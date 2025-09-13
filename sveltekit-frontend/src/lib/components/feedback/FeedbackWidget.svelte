@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount } from 'svelte';
   import { page } from '$app/stores';
 

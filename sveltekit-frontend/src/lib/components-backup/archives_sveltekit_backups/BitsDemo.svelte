@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Dialog, Button, Select, AlertDialog } from 'bits-ui';
   import { fade } from 'svelte/transition';
   import { createToaster, melt } from '@melt-ui/svelte';

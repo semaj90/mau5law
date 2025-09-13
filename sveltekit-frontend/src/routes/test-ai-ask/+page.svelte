@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
   import { browser } from "$app/environment";
   import { onMount } from "svelte";

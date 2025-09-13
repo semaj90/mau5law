@@ -1,8 +1,9 @@
 <!-- EnhancedRAG:Studio UI - Complete RAG Management Dashboard -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Input } from '$lib/components/ui/input';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Badge } from '$lib/components/ui/badge';
@@ -231,14 +232,14 @@
   </div>
 
   <!-- Service Status Bar -->
-  <Card class="mb-6">
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard class="mb-6">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Activity class="w-5 h-5" />
         Service Status
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="flex gap-4">
         <div class="flex items-center gap-2">
           <div class="w-3 h-3 rounded-full {getStatusColor(serviceStatus.services?.redis)}"></div>
@@ -258,65 +259,65 @@
           </div>
         {/if}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Navigation Tabs -->
   <div class="flex gap-2 mb-6">
-    <Button
+    <button class="nes-btn"
       variant={activeTab === 'search' ? 'default' : 'outline'}
       onclick={() => activeTab = 'search'}
       class="flex items-center gap-2"
     >
       <Search class="w-4 h-4" />
       Search
-    </Button>
-    <Button
+    </button>
+    <button class="nes-btn"
       variant={activeTab === 'upload' ? 'default' : 'outline'}
       onclick={() => activeTab = 'upload'}
       class="flex items-center gap-2"
     >
       <Upload class="w-4 h-4" />
       Upload
-    </Button>
-    <Button
+    </button>
+    <button class="nes-btn"
       variant={activeTab === 'crawl' ? 'default' : 'outline'}
       onclick={() => activeTab = 'crawl'}
       class="flex items-center gap-2"
     >
       <Globe class="w-4 h-4" />
       Crawl
-    </Button>
-    <Button
+    </button>
+    <button class="nes-btn"
       variant={activeTab === 'logs' ? 'default' : 'outline'}
       onclick={() => activeTab = 'logs'}
       class="flex items-center gap-2"
     >
       <FileText class="w-4 h-4" />
       Logs
-    </Button>
-    <Button
+    </button>
+    <button class="nes-btn"
       variant={activeTab === 'settings' ? 'default' : 'outline'}
       onclick={() => activeTab = 'settings'}
       class="flex items-center gap-2"
     >
       <Settings class="w-4 h-4" />
       Settings
-    </Button>
+    </button>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Content Area -->
     <div class="lg:col-span-2">
       {#if activeTab === 'search'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Search class="w-5 h-5" />
               Semantic Search
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+            </h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div class="flex gap-2">
               <Input
                 bind:value={searchQuery}
@@ -324,14 +325,14 @@
                 class="flex-1"
                 onkeydown={(e) => e.key === 'Enter' && handleSearch()}
               />
-              <Button onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
+              <button class="nes-btn" onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
                 {#if isLoading}
                   <RefreshCw class="w-4 h-4 animate-spin" />
                 {:else}
                   <Search class="w-4 h-4" />
                 {/if}
                 Search
-              </Button>
+              </button>
             </div>
 
             <!-- Search Results -->
@@ -350,38 +351,38 @@
                         </div>
                       </div>
                       <div class="flex gap-1 ml-4">
-                        <Button
+                        <button class="nes-btn"
                           size="sm"
                           variant="outline"
                           onclick={() => submitFeedback(result.id, 1)}
                         >
                           👍
-                        </Button>
-                        <Button
+                        </button>
+                        <button class="nes-btn"
                           size="sm"
                           variant="outline"
                           onclick={() => submitFeedback(result.id, -1)}
                         >
                           👎
-                        </Button>
+                        </button>
                       </div>
                     </div>
                   </div>
                 {/each}
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
       {:else if activeTab === 'upload'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Upload class="w-5 h-5" />
               Document Upload
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+            </h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div>
               <label class="block text-sm font-medium mb-2">Select PDF Document</label>
               <input
@@ -391,26 +392,26 @@
                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
             </div>
-            <Button onclick={handleUpload} disabled={isLoading || !uploadFile}>
+            <button class="nes-btn" onclick={handleUpload} disabled={isLoading || !uploadFile}>
               {#if isLoading}
                 <RefreshCw class="w-4 h-4 animate-spin mr-2" />
               {:else}
                 <Upload class="w-4 h-4 mr-2" />
               {/if}
               Upload & Process
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </NesCard>
 
       {:else if activeTab === 'crawl'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Globe class="w-5 h-5" />
               Web Crawler
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+            </h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div>
               <label class="block text-sm font-medium mb-2">Website URL</label>
               <Input
@@ -419,26 +420,26 @@
                 type="url"
               />
             </div>
-            <Button onclick={handleCrawl} disabled={isLoading || !crawlUrl.trim()}>
+            <button class="nes-btn" onclick={handleCrawl} disabled={isLoading || !crawlUrl.trim()}>
               {#if isLoading}
                 <RefreshCw class="w-4 h-4 animate-spin mr-2" />
               {:else}
                 <Globe class="w-4 h-4 mr-2" />
               {/if}
               Crawl & Process
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </NesCard>
 
       {:else if activeTab === 'logs'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <FileText class="w-5 h-5" />
               Activity Logs
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-2 max-h-96 overflow-y-auto">
               {#each recentLogs as log}
                 <div class="border-l-4 border-blue-500 pl-4 py-2">
@@ -454,18 +455,18 @@
                 </div>
               {/each}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
       {:else if activeTab === 'settings'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Settings class="w-5 h-5" />
               System Settings
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+            </h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div>
               <label class="block text-sm font-medium mb-2">Search Threshold</label>
               <Input type="number" step="0.1" min="0" max="1" value="0.7" />
@@ -478,23 +479,23 @@
               <label class="block text-sm font-medium mb-2">Cache TTL (seconds)</label>
               <Input type="number" min="60" max="86400" value="7200" />
             </div>
-            <Button>Save Settings</Button>
-          </CardContent>
-        </Card>
+            <button class="nes-btn">Save Settings</button>
+          </div>
+        </NesCard>
       {/if}
     </div>
 
     <!-- Sidebar - Metrics & Monitoring -->
     <div class="space-y-6">
       <!-- Embeddings Overview -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Database class="w-5 h-5" />
             Vector Database
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-2">
             <div class="flex justify-between">
               <span class="text-sm">Total Documents:</span>
@@ -509,18 +510,18 @@
               <span class="font-medium">~</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- RL Metrics -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Brain class="w-5 h-5" />
             RL Feedback
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-2">
             <div class="flex justify-between">
               <span class="text-sm">Positive Feedback:</span>
@@ -535,18 +536,18 @@
               <span class="font-medium">{rlMetrics.avgScore || 'N/A'}</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Performance Metrics -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <TrendingUp class="w-5 h-5" />
             Performance
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-2">
             <div class="flex justify-between">
               <span class="text-sm">Avg Response Time:</span>
@@ -561,8 +562,8 @@
               <span class="font-medium">~</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </div>
 </div>

@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa AI Chat Component with Enhanced RAG Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';

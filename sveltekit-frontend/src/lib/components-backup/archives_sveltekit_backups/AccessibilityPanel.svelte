@@ -2,8 +2,9 @@
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications } from "$lib/stores/notification";
   import {
     AlertTriangle,
@@ -493,14 +494,14 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <div class="mx-auto px-4 max-w-7xl">
         <div class="mx-auto px-4 max-w-7xl">
           <h2 id="accessibility-panel-title" class="mx-auto px-4 max-w-7xl">Accessibility Panel</h2>
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => (showPanel = false)}
             aria-label="Close accessibility panel"
           >
             ✕
-          </Button>
+          </button>
         </div>
 
         <!-- Accessibility Settings -->
@@ -564,7 +565,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         <div class="mx-auto px-4 max-w-7xl">
           <div class="mx-auto px-4 max-w-7xl">
             <h3 class="mx-auto px-4 max-w-7xl">Accessibility Audit</h3>
-            <Button
+            <button class="nes-btn"
               size="sm"
               onclick={() => runAccessibilityAudit()}
               disabled={isAuditing}
@@ -577,7 +578,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 <RefreshCw class="mx-auto px-4 max-w-7xl" />
                 Run Audit
               {/if}
-            </Button>
+            </button>
           </div>
 
           {#if isAuditing}
@@ -625,7 +626,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
               >
                 <Download class="mx-auto px-4 max-w-7xl" />
                 Export Report
-              </Button>
+              </button>
             </div>
 
             <!-- Audit Results -->

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     analysisData: {;
   }
@@ -11,9 +12,9 @@ https://svelte.dev/e/js_parse_error -->
 
 
 
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
       evidenceAnalysis?: any;
     personsData?: any;
@@ -46,12 +47,12 @@ https://svelte.dev/e/js_parse_error -->
   let showDetails = false;
 </script>
 
-<Card class="w-full max-w-4xl">
-  <CardHeader>
+<NesCard class="w-full max-w-4xl">
+  <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
-      <CardTitle class="text-xl font-semibold">
+      <h3 class="nes-text is-primary" class="text-xl font-semibold">
         Multi-Agent Evidence Analysis
-      </CardTitle>
+      </h3>
       {#if synthesis.caseStrength}
         <Badge class="px-3 py-1 font-medium {strengthColor}">
           Case Strength: {synthesis.caseStrength?.toUpperCase()}
@@ -63,9 +64,9 @@ https://svelte.dev/e/js_parse_error -->
         Case: {analysisData.caseId} • {analysisData.timestamp ?? 'Recently analyzed'}
       </p>
     {/if}
-  </CardHeader>
+  </div>
 
-  <CardContent class="space-y-6">
+  <div class="yorha-panel-content" class="space-y-6">
     <!-- Evidence Summary -->
     {#if evidence.documentType}
       <div>
@@ -229,25 +230,25 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Action Buttons -->
     <div class="flex items-center gap-3 pt-4 border-t">
-      <Button 
+      <button class="nes-btn" 
         variant="outline" 
         size="sm"
         onclick={() => showDetails = !showDetails}
       >
         {showDetails ? 'Hide' : 'Show'} Full Analysis
-      </Button>
+      </button>
       
-      <Button variant="outline" size="sm">
+      <button class="nes-btn" variant="outline" size="sm">
         📊 View Timeline
-      </Button>
+      </button>
       
-      <Button variant="outline" size="sm">
+      <button class="nes-btn" variant="outline" size="sm">
         🕸️ Relationship Graph  
-      </Button>
+      </button>
       
-      <Button size="sm">
+      <button class="nes-btn" size="sm">
         📝 Generate Report
-      </Button>
+      </button>
     </div>
 
     <!-- Detailed View -->
@@ -259,8 +260,8 @@ https://svelte.dev/e/js_parse_error -->
         </pre>
       </div>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   /* Custom scrollbar for JSON display */

@@ -50,7 +50,7 @@ export { sql, eq, and, or, ilike, like, desc, asc, count };
 export const helpers = { eq, and, or, ilike, like, desc, asc, count } as const;
 
 // Re-export commonly referenced tables to preserve existing import sites
-export { users, cases, evidence, legalDocuments } from './db/schema-postgres';
+export { users, cases, evidence, legalDocuments, personsOfInterest } from './db/schema-postgres';
 export { legalDocuments as legal_documents } from './db/schema-postgres';
 export { legalDocuments as legal_documents_v2 } from './schema';
 export * as legacySchema from './schema';

@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Demos Single Page App with ScrollArea -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/bitsbutton.svelte';
@@ -444,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
 
         <div class="yorha-overview-grid">
           {#each allDemos as demo}
-            <div class="yorha-demo-card yorha-demo-card-overview" role="button" tabindex="0"
+            <div class="yorha-demo-nier-bits-card yorha-demo-nier-bits-card-overview" role="button" tabindex="0"
                 onclick={() => handleDemoNavigation(demo.path)}>
               <div class="yorha-demo-header">
                 <h3 class="yorha-demo-title">{demo.title}</h3>
@@ -480,7 +481,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <div class="yorha-demos-grid">
             {#each category.demos as demo}
-              <div class="yorha-demo-card" role="button" tabindex="0"
+              <div class="yorha-demo-nier-bits-card" role="button" tabindex="0"
                 onclick={() => handleDemoNavigation(demo.path)}>
                 <div class="yorha-demo-header">
                   <h3 class="yorha-demo-title">{demo.title}</h3>
@@ -545,7 +546,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <div class="yorha-footer-actions">
             <Button.Root
-              class="yorha-btn yorha-btn-primary bits-btn bits-btn"
+              class="yorha-btn yorha-nes-btn is-primary bits-btn bits-btn"
               onclick={goHome}
             >
               <ArrowLeft size={16} />

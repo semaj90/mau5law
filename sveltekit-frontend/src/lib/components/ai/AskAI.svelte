@@ -1,5 +1,6 @@
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     caseId: string | undefined ;
     evidenceIds: string[] ;

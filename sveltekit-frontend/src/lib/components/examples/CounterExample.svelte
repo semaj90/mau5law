@@ -1,6 +1,7 @@
 <!-- Example: Svelte 4 Style (Before Migration) -->
 <!-- 
 <script>
+  import 'nes.css/css/nes.min.css';
   // Svelte 4 reactive variables
   export let initialCount = 0;
   

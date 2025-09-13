@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
+  import 'nes.css/css/nes.min.css';
 </script>
   export let variant = 'default';
   export let className = '';
@@ -18,17 +19,17 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="rounded-lg p-6 {variantClass} {className}">
   {#if $$slots.header}
-    <div class="card-header mb-4">
+    <div class="nier-bits-yorha-panel-header mb-4">
       <slot name="header" />
     </div>
   {/if}
   
-  <div class="card-content">
+  <div class="nier-bits-yorha-panel-content">
     <slot />
   </div>
   
   {#if $$slots.footer}
-    <div class="card-footer mt-4">
+    <div class="nier-bits-yorha-panel-content mt-4">
       <slot name="footer" />
     </div>
   {/if}

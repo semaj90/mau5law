@@ -6,6 +6,7 @@ Integrity Verification Component
 Displays detailed integrity verification results with AI analysis
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     integrityStatus: 'pending' | 'verified' | 'compromised' | 'requires-attention';
     verificationResults: {;

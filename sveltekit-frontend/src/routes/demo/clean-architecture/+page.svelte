@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
 
@@ -451,7 +452,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-semibold text-gray-900">Cases</h2>
         <button
-          class="btn btn-primary px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          class="btn nes-btn is-primary px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           onclick={() => showCreateForm = true}
           disabled={isLoading}
         >
@@ -471,7 +472,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="cases-list space-y-3">
           {#each cases as caseItem (caseItem.id)}
             <div
-              class="case-card p-4 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors"
+              class="case-nier-bits-card p-4 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors"
               class:selected={selectedCase?.id === caseItem.id}
               role="button" tabindex="0"
                 onclick={() => loadCase(caseItem.id)}
@@ -535,7 +536,7 @@ https://svelte.dev/e/js_parse_error -->
                 Search Evidence
               </button>
               <button
-                class="btn btn-secondary px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                class="btn nes-btn px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                 onclick={() => showUploadModal = true}
                 disabled={isLoading}
               >
@@ -839,7 +840,7 @@ https://svelte.dev/e/js_parse_error -->
           </h3>
           <div class="space-y-4">
             {#each searchResults as result, index (result.id)}
-              <div class="result-card border border-gray-200 rounded-lg p-4">
+              <div class="result-nier-bits-card border border-gray-200 rounded-lg p-4">
                 <div class="flex justify-between items-start mb-2">
                   <h4 class="font-medium text-gray-900">{result.title}</h4>
                   <div class="flex items-center space-x-2">

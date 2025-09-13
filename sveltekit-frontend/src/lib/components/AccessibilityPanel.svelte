@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import {
     Button
@@ -500,7 +501,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             aria-label="Close accessibility panel"
           >
             ✕
-          </Button>
+          </button>
         </div>
 
         <!-- Accessibility Settings -->
@@ -577,7 +578,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 <RefreshCw class="w-4 h-4" />
                 Run Audit
               {/if}
-            </Button>
+            </button>
           </div>
 
           {#if isAuditing}
@@ -625,7 +626,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
               >
                 <Download class="mx-auto px-4 max-w-7xl" />
                 Export Report
-              </Button>
+              </button>
             </div>
 
             <!-- Audit Results -->

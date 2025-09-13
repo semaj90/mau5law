@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   	import { tweened } from 'svelte/motion';
   import { cubicInOut, elasticOut } from 'svelte/easing';

@@ -4,6 +4,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 <!-- Gemma3LegalChat.svelte -->
 <!-- Complete Gemma3 Legal Model Integration Component for SvelteKit -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { createMachine, createActor } from 'xstate';
@@ -384,9 +385,9 @@ https://svelte.dev/e/attribute_invalid_name -->
 
 <div class="gemma3-legal-chat h-full flex flex-col">
   <!-- Header -->
-  <Card class="mb-4">
-    <CardHeader>
-      <CardTitle class="flex items-center justify-between">
+  <NesCard class="mb-4">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <Brain class="h-5 w-5" />
           Gemma3 Legal AI Assistant
@@ -402,9 +403,9 @@ https://svelte.dev/e/attribute_invalid_name -->
           {/if}
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$currentModel}</span>
         </div>
-      </CardTitle>
-    </CardHeader>
-  </Card>
+      </h3>
+    </div>
+  </NesCard>
 
   <!-- Main Content -->
   <Tabs bind:value={activeTab} class="flex-1 flex flex-col">
@@ -420,9 +421,9 @@ https://svelte.dev/e/attribute_invalid_name -->
         <div class="space-y-4">
           {#each $messages as message}
             <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
-              <Card class="max-w-[80%] {message.role === 'user' ? 'bg-primary/10' : ''}">
-                <CardContent class="p-4">
-                  <div class="text-sm text-muted-foreground mb-1">
+              <NesCard class="max-w-[80%] {message.role === 'user' ? 'bg-primary/10' : ''}">
+                <div class="yorha-panel-content" class="p-4">
+                  <div class="text-sm nes-text is-disabled mb-1">
                     {message.role === 'user' ? 'You' : 'Gemma3 Legal AI'}
                     · {message.timestamp.toLocaleTimeString()}
                   </div>
@@ -431,7 +432,7 @@ https://svelte.dev/e/attribute_invalid_name -->
                   </div>
                   {#if message.metadata?.sources && message.metadata.sources.length > 0}
                     <div class="mt-3 pt-3 border-t">
-                      <div class="text-xs text-muted-foreground mb-2">Sources:</div>
+                      <div class="text-xs nes-text is-disabled mb-2">Sources:</div>
                       <div class="space-y-1">
                         {#each message.metadata.sources as source}
                           <div class="text-xs">
@@ -453,20 +454,20 @@ https://svelte.dev/e/attribute_invalid_name -->
                         showPercentage={true}
                         sparkle={message.metadata.confidence > 0.8}
                       />
-                      <div class="text-xs text-muted-foreground mt-1">
+                      <div class="text-xs nes-text is-disabled mt-1">
                         AI Confidence Level
                       </div>
                     </div>
                   {/if}
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
             </div>
           {/each}
           
           {#if $isProcessing}
             <div class="flex justify-start">
-              <Card>
-                <CardContent class="p-4">
+              <NesCard>
+                <div class="yorha-panel-content" class="p-4">
                   <div class="flex items-center gap-4">
                     <N64LoadingRing 
                       size="md" 
@@ -476,11 +477,11 @@ https://svelte.dev/e/attribute_invalid_name -->
                     />
                     <div class="flex flex-col">
                       <span class="text-sm font-medium">Gemma3 Legal AI Processing</span>
-                      <span class="text-xs text-muted-foreground">Analyzing legal context with 35 GPU layers...</span>
+                      <span class="text-xs nes-text is-disabled">Analyzing legal context with 35 GPU layers...</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
             </div>
           {/if}
         </div>
@@ -512,21 +513,21 @@ https://svelte.dev/e/attribute_invalid_name -->
             {:else}
               <Send class="h-4 w-4" />
             {/if}
-          </Button>
+          </button>
         </form>
       </div>
     </TabsContent>
 
     <!-- Documents Tab -->
     <TabsContent value="documents" class="flex-1 p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <FileText class="h-5 w-5" />
             Document Analysis
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-4">
             <Alert>
               <AlertDescription>
@@ -538,32 +539,32 @@ https://svelte.dev/e/attribute_invalid_name -->
               <Button variant="outline" class="justify-start bits-btn bits-btn">
                 <FileText class="h-4 w-4 mr-2" />
                 Upload Document
-              </Button>
+              </button>
               <Button variant="outline" class="justify-start bits-btn bits-btn">
                 <Search class="h-4 w-4 mr-2" />
                 Search Documents
-              </Button>
+              </button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Metrics Tab -->
     <TabsContent value="metrics" class="flex-1 p-4">
       <div class="grid grid-cols-2 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-sm flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
               <Cpu class="h-4 w-4" />
               Performance Metrics
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-4">
               <div>
                 <div class="flex justify-between text-sm mb-2">
-                  <span class="text-muted-foreground">Tokens/sec</span>
+                  <span class="nes-text is-disabled">Tokens/sec</span>
                   <span class="font-medium">
                     {$performanceMetrics.tokensPerSecond.toFixed(1)}
                   </span>
@@ -580,7 +581,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               
               <div>
                 <div class="flex justify-between text-sm mb-2">
-                  <span class="text-muted-foreground">Cache Hit Rate</span>
+                  <span class="nes-text is-disabled">Cache Hit Rate</span>
                   <span class="font-medium">
                     {($performanceMetrics.cacheHitRate * 100).toFixed(1)}%
                   </span>
@@ -598,7 +599,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               
               <div>
                 <div class="flex justify-between text-sm mb-2">
-                  <span class="text-muted-foreground">Response Time</span>
+                  <span class="nes-text is-disabled">Response Time</span>
                   <span class="font-medium">
                     {$performanceMetrics.latency.toFixed(0)}ms
                   </span>
@@ -614,21 +615,21 @@ https://svelte.dev/e/attribute_invalid_name -->
                 />
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-sm flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
               <Zap class="h-4 w-4" />
               GPU Status - RTX 3060 Ti
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-4">
               <div>
                 <div class="flex justify-between text-sm mb-2">
-                  <span class="text-muted-foreground">GPU Layers</span>
+                  <span class="nes-text is-disabled">GPU Layers</span>
                   <span class="font-medium">{$gpuStatus.layers}/35</span>
                 </div>
                 <N64ProgressBar 
@@ -644,7 +645,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               
               <div>
                 <div class="flex justify-between text-sm mb-2">
-                  <span class="text-muted-foreground">VRAM Usage</span>
+                  <span class="nes-text is-disabled">VRAM Usage</span>
                   <span class="font-medium">
                     {($gpuStatus.memory / 1024).toFixed(1)}GB / 8.0GB
                   </span>
@@ -662,7 +663,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               
               <div>
                 <div class="flex justify-between text-sm mb-2">
-                  <span class="text-muted-foreground">GPU Utilization</span>
+                  <span class="nes-text is-disabled">GPU Utilization</span>
                   <span class="font-medium">
                     {($performanceMetrics.gpuUtilization * 100).toFixed(0)}%
                   </span>
@@ -678,8 +679,8 @@ https://svelte.dev/e/attribute_invalid_name -->
                 />
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     </TabsContent>
   </Tabs>

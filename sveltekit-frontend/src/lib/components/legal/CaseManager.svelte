@@ -8,6 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { UiButton as Button, UiInput as Input, UiLabel as Label, UiCard as Card, UiCardContent as CardContent, UiCardHeader as CardHeader, UiCardTitle as CardTitle, UiBadge as Badge } from '$lib/components/ui';
@@ -222,7 +223,7 @@ https://svelte.dev/e/js_parse_error -->
       <DialogTrigger asChild let:builder>
         <Button builders={[builder]} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
           Create New Case
-        </Button>
+        </button>
       </DialogTrigger>
       <DialogContent class="max-w-2xl">
         <DialogHeader>
@@ -307,14 +308,14 @@ https://svelte.dev/e/js_parse_error -->
               onclick={() => isCreateDialogOpen.set(false)}
             >
               Cancel
-            </Button>
+            </button>
             <Button 
               type="submit" 
               disabled={$loading}
               class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn"
             >
               {$loading ? 'Creating...' : 'Create Case'}
-            </Button>
+            </button>
           </div>
         </form>
       </DialogContent>
@@ -349,11 +350,11 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Cases Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {#each $cases as caseData (caseData.id)}
-      <Card class="hover:shadow-lg transition-shadow">
-        <CardHeader class="pb-3">
+      <NesCard class="hover:shadow-lg transition-shadow">
+        <div class="yorha-panel-header" class="pb-3">
           <div class="flex justify-between items-start">
             <div class="flex-1">
-              <CardTitle class="text-lg line-clamp-2">{caseData.title}</CardTitle>
+              <h3 class="nes-text is-primary" class="text-lg line-clamp-2">{caseData.title}</h3>
               <p class="text-sm text-gray-500 mt-1">#{caseData.id?.slice(-8)}</p>
             </div>
             <div class="flex space-x-2">
@@ -365,9 +366,9 @@ https://svelte.dev/e/js_parse_error -->
               </Badge>
             </div>
           </div>
-        </CardHeader>
+        </div>
         
-        <CardContent class="pt-0">
+        <div class="yorha-panel-content" class="pt-0">
           {#if caseData.description}
             <p class="text-sm text-gray-600 mb-3 line-clamp-2">
               {caseData.description}
@@ -398,18 +399,18 @@ https://svelte.dev/e/js_parse_error -->
                 onclick={() => openEditDialog(caseData)}
               >
                 Edit
-              </Button>
+              </button>
               <Button class="bits-btn" 
                 size="sm" 
                 variant="destructive"
                 onclick={() => deleteCase(caseData.id!)}
               >
                 Delete
-              </Button>
+              </button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     {/each}
   </div>
 
@@ -428,7 +429,7 @@ https://svelte.dev/e/js_parse_error -->
             onclick={() => isCreateDialogOpen.set(true)}
           >
             Create First Case
-          </Button>
+          </button>
         {/if}
       </div>
     </div>
@@ -519,14 +520,14 @@ https://svelte.dev/e/js_parse_error -->
             onclick={() => isEditDialogOpen.set(false)}
           >
             Cancel
-          </Button>
+          </button>
           <Button 
             type="submit" 
             disabled={$loading}
             class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn"
           >
             {$loading ? 'Updating...' : 'Update Case'}
-          </Button>
+          </button>
         </div>
       </form>
     </DialogContent>

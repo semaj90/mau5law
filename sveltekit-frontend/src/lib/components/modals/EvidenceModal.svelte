@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import Dialog from 'bits-ui/Dialog.svelte';
   import Button from 'bits-ui/Button.svelte';
@@ -90,7 +91,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         <!-- Add other view-only fields as needed -->
       </div>
       <div class="flex gap-2 mt-2">
-        <Button class="bits-btn" onclick={handleEdit}>Edit</Button>
+        <Button class="bits-btn" onclick={handleEdit}>Edit</button>
       </div>
     {:else}
       <form class="flex flex-col gap-2" onsubmit|preventDefault={handleSave}>
@@ -99,13 +100,13 @@ https://svelte.dev/e/attribute_invalid_name -->
         <input name="jsonData.tags" bind:value={tagsString} placeholder="Tags (comma separated)" class="input input-bordered" />
         <input name="jsonData.type" bind:value={type} placeholder="Type" class="input input-bordered" />
         <div class="flex gap-2 mt-2">
-          <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn bits-btn">Save</Button>
-          <Button class="bits-btn" variant="outline" onclick={handleCancel}>Cancel</Button>
+          <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn bits-btn">Save</button>
+          <Button class="bits-btn" variant="outline" onclick={handleCancel}>Cancel</button>
         </div>
       </form>
     {/if}
     <div class="mt-4 flex justify-end">
-      <Button class="bits-btn" onclick={() => (open = false)} variant="ghost">Close</Button>
+      <Button class="bits-btn" onclick={() => (open = false)} variant="ghost">Close</button>
     </div>
   </div>
 </Dialog>

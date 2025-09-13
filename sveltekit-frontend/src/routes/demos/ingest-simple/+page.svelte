@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   /**
    * Simple Document Ingest Demo
    * Demonstrates the working ingest integration without complex UI dependencies

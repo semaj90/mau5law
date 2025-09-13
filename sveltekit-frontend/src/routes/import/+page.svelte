@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { UiTooltip as Tooltip } from "$lib/components/ui";
   import {
@@ -315,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
                   <Button class="bits-btn" variant="outline" size="sm" disabled={!filePreview}>
                     <Eye class="space-y-4" />
                     Preview
-                  </Button>
+                  </button>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
                   <Button class="bits-btn"
@@ -325,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
                   >
                     <X class="space-y-4" />
                     Remove
-                  </Button>
+                  </button>
                 </Tooltip>
               </div>
             </div>
@@ -340,7 +341,7 @@ https://svelte.dev/e/js_parse_error -->
               </div>
               <Button class="bits-btn" variant="outline" onclick={() => fileInput?.click()}>
                 Select File
-              </Button>
+              </button>
             </div>
           {/if}
         </div>
@@ -510,12 +511,12 @@ https://svelte.dev/e/js_parse_error -->
                 <Upload class="space-y-4" />
                 Import Data
               {/if}
-            </Button>
+            </button>
             <Tooltip content="Clear current import and start over">
               <Button class="bits-btn" variant="outline" onclick={() => clearImport()}>
                 <X class="space-y-4" />
                 Cancel
-              </Button>
+              </button>
             </Tooltip>
           </div>
         </div>
@@ -542,7 +543,7 @@ https://svelte.dev/e/js_parse_error -->
                   onclick={() => downloadExampleTemplate("cases", "json")}
                 >
                   JSON
-                </Button>
+                </button>
               </Tooltip>
               <Tooltip content="Download CSV example for cases">
                 <Button class="bits-btn"
@@ -551,7 +552,7 @@ https://svelte.dev/e/js_parse_error -->
                   onclick={() => downloadExampleTemplate("cases", "csv")}
                 >
                   CSV
-                </Button>
+                </button>
               </Tooltip>
             </div>
           </div>
@@ -566,7 +567,7 @@ https://svelte.dev/e/js_parse_error -->
                   onclick={() => downloadExampleTemplate("evidence", "json")}
                 >
                   JSON
-                </Button>
+                </button>
               </Tooltip>
               <Tooltip content="Download CSV example for evidence">
                 <Button class="bits-btn"
@@ -575,7 +576,7 @@ https://svelte.dev/e/js_parse_error -->
                   onclick={() => downloadExampleTemplate("evidence", "csv")}
                 >
                   CSV
-                </Button>
+                </button>
               </Tooltip>
             </div>
           </div>
@@ -605,19 +606,19 @@ https://svelte.dev/e/js_parse_error -->
             <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <Download class="space-y-4" />
               Export Data
-            </Button>
+            </button>
           </a>
           <a href="/cases" class="space-y-4">
             <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <Database class="space-y-4" />
               View Cases
-            </Button>
+            </button>
           </a>
           <a href="/evidence" class="space-y-4">
             <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <FileText class="space-y-4" />
               View Evidence
-            </Button>
+            </button>
           </a>
         </div>
       </div>

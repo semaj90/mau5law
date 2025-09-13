@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from "svelte";
 
   let prompt = $state("Explain the legal concept of due process in criminal law.");

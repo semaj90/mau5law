@@ -2,6 +2,7 @@
 <!-- Integrates with Enhanced Neural Sprite Engine for comprehensive performance tracking -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived, type Readable } from 'svelte/store';
   import type { EnhancedNeuralSpriteEngine } from '$lib/engines/neural-sprite-engine-enhanced';
@@ -179,7 +180,7 @@
   <div class="p-4">
     <!-- Overall Grade & Status -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <div class="performance-card bg-gray-800 rounded p-4">
+      <div class="performance-nier-bits-card bg-gray-800 rounded p-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm text-gray-400">Overall Grade</span>
           {#if $overallGrade}
@@ -193,7 +194,7 @@
         </div>
       </div>
 
-      <div class="performance-card bg-gray-800 rounded p-4">
+      <div class="performance-nier-bits-card bg-gray-800 rounded p-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm text-gray-400">System Status</span>
           <div class="status-indicator w-3 h-3 rounded-full {$systemStatus.color}"></div>
@@ -203,7 +204,7 @@
         </div>
       </div>
 
-      <div class="performance-card bg-gray-800 rounded p-4">
+      <div class="performance-nier-bits-card bg-gray-800 rounded p-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm text-gray-400">Cache Performance</span>
           <span class="text-sm text-green-400">{($currentMetrics.cacheHitRate * 100).toFixed(1)}%</span>
@@ -254,19 +255,19 @@
       <div class="metrics-section">
         <h3 class="text-lg font-semibold mb-3">⚡ Performance Metrics</h3>
         <div class="grid grid-cols-2 gap-3">
-          <div class="metric-card bg-gray-800 p-3 rounded">
+          <div class="metric-nier-bits-card bg-gray-800 p-3 rounded">
             <div class="text-xs text-gray-400 mb-1">Memory Usage</div>
             <div class="text-lg font-mono text-blue-400">{$currentMetrics.memoryUsage}MB</div>
           </div>
-          <div class="metric-card bg-gray-800 p-3 rounded">
+          <div class="metric-nier-bits-card bg-gray-800 p-3 rounded">
             <div class="text-xs text-gray-400 mb-1">Queue Depth</div>
             <div class="text-lg font-mono text-yellow-400">{$currentMetrics.queueDepth}</div>
           </div>
-          <div class="metric-card bg-gray-800 p-3 rounded">
+          <div class="metric-nier-bits-card bg-gray-800 p-3 rounded">
             <div class="text-xs text-gray-400 mb-1">Tasks/sec</div>
             <div class="text-lg font-mono text-green-400">{$currentMetrics.distributedTasksPerSecond.toFixed(1)}</div>
           </div>
-          <div class="metric-card bg-gray-800 p-3 rounded">
+          <div class="metric-nier-bits-card bg-gray-800 p-3 rounded">
             <div class="text-xs text-gray-400 mb-1">Storage Used</div>
             <div class="text-lg font-mono text-purple-400">{formatNumber($currentMetrics.storageUtilization)}</div>
           </div>
@@ -280,7 +281,7 @@
       <h3 class="text-lg font-semibold mb-3">🚀 Service Latency</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {#each Object.entries($currentMetrics.serviceLatency) as [service, latency]}
-        <div class="latency-card bg-gray-800 p-3 rounded">
+        <div class="latency-nier-bits-card bg-gray-800 p-3 rounded">
           <div class="flex justify-between items-center">
             <span class="text-sm text-gray-300">{service}</span>
             <span class="font-mono text-sm {latency < 100 ? 'text-green-400' : latency < 500 ? 'text-yellow-400' : 'text-red-400'}">

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createDialog } from '@melt-ui/svelte';
   import { writable } from 'svelte/store';
   interface Props {

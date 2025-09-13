@@ -6,6 +6,7 @@ Enhanced Legal AI Chat with Input Synthesis and LegalBERT Integration
 Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipeline, and streaming
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { SystemStatus } from "$lib/types/global";
   import type { Props } from "$lib/types/global";
   import { onMount, tick } from 'svelte';
@@ -1170,10 +1171,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
 <div class="enhanced-legal-ai-chat flex flex-col h-full max-w-6xl mx-auto {className}">
   <!-- Header with Status -->
-  <Card class="mb-4">
-    <CardHeader class="pb-2">
+  <NesCard class="mb-4">
+    <div class="yorha-panel-header" class="pb-2">
       <div class="flex items-center justify-between">
-        <CardTitle class="flex items-center gap-2 flex-wrap">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2 flex-wrap">
           <Brain class="w-5 h-5" />
           Enhanced Legal AI Assistant
           {#if userRole}
@@ -1191,7 +1192,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
           {#if relatedReports.length > 0}
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{relatedReports.length} Related</span>
           {/if}
-        </CardTitle>
+        </h3>
 
         <div class="flex items-center gap-2">
           <!-- System Status Indicators -->
@@ -1217,14 +1218,14 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
           <!-- Settings Toggle -->
           <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showSettings = !showSettings)}>
             <Settings class="w-4 h-4" />
-          </Button>
+          </button>
         </div>
       </div>
-    </CardHeader>
+    </div>
 
     <!-- Advanced Settings Panel -->
     {#if showSettings}
-      <CardContent class="border-t">
+      <div class="yorha-panel-content" class="border-t">
         <Collapsible.Root>
           <Collapsible.Trigger class="flex items-center gap-2 text-sm font-medium mb-3">
             <Zap class="w-4 h-4" />
@@ -1307,9 +1308,9 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
             </div>
           </Collapsible.Content>
         </Collapsible.Root>
-      </CardContent>
+      </div>
     {/if}
-  </Card>
+  </NesCard>
 
   <!-- Messages Container -->
   <div
@@ -1461,7 +1462,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
           <div class="flex-shrink-0 flex flex-col gap-1">
             <Button class="bits-btn" variant="ghost" size="sm" onclick={() => copyToClipboard(message.content)}>
               <FileText class="w-3 h-3" />
-            </Button>
+            </button>
           </div>
         </div>
       </div>
@@ -1492,26 +1493,26 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
       {:else}
         <Send class="w-4 h-4" />
       {/if}
-    </Button>
+    </button>
   </div>
 
   <!-- Analysis Panel -->
   {#if currentAnalysis && showAdvancedAnalysis}
-    <Card class="mt-4" transitifly={{ y: 20, duration: 300 }}>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard class="mt-4" transitifly={{ y: 20, duration: 300 }}>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           Detailed Analysis
           <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showAdvancedAnalysis = false)}>
             ×
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+          </button>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <pre class="text-xs overflow-auto max-h-60 bg-gray-100 dark:bg-gray-800 p-3 rounded">
 {JSON.stringify(currentAnalysis, null, 2)}
         </pre>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

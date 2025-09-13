@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
@@ -368,9 +369,9 @@
   </div>
 
   <!-- Authentication Status -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         {#if isAuthenticated}
           <span class="w-3 h-3 bg-green-500 rounded-full"></span>
           Authentication Status: Connected
@@ -378,9 +379,9 @@
           <span class="w-3 h-3 bg-red-500 rounded-full"></span>
           Authentication Status: Not Authenticated
         {/if}
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       {#if isAuthenticated && currentUser}
         <div class="space-y-2">
           <p><strong>User:</strong> {currentUser.email}</p>
@@ -390,42 +391,42 @@
       {:else if authError}
         <div class="text-red-600 space-y-2">
           <p><strong>Error:</strong> {authError}</p>
-          <Button class="bits-btn" onclick={goToLogin} variant="default">Go to Login</Button>
+          <Button class="bits-btn" onclick={goToLogin} variant="default">Go to Login</button>
         </div>
       {:else}
         <p class="text-gray-500">Checking authentication...</p>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Test Controls -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Test Controls</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Test Controls</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="flex flex-wrap gap-3">
   <Button class="bits-btn" onclick={runAuthenticatedCRUDTest} disabled={isLoading || !isAuthenticated} variant="default">
           {isLoading ? '⏳ Testing...' : '🚀 Run Authenticated CRUD Test'}
-        </Button>
+        </button>
   <Button class="bits-btn" onclick={() => checkAuth()} disabled={isLoading} variant="secondary">
           🔍 Check Auth
-        </Button>
+        </button>
   <Button class="bits-btn" onclick={testAuthenticatedGET} disabled={isLoading || !isAuthenticated} variant="secondary">
           📋 Test GET
-        </Button>
+        </button>
   <Button class="bits-btn" onclick={testAuthenticatedPOST} disabled={isLoading || !isAuthenticated} variant="secondary">
           📝 Test POST
-        </Button>
+        </button>
   <Button class="bits-btn" onclick={() => testAuthenticatedPUT()} disabled={isLoading || !isAuthenticated} variant="secondary">
           ✏️ Test PUT
-        </Button>
+        </button>
   <Button class="bits-btn" onclick={() => testAuthenticatedDELETE()} disabled={isLoading || !isAuthenticated} variant="secondary">
           🗑️ Test DELETE
-        </Button>
+        </button>
   <Button class="bits-btn" onclick={clearResults} variant="ghost">
           🧹 Clear Results
-        </Button>
+        </button>
       </div>
 
       {#if !isAuthenticated}
@@ -433,15 +434,15 @@
           ⚠️ Authentication required to run tests. Please log in first.
         </p>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Test Results Summary -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Test Results Summary</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Test Results Summary</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div class="bg-blue-50 p-3 rounded">
           <div class="text-2xl font-bold text-blue-600">{testSummary.total}</div>
@@ -464,15 +465,15 @@
           <div class="text-sm text-purple-600">Success Rate</div>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Current User's Cases -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Your Cases ({cases.length})</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Your Cases ({cases.length})</h3>
+    </div>
+    <div class="yorha-panel-content">
       {#if !isAuthenticated}
         <p class="text-gray-500">Login required to view your cases</p>
       {:else if cases.length === 0}
@@ -505,15 +506,15 @@
           {/each}
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Test Results Log -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Test Results Log</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Test Results Log</h3>
+    </div>
+    <div class="yorha-panel-content">
       {#if testResults.length === 0}
         <p class="text-gray-500">No test results yet. Run some tests to see results here.</p>
       {:else}
@@ -530,6 +531,6 @@
           {/each}
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 </div>

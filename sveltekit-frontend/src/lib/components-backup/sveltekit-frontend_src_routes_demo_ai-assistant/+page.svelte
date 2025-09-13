@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import type { AIResponse } from '$lib/types/ai';
   	// Modern Svelte 5 patterns

@@ -5,6 +5,7 @@ import type { User } from '$lib/types/user';
 
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     user: User | null ;
   }

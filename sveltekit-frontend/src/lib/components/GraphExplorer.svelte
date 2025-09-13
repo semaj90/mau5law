@@ -9,6 +9,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { db, chatHistory, graphNodes } from '../db/dexie-integration';
   import { integratedSearch } from '../storage/integrated-search-engine';
@@ -364,7 +365,7 @@ https://svelte.dev/e/js_parse_error -->
         <h3>Search Results ({searchResults.length})</h3>
         <div class="results-grid">
           {#each searchResults as result}
-            <div class="result-card">
+            <div class="result-nier-bits-card">
               <div class="result-score">{(result.score * 100).toFixed(1)}%</div>
               <div class="result-content">
                 <h4>{result.id}</h4>

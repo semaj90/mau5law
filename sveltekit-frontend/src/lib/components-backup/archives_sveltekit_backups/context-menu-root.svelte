@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
   interface Props {

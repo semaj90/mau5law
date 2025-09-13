@@ -1,4 +1,5 @@
 <script>
+  import 'nes.css/css/nes.min.css';
 	/** @type {{[key: string]: any}} */
 	let { ...rest } = $props();
 </script>

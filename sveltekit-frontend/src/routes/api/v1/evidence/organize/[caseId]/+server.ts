@@ -192,7 +192,7 @@ async function organizeByCategory(evidence: any[]) {
  */
 async function organizeByTimeline(evidence: any[]) {
   const timelineEvidence = evidence
-    .filter(item => item.collected_at || item.uploaded_at || item.incident_date)
+    .filter((item) => item.collected_at || item.uploaded_at || item.incident_date)
     .sort((a, b) => {
       const dateA = new Date(a.collected_at || a.uploaded_at || a.incident_date);
       const dateB = new Date(b.collected_at || b.uploaded_at || b.incident_date);
@@ -200,8 +200,18 @@ async function organizeByTimeline(evidence: any[]) {
     });
 
   // Group by time periods
-  const periods = {};
-  timelineEvidence.forEach(item => {
+  const periods: Record<
+    string,
+    {
+      key: string;
+      label: string;
+      evidence: any[];
+      count: number;
+      startDate: Date;
+      endDate: Date;
+    }
+  > = {};
+  timelineEvidence.forEach((item) => {
     const date = new Date(item.collected_at || item.uploaded_at || item.incident_date);
     const periodKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     const periodLabel = date.toLocaleString('default', { month: 'long', year: 'numeric' });
@@ -213,7 +223,7 @@ async function organizeByTimeline(evidence: any[]) {
         evidence: [],
         count: 0,
         startDate: date,
-        endDate: date
+        endDate: date,
       };
     }
 
@@ -224,8 +234,8 @@ async function organizeByTimeline(evidence: any[]) {
     if (date > periods[periodKey].endDate) periods[periodKey].endDate = date;
   });
 
-  const uncategorized = evidence.filter(item => 
-    !item.collected_at && !item.uploaded_at && !item.incident_date
+  const uncategorized = evidence.filter(
+    (item) => !item.collected_at && !item.uploaded_at && !item.incident_date
   );
 
   return {
@@ -235,8 +245,8 @@ async function organizeByTimeline(evidence: any[]) {
     metadata: {
       totalPeriods: Object.keys(periods).length,
       timelineSpan: calculateTimelineSpan(Object.values(periods)),
-      uncategorizedCount: uncategorized.length
-    }
+      uncategorizedCount: uncategorized.length,
+    },
   };
 }
 
@@ -245,17 +255,15 @@ async function organizeByTimeline(evidence: any[]) {
  */
 async function organizeByPriority(evidence: any[]) {
   const priorities = {
-    critical: { name: 'Critical', evidence: [], color: '#dc2626', weight: 4 },
-    high: { name: 'High', evidence: [], color: '#ea580c', weight: 3 },
-    medium: { name: 'Medium', evidence: [], color: '#d97706', weight: 2 },
-    low: { name: 'Low', evidence: [], color: '#65a30d', weight: 1 },
-    unknown: { name: 'Unknown', evidence: [], color: '#6b7280', weight: 0 }
+    critical: { name: 'Critical', evidence: [], color: '#dc2626', weight: 4, count: 0 },
+    high: { name: 'High', evidence: [], color: '#ea580c', weight: 3, count: 0 },
+    medium: { name: 'Medium', evidence: [], color: '#d97706', weight: 2, count: 0 },
+    low: { name: 'Low', evidence: [], color: '#65a30d', weight: 1, count: 0 },
+    unknown: { name: 'Unknown', evidence: [], color: '#6b7280', weight: 0, count: 0 },
   };
 
-  evidence.forEach(item => {
-    const priority = item.metadata?.priority || 
-                    calculateEvidencePriority(item) || 
-                    'unknown';
+  evidence.forEach((item) => {
+    const priority = item.metadata?.priority || calculateEvidencePriority(item) || 'unknown';
 
     if (priorities[priority]) {
       priorities[priority].evidence.push(item);
@@ -265,7 +273,7 @@ async function organizeByPriority(evidence: any[]) {
   });
 
   // Add counts and filter empty priorities
-  const nonEmptyPriorities = Object.values(priorities).filter(priority => {
+  const nonEmptyPriorities = Object.values(priorities).filter((priority) => {
     priority.count = priority.evidence.length;
     return priority.count > 0;
   });
@@ -274,12 +282,12 @@ async function organizeByPriority(evidence: any[]) {
     type: 'priority',
     priorities: nonEmptyPriorities.sort((a, b) => b.weight - a.weight),
     metadata: {
-      priorityDistribution: nonEmptyPriorities.map(p => ({
+      priorityDistribution: nonEmptyPriorities.map((p) => ({
         level: p.name.toLowerCase(),
         count: p.count,
-        percentage: (p.count / evidence.length * 100).toFixed(1)
-      }))
-    }
+        percentage: ((p.count / evidence.length) * 100).toFixed(1),
+      })),
+    },
   };
 }
 
@@ -304,15 +312,14 @@ async function organizeByAIClusters(evidence: any[], clusteringParams: any) {
         totalClusters: enhancedClusters.length,
         clusteringMethod: 'gemma_embeddings',
         parameters: clusteringParams,
-        averageClusterSize: enhancedClusters.length > 0 
-          ? (evidence.length / enhancedClusters.length).toFixed(1)
-          : 0,
-        generatedAt: new Date().toISOString()
-      }
+        averageClusterSize:
+          enhancedClusters.length > 0 ? (evidence.length / enhancedClusters.length).toFixed(1) : 0,
+        generatedAt: new Date().toISOString(),
+      },
     };
   } catch (error) {
     console.error('AI clustering failed:', error);
-    
+
     // Fallback to category organization
     console.log('Falling back to category organization');
     return await organizeByCategory(evidence);
@@ -325,7 +332,7 @@ async function organizeByAIClusters(evidence: any[], clusteringParams: any) {
 async function organizeByChainOfCustody(evidence: any[]) {
   const custodyChains = {};
 
-  evidence.forEach(item => {
+  evidence.forEach((item) => {
     const custody = item.chain_of_custody || [];
     const chainId = custody.length > 0 ? custody[0].officer_id || 'unknown' : 'no_chain';
     const chainStatus = validateChainOfCustody(custody);
@@ -336,23 +343,24 @@ async function organizeByChainOfCustody(evidence: any[]) {
         officer: custody[0]?.officer_name || 'Unknown Officer',
         evidence: [],
         status: chainStatus,
-        completeness: 0
+        completeness: 0,
       };
     }
 
     custodyChains[chainId].evidence.push({
       ...item,
       custodyStatus: chainStatus,
-      custodySteps: custody.length
+      custodySteps: custody.length,
     });
   });
 
   // Calculate completeness and metrics for each chain
-  Object.values(custodyChains).forEach(chain => {
-    const completeChains = chain.evidence.filter(e => e.custodyStatus === 'complete').length;
+  Object.values(custodyChains).forEach((chain) => {
+    const completeChains = chain.evidence.filter((e) => e.custodyStatus === 'complete').length;
     chain.completeness = (completeChains / chain.evidence.length) * 100;
     chain.count = chain.evidence.length;
-    chain.averageSteps = chain.evidence.reduce((sum, e) => sum + e.custodySteps, 0) / chain.evidence.length;
+    chain.averageSteps =
+      chain.evidence.reduce((sum, e) => sum + e.custodySteps, 0) / chain.evidence.length;
   });
 
   return {
@@ -360,11 +368,12 @@ async function organizeByChainOfCustody(evidence: any[]) {
     chains: Object.values(custodyChains).sort((a, b) => b.completeness - a.completeness),
     metadata: {
       totalChains: Object.keys(custodyChains).length,
-      overallCompleteness: evidence.filter(e => 
-        validateChainOfCustody(e.chain_of_custody) === 'complete'
-      ).length / evidence.length * 100,
-      custodyStatistics: calculateCustodyStatistics(evidence)
-    }
+      overallCompleteness:
+        (evidence.filter((e) => validateChainOfCustody(e.chain_of_custody) === 'complete').length /
+          evidence.length) *
+        100,
+      custodyStatistics: calculateCustodyStatistics(evidence),
+    },
   };
 }
 
@@ -380,7 +389,7 @@ async function getEvidenceEmbeddings(evidence: any[]) {
       if (item.metadata?.aiAnalysis?.embeddingVector) {
         evidenceWithEmbeddings.push({
           ...item,
-          embedding: item.metadata.aiAnalysis.embeddingVector
+          embedding: item.metadata.aiAnalysis.embeddingVector,
         });
         continue;
       }
@@ -393,15 +402,15 @@ async function getEvidenceEmbeddings(evidence: any[]) {
           evidenceId: item.id,
           content: item.title + ' ' + (item.description || ''),
           useGemmaEmbeddings: true,
-          analysisType: 'embedding_generation'
-        })
+          analysisType: 'embedding_generation',
+        }),
       });
 
       if (response.ok) {
         const analysis = await response.json();
         evidenceWithEmbeddings.push({
           ...item,
-          embedding: analysis.embedding || null
+          embedding: analysis.embedding || null,
         });
       } else {
         evidenceWithEmbeddings.push({ ...item, embedding: null });
@@ -425,21 +434,21 @@ async function generateAIClusters(evidenceWithEmbeddings: any[], params: any) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         evidence: evidenceWithEmbeddings
-          .filter(e => e.embedding)
-          .map(e => ({
+          .filter((e) => e.embedding)
+          .map((e) => ({
             id: e.id,
             title: e.title,
             type: e.evidenceType,
             description: e.description,
-            embedding: e.embedding
+            embedding: e.embedding,
           })),
         clusteringParams: {
           minClusterSize: params.minClusterSize || 2,
           maxClusters: params.maxClusters || 10,
           similarityThreshold: params.similarityThreshold || 0.7,
-          method: params.method || 'kmeans'
-        }
-      })
+          method: params.method || 'kmeans',
+        },
+      }),
     });
 
     if (response.ok) {
@@ -468,7 +477,7 @@ async function enhanceClusters(clusters: any[]) {
     keywords: cluster.keywords || extractClusterKeywords(cluster.evidence),
     color: getClusterColor(index),
     centroid: cluster.centroid,
-    coherence: calculateClusterCoherence(cluster.evidence)
+    coherence: calculateClusterCoherence(cluster.evidence),
   }));
 }
 
@@ -481,27 +490,35 @@ function generateOrganizationAnalytics(evidence: any[], structure: any) {
     organizationEfficiency: 0,
     coverage: 0,
     qualityScore: 0,
-    recommendations: []
+    recommendations: [],
   };
 
   // Calculate metrics based on organization type
   switch (structure.type) {
     case 'category':
-      analytics.organizationEfficiency = structure.categories.length > 0 
-        ? (evidence.length - (structure.categories.find(c => c.name === 'uncategorized')?.count || 0)) / evidence.length
-        : 0;
-      analytics.coverage = (structure.categories.length / Math.max(getUniqueEvidenceTypes(evidence).length, 1)) * 100;
+      analytics.organizationEfficiency =
+        structure.categories.length > 0
+          ? (evidence.length -
+              (structure.categories.find((c) => c.name === 'uncategorized')?.count || 0)) /
+            evidence.length
+          : 0;
+      analytics.coverage =
+        (structure.categories.length / Math.max(getUniqueEvidenceTypes(evidence).length, 1)) * 100;
       break;
 
     case 'ai_clusters':
       const totalClustered = structure.clusters.reduce((sum, cluster) => sum + cluster.count, 0);
       analytics.organizationEfficiency = totalClustered / evidence.length;
       analytics.coverage = structure.clusters.length > 0 ? 100 : 0;
-      analytics.qualityScore = structure.clusters.reduce((sum, cluster) => sum + (cluster.similarity || 0), 0) / structure.clusters.length;
+      analytics.qualityScore =
+        structure.clusters.reduce((sum, cluster) => sum + (cluster.similarity || 0), 0) /
+        structure.clusters.length;
       break;
 
     case 'chain_custody':
-      const completeChains = evidence.filter(e => validateChainOfCustody(e.chain_of_custody) === 'complete').length;
+      const completeChains = evidence.filter(
+        (e) => validateChainOfCustody(e.chain_of_custody) === 'complete'
+      ).length;
       analytics.organizationEfficiency = completeChains / evidence.length;
       analytics.coverage = (structure.chains.length / Math.max(evidence.length, 1)) * 100;
       break;
@@ -517,21 +534,22 @@ function generateOrganizationAnalytics(evidence: any[], structure: any) {
  * Utility functions
  */
 function formatCategoryName(category: string): string {
-  return category.split('_').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join(' ');
+  return category
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 function calculateCategoryPriority(category: string): number {
   const priorities = {
-    'physical_evidence': 10,
-    'digital_evidence': 9,
-    'document': 8,
-    'testimony': 7,
-    'photograph': 6,
-    'video': 6,
-    'audio': 5,
-    'other': 1
+    physical_evidence: 10,
+    digital_evidence: 9,
+    document: 8,
+    testimony: 7,
+    photograph: 6,
+    video: 6,
+    audio: 5,
+    other: 1,
   };
   return priorities[category] || 3;
 }
@@ -554,9 +572,7 @@ function validateChainOfCustody(custody: any[]): string {
   if (!custody || custody.length === 0) return 'missing';
 
   const requiredFields = ['officer_id', 'timestamp', 'action'];
-  const hasAllFields = custody.every(entry => 
-    requiredFields.every(field => entry[field])
-  );
+  const hasAllFields = custody.every((entry) => requiredFields.every((field) => entry[field]));
 
   const isChronological = custody.every((entry, index) => {
     if (index === 0) return true;
@@ -570,37 +586,38 @@ function validateChainOfCustody(custody: any[]): string {
 
 function calculateTimelineSpan(periods: any[]): any {
   if (periods.length === 0) return null;
-  
-  const allDates = periods.flatMap(p => [p.startDate, p.endDate]);
-  const minDate = new Date(Math.min(...allDates.map(d => d.getTime())));
-  const maxDate = new Date(Math.max(...allDates.map(d => d.getTime())));
-  
+
+  const allDates = periods.flatMap((p) => [p.startDate, p.endDate]);
+  const minDate = new Date(Math.min(...allDates.map((d) => d.getTime())));
+  const maxDate = new Date(Math.max(...allDates.map((d) => d.getTime())));
+
   return {
     start: minDate.toISOString(),
     end: maxDate.toISOString(),
-    durationDays: Math.ceil((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24))
+    durationDays: Math.ceil((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24)),
   };
 }
 
 function calculateCustodyStatistics(evidence: any[]): any {
   const statuses = { complete: 0, incomplete: 0, missing: 0, invalid: 0 };
-  
-  evidence.forEach(item => {
+
+  evidence.forEach((item) => {
     const status = validateChainOfCustody(item.chain_of_custody);
     statuses[status]++;
   });
 
   return {
     statusDistribution: statuses,
-    totalWithCustody: evidence.filter(e => e.chain_of_custody?.length > 0).length,
-    averageCustodySteps: evidence.reduce((sum, e) => sum + (e.chain_of_custody?.length || 0), 0) / evidence.length
+    totalWithCustody: evidence.filter((e) => e.chain_of_custody?.length > 0).length,
+    averageCustodySteps:
+      evidence.reduce((sum, e) => sum + (e.chain_of_custody?.length || 0), 0) / evidence.length,
   };
 }
 
 function performSimpleClustering(evidenceWithEmbeddings: any[]) {
   // Simple fallback clustering by evidence type
   const clusters = {};
-  
+
   evidenceWithEmbeddings.forEach(item => {
     const type = item.evidenceType || 'other';
     if (!clusters[type]) {

@@ -6,9 +6,10 @@ Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
   import { 
@@ -241,14 +242,14 @@ Showcases the service worker-based AI orchestration system
   <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
     
     <!-- Quick Demo Section -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Play class="h-5 w-5" />
           Quick Demo Scenarios
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {#each demoScenarios as scenario}
             <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -281,23 +282,23 @@ Showcases the service worker-based AI orchestration system
                   <Play class="h-4 w-4 mr-2" />
                   Run Demo
                 {/if}
-              </Button>
+              </button>
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Custom Task Section -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Settings class="h-5 w-5" />
             Custom Task
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+          </h3>
+        </div>
+        <div class="yorha-panel-content" class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-2">Select AI Model</label>
             <LLMSelector 
@@ -330,31 +331,31 @@ Showcases the service worker-based AI orchestration system
                 <Play class="h-4 w-4 mr-2" />
                 Submit Task
               {/if}
-            </Button>
+            </button>
             
-            <Button variant="outline" onclick={clearResults}>
+            <button class="nes-btn" variant="outline" onclick={clearResults}>
               <RotateCcw class="h-4 w-4" />
-            </Button>
+            </button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Results Section -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center justify-between">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center justify-between">
             <span class="flex items-center gap-2">
               <Activity class="h-5 w-5" />
               Task Results ({demoResults.length})
             </span>
             {#if demoResults.length > 0}
-              <Button variant="ghost" size="sm" onclick={clearResults}>
+              <button class="nes-btn" variant="ghost" size="sm" onclick={clearResults}>
                 Clear
-              </Button>
+              </button>
             {/if}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           {#if demoResults.length === 0}
             <div class="text-center py-8 text-gray-500 dark:text-gray-400">
               <Activity class="h-12 w-12 mx-auto mb-3 opacity-50" />
@@ -425,8 +426,8 @@ Showcases the service worker-based AI orchestration system
               {/each}
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Main Orchestrator Component -->
@@ -438,14 +439,14 @@ Showcases the service worker-based AI orchestration system
     />
 
     <!-- Architecture Information -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Workflow class="h-5 w-5" />
           Architecture Overview
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h3 class="font-semibold mb-3">Service Worker Features</h3>
@@ -495,8 +496,8 @@ Showcases the service worker-based AI orchestration system
             Next phase will implement AutoGen and CrewAI agent coordination.
           </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 </div>
 

@@ -1,5 +1,6 @@
 <!-- Document Upload Page with MinIO Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
@@ -91,7 +92,7 @@
 
     <!-- Sidebar with Information -->
     <div class="info-sidebar">
-      <div class="info-card">
+      <div class="info-nier-bits-card">
         <h3>📄 Supported Formats</h3>
         <ul>
           <li>PDF Documents</li>
@@ -101,7 +102,7 @@
         </ul>
       </div>
 
-      <div class="info-card">
+      <div class="info-nier-bits-card">
         <h3>🤖 AI Processing</h3>
         <p>Uploaded documents are automatically processed with:</p>
         <ul>
@@ -113,7 +114,7 @@
         </ul>
       </div>
 
-      <div class="info-card">
+      <div class="info-nier-bits-card">
         <h3>🔒 Security</h3>
         <ul>
           <li>End-to-end encryption</li>
@@ -124,8 +125,8 @@
       </div>
 
       <!-- Recent Uploads -->
-      <div class="info-card">
-        <div class="card-header">
+      <div class="info-nier-bits-card">
+        <div class="nier-bits-yorha-panel-header">
           <h3>📋 Recent Uploads</h3>
           <button
             type="button"
@@ -174,22 +175,22 @@
   <div class="help-section">
     <h2>Need Help?</h2>
     <div class="help-grid">
-      <div class="help-card">
+      <div class="help-nier-bits-card">
         <h4>🚀 Quick Start</h4>
         <p>Select your case ID, choose your document type, and drag & drop your file to get started.</p>
       </div>
       
-      <div class="help-card">
+      <div class="help-nier-bits-card">
         <h4>📊 Processing Status</h4>
         <p>Track your document processing status and get notified when AI analysis is complete.</p>
       </div>
       
-      <div class="help-card">
+      <div class="help-nier-bits-card">
         <h4>🔍 Search Integration</h4>
         <p>Uploaded documents are automatically indexed for semantic search and similarity matching.</p>
       </div>
       
-      <div class="help-card">
+      <div class="help-nier-bits-card">
         <h4>💼 Case Management</h4>
         <p>Documents are organized by case ID for easy management and cross-referencing.</p>
       </div>

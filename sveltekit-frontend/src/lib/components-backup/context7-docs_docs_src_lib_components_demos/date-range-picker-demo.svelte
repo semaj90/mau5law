@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { DateRangePicker } from "bits-ui";
   	import CalendarBlank from "phosphor-svelte/lib/CalendarBlank";
   	import CaretLeft from "phosphor-svelte/lib/CaretLeft";
@@ -22,13 +23,13 @@
 					{#each segments as { part, value }, i (part + i)}
 						<div class="inline-block select-none">
 							{#if part === "literal"}
-								<DateRangePicker.Segment {part} class="text-muted-foreground p-1">
+								<DateRangePicker.Segment {part} class="nes-text is-disabled p-1">
 									{value}
 								</DateRangePicker.Segment>
 							{:else}
 								<DateRangePicker.Segment
 									{part}
-									class="rounded-5px hover:bg-muted focus:bg-muted focus:text-foreground aria-[valuetext=Empty]:text-muted-foreground focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
+									class="rounded-5px hover:bg-muted focus:bg-muted focus:text-foreground aria-[valuetext=Empty]:nes-text is-disabled focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
 								>
 									{value}
 								</DateRangePicker.Segment>
@@ -38,7 +39,7 @@
 				{/snippet}
 			</DateRangePicker.Input>
 			{#if type === "start"}
-				<div aria-hidden="true" class="text-muted-foreground px-1">–⁠⁠⁠⁠⁠</div>
+				<div aria-hidden="true" class="nes-text is-disabled px-1">–⁠⁠⁠⁠⁠</div>
 			{/if}
 		{/each}
 
@@ -73,7 +74,7 @@
 								<DateRangePicker.GridRow class="mb-1 flex w-full justify-between">
 									{#each weekdays as day (day)}
 										<DateRangePicker.HeadCell
-											class="text-muted-foreground font-normal! w-10 rounded-md text-xs"
+											class="nes-text is-disabled font-normal! w-10 rounded-md text-xs"
 										>
 											<div>{day.slice(0, 2)}</div>
 										</DateRangePicker.HeadCell>
@@ -90,7 +91,7 @@
 												class="p-0! relative m-0 size-10 overflow-visible text-center text-sm focus-within:relative focus-within:z-20"
 											>
 												<DateRangePicker.Day
-													class="rounded-9px text-foreground hover:border-foreground focus-visible:ring-foreground! data-selection-end:rounded-9px data-selection-start:rounded-9px data-highlighted:bg-muted data-selected:bg-muted data-selection-end:bg-foreground data-selection-start:bg-foreground data-disabled:text-foreground/30 data-selected:text-foreground data-selection-end:text-background data-selection-start:text-background data-unavailable:text-muted-foreground data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:border-foreground data-disabled:pointer-events-none data-highlighted:rounded-none  data-outside-month:pointer-events-none data-selected:font-medium data-selection-end:font-medium data-selection-start:font-medium data-selection-start:focus-visible:ring-2 data-selection-start:focus-visible:ring-offset-2! data-unavailable:line-through data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:rounded-none data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:ring-0! data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:ring-offset-0! group relative inline-flex size-10 items-center justify-center overflow-visible whitespace-nowrap border border-transparent bg-transparent p-0 text-sm font-normal transition-all"
+													class="rounded-9px text-foreground hover:border-foreground focus-visible:ring-foreground! data-selection-end:rounded-9px data-selection-start:rounded-9px data-highlighted:bg-muted data-selected:bg-muted data-selection-end:bg-foreground data-selection-start:bg-foreground data-disabled:text-foreground/30 data-selected:text-foreground data-selection-end:text-background data-selection-start:text-background data-unavailable:nes-text is-disabled data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:border-foreground data-disabled:pointer-events-none data-highlighted:rounded-none  data-outside-month:pointer-events-none data-selected:font-medium data-selection-end:font-medium data-selection-start:font-medium data-selection-start:focus-visible:ring-2 data-selection-start:focus-visible:ring-offset-2! data-unavailable:line-through data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:rounded-none data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:ring-0! data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:ring-offset-0! group relative inline-flex size-10 items-center justify-center overflow-visible whitespace-nowrap border border-transparent bg-transparent p-0 text-sm font-normal transition-all"
 												>
 													<div
 														class="bg-foreground group-data-selected:bg-background group-data-today:block absolute top-[5px] hidden size-1 rounded-full transition-all"

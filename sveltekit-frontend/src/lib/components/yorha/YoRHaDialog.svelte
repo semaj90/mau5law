@@ -3,6 +3,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- YoRHa Dialog Component - Lightweight Terminal Dialog -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade, fly } from "svelte/transition";

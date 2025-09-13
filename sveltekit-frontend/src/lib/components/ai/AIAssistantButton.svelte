@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
   // import { createTooltip, melt } from 'melt'; // Removed melt dependency
   import { Brain, MessageSquare, Sparkles, Mic, MicOff, Settings } from 'lucide-svelte';

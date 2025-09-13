@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte'
   let query = 'contract liability terms'
   let results: any[] = []
@@ -316,7 +317,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="document-results">
           <h3>📄 Relevant Documents</h3>
           {#each searchResult.searchResults as doc, i}
-            <div class="document-card">
+            <div class="document-nier-bits-card">
               <div class="doc-header">
                 <h4>{doc.filename || `Document ${doc.id}`}</h4>
                 <span class="relevance-score">

@@ -2,9 +2,10 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
+  import 'nes.css/css/nes.min.css';
 </script>
   import { user } from "$lib/stores/user";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Modal from "$lib/components/ui/Modal.svelte";
 
   let cases = [
@@ -20,7 +21,7 @@ https://svelte.dev/e/expected_token -->
   }
 </script>
 
-<Button onclick={() => showModal = true}>Select Case</Button>
+<button class="nes-btn" onclick={() => showModal = true}>Select Case</button>
 
 <Modal bind:open={showModal} title="Select a Case">
   <div slot="description">
@@ -29,9 +30,9 @@ https://svelte.dev/e/expected_token -->
   
   <div class="mx-auto px-4 max-w-7xl">
     {#each cases as caseItem}
-      <Button onclick={() => selectCase(caseItem.id)} variant="secondary">
+      <button class="nes-btn" onclick={() => selectCase(caseItem.id)} variant="secondary">
         {caseItem.name}
-      </Button>
+      </button>
     {/each}
   </div>
 </Modal>

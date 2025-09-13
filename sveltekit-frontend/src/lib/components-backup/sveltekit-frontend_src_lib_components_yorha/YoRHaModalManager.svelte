@@ -1,5 +1,6 @@
 <!-- YoRHa Modal Manager Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import YoRHaModal from './YoRHaModal.svelte';
   import { modalStore, type Modal } from '$lib/stores/dialogs';
 

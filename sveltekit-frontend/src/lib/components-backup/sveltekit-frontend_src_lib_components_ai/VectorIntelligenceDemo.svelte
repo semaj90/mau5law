@@ -1,6 +1,7 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Search, Database, Brain, FileText, AlertCircle, CheckCircle2, Loader2, Star, Clock } from "lucide-svelte";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Input from "$lib/components/ui/Input.svelte";
   import Badge from "$lib/components/ui/Badge.svelte";
   import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/Card";
@@ -161,20 +162,20 @@
       <Brain class="h-6 w-6 text-purple-600" />
       Vector Intelligence Demo
     </div>
-    <p class="text-muted-foreground">
+    <p class="nes-text is-disabled">
       Semantic search powered by pgvector and AI embeddings for legal document analysis
     </p>
   </div>
 
   <!-- Search Interface -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Search class="h-5 w-5" />
         Semantic Document Search
-      </CardTitle>
-    </CardHeader>
-    <CardContent class="space-y-4">
+      </h3>
+    </div>
+    <div class="yorha-panel-content" class="space-y-4">
       <form onsubmit={handleSubmit} class="flex gap-2">
         <Input
           bind:value={query}
@@ -195,25 +196,25 @@
             <Search class="h-4 w-4 mr-2" />
             Search
           {/if}
-        </Button>
+        </button>
       </form>
 
       <!-- Example queries -->
       <div class="flex flex-wrap gap-2">
-        <span class="text-sm text-muted-foreground">Try:</span>
+        <span class="text-sm nes-text is-disabled">Try:</span>
         {#each ["property ownership transfer", "contract liability clauses", "employment agreements", "intellectual property rights"] as example}
-          <Button
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={() => { query = example; }}
             disabled={isSearching}
           >
             {example}
-          </Button>
+          </button>
         {/each}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Error Display -->
   {#if error}
@@ -225,28 +226,28 @@
 
   <!-- Search Metrics -->
   {#if showMetrics}
-    <Card>
-      <CardContent class="pt-6">
+    <NesCard>
+      <div class="yorha-panel-content" class="pt-6">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
             <div class="text-2xl font-bold">{metrics.totalDocuments}</div>
-            <div class="text-sm text-muted-foreground">Documents</div>
+            <div class="text-sm nes-text is-disabled">Documents</div>
           </div>
           <div>
             <div class="text-2xl font-bold">{metrics.searchTime}ms</div>
-            <div class="text-sm text-muted-foreground">Search Time</div>
+            <div class="text-sm nes-text is-disabled">Search Time</div>
           </div>
           <div>
             <div class="text-2xl font-bold">{metrics.vectorDimensions}D</div>
-            <div class="text-sm text-muted-foreground">Vector Space</div>
+            <div class="text-sm nes-text is-disabled">Vector Space</div>
           </div>
           <div>
             <div class="text-2xl font-bold">{Math.round(metrics.similarityThreshold * 100)}%</div>
-            <div class="text-sm text-muted-foreground">Threshold</div>
+            <div class="text-sm nes-text is-disabled">Threshold</div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Search Results -->
@@ -260,11 +261,11 @@
       <div class="grid gap-4">
         {#each results as result (result.id)}
           {@const typeStyle = getDocumentTypeStyle(result.documentType)}
-          <Card
+          <NesCard
             class="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500"
             onclick={() => selectedResult = result}
           >
-            <CardContent class="pt-6">
+            <div class="yorha-panel-content" class="pt-6">
               <div class="space-y-3">
                 <!-- Document header -->
                 <div class="flex items-start justify-between gap-4">
@@ -273,7 +274,7 @@
                       <typeStyle.icon class="h-4 w-4" />
                       <h4 class="font-semibold line-clamp-1">{result.title}</h4>
                     </div>
-                    <p class="text-sm text-muted-foreground line-clamp-2">
+                    <p class="text-sm nes-text is-disabled line-clamp-2">
                       {result.content}
                     </p>
                   </div>
@@ -290,7 +291,7 @@
 
                 <!-- Metadata -->
                 {#if result.metadata}
-                  <div class="flex items-center gap-4 text-xs text-muted-foreground">
+                  <div class="flex items-center gap-4 text-xs nes-text is-disabled">
                     {#if result.metadata.caseId}
                       <span>Case: {result.metadata.caseId}</span>
                     {/if}
@@ -310,70 +311,70 @@
                   {/if}
                 {/if}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         {/each}
       </div>
     </div>
   {:else if !isSearching && query.trim().length > 0}
     <!-- No results state -->
-    <Card>
-      <CardContent class="pt-6 text-center space-y-2">
-        <Search class="h-12 w-12 text-muted-foreground mx-auto" />
+    <NesCard>
+      <div class="yorha-panel-content" class="pt-6 text-center space-y-2">
+        <Search class="h-12 w-12 nes-text is-disabled mx-auto" />
         <h3 class="font-semibold">No results found</h3>
-        <p class="text-sm text-muted-foreground">
+        <p class="text-sm nes-text is-disabled">
           Try adjusting your search terms or using different keywords
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Demo Notice -->
   {#if !hasResults && !isSearching && query.trim().length === 0}
-    <Card class="border-dashed">
-      <CardContent class="pt-6 text-center space-y-4">
+    <NesCard class="border-dashed">
+      <div class="yorha-panel-content" class="pt-6 text-center space-y-4">
         <div class="flex justify-center">
-          <Database class="h-16 w-16 text-muted-foreground" />
+          <Database class="h-16 w-16 nes-text is-disabled" />
         </div>
         <div class="space-y-2">
           <h3 class="font-semibold">Vector Intelligence Ready</h3>
-          <p class="text-sm text-muted-foreground max-w-md mx-auto">
+          <p class="text-sm nes-text is-disabled max-w-md mx-auto">
             Enter a search query to find semantically similar legal documents using AI-powered vector embeddings
           </p>
         </div>
         <div class="flex justify-center">
-          <Button
+          <button class="nes-btn"
             variant="outline"
             onclick={() => { results = demoResults; metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 }; }}
           >
             Load Demo Results
-          </Button>
+          </button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 
 <!-- Selected Result Modal (future enhancement) -->
 {#if selectedResult}
   <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-    <Card class="max-w-2xl w-full max-h-[80vh] overflow-auto">
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard class="max-w-2xl w-full max-h-[80vh] overflow-auto">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           {selectedResult.title}
-          <Button variant="ghost" size="sm" onclick={() => selectedResult = null}>
+          <button class="nes-btn" variant="ghost" size="sm" onclick={() => selectedResult = null}>
             ×
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+          </button>
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <p class="text-sm">{selectedResult.content}</p>
         <div class="flex items-center gap-2">
           <Badge>Similarity: {formatSimilarity(selectedResult.similarity)}</Badge>
           <Badge variant="outline">{selectedResult.documentType}</Badge>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 {/if}
 

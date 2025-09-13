@@ -7,6 +7,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { createMachine, interpret } from 'xstate';
   import { caseManagementMachine } from '$lib/machines/caseManagementMachine';

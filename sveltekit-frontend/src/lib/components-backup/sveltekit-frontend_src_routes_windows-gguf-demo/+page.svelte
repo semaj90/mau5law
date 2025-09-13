@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { AIResponse } from '$lib/types/ai';
   import { onMount, onDestroy } from 'svelte';
   import { createGGUFRuntime, GGUFHelpers } from '$lib/services/gguf-runtime';
@@ -397,39 +398,39 @@
   <div class="container mx-auto px-4 py-8">
     <!-- System Overview -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <Card class="bg-slate-800/50 border-blue-800/30">
+      <NesCard class="bg-slate-800/50 border-blue-800/30">
         <div class="p-4">
           <div class="text-2xl font-bold text-blue-400">{$runtimeStats.totalRequests}</div>
           <div class="text-sm text-slate-400">Total Requests</div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="bg-slate-800/50 border-blue-800/30">
+      <NesCard class="bg-slate-800/50 border-blue-800/30">
         <div class="p-4">
           <div class="text-2xl font-bold text-green-400">{performanceMetrics.fps}</div>
           <div class="text-sm text-slate-400">WebGPU FPS</div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="bg-slate-800/50 border-blue-800/30">
+      <NesCard class="bg-slate-800/50 border-blue-800/30">
         <div class="p-4">
           <div class="text-2xl font-bold text-cyan-400">{$metrics.activeWorkers}/{$metrics.totalWorkers}</div>
           <div class="text-sm text-slate-400">Active Workers</div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="bg-slate-800/50 border-blue-800/30">
+      <NesCard class="bg-slate-800/50 border-blue-800/30">
         <div class="p-4">
           <div class="text-2xl font-bold text-purple-400">{Math.round($systemHealth.efficiency)}%</div>
           <div class="text-sm text-slate-400">System Efficiency</div>
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Demo Controls -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Input Section -->
-      <Card class="bg-slate-800/50 border-blue-800/30">
+      <NesCard class="bg-slate-800/50 border-blue-800/30">
         <div class="p-6">
           <h2 class="text-xl font-semibold mb-4">Demo Input</h2>
           
@@ -453,7 +454,7 @@
               class="bg-blue-600 hover:bg-blue-700 text-white"
             >
               {isProcessing ? 'Processing...' : 'GGUF Inference'}
-            </Button>
+            </button>
 
             <Button
               onclick={runWebGPUProcessing}
@@ -461,7 +462,7 @@
               class="bg-green-600 hover:bg-green-700 text-white"
             >
               WebGPU Processing
-            </Button>
+            </button>
 
             <Button
               onclick={runNodeJSOrchestration}
@@ -469,7 +470,7 @@
               class="bg-purple-600 hover:bg-purple-700 text-white"
             >
               Node.js Orchestration
-            </Button>
+            </button>
           </div>
 
           <div class="mt-4 flex gap-2">
@@ -479,7 +480,7 @@
               class="border-slate-600 text-slate-300 hover:bg-slate-700"
             >
               Clear Results
-            </Button>
+            </button>
 
             <Button
               onclick={exportResults}
@@ -487,13 +488,13 @@
               class="border-slate-600 text-slate-300 hover:bg-slate-700"
             >
               Export Data
-            </Button>
+            </button>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- WebGPU Visualization -->
-      <Card class="bg-slate-800/50 border-blue-800/30">
+      <NesCard class="bg-slate-800/50 border-blue-800/30">
         <div class="p-6">
           <h2 class="text-xl font-semibold mb-4">WebGPU Visualization</h2>
           
@@ -527,7 +528,7 @@
             </div>
           </div>
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Results Section -->
@@ -537,7 +538,7 @@
         
         <div class="space-y-4">
           {#each results as result (result.id)}
-            <Card class="bg-slate-800/50 border-blue-800/30">
+            <NesCard class="bg-slate-800/50 border-blue-800/30">
               <div class="p-6">
                 <div class="flex items-center justify-between mb-4">
                   <div class="flex items-center gap-3">
@@ -577,7 +578,7 @@
                   </div>
                 </div>
               </div>
-            </Card>
+            </NesCard>
           {/each}
         </div>
       </div>
@@ -588,7 +589,7 @@
       <h2 class="text-2xl font-semibold mb-6">Technical Specifications</h2>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card class="bg-slate-800/50 border-blue-800/30">
+        <NesCard class="bg-slate-800/50 border-blue-800/30">
           <div class="p-6">
             <h3 class="text-lg font-semibold mb-4 text-blue-400">GGUF Runtime</h3>
             <ul class="space-y-2 text-sm text-slate-300">
@@ -600,9 +601,9 @@
               <li>✓ Memory-efficient GGUF loading</li>
             </ul>
           </div>
-        </Card>
+        </NesCard>
 
-        <Card class="bg-slate-800/50 border-blue-800/30">
+        <NesCard class="bg-slate-800/50 border-blue-800/30">
           <div class="p-6">
             <h3 class="text-lg font-semibold mb-4 text-green-400">WebGPU Integration</h3>
             <ul class="space-y-2 text-sm text-slate-300">
@@ -614,9 +615,9 @@
               <li>✓ Memory-efficient buffers</li>
             </ul>
           </div>
-        </Card>
+        </NesCard>
 
-        <Card class="bg-slate-800/50 border-blue-800/30">
+        <NesCard class="bg-slate-800/50 border-blue-800/30">
           <div class="p-6">
             <h3 class="text-lg font-semibold mb-4 text-purple-400">Node.js Orchestration</h3>
             <ul class="space-y-2 text-sm text-slate-300">
@@ -628,7 +629,7 @@
               <li>✓ Performance monitoring</li>
             </ul>
           </div>
-        </Card>
+        </NesCard>
       </div>
     </div>
   </div>

@@ -7,6 +7,7 @@ https://svelte.dev/e/expected_token -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import {
@@ -265,7 +266,7 @@ https://svelte.dev/e/expected_token -->
 <div class="container mx-auto p-6 space-y-6">
   <div class="text-center space-y-2">
     <h1 class="text-3xl font-bold">🧠 pgvector Integration Dashboard</h1>
-    <p class="text-muted-foreground">
+    <p class="nes-text is-disabled">
       Comprehensive testing suite for PostgreSQL + pgvector vector similarity search
     </p>
   </div>
@@ -291,22 +292,22 @@ https://svelte.dev/e/expected_token -->
     <TabsContent value="overview" class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Connection Status -->
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               PostgreSQL Connection
               <Badge class={getStatusColor(connectionStatus)}>
                 {connectionStatus}
               </Badge>
-            </CardTitle>
-            <CardDescription>
+            </h3>
+            <p class="nes-text">
               Database connectivity and pgvector extension status
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="space-y-3">
+            </p>
+          </div>
+          <div class="yorha-panel-content" class="space-y-3">
             <Button onclick={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
               {isLoading ? 'Testing...' : 'Test Connection'}
-            </Button>
+            </button>
 
             {#if connectionDetails}
               <div class="text-sm space-y-1">
@@ -319,21 +320,21 @@ https://svelte.dev/e/expected_token -->
                 <div><strong>Pool Status:</strong> {connectionDetails.connectionPool?.totalCount || 0} total, {connectionDetails.connectionPool?.idleCount || 0} idle</div>
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Database Statistics -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Database Statistics</CardTitle>
-            <CardDescription>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Database Statistics</h3>
+            <p class="nes-text">
               Vector embeddings and document metrics
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="space-y-3">
+            </p>
+          </div>
+          <div class="yorha-panel-content" class="space-y-3">
             <Button onclick={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
               {isLoading ? 'Loading...' : 'Get Statistics'}
-            </Button>
+            </button>
 
             {#if dbStats}
               <div class="text-sm space-y-1">
@@ -346,44 +347,44 @@ https://svelte.dev/e/expected_token -->
                 {/if}
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
 
       <!-- Quick Actions -->
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Quick Actions</h3>
+          <p class="nes-text">
             Database setup and optimization tools
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <Button class="bits-btn" onclick={() => seedDatabase(10)} disabled={isLoading}>
               Seed 10 Documents
-            </Button>
+            </button>
             <Button class="bits-btn" onclick={() => seedDatabase(50)} disabled={isLoading}>
               Seed 50 Documents
-            </Button>
+            </button>
             <Button class="bits-btn" onclick={() => createIndex(100, 'cosine')} disabled={isLoading}>
               Create IVFFLAT Index
-            </Button>
+            </button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Vector Search Tab -->
     <TabsContent value="search" class="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Vector Similarity Search</CardTitle>
-          <CardDescription>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Vector Similarity Search</h3>
+          <p class="nes-text">
             Test natural language queries with vector embeddings
-          </CardDescription>
-        </CardHeader>
-        <CardContent class="space-y-4">
+          </p>
+        </div>
+        <div class="yorha-panel-content" class="space-y-4">
           <div class="flex gap-3">
             <div class="flex-1">
               <Label for="query">Search Query</Label>
@@ -397,7 +398,7 @@ https://svelte.dev/e/expected_token -->
             <div class="flex items-end">
               <Button class="bits-btn" onclick={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
                 {isLoading ? 'Searching...' : 'Search'}
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -406,29 +407,29 @@ https://svelte.dev/e/expected_token -->
             <div class="space-y-3">
               <h3 class="font-medium">Search Results ({searchResults.length})</h3>
               {#each searchResults as result, i}
-                <Card class="border-l-4 border-l-blue-500">
-                  <CardContent class="pt-4">
+                <NesCard class="border-l-4 border-l-blue-500">
+                  <div class="yorha-panel-content" class="pt-4">
                     <div class="flex justify-between items-start gap-4">
                       <div class="flex-1 space-y-2">
                         <div class="flex items-center gap-2">
                           <h4 class="font-medium">{result.title || result.document_id}</h4>
                           <Badge>{result.document_type}</Badge>
-                          <span class="text-sm text-muted-foreground">
+                          <span class="text-sm nes-text is-disabled">
                             Distance: {formatDistance(result.distance)}
                           </span>
                         </div>
                         {#if result.content}
-                          <p class="text-sm text-muted-foreground line-clamp-2">
+                          <p class="text-sm nes-text is-disabled line-clamp-2">
                             {result.content.substring(0, 200)}...
                           </p>
                         {/if}
-                        <div class="text-xs text-muted-foreground">
+                        <div class="text-xs nes-text is-disabled">
                           Created: {new Date(result.created_at).toLocaleDateString()}
                         </div>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </NesCard>
               {/each}
             </div>
           {:else if searchResults.length === 0 && performanceMetrics.vectorSearch}
@@ -438,127 +439,127 @@ https://svelte.dev/e/expected_token -->
               </AlertDescription>
             </Alert>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Operations Tab -->
     <TabsContent value="operations" class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Document Insertion -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Document Operations</CardTitle>
-            <CardDescription>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Document Operations</h3>
+            <p class="nes-text">
               Test document insertion with vector embeddings
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="space-y-3">
+            </p>
+          </div>
+          <div class="yorha-panel-content" class="space-y-3">
             <Button onclick={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
               {isLoading ? 'Inserting...' : 'Test Document Insert'}
-            </Button>
-            <p class="text-sm text-muted-foreground">
+            </button>
+            <p class="text-sm nes-text is-disabled">
               Inserts a sample legal document with 1536-dimension mock embedding
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Index Management -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Index Management</CardTitle>
-            <CardDescription>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Index Management</h3>
+            <p class="nes-text">
               Create and manage vector indexes for performance
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="space-y-3">
+            </p>
+          </div>
+          <div class="yorha-panel-content" class="space-y-3">
             <div class="grid grid-cols-2 gap-2">
               <Button class="bits-btn" onclick={() => createIndex(50, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (50 lists)
-              </Button>
+              </button>
               <Button class="bits-btn" onclick={() => createIndex(100, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (100 lists)
-              </Button>
+              </button>
               <Button class="bits-btn" onclick={() => createIndex(100, 'euclidean')} disabled={isLoading} size="sm">
                 Euclidean
-              </Button>
+              </button>
               <Button class="bits-btn" onclick={() => createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
                 Inner Product
-              </Button>
+              </button>
             </div>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-sm nes-text is-disabled">
               IVFFLAT indexes improve query performance for large datasets
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     </TabsContent>
 
     <!-- Performance Tab -->
     <TabsContent value="performance" class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-lg">Connection Test</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-lg">Connection Test</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="text-2xl font-bold">
               {performanceMetrics.connectionTest || '-'}
             </div>
-            <p class="text-sm text-muted-foreground">Response time</p>
-          </CardContent>
-        </Card>
+            <p class="text-sm nes-text is-disabled">Response time</p>
+          </div>
+        </NesCard>
 
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-lg">Vector Search</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-lg">Vector Search</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="text-2xl font-bold">
               {performanceMetrics.vectorSearch || '-'}
             </div>
-            <p class="text-sm text-muted-foreground">Query execution</p>
-          </CardContent>
-        </Card>
+            <p class="text-sm nes-text is-disabled">Query execution</p>
+          </div>
+        </NesCard>
 
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-lg">Document Insert</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-lg">Document Insert</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="text-2xl font-bold">
               {performanceMetrics.documentInsert || '-'}
             </div>
-            <p class="text-sm text-muted-foreground">Single document</p>
-          </CardContent>
-        </Card>
+            <p class="text-sm nes-text is-disabled">Single document</p>
+          </div>
+        </NesCard>
 
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-lg">Index Creation</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-lg">Index Creation</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="text-2xl font-bold">
               {performanceMetrics.indexCreation || '-'}
             </div>
-            <p class="text-sm text-muted-foreground">IVFFLAT index</p>
-          </CardContent>
-        </Card>
+            <p class="text-sm nes-text is-disabled">IVFFLAT index</p>
+          </div>
+        </NesCard>
       </div>
 
       <!-- Performance Guidelines -->
-      <Card>
-        <CardHeader>
-          <CardTitle>Performance Guidelines</CardTitle>
-          <CardDescription>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Performance Guidelines</h3>
+          <p class="nes-text">
             Best practices for optimal pgvector performance
-          </CardDescription>
-        </CardHeader>
-        <CardContent class="space-y-3">
+          </p>
+        </div>
+        <div class="yorha-panel-content" class="space-y-3">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
               <h4 class="font-medium text-green-700">✅ Best Practices</h4>
-              <ul class="mt-2 space-y-1 text-muted-foreground">
+              <ul class="mt-2 space-y-1 nes-text is-disabled">
                 <li>• Use IVFFLAT indexes for >1000 vectors</li>
                 <li>• Choose lists = sqrt(total_vectors)</li>
                 <li>• Prefer cosine distance for normalized vectors</li>
@@ -568,7 +569,7 @@ https://svelte.dev/e/expected_token -->
             </div>
             <div>
               <h4 class="font-medium text-blue-700">📊 Expected Performance</h4>
-              <ul class="mt-2 space-y-1 text-muted-foreground">
+              <ul class="mt-2 space-y-1 nes-text is-disabled">
                 <li>• Connection test: < 100ms</li>
                 <li>• Vector search (10 results): < 200ms</li>
                 <li>• Document insert: < 50ms</li>
@@ -577,8 +578,8 @@ https://svelte.dev/e/expected_token -->
               </ul>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
   </Tabs>
 </div>

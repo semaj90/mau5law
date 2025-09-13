@@ -14,6 +14,7 @@ https://svelte.dev/e/attribute_duplicate -->
   - Integration with YoRHa design system
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount, tick } from 'svelte';
   import { browser } from '$app/environment';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';

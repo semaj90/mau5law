@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import {
     errorHandler,
     type UserFriendlyError,
@@ -196,7 +197,7 @@
           <div class="mx-auto px-4 max-w-7xl">
             <div class="mx-auto px-4 max-w-7xl">
               <span class="mx-auto px-4 max-w-7xl">Technical Details</span>
-              <Button
+              <button class="nes-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => copyErrorDetails()}
@@ -204,7 +205,7 @@
                 aria-label="Copy error details"
               >
                 <Copy class="mx-auto px-4 max-w-7xl" />
-              </Button>
+              </button>
             </div>
             <div class="mx-auto px-4 max-w-7xl">
               <div>Severity: {currentError.severity}</div>
@@ -230,11 +231,11 @@
               <RefreshCw class="mx-auto px-4 max-w-7xl" />
             {/if}
             Retry
-          </Button>
+          </button>
         {/if}
 
         {#if currentError.showDetails}
-          <Button
+          <button class="nes-btn"
             size="sm"
             variant="ghost"
             onclick={() => (showDetails = !showDetails)}
@@ -245,17 +246,17 @@
             {:else}
               <ChevronDown class="mx-auto px-4 max-w-7xl" />
             {/if}
-          </Button>
+          </button>
         {/if}
 
-        <Button
+        <button class="nes-btn"
           size="sm"
           variant="ghost"
           onclick={() => clearError()}
           aria-label="Dismiss error"
         >
           <X class="mx-auto px-4 max-w-7xl" />
-        </Button>
+        </button>
       </div>
     </div>
   {:else}
@@ -290,7 +291,7 @@
               <div class="mx-auto px-4 max-w-7xl">
                 <div class="mx-auto px-4 max-w-7xl">
                   <h4 class="mx-auto px-4 max-w-7xl">Technical Details</h4>
-                  <Button
+                  <button class="nes-btn"
                     variant="ghost"
                     size="sm"
                     onclick={() => copyErrorDetails()}
@@ -299,7 +300,7 @@
                   >
                     <Copy class="mx-auto px-4 max-w-7xl" />
                     Copy
-                  </Button>
+                  </button>
                 </div>
                 <div class="mx-auto px-4 max-w-7xl">
                   <div>Severity: {currentError.severity}</div>
@@ -313,7 +314,7 @@
 
         <div class="mx-auto px-4 max-w-7xl">
           {#if currentError.severity === "critical" || currentError.severity === "error"}
-            <Button
+            <button class="nes-btn"
               variant="outline"
               size="sm"
               onclick={() => reportError()}
@@ -321,11 +322,11 @@
             >
               <Bug class="mx-auto px-4 max-w-7xl" />
               Report Issue
-            </Button>
+            </button>
           {/if}
 
           {#if currentError.showDetails}
-            <Button
+            <button class="nes-btn"
               variant="outline"
               size="sm"
               onclick={() => (showDetails = !showDetails)}
@@ -338,7 +339,7 @@
                 <ChevronDown class="mx-auto px-4 max-w-7xl" />
                 Show Details
               {/if}
-            </Button>
+            </button>
           {/if}
 
           {#if currentError.canRetry}
@@ -354,15 +355,15 @@
                 <RefreshCw class="mx-auto px-4 max-w-7xl" />
                 Retry
               {/if}
-            </Button>
+            </button>
           {/if}
 
-          <Button
+          <button class="nes-btn"
             variant={currentError.canRetry ? "outline" : "default"}
             onclick={() => clearError()}
           >
             {currentError.canRetry ? "Cancel" : "Close"}
-          </Button>
+          </button>
         </div>
       </div>
     </div>

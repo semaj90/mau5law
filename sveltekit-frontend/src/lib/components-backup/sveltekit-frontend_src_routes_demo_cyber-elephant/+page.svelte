@@ -1,5 +1,6 @@
 <!-- Cyber Elephant - Ancient Psychic Tandem War Elephant -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { fabric } from 'fabric';
@@ -449,22 +450,22 @@
     <div class="dashboard-section">
       <h4>⚡ System Performance</h4>
       <div class="performance-grid">
-        <div class="perf-card">
+        <div class="perf-nier-bits-card">
           <Cpu size="20" />
           <div class="perf-value">{systemMetrics.neuralFPS}</div>
           <div class="perf-label">Neural FPS</div>
         </div>
-        <div class="perf-card">
+        <div class="perf-nier-bits-card">
           <Database size="20" />
           <div class="perf-value">{systemMetrics.spatialFPS}</div>
           <div class="perf-label">Spatial FPS</div>
         </div>
-        <div class="perf-card">
+        <div class="perf-nier-bits-card">
           <HardDrive size="20" />
           <div class="perf-value">{Math.round(systemMetrics.cacheHitRate)}%</div>
           <div class="perf-label">Cache Hit</div>
         </div>
-        <div class="perf-card">
+        <div class="perf-nier-bits-card">
           <Network size="20" />
           <div class="perf-value">{systemMetrics.bvhSearchTime}ms</div>
           <div class="perf-label">Search Time</div>

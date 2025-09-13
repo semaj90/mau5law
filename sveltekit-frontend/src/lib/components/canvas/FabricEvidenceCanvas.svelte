@@ -4,6 +4,7 @@
   Supports drag-and-drop positioning, evidence visualization, and interactive manipulation
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fabric } from 'fabric';
   

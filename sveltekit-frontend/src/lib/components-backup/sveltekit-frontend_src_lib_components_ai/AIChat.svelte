@@ -2,9 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { useChatActor, chatActions } from '$lib/stores/chatStore';
-  import { Card } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Input } from '$lib/components/ui/input';
   import { serviceStatus } from '$lib/stores/chatStore';
   import { onMount } from 'svelte';
@@ -41,11 +42,11 @@ https://svelte.dev/e/js_parse_error -->
   });
 </script>
 
-<Card class="flex flex-col h-[70vh] max-w-3xl mx-auto my-8">
+<NesCard class="flex flex-col h-[70vh] max-w-3xl mx-auto my-8">
   <div class="flex items-center justify-between border-b p-4">
     <div>
       <h2 class="text-xl font-semibold">Legal AI Assistant</h2>
-      <p class="text-sm text-muted-foreground">
+      <p class="text-sm nes-text is-disabled">
         {#if $serviceStatus.ollama === 'connected'}
           <span class="text-green-500">●</span> AI Connected
         {:else if $serviceStatus.ollama === 'error'}
@@ -55,9 +56,9 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </p>
     </div>
-    <Button variant="outline" size="sm" onclick={handleClear}>
+    <button class="nes-btn" variant="outline" size="sm" onclick={handleClear}>
       Clear Chat
-    </Button>
+    </button>
   </div>
 
   <!-- Chat messages -->
@@ -93,12 +94,12 @@ https://svelte.dev/e/js_parse_error -->
         disabled={$state.matches('loading')}
         class="flex-1"
       />
-      <Button type="submit" disabled={$state.matches('loading') || !userInput.trim()}>
+      <button class="nes-btn" type="submit" disabled={$state.matches('loading') || !userInput.trim()}>
         {$state.matches('loading') ? 'Thinking...' : 'Send'}
-      </Button>
+      </button>
     </form>
   </div>
-</Card>
+</NesCard>
 
 <style>
   .chat-message {

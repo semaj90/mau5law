@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Dialog as DialogPrimitive } from "bits-ui";
   // Removed melt dependency - using bits-ui Dialog primitives only
   import ModernButton from "./ModernButton.svelte";

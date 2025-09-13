@@ -7,6 +7,7 @@ Main UI component for managing the complete custody workflow with real-time coll
 and AI-powered verification features.
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     evidenceId: string
     caseId: string
@@ -33,8 +34,8 @@ and AI-powered verification features.
   import IntegrityVerification from './IntegrityVerification.svelte';
   import CollaborationPanel from './CollaborationPanel.svelte';
   import WorkflowProgress from './WorkflowProgress.svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert';
   import { AlertTriangle, CheckCircle, Clock, Users, FileCheck, Shield } from 'lucide-svelte';
@@ -306,44 +307,44 @@ and AI-powered verification features.
     <div class="lg:col-span-2 space-y-6">
       <!-- Workflow Controls -->
       {#if !isWorkflowActive && currentState.value === 'idle'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center">
               <Shield class="w-5 h-5 mr-2" />
               Start Custody Workflow
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             <p class="text-gray-600 mb-4">
               Begin the Evidence Chain of Custody workflow to ensure proper handling,
               verification, and documentation of evidence integrity.
             </p>
             <Button onclick={startWorkflow} class="w-full">
               Start Custody Workflow
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </NesCard>
       {/if}
 
       <!-- Integrity Verification -->
       {#if currentState.context.verificationResults || currentState.value === 'integrityVerification'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center justify-between">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center justify-between">
               <div class="flex items-center">
                 <FileCheck class="w-5 h-5 mr-2" />
                 Integrity Verification
               </div>
-              <Button 
+              <button class="nes-btn" 
                 variant="outline" 
                 size="sm"
                 onclick={() => showIntegrityDetails = !showIntegrityDetails}
               >
                 {showIntegrityDetails ? 'Hide' : 'Show'} Details
-              </Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+              </button>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             <IntegrityVerification 
               {integrityStatus}
               verificationResults={currentState.context.verificationResults}
@@ -352,75 +353,75 @@ and AI-powered verification features.
               aiAnalysis={currentState.context.aiAnalysis}
               showDetails={showIntegrityDetails}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
 
       <!-- Custody Timeline -->
       {#if custodyEvents.length > 0}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center">
               <Clock class="w-5 h-5 mr-2" />
               Custody Timeline
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             <CustodyTimeline 
               events={custodyEvents}
               currentStage={stage}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
 
       <!-- Workflow Actions -->
       {#if isWorkflowActive}
-        <Card>
-          <CardHeader>
-            <CardTitle>Workflow Actions</CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Workflow Actions</h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             {#if currentState.value === 'awaitingApproval'}
               <div class="flex space-x-3">
-                <Button onclick={approveWorkflow} variant="success">
+                <button class="nes-btn" onclick={approveWorkflow} variant="success">
                   Approve Custody
-                </Button>
-                <Button onclick={rejectWorkflow} variant="destructive">
+                </button>
+                <button class="nes-btn" onclick={rejectWorkflow} variant="destructive">
                   Reject Custody
-                </Button>
+                </button>
               </div>
             {/if}
 
             {#if currentState.value === 'collaboration'}
               <div class="flex space-x-3">
-                <Button onclick={() => showTransferDialog = true} variant="outline">
+                <button class="nes-btn" onclick={() => showTransferDialog = true} variant="outline">
                   Transfer Custody
-                </Button>
+                </button>
                 {#if !activeCollaborators.includes(userId)}
-                  <Button onclick={joinCollaboration} variant="outline">
+                  <button class="nes-btn" onclick={joinCollaboration} variant="outline">
                     Join Collaboration
-                  </Button>
+                  </button>
                 {:else}
-                  <Button onclick={leaveCollaboration} variant="outline">
+                  <button class="nes-btn" onclick={leaveCollaboration} variant="outline">
                     Leave Collaboration
-                  </Button>
+                  </button>
                 {/if}
               </div>
             {/if}
 
             {#if currentState.value === 'error'}
               <div class="flex space-x-3">
-                <Button onclick={retryWorkflow}>
+                <button class="nes-btn" onclick={retryWorkflow}>
                   Retry Workflow
-                </Button>
-                <Button onclick={cancelWorkflow} variant="destructive">
+                </button>
+                <button class="nes-btn" onclick={cancelWorkflow} variant="destructive">
                   Cancel Workflow
-                </Button>
+                </button>
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
     </div>
 
@@ -466,14 +467,14 @@ and AI-powered verification features.
             class="flex-1"
           >
             Transfer
-          </Button>
-          <Button 
+          </button>
+          <button class="nes-btn" 
             onclick={() => showTransferDialog = false}
             variant="outline"
             class="flex-1"
           >
             Cancel
-          </Button>
+          </button>
         </div>
       </div>
     </div>

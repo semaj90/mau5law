@@ -4,6 +4,7 @@
   Features: CUDA GPU acceleration, Visual Studio 2022 native performance
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount } from 'svelte';
   import { writable } from 'svelte/store';
   interface UploadFile {

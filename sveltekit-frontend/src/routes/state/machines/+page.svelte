@@ -2,12 +2,13 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   // XState Machine Registry & Management
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   
   let mounted = $state(false);
   let machines = $state([]);
@@ -114,15 +115,15 @@ https://svelte.dev/e/expected_token -->
     <p>Monitor and manage XState machines across the legal AI platform</p>
     
     <div class="stats-grid">
-      <div class="stat-card">
+      <div class="stat-nier-bits-card">
         <span class="stat-number">{machines.length}</span>
         <span class="stat-label">Total Machines</span>
       </div>
-      <div class="stat-card">
+      <div class="stat-nier-bits-card">
         <span class="stat-number">{machines.filter(m => m.status === 'running').length}</span>
         <span class="stat-label">Running</span>
       </div>
-      <div class="stat-card">
+      <div class="stat-nier-bits-card">
         <span class="stat-number">{machines.reduce((sum, m) => sum + m.instances, 0)}</span>
         <span class="stat-label">Active Instances</span>
       </div>
@@ -138,7 +139,7 @@ https://svelte.dev/e/expected_token -->
     {:else}
       <div class="machines-grid">
         {#each machines as machine}
-          <div class="machine-card">
+          <div class="machine-nier-bits-card">
             <divHeader>
               <div class="machine-header">
                 <divTitle>{machine.name}</h3>
@@ -176,30 +177,29 @@ https://svelte.dev/e/expected_token -->
                 </div>
                 
                 <div class="machine-actions">
-                  <Button 
+                  <button class="nes-btn" 
                     variant="outline" 
                     size="sm"
                     onclick={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
                   >
                     View Transitions
-                  </Button>
+                  </button>
                   
-                  <Button 
+                  <button class="nes-btn" 
                     variant="outline" 
                     size="sm"
                     onclick={() => restartMachine(machine.id)}
                   >
                     Restart
-                  </Button>
+                  </button>
                   
                   {#if machine.status === 'running'}
-                    <Button 
-                      variant="destructive" 
+                    <button class="nes-btn is-error" 
                       size="sm"
                       onclick={() => stopMachine(machine.id)}
                     >
                       Stop
-                    </Button>
+                    </button>
                   {/if}
                 </div>
               </div>

@@ -1,5 +1,6 @@
 <!-- Real-time Evidence Management Demo Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import MonacoEditor from "$lib/components/MonacoEditor.svelte";
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
   import {
@@ -198,13 +199,13 @@
             <Button class="bits-btn" onclick={() => startDemoMode()}>
               <Activity class="space-y-4" />
               Start Demo
-            </Button>
+            </button>
           {/if}
 
           <Button class="bits-btn" variant="outline" onclick={() => clearAllEvidence()}>
             <Database class="space-y-4" />
             Clear All
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -391,7 +392,7 @@
                 onclick={() => (selectedTypes = ["video", "image"])}
               >
                 Visual Evidence
-              </Button>
+              </button>
               <Button
                 size="sm"
                 variant="outline"
@@ -399,7 +400,7 @@
                 onclick={() => (selectedTypes = ["testimony", "document"])}
               >
                 Testimonial
-              </Button>
+              </button>
               <Button
                 size="sm"
                 variant="outline"
@@ -410,7 +411,7 @@
                 }}
               >
                 Clear Filters
-              </Button>
+              </button>
             </div>
           </div>
         </div>

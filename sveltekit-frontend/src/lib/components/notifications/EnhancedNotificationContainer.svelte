@@ -200,7 +200,7 @@ mcp<script lang="ts">
         onclick={() => (maxVisible += 5)}
       >
         +{hiddenCount} more notifications
-      </Button>
+      </button>
     </div>
   {/if}
 
@@ -278,7 +278,7 @@ mcp<script lang="ts">
                           class="container mx-auto px-4"
                         >
                           {action.label}
-                        </Button>
+                        </button>
                       {/each}
                     </div>
                   {/if}
@@ -294,7 +294,7 @@ mcp<script lang="ts">
                     aria-label="Dismiss notification"
                   >
                     <X class="container mx-auto px-4" />
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
@@ -314,7 +314,7 @@ mcp<script lang="ts">
         class="container mx-auto px-4"
       >
         Clear all ({$notifications.notifications.length})
-      </Button>
+      </button>
     </div>
   {/if}
 </div>

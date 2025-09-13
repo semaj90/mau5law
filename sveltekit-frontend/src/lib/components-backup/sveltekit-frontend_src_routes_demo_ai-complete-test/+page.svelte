@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   let testResults = $state<Array<{
     test: string
@@ -167,7 +168,7 @@
     <h1 class="text-4xl font-bold mb-2 flex items-center gap-2">
       🧠 Complete AI System Test
     </h1>
-    <p class="text-lg text-muted-foreground">
+    <p class="text-lg nes-text is-disabled">
       Comprehensive testing of AI pipeline, vector search, and database integration
     </p>
   </div>

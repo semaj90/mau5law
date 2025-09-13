@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import { avatarStore } from "../stores/avatarStore";
   	import Avatar from './Avatar.svelte';

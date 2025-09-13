@@ -2,6 +2,7 @@
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { createEventDispatcher } from 'svelte';
   let { score = $bindable() } = $props(); // number = 5; // Current attractiveness score (1-10)

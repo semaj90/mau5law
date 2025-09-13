@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import {
     Button
@@ -433,7 +434,7 @@
                     >
                       <Upload class="space-y-4" />
                       Upload
-                    </Button>
+                    </button>
                     {#if avatarPreview}
                       <Button class="bits-btn"
                         variant="outline"
@@ -442,7 +443,7 @@
                       >
                         <Trash2 class="space-y-4" />
                         Remove
-                      </Button>
+                      </button>
                     {/if}
                   </div>
                 </div>
@@ -909,7 +910,7 @@
                   <Button class="bits-btn" onclick={() => exportUserData()}>
                     <Download class="space-y-4" />
                     Export My Data
-                  </Button>
+                  </button>
                 </div>
               </div>
 
@@ -971,7 +972,7 @@
                     >
                       <RefreshCw class="space-y-4" />
                       Reset to Defaults
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -989,7 +990,7 @@
               <Button class="bits-btn" variant="outline" onclick={() => loadSettings()}>
                 <RefreshCw class="space-y-4" />
                 Reset Changes
-              </Button>
+              </button>
               <Button class="bits-btn" onclick={() => saveSettings()} disabled={isSaving}>
                 {#if isSaving}
                   <RefreshCw class="space-y-4" />
@@ -998,7 +999,7 @@
                   <Save class="space-y-4" />
                   Save Settings
                 {/if}
-              </Button>
+              </button>
             </div>
           </div>
         </div>

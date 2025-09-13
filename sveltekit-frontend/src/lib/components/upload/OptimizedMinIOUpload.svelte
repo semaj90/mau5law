@@ -1,12 +1,13 @@
 <!-- Optimized MinIO Upload with Parallel Processing, Toast Notifications & Redis Sync -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap } from 'lucide-svelte';
-  import { Progress } from 'bits-ui';
+  import { Progress } from '$lib/components/ui/progress';
   import { toastService } from '$lib/services/toast-service';
-  import { gpuService } from '$lib/services/gpu-acceleration-service';
-  import { vectorService } from '$lib/services/postgresql-vector-service';
-  import { embeddingService } from '$lib/services/embedding-service';
+  import { gpuAccelerationService } from '$lib/services/gpu-acceleration-service';
+  import { postgresqlVectorService } from '$lib/services/postgresql-vector-service';
+  import embeddingService from '$lib/services/embedding-service';
   import { telemetry } from '$lib/services/telemetry-service';
   import { uploadTelemetry } from '$lib/services/upload-telemetry-service';
 
@@ -544,7 +545,7 @@
         // Submit GPU processing tasks if enabled
         if (enableGPUProcessing && data[0].id) {
           try {
-            const gpuTasks = await gpuService.processFileWithGPU(
+            const gpuTasks = await gpuAccelerationService.processFileWithGPU(
               data[0].id,
               await file.arrayBuffer(),
               {
@@ -553,15 +554,16 @@
                 enableAnalysis: true
               }
             );
-            fs.gpuTaskIds = gpuTasks.taskIds;
-            performanceMetrics.gpuTasksSubmitted += gpuTasks.taskIds.length;
+            // Extract task IDs from the array of tasks
+            fs.gpuTaskIds = gpuTasks.map(task => task.id);
+            performanceMetrics.gpuTasksSubmitted += gpuTasks.length;
 
             // Show GPU processing toast
             if (enableToastNotifications) {
               toastService.gpuTask(
                 'Processing',
                 'queued',
-                `${gpuTasks.taskIds.length} tasks queued for ${file.name}`
+                `${gpuTasks.length} tasks queued for ${file.name}`
               );
             }
           } catch (error) {
@@ -592,7 +594,7 @@
           }
 
           try {
-            await vectorService.updateFileMapping(data[0].id, {
+            await postgresqlVectorService.updateFileMapping(data[0].id, {
               textChunks: [textContent],
               embeddings: [embeddingVector],
               ocrText: file.type.startsWith('image/') ? 'OCR extracted text' : undefined,
@@ -796,11 +798,7 @@
                 {/if}
               </div>
               {#if fs.status !== 'pending' && fs.status !== 'completed' && fs.status !== 'error' && fs.status !== 'canceled'}
-                <Progress.Root value={fs.progress} max={100} class="mini-progress-bar">
-                  <Progress.Track class="mini-progress-track">
-                    <Progress.Range class="mini-progress-fill" />
-                  </Progress.Track>
-                </Progress.Root>
+                <Progress value={fs.progress} max={100} class="mini-progress-bar w-full h-2 bg-gray-200 rounded-full overflow-hidden" />
               {/if}
             </div>
             <div class="file-actions">
@@ -822,11 +820,7 @@
   <!-- Upload Progress -->
   {#if uploadStatus !== 'idle'}
     <div class="upload-progress">
-      <Progress.Root value={uploadProgress} max={100} class="progress-bar">
-        <Progress.Track class="progress-track">
-          <Progress.Range class="progress-fill" />
-        </Progress.Track>
-      </Progress.Root>
+      <Progress value={uploadProgress} max={100} class="progress-bar w-full h-4 bg-gray-200 rounded-full overflow-hidden" />
       <div class="progress-text">
         {#if uploadStatus === 'uploading'}
           <Loader2 class="w-4 h-4 animate-spin" />

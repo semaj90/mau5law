@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { run } from 'svelte/legacy';
   // Badge replaced with span - not available in enhanced-bits
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -235,7 +236,7 @@ https://svelte.dev/e/js_parse_error -->
       >
         <Plus class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon" />
         Add Citation
-      </Button>
+      </button>
       <div id="add-citation-help" class="sr-only">
         Create a new legal citation with title, content, source, category, and tags
       </div>
@@ -245,8 +246,8 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Citations Grid -->
   <div class="space-y-4">
     {#each filteredCitations as citation (citation.id)}
-      <CardRoot class="citation-card">
-        <CardHeader class="citation-header">
+      <CardRoot class="citation-nier-bits-card">
+        <div class="yorha-panel-header" class="citation-header">
           <div class="space-y-4">
             <h3 class="space-y-4">{citation.title}</h3>
 
@@ -265,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
                     data-citation-id={citation.id}
                   >
                     <MoreVertical class="w-4 h-4" aria-hidden="true" role="img" aria-label="Menu options icon" />
-                  </Button>
+                  </button>
                   <div id="citation-menu-help" class="sr-only">
                     Access citation actions: favorite, copy, edit, or delete
                   </div>
@@ -304,9 +305,9 @@ https://svelte.dev/e/js_parse_error -->
               </Badge>
             {/if}
           </div>
-        </CardHeader>
+        </div>
 
-        <CardContent class="citation-content">
+        <div class="yorha-panel-content" class="citation-content">
           <p class="space-y-4">{citation.content}</p>
           <p class="space-y-4">Source: {citation.source}</p>
 
@@ -336,7 +337,7 @@ https://svelte.dev/e/js_parse_error -->
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {citation.contextData.caseId}</span>
             {/if}
           </div>
-        </CardContent>
+        </div>
       </CardRoot>
     {/each}
 
@@ -361,7 +362,7 @@ https://svelte.dev/e/js_parse_error -->
               data-operation="clear-filters"
             >
               Clear filters
-            </Button>
+            </button>
             <div id="clear-filters-help" class="sr-only">
               Remove search query and category filters to display all saved citations
             </div>
@@ -383,7 +384,7 @@ https://svelte.dev/e/js_parse_error -->
             >
               <Plus class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon" />
               Add your first citation
-            </Button>
+            </button>
             <div id="first-citation-help" class="sr-only">
               Start your citation collection by creating your first legal citation with source and notes
             </div>
@@ -457,7 +458,7 @@ https://svelte.dev/e/js_parse_error -->
     role="button"
     data-nes-theme="dialog-secondary"
     data-enhanced-bits="true"
-  >Cancel</Button>
+  >Cancel</button>
   <Button 
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
     onclick={() => saveCitation()} 
@@ -471,7 +472,7 @@ https://svelte.dev/e/js_parse_error -->
     data-operation="save-citation"
   >
         Save Citation
-      </Button>
+      </button>
       <div id="save-citation-help" class="sr-only">
         Save the new citation with all entered information to your collection
       </div>
@@ -534,7 +535,7 @@ https://svelte.dev/e/js_parse_error -->
     role="button"
     data-nes-theme="dialog-secondary"
     data-enhanced-bits="true"
-  >Cancel</Button>
+  >Cancel</button>
   <Button 
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-update-btn"
     onclick={() => updateCitation()}
@@ -544,7 +545,7 @@ https://svelte.dev/e/js_parse_error -->
     data-nes-theme="dialog-primary"
     data-enhanced-bits="true"
     data-operation="update-citation"
-  >Update Citation</Button>
+  >Update Citation</button>
   <div id="update-citation-help" class="sr-only">
     Apply changes to the citation and update your collection
   </div>

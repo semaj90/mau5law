@@ -1,5 +1,6 @@
 <!-- Enhanced AI Chat Component - Svelte 5 Compatible -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { createDialog } from 'melt-ui';
@@ -304,7 +305,7 @@
                     class="p-2 bits-btn bits-btn"
                   >
                     <MagnifyingGlassIcon class="w-4 h-4" />
-                  </Button>
+                  </button>
                                               {/snippet}
                             </Tooltip.Trigger>
               <Tooltip.Content>
@@ -315,7 +316,7 @@
           
           <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat}>
             Clear
-          </Button>
+          </button>
         </div>
       </div>
     </Card.Header>
@@ -398,11 +399,11 @@
           class="self-end bits-btn bits-btn"
         >
           <PaperPlaneIcon class="w-4 h-4" />
-        </Button>
+        </button>
       </div>
       
       {#if processingMetrics.tokensPerSecond > 0}
-        <div class="flex gap-4 mt-2 text-xs text-muted-foreground">
+        <div class="flex gap-4 mt-2 text-xs nes-text is-disabled">
           <span>Speed: {processingMetrics.tokensPerSecond} tok/s</span>
           <span>GPU: {processingMetrics.gpuUtilization}%</span>
           <span>Memory: {processingMetrics.memoryUsage}MB</span>
@@ -436,7 +437,7 @@
           {#if ragContext}
             <div>
               <h4 class="font-medium mb-2">Relevant Context</h4>
-              <div class="text-sm text-muted-foreground">
+              <div class="text-sm nes-text is-disabled">
                 <p>{ragContext.summary || 'No relevant context found'}</p>
               </div>
             </div>
@@ -446,7 +447,7 @@
         <Dialog.Footer>
           <Button class="bits-btn" variant="outline" onclick={() => ($open = false)}>
             Close
-          </Button>
+          </button>
         </Dialog.Footer>
       </Dialog.Content>
     </Dialog.Root>

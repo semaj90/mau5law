@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import SecurityMonitoringDashboard from "$lib/components/security/SecurityMonitoringDashboard.svelte";
   import {
     Button
@@ -21,7 +22,7 @@
       <Button class="bits-btn" variant="outline" size="sm">
         <ArrowLeft class="space-y-4" />
         Back to Dashboard
-      </Button>
+      </button>
     </a>
     <div>
       <h1 class="space-y-4">

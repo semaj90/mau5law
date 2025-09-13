@@ -3,6 +3,7 @@
   Showcases various drag and drop implementations with gaming aesthetics
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import SimpleDragDrop from '$lib/components/ui/SimpleDragDrop.svelte';
   import EnhancedMinIODragDrop from '$lib/components/upload/EnhancedMinIODragDrop.svelte';
   // Demo state
@@ -95,7 +96,7 @@
           </div>
           <div class="file-grid">
             {#each uploadedFiles as file, index (file.name + file.size + index)}
-              <div class="file-card">
+              <div class="file-nier-bits-card">
                 <div class="file-type">
                   {#if file.type.startsWith('image/')}
                     🖼️
@@ -140,7 +141,7 @@
     <section class="demo-section">
       <h2 class="section-title">Technical Features</h2>
       <div class="features-grid">
-        <div class="feature-card">
+        <div class="feature-nier-bits-card">
           <h3 class="feature-title">🎮 Gaming Aesthetics</h3>
           <ul class="feature-list">
             <li>NES/SNES color palettes</li>
@@ -149,7 +150,7 @@
             <li>Retro glow animations</li>
           </ul>
         </div>
-        <div class="feature-card">
+        <div class="feature-nier-bits-card">
           <h3 class="feature-title">📁 HTML5 Drag & Drop</h3>
           <ul class="feature-list">
             <li>Drag over/leave detection</li>
@@ -158,7 +159,7 @@
             <li>Multiple file support</li>
           </ul>
         </div>
-        <div class="feature-card">
+        <div class="feature-nier-bits-card">
           <h3 class="feature-title">⚡ Performance</h3>
           <ul class="feature-list">
             <li>CUDA GPU acceleration</li>
@@ -167,7 +168,7 @@
             <li>Async file processing</li>
           </ul>
         </div>
-        <div class="feature-card">
+        <div class="feature-nier-bits-card">
           <h3 class="feature-title">🔧 Modern Tech</h3>
           <ul class="feature-list">
             <li>Svelte 5 runes</li>

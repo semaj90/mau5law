@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <!-- Simplified Enhanced AI Assistant -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Brain,
     Loader2,

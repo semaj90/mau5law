@@ -12,6 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   - Advanced filtering capabilities
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount } from 'svelte';
   import { Combobox } from 'bits-ui';
   import { Search, FileText, Scale, Shield, Users, Zap, Clock } from 'lucide-svelte';

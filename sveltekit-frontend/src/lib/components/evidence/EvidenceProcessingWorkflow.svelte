@@ -1,5 +1,6 @@
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   /**
    * xState-Powered Evidence Processing Workflow Component
    *
@@ -411,20 +412,20 @@
   }
 </script>
 
-<Card class="w-full max-w-4xl mx-auto">
-  <CardHeader>
-    <CardTitle class="flex items-center gap-2">
+<NesCard class="w-full max-w-4xl mx-auto">
+  <div class="yorha-panel-header">
+    <h3 class="nes-text is-primary" class="flex items-center gap-2">
       🏛️ Legal Evidence Processing Workflow
       <span class="text-sm font-normal text-gray-600">
         {evidenceId}
       </span>
-    </CardTitle>
+    </h3>
     <p class="text-sm text-gray-600">
       Real-time streaming workflow with Neural Sprite optimization and portable artifact generation
     </p>
-  </CardHeader>
+  </div>
 
-  <CardContent class="space-y-6">
+  <div class="yorha-panel-content" class="space-y-6">
     <!-- File Upload Section -->
     {#if !selectedFile && !isProcessing && !isCompleted}
       <div
@@ -697,5 +698,5 @@
         </div>
       </div>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>

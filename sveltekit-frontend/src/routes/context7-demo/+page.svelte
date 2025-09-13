@@ -2,6 +2,7 @@
 // Demonstrates production Context7 MCP workflow with Copilot orchestration
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { writable } from 'svelte/store';
   import { derived } from 'svelte';
   import { copilotOrchestrator } from '$lib/utils/mcp-helpers';

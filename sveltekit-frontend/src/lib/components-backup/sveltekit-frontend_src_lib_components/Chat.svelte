@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount, onDestroy } from 'svelte';
   	import { useMachine } from '@xstate/svelte';
   	import { createMachine, assign } from 'xstate';
@@ -215,7 +216,7 @@ https://svelte.dev/e/js_parse_error -->
 				<div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
 				<h3 class="font-semibold text-lg">Legal AI Assistant</h3>
 			</div>
-			<div class="flex items-center space-x-2 text-sm text-muted-foreground">
+			<div class="flex items-center space-x-2 text-sm nes-text is-disabled">
 				{#if $state.context.session}
 					<span>Session: {$state.context.session.id.slice(-8)}</span>
 				{/if}
@@ -236,7 +237,7 @@ https://svelte.dev/e/js_parse_error -->
 		class="messages flex-1 overflow-y-auto p-4 space-y-4"
 	>
 		{#if messages.length === 0}
-			<div class="text-center text-muted-foreground py-8">
+			<div class="text-center nes-text is-disabled py-8">
 				<div class="text-4xl mb-4">⚖️</div>
 				<h4 class="text-lg font-medium mb-2">Welcome to Legal AI Assistant</h4>
 				<p class="text-sm">Ask questions about legal documents, cases, or get AI-powered legal analysis.</p>
@@ -268,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
 							
 							<!-- Metadata for AI responses -->
 							{#if message.role === 'assistant' && message.metadata}
-								<div class="mt-2 pt-2 border-t border-border/50 text-xs text-muted-foreground">
+								<div class="mt-2 pt-2 border-t border-border/50 text-xs nes-text is-disabled">
 									{#if message.metadata.confidence}
 										<div>Confidence: {Math.round(message.metadata.confidence * 100)}%</div>
 									{/if}
@@ -321,20 +322,20 @@ https://svelte.dev/e/js_parse_error -->
 					<span class="text-sm">{errorMessage}</span>
 				</div>
 				<div class="flex space-x-2">
-					<Button 
+					<button class="nes-btn" 
 						variant="outline" 
 						size="xs" 
 						onclick={() => send({ type: 'RETRY' })}
 					>
 						Retry
-					</Button>
-					<Button 
+					</button>
+					<button class="nes-btn" 
 						variant="ghost" 
 						size="xs" 
 						onclick={() => send({ type: 'CANCEL' })}
 					>
 						Dismiss
-					</Button>
+					</button>
 				</div>
 			</div>
 		</div>
@@ -356,12 +357,12 @@ https://svelte.dev/e/js_parse_error -->
 				></textarea>
 				
 				<!-- Character count -->
-				<div class="absolute bottom-2 right-2 text-xs text-muted-foreground">
+				<div class="absolute bottom-2 right-2 text-xs nes-text is-disabled">
 					{messageInput.length}/2000
 				</div>
 			</div>
 			
-			<Button 
+			<button class="nes-btn" 
 				type="submit"
 				variant="legal"
 				disabled={isLoading || !messageInput.trim() || messageInput.length > 2000}
@@ -385,39 +386,39 @@ https://svelte.dev/e/js_parse_error -->
 						/>
 					</svg>
 				{/if}
-			</Button>
+			</button>
 		</form>
 		
 		<!-- Quick actions -->
 		<div class="flex flex-wrap gap-2 mt-3">
-			<Button 
+			<button class="nes-btn" 
 				variant="outline" 
 				size="xs" 
 				onclick={() => messageInput = "Analyze this legal document for key terms and clauses."}
 			>
 				📄 Analyze Document
-			</Button>
-			<Button 
+			</button>
+			<button class="nes-btn" 
 				variant="outline" 
 				size="xs" 
 				onclick={() => messageInput = "What are the legal implications of this case?"}
 			>
 				⚖️ Legal Analysis
-			</Button>
-			<Button 
+			</button>
+			<button class="nes-btn" 
 				variant="outline" 
 				size="xs" 
 				onclick={() => messageInput = "Search for similar cases and precedents."}
 			>
 				🔍 Find Precedents
-			</Button>
-			<Button 
+			</button>
+			<button class="nes-btn" 
 				variant="outline" 
 				size="xs" 
 				onclick={() => messageInput = "Generate a case summary."}
 			>
 				📋 Case Summary
-			</Button>
+			</button>
 		</div>
 	</div>
 </div>

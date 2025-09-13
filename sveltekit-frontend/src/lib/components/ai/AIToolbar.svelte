@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Card,
     CardHeader,
@@ -209,21 +210,21 @@
       <Sparkles class="h-6 w-6 text-primary" />
       AI Legal Assistant
     </h2>
-    <p class="text-muted-foreground mt-2">
+    <p class="nes-text is-disabled mt-2">
       Intelligent search, chat, and summarization powered by local AI
     </p>
   </div>
 
   <div class="grid grid-cols-1 {compact ? 'lg:grid-cols-1' : 'lg:grid-cols-3'} gap-6">
     <!-- AI Search -->
-    <Card class="border-primary/20">
-      <CardHeader class="pb-3">
-        <CardTitle class="flex items-center gap-2 text-lg">
+    <NesCard class="border-primary/20">
+      <div class="yorha-panel-header" class="pb-3">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2 text-lg">
           <Bot class="h-5 w-5 text-primary" />
           AI Search
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div class="flex gap-2">
           <div class="relative flex-1">
             <Bot class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
@@ -243,7 +244,7 @@
             {:else}
               <Search class="h-4 w-4" />
             {/if}
-          </Button>
+          </button>
         </div>
 
         {#if aiSearchResults.length > 0}
@@ -251,7 +252,7 @@
             {#each aiSearchResults.slice(0, 3) as result}
               <div class="p-2 bg-muted/50 rounded text-sm">
                 <div class="font-medium truncate">{result.title}</div>
-                <div class="text-xs text-muted-foreground">{result.jurisdiction}</div>
+                <div class="text-xs nes-text is-disabled">{result.jurisdiction}</div>
               </div>
             {/each}
             {#if aiSearchResults.length > 3}
@@ -259,18 +260,18 @@
             {/if}
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- AI Chat -->
-    <Card class="border-green-500/20">
-      <CardHeader class="pb-3">
-        <CardTitle class="flex items-center gap-2 text-lg">
+    <NesCard class="border-green-500/20">
+      <div class="yorha-panel-header" class="pb-3">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2 text-lg">
           <MessageSquare class="h-5 w-5 text-green-600" />
           AI Chat
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div class="space-y-2">
           <Textarea
             placeholder="Ask a legal question..."
@@ -291,7 +292,7 @@
               <MessageSquare class="h-4 w-4 mr-2" />
               Ask AI
             {/if}
-          </Button>
+          </button>
         </div>
 
         {#if aiChatResponse}
@@ -302,18 +303,18 @@
             </div>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- AI Summarization -->
-    <Card class="border-blue-500/20">
-      <CardHeader class="pb-3">
-        <CardTitle class="flex items-center gap-2 text-lg">
+    <NesCard class="border-blue-500/20">
+      <div class="yorha-panel-header" class="pb-3">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2 text-lg">
           <FileText class="h-5 w-5 text-blue-600" />
           AI Summary
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div class="space-y-2">
           <Textarea
             placeholder="Paste legal text to summarize..."
@@ -333,7 +334,7 @@
               <Zap class="h-4 w-4 mr-2" />
               Summarize
             {/if}
-          </Button>
+          </button>
         </div>
 
         {#if summaryResult}
@@ -343,14 +344,14 @@
             </div>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 
   <!-- Clear Results Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
     <div class="text-center">
-      <Button class="bits-btn" variant="outline" onclick={clearResults} size="sm">Clear All Results</Button>
+      <Button class="bits-btn" variant="outline" onclick={clearResults} size="sm">Clear All Results</button>
     </div>
   {/if}
 
@@ -366,7 +367,7 @@
       disabled={disabled || isAISearching}>
       <Bot class="h-3 w-3 mr-1" />
       Murder Laws
-    </Button>
+    </button>
     <Button class="bits-btn"
       variant="outline"
       size="sm"
@@ -377,7 +378,7 @@
       disabled={disabled || isAIChatting}>
       <MessageSquare class="h-3 w-3 mr-1" />
       Contract Elements
-    </Button>
+    </button>
     <Button class="bits-btn"
       variant="outline"
       size="sm"
@@ -388,7 +389,7 @@
       disabled={disabled || isAISearching}>
       <Search class="h-3 w-3 mr-1" />
       Evidence Rules
-    </Button>
+    </button>
   </div>
 </div>
 

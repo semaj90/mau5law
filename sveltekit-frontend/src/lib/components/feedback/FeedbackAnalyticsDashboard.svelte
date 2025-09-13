@@ -6,6 +6,7 @@ https://svelte.dev/e/component_invalid_directive -->
   Provides comprehensive insights into user feedback and system performance
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { 
@@ -245,7 +246,7 @@ https://svelte.dev/e/component_invalid_directive -->
       <section class="overview-section" transitifly={{ y: 20, duration: 300 }}>
         <div class="overview-cards">
           <!-- Total Ratings -->
-          <div class="metric-card">
+          <div class="metric-nier-bits-card">
             <div class="metric-header">
               <Users class="metric-icon text-blue-600" />
               <span class="metric-label">Total Ratings</span>
@@ -260,7 +261,7 @@ https://svelte.dev/e/component_invalid_directive -->
           </div>
 
           <!-- Average Rating -->
-          <div class="metric-card">
+          <div class="metric-nier-bits-card">
             <div class="metric-header">
               <Star class="metric-icon text-yellow-500" />
               <span class="metric-label">Average Rating</span>
@@ -276,7 +277,7 @@ https://svelte.dev/e/component_invalid_directive -->
           </div>
 
           <!-- Completion Rate -->
-          <div class="metric-card">
+          <div class="metric-nier-bits-card">
             <div class="metric-header">
               <Zap class="metric-icon text-green-600" />
               <span class="metric-label">Completion Rate</span>
@@ -293,7 +294,7 @@ https://svelte.dev/e/component_invalid_directive -->
           </div>
 
           <!-- Satisfaction Score -->
-          <div class="metric-card">
+          <div class="metric-nier-bits-card">
             <div class="metric-header">
               <ThumbsUp class="metric-icon text-emerald-600" />
               <span class="metric-label">Satisfaction</span>
@@ -319,7 +320,7 @@ https://svelte.dev/e/component_invalid_directive -->
         <h2 class="section-title">Rating Breakdown by Category</h2>
         <div class="breakdown-grid">
           {#each dashboardData.breakdown || [] as category}
-            <div class="breakdown-card">
+            <div class="breakdown-nier-bits-card">
               <div class="breakdown-header">
                 <h3 class="breakdown-title">{category.ratingType.replace('_', ' ').toUpperCase()}</h3>
                 <div class="breakdown-count">{category.count} ratings</div>
@@ -367,7 +368,7 @@ https://svelte.dev/e/component_invalid_directive -->
       <section class="insights-section" transitifly={{ y: 20, duration: 300, delay: 200 }}>
         <div class="insights-grid">
           <!-- AI Insights -->
-          <div class="insights-card">
+          <div class="insights-nier-bits-card">
             <h2 class="section-title">
               <Zap class="w-5 h-5 text-purple-600" />
               AI Insights
@@ -398,7 +399,7 @@ https://svelte.dev/e/component_invalid_directive -->
           </div>
 
           <!-- System Recommendations -->
-          <div class="recommendations-card">
+          <div class="recommendations-nier-bits-card">
             <h2 class="section-title">
               <ThumbsUp class="w-5 h-5 text-green-600" />
               System Recommendations

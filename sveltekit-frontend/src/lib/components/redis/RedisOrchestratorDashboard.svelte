@@ -3,6 +3,7 @@
   Nintendo-inspired UI for monitoring Redis + NES memory architecture performance
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { 
     useRedisMonitoring, 

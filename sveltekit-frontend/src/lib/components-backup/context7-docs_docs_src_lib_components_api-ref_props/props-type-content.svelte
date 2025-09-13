@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import Code from "$lib/components/markdown/code.svelte";
   	import { Popover } from "bits-ui";
   	import ScrollArea from "$lib/components/scroll-area.svelte";
@@ -14,7 +15,7 @@
 		<Popover.Root>
 			<Popover.Trigger
 				data-llm-ignore
-				class="rounded-button text-muted-foreground focus-visible:ring-foreground focus-visible:ring-offset-background focus-visible:outline-hidden inline-flex items-center justify-center transition-colors focus-visible:ring-2 focus-visible:ring-offset-2"
+				class="rounded-button nes-text is-disabled focus-visible:ring-foreground focus-visible:ring-offset-background focus-visible:outline-hidden inline-flex items-center justify-center transition-colors focus-visible:ring-2 focus-visible:ring-offset-2"
 			>
 				<Info class="size-4" weight="bold" />
 				<span class="sr-only">See type definition</span>
@@ -23,7 +24,7 @@
 				preventScroll={false}
 				side="top"
 				sideOffset={10}
-				class="rounded-card border-border shadow-popover z-50 border-2 bg-zinc-50 py-1.5 pl-1.5 pr-0.5 dark:bg-[#121212]"
+				class="rounded-nier-bits-card border-border shadow-popover z-50 border-2 bg-zinc-50 py-1.5 pl-1.5 pr-0.5 dark:bg-[#121212]"
 			>
 				<ScrollArea>
 					<div

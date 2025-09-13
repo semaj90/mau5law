@@ -7,6 +7,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount  } from 'svelte';
   import { createWasmGpuService, WasmGpuHelpers  } from '$lib/wasm/gpu-wasm-init';
   // Initialize WASM GPU service with RTX 3060 configuration

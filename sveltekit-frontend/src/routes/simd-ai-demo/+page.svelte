@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, onDestroy } from 'svelte';
   import SIMDAIAssistantDemo from '$lib/components/ai/SIMDAIAssistantDemo.svelte';
@@ -278,7 +279,7 @@ https://svelte.dev/e/expected_token -->
           
           <Button class="bits-btn" onclick={runSystemBenchmark} variant="outline" size="sm">
             🧪 Run Benchmark
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -311,11 +312,11 @@ https://svelte.dev/e/expected_token -->
       <!-- System Overview -->
       <div class="space-y-8">
         <!-- Architecture Overview -->
-        <Card>
-          <CardHeader>
-            <CardTitle>🏗️ System Architecture</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">🏗️ System Architecture</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
                 <div class="text-4xl mb-3">🤖</div>
@@ -350,16 +351,16 @@ https://svelte.dev/e/expected_token -->
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
         
         <!-- System Status Dashboard -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>📊 System Status</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">📊 System Status</h3>
+            </div>
+            <div class="yorha-panel-content">
               {#if systemStatus}
                 <div class="space-y-4">
                   <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
@@ -419,14 +420,14 @@ https://svelte.dev/e/expected_token -->
                   Loading system status...
                 </div>
               {/if}
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
           
-          <Card>
-            <CardHeader>
-              <CardTitle>⚡ Performance Metrics</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">⚡ Performance Metrics</h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="space-y-4">
                 <div class="flex justify-between items-center">
                   <span class="text-sm font-medium">Total Operations</span>
@@ -472,16 +473,16 @@ https://svelte.dev/e/expected_token -->
                   </div>
                 {/if}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         </div>
         
         <!-- Feature Highlights -->
-        <Card>
-          <CardHeader>
-            <CardTitle>🌟 Key Features</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">🌟 Key Features</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div class="space-y-2">
                 <h4 class="font-semibold text-green-600">🧬 Ultra Compression</h4>
@@ -543,8 +544,8 @@ https://svelte.dev/e/expected_token -->
                 </ul>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     {/if}
     

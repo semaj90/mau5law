@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import EnhancedDocumentUpload from '$lib/components/EnhancedDocumentUpload.svelte';
   import RAGSearchComponent from '$lib/components/RAGSearchComponent.svelte';
@@ -168,7 +169,7 @@
     {#if systemStatus}
       <div class="status-grid">
         {#each systemStatus as service}
-          <div class="status-card" style="border-color: {getStatusColor(service.status)}">
+          <div class="status-nier-bits-card" style="border-color: {getStatusColor(service.status)}">
             <div class="status-header">
               <span class="status-name">{service.name}</span>
               <span class="status-indicator" style="color: {getStatusColor(service.status)}">

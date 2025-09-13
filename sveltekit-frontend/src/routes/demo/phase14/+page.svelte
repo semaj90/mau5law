@@ -15,6 +15,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { UnifiedButton, UnifiedDialog, type UnifiedButtonProps } from '$lib/components/unified/index.js';

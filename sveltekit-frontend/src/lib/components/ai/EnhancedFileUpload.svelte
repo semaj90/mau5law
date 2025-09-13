@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced File Upload with Real OCR, Embeddings, and Database Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createUploadMachine } from '$lib/machines/uploadMachine';
   import type { ProcessingPipeline } from '$lib/types/upload';
   import { toast } from '$lib/utils/toast';

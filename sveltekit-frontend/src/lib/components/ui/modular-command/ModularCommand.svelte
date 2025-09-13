@@ -1,5 +1,6 @@
 <!-- Modular API-Integrated Command Palette -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Command } from 'bits-ui';
   import { Search, FileText, Users, Calendar, Gavel, Loader2 } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -197,7 +198,7 @@
       bind:value={query}
       input={(e) => handleQueryChange(e.currentTarget.value)}
       {placeholder}
-      class="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 font-mono"
+      class="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:nes-text is-disabled disabled:cursor-not-allowed disabled:opacity-50 font-mono"
     />
     {#if isSearching}
       <Loader2 class="ml-2 h-4 w-4 animate-spin opacity-50" />
@@ -206,23 +207,23 @@
 
   <Command.List class="max-h-[400px] overflow-y-auto overflow-x-hidden modular-command-list">
     {#if query.length < minQueryLength}
-      <div class="py-6 text-center text-sm text-muted-foreground font-mono">
+      <div class="py-6 text-center text-sm nes-text is-disabled font-mono">
         Type {minQueryLength}+ characters to search...
       </div>
     {:else if isSearching}
-      <div class="py-6 text-center text-sm text-muted-foreground font-mono flex items-center justify-center gap-2">
+      <div class="py-6 text-center text-sm nes-text is-disabled font-mono flex items-center justify-center gap-2">
         <Loader2 class="h-4 w-4 animate-spin" />
         Searching...
       </div>
     {:else if totalResults === 0 && query.length >= minQueryLength}
-      <Command.Empty class="py-6 text-center text-sm text-muted-foreground font-mono">
+      <Command.Empty class="py-6 text-center text-sm nes-text is-disabled font-mono">
         No results found for "{query}"
       </Command.Empty>
     {:else}
       {#each searchTypes as type}
         {#if searchResults[type]?.length > 0}
           <Command.Group class="modular-command-group">
-            <Command.GroupHeading class="px-2 py-1.5 text-xs font-medium text-muted-foreground font-mono uppercase tracking-wider flex items-center gap-2">
+            <Command.GroupHeading class="px-2 py-1.5 text-xs font-medium nes-text is-disabled font-mono uppercase tracking-wider flex items-center gap-2">
               {@const SvelteComponent = iconMap[type]}
               <SvelteComponent class="h-3 w-3" />
               {labelMap[type]} ({searchResults[type].length})
@@ -236,17 +237,17 @@
               >
                 {@const SvelteComponent_1 = iconMap[type]}
                 <div class="flex items-start gap-3 w-full">
-                  <SvelteComponent_1 class="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
+                  <SvelteComponent_1 class="h-4 w-4 mt-0.5 nes-text is-disabled flex-shrink-0" />
                   <div class="flex flex-col gap-1 min-w-0 flex-1">
                     <div class="font-medium text-sm truncate">
                       {formatResultText(item, type)}
                       {#if item.similarity !== undefined}
-                        <span class="text-xs text-muted-foreground ml-2">
+                        <span class="text-xs nes-text is-disabled ml-2">
                           ({Math.round(item.similarity * 100)}% match)
                         </span>
                       {/if}
                     </div>
-                    <div class="text-xs text-muted-foreground truncate">
+                    <div class="text-xs nes-text is-disabled truncate">
                       {formatResultDescription(item, type)}
                     </div>
                   </div>
@@ -258,7 +259,7 @@
       {/each}
 
       {#if totalResults > searchLimit}
-        <div class="px-2 py-2 text-xs text-muted-foreground text-center font-mono border-t">
+        <div class="px-2 py-2 text-xs nes-text is-disabled text-center font-mono border-t">
           Showing {searchLimit} of {totalResults} results
         </div>
       {/if}

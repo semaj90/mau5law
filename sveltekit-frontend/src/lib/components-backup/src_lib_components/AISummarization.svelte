@@ -2,6 +2,7 @@
 https://svelte.dev/e/legacy_export_invalid -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `export let` in runes mode — use `$props()` instead -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // @ts-nocheck
   import { Button } from 'bits-ui';
   import { Card } from 'bits-ui';
@@ -419,8 +420,8 @@ https://svelte.dev/e/legacy_export_invalid -->
 </script>
 
 <div class="ai-summarization {className}">
-  <Card.Root class="w-full max-w-5xl mx-auto shadow-lg">
-    <Card.Content class="p-6">
+  <NesCard.Root class="w-full max-w-5xl mx-auto shadow-lg">
+    <NesCard.Content class="p-6">
       <div class="flex items-center justify-between mb-6">
         <div>
           <h2 class="text-2xl font-bold text-gray-900">🤖 AI Document Analysis (pgai + Gemma3)</h2>

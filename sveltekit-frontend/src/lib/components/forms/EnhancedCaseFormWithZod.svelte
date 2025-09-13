@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Demonstrates complete form enhancement pattern with validation
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { enhance } from '$app/forms';
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
@@ -206,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
               style="width: {$progress}%"
             ></div>
           </div>
-          <span class="text-sm text-muted-foreground">{Math.round($progress)}%</span>
+          <span class="text-sm nes-text is-disabled">{Math.round($progress)}%</span>
         </div>
       {/if}
     </div>
@@ -330,21 +331,21 @@ https://svelte.dev/e/js_parse_error -->
         {#if $errors.description}
           <p class="text-sm text-destructive">{$errors.description[0]}</p>
         {/if}
-        <p class="text-sm text-muted-foreground">
+        <p class="text-sm nes-text is-disabled">
           {$form.description?.length || 0}/1000 characters
         </p>
       </div>
 
       <!-- Advanced Options -->
       <div class="border-t pt-6">
-        <Button 
+        <button class="nes-btn" 
           type="button"
           variant="ghost"
           onclick={() => showAdvanced = !showAdvanced}
           class="bits-btn mb-4"
         >
           {showAdvanced ? 'Hide' : 'Show'} Advanced Options
-        </Button>
+        </button>
 
         {#if showAdvanced}
           <div class="space-y-6 border-l-2 border-muted pl-6">
@@ -362,7 +363,7 @@ https://svelte.dev/e/js_parse_error -->
                       <Select.Item value={status.value}>
                         <div>
                           <div class="font-medium">{status.label}</div>
-                          <div class="text-sm text-muted-foreground">{status.description}</div>
+                          <div class="text-sm nes-text is-disabled">{status.description}</div>
                         </div>
                       </Select.Item>
                     {/each}
@@ -399,7 +400,7 @@ https://svelte.dev/e/js_parse_error -->
                 placeholder="Enter tags separated by commas"
                 bind:value={$form.tags}
               />
-              <p class="text-sm text-muted-foreground">
+              <p class="text-sm nes-text is-disabled">
                 Use tags to categorize and organize cases
               </p>
             </div>
@@ -439,7 +440,7 @@ https://svelte.dev/e/js_parse_error -->
           <!-- File Upload Input -->
           <div class="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6">
             <div class="text-center">
-              <Upload class="mx-auto h-12 w-12 text-muted-foreground/50" />
+              <Upload class="mx-auto h-12 w-12 nes-text is-disabled/50" />
               <div class="mt-4">
                 <Label for="file-upload" class="cursor-pointer">
                   <span class="text-sm font-medium text-primary">Upload files</span>
@@ -452,9 +453,9 @@ https://svelte.dev/e/js_parse_error -->
                     class="sr-only"
                   />
                 </Label>
-                <p class="text-sm text-muted-foreground">or drag and drop</p>
+                <p class="text-sm nes-text is-disabled">or drag and drop</p>
               </div>
-              <p class="text-xs text-muted-foreground mt-2">
+              <p class="text-xs nes-text is-disabled mt-2">
                 PDF, DOC, DOCX, TXT, JPG, PNG up to 10MB each
               </p>
             </div>
@@ -468,10 +469,10 @@ https://svelte.dev/e/js_parse_error -->
                 {#each uploadedFiles as file, index}
                   <div class="flex items-center justify-between p-3 bg-muted rounded-md">
                     <div class="flex items-center space-x-3">
-                      <FileText class="h-4 w-4 text-muted-foreground" />
+                      <FileText class="h-4 w-4 nes-text is-disabled" />
                       <div>
                         <p class="text-sm font-medium">{file.name}</p>
-                        <p class="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
+                        <p class="text-xs nes-text is-disabled">{formatFileSize(file.size)}</p>
                       </div>
                     </div>
                     <Button class="bits-btn"
@@ -481,7 +482,7 @@ https://svelte.dev/e/js_parse_error -->
                       onclick={() => removeFile(index)}
                     >
                       Remove
-                    </Button>
+                    </button>
                   </div>
                 {/each}
               </div>
@@ -496,14 +497,14 @@ https://svelte.dev/e/js_parse_error -->
           {#if enableAutoSave && !editMode}
             <Button class="bits-btn" type="button" variant="outline" onclick={() => { if (ondraft) ondraft({ data: $form }); }}>
               Save as Draft
-            </Button>
+            </button>
           {/if}
         </div>
 
         <div class="flex items-center space-x-3">
           <Button class="bits-btn" type="button" variant="outline">
             Cancel
-          </Button>
+          </button>
 
           <Button
             type="submit"
@@ -516,7 +517,7 @@ https://svelte.dev/e/js_parse_error -->
             {:else}
               {editMode ? 'Update Case' : 'Create Case'}
             {/if}
-          </Button>
+          </button>
         </div>
       </div>
     </form>
@@ -535,7 +536,7 @@ https://svelte.dev/e/js_parse_error -->
       class="border-red-300 text-red-700 hover:bg-red-50"
     >
       Dismiss Error
-    </Button>
+    </button>
   </div>
 {/if}
 

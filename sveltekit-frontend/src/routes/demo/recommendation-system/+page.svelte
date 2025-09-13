@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Recommendation System Demo - Gaming CSS Modals Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { , onMount, onDestroy } from 'svelte';
 
   
@@ -213,11 +214,11 @@ https://svelte.dev/e/js_parse_error -->
 <div class="demo-content">
   <div class="demo-grid">
     <!-- Console Style Selector -->
-    <Card.Root class="control-card">
-      <Card.Header>
-        <Card.Title>🎮 Console Style</Card.Title>
+    <NesCard.Root class="control-nier-bits-card">
+      <NesCard.Header>
+        <NesCard.Title>🎮 Console Style</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="console-grid">
           {#each consoleOptions as console}
             <button
@@ -230,62 +231,62 @@ https://svelte.dev/e/js_parse_error -->
             </button>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Demo Controls -->
-    <Card.Root class="control-card">
-      <Card.Header>
-        <Card.Title>🎯 Demo Controls</Card.Title>
+    <NesCard.Root class="control-nier-bits-card">
+      <NesCard.Header>
+        <NesCard.Title>🎯 Demo Controls</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="demo-controls">
           <Button class="bits-btn"
             variant={isDetectiveMode ? 'default' : 'outline'}
             onclick={toggleDetectiveMode}
           >
             {isDetectiveMode ? 'Exit Detective Mode' : 'Enter Detective Mode'}
-          </Button>
+          </button>
           
           <Button class="bits-btn"
             variant="outline"
             onclick={() => simulateActivity('idle')}
           >
             Simulate Idle State
-          </Button>
+          </button>
           
           <Button class="bits-btn"
             variant="outline"
             onclick={() => simulateActivity('typing')}
           >
             Simulate Typing
-          </Button>
+          </button>
           
           <Button class="bits-btn"
             variant="destructive"
             onclick={addCriticalAlert}
           >
             Add Critical Alert
-          </Button>
+          </button>
         </div>
         
         <div class="utility-controls">
           <Button class="bits-btn" variant="secondary" onclick={clearRecommendations}>
             Clear All
-          </Button>
+          </button>
           <Button class="bits-btn" variant="secondary" onclick={resetDemo}>
             Reset Demo
-          </Button>
+          </button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Activity Status -->
-    <Card.Root class="status-card">
-      <Card.Header>
-        <Card.Title>📊 System Status</Card.Title>
+    <NesCard.Root class="status-nier-bits-card">
+      <NesCard.Header>
+        <NesCard.Title>📊 System Status</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="status-grid">
           <div class="status-item">
             <label>User Activity:</label>
@@ -306,15 +307,15 @@ https://svelte.dev/e/js_parse_error -->
             <span class="status-value">{currentConsole.toUpperCase()}</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Feature Description -->
-    <Card.Root class="description-card">
-      <Card.Header>
-        <Card.Title>🚀 Features</Card.Title>
+    <NesCard.Root class="description-nier-bits-card">
+      <NesCard.Header>
+        <NesCard.Title>🚀 Features</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="feature-list">
           <div class="feature-item">
             <span class="feature-icon">🎮</span>
@@ -352,8 +353,8 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 </div>
 

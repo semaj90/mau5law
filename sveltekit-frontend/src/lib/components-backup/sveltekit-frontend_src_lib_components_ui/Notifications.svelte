@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { quintOut } from "svelte/easing";
   import { fly } from "svelte/transition";
   import { notifications, type Notification } from "../../stores/notification";
@@ -82,13 +83,13 @@
           {#if notification.actions && notification.actions.length > 0}
             <div class="space-y-4">
               {#each notification.actions as action}
-                <Button
+                <button class="nes-btn"
                   size="sm"
                   variant={action.variant || "secondary"}
                   onclick={() => handleAction(notification, action)}
                 >
                   {action.label}
-                </Button>
+                </button>
               {/each}
             </div>
           {/if}

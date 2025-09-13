@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   /**
    * Neural Topology 3D Prediction Demo
@@ -293,25 +294,25 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Neural Topology Status Grid -->
   <div class="topology-status-grid">
-    <div class="topology-card transformer {neuralTopologyStatus.transformer}">
+    <div class="topology-nier-bits-card transformer {neuralTopologyStatus.transformer}">
       <h3>🔤 Transformer</h3>
       <p>Language Processing</p>
       <div class="status">Ollama gemma3-legal</div>
     </div>
     
-    <div class="topology-card autoencoder {neuralTopologyStatus.autoencoder}">
+    <div class="topology-nier-bits-card autoencoder {neuralTopologyStatus.autoencoder}">
       <h3>🗜️ Autoencoder</h3>
       <p>Pattern Compression</p>
       <div class="status">CHR-ROM Active</div>
     </div>
     
-    <div class="topology-card cnn {neuralTopologyStatus.cnn}">
+    <div class="topology-nier-bits-card cnn {neuralTopologyStatus.cnn}">
       <h3>👁️ CNN</h3>
       <p>Visual Recognition</p>
       <div class="status">WebGPU/RTX 3060 Ti</div>
     </div>
     
-    <div class="topology-card rnn {neuralTopologyStatus.rnn}">
+    <div class="topology-nier-bits-card rnn {neuralTopologyStatus.rnn}">
       <h3>🔄 RNN</h3>
       <p>Sequence Prediction</p>
       <div class="status">RL Cache Active</div>
@@ -348,25 +349,25 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Real-time Metrics Dashboard -->
   <div class="metrics-dashboard">
-    <div class="metric-card">
+    <div class="metric-nier-bits-card">
       <h4>3D Component Predictions</h4>
       <div class="metric-value">{asset3DMetrics.predictedComponents}</div>
       <div class="metric-label">RNN Topology</div>
     </div>
     
-    <div class="metric-card">
+    <div class="metric-nier-bits-card">
       <h4>Pre-rendered Animations</h4>
       <div class="metric-value">{asset3DMetrics.prerenderedAnimations}</div>
       <div class="metric-label">Autoencoder Topology</div>
     </div>
     
-    <div class="metric-card">
+    <div class="metric-nier-bits-card">
       <h4>CHR-ROM Patterns</h4>
       <div class="metric-value">{asset3DMetrics.chrRomPatterns}</div>
       <div class="metric-label">0ms Cache Hits</div>
     </div>
     
-    <div class="metric-card">
+    <div class="metric-nier-bits-card">
       <h4>Cache Hit Ratio</h4>
       <div class="metric-value">{asset3DMetrics.cacheHitRatio}%</div>
       <div class="metric-label">Learning Efficiency</div>

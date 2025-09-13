@@ -7,6 +7,7 @@
   - XState Document Processing Workflows
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import LegalDocumentProcessor from '$lib/components/legal/LegalDocumentProcessor.svelte';
   import type { LegalDocument } from '$lib/services/legalRAGEngine';
   import { Button } from '$lib/components/ui/enhanced-bits';

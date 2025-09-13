@@ -1,5 +1,6 @@
 <!-- Cache Performance Dashboard for Legal AI System -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fade, slide, scale } from 'svelte/transition';
   import { 
@@ -268,7 +269,7 @@
   <main class="dashboard-content">
     <!-- Key Metrics Row -->
     <section class="metrics-overview">
-      <div class="metric-card primary">
+      <div class="metric-nier-bits-card primary">
         <div class="metric-icon">
           <TrendingUp size={24} />
         </div>
@@ -281,7 +282,7 @@
         </div>
       </div>
       
-      <div class="metric-card">
+      <div class="metric-nier-bits-card">
         <div class="metric-icon">
           <Clock size={24} />
         </div>
@@ -293,7 +294,7 @@
         </div>
       </div>
       
-      <div class="metric-card">
+      <div class="metric-nier-bits-card">
         <div class="metric-icon">
           <DollarSign size={24} />
         </div>
@@ -305,7 +306,7 @@
         </div>
       </div>
       
-      <div class="metric-card">
+      <div class="metric-nier-bits-card">
         <div class="metric-icon">
           <BarChart3 size={24} />
         </div>
@@ -321,7 +322,7 @@
     <!-- Cache Performance Details -->
     <div class="dashboard-grid">
       <!-- Retrieval Cache Stats -->
-      <div class="dashboard-card">
+      <div class="dashboard-nier-bits-card">
         <h2>🔍 Retrieval Cache</h2>
         <div class="cache-stats">
           <div class="stat-row">
@@ -356,7 +357,7 @@
       </div>
 
       <!-- Embedding Cache Stats -->
-      <div class="dashboard-card">
+      <div class="dashboard-nier-bits-card">
         <h2>🧠 Embedding Cache</h2>
         <div class="cache-stats">
           <div class="stat-row">
@@ -391,7 +392,7 @@
       </div>
 
       <!-- Nintendo Memory Management -->
-      <div class="dashboard-card nintendo">
+      <div class="dashboard-nier-bits-card nintendo">
         <h2>🎮 Nintendo Memory Banks</h2>
         <div class="nintendo-stats">
           <div class="memory-overview">
@@ -424,7 +425,7 @@
       </div>
 
       <!-- Memory Hierarchy -->
-      <div class="dashboard-card">
+      <div class="dashboard-nier-bits-card">
         <h2>🏗️ Memory Hierarchy</h2>
         <div class="memory-hierarchy">
           <div class="memory-layer l1">
@@ -463,7 +464,7 @@
       </div>
 
       <!-- Recent Query Activity -->
-      <div class="dashboard-card recent-queries">
+      <div class="dashboard-nier-bits-card recent-queries">
         <h2>📋 Recent Queries</h2>
         <div class="query-list">
           {#each recentQueries as query, i (i)}
@@ -483,7 +484,7 @@
       </div>
 
       <!-- Performance Timeline -->
-      <div class="dashboard-card performance">
+      <div class="dashboard-nier-bits-card performance">
         <h2>📈 Performance Trends</h2>
         <div class="performance-metrics">
           <div class="perf-item">

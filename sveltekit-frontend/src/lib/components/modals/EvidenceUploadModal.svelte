@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { , createEventDispatcher } from 'svelte';
 
 
@@ -73,7 +74,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() => closeModal()}>
           <X class="container mx-auto px-4" />
-        </Button>
+        </button>
       </div>
 
       <!-- Body -->
@@ -101,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
           </p>
           <Button class="bits-btn" variant="outline" onclick={() => fileInput?.click()}>
             Choose Files
-          </Button>
+          </button>
           <input
             bind:this={fileInput}
             type="file"
@@ -177,7 +178,7 @@ https://svelte.dev/e/js_parse_error -->
                         onclick={() => removeFile(file.id)}
                       >
                         <X class="container mx-auto px-4" />
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 {/if}
@@ -206,12 +207,12 @@ https://svelte.dev/e/js_parse_error -->
         <div class="container mx-auto px-4">
           <Button class="bits-btn" variant="outline" onclick={() => closeModal()}>
             {activeUploads.length > 0 ? "Continue in Background" : "Close"}
-          </Button>
+          </button>
 
           {#if completedUploads.length > 0}
             <Button class="bits-btn" onclick={() => dispatch("viewEvidence", completedUploads)}>
               View Evidence
-            </Button>
+            </button>
           {/if}
         </div>
       </div>

@@ -1,9 +1,10 @@
 <!-- BVector Store Integration Test Interface -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { BVectorIntegrationTestSuite, runBVectorIntegrationTest } from '$lib/tests/bvector-integration-test';
   import type { TestResult, TestConfig } from '$lib/tests/bvector-integration-test';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card';
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
@@ -205,7 +206,7 @@
     </div>
     
     <div class="flex items-center gap-3">
-      <Button
+      <button class="nes-btn"
         onclick={checkSystemStatus}
         variant="outline"
         size="sm"
@@ -213,31 +214,31 @@
       >
         <RefreshCw class="w-4 h-4 mr-2" />
         Refresh Status
-      </Button>
+      </button>
       
       {#if hasResults}
-        <Button
+        <button class="nes-btn"
           onclick={exportResults}
           variant="outline"
           size="sm"
         >
           <Download class="w-4 h-4 mr-2" />
           Export Results
-        </Button>
+        </button>
       {/if}
     </div>
   </div>
 
   <!-- System Status Cards -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <Card>
-      <CardHeader class="pb-3">
-        <CardTitle class="flex items-center gap-2 text-sm">
+    <NesCard>
+      <div class="yorha-panel-header" class="pb-3">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2 text-sm">
           <Brain class="w-4 h-4" />
           Embedding Worker
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         {@const SvelteComponent = getStatusIcon(embeddingWorkerStatus)}
         <div class="flex items-center gap-2">
           <SvelteComponent 
@@ -245,17 +246,17 @@
           />
           <span class="text-sm font-medium capitalize">{embeddingWorkerStatus}</span>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
-    <Card>
-      <CardHeader class="pb-3">
-        <CardTitle class="flex items-center gap-2 text-sm">
+    <NesCard>
+      <div class="yorha-panel-header" class="pb-3">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2 text-sm">
           <Zap class="w-4 h-4" />
           GPU Acceleration
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         {@const SvelteComponent_1 = getStatusIcon(gpuStatus)}
         <div class="flex items-center gap-2">
           <SvelteComponent_1 
@@ -263,34 +264,34 @@
           />
           <span class="text-sm font-medium capitalize">{gpuStatus}</span>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
-    <Card>
-      <CardHeader class="pb-3">
-        <CardTitle class="flex items-center gap-2 text-sm">
+    <NesCard>
+      <div class="yorha-panel-header" class="pb-3">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2 text-sm">
           <Database class="w-4 h-4" />
           Go Binaries
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="text-sm">
           {Object.keys(goBinaryStatus).length > 0 
             ? `${Object.values(goBinaryStatus).filter(Boolean).length}/${Object.keys(goBinaryStatus).length} Available`
             : 'Not Checked'
           }
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
-    <Card>
-      <CardHeader class="pb-3">
-        <CardTitle class="flex items-center gap-2 text-sm">
+    <NesCard>
+      <div class="yorha-panel-header" class="pb-3">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2 text-sm">
           <Cpu class="w-4 h-4" />
           System Resources
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="text-sm space-y-1">
           {#if systemResources.cpuCores}
             <div>CPU: {systemResources.cpuCores} cores</div>
@@ -299,19 +300,19 @@
             <div>RAM: {systemResources.memoryGB}GB</div>
           {/if}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 
   <!-- Test Configuration -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Settings class="w-5 h-5" />
         Test Configuration
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <label class="flex items-center space-x-2">
           <input 
@@ -343,17 +344,17 @@
           <span class="text-sm">Mock Workers</span>
         </label>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Test Execution -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Test Controls -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Test Execution</CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Test Execution</h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div class="flex gap-3">
           <Button
             onclick={runTests}
@@ -362,16 +363,16 @@
           >
             <Play class="w-4 h-4 mr-2" />
             {isRunning ? 'Running Tests...' : 'Run Integration Tests'}
-          </Button>
+          </button>
 
           {#if isRunning}
-            <Button
+            <button class="nes-btn"
               onclick={stopTests}
               variant="outline"
             >
               <Square class="w-4 h-4 mr-2" />
               Stop
-            </Button>
+            </button>
           {/if}
         </div>
 
@@ -417,15 +418,15 @@
             </div>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Test Logs -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Test Logs</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Test Logs</h3>
+      </div>
+      <div class="yorha-panel-content">
         <ScrollArea class="h-64 w-full rounded-md border p-4">
           {#if testLogs.length === 0}
             <p class="text-gray-500 text-sm">No logs yet. Run tests to see real-time output.</p>
@@ -437,17 +438,17 @@
             </div>
           {/if}
         </ScrollArea>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 
   <!-- Detailed Results -->
   {#if hasResults}
-    <Card>
-      <CardHeader>
-        <CardTitle>Detailed Test Results</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Detailed Test Results</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-4">
           {#each results as result}
             {@const SvelteComponent_2 = getTestIcon(result)}
@@ -491,8 +492,8 @@
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

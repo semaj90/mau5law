@@ -7,6 +7,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   const { documents: DocumentInput[] = [], autoStart: boolean = false, maxConcurrent: number = 5 } = $props();
 
   import { onMount, onDestroy } from 'svelte';
@@ -143,22 +144,22 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Metrics Dashboard -->
   <div class="metrics-dashboard">
-    <div class="metric-card">
+    <div class="metric-nier-bits-card">
       <h3>Queue</h3>
       <div class="metric-value">{metrics.queueLength}</div>
       <div class="metric-label">Documents</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-nier-bits-card">
       <h3>Processing</h3>
       <div class="metric-value">{metrics.concurrentJobs}</div>
       <div class="metric-label">Active Jobs</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-nier-bits-card">
       <h3>Success Rate</h3>
       <div class="metric-value">{metrics.successRate.toFixed(1)}%</div>
       <div class="metric-label">Completion</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-nier-bits-card">
       <h3>GPU Usage</h3>
       <div class="metric-value">{metrics.gpuUtilization.toFixed(0)}%</div>
       <div class="metric-label">Utilization</div>
@@ -169,7 +170,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="control-panel">
     <div class="control-group">
       <button 
-        class="btn btn-primary" 
+        class="btn nes-btn is-primary" 
         onclick={processBatch}
         disabled={documents.length === 0}
       >
@@ -236,7 +237,7 @@ https://svelte.dev/e/js_parse_error -->
       <span class="priority-label">Priority: {priority}</span>
     </div>
     <button 
-      class="btn btn-primary" 
+      class="btn nes-btn is-primary" 
       onclick={addDocument}
       disabled={!newDocumentContent.trim()}
     >

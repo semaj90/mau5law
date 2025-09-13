@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   let { caseId | undefined = undefined, searchQuery = "", selectedTypes[] = [] } = $props();
 
   // Svelte runes ($state, $derived, etc.) are declared globally in src/types/svelte-helpers.d.ts
@@ -359,7 +360,7 @@ https://svelte.dev/e/js_parse_error -->
       title="Undo (Ctrl+Z)"
     >
       <Undo2 class="mx-auto px-4 max-w-7xl" />
-    </Button>
+    </button>
 
     <Button class="bits-btn"
       variant="ghost"
@@ -369,7 +370,7 @@ https://svelte.dev/e/js_parse_error -->
       title="Redo (Ctrl+Y)"
     >
       <Redo2 class="mx-auto px-4 max-w-7xl" />
-    </Button>
+    </button>
 
     <Button class="bits-btn"
       variant="ghost"
@@ -379,7 +380,7 @@ https://svelte.dev/e/js_parse_error -->
       title="Sync with server"
     >
       <RefreshCw class="mx-auto px-4 max-w-7xl" />
-    </Button>
+    </button>
   </div>
 </div>
 
@@ -459,7 +460,7 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <SortDesc class="mx-auto px-4 max-w-7xl" />
           {/if}
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -476,13 +477,13 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           <Grid class="mx-auto px-4 max-w-7xl" />
         {/if}
-      </Button>
+      </button>
 
       <!-- Selection Actions -->
       {#if selectedEvidence.size > 0}
         <Button class="bits-btn" variant="outline" size="sm" onclick={() => clearSelection()}>
           Clear ({selectedEvidence.size})
-        </Button>
+        </button>
 
         <Button class="bits-btn"
           variant="danger"
@@ -495,18 +496,18 @@ https://svelte.dev/e/js_parse_error -->
         >
           <Trash2 class="mx-auto px-4 max-w-7xl" />
           Delete
-        </Button>
+        </button>
       {:else}
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() => selectAll()}>
           Select All
-        </Button>
+        </button>
       {/if}
 
       <!-- Add Evidence -->
       <Button class="bits-btn" onclick={() => createEvidence()}>
         <span class="mx-auto px-4 max-w-7xl">+</span>
         Add Evidence
-      </Button>
+      </button>
     </div>
   </div>
 </div>
@@ -534,7 +535,7 @@ https://svelte.dev/e/js_parse_error -->
             ? "No evidence matches your current filters."
             : "No evidence has been added yet."}
         </p>
-        <Button class="bits-btn" onclick={() => createEvidence()}>Add First Evidence</Button>
+        <Button class="bits-btn" onclick={() => createEvidence()}>Add First Evidence</button>
       </div>
     </div>
   {:else}
@@ -577,7 +578,7 @@ https://svelte.dev/e/js_parse_error -->
                   onclick={() => (editingEvidence = item.id)}
                 >
                   <Eye class="mx-auto px-4 max-w-7xl" />
-                </Button>
+                </button>
 
                 <Button class="bits-btn"
                   variant="ghost"
@@ -585,7 +586,7 @@ https://svelte.dev/e/js_parse_error -->
                   onclick={() => deleteEvidence(item.id)}
                 >
                   <Trash2 class="mx-auto px-4 max-w-7xl" />
-                </Button>
+                </button>
               </div>
             </div>
 
@@ -613,14 +614,14 @@ https://svelte.dev/e/js_parse_error -->
                       })}
                   >
                     Save
-                  </Button>
+                  </button>
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
                     onclick={() => (editingEvidence = null)}
                   >
                     Cancel
-                  </Button>
+                  </button>
                 </div>
               </div>
             {:else}
@@ -762,14 +763,14 @@ https://svelte.dev/e/js_parse_error -->
                       onclick={() => (editingEvidence = item.id)}
                     >
                       <Eye class="mx-auto px-4 max-w-7xl" />
-                    </Button>
+                    </button>
                     <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
                       onclick={() => deleteEvidence(item.id)}
                     >
                       <Trash2 class="mx-auto px-4 max-w-7xl" />
-                    </Button>
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -797,7 +798,7 @@ https://svelte.dev/e/js_parse_error -->
             onclick={() => currentPage--}
           >
             Previous
-          </Button>
+          </button>
 
           <span class="mx-auto px-4 max-w-7xl">
             Page {currentPage + 1} of {totalPages}
@@ -810,7 +811,7 @@ https://svelte.dev/e/js_parse_error -->
             onclick={() => currentPage++}
           >
             Next
-          </Button>
+          </button>
         </div>
       </div>
     {/if}

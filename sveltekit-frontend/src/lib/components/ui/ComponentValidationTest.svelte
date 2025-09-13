@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Dropdown from './Dropdown.svelte';
   import Checkbox from './Checkbox.svelte';
   import SearchBar from './SearchBar.svelte';

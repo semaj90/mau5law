@@ -7,6 +7,7 @@ https://svelte.dev/e/expected_token -->
   Author: Claude Code Integration
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -162,7 +163,7 @@ https://svelte.dev/e/expected_token -->
     </Card.Header>
     <div.Content>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Button 
+        <button class="nes-btn" 
           onclick={() => demonstrateArrayHandling('arrayBuffer')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
@@ -170,9 +171,9 @@ https://svelte.dev/e/expected_token -->
           <div class="text-2xl mb-2">🔢</div>
           <span class="text-sm">ArrayBuffer</span>
           <span class="text-xs text-gray-500">Raw binary</span>
-        </Button>
+        </button>
         
-        <Button 
+        <button class="nes-btn" 
           onclick={() => demonstrateArrayHandling('float32Array')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
@@ -180,9 +181,9 @@ https://svelte.dev/e/expected_token -->
           <div class="text-2xl mb-2">📊</div>
           <span class="text-sm">Float32Array</span>
           <span class="text-xs text-gray-500">Typed view</span>
-        </Button>
+        </button>
         
-        <Button 
+        <button class="nes-btn" 
           onclick={() => demonstrateArrayHandling('numberArray')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
@@ -190,9 +191,9 @@ https://svelte.dev/e/expected_token -->
           <div class="text-2xl mb-2">📝</div>
           <span class="text-sm">number[]</span>
           <span class="text-xs text-gray-500">Plain JS</span>
-        </Button>
+        </button>
         
-        <Button 
+        <button class="nes-btn" 
           onclick={() => demonstrateArrayHandling('mixedPrecision')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
@@ -200,7 +201,7 @@ https://svelte.dev/e/expected_token -->
           <div class="text-2xl mb-2">🔄</div>
           <span class="text-sm">Float64Array</span>
           <span class="text-xs text-gray-500">Double precision</span>
-        </Button>
+        </button>
       </div>
     </Card.Content>
   </Card.Root>
@@ -221,7 +222,7 @@ https://svelte.dev/e/expected_token -->
           class="w-full"
         >
           {isProcessing ? 'Testing...' : '🚀 Test WebGPU RAG Service'}
-        </Button>
+        </button>
       </Card.Content>
     </Card.Root>
   {/if}

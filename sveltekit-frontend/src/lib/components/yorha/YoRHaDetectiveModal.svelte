@@ -1,5 +1,6 @@
 <!-- YoRHa Detective Modal Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import type {     Snippet     } from 'svelte';
 

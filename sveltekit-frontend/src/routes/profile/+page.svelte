@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { page } from "$app/state";
   import Avatar from "$lib/components/Avatar.svelte";
   import { avatarStore } from "$lib/stores/avatarStore";
@@ -168,27 +169,27 @@
       <div class="space-y-4">
         <h2>Account Statistics</h2>
         <div class="stats-grid">
-          <div class="stat-card">
+          <div class="stat-nier-bits-card">
             <div class="stat-value">{userStats?.totalCases || 0}</div>
             <div class="stat-label">Total Cases</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-nier-bits-card">
             <div class="stat-value">{userStats?.openCases || 0}</div>
             <div class="stat-label">Open Cases</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-nier-bits-card">
             <div class="stat-value">{userStats?.closedCases || 0}</div>
             <div class="stat-label">Closed Cases</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-nier-bits-card">
             <div class="stat-value">{userStats?.totalEvidence || 0}</div>
             <div class="stat-label">Evidence Files</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-nier-bits-card">
             <div class="stat-value">{userStats?.totalCriminals || 0}</div>
             <div class="stat-label">Persons of Interest</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-nier-bits-card">
             <div class="stat-value">{user?.role || "User"}</div>
             <div class="stat-label">Role</div>
           </div>

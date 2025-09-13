@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { browser } from "$app/environment";
   import {
@@ -238,7 +239,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       aria-label="Toggle accessibility panel"
     >
       <Accessibility class="mx-auto px-4 max-w-7xl" />
-    </Button>
+    </button>
   </Tooltip>
 
   <!-- Keyboard Shortcuts Toggle -->
@@ -251,7 +252,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       aria-label="Show keyboard shortcuts"
     >
       <Keyboard class="mx-auto px-4 max-w-7xl" />
-    </Button>
+    </button>
   </Tooltip>
 
   <!-- Fullscreen Toggle -->
@@ -271,7 +272,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       {:else}
         <Maximize2 class="mx-auto px-4 max-w-7xl" />
       {/if}
-    </Button>
+    </button>
   </Tooltip>
 </div>
 

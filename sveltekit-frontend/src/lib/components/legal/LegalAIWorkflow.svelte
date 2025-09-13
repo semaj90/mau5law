@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
     import { legalAIClient, legalAIUtils, type LegalDocumentResponse, type RecommendationResponse } from '$lib/services/legal-ai-client';
     import { createEventDispatcher } from 'svelte';
 
@@ -340,7 +341,7 @@
 
             <div class="recommendations-list">
                 {#each recommendations.recommendations as recommendation}
-                    <div class="recommendation-card">
+                    <div class="recommendation-nier-bits-card">
                         <div class="recommendation-header">
                             <h4 class="recommendation-title">{recommendation.title}</h4>
                             <span class="recommendation-type">{recommendation.recommendation_type}</span>

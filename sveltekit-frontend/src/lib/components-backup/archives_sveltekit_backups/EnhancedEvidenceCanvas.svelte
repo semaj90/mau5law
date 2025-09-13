@@ -1,7 +1,8 @@
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
-  import Button from "$lib/components/ui/Button.svelte";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications } from "$lib/stores/notification";
   import {
     Circle,
@@ -491,30 +492,30 @@
       <div
         class="mx-auto px-4 max-w-7xl"
       >
-        <Button
+        <button class="nes-btn"
           variant={selectedTool === "select" ? "primary" : "outline"}
           size="sm"
           onclick={() => selectTool("select")}
           disabled={readonly}
         >
           <Move class="mx-auto px-4 max-w-7xl" />
-        </Button>
-        <Button
+        </button>
+        <button class="nes-btn"
           variant={selectedTool === "draw" ? "primary" : "outline"}
           size="sm"
           onclick={() => selectTool("draw")}
           disabled={readonly}
         >
           ✏️
-        </Button>
-        <Button
+        </button>
+        <button class="nes-btn"
           variant={selectedTool === "text" ? "primary" : "outline"}
           size="sm"
           onclick={() => selectTool("text")}
           disabled={readonly}
         >
           <Type class="mx-auto px-4 max-w-7xl" />
-        </Button>
+        </button>
       </div>
 
       <!-- Shapes -->
@@ -522,20 +523,20 @@
         <div
           class="mx-auto px-4 max-w-7xl"
         >
-          <Button
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={() => addShape("rectangle")}
           >
             <Square class="mx-auto px-4 max-w-7xl" />
-          </Button>
-          <Button
+          </button>
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={() => addShape("circle")}
           >
             <Circle class="mx-auto px-4 max-w-7xl" />
-          </Button>
+          </button>
         </div>
       {/if}
 
@@ -543,36 +544,36 @@
       <div
         class="mx-auto px-4 max-w-7xl"
       >
-        <Button
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => undo()}
           disabled={readonly || historyIndex <= 0}
         >
           <Undo class="mx-auto px-4 max-w-7xl" />
-        </Button>
-        <Button
+        </button>
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => redo()}
           disabled={readonly || historyIndex >= canvasHistory.length - 1}
         >
           <Redo class="mx-auto px-4 max-w-7xl" />
-        </Button>
+        </button>
       </div>
 
       <!-- Zoom -->
       <div class="mx-auto px-4 max-w-7xl">
-        <Button variant="outline" size="sm" onclick={() => zoomOut()}>
+        <button class="nes-btn" variant="outline" size="sm" onclick={() => zoomOut()}>
           <ZoomOut class="mx-auto px-4 max-w-7xl" />
-        </Button>
+        </button>
         <span class="mx-auto px-4 max-w-7xl"
           >{Math.round(zoom * 100)}%</span
         >
-        <Button variant="outline" size="sm" onclick={() => zoomIn()}>
+        <button class="nes-btn" variant="outline" size="sm" onclick={() => zoomIn()}>
           <ZoomIn class="mx-auto px-4 max-w-7xl" />
-        </Button>
-        <Button variant="outline" size="sm" onclick={() => resetZoom()}
+        </button>
+        <button class="nes-btn" variant="outline" size="sm" onclick={() => resetZoom()}
           >Reset</Button
         >
       </div>
@@ -581,18 +582,18 @@
     <!-- Actions -->
     <div class="mx-auto px-4 max-w-7xl">
       {#if !readonly}
-        <Button variant="outline" size="sm" onclick={() => deleteSelected()}>
+        <button class="nes-btn" variant="outline" size="sm" onclick={() => deleteSelected()}>
           <Trash2 class="mx-auto px-4 max-w-7xl" />
-        </Button>
-        <Button variant="outline" size="sm" onclick={() => saveCanvas()}>
+        </button>
+        <button class="nes-btn" variant="outline" size="sm" onclick={() => saveCanvas()}>
           <Save class="mx-auto px-4 max-w-7xl" />
           Save
-        </Button>
+        </button>
       {/if}
-      <Button variant="outline" size="sm" onclick={() => exportCanvas()}>
+      <button class="nes-btn" variant="outline" size="sm" onclick={() => exportCanvas()}>
         <Download class="mx-auto px-4 max-w-7xl" />
         Export
-      </Button>
+      </button>
     </div>
   </div>
 

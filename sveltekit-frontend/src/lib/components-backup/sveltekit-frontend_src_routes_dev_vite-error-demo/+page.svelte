@@ -1,5 +1,6 @@
 <!-- Vite Error Logger Demo Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { logCustomError } from '$lib/vite/vscode-error-logger';
   import { vscodeIntegration, errorNavigator } from '$lib/vite/vscode-extension';

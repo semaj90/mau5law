@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Fuse from 'fuse.js';
   import { onMount } from 'svelte';
   import { Input } from "$lib/components/ui/input/index.js";
@@ -137,7 +138,7 @@
 <div class="space-y-4">
   <!-- Search Input -->
   <div class="relative">
-    <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+    <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 nes-text is-disabled" />
     <Input
       bind:value={searchQuery}
       {placeholder}
@@ -145,13 +146,13 @@
       class="pl-10"
     />
     {#if isSearching}
-      <Loader2 class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+      <Loader2 class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin nes-text is-disabled" />
     {/if}
   </div>
 
   <!-- Search Info -->
   {#if searchQuery && searchResults.length > 0}
-    <div class="text-sm text-muted-foreground">
+    <div class="text-sm nes-text is-disabled">
       Found {searchResults.length} results for "{searchQuery}"
       {#if searchResults.length === maxResults}
         (showing top {maxResults})
@@ -163,10 +164,10 @@
   {#if searchResults.length > 0}
     <div class="space-y-3">
       {#each searchResults as law}
-        <Card.Root class="hover:shadow-md transition-shadow">
-          <Card.Header class="pb-3">
+        <NesCard.Root class="hover:shadow-md transition-shadow">
+          <NesCard.Header class="pb-3">
             <div class="flex items-start justify-between">
-              <Card.Title class="text-base leading-tight">
+              <NesCard.Title class="text-base leading-tight">
                 {@html law.highlighted.title || law.title}
               </Card.Title>
               <div class="flex items-center gap-2 ml-2">
@@ -178,10 +179,10 @@
                 </Badge>
               </div>
             </div>
-            <Card.Description class="text-sm">
+            <NesCard.Description class="text-sm">
               {@html law.highlighted.description || law.description}
             </Card.Description>
-            <div class="flex gap-2 text-xs text-muted-foreground">
+            <div class="flex gap-2 text-xs nes-text is-disabled">
               <span>{law.code}</span>
               {#if law.category}
                 <span>•</span>
@@ -195,25 +196,25 @@
           </Card.Header>
           
           {#if showAIActions}
-            <Card.Content class="pt-0">
+            <NesCard.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
-                <Button 
+                <button class="nes-btn" 
                   size="sm" 
                   onclick={() => handleAIAction(law, 'summary')}
                 >
                   <Bot class="h-3 w-3 mr-1" />
                   AI Summary
-                </Button>
-                <Button 
+                </button>
+                <button class="nes-btn" 
                   variant="outline" 
                   size="sm"
                   onclick={() => handleAIAction(law, 'chat')}
                 >
                   <Bot class="h-3 w-3 mr-1" />
                   Ask AI
-                </Button>
+                </button>
                 {#if law.fullTextUrl}
-                  <Button 
+                  <button class="nes-btn" 
                     variant="outline" 
                     size="sm" 
                     asChild
@@ -222,7 +223,7 @@
                       <ExternalLink class="h-3 w-3 mr-1" />
                       Full Text
                     </a>
-                  </Button>
+                  </button>
                 {/if}
               </div>
             </Card.Content>
@@ -231,12 +232,12 @@
       {/each}
     </div>
   {:else if searchQuery && !isSearching}
-    <Card.Root>
-      <Card.Content class="py-8 text-center">
-        <p class="text-muted-foreground">
+    <NesCard.Root>
+      <NesCard.Content class="py-8 text-center">
+        <p class="nes-text is-disabled">
           No results found for "{searchQuery}".
         </p>
-        <p class="text-sm text-muted-foreground mt-1">
+        <p class="text-sm nes-text is-disabled mt-1">
           Try adjusting your search terms or use more general keywords.
         </p>
       </Card.Content>

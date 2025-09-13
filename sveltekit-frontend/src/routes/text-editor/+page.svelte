@@ -6,6 +6,7 @@ https://svelte.dev/e/expected_token -->
   Legal AI Platform - Text Editor
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
   import {
@@ -141,8 +142,8 @@ https://svelte.dev/e/expected_token -->
 
   <!-- Editor Container -->
   <div class="editor-container">
-    <Card class="editor-card">
-      <CardContent class="editor-content">
+    <NesCard class="editor-nier-bits-card">
+      <div class="yorha-panel-content" class="editor-content">
         <NierRichTextEditor
           bind:value={editorValue}
           placeholder="Begin your investigation notes or legal document here..."
@@ -150,8 +151,8 @@ https://svelte.dev/e/expected_token -->
           readonly={false}
           autosave={false}
         />
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 </div>
 

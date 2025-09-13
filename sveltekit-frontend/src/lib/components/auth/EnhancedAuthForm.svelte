@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { enhance } from '$app/forms';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import {
@@ -304,7 +305,7 @@
         <Dialog.Title class="text-lg font-semibold leading-none tracking-tight">
           {mode === 'login' ? 'Welcome back' : 'Create your account'}
         </Dialog.Title>
-        <Dialog.Description class="text-sm text-muted-foreground">
+        <Dialog.Description class="text-sm nes-text is-disabled">
           {mode === 'login' 
             ? 'Access your legal case management system with AI-powered analysis'
             : 'Join the next generation of legal professionals with AI assistance'
@@ -445,7 +446,7 @@
                 </span>
               </div>
               <Progress value={passwordStrength} class="h-2" />
-              <p class="text-xs text-muted-foreground">
+              <p class="text-xs nes-text is-disabled">
                 Use 8+ characters with uppercase, lowercase, numbers, and symbols
               </p>
             </div>
@@ -533,7 +534,7 @@
           {:else}
             {mode === 'login' ? 'Sign In' : 'Create Account'}
           {/if}
-        </Button>
+        </button>
 
         <!-- Guest Mode -->
         {#if allowGuestMode && mode === 'login'}
@@ -545,7 +546,7 @@
             disabled={formState.loading}
           >
             Continue as Guest
-          </Button>
+          </button>
         {/if}
 
         <!-- Mode Toggle -->
@@ -567,7 +568,7 @@
       <!-- Demo Accounts Notice -->
       {#if mode === 'login'}
         <div class="border-t pt-4">
-          <div class="text-xs text-muted-foreground text-center space-y-1">
+          <div class="text-xs nes-text is-disabled text-center space-y-1">
             <p class="font-medium">Demo Accounts:</p>
             <p>Admin: admin@prosecutor.com / password</p>
             <p>User: user@prosecutor.com / password</p>
@@ -576,7 +577,7 @@
       {/if}
 
       <!-- Close Button -->
-      <Dialog.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+      <Dialog.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:nes-text is-disabled">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>

@@ -1,5 +1,6 @@
 <!-- Simple test homepage to verify routing works -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
 </script>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
@@ -122,24 +123,24 @@
       
       <div class="error-actions">
         {#if showRefreshButton}
-          <Button variant="primary" onclick={refreshPage}>
+          <button class="nes-btn is-primary" onclick={refreshPage}>
             Try Again
-          </Button>
+          </button>
         {/if}
         
-        <Button variant="outline" onclick={goHome}>
+        <button class="nes-btn" variant="outline" onclick={goHome}>
           Go Home
-        </Button>
+        </button>
         
         {#if showReportButton}
-          <Button variant="outline" onclick={reportError}>
+          <button class="nes-btn" variant="outline" onclick={reportError}>
             Report Issue
-          </Button>
+          </button>
         {/if}
         
-        <Button variant="outline" size="sm" onclick={reset}>
+        <button class="nes-btn" variant="outline" size="sm" onclick={reset}>
           Reset
-        </Button>
+        </button>
       </div>
     </div>
   </div>

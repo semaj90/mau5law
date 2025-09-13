@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Avatar, DropdownMenu, Tabs } from "bits-ui";
   	import Cardholder from "phosphor-svelte/lib/Cardholder";
   	import DotsThreeVertical from "phosphor-svelte/lib/DotsThreeVertical";
@@ -30,7 +31,7 @@
 	></div>
 
 	<div
-		class="rounded-card-lg m-1.5 aspect-square w-full bg-[#FEFCE8] px-3 py-3 lg:m-[10px] lg:px-[14px] dark:bg-[#FFFBD4]"
+		class="rounded-nier-bits-card-lg m-1.5 aspect-square w-full bg-[#FEFCE8] px-3 py-3 lg:m-[10px] lg:px-[14px] dark:bg-[#FFFBD4]"
 	>
 		<Tabs.Root value="follow">
 			<Tabs.List
@@ -117,7 +118,7 @@
 					{firstName}
 				</h3>
 				<p
-					class="text-muted-foreground text-[9px] font-medium lg:text-[12px] dark:text-[#171717]/50"
+					class="nes-text is-disabled text-[9px] font-medium lg:text-[12px] dark:text-[#171717]/50"
 				>
 					@{username}
 				</p>
@@ -144,12 +145,12 @@
 						</div>
 						<div class="ml-auto flex items-center gap-px">
 							<kbd
-								class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-xs"
+								class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-xs"
 							>
 								⌘
 							</kbd>
 							<kbd
-								class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-[10px]"
+								class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-[10px]"
 							>
 								P
 							</kbd>
@@ -165,12 +166,12 @@
 						</div>
 						<div class="ml-auto flex items-center gap-px">
 							<kbd
-								class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-xs"
+								class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-xs"
 							>
 								⌘
 							</kbd>
 							<kbd
-								class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-[10px]"
+								class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-[10px]"
 							>
 								B
 							</kbd>

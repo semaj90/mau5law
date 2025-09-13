@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Badge, Button, Input } from "$lib/components/ui";
   import Fuse from "fuse.js";
   import { createEventDispatcher, onMount } from "svelte";
@@ -227,7 +228,7 @@ https://svelte.dev/e/js_parse_error -->
         class="mx-auto px-4 max-w-7xl"
       />
       {#if searchQuery}
-        <Button onclick={clearSearch} variant="outline" size="sm">Clear</Button
+        <button class="nes-btn" onclick={clearSearch} variant="outline" size="sm">Clear</Button
         >
       {/if}
     </div>
@@ -265,14 +266,14 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mx-auto px-4 max-w-7xl">
         <div class="mx-auto px-4 max-w-7xl">
           <h3 class="mx-auto px-4 max-w-7xl">AI Analysis</h3>
-          <Button
+          <button class="nes-btn"
             onclick={reprocessWithAI}
             disabled={isProcessing}
             variant="outline"
             size="sm"
           >
             {isProcessing ? "Processing..." : "Re-analyze"}
-          </Button>
+          </button>
         </div>
 
         <!-- Summary -->
@@ -317,9 +318,9 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mx-auto px-4 max-w-7xl">
         <div class="mx-auto px-4 max-w-7xl">🤖</div>
         <div class="mx-auto px-4 max-w-7xl">No AI analysis available</div>
-        <Button onclick={reprocessWithAI} disabled={isProcessing}>
+        <button class="nes-btn" onclick={reprocessWithAI} disabled={isProcessing}>
           {isProcessing ? "Processing..." : "Analyze with AI"}
-        </Button>
+        </button>
       </div>
     {/if}
 

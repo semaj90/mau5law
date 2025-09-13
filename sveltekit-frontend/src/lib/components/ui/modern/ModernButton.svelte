@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Button } from "bits-ui";
   // Tooltip functionality will use CSS-only or bits-ui Tooltip when needed
 

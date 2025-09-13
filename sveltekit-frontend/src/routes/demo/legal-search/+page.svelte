@@ -3,6 +3,7 @@
   Demonstrates the LegalSearchCombobox component with various configurations
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import LegalSearchCombobox from '$lib/components/search/LegalSearchCombobox.svelte';
   import { Search, Zap, Database, Users, FileText, Scale } from 'lucide-svelte';

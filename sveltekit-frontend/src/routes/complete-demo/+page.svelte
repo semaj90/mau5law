@@ -1,5 +1,6 @@
 <!-- Complete Demo: Gemma Embeddings + XState Typing Machine + MCP Multi-Core -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import HeadlessTypingListener from '$lib/components/HeadlessTypingListener.svelte';
   import type { TypingState, TypingContext } from '$lib/machines/userTypingStateMachine.js';
@@ -236,19 +237,19 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
     <p>Gemma Embeddings + XState Typing Machine + MCP Multi-Core + Real-time Analytics</p>
     
     <div class="status-grid">
-      <div class="status-card">
+      <div class="status-nier-bits-card">
         <span class="status-label">Typing State</span>
         <span class="status-value {typingState}">{typingState.replace('_', ' ')}</span>
       </div>
-      <div class="status-card">
+      <div class="status-nier-bits-card">
         <span class="status-label">MCP Worker</span>
         <span class="status-value {mcpWorkerStatus}">{mcpWorkerStatus}</span>
       </div>
-      <div class="status-card">
+      <div class="status-nier-bits-card">
         <span class="status-label">User Engagement</span>
         <span class="status-value {realTimeStats.userEngagement}">{realTimeStats.userEngagement}</span>
       </div>
-      <div class="status-card">
+      <div class="status-nier-bits-card">
         <span class="status-label">Typing Speed</span>
         <span class="status-value">{realTimeStats.typingSpeed} CPM</span>
       </div>
@@ -404,7 +405,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
       <h2>📊 Real-time User Analytics</h2>
       
       <div class="analytics-grid">
-        <div class="analytics-card">
+        <div class="analytics-nier-bits-card">
           <h3>⌨️ Typing Behavior</h3>
           <div class="analytics-data">
             <div class="data-row">
@@ -426,7 +427,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
           </div>
         </div>
 
-        <div class="analytics-card">
+        <div class="analytics-nier-bits-card">
           <h3>👤 User Engagement</h3>
           <div class="analytics-data">
             <div class="data-row">
@@ -448,7 +449,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
           </div>
         </div>
 
-        <div class="analytics-card">
+        <div class="analytics-nier-bits-card">
           <h3>🔧 System Status</h3>
           <div class="analytics-data">
             <div class="data-row">
@@ -471,7 +472,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
         </div>
 
         {#if typingContext?.userBehavior.contextualHints.length > 0}
-          <div class="analytics-card">
+          <div class="analytics-nier-bits-card">
             <h3>🧠 Contextual Insights</h3>
             <div class="insights-list">
               {#each typingContext.userBehavior.contextualHints as hint}

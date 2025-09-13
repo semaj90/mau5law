@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import WebAssemblyLangChainTest from '$lib/components/tests/WebAssemblyLangChainTest.svelte';
 </script>
 

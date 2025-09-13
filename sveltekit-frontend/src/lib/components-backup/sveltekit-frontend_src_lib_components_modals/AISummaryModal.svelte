@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onclose?: (event?: any) => void;
   }
@@ -63,10 +64,10 @@
       <!-- Summary Content -->
       <div class="space-y-4">
         <div class="space-y-4">
-          <Button onclick={() => copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
+          <button class="nes-btn" onclick={() => copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
             <Copy class="space-y-4" />
             <span class="space-y-4">Copy</span>
-          </Button>
+          </button>
           {#if copied}
             <span class="space-y-4"><Check class="space-y-4" />Copied!</span>
           {/if}
@@ -87,10 +88,10 @@
 
   <Dialog.Footer>
     <Dialog.Close asChild>
-      <Button onclick={() => closeModal()} variant="secondary" aria-label="Close summary modal">
+      <button class="nes-btn" onclick={() => closeModal()} variant="secondary" aria-label="Close summary modal">
         <X class="space-y-4" />
         <span class="space-y-4">Close</span>
-      </Button>
+      </button>
     </Dialog.Close>
   </Dialog.Footer>
   </Dialog.Content>

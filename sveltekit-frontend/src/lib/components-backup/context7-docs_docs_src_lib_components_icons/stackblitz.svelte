@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import type { SVGAttributes } from "svelte/elements";
 
   	let props: SVGAttributes<SVGElement> = $props();

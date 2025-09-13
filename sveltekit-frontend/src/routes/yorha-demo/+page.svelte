@@ -3,6 +3,9 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Demo Page - Fully Working Integration Demo -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import YoRHaDataGrid from '$lib/components/yorha/YoRHaDataGrid.svelte';
   import YoRHaForm from '$lib/components/yorha/YoRHaForm.svelte';

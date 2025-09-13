@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { createContextMenu, melt } from "melt";
   import { setContext } from "svelte";

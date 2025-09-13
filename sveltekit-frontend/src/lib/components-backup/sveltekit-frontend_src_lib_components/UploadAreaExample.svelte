@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import UploadArea from './UploadArea.svelte';
 
   let uploadComponent: UploadArea = $state()

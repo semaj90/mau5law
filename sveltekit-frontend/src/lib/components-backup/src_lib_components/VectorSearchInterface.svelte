@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import * as Button from "$lib/components/ui/button";
   import * as Card from "$lib/components/ui/card";
   import * as Input from "$lib/components/ui/input";
@@ -263,10 +264,10 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
   <!-- Filters Section -->
   {#if showFilters}
-    <Card.Root class="mb-6">
-      <Card.Header>
+    <NesCard.Root class="mb-6">
+      <NesCard.Header>
         <div class="flex items-center justify-between">
-          <Card.Title>Filters</Card.Title>
+          <NesCard.Title>Filters</Card.Title>
           <Button.Root
             variant="ghost"
             size="sm"
@@ -277,7 +278,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           </Button.Root>
         </div>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <!-- Document Type -->
           <div class="space-y-2">

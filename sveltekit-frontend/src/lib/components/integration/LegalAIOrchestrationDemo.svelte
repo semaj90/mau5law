@@ -4,6 +4,7 @@
   Shows complete workflow from user input to AI-powered results
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { workflowOrchestrator, workflowStore, currentWorkflowStore, healthStore, isSystemHealthy } from '$lib/services/end-to-end-api-integration.js';
   import type { LegalResearchWorkflowRequest, DocumentProcessingWorkflowRequest, CaseCreationWorkflowRequest } from '$lib/services/end-to-end-api-integration.js';
   import {
@@ -189,11 +190,11 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Workflow Selection -->
     <div class="lg:col-span-1">
-      <Card>
-        <CardHeader>
-          <CardTitle>Select Workflow</CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Select Workflow</h3>
+        </div>
+        <div class="yorha-panel-content" class="space-y-4">
           <div class="space-y-2">
             <label class="flex items-center space-x-3">
               <input 
@@ -241,16 +242,16 @@
             class="w-full bits-btn bits-btn"
           >
             Load Demo Data
-          </Button>
-        </CardContent>
-      </Card>
+          </button>
+        </div>
+      </NesCard>
 
       <!-- System Status -->
-      <Card class="mt-4">
-        <CardHeader>
-          <CardTitle>System Status</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard class="mt-4">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">System Status</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-2 text-sm">
             {#each Object.entries(systemHealth) as [service, healthy]}
               <div class="flex items-center justify-between">
@@ -261,19 +262,19 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Workflow Form -->
     <div class="lg:col-span-2">
-      <Card>
-        <CardHeader>
-          <CardTitle>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">
             {selectedWorkflow.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Workflow
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+          </h3>
+        </div>
+        <div class="yorha-panel-content" class="space-y-4">
           {#if selectedWorkflow === 'legal-research'}
             <div class="space-y-4">
               <div>
@@ -387,20 +388,20 @@
               {:else}
                 Execute {selectedWorkflow.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Workflow
               {/if}
-            </Button>
+            </button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </div>
 
   <!-- Workflow Status -->
   {#if activeWorkflowStatus}
-    <Card>
-      <CardHeader>
-        <CardTitle>Workflow Status: {activeWorkflowStatus.type}</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Workflow Status: {activeWorkflowStatus.type}</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="flex items-center space-x-4">
           <div class="flex-1">
             <div class="flex items-center space-x-2">
@@ -426,30 +427,30 @@
             ></div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Results -->
   {#if errorMessage}
-    <Card class="border-red-200 bg-red-50">
-      <CardHeader>
-        <CardTitle class="text-red-800">Error</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard class="border-red-200 bg-red-50">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="text-red-800">Error</h3>
+      </div>
+      <div class="yorha-panel-content">
         <p class="text-red-600">{errorMessage}</p>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   {#if workflowResult}
-    <Card class="border-green-200 bg-green-50">
-      <CardHeader>
-        <CardTitle class="text-green-800">
+    <NesCard class="border-green-200 bg-green-50">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="text-green-800">
           Workflow Results - {formatTime(workflowResult.processingTime)}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-4">
           {#if selectedWorkflow === 'legal-research'}
             <div>
@@ -524,8 +525,8 @@
             {/if}
           {/if}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

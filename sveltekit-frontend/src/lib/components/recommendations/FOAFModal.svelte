@@ -1,5 +1,6 @@
 <!-- FOAF Recommendations Modal - SSR compatible with Svelte 5 runes + Melt-UI -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createDialog, melt } from 'melt';
   import { fade, fly } from 'svelte/transition';
   import { X, Users, UserCheck, Briefcase, Mail } from 'lucide-svelte';

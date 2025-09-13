@@ -2,6 +2,7 @@
 <!-- Native Windows Implementation -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { createFileMergeSystem, fileMergeStore, type FileMetadata, type MergeOperation } from '$lib/services/file-merge-system.js';
   import { Button } from '$lib/components/ui/button/index.js';
@@ -235,14 +236,14 @@
   {#if activeTab === 'upload'}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Upload Section -->
-      <Card class="lg:col-span-1">
-        <CardHeader>
-          <CardTitle>Upload Files</CardTitle>
-          <CardDescription>
+      <NesCard class="lg:col-span-1">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Upload Files</h3>
+          <p class="nes-text">
             Upload documents to MinIO storage with automatic vectorization
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <div 
             class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center transition-colors"
             class:border-blue-500={dragOver}
@@ -285,18 +286,18 @@
               <p class="text-sm text-red-600">{store.error}</p>
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Files List -->
-      <Card class="lg:col-span-2">
-        <CardHeader>
-          <CardTitle>Files ({files.length})</CardTitle>
-          <CardDescription>
+      <NesCard class="lg:col-span-2">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Files ({files.length})</h3>
+          <p class="nes-text">
             Manage your uploaded documents
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-3 max-h-96 overflow-y-auto">
             {#each files as file (file.id)}
               <div class="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">
@@ -320,21 +321,21 @@
                   </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <Button 
+                  <button class="nes-btn" 
                     variant="ghost" 
                     size="sm"
                     onclick={() => downloadFile(file.id)}
                   >
                     Download
-                  </Button>
-                  <Button 
+                  </button>
+                  <button class="nes-btn" 
                     variant="ghost" 
                     size="sm"
                     onclick={() => deleteFile(file.id)}
                     class="text-red-600 hover:text-red-700"
                   >
                     Delete
-                  </Button>
+                  </button>
                 </div>
               </div>
             {:else}
@@ -343,21 +344,21 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   {/if}
 
   <!-- Merge Files Tab -->
   {#if activeTab === 'merge'}
-    <Card>
-      <CardHeader>
-        <CardTitle>Merge Selected Files</CardTitle>
-        <CardDescription>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Merge Selected Files</h3>
+        <p class="nes-text">
           Combine multiple files into a single document with various merge strategies
-        </CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </p>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium mb-2">Target Filename</label>
@@ -396,7 +397,7 @@
             {/each}
           </div>
         </div>
-      </CardContent>
+      </div>
       <CardFooter>
         <Button 
           onclick={handleMergeFiles}
@@ -404,21 +405,21 @@
           class="w-full"
         >
           Merge Files
-        </Button>
+        </button>
       </CardFooter>
-    </Card>
+    </NesCard>
   {/if}
 
   <!-- Similarity Search Tab -->
   {#if activeTab === 'search'}
-    <Card>
-      <CardHeader>
-        <CardTitle>Document Similarity Search</CardTitle>
-        <CardDescription>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Document Similarity Search</h3>
+        <p class="nes-text">
           Search through vectorized documents using semantic similarity
-        </CardDescription>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </p>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div class="flex space-x-2">
           <Input 
             bind:value={searchQuery}
@@ -426,7 +427,7 @@
             class="flex-1"
             onkeydown={(e) => e.key === 'Enter' && handleSearch()}
           />
-          <Button onclick={handleSearch}>Search</Button>
+          <button class="nes-btn" onclick={handleSearch}>Search</button>
         </div>
 
         <div class="space-y-3 max-h-96 overflow-y-auto">
@@ -454,13 +455,13 @@
                     </div>
                   {/if}
                 </div>
-                <Button 
+                <button class="nes-btn" 
                   variant="ghost" 
                   size="sm"
                   onclick={() => downloadFile(result.id)}
                 >
                   Download
-                </Button>
+                </button>
               </div>
             </div>
           {:else}
@@ -475,20 +476,20 @@
             {/if}
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Operations Tab -->
   {#if activeTab === 'operations'}
-    <Card>
-      <CardHeader>
-        <CardTitle>Merge Operations</CardTitle>
-        <CardDescription>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Merge Operations</h3>
+        <p class="nes-text">
           Track file merge operations and their status
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+        </p>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each store.operations as operation (operation.id)}
             <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
@@ -517,13 +518,13 @@
                   {/if}
                 </div>
                 {#if operation.result}
-                  <Button 
+                  <button class="nes-btn" 
                     variant="ghost" 
                     size="sm"
                     onclick={() => downloadFile(operation.result.fileId)}
                   >
                     Download Result
-                  </Button>
+                  </button>
                 {/if}
               </div>
             </div>
@@ -533,8 +534,8 @@
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

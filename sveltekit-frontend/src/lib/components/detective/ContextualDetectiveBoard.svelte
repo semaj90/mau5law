@@ -12,6 +12,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { page } from '$app/state';
   import HeadlessTypingListener from '$lib/components/HeadlessTypingListener.svelte';

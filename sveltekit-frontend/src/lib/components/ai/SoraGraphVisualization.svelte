@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
   import { SoraGraphTraversal, type SoraTraversalPath, type SoraTraversalOptions } from '$lib/ai/sora-graph-traversal.js';

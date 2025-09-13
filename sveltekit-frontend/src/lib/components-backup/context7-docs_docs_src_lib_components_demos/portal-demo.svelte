@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Portal, BitsConfig } from "bits-ui";
 
   	let target: HTMLElement | undefined = $state();

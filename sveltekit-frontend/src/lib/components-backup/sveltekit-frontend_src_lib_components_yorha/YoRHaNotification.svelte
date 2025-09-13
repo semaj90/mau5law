@@ -1,5 +1,6 @@
 <!-- YoRHa Notification/Alert System Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
 

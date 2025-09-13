@@ -2,8 +2,9 @@
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:keydown) and new syntaxes for event handling is not allowed. Use only the onkeydown syntax -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import {
     ArrowLeft,
     ArrowRight,
@@ -289,7 +290,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
         <div class="w-4 h-4">
           {#if autoProgress}
-            <Button
+            <button class="nes-btn"
               variant="ghost"
               size="sm"
               onclick={() => toggleAutoProgress()}
@@ -303,17 +304,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
               {:else}
                 <Play class="w-4 h-4" />
               {/if}
-            </Button>
+            </button>
           {/if}
 
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => closeOnboarding()}
             aria-label="Close onboarding"
           >
             <X class="w-4 h-4" />
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -378,10 +379,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       <div class="w-4 h-4">
         <div class="w-4 h-4">
           {#if allowSkip}
-            <Button variant="ghost" size="sm" onclick={() => skipOnboarding()}>
+            <button class="nes-btn" variant="ghost" size="sm" onclick={() => skipOnboarding()}>
               <SkipForward class="w-4 h-4" />
               Skip Tour
-            </Button>
+            </button>
           {/if}
         </div>
 
@@ -408,7 +409,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         </div>
 
         <div class="w-4 h-4">
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => previousStep()}
@@ -416,9 +417,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           >
             <ArrowLeft class="w-4 h-4" />
             Back
-          </Button>
+          </button>
 
-          <Button onclick={() => nextStep()} size="sm">
+          <button class="nes-btn" onclick={() => nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
               <Check class="w-4 h-4" />
               Complete
@@ -426,7 +427,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
               Next
               <ArrowRight class="w-4 h-4" />
             {/if}
-          </Button>
+          </button>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Convert to Svelte 5 runes pattern
   let { name = '', className = '' } = $props<{
     name?: string;

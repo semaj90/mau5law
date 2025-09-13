@@ -2,8 +2,9 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Badge from "$lib/components/ui/Badge.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import CardRoot from "$lib/components/ui/Card.svelte";
   import CardContent from "$lib/components/ui/CardContent.svelte";
   import CardHeader from "$lib/components/ui/CardHeader.svelte";
@@ -244,26 +245,26 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <div class="space-y-4">
-      <Button onclick={() => (showAddDialog = true)}>
+      <button class="nes-btn" onclick={() => (showAddDialog = true)}>
         <Plus class="space-y-4" />
         Add Citation
-      </Button>
+      </button>
     </div>
   </div>
 
   <!-- Citations Grid -->
   <div class="space-y-4">
     {#each filteredCitations as citation (citation.id)}
-      <CardRoot class="citation-card">
-        <CardHeader className="citation-header">
+      <CardRoot class="citation-nier-bits-card">
+        <div class="yorha-panel-header" className="citation-header">
           <div class="space-y-4">
             <h3 class="space-y-4">{citation.title}</h3>
 
             <DropdownMenuRoot let:trigger let:menu>
               <DropdownMenuTrigger {trigger}>
-                <Button variant="ghost" size="sm">
+                <button class="nes-btn" variant="ghost" size="sm">
                   <MoreVertical class="w-4 h-4" />
-                </Button>
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent {menu}>
                 <DropdownMenuItem onclick={() => toggleFavorite(citation)}>
@@ -303,9 +304,9 @@ https://svelte.dev/e/js_parse_error -->
               </Badge>
             {/if}
           </div>
-        </CardHeader>
+        </div>
 
-        <CardContent className="citation-content">
+        <div class="yorha-panel-content" className="citation-content">
           <p class="space-y-4">{citation.content}</p>
           <p class="space-y-4">Source: {citation.source}</p>
 
@@ -337,7 +338,7 @@ https://svelte.dev/e/js_parse_error -->
               </Badge>
             {/if}
           </div>
-        </CardContent>
+        </div>
       </CardRoot>
     {/each}
 
@@ -349,25 +350,24 @@ https://svelte.dev/e/js_parse_error -->
             <p class="space-y-4">
               No citations match your current search criteria.
             </p>
-            <Button
-              variant="secondary"
+            <button class="nes-btn"
               onclick={() => {
                 searchQuery = "";
                 selectedCategory = "all";
               }}
             >
               Clear filters
-            </Button>
+            </button>
           {:else}
             <h3 class="space-y-4">No saved citations</h3>
             <p class="space-y-4">
               You haven't saved any citations yet. Start by adding citations
               from reports or create new ones.
             </p>
-            <Button onclick={() => (showAddDialog = true)}>
+            <button class="nes-btn" onclick={() => (showAddDialog = true)}>
               <Plus class="space-y-4" />
               Add your first citation
-            </Button>
+            </button>
           {/if}
         </div>
       </div>
@@ -451,15 +451,15 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <DialogFooter>
-      <Button variant="secondary" onclick={() => (showAddDialog = false)}
+      <button class="nes-btn" onclick={() => (showAddDialog = false)}
         >Cancel</Button
       >
-      <Button
+      <button class="nes-btn"
         onclick={() => saveCitation()}
         disabled={!newCitation.title || !newCitation.content}
       >
         Save Citation
-      </Button>
+      </button>
     </DialogFooter>
   </DialogContent>
 </DialogRoot>
@@ -525,10 +525,10 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <DialogFooter>
-        <Button variant="secondary" onclick={() => (editingCitation = null)}
+        <button class="nes-btn" onclick={() => (editingCitation = null)}
           >Cancel</Button
         >
-        <Button onclick={() => updateCitation()}>Update Citation</Button>
+        <button class="nes-btn" onclick={() => updateCitation()}>Update Citation</button>
       </DialogFooter>
     </DialogContent>
   </DialogRoot>

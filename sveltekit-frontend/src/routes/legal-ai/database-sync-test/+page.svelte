@@ -9,6 +9,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   
   // Logic Layer imports - our decoupled stores
@@ -189,19 +190,19 @@
   <section class="status-dashboard">
     <h2>Service Status</h2>
     <div class="status-grid">
-      <div class="status-card" class:online={serviceStatus.postgresql}>
+      <div class="status-nier-bits-card" class:online={serviceStatus.postgresql}>
         <span class="status-indicator" aria-label="PostgreSQL status"></span>
         <strong>PostgreSQL</strong>
         <span>{serviceStatus.postgresql ? 'Online' : 'Offline'}</span>
       </div>
       
-      <div class="status-card" class:online={serviceStatus.ollama}>
+      <div class="status-nier-bits-card" class:online={serviceStatus.ollama}>
         <span class="status-indicator" aria-label="Ollama status"></span>
         <strong>Ollama</strong>
         <span>{serviceStatus.ollama ? 'Online' : 'Offline'}</span>
       </div>
       
-      <div class="status-card" class:online={serviceStatus.redis}>
+      <div class="status-nier-bits-card" class:online={serviceStatus.redis}>
         <span class="status-indicator" aria-label="Redis status"></span>
         <strong>Redis</strong>
         <span>{serviceStatus.redis ? 'Online' : 'Offline'}</span>
@@ -219,7 +220,7 @@
   <section class="ssr-data">
     <h2>SSR Initial Data</h2>
     <div class="data-grid">
-      <div class="data-card">
+      <div class="data-nier-bits-card">
         <h3>Recent Sessions ({recentSessions.length})</h3>
         {#if recentSessions.length > 0}
           <ul>
@@ -245,7 +246,7 @@
         {/if}
       </div>
       
-      <div class="data-card">
+      <div class="data-nier-bits-card">
         <h3>Recent Documents ({recentDocuments.length})</h3>
         {#if recentDocuments.length > 0}
           <ul>

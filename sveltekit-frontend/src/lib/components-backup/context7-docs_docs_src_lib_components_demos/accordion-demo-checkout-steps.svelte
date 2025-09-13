@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { cn } from "$lib/utils/styles.js";
   	import { Accordion, useId, Button } from "bits-ui";
   	import CaretDown from "phosphor-svelte/lib/CaretDown";
@@ -51,7 +52,7 @@
 			{id}
 			name={label}
 			{placeholder}
-			class="rounded-card-sm border-border-input bg-background placeholder:text-foreground-alt/50 hover:border-dark-40 focus-override inline-flex h-10 w-full items-center border px-4 text-base sm:text-sm"
+			class="rounded-nier-bits-card-sm border-border-input bg-background placeholder:text-foreground-alt/50 hover:border-dark-40 focus-override inline-flex h-10 w-full items-center border px-4 text-base sm:text-sm"
 		/>
 	</div>
 {/snippet}
@@ -130,15 +131,15 @@
 					<h4 class="mb-2 font-medium">Order Summary</h4>
 					<div class="flex flex-col gap-2">
 						<div class="flex justify-between text-sm">
-							<span class="text-muted-foreground">Product 1</span>
+							<span class="nes-text is-disabled">Product 1</span>
 							<span>$29.99</span>
 						</div>
 						<div class="flex justify-between text-sm">
-							<span class="text-muted-foreground">Product 2</span>
+							<span class="nes-text is-disabled">Product 2</span>
 							<span>$49.99</span>
 						</div>
 						<div class="flex justify-between text-sm">
-							<span class="text-muted-foreground">Shipping</span>
+							<span class="nes-text is-disabled">Shipping</span>
 							<span>$4.99</span>
 						</div>
 						<div class="mt-2 flex justify-between border-t pt-2 font-medium">

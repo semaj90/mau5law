@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { unstable_RatingGroup as RatingGroup } from "bits-ui";
   	import Star from "phosphor-svelte/lib/Star";
   	let value = $state(3);
@@ -9,7 +10,7 @@
 		{#each items as item (item.index)}
 			<RatingGroup.Item
 				index={item.index}
-				class="text-foreground hover:text-foreground data-[state=inactive]:text-muted-foreground group size-10 cursor-pointer transition-colors md:size-8"
+				class="text-foreground hover:text-foreground data-[state=inactive]:nes-text is-disabled group size-10 cursor-pointer transition-colors md:size-8"
 			>
 				<Star class="size-full" weight="fill" />
 			</RatingGroup.Item>

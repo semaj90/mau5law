@@ -3,6 +3,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:submit) and new syntaxes for event handling is not allowed. Use only the onsubmit syntax -->
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     oncancel?: (event?: any) => void;
   }

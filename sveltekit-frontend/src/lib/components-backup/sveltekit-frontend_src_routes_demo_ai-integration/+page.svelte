@@ -1,12 +1,13 @@
 <!-- AI Integration Demo - Complete System Showcase -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { prefetchMachine } from '$lib/machines/prefetchMachine';
   import OllamaAgentShell from '$lib/components/ai/ollama-agent-shell.svelte';
   import WebGPUViewer from '$lib/components/ai/webgpu-viewer.svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
   import { Play, Pause, Brain, Cpu, Database, Zap, Globe, Activity, Terminal, Eye } from 'lucide-svelte';
@@ -314,17 +315,17 @@
   </div>
 
   <!-- System Health Status -->
-  <Card class="mb-8 bg-slate-800/50 border-slate-700">
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2 text-slate-100">
+  <NesCard class="mb-8 bg-slate-800/50 border-slate-700">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2 text-slate-100">
         <Activity class="h-5 w-5" />
         System Health Status
-      </CardTitle>
-      <CardDescription class="text-slate-400">
+      </h3>
+      <p class="nes-text" class="text-slate-400">
         Real-time monitoring of all system components
-      </CardDescription>
-    </CardHeader>
-    <CardContent>
+      </p>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         {#each Object.entries(systemHealth) as [service, health]}
           {@const IconComponent = getStatusIcon(service)}
@@ -340,8 +341,8 @@
           </div>
         {/each}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Main Demo Tabs -->
   <Tabs defaultValue="webgpu" class="space-y-6">
@@ -366,14 +367,14 @@
 
     <!-- WebGPU Visualization Tab -->
     <TabsContent value="webgpu" class="space-y-6">
-      <Card class="bg-slate-800/50 border-slate-700">
-        <CardHeader>
-          <CardTitle class="text-slate-100">GPU-Accelerated Vector Visualization</CardTitle>
-          <CardDescription class="text-slate-400">
+      <NesCard class="bg-slate-800/50 border-slate-700">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-slate-100">GPU-Accelerated Vector Visualization</h3>
+          <p class="nes-text" class="text-slate-400">
             Real-time 3D rendering of document embeddings using WebGPU shaders
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-4">
             <div class="flex items-center gap-4 mb-4">
               <Badge variant="outline" class="bg-blue-500/10 text-blue-400 border-blue-500/30">
@@ -382,9 +383,9 @@
               <Badge variant="outline" class="bg-green-500/10 text-green-400 border-green-500/30">
                 WebGPU Enabled
               </Badge>
-              <Button onclick={generateDemoEmbeddings} size="sm">
+              <button class="nes-btn" onclick={generateDemoEmbeddings} size="sm">
                 Regenerate Embeddings
-              </Button>
+              </button>
             </div>
 
             <!-- WebGPU Canvas -->
@@ -397,20 +398,20 @@
               />
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Ollama Agent Shell Tab -->
     <TabsContent value="ollama" class="space-y-6">
-      <Card class="bg-slate-800/50 border-slate-700">
-        <CardHeader>
-          <CardTitle class="text-slate-100">AI Agent Terminal Interface</CardTitle>
-          <CardDescription class="text-slate-400">
+      <NesCard class="bg-slate-800/50 border-slate-700">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-slate-100">AI Agent Terminal Interface</h3>
+          <p class="nes-text" class="text-slate-400">
             Interactive shell for real-time AI analysis with Ollama and gemma3-legal model
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-4">
             <div class="flex items-center gap-4 mb-4">
               <Badge variant="outline" class="bg-purple-500/10 text-purple-400 border-purple-500/30">
@@ -419,23 +420,23 @@
               <Badge variant="outline" class="bg-orange-500/10 text-orange-400 border-orange-500/30">
                 Streaming: Enabled
               </Badge>
-              <Button onclick={openAgentShell} size="sm">
+              <button class="nes-btn" onclick={openAgentShell} size="sm">
                 <Terminal class="h-4 w-4 mr-2" />
                 Open Agent Shell
-              </Button>
+              </button>
             </div>
 
             <!-- Integration Test Buttons -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <Button onclick={testOllamaIntegration} class="bg-blue-600 hover:bg-blue-700">
                 Test AI Analysis
-              </Button>
+              </button>
               <Button onclick={testEmbeddingGeneration} class="bg-green-600 hover:bg-green-700">
                 Generate Embeddings
-              </Button>
+              </button>
               <Button onclick={testVectorSimilarity} class="bg-purple-600 hover:bg-purple-700">
                 Vector Similarity
-              </Button>
+              </button>
             </div>
 
             <!-- Agent Shell Modal -->
@@ -447,20 +448,20 @@
               />
             {/if}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- XState Prefetch Tab -->
     <TabsContent value="prefetch" class="space-y-6">
-      <Card class="bg-slate-800/50 border-slate-700">
-        <CardHeader>
-          <CardTitle class="text-slate-100">AI-Powered Intent Prediction & Prefetching</CardTitle>
-          <CardDescription class="text-slate-400">
+      <NesCard class="bg-slate-800/50 border-slate-700">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-slate-100">AI-Powered Intent Prediction & Prefetching</h3>
+          <p class="nes-text" class="text-slate-400">
             XState machine with Loki.js caching and Fuse.js fuzzy search
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-6">
             <!-- Current State -->
             <div class="flex items-center justify-between">
@@ -474,9 +475,9 @@
                   </div>
                 {/if}
               </div>
-              <Button onclick={() => prefetchSend({ type: 'PREDICT_INTENT' })} size="sm">
+              <button class="nes-btn" onclick={() => prefetchSend({ type: 'PREDICT_INTENT' })} size="sm">
                 Trigger Prediction
-              </Button>
+              </button>
             </div>
 
             <!-- Metrics Grid -->
@@ -501,31 +502,31 @@
 
             <!-- Control Buttons -->
             <div class="flex gap-4">
-              <Button onclick={() => prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm" class="bg-green-600 hover:bg-green-700">
+              <button class="nes-btn" onclick={() => prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm" class="bg-green-600 hover:bg-green-700">
                 Simulate Cache Hit
-              </Button>
-              <Button onclick={() => prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm" class="bg-red-600 hover:bg-red-700">
+              </button>
+              <button class="nes-btn" onclick={() => prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm" class="bg-red-600 hover:bg-red-700">
                 Simulate Cache Miss
-              </Button>
-              <Button onclick={() => prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">
+              </button>
+              <button class="nes-btn" onclick={() => prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">
                 Reset Metrics
-              </Button>
+              </button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Performance Tab -->
     <TabsContent value="performance" class="space-y-6">
-      <Card class="bg-slate-800/50 border-slate-700">
-        <CardHeader>
+      <NesCard class="bg-slate-800/50 border-slate-700">
+        <div class="yorha-panel-header">
           <div class="flex items-center justify-between">
             <div>
-              <CardTitle class="text-slate-100">Performance Metrics</CardTitle>
-              <CardDescription class="text-slate-400">
+              <h3 class="nes-text is-primary" class="text-slate-100">Performance Metrics</h3>
+              <p class="nes-text" class="text-slate-400">
                 Real-time system performance monitoring and statistics
-              </CardDescription>
+              </p>
             </div>
             <Button
               onclick={isMonitoring ? stopPerformanceMonitoring : startPerformanceMonitoring}
@@ -538,10 +539,10 @@
                 <Play class="h-4 w-4 mr-2" />
                 Start Monitoring
               {/if}
-            </Button>
+            </button>
           </div>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="p-4 rounded-lg bg-slate-700/30">
               <div class="text-3xl font-bold text-blue-400 mb-2">{performanceMetrics.requests}</div>
@@ -574,8 +575,8 @@
               <div class="text-sm text-slate-400">Monitoring Status</div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
   </Tabs>
 

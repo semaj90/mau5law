@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   /**
    * Intelligent Renderer: Decides between regular DOM and canvas
    * 90% regular Enhanced-Bits + NES.css, 10% gaming LOD for glyph-heavy processes
@@ -64,19 +65,19 @@
   </div>
 {:else}
   <!-- Regular Enhanced-Bits + NES.css UI (90% of app) -->
-  <Card.Root class="enhanced-bits-card legal-case-priority-{priority} gaming-transition gaming-hover">
-    <Card.Header>
-      <Card.Title class="nes-text text-yorha-white">
+  <NesCard.Root class="enhanced-bits-nier-bits-card legal-case-priority-{priority} gaming-transition gaming-hover">
+    <NesCard.Header>
+      <NesCard.Title class="nes-text text-yorha-white">
         {title}
       </Card.Title>
     </Card.Header>
 
-    <Card.Content class="space-y-4">
+    <NesCard.Content class="space-y-4">
       {#if type === 'evidence-card' && data.evidence}
         <!-- Regular DOM evidence display -->
         <div class="grid gap-2">
           {#each data.evidence as item}
-            <div class="enhanced-bits-card p-3 border-l-4 border-n64-blue">
+            <div class="enhanced-bits-nier-bits-card p-3 border-l-4 border-n64-blue">
               <div class="flex justify-between items-center">
                 <span class="nes-text text-sm">{item.title}</span>
                 <span class="nes-badge is-{item.priority}">{item.confidence}%</span>
@@ -89,14 +90,14 @@
         <!-- Regular DOM document display -->
         <div class="space-y-3">
           {#each data.documents as doc}
-            <div class="enhanced-bits-card p-4">
+            <div class="enhanced-bits-nier-bits-card p-4">
               <h3 class="nes-text font-bold mb-2">{doc.title}</h3>
               <p class="text-yorha-white text-sm">{doc.content.slice(0, 200)}...</p>
               <div class="mt-2 flex justify-between">
                 <span class="nes-text text-xs">Confidence: {doc.confidence}%</span>
                 <Button class="enhanced-bits-button is-small" on:click={handleInteraction}>
                   Analyze
-                </Button>
+                </button>
               </div>
             </div>
           {/each}
@@ -104,7 +105,7 @@
 
       {:else if type === 'chat-interface'}
         <!-- Regular DOM chat (unless real-time heavy processing) -->
-        <div class="enhanced-bits-card p-4 bg-yorha-black">
+        <div class="enhanced-bits-nier-bits-card p-4 bg-yorha-black">
           <div class="nes-text text-yorha-white">
             💬 Legal AI Assistant
           </div>
@@ -115,7 +116,7 @@
 
       {:else}
         <!-- Default regular DOM display -->
-        <div class="enhanced-bits-card p-4">
+        <div class="enhanced-bits-nier-bits-card p-4">
           <div class="nes-text text-center text-yorha-white">
             📁 Legal Data Display
           </div>
@@ -129,14 +130,14 @@
           on:click={handleInteraction}
         >
           Process
-        </Button>
+        </button>
         <Button
           class="enhanced-bits-button nes-btn gaming-transition"
           variant="outline"
           on:click={handleInteraction}
         >
           Details
-        </Button>
+        </button>
       </div>
     </Card.Content>
   </Card.Root>

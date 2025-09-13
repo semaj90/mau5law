@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   // Demo state

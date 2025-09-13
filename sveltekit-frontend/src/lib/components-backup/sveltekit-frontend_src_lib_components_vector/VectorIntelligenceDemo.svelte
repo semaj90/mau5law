@@ -3,9 +3,10 @@ Vector Intelligence Demo Component
 Comprehensive showcase of Phase 4 Vector Intelligence capabilities
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
@@ -330,7 +331,7 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
       Vector Intelligence Demo
     </h1>
-    <p class="text-lg text-muted-foreground max-w-3xl mx-auto">
+    <p class="text-lg nes-text is-disabled max-w-3xl mx-auto">
       Experience the power of Phase 4 Vector Intelligence with semantic search, AI recommendations,
       and advanced document analysis for legal professionals.
     </p>
@@ -356,14 +357,14 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
   </div>
 
   <!-- Demo Examples -->
-  <Card class="shadcn-card">
-    <CardHeader class="shadcn-card-header">
-      <CardTitle class="flex items-center gap-2">
+  <NesCard class="nes-container">
+    <div class="yorha-panel-header" class="nes-container-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Play class="h-5 w-5" />
         Quick Demo Examples
-      </CardTitle>
-    </CardHeader>
-    <CardContent class="shadcn-card-content">
+      </h3>
+    </div>
+    <div class="yorha-panel-content" class="nes-container-content">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Search Examples -->
         <div class="space-y-3">
@@ -372,9 +373,9 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
             Semantic Search
           </h3>
           {#each demoSearchQueries as example}
-            <div class="demo-example-card" onclick={() => loadDemoQuery(example.query)}>
+            <div class="demo-example-nier-bits-card" onclick={() => loadDemoQuery(example.query)}>
               <h4 class="font-medium text-sm mb-1">{example.category}</h4>
-              <p class="text-xs text-muted-foreground mb-2">{example.description}</p>
+              <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded font-mono">{example.query}</p>
             </div>
           {/each}
@@ -387,10 +388,10 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
             AI Recommendations
           </h3>
           {#each demoRecommendationContexts as example}
-            <div class="demo-example-card" onclick={() => loadDemoContext(example.context, example.role)}>
+            <div class="demo-example-nier-bits-card" onclick={() => loadDemoContext(example.context, example.role)}>
               <h4 class="font-medium text-sm mb-1">{example.description}</h4>
               <Badge class="bits-badge-outline text-xs mb-2">{example.role}</Badge>
-              <p class="text-xs text-muted-foreground">{example.context.substring(0, 80)}...</p>
+              <p class="text-xs nes-text is-disabled">{example.context.substring(0, 80)}...</p>
             </div>
           {/each}
         </div>
@@ -402,20 +403,20 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
             Document Analysis
           </h3>
           {#each demoAnalysisContent as example}
-            <div class="demo-example-card" onclick={() => loadDemoContent(example.content)}>
+            <div class="demo-example-nier-bits-card" onclick={() => loadDemoContent(example.content)}>
               <h4 class="font-medium text-sm mb-1">{example.type}</h4>
-              <p class="text-xs text-muted-foreground mb-2">{example.description}</p>
+              <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded">{example.content.substring(0, 60)}...</p>
             </div>
           {/each}
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Tab Navigation -->
   <div class="flex items-center justify-center space-x-1 bg-muted p-1 rounded-lg w-fit mx-auto">
-    <Button
+    <button class="nes-btn"
       variant={activeTab === 'search' ? 'default' : 'ghost'}
       size="sm"
       onclick={() => activeTab = 'search'}
@@ -423,8 +424,8 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     >
       <Search class="h-4 w-4" />
       Search
-    </Button>
-    <Button
+    </button>
+    <button class="nes-btn"
       variant={activeTab === 'recommendations' ? 'default' : 'ghost'}
       size="sm"
       onclick={() => activeTab = 'recommendations'}
@@ -432,8 +433,8 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     >
       <Lightbulb class="h-4 w-4" />
       Recommendations
-    </Button>
-    <Button
+    </button>
+    <button class="nes-btn"
       variant={activeTab === 'analysis' ? 'default' : 'ghost'}
       size="sm"
       onclick={() => activeTab = 'analysis'}
@@ -441,8 +442,8 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     >
       <BarChart3 class="h-4 w-4" />
       Analysis
-    </Button>
-    <Button
+    </button>
+    <button class="nes-btn"
       variant={activeTab === 'health' ? 'default' : 'ghost'}
       size="sm"
       onclick={() => activeTab = 'health'}
@@ -450,33 +451,33 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     >
       <Activity class="h-4 w-4" />
       Health
-    </Button>
+    </button>
   </div>
 
   <!-- Processing Indicator -->
   {#if isProcessing}
-    <Card class="shadcn-card">
-      <CardContent class="shadcn-card-content">
+    <NesCard class="nes-container">
+      <div class="yorha-panel-content" class="nes-container-content">
         <div class="flex items-center justify-center space-x-3 py-8">
           <div class="animate-spin h-6 w-6 border border-primary border-t-transparent rounded-full"></div>
-          <span class="text-muted-foreground">{processingStage}</span>
+          <span class="nes-text is-disabled">{processingStage}</span>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Tab Content -->
   {#if activeTab === 'search'}
     <!-- Semantic Search Tab -->
     <div class="space-y-6">
-      <Card class="shadcn-card">
-        <CardHeader class="shadcn-card-header">
-          <CardTitle class="flex items-center gap-2">
+      <NesCard class="nes-container">
+        <div class="yorha-panel-header" class="nes-container-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Search class="h-5 w-5" />
             Semantic Vector Search
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="shadcn-card-content space-y-4">
+          </h3>
+        </div>
+        <div class="yorha-panel-content" class="nes-container-content space-y-4">
           <div class="space-y-2">
             <label class="bits-label">Search Query</label>
             <Textarea
@@ -518,33 +519,33 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                 <Search class="h-4 w-4 mr-2" />
                 Search
               {/if}
-            </Button>
-            <Button
+            </button>
+            <button class="nes-btn"
               variant="outline"
               size="sm"
               onclick={() => showAdvancedOptions = !showAdvancedOptions}
             >
               <Settings class="h-4 w-4" />
-            </Button>
+            </button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Search Results -->
       {#if searchResults.length > 0}
-        <Card class="shadcn-card">
-          <CardHeader class="shadcn-card-header">
-            <CardTitle class="flex items-center justify-between">
+        <NesCard class="nes-container">
+          <div class="yorha-panel-header" class="nes-container-header">
+            <h3 class="nes-text is-primary" class="flex items-center justify-between">
               <span class="flex items-center gap-2">
                 <Eye class="h-5 w-5" />
                 Search Results ({searchResults.length})
               </span>
-              <Button variant="outline" size="sm">
+              <button class="nes-btn" variant="outline" size="sm">
                 <Download class="h-4 w-4" />
-              </Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="shadcn-card-content">
+              </button>
+            </h3>
+          </div>
+          <div class="yorha-panel-content" class="nes-container-content">
             <div class="space-y-4">
               {#each searchResults as result}
                 <div class="vector-result-item">
@@ -558,7 +559,7 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                     </div>
                   </div>
 
-                  <p class="text-sm text-muted-foreground mb-3">
+                  <p class="text-sm nes-text is-disabled mb-3">
                     {result.content.substring(0, 200)}...
                   </p>
 
@@ -582,22 +583,22 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                 </div>
               {/each}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
     </div>
 
   {:else if activeTab === 'recommendations'}
     <!-- AI Recommendations Tab -->
     <div class="space-y-6">
-      <Card class="shadcn-card">
-        <CardHeader class="shadcn-card-header">
-          <CardTitle class="flex items-center gap-2">
+      <NesCard class="nes-container">
+        <div class="yorha-panel-header" class="nes-container-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Lightbulb class="h-5 w-5" />
             AI Recommendations
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="shadcn-card-content space-y-4">
+          </h3>
+        </div>
+        <div class="yorha-panel-content" class="nes-container-content space-y-4">
           <div class="space-y-2">
             <label class="bits-label">Context Description</label>
             <Textarea
@@ -651,30 +652,30 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
               <Zap class="h-4 w-4 mr-2" />
               Generate Recommendations
             {/if}
-          </Button>
-        </CardContent>
-      </Card>
+          </button>
+        </div>
+      </NesCard>
 
       <!-- Recommendations Results -->
       {#if recommendations.length > 0}
-        <Card class="shadcn-card">
-          <CardHeader class="shadcn-card-header">
-            <CardTitle class="flex items-center justify-between">
+        <NesCard class="nes-container">
+          <div class="yorha-panel-header" class="nes-container-header">
+            <h3 class="nes-text is-primary" class="flex items-center justify-between">
               <span class="flex items-center gap-2">
                 <Target class="h-5 w-5" />
                 Intelligent Recommendations ({recommendations.length})
               </span>
               <div class="flex items-center gap-2">
-                <Button variant="outline" size="sm">
+                <button class="nes-btn" variant="outline" size="sm">
                   <Share class="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="sm">
+                </button>
+                <button class="nes-btn" variant="outline" size="sm">
                   <Download class="h-4 w-4" />
-                </Button>
+                </button>
               </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="shadcn-card-content">
+            </h3>
+          </div>
+          <div class="yorha-panel-content" class="nes-container-content">
             <div class="recommendation-container">
               {#each recommendations as rec}
                 {@const SvelteComponent = getRecommendationIcon(rec.type)}
@@ -719,22 +720,22 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                 </div>
               {/each}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
     </div>
 
   {:else if activeTab === 'analysis'}
     <!-- Semantic Analysis Tab -->
     <div class="space-y-6">
-      <Card class="shadcn-card">
-        <CardHeader class="shadcn-card-header">
-          <CardTitle class="flex items-center gap-2">
+      <NesCard class="nes-container">
+        <div class="yorha-panel-header" class="nes-container-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <BarChart3 class="h-5 w-5" />
             Document Semantic Analysis
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="shadcn-card-content space-y-4">
+          </h3>
+        </div>
+        <div class="yorha-panel-content" class="nes-container-content space-y-4">
           <div class="space-y-2">
             <label class="bits-label">Document Content</label>
             <Textarea
@@ -756,22 +757,22 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
               <BarChart3 class="h-4 w-4 mr-2" />
               Analyze Document
             {/if}
-          </Button>
-        </CardContent>
-      </Card>
+          </button>
+        </div>
+      </NesCard>
 
       <!-- Analysis Results -->
       {#if semanticAnalysis}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Entities -->
-          <Card class="shadcn-card">
-            <CardHeader class="shadcn-card-header">
-              <CardTitle class="flex items-center gap-2">
+          <NesCard class="nes-container">
+            <div class="yorha-panel-header" class="nes-container-header">
+              <h3 class="nes-text is-primary" class="flex items-center gap-2">
                 <Users class="h-5 w-5" />
                 Extracted Entities ({semanticAnalysis.entities?.length || 0})
-              </CardTitle>
-            </CardHeader>
-            <CardContent class="shadcn-card-content">
+              </h3>
+            </div>
+            <div class="yorha-panel-content" class="nes-container-content">
               {#if semanticAnalysis.entities?.length > 0}
                 <div class="semantic-entity-container">
                   {#each semanticAnalysis.entities as entity}
@@ -784,20 +785,20 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                   {/each}
                 </div>
               {:else}
-                <p class="text-sm text-muted-foreground">No entities detected</p>
+                <p class="text-sm nes-text is-disabled">No entities detected</p>
               {/if}
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Themes -->
-          <Card class="shadcn-card">
-            <CardHeader class="shadcn-card-header">
-              <CardTitle class="flex items-center gap-2">
+          <NesCard class="nes-container">
+            <div class="yorha-panel-header" class="nes-container-header">
+              <h3 class="nes-text is-primary" class="flex items-center gap-2">
                 <Tag class="h-5 w-5" />
                 Document Themes ({semanticAnalysis.themes?.length || 0})
-              </CardTitle>
-            </CardHeader>
-            <CardContent class="shadcn-card-content">
+              </h3>
+            </div>
+            <div class="yorha-panel-content" class="nes-container-content">
               {#if semanticAnalysis.themes?.length > 0}
                 <div class="space-y-3">
                   {#each semanticAnalysis.themes as theme}
@@ -816,20 +817,20 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                   {/each}
                 </div>
               {:else}
-                <p class="text-sm text-muted-foreground">No themes identified</p>
+                <p class="text-sm nes-text is-disabled">No themes identified</p>
               {/if}
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Relationships -->
-          <Card class="shadcn-card">
-            <CardHeader class="shadcn-card-header">
-              <CardTitle class="flex items-center gap-2">
+          <NesCard class="nes-container">
+            <div class="yorha-panel-header" class="nes-container-header">
+              <h3 class="nes-text is-primary" class="flex items-center gap-2">
                 <Network class="h-5 w-5" />
                 Entity Relationships ({semanticAnalysis.relationships?.length || 0})
-              </CardTitle>
-            </CardHeader>
-            <CardContent class="shadcn-card-content">
+              </h3>
+            </div>
+            <div class="yorha-panel-content" class="nes-container-content">
               {#if semanticAnalysis.relationships?.length > 0}
                 <div class="relationship-container">
                   {#each semanticAnalysis.relationships as rel}
@@ -842,20 +843,20 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                   {/each}
                 </div>
               {:else}
-                <p class="text-sm text-muted-foreground">No relationships detected</p>
+                <p class="text-sm nes-text is-disabled">No relationships detected</p>
               {/if}
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Complexity Metrics -->
-          <Card class="shadcn-card">
-            <CardHeader class="shadcn-card-header">
-              <CardTitle class="flex items-center gap-2">
+          <NesCard class="nes-container">
+            <div class="yorha-panel-header" class="nes-container-header">
+              <h3 class="nes-text is-primary" class="flex items-center gap-2">
                 <BarChart3 class="h-5 w-5" />
                 Complexity Analysis
-              </CardTitle>
-            </CardHeader>
-            <CardContent class="shadcn-card-content">
+              </h3>
+            </div>
+            <div class="yorha-panel-content" class="nes-container-content">
               <div class="space-y-4">
                 <div class="space-y-2">
                   <div class="flex justify-between text-sm">
@@ -907,8 +908,8 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         </div>
       {/if}
     </div>
@@ -916,23 +917,23 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
   {:else if activeTab === 'health'}
     <!-- System Health Tab -->
     <div class="space-y-6">
-      <Card class="shadcn-card">
-        <CardHeader class="shadcn-card-header">
-          <CardTitle class="flex items-center justify-between">
+      <NesCard class="nes-container">
+        <div class="yorha-panel-header" class="nes-container-header">
+          <h3 class="nes-text is-primary" class="flex items-center justify-between">
             <span class="flex items-center gap-2">
               <Activity class="h-5 w-5" />
               Vector Intelligence System Health
             </span>
-            <Button variant="outline" size="sm" onclick={loadSystemHealth}>
+            <button class="nes-btn" variant="outline" size="sm" onclick={loadSystemHealth}>
               <RefreshCw class="h-4 w-4" />
-            </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="shadcn-card-content">
+            </button>
+          </h3>
+        </div>
+        <div class="yorha-panel-content" class="nes-container-content">
           {#if systemHealth}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card class="border">
-                <CardContent class="p-4">
+              <NesCard class="border">
+                <div class="yorha-panel-content" class="p-4">
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-sm font-medium">System Status</p>
@@ -942,11 +943,11 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                     </div>
                     <Activity class="h-8 w-8 {getHealthColor(systemHealth.systemHealth)}" />
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
 
-              <Card class="border">
-                <CardContent class="p-4">
+              <NesCard class="border">
+                <div class="yorha-panel-content" class="p-4">
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-sm font-medium">Model Confidence</p>
@@ -956,11 +957,11 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                     </div>
                     <Star class="h-8 w-8 text-yellow-600" />
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
 
-              <Card class="border">
-                <CardContent class="p-4">
+              <NesCard class="border">
+                <div class="yorha-panel-content" class="p-4">
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-sm font-medium">Indexed Documents</p>
@@ -970,11 +971,11 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                     </div>
                     <FileText class="h-8 w-8 text-blue-600" />
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
 
-              <Card class="border">
-                <CardContent class="p-4">
+              <NesCard class="border">
+                <div class="yorha-panel-content" class="p-4">
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-sm font-medium">Vector Dimensions</p>
@@ -984,8 +985,8 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
                     </div>
                     <Network class="h-8 w-8 text-purple-600" />
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
             </div>
 
             <Separator class="bits-separator my-6" />
@@ -996,11 +997,11 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div class="space-y-2">
                   <div class="flex justify-between">
-                    <span class="text-muted-foreground">Embedding Model:</span>
+                    <span class="nes-text is-disabled">Embedding Model:</span>
                     <span class="font-mono">{systemHealth.embeddingModel}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-muted-foreground">Initialization Status:</span>
+                    <span class="nes-text is-disabled">Initialization Status:</span>
                     <Badge class={systemHealth.isInitialized ? 'bits-badge-default' : 'bits-badge-destructive'}>
                       {systemHealth.isInitialized ? 'Initialized' : 'Not Initialized'}
                     </Badge>
@@ -1009,11 +1010,11 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
 
                 <div class="space-y-2">
                   <div class="flex justify-between">
-                    <span class="text-muted-foreground">Last Update:</span>
+                    <span class="nes-text is-disabled">Last Update:</span>
                     <span>{new Date(systemHealth.lastUpdateTime).toLocaleString()}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-muted-foreground">Performance:</span>
+                    <span class="nes-text is-disabled">Performance:</span>
                     <Badge class={getHealthColor(systemHealth.systemHealth).includes('green') ? 'bits-badge-default' : 'bits-badge-secondary'}>
                       Optimal
                     </Badge>
@@ -1023,11 +1024,11 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
             </div>
           {:else}
             <div class="text-center py-8">
-              <p class="text-muted-foreground">Loading system health information...</p>
+              <p class="nes-text is-disabled">Loading system health information...</p>
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   {/if}
 </div>

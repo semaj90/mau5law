@@ -632,6 +632,7 @@ https://svelte.dev/e/script_duplicate -->
 </style>
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   function formatTime(date: Date): string {
     const now = new Date();

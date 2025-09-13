@@ -7,6 +7,7 @@ https://svelte.dev/e/tag_invalid_name -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
   import { wasmGraphEngine } from '$lib/wasm/graphEngine';

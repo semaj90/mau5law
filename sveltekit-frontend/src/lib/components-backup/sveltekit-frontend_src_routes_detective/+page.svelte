@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
   import CaseForm from '$lib/components/forms/CaseForm.svelte';
   import { getAuthContext } from "$lib/stores/auth";

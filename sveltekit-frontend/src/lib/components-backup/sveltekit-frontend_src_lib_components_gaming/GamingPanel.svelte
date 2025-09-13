@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import type { ComponentProps } from 'svelte';
   	interface GamingPanelProps {
   		title?: string;

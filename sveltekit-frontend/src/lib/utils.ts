@@ -1,11 +1,11 @@
 import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
 
 /**
- * Utility function to merge Tailwind CSS classes
+ * Utility function to merge CSS classes
+ * Now using UnoCSS instead of Tailwind
  */
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  return clsx(inputs);
 }
 
 // Type helpers for Svelte 5 and component props

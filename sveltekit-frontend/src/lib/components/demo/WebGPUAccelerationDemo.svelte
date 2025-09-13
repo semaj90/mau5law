@@ -1,5 +1,6 @@
 <!-- WebGPU Client-Side Acceleration Demo -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator';
   import {
@@ -349,9 +350,9 @@
   </div>
 
   <!-- WebGPU Status -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center justify-between">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center justify-between">
         <span>WebGPU Capabilities</span>
         {#if isInitializing}
           <span class="text-sm text-blue-600">Initializing...</span>
@@ -360,9 +361,9 @@
         {:else}
           <span class="text-sm text-red-600">✗ Not Available</span>
         {/if}
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       {#if isInitializing}
         <div class="animate-pulse text-gray-500">
           Checking WebGPU support and initializing GPU resources...
@@ -402,21 +403,21 @@
           </div>
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   {#if capabilities?.available}
     <!-- Demo Controls -->
     <div class="demo-controls grid grid-cols-1 md:grid-cols-3 gap-4">
       <!-- Vector Similarity -->
-      <Card class="demo-card">
-        <CardHeader>
-          <CardTitle class="flex items-center space-x-2">
+      <NesCard class="demo-nier-bits-card">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
             <span class="text-2xl">🔍</span>
             <span>Vector Similarity</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-3">
             <div>
               <label for="vector-dimensions" class="block text-sm font-medium text-gray-700 mb-1">
@@ -439,20 +440,20 @@
               disabled={isProcessing || activeDemo === 'similarity'}
               class="w-full bits-btn bits-btn">
               {isProcessing && activeDemo === 'similarity' ? 'Computing...' : 'Run Similarity Test'}
-            </Button>
+            </button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- K-Means Clustering -->
-      <Card class="demo-card">
-        <CardHeader>
-          <CardTitle class="flex items-center space-x-2">
+      <NesCard class="demo-nier-bits-card">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
             <span class="text-2xl">🎯</span>
             <span>K-Means Clustering</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-3">
             <div>
               <label for="data-points" class="block text-sm font-medium text-gray-700 mb-1">
@@ -490,20 +491,20 @@
               disabled={isProcessing || activeDemo === 'clustering'}
               class="w-full bits-btn bits-btn">
               {isProcessing && activeDemo === 'clustering' ? 'Clustering...' : 'Run Clustering'}
-            </Button>
+            </button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Matrix Multiplication -->
-      <Card class="demo-card">
-        <CardHeader>
-          <CardTitle class="flex items-center space-x-2">
+      <NesCard class="demo-nier-bits-card">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
             <span class="text-2xl">🧮</span>
             <span>Matrix Multiply</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-3">
             <div>
               <label for="matrix-size" class="block text-sm font-medium text-gray-700 mb-1">
@@ -526,19 +527,19 @@
               disabled={isProcessing || activeDemo === 'matrix'}
               class="w-full bits-btn bits-btn">
               {isProcessing && activeDemo === 'matrix' ? 'Computing...' : 'Run Matrix Multiply'}
-            </Button>
+            </button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Results Display -->
     {#if results}
-      <Card>
-        <CardHeader>
-          <CardTitle>Performance Results</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Performance Results</h3>
+        </div>
+        <div class="yorha-panel-content">
           {#if results.error}
             <div class="error-message p-4 bg-red-50 border border-red-200 rounded-lg">
               <div class="text-red-800 font-medium">Error</div>
@@ -595,16 +596,16 @@
               </div>
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     {/if}
 
     <!-- Legal AI Use Cases -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Legal AI Applications</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Legal AI Applications</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="applications grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="application-item p-4 border rounded-lg">
             <h4 class="font-semibold text-gray-900">Document Similarity</h4>
@@ -627,8 +628,8 @@
             </p>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

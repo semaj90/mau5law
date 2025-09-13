@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { user } from "$lib/stores/user";
   import {
     Button
@@ -17,7 +18,7 @@
   }
 </script>
 
-<Button class="bits-btn" onclick={() => showModal = true}>Select Case</Button>
+<Button class="bits-btn" onclick={() => showModal = true}>Select Case</button>
 
 <Modal bind:open={showModal} title="Select a Case">
   {#snippet description()}
@@ -30,7 +31,7 @@
     {#each cases as caseItem}
       <Button class="bits-btn" onclick={() => selectCase(caseItem.id)} variant="secondary">
         {caseItem.name}
-      </Button>
+      </button>
     {/each}
   </div>
 </Modal>

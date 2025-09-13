@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Chat Message: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     message: { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string };
   let {

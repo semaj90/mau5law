@@ -5,6 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 // File: AIAssistantButton.svelte
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onresponse?: (event?: any) => void;
     onerror?: (event?: any) => void;

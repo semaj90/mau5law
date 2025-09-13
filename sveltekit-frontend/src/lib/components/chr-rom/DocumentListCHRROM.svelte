@@ -7,6 +7,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader.js';
@@ -262,7 +263,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="document-grid">
     {#each documents as doc}
       <div 
-        class="document-card"
+        class="document-nier-bits-card"
         style:border-left-color={getCategoryColor(doc.id)}
         on:mouseenter={() => handleDocumentHover(doc.id)}
         on:mouseleave={handleDocumentLeave}

@@ -8,6 +8,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { detectiveAnalysisEngine, type EvidenceItem, type ConflictAnalysis, type SearchSuggestion } from '$lib/evidence/detective-analysis-engine.js';
   import { browser } from '$app/environment';

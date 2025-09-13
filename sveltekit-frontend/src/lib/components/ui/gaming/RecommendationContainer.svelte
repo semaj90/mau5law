@@ -1,5 +1,6 @@
 <!-- Recommendation Container - Bits-UI Integration Under Nav-Bar -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fly, fade } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
@@ -463,9 +464,9 @@
           transition:fly={{ y: -20, duration: 300, easing: quintOut }}
         >
           {#each Object.entries(groupedRecommendations) as [type, recs]}
-            <div.Root class="recommendation-card {type}">
-              <div.Header class="card-header">
-                <div class="card-title">
+            <div.Root class="recommendation-nier-bits-card {type}">
+              <div.Header class="nier-bits-yorha-panel-header">
+                <div class="nier-bits-nes-text is-primary">
                   <span class="type-icon">{categoryIcons[type]}</span>
                   <span class="type-name">{type.charAt(0).toUpperCase() + type.slice(1)}</span>
                   <Badge.Root variant="outline" class="count-badge">
@@ -474,7 +475,7 @@
                 </div>
               </Card.Header>
               
-              <div.Content class="card-content">
+              <div.Content class="nier-bits-yorha-panel-content">
                 <div class="recommendations-preview">
                   {#each recs.slice(0, 3) as rec}
                     <div class="rec-preview-item">
@@ -539,7 +540,7 @@
                   {/if}
                 </div>
                 
-                <div class="card-actions">
+                <div class="nier-bits-card-actions">
                   <button 
                     class="view-all-btn"
                     onclick={() => openModal(type)}
@@ -560,7 +561,7 @@
           {/each}
 
           <!-- View All Recommendations -->
-          <div.Root class="view-all-card">
+          <div.Root class="view-all-nier-bits-card">
             <div.Content class="view-all-content">
               <button 
                 class="view-all-recommendations"

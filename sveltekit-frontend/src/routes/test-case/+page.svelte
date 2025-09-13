@@ -2,6 +2,7 @@
   Simple Case Creation Test Page - Testing bits-ui buttons and database integration
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import {
     Input
@@ -73,7 +74,7 @@ let formData = $state({
       <Scale class="h-6 w-6 text-primary" />
       <div>
         <h1 class="text-3xl font-bold tracking-tight">Test Case Creation</h1>
-        <p class="text-muted-foreground mt-1">
+        <p class="nes-text is-disabled mt-1">
           Testing bits-ui buttons, database save, and API integration
         </p>
       </div>
@@ -171,7 +172,7 @@ let formData = $state({
             }}
           >
             Clear Form
-          </Button>
+          </button>
 
           <Button
             type="submit"
@@ -185,7 +186,7 @@ let formData = $state({
               <Save class="mr-2 h-4 w-4" />
               Create Case
             {/if}
-          </Button>
+          </button>
         </div>
       </form>
     </Card.Content>
@@ -198,7 +199,7 @@ let formData = $state({
       <span>Integration Test Features</span>
     </h3>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm nes-text is-disabled">
       <div>
         <h4 class="font-medium text-foreground mb-2">bits-ui Button Integration</h4>
         <ul class="space-y-1">

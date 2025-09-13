@@ -5,6 +5,7 @@ https://svelte.dev/e/expected_token -->
 <!-- Production-ready form with state management, validation, and progress tracking -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   interface Props {
     data: SuperValidated<Infer<typeof DocumentUploadSchema>>;;
@@ -277,28 +278,28 @@ https://svelte.dev/e/expected_token -->
         </div>
 
         <div class="flex gap-2">
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={handleSaveDraft}
             disabled={$isSubmitting}
           >
             <Save size={16} />
-          </Button>
-          <Button
+          </button>
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={handleReset}
             disabled={$isSubmitting}
           >
             <RotateCcw size={16} />
-          </Button>
+          </button>
         </div>
-      </CardTitle>
-    </CardHeader>
+      </h3>
+    </div>
 
     {#if showProgress}
-      <CardContent>
+      <div class="yorha-panel-content">
         <div class="space-y-2">
           <div class="flex justify-between text-sm">
             <span>Progress</span>
@@ -307,18 +308,18 @@ https://svelte.dev/e/expected_token -->
           <Progress value={$progress} class="h-2" />
 
           {#if stateValue === "uploading"}
-            <p class="text-sm text-muted-foreground">Uploading file...</p>
+            <p class="text-sm nes-text is-disabled">Uploading file...</p>
           {:else if stateValue === "processing"}
-            <p class="text-sm text-muted-foreground">Processing with AI...</p>
+            <p class="text-sm nes-text is-disabled">Processing with AI...</p>
           {/if}
         </div>
-      </CardContent>
+      </div>
     {/if}
-  </Card>
+  </NesCard>
 
   <!-- File Drop Zone -->
-  <Card class="file-upload-card">
-    <CardContent class="p-6">
+  <NesCard class="file-upload-nier-bits-card">
+    <div class="yorha-panel-content" class="p-6">
       <div
         class="drop-zone"
         class:drag-active={dragActive}
@@ -340,28 +341,28 @@ https://svelte.dev/e/expected_token -->
                   "Unknown type"}
               </p>
             </div>
-            <Button
+            <button class="nes-btn"
               variant="ghost"
               size="sm"
               onclick={removeFile}
               disabled={$isSubmitting}
             >
               <X size={16} />
-            </Button>
+            </button>
           </div>
         {:else}
           <div class="drop-zone-content">
-            <Upload size={48} class="text-muted-foreground" />
+            <Upload size={48} class="nes-text is-disabled" />
             <h3 class="drop-zone-title">
               {dragActive ? "Drop file here" : "Choose file or drag & drop"}
             </h3>
             <p class="drop-zone-description">
               Supports PDF, DOCX, TXT, and image files up to 50MB
             </p>
-            <Button variant="outline" disabled={$isSubmitting}>
+            <button class="nes-btn" variant="outline" disabled={$isSubmitting}>
               <Upload class="mr-2" size={16} />
               Browse Files
-            </Button>
+            </button>
           </div>
         {/if}
       </div>
@@ -374,18 +375,18 @@ https://svelte.dev/e/expected_token -->
         class="sr-only"
         disabled={$isSubmitting}
       />
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Form Fields -->
   <form use:enhance method="post" class="space-y-6">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Basic Information -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-lg">Document Information</CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-lg">Document Information</h3>
+        </div>
+        <div class="yorha-panel-content" class="space-y-4">
           <div>
             <label for="title" class="block text-sm font-medium mb-2">
               Title *
@@ -475,25 +476,25 @@ https://svelte.dev/e/expected_token -->
               disabled={$isSubmitting}
             />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- AI Processing Options -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-lg flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
             <Zap size={20} />
             AI Processing Options
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+          </h3>
+        </div>
+        <div class="yorha-panel-content" class="space-y-4">
           <div class="space-y-3">
             <Checkbox
               bind:checked={$formData.aiProcessing.generateSummary}
               disabled={$isSubmitting}
             >
               Generate Summary
-              <span class="text-sm text-muted-foreground block">
+              <span class="text-sm nes-text is-disabled block">
                 Create an AI-powered summary of the document
               </span>
             </Checkbox>
@@ -503,7 +504,7 @@ https://svelte.dev/e/expected_token -->
               disabled={$isSubmitting}
             >
               Extract Entities
-              <span class="text-sm text-muted-foreground block">
+              <span class="text-sm nes-text is-disabled block">
                 Identify names, dates, amounts, and legal entities
               </span>
             </Checkbox>
@@ -513,7 +514,7 @@ https://svelte.dev/e/expected_token -->
               disabled={$isSubmitting}
             >
               Risk Assessment
-              <span class="text-sm text-muted-foreground block">
+              <span class="text-sm nes-text is-disabled block">
                 Analyze potential legal risks and compliance issues
               </span>
             </Checkbox>
@@ -523,7 +524,7 @@ https://svelte.dev/e/expected_token -->
               disabled={$isSubmitting}
             >
               Generate Recommendations
-              <span class="text-sm text-muted-foreground block">
+              <span class="text-sm nes-text is-disabled block">
                 Provide actionable legal recommendations
               </span>
             </Checkbox>
@@ -538,8 +539,8 @@ https://svelte.dev/e/expected_token -->
               </AlertDescription>
             </Alert>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Error Display -->
@@ -551,7 +552,7 @@ https://svelte.dev/e/expected_token -->
 
           {#if stateValue === "uploadError" || stateValue === "processingError"}
             <div class="mt-2">
-              <Button
+              <button class="nes-btn"
                 variant="outline"
                 size="sm"
                 onclick={() => actor.send({ type: "RETRY" })}
@@ -559,17 +560,17 @@ https://svelte.dev/e/expected_token -->
               >
                 Retry ({contextValue.maxRetries - contextValue.retryCount} attempts
                 left)
-              </Button>
+              </button>
 
               {#if stateValue === "processingError"}
-                <Button
+                <button class="nes-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => actor.send({ type: "SKIP_PROCESSING" })}
                   class="ml-2"
                 >
                   Skip AI Processing
-                </Button>
+                </button>
               {/if}
             </div>
           {/if}
@@ -598,22 +599,22 @@ https://svelte.dev/e/expected_token -->
 
     <!-- Form Actions -->
     <div class="flex justify-between items-center pt-4 border-t">
-      <div class="text-sm text-muted-foreground">
+      <div class="text-sm nes-text is-disabled">
         {#if autoSave && !$isSubmitting}
           Auto-save enabled
         {/if}
       </div>
 
       <div class="flex gap-3">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           onclick={handleReset}
           disabled={$isSubmitting}
         >
           Reset Form
-        </Button>
+        </button>
 
-        <Button
+        <button class="nes-btn"
           type="submit"
           onclick|preventDefault={handleSubmit}
           disabled={!canSubmit}
@@ -629,7 +630,7 @@ https://svelte.dev/e/expected_token -->
             <Upload class="mr-2" size={16} />
             Upload & Process
           {/if}
-        </Button>
+        </button>
       </div>
     </div>
   </form>

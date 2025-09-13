@@ -3,6 +3,7 @@ https://svelte.dev/e/component_invalid_directive -->
 <!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <!-- NieR: Automata Themed Rich Text Editor using bits-ui -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     content?: any;
     placeholder?: any;
@@ -17,7 +18,7 @@ https://svelte.dev/e/component_invalid_directive -->
   import { Editor } from "@tiptap/core";
   import StarterKit from "@tiptap/starter-kit";
   import { onMount } from "svelte";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Select } from "$lib/components/ui/select";
   import { Separator } from "$lib/components/ui/separator";
   let editor: Editor | null = null;
@@ -52,7 +53,7 @@ https://svelte.dev/e/component_invalid_directive -->
         onclick={() => editor?.commands.undo()}
       >
         ↶
-      </Button>
+      </button>
       <Button 
         variant="ghost" 
         size="sm" 
@@ -60,7 +61,7 @@ https://svelte.dev/e/component_invalid_directive -->
         onclick={() => editor?.commands.redo()}
       >
         ↷
-      </Button>
+      </button>
     </div>
     
     <Separator orientation="vertical" class="nier-toolbar-separator" />
@@ -94,7 +95,7 @@ https://svelte.dev/e/component_invalid_directive -->
         onclick={() => editor?.chain().focus().toggleBold().run()}
       >
         <strong>B</strong>
-      </Button>
+      </button>
       <Button 
         variant="ghost" 
         size="sm" 
@@ -103,7 +104,7 @@ https://svelte.dev/e/component_invalid_directive -->
         onclick={() => editor?.chain().focus().toggleItalic().run()}
       >
         <em>I</em>
-      </Button>
+      </button>
     </div>
   </div>
   

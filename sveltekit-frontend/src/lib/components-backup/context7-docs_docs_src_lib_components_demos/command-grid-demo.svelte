@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Command } from "bits-ui";
   	import Sticker from "phosphor-svelte/lib/Sticker";
   	import Smiley from "phosphor-svelte/lib/Smiley";
@@ -148,9 +149,9 @@
 >
 	<div class="flex items-center">
 		{#if views.length > 1}
-			<Button variant="ghost" onclick={() => views.pop()}>
+			<button class="nes-btn" variant="ghost" onclick={() => views.pop()}>
 				<ArrowLeft />
-			</Button>
+			</button>
 		{/if}
 		<Command.Input
 			autofocus={false}
@@ -172,13 +173,13 @@
 		<Command.List class="max-h-[280px] overflow-y-auto overflow-x-hidden px-2 pb-2">
 			<Command.Viewport>
 				<Command.Empty
-					class="text-muted-foreground flex w-full items-center justify-center pb-6 pt-8 text-sm"
+					class="nes-text is-disabled flex w-full items-center justify-center pb-6 pt-8 text-sm"
 				>
 					{currentView.empty}
 				</Command.Empty>
 				{#each currentView.groups as group (group)}
 					<Command.Group>
-						<Command.GroupHeading class="text-muted-foreground px-2 pb-2 pt-4 text-xs">
+						<Command.GroupHeading class="nes-text is-disabled px-2 pb-2 pt-4 text-xs">
 							{group.name}
 						</Command.GroupHeading>
 						<Command.GroupItems class="grid grid-cols-8 gap-2 px-2">
@@ -204,13 +205,13 @@
 		<Command.List class="max-h-[280px] overflow-y-auto overflow-x-hidden px-2 pb-2">
 			<Command.Viewport>
 				<Command.Empty
-					class="text-muted-foreground flex w-full items-center justify-center pb-6 pt-8 text-sm"
+					class="nes-text is-disabled flex w-full items-center justify-center pb-6 pt-8 text-sm"
 				>
 					{currentView.empty}
 				</Command.Empty>
 				{#each currentView.groups as group (group)}
 					<Command.Group>
-						<Command.GroupHeading class="text-muted-foreground px-3 pb-2 pt-4 text-xs">
+						<Command.GroupHeading class="nes-text is-disabled px-3 pb-2 pt-4 text-xs">
 							{group.name}
 						</Command.GroupHeading>
 						<Command.GroupItems>

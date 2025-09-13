@@ -10,6 +10,7 @@
   - Accessibility support
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Button as BitsButton } from 'bits-ui';
   import { createEventDispatcher } from 'svelte';
   import type { GamingComponentProps } from '../types/gaming-types.js';

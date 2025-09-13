@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { ocrTensorProcessor, type ProcessingResult } from '$lib/client/ocr-tensor-processor.js';
 
@@ -322,7 +323,7 @@
         <h3>📋 Processing Results ({results.length})</h3>
         <div class="results-list">
           {#each results as result, i}
-            <div class="result-card" class:cache-hit={result.cacheHit}>
+            <div class="result-nier-bits-card" class:cache-hit={result.cacheHit}>
               <div class="result-header">
                 <span class="result-index">#{i + 1}</span>
                 <span class="cache-indicator">

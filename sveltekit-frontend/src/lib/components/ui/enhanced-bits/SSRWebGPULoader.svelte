@@ -6,20 +6,32 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { lodManager } from '$lib/services/N64LODManager.ts';
   import type { LODContext } from '$lib/services/N64LODManager.ts';
 
   // Props for texture streaming configuration
-  export let assetId: string;
-  export let width: number = 64;
-  export let height: number = 64;
-  export let viewportDistance: number = 50; // 0-100 scale
-  export let enableGPU: boolean = true;
-  export let fallbackContent: string = ''; // Server-side fallback
-  export let loadingClass: string = 'nes-loading';
-  export let errorClass: string = 'nes-error';
+  let {
+    assetId,
+    width = 64,
+    height = 64,
+    viewportDistance = 50, // 0-100 scale
+    enableGPU = true,
+    fallbackContent = '', // Server-side fallback
+    loadingClass = 'nes-loading',
+    errorClass = 'nes-error'
+  }: {
+    assetId: string;
+    width?: number;
+    height?: number;
+    viewportDistance?: number;
+    enableGPU?: boolean;
+    fallbackContent?: string;
+    loadingClass?: string;
+    errorClass?: string;
+  } = $props();
 
   // Reactive state for texture streaming
   let webgpuSupported = false;

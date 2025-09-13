@@ -6,6 +6,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Dialog, DropdownMenu } from 'bits-ui';
   import { onMount, tick } from 'svelte';
   import type { Case, Evidence, Report, CanvasState } from '$lib/data/types';
@@ -21,7 +22,7 @@
   } from 'lucide-svelte';
 
   // Import our enhanced UI components
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Card from '$lib/components/ui/Card.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
@@ -87,21 +88,21 @@
   <!-- Vector Search Demo -->
   <section class="mb-12">
     <h2 class="text-2xl font-semibold mb-4 text-gold">Vector Search Integration</h2>
-    <div class="nier-card nier-card-interactive p-6">
+    <div class="nier-nier-bits-card nier-nier-bits-card-interactive p-6">
       <div class="flex gap-4 mb-4">
         <Input
           bind:value={searchQuery}
           placeholder="Search cases, evidence, legal documents..."
           class="flex-1"
         />
-        <Button
+        <button class="nes-btn"
           onclick={performVectorSearch}
           loading={isSearching}
           disabled={!searchQuery.trim()}
         >
           <Search class="w-5 h-5 mr-2" />
           Search
-        </Button>
+        </button>
       </div>
 
       {#if vectorResults.length > 0}
@@ -132,23 +133,23 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Button variants -->
-      <Card>
+      <NesCard>
           <div class="p-4">
             <h3 class="text-lg font-semibold mb-4 text-crimson">Button Variants</h3>
             <div class="space-y-3">
-              <Button variant="primary">Primary Action</Button>
-              <Button variant="secondary">Secondary Action</Button>
-              <Button variant="ghost">Ghost Button</Button>
-              <Button variant="danger">Delete Action</Button>
+              <button class="nes-btn is-primary">Primary Action</button>
+              <button class="nes-btn">Secondary Action</button>
+              <button class="nes-btn" variant="ghost">Ghost Button</button>
+              <button class="nes-btn" variant="danger">Delete Action</button>
             </div>
           </div>
-      </Card>
+      </NesCard>
 
       <!-- Modal demo -->
-      <Card>
+      <NesCard>
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Modal Component</h3>
-            <Button onclick={() => modalOpen = true}>Open Modal</Button>
+            <button class="nes-btn" onclick={() => modalOpen = true}>Open Modal</button>
 
             <Modal
               bind:open={modalOpen}
@@ -160,16 +161,16 @@
                     The modal integrates with bits-ui and follows Svelte 5 best practices.
                   </p>
                   <div class="flex gap-2 justify-end">
-                    <Button variant="ghost" onclick={() => modalOpen = false}>Cancel</Button>
-                    <Button onclick={() => modalOpen = false}>Acknowledge</Button>
+                    <button class="nes-btn" variant="ghost" onclick={() => modalOpen = false}>Cancel</button>
+                    <button class="nes-btn" onclick={() => modalOpen = false}>Acknowledge</button>
                   </div>
                 </div>
             </Modal>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- Input components -->
-      <Card>
+      <NesCard>
           <div class="p-4">
             <h3 class="text-lg font-semibold mb-4 text-crimson">Input Components</h3>
             <div class="space-y-3">
@@ -189,7 +190,7 @@
               />
             </div>
           </div>
-      </Card>
+      </NesCard>
     </div>
   </section>
 
@@ -214,7 +215,7 @@
 </div>
 
 {#snippet StatusCard({ title, status, description })}
-  <Card variant="interactive">
+  <NesCard variant="interactive">
       <div class="p-4 text-center">
         <div class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center {status === 'active' ? 'bg-green-500/20' : 'bg-red-500/20'}">
           {#if status === 'active'}
@@ -229,7 +230,7 @@
           {status.toUpperCase()}
         </span>
       </div>
-  </Card>
+  </NesCard>
 {/snippet}
 
 {#snippet LayoutDemo()}
@@ -269,7 +270,7 @@
           { title: "Evidence Items", value: layoutData.stats.evidenceCount, icon: Scale }
         ] as stat}
           {@const StatIcon = stat.icon}
-          <Card>
+          <NesCard>
               <div class="p-4">
                 <div class="flex justify-between items-center mb-2">
                   <h4 class="text-sm font-medium text-nier-text-muted">{stat.title}</h4>
@@ -277,11 +278,11 @@
                 </div>
                 <p class="text-2xl font-bold text-nier-white">{stat.value}</p>
               </div>
-          </Card>
+          </NesCard>
         {/each}
       </div>
 
-      <Card>
+      <NesCard>
           <div class="p-6">
             <h3 class="text-lg font-semibold text-nier-white mb-4">Recent Activity</h3>
             <div class="space-y-3">
@@ -297,7 +298,7 @@
               {/each}
             </div>
           </div>
-      </Card>
+      </NesCard>
     </main>
   </div>
 {/snippet}

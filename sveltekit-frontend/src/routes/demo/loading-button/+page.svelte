@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   
   // Demo state

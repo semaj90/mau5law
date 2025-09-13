@@ -1,5 +1,6 @@
 <!-- RAG System Demo Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import AskAI from "$lib/components/ai/AskAI.svelte";
   import {
     AlertTriangle,

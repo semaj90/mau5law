@@ -1,6 +1,7 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import SecurityMonitoringDashboard from "$lib/components/security/SecurityMonitoringDashboard.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { ArrowLeft, Shield } from "lucide-svelte";
 </script>
 
@@ -16,10 +17,10 @@
   <!-- Header -->
   <div class="space-y-4">
     <a href="/dashboard" class="space-y-4">
-      <Button variant="outline" size="sm">
+      <button class="nes-btn" variant="outline" size="sm">
         <ArrowLeft class="space-y-4" />
         Back to Dashboard
-      </Button>
+      </button>
     </a>
     <div>
       <h1 class="space-y-4">

@@ -6,7 +6,7 @@ https://svelte.dev/e/expected_token -->
   import { onMount } from 'svelte';
   import { useChatActor, chatActions, serviceStatus } from '$lib/stores/chatStore';
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/Card';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Input } from '$lib/components/ui/input';
   import { Badge } from '$lib/components/ui/badge';
   import { ScrollArea } from '$lib/components/ui/scrollarea';

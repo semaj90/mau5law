@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Collapsible } from "bits-ui";
   	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";
 </script>

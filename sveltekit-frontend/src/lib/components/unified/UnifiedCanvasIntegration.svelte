@@ -3,6 +3,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Unified Canvas Integration - Bridge Between Enhanced Evidence Canvas and Detective Board -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
   	import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
@@ -153,16 +154,16 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- Unified Canvas Integration Interface -->
 <div class="w-full h-full flex flex-col bg-background">
 	<!-- Integration Header -->
-	<Card class="mb-4">
-		<CardHeader class="pb-3">
+	<NesCard class="mb-4">
+		<div class="yorha-panel-header" class="pb-3">
 			<div class="flex justify-between items-center">
 				<div class="flex items-center gap-4">
 					<div class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
 						<Canvas class="w-5 h-5 text-primary" />
 					</div>
 					<div>
-						<CardTitle class="text-xl">Unified Evidence Analysis</CardTitle>
-						<p class="text-sm text-muted-foreground">Enhanced Canvas + Detective Board Integration</p>
+						<h3 class="nes-text is-primary" class="text-xl">Unified Evidence Analysis</h3>
+						<p class="text-sm nes-text is-disabled">Enhanced Canvas + Detective Board Integration</p>
 					</div>
 				</div>
 				
@@ -177,7 +178,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						>
 							<Canvas class="w-4 h-4 mr-1" />
 							Canvas
-						</Button>
+						</button>
 						<Button class="bits-btn"
 							variant={viewMode === 'board' ? 'default' : 'ghost'}
 							size="sm"
@@ -186,7 +187,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						>
 							<Grid3X3 class="w-4 h-4 mr-1" />
 							Board
-						</Button>
+						</button>
 						<Button class="bits-btn"
 							variant={viewMode === 'hybrid' ? 'default' : 'ghost'}
 							size="sm"
@@ -195,7 +196,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						>
 							<Eye class="w-4 h-4 mr-1" />
 							Hybrid
-						</Button>
+						</button>
 					</div>
 					
 					<!-- System Status Indicators -->
@@ -211,12 +212,12 @@ https://svelte.dev/e/attribute_duplicate -->
 					</div>
 				</div>
 			</div>
-		</CardHeader>
-	</Card>
+		</div>
+	</NesCard>
 
 	<!-- Performance Metrics Bar -->
-	<Card class="mb-4">
-		<CardContent class="py-3">
+	<NesCard class="mb-4">
+		<div class="yorha-panel-content" class="py-3">
 			<div class="flex justify-between items-center">
 				<div class="flex gap-6">
 					<div class="flex items-center gap-2">
@@ -240,17 +241,17 @@ https://svelte.dev/e/attribute_duplicate -->
 				<div class="flex gap-2">
 					<Button class="bits-btn" variant="outline" size="sm" onclick={syncCanvasToBoard}>
 						Sync Canvas → Board
-					</Button>
+					</button>
 					<Button class="bits-btn" variant="outline" size="sm" onclick={syncBoardToCanvas}>
 						Sync Board → Canvas
-					</Button>
+					</button>
 					<Button class="bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>
 						Analyze All Evidence
-					</Button>
+					</button>
 				</div>
 			</div>
-		</CardContent>
-	</Card>
+		</div>
+	</NesCard>
 
 	<!-- Main Integration View -->
 	<div class="flex-1 relative">
@@ -275,37 +276,37 @@ https://svelte.dev/e/attribute_duplicate -->
 			<!-- Hybrid View - Split Screen -->
 			<div class="h-full grid grid-cols-2 gap-4">
 				<!-- Left Panel - Enhanced Evidence Canvas -->
-				<Card class="h-full">
-					<CardHeader class="pb-2">
-						<CardTitle class="text-lg flex items-center gap-2">
+				<NesCard class="h-full">
+					<div class="yorha-panel-header" class="pb-2">
+						<h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
 							<Canvas class="w-5 h-5" />
 							Evidence Canvas
-						</CardTitle>
-					</CardHeader>
-					<CardContent class="p-2 h-[calc(100%-4rem)]">
+						</h3>
+					</div>
+					<div class="yorha-panel-content" class="p-2 h-[calc(100%-4rem)]">
 						<EvidenceCanvas
 							bind:evidence={canvasEvidence}
 							{caseId}
 							onEvidenceUpdate={handleCanvasEvidenceUpdate}
 						/>
-					</CardContent>
-				</Card>
+					</div>
+				</NesCard>
 				
 				<!-- Right Panel - Detective Board -->
-				<Card class="h-full">
-					<CardHeader class="pb-2">
-						<CardTitle class="text-lg flex items-center gap-2">
+				<NesCard class="h-full">
+					<div class="yorha-panel-header" class="pb-2">
+						<h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
 							<Grid3X3 class="w-5 h-5" />
 							Detective Board
-						</CardTitle>
-					</CardHeader>
-					<CardContent class="p-2 h-[calc(100%-4rem)]">
+						</h3>
+					</div>
+					<div class="yorha-panel-content" class="p-2 h-[calc(100%-4rem)]">
 						<DetectiveBoard
 							{caseId}
 							evidence={evidence}
 						/>
-					</CardContent>
-				</Card>
+					</div>
+				</NesCard>
 			</div>
 		{/if}
 	</div>
@@ -313,20 +314,20 @@ https://svelte.dev/e/attribute_duplicate -->
 	<!-- Analysis Results Overlay -->
 	{#if activeAnalysis.length > 0}
 		<div class="absolute bottom-4 right-4 w-80">
-			<Card class="bg-background/95 backdrop-blur-sm">
-				<CardHeader class="pb-2">
-					<CardTitle class="text-sm flex items-center gap-2">
+			<NesCard class="bg-background/95 backdrop-blur-sm">
+				<div class="yorha-panel-header" class="pb-2">
+					<h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
 						<Activity class="w-4 h-4" />
 						Live Analysis Results
-					</CardTitle>
-				</CardHeader>
-				<CardContent class="space-y-2 max-h-48 overflow-y-auto">
+					</h3>
+				</div>
+				<div class="yorha-panel-content" class="space-y-2 max-h-48 overflow-y-auto">
 					{#each activeAnalysis.slice(-3) as analysis}
 						<div class="p-2 bg-muted rounded text-xs">
 							<div class="font-medium mb-1">
 								Evidence {analysis.evidenceId.slice(-6)}
 							</div>
-							<div class="text-muted-foreground">
+							<div class="nes-text is-disabled">
 								{analysis.summary?.slice(0, 80)}...
 							</div>
 							<div class="flex gap-1 mt-1">
@@ -336,8 +337,8 @@ https://svelte.dev/e/attribute_duplicate -->
 							</div>
 						</div>
 					{/each}
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 		</div>
 	{/if}
 </div>

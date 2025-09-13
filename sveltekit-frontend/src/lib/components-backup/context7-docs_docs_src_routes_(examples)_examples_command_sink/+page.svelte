@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Command } from "bits-ui";
 
   	// prettier-ignore

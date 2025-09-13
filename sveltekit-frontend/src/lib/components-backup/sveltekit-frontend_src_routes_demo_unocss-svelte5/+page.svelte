@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 	import { preventDefault } from 'svelte/legacy';
 
   	import { Button, Card, Input } from '$lib/components/ui/enhanced';
@@ -28,7 +29,7 @@
 			<h1 class="text-4xl font-bold text-nier-text-primary {animationClasses.fadeIn}">
 				🚀 UnoCSS + Svelte 5 Integration Demo
 			</h1>
-			<p class="text-lg text-muted-foreground">
+			<p class="text-lg nes-text is-disabled">
 				Enhanced legal AI components with NieR theming and shadcn-svelte compatibility
 			</p>
 		</div>
@@ -36,20 +37,20 @@
 		<!-- Feature Grid -->
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 			<!-- Enhanced Button Showcase -->
-			<Card elevated class="p-6 space-y-4">
+			<NesCard elevated class="p-6 space-y-4">
 				<h3 class="text-xl font-semibold">Enhanced Buttons</h3>
 				<div class="space-y-3">
-					<Button variant="nier">NieR Style</Button>
-					<Button variant="default" {loading}>
+					<button class="nes-btn" variant="nier">NieR Style</button>
+					<button class="nes-btn" variant="default" {loading}>
 						{loading ? 'Processing...' : 'Default Style'}
-					</Button>
-					<Button variant="outline" size="sm">Small Outline</Button>
-					<Button variant="destructive" size="lg">Large Destructive</Button>
+					</button>
+					<button class="nes-btn" variant="outline" size="sm">Small Outline</button>
+					<button class="nes-btn is-error" size="lg">Large Destructive</button>
 				</div>
-			</Card>
+			</NesCard>
 
 			<!-- Enhanced Inputs -->
-			<Card class="p-6 space-y-4">
+			<NesCard class="p-6 space-y-4">
 				<h3 class="text-xl font-semibold">Enhanced Inputs</h3>
 				<Input
 					bind:value={name}
@@ -65,10 +66,10 @@
 					icon="mail"
 					placeholder="your@email.com"
 				/>
-			</Card>
+			</NesCard>
 
 			<!-- UnoCSS Utilities -->
-			<Card interactive class="p-6 space-y-4 hover:scale-105 transition-transform">
+			<NesCard interactive class="p-6 space-y-4 hover:scale-105 transition-transform">
 				<h3 class="text-xl font-semibold">UnoCSS Magic</h3>
 				<div class="space-y-2">
 					<div class="h-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded"></div>
@@ -81,20 +82,20 @@
 						<span class="text-sm">Tabler Icons</span>
 					</div>
 				</div>
-			</Card>
+			</NesCard>
 
 			<!-- NieR Theme Components -->
-			<Card class="{nierClasses.card} p-6 space-y-4">
+			<NesCard class="{nierClasses.nier-bits-card} p-6 space-y-4">
 				<h3 class="text-xl font-semibold">NieR Theme Components</h3>
 				<div class="yorha-evidence-item p-4 text-sm">
 					Evidence Item Style
 				</div>
 				<div class="ai-status-indicator bg-ai-status-online"></div>
 				<p class="text-nier-text-secondary">Themed with NieR colors</p>
-			</Card>
+			</NesCard>
 
 			<!-- Interactive Demo -->
-			<Card class="p-6 space-y-4 col-span-full lg:col-span-2">
+			<NesCard class="p-6 space-y-4 col-span-full lg:col-span-2">
 				<h3 class="text-xl font-semibold">Interactive Demo</h3>
 				<form onsubmit={preventDefault(handleSubmit)} class="space-y-4">
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -112,14 +113,14 @@
 							required
 						/>
 					</div>
-					<Button 
+					<button class="nes-btn" 
 						type="submit" 
 						variant="nier" 
 						{loading}
 						disabled={!name || !email}
 					>
 						{loading ? 'Processing...' : 'Test Integration'}
-					</Button>
+					</button>
 				</form>
 				
 				{#if message}
@@ -127,33 +128,33 @@
 						<p class="text-green-800">{message}</p>
 					</div>
 				{/if}
-			</Card>
+			</NesCard>
 		</div>
 
 		<!-- Performance Stats -->
-		<Card class="p-6">
+		<NesCard class="p-6">
 			<h3 class="text-xl font-semibold mb-4">🎯 Performance Benefits</h3>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 				<div class="text-center space-y-2">
 					<div class="text-3xl font-bold text-green-600">⚡ ~40%</div>
-					<p class="text-sm text-muted-foreground">Faster CSS generation vs TailwindCSS</p>
+					<p class="text-sm nes-text is-disabled">Faster CSS generation vs TailwindCSS</p>
 				</div>
 				<div class="text-center space-y-2">
 					<div class="text-3xl font-bold text-blue-600">📦 ~60%</div>
-					<p class="text-sm text-muted-foreground">Smaller bundle size</p>
+					<p class="text-sm nes-text is-disabled">Smaller bundle size</p>
 				</div>
 				<div class="text-center space-y-2">
 					<div class="text-3xl font-bold text-purple-600">🔥 100%</div>
-					<p class="text-sm text-muted-foreground">Svelte 5 runes compatibility</p>
+					<p class="text-sm nes-text is-disabled">Svelte 5 runes compatibility</p>
 				</div>
 			</div>
-		</Card>
+		</NesCard>
 
 		<!-- Technical Details -->
-		<Card class="p-6">
+		<NesCard class="p-6">
 			<h3 class="text-xl font-semibold mb-4">🔧 Technical Implementation</h3>
 			<div class="prose prose-sm max-w-none">
-				<ul class="space-y-2 text-sm text-muted-foreground">
+				<ul class="space-y-2 text-sm nes-text is-disabled">
 					<li>✅ <strong>UnoCSS 66.3.3</strong> with Svelte 5 extractor</li>
 					<li>✅ <strong>Shadcn-compatible</strong> design tokens and CSS variables</li>
 					<li>✅ <strong>NieR theming</strong> with custom color palette and shortcuts</li>
@@ -163,7 +164,7 @@
 					<li>✅ <strong>Legal AI ready</strong> with evidence management components</li>
 				</ul>
 			</div>
-		</Card>
+		</NesCard>
 	</div>
 </div>
 

@@ -24,14 +24,15 @@ export function withRedisOrchestrator(
     aiQueryExtractor?: (body: any) => { query: string; context: any } | null;
   }
 ): RequestHandler {
-  
-  return async ({ request, params, url, cookies, locals }) => {
+
+  return async (event) => {
+    const { request, params, url, cookies, locals } = event;
     const startTime = performance.now();
     
     try {
       // Skip Redis optimization for non-AI endpoints or when bypassed
       if (config.cacheStrategy === 'bypass' || !isAIEndpoint(config.endpointName)) {
-        return await originalHandler({ request, params, url, cookies, locals });
+        return await originalHandler(event);
       }
       
       // Extract AI query from request if this is an AI endpoint
@@ -42,12 +43,9 @@ export function withRedisOrchestrator(
       
       if (!aiQuery) {
         // No AI query detected, use original handler
-        return await originalHandler({ 
-          request: recreateRequest(request, body), 
-          params, 
-          url, 
-          cookies, 
-          locals 
+        return await originalHandler({
+          ...event,
+          request: recreateRequest(request, body)
         });
       }
       
@@ -86,12 +84,9 @@ export function withRedisOrchestrator(
       }
       
       // No cache hit, process with original handler but track for caching
-      const originalResult = await originalHandler({ 
-        request: recreateRequest(request, body), 
-        params, 
-        url, 
-        cookies, 
-        locals 
+      const originalResult = await originalHandler({
+        ...event,
+        request: recreateRequest(request, body)
       });
       
       // Cache the result if it's successful
@@ -117,7 +112,7 @@ export function withRedisOrchestrator(
       console.error(`🎮 [REDIS MIDDLEWARE] ${config.endpointName} error:`, err);
       
       // Fallback to original handler on Redis errors
-      return await originalHandler({ request, params, url, cookies, locals });
+      return await originalHandler(event);
     }
   };
 }
@@ -362,8 +357,8 @@ async function cacheOriginalResult(
     await appRedisOrchestrator.processAIQuery(query, sessionId, {
       endpoint: `${config.endpointName}_cache_store`,
       priority: 50, // Low priority for cache storage
-      cache_data: responseBody,
-      processing_time: processingTime
+      useRAG: false,
+      requiresFresh: false
     });
   } catch (error) {
     console.warn('🎮 Failed to cache original result:', error);

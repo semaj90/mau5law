@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter';
   import {
@@ -154,9 +155,9 @@
 </script>
 
 <div class="client-ai-chat" class:collapsed data-testid="ai-chat-container">
-  <Card class="bg-gray-900/90 backdrop-blur-md border-yellow-500/30 shadow-xl">
-    <CardHeader class="pb-3">
-      <CardTitle class="flex items-center gap-2 text-yellow-400 text-sm font-mono">
+  <NesCard class="bg-gray-900/90 backdrop-blur-md border-yellow-500/30 shadow-xl">
+    <div class="yorha-panel-header pb-3">
+      <h3 class="nes-text is-primary flex items-center gap-2 text-yellow-400 text-sm font-mono">
         <Brain class="w-4 h-4" />
         Client-Side AI Chat
         {#if showStatus}
@@ -166,7 +167,7 @@
             </Badge>
           </div>
         {/if}
-      </CardTitle>
+      </h3>
       
       {#if showStatus && !collapsed}
         <div class="flex items-center gap-2 text-xs">
@@ -184,9 +185,9 @@
           </span>
         </div>
       {/if}
-    </CardHeader>
+    </div>
     
-    <CardContent class="p-3 space-y-3">
+    <div class="yorha-panel-content p-3 space-y-3">
       {#if !collapsed}
         <!-- Messages -->
         <div class="messages-container h-48 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-gray-600" data-testid="chat-messages">
@@ -303,8 +304,8 @@
           {/if}
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 </div>
 
 <style>

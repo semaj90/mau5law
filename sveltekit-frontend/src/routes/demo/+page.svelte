@@ -6,6 +6,7 @@ https://svelte.dev/e/attribute_duplicate -->
   Comprehensive navigation for all demonstrations and testing interfaces
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
   import * as Card from '$lib/components/ui/card';
   import {
@@ -391,12 +392,12 @@ https://svelte.dev/e/attribute_duplicate -->
 
 <div class="min-h-screen bg-background">
   <!-- Header -->
-  <div class="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+  <div class="border-b bg-nier-bits-card/50 backdrop-blur-sm sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-6">
       <div class="flex items-center justify-between mb-6">
         <div>
           <h1 class="text-3xl font-bold tracking-tight">Demo Hub</h1>
-          <p class="text-muted-foreground mt-2">
+          <p class="nes-text is-disabled mt-2">
             Explore {totalDemos} demonstrations across all platform features and systems
           </p>
         </div>
@@ -405,14 +406,14 @@ https://svelte.dev/e/attribute_duplicate -->
           <Button class="bits-btn" onclick={() => goto('/')} variant="outline">
             <ChevronRight class="h-4 w-4 mr-2 rotate-180" />
             Back to Home
-          </Button>
+          </button>
         </div>
       </div>
 
       <!-- Search and Filters -->
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="relative flex-1 max-w-md">
-          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 nes-text is-disabled" />
           <Input
             type="text"
             placeholder="Search demos, features, or descriptions..."
@@ -422,7 +423,7 @@ https://svelte.dev/e/attribute_duplicate -->
         </div>
 
         <div class="flex items-center gap-2">
-          <Filter class="h-4 w-4 text-muted-foreground" />
+          <Filter class="h-4 w-4 nes-text is-disabled" />
           <select
             bind:value={selectedCategory}
             class="px-3 py-2 border border-input rounded-md text-sm bg-background"
@@ -441,14 +442,14 @@ https://svelte.dev/e/attribute_duplicate -->
             onclick={() => viewMode = 'grid'}
           >
             <Grid class="h-4 w-4" />
-          </Button>
+          </button>
           <Button class="bits-btn"
             variant={viewMode === 'list' ? 'default' : 'ghost'}
             size="sm"
             onclick={() => viewMode = 'list'}
           >
             <List class="h-4 w-4" />
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -459,9 +460,9 @@ https://svelte.dev/e/attribute_duplicate -->
     {#if filteredCategories.length === 0}
       <!-- No Results -->
       <div class="text-center py-12">
-        <Search class="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+        <Search class="h-12 w-12 nes-text is-disabled mx-auto mb-4" />
         <h3 class="text-lg font-semibold mb-2">No demos found</h3>
-        <p class="text-muted-foreground">Try adjusting your search or filter criteria</p>
+        <p class="nes-text is-disabled">Try adjusting your search or filter criteria</p>
       </div>
     {:else}
       <!-- Demo Categories -->
@@ -478,7 +479,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 </div>
                 <div>
                   <h2 class="text-2xl font-semibold">{category.title}</h2>
-                  <p class="text-muted-foreground">{category.description}</p>
+                  <p class="nes-text is-disabled">{category.description}</p>
                 </div>
               </div>
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{category.demos.length} demo{category.demos.length !== 1 ? 's' : ''}</span>
@@ -501,12 +502,12 @@ https://svelte.dev/e/attribute_duplicate -->
                             </Badge>
                           </div>
                         </div>
-                        <ExternalLink class="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                        <ExternalLink class="h-4 w-4 nes-text is-disabled group-hover:text-primary transition-colors" />
                       </div>
                     </Card.Header>
 
                     <div.Content class="pt-0">
-                      <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      <p class="text-sm nes-text is-disabled mb-4 line-clamp-2">
                         {demo.description}
                       </p>
 
@@ -519,14 +520,14 @@ https://svelte.dev/e/attribute_duplicate -->
                         {/if}
                       </div>
 
-                      <Button
+                      <button class="nes-btn"
                         onclick={() => navigateToDemo(demo.path)}
                         class="bits-btn w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
                         variant="outline"
                       >
                         <Play class="h-4 w-4 mr-2" />
                         Launch Demo
-            </Button>
+            </button>
             </Card.Content>
           </Card.Root>
                 {/each}
@@ -544,7 +545,7 @@ https://svelte.dev/e/attribute_duplicate -->
                               <h3 class="font-semibold group-hover:text-primary transition-colors">
                                 {demo.name}
                               </h3>
-                              <p class="text-sm text-muted-foreground mt-1">
+                              <p class="text-sm nes-text is-disabled mt-1">
                                 {demo.description}
                               </p>
                               <div class="flex items-center gap-2 mt-2">
@@ -565,7 +566,7 @@ https://svelte.dev/e/attribute_duplicate -->
                             >
                               <Play class="h-4 w-4 mr-2" />
                               Launch
-                            </Button>
+                            </button>
                           </div>
                         </div>
                       </div>

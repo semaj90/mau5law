@@ -1,7 +1,8 @@
 <!-- Updated AI Chat for GPU Ollama -->
 <script lang="ts">
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Input } from '$lib/components/ui/input';
   let messages = $state<{role: string, content: string}[]>([]);
   let input = $state('');
@@ -39,11 +40,11 @@
   }
 </script>
 
-<Card class="h-96 flex flex-col">
-  <CardHeader>
-    <CardTitle>Legal AI Assistant (GPU)</CardTitle>
-  </CardHeader>
-  <CardContent class="flex-1 flex flex-col space-y-4">
+<NesCard class="h-96 flex flex-col">
+  <div class="yorha-panel-header">
+    <h3 class="nes-text is-primary">Legal AI Assistant (GPU)</h3>
+  </div>
+  <div class="yorha-panel-content" class="flex-1 flex flex-col space-y-4">
     <div class="flex-1 overflow-y-auto space-y-2 p-2 border rounded">
       {#each messages as message}
         <div class="p-2 rounded {message.role === 'user' ? 'bg-blue-100 ml-8' : message.role === 'error' ? 'bg-red-100' : 'bg-gray-100 mr-8'}">
@@ -56,8 +57,8 @@
     </div>
     <div class="flex space-x-2">
       <Input bind:value={input} placeholder="Legal question..." onkeydown={(e) => e.key === 'Enter' && sendMessage()} />
-      <Button onclick={sendMessage} disabled={isLoading}>Send</Button>
+      <button class="nes-btn" onclick={sendMessage} disabled={isLoading}>Send</button>
     </div>
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 

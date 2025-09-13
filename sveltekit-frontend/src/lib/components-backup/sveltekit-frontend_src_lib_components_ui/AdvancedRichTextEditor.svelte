@@ -3,6 +3,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:change) and new syntaxes for event handling is not allowed. Use only the onchange syntax -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Editor } from "@tiptap/core";
   import Color from "@tiptap/extension-color";
   import FontFamily from "@tiptap/extension-font-family";

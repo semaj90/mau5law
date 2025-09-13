@@ -1,5 +1,6 @@
 <!-- YoRHa Modal Component with Terminal Styling -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade, scale } from "svelte/transition";

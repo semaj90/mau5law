@@ -7,6 +7,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { wasmGraphEngine } from '$lib/wasm/graphEngine';
   import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';

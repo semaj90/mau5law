@@ -7,6 +7,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import WebGPUQuantizationDemo from '$lib/components/demo/WebGPUQuantizationDemo.svelte';
   import { page } from '$app/stores';

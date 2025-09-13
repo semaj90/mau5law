@@ -1,5 +1,6 @@
 <!-- Cache System Demo Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import CacheDemo from '$lib/components/cache/CacheDemo.svelte';
 </script>
 
@@ -14,7 +15,7 @@
       <h1 class="text-3xl font-bold mb-2">
         Multi-Layer Cache System Demo
       </h1>
-      <p class="text-muted-foreground text-lg">
+      <p class="nes-text is-disabled text-lg">
         Interactive demonstration of Loki.js + Redis + PostgreSQL caching architecture
       </p>
     </div>

@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 	import { onMount } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
@@ -249,22 +250,22 @@ https://svelte.dev/e/expected_token -->
 		{#if activeView === 'dashboard'}
 			<div class="dashboard" transition:fade={{ duration: 300 }}>
 				<div class="stats-grid">
-					<div class="stat-card">
+					<div class="stat-nier-bits-card">
 						<div class="stat-icon">📂</div>
 						<div class="stat-value">{mockUser.cases}</div>
 						<div class="stat-label">Active Cases</div>
 					</div>
-					<div class="stat-card">
+					<div class="stat-nier-bits-card">
 						<div class="stat-icon">🔍</div>
 						<div class="stat-value">{mockUser.evidenceAnalyzed.toLocaleString()}</div>
 						<div class="stat-label">Evidence Analyzed</div>
 					</div>
-					<div class="stat-card">
+					<div class="stat-nier-bits-card">
 						<div class="stat-icon">⚖️</div>
 						<div class="stat-value">{mockUser.convictionRate}%</div>
 						<div class="stat-label">Conviction Rate</div>
 					</div>
-					<div class="stat-card">
+					<div class="stat-nier-bits-card">
 						<div class="stat-icon">🤖</div>
 						<div class="stat-value">24/7</div>
 						<div class="stat-label">AI Assistance</div>
@@ -291,14 +292,14 @@ https://svelte.dev/e/expected_token -->
 
 					<div class="ai-insights">
 						<h3>🧠 AI Insights</h3>
-						<div class="insight-card">
+						<div class="insight-nier-bits-card">
 							<div class="insight-icon">🚨</div>
 							<div class="insight-content">
 								<h4>Pattern Alert</h4>
 								<p>Similar MO detected across 3 cases. Potential serial offender.</p>
 							</div>
 						</div>
-						<div class="insight-card">
+						<div class="insight-nier-bits-card">
 							<div class="insight-icon">📈</div>
 							<div class="insight-content">
 								<h4>Success Prediction</h4>
@@ -314,7 +315,7 @@ https://svelte.dev/e/expected_token -->
 				<h2>📂 Case Management</h2>
 				<div class="cases-grid">
 					{#each cases as cse}
-						<div class="case-card">
+						<div class="case-nier-bits-card">
 							<div class="case-header">
 								<h3>{cse.title}</h3>
 								<div class="case-badges">
@@ -337,8 +338,8 @@ https://svelte.dev/e/expected_token -->
 								</div>
 							</div>
 							<div class="case-actions">
-								<button class="btn-primary">Open Case</button>
-								<button class="btn-secondary">AI Analysis</button>
+								<button class="nes-btn is-primary">Open Case</button>
+								<button class="nes-btn">AI Analysis</button>
 							</div>
 						</div>
 					{/each}
@@ -367,7 +368,7 @@ https://svelte.dev/e/expected_token -->
 							rows="4"
 						></textarea>
 						<button
-							class="btn-primary"
+							class="nes-btn is-primary"
 							onclick={() => {
 								workflowStep++;
 								if (workflowStep < prosecutionWorkflow.length) {
@@ -384,7 +385,7 @@ https://svelte.dev/e/expected_token -->
 					<div class="workflow-complete">
 						<h3>✅ Prosecution Analysis Complete</h3>
 						<p>All key elements documented. Ready to build your case.</p>
-						<button class="btn-primary">Generate Case File</button>
+						<button class="nes-btn is-primary">Generate Case File</button>
 					</div>
 				{/if}
 			</div>
@@ -394,15 +395,15 @@ https://svelte.dev/e/expected_token -->
 				<h2>🚧 {activeView.charAt(0).toUpperCase() + activeView.slice(1)} Feature</h2>
 				<p>This feature is fully implemented in the platform. Click around to explore!</p>
 				<div class="feature-grid">
-					<div class="feature-card">
+					<div class="feature-nier-bits-card">
 						<h4>Evidence Board</h4>
 						<p>Visual evidence mapping with AI-powered pattern recognition</p>
 					</div>
-					<div class="feature-card">
+					<div class="feature-nier-bits-card">
 						<h4>Legal Citations</h4>
 						<p>Automated legal research with relevance scoring</p>
 					</div>
-					<div class="feature-card">
+					<div class="feature-nier-bits-card">
 						<h4>AI Recommendations</h4>
 						<p>Smart prosecution strategies based on case analysis</p>
 					</div>
@@ -442,7 +443,7 @@ https://svelte.dev/e/expected_token -->
 		{#if !showQuickInput && !isTyping && currentPrompt}
 			<div class="ai-actions">
 				<button
-					class="btn-primary"
+					class="nes-btn is-primary"
 					onclick={() => {
 						showQuickInput = true;
 						startTypewriter("What's wrong? Describe the situation and I'll help you build the caseItem:");
@@ -451,7 +452,7 @@ https://svelte.dev/e/expected_token -->
 					What's Wrong?
 				</button>
 				<button
-					class="btn-secondary"
+					class="nes-btn"
 					onclick={() => startTypewriter("Ready to analyze evidence, detect patterns, and suggest prosecution strategies. What would you like me to focus on?")}
 				>
 					Analyze Evidence
@@ -469,14 +470,14 @@ https://svelte.dev/e/expected_token -->
 				></textarea>
 				<div class="input-actions">
 					<button
-						class="btn-primary"
+						class="nes-btn is-primary"
 						onclick={processQuickInput}
 						disabled={!quickInput.trim()}
 					>
 						Auto-Fill Case
 					</button>
 					<button
-						class="btn-secondary"
+						class="nes-btn"
 						onclick={() => {
 							showQuickInput = false;
 							quickInput = '';

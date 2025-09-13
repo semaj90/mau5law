@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Card Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
 
@@ -92,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Card Content -->
   {#if children}
-    <div class="card-content">
+    <div class="nier-bits-yorha-panel-content">
       {@render children()}
     </div>
   {/if}

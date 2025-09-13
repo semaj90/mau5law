@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { melt } from '@melt-ui/svelte';
   interface Props {
     trigger: unknown;

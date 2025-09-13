@@ -3,6 +3,7 @@
   Real-time analytics, vector search insights, system monitoring
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   // Modern UI Components
@@ -171,7 +172,7 @@
       <Button class="bits-btn" variant="outline" size="sm">
         <BarChart3 class="w-4 h-4 mr-2" />
         Export Report
-      </Button>
+      </button>
     </div>
   </div>
   
@@ -333,7 +334,7 @@
             <Button class="bits-btn" variant="outline" size="sm">
               View All Activity
               <ChevronRight class="w-4 h-4 ml-2" />
-            </Button>
+            </button>
           </div>
         </Card.Content>
       </Card.Root>

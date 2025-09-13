@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import AdvancedFileUpload from "$lib/components/upload/AdvancedFileUpload.svelte";
   // $state runtime rune is provided globally
 

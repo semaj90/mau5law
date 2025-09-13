@@ -13,6 +13,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   - Optional effects (scanlines, CRT)
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from 'svelte';
   import type { GamingComponentProps } from '../types/gaming-types.js';
   import { NES_COLOR_PALETTE } from '../constants/gaming-constants.js';

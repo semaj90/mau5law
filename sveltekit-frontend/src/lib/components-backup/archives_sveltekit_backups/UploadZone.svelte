@@ -2,6 +2,7 @@
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragover) and new syntaxes for event handling is not allowed. Use only the ondragover syntax -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
   export let minimal = false; // New prop for minimal canvas mode

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import type { ComponentProps } from 'svelte';
   	interface GamingButtonProps {
   		variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';

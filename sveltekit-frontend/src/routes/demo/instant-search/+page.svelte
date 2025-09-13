@@ -10,9 +10,10 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { InstantLegalSearch } from '$lib/components/search';
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import * as Card from '$lib/components/ui/card';
   import * as Tabs from '$lib/components/ui/tabs';
   import { Badge } from '$lib/components/ui/badge/index.js';
@@ -211,7 +212,7 @@
       <Zap class="h-8 w-8 text-blue-600" />
       <h1 class="text-4xl font-bold">Instant Legal Search Demo</h1>
     </div>
-    <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+    <p class="text-lg nes-text is-disabled max-w-2xl mx-auto">
       High-performance legal document search powered by Redis + Loki.js + Fuse.js integration.
       Experience sub-100ms search responses with smart legal pattern recognition.
     </p>
@@ -225,10 +226,10 @@
           <Activity class="h-5 w-5" />
           System Health
         </Card.Title>
-        <Button size="sm" onclick={checkSystemHealth} disabled={isTestRunning}>
+        <button class="nes-btn" size="sm" onclick={checkSystemHealth} disabled={isTestRunning}>
           <RefreshCw class="h-4 w-4 mr-2" />
           Refresh
-        </Button>
+        </button>
       </div>
     </Card.Header>
     <div.Content>
@@ -244,7 +245,7 @@
               />
               <span class="font-medium">Redis Cache</span>
             </div>
-            <div class="text-sm text-muted-foreground">
+            <div class="text-sm nes-text is-disabled">
               Status: {systemHealth.components?.redis?.connected ? 'Connected' : 'Disconnected'}
             </div>
           </div>
@@ -256,7 +257,7 @@
               />
               <span class="font-medium">Loki.js Database</span>
             </div>
-            <div class="text-sm text-muted-foreground">
+            <div class="text-sm nes-text is-disabled">
               Documents: {systemHealth.components?.loki?.stats?.overall?.totalDocuments || 0}
             </div>
           </div>
@@ -268,7 +269,7 @@
               />
               <span class="font-medium">Search Engine</span>
             </div>
-            <div class="text-sm text-muted-foreground">
+            <div class="text-sm nes-text is-disabled">
               Searches: {systemHealth.components?.instantSearch?.stats?.totalSearches || 0}
             </div>
           </div>
@@ -285,7 +286,7 @@
               {systemHealth.status}
             </Badge>
           </div>
-          <div class="text-sm text-muted-foreground">
+          <div class="text-sm nes-text is-disabled">
             Redis ↔ Loki: {systemHealth.integration?.redisLoki ? '✓' : '✗'} | 
             Loki ↔ Search: {systemHealth.integration?.lokiSearch ? '✓' : '✗'} | 
             Full Pipeline: {systemHealth.integration?.fullPipeline ? '✓' : '✗'}
@@ -293,8 +294,8 @@
         </div>
       {:else}
         <div class="text-center py-4">
-          <Activity class="h-8 w-8 mx-auto text-muted-foreground animate-pulse mb-2" />
-          <p class="text-muted-foreground">Loading system health...</p>
+          <Activity class="h-8 w-8 mx-auto nes-text is-disabled animate-pulse mb-2" />
+          <p class="nes-text is-disabled">Loading system health...</p>
         </div>
       {/if}
     </Card.Content>
@@ -345,19 +346,19 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div class="text-center">
                 <div class="text-2xl font-bold text-blue-600">{performanceMetrics.searchTime}ms</div>
-                <div class="text-sm text-muted-foreground">Last Search Time</div>
+                <div class="text-sm nes-text is-disabled">Last Search Time</div>
               </div>
               <div class="text-center">
                 <div class="text-2xl font-bold text-green-600">{(performanceMetrics.cacheHitRate * 100).toFixed(1)}%</div>
-                <div class="text-sm text-muted-foreground">Cache Hit Rate</div>
+                <div class="text-sm nes-text is-disabled">Cache Hit Rate</div>
               </div>
               <div class="text-center">
                 <div class="text-2xl font-bold text-purple-600">{performanceMetrics.totalSearches}</div>
-                <div class="text-sm text-muted-foreground">Total Searches</div>
+                <div class="text-sm nes-text is-disabled">Total Searches</div>
               </div>
               <div class="text-center">
                 <div class="text-2xl font-bold text-orange-600">{Math.round(performanceMetrics.averageResponseTime)}ms</div>
-                <div class="text-sm text-muted-foreground">Avg Response Time</div>
+                <div class="text-sm nes-text is-disabled">Avg Response Time</div>
               </div>
             </div>
           </Card.Content>
@@ -377,22 +378,22 @@
         </Card.Header>
         <div.Content>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Button onclick={() => runIntegrationTest('redis')} disabled={isTestRunning}>
+            <button class="nes-btn" onclick={() => runIntegrationTest('redis')} disabled={isTestRunning}>
               <Database class="h-4 w-4 mr-2" />
               Test Redis
-            </Button>
-            <Button onclick={() => runIntegrationTest('loki')} disabled={isTestRunning}>
+            </button>
+            <button class="nes-btn" onclick={() => runIntegrationTest('loki')} disabled={isTestRunning}>
               <Activity class="h-4 w-4 mr-2" />
               Test Loki.js
-            </Button>
-            <Button onclick={() => runIntegrationTest('search')} disabled={isTestRunning}>
+            </button>
+            <button class="nes-btn" onclick={() => runIntegrationTest('search')} disabled={isTestRunning}>
               <Zap class="h-4 w-4 mr-2" />
               Test Search
-            </Button>
-            <Button onclick={() => runIntegrationTest('all')} disabled={isTestRunning}>
+            </button>
+            <button class="nes-btn" onclick={() => runIntegrationTest('all')} disabled={isTestRunning}>
               <Play class="h-4 w-4 mr-2" />
               Test All
-            </Button>
+            </button>
           </div>
         </Card.Content>
       </Card.Root>
@@ -415,19 +416,19 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div class="text-center">
                 <div class="text-xl font-bold text-blue-600">{testResults.summary?.testsRun || 0}</div>
-                <div class="text-sm text-muted-foreground">Tests Run</div>
+                <div class="text-sm nes-text is-disabled">Tests Run</div>
               </div>
               <div class="text-center">
                 <div class="text-xl font-bold text-green-600">{testResults.summary?.testsSucceeded || 0}</div>
-                <div class="text-sm text-muted-foreground">Tests Passed</div>
+                <div class="text-sm nes-text is-disabled">Tests Passed</div>
               </div>
               <div class="text-center">
                 <div class="text-xl font-bold text-red-600">{testResults.summary?.errorCount || 0}</div>
-                <div class="text-sm text-muted-foreground">Errors</div>
+                <div class="text-sm nes-text is-disabled">Errors</div>
               </div>
               <div class="text-center">
                 <div class="text-xl font-bold text-purple-600">{testResults.summary?.totalTime || 0}ms</div>
-                <div class="text-sm text-muted-foreground">Total Time</div>
+                <div class="text-sm nes-text is-disabled">Total Time</div>
               </div>
             </div>
 
@@ -447,7 +448,7 @@
                     </div>
                     
                     {#if result.operations}
-                      <div class="text-sm text-muted-foreground mb-2">
+                      <div class="text-sm nes-text is-disabled mb-2">
                         Operations: {result.operations.join(', ')}
                       </div>
                     {/if}
@@ -501,7 +502,7 @@
                 disabled={isTestRunning}
               />
             </div>
-            <Button onclick={runBenchmark} disabled={isTestRunning}>
+            <button class="nes-btn" onclick={runBenchmark} disabled={isTestRunning}>
               {#if isTestRunning}
                 <RefreshCw class="h-4 w-4 mr-2 animate-spin" />
                 Running...
@@ -509,7 +510,7 @@
                 <BarChart3 class="h-4 w-4 mr-2" />
                 Run Benchmark
               {/if}
-            </Button>
+            </button>
           </div>
         </Card.Content>
       </Card.Root>
@@ -524,23 +525,23 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div class="text-center">
                 <div class="text-2xl font-bold text-blue-600">{Math.round(benchmarkResults.statistics.avgSearchTime)}ms</div>
-                <div class="text-sm text-muted-foreground">Average Search Time</div>
+                <div class="text-sm nes-text is-disabled">Average Search Time</div>
               </div>
               <div class="text-center">
                 <div class="text-2xl font-bold text-green-600">{benchmarkResults.statistics.minSearchTime}ms</div>
-                <div class="text-sm text-muted-foreground">Fastest Search</div>
+                <div class="text-sm nes-text is-disabled">Fastest Search</div>
               </div>
               <div class="text-center">
                 <div class="text-2xl font-bold text-orange-600">{benchmarkResults.statistics.maxSearchTime}ms</div>
-                <div class="text-sm text-muted-foreground">Slowest Search</div>
+                <div class="text-sm nes-text is-disabled">Slowest Search</div>
               </div>
               <div class="text-center">
                 <div class="text-2xl font-bold text-purple-600">{(benchmarkResults.statistics.cacheHitRate * 100).toFixed(1)}%</div>
-                <div class="text-sm text-muted-foreground">Cache Hit Rate</div>
+                <div class="text-sm nes-text is-disabled">Cache Hit Rate</div>
               </div>
             </div>
             
-            <div class="mt-4 text-sm text-muted-foreground">
+            <div class="mt-4 text-sm nes-text is-disabled">
               Ran {benchmarkResults.iterations} searches across {benchmarkResults.queries} different queries
             </div>
           </Card.Content>
@@ -559,18 +560,18 @@
         </Card.Header>
         <div.Content>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button onclick={populateTestData} disabled={isTestRunning}>
+            <button class="nes-btn" onclick={populateTestData} disabled={isTestRunning}>
               <Database class="h-4 w-4 mr-2" />
               Populate Test Data
-            </Button>
-            <Button variant="outline" onclick={clearCache} disabled={isTestRunning}>
+            </button>
+            <button class="nes-btn" variant="outline" onclick={clearCache} disabled={isTestRunning}>
               <RefreshCw class="h-4 w-4 mr-2" />
               Clear All Caches
-            </Button>
-            <Button variant="outline" onclick={checkSystemHealth} disabled={isTestRunning}>
+            </button>
+            <button class="nes-btn" variant="outline" onclick={checkSystemHealth} disabled={isTestRunning}>
               <Activity class="h-4 w-4 mr-2" />
               Check System Health
-            </Button>
+            </button>
           </div>
           
           <div class="mt-6 space-y-4">

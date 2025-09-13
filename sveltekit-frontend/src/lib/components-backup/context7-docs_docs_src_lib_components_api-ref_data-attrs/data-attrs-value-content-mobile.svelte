@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Popover, Separator } from "bits-ui";
   	import ScrollArea from "$lib/components/scroll-area.svelte";
   	import type { DataAttrSchema } from "$lib/types/index.js";
@@ -13,7 +14,7 @@
 <Popover.Root>
 	<Popover.Trigger
 		data-llm-ignore
-		class="rounded-button text-muted-foreground focus-visible:ring-foreground focus-visible:ring-offset-background extend-touch-target focus-visible:outline-hidden inline-flex h-full w-full items-center justify-end px-2 py-3 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2"
+		class="rounded-button nes-text is-disabled focus-visible:ring-foreground focus-visible:ring-offset-background extend-touch-target focus-visible:outline-hidden inline-flex h-full w-full items-center justify-end px-2 py-3 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2"
 	>
 		<Info class="size-4" weight="bold" />
 		<span class="sr-only">See type definition</span>

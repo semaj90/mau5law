@@ -1,5 +1,6 @@
 <!-- Phase 3: Live Agent Integration Demo -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { 
     liveAgentOrchestrator, 

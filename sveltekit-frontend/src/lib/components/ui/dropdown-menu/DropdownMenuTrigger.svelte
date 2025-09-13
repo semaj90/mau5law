@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { DropdownMenu } from 'bits-ui';
 
   interface Props {

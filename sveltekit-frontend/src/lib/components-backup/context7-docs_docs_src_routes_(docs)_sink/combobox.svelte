@@ -2,6 +2,7 @@
 https://svelte.dev/e/bind_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Combobox, type WithoutChildrenOrChild, mergeProps } from "bits-ui";
   	import ChevronUpDown from "phosphor-svelte/lib/CaretUpDown";
   	type Item = { value: string; label: string };
@@ -49,10 +50,10 @@ https://svelte.dev/e/bind_invalid_expression -->
 	<div class="relative">
 		<Combobox.Input
 			{...mergedInputProps}
-			class="border-input bg-background placeholder:text-muted-foreground flex h-10 w-full rounded-md border px-3 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+			class="border-input bg-background placeholder:nes-text is-disabled flex h-10 w-full rounded-md border px-3 py-2 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
 		/>
 		<Combobox.Trigger class="absolute end-3 top-1/2 size-6 -translate-y-1/2"
-			><ChevronUpDown class="text-muted-foreground h-5 w-5" /></Combobox.Trigger
+			><ChevronUpDown class="nes-text is-disabled h-5 w-5" /></Combobox.Trigger
 		>
 	</div>
 	<Combobox.Portal>

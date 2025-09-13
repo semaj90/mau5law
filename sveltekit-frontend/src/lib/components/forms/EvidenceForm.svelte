@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Props } from "$lib/types/global";
 
   let {
@@ -116,7 +117,7 @@
       {:else}
         {evidence ? "Save Changes" : "Create Evidence"}
       {/if}
-    </Button>
+    </button>
   </div>
 </form>
 

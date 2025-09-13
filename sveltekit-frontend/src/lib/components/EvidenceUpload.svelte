@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   let { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024 } = $props();
 
   import { onMount } from 'svelte';
@@ -190,7 +191,7 @@ https://svelte.dev/e/js_parse_error -->
         onclick={() => fileInput?.click()}
       >
         Select File
-      </Button>
+      </button>
     </div>
   {/if}
 
@@ -208,10 +209,10 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex gap-2">
           <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
             Change File
-          </Button>
+          </button>
           <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">
             Process Evidence
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -279,10 +280,10 @@ https://svelte.dev/e/js_parse_error -->
             onclick={() => window.open(artifactUrl, '_blank')}
           >
             Download Artifact
-          </Button>
+          </button>
           <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
             Process Another
-          </Button>
+          </button>
         </div>
       {/if}
     </div>
@@ -297,10 +298,10 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex gap-2">
           <Button class="bits-btn" variant="outline" size="sm" onclick={handleRetry}>
             Retry
-          </Button>
+          </button>
           <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
             Reset
-          </Button>
+          </button>
         </div>
       </AlertDescription>
     </Alert>

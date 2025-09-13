@@ -1,5 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
   import { accessibleClick } from '$lib/actions/accessibleClick';
 
   // For now, let's use plain HTML for all components to avoid bits-ui import issues
@@ -161,12 +162,12 @@
     <section class="component-section">
       <h2 class="nes-text is-warning">🎴 Cards</h2>
 
-      <div class="card-grid">
+      <div class="nier-bits-card-grid">
         <div class="nes-container">
-          <div class="card-header">
+          <div class="nier-bits-yorha-panel-header">
             <h3 class="nes-text is-primary">Game Stats</h3>
           </div>
-          <div class="card-content">
+          <div class="nier-bits-yorha-panel-content">
             <div class="stats">
               <p>Level: <span class="nes-text is-success">42</span></p>
               <p>Score: <span class="nes-text is-warning">12,345</span></p>
@@ -177,7 +178,7 @@
 
         <div class="nes-container with-title">
           <p class="title">Inventory</p>
-          <div class="card-content">
+          <div class="nier-bits-yorha-panel-content">
             <div class="inventory-items">
               <div class="nes-badge"><span class="is-success">🗡️ Sword</span></div>
               <div class="nes-badge"><span class="is-primary">🛡️ Shield</span></div>
@@ -187,10 +188,10 @@
         </div>
 
         <div class="nes-container is-dark">
-          <div class="card-header">
+          <div class="nier-bits-yorha-panel-header">
             <h3 class="nes-text is-primary">Dark Mode</h3>
           </div>
-          <div class="card-content">
+          <div class="nier-bits-yorha-panel-content">
             <p>This card uses the dark theme variant.</p>
             <button class="nes-btn is-success">
               Action

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { ChatMessage } from "$lib/stores/chatStore";
   import DOMPurify from "dompurify";
   import { Bot } from "lucide-svelte";

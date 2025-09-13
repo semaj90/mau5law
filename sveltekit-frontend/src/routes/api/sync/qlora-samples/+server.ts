@@ -6,8 +6,32 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import { mockDataGenerators } from '$lib/server/sync/mock-api-sync-simple';
-// import { qloraTopologyPredictor } from '$lib/ai/qlora-topology-predictor';
-// import { hmmSomEngine } from '$lib/services/predictive-hmm-som';
+// Mock implementation since qloraTopologyPredictor is not available
+const qloraTopologyPredictor = {
+  async predictOptimalTopology(doc: any, context: any, constraints: any) {
+    return {
+      recommendedTopology: 'auto',
+      confidence: 0.85,
+      estimatedPerformance: {
+        latency: Math.random() * 1000 + 500,
+        accuracy: 0.85 + Math.random() * 0.1,
+        memoryUsage: Math.random() * 256 + 128
+      },
+      reasoning: 'Mock topology prediction for development'
+    };
+  }
+};
+
+// Mock implementations for commented out services
+const hmmSomEngine = {
+  async generateTrainingSample() {
+    return {
+      input: 'mock_input',
+      expected_output: 'mock_output',
+      metadata: { generated_at: new Date().toISOString() }
+    };
+  }
+};
 // import { db } from '$lib/server/db/drizzle';
 // import { qloraTrainingJobs, legalDocuments } from '$lib/server/db/schema-postgres';
 import { desc, eq } from 'drizzle-orm';

@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import { diagnoseWebGPU, type WebGPUDiagResult } from '$lib/webgpu/diag';
@@ -47,12 +48,12 @@ https://svelte.dev/e/expected_token -->
 </div>
 
 {#if loading}
-  <div class="card">Running diagnostics…</div>
+  <div class="nier-bits-card">Running diagnostics…</div>
 {:else if error}
-  <div class="card bad">Error: {error}</div>
+  <div class="nier-bits-card bad">Error: {error}</div>
 {:else if result}
   <div class="grid">
-    <div class="card">
+    <div class="nier-bits-card">
       <h2>Status</h2>
       <ul>
         <li>Browser WebGPU Support: <span class={result.supported ? 'ok' : 'bad'}>{result.supported ? 'Yes' : 'No'}</span></li>
@@ -64,7 +65,7 @@ https://svelte.dev/e/expected_token -->
       {/if}
     </div>
 
-    <div class="card">
+    <div class="nier-bits-card">
       <h2>Timings</h2>
       <div class="mono">
         <div>requestAdapter: {result.timings.requestAdapterMs?.toFixed(1) ?? '—'} ms</div>
@@ -76,7 +77,7 @@ https://svelte.dev/e/expected_token -->
       {/if}
     </div>
 
-    <div class="card">
+    <div class="nier-bits-card">
       <h2>Adapter</h2>
       {#if result.adapter}
         <div class="mono">{result.adapter.label || '(no label)'} {result.adapter.isFallbackAdapter ? ' — fallback' : ''}</div>
@@ -89,14 +90,14 @@ https://svelte.dev/e/expected_token -->
       {/if}
     </div>
 
-    <div class="card">
+    <div class="nier-bits-card">
       <h2>Device Limits</h2>
       <div class="mono" style="white-space: pre-wrap">{result.deviceLimits ? JSON.stringify(result.deviceLimits, null, 2) : '—'}</div>
     </div>
   </div>
 
   {#if result.warnings.length}
-    <div class="card warn">
+    <div class="nier-bits-card warn">
       <h2>Warnings</h2>
       <ul>
         {#each result.warnings as w}
@@ -107,7 +108,7 @@ https://svelte.dev/e/expected_token -->
   {/if}
 
   {#if result.recommendedActions.length}
-    <div class="card">
+    <div class="nier-bits-card">
       <h2>Recommended Actions</h2>
       <ol>
         {#each result.recommendedActions as a}

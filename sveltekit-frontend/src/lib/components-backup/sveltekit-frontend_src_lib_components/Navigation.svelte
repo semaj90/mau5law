@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { page } from '$app/state';
   	import { goto } from '$app/navigation';
   	import { cn } from '$lib/utils';
@@ -31,7 +32,7 @@
 				</div>
 				<div class="ml-10 flex items-center space-x-1">
 					{#each navItems as item}
-						<Button
+						<button class="nes-btn"
 							variant={currentPath === item.href ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => handleNavigation(item.href)}
@@ -42,14 +43,14 @@
 						>
 							<span>{item.icon}</span>
 							{item.label}
-						</Button>
+						</button>
 					{/each}
 				</div>
 			</div>
 			
 			<div class="flex items-center space-x-4">
 				<!-- AI Search Button -->
-				<Button
+				<button class="nes-btn"
 					variant="outline"
 					size="sm"
 					onclick={() => {
@@ -64,7 +65,7 @@
 				>
 					<span>🔍</span>
 					AI Search
-				</Button>
+				</button>
 				
 				<Badge variant="outline" class="gap-2">
 					<span>🤖</span>
@@ -72,7 +73,7 @@
 				</Badge>
 				<div class="flex items-center gap-2">
 					<div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" title="System Online"></div>
-					<span class="text-sm text-muted-foreground">Online</span>
+					<span class="text-sm nes-text is-disabled">Online</span>
 				</div>
 			</div>
 		</div>

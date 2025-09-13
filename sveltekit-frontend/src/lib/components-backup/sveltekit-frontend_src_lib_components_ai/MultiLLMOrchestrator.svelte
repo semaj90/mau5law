@@ -3,11 +3,12 @@ Multi-LLM Orchestration Component
 Provides UI for managing multiple AI workers and orchestrating parallel processing
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Progress } from '$lib/components/ui/progress';
   import { 
     Play, 
@@ -261,7 +262,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     </div>
     
     <div class="flex items-center gap-2">
-      <Button
+      <button class="nes-btn"
         variant="outline"
         size="sm"
         onclick={refreshStatus}
@@ -269,21 +270,21 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       >
         <RefreshCw class="h-4 w-4 mr-2 {isProcessing ? 'animate-spin' : ''}" />
         Refresh
-      </Button>
+      </button>
       
-      <Button
+      <button class="nes-btn"
         variant="outline"
         size="sm"
         onclick={() => showSettings = !showSettings}
       >
         <Settings class="h-4 w-4" />
-      </Button>
+      </button>
       
       {#if !isInitialized}
-        <Button onclick={initializeOrchestrator} disabled={isProcessing}>
+        <button class="nes-btn" onclick={initializeOrchestrator} disabled={isProcessing}>
           <Play class="h-4 w-4 mr-2" />
           Initialize
-        </Button>
+        </button>
       {/if}
     </div>
   </div>
@@ -291,8 +292,8 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   <!-- Status Overview -->
   {#if isInitialized && workerStatus}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <Card>
-        <CardContent class="p-4">
+      <NesCard>
+        <div class="yorha-panel-content" class="p-4">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">Active Tasks</p>
@@ -300,11 +301,11 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             </div>
             <Activity class="h-8 w-8 text-blue-500" />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
       
-      <Card>
-        <CardContent class="p-4">
+      <NesCard>
+        <div class="yorha-panel-content" class="p-4">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">Queue Length</p>
@@ -312,11 +313,11 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             </div>
             <Clock class="h-8 w-8 text-yellow-500" />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
       
-      <Card>
-        <CardContent class="p-4">
+      <NesCard>
+        <div class="yorha-panel-content" class="p-4">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">Success Rate</p>
@@ -324,11 +325,11 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             </div>
             <CheckCircle class="h-8 w-8 text-green-500" />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
       
-      <Card>
-        <CardContent class="p-4">
+      <NesCard>
+        <div class="yorha-panel-content" class="p-4">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">Avg Response</p>
@@ -336,20 +337,20 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             </div>
             <Zap class="h-8 w-8 text-purple-500" />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   {/if}
 
   <!-- Provider Status -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Database class="h-5 w-5" />
         AI Providers
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {#each providerConfigs as provider}
           <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -388,29 +389,29 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
                 disabled={provider.status !== 'online'}
               >
                 Test Connection
-              </Button>
+              </button>
             </div>
           </div>
         {/each}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Active Tasks -->
   {#if activeTasks.size > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           <span class="flex items-center gap-2">
             <Activity class="h-5 w-5" />
             Active Tasks ({activeTasks.size})
           </span>
-          <Button variant="outline" size="sm" onclick={clearCompletedTasks}>
+          <button class="nes-btn" variant="outline" size="sm" onclick={clearCompletedTasks}>
             Clear Completed
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+          </button>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-3">
           {#each Array.from(activeTasks.entries()) as [taskId, task]}
             {@const SvelteComponent = getProviderIcon(task.providerId)}
@@ -431,31 +432,31 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
                 <Badge variant="outline" class="text-xs">
                   {task.priority}
                 </Badge>
-                <Button
+                <button class="nes-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => cancelTask(taskId)}
                 >
                   <X class="h-4 w-4" />
-                </Button>
+                </button>
               </div>
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Recent Results -->
   {#if completedTasks.size > 0 || taskErrors.size > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <CheckCircle class="h-5 w-5" />
           Recent Results
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each Array.from(completedTasks.entries()) as [taskId, response]}
             <div class="flex items-start justify-between p-3 border border-green-200 rounded-lg bg-green-50 dark:bg-green-900/20">
@@ -491,20 +492,20 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Worker Pool Status -->
   {#if showMetrics && workerPool}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Cpu class="h-5 w-5" />
           Worker Pool Status
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Worker Distribution</p>
@@ -536,8 +537,8 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             </div>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

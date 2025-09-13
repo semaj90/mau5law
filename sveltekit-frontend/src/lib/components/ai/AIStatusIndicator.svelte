@@ -1,5 +1,6 @@
 <!-- AI Status Indicator Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     isReady?: boolean;
     isLoading?: boolean;

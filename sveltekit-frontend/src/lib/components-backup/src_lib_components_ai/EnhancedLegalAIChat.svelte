@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
 	import { onMount } from 'svelte';
 	import { writable, derived } from 'svelte/store';
@@ -330,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
 				{#each Object.entries(LEGAL_AI_PROMPTS) as [key, prompt]}
-					<Button
+					<button class="nes-btn"
 						variant="outline"
 						size="sm"
 						onclick={() => applyPromptTemplate(prompt)}
@@ -435,7 +436,7 @@ https://svelte.dev/e/js_parse_error -->
 						Send
 
 
-					<Button
+					<button class="nes-btn"
 						variant="outline"
 						size="sm"
 						onclick={() => inputText = ''}

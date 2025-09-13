@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Evidence } from '$lib/types';
   import {
     Button
@@ -262,7 +263,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {:else}
             <SortDesc class="w-4 h-4" />
           {/if}
-        </Button>
+        </button>
 
         <!-- View mode toggle -->
         <Button class="bits-btn"
@@ -276,7 +277,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {:else}
             <Grid class="w-4 h-4" />
           {/if}
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -293,15 +294,15 @@ https://svelte.dev/e/attribute_duplicate -->
             onclick={() => clearSelection()}
           >
             Clear
-          </Button>
-          <Button variant="secondary" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
+          </button>
+          <button class="nes-btn" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
             <Download class="w-4 h-4" />
             Download
-          </Button>
-          <Button variant="secondary" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
+          </button>
+          <button class="nes-btn" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
             <Archive class="w-4 h-4" />
             Archive
-          </Button>
+          </button>
         </div>
       </div>
     {/if}
@@ -324,7 +325,7 @@ https://svelte.dev/e/attribute_duplicate -->
         onclick={() => evidenceActions.loadEvidence(caseId)}
       >
         Try Again
-      </Button>
+      </button>
     </div>
   {:else if filteredData.length === 0}
     <!-- Empty state -->
@@ -512,7 +513,7 @@ https://svelte.dev/e/attribute_duplicate -->
               <div class="space-y-4">
                 <Button variant="ghost" size="sm" class="space-y-4 bits-btn bits-btn">
                   <MoreHorizontal class="space-y-4" />
-                </Button>
+                </button>
               </div>
             </div>
           {/each}

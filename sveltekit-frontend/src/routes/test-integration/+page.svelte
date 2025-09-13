@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // $state is declared globally in src/types/svelte-helpers.d.ts
   import { fade, fly } from 'svelte/transition';

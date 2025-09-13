@@ -2,6 +2,7 @@
 https://svelte.dev/e/component_invalid_directive -->
 <!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import { Search, Sparkles, FileText, Users, Calendar, Zap, Brain, Target } from 'lucide-svelte';
   import { createEventDispatcher, onMount } from 'svelte';
@@ -574,7 +575,7 @@ https://svelte.dev/e/component_invalid_directive -->
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               {#each autoSuggestions as suggestion}
-                <div class="nier-suggestion-card bg-gray-800/50 border border-gray-600 p-4 hover:border-yellow-400/50 transition-colors group cursor-pointer"
+                <div class="nier-suggestion-nier-bits-card bg-gray-800/50 border border-gray-600 p-4 hover:border-yellow-400/50 transition-colors group cursor-pointer"
                      onclick={() => applyAutoSuggestion(suggestion)}>
                   <div class="flex items-start gap-3">
                     <div class="nier-priority-indicator {suggestion.priority} w-3 h-3 rounded-full flex-shrink-0 mt-1"></div>

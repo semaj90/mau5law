@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from "svelte";
   import { apiFetch } from "$lib/api/clients/api-client";
   import { concurrencyOrchestrator } from '$lib/services/concurrency-orchestrator';

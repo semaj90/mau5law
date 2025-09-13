@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Toolbar } from "bits-ui";
   	import WaveSine from "phosphor-svelte/lib/WaveSine";
   	import WaveSquare from "phosphor-svelte/lib/WaveSquare";

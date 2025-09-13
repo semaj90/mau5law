@@ -1,5 +1,6 @@
 <!-- YoRHa Command Center Dashboard Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Svelte 5 runes and modern imports
   import { onMount } from 'svelte';
   import { goto } from "$app/navigation";
@@ -221,7 +222,7 @@
     <div class="overview-cards lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
 
       <!-- Active Cases -->
-      <div class="metric-card bg-yorha-darker border border-yorha-accent-warm/30 rounded-lg p-4 hover:border-yorha-accent-warm/50 transition-all duration-300">
+      <div class="metric-nier-bits-card bg-yorha-darker border border-yorha-accent-warm/30 rounded-lg p-4 hover:border-yorha-accent-warm/50 transition-all duration-300">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs text-yorha-muted uppercase tracking-wider">Active Cases</span>
           <span class="text-2xl">📁</span>
@@ -233,7 +234,7 @@
       </div>
 
       <!-- Evidence Items -->
-      <div class="metric-card bg-yorha-darker border border-yorha-accent-warm/30 rounded-lg p-4 hover:border-yorha-accent-warm/50 transition-all duration-300">
+      <div class="metric-nier-bits-card bg-yorha-darker border border-yorha-accent-warm/30 rounded-lg p-4 hover:border-yorha-accent-warm/50 transition-all duration-300">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs text-yorha-muted uppercase tracking-wider">Evidence</span>
           <span class="text-2xl">🔍</span>
@@ -245,7 +246,7 @@
       </div>
 
       <!-- Persons of Interest -->
-      <div class="metric-card bg-yorha-darker border border-yorha-accent-warm/30 rounded-lg p-4 hover:border-yorha-accent-warm/50 transition-all duration-300">
+      <div class="metric-nier-bits-card bg-yorha-darker border border-yorha-accent-warm/30 rounded-lg p-4 hover:border-yorha-accent-warm/50 transition-all duration-300">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs text-yorha-muted uppercase tracking-wider">Persons</span>
           <span class="text-2xl">👤</span>
@@ -257,7 +258,7 @@
       </div>
 
       <!-- AI Queries -->
-      <div class="metric-card bg-yorha-darker border border-yorha-accent-warm/30 rounded-lg p-4 hover:border-yorha-accent-warm/50 transition-all duration-300">
+      <div class="metric-nier-bits-card bg-yorha-darker border border-yorha-accent-warm/30 rounded-lg p-4 hover:border-yorha-accent-warm/50 transition-all duration-300">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs text-yorha-muted uppercase tracking-wider">AI Queries</span>
           <span class="text-2xl">🤖</span>
@@ -335,7 +336,7 @@
     <div class="actions-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
       {#each quickActions as action}
         <button
-          class="action-card border rounded-lg p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg {getActionColor(action.color)} {selectedCard === action.id ? 'scale-95' : ''}"
+          class="action-nier-bits-card border rounded-lg p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg {getActionColor(action.color)} {selectedCard === action.id ? 'scale-95' : ''}"
           onclick={() => handleQuickAction(action)}
           role="button"
           tabindex="0"

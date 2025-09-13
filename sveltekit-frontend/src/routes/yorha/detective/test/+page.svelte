@@ -1,5 +1,6 @@
 <!-- Test page for YoRHa Detective functionality -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   let testResult = $state('');
   let isLoading = $state(false);

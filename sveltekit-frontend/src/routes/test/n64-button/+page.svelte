@@ -3,6 +3,7 @@
   Verifies functionality and styling of the gaming UI component
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import N643DButton from '$lib/components/ui/gaming/n64/N643DButton.svelte';
   import { onMount } from 'svelte';
 

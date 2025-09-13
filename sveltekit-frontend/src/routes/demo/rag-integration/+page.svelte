@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { PageData, ActionData } from './$types.js';
   import { onMount } from 'svelte';
   import { enhance } from '$app/forms';
@@ -120,7 +121,7 @@
       <Brain class="w-10 h-10 text-primary" />
       RAG Integration
     </h1>
-    <p class="text-lg text-muted-foreground max-w-3xl mx-auto">
+    <p class="text-lg nes-text is-disabled max-w-3xl mx-auto">
       Comprehensive Retrieval-Augmented Generation system showcasing pgvector, embeddings, 
       and advanced legal knowledge retrieval with real-time performance metrics
     </p>
@@ -173,16 +174,16 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Query Interface -->
       <OrchestratedCard.Analysis>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <Search class="w-5 h-5" />
             RAG Query Interface
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             Perform advanced retrieval-augmented generation queries against the legal knowledge base
           </Card.Description>
         </Card.Header>
-        <Card.Content class="space-y-6">
+        <NesCard.Content class="space-y-6">
           <!-- Query Input -->
           <div class="space-y-3">
             <label class="text-sm font-medium" for="legal-query">Legal Query</label><textarea id="legal-query"
@@ -240,7 +241,7 @@
               {#each (data.demoQueries || []) as demoQuery}
                 <button
                   onclick={() => useDemoQuery(demoQuery)}
-                  class="w-full text-left p-2 text-sm bg-muted hover:bg-muted/80 rounded border text-muted-foreground hover:text-foreground transition-colors"
+                  class="w-full text-left p-2 text-sm bg-muted hover:bg-muted/80 rounded border nes-text is-disabled hover:text-foreground transition-colors"
                   disabled={isQuerying}
                 >
                   {demoQuery}
@@ -253,31 +254,31 @@
 
       <!-- Query Results -->
       <OrchestratedCard.AIInsight>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <FileText class="w-5 h-5" />
             Query Results
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             Generated response and retrieved source documents
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           {#if ragResult}
             <div class="space-y-6">
               <!-- Performance Metrics -->
               <div class="grid grid-cols-3 gap-4">
                 <div class="text-center p-3 bg-muted/50 rounded-lg">
                   <p class="text-lg font-bold text-primary">{formatLatency(ragResult.processingTime)}</p>
-                  <p class="text-xs text-muted-foreground">Total Time</p>
+                  <p class="text-xs nes-text is-disabled">Total Time</p>
                 </div>
                 <div class="text-center p-3 bg-muted/50 rounded-lg">
                   <p class="text-lg font-bold text-primary">{ragResult.sources?.length || 0}</p>
-                  <p class="text-xs text-muted-foreground">Sources</p>
+                  <p class="text-xs nes-text is-disabled">Sources</p>
                 </div>
                 <div class="text-center p-3 bg-muted/50 rounded-lg">
                   <p class="text-lg font-bold text-primary">{formatSimilarity(ragResult.metadata?.avgSimilarity || 0)}</p>
-                  <p class="text-xs text-muted-foreground">Avg Similarity</p>
+                  <p class="text-xs nes-text is-disabled">Avg Similarity</p>
                 </div>
               </div>
 
@@ -310,7 +311,7 @@
                           </Badge>
                         </div>
                         <h5 class="font-medium text-sm mb-1">{source.title}</h5>
-                        <p class="text-xs text-muted-foreground">{source.content}</p>
+                        <p class="text-xs nes-text is-disabled">{source.content}</p>
                       </div>
                     {/each}
                   </div>
@@ -318,7 +319,7 @@
               {/if}
             </div>
           {:else}
-            <div class="text-center py-12 text-muted-foreground">
+            <div class="text-center py-12 nes-text is-disabled">
               <Brain class="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p>Execute a RAG query to see results and retrieved sources here.</p>
               <p class="text-sm mt-2">Try one of the demo queries to get started.</p>
@@ -334,24 +335,24 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <!-- Knowledge Base Overview -->
       <OrchestratedCard.Evidence>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <BookOpen class="w-5 h-5" />
             Knowledge Base Overview
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             Current state and statistics of the legal document repository
           </Card.Description>
         </Card.Header>
-        <Card.Content class="space-y-4">
+        <NesCard.Content class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="text-center p-4 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold text-primary">{totalDocuments.toLocaleString()}</p>
-              <p class="text-sm text-muted-foreground">Total Documents</p>
+              <p class="text-sm nes-text is-disabled">Total Documents</p>
             </div>
             <div class="text-center p-4 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold text-primary">{data.vectorStats?.totalChunks?.toLocaleString() || '0'}</p>
-              <p class="text-sm text-muted-foreground">Text Chunks</p>
+              <p class="text-sm nes-text is-disabled">Text Chunks</p>
             </div>
           </div>
 
@@ -377,35 +378,35 @@
 
       <!-- System Information -->
       <OrchestratedCard.Analysis>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <Settings class="w-5 h-5" />
             System Information
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             RAG system architecture and configuration
           </Card.Description>
         </Card.Header>
-        <Card.Content class="space-y-4">
+        <NesCard.Content class="space-y-4">
           <div class="space-y-3">
             <div class="flex justify-between">
-              <span class="text-sm text-muted-foreground">Vector Database:</span>
+              <span class="text-sm nes-text is-disabled">Vector Database:</span>
               <span class="text-sm font-medium">{data.ragCapabilities?.vectorDatabase?.provider || 'pgvector'}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-sm text-muted-foreground">Dimensions:</span>
+              <span class="text-sm nes-text is-disabled">Dimensions:</span>
               <span class="text-sm font-medium">{data.ragCapabilities?.vectorDatabase?.dimensions || 768}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-sm text-muted-foreground">Embedding Model:</span>
+              <span class="text-sm nes-text is-disabled">Embedding Model:</span>
               <span class="text-sm font-medium">{data.ragCapabilities?.embeddingModel?.name || 'nomic-embed-text'}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-sm text-muted-foreground">LLM Model:</span>
+              <span class="text-sm nes-text is-disabled">LLM Model:</span>
               <span class="text-sm font-medium">{data.ragCapabilities?.llmModel?.name || 'gemma2:27b'}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-sm text-muted-foreground">Context Length:</span>
+              <span class="text-sm nes-text is-disabled">Context Length:</span>
               <span class="text-sm font-medium">{data.ragCapabilities?.llmModel?.contextLength || 8192} tokens</span>
             </div>
           </div>
@@ -419,26 +420,26 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <!-- Vector Database Performance -->
       <OrchestratedCard.Analysis>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <Database class="w-5 h-5" />
             Vector Database Performance
           </Card.Title>
         </Card.Header>
-        <Card.Content class="space-y-4">
+        <NesCard.Content class="space-y-4">
           {#if data.vectorStats?.queryLatency}
             <div class="grid grid-cols-2 gap-4">
               <div class="text-center p-3 bg-muted/50 rounded-lg">
                 <p class="text-lg font-bold {getPerformanceColor(data.vectorStats.queryLatency.p50, 50)}">
                   {data.vectorStats.queryLatency.p50}ms
                 </p>
-                <p class="text-xs text-muted-foreground">P50 Latency</p>
+                <p class="text-xs nes-text is-disabled">P50 Latency</p>
               </div>
               <div class="text-center p-3 bg-muted/50 rounded-lg">
                 <p class="text-lg font-bold {getPerformanceColor(data.vectorStats.queryLatency.p95, 100)}">
                   {data.vectorStats.queryLatency.p95}ms
                 </p>
-                <p class="text-xs text-muted-foreground">P95 Latency</p>
+                <p class="text-xs nes-text is-disabled">P95 Latency</p>
               </div>
             </div>
           {/if}
@@ -447,20 +448,20 @@
 
       <!-- Model Performance -->
       <OrchestratedCard.Analysis>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <Cpu class="w-5 h-5" />
             Model Performance
           </Card.Title>
         </Card.Header>
-        <Card.Content class="space-y-4">
+        <NesCard.Content class="space-y-4">
           <div class="text-center p-4 bg-muted/50 rounded-lg">
             <p class="text-2xl font-bold text-primary">{formatLatency(data.modelInfo?.embedding?.avgLatency || 0)}</p>
-            <p class="text-sm text-muted-foreground">Embedding Latency</p>
+            <p class="text-sm nes-text is-disabled">Embedding Latency</p>
           </div>
           <div class="text-center p-4 bg-muted/50 rounded-lg">
             <p class="text-2xl font-bold text-primary">{formatLatency(data.modelInfo?.llm?.avgLatency || 0)}</p>
-            <p class="text-sm text-muted-foreground">LLM Latency</p>
+            <p class="text-sm nes-text is-disabled">LLM Latency</p>
           </div>
         </Card.Content>
       </OrchestratedCard.Analysis>
@@ -469,33 +470,33 @@
 
   <!-- Recent Queries -->
   <OrchestratedCard.Analysis>
-    <Card.Header>
-      <Card.Title class="flex items-center gap-2">
+    <NesCard.Header>
+      <NesCard.Title class="flex items-center gap-2">
         <Clock class="w-5 h-5" />
         Recent RAG Queries
       </Card.Title>
-      <Card.Description>
+      <NesCard.Description>
         Latest queries processed by the RAG system with performance metrics
       </Card.Description>
     </Card.Header>
-    <Card.Content>
+    <NesCard.Content>
       <div class="space-y-3">
         {#each (data.recentQueries || []) as query}
           <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
             <div class="flex-1">
               <p class="font-medium text-sm mb-1">{query.query}</p>
-              <div class="text-xs text-muted-foreground">
+              <div class="text-xs nes-text is-disabled">
                 {query.resultsFound} results • 
                 {formatSimilarity(query.avgSimilarity)} avg similarity • 
                 {formatLatency(query.processingTime)}
               </div>
-              <div class="text-xs text-muted-foreground">
+              <div class="text-xs nes-text is-disabled">
                 {formatAnalysisDate(new Date(query.timestamp))}
               </div>
             </div>
-            <Button variant="ghost" size="sm" onclick={() => useDemoQuery(query.query)}>
+            <button class="nes-btn" variant="ghost" size="sm" onclick={() => useDemoQuery(query.query)}>
               <Eye class="w-3 h-3" />
-            </Button>
+            </button>
           </div>
         {/each}
       </div>

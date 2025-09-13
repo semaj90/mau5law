@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { PageData, ActionData } from './$types.js';
   import { onMount, onDestroy } from 'svelte';
   import { enhance } from '$app/forms';
@@ -228,7 +229,7 @@
       <Cpu class="w-10 h-10 text-primary" />
       CUDA Streaming
     </h1>
-    <p class="text-lg text-muted-foreground max-w-3xl mx-auto">
+    <p class="text-lg nes-text is-disabled max-w-3xl mx-auto">
       GPU-accelerated real-time legal document processing with NVIDIA CUDA and streaming analytics
     </p>
     <div class="flex justify-center gap-2 mt-6">
@@ -280,16 +281,16 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Streaming Controls -->
       <OrchestratedCard.Analysis>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <Play class="w-5 h-5" />
             Streaming Configuration
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             Configure and start GPU-accelerated document processing streams
           </Card.Description>
         </Card.Header>
-        <Card.Content class="space-y-6">
+        <NesCard.Content class="space-y-6">
           <!-- Operation Selection -->
           <div class="space-y-3">
             <label class="text-sm font-medium" for="processing-operation">Processing Operation</label>
@@ -359,14 +360,13 @@
             </OrchestratedButton.ProcessDocument>
 
             {#if isStreaming}
-              <Button 
-                variant="destructive" 
+              <button class="nes-btn is-error" 
                 onclick={stopCudaStream}
                 class="gap-2"
               >
                 <Square class="w-4 h-4" />
                 Stop
-              </Button>
+              </button>
             {:else}
               <Button 
                 variant="outline" 
@@ -376,7 +376,7 @@
               >
                 <Zap class="w-4 h-4" />
                 Single Process
-              </Button>
+              </button>
             {/if}
           </div>
 
@@ -394,7 +394,7 @@
                 ></div>
               </div>
               {#if currentSession}
-                <p class="text-xs text-muted-foreground">
+                <p class="text-xs nes-text is-disabled">
                   Session: {currentSession}
                 </p>
               {/if}
@@ -405,19 +405,19 @@
 
       <!-- Live Stream Results -->
       <OrchestratedCard.Evidence>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <Activity class="w-5 h-5" />
             Live Stream Results
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             Real-time processing results and performance metrics
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           <div class="space-y-3 max-h-96 overflow-y-auto">
             {#if streamResults.length === 0}
-              <div class="text-center py-8 text-muted-foreground">
+              <div class="text-center py-8 nes-text is-disabled">
                 <Activity class="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p>No active streams. Start processing to see results.</p>
               </div>
@@ -438,11 +438,11 @@
                   </div>
                   
                   {#if result.input}
-                    <p class="text-xs text-muted-foreground mb-2">{result.input}</p>
+                    <p class="text-xs nes-text is-disabled mb-2">{result.input}</p>
                   {/if}
                   
                   {#if result.processingTime}
-                    <div class="flex items-center gap-4 text-xs text-muted-foreground">
+                    <div class="flex items-center gap-4 text-xs nes-text is-disabled">
                       <span>{result.processingTime}ms</span>
                       <span>{result.gpuAccelerated ? 'GPU' : 'CPU'}</span>
                       {#if result.results?.confidence}
@@ -475,80 +475,80 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- GPU Status -->
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between mb-4">
             <Cpu class="w-8 h-8 text-primary/60" />
             <Badge variant={data.gpuInfo.gpuAvailable ? 'default' : 'destructive'}>
               {gpuStatus}
             </Badge>
           </div>
-          <p class="text-sm text-muted-foreground mb-1">GPU Status</p>
+          <p class="text-sm nes-text is-disabled mb-1">GPU Status</p>
           <p class="text-lg font-medium">{data.gpuInfo.gpuName}</p>
-          <p class="text-xs text-muted-foreground">{data.gpuInfo.computeCapability}</p>
+          <p class="text-xs nes-text is-disabled">{data.gpuInfo.computeCapability}</p>
         </Card.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Memory Usage -->
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between mb-4">
             <Memory class="w-8 h-8 text-primary/60" />
             <Badge variant="outline">{data.gpuInfo.utilization?.memory}%</Badge>
           </div>
-          <p class="text-sm text-muted-foreground mb-1">Memory Usage</p>
+          <p class="text-sm nes-text is-disabled mb-1">Memory Usage</p>
           <p class="text-lg font-medium">{data.gpuInfo.availableMemory}</p>
-          <p class="text-xs text-muted-foreground">of {data.gpuInfo.totalMemory}</p>
+          <p class="text-xs nes-text is-disabled">of {data.gpuInfo.totalMemory}</p>
         </Card.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Temperature -->
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between mb-4">
             <Thermometer class="w-8 h-8 text-primary/60" />
             <Badge variant="outline">{data.gpuInfo.temperatureCurrent}°C</Badge>
           </div>
-          <p class="text-sm text-muted-foreground mb-1">Temperature</p>
+          <p class="text-sm nes-text is-disabled mb-1">Temperature</p>
           <p class="text-lg font-medium">{data.gpuInfo.temperatureCurrent}°C</p>
-          <p class="text-xs text-muted-foreground">Normal operating range</p>
+          <p class="text-xs nes-text is-disabled">Normal operating range</p>
         </Card.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Power Draw -->
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between mb-4">
             <Power class="w-8 h-8 text-primary/60" />
             <Badge variant="outline">{data.gpuInfo.powerDraw}W</Badge>
           </div>
-          <p class="text-sm text-muted-foreground mb-1">Power Draw</p>
+          <p class="text-sm nes-text is-disabled mb-1">Power Draw</p>
           <p class="text-lg font-medium">{data.gpuInfo.powerDraw}W</p>
-          <p class="text-xs text-muted-foreground">Current consumption</p>
+          <p class="text-xs nes-text is-disabled">Current consumption</p>
         </Card.Content>
       </OrchestratedCard.Analysis>
     </div>
 
     <!-- Performance Metrics -->
     <OrchestratedCard.Analysis>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+      <NesCard.Header>
+        <NesCard.Title class="flex items-center gap-2">
           <TrendingUp class="w-5 h-5" />
           Real-Time Performance Metrics
         </Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="text-center p-4 bg-muted/50 rounded-lg">
             <p class="text-2xl font-bold text-primary">{formatThroughput(liveMetrics.throughputCurrent)}</p>
-            <p class="text-sm text-muted-foreground">Current Throughput</p>
+            <p class="text-sm nes-text is-disabled">Current Throughput</p>
           </div>
           <div class="text-center p-4 bg-muted/50 rounded-lg">
             <p class="text-2xl font-bold text-primary">{liveMetrics.avgProcessingTime}ms</p>
-            <p class="text-sm text-muted-foreground">Avg Processing Time</p>
+            <p class="text-sm nes-text is-disabled">Avg Processing Time</p>
           </div>
           <div class="text-center p-4 bg-muted/50 rounded-lg">
             <p class="text-2xl font-bold text-primary">{liveMetrics.queueSize}</p>
-            <p class="text-sm text-muted-foreground">Queue Size</p>
+            <p class="text-sm nes-text is-disabled">Queue Size</p>
           </div>
         </div>
       </Card.Content>
@@ -557,16 +557,16 @@
 
   <!-- Recent Processing Results -->
   <OrchestratedCard.Analysis>
-    <Card.Header>
-      <Card.Title class="flex items-center gap-2">
+    <NesCard.Header>
+      <NesCard.Title class="flex items-center gap-2">
         <Clock class="w-5 h-5" />
         Recent Processing Sessions
       </Card.Title>
-      <Card.Description>
+      <NesCard.Description>
         Historical GPU processing performance and results
       </Card.Description>
     </Card.Header>
-    <Card.Content>
+    <NesCard.Content>
       <div class="space-y-3">
         {#each data.recentProcessing as session}
           <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
@@ -586,18 +586,18 @@
                   {session.status}
                 </Badge>
               </div>
-              <div class="text-sm text-muted-foreground">
+              <div class="text-sm nes-text is-disabled">
                 {session.documentsProcessed} documents • 
                 {session.processingTime}ms • 
                 {formatThroughput(session.throughput)} throughput
               </div>
-              <div class="text-xs text-muted-foreground">
+              <div class="text-xs nes-text is-disabled">
                 {formatAnalysisDate(new Date(session.timestamp))}
               </div>
             </div>
-            <Button variant="ghost" size="sm">
+            <button class="nes-btn" variant="ghost" size="sm">
               <Eye class="w-3 h-3" />
-            </Button>
+            </button>
           </div>
         {/each}
       </div>

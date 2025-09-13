@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import EvidenceCard from '$lib/components/ui/evidence/EvidenceCard.svelte';
   import EvidenceCanvas from '$lib/components/canvas/EvidenceCanvas.svelte';
   import type { CaseFile } from '$lib/core/logic/case-logic';

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goTensorService } from '$lib/services/go-tensor-service-client';
   import { gpuPerformanceOptimizer } from '$lib/services/gpu-performance-optimizer';

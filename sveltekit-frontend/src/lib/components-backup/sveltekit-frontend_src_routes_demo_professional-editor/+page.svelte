@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import ProfessionalEditor from '$lib/components/editor/ProfessionalEditor.svelte';
   import { FileText, Zap, Keyboard, Eye, Save, BarChart3 } from 'lucide-svelte';
 
@@ -66,37 +67,37 @@
         </div>
         
         <div class="features-grid">
-          <div class="feature-card yorha-card">
+          <div class="feature-nier-bits-card yorha-nier-bits-card">
             <Zap class="feature-icon text-yorha-primary" />
             <h3>Full-Screen Experience</h3>
             <p>Immersive writing environment with F11 fullscreen support</p>
           </div>
           
-          <div class="feature-card yorha-card">
+          <div class="feature-nier-bits-card yorha-nier-bits-card">
             <Keyboard class="feature-icon text-yorha-secondary" />
             <h3>Keyboard Shortcuts</h3>
             <p>Professional hotkeys for efficient document editing</p>
           </div>
           
-          <div class="feature-card yorha-card">
+          <div class="feature-nier-bits-card yorha-nier-bits-card">
             <Save class="feature-icon text-yorha-accent" />
             <h3>Auto-Save</h3>
             <p>Never lose your work with intelligent auto-save functionality</p>
           </div>
           
-          <div class="feature-card yorha-card">
+          <div class="feature-nier-bits-card yorha-nier-bits-card">
             <Eye class="feature-icon text-yorha-success" />
             <h3>Focus Mode</h3>
             <p>Distraction-free writing with dimmed UI elements</p>
           </div>
           
-          <div class="feature-card yorha-card">
+          <div class="feature-nier-bits-card yorha-nier-bits-card">
             <FileText class="feature-icon text-yorha-primary" />
             <h3>Professional Typography</h3>
             <p>Optimized fonts and spacing for legal documents</p>
           </div>
           
-          <div class="feature-card yorha-card">
+          <div class="feature-nier-bits-card yorha-nier-bits-card">
             <BarChart3 class="feature-icon text-yorha-secondary" />
             <h3>Document Statistics</h3>
             <p>Real-time word count, character count, and reading time</p>
@@ -147,7 +148,7 @@
       <!-- Usage Instructions -->
       <section class="instructions-section">
         <div class="instructions-grid">
-          <div class="instruction-card yorha-card">
+          <div class="instruction-nier-bits-card yorha-nier-bits-card">
             <h3>Getting Started</h3>
             <ol>
               <li>Click in the editor area to start typing</li>
@@ -157,7 +158,7 @@
             </ol>
           </div>
           
-          <div class="instruction-card yorha-card">
+          <div class="instruction-nier-bits-card yorha-nier-bits-card">
             <h3>Professional Features</h3>
             <ul>
               <li>Auto-save every 5 seconds (configurable)</li>
@@ -167,7 +168,7 @@
             </ul>
           </div>
           
-          <div class="instruction-card yorha-card">
+          <div class="instruction-nier-bits-card yorha-nier-bits-card">
             <h3>Keyboard Shortcuts</h3>
             <div class="shortcuts-table">
               <div class="shortcut-row">

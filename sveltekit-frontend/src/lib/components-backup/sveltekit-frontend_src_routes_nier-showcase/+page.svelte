@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import NierThemeShowcase from '$lib/components/NierThemeShowcase.svelte'
   import NierHeader from '$lib/components/NierHeader.svelte'
   import CaseCard from '$lib/components/cases/CaseCard.svelte'
@@ -149,28 +150,28 @@
 
     <!-- Stats Overview -->
     <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-      <div class="nier-card p-6 text-center group hover:border-digital-green dark:hover:border-digital-green">
+      <div class="nier-nier-bits-card p-6 text-center group hover:border-digital-green dark:hover:border-digital-green">
         <div class="text-3xl font-bold text-harvard-crimson dark:text-digital-green mb-2">
           127
         </div>
         <p class="text-sm text-nier-gray dark:text-nier-silver">Active Cases</p>
       </div>
 
-      <div class="nier-card p-6 text-center group hover:border-digital-green dark:hover:border-digital-green">
+      <div class="nier-nier-bits-card p-6 text-center group hover:border-digital-green dark:hover:border-digital-green">
         <div class="text-3xl font-bold text-harvard-crimson dark:text-digital-green mb-2">
           89%
         </div>
         <p class="text-sm text-nier-gray dark:text-nier-silver">Success Rate</p>
       </div>
 
-      <div class="nier-card p-6 text-center group hover:border-digital-green dark:hover:border-digital-green">
+      <div class="nier-nier-bits-card p-6 text-center group hover:border-digital-green dark:hover:border-digital-green">
         <div class="text-3xl font-bold text-harvard-crimson dark:text-digital-green mb-2">
           1,247
         </div>
         <p class="text-sm text-nier-gray dark:text-nier-silver">Evidence Items</p>
       </div>
 
-      <div class="nier-card p-6 text-center group hover:border-digital-green dark:hover:border-digital-green">
+      <div class="nier-nier-bits-card p-6 text-center group hover:border-digital-green dark:hover:border-digital-green">
         <div class="text-3xl font-bold text-harvard-crimson dark:text-digital-green mb-2">
           24/7
         </div>

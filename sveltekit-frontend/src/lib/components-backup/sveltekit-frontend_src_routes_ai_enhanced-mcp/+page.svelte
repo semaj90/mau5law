@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	/**
   	 * Enhanced MCP Integration Demo Page
   	 * Demonstrates cluster system, MCP tools, and Context7 integration with SvelteKit
@@ -200,7 +201,7 @@
 	<div class="system-status">
 		<h2>🔍 System Status Overview</h2>
 		<div class="status-grid">
-			<div class="status-card status-{$integrationStatus.mcpServerRunning ? 'online' : 'offline'}">
+			<div class="status-nier-bits-card status-{$integrationStatus.mcpServerRunning ? 'online' : 'offline'}">
 				<div class="status-icon">📡</div>
 				<div class="status-info">
 					<div class="status-title">Context7 MCP Server</div>
@@ -210,7 +211,7 @@
 				</div>
 			</div>
 			
-			<div class="status-card status-{$integrationStatus.clusterSystemOnline ? 'online' : 'offline'}">
+			<div class="status-nier-bits-card status-{$integrationStatus.clusterSystemOnline ? 'online' : 'offline'}">
 				<div class="status-icon">⚡</div>
 				<div class="status-info">
 					<div class="status-title">Cluster System</div>
@@ -220,7 +221,7 @@
 				</div>
 			</div>
 			
-			<div class="status-card status-{$integrationStatus.ollamaModelsLoaded ? 'online' : 'offline'}">
+			<div class="status-nier-bits-card status-{$integrationStatus.ollamaModelsLoaded ? 'online' : 'offline'}">
 				<div class="status-icon">🧠</div>
 				<div class="status-info">
 					<div class="status-title">Ollama Models</div>
@@ -230,7 +231,7 @@
 				</div>
 			</div>
 			
-			<div class="status-card status-{$integrationStatus.vsCodeExtensionActive ? 'online' : 'offline'}">
+			<div class="status-nier-bits-card status-{$integrationStatus.vsCodeExtensionActive ? 'online' : 'offline'}">
 				<div class="status-icon">💻</div>
 				<div class="status-info">
 					<div class="status-title">VS Code Extension</div>
@@ -240,7 +241,7 @@
 				</div>
 			</div>
 			
-			<div class="status-card status-{$integrationStatus.contextualAnalysisReady ? 'online' : 'offline'}">
+			<div class="status-nier-bits-card status-{$integrationStatus.contextualAnalysisReady ? 'online' : 'offline'}">
 				<div class="status-icon">🎯</div>
 				<div class="status-info">
 					<div class="status-title">Contextual Analysis</div>
@@ -325,7 +326,7 @@
 	<div class="integration-features">
 		<h2>✨ Enhanced Integration Features</h2>
 		<div class="features-grid">
-			<div class="feature-card">
+			<div class="feature-nier-bits-card">
 				<div class="feature-icon">🚀</div>
 				<div class="feature-title">Cluster Performance</div>
 				<div class="feature-description">
@@ -333,7 +334,7 @@
 				</div>
 			</div>
 			
-			<div class="feature-card">
+			<div class="feature-nier-bits-card">
 				<div class="feature-icon">🤖</div>
 				<div class="feature-title">Multi-Agent Orchestration</div>
 				<div class="feature-description">
@@ -341,7 +342,7 @@
 				</div>
 			</div>
 			
-			<div class="feature-card">
+			<div class="feature-nier-bits-card">
 				<div class="feature-icon">🧠</div>
 				<div class="feature-title">Enhanced RAG System</div>
 				<div class="feature-description">
@@ -349,7 +350,7 @@
 				</div>
 			</div>
 			
-			<div class="feature-card">
+			<div class="feature-nier-bits-card">
 				<div class="feature-icon">📚</div>
 				<div class="feature-title">Context7 Documentation</div>
 				<div class="feature-description">
@@ -357,7 +358,7 @@
 				</div>
 			</div>
 			
-			<div class="feature-card">
+			<div class="feature-nier-bits-card">
 				<div class="feature-icon">🕸️</div>
 				<div class="feature-title">Memory Graph</div>
 				<div class="feature-description">
@@ -365,7 +366,7 @@
 				</div>
 			</div>
 			
-			<div class="feature-card">
+			<div class="feature-nier-bits-card">
 				<div class="feature-icon">📡</div>
 				<div class="feature-title">Real-time WebSocket</div>
 				<div class="feature-description">

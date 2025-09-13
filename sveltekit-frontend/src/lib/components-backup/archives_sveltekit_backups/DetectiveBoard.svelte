@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Evidence } from "$lib/types/api";
   import { onDestroy, onMount } from "svelte";
   import { dndzone } from "svelte-dnd-action";

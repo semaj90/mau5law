@@ -13,6 +13,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   
@@ -328,7 +329,7 @@
   <section class="metrics-section">
     <div class="metrics-grid">
       {#each intelligenceMetrics as metric (metric.id)}
-        <div.Root class="metric-card">
+        <div.Root class="metric-nier-bits-card">
           <div.Content class="p-6">
             <div class="metric-header">
               <h3 class="metric-name">{metric.name}</h3>
@@ -647,13 +648,13 @@
         </div>
         
         <div class="modal-actions">
-          <Button variant="outline" onclick={closeInsightDetails}>
+          <button class="nes-btn" variant="outline" onclick={closeInsightDetails}>
             Close
-          </Button>
-          <Button variant="primary">
+          </button>
+          <button class="nes-btn is-primary">
             <Target class="w-4 h-4 mr-2" />
             Act on Insight
-          </Button>
+          </button>
         </div>
       </div>
     {/if}

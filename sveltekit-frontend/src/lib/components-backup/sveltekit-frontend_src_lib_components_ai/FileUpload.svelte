@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label";
   import { Progress } from "$lib/components/ui/progress";
@@ -61,14 +62,14 @@
   }
 </script>
 
-<Card class="w-full max-w-2xl mx-auto">
-  <CardHeader>
-    <CardTitle class="flex items-center gap-2">
+<NesCard class="w-full max-w-2xl mx-auto">
+  <div class="yorha-panel-header">
+    <h3 class="nes-text is-primary" class="flex items-center gap-2">
       <FileUp />
       Document Upload and Analysis
-    </CardTitle>
-  </CardHeader>
-  <CardContent class="space-y-6">
+    </h3>
+  </div>
+  <div class="yorha-panel-content" class="space-y-6">
     <div class="grid w-full items-center gap-1.5">
       <Label for_="file-upload">PDF or XML Document</Label>
       <Input id="file-upload" type="file" bind:files accept=".pdf,.xml" />
@@ -93,7 +94,7 @@
         <FileUp class="mr-2 h-4 w-4" />
         Upload and Analyze
       {/if}
-    </Button>
+    </button>
 
     {#if isUploading}
       <Progress value={uploadProgress} class="w-full" />
@@ -107,16 +108,16 @@
     {/if}
 
     {#if analysisResult}
-      <Card>
-        <CardHeader>
-          <CardTitle>Analysis Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Analysis Summary</h3>
+        </div>
+        <div class="yorha-panel-content">
           <pre class="whitespace-pre-wrap text-sm">{JSON.stringify(analysisResult, null, 2)}</pre>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 

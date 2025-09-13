@@ -1,9 +1,10 @@
 <script lang="ts">
-  import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import 'nes.css/css/nes.min.css';
+  import { Card } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { CaseLogic, type CaseFile } from '$lib/core/logic/case-logic';
 
-  export let caseFile: CaseFile;
+  let { caseFile }: { caseFile: CaseFile } = $props();
 
   const displayStatus = CaseLogic.getDisplayStatus(caseFile);
   const riskScore = CaseLogic.calculateRiskScore(caseFile);
@@ -23,7 +24,7 @@
   <Card.Content class="space-y-4">
     <p>{caseFile.summary}</p>
     <div class="flex justify-end">
-      <Button class="nes-btn is-primary" on:click={handleAnalyzeClick}>
+      <Button class="nes-btn is-primary" onclick={handleAnalyzeClick}>
         Analyze
       </Button>
     </div>

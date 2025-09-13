@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Button, Dialog, Select } from "bits-ui";
   import { onMount } from "svelte";
 

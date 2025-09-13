@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { goto, invalidateAll } from '$app/navigation';
   import { onMount } from 'svelte';
   onMount(async () => {

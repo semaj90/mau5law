@@ -1,5 +1,6 @@
 <!-- Enhanced AI Chat Test Component - Svelte 5 with bits-ui and shadcn-svelte -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from '$app/environment';
   import { onMount, tick } from 'svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
@@ -341,7 +342,7 @@
     <Button variant="outline" class="gap-2 bits-btn bits-btn">
       <MessageCircle class="h-4 w-4" />
       {title}
-    </Button>
+    </button>
   </Dialog.Trigger>
 
   <Dialog.Portal>
@@ -391,12 +392,12 @@
             onclick={downloadConversation}
             disabled={messages.length <= 1}>
             <Download class="h-4 w-4" />
-          </Button>
+          </button>
           <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages} disabled={messages.length <= 1}>
             <Trash2 class="h-4 w-4" />
-          </Button>
+          </button>
           <Dialog.Close>
-            <Button class="bits-btn" variant="ghost" size="sm">✕</Button>
+            <Button class="bits-btn" variant="ghost" size="sm">✕</button>
           </Dialog.Close>
         </div>
       </div>
@@ -413,7 +414,7 @@
                 </div>
               {/if}
 
-              <Card
+              <NesCard
                 class="max-w-[80%] p-3 {message.role === 'user'
                   ? 'bg-blue-600 text-white'
                   : message.error
@@ -438,7 +439,7 @@
                 <div class="text-xs opacity-70 mt-1">
                   {message.timestamp.toLocaleTimeString()}
                 </div>
-              </Card>
+              </NesCard>
 
               {#if message.role === 'user'}
                 <div
@@ -470,7 +471,7 @@
             {:else}
               <Send class="h-4 w-4" />
             {/if}
-          </Button>
+          </button>
         </div>
 
         <div class="flex items-center justify-between mt-2">

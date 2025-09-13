@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import { createAccordion, melt } from 'melt';
   // Bits UI Dialog
@@ -24,7 +25,7 @@
 <div class="container mx-auto p-8 space-y-8">
   <div class="text-center space-y-4">
     <h1 class="text-4xl font-bold text-primary">Advanced UI Components</h1>
-    <p class="text-xl text-muted-foreground">
+    <p class="text-xl nes-text is-disabled">
       bits-ui v2.9.4 + melt v0.39.0 + shadcn-svelte on Svelte 5, SvelteKit 2
     </p>
     <div class="flex items-center justify-center space-x-4 text-sm">
@@ -44,13 +45,13 @@
         onclick={() => selectedDemo = item.id}
       >
         <h3 class="font-semibold">{item.label}</h3>
-        <p class="text-sm text-muted-foreground mt-1">{item.description}</p>
+        <p class="text-sm nes-text is-disabled mt-1">{item.description}</p>
       </button>
     {/each}
   </div>
 
   <!-- Demo Content -->
-  <div class="min-h-[500px] border rounded-lg p-6 bg-card">
+  <div class="min-h-[500px] border rounded-lg p-6 bg-nier-bits-card">
     {#if selectedDemo === 'overview'}
       <div class="space-y-6">
         <h2 class="text-2xl font-bold">Integration Overview</h2>
@@ -98,20 +99,20 @@
         <h2 class="text-2xl font-bold">Button Components</h2>
         
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Button class="bits-btn" variant="default">Default</Button>
-          <Button class="bits-btn" variant="secondary">Secondary</Button>
-          <Button class="bits-btn" variant="outline">Outline</Button>
-          <Button class="bits-btn" variant="ghost">Ghost</Button>
-          <Button class="bits-btn" variant="legal">Legal</Button>
-          <Button class="bits-btn" variant="evidence">Evidence</Button>
-          <Button class="bits-btn" variant="case">Case</Button>
-          <Button class="bits-btn" variant="destructive">Destructive</Button>
+          <Button class="bits-btn" variant="default">Default</button>
+          <Button class="bits-btn" variant="secondary">Secondary</button>
+          <Button class="bits-btn" variant="outline">Outline</button>
+          <Button class="bits-btn" variant="ghost">Ghost</button>
+          <Button class="bits-btn" variant="legal">Legal</button>
+          <Button class="bits-btn" variant="evidence">Evidence</button>
+          <Button class="bits-btn" variant="case">Case</button>
+          <Button class="bits-btn" variant="destructive">Destructive</button>
         </div>
         
         <div class="grid grid-cols-3 gap-4">
-          <Button class="bits-btn" size="sm">Small</Button>
-          <Button class="bits-btn" size="default">Default</Button>
-          <Button class="bits-btn" size="lg">Large</Button>
+          <Button class="bits-btn" size="sm">Small</button>
+          <Button class="bits-btn" size="default">Default</button>
+          <Button class="bits-btn" size="lg">Large</button>
         </div>
         
         <div class="bg-muted p-4 rounded-lg">
@@ -158,7 +159,7 @@
             </button>
             <div 
               
-              class="px-4 pb-4 text-sm text-muted-foreground"
+              class="px-4 pb-4 text-sm nes-text is-disabled"
             >
               bits-ui is a headless component library for Svelte that provides accessible, customizable UI primitives.
             </div>
@@ -173,7 +174,7 @@
             </button>
             <div 
               
-              class="px-4 pb-4 text-sm text-muted-foreground"
+              class="px-4 pb-4 text-sm nes-text is-disabled"
             >
               melt-ui provides builder functions that create accessible, keyboard-navigable components with smooth animations.
             </div>
@@ -188,7 +189,7 @@
             </button>
             <div 
               
-              class="px-4 pb-4 text-sm text-muted-foreground"
+              class="px-4 pb-4 text-sm nes-text is-disabled"
             >
               bits-ui and melt-ui complement each other - bits-ui for complex components, melt-ui for interactive behaviors and animations.
             </div>
@@ -231,7 +232,7 @@
             ></textarea>
           </div>
           
-          <Button type="submit" class="w-full bits-btn bits-btn">Submit Form</Button>
+          <Button type="submit" class="w-full bits-btn bits-btn">Submit Form</button>
         </form>
         
         <div class="bg-muted p-4 rounded-lg">
@@ -243,7 +244,7 @@
   </div>
   
   <!-- Package Info -->
-  <div class="bg-card border rounded-lg p-6">
+  <div class="bg-nier-bits-card border rounded-lg p-6">
     <h3 class="text-lg font-semibold mb-4">Current Package Versions</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
       <div class="flex justify-between">
@@ -272,7 +273,7 @@
       <h2  class="text-lg font-semibold mb-4">
         bits-ui Dialog Example
       </h2>
-      <p class="text-sm text-muted-foreground mb-4">
+      <p class="text-sm nes-text is-disabled mb-4">
         This is a fully accessible dialog component built with bits-ui v2.9.4 for Svelte 5.
       </p>
       <div class="flex justify-end space-x-2">

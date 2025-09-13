@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   const { data } = $props();
 
   import { onMount } from 'svelte';

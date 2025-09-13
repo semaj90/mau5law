@@ -2,7 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  import Button from "$lib/components/ui/Button.svelte";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
   import { formatFileSize } from "$lib/utils/file-utils";
   import {
@@ -76,9 +77,9 @@ https://svelte.dev/e/js_parse_error -->
           <Upload class="mx-auto px-4 max-w-7xl" />
           <h2 class="mx-auto px-4 max-w-7xl">Upload Evidence</h2>
         </div>
-        <Button variant="ghost" size="sm" onclick={() => closeModal()}>
+        <button class="nes-btn" variant="ghost" size="sm" onclick={() => closeModal()}>
           <X class="mx-auto px-4 max-w-7xl" />
-        </Button>
+        </button>
       </div>
 
       <!-- Body -->
@@ -101,9 +102,9 @@ https://svelte.dev/e/js_parse_error -->
           <p class="mx-auto px-4 max-w-7xl">
             Support for images, documents, audio, and video files
           </p>
-          <Button variant="outline" onclick={() => fileInput?.click()}>
+          <button class="nes-btn" variant="outline" onclick={() => fileInput?.click()}>
             Choose Files
-          </Button>
+          </button>
           <input
             bind:this={fileInput}
             type="file"
@@ -177,13 +178,13 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
 
                     <div class="mx-auto px-4 max-w-7xl">
-                      <Button
+                      <button class="nes-btn"
                         variant="ghost"
                         size="sm"
                         onclick={() => removeFile(file.id)}
                       >
                         <X class="mx-auto px-4 max-w-7xl" />
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 {/if}
@@ -210,14 +211,14 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <div class="mx-auto px-4 max-w-7xl">
-          <Button variant="outline" onclick={() => closeModal()}>
+          <button class="nes-btn" variant="outline" onclick={() => closeModal()}>
             {activeUploads.length > 0 ? "Continue in Background" : "Close"}
-          </Button>
+          </button>
 
           {#if completedUploads.length > 0}
-            <Button onclick={() => dispatch("viewEvidence", completedUploads)}>
+            <button class="nes-btn" onclick={() => dispatch("viewEvidence", completedUploads)}>
               View Evidence
-            </Button>
+            </button>
           {/if}
         </div>
       </div>

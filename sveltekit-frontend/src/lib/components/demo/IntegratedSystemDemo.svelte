@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
   import { onMount } from 'svelte';
@@ -217,11 +218,11 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="w-full max-w-6xl mx-auto p-6 space-y-6">
   <!-- System Overview Header -->
-  <Card>
-    <CardHeader>
+  <NesCard>
+    <div class="yorha-panel-header">
       <div class="flex items-center justify-between">
         <div>
-          <CardTitle class="text-2xl font-bold">Integrated Legal AI System</CardTitle>
+          <h3 class="nes-text is-primary" class="text-2xl font-bold">Integrated Legal AI System</h3>
           <p class="text-gray-600 mt-1">
             Complete demonstration of XState machines, authentication, AI assistant, and production services
           </p>
@@ -236,14 +237,14 @@ https://svelte.dev/e/js_parse_error -->
           </Badge>
         </div>
       </div>
-    </CardHeader>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- System Status Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
     <!-- Authentication Status -->
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">Authentication</p>
@@ -258,12 +259,12 @@ https://svelte.dev/e/js_parse_error -->
             Uptime: {formatUptime(serviceMetrics.authUptime)}
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Session Management Status -->
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">Session Management</p>
@@ -278,12 +279,12 @@ https://svelte.dev/e/js_parse_error -->
             Health: {sessionHealth().warningCount} warnings
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- AI Assistant Status -->
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">AI Assistant</p>
@@ -298,12 +299,12 @@ https://svelte.dev/e/js_parse_error -->
             Conversations: {conversationHistory().length}
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Production Services Status -->
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">Production Services</p>
@@ -316,8 +317,8 @@ https://svelte.dev/e/js_parse_error -->
           Upload Service: {systemStatus.productionServices ? 'Running' : 'Stopped'}<br>
           Total Interactions: {serviceMetrics.totalInteractions}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 
   <!-- Demo Tabs -->
@@ -332,11 +333,11 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Overview Tab -->
     <TabsContent value="overview" class="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>System Integration Demo</CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">System Integration Demo</h3>
+        </div>
+        <div class="yorha-panel-content" class="space-y-4">
           <p class="text-gray-600">
             This demonstration showcases the complete integration of all system components:
           </p>
@@ -360,27 +361,27 @@ https://svelte.dev/e/js_parse_error -->
               <div class="space-y-2">
                 <Button class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
                   Demo Login
-                </Button>
+                </button>
                 <Button class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
                   Test AI Assistant
-                </Button>
+                </button>
                 <Button class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="outline">
                   Demo Logout
-                </Button>
+                </button>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Authentication Tab -->
     <TabsContent value="auth" class="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Authentication System</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Authentication System</h3>
+        </div>
+        <div class="yorha-panel-content">
           {#if !authenticatedUser}
             <div class="space-y-4">
               <p class="text-gray-600">
@@ -388,7 +389,7 @@ https://svelte.dev/e/js_parse_error -->
               </p>
               <Button class="bits-btn" onclick={() => showAuthDialog = true}>
                 Open Authentication Dialog
-              </Button>
+              </button>
             </div>
           {:else}
             <div class="space-y-4">
@@ -402,20 +403,20 @@ https://svelte.dev/e/js_parse_error -->
               </div>
               <Button class="bits-btn" onclick={demoLogout} variant="outline">
                 Logout
-              </Button>
+              </button>
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Session Tab -->
     <TabsContent value="session" class="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Session Management</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Session Management</h3>
+        </div>
+        <div class="yorha-panel-content">
           {#if activeSession}
             <div class="space-y-4">
               <div class="grid grid-cols-2 gap-4">
@@ -444,21 +445,21 @@ https://svelte.dev/e/js_parse_error -->
                   size="sm"
                 >
                   Security Check
-                </Button>
+                </button>
                 <Button class="bits-btn" 
                   onclick={() => sessionManager.refreshSession()} 
                   size="sm" 
                   variant="outline"
                 >
                   Refresh Session
-                </Button>
+                </button>
               </div>
             </div>
           {:else}
             <p class="text-gray-600">Please authenticate to view session management features.</p>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- AI Assistant Tab -->
@@ -473,11 +474,11 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Services Tab -->
     <TabsContent value="services" class="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Production Services Status</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Production Services Status</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
@@ -515,10 +516,10 @@ https://svelte.dev/e/js_parse_error -->
             
             <Button class="bits-btn" onclick={checkSystemHealth}>
               Refresh System Health
-            </Button>
+            </button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
   </Tabs>
 </div>

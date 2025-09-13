@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Features: Drag & drop, progress tracking, AI processing, validation, preview
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     caseId: string | undefined ;
     multiple?: any;
@@ -31,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
 
   import { Alert, AlertDescription } from "$lib/components/ui/alert";
   import { Badge } from "$lib/components/ui/badge";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import {
     Card,
     CardContent,
@@ -358,15 +359,15 @@ https://svelte.dev/e/js_parse_error -->
   class="hidden"
 />
 
-<Card class="w-full">
-  <CardHeader class="pb-4">
-    <CardTitle class="flex items-center gap-2">
+<NesCard class="w-full">
+  <div class="yorha-panel-header" class="pb-4">
+    <h3 class="nes-text is-primary" class="flex items-center gap-2">
       <Upload class="h-5 w-5" />
       {compact ? "Upload Files" : "Evidence Upload"}
-    </CardTitle>
-  </CardHeader>
+    </h3>
+  </div>
 
-  <CardContent class="space-y-6">
+  <div class="yorha-panel-content" class="space-y-6">
     <!-- Drop Zone -->
     <div
       class="border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer
@@ -393,7 +394,7 @@ https://svelte.dev/e/js_parse_error -->
                 value={uploadProgress[currentUploadFile]}
                 class="w-64"
               />
-              <p class="text-xs text-muted-foreground">
+              <p class="text-xs nes-text is-disabled">
                 {Math.round(uploadProgress[currentUploadFile])}% complete
               </p>
             {/if}
@@ -401,14 +402,14 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {:else}
         <div class="space-y-4">
-          <Upload class="h-12 w-12 mx-auto text-muted-foreground" />
+          <Upload class="h-12 w-12 mx-auto nes-text is-disabled" />
           <div>
             <p class="text-lg font-medium">
               {selectedFiles.length > 0
                 ? "Add more files"
                 : "Drop files here or click to browse"}
             </p>
-            <p class="text-sm text-muted-foreground mt-1">
+            <p class="text-sm nes-text is-disabled mt-1">
               Supports: Images, Videos, Audio, Documents (Max {maxSizeMB}MB
               each)
             </p>
@@ -436,14 +437,14 @@ https://svelte.dev/e/js_parse_error -->
                 {:else}
                   <svelte:component
                     this={getFileIcon(file)}
-                    class="h-12 w-12 text-muted-foreground"
+                    class="h-12 w-12 nes-text is-disabled"
                   />
                 {/if}
               </div>
 
               <div class="flex-1 min-w-0">
                 <p class="font-medium truncate">{file.name}</p>
-                <p class="text-sm text-muted-foreground">
+                <p class="text-sm nes-text is-disabled">
                   {formatFileSize(file.size)} • {file.type}
                 </p>
                 {#if uploadProgress[file.name] !== undefined}
@@ -451,7 +452,7 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
               </div>
 
-              <Button
+              <button class="nes-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => removeFile(file.name)}
@@ -459,7 +460,7 @@ https://svelte.dev/e/js_parse_error -->
                 class="flex-shrink-0"
               >
                 <X class="h-4 w-4" />
-              </Button>
+              </button>
             </div>
           {/each}
         </div>
@@ -571,14 +572,14 @@ https://svelte.dev/e/js_parse_error -->
               on:keydown={(e) =>
                 e.key === "Enter" && (e.preventDefault(), addTag())}
             />
-            <Button
+            <button class="nes-btn"
               type="button"
               variant="outline"
               onclick={addTag}
               disabled={isUploading}
             >
               Add
-            </Button>
+            </button>
           </div>
           {#if $form.tags.length > 0}
             <div class="flex flex-wrap gap-2 mt-2">
@@ -593,7 +594,7 @@ https://svelte.dev/e/js_parse_error -->
                     disabled={isUploading}
                   >
                     <X class="h-3 w-3" />
-                  </Button>
+                  </button>
                 </Badge>
               {/each}
             </div>
@@ -659,21 +660,21 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Action Buttons -->
     <div class="flex justify-between items-center pt-4 border-t">
-      <p class="text-sm text-muted-foreground">
+      <p class="text-sm nes-text is-disabled">
         {selectedFiles.length} file{selectedFiles.length !== 1 ? "s" : ""} selected
         {#if multiple}(max {maxFiles}){/if}
       </p>
 
       <div class="flex gap-2">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           onclick={() => dispatch("cancel")}
           disabled={isUploading}
         >
           Cancel
-        </Button>
+        </button>
 
-        <Button
+        <button class="nes-btn"
           onclick={handleFormSubmit}
           disabled={selectedFiles.length === 0 ||
             isUploading ||
@@ -689,7 +690,7 @@ https://svelte.dev/e/js_parse_error -->
               ? "s"
               : ""}
           {/if}
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -707,8 +708,8 @@ https://svelte.dev/e/js_parse_error -->
         </AlertDescription>
       </Alert>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   .hidden {

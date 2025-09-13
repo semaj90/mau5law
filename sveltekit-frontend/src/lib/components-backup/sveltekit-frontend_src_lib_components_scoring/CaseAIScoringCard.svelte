@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Button } from "bits-ui";
   import { onMount } from "svelte";
 
@@ -81,7 +82,7 @@
 </script>
 
 <div
-  class="case-scoring-card bg-slate-900 border border-slate-700 rounded-lg p-4"
+  class="case-scoring-nier-bits-card bg-slate-900 border border-slate-700 rounded-lg p-4"
 >
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-lg font-semibold text-white">Case AI Scoring</h3>

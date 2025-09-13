@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Production-level AI Dropdown using Melt UI with keyboard shortcuts -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props { disabled?: any;
     onReportGenerate: (reportType: string) => void;,
     onSummarize: () ;,

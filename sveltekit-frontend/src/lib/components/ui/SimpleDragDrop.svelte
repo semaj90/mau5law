@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Modern Svelte 5 implementation with gaming aesthetics
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { Upload, File, X } from 'lucide-svelte';
 

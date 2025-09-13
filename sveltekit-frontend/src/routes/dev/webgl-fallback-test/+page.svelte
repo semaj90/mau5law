@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { LodCacheEngine } from '$lib/gpu/lod-cache-engine.js';
   // import { GpuVectorProcessor } from '$lib/gpu/GpuVectorProcessor.js'; // Temporarily disabled due to TypeScript compilation issues

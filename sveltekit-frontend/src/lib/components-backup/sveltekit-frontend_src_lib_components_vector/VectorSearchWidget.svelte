@@ -3,8 +3,9 @@ Vector Search Widget
 Compact searchable component for embedding in other interfaces
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Badge } from "$lib/components/ui/badge";
   import {
     Search,
@@ -134,9 +135,9 @@ Compact searchable component for embedding in other interfaces
   <div class="relative">
     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
       {#if isSearching}
-        <Loader2 class="h-4 w-4 animate-spin text-muted-foreground" />
+        <Loader2 class="h-4 w-4 animate-spin nes-text is-disabled" />
       {:else}
-        <Search class="h-4 w-4 text-muted-foreground" />
+        <Search class="h-4 w-4 nes-text is-disabled" />
       {/if}
     </div>
 
@@ -155,7 +156,7 @@ Compact searchable component for embedding in other interfaces
         class="absolute inset-y-0 right-0 pr-3 flex items-center"
         onclick={clearSearch}
       >
-        <X class="h-4 w-4 text-muted-foreground hover:text-foreground" />
+        <X class="h-4 w-4 nes-text is-disabled hover:text-foreground" />
       </button>
     {/if}
   </div>
@@ -164,7 +165,7 @@ Compact searchable component for embedding in other interfaces
   {#if isOpen && searchResults.length > 0}
     <div class="absolute top-full left-0 right-0 z-50 mt-1 bg-popover border border-border rounded-md shadow-lg max-h-96 overflow-y-auto">
       <div class="p-2">
-        <div class="text-xs text-muted-foreground mb-2 px-2">
+        <div class="text-xs nes-text is-disabled mb-2 px-2">
           Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
         </div>
 
@@ -178,7 +179,7 @@ Compact searchable component for embedding in other interfaces
             >
               <div class="flex items-start justify-between mb-2">
                 <div class="flex items-center gap-2">
-                  <SvelteComponent class="h-4 w-4 text-muted-foreground" />
+                  <SvelteComponent class="h-4 w-4 nes-text is-disabled" />
                   <span class="text-sm font-medium truncate">{result.id}</span>
                 </div>
                 <div class="flex items-center gap-1">
@@ -189,7 +190,7 @@ Compact searchable component for embedding in other interfaces
                 </div>
               </div>
 
-              <p class="text-xs text-muted-foreground line-clamp-2 mb-2">
+              <p class="text-xs nes-text is-disabled line-clamp-2 mb-2">
                 {result.content.substring(0, 120)}...
               </p>
 
@@ -200,7 +201,7 @@ Compact searchable component for embedding in other interfaces
               {/if}
 
               {#if !compact}
-                <div class="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                <div class="flex items-center gap-3 mt-2 text-xs nes-text is-disabled">
                   <span>Relevance: {result.relevanceScore.toFixed(2)}</span>
                   <span>•</span>
                   <span>Similarity: {result.similarity.toFixed(3)}</span>
@@ -213,7 +214,7 @@ Compact searchable component for embedding in other interfaces
 
       {#if searchResults.length === maxResults}
         <div class="border-t border-border p-2">
-          <div class="text-xs text-muted-foreground text-center">
+          <div class="text-xs nes-text is-disabled text-center">
             Showing top {maxResults} results
           </div>
         </div>
@@ -225,9 +226,9 @@ Compact searchable component for embedding in other interfaces
   {#if isOpen && searchResults.length === 0 && !isSearching && searchQuery.length >= 2}
     <div class="absolute top-full left-0 right-0 z-50 mt-1 bg-popover border border-border rounded-md shadow-lg">
       <div class="p-4 text-center">
-        <Search class="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-        <p class="text-sm text-muted-foreground">No results found for "{searchQuery}"</p>
-        <p class="text-xs text-muted-foreground mt-1">Try adjusting your search terms</p>
+        <Search class="h-8 w-8 nes-text is-disabled mx-auto mb-2" />
+        <p class="text-sm nes-text is-disabled">No results found for "{searchQuery}"</p>
+        <p class="text-xs nes-text is-disabled mt-1">Try adjusting your search terms</p>
       </div>
     </div>
   {/if}

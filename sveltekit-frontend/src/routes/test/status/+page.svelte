@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Route Status Check - Verify All Routes Work -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
   let routeTests = $state([
@@ -97,14 +98,14 @@ https://svelte.dev/e/js_parse_error -->
       variant="default"
     >
       {isTestingRoutes ? '🔄 Testing...' : '🚀 Test All Routes'}
-    </Button>
+    </button>
 
     <Button class="bits-btn"
       onclick={() => window.location.href = '/test'}
       variant="outline"
     >
       ← Back to Test Hub
-    </Button>
+    </button>
   </div>
 
   <!-- Route Test Results -->

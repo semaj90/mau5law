@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { PageData } from './$types';
   let { data } = $props<{ data: PageData }>();
   // Component state
@@ -176,7 +177,7 @@
       <div class="yorha-routes-grid" class:list-view={viewMode === 'list'}>
         {#each filteredRoutes as route}
           <div 
-            class="yorha-route-card {getStatusColor(route.status)} {getPriorityColor(route.priority)}"
+            class="yorha-route-nier-bits-card {getStatusColor(route.status)} {getPriorityColor(route.priority)}"
             class:clickable={route.status === 'functional'}
             onclick={() => handleRouteClick(route)}
             role={route.status === 'functional' ? 'button' : 'article'}
@@ -223,7 +224,7 @@
     <h2 class="yorha-section-title">CATEGORY OVERVIEW</h2>
     <div class="yorha-category-grid">
       {#each Object.entries(categoryStats) as [category, stats]}
-        <div class="yorha-category-card">
+        <div class="yorha-category-nier-bits-card">
           <div class="yorha-category-icon">{stats.icon}</div>
           <div class="yorha-category-name">{category}</div>
           <div class="yorha-category-stats">

@@ -1,7 +1,8 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { page } from "$app/state";
   import ChatInterface from "$lib/components/ai/ChatInterface.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import {
     chatActions,
     chatStore,
@@ -112,14 +113,14 @@
                 <Clock class="space-y-4" />
                 Chat History
               </h2>
-              <Button
+              <button class="nes-btn"
                 variant="outline"
                 size="sm"
                 onclick={() => startNewChat()}
               >
                 <Plus class="space-y-4" />
                 New
-              </Button>
+              </button>
             </div>
 
             <!-- Search -->
@@ -179,14 +180,14 @@
           >
             <div class="space-y-4">
               {#if !showHistory}
-                <Button
+                <button class="nes-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => showHistoryPanel()}
                 >
                   <Clock class="space-y-4" />
                   History
-                </Button>
+                </button>
               {/if}
 
               <div>
@@ -203,24 +204,24 @@
 
             <div class="space-y-4">
               {#if $chatStore.currentConversation}
-                <Button
+                <button class="nes-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => chatActions.saveToStorage()}
                 >
                   <Save class="space-y-4" />
                   Save
-                </Button>
+                </button>
               {/if}
 
-              <Button
+              <button class="nes-btn"
                 variant="outline"
                 size="sm"
                 onclick={() => startNewChat()}
               >
                 <Plus class="space-y-4" />
                 New Chat
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -254,7 +255,7 @@
                   }}
                 >
                   <span class="space-y-4">{prompt}</span>
-                </Button>
+                </button>
               {/each}
             </div>
           </div>

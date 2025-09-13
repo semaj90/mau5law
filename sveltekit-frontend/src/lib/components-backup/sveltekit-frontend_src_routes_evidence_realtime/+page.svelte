@@ -1,8 +1,9 @@
 <!-- Real-time Evidence Management Demo Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import MonacoEditor from "$lib/components/MonacoEditor.svelte";
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte";
   import { evidenceStore } from "$lib/stores/evidenceStore";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
@@ -193,16 +194,16 @@
 
         <div class="space-y-4">
           {#if !demoMode}
-            <Button onclick={() => startDemoMode()}>
+            <button class="nes-btn" onclick={() => startDemoMode()}>
               <Activity class="space-y-4" />
               Start Demo
-            </Button>
+            </button>
           {/if}
 
-          <Button variant="outline" onclick={() => clearAllEvidence()}>
+          <button class="nes-btn" variant="outline" onclick={() => clearAllEvidence()}>
             <Database class="space-y-4" />
             Clear All
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -389,7 +390,7 @@
                 onclick={() => (selectedTypes = ["video", "image"])}
               >
                 Visual Evidence
-              </Button>
+              </button>
               <Button
                 size="sm"
                 variant="outline"
@@ -397,7 +398,7 @@
                 onclick={() => (selectedTypes = ["testimony", "document"])}
               >
                 Testimonial
-              </Button>
+              </button>
               <Button
                 size="sm"
                 variant="outline"
@@ -408,7 +409,7 @@
                 }}
               >
                 Clear Filters
-              </Button>
+              </button>
             </div>
           </div>
         </div>

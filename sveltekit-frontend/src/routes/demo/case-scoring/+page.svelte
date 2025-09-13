@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import CaseScoringDashboard from '$lib/components/ai/CaseScoringDashboard.svelte';
 </script>
 

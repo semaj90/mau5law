@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     item: {;
     open?: any;
@@ -93,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Add other view-only fields as needed -->
       </div>
       <div class="flex gap-2 mt-2">
-        <Button onclick={handleEdit}>Edit</Button>
+        <button class="nes-btn" onclick={handleEdit}>Edit</button>
       </div>
     {:else}
       <form class="flex flex-col gap-2" on:submit|preventDefault={handleSave}>
@@ -102,13 +103,13 @@ https://svelte.dev/e/js_parse_error -->
         <input name="jsonData.tags" bind:value={tagsString} placeholder="Tags (comma separated)" class="input input-bordered" />
         <input name="jsonData.type" bind:value={type} placeholder="Type" class="input input-bordered" />
         <div class="flex gap-2 mt-2">
-          <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded">Save</Button>
-          <Button variant="outline" onclick={handleCancel}>Cancel</Button>
+          <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded">Save</button>
+          <button class="nes-btn" variant="outline" onclick={handleCancel}>Cancel</button>
         </div>
       </form>
     {/if}
     <div class="mt-4 flex justify-end">
-      <Button onclick={() => (open = false)} variant="ghost">Close</Button>
+      <button class="nes-btn" onclick={() => (open = false)} variant="ghost">Close</button>
     </div>
   </div>
 </Dialog>

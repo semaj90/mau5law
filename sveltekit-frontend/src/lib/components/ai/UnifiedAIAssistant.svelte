@@ -1,6 +1,7 @@
 <!-- Unified AI Assistant Chat Interface -->
 <!-- Integrates Ollama, LLaMA.cpp WebASM, WebGPU acceleration, and Go microservices -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount, onDestroy, tick } from 'svelte';
   	import {
     Card,
@@ -528,16 +529,16 @@
 <!-- Unified AI Assistant Interface -->
 <div class="h-full flex flex-col bg-background">
 	<!-- Header -->
-	<Card class="mb-4">
-		<CardHeader class="pb-3">
+	<NesCard class="mb-4">
+		<div class="yorha-panel-header" class="pb-3">
 			<div class="flex justify-between items-center">
 				<div class="flex items-center gap-4">
 					<div class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
 						<Bot class="w-5 h-5 text-primary" />
 					</div>
 					<div>
-						<CardTitle class="text-xl">Legal AI Assistant</CardTitle>
-						<p class="text-sm text-muted-foreground">Powered by multiple AI backends with GPU acceleration</p>
+						<h3 class="nes-text is-primary" class="text-xl">Legal AI Assistant</h3>
+						<p class="text-sm nes-text is-disabled">Powered by multiple AI backends with GPU acceleration</p>
 					</div>
 				</div>
 				
@@ -561,19 +562,19 @@
 					<Button class="bits-btn" variant="outline" size="sm" onclick={exportConversation}>
 						<Download class="w-4 h-4 mr-1" />
 						Export
-					</Button>
+					</button>
 					<Button class="bits-btn" variant="outline" size="sm" onclick={clearConversation}>
 						<Square class="w-4 h-4 mr-1" />
 						Clear
-					</Button>
+					</button>
 				</div>
 			</div>
-		</CardHeader>
-	</Card>
+		</div>
+	</NesCard>
 
 	<!-- Performance Metrics -->
-	<Card class="mb-4">
-		<CardContent class="py-3">
+	<NesCard class="mb-4">
+		<div class="yorha-panel-content" class="py-3">
 			<div class="flex justify-between items-center text-sm">
 				<div class="flex gap-6">
 					<span class="flex items-center gap-1">
@@ -594,16 +595,16 @@
 					</span>
 				</div>
 				
-				<div class="text-xs text-muted-foreground">
+				<div class="text-xs nes-text is-disabled">
 					Model: {assistantConfig.model} | Temp: {assistantConfig.temperature}
 				</div>
 			</div>
-		</CardContent>
-	</Card>
+		</div>
+	</NesCard>
 
 	<!-- Chat Messages -->
-	<Card class="flex-1 mb-4">
-		<CardContent class="p-0 h-full">
+	<NesCard class="flex-1 mb-4">
+		<div class="yorha-panel-content" class="p-0 h-full">
 			<div 
 				bind:this={chatContainer}
 				class="h-full overflow-y-auto p-4 space-y-4"
@@ -666,7 +667,7 @@
 							🤖
 						</div>
 						<div class="bg-muted p-3 rounded-lg">
-							<div class="flex items-center gap-2 text-sm text-muted-foreground">
+							<div class="flex items-center gap-2 text-sm nes-text is-disabled">
 								<div class="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
 								Processing your request...
 							</div>
@@ -674,12 +675,12 @@
 					</div>
 				{/if}
 			</div>
-		</CardContent>
-	</Card>
+		</div>
+	</NesCard>
 
 	<!-- Input Area -->
-	<Card>
-		<CardContent class="p-4">
+	<NesCard>
+		<div class="yorha-panel-content" class="p-4">
 			<div class="flex items-center gap-2">
 				<div class="flex-1 relative">
 					<Input
@@ -704,7 +705,7 @@
 							{:else}
 								<Mic class="w-4 h-4" />
 							{/if}
-						</Button>
+						</button>
 					{/if}
 				</div>
 				
@@ -714,26 +715,26 @@
 				>
 					<Send class="w-4 h-4 mr-1" />
 					Send
-				</Button>
+				</button>
 			</div>
 			
 			<!-- Quick Actions -->
 			<div class="flex gap-2 mt-3 flex-wrap">
 				<Button class="bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'Analyze the evidence in this case'}>
 					🔍 Analyze Evidence
-				</Button>
+				</button>
 				<Button class="bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'What are the key legal issues?'}>
 					⚖️ Legal Issues
-				</Button>
+				</button>
 				<Button class="bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'Generate a case summary'}>
 					📋 Case Summary
-				</Button>
+				</button>
 				<Button class="bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'Find relevant precedents'}>
 					📚 Find Precedents
-				</Button>
+				</button>
 			</div>
-		</CardContent>
-	</Card>
+		</div>
+	</NesCard>
 </div>
 
 <style>

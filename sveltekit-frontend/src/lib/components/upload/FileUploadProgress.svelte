@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Card,
     CardHeader,
@@ -53,14 +54,14 @@
   });
 </script>
 
-<Card variant={variant} class="w-full">
+<NesCard variant={variant} class="w-full">
   <!-- File info header -->
   <div class="flex items-center justify-between mb-4">
     <div class="flex items-center gap-3">
-      <div class="i-lucide-file w-5 h-5 text-muted-foreground" aria-hidden="true"></div>
+      <div class="i-lucide-file w-5 h-5 nes-text is-disabled" aria-hidden="true"></div>
       <div>
         <p class="font-medium text-sm">{fileName || 'Unknown file'}</p>
-        <p class="text-xs text-muted-foreground">{label}</p>
+        <p class="text-xs nes-text is-disabled">{label}</p>
       </div>
     </div>
     
@@ -93,5 +94,5 @@
       Upload paused. Click to resume.
     </p>
   {/if}
-</Card>
+</NesCard>
 

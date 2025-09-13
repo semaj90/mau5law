@@ -6,10 +6,11 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import SSRWebGPULoader from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
   
   // NES Memory Architecture imports
@@ -237,7 +238,7 @@
         <divContent>
           <div class="priority-grid">
             {#each documentPriorities as item}
-              <div class="priority-card" style:border-color={getPriorityColor(item.priority)}>
+              <div class="priority-nier-bits-card" style:border-color={getPriorityColor(item.priority)}>
                 <div class="document-header">
                   <h4>{item.document.type}</h4>
                   <span class="priority-score" style:background={getPriorityColor(item.priority)}>
@@ -332,7 +333,7 @@
         <divContent>
           <div class="warming-strategies">
             {#each Object.entries(WARMING_STRATEGIES) as [strategyKey, strategy]}
-              <div class="strategy-card">
+              <div class="strategy-nier-bits-card">
                 <h4>{strategy.name}</h4>
                 <p>{strategy.description}</p>
                 
@@ -355,12 +356,12 @@
                   </div>
                 </div>
                 
-                <Button 
+                <button class="nes-btn" 
                   on:click={() => triggerCacheWarming(strategyKey)}
                   disabled={isWarming}
                 >
                   {isWarming ? '⚡ Warming...' : 'Start Warming'}
-                </Button>
+                </button>
               </div>
             {/each}
           </div>
@@ -417,32 +418,32 @@
         </div>
         <divContent>
           <div class="stats-grid">
-            <div class="stat-card">
+            <div class="stat-nier-bits-card">
               <div class="stat-label">Active Components</div>
               <div class="stat-value">{registryStats.activeComponents || 0}</div>
             </div>
             
-            <div class="stat-card">
+            <div class="stat-nier-bits-card">
               <div class="stat-label">Total Textures</div>
               <div class="stat-value">{registryStats.totalTextures || 0}</div>
             </div>
             
-            <div class="stat-card">
+            <div class="stat-nier-bits-card">
               <div class="stat-label">Memory Conflicts</div>
               <div class="stat-value">{registryStats.conflicts || 0}</div>
             </div>
             
-            <div class="stat-card">
+            <div class="stat-nier-bits-card">
               <div class="stat-label">Evictions</div>
               <div class="stat-value">{registryStats.evictions || 0}</div>
             </div>
             
-            <div class="stat-card">
+            <div class="stat-nier-bits-card">
               <div class="stat-label">Cache Warmings</div>
               <div class="stat-value">{warmingStats.totalWarmings || 0}</div>
             </div>
             
-            <div class="stat-card">
+            <div class="stat-nier-bits-card">
               <div class="stat-label">Avg Processing Time</div>
               <div class="stat-value">{(warmingStats.averageProcessingTime || 0).toFixed(1)}ms</div>
             </div>

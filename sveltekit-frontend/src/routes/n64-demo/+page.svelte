@@ -1,9 +1,10 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { N64LegalAIOrchestrator } from '$lib/services/n64-legal-ai-orchestrator';
   import { n64Cache } from '$lib/services/n64-cache-hierarchy';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Alert, AlertDescription } from '$lib/components/ui/enhanced-bits';
   import type { LegalDocument, ProcessingPipeline } from '$lib/types/legal-ai';
 
@@ -303,7 +304,7 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
                     {document.metadata.documentType} • {formatBytes(document.metadata.fileSize)} • Risk: {document.metadata.riskLevel}
                   </div>
                 </div>
-                <Button 
+                <button class="nes-btn" 
                   variant="outline" 
                   size="sm"
                   disabled={!isInitialized || isProcessing}
@@ -311,19 +312,18 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
                   class="ml-2"
                 >
                   {isProcessing ? '⚡' : '🚀'} Process
-                </Button>
+                </button>
               </div>
             {/each}
           </div>
 
-          <Button 
-            variant="primary"
+          <button class="nes-btn is-primary"
             disabled={!isInitialized || isProcessing}
             onclick={processAllDocuments}
             class="w-full"
           >
             {isProcessing ? '⚡ Processing...' : '🎮 Process All Documents'}
-          </Button>
+          </button>
         </div>
       </div>
 

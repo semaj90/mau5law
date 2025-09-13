@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     ontagsUpdate?: (event?: any) => void;
   }
@@ -12,7 +13,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
   import Badge from "$lib/components/ui/Badge.svelte";
-  import Button from "$lib/components/ui/Button.svelte";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Input from "$lib/components/ui/Input.svelte";
   import Fuse from "fuse.js";
   // AI processing state
@@ -217,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
         class="space-y-4"
       />
       {#if searchQuery}
-        <Button onclick={clearSearch} variant="outline" size="sm">Clear</Button>
+        <button class="nes-btn" onclick={clearSearch} variant="outline" size="sm">Clear</button>
       {/if}
     </div>
 
@@ -254,14 +255,14 @@ https://svelte.dev/e/js_parse_error -->
       <div class="space-y-4">
         <div class="space-y-4">
           <h3 class="space-y-4">AI Analysis</h3>
-          <Button
+          <button class="nes-btn"
             onclick={reprocessWithAI}
             disabled={isProcessing}
             variant="outline"
             size="sm"
           >
             {isProcessing ? "Processing..." : "Re-analyze"}
-          </Button>
+          </button>
         </div>
 
         <!-- Summary -->
@@ -306,9 +307,9 @@ https://svelte.dev/e/js_parse_error -->
       <div class="space-y-4">
         <div class="space-y-4">🤖</div>
         <div class="space-y-4">No AI analysis available</div>
-        <Button onclick={reprocessWithAI} disabled={isProcessing}>
+        <button class="nes-btn" onclick={reprocessWithAI} disabled={isProcessing}>
           {isProcessing ? "Processing..." : "Analyze with AI"}
-        </Button>
+        </button>
       </div>
     {/if}
 

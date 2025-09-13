@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     data: any
     formType: "login" | "register";

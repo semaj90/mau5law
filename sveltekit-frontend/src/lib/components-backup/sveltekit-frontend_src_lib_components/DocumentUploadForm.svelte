@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     formData: {
   }
@@ -303,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 {/if}
 
-                <Button.Root
+                <button class="nes-btn".Root
                   onclick={() => removeFile(index)}
                   class="p-1 text-red-600 hover:text-red-800 focus:outline-none"
                 >

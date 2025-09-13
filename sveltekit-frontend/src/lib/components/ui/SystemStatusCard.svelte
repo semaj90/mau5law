@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
+  import 'nes.css/css/nes.min.css';
   const { title = "System status", status = "OK", updatedAt = null } = $props();
 
 </script>
@@ -94,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 </style>
 
-<div class="card" role="group" aria-label={title}>
+<div class="nier-bits-card" role="group" aria-label={title}>
   <div class="header">
 	<div class="title">{title}</div>
 	<div class="status {statusClass()}" aria-live="polite">

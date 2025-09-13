@@ -2,13 +2,14 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onclose?: (event?: any) => void;
     onviewEvidence?: (event?: any) => void;
   }
 
 
-  import Button from "$lib/components/ui/Button.svelte";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
   import { formatFileSize } from "$lib/utils/file-utils";
   import {
@@ -71,9 +72,9 @@ https://svelte.dev/e/js_parse_error -->
           <Upload class="space-y-4" />
           <h2 class="space-y-4">Upload Evidence</h2>
         </div>
-        <Button variant="ghost" size="sm" onclick={() => closeModal()}>
+        <button class="nes-btn" variant="ghost" size="sm" onclick={() => closeModal()}>
           <X class="space-y-4" />
-        </Button>
+        </button>
       </div>
 
       <!-- Body -->
@@ -99,9 +100,9 @@ https://svelte.dev/e/js_parse_error -->
           <p id="evidence-dropzone-instructions" class="space-y-4">
             Support for images, documents, audio, and video files
           </p>
-          <Button variant="outline" onclick={() => fileInput?.click()}>
+          <button class="nes-btn" variant="outline" onclick={() => fileInput?.click()}>
             Choose Files
-          </Button>
+          </button>
           <input
             bind:this={fileInput}
             type="file"
@@ -171,13 +172,13 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
 
                     <div class="space-y-4">
-                      <Button
+                      <button class="nes-btn"
                         variant="ghost"
                         size="sm"
                         onclick={() => removeFile(file.id)}
                       >
                         <X class="space-y-4" />
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 {/if}
@@ -204,14 +205,14 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <div class="space-y-4">
-          <Button variant="outline" onclick={() => closeModal()}>
+          <button class="nes-btn" variant="outline" onclick={() => closeModal()}>
             {activeUploads.length > 0 ? "Continue in Background" : "Close"}
-          </Button>
+          </button>
 
           {#if completedUploads.length > 0}
-            <Button onclick={() => onviewEvidence?.()}>
+            <button class="nes-btn" onclick={() => onviewEvidence?.()}>
               View Evidence
-            </Button>
+            </button>
           {/if}
         </div>
       </div>

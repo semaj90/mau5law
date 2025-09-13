@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import N64ProgressBar from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
   import N64LoadingRing from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';
@@ -89,9 +90,9 @@
 
 <div class="container mx-auto p-6 space-y-6">
   <!-- Header -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center justify-between">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <Brain class="h-6 w-6" />
           N64 Progress Components - Legal AI Integration Test
@@ -99,19 +100,19 @@
         <div class="flex gap-2">
           <Button class="bits-btn" onclick={startAnimation} disabled={mockData.isProcessing}>
             Start AI Processing
-          </Button>
+          </button>
           <Button class="bits-btn" variant="outline" onclick={resetData}>
             Reset
-          </Button>
+          </button>
         </div>
-      </CardTitle>
-    </CardHeader>
-  </Card>
+      </h3>
+    </div>
+  </NesCard>
 
   <!-- Processing Status -->
   {#if mockData.isProcessing}
-    <Card>
-      <CardContent class="p-6">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-6">
         <div class="flex items-center gap-4">
           <N64LoadingRing 
             size="lg" 
@@ -121,42 +122,42 @@
           />
           <div class="flex flex-col">
             <span class="text-lg font-medium">Legal AI Processing Active</span>
-            <span class="text-muted-foreground">Evolution Stage: {mockData.evolutionStage.toUpperCase()}</span>
+            <span class="nes-text is-disabled">Evolution Stage: {mockData.evolutionStage.toUpperCase()}</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Evolution Loader -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Zap class="h-5 w-5" />
         N64 Evolution Loader
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       <N64EvolutionLoader 
         stage={mockData.evolutionStage}
         showStageText={true}
         size="lg"
         animateTransitions={true}
       />
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- AI Performance Metrics -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- AI Confidence -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="text-sm flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
           <Brain class="h-4 w-4" />
           AI Analysis Confidence
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div>
           <div class="flex justify-between text-sm mb-2">
             <span>Current Confidence</span>
@@ -173,18 +174,18 @@
             retro={true}
           />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Performance Metrics -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="text-sm flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
           <Cpu class="h-4 w-4" />
           Performance Metrics
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div>
           <div class="flex justify-between text-sm mb-2">
             <span>Tokens/sec</span>
@@ -215,18 +216,18 @@
             showPercentage={false}
           />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- GPU Status -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="text-sm flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
           <Zap class="h-4 w-4" />
           RTX 3060 Ti Status
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div>
           <div class="flex justify-between text-sm mb-2">
             <span>GPU Layers</span>
@@ -273,18 +274,18 @@
             sparkle={mockData.gpuUtilization > 90}
           />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Response Time -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="text-sm flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
           <Database class="h-4 w-4" />
           System Response
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div>
           <div class="flex justify-between text-sm mb-2">
             <span>Response Time</span>
@@ -302,16 +303,16 @@
             retro={true}
           />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 
   <!-- Color Theme Showcase -->
-  <Card>
-    <CardHeader>
-      <CardTitle>N64 Controller Color Themes</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">N64 Controller Color Themes</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each ['classic', 'gold', 'red', 'blue', 'green', 'purple'] as theme}
           <div class="space-y-2">
@@ -328,8 +329,8 @@
           </div>
         {/each}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 </div>
 
 <style>

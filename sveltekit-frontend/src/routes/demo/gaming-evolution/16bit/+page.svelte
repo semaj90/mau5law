@@ -2,6 +2,7 @@
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `</Card.Content>` attempted to close an element that was not open -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     Button
@@ -74,16 +75,16 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     <!-- Technical Analysis Panel -->
     <section class="analysis-panel">
-      <Card.Card class="snes-card">
-        <Card.CardHeader>
-          <Card.CardTitle class="snes-title">
+      <NesCard.Card class="snes-nier-bits-card">
+        <NesCard.CardHeader>
+          <NesCard.CardTitle class="snes-title">
             🎮 16-bit SNES Era Analysis
           </Card.CardTitle>
-          <Card.CardDescription class="snes-subtitle">
+          <NesCard.CardDescription class="snes-subtitle">
             Super Nintendo Entertainment System Visual Characteristics
           </Card.CardDescription>
         </Card.CardHeader>
-        <Card.CardContent class="technical-specs">
+        <NesCard.CardContent class="technical-specs">
 
           <div class="spec-grid">
             <div class="spec-item">
@@ -130,16 +131,16 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     <!-- Interactive Components Panel -->
     <section class="components-panel">
-      <Card.Card class="snes-card">
-        <Card.CardHeader>
-          <Card.CardTitle class="snes-title">
+      <NesCard.Card class="snes-nier-bits-card">
+        <NesCard.CardHeader>
+          <NesCard.CardTitle class="snes-title">
             🕹️ 16-bit UI Components
           </Card.CardTitle>
-          <Card.CardDescription class="snes-subtitle">
+          <NesCard.CardDescription class="snes-subtitle">
             bits-ui Components with SNES Aesthetics
           </Card.CardDescription>
         </Card.CardHeader>
-        <Card.CardContent class="components-grid">
+        <NesCard.CardContent class="components-grid">
 
           <!-- Buttons Section -->
           <div class="component-section">
@@ -204,16 +205,16 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     <!-- Game UI Recreation -->
     <section class="game-ui-panel">
-      <Card.Card class="snes-card">
-        <Card.CardHeader>
-          <Card.CardTitle class="snes-title">
+      <NesCard.Card class="snes-nier-bits-card">
+        <NesCard.CardHeader>
+          <NesCard.CardTitle class="snes-title">
             👾 16-bit Game Interface
           </Card.CardTitle>
-          <Card.CardDescription class="snes-subtitle">
+          <NesCard.CardDescription class="snes-subtitle">
             Classic SNES Menu & Dialog Recreation
           </Card.CardDescription>
         </Card.CardHeader>
-        <Card.CardContent class="game-interface">
+        <NesCard.CardContent class="game-interface">
 
           <!-- RPG-style Tabs -->
           <Tabs.Root bind:value={activeTab} class="snes-tabs">
@@ -274,7 +275,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <!-- Interactive Dialog -->
           <div class="dialog-section">
             <Button.Root
-              class="snes-btn snes-btn-primary bits-btn bits-btn"
+              class="snes-btn snes-nes-btn is-primary bits-btn bits-btn"
               onclick={() => dialogOpen = true}
             >
               🗨️ Open Message Box

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import type { BitsPrimitiveDivAttributes, WithChildren } from "bits-ui";
   	import { type Variant, alertVariants } from "./index.js";
   	import { cn } from "$lib/utils/styles.js";

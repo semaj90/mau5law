@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { Button, Progress } from 'bits-ui';
   import { langchain } from '$lib/ai/langchain';
@@ -127,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             Analyze Document
           {/if}
-        </Button>
+        </button>
       </div>
     {:else}
       <div class="space-y-4">
@@ -156,8 +157,8 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <div class="flex items-center gap-2">
-          <Button onclick={resetAnalysis} class="py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Analyze Another Document</Button>
-          <Button onclick={() => navigator.clipboard.writeText(JSON.stringify(analysisResult, null, 2))} class="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700">Copy JSON</Button>
+          <Button onclick={resetAnalysis} class="py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Analyze Another Document</button>
+          <button class="nes-btn" onclick={() => navigator.clipboard.writeText(JSON.stringify(analysisResult, null, 2))} class="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700">Copy JSON</button>
         </div>
       </div>
     {/if}

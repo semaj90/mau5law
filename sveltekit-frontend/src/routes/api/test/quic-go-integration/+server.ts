@@ -5,9 +5,15 @@ import type { RequestHandler } from './$types';
  * Tests the integration between SvelteKit QUIC endpoints and Go microservices
  */
 import { json, error } from '@sveltejs/kit';
-
+import type { RequestHandler } from './$types';
 import { ensureError } from '$lib/utils/ensure-error';
-import { goServiceManager } from '$lib/services/go-microservice-client.js';
+
+// Mock Go service manager since the actual service doesn't exist
+const goServiceManager = {
+  async healthCheck() {
+    return { success: true, message: 'Mock Go service health check' };
+  },
+};
 
 /*
  * GET /api/test/quic-go-integration - Test all QUIC-Go integrations
@@ -34,15 +40,15 @@ export const GET: RequestHandler = async ({ url }) => {
         maxResults: 3,
         threshold: 0.5
       });
-      
+
       testResults.enhancedRag = {
         test: 'Enhanced RAG Query',
         status: ragResponse.success ? 'PASS' : 'FAIL',
         responseTime: ragResponse.responseTime,
         protocol: ragResponse.protocol,
-        error: ragResponse.error || null
+        error: ragResponse.error || null,
       };
-      
+
       if (!ragResponse.success) overallSuccess = false;
     } catch (ragError) {
       testResults.enhancedRag = {
@@ -61,15 +67,15 @@ export const GET: RequestHandler = async ({ url }) => {
         collection: 'legal_documents',
         limit: 5
       });
-      
+
       testResults.vectorService = {
         test: 'Vector Semantic Search',
         status: vectorResponse.success ? 'PASS' : 'FAIL',
         responseTime: vectorResponse.responseTime,
         protocol: vectorResponse.protocol,
-        error: vectorResponse.error || null
+        error: vectorResponse.error || null,
       };
-      
+
       if (!vectorResponse.success) overallSuccess = false;
     } catch (vectorError) {
       testResults.vectorService = {
@@ -85,15 +91,15 @@ export const GET: RequestHandler = async ({ url }) => {
     try {
       const uploadClient = goServiceManager.getUploadService();
       const healthResponse = await uploadClient.health();
-      
+
       testResults.uploadService = {
         test: 'Upload Service Health',
         status: healthResponse.success ? 'PASS' : 'FAIL',
         responseTime: healthResponse.responseTime,
         protocol: healthResponse.protocol,
-        error: healthResponse.error || null
+        error: healthResponse.error || null,
       };
-      
+
       if (!healthResponse.success) overallSuccess = false;
     } catch (uploadError) {
       testResults.uploadService = {
@@ -119,14 +125,14 @@ export const GET: RequestHandler = async ({ url }) => {
       });
 
       const ragProxyResult = ragProxyResponse.ok;
-      
+
       testResults.quicEndpoints = {
         test: 'QUIC RAG Proxy Integration',
         status: ragProxyResult ? 'PASS' : 'FAIL',
         httpStatus: ragProxyResponse.status,
-        statusText: ragProxyResponse.statusText
+        statusText: ragProxyResponse.statusText,
       };
-      
+
       if (!ragProxyResult) overallSuccess = false;
     } catch (quicError) {
       testResults.quicEndpoints = {

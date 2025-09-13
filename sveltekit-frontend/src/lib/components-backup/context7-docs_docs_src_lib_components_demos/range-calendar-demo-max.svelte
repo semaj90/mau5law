@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { RangeCalendar } from "bits-ui";
   	import CaretLeft from "phosphor-svelte/lib/CaretLeft";
   	import CaretRight from "phosphor-svelte/lib/CaretRight";
@@ -9,7 +10,7 @@
 </script>
 
 <RangeCalendar.Root
-	class="rounded-15px border-dark-10 bg-background-alt shadow-card mt-6 border p-[22px]"
+	class="rounded-15px border-dark-10 bg-background-alt shadow-nier-bits-card mt-6 border p-[22px]"
 	weekdayFormat="short"
 	fixedWeeks={true}
 	bind:value
@@ -36,7 +37,7 @@
 						<RangeCalendar.GridRow class="mb-1 flex w-full justify-between">
 							{#each weekdays as day (day)}
 								<RangeCalendar.HeadCell
-									class="text-muted-foreground font-normal! w-10 rounded-md text-xs"
+									class="nes-text is-disabled font-normal! w-10 rounded-md text-xs"
 								>
 									<div>{day.slice(0, 2)}</div>
 								</RangeCalendar.HeadCell>

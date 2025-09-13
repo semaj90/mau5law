@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -69,7 +70,7 @@
       >
         <Filter class="w-4 h-4 mr-2" />
         Filters
-      </Button>
+      </button>
 
     <Button class="bits-btn"
         variant="outline"
@@ -81,12 +82,12 @@
         {:else}
           <Grid class="w-4 h-4" />
         {/if}
-      </Button>
+      </button>
 
       <Button class="bits-btn">
         <Plus class="w-4 h-4 mr-2" />
         Add Person
-      </Button>
+      </button>
     </div>
   </div>
 
@@ -131,7 +132,7 @@
         <div class="flex items-end">
           <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">
             Clear Filters
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -158,7 +159,7 @@
         <Button class="bits-btn">
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
-        </Button>
+        </button>
       {/if}
     </div>
   {:else if viewMode === 'grid'}
@@ -196,11 +197,11 @@
             <Button size="sm" class="flex-1 bits-btn bits-btn">
               <Eye class="w-3 h-3 mr-1" />
               View
-            </Button>
+            </button>
             <Button variant="outline" size="sm" class="flex-1 bits-btn bits-btn">
               <Edit class="w-3 h-3 mr-1" />
               Edit
-            </Button>
+            </button>
           </div>
         </div>
       {/each}
@@ -229,11 +230,11 @@
               <Button class="bits-btn" size="sm">
                 <Eye class="w-3 h-3 mr-1" />
                 View
-              </Button>
+              </button>
               <Button class="bits-btn" variant="outline" size="sm">
                 <Edit class="w-3 h-3 mr-1" />
                 Edit
-              </Button>
+              </button>
             </div>
           </div>
         </div>

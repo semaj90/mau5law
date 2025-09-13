@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Modal from "../ui/Modal.svelte";
   // Adjust path to melt-ui or bits-ui as needed
   import { createEventDispatcher } from "svelte";

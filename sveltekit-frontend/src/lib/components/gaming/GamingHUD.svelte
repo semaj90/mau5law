@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import type { ComponentProps } from 'svelte';
   	// Gaming-themed props using Svelte 5 patterns

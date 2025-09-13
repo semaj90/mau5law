@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import Counter from './Counter.svelte'
   	import Go from './Go.svelte'
 </script>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import ThemeSwitcher from "$lib/components/examples/command/theme-switcher.svelte";
   	import CommandWrapper from "$lib/components/examples/command/command-wrapper.svelte";
   	import RaycastCommand from "$lib/components/examples/command/raycast/raycast-command.svelte";

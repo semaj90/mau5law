@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     message: { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string }
     analyticsLog?: (event: any) => void;

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { cva, type VariantProps } from 'class-variance-authority'
   import { cn } from '$lib/utils'
   import type { HTMLButtonAttributes } from 'svelte/elements'

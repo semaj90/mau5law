@@ -6,12 +6,13 @@ https://svelte.dev/e/bind_invalid_expression -->
   Demonstrates real-time AI-powered editing with comprehensive suggestion types
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import EnhancedInlineEditor from '$lib/components/ai/EnhancedInlineEditor.svelte';
   import { inlineSuggestionService, type SuggestionOptions } from '$lib/services/inlineSuggestionService';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Switch } from '$lib/components/ui/switch';
   import { Slider } from '$lib/components/ui/slider';
 
@@ -171,41 +172,41 @@ https://svelte.dev/e/bind_invalid_expression -->
       <div class="lg:col-span-2 space-y-6">
         
         <!-- Demo Scenarios -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Demo Scenarios</CardTitle>
-            <CardDescription>Try these pre-built legal scenarios</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Demo Scenarios</h3>
+            <p class="nes-text">Try these pre-built legal scenarios</p>
+          </div>
+          <div class="yorha-panel-content">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               {#each demoScenarios as scenario}
-                <Button
+                <button class="nes-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => loadScenario(scenario)}
                   class="justify-start text-left"
                 >
                   {scenario.title}
-                </Button>
+                </button>
               {/each}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Enhanced Editor -->
-        <Card>
-          <CardHeader>
+        <NesCard>
+          <div class="yorha-panel-header">
             <div class="flex justify-between items-center">
               <div>
-                <CardTitle>AI-Enhanced Legal Editor</CardTitle>
-                <CardDescription>Start typing to see intelligent suggestions appear</CardDescription>
+                <h3 class="nes-text is-primary">AI-Enhanced Legal Editor</h3>
+                <p class="nes-text">Start typing to see intelligent suggestions appear</p>
               </div>
-              <Button onclick={resetDemo} variant="outline" size="sm">
+              <button class="nes-btn" onclick={resetDemo} variant="outline" size="sm">
                 Reset Demo
-              </Button>
+              </button>
             </div>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div class="yorha-panel-content">
             <EnhancedInlineEditor
               bind:value={demoContent}
               placeholder="Start typing your legal document..."
@@ -219,16 +220,16 @@ https://svelte.dev/e/bind_invalid_expression -->
               className="w-full"
               onsuggestionaccepted={handleSuggestionAccepted}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
         
         <!-- Live Stats -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Live Statistics</CardTitle>
-            <CardDescription>Real-time metrics from your editing session</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Live Statistics</h3>
+            <p class="nes-text">Real-time metrics from your editing session</p>
+          </div>
+          <div class="yorha-panel-content">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div class="text-center">
                 <div class="text-2xl font-bold text-blue-600">{stats.totalSuggestions}</div>
@@ -261,20 +262,20 @@ https://svelte.dev/e/bind_invalid_expression -->
                 {/each}
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
 
       <!-- Configuration Panel -->
       <div class="space-y-6">
         
         <!-- AI Configuration -->
-        <Card>
-          <CardHeader>
-            <CardTitle>AI Configuration</CardTitle>
-            <CardDescription>Customize the suggestion engine</CardDescription>
-          </CardHeader>
-          <CardContent class="space-y-6">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">AI Configuration</h3>
+            <p class="nes-text">Customize the suggestion engine</p>
+          </div>
+          <div class="yorha-panel-content" class="space-y-6">
             
             <!-- AI Model Selection -->
             <div>
@@ -361,15 +362,15 @@ https://svelte.dev/e/bind_invalid_expression -->
                 />
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Features Overview -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Key Features</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Key Features</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-3 text-sm">
               <div class="flex items-start gap-2">
                 <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
@@ -411,15 +412,15 @@ https://svelte.dev/e/bind_invalid_expression -->
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Usage Instructions -->
-        <Card>
-          <CardHeader>
-            <CardTitle>How to Use</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">How to Use</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-3 text-sm">
               <div class="flex gap-2">
                 <Badge variant="outline" size="sm">1</Badge>
@@ -442,8 +443,8 @@ https://svelte.dev/e/bind_invalid_expression -->
                 <span>Press Esc to dismiss suggestions</span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     </div>
   </div>

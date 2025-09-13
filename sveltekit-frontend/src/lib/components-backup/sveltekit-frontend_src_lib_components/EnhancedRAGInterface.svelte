@@ -3,10 +3,11 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- EnhancedRAGInterface.svelte - SvelteKit 2.0 Advanced RAG Interface -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, tick } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Input } from '$lib/components/ui/input';
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
@@ -156,17 +157,17 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Main Interface -->
 <div class="enhanced-rag-interface">
   <!-- Header with Real-time Status -->
-  <Card class="mb-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950">
-    <CardHeader>
+  <NesCard class="mb-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950">
+    <div class="yorha-panel-header">
       <div class="flex items-center justify-between">
         <div>
-          <CardTitle class="flex items-center gap-2">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Brain class="h-6 w-6 text-blue-600" />
             Enhanced RAG System
             <Badge variant="outline" class="ml-2">
               {ragState.status.version}
             </Badge>
-          </CardTitle>
+          </h3>
           <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
             Neural-powered legal research with SOM clustering and ML optimization
           </p>
@@ -196,12 +197,12 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-    </CardHeader>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Enhanced Search Interface -->
-  <Card class="mb-6">
-    <CardContent class="p-6">
+  <NesCard class="mb-6">
+    <div class="yorha-panel-content" class="p-6">
       <!-- Main Search Bar -->
       <div class="relative mb-4">
         <div class="flex gap-2">
@@ -229,14 +230,14 @@ https://svelte.dev/e/js_parse_error -->
             class="px-6"
           >
             {ragState.isLoading ? 'Searching...' : 'Search'}
-          </Button>
+          </button>
 
-          <Button
+          <button class="nes-btn"
             variant="outline"
             onclick={() => showAdvancedOptions = !showAdvancedOptions}
           >
             <Settings class="h-4 w-4" />
-          </Button>
+          </button>
         </div>
 
         <!-- Real-time Search Performance -->
@@ -258,7 +259,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <div class="flex flex-wrap gap-2">
             {#each intelligentSuggestions as suggestion}
-              <Button
+              <button class="nes-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => selectSuggestion(suggestion)}
@@ -266,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
               >
                 <Sparkles class="h-3 w-3 mr-1" />
                 {suggestion}
-              </Button>
+              </button>
             {/each}
           </div>
         </div>
@@ -329,20 +330,20 @@ https://svelte.dev/e/js_parse_error -->
               >
                 <Zap class="h-4 w-4 mr-1" />
                 Optimize Now
-              </Button>
+              </button>
             </div>
           </div>
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Results Section -->
   {#if optimizedResults.length > 0}
     <div id="search-results">
       <!-- Results Header with Filters -->
-      <Card class="mb-4">
-        <CardContent class="p-4">
+      <NesCard class="mb-4">
+        <div class="yorha-panel-content" class="p-4">
           <div class="flex items-center justify-between">
             <div>
               <h3 class="font-semibold">
@@ -357,22 +358,22 @@ https://svelte.dev/e/js_parse_error -->
 
             <!-- View Toggle -->
             <div class="flex gap-2">
-              <Button
+              <button class="nes-btn"
                 variant={visualizationMode === 'list' ? 'default' : 'outline'}
                 size="sm"
                 onclick={() => visualizationMode = 'list'}
               >
                 List
-              </Button>
-              <Button
+              </button>
+              <button class="nes-btn"
                 variant={visualizationMode === 'clusters' ? 'default' : 'outline'}
                 size="sm"
                 onclick={() => visualizationMode = 'clusters'}
               >
                 <Target class="h-4 w-4 mr-1" />
                 Clusters
-              </Button>
-              <Button
+              </button>
+              <button class="nes-btn"
                 variant={visualizationMode === 'performance' ? 'default' : 'outline'}
                 size="sm"
                 onclick={() => visualizationMode = 'performance'}
@@ -382,16 +383,16 @@ https://svelte.dev/e/js_parse_error -->
                 <ChartBar class="h-4 w-4 mr-1" />
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Dynamic Content Based on View Mode -->
       {#if visualizationMode === 'list'}
         <!-- Enhanced Results List -->
         <div class="space-y-4">
           {#each optimizedResults as result, index}
-            <Card class="hover:shadow-lg transition-shadow">
-              <CardContent class="p-6">
+            <NesCard class="hover:shadow-lg transition-shadow">
+              <div class="yorha-panel-content" class="p-6">
                 <div class="flex items-start justify-between mb-3">
                   <div class="flex-1">
                     <h4 class="font-semibold text-lg mb-1">
@@ -444,8 +445,8 @@ https://svelte.dev/e/js_parse_error -->
                     {/each}
                   </div>
                 {/if}
-              </CardContent>
-            </Card>
+              </div>
+            </NesCard>
           {/each}
         </div>
 
@@ -453,17 +454,17 @@ https://svelte.dev/e/js_parse_error -->
         <!-- SOM Cluster Visualization -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {#each clusterVisualization as cluster}
-            <Card class="cursor-pointer transition-all {cluster.isSelected ? 'ring-2 ring-blue-500' : ''}"
+            <NesCard class="cursor-pointer transition-all {cluster.isSelected ? 'ring-2 ring-blue-500' : ''}"
                   onclick={() => handleClusterSelect(cluster.id)}>
-              <CardHeader>
-                <CardTitle class="flex items-center justify-between">
+              <div class="yorha-panel-header">
+                <h3 class="nes-text is-primary" class="flex items-center justify-between">
                   <span>Cluster {cluster.id}</span>
                   <Badge variant="secondary">
                     {cluster.relevantResults.length} results
                   </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </h3>
+              </div>
+              <div class="yorha-panel-content">
                 <div class="space-y-2">
                   <div class="flex flex-wrap gap-1">
                     {#each cluster.keywords.slice(0, 6) as keyword}
@@ -480,74 +481,74 @@ https://svelte.dev/e/js_parse_error -->
 
                   <Progress value={cluster.coherence * 100} class="h-2" />
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </NesCard>
           {/each}
         </div>
 
       {:else if visualizationMode === 'performance'}
         <!-- Performance Analytics Dashboard -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <Card>
-            <CardContent class="p-4 text-center">
+          <NesCard>
+            <div class="yorha-panel-content" class="p-4 text-center">
               <Cpu class="h-8 w-8 mx-auto text-blue-600 mb-2" />
               <div class="text-2xl font-bold">{performanceMetrics.totalQueries}</div>
               <div class="text-sm text-gray-600">Total Queries</div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
-          <Card>
-            <CardContent class="p-4 text-center">
+          <NesCard>
+            <div class="yorha-panel-content" class="p-4 text-center">
               <Zap class="h-8 w-8 mx-auto text-green-600 mb-2" />
               <div class="text-2xl font-bold">{Math.round(performanceMetrics.throughputQPS)}</div>
               <div class="text-sm text-gray-600">Queries/sec</div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
-          <Card>
-            <CardContent class="p-4 text-center">
+          <NesCard>
+            <div class="yorha-panel-content" class="p-4 text-center">
               <Database class="h-8 w-8 mx-auto text-purple-600 mb-2" />
               <div class="text-2xl font-bold">{performanceMetrics.cacheSize}</div>
               <div class="text-sm text-gray-600">Cache Entries</div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
-          <Card>
-            <CardContent class="p-4 text-center">
+          <NesCard>
+            <div class="yorha-panel-content" class="p-4 text-center">
               <TrendingUp class="h-8 w-8 mx-auto text-orange-600 mb-2" />
               <div class="text-2xl font-bold">
                 {formatDuration(performanceMetrics.averageResponseTime)}
               </div>
               <div class="text-sm text-gray-600">Avg Response</div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         </div>
 
         <!-- Real-time Performance Chart -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Real-time Performance Metrics</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Real-time Performance Metrics</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="h-64 bg-gray-50 dark:bg-gray-900 rounded flex items-center justify-center">
               <p class="text-gray-500">Performance chart would be rendered here</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
     </div>
   {/if}
 
   <!-- Error Display -->
   {#if ragState.error}
-    <Card class="border-red-200 bg-red-50 dark:bg-red-950">
-      <CardContent class="p-4">
+    <NesCard class="border-red-200 bg-red-50 dark:bg-red-950">
+      <div class="yorha-panel-content" class="p-4">
         <div class="flex items-center gap-2 text-red-800 dark:text-red-200">
           <span class="font-medium">Error:</span>
           <span>{ragState.error}</span>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

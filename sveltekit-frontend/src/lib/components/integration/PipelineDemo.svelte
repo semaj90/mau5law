@@ -3,6 +3,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
 <!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here -->
 {#snippet default}
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { pipelineManager, type PipelineType, type PipelineResult } from '$lib/services/pipeline-manager';
   import { PipelineVisualizer } from '$lib/services/pipeline-visualizer';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -181,11 +182,11 @@ https://svelte.dev/e/unexpected_reserved_word -->
   </div>
 
   <!-- Pipeline Controls -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Pipeline Execution</CardTitle>
-    </CardHeader>
-    <CardContent class="space-y-4">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Pipeline Execution</h3>
+    </div>
+    <div class="yorha-panel-content" class="space-y-4">
       <!-- Pipeline Selection -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
@@ -217,7 +218,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
             class="w-full bits-btn bits-btn"
           >
             {isProcessing ? '⏳ Processing...' : '🚀 Execute Pipeline'}
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -229,7 +230,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           variant="outline"
         >
           🧠 Auto-Select Optimal
-        </Button>
+        </button>
         
         <Button class="bits-btn" 
           onclick={batchProcess}
@@ -237,38 +238,38 @@ https://svelte.dev/e/unexpected_reserved_word -->
           variant="outline"
         >
           📦 Batch Process
-        </Button>
+        </button>
         
         <Button class="bits-btn" 
           onclick={checkSystemHealth}
           variant="outline"
         >
           🏥 Health Check
-        </Button>
+        </button>
         
         <Button class="bits-btn" 
           onclick={generateReport}
           variant="outline"
         >
           📈 Performance Report
-        </Button>
+        </button>
         
         <Button class="bits-btn" 
           onclick={cleanup}
           variant="destructive"
         >
           🧹 Cleanup
-        </Button>
+        </button>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Search Interface -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Cross-Pipeline Search</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Cross-Pipeline Search</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="flex gap-2">
         <input 
           type="text" 
@@ -279,7 +280,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         />
         <Button class="bits-btn" onclick={searchPipelines}>
           🔍 Search
-        </Button>
+        </button>
       </div>
       
       {#if searchResults}
@@ -303,55 +304,55 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </div>
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Metrics Dashboard -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-blue-600">{metrics.totalOperations}</div>
           <div class="text-sm text-gray-500">Total Operations</div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
     
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-green-600">{formatTime(metrics.averageTime)}</div>
           <div class="text-sm text-gray-500">Average Time</div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
     
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-purple-600">{metrics.successRate.toFixed(1)}%</div>
           <div class="text-sm text-gray-500">Success Rate</div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
     
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-orange-600">{results.length}</div>
           <div class="text-sm text-gray-500">Recent Results</div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 
   <!-- System Health -->
   {#if systemHealth}
-    <Card>
-      <CardHeader>
-        <CardTitle>System Health</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">System Health</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="text-center">
             <div class={systemHealth.gpu ? 'text-green-600' : 'text-red-600'}>
@@ -374,17 +375,17 @@ https://svelte.dev/e/unexpected_reserved_word -->
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Recent Results -->
   {#if results.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle>Recent Pipeline Results</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Recent Pipeline Results</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-3">
           {#each results.slice(0, 5) as result}
             <div class="p-3 border rounded-lg">
@@ -427,17 +428,17 @@ https://svelte.dev/e/unexpected_reserved_word -->
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Performance Report -->
   {#if performanceReport}
-    <Card>
-      <CardHeader>
-        <CardTitle>Performance Report</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Performance Report</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-4">
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
@@ -470,21 +471,21 @@ https://svelte.dev/e/unexpected_reserved_word -->
             </ul>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Architecture Diagram -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Pipeline Architecture</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Pipeline Architecture</h3>
+    </div>
+    <div class="yorha-panel-content">
       <pre class="text-xs bg-gray-50 p-4 rounded overflow-x-auto">
 {PipelineVisualizer.generateArchitectureDiagram()}
       </pre>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 </div>
 {/snippet}
 

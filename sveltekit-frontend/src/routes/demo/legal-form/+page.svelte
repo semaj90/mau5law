@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import LegalCaseForm from '$lib/components/forms/LegalCaseForm.svelte';
   import { CardBits } from '$lib/components/ui/bits-ui';
 </script>
@@ -19,7 +20,7 @@
   </div>
 
   <div class="demo-features">
-    <CardBits variant="outlined" padding="md" class="feature-card">
+    <CardBits variant="outlined" padding="md" class="feature-nier-bits-card">
       <h3 class="feature-title">🎯 Key Features</h3>
       <ul class="feature-list">
         <li>✅ Svelte 5 runes for reactive state management</li>
@@ -33,7 +34,7 @@
       </ul>
     </CardBits>
 
-    <CardBits variant="outlined" padding="md" class="feature-card">
+    <CardBits variant="outlined" padding="md" class="feature-nier-bits-card">
       <h3 class="feature-title">🧩 Components Used</h3>
       <ul class="component-list">
         <li><code>ButtonBits</code> - Action buttons with states</li>
@@ -51,7 +52,7 @@
   </div>
 
   <div class="demo-footer">
-    <CardBits variant="filled" padding="lg" class="footer-card">
+    <CardBits variant="filled" padding="lg" class="footer-nier-bits-card">
       <h3 class="footer-title">🚀 Integration Complete</h3>
       <p class="footer-text">
         This form demonstrates the seamless integration of bits-ui components with

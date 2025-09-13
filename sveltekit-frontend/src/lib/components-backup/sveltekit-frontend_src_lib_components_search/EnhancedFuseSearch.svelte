@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Fuse from 'fuse.js';
   import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
@@ -130,18 +131,18 @@
 
 <div class="space-y-4">
   <!-- Search Input -->
-  <Card class="border-primary/20">
-    <CardHeader class="pb-3">
-      <CardTitle class="flex items-center gap-2 text-lg">
+  <NesCard class="border-primary/20">
+    <div class="yorha-panel-header" class="pb-3">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2 text-lg">
         <Search class="h-5 w-5 text-primary" />
         Enhanced Legal Search
         <Sparkles class="h-4 w-4 text-yellow-500" />
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="flex gap-2">
         <div class="relative flex-1">
-          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 nes-text is-disabled" />
           <Input
             {placeholder}
             bind:value={searchQuery}
@@ -149,7 +150,7 @@
             class="pl-10"
           />
         </div>
-        <Button 
+        <button class="nes-btn" 
           onclick={performSearch} 
           disabled={isSearching || !searchQuery.trim()}
           size="sm"
@@ -159,28 +160,28 @@
           {:else}
             <Search class="h-4 w-4" />
           {/if}
-        </Button>
+        </button>
       </div>
       
       {#if searchQuery && searchResults.length > 0}
-        <div class="mt-2 text-sm text-muted-foreground">
+        <div class="mt-2 text-sm nes-text is-disabled">
           Found {searchResults.length} result{searchResults.length === 1 ? '' : 's'} for "{searchQuery}"
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Search Results -->
   {#if searchResults.length > 0}
     <div class="space-y-3">
       {#each searchResults as result, index (result.item.id)}
-        <Card class="hover:shadow-md transition-all duration-200 border-l-4 border-l-primary/30">
-          <CardHeader class="pb-2">
+        <NesCard class="hover:shadow-md transition-all duration-200 border-l-4 border-l-primary/30">
+          <div class="yorha-panel-header" class="pb-2">
             <div class="flex items-start justify-between">
               <div class="flex-1 space-y-2">
-                <CardTitle class="text-base leading-tight">
+                <h3 class="nes-text is-primary" class="text-base leading-tight">
                   {@html highlightMatches(result.item.title, result.matches?.filter(m => m.key === 'title'))}
-                </CardTitle>
+                </h3>
                 
                 <div class="flex flex-wrap gap-2">
                   <Badge class={getJurisdictionColor(result.item.jurisdiction)}>
@@ -199,21 +200,21 @@
                 </div>
               </div>
               
-              <div class="text-right text-xs text-muted-foreground">
+              <div class="text-right text-xs nes-text is-disabled">
                 #{index + 1}
               </div>
             </div>
-          </CardHeader>
+          </div>
           
-          <CardContent class="pt-0">
-            <p class="text-sm text-muted-foreground mb-3">
+          <div class="yorha-panel-content" class="pt-0">
+            <p class="text-sm nes-text is-disabled mb-3">
               {@html highlightMatches(result.item.description, result.matches?.filter(m => m.key === 'description'))}
             </p>
             
             {#if result.matches?.some(m => m.key === 'content')}
               <div class="text-xs bg-muted/50 p-2 rounded mb-3">
                 <div class="font-medium mb-1">Content Match:</div>
-                <div class="text-muted-foreground">
+                <div class="nes-text is-disabled">
                   {@html highlightMatches(
                     result.item.content.substring(0, 200) + '...',
                     result.matches?.filter(m => m.key === 'content')
@@ -239,63 +240,63 @@
             {/if}
 
             <div class="flex gap-2">
-              <Button size="sm" variant="outline">
+              <button class="nes-btn" size="sm" variant="outline">
                 <FileText class="h-3 w-3 mr-1" />
                 AI Summary
-              </Button>
-              <Button size="sm" variant="outline">
+              </button>
+              <button class="nes-btn" size="sm" variant="outline">
                 <Sparkles class="h-3 w-3 mr-1" />
                 AI Analysis
-              </Button>
+              </button>
               {#if result.item.url}
-                <Button size="sm" variant="outline">
+                <button class="nes-btn" size="sm" variant="outline">
                   <a href={result.item.url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1">
                     <ExternalLink class="h-3 w-3" />
                     Full Text
                   </a>
-                </Button>
+                </button>
               {/if}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/each}
     </div>
   {:else if searchQuery && !isSearching}
-    <Card>
-      <CardContent class="py-8 text-center">
+    <NesCard>
+      <div class="yorha-panel-content" class="py-8 text-center">
         <div class="space-y-3">
-          <Search class="h-12 w-12 mx-auto text-muted-foreground" />
+          <Search class="h-12 w-12 mx-auto nes-text is-disabled" />
           <div>
             <p class="font-medium">No results found</p>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-sm nes-text is-disabled">
               Try searching for terms like "murder", "contract", "evidence", or "robbery"
             </p>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Quick Search Suggestions -->
   {#if !searchQuery}
-    <Card>
-      <CardHeader>
-        <CardTitle class="text-sm">Quick Search Examples</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="text-sm">Quick Search Examples</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="flex flex-wrap gap-2">
           {#each ['murder', 'contract liability', 'evidence rules', 'robbery', 'constitutional rights', 'family law'] as suggestion}
-            <Button 
+            <button class="nes-btn" 
               variant="outline" 
               size="sm" 
               onclick={() => { searchQuery = suggestion; performSearch(); }}
             >
               {suggestion}
-            </Button>
+            </button>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

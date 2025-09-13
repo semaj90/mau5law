@@ -1,5 +1,6 @@
 <!-- YoRHa Dialog Manager Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import YoRHaDialog from './YoRHaDialog.svelte';
   import { dialogStore, type Dialog } from '$lib/stores/dialogs';
 

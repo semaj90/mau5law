@@ -2,6 +2,7 @@
 https://svelte.dev/e/render_tag_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from "svelte";
   import { X } from "lucide-svelte";
 

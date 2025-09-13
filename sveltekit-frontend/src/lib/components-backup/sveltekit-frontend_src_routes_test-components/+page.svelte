@@ -1,10 +1,11 @@
 <!-- Test existing shadcn components -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Test shadcn components that are working
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
 </script>
 
 <div class="p-8 bg-slate-900 text-white min-h-screen">
   <h1 class="text-2xl mb-4">Testing Existing Shadcn Button</h1>
-  <Button>Shadcn Button (Working)</Button>
+  <button class="nes-btn">Shadcn Button (Working)</button>
 </div>

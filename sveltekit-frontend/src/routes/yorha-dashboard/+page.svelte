@@ -3,6 +3,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:keydown) and new syntaxes for event handling is not allowed. Use only the onkeydown syntax -->
 <!-- YoRHa Legal AI Dashboard - Complete Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
   // Using Svelte 5 runes ($state/$derived) without importing $derived at runtime
   import { onMount } from 'svelte';
   import YoRHaDataGrid from '$lib/components/yorha/YoRHaDataGrid.svelte';

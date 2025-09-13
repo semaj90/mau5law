@@ -1,6 +1,7 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Evidence } from '$lib/types';
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import {
     evidenceActions,
     evidenceGrid,
@@ -247,8 +248,7 @@
         </select>
 
         <!-- Sort direction -->
-        <Button
-          variant="secondary"
+        <button class="nes-btn"
           size="sm"
           onclick={() => toggleSort(sortBy)}
           class="flex items-center gap-2"
@@ -258,11 +258,10 @@
           {:else}
             <SortDesc class="w-4 h-4" />
           {/if}
-        </Button>
+        </button>
 
         <!-- View mode toggle -->
-        <Button
-          variant="secondary"
+        <button class="nes-btn"
           size="sm"
           onclick={() => toggleViewMode()}
           class="flex items-center gap-2"
@@ -272,7 +271,7 @@
           {:else}
             <Grid class="w-4 h-4" />
           {/if}
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -283,21 +282,20 @@
           {selectedItems.size} item{selectedItems.size !== 1 ? "s" : ""} selected
         </span>
         <div class="flex items-center gap-2">
-          <Button
-            variant="secondary"
+          <button class="nes-btn"
             size="sm"
             onclick={() => clearSelection()}
           >
             Clear
-          </Button>
-          <Button variant="secondary" size="sm" class="flex items-center gap-2">
+          </button>
+          <button class="nes-btn" size="sm" class="flex items-center gap-2">
             <Download class="w-4 h-4" />
             Download
-          </Button>
-          <Button variant="secondary" size="sm" class="flex items-center gap-2">
+          </button>
+          <button class="nes-btn" size="sm" class="flex items-center gap-2">
             <Archive class="w-4 h-4" />
             Archive
-          </Button>
+          </button>
         </div>
       </div>
     {/if}
@@ -314,13 +312,12 @@
     <div class="text-center py-12">
       <div class="text-red-600 dark:text-red-400 mb-2">Error loading evidence</div>
       <p class="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
-      <Button
-        variant="secondary"
+      <button class="nes-btn"
         size="sm"
         onclick={() => evidenceActions.loadEvidence(caseId)}
       >
         Try Again
-      </Button>
+      </button>
     </div>
   {:else if filteredData.length === 0}
     <!-- Empty state -->
@@ -506,7 +503,7 @@
               <div class="space-y-4">
                 <Button variant="ghost" size="sm" class="space-y-4">
                   <MoreHorizontal class="space-y-4" />
-                </Button>
+                </button>
               </div>
             </div>
           {/each}

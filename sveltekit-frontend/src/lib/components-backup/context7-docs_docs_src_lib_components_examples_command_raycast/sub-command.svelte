@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Command, Popover } from "bits-ui";
   	import SubItem from "./sub-item.svelte";
   	import { FinderIcon, StarIcon, WindowIcon } from "./icons/index.js";

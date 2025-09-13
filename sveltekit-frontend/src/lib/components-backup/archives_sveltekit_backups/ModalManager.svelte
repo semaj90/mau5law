@@ -2,7 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
-  	import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  	import Button from '$lib/components/ui/nes-button.svelte';
   	import { quintOut } from 'svelte/easing';
   	import { fade, fly } from 'svelte/transition';
   	import { modals } from "../../stores/modal";
@@ -178,12 +179,12 @@ https://svelte.dev/e/js_parse_error -->
 					{#if builtInModal.actions}
 						<div class="mx-auto px-4 max-w-7xl">
 							{#each builtInModal.actions as action}
-								<Button
+								<button class="nes-btn"
 									variant={action.variant}
 									onclick={() => action.action()}
 								>
 									{action.label}
-								</Button>
+								</button>
 							{/each}
 						</div>
 					{/if}

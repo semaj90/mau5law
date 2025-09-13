@@ -1,9 +1,10 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import ModernButton from '$lib/components/ui/button/Button.svelte';
 
   let fileInput: HTMLInputElement;
-  let selectedFile: File | null = null;
+  let selectedFile = $state<File | null>(null);
   let uploading = $state(false);
   let uploadResult = $state<any>(null);
   let errorMessage = $state('');

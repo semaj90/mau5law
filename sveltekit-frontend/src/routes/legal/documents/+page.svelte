@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { 
@@ -348,7 +349,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-3xl font-bold tracking-tight text-foreground">Legal Documents</h1>
-        <p class="text-muted-foreground">
+        <p class="nes-text is-disabled">
           AI-powered document management with OCR, analysis, and vector search
         </p>
       </div>
@@ -356,11 +357,11 @@ https://svelte.dev/e/js_parse_error -->
         <Button class="bits-btn" variant="outline" onclick={() => goto('/legal/documents/templates')}>
           <FileText class="h-4 w-4 mr-2" />
           Templates
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={() => showUploadDialog = true}>
           <Plus class="h-4 w-4 mr-2" />
           Upload Document
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -369,7 +370,7 @@ https://svelte.dev/e/js_parse_error -->
       <div.Root>
         <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
           <div.Title class="text-sm font-medium">Total Documents</Card.Title>
-          <FileText class="h-4 w-4 text-muted-foreground" />
+          <FileText class="h-4 w-4 nes-text is-disabled" />
         </Card.Header>
         <div.Content>
           <div class="text-2xl font-bold">{documentStats.total}</div>
@@ -411,7 +412,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div class="flex flex-col gap-4 md:flex-row md:items-center">
         <div class="relative">
-          <Search class="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search class="absolute left-2 top-2.5 h-4 w-4 nes-text is-disabled" />
           <Input
             bind:value={searchQuery}
             placeholder="Search documents by title, author, or tags..."
@@ -455,20 +456,20 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex items-center justify-center py-12">
         <div class="flex items-center gap-2">
           <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-          <span class="text-muted-foreground">Loading documents...</span>
+          <span class="nes-text is-disabled">Loading documents...</span>
         </div>
       </div>
     {:else if filteredDocuments.length === 0}
       <div.Root>
         <div.Content class="flex flex-col items-center justify-center py-12">
-          <FileText class="h-12 w-12 text-muted-foreground mb-4" />
+          <FileText class="h-12 w-12 nes-text is-disabled mb-4" />
           <h3 class="text-lg font-semibold mb-2">
             {searchQuery || statusFilter !== 'all' || typeFilter !== 'all' 
               ? 'No documents found matching your filters' 
               : 'No documents found'
             }
           </h3>
-          <p class="text-muted-foreground mb-4">
+          <p class="nes-text is-disabled mb-4">
             {documents.length === 0 
               ? 'Upload your first document to get started with AI-powered analysis'
               : 'Try adjusting your search terms or filters'
@@ -477,7 +478,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn" onclick={() => showUploadDialog = true}>
             <Plus class="h-4 w-4 mr-2" />
             Upload Document
-          </Button>
+          </button>
         </div>
       </div>
     {:else}
@@ -506,16 +507,16 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="flex gap-1">
                   <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); editDocument(document); }}>
                     <Edit2 class="h-4 w-4" />
-                  </Button>
+                  </button>
                   <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); deleteDocument(document); }}>
                     <Trash2 class="h-4 w-4" />
-                  </Button>
+                  </button>
                 </div>
               </div>
             </Card.Header>
             <div.Content>
               <div class="space-y-3">
-                <div class="text-sm text-muted-foreground">
+                <div class="text-sm nes-text is-disabled">
                   <p>Author: {document.author}</p>
                   <p>Size: {formatFileSize(document.size)}</p>
                   <div class="flex justify-between items-center mt-2">
@@ -539,7 +540,7 @@ https://svelte.dev/e/js_parse_error -->
                 
                 {#if document.processingStatus}
                   <div class="space-y-2">
-                    <div class="text-xs text-muted-foreground">Processing Status:</div>
+                    <div class="text-xs nes-text is-disabled">Processing Status:</div>
                     <div class="flex gap-2 text-xs">
                       <span class="{document.processingStatus.ocr === 'completed' ? 'text-green-600' : document.processingStatus.ocr === 'processing' ? 'text-blue-600' : 'text-gray-500'}">
                         OCR: {document.processingStatus.ocr}
@@ -585,14 +586,14 @@ https://svelte.dev/e/js_parse_error -->
             <div class="space-y-2">
               <FileText class="h-8 w-8 mx-auto text-green-600" />
               <p class="font-medium">{uploadFile.name}</p>
-              <p class="text-sm text-muted-foreground">{formatFileSize(uploadFile.size)}</p>
+              <p class="text-sm nes-text is-disabled">{formatFileSize(uploadFile.size)}</p>
               <Button class="bits-btn" variant="outline" size="sm" onclick={() => uploadFile = null}>
                 Remove
-              </Button>
+              </button>
             </div>
           {:else}
             <div class="space-y-2">
-              <Upload class="h-8 w-8 mx-auto text-muted-foreground" />
+              <Upload class="h-8 w-8 mx-auto nes-text is-disabled" />
               <div>
                 <p class="font-medium">Drop your document here, or</p>
                 <label for="file-upload" class="text-primary cursor-pointer hover:underline">
@@ -606,7 +607,7 @@ https://svelte.dev/e/js_parse_error -->
                   />
                 </label>
               </div>
-              <p class="text-sm text-muted-foreground">
+              <p class="text-sm nes-text is-disabled">
                 Supports PDF, DOC, DOCX, TXT, RTF (max 50MB)
               </p>
             </div>
@@ -668,7 +669,7 @@ https://svelte.dev/e/js_parse_error -->
     <Dialog.Footer>
       <Button class="bits-btn" variant="outline" onclick={() => { showUploadDialog = false; resetUploadForm(); }}>
         Cancel
-      </Button>
+      </button>
       <Button class="bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
         {#if uploading}
           <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2"></div>
@@ -676,7 +677,7 @@ https://svelte.dev/e/js_parse_error -->
           <Upload class="h-4 w-4 mr-2" />
         {/if}
         Upload Document
-      </Button>
+      </button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
@@ -729,12 +730,12 @@ https://svelte.dev/e/js_parse_error -->
             <div class="space-y-2">
               <div>
                 <strong class="text-sm">Summary:</strong>
-                <p class="text-sm text-muted-foreground mt-1">{selectedDocument.aiAnalysis.summary}</p>
+                <p class="text-sm nes-text is-disabled mt-1">{selectedDocument.aiAnalysis.summary}</p>
               </div>
               
               <div>
                 <strong class="text-sm">Key Points:</strong>
-                <ul class="text-sm text-muted-foreground mt-1 space-y-1">
+                <ul class="text-sm nes-text is-disabled mt-1 space-y-1">
                   {#each selectedDocument.aiAnalysis.keyPoints as point}
                     <li class="flex items-start gap-2">
                       <span class="text-primary mt-1">•</span>
@@ -755,7 +756,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         {:else}
-          <div class="text-center py-4 text-muted-foreground">
+          <div class="text-center py-4 nes-text is-disabled">
             <Bot class="h-8 w-8 mx-auto mb-2 opacity-50" />
             <p>AI analysis not available for this document</p>
           </div>
@@ -791,11 +792,11 @@ https://svelte.dev/e/js_parse_error -->
       <Dialog.Footer>
         <Button class="bits-btn" variant="outline" onclick={() => showAIAnalysisDialog = false}>
           Close
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={() => editDocument(selectedDocument)}>
           <Edit2 class="h-4 w-4 mr-2" />
           Edit Document
-        </Button>
+        </button>
       </Dialog.Footer>
     {/if}
   </Dialog.Content>

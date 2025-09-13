@@ -1,5 +1,6 @@
 <!-- 3D NES.css LOD Effects for Document Processing -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { quintOut, elasticOut } from 'svelte/easing';

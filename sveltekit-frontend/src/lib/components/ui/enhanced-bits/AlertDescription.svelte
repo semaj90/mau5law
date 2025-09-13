@@ -3,6 +3,7 @@ Enhanced-Bits AlertDescription Component
 Description content for alerts with NES styling
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { cn } from '$lib/utils';
   
   interface AlertDescriptionProps {

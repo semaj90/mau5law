@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { NavigationMenu } from "bits-ui";
   	import CaretDown from "phosphor-svelte/lib/CaretDown";
   	import { cn } from "$lib/utils/styles.js";
@@ -58,7 +59,7 @@
 			{href}
 		>
 			<div class="text-sm font-medium leading-none">{title}</div>
-			<p class="text-muted-foreground line-clamp-2 text-sm leading-snug">
+			<p class="nes-text is-disabled line-clamp-2 text-sm leading-snug">
 				{content}
 			</p>
 		</NavigationMenu.Link>
@@ -91,7 +92,7 @@
 						>
 							<!-- <Icons.logo class="h-6 w-6" /> -->
 							<div class="mb-2 mt-4 text-lg font-medium">Bits UI</div>
-							<p class="text-muted-foreground text-sm leading-tight">
+							<p class="nes-text is-disabled text-sm leading-tight">
 								The headless components for Svelte.
 							</p>
 						</NavigationMenu.Link>

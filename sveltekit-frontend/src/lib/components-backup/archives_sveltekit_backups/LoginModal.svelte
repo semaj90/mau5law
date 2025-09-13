@@ -2,7 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { createDialog, melt } from "@melt-ui/svelte";
   import { createEventDispatcher } from "svelte";
   import { writable } from "svelte/store";
@@ -90,16 +91,16 @@ https://svelte.dev/e/js_parse_error -->
         {#if message}<div class="mx-auto px-4 max-w-7xl">{message}</div>{/if}
       </div>
       <div class="mx-auto px-4 max-w-7xl">
-        <Button
+        <button class="nes-btn"
           type="button"
           variant="ghost"
           onclick={() => ($isMeltOpen = false)}
         >
           Cancel
-        </Button>
-        <Button type="submit" disabled={$submitting}>
+        </button>
+        <button class="nes-btn" type="submit" disabled={$submitting}>
           {#if $submitting}Logging in...{:else}Login{/if}
-        </Button>
+        </button>
       </div>
     </form>
   </div>

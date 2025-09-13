@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Svelte 5 runes are built-in, no import needed
   // Web Speech API type declarations
   interface SpeechRecognition extends EventTarget {
@@ -479,10 +480,10 @@ https://svelte.dev/e/js_parse_error -->
   <Button class="bits-btn" variant="outline" size="sm" onclick={exportChatHistory}>
           <Download class="h-4 w-4 mr-1" />
           Export
-        </Button>
+        </button>
         <Button class="bits-btn" variant="outline" size="sm">
           <Settings class="h-4 w-4" />
-        </Button>
+        </button>
       </div>
     </div>
   </header>
@@ -501,10 +502,10 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex items-center space-x-1">
               <Button class="bits-btn" size="sm" variant="ghost" onclick={() => adjustPanelWidth('reports', -5)}>
                 <Minimize class="h-3 w-3" />
-              </Button>
+              </button>
               <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('reports')}>
                 <Minimize class="h-3 w-3" />
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -549,7 +550,7 @@ https://svelte.dev/e/js_parse_error -->
             <h3 class="font-semibold text-slate-900">Summaries</h3>
             <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('summaries')}>
               <Minimize class="h-3 w-3" />
-            </Button>
+            </button>
           </div>
 
           <div class="flex-1 overflow-y-auto p-4">
@@ -577,7 +578,7 @@ https://svelte.dev/e/js_parse_error -->
             <h3 class="font-semibold text-slate-900">Citations</h3>
             <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('citations')}>
               <Minimize class="h-3 w-3" />
-            </Button>
+            </button>
           </div>
 
           <div class="flex-1 overflow-y-auto p-4">
@@ -622,7 +623,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('chat')}>
             <Expand class="h-3 w-3" />
-          </Button>
+          </button>
         </div>
 
         <!-- AI Suggestions Bar -->
@@ -738,12 +739,12 @@ https://svelte.dev/e/js_parse_error -->
                 {:else}
                   <Mic class="h-4 w-4" />
                 {/if}
-              </Button>
+              </button>
             {/if}
 
             <Button class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing}>
               <Send class="h-4 w-4" />
-            </Button>
+            </button>
           </div>
         </div>
       {/if}

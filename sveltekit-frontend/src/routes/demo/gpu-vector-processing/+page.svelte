@@ -4,6 +4,7 @@
   Shows the complete pipeline from cached resources to GPU compute execution
 -->
 <script lang=\"ts\">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { GpuVectorProcessor } from '$lib/gpu/GpuVectorProcessor.js';
   // import { LodCacheEngine } from '$lib/gpu/lod-cache-engine.js'; // File doesn't exist

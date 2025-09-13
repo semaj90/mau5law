@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { aiPersonality } from "$lib/stores/chatStore";
   import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
@@ -77,7 +78,7 @@
         >
           <MessageCircle class="mx-auto px-4 max-w-7xl" />
           Yes, help me
-        </Button>
+        </button>
 
         <!-- Quick responses -->
         <Button
@@ -88,7 +89,7 @@
         >
           <Lightbulb class="mx-auto px-4 max-w-7xl" />
           Summarize
-        </Button>
+        </button>
 
         <!-- Dismiss Button -->
         <Button
@@ -99,7 +100,7 @@
           title="Not now"
         >
           <X class="mx-auto px-4 max-w-7xl" />
-        </Button>
+        </button>
       </div>
     </div>
   </div>

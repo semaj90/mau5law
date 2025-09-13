@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { PageData } from './$types';
 
   export let data: PageData;

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { Card } from '$lib/components/ui/enhanced-bits';
   import CardContent from '$lib/components/ui/CardContent.svelte';
@@ -220,40 +221,40 @@
   </div>
 
   <!-- Test Controls -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Test Controls</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Test Controls</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="flex flex-wrap gap-3">
   <Button class="bits-btn" onclick={runFullCRUDTest} disabled={isLoading} variant="default">
           {isLoading ? '⏳ Testing...' : '🚀 Run Full CRUD Test'}
-        </Button>
+        </button>
   <Button class="bits-btn" onclick={testGETOperations} disabled={isLoading} variant="secondary">
           🔍 Test GET
-        </Button>
+        </button>
   <Button class="bits-btn" onclick={testPOSTOperation} disabled={isLoading} variant="secondary">
           📝 Test POST
-        </Button>
+        </button>
   <Button class="bits-btn" onclick={() => testPUTOperation()} disabled={isLoading} variant="secondary">
           ✏️ Test PUT
-        </Button>
+        </button>
   <Button class="bits-btn" onclick={() => testDELETEOperation()} disabled={isLoading} variant="secondary">
           🗑️ Test DELETE
-        </Button>
+        </button>
   <Button class="bits-btn" onclick={clearResults} variant="ghost">
           🧹 Clear Results
-        </Button>
+        </button>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Test Results Summary -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Test Results Summary</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Test Results Summary</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="bg-blue-50 p-3 rounded">
           <div class="text-2xl font-bold text-blue-600">{testSummary.total}</div>
@@ -272,15 +273,15 @@
           <div class="text-sm text-purple-600">Success Rate</div>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Current Cases -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Current Cases ({cases.length})</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Current Cases ({cases.length})</h3>
+    </div>
+    <div class="yorha-panel-content">
       {#if cases.length === 0}
         <p class="text-gray-500">No cases found. Create some test cases to see them here.</p>
       {:else}
@@ -301,15 +302,15 @@
           {/each}
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Test Results Log -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Test Results Log</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Test Results Log</h3>
+    </div>
+    <div class="yorha-panel-content">
       {#if testResults.length === 0}
         <p class="text-gray-500">No test results yet. Run some tests to see results here.</p>
       {:else}
@@ -319,18 +320,18 @@
           {/each}
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Selected Case Details -->
   {#if selectedCase}
-    <Card>
-      <CardHeader>
-        <CardTitle>Selected Case Details</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Selected Case Details</h3>
+      </div>
+      <div class="yorha-panel-content">
         <pre class="bg-gray-100 p-4 rounded text-sm overflow-auto">{JSON.stringify(selectedCase, null, 2)}</pre>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>

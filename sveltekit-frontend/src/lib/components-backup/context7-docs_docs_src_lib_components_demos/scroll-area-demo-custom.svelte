@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { ScrollArea, type WithoutChild } from "bits-ui";
   	import DemoContainer from "../demo-container.svelte";
   	import { cn } from "$lib/utils/styles.js";
@@ -39,7 +40,7 @@
 	<ScrollArea.Root
 		bind:ref
 		{...restProps}
-		class="border-dark-10 bg-background-alt shadow-card relative overflow-hidden rounded-[10px] border px-4 py-4"
+		class="border-dark-10 bg-background-alt shadow-nier-bits-card relative overflow-hidden rounded-[10px] border px-4 py-4"
 	>
 		<ScrollArea.Viewport
 			class={cn("h-full max-h-[200px] w-full max-w-[200px]", viewportClasses)}

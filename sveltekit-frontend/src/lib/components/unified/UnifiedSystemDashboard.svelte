@@ -4,6 +4,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   // System status and metrics stores

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import type { CitationPoint, Report, ReportSection } from "$lib/data/types";
   import { onDestroy, onMount } from "svelte";

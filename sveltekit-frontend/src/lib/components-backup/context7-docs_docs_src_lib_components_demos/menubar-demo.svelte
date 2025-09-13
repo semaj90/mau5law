@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Menubar } from "bits-ui";
   	import CaretRight from "phosphor-svelte/lib/CaretRight";
   	import Cat from "phosphor-svelte/lib/Cat";

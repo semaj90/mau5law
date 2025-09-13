@@ -2,6 +2,7 @@
 <!-- File: sveltekit-frontend/src/routes/ai-summary/+page.svelte -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   let caseData = $state(null);
   let summary = $state('');

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Snippet } from 'svelte';
 
   import Button from '$lib/components/ui/button/Button.svelte';
@@ -88,10 +89,10 @@
               onclick={() => handleOpenChange(false)}
             >
               Cancel
-            </Button>
+            </button>
             <Button class="bits-btn" type="submit" disabled={$submitting}>
               {#if $submitting}Logging in...{:else}Login{/if}
-            </Button>
+            </button>
           </div>
         </div>
       </form>

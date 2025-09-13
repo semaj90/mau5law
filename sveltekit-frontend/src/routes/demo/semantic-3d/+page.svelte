@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import Enhanced3DSemanticProcessor from '$lib/components/Enhanced3DSemanticProcessor.svelte';
@@ -155,11 +156,11 @@
   <main class="py-8">
     <!-- Mathematical Concepts Section -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-2xl">🧮 Mathematical Foundations</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-2xl">🧮 Mathematical Foundations</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {#each mathematicalConcepts as concept}
               <div class="border rounded-lg p-4 bg-gray-50">
@@ -174,18 +175,18 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Enhanced 3D Processor Component -->
     <div class="max-w-full mx-auto mb-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-2xl">🎯 Live 3D Semantic Processor</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-2xl">🎯 Live 3D Semantic Processor</h3>
+          </div>
+          <div class="yorha-panel-content">
             <Enhanced3DSemanticProcessor 
               maxConcurrent={8}
               embeddingDimensions={768}
@@ -193,18 +194,18 @@
               lodThreshold={15.0}
               enableAutocomplete={true}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     </div>
 
     <!-- Optimization Techniques -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-2xl">⚡ Optimization Techniques</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-2xl">⚡ Optimization Techniques</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {#each optimizationTechniques as opt}
               <div class="border rounded-lg p-4 hover:shadow-lg transition-shadow">
@@ -216,17 +217,17 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Performance Metrics -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-2xl">📊 Performance Benchmarks</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-2xl">📊 Performance Benchmarks</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {#each performanceMetrics as metric}
               <div class="text-center p-4 border rounded-lg">
@@ -236,17 +237,17 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Pipeline Architecture Diagram -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-2xl">🏗️ Processing Pipeline Architecture</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-2xl">🏗️ Processing Pipeline Architecture</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="overflow-x-auto">
             <div class="flex items-center space-x-4 min-w-max p-4">
               <!-- Step 1: Text Input -->
@@ -314,8 +315,8 @@
               <li>• <strong>Memory Efficiency:</strong> Quantization and compression reduce storage by 75%</li>
             </ul>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </main>
 

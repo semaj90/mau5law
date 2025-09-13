@@ -3,6 +3,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `</section>` attempted to close an element that was not open -->
 <!-- Advanced YoRHa Testing Suite -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     TestTube,
@@ -402,22 +405,22 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   <!-- Test Statistics -->
   <section class="yorha-test-stats">
     <div class="yorha-test-stats-content">
-      <div class="yorha-test-stat-card">
+      <div class="yorha-test-stat-nier-bits-nier-bits-nier-bits-card">
         <TestTube size={24} />
         <div class="yorha-test-stat-value">{stats.total}</div>
         <div class="yorha-test-stat-label">TOTAL TESTS</div>
       </div>
-      <div class="yorha-test-stat-card passed">
+      <div class="yorha-test-stat-nier-bits-nier-bits-nier-bits-card passed">
         <CheckCircle size={24} />
         <div class="yorha-test-stat-value">{stats.passed}</div>
         <div class="yorha-test-stat-label">PASSED</div>
       </div>
-      <div class="yorha-test-stat-card warning">
+      <div class="yorha-test-stat-nier-bits-nier-bits-nier-bits-card warning">
         <AlertTriangle size={24} />
         <div class="yorha-test-stat-value">{stats.warnings}</div>
         <div class="yorha-test-stat-label">WARNINGS</div>
       </div>
-      <div class="yorha-test-stat-card failed">
+      <div class="yorha-test-stat-nier-bits-nier-bits-nier-bits-card failed">
         <XCircle size={24} />
         <div class="yorha-test-stat-value">{stats.failed}</div>
         <div class="yorha-test-stat-label">FAILED</div>
@@ -429,7 +432,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   <section class="yorha-test-suites">
     <div class="yorha-test-suites-content">
       {#each testSuites as suite}
-        <div class="yorha-test-suite-card">
+        <div class="yorha-test-suite-nier-bits-nier-bits-nier-bits-card">
           <div class="yorha-test-suite-header">
             <div class="yorha-test-suite-title">
               <Server size={24} />

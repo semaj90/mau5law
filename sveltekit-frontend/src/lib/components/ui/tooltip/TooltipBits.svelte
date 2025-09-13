@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Tooltip as TooltipPrimitive } from "bits-ui";
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';

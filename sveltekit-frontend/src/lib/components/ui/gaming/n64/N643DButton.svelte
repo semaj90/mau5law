@@ -11,6 +11,7 @@
   - Integration with YoRHa 3D system
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Button as BitsButton } from 'bits-ui';
   import { createEventDispatcher, onMount } from 'svelte';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';

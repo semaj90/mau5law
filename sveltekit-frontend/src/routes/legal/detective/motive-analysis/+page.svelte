@@ -1,9 +1,10 @@
 <!-- Detective Mode: Motive Analysis Enhancement -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
@@ -512,19 +513,19 @@
       class="bg-blue-600 hover:bg-blue-700"
     >
       {analysisInProgress ? 'Analyzing...' : 'Start Motive Analysis'}
-    </Button>
+    </button>
     
-    <Button variant="outline" onclick={() => activeTab = 'profile'}>
+    <button class="nes-btn" variant="outline" onclick={() => activeTab = 'profile'}>
       View Suspect Profile
-    </Button>
+    </button>
     
-    <Button variant="outline" onclick={() => activeTab = 'motives'}>
+    <button class="nes-btn" variant="outline" onclick={() => activeTab = 'motives'}>
       Motive Matrix
-    </Button>
+    </button>
     
-    <Button variant="outline" onclick={() => activeTab = 'risk'}>
+    <button class="nes-btn" variant="outline" onclick={() => activeTab = 'risk'}>
       Risk Assessment
-    </Button>
+    </button>
   </div>
 
   <!-- Analysis Results -->

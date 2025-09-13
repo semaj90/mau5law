@@ -13,6 +13,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { WebGPULegalDocumentGraph } from '$lib/webgpu/legal-document-graph';

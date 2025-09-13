@@ -1,6 +1,7 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import GoldenRatioGrid from '$lib/components/ui/layout/GoldenRatioGrid.svelte';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Card } from '$lib/components/ui/enhanced-bits';
 
   let currentVariant = $state<'sidebar' | 'dashboard' | 'split' | 'content' | 'legal-document'>('dashboard');
@@ -36,34 +37,34 @@
 
     <!-- Controls -->
     <div class="golden-section mb-phi-xl">
-      <div class="golden-card">
+      <div class="golden-nier-bits-card">
         <h3 class="text-phi-lg font-semibold mb-phi-md">Grid Variant</h3>
         <div class="flex gap-phi-sm flex-wrap">
           {#each variants as variant}
-            <Button
+            <button class="nes-btn"
               variant={currentVariant === variant ? 'primary' : 'outline'}
               size="sm"
               onclick={() => currentVariant = variant}
               class="capitalize"
             >
               {variant.replace('-', ' ')}
-            </Button>
+            </button>
           {/each}
         </div>
       </div>
 
-      <div class="golden-card">
+      <div class="golden-nier-bits-card">
         <h3 class="text-phi-lg font-semibold mb-phi-md">Golden Direction</h3>
         <div class="flex gap-phi-sm flex-wrap">
           {#each directions as direction}
-            <Button
+            <button class="nes-btn"
               variant={currentDirection === direction ? 'primary' : 'outline'}
               size="sm"
               onclick={() => currentDirection = direction}
               class="capitalize"
             >
               {direction}
-            </Button>
+            </button>
           {/each}
         </div>
       </div>
@@ -76,7 +77,7 @@
         class="text-phi-sm"
       >
         {showDebugGrid ? 'Hide' : 'Show'} Debug Grid
-      </Button>
+      </button>
     </div>
   </div>
 
@@ -111,15 +112,15 @@
             Sidebar (φ⁻¹ proportion)
           </h3>
           <div class="space-y-phi-sm">
-            <div class="evidence-card-phi">
+            <div class="evidence-nier-bits-card-phi">
               <h4 class="text-phi-md font-medium mb-phi-sm">Case Files</h4>
               <p class="text-phi-sm text-gray-600">Evidence organized by golden ratio proportions</p>
             </div>
-            <div class="evidence-card-phi">
+            <div class="evidence-nier-bits-card-phi">
               <h4 class="text-phi-md font-medium mb-phi-sm">AI Analysis</h4>
               <p class="text-phi-sm text-gray-600">Machine learning insights</p>
             </div>
-            <div class="evidence-card-phi">
+            <div class="evidence-nier-bits-card-phi">
               <h4 class="text-phi-md font-medium mb-phi-sm">Legal Research</h4>
               <p class="text-phi-sm text-gray-600">Case law and precedents</p>
             </div>
@@ -154,7 +155,7 @@
           </div>
 
           <div class="golden-section mb-phi-lg">
-            <Card class="p-phi-lg">
+            <NesCard class="p-phi-lg">
               <h4 class="text-phi-lg font-semibold mb-phi-md">Evidence Timeline</h4>
               <div class="space-y-phi-sm">
                 <div class="border-l-phi border-nier-golden-accent pl-phi-md">
@@ -166,9 +167,9 @@
                   <div class="text-phi-md">AI analysis completed</div>
                 </div>
               </div>
-            </Card>
+            </NesCard>
 
-            <Card class="p-phi-lg">
+            <NesCard class="p-phi-lg">
               <h4 class="text-phi-lg font-semibold mb-phi-md">Case Statistics</h4>
               <div class="space-y-phi-sm">
                 <div class="flex justify-between">
@@ -184,7 +185,7 @@
                   <span class="text-phi-sm font-semibold">78%</span>
                 </div>
               </div>
-            </Card>
+            </NesCard>
           </div>
 
           <p class="text-phi-sm text-gray-600 leading-phi">
@@ -204,9 +205,9 @@
             <div class="nier-golden-panel">
               <h4 class="text-phi-md font-semibold mb-phi-sm">Quick Actions</h4>
               <div class="space-y-phi-sm">
-                <Button variant="outline" size="sm" class="w-full">Export Report</Button>
-                <Button variant="outline" size="sm" class="w-full">Share Case</Button>
-                <Button variant="outline" size="sm" class="w-full">Schedule Review</Button>
+                <Button variant="outline" size="sm" class="w-full">Export Report</button>
+                <Button variant="outline" size="sm" class="w-full">Share Case</button>
+                <Button variant="outline" size="sm" class="w-full">Schedule Review</button>
               </div>
             </div>
 
@@ -246,7 +247,7 @@
 
   <!-- Golden Ratio Explanation -->
   <div class="mt-phi-xl">
-    <Card class="p-phi-xl">
+    <NesCard class="p-phi-xl">
       <h2 class="text-phi-2xl font-bold text-nier-golden-primary mb-phi-lg">
         Golden Ratio in Legal AI Design
       </h2>
@@ -307,7 +308,7 @@
           </div>
         </div>
       </div>
-    </Card>
+    </NesCard>
   </div>
 </div>
 

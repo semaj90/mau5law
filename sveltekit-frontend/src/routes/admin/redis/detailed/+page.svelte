@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { redisOrchestratorClient } from '$lib/stores/redis-orchestrator-store';
   
@@ -495,7 +496,7 @@
   {:else}
     <div class="metrics-grid">
       {#each endpointMetrics as endpoint}
-        <div class="endpoint-card complexity-{endpoint.complexity}">
+        <div class="endpoint-nier-bits-card complexity-{endpoint.complexity}">
           <div class="endpoint-header">
             <h3>{endpoint.name}</h3>
             <span class="complexity-badge {endpoint.complexity}">

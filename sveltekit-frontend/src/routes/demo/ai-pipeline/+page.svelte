@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- AI Pipeline Demo -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   	import { enhance } from '$app/forms';
   	import { writable } from 'svelte/store';

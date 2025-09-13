@@ -6,10 +6,11 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import SSRWebGPULoader from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { lodManager, type LODContext } from '$lib/services/N64LODManager.ts';
 
   // Demo state
@@ -125,10 +126,10 @@
   <!-- Document Selection -->
   <div class="demo-section">
     <div>
-      <divHeader>
-        <divTitle>Legal Document Selection</h3>
+      <div class="header">
+        <h3 class="title">Legal Document Selection</h3>
       </div>
-      <divContent>
+      <div class="content">
         <div class="nes-field">
           <label for="doc-select" class="nes-text">Document:</label>
           <div class="nes-select">
@@ -152,10 +153,10 @@
   <!-- LOD Controls -->
   <div class="demo-section">
     <div>
-      <divHeader>
-        <divTitle>N64-Style LOD Controls</h3>
+      <div class="header">
+        <h3 class="title">N64-Style LOD Controls</h3>
       </div>
-      <divContent>
+      <div class="content">
         <div class="controls-grid">
           <div class="nes-field">
             <label for="distance" class="nes-text">Viewport Distance: {viewportDistance}</label>
@@ -197,9 +198,9 @@
         </div>
 
         <div class="action-buttons">
-          <Button on:click={processDocument}>Process Document</Button>
-          <Button on:click={preloadAllLODs}>Preload All LODs</Button>
-          <Button on:click={updateScrollVelocity}>Simulate Scroll</Button>
+          <button class="nes-btn" on:click={processDocument}>Process Document</button>
+          <button class="nes-btn" on:click={preloadAllLODs}>Preload All LODs</button>
+          <button class="nes-btn" on:click={updateScrollVelocity}>Simulate Scroll</button>
         </div>
 
         <div class="nes-field">

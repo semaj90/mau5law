@@ -1,5 +1,8 @@
 <!-- Modern Dark YoRHa Legal AI Platform -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import {
@@ -112,14 +115,14 @@
       </div>
       <div class="flex items-center space-x-3">
         <button
-          class="yorha-btn yorha-btn-primary"
+          class="yorha-btn yorha-nes-btn is-primary"
           onclick={handleNewCase}
         >
           <Plus class="w-4 h-4 mr-2" />
           NEW CASE
         </button>
         <button
-          class="yorha-btn yorha-btn-secondary"
+          class="yorha-btn yorha-nes-btn"
           onclick={handleGlobalSearch}
         >
           <Search class="w-4 h-4 mr-2" />
@@ -181,7 +184,7 @@
 
       <!-- Status footer -->
       <div class="absolute bottom-4 left-4 right-4 max-w-52">
-        <div class="yorha-card p-3">
+        <div class="yorha-nier-bits-nier-bits-nier-bits-card p-3">
           <div class="flex items-center space-x-2">
             <div class="yorha-status-indicator yorha-status-online"></div>
             <span class="yorha-text-primary font-medium">Online</span>
@@ -196,7 +199,7 @@
     <main class="flex-1 p-6">
       <!-- Stats Cards -->
       <div class="yorha-grid yorha-grid-cols-4 mb-6">
-        <div class="yorha-card yorha-fade-in">
+        <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-fade-in">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium yorha-text-secondary">Active Cases</p>
@@ -206,7 +209,7 @@
           </div>
         </div>
 
-        <div class="yorha-card yorha-fade-in" style="animation-delay: 0.1s">
+        <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-fade-in" style="animation-delay: 0.1s">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium yorha-text-secondary">Evidence Items</p>
@@ -216,7 +219,7 @@
           </div>
         </div>
 
-        <div class="yorha-card yorha-fade-in" style="animation-delay: 0.2s">
+        <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-fade-in" style="animation-delay: 0.2s">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium yorha-text-secondary">Persons of Interest</p>
@@ -226,7 +229,7 @@
           </div>
         </div>
 
-        <div class="yorha-card yorha-fade-in" style="animation-delay: 0.3s">
+        <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-fade-in" style="animation-delay: 0.3s">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium yorha-text-secondary">Recent Activity</p>
@@ -240,11 +243,11 @@
       <div class="yorha-grid yorha-grid-cols-3 gap-6">
         <!-- Active Cases -->
         <div class="col-span-2">
-          <div class="yorha-card yorha-slide-in">
-            <div class="yorha-card-header flex items-center justify-between">
-              <h2 class="yorha-card-title">ACTIVE CASES</h2>
+          <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-slide-in">
+            <div class="yorha-nier-bits-yorha-panel-header flex items-center justify-between">
+              <h2 class="yorha-nier-bits-nes-text is-primary">ACTIVE CASES</h2>
               <button
-                class="yorha-btn yorha-btn-ghost text-sm"
+                class="yorha-btn yorha-nes-btn text-sm"
                 onclick={handleViewAll}
               >
                 VIEW ALL
@@ -282,9 +285,9 @@
         <!-- System Status & Quick Actions -->
         <div class="space-y-6">
           <!-- System Status -->
-          <div class="yorha-card yorha-slide-in" style="animation-delay: 0.2s">
-            <div class="yorha-card-header">
-              <h2 class="yorha-card-title">SYSTEM STATUS</h2>
+          <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-slide-in" style="animation-delay: 0.2s">
+            <div class="yorha-nier-bits-yorha-panel-header">
+              <h2 class="yorha-nier-bits-nes-text is-primary">SYSTEM STATUS</h2>
             </div>
             <div class="space-y-4">
               {#each systemStatus as status}
@@ -304,20 +307,20 @@
           </div>
 
           <!-- Quick Actions -->
-          <div class="yorha-card yorha-slide-in" style="animation-delay: 0.4s">
-            <div class="yorha-card-header">
-              <h2 class="yorha-card-title">QUICK ACTIONS</h2>
+          <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-slide-in" style="animation-delay: 0.4s">
+            <div class="yorha-nier-bits-yorha-panel-header">
+              <h2 class="yorha-nier-bits-nes-text is-primary">QUICK ACTIONS</h2>
             </div>
             <div class="space-y-3">
-              <button class="w-full yorha-btn yorha-btn-secondary justify-start">
+              <button class="w-full yorha-btn yorha-nes-btn justify-start">
                 <Database class="w-4 h-4 mr-3" />
                 EVIDENCE BOARD
               </button>
-              <button class="w-full yorha-btn yorha-btn-secondary justify-start">
+              <button class="w-full yorha-btn yorha-nes-btn justify-start">
                 <Clock class="w-4 h-4 mr-3" />
                 TIMELINE ANALYSIS
               </button>
-              <button class="w-full yorha-btn yorha-btn-secondary justify-start">
+              <button class="w-full yorha-btn yorha-nes-btn justify-start">
                 <Terminal class="w-4 h-4 mr-3" />
                 TERMINAL ACCESS
               </button>
@@ -325,9 +328,9 @@
           </div>
 
           <!-- AI Status -->
-          <div class="yorha-card yorha-slide-in" style="animation-delay: 0.6s">
-            <div class="yorha-card-header">
-              <h2 class="yorha-card-title">AI SYSTEMS</h2>
+          <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-slide-in" style="animation-delay: 0.6s">
+            <div class="yorha-nier-bits-yorha-panel-header">
+              <h2 class="yorha-nier-bits-nes-text is-primary">AI SYSTEMS</h2>
             </div>
             <div class="space-y-3">
               <div class="flex items-center justify-between">

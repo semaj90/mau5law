@@ -1,30 +1,23 @@
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { cases } from '$lib/server/db/schema-unified-postgres';
+import { cases } from '$lib/db/schema';
 import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
-
 
 // Production API endpoint for case creation - PostgreSQL integration
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const data = await request.json();
-    
+
     // Validate required fields
     if (!data.caseNumber || !data.title) {
-      return json(
-        { error: 'Case number and title are required' },
-        { status: 400 }
-      );
+      return json({ error: 'Case number and title are required' }, { status: 400 });
     }
 
     // Validate priority enum
     const validPriorities = ['low', 'medium', 'high'];
     if (data.priority && !validPriorities.includes(data.priority)) {
-      return json(
-        { error: 'Invalid priority. Must be: low, medium, or high' },
-        { status: 400 }
-      );
+      return json({ error: 'Invalid priority. Must be: low, medium, or high' }, { status: 400 });
     }
 
     // Get user ID (mock for testing - in production would come from session)
@@ -34,24 +27,27 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       caseNumber: data.caseNumber,
       title: data.title,
       userId: userId,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     // ✅ REAL PostgreSQL DATABASE INSERT
-    const [createdCase] = await db.insert(cases).values({
-      case_number: data.caseNumber,
-      title: data.title,
-      description: data.description || null,
-      priority: data.priority || 'medium',
-      status: 'draft',
-      user_id: userId,
-      jurisdiction: 'test',
-      metadata: {
-        source: 'test-case-api',
-        createdVia: 'form-submission',
-        userAgent: request.headers.get('user-agent') || 'unknown'
-      }
-    }).returning();
+    const [createdCase] = await db
+      .insert(cases)
+      .values({
+        case_number: data.caseNumber,
+        title: data.title,
+        description: data.description || null,
+        priority: data.priority || 'medium',
+        status: 'draft',
+        user_id: userId,
+        jurisdiction: 'test',
+        metadata: {
+          source: 'test-case-api',
+          createdVia: 'form-submission',
+          userAgent: request.headers.get('user-agent') || 'unknown',
+        },
+      })
+      .returning();
 
     console.log('✅ PostgreSQL Case Created Successfully:', {
       id: createdCase.id,
@@ -60,7 +56,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       status: createdCase.status,
       priority: createdCase.priority,
       userId: createdCase.user_id,
-      timestamp: createdCase.created_at
+      timestamp: createdCase.created_at,
     });
 
     return json({
@@ -77,19 +73,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         userId: createdCase.user_id,
         jurisdiction: createdCase.jurisdiction,
         createdAt: createdCase.created_at,
-        updatedAt: createdCase.updated_at
-      }
+        updatedAt: createdCase.updated_at,
+      },
     });
-
   } catch (error) {
     console.error('❌ PostgreSQL Case Creation Error:', error);
-    
+
     return json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Database error occurred',
         details: error instanceof Error ? error.stack : undefined,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -100,17 +95,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 export const GET: RequestHandler = async () => {
   try {
     // Test database connection by querying cases
-    const recentCases = await db.select({
-      id: cases.id,
-      case_number: cases.case_number,
-      title: cases.title,
-      status: cases.status,
-      priority: cases.priority,
-      created_at: cases.created_at
-    })
-    .from(cases)
-    .limit(5)
-    .orderBy(cases.created_at);
+    const recentCases = await db
+      .select({
+        id: cases.id,
+        case_number: cases.case_number,
+        title: cases.title,
+        status: cases.status,
+        priority: cases.priority,
+        created_at: cases.created_at,
+      })
+      .from(cases)
+      .limit(5)
+      .orderBy(cases.created_at);
 
     return json({
       status: 'PostgreSQL database connection successful',
@@ -118,20 +114,19 @@ export const GET: RequestHandler = async () => {
       database: {
         connection: 'Active',
         recent_cases_count: recentCases.length,
-        recent_cases: recentCases
+        recent_cases: recentCases,
       },
       features: {
         'postgresql-integration': '✅ Active',
         'drizzle-orm': '✅ Connected',
         'case-creation': '✅ Functional',
         'database-queries': '✅ Working',
-        'api-endpoints': '✅ Production Ready'
-      }
+        'api-endpoints': '✅ Production Ready',
+      },
     });
-
   } catch (error) {
     console.error('❌ Database connectivity test failed:', error);
-    
+
     return json(
       {
         status: 'Database connection failed',
@@ -141,8 +136,8 @@ export const GET: RequestHandler = async () => {
           'postgresql-integration': '❌ Failed',
           'drizzle-orm': '❌ Error',
           'case-creation': '❌ Unavailable',
-          'database-queries': '❌ Failed'
-        }
+          'database-queries': '❌ Failed',
+        },
       },
       { status: 500 }
     );

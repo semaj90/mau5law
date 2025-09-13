@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	let { open }: { open: boolean } = $props();
 </script>
 

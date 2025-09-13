@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from 'svelte';
   import { Button } from 'bits-ui';
   import { fade, slide } from 'svelte/transition';
@@ -120,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
       class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg disabled:opacity-50"
     >
       {isAnalyzing ? 'Analyzing...' : 'Start AI Analysis'}
-    </Button>
+    </button>
   </div>
 
   {#if isAnalyzing}
@@ -140,14 +141,14 @@ https://svelte.dev/e/js_parse_error -->
       <h4 class="text-lg font-semibold mb-4">Analysis Results</h4>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="result-card p-4 bg-gray-50 rounded-lg">
+        <div class="result-nier-bits-card p-4 bg-gray-50 rounded-lg">
           <h5 class="font-medium mb-2">Case Strength Score</h5>
           <div class="text-2xl font-bold text-blue-600">
             {$analysisResults.case_strength_score}%
           </div>
         </div>
 
-        <div class="result-card p-4 bg-gray-50 rounded-lg">
+        <div class="result-nier-bits-card p-4 bg-gray-50 rounded-lg">
           <h5 class="font-medium mb-2">Predicted Outcome</h5>
           <div class="text-lg font-medium text-green-600">
             {$analysisResults.predicted_outcome}

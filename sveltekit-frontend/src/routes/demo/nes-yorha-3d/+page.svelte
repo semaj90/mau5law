@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import * as THREE from 'three';
   import { NESYoRHaHybrid3D, createNESButton, createNESContainer, createNESProgressBar, NES_YORHA_PALETTE } from '$lib/components/three/yorha-ui/NESYoRHaHybrid3D';
@@ -282,7 +283,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="nes-yorha-3d-demo">
   <!-- Header -->
-  <div class="yorha-card p-4 mb-6">
+  <div class="yorha-nier-bits-card p-4 mb-6">
     <h1 class="text-3xl font-bold mb-4 flex items-center gap-4">
       <span class="nes-text is-primary">🎮</span>
       NES.css + YoRHa 3D Hybrid System

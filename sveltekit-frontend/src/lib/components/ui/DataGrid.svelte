@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Props } from "$lib/types/global";
   import { cn } from '$lib/utils/cn';
   import { ChevronDown, ChevronUp, MoreHorizontal, Search, Filter } from 'lucide-svelte';

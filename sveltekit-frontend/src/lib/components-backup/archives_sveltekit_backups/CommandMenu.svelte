@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { goto } from "$app/navigation";
   import { citationStore } from "$lib/stores/citations";
   import { createPopover, melt } from "@melt-ui/svelte";

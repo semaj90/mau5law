@@ -8,6 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import ModularAIExperience from '$lib/components/ai/ModularAIExperience.svelte';
   import { onMount } from 'svelte';
   let userId = $state('demo_user_' + Math.random().toString(36).substring(2, 11));
@@ -67,31 +68,31 @@ https://svelte.dev/e/js_parse_error -->
   <!-- System Status Dashboard -->
   <div class="status-dashboard max-w-7xl mx-auto px-6 py-6">
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-      <div class="status-card bg-white p-4 rounded-lg shadow text-center">
+      <div class="status-nier-bits-card bg-white p-4 rounded-lg shadow text-center">
         <div class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.cudaService ? 'bg-green-500' : 'bg-red-500'}"></div>
         <div class="text-xs font-medium text-gray-700">CUDA Service</div>
         <div class="text-xs text-gray-500">Port 8096</div>
       </div>
 
-      <div class="status-card bg-white p-4 rounded-lg shadow text-center">
+      <div class="status-nier-bits-card bg-white p-4 rounded-lg shadow text-center">
         <div class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.webgpuSupported ? 'bg-green-500' : 'bg-yellow-500'}"></div>
         <div class="text-xs font-medium text-gray-700">WebGPU</div>
         <div class="text-xs text-gray-500">Browser Support</div>
       </div>
 
-      <div class="status-card bg-white p-4 rounded-lg shadow text-center">
+      <div class="status-nier-bits-card bg-white p-4 rounded-lg shadow text-center">
         <div class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.dimensionalCache ? 'bg-green-500' : 'bg-red-500'}"></div>
         <div class="text-xs font-medium text-gray-700">Dimensional Cache</div>
         <div class="text-xs text-gray-500">Memory Engine</div>
       </div>
 
-      <div class="status-card bg-white p-4 rounded-lg shadow text-center">
+      <div class="status-nier-bits-card bg-white p-4 rounded-lg shadow text-center">
         <div class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.xstateMachine ? 'bg-green-500' : 'bg-red-500'}"></div>
         <div class="text-xs font-medium text-gray-700">XState Machine</div>
         <div class="text-xs text-gray-500">State Management</div>
       </div>
 
-      <div class="status-card bg-white p-4 rounded-lg shadow text-center">
+      <div class="status-nier-bits-card bg-white p-4 rounded-lg shadow text-center">
         <div class="w-4 h-4 rounded-full mx-auto mb-2 {systemStatus.rabbitMqConnected ? 'bg-green-500' : 'bg-red-500'}"></div>
         <div class="text-xs font-medium text-gray-700">RabbitMQ</div>
         <div class="text-xs text-gray-500">Async Processing</div>

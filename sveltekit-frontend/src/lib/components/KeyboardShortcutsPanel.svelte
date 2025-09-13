@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy,  } from 'svelte';
 
   
@@ -117,13 +118,13 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Help Modal -->
 {#if helpModalVisible}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <Card class="w-full max-w-4xl max-h-[80vh] overflow-hidden bg-gray-900 text-white border-gray-700">
+    <NesCard class="w-full max-w-4xl max-h-[80vh] overflow-hidden bg-gray-900 text-white border-gray-700">
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-2xl font-bold text-green-400">⌨️ Keyboard Shortcuts</h2>
           <Button class="bits-btn" variant="ghost" onclick={() => helpModalVisible = false}>
             ✕
-          </Button>
+          </button>
         </div>
 
         <!-- Search and filters -->
@@ -190,7 +191,7 @@ https://svelte.dev/e/js_parse_error -->
                           disabled={!shortcut.enabled}
                         >
                           Test
-                        </Button>
+                        </button>
                       </div>
                     </div>
                   {/each}
@@ -207,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
               <span class="text-green-400">🔗 Connected to remote control</span>
               <Button class="bits-btn" size="sm" variant="outline" onclick={() => remoteStatusVisible = true}>
                 View Status
-              </Button>
+              </button>
             </div>
           </div>
         {:else}
@@ -216,25 +217,25 @@ https://svelte.dev/e/js_parse_error -->
               <span class="text-yellow-400">⚠️ Remote control disconnected</span>
               <Button class="bits-btn" size="sm" variant="outline" onclick={() => keyboardShortcutsService.connectRemote()}>
                 Connect
-              </Button>
+              </button>
             </div>
           </div>
         {/if}
       </div>
-    </Card>
+    </NesCard>
   </div>
 {/if}
 
 <!-- Remote Status Modal -->
 {#if remoteStatusVisible}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <Card class="w-full max-w-2xl max-h-[80vh] overflow-hidden bg-gray-900 text-white border-gray-700">
+    <NesCard class="w-full max-w-2xl max-h-[80vh] overflow-hidden bg-gray-900 text-white border-gray-700">
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold text-green-400">📡 Remote Control Status</h2>
           <Button class="bits-btn" variant="ghost" onclick={() => remoteStatusVisible = false}>
             ✕
-          </Button>
+          </button>
         </div>
 
         <!-- Connection status -->
@@ -283,26 +284,26 @@ https://svelte.dev/e/js_parse_error -->
           {#if $isRemoteConnected}
             <Button class="bits-btn" variant="outline" onclick={() => keyboardShortcutsService.disconnectRemote()}>
               Disconnect
-            </Button>
+            </button>
           {:else}
             <Button class="bits-btn" onclick={() => keyboardShortcutsService.connectRemote()}>
               Reconnect
-            </Button>
+            </button>
           {/if}
 
           <Button class="bits-btn" variant="outline" onclick={() => $remoteCommands.length && remoteCommands.set([])}>
             Clear History
-          </Button>
+          </button>
         </div>
       </div>
-    </Card>
+    </NesCard>
   </div>
 {/if}
 
 <!-- Floating shortcut indicator (when visible prop is true) -->
 {#if visible}
   <div class="fixed bottom-4 right-4 z-40">
-    <Card class="p-3 bg-gray-900 border-gray-700 text-white">
+    <NesCard class="p-3 bg-gray-900 border-gray-700 text-white">
       <div class="flex items-center gap-2 text-sm">
         <span>🎹</span>
         <span>Press <kbd class="bg-gray-800 px-1 rounded">Shift</kbd> + <kbd class="bg-gray-800 px-1 rounded">H</kbd> for shortcuts</span>
@@ -310,7 +311,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
         {/if}
       </div>
-    </Card>
+    </NesCard>
   </div>
 {/if}
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import * as Dialog from "$lib/components/ui/dialog/index.js";
   import * as Card from "$lib/components/ui/card/index.js";
@@ -213,8 +214,8 @@
               {/if}
 
               <div class="flex-1 max-w-[80%] {message.role === 'user' ? 'order-first' : ''}">
-                <Card.Root class="{message.role === 'user' ? 'bg-primary text-primary-foreground' : ''} {message.error ? 'border-red-200 dark:border-red-800' : ''}">
-                  <Card.Content class="p-3">
+                <NesCard.Root class="{message.role === 'user' ? 'bg-primary text-primary-foreground' : ''} {message.error ? 'border-red-200 dark:border-red-800' : ''}">
+                  <NesCard.Content class="p-3">
                     <div class="prose prose-sm max-w-none {message.role === 'user' ? 'prose-invert' : ''}">
                       <p class="whitespace-pre-wrap">{message.content}</p>
                     </div>
@@ -233,27 +234,27 @@
                       
                       {#if message.role === 'assistant' && !message.error}
                         <div class="flex items-center gap-1">
-                          <Button
+                          <button class="nes-btn"
                             variant="ghost"
                             size="sm"
                             onclick={() => copyToClipboard(message.content)}
                           >
                             <Copy class="h-3 w-3" />
-                          </Button>
-                          <Button
+                          </button>
+                          <button class="nes-btn"
                             variant="ghost"
                             size="sm"
                             onclick={() => provideFeedback(message.id, 'positive')}
                           >
                             <ThumbsUp class="h-3 w-3" />
-                          </Button>
-                          <Button
+                          </button>
+                          <button class="nes-btn"
                             variant="ghost"
                             size="sm"
                             onclick={() => provideFeedback(message.id, 'negative')}
                           >
                             <ThumbsDown class="h-3 w-3" />
-                          </Button>
+                          </button>
                         </div>
                       {/if}
                     </div>
@@ -271,7 +272,7 @@
                         onclick={() => handleSuggestionClick(suggestion)}
                       >
                         {suggestion}
-                      </Button>
+                      </button>
                     {/each}
                   </div>
                 {/if}
@@ -295,9 +296,9 @@
                 </div>
               </div>
               <div class="flex-1 max-w-[80%]">
-                <Card.Root>
-                  <Card.Content class="p-3">
-                    <div class="flex items-center gap-2 text-muted-foreground">
+                <NesCard.Root>
+                  <NesCard.Content class="p-3">
+                    <div class="flex items-center gap-2 nes-text is-disabled">
                       <Loader2 class="h-4 w-4 animate-spin" />
                       <span>Thinking...</span>
                     </div>
@@ -321,20 +322,20 @@
           disabled={isLoading}
           class="flex-1"
         />
-        <Button onclick={sendMessage} disabled={isLoading || !currentMessage.trim()}>
+        <button class="nes-btn" onclick={sendMessage} disabled={isLoading || !currentMessage.trim()}>
           {#if isLoading}
             <Loader2 class="h-4 w-4 animate-spin" />
           {:else}
             <Send class="h-4 w-4" />
           {/if}
-        </Button>
-        <Button variant="outline" onclick={clearChat}>
+        </button>
+        <button class="nes-btn" variant="outline" onclick={clearChat}>
           <X class="h-4 w-4" />
-        </Button>
+        </button>
       </div>
       
       {#if messages.length === 0 && context}
-        <div class="mt-3 text-sm text-muted-foreground">
+        <div class="mt-3 text-sm nes-text is-disabled">
           <p>You can ask questions like:</p>
           <ul class="list-disc list-inside mt-1 space-y-1">
             <li>"Explain this law in simple terms"</li>

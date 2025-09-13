@@ -6,6 +6,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
@@ -362,7 +363,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   <Button class="bits-btn" onclick={saveInvestigation} variant="outline" size="sm">
           <Save class="w-4 h-4 mr-2" />
           Save Progress
-        </Button>
+        </button>
 
         <!-- System Status Indicators -->
         <div class="status-indicators">
@@ -542,7 +543,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               />
               <Button class="bits-btn" onclick={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
                 <MessageSquare class="w-4 h-4" />
-              </Button>
+              </button>
             </div>
           </div>
         </div>

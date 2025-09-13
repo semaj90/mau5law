@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Svelte 5 runes are built-in, no import needed
   import { Button } from '$lib/components/ui/enhanced-bits';
 
@@ -37,7 +38,7 @@
   onclick={handleButtonClick}
       >
         Test Button (onclick)
-      </Button>
+      </button>
       <p class="text-sm text-gray-600">Dialog open: {dialogOpen}</p>
     </div>
 

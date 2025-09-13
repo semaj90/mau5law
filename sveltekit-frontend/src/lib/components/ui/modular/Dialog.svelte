@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Dialog Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Dialog as DialogPrimitive } from 'bits-ui';
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
@@ -143,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
 
       <!-- Close Button -->
-      <DialogPrimitive.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+      <DialogPrimitive.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:nes-text is-disabled">
         <div class="i-lucide-x w-4 h-4" />
         <span class="sr-only">Close</span>
       </DialogPrimitive.Close>

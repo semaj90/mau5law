@@ -2,6 +2,7 @@
 https://svelte.dev/e/legacy_export_invalid -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `export let` in runes mode — use `$props()` instead -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	/** Optimized MinIO Upload Component
   	 *  - Native Windows friendly (no fs dependencies)
   	 *  - Uses Svelte 5 $state stores for local reactive state
@@ -213,10 +214,10 @@ https://svelte.dev/e/legacy_export_invalid -->
 	<div class="controls">
 		<label class="file-select">
 			<input type="file" {accept} {multiple} on:change={selectFiles} />
-			<Button class="select-btn" type="button">Select Files</Button>
+			<Button class="select-btn" type="button">Select Files</button>
 		</label>
-		<Button type="button" disabled={uploading || files.length===0} onclick={startUpload}>Start</Button>
-		<Button type="button" disabled={!uploading} onclick={cancelAll}>Cancel</Button>
+		<button class="nes-btn" type="button" disabled={uploading || files.length===0} onclick={startUpload}>Start</button>
+		<button class="nes-btn" type="button" disabled={!uploading} onclick={cancelAll}>Cancel</button>
 	</div>
 
 	{#if files.length > 0}

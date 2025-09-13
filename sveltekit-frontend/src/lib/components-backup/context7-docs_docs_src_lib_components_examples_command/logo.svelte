@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import type { Snippet } from "svelte";
   	let { size = "20px", children }: { size?: string; children: Snippet } = $props();
 </script>

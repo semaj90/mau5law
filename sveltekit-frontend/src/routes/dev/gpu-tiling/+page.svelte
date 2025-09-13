@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { embedText } from '$lib/ai/tensor-client';
 
   let text = 'A short legal passage about indemnification and liability.';

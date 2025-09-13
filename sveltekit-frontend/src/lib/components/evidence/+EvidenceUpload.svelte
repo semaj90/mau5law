@@ -2,6 +2,7 @@
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Evidence } from "$lib/data/types";
   import { createEventDispatcher } from "svelte";
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { aiHistory } from "$lib/stores/aiHistoryStore";
   import Fuse from "fuse.js";
   import { onMount } from "svelte";

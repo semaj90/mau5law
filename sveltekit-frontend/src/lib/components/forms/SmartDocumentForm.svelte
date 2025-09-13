@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Smart Document Form with OCR Auto-Population -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount } from 'svelte';
   	// Updated to use melt-ui components
   	import Button from '$lib/components/ui/bitsbutton.svelte';
@@ -232,14 +233,14 @@ https://svelte.dev/e/js_parse_error -->
 
 	<!-- File Upload Section -->
 	{#if enableOCR}
-		<Card>
-			<CardHeader>
-				<CardTitle class="flex items-center space-x-2">
+		<NesCard>
+			<div class="yorha-panel-header">
+				<h3 class="nes-text is-primary" class="flex items-center space-x-2">
 					<span>📄</span>
 					<span>Document Upload & Processing</span>
-				</CardTitle>
-			</CardHeader>
-			<CardContent class="space-y-4">
+				</h3>
+			</div>
+			<div class="yorha-panel-content" class="space-y-4">
 				<!-- Document Type Selection -->
 				<div class="flex items-center space-x-4">
 					<Label class="text-sm font-medium">Document Type:</Label>
@@ -303,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
 							onclick={() => fileInput.click()}
 						>
 							Browse Files
-						</Button>
+						</button>
 					{/if}
 				</div>
 
@@ -334,14 +335,14 @@ https://svelte.dev/e/js_parse_error -->
 						</div>
 					</div>
 				{/if}
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 	{/if}
 
 	<!-- Form Fields -->
-	<Card>
-		<CardHeader>
-			<CardTitle class="flex items-center space-x-2">
+	<NesCard>
+		<div class="yorha-panel-header">
+			<h3 class="nes-text is-primary" class="flex items-center space-x-2">
 				<span>📝</span>
 				<span>Form Fields</span>
 				{#if enableOCR && $extractedFields.length > 0}
@@ -349,9 +350,9 @@ https://svelte.dev/e/js_parse_error -->
 						Auto-populated
 					</Badge>
 				{/if}
-			</CardTitle>
-		</CardHeader>
-		<CardContent>
+			</h3>
+		</div>
+		<div class="yorha-panel-content">
 			<form onsubmit|preventDefault={handleSubmit} class="space-y-6">
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 					{#each populatedFields as field (field.name)}
@@ -417,7 +418,7 @@ https://svelte.dev/e/js_parse_error -->
 												onclick={() => applySuggestion(field.name, suggestion)}
 											>
 												{suggestion}
-											</Button>
+											</button>
 										{/each}
 									</div>
 								</div>
@@ -457,7 +458,7 @@ https://svelte.dev/e/js_parse_error -->
 							}}
 						>
 							Clear All
-						</Button>
+						</button>
 
 						<Button
 							type="submit"
@@ -465,18 +466,18 @@ https://svelte.dev/e/js_parse_error -->
 							class="bg-yorha-primary hover:bg-yorha-primary/80 disabled:opacity-50 bits-btn"
 						>
 							Submit Form
-						</Button>
+						</button>
 					</div>
 				</div>
 			</form>
-		</CardContent>
-	</Card>
+		</div>
+	</NesCard>
 
 	<!-- Extracted Fields Preview -->
 	{#if $extractedFields.length > 0 && showPreview}
-		<Card>
-			<CardHeader>
-				<CardTitle class="flex items-center space-x-2">
+		<NesCard>
+			<div class="yorha-panel-header">
+				<h3 class="nes-text is-primary" class="flex items-center space-x-2">
 					<span>🔍</span>
 					<span>Extracted Data</span>
 					<Button class="bits-btn"
@@ -485,10 +486,10 @@ https://svelte.dev/e/js_parse_error -->
 						onclick={() => showPreview = !showPreview}
 					>
 						{showPreview ? 'Hide' : 'Show'}
-					</Button>
-				</CardTitle>
-			</CardHeader>
-			<CardContent>
+					</button>
+				</h3>
+			</div>
+			<div class="yorha-panel-content">
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
 					{#each $extractedFields as field (field.fieldName)}
 						<div class="bg-yorha-bg-secondary rounded p-3 border border-yorha-border">
@@ -514,8 +515,8 @@ https://svelte.dev/e/js_parse_error -->
 						</div>
 					{/each}
 				</div>
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 	{/if}
 </div>
 

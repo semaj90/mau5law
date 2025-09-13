@@ -4,6 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 // Created on 2025-07-20
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { ScrollArea, type WithoutChild } from "bits-ui";
   type Props = WithoutChild<ScrollArea.RootProps> & {
     orientation?: "vertical" | "horizontal" | "both";

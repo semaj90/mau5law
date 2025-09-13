@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Toaster } from "svelte-sonner";
   	import { ModeWatcher } from "mode-watcher";
   	import Metadata from "$lib/components/metadata.svelte";

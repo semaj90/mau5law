@@ -7,6 +7,7 @@ https://svelte.dev/e/legacy_export_invalid -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { createGPUProcessingActor, type DocumentInput } from '$lib/state/gpu-processing-machine';
   import { wasmTextProcessor } from '$lib/services/wasm-text-processor.js';
@@ -356,11 +357,11 @@ https://svelte.dev/e/legacy_export_invalid -->
   </div>
 
   <!-- Stats Dashboard -->
-  <Card.Root class="mb-6">
-    <Card.Header>
-      <Card.Title>Processing Statistics</Card.Title>
+  <NesCard.Root class="mb-6">
+    <NesCard.Header>
+      <NesCard.Title>Processing Statistics</Card.Title>
     </Card.Header>
-    <Card.Content>
+    <NesCard.Content>
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-blue-600">{stats.filesProcessed}</div>
@@ -389,11 +390,11 @@ https://svelte.dev/e/legacy_export_invalid -->
   <!-- File Upload & Controls -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
     <!-- File Upload -->
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>Text File Processing</Card.Title>
+    <NesCard.Root>
+      <NesCard.Header>
+        <NesCard.Title>Text File Processing</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="space-y-4">
           <input
             bind:this={fileInput}
@@ -417,7 +418,7 @@ https://svelte.dev/e/legacy_export_invalid -->
           {/if}
           
           <div class="flex space-x-2">
-            <Button.Root 
+            <button class="nes-btn".Root 
               onclick={() => fileInput?.click()}
               class="bg-blue-600 hover:bg-blue-700"
             >
@@ -436,11 +437,11 @@ https://svelte.dev/e/legacy_export_invalid -->
     </Card.Root>
 
     <!-- Autocomplete Demo -->
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>Semantic Autocomplete</Card.Title>
+    <NesCard.Root>
+      <NesCard.Header>
+        <NesCard.Title>Semantic Autocomplete</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="space-y-4">
           <div class="relative">
             <input
@@ -481,11 +482,11 @@ https://svelte.dev/e/legacy_export_invalid -->
   </div>
 
   <!-- 3D Visualization -->
-  <Card.Root class="mb-6">
-    <Card.Header>
-      <Card.Title>3D Semantic Space Visualization</Card.Title>
+  <NesCard.Root class="mb-6">
+    <NesCard.Header>
+      <NesCard.Title>3D Semantic Space Visualization</Card.Title>
     </Card.Header>
-    <Card.Content>
+    <NesCard.Content>
       <div class="relative">
         <canvas
           bind:this={canvas3D}
@@ -521,11 +522,11 @@ https://svelte.dev/e/legacy_export_invalid -->
 
   <!-- Processing Queue Info -->
   {#if actorState.context.processingQueue.length > 0 || actorState.context.activeProcessing.size > 0}
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>GPU Processing Status</Card.Title>
+    <NesCard.Root>
+      <NesCard.Header>
+        <NesCard.Title>GPU Processing Status</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="text-center">
             <div class="text-xl font-bold text-blue-600">

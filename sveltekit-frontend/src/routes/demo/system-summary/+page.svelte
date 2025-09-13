@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   // System status and metrics
   	let systemHealth = $state<any>(null);

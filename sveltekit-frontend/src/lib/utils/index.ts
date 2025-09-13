@@ -5,12 +5,11 @@
  */
 
 import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
 
 // ===== CLASS NAME UTILITIES =====
 
 export function cn(...inputs: ClassValue[]): string {
-  return twMerge(clsx(inputs));
+  return clsx(inputs);
 }
 
 // ===== NETWORK UTILITIES =====

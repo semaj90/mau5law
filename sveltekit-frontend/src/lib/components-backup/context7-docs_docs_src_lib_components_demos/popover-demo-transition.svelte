@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Popover, Separator, Toggle } from "bits-ui";
   	import ImageSquare from "phosphor-svelte/lib/ImageSquare";
   	import LinkSimpleHorizontalBreak from "phosphor-svelte/lib/LinkSimpleHorizontalBreak";
@@ -37,7 +38,7 @@
 									>
 										Resize image
 									</h4>
-									<p class="text-muted-foreground text-sm font-medium">
+									<p class="nes-text is-disabled text-sm font-medium">
 										Resize your photos easily
 									</p>
 								</div>
@@ -49,7 +50,7 @@
 										<span class="sr-only">Width</span>
 										<span
 											aria-hidden="true"
-											class="text-xxs text-muted-foreground absolute left-5 top-4"
+											class="text-xxs nes-text is-disabled absolute left-5 top-4"
 											>W</span
 										>
 										<input
@@ -62,7 +63,7 @@
 										<span class="sr-only">Height</span>
 										<span
 											aria-hidden="true"
-											class="text-xxs text-muted-foreground absolute left-5 top-4"
+											class="text-xxs nes-text is-disabled absolute left-5 top-4"
 											>H</span
 										>
 										<input

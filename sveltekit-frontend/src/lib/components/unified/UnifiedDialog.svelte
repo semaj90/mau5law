@@ -15,6 +15,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createDialog, melt } from 'melt';
   import { fade, fly, scale } from 'svelte/transition';
   import { cubicInOut } from 'svelte/easing';

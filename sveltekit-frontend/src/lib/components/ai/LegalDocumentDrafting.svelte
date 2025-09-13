@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
@@ -359,12 +360,12 @@
     </div>
     <div class="header-actions">
       {#if currentDocument}
-        <Button on:click={saveDocument}>Save Draft</Button>
-        <Button variant="outline" on:click={() => showPreview = true}>Preview</Button>
+        <button class="nes-btn" on:click={saveDocument}>Save Draft</button>
+        <button class="nes-btn" variant="outline" on:click={() => showPreview = true}>Preview</button>
       {:else}
-        <Button on:click={startNewDocument} disabled={!selectedDocumentType || isDrafting}>
+        <button class="nes-btn" on:click={startNewDocument} disabled={!selectedDocumentType || isDrafting}>
           {isDrafting ? 'Creating...' : 'Start New Document'}
-        </Button>
+        </button>
       {/if}
     </div>
   </header>
@@ -385,7 +386,7 @@
                   value={docType.id}
                   class="sr-only"
                 />
-                <div class="document-type-card" class:selected={selectedDocumentType === docType.id}>
+                <div class="document-type-nier-bits-card" class:selected={selectedDocumentType === docType.id}>
                   <div class="type-header">
                     <span class="type-icon">{getDocumentTypeIcon(docType.category)}</span>
                     <div>
@@ -520,12 +521,12 @@
                   <p class="suggestion-text">{suggestion.suggestion}</p>
                   <p class="suggestion-reasoning">{suggestion.reasoning}</p>
                   <div class="suggestion-actions">
-                    <Button size="sm" on:click={() => applySuggestion(suggestion)}>
+                    <button class="nes-btn" size="sm" on:click={() => applySuggestion(suggestion)}>
                       Apply
-                    </Button>
-                    <Button variant="outline" size="sm">
+                    </button>
+                    <button class="nes-btn" variant="outline" size="sm">
                       Dismiss
-                    </Button>
+                    </button>
                   </div>
                 </div>
               {/each}
@@ -537,38 +538,38 @@
         <section class="sidebar-section">
           <h3>Quick Actions</h3>
           <div class="quick-actions">
-            <Button 
+            <button class="nes-btn" 
               variant="outline" 
               size="sm" 
               on:click={() => generateContent('Add a professional introduction')}
               disabled={isGenerating}
             >
               Add Introduction
-            </Button>
-            <Button 
+            </button>
+            <button class="nes-btn" 
               variant="outline" 
               size="sm" 
               on:click={() => generateContent('Add a conclusion section')}
               disabled={isGenerating}
             >
               Add Conclusion
-            </Button>
-            <Button 
+            </button>
+            <button class="nes-btn" 
               variant="outline" 
               size="sm" 
               on:click={() => generateContent('Review and improve language')}
               disabled={isGenerating}
             >
               Improve Language
-            </Button>
-            <Button 
+            </button>
+            <button class="nes-btn" 
               variant="outline" 
               size="sm" 
               on:click={() => generateContent('Add relevant legal citations')}
               disabled={isGenerating}
             >
               Add Citations
-            </Button>
+            </button>
           </div>
         </section>
       {/if}
@@ -619,9 +620,9 @@
             </div>
             <div class="toolbar-right">
               <span class="word-count">{wordCount} words</span>
-              <Button variant="outline" size="sm" disabled={isGenerating}>
+              <button class="nes-btn" variant="outline" size="sm" disabled={isGenerating}>
                 {isGenerating ? 'Generating...' : 'AI Assist'}
-              </Button>
+              </button>
             </div>
           </div>
           
@@ -646,9 +647,9 @@
                   }
                 }}
               />
-              <Button size="sm" disabled={isGenerating}>
+              <button class="nes-btn" size="sm" disabled={isGenerating}>
                 Generate
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -662,7 +663,7 @@
       <h2>Recent Drafts</h2>
       <div class="drafts-grid">
         {#each draftHistory.slice(0, 6) as draft}
-          <div.Root class="draft-card">
+          <div.Root class="draft-nier-bits-card">
             <div.Header>
               <div.Title class="draft-title">{draft.title}</Card.Title>
               <div.Description>
@@ -682,8 +683,8 @@
             </Card.Content>
             <div.Footer>
               <div class="draft-actions">
-                <Button variant="outline" size="sm">Continue</Button>
-                <Button size="sm">Duplicate</Button>
+                <button class="nes-btn" variant="outline" size="sm">Continue</button>
+                <button class="nes-btn" size="sm">Duplicate</button>
               </div>
             </Card.Footer>
           </Card.Root>
@@ -722,12 +723,12 @@
       </div>
       
       <div class="dialog-actions">
-        <Button variant="outline" on:click={() => showPreview = false}>
+        <button class="nes-btn" variant="outline" on:click={() => showPreview = false}>
           Close Preview
-        </Button>
-        <Button>
+        </button>
+        <button class="nes-btn">
           Export PDF
-        </Button>
+        </button>
       </div>
     {/if}
   </Dialog.Content>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   /**
    * Document Ingest Assistant Demo
    * Showcases the complete ingest integration with Go microservice,
@@ -71,67 +72,67 @@
   <!-- Header -->
   <div class="text-center space-y-4">
     <h1 class="text-4xl font-bold">Document Ingest Assistant</h1>
-    <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
+    <p class="text-xl nes-text is-disabled max-w-3xl mx-auto">
       AI-powered document ingestion with Go microservices, PostgreSQL + pgvector,
       and intelligent semantic processing
     </p>
   </div>
 
   <!-- Service Status -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center justify-between">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center justify-between">
         Service Status
   <Badge variant={serviceStatus === 'healthy' ? 'default' : serviceStatus === 'checking...' ? 'secondary' : 'destructive'}>
           {serviceStatus}
         </Badge>
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       {#if serviceHealth}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="text-center">
             <div class="text-2xl font-bold text-green-600">✓</div>
             <div class="text-sm font-medium">Ingest Service</div>
-            <div class="text-xs text-muted-foreground">Port {serviceHealth.upstream?.port}</div>
+            <div class="text-xs nes-text is-disabled">Port {serviceHealth.upstream?.port}</div>
           </div>
           <div class="text-center">
             <div class="text-2xl font-bold text-green-600">✓</div>
             <div class="text-sm font-medium">Database</div>
-            <div class="text-xs text-muted-foreground">PostgreSQL + pgvector</div>
+            <div class="text-xs nes-text is-disabled">PostgreSQL + pgvector</div>
           </div>
           <div class="text-center">
             <div class="text-2xl font-bold text-green-600">✓</div>
             <div class="text-sm font-medium">Ollama</div>
-            <div class="text-xs text-muted-foreground">{serviceHealth.upstream?.config?.embed_model}</div>
+            <div class="text-xs nes-text is-disabled">{serviceHealth.upstream?.config?.embed_model}</div>
           </div>
           <div class="text-center">
             <div class="text-2xl font-bold text-blue-600">{serviceHealth.upstream?.config?.batch_size}</div>
             <div class="text-sm font-medium">Batch Size</div>
-            <div class="text-xs text-muted-foreground">Max documents</div>
+            <div class="text-xs nes-text is-disabled">Max documents</div>
           </div>
         </div>
       {:else}
-        <div class="text-center text-muted-foreground">
+        <div class="text-center nes-text is-disabled">
           {serviceStatus === 'checking...' ? 'Checking service status...' : 'Service unavailable'}
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Architecture Overview -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Architecture Overview</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Architecture Overview</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="text-center space-y-2">
           <div class="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
             <span class="text-2xl">🎨</span>
           </div>
           <h3 class="font-semibold">SvelteKit Frontend</h3>
-          <p class="text-sm text-muted-foreground">
+          <p class="text-sm nes-text is-disabled">
             Bits UI + Melt UI components with TypeScript integration
           </p>
         </div>
@@ -140,7 +141,7 @@
             <span class="text-2xl">⚡</span>
           </div>
           <h3 class="font-semibold">Go Microservice</h3>
-          <p class="text-sm text-muted-foreground">
+          <p class="text-sm nes-text is-disabled">
             High-performance ingest service with SIMD JSON parsing
           </p>
         </div>
@@ -149,27 +150,27 @@
             <span class="text-2xl">🗄️</span>
           </div>
           <h3 class="font-semibold">PostgreSQL + pgvector</h3>
-          <p class="text-sm text-muted-foreground">
+          <p class="text-sm nes-text is-disabled">
             Vector embeddings storage with semantic search
           </p>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Recent Ingests -->
   {#if recentIngests.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle>Recent Ingests</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Recent Ingests</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-3">
           {#each recentIngests as ingest}
             <div class="flex items-center justify-between p-3 border rounded-lg">
               <div class="flex-1">
                 <div class="font-medium">{ingest.title}</div>
-                <div class="text-sm text-muted-foreground">
+                <div class="text-sm nes-text is-disabled">
                   Type: {ingest.type} • Processing: {ingest.processingTime.toFixed(1)}ms
                 </div>
               </div>
@@ -177,65 +178,65 @@
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Main Ingest Assistant (temporarily disabled for demo) -->
-  <Card>
-    <CardHeader>
-      <CardTitle>AI Assistant Integration</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">AI Assistant Integration</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="text-center py-8 space-y-4">
         <div class="text-6xl">🤖</div>
         <h3 class="text-xl font-semibold">Ingest AI Assistant</h3>
-        <p class="text-muted-foreground max-w-md mx-auto">
+        <p class="nes-text is-disabled max-w-md mx-auto">
           Full IngestAIAssistant component with Bits UI + Melt UI integration
           is available at <code>$lib/components/ai/IngestAIAssistant.svelte</code>
         </p>
         <div class="space-y-2">
           <Button class="bits-btn" onclick={() => window.open('/api/v1/ingest', '_blank')}>
             Test API Directly
-          </Button>
+          </button>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Performance Stats -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Performance Highlights</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Performance Highlights</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
         <div>
           <div class="text-2xl font-bold text-green-600">&lt; 50ms</div>
-          <div class="text-sm text-muted-foreground">Single Document</div>
+          <div class="text-sm nes-text is-disabled">Single Document</div>
         </div>
         <div>
           <div class="text-2xl font-bold text-blue-600">19+ docs/sec</div>
-          <div class="text-sm text-muted-foreground">Batch Processing</div>
+          <div class="text-sm nes-text is-disabled">Batch Processing</div>
         </div>
         <div>
           <div class="text-2xl font-bold text-purple-600">768 dims</div>
-          <div class="text-sm text-muted-foreground">Vector Embeddings</div>
+          <div class="text-sm nes-text is-disabled">Vector Embeddings</div>
         </div>
         <div>
           <div class="text-2xl font-bold text-orange-600">100%</div>
-          <div class="text-sm text-muted-foreground">Success Rate</div>
+          <div class="text-sm nes-text is-disabled">Success Rate</div>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Integration Features -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Integration Features</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Integration Features</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-3">
           <h4 class="font-semibold text-green-600">✅ Completed Features</h4>
@@ -264,40 +265,40 @@
           </ul>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- API Endpoints -->
-  <Card>
-    <CardHeader>
-      <CardTitle>API Endpoints</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">API Endpoints</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="space-y-3">
         <div class="p-3 bg-muted rounded-lg">
           <div class="font-mono text-sm">
             <span class="text-green-600 font-semibold">POST</span> /api/v1/ingest
           </div>
-          <div class="text-xs text-muted-foreground mt-1">Single document ingestion</div>
+          <div class="text-xs nes-text is-disabled mt-1">Single document ingestion</div>
         </div>
         <div class="p-3 bg-muted rounded-lg">
           <div class="font-mono text-sm">
             <span class="text-green-600 font-semibold">POST</span> /api/v1/ingest/batch
           </div>
-          <div class="text-xs text-muted-foreground mt-1">Batch document processing</div>
+          <div class="text-xs nes-text is-disabled mt-1">Batch document processing</div>
         </div>
         <div class="p-3 bg-muted rounded-lg">
           <div class="font-mono text-sm">
             <span class="text-blue-600 font-semibold">GET</span> /api/v1/ingest
           </div>
-          <div class="text-xs text-muted-foreground mt-1">Service health check</div>
+          <div class="text-xs nes-text is-disabled mt-1">Service health check</div>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Footer -->
-  <div class="text-center text-sm text-muted-foreground space-y-2">
+  <div class="text-center text-sm nes-text is-disabled space-y-2">
     <p>
       🎯 <strong>Production Ready:</strong> Enterprise-grade document ingest system with
       AI-powered processing and vector semantic search
@@ -305,10 +306,10 @@
     <div class="flex justify-center space-x-4">
   <Button class="bits-btn" variant="outline" size="sm" onclick={checkServiceHealth}>
         🔄 Refresh Status
-      </Button>
+      </button>
   <Button class="bits-btn" variant="outline" size="sm" onclick={loadRecentIngests}>
         📊 Load Recent
-      </Button>
+      </button>
     </div>
   </div>
 </div>

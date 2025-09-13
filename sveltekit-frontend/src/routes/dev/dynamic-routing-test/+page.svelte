@@ -6,6 +6,7 @@ https://svelte.dev/e/attribute_duplicate -->
   Basic route testing without complex imports
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { goto } from '$app/navigation';
@@ -171,7 +172,7 @@ https://svelte.dev/e/attribute_duplicate -->
     </div>
 
     <!-- Test Controls -->
-    <Card class="p-6">
+    <NesCard class="p-6">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Controls</h2>
 
       <div class="flex gap-4 mb-6">
@@ -181,7 +182,7 @@ https://svelte.dev/e/attribute_duplicate -->
           class="bg-yorha-secondary text-yorha-bg-primary hover:bg-yorha-secondary-dark bits-btn bits-btn"
         >
           {isLoading ? 'Running Tests...' : 'Run All Tests'}
-        </Button>
+        </button>
 
         <Button
           onclick={calculateRouteStats}
@@ -189,12 +190,12 @@ https://svelte.dev/e/attribute_duplicate -->
           class="border-yorha-accent text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary bits-btn bits-btn"
         >
           Refresh Stats
-        </Button>
+        </button>
       </div>
-    </Card>
+    </NesCard>
 
     <!-- Test Results -->
-    <Card class="p-6">
+    <NesCard class="p-6">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Results</h2>
 
       {#if $testResults.length > 0}
@@ -206,11 +207,11 @@ https://svelte.dev/e/attribute_duplicate -->
       {:else}
         <p class="text-yorha-text-secondary">No test results yet. Run tests to see output.</p>
       {/if}
-    </Card>
+    </NesCard>
 
     <!-- Route Statistics -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <Card class="p-6">
+      <NesCard class="p-6">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Route Statistics</h3>
 
         {#if $routeStats.total}
@@ -238,9 +239,9 @@ https://svelte.dev/e/attribute_duplicate -->
         {:else}
           <p class="text-yorha-text-secondary">Loading statistics...</p>
         {/if}
-      </Card>
+      </NesCard>
 
-      <Card class="p-6">
+      <NesCard class="p-6">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Categories</h3>
 
         {#if $routeStats.categories}
@@ -253,9 +254,9 @@ https://svelte.dev/e/attribute_duplicate -->
             {/each}
           </div>
         {/if}
-      </Card>
+      </NesCard>
 
-      <Card class="p-6">
+      <NesCard class="p-6">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Quick Navigation</h3>
 
         <div class="space-y-2">
@@ -266,7 +267,7 @@ https://svelte.dev/e/attribute_duplicate -->
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🏠 Home
-          </Button>
+          </button>
 
           <Button class="bits-btn"
             size="sm"
@@ -275,7 +276,7 @@ https://svelte.dev/e/attribute_duplicate -->
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🎯 Demo Overview
-          </Button>
+          </button>
 
           <Button class="bits-btn"
             size="sm"
@@ -284,7 +285,7 @@ https://svelte.dev/e/attribute_duplicate -->
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🔧 MCP Tools
-          </Button>
+          </button>
 
           <Button class="bits-btn"
             size="sm"
@@ -293,13 +294,13 @@ https://svelte.dev/e/attribute_duplicate -->
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             📁 Case Management
-          </Button>
+          </button>
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Route Categories List -->
-    <Card class="p-6">
+    <NesCard class="p-6">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Route Categories</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -330,10 +331,10 @@ https://svelte.dev/e/attribute_duplicate -->
           {/if}
         {/each}
       </div>
-    </Card>
+    </NesCard>
 
     <!-- Debug Information -->
-    <Card class="p-6">
+    <NesCard class="p-6">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Debug Information</h2>
 
       <details class="cursor-pointer">
@@ -354,7 +355,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {/each}
         </div>
       </details>
-    </Card>
+    </NesCard>
   </div>
 </div>
 

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import type { ShaderSearchResult, ShaderSearchQuery } from '$lib/webgpu/shader-cache-manager';
@@ -202,19 +203,19 @@ https://svelte.dev/e/js_parse_error -->
     <section class="stats-section">
       <h2>Cache Statistics</h2>
       <div class="stats-grid">
-        <div class="stat-card">
+        <div class="stat-nier-bits-card">
           <div class="stat-number">{stats.totalShaders.total}</div>
           <div class="stat-label">Total Shaders</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-nier-bits-card">
           <div class="stat-number webgpu-color">{stats.totalShaders.webgpu}</div>
           <div class="stat-label">WebGPU Shaders</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-nier-bits-card">
           <div class="stat-number webgl-color">{stats.totalShaders.webgl}</div>
           <div class="stat-label">WebGL Shaders</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-nier-bits-card">
           <div class="stat-number">{formatExecutionTime(stats.averagePerformance)}</div>
           <div class="stat-label">Avg Performance</div>
         </div>
@@ -353,7 +354,7 @@ https://svelte.dev/e/js_parse_error -->
     {:else}
       <div class="results-grid">
         {#each searchResults as shader}
-          <div class="shader-card" role="button" tabindex="0"
+          <div class="shader-nier-bits-card" role="button" tabindex="0"
                 onclick={() => selectedShader = shader}>
             <div class="shader-header">
               <h3>{shader.id}</h3>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Progress, useId } from "bits-ui";
   	import type { ComponentProps } from "svelte";
   	import DemoContainer from "../demo-container.svelte";

@@ -3,6 +3,7 @@
   Enhanced-Bits orchestrated components with Svelte 5 runes
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   // Enhanced-Bits orchestrated components
@@ -194,13 +195,13 @@
       <Button class="bits-btn" variant="outline" size="sm">
         <Settings class="w-4 h-4 mr-2" />
         Settings
-      </Button>
+      </button>
     </div>
   </div>
   
   <!-- Search Interface - Enhanced-Bits orchestrated -->
   <OrchestratedCard.Analysis>
-    <Card.Content class="p-6">
+    <NesCard.Content class="p-6">
       <div class="space-y-4">
         <!-- Search Input -->
         <div class="relative">
@@ -285,9 +286,9 @@
   <!-- Search Results -->
   {#if searchInfo}
     <OrchestratedCard.Evidence>
-      <Card.Header>
+      <NesCard.Header>
         <div class="flex items-center justify-between">
-          <Card.Title class="flex items-center gap-2">
+          <NesCard.Title class="flex items-center gap-2">
             <Database class="w-5 h-5" />
             Search Results ({results.length})
           </Card.Title>
@@ -296,12 +297,12 @@
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{searchInfo.embedding_model}</span>
           </div>
         </div>
-        <Card.Description>
+        <NesCard.Description>
           Query: "{searchInfo.processed_query}" • Total: {searchInfo.total_results} matches
         </Card.Description>
       </Card.Header>
       
-      <Card.Content class="space-y-4">
+      <NesCard.Content class="space-y-4">
         {#if loading}
           <div class="text-center py-8">
             <div class="animate-spin w-8 h-8 border-4 border-nier-accent-warm border-t-transparent rounded-full mx-auto"></div>
@@ -313,7 +314,7 @@
             <p class="text-red-600">{error}</p>
             <Button onclick={performSearch} variant="outline" size="sm" class="mt-2 bits-btn">
               Retry Search
-            </Button>
+            </button>
           </div>
         {:else if results.length === 0}
           <div class="text-center py-8">
@@ -392,10 +393,10 @@
                   <Button class="bits-btn" variant="ghost" size="sm">
                     <Eye class="w-4 h-4 mr-1" />
                     View
-                  </Button>
+                  </button>
                   <Button class="bits-btn" variant="ghost" size="sm">
                     <ChevronRight class="w-4 h-4" />
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
@@ -406,17 +407,17 @@
   {/if}
   
   <!-- Search Suggestions -->
-  <Card.Root>
-    <Card.Header>
-      <Card.Title class="flex items-center gap-2">
+  <NesCard.Root>
+    <NesCard.Header>
+      <NesCard.Title class="flex items-center gap-2">
         <Lightbulb class="w-5 h-5" />
         Search Suggestions
       </Card.Title>
-      <Card.Description>
+      <NesCard.Description>
         Try these common legal research queries
       </Card.Description>
     </Card.Header>
-    <Card.Content>
+    <NesCard.Content>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         {#each searchSuggestions as suggestion}
           <button
@@ -437,14 +438,14 @@
   
   <!-- Performance Metrics -->
   {#if searchInfo}
-    <Card.Root>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+    <NesCard.Root>
+      <NesCard.Header>
+        <NesCard.Title class="flex items-center gap-2">
           <TrendingUp class="w-5 h-5" />
           Search Performance
         </Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
           <div>
             <div class="text-nier-text-muted">Query Processing</div>

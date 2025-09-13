@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   let { content = null, placeholder = "Start writing your legal report...", autosave = true, reportId = "", caseId = "" } = $props();
 
   import { Editor } from "@tiptap/core";

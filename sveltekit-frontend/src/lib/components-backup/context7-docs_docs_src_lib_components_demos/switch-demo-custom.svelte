@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Label, Switch, type WithoutChildrenOrChild, useId } from "bits-ui";
   	import DemoContainer from "../demo-container.svelte";
 
@@ -24,7 +25,7 @@
 				class="bg-background data-[state=unchecked]:shadow-mini dark:border-background/30 dark:bg-foreground dark:shadow-popover pointer-events-none block size-[30px] shrink-0 rounded-full transition-transform data-[state=checked]:translate-x-6 data-[state=unchecked]:translate-x-0 dark:border dark:data-[state=unchecked]:border"
 			/>
 		</Switch.Root>
-		<Label.Root for={id} class="peer-disabled:text-muted-foreground text-sm font-medium"
+		<Label.Root for={id} class="peer-disabled:nes-text is-disabled text-sm font-medium"
 			>{labelText}</Label.Root
 		>
 	</div>

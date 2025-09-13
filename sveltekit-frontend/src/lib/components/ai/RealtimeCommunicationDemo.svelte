@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'Card' has already been declared -->
 <!-- Real-time Communication Demo Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import {
     realtimeComm,
@@ -308,22 +309,22 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <!-- Connection Status -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center justify-between">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center justify-between">
         <span>Connection Status</span>
         {#if !isInitialized}
           <Button onclick={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
             {isInitializing ? 'Initializing...' : 'Connect'}
-          </Button>
+          </button>
         {:else}
           <Button onclick={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
             Disconnect
-          </Button>
+          </button>
         {/if}
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="connection-grid grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- WebSocket -->
         <div class="connection-item p-4 border rounded-lg">
@@ -377,18 +378,18 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   {#if isInitialized}
     <!-- Demo Controls -->
     <div class="demo-controls grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Message Testing -->
-      <Card>
-        <CardHeader>
-          <CardTitle>Send Test Message</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Send Test Message</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2" for="-message-content-"> Message Content </label><textarea id="-message-content-"
@@ -425,17 +426,17 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </div>
 
-            <Button onclick={sendTestMessage} class="w-full bits-btn bits-btn">Send Message</Button>
+            <Button onclick={sendTestMessage} class="w-full bits-btn bits-btn">Send Message</button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Streaming Testing -->
-      <Card>
-        <CardHeader>
-          <CardTitle>Streaming Requests</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Streaming Requests</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2" for="-streaming-request-d">
@@ -458,21 +459,21 @@ https://svelte.dev/e/js_parse_error -->
               </select>
             </div>
 
-            <Button onclick={startStreamingRequest} class="w-full bits-btn bits-btn">Start Stream</Button>
+            <Button onclick={startStreamingRequest} class="w-full bits-btn bits-btn">Start Stream</button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Performance Metrics -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           <span>Performance Metrics</span>
-          <Button onclick={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">Run Performance Test</Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+          <Button onclick={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">Run Performance Test</button>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="metrics-grid grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="metric-item text-center p-4 bg-blue-50 rounded-lg">
             <div class="text-2xl font-bold text-blue-600">
@@ -502,15 +503,15 @@ https://svelte.dev/e/js_parse_error -->
             <div class="text-sm text-orange-800">Connection Uptime</div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Message Log -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Recent Messages ({messageList.length})</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Recent Messages ({messageList.length})</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="message-log max-h-96 overflow-y-auto space-y-2">
           {#each messageList.slice().reverse() as message}
             <div class="message-item p-3 border border-gray-200 rounded-lg">
@@ -548,16 +549,16 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Streaming Responses -->
     {#if streamingList.size > 0}
-      <Card>
-        <CardHeader>
-          <CardTitle>Active Streams ({streamingList.size})</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Active Streams ({streamingList.size})</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="streams space-y-4">
             {#each Array.from(streamingList.entries()) as [requestId, response]}
               <div class="stream-item p-4 border border-gray-200 rounded-lg">
@@ -598,8 +599,8 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     {/if}
   {/if}
 </div>

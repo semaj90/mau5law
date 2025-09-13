@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { cn } from "$lib/utils/styles.js";
   	import { Popover } from "bits-ui";
   	import type { ComponentProps } from "svelte";

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     oncitationSelected?: (event?: any) => void;
     ondeleteCitation?: (event?: any) => void;
@@ -13,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
 
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import type { Citation } from "$lib/types/api";
   import { Copy, Search, Star, Tag, Trash2 } from "lucide-svelte";
     import Badge from '$lib/components/ui/Badge.svelte';
@@ -106,30 +107,30 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Citations List -->
   <div class="space-y-4">
     {#each filteredCitations as citation (citation.id)}
-      <Card class="space-y-4">
+      <NesCard class="space-y-4">
         <div class="space-y-4">
           <div class="space-y-4">
             <h3 class="space-y-4">{citation.title}</h3>
             <div class="space-y-4">
-              <Button
+              <button class="nes-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => toggleFavorite(citation)}
                 class="space-y-4"
               >
                 <Star class="space-y-4" />
-              </Button>
+              </button>
 
-              <Button
+              <button class="nes-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => copyCitation(citation)}
                 title="Copy citation"
               >
                 <Copy class="space-y-4" />
-              </Button>
+              </button>
 
-              <Button
+              <button class="nes-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => deleteCitation(citation)}
@@ -137,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
                 class="space-y-4"
               >
                 <Trash2 class="space-y-4" />
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -194,15 +195,14 @@ https://svelte.dev/e/js_parse_error -->
             </Badge>
           </div>
         </div>
-      </Card>
+      </NesCard>
     {/each}
 
     {#if filteredCitations.length === 0}
       <div class="space-y-4">
         {#if searchQuery || selectedCategory !== "all"}
           <p class="space-y-4">No citations match your search criteria.</p>
-          <Button
-            variant="secondary"
+          <button class="nes-btn"
             size="sm"
             onclick={() => {
               searchQuery = "";
@@ -210,7 +210,7 @@ https://svelte.dev/e/js_parse_error -->
             "
           >
             Clear filters
-          </Button>
+          </button>
         {:else}
           <p class="space-y-4">No saved citations yet.</p>
           <p class="space-y-4">

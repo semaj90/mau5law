@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { OllamaService } from '$lib/services/ollamaService';
   import { multiLayerCache } from '$lib/services/multiLayerCache';
@@ -89,7 +90,7 @@
     <h1 class="text-4xl font-bold mb-2 flex items-center gap-2">
       🤖 AI Pipeline Testing
     </h1>
-    <p class="text-lg text-muted-foreground">
+    <p class="text-lg nes-text is-disabled">
       Testing core AI components and services
     </p>
   </div>

@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Provides feedback hooks for any component or interaction
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { getFeedbackStore } from '$lib/stores/feedback-store.svelte';
   import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';

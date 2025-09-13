@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
   import SearchBar from '$lib/components/+SearchBar.svelte';
 
@@ -30,7 +31,7 @@
 
 <nav class="navbar bg-base-100 shadow-sm">
   <div class="flex-none lg:hidden">
-    <label for="my-drawer-2" class="btn btn-square btn-ghost">
+    <label for="my-drawer-2" class="btn btn-square nes-btn">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -46,13 +47,13 @@
     </label>
   </div>
   <div class="flex-1">
-    <a class="btn btn-ghost text-xl" href="/">{title}</a>
+    <a class="btn nes-btn text-xl" href="/">{title}</a>
   </div>
   <div class="flex-none gap-2">
     <SearchBar />
     {#if user}
       <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button" class="avatar btn btn-ghost">
+        <div tabindex="0" role="button" class="avatar btn nes-btn">
           {#if user.image}
             <div class="w-10 rounded-full">
               <img alt="Profile" src={user.image} />
@@ -78,8 +79,8 @@
         </ul>
       </div>
     {:else}
-      <a href="/login" class="btn btn-primary" use:navigate>Sign In</a>
-      <a href="/register" class="btn btn-secondary" use:navigate>Register</a>
+      <a href="/login" class="btn nes-btn is-primary" use:navigate>Sign In</a>
+      <a href="/register" class="btn nes-btn" use:navigate>Register</a>
     {/if}
   </div>
 </nav>

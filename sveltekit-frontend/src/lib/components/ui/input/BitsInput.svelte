@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modern Input Component for Legal AI App -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { cn } from '$lib/utils';
   import type { HTMLInputAttributes } from 'svelte/elements';
   interface Props extends HTMLInputAttributes {

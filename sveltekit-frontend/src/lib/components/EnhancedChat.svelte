@@ -1,5 +1,6 @@
 <!-- Enhanced Chat Component with bits-ui, melt-ui, shadcn-svelte integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, tick } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { createMachine, assign } from 'xstate';
@@ -379,7 +380,7 @@ const { state, send } = useMachine(enhancedChatMachine);
 						onclick={() => send({ type: 'RETRY' })}
 					>
 						Retry
-					</Button>
+					</button>
 					<Button
 						class="bits-btn text-red-700 hover:bg-red-50"
 						size="sm"
@@ -387,7 +388,7 @@ const { state, send } = useMachine(enhancedChatMachine);
 						onclick={() => send({ type: 'CLEAR_ERROR' })}
 					>
 						Dismiss
-					</Button>
+					</button>
 				</div>
 			</div>
 					<Button
@@ -397,7 +398,7 @@ const { state, send } = useMachine(enhancedChatMachine);
 						on:click={() => send({ type: 'RETRY' })}
 					>
 						Retry
-					</Button>
+					</button>
 					<Button
 						class="bits-btn text-red-700 hover:bg-red-50"
 						size="sm"
@@ -405,7 +406,7 @@ const { state, send } = useMachine(enhancedChatMachine);
 						on:click={() => send({ type: 'CLEAR_ERROR' })}
 					>
 						Dismiss
-					</Button>
+					</button>
 			<div class="flex flex-col justify-end">
 				<Button
 					onclick={handleSend}

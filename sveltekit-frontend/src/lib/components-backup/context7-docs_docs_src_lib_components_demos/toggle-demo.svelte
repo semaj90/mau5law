@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Toggle } from "bits-ui";
   	import LockKeyOpen from "phosphor-svelte/lib/LockKeyOpen";
 
@@ -7,7 +8,7 @@
 </script>
 
 <div
-	class="min-h-input rounded-card-sm border-border bg-background-alt shadow-mini flex h-full w-[176px] items-center gap-2 border py-1 pl-[18px] pr-1.5"
+	class="min-h-input rounded-nier-bits-card-sm border-border bg-background-alt shadow-mini flex h-full w-[176px] items-center gap-2 border py-1 pl-[18px] pr-1.5"
 >
 	<div
 		class="font-alt text-end text-[19px] tracking-[13.87px] {unlocked

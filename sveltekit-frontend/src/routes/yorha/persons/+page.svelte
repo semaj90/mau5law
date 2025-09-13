@@ -1,7 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open
+<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open -->
+<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // $state and $derived are available in runes mode via types, not runtime imports
   import * as Dialog from '$lib/components/ui/dialog';
@@ -219,7 +220,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         <Button class="header-btn bits-btn bits-btn" onclick={() => showNewPersonModal = true}>
           <Plus class="w-4 h-4" />
           ADD PERSON
-        </Button>
+        </button>
       </div>
     </header>
 
@@ -278,8 +279,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         </div>
       {:else}
         {#each filteredPersons as person (person.id)}
-          <Card.Root class="person-card">
-          <Card.Header class="person-header">
+          <NesCard.Root class="person-nier-bits-card">
+          <NesCard.Header class="person-header">
             <div class="person-photo">
               {#if person.photo}
                 <img src={person.photo} alt={person.name} />
@@ -306,7 +307,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </div>
           </Card.Header>
 
-          <Card.Content class="person-content">
+          <NesCard.Content class="person-content">
             <div class="person-details">
               <div class="detail-row">
                 <span class="detail-label">Last Seen:</span>
@@ -331,23 +332,23 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{caseId}</span>
               {/each}
             </div>
-          </CardContent>
+          </div>
 
-          <Card.Footer class="person-actions">
+          <NesCard.Footer class="person-actions">
             <Button class="bits-btn" size="sm" variant="outline">
               <Eye class="w-4 h-4" />
               View
-            </Button>
+            </button>
             <Button class="bits-btn" size="sm" variant="outline">
               <Edit class="w-4 h-4" />
               Edit
-            </Button>
+            </button>
             <Button class="bits-btn" size="sm" variant="destructive">
               <Trash2 class="w-4 h-4" />
               Remove
-            </Button>
+            </button>
           </Card.Footer>
-        </Card>
+        </NesCard>
         {/each}
       {/if}
     </div>
@@ -413,10 +414,10 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     <Dialog.Footer>
       <Button class="bits-btn" variant="outline" onclick={() => showNewPersonModal = false}>
         CANCEL
-      </Button>
+      </button>
       <Button class="bits-btn" onclick={() => showNewPersonModal = false}>
         ADD PERSON
-      </Button>
+      </button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

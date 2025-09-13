@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { aiAgentStore, isAIConnected, systemHealth, currentConversation } from '$lib/stores/ai-agent';
   import type { User } from '$lib/types';

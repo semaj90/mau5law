@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Separator, Toolbar } from "bits-ui";
   	import Sparkle from "phosphor-svelte/lib/Sparkle";
   	import TextAlignCenter from "phosphor-svelte/lib/TextAlignCenter";

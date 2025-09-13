@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
   // Using native <button> elements for consistent event handling
@@ -417,8 +418,8 @@
       </div>
     {:else}
       {#each filteredCases as caseItem}
-        <div class="case-score-card">
-          <div class="card-header">
+        <div class="case-score-nier-bits-card">
+          <div class="nier-bits-yorha-panel-header">
             <div class="case-header">
               <h3 class="case-title">{caseItem.title}</h3>
               <div class="case-badges">
@@ -435,7 +436,7 @@
             </p>
           </div>
 
-          <div class="card-content">
+          <div class="nier-bits-yorha-panel-content">
             <div class="score-metrics">
               <div class="metric">
                 <span class="metric-label">Risk Score</span>
@@ -464,8 +465,8 @@
             </div>
           </div>
 
-            <div class="card-footer">
-              <div class="card-actions">
+            <div class="nier-bits-yorha-panel-content">
+              <div class="nier-bits-card-actions">
                 <button type="button" onclick={() => openScoreDetails(caseItem)} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
                   View Details
                 </button>
@@ -516,7 +517,7 @@
           <h3>Scoring Factors</h3>
           <div class="factors-grid">
             {#each selectedCase.factors as factor}
-              <div class="factor-card">
+              <div class="factor-nier-bits-card">
                 <h4>{factor.category}</h4>
                 <div class="factor-metrics">
                   <div class="factor-bar">

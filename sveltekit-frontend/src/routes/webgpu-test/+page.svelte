@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { diagnoseWebGPU, checkBrowserCompatibility } from '$lib/webgpu/webgpu-diagnostics';
   import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
@@ -100,7 +101,7 @@
 
   <section class="browser-check">
     <h2>Browser Compatibility</h2>
-    <div class="status-card" class:success={browserCheck.compatible} class:error={!browserCheck.compatible}>
+    <div class="status-nier-bits-card" class:success={browserCheck.compatible} class:error={!browserCheck.compatible}>
       <div class="status-icon">
         {browserCheck.compatible ? '✅' : '❌'}
       </div>
@@ -119,7 +120,7 @@
 
     {#if diagnosticsResults}
       <div class="diagnostics-results">
-        <div class="status-card" class:success={diagnosticsResults.isSupported} class:error={!diagnosticsResults.isSupported}>
+        <div class="status-nier-bits-card" class:success={diagnosticsResults.isSupported} class:error={!diagnosticsResults.isSupported}>
           <div class="status-icon">
             {diagnosticsResults.isSupported ? '🚀' : '⚠️'}
           </div>
@@ -186,13 +187,13 @@
       <div class="test-results">
         <h3>Results</h3>
         <div class="result-grid">
-          <div class="result-card">
+          <div class="result-nier-bits-card">
             <h4>CPU Implementation</h4>
             <div class="result-value">{testResults.cpu.toFixed(6)}</div>
           </div>
 
           {#if testResults.webgpu !== undefined}
-            <div class="result-card success">
+            <div class="result-nier-bits-card success">
               <h4>WebGPU Implementation</h4>
               <div class="result-value">{testResults.webgpu.toFixed(6)}</div>
               <div class="diff">
@@ -202,7 +203,7 @@
           {/if}
 
           {#if testResults.error}
-            <div class="result-card error">
+            <div class="result-nier-bits-card error">
               <h4>Error</h4>
               <div class="error-text">{testResults.error}</div>
             </div>

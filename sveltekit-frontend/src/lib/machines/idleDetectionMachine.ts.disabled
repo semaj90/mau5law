@@ -1,0 +1,6 @@
+// Re-export from the correct file location
+export {
+  idleDetectionMachine,
+  type IdleDetectionActor,
+} from './idle-detection-rabbitmq-machine.js';
+export { default } from './idle-detection-rabbitmq-machine.js';

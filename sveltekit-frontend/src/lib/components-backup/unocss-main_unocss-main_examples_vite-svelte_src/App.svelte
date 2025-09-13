@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { run } from 'svelte/legacy';
 
     import { fade, fly } from 'svelte/transition'

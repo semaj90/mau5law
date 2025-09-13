@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Card,
     CardHeader,
@@ -90,7 +91,7 @@ let isSearching = $state<boolean >(false);
   <!-- Header -->
   <div class="text-center space-y-4">
     <h1 class="text-4xl font-bold tracking-tight">Legal Resources</h1>
-    <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+    <p class="text-xl nes-text is-disabled max-w-2xl mx-auto">
       Browse California and state laws with AI-powered search and summaries
     </p>
   </div>
@@ -110,14 +111,14 @@ let isSearching = $state<boolean >(false);
     />
   {/if}
   <!-- Simple Search -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Search class="h-5 w-5" />
         Search Laws & Regulations
-      </CardTitle>
-    </CardHeader>
-    <CardContent class="space-y-4">
+      </h3>
+    </div>
+    <div class="yorha-panel-content" class="space-y-4">
       <div class="flex gap-2">
           <Input
           placeholder="Search laws, codes, regulations..."
@@ -133,8 +134,8 @@ let isSearching = $state<boolean >(false);
           {/if}
         </button>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Quick Links -->
   <div class="space-y-4">
@@ -145,16 +146,16 @@ let isSearching = $state<boolean >(false);
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {#each data.quickLinks as link}
-        <Card class="hover:shadow-lg transition-all duration-200">
-          <CardHeader>
-            <CardTitle class="text-lg">{link.title}</CardTitle>
-            <CardDescription>{link.description}</CardDescription>
+        <NesCard class="hover:shadow-lg transition-all duration-200">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-lg">{link.title}</h3>
+            <p class="nes-text">{link.description}</p>
             <div class="flex gap-2">
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{link.jurisdiction}</span>
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{link.category}</span>
             </div>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div class="yorha-panel-content">
             <a
               href={link.url}
               target="_blank"
@@ -163,8 +164,8 @@ let isSearching = $state<boolean >(false);
               <ExternalLink class="h-4 w-4" />
               Browse {link.title}
             </a>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/each}
     </div>
   </div>
@@ -178,14 +179,14 @@ let isSearching = $state<boolean >(false);
 
       <div class="space-y-4">
         {#each searchResults as law}
-          <Card>
-            <CardHeader>
-              <CardTitle>{law.title}</CardTitle>
-              <CardDescription>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">{law.title}</h3>
+              <p class="nes-text">
                 {law.jurisdiction} • {law.category}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+              </p>
+            </div>
+            <div class="yorha-panel-content">
               <p class="mb-4 text-sm">{law.description}</p>
               <div class="flex gap-2">
                 <button onclick={() => handleAISummarizeResult(law)} class="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm">
@@ -202,17 +203,17 @@ let isSearching = $state<boolean >(false);
                   </a>
                 {/if}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         {/each}
       </div>
     </div>
   {:else if searchQuery && !isSearching}
-    <Card>
-      <CardContent class="py-8 text-center">
-        <p class="text-muted-foreground">No results found for "{searchQuery}"</p>
-      </CardContent>
-    </Card>
+    <NesCard>
+      <div class="yorha-panel-content" class="py-8 text-center">
+        <p class="nes-text is-disabled">No results found for "{searchQuery}"</p>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

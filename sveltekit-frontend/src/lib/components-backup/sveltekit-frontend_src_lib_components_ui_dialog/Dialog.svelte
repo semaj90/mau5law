@@ -1,5 +1,6 @@
 <!-- Enhanced Dialog component with custom implementation -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onclose?: (event?: any) => void;
   }

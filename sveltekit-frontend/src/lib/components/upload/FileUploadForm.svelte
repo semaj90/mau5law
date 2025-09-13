@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Use modular components
   import {
     Card,
@@ -140,11 +141,11 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<Card variant="legal" class="w-full max-w-2xl">
+<NesCard variant="legal" class="w-full max-w-2xl">
   {#snippet header()}
     <div class="space-y-2">
       <h3 class="text-xl font-semibold">Upload Evidence</h3>
-      <p class="text-muted-foreground">
+      <p class="nes-text is-disabled">
         Upload documents, images, videos, or other evidence files for AI analysis
       </p>
     </div>
@@ -242,7 +243,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex items-center justify-between">
             <Label for="aiAnalysis" class="flex-1">
               Enable AI Analysis
-              <span class="block text-sm font-normal text-muted-foreground">
+              <span class="block text-sm font-normal nes-text is-disabled">
                 Extract text, generate embeddings, and summarize content
               </span>
             </Label>
@@ -252,7 +253,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex items-center justify-between">
             <Label for="isPrivate" class="flex-1">
               Private Evidence
-              <span class="block text-sm font-normal text-muted-foreground">
+              <span class="block text-sm font-normal nes-text is-disabled">
                 Only visible to you and case administrators
               </span>
             </Label>
@@ -289,9 +290,9 @@ https://svelte.dev/e/js_parse_error -->
               Upload Evidence
             {/if}
           {/snippet}
-        </Button>
+        </button>
   </Form>
-</Card>
+</NesCard>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 

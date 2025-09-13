@@ -2,6 +2,7 @@
 <!-- Shows real-time updates for document re-embedding and re-ranking -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     documentUpdateNotifications,
     formatNotificationTime,

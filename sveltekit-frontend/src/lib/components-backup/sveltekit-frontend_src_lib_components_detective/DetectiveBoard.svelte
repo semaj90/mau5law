@@ -2,6 +2,7 @@
 https://svelte.dev/e/global_reference_invalid -->
 <!-- @migration-task Error while migrating Svelte code: `$evidenceStore` is an illegal variable name. To reference a global variable called `$evidenceStore`, use `globalThis.$evidenceStore` -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Badge from "$lib/components/ui/Badge.svelte";
   import Button from "$lib/components/ui/button/Button.svelte";
   import {
@@ -175,8 +176,8 @@ https://svelte.dev/e/global_reference_invalid -->
 
 <div class="w-full h-full min-h-screen bg-background">
   <!-- Header -->
-  <Card class="mb-6">
-    <CardHeader>
+  <NesCard class="mb-6">
+    <div class="yorha-panel-header">
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-4">
           <div
@@ -185,30 +186,30 @@ https://svelte.dev/e/global_reference_invalid -->
             <span class="text-2xl">🕵️</span>
           </div>
           <div>
-            <CardTitle class="text-2xl">Detective Board</CardTitle>
-            <p class="text-muted-foreground">Case Evidence Management System</p>
+            <h3 class="nes-text is-primary" class="text-2xl">Detective Board</h3>
+            <p class="nes-text is-disabled">Case Evidence Management System</p>
           </div>
         </div>
 
         <div class="flex items-center gap-4">
           <!-- View Mode Switcher -->
           <div class="flex gap-2">
-            <Button
+            <button class="nes-btn"
               variant={viewMode === "columns" ? "default" : "outline"}
               size="sm"
               onclick={() => switchViewMode("columns")}
             >
               <span class="mr-2">📋</span>
               Columns
-            </Button>
-            <Button
+            </button>
+            <button class="nes-btn"
               variant={viewMode === "canvas" ? "default" : "outline"}
               size="sm"
               onclick={() => switchViewMode("canvas")}
             >
               <span class="mr-2">🎨</span>
               Canvas
-            </Button>
+            </button>
           </div>
 
           <!-- Active Users -->
@@ -224,7 +225,7 @@ https://svelte.dev/e/global_reference_invalid -->
                 {/each}
                 {#if $activeUsers.length > 3}
                   <div
-                    class="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm border-2 border-background"
+                    class="w-8 h-8 bg-muted nes-text is-disabled rounded-full flex items-center justify-center text-sm border-2 border-background"
                   >
                     +{$activeUsers.length - 3}
                   </div>
@@ -234,14 +235,14 @@ https://svelte.dev/e/global_reference_invalid -->
             </div>
           {/if}
 
-          <Button size="sm">
+          <button class="nes-btn" size="sm">
             <span class="mr-2">➕</span>
             New Case
-          </Button>
+          </button>
         </div>
       </div>
-    </CardHeader>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Main Board Area -->
   <main class="flex-1">
@@ -249,20 +250,20 @@ https://svelte.dev/e/global_reference_invalid -->
       <!-- Columns Container -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
         {#each columns as column (column.id)}
-          <Card class="h-fit">
-            <CardHeader class="pb-3">
+          <NesCard class="h-fit">
+            <div class="yorha-panel-header" class="pb-3">
               <div class="flex justify-between items-center">
-                <CardTitle class="text-lg flex items-center gap-2">
+                <h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
                   <div class="w-3 h-3 bg-primary rounded-full"></div>
                   {column.title}
-                </CardTitle>
+                </h3>
                 <Badge variant="secondary">
                   {column.items.length}
                 </Badge>
               </div>
-            </CardHeader>
+            </div>
 
-            <CardContent class="space-y-4">
+            <div class="yorha-panel-content" class="space-y-4">
               <!-- Upload Zone for first column -->
               {#if column.id === "new"}
                 <UploadZone
@@ -296,8 +297,8 @@ https://svelte.dev/e/global_reference_invalid -->
                   </div>
                 {/each}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         {/each}
       </div>
     {:else}
@@ -309,21 +310,21 @@ https://svelte.dev/e/global_reference_invalid -->
       >
         <!-- Canvas Toolbar -->
         <div class="absolute top-4 left-4 flex gap-2 z-10">
-          <Button size="sm" variant="outline" title="Reset View">
+          <button class="nes-btn" size="sm" variant="outline" title="Reset View">
             <span>🔄</span>
-          </Button>
-          <Button size="sm" variant="outline" title="Zoom In">
+          </button>
+          <button class="nes-btn" size="sm" variant="outline" title="Zoom In">
             <span>🔍</span>
-          </Button>
-          <Button size="sm" variant="outline" title="Zoom Out">
+          </button>
+          <button class="nes-btn" size="sm" variant="outline" title="Zoom Out">
             <span>🔍</span>
-          </Button>
-          <Button size="sm" variant="outline" title="Add Note">
+          </button>
+          <button class="nes-btn" size="sm" variant="outline" title="Add Note">
             <span>📝</span>
-          </Button>
-          <Button size="sm" variant="outline" title="Add Connection">
+          </button>
+          <button class="nes-btn" size="sm" variant="outline" title="Add Connection">
             <span>🔗</span>
-          </Button>
+          </button>
         </div>
 
         <!-- Evidence Nodes on Canvas -->
@@ -464,12 +465,12 @@ https://svelte.dev/e/global_reference_invalid -->
                   if (e.key === "Enter") runFindSearch();
                 }}
               />
-              <Button
+              <button class="nes-btn"
                 size="sm"
                 onclick={runFindSearch}
                 disabled={findModal.loading}>Search</Button
               >
-              <Button size="sm" variant="outline" onclick={closeFindModal}
+              <button class="nes-btn" size="sm" variant="outline" onclick={closeFindModal}
                 >Close</Button
               >
             </div>
@@ -504,7 +505,7 @@ https://svelte.dev/e/global_reference_invalid -->
                       class="p-2 rounded bg-muted/50 border border-primary/10"
                     >
                       <div class="font-medium">{suggestion.expectedOutput}</div>
-                      <div class="text-xs text-muted-foreground">
+                      <div class="text-xs nes-text is-disabled">
                         {suggestion.reasoning}
                       </div>
                     </li>

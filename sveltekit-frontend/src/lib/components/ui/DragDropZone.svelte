@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { AlertCircle, FileText, Image, Upload } from 'lucide-svelte';
   // runtime helpers ($props, $state, $derived, $effect, $bindable) are provided by the compiler in runes mode

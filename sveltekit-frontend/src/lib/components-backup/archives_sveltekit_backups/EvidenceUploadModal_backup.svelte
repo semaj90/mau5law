@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
 
   // TODO: Convert to $derived: isOpen = $uploadModal.isOpen

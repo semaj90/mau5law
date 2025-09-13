@@ -2,11 +2,12 @@
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open -->
 <script>
+  import 'nes.css/css/nes.min.css';
 </script>
   export let value = 0;
   export let label = '';
 </script>
-<div class="stats-card">
+<div class="stats-nier-bits-card">
   <div class="value">{value}</div>
   <div class="label">{label}</div>
 </div>

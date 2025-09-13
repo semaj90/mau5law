@@ -2,11 +2,12 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
   import EvidenceUploadModal from "$lib/components/modals/EvidenceUploadModal.svelte";
   import EvidenceValidationModal from "$lib/components/modals/EvidenceValidationModal.svelte";
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import {
     Card,
     CardHeader,
@@ -674,7 +675,7 @@ https://svelte.dev/e/js_parse_error -->
             <span class:animate-spin={loading} class:neural-sprite-loading={loading}>
               <RefreshCw class="w-4 h-4" />
             </span>
-          </Button>
+          </button>
         </Tooltip>
 
         <Tooltip content="Toggle filters">
@@ -688,7 +689,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             <Filter class="w-4 h-4 mr-2" />
             Filters
-          </Button>
+          </button>
         </Tooltip>
 
         <Tooltip content="Toggle view mode">
@@ -704,7 +705,7 @@ https://svelte.dev/e/js_parse_error -->
             {:else}
               <Grid class="w-4 h-4" />
             {/if}
-          </Button>
+          </button>
         </Tooltip>
 
         <Tooltip content="Advanced file upload">
@@ -716,7 +717,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             <Upload class="w-4 h-4 mr-2" />
             Advanced Upload
-          </Button>
+          </button>
         </Tooltip>
 
         <Tooltip content="Standard evidence upload">
@@ -726,7 +727,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             <Plus class="w-4 h-4 mr-2" />
             Upload Evidence
-          </Button>
+          </button>
         </Tooltip>
       </div>
     </div>
@@ -769,7 +770,7 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <SortDesc class="w-4 h-4" />
           {/if}
-        </Button>
+        </button>
       </div>
 
       <div class="flex items-center gap-2">
@@ -809,7 +810,7 @@ https://svelte.dev/e/js_parse_error -->
               <Zap class="mx-auto px-4 max-w-7xl" />
               Quick Analyze
             {/if}
-          </Button>
+          </button>
 
           <Button class="bits-btn"
             variant="outline"
@@ -820,7 +821,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             <CheckCircle class="mx-auto px-4 max-w-7xl" />
             Verify
-          </Button>
+          </button>
 
           <Button class="bits-btn"
             variant="outline"
@@ -831,7 +832,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             <Archive class="mx-auto px-4 max-w-7xl" />
             Archive
-          </Button>
+          </button>
 
           <Button class="bits-btn"
             variant="outline"
@@ -842,7 +843,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             <Download class="mx-auto px-4 max-w-7xl" />
             Export
-          </Button>
+          </button>
 
           <Button class="bits-btn"
             variant="outline"
@@ -853,7 +854,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             <Trash2 class="mx-auto px-4 max-w-7xl" />
             Delete
-          </Button>
+          </button>
 
           <Button class="bits-btn"
             variant="outline"
@@ -866,7 +867,7 @@ https://svelte.dev/e/js_parse_error -->
             disabled={bulkOperationLoading}
           >
             Cancel
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -888,7 +889,7 @@ https://svelte.dev/e/js_parse_error -->
   <Button class="bits-btn" variant="outline" size="sm" onclick={() => refreshEvidence()}>
         <RefreshCw class="mx-auto px-4 max-w-7xl" />
         Retry
-      </Button>
+      </button>
     </div>
   {:else if filteredEvidence.length === 0}
     <div class="mx-auto px-4 max-w-7xl">
@@ -918,7 +919,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn" onclick={() => openUploadModal()} class="mx-auto px-4 max-w-7xl">
             <Plus class="mx-auto px-4 max-w-7xl" />
             Upload Evidence
-          </Button>
+          </button>
           <Button class="bits-btn"
             variant="outline"
             onclick={() => handleAdvancedUpload()}
@@ -926,7 +927,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             <Upload class="mx-auto px-4 max-w-7xl" />
             Advanced Upload
-          </Button>
+          </button>
         </div>
       {/if}
     </div>
@@ -955,7 +956,7 @@ https://svelte.dev/e/js_parse_error -->
               <Square class="mx-auto px-4 max-w-7xl" />
             {/if}
             Select All
-          </Button>
+          </button>
         {/if}
       </div>
     </div>
@@ -965,7 +966,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if viewMode === "grid"}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {#each visibleEvidence as evidence}
-            <Card
+            <NesCard
               variant="evidence"
               priority={evidence.isAdmissible ? "critical" : "medium"}
               loading={analysisInProgress.has(evidence.id)}
@@ -986,7 +987,7 @@ https://svelte.dev/e/js_parse_error -->
                   <Tooltip content="Evidence actions">
                     <Button variant="ghost" size="sm" class="yorha-3d-button bits-btn bits-btn">
                       <MoreHorizontal class="w-4 h-4" />
-                    </Button>
+                    </button>
                   </Tooltip>
                 </div>
               </div>
@@ -1077,16 +1078,16 @@ https://svelte.dev/e/js_parse_error -->
                     <Zap class="w-3 h-3 mr-1" />
                     Analyze
                   {/if}
-                </Button>
+                </button>
 
                 <a href="/evidence/{evidence.id}">
                   <Button size="sm" variant="evidence" class="flex-1 bits-btn bits-btn">
                     <Eye class="w-3 h-3 mr-1" />
                     View
-                  </Button>
+                  </button>
                 </a>
               </div>
-            </Card>
+            </NesCard>
           {/each}
         </div>
       {:else}
@@ -1107,7 +1108,7 @@ https://svelte.dev/e/js_parse_error -->
                 />
 
                 {@const EvidenceIconList = getEvidenceTypeIcon(evidence.evidenceType)}
-                <EvidenceIconList class="w-4 h-4 text-muted-foreground" />
+                <EvidenceIconList class="w-4 h-4 nes-text is-disabled" />
 
                 <div class="mx-auto px-4 max-w-7xl">
                   <div class="mx-auto px-4 max-w-7xl">
@@ -1186,13 +1187,13 @@ https://svelte.dev/e/js_parse_error -->
                       <Zap class="mx-auto px-4 max-w-7xl" />
                       Analyze
                     {/if}
-                  </Button>
+                  </button>
 
                   <a href="/evidence/{evidence.id}" class="mx-auto px-4 max-w-7xl">
                     <Button class="bits-btn" size="sm" variant="outline">
                       <Eye class="mx-auto px-4 max-w-7xl" />
                       View
-                    </Button>
+                    </button>
                   </a>
 
                   <div class="mx-auto px-4 max-w-7xl">
@@ -1206,7 +1207,7 @@ https://svelte.dev/e/js_parse_error -->
                           'Untitled Evidence'}"
                       >
                         <MoreHorizontal class="mx-auto px-4 max-w-7xl" />
-                      </Button>
+                      </button>
                     </Tooltip>
                     <ul
                       tabindex={0}
@@ -1254,7 +1255,7 @@ https://svelte.dev/e/js_parse_error -->
             aria-label="Previous page"
           >
             Previous
-          </Button>
+          </button>
 
           {#each Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
             const start = Math.max(1, currentPage - 2);
@@ -1269,7 +1270,7 @@ https://svelte.dev/e/js_parse_error -->
               aria-current={page === currentPage ? "page" : undefined}
             >
               {page}
-            </Button>
+            </button>
           {/each}
 
           <Button
@@ -1282,7 +1283,7 @@ https://svelte.dev/e/js_parse_error -->
             aria-label="Next page"
           >
             Next
-          </Button>
+          </button>
         </div>
       </div>
     {/if}
@@ -1316,7 +1317,7 @@ https://svelte.dev/e/js_parse_error -->
         </h3>
   <Button class="bits-btn" variant="ghost" size="sm" onclick={closeAnalysisModal}>
           ✕
-        </Button>
+        </button>
       </div>
 
       <div class="mx-auto px-4 max-w-7xl">
@@ -1337,11 +1338,11 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="mx-auto px-4 max-w-7xl">
-  <Button class="bits-btn" variant="outline" onclick={closeAnalysisModal}>Close</Button>
+  <Button class="bits-btn" variant="outline" onclick={closeAnalysisModal}>Close</button>
   <Button class="bits-btn" onclick={() => {
           // Save analysis or perform other actions
           closeAnalysisModal();
-        }}>Save Analysis</Button>
+        }}>Save Analysis</button>
       </div>
     </div>
   <div class="mx-auto px-4 max-w-7xl" role="button" tabindex="0" onclick={closeAnalysisModal} onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && closeAnalysisModal()}></div>

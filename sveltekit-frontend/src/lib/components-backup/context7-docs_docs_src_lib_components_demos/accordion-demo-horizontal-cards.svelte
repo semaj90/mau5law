@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Accordion } from "bits-ui";
 
   	let value = $state("item-1");

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount, type Snippet } from "svelte";
   	import { Button } from "bits-ui";
   	import { scale } from "svelte/transition";

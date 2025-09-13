@@ -11,6 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   - Integration with case management system
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   const { caseId: string, citation: Partial<Citation> | null = null, mode: 'create' | 'edit' = 'create', disabled = false } = $props();
 
   import { onMount, createEventDispatcher } from 'svelte';

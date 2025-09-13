@@ -2,8 +2,9 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import {
     ArrowLeft,
     ArrowRight,
@@ -299,7 +300,7 @@ https://svelte.dev/e/js_parse_error -->
 
         <div class="mx-auto px-4 max-w-7xl">
           {#if autoProgress}
-            <Button
+            <button class="nes-btn"
               variant="ghost"
               size="sm"
               onclick={() => toggleAutoProgress()}
@@ -313,17 +314,17 @@ https://svelte.dev/e/js_parse_error -->
               {:else}
                 <Play class="mx-auto px-4 max-w-7xl" />
               {/if}
-            </Button>
+            </button>
           {/if}
 
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => closeOnboarding()}
             aria-label="Close onboarding"
           >
             <X class="mx-auto px-4 max-w-7xl" />
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -388,10 +389,10 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mx-auto px-4 max-w-7xl">
         <div class="mx-auto px-4 max-w-7xl">
           {#if allowSkip}
-            <Button variant="ghost" size="sm" onclick={() => skipOnboarding()}>
+            <button class="nes-btn" variant="ghost" size="sm" onclick={() => skipOnboarding()}>
               <SkipForward class="mx-auto px-4 max-w-7xl" />
               Skip Tour
-            </Button>
+            </button>
           {/if}
         </div>
 
@@ -418,7 +419,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <div class="mx-auto px-4 max-w-7xl">
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => previousStep()}
@@ -426,9 +427,9 @@ https://svelte.dev/e/js_parse_error -->
           >
             <ArrowLeft class="mx-auto px-4 max-w-7xl" />
             Back
-          </Button>
+          </button>
 
-          <Button onclick={() => nextStep()} size="sm">
+          <button class="nes-btn" onclick={() => nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
               <Check class="mx-auto px-4 max-w-7xl" />
               Complete
@@ -436,7 +437,7 @@ https://svelte.dev/e/js_parse_error -->
               Next
               <ArrowRight class="mx-auto px-4 max-w-7xl" />
             {/if}
-          </Button>
+          </button>
         </div>
       </div>
     </div>

@@ -1,8 +1,9 @@
 <!-- OllamaChatInterface.svelte - Svelte 5 + SvelteKit 2.0 Enhanced AI Chat -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import TokenUsageManager from "$lib/components/TokenUsageManager.svelte";
   import { Badge } from "$lib/components/ui/badge";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import {
     Card,
     CardContent,
@@ -288,10 +289,10 @@
 <!-- Chat Interface -->
 <div class="ollama-chat-interface {className}">
   <!-- Header with Status -->
-  <Card class="mb-4">
-    <CardHeader class="pb-3">
+  <NesCard class="mb-4">
+    <div class="yorha-panel-header" class="pb-3">
       <div class="flex items-center justify-between">
-        <CardTitle class="flex items-center gap-2">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Brain class="w-5 h-5" />
           Legal AI Assistant
           <Badge
@@ -299,7 +300,7 @@
           >
             {ollamaStatus}
           </Badge>
-        </CardTitle>
+        </h3>
 
         <div class="flex items-center gap-2">
           <!-- Model Selector -->
@@ -310,29 +311,29 @@
           </select>
 
           <!-- Settings Toggle -->
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => (showSettings = !showSettings)}
           >
             <Settings class="w-4 h-4" />
-          </Button>
+          </button>
 
           <!-- Health Check -->
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={checkOllamaHealth}
             disabled={isLoading}
           >
             <RefreshCw class="w-4 h-4" />
-          </Button>
+          </button>
         </div>
       </div>
 
       <!-- Performance Metrics -->
       {#if lastResponse?.performance}
-        <div class="flex items-center gap-4 text-xs text-muted-foreground">
+        <div class="flex items-center gap-4 text-xs nes-text is-disabled">
           <span>
             <Zap class="w-3 h-3 inline mr-1" />
             {lastResponse.performance.duration}ms
@@ -345,11 +346,11 @@
           </span>
         </div>
       {/if}
-    </CardHeader>
+    </div>
 
     <!-- Advanced Settings -->
     {#if showSettings}
-      <CardContent class="pt-0 border-t">
+      <div class="yorha-panel-content" class="pt-0 border-t">
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="text-sm font-medium">Temperature</label>
@@ -361,7 +362,7 @@
               bind:value={temperature}
               class="w-full"
             />
-            <span class="text-xs text-muted-foreground">{temperature}</span>
+            <span class="text-xs nes-text is-disabled">{temperature}</span>
           </div>
           <div class="flex items-center gap-2">
             <input type="checkbox" bind:checked={streamMode} id="stream-mode" />
@@ -372,9 +373,9 @@
             <label for="use-rag" class="text-sm">Enhanced RAG</label>
           </div>
         </div>
-      </CardContent>
+      </div>
     {/if}
-  </Card>
+  </NesCard>
 
   <!-- Token Usage Manager -->
   <TokenUsageManager
@@ -404,10 +405,10 @@
   {/if}
 
   <!-- Chat History -->
-  <Card class="flex-1 mb-4">
+  <NesCard class="flex-1 mb-4">
     <ScrollArea class="h-96 p-4" bind:viewport={chatContainer}>
       {#if chatHistory.length === 0}
-        <div class="text-center text-muted-foreground py-8">
+        <div class="text-center nes-text is-disabled py-8">
           <MessageSquare class="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p>Start a conversation with the Legal AI Assistant</p>
           <p class="text-sm mt-2">
@@ -436,7 +437,7 @@
             </div>
 
             <!-- Message Timestamp -->
-            <div class="text-xs text-muted-foreground mt-1">
+            <div class="text-xs nes-text is-disabled mt-1">
               {msg.timestamp.toLocaleTimeString()}
             </div>
 
@@ -444,14 +445,14 @@
             {#if msg.suggestions && msg.suggestions.length > 0}
               <div class="mt-3 flex flex-wrap gap-2">
                 {#each msg.suggestions as suggestion}
-                  <Button
+                  <button class="nes-btn"
                     variant="outline"
                     size="sm"
                     onclick={() => selectSuggestion(suggestion)}
                     class="text-xs"
                   >
                     {suggestion}
-                  </Button>
+                  </button>
                 {/each}
               </div>
             {/if}
@@ -459,7 +460,7 @@
             <!-- Related Cases -->
             {#if msg.relatedCases && msg.relatedCases.length > 0}
               <div class="mt-2">
-                <p class="text-xs text-muted-foreground mb-1">Related Cases:</p>
+                <p class="text-xs nes-text is-disabled mb-1">Related Cases:</p>
                 <div class="flex flex-wrap gap-1">
                   {#each msg.relatedCases as caseTitle}
                     <Badge variant="secondary" class="text-xs">
@@ -475,13 +476,13 @@
 
       <!-- Loading Indicator -->
       {#if isLoading}
-        <div class="flex items-center gap-2 text-muted-foreground">
+        <div class="flex items-center gap-2 nes-text is-disabled">
           <Loader2 class="w-4 h-4 animate-spin" />
           <span>AI is thinking...</span>
         </div>
       {/if}
     </ScrollArea>
-  </Card>
+  </NesCard>
 
   <!-- Input Area -->
   <div class="flex gap-2">
@@ -507,29 +508,29 @@
       {:else}
         <Send class="w-4 h-4" />
       {/if}
-    </Button>
+    </button>
 
     <!-- Additional Actions -->
-    <Button
+    <button class="nes-btn"
       variant="outline"
       onclick={clearChat}
       disabled={chatHistory.length === 0}
     >
       Clear
-    </Button>
+    </button>
 
-    <Button
+    <button class="nes-btn"
       variant="outline"
       onclick={exportChat}
       disabled={chatHistory.length === 0}
     >
       Export
-    </Button>
+    </button>
   </div>
 
   <!-- Chat Stats -->
   {#if messageCount > 0}
-    <div class="mt-4 text-xs text-muted-foreground text-center">
+    <div class="mt-4 text-xs nes-text is-disabled text-center">
       {messageCount} messages • Model: {model}
       {#if caseId}
         • Case: {caseId}{/if}

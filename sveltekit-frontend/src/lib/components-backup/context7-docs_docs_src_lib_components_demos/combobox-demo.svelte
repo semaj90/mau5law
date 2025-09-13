@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Combobox } from "bits-ui";
   	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";
   	import Check from "phosphor-svelte/lib/Check";
@@ -47,7 +48,7 @@
 >
 	<div class="relative">
 		<OrangeSlice
-			class="text-muted-foreground absolute start-3 top-1/2 size-6 -translate-y-1/2"
+			class="nes-text is-disabled absolute start-3 top-1/2 size-6 -translate-y-1/2"
 		/>
 		<Combobox.Input
 			oninput={(e) => (searchValue = e.currentTarget.value)}
@@ -56,7 +57,7 @@
 			aria-label="Search a fruit"
 		/>
 		<Combobox.Trigger class="absolute end-3 top-1/2 size-6 -translate-y-1/2 touch-none">
-			<CaretUpDown class="text-muted-foreground size-6" />
+			<CaretUpDown class="nes-text is-disabled size-6" />
 		</Combobox.Trigger>
 	</div>
 	<Combobox.Portal>
@@ -84,7 +85,7 @@
 						{/snippet}
 					</Combobox.Item>
 				{:else}
-					<span class="block px-5 py-2 text-sm text-muted-foreground">
+					<span class="block px-5 py-2 text-sm nes-text is-disabled">
 						No results found, try again.
 					</span>
 				{/each}

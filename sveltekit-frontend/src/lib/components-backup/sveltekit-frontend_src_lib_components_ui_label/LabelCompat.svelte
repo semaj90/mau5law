@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Label from '../Label.svelte';
   import type { HTMLAttributes } from 'svelte/elements';
 

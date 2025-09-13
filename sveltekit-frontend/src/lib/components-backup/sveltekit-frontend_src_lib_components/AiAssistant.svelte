@@ -4,6 +4,7 @@
   Date: 2025-07-20
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // @ts-nocheck
   /**
    * AiAssistant.svelte
@@ -196,7 +197,7 @@
       {:else}
         Analyze Evidence
       {/if}
-    </Button>
+    </button>
   </div>
 
   <div class="mt-2 text-gray-300 text-sm min-h-24">

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import 'uno.css'
   	import { fade, fly } from 'svelte/transition'
 	interface Props {

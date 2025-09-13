@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     item: Evidence
 
@@ -70,12 +71,12 @@
   }
 </script>
 
-<Card
+<NesCard
   class="group hover:shadow-md transition-shadow duration-200 cursor-pointer"
   role="article"
   aria-label={item.title}
 >
-  <CardHeader class="pb-3">
+  <div class="yorha-panel-header" class="pb-3">
     <div class="flex items-start justify-between">
       <div class="flex items-center gap-3">
         <div
@@ -92,7 +93,7 @@
           <h3 class="font-semibold text-sm text-foreground truncate">
             {item.title}
           </h3>
-          <p class="text-xs text-muted-foreground truncate">
+          <p class="text-xs nes-text is-disabled truncate">
             {item.fileName || "No filename"}
           </p>
         </div>
@@ -109,7 +110,7 @@
           aria-label="View Evidence"
         >
           <i class="i-lucide-eye w-4 h-4" aria-hidden="true"></i>
-        </Button>
+        </button>
         <Button
           variant="ghost"
           size="sm"
@@ -117,12 +118,12 @@
           aria-label="More Options"
         >
           <i class="i-lucide-more-horizontal w-4 h-4" aria-hidden="true"></i>
-        </Button>
+        </button>
       </div>
     </div>
-  </CardHeader>
+  </div>
 
-  <CardContent class="space-y-3">
+  <div class="yorha-panel-content" class="space-y-3">
     <!-- Preview/Thumbnail -->
     {#if item.thumbnailUrl}
       <div class="aspect-video bg-muted rounded-md overflow-hidden">
@@ -141,10 +142,10 @@
           <i
             class="{getEvidenceIcon(
               item.evidenceType
-            )} w-8 h-8 mx-auto mb-2 text-muted-foreground"
+            )} w-8 h-8 mx-auto mb-2 nes-text is-disabled"
             aria-hidden="true"
           ></i>
-          <p class="text-xs text-muted-foreground capitalize">
+          <p class="text-xs nes-text is-disabled capitalize">
             {item.evidenceType}
           </p>
         </div>
@@ -158,7 +159,7 @@
           <i class="i-lucide-brain w-4 h-4 text-primary" aria-hidden="true"></i>
           <span class="text-xs font-medium text-primary">AI Summary</span>
         </div>
-        <p class="text-xs text-muted-foreground line-clamp-2">
+        <p class="text-xs nes-text is-disabled line-clamp-2">
           {item.aiSummary}
         </p>
       </div>
@@ -184,7 +185,7 @@
 
       <!-- File Info -->
       <div
-        class="flex items-center justify-between text-xs text-muted-foreground"
+        class="flex items-center justify-between text-xs nes-text is-disabled"
       >
         <span>{formatFileSize(item.fileSize || 0)}</span>
         <span>{formatDate(item.createdAt)}</span>
@@ -201,8 +202,8 @@
         </div>
       {/if}
     </div>
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   /* @unocss-include */

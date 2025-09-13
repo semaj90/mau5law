@@ -3,6 +3,7 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!-- Date Picker Component for Legal AI App -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { DatePicker } from 'bits-ui';
   import { Calendar, ChevronLeft, ChevronRight } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -158,7 +159,7 @@ https://svelte.dev/e/expected_token -->
           <DatePicker.GridRow class="flex">
             {#each ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] as day}
               <DatePicker.HeadCell 
-                class="text-muted-foreground w-9 rounded-md text-[0.8rem] font-normal font-mono text-center text-yorha-text-secondary"
+                class="nes-text is-disabled w-9 rounded-md text-[0.8rem] font-normal font-mono text-center text-yorha-text-secondary"
               >
                 {day}
               </DatePicker.HeadCell>

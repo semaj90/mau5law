@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Form Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { MatrixUICompiler, type MatrixUINode } from '$lib/ui/matrix-compiler';
   import { MatrixLODSystem, type ViewportFocus } from '$lib/ui/matrix-lod';
@@ -329,7 +330,7 @@
 
   <!-- Technical Details -->
   <div class="technical-details mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-    <div class="tech-card yorha-panel p-4">
+    <div class="tech-nier-bits-card yorha-panel p-4">
       <h4 class="text-sm font-semibold text-yellow-400 mb-2">Custom Reranker</h4>
       <div class="text-xs text-gray-300 space-y-1">
         <div>✅ Legal context awareness</div>
@@ -339,7 +340,7 @@
       </div>
     </div>
     
-    <div class="tech-card yorha-panel p-4">
+    <div class="tech-nier-bits-card yorha-panel p-4">
       <h4 class="text-sm font-semibold text-yellow-400 mb-2">Matrix Compiler</h4>
       <div class="text-xs text-gray-300 space-y-1">
         <div>✅ JSON to DOM conversion</div>
@@ -349,7 +350,7 @@
       </div>
     </div>
     
-    <div class="tech-card yorha-panel p-4">
+    <div class="tech-nier-bits-card yorha-panel p-4">
       <h4 class="text-sm font-semibold text-yellow-400 mb-2">LOD System</h4>
       <div class="text-xs text-gray-300 space-y-1">
         <div>✅ GLSL cubic blending</div>
@@ -359,7 +360,7 @@
       </div>
     </div>
     
-    <div class="tech-card yorha-panel p-4">
+    <div class="tech-nier-bits-card yorha-panel p-4">
       <h4 class="text-sm font-semibold text-yellow-400 mb-2">Predictive Prefetch</h4>
       <div class="text-xs text-gray-300 space-y-1">
         <div>✅ Intent prediction</div>

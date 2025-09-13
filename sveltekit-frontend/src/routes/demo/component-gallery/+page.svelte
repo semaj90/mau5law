@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     Button
@@ -158,14 +159,14 @@
   <!-- Theme Controls -->
   <section class="theme-controls">
     <div class="space-y-4">
-      <Card class="controls-card">
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard class="controls-nier-bits-card">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Settings class="h-5 w-5" />
             Gallery Controls
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="controls-grid">
             <div class="control-group">
               <Label for="theme-select">Theme Variant</Label>
@@ -204,8 +205,8 @@
               </label>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </section>
 
@@ -218,15 +219,15 @@
       
       <div class="features-grid">
         {#each features as feature}
-          <Card class="feature-showcase">
-            <CardContent class="text-center p-6">
+          <NesCard class="feature-showcase">
+            <div class="yorha-panel-content" class="text-center p-6">
               <feature.icon 
                 class="feature-icon {feature.color} mx-auto mb-4" 
               />
               <h3 class="feature-title">{feature.title}</h3>
               <p class="feature-description">{feature.description}</p>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         {/each}
       </div>
     </div>
@@ -248,30 +249,30 @@
         
         <div class="component-grid">
           <!-- Buttons -->
-          <Card class="component-demo">
-            <CardHeader>
-              <CardTitle>Buttons</CardTitle>
-            </CardHeader>
-            <CardContent class="space-y-4">
+          <NesCard class="component-demo">
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">Buttons</h3>
+            </div>
+            <div class="yorha-panel-content" class="space-y-4">
               <div class="button-group">
-                <Button class="yorha-btn-primary bits-btn bits-btn">Primary Action</Button>
-                <Button class="yorha-btn-secondary bits-btn bits-btn">Secondary</Button>
-                <Button class="bits-btn" disabled>Disabled</Button>
+                <Button class="yorha-nes-btn is-primary bits-btn bits-btn">Primary Action</button>
+                <Button class="yorha-nes-btn bits-btn bits-btn">Secondary</button>
+                <Button class="bits-btn" disabled>Disabled</button>
               </div>
               <div class="button-group">
-                <Button class="bits-btn" size="sm">Small</Button>
-                <Button class="bits-btn" size="md">Medium</Button>
-                <Button class="bits-btn" size="lg">Large</Button>
+                <Button class="bits-btn" size="sm">Small</button>
+                <Button class="bits-btn" size="md">Medium</button>
+                <Button class="bits-btn" size="lg">Large</button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Form Elements -->
-          <Card class="component-demo">
-            <CardHeader>
-              <CardTitle>Form Elements</CardTitle>
-            </CardHeader>
-            <CardContent class="space-y-4">
+          <NesCard class="component-demo">
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">Form Elements</h3>
+            </div>
+            <div class="yorha-panel-content" class="space-y-4">
               <div class="form-group">
                 <Label for="demo-input">Professional Input</Label>
                 <Input 
@@ -289,15 +290,15 @@
                   placeholder="Describe the case details..."
                 ></textarea>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Status Indicators -->
-          <Card class="component-demo">
-            <CardHeader>
-              <CardTitle>Status & Badges</CardTitle>
-            </CardHeader>
-            <CardContent class="space-y-4">
+          <NesCard class="component-demo">
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">Status & Badges</h3>
+            </div>
+            <div class="yorha-panel-content" class="space-y-4">
               <div class="badge-group">
                 <span class="badge badge-success">Active Case</span>
                 <span class="badge badge-warning">Under Review</span>
@@ -311,8 +312,8 @@
                 </div>
                 <span class="progress-text">75% Complete</span>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         </div>
       </div>
 
@@ -324,11 +325,11 @@
         </h3>
         
         <div class="ai-showcase">
-          <Card class="ai-demo">
-            <CardHeader>
-              <CardTitle>AI Chat Interface</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard class="ai-demo">
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">AI Chat Interface</h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="chat-preview">
                 <div class="message user-message">
                   <div class="message-content">
@@ -353,14 +354,14 @@
                   AI is thinking...
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
-          <Card class="ai-demo">
-            <CardHeader>
-              <CardTitle>Multi-Agent Analysis</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard class="ai-demo">
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">Multi-Agent Analysis</h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="agent-pipeline">
                 <div class="agent-step completed">
                   <div class="agent-icon">✓</div>
@@ -391,8 +392,8 @@
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         </div>
       </div>
 
@@ -403,14 +404,14 @@
           Professional Editor
         </h3>
         
-        <Card class="editor-showcase">
-          <CardHeader>
-            <CardTitle>Full-Featured Document Editor</CardTitle>
+        <NesCard class="editor-showcase">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Full-Featured Document Editor</h3>
             <p class="text-sm text-yorha-text-muted">
               Features: Auto-save, keyboard shortcuts, focus mode, document statistics
             </p>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div class="yorha-panel-content">
             <div class="editor-container">
               <ProfessionalEditor 
                 bind:content={demoContent}
@@ -419,8 +420,8 @@
                 save={(e) => console.log('Demo save:', e.detail)}
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     </div>
   </section>
@@ -433,11 +434,11 @@
       </h2>
       
       <div class="docs-grid">
-        <Card class="color-palette">
-          <CardHeader>
-            <CardTitle>Color Palette</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard class="color-palette">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Color Palette</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="color-grid">
               <div class="color-swatch">
                 <div class="swatch" style="background-color: #b8860b"></div>
@@ -482,14 +483,14 @@
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
-        <Card class="typography-demo">
-          <CardHeader>
-            <CardTitle>Typography System</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard class="typography-demo">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Typography System</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="type-scale">
               <h1 class="type-sample h1">Heading 1 - Document Title</h1>
               <h2 class="type-sample h2">Heading 2 - Section</h2>
@@ -498,14 +499,14 @@
               <p class="type-sample caption">Caption text for metadata and annotations</p>
               <code class="type-sample code">Code and monospace elements</code>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
-        <Card class="accessibility-info">
-          <CardHeader>
-            <CardTitle>Accessibility Features</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard class="accessibility-info">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Accessibility Features</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="a11y-features">
               <div class="a11y-item">
                 <Shield class="h-5 w-5 text-yorha-success" />
@@ -536,8 +537,8 @@
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     </div>
   </section>

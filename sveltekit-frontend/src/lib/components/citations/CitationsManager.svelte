@@ -3,6 +3,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Citations Manager - Legal Citation System with AI-powered search -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import {
     Card,
@@ -331,16 +332,16 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- Citations Manager Interface -->
 <div class="w-full h-full flex flex-col bg-background">
 	<!-- Header -->
-	<Card class="mb-4">
-		<CardHeader class="pb-3">
+	<NesCard class="mb-4">
+		<div class="yorha-panel-header" class="pb-3">
 			<div class="flex justify-between items-center">
 				<div class="flex items-center gap-4">
 					<div class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
 						<BookOpen class="w-5 h-5 text-primary" />
 					</div>
 					<div>
-						<CardTitle class="text-xl">Citations & References</CardTitle>
-						<p class="text-sm text-muted-foreground">Legal citation management system</p>
+						<h3 class="nes-text is-primary" class="text-xl">Citations & References</h3>
+						<p class="text-sm nes-text is-disabled">Legal citation management system</p>
 					</div>
 				</div>
 				
@@ -360,7 +361,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						>
 							<Plus class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Plus icon" />
 							Add Citation
-						</Button>
+						</button>
 						<div id="add-citation-help" class="sr-only">
 							Create a new legal citation with complete source information
 						</div>
@@ -379,23 +380,23 @@ https://svelte.dev/e/attribute_duplicate -->
 					>
 						<Download class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Download icon" />
 						Export
-					</Button>
+					</button>
 					<div id="export-help" class="sr-only">
 						Download all filtered citations as a JSON file for backup or sharing
 					</div>
 				</div>
 			</div>
-		</CardHeader>
-	</Card>
+		</div>
+	</NesCard>
 
 	<!-- Search and Filters -->
-	<Card class="mb-4">
-		<CardContent class="py-4">
+	<NesCard class="mb-4">
+		<div class="yorha-panel-content" class="py-4">
 			<div class="flex flex-col lg:flex-row gap-4">
 				<!-- Search -->
 				<div class="flex-1">
 					<div class="relative">
-						<Search class="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
+						<Search class="w-4 h-4 absolute left-3 top-3 nes-text is-disabled" />
 						<Input
 							placeholder="Search citations, authors, sources..."
 							value={searchQuery}
@@ -422,7 +423,7 @@ https://svelte.dev/e/attribute_duplicate -->
 					>
 						<Calendar class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Calendar icon" />
 						Date
-					</Button>
+					</button>
 					<div id="sort-date-help" class="sr-only">
 						Sort citations by the date they were added to the system
 					</div>
@@ -441,7 +442,7 @@ https://svelte.dev/e/attribute_duplicate -->
 					>
 						<SortAsc class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Sort ascending icon" />
 						Title
-					</Button>
+					</button>
 					<div id="sort-title-help" class="sr-only">
 						Sort citations alphabetically by title
 					</div>
@@ -460,23 +461,23 @@ https://svelte.dev/e/attribute_duplicate -->
 					>
 						<Filter class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Filter icon" />
 						Relevance
-					</Button>
+					</button>
 					<div id="sort-relevance-help" class="sr-only">
 						Sort citations by their calculated relevance score to your case
 					</div>
 				</div>
 			</div>
-		</CardContent>
-	</Card>
+		</div>
+	</NesCard>
 
 	<!-- Main Content -->
 	<div class="flex-1 grid grid-cols-4 gap-4">
 		<!-- Categories Sidebar -->
-		<Card class="h-fit">
-			<CardHeader class="pb-3">
-				<CardTitle class="text-sm">Categories</CardTitle>
-			</CardHeader>
-			<CardContent class="space-y-2">
+		<NesCard class="h-fit">
+			<div class="yorha-panel-header" class="pb-3">
+				<h3 class="nes-text is-primary" class="text-sm">Categories</h3>
+			</div>
+			<div class="yorha-panel-content" class="space-y-2">
 				{#each citationCategories as category}
 					<button
 						class="w-full flex justify-between items-center p-2 rounded text-sm hover:bg-muted transition-colors"
@@ -488,32 +489,32 @@ https://svelte.dev/e/attribute_duplicate -->
 						<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{category.count}</span>
 					</button>
 				{/each}
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 
 		<!-- Citations List -->
 		<div class="col-span-3 space-y-4">
 			{#if isLoading}
-				<Card>
-					<CardContent class="py-8 text-center">
+				<NesCard>
+					<div class="yorha-panel-content" class="py-8 text-center">
 						<div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-						<p class="text-sm text-muted-foreground">Loading citations...</p>
-					</CardContent>
-				</Card>
+						<p class="text-sm nes-text is-disabled">Loading citations...</p>
+					</div>
+				</NesCard>
 			{:else if filteredCitations.length === 0}
-				<Card>
-					<CardContent class="py-8 text-center">
-						<BookOpen class="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-						<p class="text-sm text-muted-foreground mb-2">No citations found</p>
+				<NesCard>
+					<div class="yorha-panel-content" class="py-8 text-center">
+						<BookOpen class="w-12 h-12 nes-text is-disabled mx-auto mb-4" />
+						<p class="text-sm nes-text is-disabled mb-2">No citations found</p>
 						{#if searchQuery}
-							<p class="text-xs text-muted-foreground">Try adjusting your search terms</p>
+							<p class="text-xs nes-text is-disabled">Try adjusting your search terms</p>
 						{/if}
-					</CardContent>
-				</Card>
+					</div>
+				</NesCard>
 			{:else}
 				{#each filteredCitations as citation}
-					<Card class="hover:shadow-md transition-shadow">
-						<CardContent class="py-4">
+					<NesCard class="hover:shadow-md transition-shadow">
+						<div class="yorha-panel-content" class="py-4">
 							<div class="flex justify-between items-start">
 								<div class="flex-1 pr-4">
 									<div class="flex items-center gap-2 mb-2">
@@ -524,7 +525,7 @@ https://svelte.dev/e/attribute_duplicate -->
 										{/if}
 									</div>
 									
-									<div class="text-sm text-muted-foreground mb-2">
+									<div class="text-sm nes-text is-disabled mb-2">
 										<div class="flex items-center gap-4 flex-wrap">
 											<span class="flex items-center gap-1">
 												<User class="w-3 h-3" />
@@ -559,14 +560,14 @@ https://svelte.dev/e/attribute_duplicate -->
 								</div>
 								
 								<div class="flex items-center gap-1">
-									<Button
+									<button class="nes-btn"
 										variant="ghost"
 										size="sm"
 										onclick={() => viewCitationDetails(citation)}
 										class="h-8 w-8 p-0"
 									>
 										<Eye class="w-4 h-4" />
-									</Button>
+									</button>
 									{#if citation.url}
 										<Button 
 											class="enhanced-bits-btn nes-citation-action n64-enhanced lod-optimized retro-external-btn h-8 w-8 p-0"
@@ -581,7 +582,7 @@ https://svelte.dev/e/attribute_duplicate -->
 											data-operation="external-link"
 										>
 											<ExternalLink class="w-4 h-4" />
-										</Button>
+										</button>
 									{/if}
 									{#if !readonly}
 										<Button 
@@ -598,12 +599,12 @@ https://svelte.dev/e/attribute_duplicate -->
 											data-critical="true"
 										>
 											<Trash2 class="w-4 h-4" />
-										</Button>
+										</button>
 									{/if}
 								</div>
 							</div>
-						</CardContent>
-					</Card>
+						</div>
+					</NesCard>
 				{/each}
 			{/if}
 		</div>
@@ -614,11 +615,11 @@ https://svelte.dev/e/attribute_duplicate -->
 {#if showAddForm}
 	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" role="button" tabindex="0"
                 onclick={(e) => { if (e.target === e.currentTarget) hideAddCitationForm(); }}>
-		<Card class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-			<CardHeader>
-				<CardTitle>Add New Citation</CardTitle>
-			</CardHeader>
-			<CardContent class="space-y-4">
+		<NesCard class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+			<div class="yorha-panel-header">
+				<h3 class="nes-text is-primary">Add New Citation</h3>
+			</div>
+			<div class="yorha-panel-content" class="space-y-4">
 				<div class="grid grid-cols-2 gap-4">
 					<div>
 						<label class="block text-sm font-medium mb-1">Title *</label>
@@ -680,7 +681,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						data-enhanced-bits="true"
 					>
 						Cancel
-					</Button>
+					</button>
 					<Button 
 						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
 						onclick={saveCitation}
@@ -692,24 +693,24 @@ https://svelte.dev/e/attribute_duplicate -->
 						data-operation="save-citation"
 					>
 						Save Citation
-					</Button>
+					</button>
 					<div id="save-citation-help" class="sr-only">
 						Add this citation to your legal reference collection
 					</div>
 				</div>
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 	</div>
 {/if}
 
 <!-- Citation Detail Modal -->
 {#if showDetailModal && selectedCitation}
 	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onclick|self={hideDetailModal}>
-		<Card class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-			<CardHeader>
-				<CardTitle>{selectedCitation.title}</CardTitle>
-			</CardHeader>
-			<CardContent class="space-y-4">
+		<NesCard class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+			<div class="yorha-panel-header">
+				<h3 class="nes-text is-primary">{selectedCitation.title}</h3>
+			</div>
+			<div class="yorha-panel-content" class="space-y-4">
 				<div class="bg-muted p-4 rounded font-mono text-sm">
 					{formatCitation(selectedCitation)}
 				</div>
@@ -767,7 +768,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							>
 								<ExternalLink class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="External link icon" />
 								Open Link
-							</Button>
+							</button>
 						{/if}
 						<Button 
 							class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-close-btn"
@@ -778,11 +779,11 @@ https://svelte.dev/e/attribute_duplicate -->
 							data-enhanced-bits="true"
 						>
 							Close
-						</Button>
+						</button>
 					</div>
 				</div>
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 	</div>
 {/if}
 

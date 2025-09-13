@@ -2,6 +2,7 @@
 https://svelte.dev/e/block_unexpected_character -->
 <!-- @migration-task Error while migrating Svelte code: Expected a `#` character immediately following the opening bracket -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     evidence: ExtendedEvidence;
     onView: (evidence: Evidence) => void;

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import DemoContainer from "../demo-container.svelte";
   	import CustomDialog from "./dialog-demo-custom.svelte";
 </script>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { mode } from "mode-watcher";
   	import "./raycast.css";
   	import { Command } from "bits-ui";

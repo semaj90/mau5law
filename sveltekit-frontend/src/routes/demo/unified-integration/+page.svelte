@@ -1,5 +1,6 @@
 <!-- Unified GPU/WASM Integration Demo Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import UnifiedIntegrationDemo from '$lib/components/UnifiedIntegrationDemo.svelte';
 </script>
 

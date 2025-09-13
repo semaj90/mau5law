@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
 
   import { useChatActor, chatActions } from '$lib/stores/chatStore';
@@ -54,11 +55,11 @@ https://svelte.dev/e/attribute_invalid_name -->
   });
 </script>
 
-<Card class="flex flex-col h-[70vh] max-w-3xl mx-auto my-8">
+<NesCard class="flex flex-col h-[70vh] max-w-3xl mx-auto my-8">
   <div class="flex items-center justify-between border-b p-4">
     <div>
       <h2 class="text-xl font-semibold">Legal AI Assistant</h2>
-      <p class="text-sm text-muted-foreground">
+      <p class="text-sm nes-text is-disabled">
         {#if $serviceStatus.ollama === 'connected'}
           <span class="text-green-500">●</span> AI Connected
         {:else if $serviceStatus.ollama === 'error'}
@@ -70,7 +71,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     </div>
   <Button class="bits-btn" variant="outline" size="sm" onclick={handleClear}>
       Clear Chat
-    </Button>
+    </button>
   </div>
 
   <!-- Chat messages -->
@@ -108,10 +109,10 @@ https://svelte.dev/e/attribute_invalid_name -->
       />
       <Button class="bits-btn" type="submit" disabled={$state.matches('loading') || !userInput.trim()}>
         {$state.matches('loading') ? 'Thinking...' : 'Send'}
-      </Button>
+      </button>
     </form>
   </div>
-</Card>
+</NesCard>
 
 <style>
   .chat-message {

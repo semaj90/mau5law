@@ -1,5 +1,6 @@
 <!-- Data Table Component for Legal AI App -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { cn } from '$lib/utils';
   import { ChevronDown, ChevronUp, Search, Filter, Download } from 'lucide-svelte';
 
@@ -149,14 +150,14 @@
       {#if filterable}
         <Button class="bits-btn" variant="outline" size="sm">
           <Filter class="w-4 h-4" />
-        </Button>
+        </button>
       {/if}
 
       {#if exportable}
         <Button class="bits-btn" variant="outline" size="sm" onclick={handleExport}>
           <Download class="w-4 h-4 mr-2" />
           Export
-        </Button>
+        </button>
       {/if}
     </div>
   </div>
@@ -263,7 +264,7 @@
           onclick={() => currentPage = Math.max(0, currentPage - 1)}
         >
           Previous
-        </Button>
+        </button>
 
         <span class="px-3 py-1 text-yorha-text-primary">
           Page {currentPage + 1} of {totalPages}
@@ -276,7 +277,7 @@
           onclick={() => currentPage = Math.min(totalPages - 1, currentPage + 1)}
         >
           Next
-        </Button>
+        </button>
       </div>
     {/if}
   </div>

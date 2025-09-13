@@ -10,6 +10,7 @@ https://svelte.dev/e/expected_token -->
      - MinIO file upload with real-time processing -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { nesGPUIntegration, type LegalDocument, type PipelineStats } from '$lib/gpu/nes-gpu-integration';

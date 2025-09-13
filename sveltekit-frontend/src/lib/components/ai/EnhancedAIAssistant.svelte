@@ -7,6 +7,7 @@ https://svelte.dev/e/effect_invalid_placement -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { aiAssistant } from '$lib/stores/ai-assistant.svelte';
   import { pgVectorSearch } from '$lib/services/pgvector-semantic-search';
@@ -496,10 +497,10 @@ https://svelte.dev/e/effect_invalid_placement -->
             <p>{selectedCitation}</p>
           </div>
           <div class="modal-actions">
-            <button class="btn-primary" onclick={() => insertCitation()}>
+            <button class="nes-btn is-primary" onclick={() => insertCitation()}>
               Insert Citation
             </button>
-            <button class="btn-secondary" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
+            <button class="nes-btn" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
               Copy
             </button>
           </div>

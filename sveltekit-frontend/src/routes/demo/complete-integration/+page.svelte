@@ -7,6 +7,7 @@ https://svelte.dev/e/tag_invalid_name -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import WebGPUWebAssemblyBridge from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
@@ -233,11 +234,11 @@ https://svelte.dev/e/tag_invalid_name -->
 
     <!-- WebGPU + WebAssembly Bridge -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <Card class="bg-black bg-opacity-30 border-yellow-500">
-        <CardHeader>
-          <CardTitle class="text-yellow-400 font-mono">🔗 WebGPU + WebAssembly Bridge</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard class="bg-black bg-opacity-30 border-yellow-500">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-yellow-400 font-mono">🔗 WebGPU + WebAssembly Bridge</h3>
+        </div>
+        <div class="yorha-panel-content">
           <WebGPUWebAssemblyBridge
             enableGPU={true}
             enableWebAssembly={true}
@@ -245,17 +246,17 @@ https://svelte.dev/e/tag_invalid_name -->
             maxConcurrent={6}
             enableDemo={true}
           />
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- AI Assistant Interface -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <Card class="bg-black bg-opacity-30 border-green-500">
-        <CardHeader>
-          <CardTitle class="text-green-400 font-mono">🤖 WebAssembly AI Assistant (Gemma 270MB)</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard class="bg-black bg-opacity-30 border-green-500">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-green-400 font-mono">🤖 WebAssembly AI Assistant (Gemma 270MB)</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-6">
             <!-- Test Prompts -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -345,17 +346,17 @@ https://svelte.dev/e/tag_invalid_name -->
               </div>
             {/if}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- NES 3D LOD Processor -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <Card class="bg-black bg-opacity-30 border-purple-500">
-        <CardHeader>
-          <CardTitle class="text-purple-400 font-mono">🎮 NES 3D LOD Processor</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard class="bg-black bg-opacity-30 border-purple-500">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-purple-400 font-mono">🎮 NES 3D LOD Processor</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-4 mb-6">
             <!-- Controls -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -408,17 +409,17 @@ https://svelte.dev/e/tag_invalid_name -->
             performanceTarget="balanced"
             userId="demo_user"
           />
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- System Architecture Diagram -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <Card class="bg-black bg-opacity-30 border-yellow-500">
-        <CardHeader>
-          <CardTitle class="text-yellow-400 font-mono">🏗️ Complete Integration Architecture</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard class="bg-black bg-opacity-30 border-yellow-500">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-yellow-400 font-mono">🏗️ Complete Integration Architecture</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="overflow-x-auto">
             <div class="flex items-center space-x-4 min-w-max p-6">
               <!-- User Input -->
@@ -486,8 +487,8 @@ https://svelte.dev/e/tag_invalid_name -->
               <li>• <strong>Memory Efficient:</strong> &lt; 300MB total footprint</li>
             </ul>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </main>
 

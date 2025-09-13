@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Meter, useId } from "bits-ui";
 
   	let value = $state(2000);

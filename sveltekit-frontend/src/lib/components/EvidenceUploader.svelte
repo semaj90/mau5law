@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   // Svelte 5 props interface
   interface Props {

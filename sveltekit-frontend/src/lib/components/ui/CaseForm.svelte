@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { goto } from "$app/navigation";
   import {
@@ -159,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 
-  <Card variant="interactive" padding="lg">
+  <NesCard variant="interactive" padding="lg">
     <Form
       bind:formApi
       options={formOptions}
@@ -331,7 +332,7 @@ https://svelte.dev/e/js_parse_error -->
                   onclick={() => addTag()}
                 >
                   Add
-                </Button>
+                </button>
               </div>
             </div>
           </div>
@@ -362,7 +363,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </Form>
-  </Card>
+  </NesCard>
 </div>
 
 <style>

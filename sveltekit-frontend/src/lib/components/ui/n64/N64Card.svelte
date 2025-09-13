@@ -2,6 +2,7 @@
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, createEventDispatcher } from 'svelte';
   import type { Snippet } from 'svelte';
   // Svelte 5 props interface
@@ -322,7 +323,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
 <div 
   bind:this={container}
-  class="n64-card-container {className}"
+  class="n64-nier-bits-card-container {className}"
   style={cardStyles()}
 >
   <article
@@ -341,7 +342,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     onkeydown={handleKeydown}
   >
     <!-- N64 Visual Enhancement Layers -->
-    <div class="n64-card-overlay" aria-hidden="true">
+    <div class="n64-nier-bits-card-overlay" aria-hidden="true">
       <!-- Depth effect layer -->
       <div class="depth-layer depth-{depthEffect}"></div>
       
@@ -366,18 +367,18 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
     <!-- Card Header -->
     {#if title || subtitle}
-      <header class="n64-card-header">
+      <header class="n64-nier-bits-yorha-panel-header">
         {#if title}
-          <h3 class="n64-card-title">{title}</h3>
+          <h3 class="n64-nier-bits-nes-text is-primary">{title}</h3>
         {/if}
         {#if subtitle}
-          <p class="n64-card-subtitle">{subtitle}</p>
+          <p class="n64-nier-bits-card-subtitle">{subtitle}</p>
         {/if}
       </header>
     {/if}
 
     <!-- Card Content -->
-    <div class="n64-card-content">
+    <div class="n64-nier-bits-yorha-panel-content">
       {#if children}
         {@render children()}
       {/if}

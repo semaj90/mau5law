@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { type Snippet, untrack } from "svelte";
   	import { Collapsible, ScrollArea, Tabs } from "bits-ui";
   	import DemoCodeTabs from "./demo-code-tabs.svelte";
@@ -59,7 +60,7 @@
 		{#each items as item (item.value)}
 			<Tabs.Content
 				value={item.value}
-				class="rounded-b-card bg-background relative overflow-hidden border-x-2 border-b-2"
+				class="rounded-b-nier-bits-card bg-background relative overflow-hidden border-x-2 border-b-2"
 				data-llm-ignore={item.value === "app.css" ? "" : undefined}
 			>
 				<Collapsible.Content forceMount>

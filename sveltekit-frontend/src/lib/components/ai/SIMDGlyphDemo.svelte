@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -197,16 +198,16 @@ https://svelte.dev/e/expected_token -->
 </script>
 
 <div class="p-6 max-w-7xl mx-auto space-y-6">
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         🧬 SIMD-Enhanced Legal Glyph Generation
         <span class="text-sm font-normal text-gray-500">
           GPU-Accelerated Evidence Visualization with Neural Sprite Compression
         </span>
-      </CardTitle>
-    </CardHeader>
-    <CardContent class="space-y-6">
+      </h3>
+    </div>
+    <div class="yorha-panel-content" class="space-y-6">
       <!-- Configuration Panel -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
         <div>
@@ -248,7 +249,7 @@ https://svelte.dev/e/expected_token -->
             class="w-full"
           >
             {isGenerating ? '🔄 Generating...' : '🎨 Generate'}
-          </Button>
+          </button>
         </div>
       </div>
       
@@ -256,13 +257,13 @@ https://svelte.dev/e/expected_token -->
       <div class="flex gap-2">
         <Button class="bits-btn" onclick={generateBatchDemo} disabled={isGenerating} variant="outline">
           🚀 Batch Demo
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={testCompressionLevels} disabled={isGenerating} variant="outline">
           📊 Test Compression
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={() => results = []} variant="outline">
           🗑️ Clear Results
-        </Button>
+        </button>
       </div>
       
       <!-- Processing Statistics -->
@@ -292,27 +293,27 @@ https://svelte.dev/e/expected_token -->
           </div>
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
   
   <!-- Results Grid -->
   {#if results.length > 0}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {#each results as result (result.id)}
-        <Card class="overflow-hidden">
-          <CardHeader class="pb-2">
-            <CardTitle class="text-lg flex items-center justify-between">
+        <NesCard class="overflow-hidden">
+          <div class="yorha-panel-header" class="pb-2">
+            <h3 class="nes-text is-primary" class="text-lg flex items-center justify-between">
               <span class="truncate">{result.prompt}</span>
               <span class={`px-2 py-1 rounded-full text-xs ${getQualityTierColor(result.metadata.performance_tier)}`}>
                 {result.metadata.performance_tier.toUpperCase()}
               </span>
-            </CardTitle>
+            </h3>
             <div class="text-sm text-gray-500">
               Style: {result.style} • Evidence #{result.evidence_id}
             </div>
-          </CardHeader>
+          </div>
           
-          <CardContent class="space-y-4">
+          <div class="yorha-panel-content" class="space-y-4">
             <!-- Generated Glyph Display -->
             <div class="flex gap-4">
               <div class="flex-1">
@@ -370,7 +371,7 @@ https://svelte.dev/e/expected_token -->
                     class="text-xs"
                   >
                     📄 Download
-                  </Button>
+                  </button>
                 </div>
                 <pre class="whitespace-pre-wrap break-all">{result.simd_data.shader_code.slice(0, 300)}...</pre>
               </div>
@@ -396,13 +397,13 @@ https://svelte.dev/e/expected_token -->
               <span>Generated: {new Date(result.timestamp).toLocaleTimeString()}</span>
               <span>Total: {result.processing_time}ms</span>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/each}
     </div>
   {:else}
-    <Card>
-      <CardContent class="text-center py-12 text-gray-500">
+    <NesCard>
+      <div class="yorha-panel-content" class="text-center py-12 text-gray-500">
         <div class="text-6xl mb-4">🎨</div>
         <h3 class="text-lg font-medium mb-2">No SIMD Glyphs Generated Yet</h3>
         <p class="mb-4">Generate your first SIMD-optimized legal evidence glyph with GPU acceleration!</p>
@@ -411,9 +412,9 @@ https://svelte.dev/e/expected_token -->
           disabled={isGenerating}
         >
           🚀 Generate Demo Glyph
-        </Button>
-      </CardContent>
-    </Card>
+        </button>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

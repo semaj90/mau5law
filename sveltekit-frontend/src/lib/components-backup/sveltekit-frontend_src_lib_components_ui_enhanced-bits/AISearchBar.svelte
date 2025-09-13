@@ -1,5 +1,6 @@
 <!-- AI Search Bar: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from 'svelte';
   import { Input, Button } from './index.js';
   import { Search } from 'lucide-svelte';
@@ -62,9 +63,9 @@
     legal
     aiAssisted
   />
-  <Button variant="yorha" onclick={handleSearch} loading={loading} legal>
+  <button class="nes-btn" variant="yorha" onclick={handleSearch} loading={loading} legal>
     <Search class="w-4 h-4 mr-1" />
     Search
-  </Button>
+  </button>
 </div>
 

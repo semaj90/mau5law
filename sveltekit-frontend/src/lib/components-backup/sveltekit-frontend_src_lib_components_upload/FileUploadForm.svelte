@@ -2,8 +2,9 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Alert, AlertDescription  } from "$lib/components/ui/alert";
-  import { Button  } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Card,
     CardContent,
     CardDescription,
@@ -136,14 +137,14 @@ https://svelte.dev/e/js_parse_error -->
    }
 </script>
 
-<Card class="w-full max-w-2xl">
-  <CardHeader>
-    <CardTitle>Upload Evidence</CardTitle>
-    <CardDescription>
+<NesCard class="w-full max-w-2xl">
+  <div class="yorha-panel-header">
+    <h3 class="nes-text is-primary">Upload Evidence</h3>
+    <p class="nes-text">
       Upload documents, images, videos, or other evidence files for AI analysis
-    </CardDescription>
-  </CardHeader>
-  <CardContent>
+    </p>
+  </div>
+  <div class="yorha-panel-content">
     <form method="POST" enctype="multipart/form-data" use:enhance>
       <div class="space-y-6">
         <!-- File Upload Area -->
@@ -165,18 +166,18 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="flex items-center gap-3">
                     <svelte:component
                       this={ fileTypeIcons[$form.type] }
-                      class="h-8 w-8 text-muted-foreground"
+                      class="h-8 w-8 nes-text is-disabled"
                     />
                     <div>
                       <p class="font-medium">{ selectedFile.name }</p>
-                      <p class="text-sm text-muted-foreground">
+                      <p class="text-sm nes-text is-disabled">
                         { formatFileSize(selectedFile.size) } • { selectedFile.type }
                       </p>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" onclick={ removeFile }>
+                  <button class="nes-btn" variant="ghost" size="sm" onclick={ removeFile }>
                     <X class="h-4 w-4" />
-                  </Button>
+                  </button>
                 </div>
 
                 { #if previewUrl && $form.type === "image" }
@@ -193,11 +194,11 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             { : else }
               <div class="text-center">
-                <Upload class="mx-auto h-12 w-12 text-muted-foreground" />
-                <p class="mt-2 text-sm text-muted-foreground">
+                <Upload class="mx-auto h-12 w-12 nes-text is-disabled" />
+                <p class="mt-2 text-sm nes-text is-disabled">
                   Drag and drop a file here, or click to select
                 </p>
-                <p class="text-xs text-muted-foreground mt-1">
+                <p class="text-xs nes-text is-disabled mt-1">
                   Max size: 50MB • Supported: PDF, Word, Images, Video, Audio
                 </p>
                 <input
@@ -290,7 +291,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex items-center justify-between">
             <Label for="aiAnalysis" class="flex-1">
               Enable AI Analysis
-              <span class="block text-sm font-normal text-muted-foreground">
+              <span class="block text-sm font-normal nes-text is-disabled">
                 Extract text, generate embeddings, and summarize content
               </span>
             </Label>
@@ -304,7 +305,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex items-center justify-between">
             <Label for="isPrivate" class="flex-1">
               Private Evidence
-              <span class="block text-sm font-normal text-muted-foreground">
+              <span class="block text-sm font-normal nes-text is-disabled">
                 Only visible to you and case administrators
               </span>
             </Label>
@@ -347,10 +348,10 @@ https://svelte.dev/e/js_parse_error -->
             <Upload class="mr-2 h-4 w-4" />
             Upload Evidence
           { /if }
-        </Button>
+        </button>
       </div>
     </form>
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 

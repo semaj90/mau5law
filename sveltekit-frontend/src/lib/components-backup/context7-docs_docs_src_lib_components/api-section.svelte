@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { page } from "$app/state";
   	import CSSVarsTable from "$lib/components/api-ref/css-vars/css-vars-table.svelte";
   	import DataAttrsTable from "$lib/components/api-ref/data-attrs/data-attrs-table.svelte";

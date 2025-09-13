@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
   import ModernButton from '$lib/components/ui/button/Button.svelte';
@@ -22,8 +23,11 @@
     includeRAGResponse: true
   });
 
-  onMount(async () => {
-    await loadSystemStatus();
+  onMount(() => {
+    (async () => {
+      await loadSystemStatus();
+    })();
+
     // Refresh system status periodically
     const interval = setInterval(loadSystemStatus, 10000);
     return () => clearInterval(interval);
@@ -67,7 +71,7 @@
         // If includeRAGResponse is enabled, generate a response using the retrieved documents
         if (searchConfig.includeRAGResponse && data.results.length > 0) {
           try {
-            const ragResponse = await fetch('/api/rag/enhanced', {
+            const ragResponseFetch = await fetch('/api/rag/enhanced', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -78,8 +82,8 @@
               })
             });
 
-            if (ragResponse.ok) {
-              const ragData = await ragResponse.json();
+            if (ragResponseFetch.ok) {
+              const ragData = await ragResponseFetch.json();
               ragResponse = ragData.success ? ragData.answer : null;
             }
           } catch (ragError) {
@@ -122,7 +126,8 @@
     fileInput.type = 'file';
     fileInput.accept = '.txt,.pdf,.doc,.docx';
     fileInput.onchange= async (event) => {
-      const file = event.target.files[0];
+      const target = event.target as HTMLInputElement;
+      const file = target.files?.[0];
       if (!file) return;
       try {
         const text = await file.text();

@@ -4,6 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`
 https://svelte.dev/e/const_tag_invalid_placement -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -553,15 +554,15 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           <Button variant="outline" class="w-full justify-start bits-btn bits-btn">
             <MessageSquare class="h-4 w-4 mr-2" />
             Contact Support
-          </Button>
+          </button>
           <Button variant="outline" class="w-full justify-start bits-btn bits-btn">
             <Video class="h-4 w-4 mr-2" />
             Video Tutorials
-          </Button>
+          </button>
           <Button variant="outline" class="w-full justify-start bits-btn bits-btn">
             <Download class="h-4 w-4 mr-2" />
             User Manual (PDF)
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -630,7 +631,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                       <Book class="h-4 w-4 mr-2" />
                       Read Full Article
                       <ArrowRight class="h-4 w-4 ml-2" />
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -689,11 +690,11 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               <Button class="bits-btn" variant="outline" size="sm">
                 <MessageSquare class="h-4 w-4 mr-2" />
                 Start Live Chat
-              </Button>
+              </button>
               <Button class="bits-btn" variant="outline" size="sm">
                 <ExternalLink class="h-4 w-4 mr-2" />
                 Submit Ticket
-              </Button>
+              </button>
             </div>
           </div>
         </div>

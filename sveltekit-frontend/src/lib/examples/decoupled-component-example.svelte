@@ -8,6 +8,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   
   // Logic Layer imports
@@ -163,13 +164,13 @@
       <h2 id="results-heading">Analysis Results</h2>
       
       <div class="result-grid">
-        <div class="result-card">
+        <div class="result-nier-bits-card">
           <h3>Summary</h3>
           <p>{documentState.result.summary}</p>
         </div>
         
         {#if documentState.result.keyTerms?.length}
-          <div class="result-card">
+          <div class="result-nier-bits-card">
             <h3>Key Terms</h3>
             <ul>
               {#each documentState.result.keyTerms as term}
@@ -180,7 +181,7 @@
         {/if}
         
         {#if documentState.result.entities?.length}
-          <div class="result-card">
+          <div class="result-nier-bits-card">
             <h3>Legal Entities</h3>
             <ul>
               {#each documentState.result.entities as entity}

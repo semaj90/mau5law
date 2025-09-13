@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     Button,
@@ -299,7 +300,7 @@
     </div>
 
     <!-- System Status Card -->
-    <Card class="mb-6 p-6">
+    <NesCard class="mb-6 p-6">
       {#snippet children()}
         <div class="mb-4">
           <h2 class="text-xl font-semibold flex items-center gap-2">
@@ -325,10 +326,10 @@
           {/each}
         </div>
       {/snippet}
-    </Card>
+    </NesCard>
 
     <!-- Quick Actions -->
-    <Card class="mb-6 p-6">
+    <NesCard class="mb-6 p-6">
       {#snippet children()}
         <h2 class="text-xl font-semibold mb-4">Quick Legal Queries</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -339,7 +340,7 @@
             disabled={isStreaming}
           >
             {#snippet children()}Contract Law{/snippet}
-          </Button>
+          </button>
           <Button 
             class="bits-btn justify-start"
             variant="outline"
@@ -347,7 +348,7 @@
             disabled={isStreaming}
           >
             {#snippet children()}Evidence Rules{/snippet}
-          </Button>
+          </button>
           <Button 
             class="bits-btn justify-start"
             variant="outline"
@@ -355,7 +356,7 @@
             disabled={isStreaming}
           >
             {#snippet children()}Liability{/snippet}
-          </Button>
+          </button>
           <Button 
             class="bits-btn justify-start"
             variant="outline"
@@ -363,16 +364,16 @@
             disabled={isStreaming}
           >
             {#snippet children()}Tort Law{/snippet}
-          </Button>
+          </button>
         </div>
       {/snippet}
-    </Card>
+    </NesCard>
 
     <!-- Chat Interface -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
       <!-- Chat Messages -->
       <div class="xl:col-span-2">
-        <Card class="h-[600px] flex flex-col p-6">
+        <NesCard class="h-[600px] flex flex-col p-6">
           {#snippet children()}
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-xl font-semibold">Legal AI Chat</h2>
@@ -380,9 +381,9 @@
                 <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
                   {isStreaming ? 'Streaming...' : 'Ready'}
                 </span>
-                <Button variant="outline" size="sm" class="bits-btn bits-btn-outline bits-btn bits-btn" onclick={clearChat} disabled={isStreaming}>
+                <Button variant="outline" size="sm" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={clearChat} disabled={isStreaming}>
                   {#snippet children()}Clear{/snippet}
-                </Button>
+                </button>
               </div>
             </div>
 
@@ -452,15 +453,15 @@
                       Send
                     {/if}
                   {/snippet}
-                </Button>
+                </button>
               </div>
             </div>
           {/snippet}
-        </Card>
+        </NesCard>
 
         <!-- POI Timeline Visualization -->
         {#if showTimeline && poiTimelineData.length > 0}
-          <Card class="mt-6 p-6">
+          <NesCard class="mt-6 p-6">
             {#snippet children()}
               <div class="mb-4 flex justify-between items-center">
                 <h2 class="text-xl font-semibold flex items-center gap-2">
@@ -469,7 +470,7 @@
                   </svg>
                   Persons of Interest Timeline
                 </h2>
-                <Button
+                <button class="nes-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => showTimeline = false}
@@ -480,7 +481,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                   {/snippet}
-                </Button>
+                </button>
               </div>
 
               <div class="space-y-4">
@@ -498,7 +499,7 @@
                           </span>
                         </div>
                       </div>
-                      <Button
+                      <button class="nes-btn"
                         variant="outline"
                         size="sm"
                         onclick={() => selectPOI(poi)}
@@ -507,7 +508,7 @@
                         {#snippet children()}
                           View Details
                         {/snippet}
-                      </Button>
+                      </button>
                     </div>
 
                     {#if poi.activities.length > 0}
@@ -555,12 +556,12 @@
                 {/each}
               </div>
             {/snippet}
-          </Card>
+          </NesCard>
         {/if}
 
         <!-- User Activity Timeline -->
         {#if userActivityTimeline.length > 0}
-          <Card class="mt-6 p-6">
+          <NesCard class="mt-6 p-6">
             {#snippet children()}
               <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -586,7 +587,7 @@
                 {/each}
               </div>
             {/snippet}
-          </Card>
+          </NesCard>
         {/if}
       </div>
 
@@ -594,7 +595,7 @@
       <div class="xl:col-span-1">
         <div class="space-y-6">
           <!-- Model Information -->
-          <Card class="p-6">
+          <NesCard class="p-6">
             {#snippet children()}
               <h3 class="font-semibold mb-3">AI Model</h3>
               <div class="space-y-2">
@@ -606,10 +607,10 @@
                 </p>
               </div>
             {/snippet}
-          </Card>
+          </NesCard>
 
           <!-- Features -->
-          <Card class="p-6">
+          <NesCard class="p-6">
             {#snippet children()}
               <h3 class="font-semibold mb-3">Features</h3>
               <div class="space-y-3">
@@ -639,10 +640,10 @@
                 </div>
               </div>
             {/snippet}
-          </Card>
+          </NesCard>
 
           <!-- System Actions -->
-          <Card class="p-6">
+          <NesCard class="p-6">
             {#snippet children()}
               <h3 class="font-semibold mb-3">System Actions</h3>
               <div class="space-y-2">
@@ -659,7 +660,7 @@
                     </svg>
                     Refresh Status
                   {/snippet}
-                </Button>
+                </button>
                 <Button 
                   class="bits-btn w-full justify-start"
                   variant="outline"
@@ -673,13 +674,13 @@
                     </svg>
                     Health Report
                   {/snippet}
-                </Button>
+                </button>
               </div>
             {/snippet}
-          </Card>
+          </NesCard>
 
           <!-- POI Timeline Analysis -->
-          <Card class="p-6">
+          <NesCard class="p-6">
             {#snippet children()}
               <h3 class="font-semibold mb-3 flex items-center gap-2">
                 <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -688,8 +689,7 @@
                 POI Timeline
               </h3>
               <div class="space-y-2">
-                <Button
-                  variant="primary"
+                <button class="nes-btn is-primary"
                   size="sm"
                   onclick={analyzePersonsOfInterest}
                   disabled={timelineLoading}
@@ -708,7 +708,7 @@
                     {/if}
                     Analyze Evidence
                   {/snippet}
-                </Button>
+                </button>
                 <Button
                   variant="outline"
                   size="sm"
@@ -729,14 +729,14 @@
                     {/if}
                     User Activity
                   {/snippet}
-                </Button>
+                </button>
               </div>
             {/snippet}
-          </Card>
+          </NesCard>
 
           <!-- Focus Metrics -->
           {#if focusMetrics.sessionsToday > 0}
-            <Card class="p-6">
+            <NesCard class="p-6">
               {#snippet children()}
                 <h3 class="font-semibold mb-3 text-green-600">Focus Tracking</h3>
                 <div class="space-y-3">
@@ -758,7 +758,7 @@
                   </div>
                 </div>
               {/snippet}
-            </Card>
+            </NesCard>
           {/if}
         </div>
       </div>
@@ -800,7 +800,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             {/snippet}
-          </Button>
+          </button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -906,16 +906,15 @@
             {#snippet children()}
               Close
             {/snippet}
-          </Button>
-          <Button
-            variant="primary"
+          </button>
+          <button class="nes-btn is-primary"
             onclick={() => handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`)}
             class="bits-btn"
           >
             {#snippet children()}
               Ask AI About This Person
             {/snippet}
-          </Button>
+          </button>
         </div>
       </div>
     {/snippet}

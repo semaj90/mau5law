@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -110,7 +111,7 @@
           class={submitFullWidth ? "w-full" : ""}
         >
           {resetText}
-        </Button>
+        </button>
       {/if}
 
       {#if showSubmitButton}
@@ -122,7 +123,7 @@
           class={submitFullWidth ? "w-full" : ""}
         >
           {submitText}
-        </Button>
+        </button>
       {/if}
     </div>
   {/if}

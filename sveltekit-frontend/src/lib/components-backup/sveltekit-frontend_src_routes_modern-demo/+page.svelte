@@ -1,6 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here
 https://svelte.dev/e/unexpected_reserved_word -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import EvidenceCard from "$lib/components/evidence/EvidenceCard.svelte";
   import ExpandGrid from "$lib/components/ui/ExpandGrid.svelte";
   import GoldenLayout from "$lib/components/ui/GoldenLayout.svelte";

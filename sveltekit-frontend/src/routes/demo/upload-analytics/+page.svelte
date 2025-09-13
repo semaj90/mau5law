@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import ComprehensiveUploadAnalytics from '$lib/components/ComprehensiveUploadAnalytics.svelte';
 
@@ -188,7 +189,7 @@
   <section class="features-section">
     <h2>Key Features Demonstrated</h2>
     <div class="features-grid">
-      <div class="feature-card">
+      <div class="feature-nier-bits-card">
         <div class="feature-icon">🧠</div>
         <h3>Contextual AI Prompting</h3>
         <ul>
@@ -199,7 +200,7 @@
         </ul>
       </div>
 
-      <div class="feature-card">
+      <div class="feature-nier-bits-card">
         <div class="feature-icon">📈</div>
         <h3>User Analytics</h3>
         <ul>
@@ -210,7 +211,7 @@
         </ul>
       </div>
 
-      <div class="feature-card">
+      <div class="feature-nier-bits-card">
         <div class="feature-icon">⚙️</div>
         <h3>Pipeline Orchestration</h3>
         <ul>
@@ -221,7 +222,7 @@
         </ul>
       </div>
 
-      <div class="feature-card">
+      <div class="feature-nier-bits-card">
         <div class="feature-icon">🎯</div>
         <h3>Production Ready</h3>
         <ul>
@@ -254,7 +255,7 @@
   <section class="technical-section">
     <h2>Technical Implementation</h2>
     <div class="technical-grid">
-      <div class="tech-card">
+      <div class="tech-nier-bits-card">
         <h3>🏗️ Architecture</h3>
         <ul>
           <li><strong>State Management:</strong> XState v5 machines</li>
@@ -265,7 +266,7 @@
         </ul>
       </div>
 
-      <div class="tech-card">
+      <div class="tech-nier-bits-card">
         <h3>🤖 AI Integration</h3>
         <ul>
           <li><strong>Mock Services:</strong> Development-ready AI mocks</li>
@@ -275,7 +276,7 @@
         </ul>
       </div>
 
-      <div class="tech-card">
+      <div class="tech-nier-bits-card">
         <h3>📊 Analytics</h3>
         <ul>
           <li><strong>Real-time Tracking:</strong> User interaction metrics</li>
@@ -285,7 +286,7 @@
         </ul>
       </div>
 
-      <div class="tech-card">
+      <div class="tech-nier-bits-card">
         <h3>🚀 Performance</h3>
         <ul>
           <li><strong>Pipeline Status:</strong> Real-time progress</li>

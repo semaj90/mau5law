@@ -1,6 +1,7 @@
 <!-- Enhanced AI Chat Assistant with EmbeddingGemma + RAG Integration -->
 <!-- Uses Svelte 5 patterns with bits-ui components -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';
@@ -481,7 +482,7 @@
             Quick Mode
           {/if}
         {/snippet}
-      </Button>
+      </button>
 
       {#if showDocumentAnalysis}
         <Button class="bits-btn"
@@ -494,7 +495,7 @@
             <Search class="w-4 h-4 mr-1" />
             Analyze Docs
           {/snippet}
-        </Button>
+        </button>
       {/if}
 
       <Button class="bits-btn"
@@ -511,7 +512,7 @@
           }`} />
           Health
         {/snippet}
-      </Button>
+      </button>
 
       <Button class="bits-btn"
         variant="outline"
@@ -523,7 +524,7 @@
           <Database class="w-4 h-4 mr-1" />
           Queue Jobs
         {/snippet}
-      </Button>
+      </button>
     </div>
   </div>
 
@@ -540,7 +541,7 @@
               <FileText class="w-3 h-3 mr-1" />
               Add Doc
             {/snippet}
-          </Button>
+          </button>
           <label class="text-xs text-gray-600 flex items-center gap-1">
             Threshold:
             <input
@@ -656,7 +657,7 @@
             <Send class="w-4 h-4" />
           {/if}
         {/snippet}
-      </Button>
+      </button>
     </div>
 
     <!-- Status Bar -->

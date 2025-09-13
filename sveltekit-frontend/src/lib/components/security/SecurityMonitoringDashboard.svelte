@@ -3,6 +3,7 @@
   Displays security events, system health, and security metrics
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -233,11 +234,11 @@
       >
         <RefreshCw class={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
         Refresh
-      </Button>
+      </button>
       <Button class="bits-btn" variant="outline" size="sm" onclick={() => exportEvents()}>
         <Download class="h-4 w-4" />
         Export
-      </Button>
+      </button>
       <Button 
         class="bits-btn container mx-auto px-4"
         variant="outline"
@@ -246,7 +247,7 @@
       >
         <Trash2 class="h-4 w-4" />
         Clear All
-      </Button>
+      </button>
     </div>
   </div>
 
@@ -455,7 +456,7 @@
                   onclick={() => toggleEventDetails(index)}
                 >
                   <Eye class="h-4 w-4" />
-                </Button>
+                </button>
               </div>
             </div>
           {/each}

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, setContext } from 'svelte';
 
   import AiAssistant from '$lib/components/ai/AiAssistant.svelte';
@@ -97,31 +98,31 @@ https://svelte.dev/e/js_parse_error -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Chat Interface -->
         <div class="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>💬 Legal AI Assistant</CardTitle>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">💬 Legal AI Assistant</h3>
               <p class="text-sm text-gray-600">
                 Ask questions about your evidence, get legal insights, and perform semantic searches
               </p>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <div class="yorha-panel-content">
               <AiAssistant
                 {caseId}
                 {contextItems}
                 {evidenceText}
               />
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         </div>
 
         <!-- Context & Information Panel -->
         <div class="space-y-6">
           <!-- Case Configuration -->
-          <Card>
-            <CardHeader>
-              <CardTitle>📋 Case Context</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">📋 Case Context</h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="space-y-4">
                 <div>
                   <label class="block text-sm font-medium mb-2" for="case-id">Case ID:</label><input id="case-id"
@@ -139,18 +140,18 @@ https://svelte.dev/e/js_parse_error -->
                   ></textarea>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Context Items -->
-          <Card>
-            <CardHeader>
-              <CardTitle>🔍 Current Context</CardTitle>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">🔍 Current Context</h3>
               <p class="text-xs text-gray-500">
                 {contextItems.length} evidence files available
               </p>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <div class="yorha-panel-content">
               <div class="space-y-2 max-h-96 overflow-y-auto">
                 {#each contextItems.slice(0, 10) as item}
                   <div class="p-2 bg-gray-50 rounded text-xs border-l-4 border-blue-200">
@@ -172,15 +173,15 @@ https://svelte.dev/e/js_parse_error -->
                   </p>
                 {/each}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Quick Actions -->
-          <Card>
-            <CardHeader>
-              <CardTitle>⚡ Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">⚡ Quick Actions</h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="space-y-2">
                 <button
                   onclick={() => activeTab = 'evidence'}
@@ -210,8 +211,8 @@ https://svelte.dev/e/js_parse_error -->
                   🔄 Process Evidence Embeddings
                 </button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         </div>
       </div>
     </TabsContent>

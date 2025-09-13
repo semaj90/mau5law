@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { createEventDispatcher } from 'svelte';
   import { Button } from 'bits-ui';
@@ -257,7 +258,7 @@ https://svelte.dev/e/js_parse_error -->
             placeholder="Event description"
             class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
-          <Button.Root
+          <button class="nes-btn".Root
             type="button"
             onclick={() => removeKeyDate(index)}
             class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none"

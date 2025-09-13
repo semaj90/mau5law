@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Enhanced AI Search Component with Bits UI and UnoCSS
   // Svelte 5 + Go Microservice + Gemma3-Legal Integration
 
@@ -180,7 +181,7 @@
         🤖 Enhanced Legal AI Search
       </h2>
 
-      <Button.Root
+      <button class="nes-btn".Root
         onclick={() => (showAdvanced = !showAdvanced)}
         class="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
       >

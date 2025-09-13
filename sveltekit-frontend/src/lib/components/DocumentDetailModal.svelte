@@ -12,6 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   5. GPU acceleration for document analysis
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';

@@ -1,5 +1,6 @@
 <!-- AI Recommendations: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { UiCard as Card, UiCardHeader as CardHeader, UiCardTitle as CardTitle, UiCardContent as CardContent } from '../index.js';
 
@@ -43,11 +44,11 @@
   onMount(fetchRecommendations);
 </script>
 
-<Card class="w-full">
-  <CardHeader>
-    <CardTitle>AI Recommendations</CardTitle>
-  </CardHeader>
-  <CardContent>
+<NesCard class="w-full">
+  <div class="yorha-panel-header">
+    <h3 class="nes-text is-primary">AI Recommendations</h3>
+  </div>
+  <div class="yorha-panel-content">
     {#if loading}
       <div class="text-gray-500">Loading recommendations...</div>
     {:else if recommendations.length === 0}
@@ -63,6 +64,6 @@
         {/each}
       </ul>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 

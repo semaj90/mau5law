@@ -1,6 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     message: any;
   }
@@ -137,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
             title="Copy message"
           >
             <Copy class="space-y-4" />
-          </Button>
+          </button>
 
           <!-- Save/Unsave -->
           <Button
@@ -152,7 +153,7 @@ https://svelte.dev/e/js_parse_error -->
             {:else}
               <StarOff class="space-y-4" />
             {/if}
-          </Button>
+          </button>
 
           <!-- More Options -->
           <Button
@@ -162,7 +163,7 @@ https://svelte.dev/e/js_parse_error -->
             title="More options"
           >
             <MoreVertical class="space-y-4" />
-          </Button>
+          </button>
         </div>
       </div>
     </div>

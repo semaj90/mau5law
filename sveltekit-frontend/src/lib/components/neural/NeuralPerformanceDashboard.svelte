@@ -7,6 +7,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   const { updateInterval: number = 2000, maxHistoryPoints: number = 30, showAdvancedMetrics: boolean = true } = $props();
 
   import { onMount, onDestroy } from 'svelte';
@@ -204,7 +205,7 @@ https://svelte.dev/e/js_parse_error -->
             ⏸️ Pause
           </button>
         {:else}
-          <button class="btn btn-primary" onclick={startMonitoring}>
+          <button class="btn nes-btn is-primary" onclick={startMonitoring}>
             ▶️ Start
           </button>
         {/if}
@@ -232,7 +233,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Real-time Metrics Grid -->
   {#if $currentMetrics}
     <div class="metrics-grid">
-      <div class="metric-card gpu-utilization">
+      <div class="metric-nier-bits-card gpu-utilization">
         <div class="metric-header">
           <span class="metric-icon">🚀</span>
           <h3>GPU Utilization</h3>
@@ -243,7 +244,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
 
-      <div class="metric-card memory-usage">
+      <div class="metric-nier-bits-card memory-usage">
         <div class="metric-header">
           <span class="metric-icon">💾</span>
           <h3>Memory Usage</h3>
@@ -254,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
 
-      <div class="metric-card processing-speed">
+      <div class="metric-nier-bits-card processing-speed">
         <div class="metric-header">
           <span class="metric-icon">⚡</span>
           <h3>Processing Speed</h3>
@@ -263,7 +264,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="metric-unit">ops/sec</div>
       </div>
 
-      <div class="metric-card temperature">
+      <div class="metric-nier-bits-card temperature">
         <div class="metric-header">
           <span class="metric-icon">🌡️</span>
           <h3>GPU Temperature</h3>
@@ -274,7 +275,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
 
-      <div class="metric-card connections">
+      <div class="metric-nier-bits-card connections">
         <div class="metric-header">
           <span class="metric-icon">🔗</span>
           <h3>Active Connections</h3>
@@ -283,7 +284,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="metric-unit">concurrent</div>
       </div>
 
-      <div class="metric-card efficiency">
+      <div class="metric-nier-bits-card efficiency">
         <div class="metric-header">
           <span class="metric-icon">🎯</span>
           <h3>Neural Efficiency</h3>

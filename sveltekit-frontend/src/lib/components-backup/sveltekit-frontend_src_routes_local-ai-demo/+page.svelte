@@ -1,5 +1,6 @@
 <!-- Enhanced RAG Demo with Local LLM Support -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import AskAI from "$lib/components/ai/AskAI.svelte";
   import { aiService } from "$lib/services/ai-service";
   import { tauriLLM, type LocalModel } from "$lib/services/tauri-llm";

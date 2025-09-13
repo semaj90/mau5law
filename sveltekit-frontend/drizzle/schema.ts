@@ -1137,7 +1137,7 @@ export const recommendationRatings = pgTable("recommendation_ratings", {
 ]);
 
 export const embeddings = pgTable("embeddings", {
-	id: text().default((gen_random_uuid())).primaryKey().notNull(),
+	id: text().default(sql`gen_random_uuid()`).primaryKey().notNull(),
 	documentId: text("document_id"),
 	content: text().notNull(),
 	embedding: vector({ dimensions: 1536 }),
@@ -1152,7 +1152,7 @@ export const embeddings = pgTable("embeddings", {
 ]);
 
 export const searchSessions = pgTable("search_sessions", {
-	id: text().default((gen_random_uuid())).primaryKey().notNull(),
+	id: text().default(sql`gen_random_uuid()`).primaryKey().notNull(),
 	query: text().notNull(),
 	queryEmbedding: vector("query_embedding", { dimensions: 1536 }),
 	results: jsonb(),

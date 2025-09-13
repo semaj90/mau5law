@@ -1,12 +1,11 @@
 import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
 
 /**
- * Utility function to merge Tailwind CSS classes
- * Combines clsx for conditional classes with tailwind-merge for deduplication
+ * Utility function to merge CSS classes
+ * Using UnoCSS instead of Tailwind, so no merge deduplication needed
  */
 export function cn(...inputs: ClassValue[]) {
-	return twMerge(clsx(inputs));
+	return clsx(inputs);
 }
 
 /**
@@ -14,7 +13,7 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function legalCn(...inputs: ClassValue[]) {
   const baseClasses = 'font-mono text-yorha-text-primary';
-  return twMerge(clsx(baseClasses, inputs));
+  return clsx(baseClasses, inputs);
 }
 
 /**

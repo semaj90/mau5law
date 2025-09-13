@@ -1,6 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Cannot read properties of undefined (reading 'end') -->
 <!-- @migration-task Error while migrating Svelte code: Cannot read properties of undefined (reading 'end') -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
   import { goto, invalidateAll } from '$app/navigation';
   import { enhance } from '$app/forms';
@@ -367,7 +368,7 @@
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-3xl font-bold tracking-tight text-foreground">Legal Cases</h1>
-        <p class="text-muted-foreground">
+        <p class="nes-text is-disabled">
           Manage cases with AI-powered search and PostgreSQL vector storage
         </p>
       </div>
@@ -376,31 +377,31 @@
           <Plus class="h-4 w-4" />
           New Case
         {/snippet}
-      </Button>
+      </button>
     </div>
 
     <!-- Stats Overview -->
     {#if data.caseStats}
     <div class="grid gap-4 md:grid-cols-4">
-      <Card class="p-6">
+      <NesCard class="p-6">
         {#snippet children()}
           <div class="flex flex-row items-center justify-between space-y-0 pb-2">
             <h3 class="text-sm font-medium">Total Cases</h3>
-            <FileText class="h-4 w-4 text-muted-foreground" />
+            <FileText class="h-4 w-4 nes-text is-disabled" />
           </div>
           <div class="text-2xl font-bold">{data.caseStats.total}</div>
         {/snippet}
-      </Card>
-      <Card class="p-6">
+      </NesCard>
+      <NesCard class="p-6">
         {#snippet children()}
           <div class="flex flex-row items-center justify-between space-y-0 pb-2">
             <h3 class="text-sm font-medium">Open Cases</h3>
-            <Eye class="h-4 w-4 text-muted-foreground" />
+            <Eye class="h-4 w-4 nes-text is-disabled" />
           </div>
           <div class="text-2xl font-bold text-blue-600">{data.caseStats.open}</div>
         {/snippet}
-      </Card>
-      <Card class="p-6">
+      </NesCard>
+      <NesCard class="p-6">
         {#snippet children()}
           <div class="flex flex-row items-center justify-between space-y-0 pb-2">
             <h3 class="text-sm font-medium">High Priority</h3>
@@ -408,8 +409,8 @@
           </div>
           <div class="text-2xl font-bold text-red-600">{data.caseStats.highPriority}</div>
         {/snippet}
-      </Card>
-      <Card class="p-6">
+      </NesCard>
+      <NesCard class="p-6">
         {#snippet children()}
           <div class="flex flex-row items-center justify-between space-y-0 pb-2">
             <h3 class="text-sm font-medium">Closed Cases</h3>
@@ -417,7 +418,7 @@
           </div>
           <div class="text-2xl font-bold text-gray-600">{data.caseStats.closed}</div>
         {/snippet}
-      </Card>
+      </NesCard>
     </div>
     {/if}
 
@@ -425,7 +426,7 @@
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div class="flex flex-col gap-4 md:flex-row md:items-center">
         <div class="relative">
-          <Search class="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search class="absolute left-2 top-2.5 h-4 w-4 nes-text is-disabled" />
           <Input
             bind:value={searchQuery}
             placeholder="Search cases with AI vector search..."
@@ -449,7 +450,7 @@
               {/if}
               AI Search
             {/snippet}
-          </Button>
+          </button>
 
           <Select
             options={[
@@ -490,18 +491,18 @@
             {#snippet children()}
               ← Back to Cases
             {/snippet}
-          </Button>
+          </button>
           <div class="flex gap-2">
             <Button class="bits-btn" variant="outline" size="sm" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
               {#snippet children()}
                 <Plus class="h-4 w-4 mr-2" />
                 Add Evidence
               {/snippet}
-            </Button>
+            </button>
           </div>
         </div>
 
-        <Card class="p-6">
+        <NesCard class="p-6">
           {#snippet children()}
             <div class="mb-4">
               <div class="flex items-start justify-between">
@@ -524,38 +525,38 @@
                 </div>
               </div>
             </div>
-            <p class="text-muted-foreground mb-4">{data.activeCase.description}</p>
+            <p class="nes-text is-disabled mb-4">{data.activeCase.description}</p>
             {#if data.activeCase.incidentDate}
-              <div class="text-sm text-muted-foreground">
+              <div class="text-sm nes-text is-disabled">
                 <strong>Incident Date:</strong> {new Date(data.activeCase.incidentDate).toLocaleDateString()}
               </div>
             {/if}
           {/snippet}
-        </Card>
+        </NesCard>
 
         <!-- Evidence Section -->
         <div class="space-y-4">
           <h2 class="text-xl font-semibold">Evidence ({data.caseEvidence.length})</h2>
 
           {#if data.caseEvidence.length === 0}
-            <Card class="p-6">
+            <NesCard class="p-6">
               {#snippet children()}
                 <div class="flex flex-col items-center justify-center py-12">
-                  <FileText class="h-12 w-12 text-muted-foreground mb-4" />
-                  <p class="text-muted-foreground mb-4">No evidence has been added to this case yet.</p>
+                  <FileText class="h-12 w-12 nes-text is-disabled mb-4" />
+                  <p class="nes-text is-disabled mb-4">No evidence has been added to this case yet.</p>
                   <Button class="bits-btn" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
                     {#snippet children()}
                       <Plus class="h-4 w-4 mr-2" />
                       Add First Evidence
                     {/snippet}
-                  </Button>
+                  </button>
                 </div>
               {/snippet}
-            </Card>
+            </NesCard>
           {:else}
             <div class="grid gap-4">
               {#each [...data.caseEvidence, ...optimisticEvidence] as item}
-                <Card class="p-6">
+                <NesCard class="p-6">
                   {#snippet children()}
                     <div class="mb-4">
                       <div class="flex items-center justify-between">
@@ -563,7 +564,7 @@
                         <div class="flex gap-2">
                           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{item.evidenceType}</span>
                           {#if item.__optimistic}
-                            <span class="flex items-center gap-1 text-xs text-muted-foreground animate-pulse">
+                            <span class="flex items-center gap-1 text-xs nes-text is-disabled animate-pulse">
                               <div class="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
                               pending
                             </span>
@@ -572,7 +573,7 @@
                             {#snippet children()}
                               <Edit2 class="h-4 w-4" />
                             {/snippet}
-                          </Button>
+                          </button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
@@ -581,19 +582,19 @@
                             {#snippet children()}
                               <Trash2 class="h-4 w-4" />
                             {/snippet}
-                          </Button>
+                          </button>
                         </div>
                       </div>
                     </div>
-                    <p class="text-sm text-muted-foreground mb-2">{item.description}</p>
-                    <div class="flex justify-between items-center text-xs text-muted-foreground">
+                    <p class="text-sm nes-text is-disabled mb-2">{item.description}</p>
+                    <div class="flex justify-between items-center text-xs nes-text is-disabled">
                       <span>Collected: {new Date(item.collectedAt).toLocaleDateString()}</span>
                       {#if item.tags}
                         <span>Tags: {item.tags}</span>
                       {/if}
                     </div>
                   {/snippet}
-                </Card>
+                </NesCard>
               {/each}
             </div>
           {/if}
@@ -613,7 +614,7 @@
         <Tabs.Content value="all-cases" class="space-y-4">
           <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {#each filteredCases as caseItem}
-              <Card class="cursor-pointer transition-colors hover:bg-muted/50 p-6" onclick={() => viewCase(caseItem)}>
+              <NesCard class="cursor-pointer transition-colors hover:bg-muted/50 p-6" onclick={() => viewCase(caseItem)}>
                 {#snippet children()}
                   <div class="mb-4">
                     <div class="flex items-start justify-between">
@@ -628,17 +629,17 @@
                       </div>
                     </div>
                   </div>
-                  <p class="text-sm text-muted-foreground line-clamp-3 mb-4">
+                  <p class="text-sm nes-text is-disabled line-clamp-3 mb-4">
                     {caseItem.description || 'No description provided'}
                   </p>
                   <div class="space-y-2">
                     {#if caseItem.location}
-                      <div class="text-xs text-muted-foreground">📍 {caseItem.location}</div>
+                      <div class="text-xs nes-text is-disabled">📍 {caseItem.location}</div>
                     {/if}
                     {#if caseItem.jurisdiction}
-                      <div class="text-xs text-muted-foreground">⚖️ {caseItem.jurisdiction}</div>
+                      <div class="text-xs nes-text is-disabled">⚖️ {caseItem.jurisdiction}</div>
                     {/if}
-                    <div class="flex items-center justify-between text-xs text-muted-foreground">
+                    <div class="flex items-center justify-between text-xs nes-text is-disabled">
                       <span>Created: {new Date(caseItem.createdAt).toLocaleDateString()}</span>
                       {#if caseItem.updatedAt}
                         <span>Updated: {new Date(caseItem.updatedAt).toLocaleDateString()}</span>
@@ -646,14 +647,14 @@
                     </div>
                   </div>
                 {/snippet}
-              </Card>
+              </NesCard>
             {:else}
               <div class="col-span-full">
-                <Card class="p-6">
+                <NesCard class="p-6">
                   {#snippet children()}
                     <div class="flex flex-col items-center justify-center py-12">
-                      <FileText class="h-12 w-12 text-muted-foreground mb-4" />
-                      <p class="text-muted-foreground mb-4">
+                      <FileText class="h-12 w-12 nes-text is-disabled mb-4" />
+                      <p class="nes-text is-disabled mb-4">
                         {searchQuery.trim() ? 'No cases found matching your search.' : 'No cases found.'}
                       </p>
                       <Button class="bits-btn" onclick={() => createCaseDialogOpen = true}>
@@ -661,10 +662,10 @@
                           <Plus class="h-4 w-4 mr-2" />
                           Create Your First Case
                         {/snippet}
-                      </Button>
+                      </button>
                     </div>
                   {/snippet}
-                </Card>
+                </NesCard>
               </div>
             {/each}
           </div>
@@ -674,7 +675,7 @@
           {#if vectorSearchResults.length > 0}
             <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {#each vectorSearchResults as result}
-                <Card class="cursor-pointer transition-colors hover:bg-muted/50 p-6" onclick={() => viewCase(result)}>
+                <NesCard class="cursor-pointer transition-colors hover:bg-muted/50 p-6" onclick={() => viewCase(result)}>
                   {#snippet children()}
                     <div class="mb-4">
                       <div class="flex items-start justify-between">
@@ -682,34 +683,34 @@
                         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(result.similarity * 100)}% match</span>
                       </div>
                     </div>
-                    <p class="text-sm text-muted-foreground line-clamp-3 mb-2">
+                    <p class="text-sm nes-text is-disabled line-clamp-3 mb-2">
                       {result.description || 'No description provided'}
                     </p>
                     <div class="text-xs text-green-600 mb-2">
                       🤖 AI-powered similarity: {(result.similarity * 100).toFixed(1)}%
                     </div>
                   {/snippet}
-                </Card>
+                </NesCard>
               {/each}
             </div>
           {:else}
-            <Card class="p-6">
+            <NesCard class="p-6">
               {#snippet children()}
                 <div class="flex flex-col items-center justify-center py-12">
-                  <Search class="h-12 w-12 text-muted-foreground mb-4" />
-                  <p class="text-muted-foreground mb-4">Use the AI Search button to find similar cases</p>
-                  <p class="text-sm text-muted-foreground text-center max-w-md">
+                  <Search class="h-12 w-12 nes-text is-disabled mb-4" />
+                  <p class="nes-text is-disabled mb-4">Use the AI Search button to find similar cases</p>
+                  <p class="text-sm nes-text is-disabled text-center max-w-md">
                     Vector search uses AI to find semantically similar cases based on content, not just keywords.
                   </p>
                 </div>
               {/snippet}
-            </Card>
+            </NesCard>
           {/if}
         </Tabs.Content>
 
         <Tabs.Content value="analytics" class="space-y-4">
           <div class="grid gap-4 md:grid-cols-2">
-            <Card class="p-6">
+            <NesCard class="p-6">
               {#snippet children()}
                 <div class="mb-4">
                   <h3 class="text-lg font-semibold">Case Distribution</h3>
@@ -735,9 +736,9 @@
                   {/if}
                 </div>
               {/snippet}
-            </Card>
+            </NesCard>
 
-            <Card class="p-6">
+            <NesCard class="p-6">
               {#snippet children()}
                 <div class="mb-4">
                   <h3 class="text-lg font-semibold">Priority Breakdown</h3>
@@ -763,7 +764,7 @@
                   {/if}
                 </div>
               {/snippet}
-            </Card>
+            </NesCard>
           </div>
         </Tabs.Content>
       </Tabs.Root>
@@ -870,12 +871,12 @@
       <div class="flex justify-end gap-2">
         <Button class="bits-btn" variant="outline" type="button" onclick={() => createCaseDialogOpen = false}>
           {#snippet children()}Cancel{/snippet}
-        </Button>
+        </button>
         <Button class="bits-btn" type="submit" disabled={isCreatingCase || !$createFormData.title?.trim()}>
           {#snippet children()}
             {#if isCreatingCase}Creating...{:else}Create Case{/if}
           {/snippet}
-        </Button>
+        </button>
       </div>
     </form>
     <div aria-live="polite" class="sr-only">{isCreatingCase ? 'Creating case' : ''}</div>
@@ -944,12 +945,12 @@
       <div class="flex justify-end gap-2">
         <Button class="bits-btn" variant="outline" type="button" onclick={() => addEvidenceDialogOpen = false}>
           {#snippet children()}Cancel{/snippet}
-        </Button>
+        </button>
         <Button class="bits-btn" type="submit" disabled={isAddingEvidence || !$evidenceFormData.title?.trim()}>
           {#snippet children()}
             {#if isAddingEvidence}Adding...{:else}Add Evidence{/if}
           {/snippet}
-        </Button>
+        </button>
       </div>
     </form>
     <div aria-live="polite" class="sr-only">{isAddingEvidence ? 'Adding evidence' : ''}</div>
@@ -968,10 +969,10 @@
     <AlertDialog.Footer>
       <Button class="bits-btn" variant="outline" onclick={() => deleteEvidenceDialogOpen = false}>
         {#snippet children()}Cancel{/snippet}
-      </Button>
+      </button>
       <Button class="bits-btn" variant="destructive" onclick={deleteEvidence}>
         {#snippet children()}Delete Evidence{/snippet}
-      </Button>
+      </button>
     </AlertDialog.Footer>
   </AlertDialog.Content>
 </AlertDialog.Root>

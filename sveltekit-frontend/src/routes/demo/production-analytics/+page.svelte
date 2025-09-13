@@ -7,6 +7,7 @@
   - GPU acceleration with fallback handling
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { VectorMetadataEncoder } from '$lib/vector/metadata-encoder.js';
   import { telemetryBus, measureAsync } from '$lib/telemetry/event-bus.js';

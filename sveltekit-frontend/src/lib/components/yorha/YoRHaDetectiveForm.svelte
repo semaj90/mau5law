@@ -1,5 +1,6 @@
 <!-- YoRHa Detective Form Component - Fixed dynamic type binding -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface FormField {
     name: string;
     label: string;

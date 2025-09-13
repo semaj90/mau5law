@@ -7,6 +7,7 @@ https://svelte.dev/e/state_invalid_placement -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { 
     unifiedInferenceClient, 
@@ -15,8 +16,8 @@ https://svelte.dev/e/state_invalid_placement -->
     pipelineHealth, 
     pipelineStats 
   } from '$lib/services/unified-inference-client';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/Badge.svelte';
 
   // Demo state
@@ -245,11 +246,11 @@ https://svelte.dev/e/state_invalid_placement -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Control Panel -->
       <div class="lg:col-span-1">
-        <Card class="bg-gray-800 border-blue-500">
-          <CardHeader>
-            <CardTitle class="text-white">Demo Controls</CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+        <NesCard class="bg-gray-800 border-blue-500">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-white">Demo Controls</h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <!-- Demo Type Selection -->
             <div>
               <label class="text-white text-sm font-medium mb-2 block">Demo Type</label>
@@ -307,12 +308,12 @@ https://svelte.dev/e/state_invalid_placement -->
                       placeholder="Enter text..."
                     />
                   {/each}
-                  <Button
+                  <button class="nes-btn"
                     onclick={() => { embeddingTexts = [...embeddingTexts, '']; }}
                     class="w-full bg-blue-600 hover:bg-blue-700"
                   >
                     Add Text
-                  </Button>
+                  </button>
                 </div>
               </div>
             {/if}
@@ -329,24 +330,24 @@ https://svelte.dev/e/state_invalid_placement -->
               {:else}
                 🚀 Run Demo
               {/if}
-            </Button>
+            </button>
 
             <!-- Advanced Options Toggle -->
-            <Button
+            <button class="nes-btn"
               onclick={() => { showAdvanced = !showAdvanced; }}
               class="w-full bg-gray-600 hover:bg-gray-700"
             >
               {showAdvanced ? '📋 Hide' : '⚙️ Show'} Advanced Options
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </NesCard>
 
         <!-- Service Status -->
-        <Card class="bg-gray-800 border-green-500 mt-6">
-          <CardHeader>
-            <CardTitle class="text-white">Service Status</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard class="bg-gray-800 border-green-500 mt-6">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-white">Service Status</h3>
+          </div>
+          <div class="yorha-panel-content">
             {#if $pipelineHealth}
               <div class="space-y-2">
                 <div class="flex justify-between">
@@ -377,24 +378,24 @@ https://svelte.dev/e/state_invalid_placement -->
             {:else}
               <div class="text-gray-400">Loading service status...</div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
 
       <!-- Results Panel -->
       <div class="lg:col-span-2">
-        <Card class="bg-gray-800 border-purple-500">
-          <CardHeader>
-            <CardTitle class="text-white flex items-center gap-2">
+        <NesCard class="bg-gray-800 border-purple-500">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-white flex items-center gap-2">
               📊 Demo Results
               {#if $lastResponse?.cached}
                 <Badge class="text-green-400 bg-green-900">
                   {$lastResponse.cacheLevel?.toUpperCase()} CACHE HIT
                 </Badge>
               {/if}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             {#if $isProcessing}
               <div class="flex items-center justify-center h-64">
                 <div class="animate-spin text-4xl">⚡</div>
@@ -446,16 +447,16 @@ https://svelte.dev/e/state_invalid_placement -->
                 </div>
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Demo History -->
         {#if demoHistory.length > 0}
-          <Card class="bg-gray-800 border-yellow-500 mt-6">
-            <CardHeader>
-              <CardTitle class="text-white">Recent Demo History</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard class="bg-gray-800 border-yellow-500 mt-6">
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary" class="text-white">Recent Demo History</h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="space-y-2">
                 {#each demoHistory as entry}
                   <div class="flex items-center justify-between bg-gray-700 rounded p-3">
@@ -472,19 +473,19 @@ https://svelte.dev/e/state_invalid_placement -->
                   </div>
                 {/each}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         {/if}
       </div>
     </div>
 
     <!-- Advanced Options Panel -->
     {#if showAdvanced}
-      <Card class="bg-gray-800 border-orange-500 mt-6">
-        <CardHeader>
-          <CardTitle class="text-white">🔧 Advanced Pipeline Configuration</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard class="bg-gray-800 border-orange-500 mt-6">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-white">🔧 Advanced Pipeline Configuration</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Cache Statistics -->
             <div>
@@ -521,23 +522,23 @@ https://svelte.dev/e/state_invalid_placement -->
             <div>
               <h3 class="text-white font-semibold mb-3">Quick Actions</h3>
               <div class="space-y-2">
-                <Button
+                <button class="nes-btn"
                   onclick={() => unifiedInferenceClient.prefetchLegalQueries('DEMO-CASE-001', ['contract', 'evidence'])}
                   class="w-full bg-green-600 hover:bg-green-700 text-sm"
                 >
                   🔄 Prefetch Legal Queries
-                </Button>
-                <Button
+                </button>
+                <button class="nes-btn"
                   onclick={() => { demoHistory = []; }}
                   class="w-full bg-red-600 hover:bg-red-700 text-sm"
                 >
                   🗑️ Clear History
-                </Button>
+                </button>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     {/if}
   </div>
 </div>

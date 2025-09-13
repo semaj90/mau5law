@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onevidenceUpdated?: (event?: unknown) => void;
     onsave?: (event?: unknown) => void;
@@ -464,7 +465,7 @@ https://svelte.dev/e/js_parse_error -->
           disabled={readonly}
         >
           <Move class="space-y-4" />
-        </Button>
+        </button>
         <Button class="bits-btn"
           variant={selectedTool === "draw" ? "primary" : "outline"}
           size="sm"
@@ -472,7 +473,7 @@ https://svelte.dev/e/js_parse_error -->
           disabled={readonly}
         >
           ✏️
-        </Button>
+        </button>
         <Button class="bits-btn"
           variant={selectedTool === "text" ? "primary" : "outline"}
           size="sm"
@@ -480,7 +481,7 @@ https://svelte.dev/e/js_parse_error -->
           disabled={readonly}
         >
           <Type class="space-y-4" />
-        </Button>
+        </button>
       </div>
 
       <!-- Shapes -->
@@ -494,14 +495,14 @@ https://svelte.dev/e/js_parse_error -->
             onclick={() => addShape("rectangle")}
           >
             <Square class="space-y-4" />
-          </Button>
+          </button>
           <Button class="bits-btn"
             variant="outline"
             size="sm"
             onclick={() => addShape("circle")}
           >
             <Circle class="space-y-4" />
-          </Button>
+          </button>
         </div>
       {/if}
 
@@ -516,7 +517,7 @@ https://svelte.dev/e/js_parse_error -->
           disabled={readonly || historyIndex <= 0}
         >
           <Undo class="space-y-4" />
-        </Button>
+        </button>
         <Button class="bits-btn"
           variant="outline"
           size="sm"
@@ -524,20 +525,20 @@ https://svelte.dev/e/js_parse_error -->
           disabled={readonly || historyIndex >= canvasHistory.length - 1}
         >
           <Redo class="space-y-4" />
-        </Button>
+        </button>
       </div>
 
       <!-- Zoom -->
       <div class="space-y-4">
         <Button class="bits-btn" variant="outline" size="sm" onclick={() => zoomOut()}>
           <ZoomOut class="space-y-4" />
-        </Button>
+        </button>
         <span class="space-y-4"
           >{Math.round(zoom * 100)}%</span
         >
         <Button class="bits-btn" variant="outline" size="sm" onclick={() => zoomIn()}>
           <ZoomIn class="space-y-4" />
-        </Button>
+        </button>
         <Button class="bits-btn" variant="outline" size="sm" onclick={() => resetZoom()}
           >Reset</Button
         >
@@ -549,16 +550,16 @@ https://svelte.dev/e/js_parse_error -->
       {#if !readonly}
         <Button class="bits-btn" variant="outline" size="sm" onclick={() => deleteSelected()}>
           <Trash2 class="space-y-4" />
-        </Button>
+        </button>
         <Button class="bits-btn" variant="outline" size="sm" onclick={() => saveCanvas()}>
           <Save class="space-y-4" />
           Save
-        </Button>
+        </button>
       {/if}
       <Button class="bits-btn" variant="outline" size="sm" onclick={() => exportCanvas()}>
         <Download class="space-y-4" />
         Export
-      </Button>
+      </button>
     </div>
   </div>
 

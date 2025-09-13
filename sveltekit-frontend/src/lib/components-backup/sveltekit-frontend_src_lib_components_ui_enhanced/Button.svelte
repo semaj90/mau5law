@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { type ButtonVariants, buttonVariants } from './button-variants';
   	import type { HTMLButtonAttributes } from 'svelte/elements';
 

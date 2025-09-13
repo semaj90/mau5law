@@ -4,6 +4,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { redisStats, redisOrchestratorClient } from '$lib/stores/redis-orchestrator-store';
@@ -228,8 +229,8 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   <!-- Real-time Metrics Grid -->
   <div class="metrics-grid">
     <!-- Redis Performance -->
-    <div class="metric-card redis-card">
-      <div class="card-header">
+    <div class="metric-nier-bits-card redis-nier-bits-card">
+      <div class="nier-bits-yorha-panel-header">
         <span class="icon">🔴</span>
         <h3>Redis Cache Performance</h3>
       </div>
@@ -245,8 +246,8 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     </div>
 
     <!-- GPU Performance -->
-    <div class="metric-card gpu-card">
-      <div class="card-header">
+    <div class="metric-nier-bits-card gpu-nier-bits-card">
+      <div class="nier-bits-yorha-panel-header">
         <span class="icon">🎯</span>
         <h3>RTX 3060 Ti GPU</h3>
       </div>
@@ -261,8 +262,8 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     </div>
 
     <!-- SIMD Parser Performance -->
-    <div class="metric-card simd-card">
-      <div class="card-header">
+    <div class="metric-nier-bits-card simd-nier-bits-card">
+      <div class="nier-bits-yorha-panel-header">
         <span class="icon">⚡</span>
         <h3>SIMD Parser Engine</h3>
       </div>
@@ -277,8 +278,8 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     </div>
 
     <!-- MCP Workers -->
-    <div class="metric-card mcp-card">
-      <div class="card-header">
+    <div class="metric-nier-bits-card mcp-nier-bits-card">
+      <div class="nier-bits-yorha-panel-header">
         <span class="icon">👥</span>
         <h3>MCP Multi-Core</h3>
       </div>

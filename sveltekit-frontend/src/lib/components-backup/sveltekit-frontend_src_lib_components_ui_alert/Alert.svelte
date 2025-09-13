@@ -1,6 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Identifier 'children' has already been declared
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   let { children,
     variant = 'default',
     class: className = '',

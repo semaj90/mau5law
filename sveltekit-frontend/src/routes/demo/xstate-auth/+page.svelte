@@ -3,6 +3,7 @@
   Complete testing of authentication flow with GPU accelerated legal AI features
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import XStateAuthDemo from '$lib/components/auth/XStateAuthDemo.svelte';
@@ -194,7 +195,7 @@
         <Shield class="h-10 w-10 text-primary" />
         <h1 class="text-4xl font-bold">XState Authentication Flow Demo</h1>
       </div>
-      <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
+      <p class="text-xl nes-text is-disabled max-w-3xl mx-auto">
         Complete demonstration and testing of authentication flow with GPU accelerated legal AI features,
         XState management, Bits UI v2 components, and Context7 documentation integration.
       </p>
@@ -234,14 +235,14 @@
                 <Zap class="h-4 w-4 mr-2" />
                 Run Integration Tests
               {/if}
-            </Button>
+            </button>
           </div>
         </div>
       </Card.Header>
 
       <div.Content>
         {#if testResults.length === 0}
-          <div class="text-center py-8 text-muted-foreground">
+          <div class="text-center py-8 nes-text is-disabled">
             <Code2 class="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>Click "Run Integration Tests" to verify all systems are operational</p>
           </div>
@@ -253,12 +254,12 @@
                   {#if result.status === 'success'}<CheckCircle class="h-5 w-5 {getStatusColor(result.status)} {result.status === 'running' ? 'animate-spin' : ''}" />{:else if result.status === 'error'}<AlertTriangle class="h-5 w-5 {getStatusColor(result.status)} {result.status === 'running' ? 'animate-spin' : ''}" />{:else if result.status === 'running'}<Cpu class="h-5 w-5 {getStatusColor(result.status)} {result.status === 'running' ? 'animate-spin' : ''}" />{:else}<Code2 class="h-5 w-5 {getStatusColor(result.status)} {result.status === 'running' ? 'animate-spin' : ''}" />{/if}
                   <div>
                     <div class="font-medium">{result.name}</div>
-                    <div class="text-sm text-muted-foreground">{result.message}</div>
+                    <div class="text-sm nes-text is-disabled">{result.message}</div>
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
                   {#if result.duration}
-                    <span class="text-xs text-muted-foreground">{result.duration}ms</span>
+                    <span class="text-xs nes-text is-disabled">{result.duration}ms</span>
                   {/if}
                   <Badge variant={getStatusVariant(result.status)}>
                     {result.status}
@@ -297,7 +298,7 @@
             <Shield class="h-6 w-6 text-blue-500" />
             <h3 class="font-semibold">XState Integration</h3>
           </div>
-          <p class="text-sm text-muted-foreground">
+          <p class="text-sm nes-text is-disabled">
             Complete state management with auth, session, and AI machines
           </p>
         </Card.Content>
@@ -309,7 +310,7 @@
             <Cpu class="h-6 w-6 text-green-500" />
             <h3 class="font-semibold">GPU Acceleration</h3>
           </div>
-          <p class="text-sm text-muted-foreground">
+          <p class="text-sm nes-text is-disabled">
             MCP GPU orchestrator for enhanced security analysis
           </p>
         </Card.Content>
@@ -321,7 +322,7 @@
             <Brain class="h-6 w-6 text-purple-500" />
             <h3 class="font-semibold">AI Integration</h3>
           </div>
-          <p class="text-sm text-muted-foreground">
+          <p class="text-sm nes-text is-disabled">
             Ollama cluster with Context7 documentation enhancement
           </p>
         </Card.Content>
@@ -333,7 +334,7 @@
             <Users class="h-6 w-6 text-orange-500" />
             <h3 class="font-semibold">Legal Professional</h3>
           </div>
-          <p class="text-sm text-muted-foreground">
+          <p class="text-sm nes-text is-disabled">
             Role-based authentication with legal domain validation
           </p>
         </Card.Content>
@@ -377,7 +378,7 @@
         <div class="bg-slate-100 p-4 rounded-lg">
           <h4 class="font-semibold mb-2">Current Route</h4>
           <code class="text-sm">{$page.url.pathname}</code>
-          <p class="text-sm text-muted-foreground mt-2">
+          <p class="text-sm nes-text is-disabled mt-2">
             This demo page showcases the complete integration of all authentication and AI systems
             working together with XState for predictable state management.
           </p>

@@ -2,8 +2,9 @@
 <!-- Complete integration of XState, WebGL, Enhanced RAG, and Context7 MCP -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Card from '$lib/components/ui/Card.svelte';
   import { createPhase13Integration } from '$lib/state/phase13StateMachine';
   import { createStatelessAPICoordinator } from '$lib/services/stateless-api-coordinator';
@@ -305,7 +306,7 @@
 
     <!-- System Status -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg" class:bg-green-100={webglReady} class:bg-red-100={!webglReady}>
             <Cpu class="h-5 w-5 {webglReady ? 'text-green-600' : 'text-red-600'}" />
@@ -315,9 +316,9 @@
             <p class="text-sm text-gray-400">{frameRate}fps</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg" class:bg-green-100={apiActive} class:bg-red-100={!apiActive}>
             <Database class="h-5 w-5 {apiActive ? 'text-green-600' : 'text-red-600'}" />
@@ -327,9 +328,9 @@
             <p class="text-sm text-gray-400">{apiThroughput.toFixed(1)} tasks/s</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg" class:bg-green-100={ragActive || searchResults.length > 0} class:bg-red-100={!ragActive && searchResults.length === 0}>
             <Zap class="h-5 w-5 {(ragActive || searchResults.length > 0) ? 'text-green-600' : 'text-red-600'}" />
@@ -339,9 +340,9 @@
             <p class="text-sm text-gray-400">{ragQueryTime}ms</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg" class:bg-green-100={context7Active} class:bg-red-100={!context7Active}>
             <Activity class="h-5 w-5 {context7Active ? 'text-green-600' : 'text-red-600'}" />
@@ -351,11 +352,11 @@
             <p class="text-sm text-gray-400">{systemHealth}% health</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- WebGL Canvas -->
-    <Card class="p-6 mb-8 bg-slate-800/50 border-slate-700">
+    <NesCard class="p-6 mb-8 bg-slate-800/50 border-slate-700">
       <h3 class="text-lg font-semibold text-white mb-4">WebGL Vertex Streaming Canvas</h3>
       <div class="flex gap-4 items-start">
         <canvas 
@@ -372,19 +373,19 @@
             class="text-white border-slate-600 hover:bg-slate-700"
           >
             Start WebGL Demo
-          </Button>
+          </button>
           <p class="text-sm text-gray-400">
             Frame Rate: {frameRate} fps<br>
             Status: {webglReady ? 'Streaming' : 'Idle'}
           </p>
         </div>
       </div>
-    </Card>
+    </NesCard>
 
     <!-- Control Panel -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
       <!-- Search Controls -->
-      <Card class="p-6 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
         <h3 class="text-lg font-semibold text-white mb-4">Enhanced RAG Search</h3>
         <div class="space-y-4">
           <input 
@@ -399,7 +400,7 @@
               class="bg-blue-600 hover:bg-blue-700"
             >
               {ragActive ? 'Searching...' : 'Search'}
-            </Button>
+            </button>
             <Button 
               onclick={getContext7Recommendations}
               disabled={!systemInitialized}
@@ -407,16 +408,16 @@
               class="text-white border-slate-600 hover:bg-slate-700"
             >
               Get Recommendations
-            </Button>
+            </button>
           </div>
           <div class="text-sm text-gray-400">
             PageRank Score: {pageRankScore.toFixed(3)} | Feedback: {feedbackCount} votes
           </div>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- System Controls -->
-      <Card class="p-6 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
         <h3 class="text-lg font-semibold text-white mb-4">System Controls</h3>
         <div class="space-y-4">
           <Button 
@@ -425,26 +426,26 @@
             class="w-full bg-green-600 hover:bg-green-700"
           >
             {apiActive ? 'API Active' : 'Start API Coordination'}
-          </Button>
+          </button>
           <Button 
             onclick={runFullDemo}
             disabled={!systemInitialized}
             class="w-full bg-purple-600 hover:bg-purple-700"
           >
             Run Full Demo
-          </Button>
+          </button>
           <div class="text-sm text-gray-400">
             System Status: {systemInitialized ? 'Initialized' : 'Initializing...'}<br>
             Health: {systemHealth}%
           </div>
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Results Display -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Search Results -->
-      <Card class="p-6 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
         <h3 class="text-lg font-semibold text-white mb-4">Search Results</h3>
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each searchResults as result, index}
@@ -462,23 +463,23 @@
                 <span class="text-xs text-gray-400">
                   PageRank: {result.pageRankBoost?.toFixed(3) || '0.000'}
                 </span>
-                <Button 
+                <button class="nes-btn" 
                   size="sm" 
                   onclick={() => submitPositiveFeedback(index)}
                   class="text-xs bg-green-600 hover:bg-green-700"
                 >
                   👍 Relevant
-                </Button>
+                </button>
               </div>
             </div>
           {:else}
             <p class="text-gray-400 text-center py-8">No search results yet. Try performing a search.</p>
           {/each}
         </div>
-      </Card>
+      </NesCard>
 
       <!-- AI Recommendations -->
-      <Card class="p-6 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
         <h3 class="text-lg font-semibold text-white mb-4">Context7 MCP Recommendations</h3>
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each recommendations as rec}
@@ -510,7 +511,7 @@
             <p class="text-gray-400 text-center py-8">No recommendations yet. Click "Get Recommendations" above.</p>
           {/each}
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Footer -->

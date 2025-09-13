@@ -1,6 +1,9 @@
 <!-- Simplified YoRHa Interface -->
 <!-- Svelte runes are declared globally in src/types/svelte-helpers.d.ts -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
   import {
     Terminal,
@@ -246,25 +249,25 @@
   <!-- Quick Actions -->
   <section class="yorha-actions">
     <div class="yorha-actions-grid">
-      <button class="yorha-action-card yorha-action-primary" onclick={performRAGQuery}>
+      <button class="yorha-action-nier-bits-nier-bits-nier-bits-card yorha-action-primary" onclick={performRAGQuery}>
         <Cpu size={32} />
         <h3>ENHANCED RAG</h3>
         <p>AI-powered legal analysis</p>
       </button>
 
-      <button class="yorha-action-card yorha-action-search" onclick={performSemanticSearch}>
+      <button class="yorha-action-nier-bits-nier-bits-nier-bits-card yorha-action-search" onclick={performSemanticSearch}>
         <Search size={32} />
         <h3>VECTOR SEARCH</h3>
         <p>Semantic document retrieval</p>
       </button>
 
-      <button class="yorha-action-card yorha-action-health" onclick={performHealthCheck}>
+      <button class="yorha-action-nier-bits-nier-bits-nier-bits-card yorha-action-health" onclick={performHealthCheck}>
         <Monitor size={32} />
         <h3>SYSTEM HEALTH</h3>
         <p>Cluster monitoring</p>
       </button>
 
-      <button class="yorha-action-card yorha-action-database" onclick={performDatabaseQuery}>
+      <button class="yorha-action-nier-bits-nier-bits-nier-bits-card yorha-action-database" onclick={performDatabaseQuery}>
         <Database size={32} />
         <h3>DATABASE</h3>
         <p>Direct data access</p>
@@ -303,7 +306,7 @@
       </div>
     </div>
     <div class="yorha-metrics-grid">
-      <div class="yorha-metric-card">
+      <div class="yorha-metric-nier-bits-nier-bits-nier-bits-card">
         <div class="yorha-metric-header">
           <Database size={24} />
           <h3>DATABASE</h3>
@@ -312,7 +315,7 @@
         <div class="yorha-metric-label">ACTIVE CASES</div>
       </div>
 
-      <div class="yorha-metric-card">
+      <div class="yorha-metric-nier-bits-nier-bits-nier-bits-card">
         <div class="yorha-metric-header">
           <Cpu size={24} />
           <h3>PROCESSING</h3>
@@ -321,7 +324,7 @@
         <div class="yorha-metric-label">AI QUERIES</div>
       </div>
 
-      <div class="yorha-metric-card">
+      <div class="yorha-metric-nier-bits-nier-bits-nier-bits-card">
         <div class="yorha-metric-header">
           <Monitor size={24} />
           <h3>EVIDENCE</h3>
@@ -330,7 +333,7 @@
         <div class="yorha-metric-label">ITEMS STORED</div>
       </div>
 
-      <div class="yorha-metric-card">
+      <div class="yorha-metric-nier-bits-nier-bits-nier-bits-card">
         <div class="yorha-metric-header">
           <Activity size={24} />
           <h3>PERFORMANCE</h3>
@@ -346,7 +349,7 @@
     <h2 class="yorha-section-title">INTERFACE MODULES</h2>
 
     <div class="yorha-nav-grid">
-      <button class="yorha-nav-card" onclick={() => navigateTo('/yorha/dashboard')}>
+      <button class="yorha-nav-nier-bits-nier-bits-nier-bits-card" onclick={() => navigateTo('/yorha/dashboard')}>
         <div class="yorha-nav-header">
           <Monitor size={28} />
           <h3>SYSTEM DASHBOARD</h3>
@@ -358,7 +361,7 @@
         </div>
       </button>
 
-      <button class="yorha-nav-card" onclick={() => navigateTo('/yorha/components')}>
+      <button class="yorha-nav-nier-bits-nier-bits-nier-bits-card" onclick={() => navigateTo('/yorha/components')}>
         <div class="yorha-nav-header">
           <Gamepad2 size={28} />
           <h3>3D COMPONENTS</h3>
@@ -370,7 +373,7 @@
         </div>
       </button>
 
-      <button class="yorha-nav-card" onclick={() => navigateTo('/yorha/api-test')}>
+      <button class="yorha-nav-nier-bits-nier-bits-nier-bits-card" onclick={() => navigateTo('/yorha/api-test')}>
         <div class="yorha-nav-header">
           <Settings size={28} />
           <h3>API TESTING</h3>
@@ -382,7 +385,7 @@
         </div>
       </button>
 
-      <button class="yorha-nav-card" onclick={() => navigateTo('/yorha/terminal')}>
+      <button class="yorha-nav-nier-bits-nier-bits-nier-bits-card" onclick={() => navigateTo('/yorha/terminal')}>
         <div class="yorha-nav-header">
           <Terminal size={28} />
           <h3>TERMINAL</h3>

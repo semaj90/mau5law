@@ -1,5 +1,6 @@
 <!-- Legal AI Performance Metrics Dashboard -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { 
     legalPerformanceMonitor, 

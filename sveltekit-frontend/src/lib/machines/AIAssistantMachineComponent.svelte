@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { useMachine } from '@xstate/svelte';
   import { aiAssistantMachine, type AIAssistantContext } from './aiAssistantMachine.js';
   import DidYouMeanSuggestions from '$lib/components/recommendations/DidYouMeanSuggestions.svelte';

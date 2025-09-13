@@ -2,7 +2,8 @@
 https://svelte.dev/e/unexpected_reserved_word -->
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { createEventDispatcher } from "svelte";
   import Badge from "../../../lib/components/ui/Badge.svelte";
   import Dialog from "../../../lib/components/ui/dialog/Dialog.svelte";
@@ -221,8 +222,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
             </div>
 
             <div class="mx-auto px-4 max-w-7xl">
-              <Button
-                variant="secondary"
+              <button class="nes-btn"
                 size="sm"
                 onclick={() => generateSummary()}
                 disabled={isGeneratingSummary}
@@ -236,7 +236,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
                   <Sparkles class="mx-auto px-4 max-w-7xl" />
                   Generate Summary
                 {/if}
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -483,7 +483,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
             <p class="mx-auto px-4 max-w-7xl">
               Generate an AI-powered summary to see comprehensive case analysis.
             </p>
-            <Button onclick={() => generateSummary()} disabled={isGeneratingSummary}>
+            <button class="nes-btn" onclick={() => generateSummary()} disabled={isGeneratingSummary}>
               {#if isGeneratingSummary}
                 <div
                   class="mx-auto px-4 max-w-7xl"
@@ -493,7 +493,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
                 <Sparkles class="mx-auto px-4 max-w-7xl" />
                 Generate Summary
               {/if}
-            </Button>
+            </button>
           </div>
         {/if}
       </div>
@@ -501,13 +501,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
 
     {#snippet footer({ close })}
       
-        <Button variant="secondary" onclick={() => close()}>Close</Button>
-        <Button
-          variant="primary"
+        <button class="nes-btn" onclick={() => close()}>Close</button>
+        <button class="nes-btn is-primary"
           onclick={() => dispatch("exportSummary", caseData)}
         >
           Export Summary
-        </Button>
+        </button>
       
       {/snippet}
   </Dialog>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   export interface Item<T = any> {
     id: string;
     __optimistic?: boolean;

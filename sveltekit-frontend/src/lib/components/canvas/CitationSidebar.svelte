@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -100,19 +101,19 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Citations List -->
   <div class="container mx-auto px-4">
     {#each filteredCitations as citation (citation.id)}
-      <Card class="container mx-auto px-4">
+      <NesCard class="container mx-auto px-4">
         <div class="container mx-auto px-4">
           <div class="container mx-auto px-4">
             <h3 class="container mx-auto px-4">{citation.title}</h3>
             <div class="container mx-auto px-4">
-              <Button
+              <button class="nes-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => toggleFavorite(citation)}
                 class="bits-btn container mx-auto px-4"
               >
                 <Star class="container mx-auto px-4" />
-              </Button>
+              </button>
 
               <Button class="bits-btn"
                 variant="ghost"
@@ -121,9 +122,9 @@ https://svelte.dev/e/js_parse_error -->
                 title="Copy citation"
               >
                 <Copy class="container mx-auto px-4" />
-              </Button>
+              </button>
 
-              <Button
+              <button class="nes-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => deleteCitation(citation)}
@@ -131,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
                 class="bits-btn container mx-auto px-4"
               >
                 <Trash2 class="container mx-auto px-4" />
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -186,15 +187,14 @@ https://svelte.dev/e/js_parse_error -->
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{citation.category}</span>
           </div>
         </div>
-      </Card>
+      </NesCard>
     {/each}
 
     {#if filteredCitations.length === 0}
       <div class="container mx-auto px-4">
         {#if searchQuery || selectedCategory !== "all"}
           <p class="container mx-auto px-4">No citations match your search criteria.</p>
-          <Button
-            variant="secondary"
+          <button class="nes-btn"
             size="sm"
             onclick={() => {
               searchQuery = "";
@@ -203,7 +203,7 @@ https://svelte.dev/e/js_parse_error -->
             class="bits-btn"
           >
             Clear filters
-          </Button>
+          </button>
         {:else}
           <p class="container mx-auto px-4">No saved citations yet.</p>
           <p class="container mx-auto px-4">

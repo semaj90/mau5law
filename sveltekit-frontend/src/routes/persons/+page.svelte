@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     Search, Users, Plus, Eye, Edit, Filter, Grid, List,
@@ -421,7 +422,7 @@
     {#if viewMode === 'cards'}
       <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {#each filteredPersons as person}
-          <div class="yorha-3d-panel person-card hover:scale-105 transition-transform">
+          <div class="yorha-3d-panel person-nier-bits-card hover:scale-105 transition-transform">
             <div class="p-6">
               <!-- Person Header -->
               <div class="flex items-start gap-4 mb-4">

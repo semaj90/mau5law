@@ -2,6 +2,7 @@
 https://svelte.dev/e/global_reference_invalid -->
 <!-- @migration-task Error while migrating Svelte code: `$selected` is an illegal variable name. To reference a global variable called `$selected`, use `globalThis.$selected` -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte'
   import * as Select from '$lib/components/ui/select'
   import { fade, fly } from 'svelte/transition'

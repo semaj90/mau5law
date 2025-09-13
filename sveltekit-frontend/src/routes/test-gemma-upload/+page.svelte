@@ -3,6 +3,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Gemma Embeddings Test Upload Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 	import { onMount } from 'svelte';
 
 	// Reactive state
@@ -299,7 +300,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 				<h2>📊 Processing Results</h2>
 				
 				<div class="results-grid">
-					<div class="result-card">
+					<div class="result-nier-bits-card">
 						<h3>📁 File Information</h3>
 						<div class="result-data">
 							<div><strong>Name:</strong> {results.file.name}</div>
@@ -308,7 +309,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 						</div>
 					</div>
 
-					<div class="result-card">
+					<div class="result-nier-bits-card">
 						<h3>🗄️ MinIO Storage</h3>
 						<div class="result-data">
 							<div><strong>Path:</strong> {results.minioPath}</div>
@@ -316,7 +317,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 						</div>
 					</div>
 
-					<div class="result-card">
+					<div class="result-nier-bits-card">
 						<h3>📝 Text Processing</h3>
 						<div class="result-data">
 							<div><strong>Text Length:</strong> {results.textLength.toLocaleString()} characters</div>
@@ -324,7 +325,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 						</div>
 					</div>
 
-					<div class="result-card">
+					<div class="result-nier-bits-card">
 						<h3>🧮 Gemma Embeddings</h3>
 						<div class="result-data">
 							<div><strong>Embeddings Generated:</strong> {results.embeddingsCount}</div>
@@ -332,7 +333,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 						</div>
 					</div>
 
-					<div class="result-card full-width">
+					<div class="result-nier-bits-card full-width">
 						<h3>✅ Processing Pipeline</h3>
 						<div class="pipeline-steps">
 							{#each results.processingSteps as step}
@@ -341,7 +342,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 						</div>
 					</div>
 
-					<div class="result-card full-width">
+					<div class="result-nier-bits-card full-width">
 						<h3>🔍 RAG Status</h3>
 						<div class="rag-status">
 							<div class="status-item">

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, createEventDispatcher } from 'svelte';
   import { Search, File, Briefcase, User, Settings, Command } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -156,16 +157,16 @@ https://svelte.dev/e/js_parse_error -->
         
         <!-- Search input -->
         <div class="flex items-center border-b border-nier-gray px-4">
-          <Search class="h-5 w-5 text-muted-foreground mr-3" />
+          <Search class="h-5 w-5 nes-text is-disabled mr-3" />
           <input
             bind:this={searchInput}
             bind:value={searchQuery}
             type="text"
             placeholder="Search commands, cases, evidence..."
-            class="flex-1 bg-transparent border-none outline-none py-4 text-foreground placeholder:text-muted-foreground"
+            class="flex-1 bg-transparent border-none outline-none py-4 text-foreground placeholder:nes-text is-disabled"
             oninput={() => selectedIndex = 0}
           />
-          <div class="flex items-center gap-1 text-xs text-muted-foreground">
+          <div class="flex items-center gap-1 text-xs nes-text is-disabled">
             <kbd class="px-1.5 py-0.5 bg-nier-surface-light rounded border border-nier-gray">
               <Command class="h-3 w-3" />
             </kbd>
@@ -185,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
             ) as [category, items], categoryIndex}
               
               <div class="px-2 py-2">
-                <h3 class="px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+                <h3 class="px-2 text-xs font-semibold nes-text is-disabled uppercase tracking-wider mb-1">
                   {category}
                 </h3>
                 
@@ -244,7 +245,7 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             {/each}
           {:else}
-            <div class="px-4 py-8 text-center text-muted-foreground">
+            <div class="px-4 py-8 text-center nes-text is-disabled">
               <Search class="h-8 w-8 mx-auto mb-3 opacity-50" />
               <p class="text-sm">No results found for "{searchQuery}"</p>
               <p class="text-xs mt-1">Try searching for cases, evidence, or commands</p>
@@ -254,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
         
         <!-- Footer -->
         <div class="border-t border-nier-gray px-4 py-3">
-          <div class="flex items-center justify-between text-xs text-muted-foreground">
+          <div class="flex items-center justify-between text-xs nes-text is-disabled">
             <div class="flex items-center gap-4">
               <div class="flex items-center gap-1">
                 <kbd class="px-1 py-0.5 bg-nier-surface-light rounded border border-nier-gray">↑</kbd>

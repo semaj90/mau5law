@@ -3,6 +3,7 @@
   Using Bits UI v2 + Superforms + XState + MCP GPU Orchestrator
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // runtime helpers ($props, $state, $derived, $effect) are available in runes mode — do not import them
   import { enhance } from '$app/forms';
   import { page } from '$app/state';
@@ -248,21 +249,21 @@
   }
 </script>
 
-<div class="w-full max-w-2xl mx-auto nes-legal-register-form card-shell">
-  <header class="text-center card-header">
+<div class="w-full max-w-2xl mx-auto nes-legal-register-form nier-bits-card-shell">
+  <header class="text-center nier-bits-yorha-panel-header">
     <div class="flex items-center justify-center mb-4">
       <Shield class="h-8 w-8 text-primary mr-2" />
       <h1 class="text-2xl font-bold">Legal AI Platform</h1>
     </div>
-  <h2 class="text-xl flex items-center justify-center gap-2 card-title">
+  <h2 class="text-xl flex items-center justify-center gap-2 nier-bits-nes-text is-primary">
       <UserPlus class="h-5 w-5" />
       Create Account
   </h2>
-  <p class="card-description">
+  <p class="nier-bits-nes-text">
       Register as a legal professional to access the AI-powered legal system
     </p>
   </header>
-  <section class="card-content">
+  <section class="nier-bits-yorha-panel-content">
     <!-- GPU Validation Status -->
     {#if enableGPUValidation && gpuValidationStatus !== 'idle'}
       <div class="mb-4 gpu-validation {gpuValidationStatus}" role="status" aria-live="polite">
@@ -559,7 +560,7 @@
     <!-- Login Link -->
     {#if showLogin}
       <div class="mt-6 text-center">
-        <p class="text-sm text-muted-foreground">
+        <p class="text-sm nes-text is-disabled">
           Already have an account?
           <a
             href="/auth/login"

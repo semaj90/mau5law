@@ -1,9 +1,10 @@
 <!-- Enhanced AI Chat Test Component - Svelte 5 with bits-ui and shadcn-svelte -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { onMount, tick } from "svelte";
   import { Dialog } from "bits-ui";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Input from "$lib/components/ui/Input.svelte";
   import Badge from "$lib/components/ui/Badge.svelte";
   import Card from "$lib/components/ui/Card.svelte";
@@ -318,7 +319,7 @@
     <Button variant="outline" class="gap-2">
       <MessageCircle class="h-4 w-4" />
       {title}
-    </Button>
+    </button>
   </Dialog.Trigger>
 
   <Dialog.Portal>
@@ -356,16 +357,16 @@
           </div>
 
           <!-- Action Buttons -->
-          <Button variant="ghost" size="sm" onclick={downloadConversation} disabled={messages.length <= 1}>
+          <button class="nes-btn" variant="ghost" size="sm" onclick={downloadConversation} disabled={messages.length <= 1}>
             <Download class="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="sm" onclick={clearMessages} disabled={messages.length <= 1}>
+          </button>
+          <button class="nes-btn" variant="ghost" size="sm" onclick={clearMessages} disabled={messages.length <= 1}>
             <Trash2 class="h-4 w-4" />
-          </Button>
+          </button>
           <Dialog.Close>
-            <Button variant="ghost" size="sm">
+            <button class="nes-btn" variant="ghost" size="sm">
               ✕
-            </Button>
+            </button>
           </Dialog.Close>
         </div>
       </div>
@@ -381,7 +382,7 @@
                 </div>
               {/if}
 
-              <Card class="max-w-[80%] p-3 {message.role === 'user' ? 'bg-blue-600 text-white' : message.error ? 'bg-red-50 border-red-200' : 'bg-gray-50'}">
+              <NesCard class="max-w-[80%] p-3 {message.role === 'user' ? 'bg-blue-600 text-white' : message.error ? 'bg-red-50 border-red-200' : 'bg-gray-50'}">
                 <div class="text-sm whitespace-pre-wrap">
                   {message.content}
                 </div>
@@ -407,7 +408,7 @@
                 <div class="text-xs opacity-70 mt-1">
                   {message.timestamp.toLocaleTimeString()}
                 </div>
-              </Card>
+              </NesCard>
 
               {#if message.role === "user"}
                 <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
@@ -440,7 +441,7 @@
             {:else}
               <Send class="h-4 w-4" />
             {/if}
-          </Button>
+          </button>
         </div>
 
         <div class="flex items-center justify-between mt-2">

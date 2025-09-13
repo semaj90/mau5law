@@ -5,6 +5,7 @@ https://svelte.dev/e/attribute_duplicate -->
 https://svelte.dev/e/js_parse_error -->
 <!-- Enhanced Vector Search Interface with Ranking, Analytics, and Real-time Results -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Updated to use melt-ui components
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
@@ -488,7 +489,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="search-actions">
-        <Button 
+        <button class="nes-btn" 
           onclick={() => performSearch()}
           disabled={$isSearching || !$searchQuery.trim()}
           class="bits-btn search-button"
@@ -500,7 +501,7 @@ https://svelte.dev/e/js_parse_error -->
             <Search class="mr-2" size={16} />
             Search
           {/if}
-        </Button>
+        </button>
 
         {#if enableFilters}
           <Button class="bits-btn"
@@ -515,7 +516,7 @@ https://svelte.dev/e/js_parse_error -->
             {:else}
               <ChevronDown class="ml-2" size={16} />
             {/if}
-          </Button>
+          </button>
         {/if}
 
         {#if enableAnalytics}
@@ -525,7 +526,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             <BarChart3 class="mr-2" size={16} />
             Analytics
-          </Button>
+          </button>
         {/if}
       </div>
     </div>
@@ -547,7 +548,7 @@ https://svelte.dev/e/js_parse_error -->
             >
               <Clock class="mr-1" size={12} />
               {historyItem}
-            </Button>
+            </button>
           {/each}
         </div>
       </div>
@@ -556,16 +557,16 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Advanced Filters -->
   {#if $showFilters && enableFilters}
-    <Card class="filters-panel">
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard class="filters-panel">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           <span>Advanced Filters</span>
           <Button class="bits-btn" variant="ghost" size="sm" onclick={resetFilters}>
             Reset
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+          </button>
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div class="filter-grid">
           <!-- Document Types -->
           <div class="filter-group">
@@ -658,9 +659,9 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
 
-        <Button onclick={applyFilters} class="w-full bits-btn bits-btn">Apply Filters</Button>
-      </CardContent>
-    </Card>
+        <Button onclick={applyFilters} class="w-full bits-btn bits-btn">Apply Filters</button>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Search Results -->
@@ -695,8 +696,8 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Results List -->
       <div class="results-list">
         {#each $searchResults as result (result.id)}
-          <Card class="result-item" onclick={() => handleResultClick(result)}>
-            <CardContent class="result-content">
+          <NesCard class="result-item" onclick={() => handleResultClick(result)}>
+            <div class="yorha-panel-content" class="result-content">
               <!-- Result Header -->
               <div class="result-header">
                 <div class="result-title-section">
@@ -757,18 +758,18 @@ https://svelte.dev/e/js_parse_error -->
                 <Button class="bits-btn" variant="ghost" size="sm">
                   <Eye class="mr-1" size={14} />
                   View
-                </Button>
+                </button>
                 <Button class="bits-btn" variant="ghost" size="sm">
                   <Download class="mr-1" size={14} />
                   Download
-                </Button>
+                </button>
                 <Button class="bits-btn" variant="ghost" size="sm">
                   <Share2 class="mr-1" size={14} />
                   Share
-                </Button>
+                </button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         {/each}
       </div>
     </div>
@@ -781,7 +782,7 @@ https://svelte.dev/e/js_parse_error -->
         <p class="no-results-description">
           Try adjusting your search terms or filters
         </p>
-        <Button class="bits-btn" variant="outline" onclick={resetFilters}>Reset Filters</Button>
+        <Button class="bits-btn" variant="outline" onclick={resetFilters}>Reset Filters</button>
       </div>
     </div>
   {/if}
@@ -803,8 +804,8 @@ https://svelte.dev/e/js_parse_error -->
 
           <TabsContent value="overview" class="analytics-overview">
             <div class="analytics-grid">
-              <Card class="metric-card">
-                <CardContent class="metric-content">
+              <NesCard class="metric-nier-bits-card">
+                <div class="yorha-panel-content" class="metric-content">
                   <div class="metric-icon">
                     <Search size={24} />
                   </div>
@@ -812,11 +813,11 @@ https://svelte.dev/e/js_parse_error -->
                     <p class="metric-label">Total Searches</p>
                     <p class="metric-value">{$searchAnalytics.totalSearches}</p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
 
-              <Card class="metric-card">
-                <CardContent class="metric-content">
+              <NesCard class="metric-nier-bits-card">
+                <div class="yorha-panel-content" class="metric-content">
                   <div class="metric-icon">
                     <Target size={24} />
                   </div>
@@ -826,11 +827,11 @@ https://svelte.dev/e/js_parse_error -->
                       {$searchAnalytics.averageResultCount}
                     </p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
 
-              <Card class="metric-card">
-                <CardContent class="metric-content">
+              <NesCard class="metric-nier-bits-card">
+                <div class="yorha-panel-content" class="metric-content">
                   <div class="metric-icon">
                     <Zap size={24} />
                   </div>
@@ -840,11 +841,11 @@ https://svelte.dev/e/js_parse_error -->
                       {$searchAnalytics.responseTime}ms
                     </p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
 
-              <Card class="metric-card">
-                <CardContent class="metric-content">
+              <NesCard class="metric-nier-bits-card">
+                <div class="yorha-panel-content" class="metric-content">
                   <div class="metric-icon">
                     <Brain size={24} />
                   </div>
@@ -854,18 +855,18 @@ https://svelte.dev/e/js_parse_error -->
                       {formatSimilarity($searchAnalytics.averageSimilarity)}
                     </p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
             </div>
           </TabsContent>
 
           <TabsContent value="performance" class="analytics-performance">
             <div class="performance-metrics">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Performance Breakdown</CardTitle>
-                </CardHeader>
-                <CardContent>
+              <NesCard>
+                <div class="yorha-panel-header">
+                  <h3 class="nes-text is-primary">Performance Breakdown</h3>
+                </div>
+                <div class="yorha-panel-content">
                   <div class="performance-bars">
                     <div class="performance-item">
                       <span class="performance-label">Vector Search</span>
@@ -903,18 +904,18 @@ https://svelte.dev/e/js_parse_error -->
                       >
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
             </div>
           </TabsContent>
 
           <TabsContent value="queries" class="analytics-queries">
             {#if $searchAnalytics.topQueries.length > 0}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Most Popular Queries</CardTitle>
-                </CardHeader>
-                <CardContent>
+              <NesCard>
+                <div class="yorha-panel-header">
+                  <h3 class="nes-text is-primary">Most Popular Queries</h3>
+                </div>
+                <div class="yorha-panel-content">
                   <div class="top-queries-list">
                     {#each $searchAnalytics.topQueries as { query, count }}
                       <div class="query-item">
@@ -923,8 +924,8 @@ https://svelte.dev/e/js_parse_error -->
                       </div>
                     {/each}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
             {:else}
               <div class="no-analytics">
                 <p>

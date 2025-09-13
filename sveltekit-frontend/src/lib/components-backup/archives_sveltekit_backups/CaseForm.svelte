@@ -2,8 +2,9 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { goto } from "$app/navigation";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Card from "../../../lib/components/ui/Card.svelte";
   import Form from "../../../lib/components/ui/Form.svelte";
   import Input from "../../../lib/components/ui/Input.svelte";
@@ -164,7 +165,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 
-  <Card variant="elevated" padding="lg">
+  <NesCard variant="elevated" padding="lg">
     <Form
       bind:formApi
       options={formOptions}
@@ -328,7 +329,7 @@ https://svelte.dev/e/js_parse_error -->
                     onblur={() => formApi.touchField("tags")}
                   />
                 </div>
-                <Button
+                <button class="nes-btn"
                   type="button"
                   variant="secondary"
                   size="md"
@@ -336,7 +337,7 @@ https://svelte.dev/e/js_parse_error -->
                   onclick={() => addTag()}
                 >
                   Add
-                </Button>
+                </button>
               </div>
             </div>
           </div>
@@ -367,7 +368,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </Form>
-  </Card>
+  </NesCard>
 </div>
 
 <style>

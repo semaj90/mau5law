@@ -1,6 +1,7 @@
 
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createContextMenu, melt } from '@melt-ui/svelte'
   import { fly, scale } from 'svelte/transition'
   import {
@@ -142,7 +143,7 @@
 
 <div
   
-  class="case-card {currentPriority.class} group relative overflow-hidden"
+  class="case-nier-bits-card {currentPriority.class} group relative overflow-hidden"
   role="article"
   aria-label="Case {caseData.id}"
 >

@@ -1,5 +1,6 @@
 <!-- YoRHa Interface Layout -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   let { children } = $props();
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';

@@ -3,6 +3,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `</DialogDescription>` attempted to close an element that was not open -->
 <!-- Legal Case Analysis Dialog - Bits UI Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Dialog, Select, Button, Badge } from 'bits-ui';
   import { Progress } from 'bits-ui';
   import { legalCaseStore } from '$lib/stores/legal-case.store.svelte';
@@ -78,7 +79,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
       Analyze Case Documents
-    </Button>
+    </button>
   </Dialog.Trigger>
 
   <Dialog.Content class="legal-dialog max-w-2xl w-full bg-white border border-gray-200 rounded-lg shadow-xl">
@@ -225,13 +226,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     </div>
 
     <Dialog.Footer class="border-t border-gray-100 p-6 flex justify-end space-x-3">
-      <Button
+      <button class="nes-btn"
         variant="outline"
         onclick={() => onOpenChange(false)}
         disabled={loading.analysis}
       >
         Cancel
-      </Button>
+      </button>
       <Button
         onclick={handleAnalysis}
         disabled={!selectedCaseForAnalysis || loading.analysis || analysisStatus === 'analyzing'}
@@ -251,7 +252,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         {:else}
           Start Analysis
         {/if}
-      </Button>
+      </button>
     </DialogFooter>
   </Dialog.Content>
 </Dialog.Root>

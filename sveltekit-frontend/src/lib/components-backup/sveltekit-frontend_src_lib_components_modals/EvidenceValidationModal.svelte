@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'aiEvent' has already been declared -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onvalidated?: (event?: any) => void;
   }
@@ -13,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
 
-  import Button from "$lib/components/ui/Button.svelte";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Dialog as DialogPrimitive } from "bits-ui";
   import {
     AlertTriangle,
@@ -127,14 +128,14 @@ https://svelte.dev/e/js_parse_error -->
           </DialogPrimitive.Description>
         </div>
         <DialogPrimitive.Close let:builder>
-          <Button
+          <button class="nes-btn"
             {...builder}
             variant="ghost"
             size="sm"
             onclick={() => closeModal()}
           >
             ×
-          </Button>
+          </button>
         </DialogPrimitive.Close>
       </div>
 
@@ -209,7 +210,7 @@ https://svelte.dev/e/js_parse_error -->
               >
                 <CheckCircle class="space-y-4" />
                 Yes, it's accurate
-              </Button>
+              </button>
 
               <Button
                 variant={validationChoice === "reject" ? "danger" : "outline"}
@@ -218,7 +219,7 @@ https://svelte.dev/e/js_parse_error -->
               >
                 <XCircle class="space-y-4" />
                 No, needs correction
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -325,14 +326,14 @@ https://svelte.dev/e/js_parse_error -->
                     onkeydown={(e) =>
                       e.key === "Enter" && (e.preventDefault(), addTag())}
                   />
-                  <Button
+                  <button class="nes-btn"
                     type="button"
                     variant="secondary"
                     size="sm"
                     onclick={() => addTag()}
                   >
                     <Tag class="space-y-4" />
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
@@ -341,15 +342,15 @@ https://svelte.dev/e/js_parse_error -->
 
         <!-- Footer -->
         <div class="space-y-4">
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             onclick={() => closeModal()}
             disabled={isSubmitting}
           >
             Cancel
-          </Button>
+          </button>
 
-          <Button
+          <button class="nes-btn"
             onclick={() => submitValidation()}
             disabled={!validationChoice || isSubmitting}
             class="space-y-4"
@@ -363,7 +364,7 @@ https://svelte.dev/e/js_parse_error -->
               <Save class="space-y-4" />
               Submit Validation
             {/if}
-          </Button>
+          </button>
         </div>
       {/if}
     </div>

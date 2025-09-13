@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import SearchInput from './SearchInput.svelte';
   	import { Filter, ArrowUpDown } from 'lucide-svelte';
 

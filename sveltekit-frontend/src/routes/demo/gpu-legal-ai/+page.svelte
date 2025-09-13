@@ -1,7 +1,8 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Input } from '$lib/components/ui/input';
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
@@ -242,7 +243,7 @@
       <Cpu class="w-10 h-10 text-primary" />
       GPU Legal AI Processor
     </h1>
-    <p class="text-lg text-muted-foreground max-w-3xl mx-auto">
+    <p class="text-lg nes-text is-disabled max-w-3xl mx-auto">
       High-performance legal document analysis powered by GPU acceleration, 
       WebGPU compute shaders, and specialized legal AI models
     </p>
@@ -334,15 +335,15 @@
                 <Play class="w-4 h-4" />
                 Analyze with GPU
               {/if}
-            </Button>
+            </button>
             
-            <Button 
+            <button class="nes-btn" 
               variant="outline" 
               onclick={resetProcessor}
               disabled={gpuStatus === 'processing'}
             >
               <RefreshCw class="w-4 h-4" />
-            </Button>
+            </button>
           </div>
           
           <!-- Processing Status -->
@@ -357,13 +358,13 @@
               
               <Progress value={progress} class="h-2" />
               
-              <div class="flex items-center gap-2 text-sm text-muted-foreground">
+              <div class="flex items-center gap-2 text-sm nes-text is-disabled">
                 <Activity class="w-3 h-3 animate-pulse" />
                 {processingStage}
               </div>
               
               {#if processingTime > 0}
-                <div class="text-xs text-muted-foreground">
+                <div class="text-xs nes-text is-disabled">
                   Processing completed in {processingTime}ms
                 </div>
               {/if}
@@ -387,24 +388,24 @@
           {#if gpuInfo}
             <div class="space-y-3">
               <div class="flex justify-between">
-                <span class="text-sm text-muted-foreground">Graphics Card</span>
+                <span class="text-sm nes-text is-disabled">Graphics Card</span>
                 <span class="text-sm font-medium">{gpuInfo.model}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-sm text-muted-foreground">Memory</span>
+                <span class="text-sm nes-text is-disabled">Memory</span>
                 <span class="text-sm font-medium">{gpuInfo.memory}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-sm text-muted-foreground">Compute</span>
+                <span class="text-sm nes-text is-disabled">Compute</span>
                 <span class="text-sm font-medium">{gpuInfo.compute}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-sm text-muted-foreground">Model</span>
+                <span class="text-sm nes-text is-disabled">Model</span>
                 <span class="text-sm font-medium">{selectedModel}</span>
               </div>
             </div>
           {:else}
-            <div class="text-center text-muted-foreground py-8">
+            <div class="text-center nes-text is-disabled py-8">
               <Cpu class="w-8 h-8 mx-auto mb-2 opacity-50" />
               <p>GPU information not available</p>
             </div>
@@ -414,11 +415,11 @@
             <div class="grid grid-cols-2 gap-4 text-center">
               <div>
                 <p class="text-2xl font-bold text-primary">{vectorDimensions}</p>
-                <p class="text-xs text-muted-foreground">Vector Dimensions</p>
+                <p class="text-xs nes-text is-disabled">Vector Dimensions</p>
               </div>
               <div>
                 <p class="text-2xl font-bold text-primary">{batchSize}</p>
-                <p class="text-xs text-muted-foreground">Batch Size</p>
+                <p class="text-xs nes-text is-disabled">Batch Size</p>
               </div>
             </div>
           </div>
@@ -443,19 +444,19 @@
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="text-center p-3 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold text-primary">{results.performance.tokensPerSecond.toLocaleString()}</p>
-              <p class="text-xs text-muted-foreground">Tokens/Second</p>
+              <p class="text-xs nes-text is-disabled">Tokens/Second</p>
             </div>
             <div class="text-center p-3 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold text-primary">{results.processingTime}ms</p>
-              <p class="text-xs text-muted-foreground">Processing Time</p>
+              <p class="text-xs nes-text is-disabled">Processing Time</p>
             </div>
             <div class="text-center p-3 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold text-primary">{results.performance.gpuUtilization}%</p>
-              <p class="text-xs text-muted-foreground">GPU Utilization</p>
+              <p class="text-xs nes-text is-disabled">GPU Utilization</p>
             </div>
             <div class="text-center p-3 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold text-primary">{Math.round(results.confidence * 100)}%</p>
-              <p class="text-xs text-muted-foreground">Confidence</p>
+              <p class="text-xs nes-text is-disabled">Confidence</p>
             </div>
           </div>
 
@@ -474,7 +475,7 @@
                   </Badge>
                 </div>
                 <p class="text-sm">{insight.content}</p>
-                <p class="text-xs text-muted-foreground">Source: {insight.source}</p>
+                <p class="text-xs nes-text is-disabled">Source: {insight.source}</p>
               </div>
             {/each}
           </div>
@@ -488,15 +489,15 @@
             <div class="grid grid-cols-3 gap-4 text-center">
               <div>
                 <p class="text-lg font-semibold">{results.vectors.dimensions}</p>
-                <p class="text-xs text-muted-foreground">Dimensions</p>
+                <p class="text-xs nes-text is-disabled">Dimensions</p>
               </div>
               <div>
                 <p class="text-lg font-semibold">{Math.round(results.vectors.similarity * 1000) / 1000}</p>
-                <p class="text-xs text-muted-foreground">Similarity Score</p>
+                <p class="text-xs nes-text is-disabled">Similarity Score</p>
               </div>
               <div>
                 <p class="text-lg font-semibold">{results.vectors.clusters}</p>
-                <p class="text-xs text-muted-foreground">Clusters Found</p>
+                <p class="text-xs nes-text is-disabled">Clusters Found</p>
               </div>
             </div>
           </div>
@@ -531,13 +532,13 @@
               <Play class="w-4 h-4" />
               Run Benchmarks
             {/if}
-          </Button>
+          </button>
         </div>
 
         {#if gpuStatus === 'processing'}
           <div class="space-y-3 p-4 bg-muted/50 rounded-lg">
             <Progress value={progress} class="h-2" />
-            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+            <div class="flex items-center gap-2 text-sm nes-text is-disabled">
               <Activity class="w-3 h-3 animate-pulse" />
               {processingStage}
             </div>
@@ -548,7 +549,7 @@
           <div class="space-y-4">
             <div class="text-center p-6 bg-primary/5 rounded-lg border">
               <p class="text-3xl font-bold text-primary">{benchmarkResults.overallScore.toLocaleString()}</p>
-              <p class="text-sm text-muted-foreground">Overall GPU Score</p>
+              <p class="text-sm nes-text is-disabled">Overall GPU Score</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -610,19 +611,19 @@
           <div class="grid grid-cols-2 gap-4 text-center">
             <div>
               <p class="text-lg font-semibold">{Math.round(gpuMetrics.temperature)}�C</p>
-              <p class="text-xs text-muted-foreground">Temperature</p>
+              <p class="text-xs nes-text is-disabled">Temperature</p>
             </div>
             <div>
               <p class="text-lg font-semibold">{Math.round(gpuMetrics.powerDraw)}W</p>
-              <p class="text-xs text-muted-foreground">Power Draw</p>
+              <p class="text-xs nes-text is-disabled">Power Draw</p>
             </div>
             <div>
               <p class="text-lg font-semibold">{Math.round(gpuMetrics.clockSpeed)}MHz</p>
-              <p class="text-xs text-muted-foreground">Core Clock</p>
+              <p class="text-xs nes-text is-disabled">Core Clock</p>
             </div>
             <div>
               <p class="text-lg font-semibold">{gpuStatus}</p>
-              <p class="text-xs text-muted-foreground">Status</p>
+              <p class="text-xs nes-text is-disabled">Status</p>
             </div>
           </div>
         </div>
@@ -683,7 +684,7 @@
           <Button class="w-full gap-2">
             <CheckCircle class="w-4 h-4" />
             Apply Configuration
-          </Button>
+          </button>
         </div>
       </div>
     </div>

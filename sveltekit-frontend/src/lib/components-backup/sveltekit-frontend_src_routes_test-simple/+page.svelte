@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   let message = "SvelteKit 2 + Svelte 5 Test Page";
   let count = $state(0);
   function increment() {

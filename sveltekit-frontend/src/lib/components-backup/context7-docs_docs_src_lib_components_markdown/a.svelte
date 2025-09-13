@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import type { HTMLAnchorAttributes } from "svelte/elements";
   	import { cn } from "$lib/utils/styles.js";
 

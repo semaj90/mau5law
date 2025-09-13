@@ -702,12 +702,15 @@ Only return the queries, one per line.`),
         fileMetadata: {
           size: fileSize,
           mimeType: this.getMimeType(fileName),
-          originalPath: filePath,
+          wordCount: documentContent.split(/\s+/).length,
+          language: 'en',
         },
         classification: {
+          documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
           practiceArea: this.inferPracticeArea(documentContent),
           jurisdiction: this.inferJurisdiction(documentContent),
-          documentClass: options?.documentType || 'general',
+          confidentialityLevel: 'public',
+          tags: [],
         },
         extraction: {
           extractedAt: new Date().toISOString(),

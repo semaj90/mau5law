@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Demonstrates the validation utilities in practice
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     FormValidator,
     type FormFieldConfig,

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import TooltipContent from "$lib/components/ui/TooltipContent.svelte";
   import TooltipTrigger from "$lib/components/ui/TooltipTrigger.svelte";
@@ -252,20 +253,20 @@
                 Case Filter (Optional)
               </label>
               <div class="space-y-4">
-                <Button
+                <button class="nes-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => selectAllCases()}
                 >
                   Select All
-                </Button>
-                <Button
+                </button>
+                <button class="nes-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => clearCaseSelection()}
                 >
                   Clear
-                </Button>
+                </button>
               </div>
             </div>
 
@@ -334,7 +335,7 @@
           <!-- Export Button -->
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
+              <button class="nes-btn"
                 onclick={() => exportData()}
                 disabled={exportLoading || (!includeCases && !includeEvidence)}
                 class="space-y-4"
@@ -348,7 +349,7 @@
                   <Download class="space-y-4" />
                   Export Data
                 {/if}
-              </Button>
+              </button>
             </TooltipTrigger>
             <TooltipContent>
               <p>Download the configured data export</p>

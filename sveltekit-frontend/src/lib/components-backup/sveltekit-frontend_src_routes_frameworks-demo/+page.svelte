@@ -1,5 +1,6 @@
 <!-- Legal Frameworks Demo - Pico CSS + UnoCSS + Melt UI -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import AskAI from "$lib/components/ai/AskAI.svelte";
   import LegalDocumentEditor from "$lib/components/editor/LegalDocumentEditor.svelte";
   import WysiwygEditor from "$lib/components/editor/WysiwygEditor.svelte";

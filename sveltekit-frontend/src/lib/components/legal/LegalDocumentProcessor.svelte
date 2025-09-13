@@ -3,6 +3,7 @@
   Demonstrates XState integration with Svelte 5 for legal document processing
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { useMachine } from '@xstate/svelte';
   import { legalDocumentProcessingMachine, selectors } from '$lib/state/legalDocumentProcessingMachine';
   import type { LegalDocument } from '$lib/services/legalRAGEngine';

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props { onupdate?: (event?: any) => void;
     onupdatePosition?: (event?: any) => void;
     ondelete?: (event?: any) => void;
@@ -194,7 +195,7 @@ https://svelte.dev/e/js_parse_error -->
       aria-label="POI context menu"
     >
       <!-- Card usage fix: replace Card.Root, Card.Header, etc. with Card, CardHeader, CardContent, CardFooter -->
-      <div class="nier-card nier-shadow nier-border nier-bg p-4 rounded-xl max-w-md min-w-[320px]">
+      <div class="nier-nier-bits-card nier-shadow nier-border nier-bg p-4 rounded-xl max-w-md min-w-[320px]">
         <div class="nier-header flex items-center gap-2 mb-2">
           <UserIcon class="nier-icon text-gray-400 w-6 h-6" />
           { #if isEditing }
@@ -308,10 +309,10 @@ https://svelte.dev/e/js_parse_error -->
         <div class="nier-footer flex justify-between items-center mt-4 gap-2">
           { #if isEditing }
             <button class="nier-btn nier-btn-accent" onclick={ () => saveChanges() }><Save class="w-4 h-4" /> Save</button>
-            <button class="nier-btn nier-btn-secondary" onclick={ () => cancelEditing() }><X class="w-4 h-4" /> Cancel</button>
+            <button class="nier-btn nier-nes-btn" onclick={ () => cancelEditing() }><X class="w-4 h-4" /> Cancel</button>
           { : else }
-            <button class="nier-btn nier-btn-secondary" onclick={ () => startEditing() }><Edit class="w-4 h-4" /> Edit</button>
-            <button class="nier-btn nier-btn-secondary" onclick={ () => summarizePOI() }><Sparkles class="w-4 h-4" /> Summarize</button>
+            <button class="nier-btn nier-nes-btn" onclick={ () => startEditing() }><Edit class="w-4 h-4" /> Edit</button>
+            <button class="nier-btn nier-nes-btn" onclick={ () => summarizePOI() }><Sparkles class="w-4 h-4" /> Summarize</button>
           { /if }
         </div>
       </div>

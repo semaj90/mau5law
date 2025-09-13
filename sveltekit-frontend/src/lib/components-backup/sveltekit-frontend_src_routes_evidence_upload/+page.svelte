@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import FileUploadForm from '$lib/components/upload/FileUploadForm.svelte';
   import { page } from '$app/state';
   import type { PageData } from './$types';

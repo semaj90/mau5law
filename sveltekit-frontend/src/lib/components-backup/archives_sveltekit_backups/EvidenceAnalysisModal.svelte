@@ -1,11 +1,12 @@
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import Dialog from '../../../lib/components/ui/dialog/Dialog.svelte';
   import Grid from '../../../lib/components/ui/grid/Grid.svelte';
   import GridItem from '../../../lib/components/ui/grid/GridItem.svelte';
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Input from '../../../lib/components/ui/Input.svelte';
   import Badge from '../../../lib/components/ui/Badge.svelte';
   // Icons
@@ -143,12 +144,11 @@
         </div>
         
         <div class="mx-auto px-4 max-w-7xl">
-          <Button variant="secondary" size="sm">
+          <button class="nes-btn" size="sm">
             <Download class="mx-auto px-4 max-w-7xl" />
             Export
-          </Button>
-          <Button 
-            variant="primary" 
+          </button>
+          <button class="nes-btn is-primary" 
             size="sm" 
             onclick={() => analyzeEvidence()}
             disabled={isAnalyzing}
@@ -160,7 +160,7 @@
               <Brain class="mx-auto px-4 max-w-7xl" />
               Re-analyze
             {/if}
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -284,9 +284,9 @@
                 placeholder="Add tags (comma-separated)"
                 class="mx-auto px-4 max-w-7xl"
               />
-              <Button size="sm" onclick={() => updateTags()} disabled={!newTags.trim()}>
+              <button class="nes-btn" size="sm" onclick={() => updateTags()} disabled={!newTags.trim()}>
                 Add
-              </Button>
+              </button>
             </div>
           </div>
         </GridItem>
@@ -313,12 +313,12 @@
 
   {#snippet footer({ close })}
   
-      <Button variant="secondary" onclick={() => close()}>
+      <button class="nes-btn" onclick={() => close()}>
         Close
-      </Button>
-      <Button variant="primary" onclick={() => dispatch('saveAnalysis', evidence)}>
+      </button>
+      <button class="nes-btn is-primary" onclick={() => dispatch('saveAnalysis', evidence)}>
         Save Analysis
-      </Button>
+      </button>
     
   {/snippet}
 </Dialog>

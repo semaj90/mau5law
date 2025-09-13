@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced/Button.svelte';
   import {
@@ -160,48 +161,48 @@
     </div>
 
     <!-- Quick Actions -->
-    <Card class="mb-8 p-6">
+    <NesCard class="mb-8 p-6">
       {#snippet children()}
-        <CardHeader class="mb-4">
+        <div class="yorha-panel-header" class="mb-4">
           {#snippet children()}
-            <CardTitle>🚀 Development Actions</CardTitle>
+            <h3 class="nes-text is-primary">🚀 Development Actions</h3>
           {/snippet}
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div class="yorha-panel-content">
           {#snippet children()}
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Button class="bits-btn" onclick={runAllTests} disabled={isRunning} variant="default">
                 {#snippet children()}
                   {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
                 {/snippet}
-              </Button>
+              </button>
 
               <Button class="bits-btn" onclick={createDevSession} variant="outline">
                 {#snippet children()}🔑 Create Dev Session{/snippet}
-              </Button>
+              </button>
 
               <Button class="bits-btn" onclick={checkAuthStatus} variant="outline">
                 {#snippet children()}👤 Check Auth Status{/snippet}
-              </Button>
+              </button>
 
               <Button class="bits-btn" onclick={clearSession} variant="destructive">
                 {#snippet children()}🚪 Clear Session{/snippet}
-              </Button>
+              </button>
             </div>
           {/snippet}
-        </CardContent>
+        </div>
       {/snippet}
-    </Card>
+    </NesCard>
 
     <!-- Authentication Status -->
-    <Card class="mb-8 p-6">
+    <NesCard class="mb-8 p-6">
       {#snippet children()}
-        <CardHeader class="mb-4">
+        <div class="yorha-panel-header" class="mb-4">
           {#snippet children()}
-            <CardTitle>🔐 Authentication Status</CardTitle>
+            <h3 class="nes-text is-primary">🔐 Authentication Status</h3>
           {/snippet}
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div class="yorha-panel-content">
           {#snippet children()}
             {#if authStatus}
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -236,21 +237,21 @@
               <p class="text-gray-500">Loading authentication status...</p>
             {/if}
           {/snippet}
-        </CardContent>
+        </div>
       {/snippet}
-    </Card>
+    </NesCard>
 
     <!-- System Tests -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       {#each tests as test}
         {@const result = testResults[test.name]}
-        <Card class="p-6">
+        <NesCard class="p-6">
           {#snippet children()}
-            <CardHeader class="mb-4">
+            <div class="yorha-panel-header" class="mb-4">
               {#snippet children()}
                 <div class="flex items-start justify-between">
                   <div>
-                    <CardTitle class="text-lg">{test.name}</CardTitle>
+                    <h3 class="nes-text is-primary" class="text-lg">{test.name}</h3>
                     <p class="text-sm text-gray-600 mt-1">{test.description}</p>
                     <p class="text-xs text-gray-500 mt-1 font-mono">
                       {test.method || 'GET'} {test.endpoint}
@@ -263,9 +264,9 @@
                   </Badge>
                 </div>
               {/snippet}
-            </CardHeader>
+            </div>
 
-            <CardContent>
+            <div class="yorha-panel-content">
               {#snippet children()}
                 {#if result}
                   <div class="space-y-3">
@@ -304,21 +305,21 @@
                   <p class="text-gray-400 text-sm">Waiting for test to run...</p>
                 {/if}
               {/snippet}
-            </CardContent>
+            </div>
           {/snippet}
-        </Card>
+        </NesCard>
       {/each}
     </div>
 
     <!-- URLs and Access Points -->
-    <Card class="p-6">
+    <NesCard class="p-6">
       {#snippet children()}
-        <CardHeader class="mb-4">
+        <div class="yorha-panel-header" class="mb-4">
           {#snippet children()}
-            <CardTitle>🌐 Available Endpoints & Demos</CardTitle>
+            <h3 class="nes-text is-primary">🌐 Available Endpoints & Demos</h3>
           {/snippet}
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div class="yorha-panel-content">
           {#snippet children()}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <!-- Frontend Demos -->
@@ -377,8 +378,8 @@
               </div>
             </div>
           {/snippet}
-        </CardContent>
+        </div>
       {/snippet}
-    </Card>
+    </NesCard>
   </div>
 </div>

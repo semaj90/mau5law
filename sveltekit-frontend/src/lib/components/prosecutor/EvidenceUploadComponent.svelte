@@ -6,6 +6,7 @@ Enhanced Evidence Upload Component for Prosecutors
 Features: MinIO storage, AI analysis, multi-file support, drag-drop
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Props } from "$lib/types/global";
   import {
     Card,
@@ -201,9 +202,9 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   };
 </script>
 
-<Card class="w-full max-w-4xl mx-auto">
-  <CardHeader>
-    <CardTitle class="flex items-center gap-2">
+<NesCard class="w-full max-w-4xl mx-auto">
+  <div class="yorha-panel-header">
+    <h3 class="nes-text is-primary" class="flex items-center gap-2">
       <Upload class="w-5 h-5" />
       Evidence Upload - Prosecutor Workflow
       {#if enableWebGPU}
@@ -212,10 +213,10 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           GPU Accelerated
         </Badge>
       {/if}
-    </CardTitle>
-  </CardHeader>
+    </h3>
+  </div>
 
-  <CardContent class="space-y-6">
+  <div class="yorha-panel-content" class="space-y-6">
     <!-- Evidence Metadata Form -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="space-y-2">
@@ -313,7 +314,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         />
         <Button class="bits-btn" variant="outline" onclick={() => document.getElementById('file-input')?.click()}>
           Select Files
-        </Button>
+        </button>
       {:else}
         <div class="space-y-3">
           <h3 class="text-lg font-medium">Selected Files ({selectedFiles.length}/{maxFiles})</h3>
@@ -343,7 +344,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
                   onclick={() => removeFile(index)}
                 >
                   <X class="w-4 h-4" />
-                </Button>
+                </button>
               </div>
             </div>
           {/each}
@@ -363,14 +364,14 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
               disabled={selectedFiles.length >= maxFiles}
             >
               Add More Files
-            </Button>
+            </button>
             <Button class="bits-btn" onclick={uploadEvidence} disabled={uploading || !evidenceTitle.trim()}>
               {#if uploading}
                 Processing...
               {:else}
                 Upload & Analyze Evidence
               {/if}
-            </Button>
+            </button>
           </div>
         </div>
       {/if}
@@ -439,7 +440,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
             }}
           >
             Upload More Evidence
-          </Button>
+          </button>
         </div>
       </div>
     {/if}
@@ -465,8 +466,8 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         </div>
       </div>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   .drag-active {

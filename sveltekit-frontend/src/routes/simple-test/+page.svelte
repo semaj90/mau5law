@@ -2,6 +2,7 @@
   Minimal Case Creation Test - Testing API integration without UI library dependencies
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 let isSubmitting = $state(false);
 let submitResult = $state('');
 let formData = $state({
@@ -73,7 +74,7 @@ async function testDatabaseConnection() {
     </div>
   {/if}
 
-  <div class="card" style="border: 1px solid #ddd; border-radius: 8px; padding: 30px; background: white;">
+  <div class="nier-bits-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 30px; background: white;">
     <h2 style="margin-top: 0; color: #333;">Case Information Form</h2>
     
     <form onsubmit={handleSubmit} style="display: flex; flex-direction: column; gap: 20px;">

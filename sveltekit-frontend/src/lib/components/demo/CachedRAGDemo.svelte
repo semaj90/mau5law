@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   let query = $state('What constitutes breach of contract?');
   let loading = $state(false);
   let result = $state<any>(null);
@@ -278,7 +279,7 @@
     <div class="metrics-section">
       <h3>📊 Cache Metrics</h3>
       <div class="metrics-grid">
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <h4>🧠 Embeddings</h4>
           <div class="metric-stats">
             <div>Total Requests: {cacheMetrics.embeddings.totalRequests}</div>
@@ -288,7 +289,7 @@
           </div>
         </div>
 
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <h4>🔍 Queries</h4>
           <div class="metric-stats">
             <div>Total Requests: {cacheMetrics.queries.totalRequests}</div>
