@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <!-- Enhanced Dialog component with custom implementation -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { X } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
   import { quadOut } from "svelte/easing";

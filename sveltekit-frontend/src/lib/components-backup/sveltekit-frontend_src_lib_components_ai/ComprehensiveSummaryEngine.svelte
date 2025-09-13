@@ -2,6 +2,7 @@
 <!-- Features: Local LLM + Enhanced RAG + Loki.js + Fuse.js + XState + Service Workers -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     targetId: string
     targetType: 'case' | 'evidence' | 'legal_document' | 'cross_analysis' ;
@@ -502,12 +503,12 @@
 
       <div class="processing-controls">
         {#if !isProcessing}
-          <button class="btn-primary" onclick={startComprehensiveSummary}>
+          <button class="nes-btn is-primary" onclick={startComprehensiveSummary}>
             <Play size="16" />
             Start Analysis
           </button>
         {:else}
-          <button class="btn-secondary" onclick={pauseProcessing}>
+          <button class="nes-btn" onclick={pauseProcessing}>
             <Pause size="16" />
             Pause
           </button>

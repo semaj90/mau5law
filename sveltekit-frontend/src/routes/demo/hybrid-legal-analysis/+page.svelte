@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { PageData, ActionData } from './$types.js';
   import { onMount } from 'svelte';
   import { enhance } from '$app/forms';
@@ -159,7 +160,7 @@ https://svelte.dev/e/expected_token -->
       <Layers class="w-10 h-10 text-primary" />
       Hybrid Legal Analysis
     </h1>
-    <p class="text-lg text-muted-foreground max-w-3xl mx-auto">
+    <p class="text-lg nes-text is-disabled max-w-3xl mx-auto">
       Multi-modal AI-powered legal document analysis combining semantic search,
       entity extraction, risk assessment, and precedent matching
     </p>
@@ -209,16 +210,16 @@ https://svelte.dev/e/expected_token -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Document Selection -->
       <OrchestratedCard.CaseFile>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <FileText class="w-5 h-5" />
             Document Selection
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             Choose a document for comprehensive multi-modal analysis
           </Card.Description>
         </Card.Header>
-        <Card.Content class="space-y-4">
+        <NesCard.Content class="space-y-4">
           <div class="grid gap-3 max-h-96 overflow-y-auto">
             {#each data.sampleDocuments as document}
               <button
@@ -235,14 +236,14 @@ https://svelte.dev/e/expected_token -->
                     </Badge>
                   </div>
                 </div>
-                <p class="text-sm text-muted-foreground line-clamp-2">{document.content}</p>
+                <p class="text-sm nes-text is-disabled line-clamp-2">{document.content}</p>
                 <div class="flex flex-wrap gap-1 mt-2">
                   {#each document.tags as tag}
                     <Badge variant="secondary" class="text-xs">{tag}</Badge>
                   {/each}
                 </div>
                 {#if document.lastAnalyzed}
-                  <p class="text-xs text-muted-foreground mt-2">
+                  <p class="text-xs nes-text is-disabled mt-2">
                     Last analyzed: {formatAnalysisDate(new Date(document.lastAnalyzed))}
                   </p>
                 {/if}
@@ -254,16 +255,16 @@ https://svelte.dev/e/expected_token -->
 
       <!-- Analysis Configuration -->
       <OrchestratedCard.Analysis>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <Settings class="w-5 h-5" />
             Analysis Configuration
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             Select analysis types and run multi-modal processing
           </Card.Description>
         </Card.Header>
-        <Card.Content class="space-y-6">
+        <NesCard.Content class="space-y-6">
           <!-- Available Analysis Types -->
           <div class="space-y-3">
             <h4 class="font-medium">Analysis Types</h4>
@@ -279,12 +280,12 @@ https://svelte.dev/e/expected_token -->
                   <div class="flex-1">
                     <div class="flex items-center justify-between">
                       <span class="font-medium">{analysis.name}</span>
-                      <div class="flex gap-2 text-xs text-muted-foreground">
+                      <div class="flex gap-2 text-xs nes-text is-disabled">
                         <span>{formatConfidence(analysis.accuracy)} accuracy</span>
                         <span>{analysis.avgTime}ms avg</span>
                       </div>
                     </div>
-                    <p class="text-sm text-muted-foreground">{analysis.description}</p>
+                    <p class="text-sm nes-text is-disabled">{analysis.description}</p>
                   </div>
                 </label>
               {/each}
@@ -315,7 +316,7 @@ https://svelte.dev/e/expected_token -->
                     style="width: {analysisProgress}%"
                   ></div>
                 </div>
-                <div class="text-sm text-muted-foreground space-y-1">
+                <div class="text-sm nes-text is-disabled space-y-1">
                   {#each processingSteps as step}
                     <div class="flex items-center gap-2">
                       <Activity class="w-3 h-3 animate-pulse" />
@@ -333,31 +334,31 @@ https://svelte.dev/e/expected_token -->
     <!-- Analysis Results -->
     {#if analysisResults}
       <OrchestratedCard.AIInsight>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <BarChart3 class="w-5 h-5" />
             Analysis Results
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             Multi-modal analysis completed with {formatConfidence(analysisResults.confidence)} confidence
           </Card.Description>
         </Card.Header>
-        <Card.Content class="space-y-6">
+        <NesCard.Content class="space-y-6">
           <!-- Overall Results Summary -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="text-center p-4 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold {getConfidenceClass(analysisResults.confidence)}">
                 {formatConfidence(analysisResults.confidence)}
               </p>
-              <p class="text-sm text-muted-foreground">Overall Confidence</p>
+              <p class="text-sm nes-text is-disabled">Overall Confidence</p>
             </div>
             <div class="text-center p-4 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold text-primary">{selectedAnalysisTypes.size}</p>
-              <p class="text-sm text-muted-foreground">Analysis Types</p>
+              <p class="text-sm nes-text is-disabled">Analysis Types</p>
             </div>
             <div class="text-center p-4 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold text-primary">{analysisResults.processingSteps?.length || 0}</p>
-              <p class="text-sm text-muted-foreground">Processing Steps</p>
+              <p class="text-sm nes-text is-disabled">Processing Steps</p>
             </div>
           </div>
 
@@ -416,7 +417,7 @@ https://svelte.dev/e/expected_token -->
                       <div class="space-y-1">
                         <h6 class="text-sm font-medium">Risk Factors:</h6>
                         {#each result.riskFactors as factor}
-                          <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                          <div class="flex items-center gap-2 text-sm nes-text is-disabled">
                             <AlertTriangle class="w-3 h-3" />
                             {factor}
                           </div>
@@ -431,17 +432,17 @@ https://svelte.dev/e/expected_token -->
 
           <!-- Action Buttons -->
           <div class="flex gap-3 pt-4 border-t">
-            <Button variant="outline" onclick={() => analysisResults = null}>
+            <button class="nes-btn" variant="outline" onclick={() => analysisResults = null}>
               Clear Results
-            </Button>
-            <Button variant="outline" onclick={() => currentTab = 'visualization'}>
+            </button>
+            <button class="nes-btn" variant="outline" onclick={() => currentTab = 'visualization'}>
               <Eye class="w-4 h-4 mr-2" />
               View Visualization
-            </Button>
-            <Button onclick={() => goto('/dashboard/search')}>
+            </button>
+            <button class="nes-btn" onclick={() => goto('/dashboard/search')}>
               <Search class="w-4 h-4 mr-2" />
               Search Similar
-            </Button>
+            </button>
           </div>
         </Card.Content>
       </OrchestratedCard.AIInsight>
@@ -451,16 +452,16 @@ https://svelte.dev/e/expected_token -->
   <!-- Document Comparison Tab -->
   {#if currentTab === 'comparison'}
     <OrchestratedCard.Analysis>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+      <NesCard.Header>
+        <NesCard.Title class="flex items-center gap-2">
           <BarChart3 class="w-5 h-5" />
           Document Comparison
         </Card.Title>
-        <Card.Description>
+        <NesCard.Description>
           Compare multiple documents using advanced similarity analysis
         </Card.Description>
       </Card.Header>
-      <Card.Content class="space-y-6">
+      <NesCard.Content class="space-y-6">
         <div class="grid gap-3">
           {#each data.sampleDocuments as document}
             <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50">
@@ -475,7 +476,7 @@ https://svelte.dev/e/expected_token -->
                   <span class="font-medium">{document.title}</span>
                   <Badge variant="outline" class="text-xs capitalize">{document.type}</Badge>
                 </div>
-                <p class="text-sm text-muted-foreground line-clamp-1">{document.content}</p>
+                <p class="text-sm nes-text is-disabled line-clamp-1">{document.content}</p>
               </div>
             </label>
           {/each}
@@ -487,23 +488,23 @@ https://svelte.dev/e/expected_token -->
         >
           <BarChart3 class="w-4 h-4" />
           Compare Selected Documents ({selectedDocuments.size})
-        </Button>
+        </button>
       </Card.Content>
     </OrchestratedCard.Analysis>
   {/if}
 
   <!-- Recent Analyses -->
   <OrchestratedCard.Analysis>
-    <Card.Header>
-      <Card.Title class="flex items-center gap-2">
+    <NesCard.Header>
+      <NesCard.Title class="flex items-center gap-2">
         <Clock class="w-5 h-5" />
         Recent Hybrid Analyses
       </Card.Title>
-      <Card.Description>
+      <NesCard.Description>
         Latest multi-modal analysis results and performance metrics
       </Card.Description>
     </Card.Header>
-    <Card.Content>
+    <NesCard.Content>
       <div class="space-y-3">
         {#each data.recentAnalyses as analysis}
           <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
@@ -516,7 +517,7 @@ https://svelte.dev/e/expected_token -->
                   {/each}
                 </div>
               </div>
-              <div class="text-sm text-muted-foreground">
+              <div class="text-sm nes-text is-disabled">
                 {formatAnalysisDate(new Date(analysis.timestamp))} •
                 Processed in {analysis.processingTime}ms
               </div>
@@ -527,9 +528,9 @@ https://svelte.dev/e/expected_token -->
                   {formatConfidence(analysis.results.overallScore)}
                 </Badge>
               {/if}
-              <Button variant="ghost" size="sm" onclick={() => navigateToDocument(analysis.documentId)}>
+              <button class="nes-btn" variant="ghost" size="sm" onclick={() => navigateToDocument(analysis.documentId)}>
                 <Eye class="w-3 h-3" />
-              </Button>
+              </button>
             </div>
           </div>
         {/each}

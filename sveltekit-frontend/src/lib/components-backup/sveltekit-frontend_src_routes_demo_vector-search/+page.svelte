@@ -1,13 +1,8 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Badge } from "$lib/components/ui/badge";
-  import { Button } from "$lib/components/ui/button";
-  import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from "$lib/components/ui/card";
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label";
   import {
@@ -106,20 +101,20 @@
       <Brain class="h-10 w-10" />
       AI-Powered Vector Search & Ranking
     </h1>
-    <p class="text-lg text-muted-foreground">
+    <p class="text-lg nes-text is-disabled">
       Semantic search with multi-factor ranking using nomic-embed-text
     </p>
   </div>
 
   <!-- Search Configuration -->
-  <Card class="mb-8">
-    <CardHeader>
-      <CardTitle>Search Configuration</CardTitle>
-      <CardDescription>
+  <NesCard class="mb-8">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Search Configuration</h3>
+      <p class="nes-text">
         Configure your semantic search parameters
-      </CardDescription>
-    </CardHeader>
-    <CardContent class="space-y-6">
+      </p>
+    </div>
+    <div class="yorha-panel-content" class="space-y-6">
       <!-- Search Query -->
       <div class="space-y-2">
         <Label for="query">Search Query</Label>
@@ -131,7 +126,7 @@
             class="flex-1"
             on:keydown={(e) => e.key === "Enter" && performSearch()}
           />
-          <Button
+          <button class="nes-btn"
             onclick={performSearch}
             disabled={searching || !query.trim()}
           >
@@ -144,7 +139,7 @@
               <Search class="mr-2 h-4 w-4" />
               Search
             {/if}
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -190,7 +185,7 @@
       <div class="space-y-2">
         <div class="flex items-center justify-between">
           <Label for="threshold">Similarity Threshold</Label>
-          <span class="text-sm text-muted-foreground"
+          <span class="text-sm nes-text is-disabled"
             >{formatScore(threshold[0])}</span
           >
         </div>
@@ -202,7 +197,7 @@
           step={0.05}
           class="py-2"
         />
-        <div class="flex justify-between text-xs text-muted-foreground">
+        <div class="flex justify-between text-xs nes-text is-disabled">
           <span>Broad (30%)</span>
           <span>Focused (95%)</span>
         </div>
@@ -215,7 +210,7 @@
             <Label for="personalized" class="text-base font-medium">
               Personalized Results
             </Label>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-sm nes-text is-disabled">
               Rank results based on your search history
             </p>
           </div>
@@ -227,23 +222,23 @@
             <Label for="explanation" class="text-base font-medium">
               Include Explanations
             </Label>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-sm nes-text is-disabled">
               Show why each result was ranked
             </p>
           </div>
           <Switch id="explanation" bind:checked={includeExplanation} />
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Search Results -->
   {#if error}
-    <Card class="border-destructive">
-      <CardContent class="pt-6">
+    <NesCard class="border-destructive">
+      <div class="yorha-panel-content" class="pt-6">
         <p class="text-destructive">{error}</p>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {:else if results.length > 0}
     <div class="space-y-4">
       <h2 class="text-2xl font-semibold flex items-center gap-2">
@@ -252,27 +247,27 @@
       </h2>
 
       {#each results as result, index}
-        <Card class="hover:shadow-lg transition-shadow">
-          <CardHeader>
+        <NesCard class="hover:shadow-lg transition-shadow">
+          <div class="yorha-panel-header">
             <div class="flex items-start justify-between">
               <div class="flex-1">
-                <CardTitle class="text-lg flex items-center gap-2">
+                <h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
                   {@const Icon = typeIcons[documentType]}
                   <Icon class="h-5 w-5" />
                   Result #{index + 1}
-                </CardTitle>
-                <CardDescription class="mt-1">
+                </h3>
+                <p class="nes-text" class="mt-1">
                   {result.metadata?.filename ||
                     result.metadata?.title ||
                     "Untitled"}
-                </CardDescription>
+                </p>
               </div>
               <Badge variant="secondary" class="text-lg">
                 {formatScore(result.score)}
               </Badge>
             </div>
-          </CardHeader>
-          <CardContent class="space-y-4">
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <!-- Content Preview -->
             <div class="bg-muted p-4 rounded-lg">
               <p class="text-sm line-clamp-3">
@@ -292,7 +287,7 @@
                     <Tooltip>
                       <TooltipTrigger>
                         <div class="text-center p-2 bg-muted rounded">
-                          <div class="text-xs text-muted-foreground capitalize">
+                          <div class="text-xs nes-text is-disabled capitalize">
                             {factor.replace(/([A-Z])/g, " $1").trim()}
                           </div>
                           <div
@@ -345,30 +340,30 @@
                 {/each}
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/each}
     </div>
   {:else if searching}
-    <Card>
-      <CardContent class="py-12">
+    <NesCard>
+      <div class="yorha-panel-content" class="py-12">
         <div class="flex flex-col items-center justify-center space-y-4">
           <div
             class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"
           ></div>
-          <p class="text-muted-foreground">Searching through vectors...</p>
+          <p class="nes-text is-disabled">Searching through vectors...</p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {:else}
-    <Card>
-      <CardContent class="py-12 text-center">
-        <Search class="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-        <p class="text-muted-foreground">
+    <NesCard>
+      <div class="yorha-panel-content" class="py-12 text-center">
+        <Search class="mx-auto h-12 w-12 nes-text is-disabled mb-4" />
+        <p class="nes-text is-disabled">
           Enter a search query to find semantically similar documents
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

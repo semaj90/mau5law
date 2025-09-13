@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import type { HTMLAttributes } from "svelte/elements";
 
   	let { children, ...restProps }: HTMLAttributes<HTMLDivElement> = $props();

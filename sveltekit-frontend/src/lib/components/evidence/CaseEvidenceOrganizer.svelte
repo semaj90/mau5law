@@ -11,6 +11,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { page } from '$app/state';
   import DetectiveWebSocketManager from '$lib/websocket/DetectiveWebSocketManager.js';
@@ -790,7 +791,7 @@
             <div class="evidence-grid">
               {#each category.evidence as evidence}
                 <div 
-                  class="evidence-card"
+                  class="evidence-nier-bits-card"
                   class:selected={selectedEvidence.includes(evidence)}
                   onclick={() => selectEvidence(evidence, 'category')}
                 >
@@ -877,7 +878,7 @@
             <div class="cluster-evidence">
               {#each cluster.evidence as evidence}
                 <div 
-                  class="evidence-card compact"
+                  class="evidence-nier-bits-card compact"
                   class:selected={selectedEvidence.includes(evidence)}
                   onclick={() => selectEvidence(evidence, 'cluster')}
                 >
@@ -907,7 +908,7 @@
             <div class="chain-evidence">
               {#each chain.evidence as evidence}
                 <div 
-                  class="evidence-card custody"
+                  class="evidence-nier-bits-card custody"
                   class:selected={selectedEvidence.includes(evidence)}
                   onclick={() => selectEvidence(evidence, 'custody')}
                 >

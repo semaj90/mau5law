@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Button } from 'bits-ui';
   // import { createDialog, melt } from 'melt'; // Removed melt dependency
   import { fly, fade } from 'svelte/transition';
@@ -86,7 +87,7 @@
     <div class="space-y-8">
       {#if activeTab === 'overview'}
         <!-- Color Palette -->
-        <section class="nier-card p-8">
+        <section class="nier-nier-bits-card p-8">
           <h3 class="text-2xl font-display nier-heading mb-6">Color System</h3>
           
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -162,7 +163,7 @@
 
       {#if activeTab === 'components'}
         <!-- Buttons -->
-        <section class="nier-card p-8">
+        <section class="nier-nier-bits-card p-8">
           <h3 class="text-2xl font-display nier-heading mb-6">Button Components</h3>
           
           <div class="flex flex-wrap gap-4">
@@ -183,7 +184,7 @@
         </section>
 
         <!-- Badges -->
-        <section class="nier-card p-8">
+        <section class="nier-nier-bits-card p-8">
           <h3 class="text-2xl font-display nier-heading mb-6">Status Badges</h3>
           
           <div class="flex flex-wrap gap-3">
@@ -195,7 +196,7 @@
         </section>
 
         <!-- Interactive Elements -->
-        <section class="nier-card p-8">
+        <section class="nier-nier-bits-card p-8">
           <h3 class="text-2xl font-display nier-heading mb-6">Interactive Elements</h3>
           
           <!-- Melt UI Dialog Example -->
@@ -238,7 +239,7 @@
 
       {#if activeTab === 'forms'}
         <!-- Form Elements -->
-        <section class="nier-card p-8">
+        <section class="nier-nier-bits-card p-8">
           <h3 class="text-2xl font-display nier-heading mb-6">Form Elements</h3>
           
           <div class="space-y-6 max-w-md">
@@ -304,7 +305,7 @@
         <!-- Case Card -->
         <section class="grid md:grid-cols-2 gap-6">
           <!-- Standard Case Card -->
-          <div class="case-card priority-{demoCase.priority}">
+          <div class="case-nier-bits-card priority-{demoCase.priority}">
             <div class="flex justify-between items-start mb-4">
               <div>
                 <h4 class="text-lg font-semibold nier-heading">{demoCase.title}</h4>

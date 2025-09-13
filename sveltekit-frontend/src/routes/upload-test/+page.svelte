@@ -1,6 +1,7 @@
 /// <reference types="vite/client"></reference>
 <!-- Test page for Simple File Upload with RAG integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
   import { onMount } from 'svelte';
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Card } from "bits-ui";
   // Tooltip functionality removed for now - can be re-added with bits-ui Tooltip
 
@@ -73,7 +74,7 @@
   }
 </script>
 
-<Card.Root
+<NesCard.Root
   class={cardClasses}
   role={clickable ? 'button' : undefined}
   tabindex={clickable ? 0 : undefined}
@@ -92,21 +93,21 @@
   {/if}
 
   {#if header || title || subtitle || actions}
-    <Card.Header class="card-header">
+    <NesCard.Header class="nier-bits-yorha-panel-header">
       {#if header}
         {@render header()}
       {:else if title || subtitle}
         <div class="golden-flex-between">
           <div class="space-y-golden">
             {#if title}
-              <Card.Title class="card-title text-yorha-text-primary">{title}</Card.Title>
+              <NesCard.Title class="nier-bits-nes-text is-primary text-yorha-text-primary">{title}</Card.Title>
             {/if}
             {#if subtitle}
-              <Card.Description class="card-subtitle text-yorha-text-secondary">{subtitle}</Card.Description>
+              <NesCard.Description class="nier-bits-card-subtitle text-yorha-text-secondary">{subtitle}</Card.Description>
             {/if}
           </div>
           {#if actions}
-            <div class="card-actions">{@render actions()}</div>
+            <div class="nier-bits-card-actions">{@render actions()}</div>
           {/if}
         </div>
       {/if}
@@ -114,11 +115,11 @@
   {/if}
 
   {#if children}
-    <Card.Content class="card-content">{@render children()}</Card.Content>
+    <NesCard.Content class="nier-bits-yorha-panel-content">{@render children()}</Card.Content>
   {/if}
 
   {#if footer}
-    <Card.Footer class="card-footer">{@render footer()}</Card.Footer>
+    <NesCard.Footer class="nier-bits-yorha-panel-content">{@render footer()}</Card.Footer>
   {/if}
 </Card.Root>
 

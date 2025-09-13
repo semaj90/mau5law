@@ -269,7 +269,7 @@ https://svelte.dev/e/expected_token -->
                           {upload.status}
                         
                         {#if upload.documentId}
-                          <Button.Root
+                          <button class="nes-btn".Root
                             size="sm"
                             variant="outline"
                             onclick={() => loadDocumentForAnalysis(upload.documentId!)}
@@ -344,7 +344,7 @@ https://svelte.dev/e/expected_token -->
                         {/if}
                       
                     
-                    <Button.Root
+                    <button class="nes-btn".Root
                       variant="outline"
                       onclick={clearSelectedDocument}
                     >
@@ -377,13 +377,13 @@ https://svelte.dev/e/expected_token -->
                 Choose a document from your search results or recent uploads to begin AI analysis
               
               
-                <Button.Root
+                <button class="nes-btn".Root
                   onclick={() => activeTab = 'search'}
                   disabled={!hasDocuments}
                 >
                   Search Documents
                 
-                <Button.Root
+                <button class="nes-btn".Root
                   variant="outline"
                   onclick={() => activeTab = 'upload'}
                 >
@@ -427,7 +427,7 @@ https://svelte.dev/e/expected_token -->
                             {upload.status}
                           
                           {#if upload.documentId}
-                            <Button.Root
+                            <button class="nes-btn".Root
                               size="sm"
                               variant="outline"
                               onclick={() => loadDocumentForAnalysis(upload.documentId!)}
@@ -460,7 +460,7 @@ https://svelte.dev/e/expected_token -->
                               {Math.round(result.similarity * 100)}% similarity
                             
                           
-                          <Button.Root
+                          <button class="nes-btn".Root
                             size="sm"
                             variant="outline"
                             onclick={() => handleDocumentSelect({ detail: { document: result } })}

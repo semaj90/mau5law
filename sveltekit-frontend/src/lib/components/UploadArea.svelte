@@ -2,6 +2,7 @@
 https://svelte.dev/e/rune_missing_parentheses -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { preventDefault } from 'svelte/legacy';
   interface Props {

@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import GlyphGenerator from '$lib/components/glyph/GlyphGenerator.svelte';
   import {
     Card,
@@ -84,11 +85,11 @@ https://svelte.dev/e/attribute_duplicate -->
     <!-- Sidebar -->
     <div class="space-y-6">
       <!-- Evidence Selection -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-lg">📁 Evidence Selection</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-lg">📁 Evidence Selection</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-3">
             <div>
               <label class="block text-sm font-medium mb-1" for="evidence-id">Evidence ID</label><input id="evidence-id"
@@ -103,13 +104,13 @@ https://svelte.dev/e/attribute_duplicate -->
               Select an evidence file to generate a glyph for. The system will use evidence metadata for enhanced context.
             </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Tensor Search -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-lg flex items-center justify-between">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-lg flex items-center justify-between">
             🔍 Tensor Search
             <Button
               class="bits-btn text-xs px-2 py-1"
@@ -117,10 +118,10 @@ https://svelte.dev/e/attribute_duplicate -->
               onclick={() => showAdvanced = !showAdvanced}
             >
               {showAdvanced ? 'Hide' : 'Advanced'}
-            </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+            </button>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-3">
             <div class="flex gap-2">
               <input
@@ -136,7 +137,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 class="px-3 py-2 text-sm bits-btn bits-btn"
               >
                 {searching ? '...' : 'Search'}
-              </Button>
+              </button>
             </div>
 
             {#if tensorSearchResults.length > 0}
@@ -157,16 +158,16 @@ https://svelte.dev/e/attribute_duplicate -->
               <p class="text-xs text-gray-500 italic">No tensors found for "{tensorSearchQuery}"</p>
             {/if}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- System Performance -->
       {#if showAdvanced}
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-lg">⚡ Performance Stats</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-lg">⚡ Performance Stats</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
                 <span>GPU Cache:</span>
@@ -185,17 +186,17 @@ https://svelte.dev/e/attribute_duplicate -->
                 <span class="text-orange-600">Enabled</span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
     </div>
   </div>
 
   <!-- Recent Glyphs Gallery -->
   {#if recentGlyphs.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           🖼️ Recent Glyphs ({recentGlyphs.length})
           <Button
             variant="outline"
@@ -203,10 +204,10 @@ https://svelte.dev/e/attribute_duplicate -->
             class="text-sm px-3 py-1 bits-btn bits-btn"
           >
             Clear All
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+          </button>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
           {#each recentGlyphs as glyph}
             <div class="group relative">
@@ -230,16 +231,16 @@ https://svelte.dev/e/attribute_duplicate -->
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Features Overview -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="text-lg">🚀 Glyph Diffusion Features</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="text-lg">🚀 Glyph Diffusion Features</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="text-center p-4 border rounded-lg">
           <div class="text-2xl mb-2">⚡</div>
@@ -275,8 +276,8 @@ https://svelte.dev/e/attribute_duplicate -->
           <li>• Download PNG files with embedded tensors for portable AI workflows</li>
         </ul>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 </div>
 
 <style>

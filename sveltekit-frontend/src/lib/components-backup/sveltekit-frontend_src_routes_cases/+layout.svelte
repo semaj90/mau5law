@@ -6,6 +6,7 @@ import type { Case } from '$lib/types';
 
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     data: LayoutData
   }

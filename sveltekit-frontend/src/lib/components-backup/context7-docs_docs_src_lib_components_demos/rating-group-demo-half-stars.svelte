@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { unstable_RatingGroup as RatingGroup } from "bits-ui";
   	import Star from "phosphor-svelte/lib/Star";
   	import StarHalf from "phosphor-svelte/lib/StarHalf";
@@ -10,7 +11,7 @@
 		{#each items as item (item.index)}
 			<RatingGroup.Item
 				index={item.index}
-				class="text-foreground data-[state=inactive]:text-muted-foreground size-10 cursor-pointer transition-colors data-[readonly]:cursor-default md:size-8"
+				class="text-foreground data-[state=inactive]:nes-text is-disabled size-10 cursor-pointer transition-colors data-[readonly]:cursor-default md:size-8"
 			>
 				{#if item.state === "inactive"}
 					<Star class="size-full" />

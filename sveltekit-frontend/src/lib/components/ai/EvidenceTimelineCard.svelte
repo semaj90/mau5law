@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
 
   // runes-mode: props accessed via $props()
@@ -111,28 +112,28 @@
   }
 </script>
 
-<Card class="w-full max-w-4xl">
-  <CardHeader>
+<NesCard class="w-full max-w-4xl">
+  <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
-      <CardTitle class="text-xl font-semibold flex items-center gap-2">
+      <h3 class="nes-text is-primary" class="text-xl font-semibold flex items-center gap-2">
         ⏰ Evidence Timeline
         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{timelineEvents.length} events</span>
-      </CardTitle>
+      </h3>
       <div class="flex gap-2">
         <Button class="bits-btn" variant="outline" size="sm">
           📊 Timeline Analysis
-        </Button>
+        </button>
         <Button class="bits-btn" variant="outline" size="sm">
           🗂️ Export Timeline
-        </Button>
+        </button>
       </div>
     </div>
     {#if caseId}
       <p class="text-sm text-gray-600">Case: {caseId}</p>
     {/if}
-  </CardHeader>
+  </div>
 
-  <CardContent>
+  <div class="yorha-panel-content">
     {#if sortedEvents.length === 0}
       <div class="text-center py-8 text-gray-500">
         <div class="text-4xl mb-2">📅</div>
@@ -243,18 +244,18 @@
         <div class="flex gap-2">
           <Button class="bits-btn" variant="outline" size="sm">
             🔍 Find Gaps
-          </Button>
+          </button>
           <Button class="bits-btn" variant="outline" size="sm">
             🕸️ Show Connections
-          </Button>
+          </button>
           <Button class="bits-btn" size="sm">
             📝 Generate Report
-          </Button>
+          </button>
         </div>
       </div>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   /* Timeline custom styles */

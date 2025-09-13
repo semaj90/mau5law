@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onsummaryGenerated?: (event?: any) => void;
   }
@@ -14,7 +15,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
 
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
     import Badge from '$lib/components/ui/Badge.svelte';
   import * as Dialog from '$lib/components/ui/dialog';
   import Drawer from '$lib/components/ui/drawer/Drawer.svelte';
@@ -180,28 +181,28 @@ https://svelte.dev/e/js_parse_error -->
           <!-- Loading State -->
           <div class="flex flex-col items-center justify-center h-48">
             <Brain class="w-16 h-16 text-primary animate-pulse" />
-            <span class="text-lg text-muted-foreground mt-4">Generating AI Summary...</span>
+            <span class="text-lg nes-text is-disabled mt-4">Generating AI Summary...</span>
           </div>
         {:else if caseData?.summary}
           <!-- Summary Content -->
           <div class="space-y-4">
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-semibold">Overview</h3>
-              <Button onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="outline">
+              <button class="nes-btn" onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="outline">
                 <Sparkles class="w-4 h-4 mr-2" /> Regenerate
-              </Button>
+              </button>
             </div>
-            <p class="text-muted-foreground">{caseData.summary.overview}</p>
+            <p class="nes-text is-disabled">{caseData.summary.overview}</p>
 
             <h3 class="text-lg font-semibold">Key Findings</h3>
-            <ul class="list-disc list-inside text-muted-foreground">
+            <ul class="list-disc list-inside nes-text is-disabled">
               {#each caseData.summary.keyFindings as finding}
                 <li>{finding}</li>
               {/each}
             </ul>
 
             <h3 class="text-lg font-semibold">Recommendations</h3>
-            <ul class="list-disc list-inside text-muted-foreground">
+            <ul class="list-disc list-inside nes-text is-disabled">
               {#each caseData.summary.recommendations as rec}
                 <li>{rec}</li>
               {/each}
@@ -212,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
               <Badge variant="outline" class="{getRiskColor(caseData.summary.riskAssessment.level)}">
                 {caseData.summary.riskAssessment.level}
               </Badge>
-              <span class="text-muted-foreground">({caseData.summary.riskAssessment.factors.join(', ')})</span>
+              <span class="nes-text is-disabled">({caseData.summary.riskAssessment.factors.join(', ')})</span>
             </div>
 
             <h3 class="text-lg font-semibold">Timeline</h3>
@@ -223,13 +224,13 @@ https://svelte.dev/e/js_parse_error -->
                     <div class="absolute w-3 h-3 bg-primary rounded-full mt-1.5 -left-1.5 border border-white"></div>
                     <time class="ml-2 text-sm font-semibold text-primary">{formatDate(event.date)}</time>
                   </div>
-                  <p class="ml-2 text-muted-foreground">{event.event}</p>
+                  <p class="ml-2 nes-text is-disabled">{event.event}</p>
                 </li>
               {/each}
             </ol>
 
             <h3 class="text-lg font-semibold">Evidence Overview</h3>
-            <div class="grid grid-cols-2 gap-4 text-muted-foreground">
+            <div class="grid grid-cols-2 gap-4 nes-text is-disabled">
               <div>Total Evidence: {caseData.summary.evidence.total}</div>
               <div>Admissible: {caseData.summary.evidence.admissible}</div>
               <div>Questionable: {caseData.summary.evidence.questionable}</div>
@@ -237,19 +238,19 @@ https://svelte.dev/e/js_parse_error -->
             </div>
 
             <h3 class="text-lg font-semibold">Next Steps</h3>
-            <ul class="list-disc list-inside text-muted-foreground">
+            <ul class="list-disc list-inside nes-text is-disabled">
               {#each caseData.summary.nextSteps as step}
                 <li>{step}</li>
               {/each}
             </ul>
           </div>
         {:else}
-          <div class="flex flex-col items-center justify-center h-48 text-muted-foreground">
+          <div class="flex flex-col items-center justify-center h-48 nes-text is-disabled">
             <Brain class="w-16 h-16 mb-4 opacity-50" />
             <p>No AI summary available for this case.</p>
             <Button onclick={generateSummary} disabled={isGeneratingSummary} class="mt-4">
               <Sparkles class="w-4 h-4 mr-2" /> Generate Summary
-            </Button>
+            </button>
           </div>
         {/if}
       </div>

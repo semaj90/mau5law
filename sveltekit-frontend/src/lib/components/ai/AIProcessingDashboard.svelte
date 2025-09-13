@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- AI Processing Dashboard - Integration Demo -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount, onDestroy } from 'svelte';
   	import { Badge } from 'bits-ui';
   	import { Card, CardContent, CardHeader, CardTitle } from 'bits-ui';
@@ -228,59 +229,59 @@ https://svelte.dev/e/js_parse_error -->
 	</div>
 
 	<!-- Provider Selection -->
-	<Card>
-		<CardHeader>
-			<CardTitle>LLM Provider Configuration</CardTitle>
-		</CardHeader>
-		<CardContent>
+	<NesCard>
+		<div class="yorha-panel-header">
+			<h3 class="nes-text is-primary">LLM Provider Configuration</h3>
+		</div>
+		<div class="yorha-panel-content">
 			<LLMProviderSelector 
 				bind:selectedProvider
 				on:providerSelected={handleProviderSelected}
 				on:statusChanged={handleStatusChanged}
 			/>
-		</CardContent>
-	</Card>
+		</div>
+	</NesCard>
 
 	<!-- System Metrics -->
 	<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-		<Card>
-			<CardContent class="p-4">
+		<NesCard>
+			<div class="yorha-panel-content" class="p-4">
 				<div class="text-2xl font-bold text-yorha-primary">{$systemMetrics?.totalTasksProcessed || 0}</div>
 				<div class="text-sm text-yorha-text-secondary">Tasks Processed</div>
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 		
-		<Card>
-			<CardContent class="p-4">
+		<NesCard>
+			<div class="yorha-panel-content" class="p-4">
 				<div class="text-2xl font-bold text-yorha-accent">{$systemMetrics?.averageResponseTime?.toFixed(0) || 0}ms</div>
 				<div class="text-sm text-yorha-text-secondary">Avg Response Time</div>
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 		
-		<Card>
-			<CardContent class="p-4">
+		<NesCard>
+			<div class="yorha-panel-content" class="p-4">
 				<div class="flex items-center space-x-2">
 					<div class="text-2xl font-bold text-yorha-warning">{$systemMetrics?.currentLoad?.toFixed(1) || 0}%</div>
 					<Progress value={$systemMetrics?.currentLoad || 0} class="flex-1 h-2" />
 				</div>
 				<div class="text-sm text-yorha-text-secondary">System Load</div>
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 		
-		<Card>
-			<CardContent class="p-4">
+		<NesCard>
+			<div class="yorha-panel-content" class="p-4">
 				<div class="text-2xl font-bold text-yorha-success">{$systemMetrics?.availableWorkers || 0}</div>
 				<div class="text-sm text-yorha-text-secondary">Available Workers</div>
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 	</div>
 
 	<!-- Task Controls -->
-	<Card>
-		<CardHeader>
-			<CardTitle>AI Task Processing</CardTitle>
-		</CardHeader>
-		<CardContent class="space-y-4">
+	<NesCard>
+		<div class="yorha-panel-header">
+			<h3 class="nes-text is-primary">AI Task Processing</h3>
+		</div>
+		<div class="yorha-panel-content" class="space-y-4">
 			<!-- Test Input -->
 			<div>
 				<label class="block text-sm font-medium text-yorha-text-primary mb-2" for="-test-input-">
@@ -295,7 +296,7 @@ https://svelte.dev/e/js_parse_error -->
 			<!-- Individual Task Buttons -->
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 				{#each demoTasks as task}
-					<Button 
+					<button class="nes-btn" 
 						variant="outline"
 						disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
 						onclick={() => processTask(task)}
@@ -306,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
 							<span class="font-medium">{task.name}</span>
 						</div>
 						<span class="text-xs text-yorha-text-secondary text-left">{task.description}</span>
-					</Button>
+					</button>
 				{/each}
 			</div>
 
@@ -323,18 +324,18 @@ https://svelte.dev/e/js_parse_error -->
 					{:else}
 						🚀 Run All Tasks in Parallel
 					{/if}
-				</Button>
+				</button>
 			</div>
-		</CardContent>
-	</Card>
+		</div>
+	</NesCard>
 
 	<!-- Results -->
 	{#if processingResults.length > 0}
-		<Card>
-			<CardHeader>
-				<CardTitle>Processing Results</CardTitle>
-			</CardHeader>
-			<CardContent>
+		<NesCard>
+			<div class="yorha-panel-header">
+				<h3 class="nes-text is-primary">Processing Results</h3>
+			</div>
+			<div class="yorha-panel-content">
 				<div class="space-y-3 max-h-96 overflow-y-auto">
 					{#each processingResults as result (result.taskId)}
 						<div 
@@ -373,17 +374,17 @@ https://svelte.dev/e/js_parse_error -->
 						</div>
 					{/each}
 				</div>
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 	{/if}
 
 	<!-- Worker Status -->
 	{#if $workerStatus && $workerStatus.length > 0}
-		<Card>
-			<CardHeader>
-				<CardTitle>Worker Status</CardTitle>
-			</CardHeader>
-			<CardContent>
+		<NesCard>
+			<div class="yorha-panel-header">
+				<h3 class="nes-text is-primary">Worker Status</h3>
+			</div>
+			<div class="yorha-panel-content">
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
 					{#each $workerStatus as worker (worker.id)}
 						<div class="p-3 bg-yorha-bg-secondary rounded border">
@@ -406,8 +407,8 @@ https://svelte.dev/e/js_parse_error -->
 						</div>
 					{/each}
 				</div>
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 	{/if}
 </div>
 

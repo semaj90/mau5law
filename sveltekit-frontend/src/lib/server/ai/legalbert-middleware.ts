@@ -1,5 +1,5 @@
 import { logger } from './logger.js';
-import crypto from "crypto";
+const crypto = require('crypto');
 import { ollamaConfig } from '$lib/services/ollama-config-service.js';
 import { ENV_CONFIG } from '$lib/config/environment.js';
 
@@ -32,7 +32,7 @@ async function withRetry<T>(fn: () => Promise<T>, retries: number = 3): Promise<
       return await fn();
     } catch (error: any) {
       if (i === retries - 1) throw error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i)));
+      await new Promise((resolve) => setTimeout(resolve, 1000 * Math.pow(2, i)));
     }
   }
   throw new Error('Max retries exceeded');
@@ -50,13 +50,13 @@ const LEGALBERT_MODELS = {
   huggingface: {
     embedding: 'nlpaueb/legal-bert-base-uncased',
     analysis: 'nlpaueb/legal-bert-small-uncased',
-    apiKey: import.meta.env.HUGGINGFACE_API_KEY,
+    apiKey: process.env.HUGGINGFACE_API_KEY,
     baseUrl: 'https://api-inference.huggingface.co/models',
   },
   openai: {
     embedding: 'text-embedding-3-small',
     analysis: 'gpt-4',
-    apiKey: import.meta.env.OPENAI_API_KEY,
+    apiKey: process.env.OPENAI_API_KEY,
     baseUrl: 'https://api.openai.com/v1',
   },
 };
@@ -728,7 +728,7 @@ export class LegalBERTMiddleware {
     const concepts2 = this.extractBasicConcepts(text2);
 
     const intersection = concepts1.filter((c) => concepts2.includes(c));
-    const union = [...new Set([...concepts1, ...concepts2])];
+    const union = Array.from(new Set([...concepts1, ...concepts2]));
 
     return union.length > 0 ? intersection.length / union.length : 0;
   }

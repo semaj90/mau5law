@@ -5,6 +5,7 @@ and performance monitoring across N64 and YoRHa gaming components
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, tick } from 'svelte';
   import type { 
     EnhancedGPUCacheEntry, 

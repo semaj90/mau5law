@@ -9,6 +9,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import ContextualDetectiveBoard from '$lib/components/detective/ContextualDetectiveBoard.svelte';

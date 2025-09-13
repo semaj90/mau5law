@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import DetectiveWebSocketManager, { type CollaborativeUser } from '$lib/websocket/DetectiveWebSocketManager.js';
   
@@ -293,7 +294,7 @@
       {#if collaborativeUsers.length > 0}
         <div class="users-grid">
           {#each collaborativeUsers as user}
-            <div class="user-card">
+            <div class="user-nier-bits-card">
               <div class="user-info">
                 <span class="user-name">{user.name}</span>
                 <span class="user-id">{user.id}</span>

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Badge } from "$lib/components/ui/index";
   import type { Case } from "$lib/types/api";
   import { formatDistanceToNow } from "date-fns";

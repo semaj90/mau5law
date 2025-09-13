@@ -20,6 +20,7 @@ https://svelte.dev/e/expected_token -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, onDestroy } from 'svelte';
   import { 
@@ -28,7 +29,7 @@ https://svelte.dev/e/expected_token -->
     type SearchFilters 
   } from '$lib/services/instant-search-engine.js';
   import { Input } from '$lib/components/ui/enhanced-bits';
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import * as Card from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import * as Select from '$lib/components/ui/select';
@@ -242,7 +243,7 @@ https://svelte.dev/e/expected_token -->
     <!-- Main Search Input -->
     <div class="relative">
       <Search 
-        class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" 
+        class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 nes-text is-disabled" 
       />
       <Input
         bind:value={searchQuery}
@@ -254,7 +255,7 @@ https://svelte.dev/e/expected_token -->
       <!-- Search Status Icons -->
       <div class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
         {#if isSearching}
-          <Loader2 class="h-4 w-4 animate-spin text-muted-foreground" />
+          <Loader2 class="h-4 w-4 animate-spin nes-text is-disabled" />
         {/if}
         
         {#if showFilters}
@@ -265,7 +266,7 @@ https://svelte.dev/e/expected_token -->
             class="h-8 w-8 p-0"
           >
             <Filter class="h-4 w-4" />
-          </Button>
+          </button>
         {/if}
       </div>
     </div>
@@ -334,7 +335,7 @@ https://svelte.dev/e/expected_token -->
             <label class="text-sm font-medium mb-2 block">Minimum Scores</label>
             <div class="space-y-3">
               <div>
-                <label class="text-xs text-muted-foreground" for="confidence-selectedf">Confidence: {selectedFilters.confidenceMin}</label><input id="confidence-selectedf"
+                <label class="text-xs nes-text is-disabled" for="confidence-selectedf">Confidence: {selectedFilters.confidenceMin}</label><input id="confidence-selectedf"
                   type="range"
                   bind:value={selectedFilters.confidenceMin}
                   min="0"
@@ -344,7 +345,7 @@ https://svelte.dev/e/expected_token -->
                 />
               </div>
               <div>
-                <label class="text-xs text-muted-foreground" for="priority-selectedfil">Priority: {selectedFilters.priorityMin}</label><input id="priority-selectedfil"
+                <label class="text-xs nes-text is-disabled" for="priority-selectedfil">Priority: {selectedFilters.priorityMin}</label><input id="priority-selectedfil"
                   type="range"
                   bind:value={selectedFilters.priorityMin}
                   min="0"
@@ -361,7 +362,7 @@ https://svelte.dev/e/expected_token -->
 
     <!-- Search Stats -->
     {#if showStats && (searchQuery || searchResults.length > 0)}
-      <div class="flex items-center justify-between text-sm text-muted-foreground">
+      <div class="flex items-center justify-between text-sm nes-text is-disabled">
         <div class="flex items-center gap-4">
           {#if searchQuery && searchResults.length > 0}
             <span>
@@ -389,7 +390,7 @@ https://svelte.dev/e/expected_token -->
     {#if searchResults.length > 0}
       <div class="space-y-4">
         {#each searchResults as result}
-          <Card.Root 
+          <NesCard.Root 
             class="hover:shadow-md transition-shadow cursor-pointer"
             onclick={() => handleResultClick(result)}
           >
@@ -436,7 +437,7 @@ https://svelte.dev/e/expected_token -->
               </Card.Description>
 
               <!-- Metadata -->
-              <div class="flex flex-wrap gap-4 text-xs text-muted-foreground">
+              <div class="flex flex-wrap gap-4 text-xs nes-text is-disabled">
                 <div class="flex items-center gap-1">
                   <FileText class="h-3 w-3" />
                   <span class="capitalize">{result.document.type}</span>
@@ -478,33 +479,33 @@ https://svelte.dev/e/expected_token -->
             <!-- Action Buttons -->
             <div.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
-                <Button 
+                <button class="nes-btn" 
                   size="sm" 
                   onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'view'); }}
                 >
                   View Document
-                </Button>
+                </button>
                 
-                <Button 
+                <button class="nes-btn" 
                   size="sm" 
                   variant="outline" 
                   onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'analyze'); }}
                 >
                   AI Analysis
-                </Button>
+                </button>
                 
                 {#if result.document.type === 'evidence'}
-                  <Button 
+                  <button class="nes-btn" 
                     size="sm" 
                     variant="outline" 
                     onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'canvas'); }}
                   >
                     Open in Canvas
-                  </Button>
+                  </button>
                 {/if}
                 
                 {#if result.fuseScore && result.semanticScore}
-                  <div class="ml-auto text-xs text-muted-foreground">
+                  <div class="ml-auto text-xs nes-text is-disabled">
                     Fuzzy: {formatScore(1 - result.fuseScore)} | 
                     Semantic: {formatScore(result.semanticScore)}
                   </div>
@@ -519,12 +520,12 @@ https://svelte.dev/e/expected_token -->
       <!-- No Results -->
       <div.Root>
         <div.Content class="py-12 text-center">
-          <AlertTriangle class="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+          <AlertTriangle class="h-12 w-12 mx-auto nes-text is-disabled mb-4" />
           <h3 class="font-medium mb-2">No results found</h3>
-          <p class="text-muted-foreground text-sm mb-4">
+          <p class="nes-text is-disabled text-sm mb-4">
             No documents match your search for "{searchQuery}".
           </p>
-          <div class="text-sm text-muted-foreground space-y-1">
+          <div class="text-sm nes-text is-disabled space-y-1">
             <p>Try:</p>
             <ul class="list-disc list-inside space-y-1">
               <li>Using different or more general keywords</li>
@@ -540,9 +541,9 @@ https://svelte.dev/e/expected_token -->
       <!-- Loading State -->
       <div.Root>
         <div.Content class="py-12 text-center">
-          <Loader2 class="h-12 w-12 mx-auto text-muted-foreground animate-spin mb-4" />
+          <Loader2 class="h-12 w-12 mx-auto nes-text is-disabled animate-spin mb-4" />
           <h3 class="font-medium mb-2">Searching...</h3>
-          <p class="text-muted-foreground text-sm">
+          <p class="nes-text is-disabled text-sm">
             Searching across legal documents, cases, and evidence...
           </p>
         </Card.Content>

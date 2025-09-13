@@ -2,8 +2,9 @@
 <!-- Real-time demonstration of AI-driven development architecture -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Card from '$lib/components/ui/Card.svelte';
   import { createEnhancedRAGEngine } from '$lib/services/enhanced-rag-pagerank';
   import { createCompilerFeedbackLoop, type CompilerEvent, type PatchCandidate, type SOMCluster } from '$lib/services/compiler-feedback-loop';
@@ -178,7 +179,7 @@
 
     <!-- System Status -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg" class:bg-green-100={systemInitialized} class:bg-red-100={!systemInitialized}>
             <Cpu class="h-5 w-5 {systemInitialized ? 'text-green-600' : 'text-red-600'}" />
@@ -188,9 +189,9 @@
             <p class="text-sm text-gray-400">{systemInitialized ? 'Ready' : 'Initializing'}</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg" class:bg-green-100={isMonitoring} class:bg-red-100={!isMonitoring}>
             <Activity class="h-5 w-5 {isMonitoring ? 'text-green-600' : 'text-red-600'}" />
@@ -200,9 +201,9 @@
             <p class="text-sm text-gray-400">{isMonitoring ? 'Active' : 'Inactive'}</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-blue-100">
             <Brain class="h-5 w-5 text-blue-600" />
@@ -212,9 +213,9 @@
             <p class="text-sm text-gray-400">{performance.successfulPatches} generated</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-purple-100">
             <Target class="h-5 w-5 text-purple-600" />
@@ -224,7 +225,7 @@
             <p class="text-sm text-gray-400">{performance.clusterCount} patterns</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Controls -->
@@ -235,7 +236,7 @@
         class="bg-green-600 hover:bg-green-700"
       >
         Start Monitoring
-      </Button>
+      </button>
       
       <Button 
         onclick={stopMonitoring} 
@@ -243,7 +244,7 @@
         class="bg-red-600 hover:bg-red-700"
       >
         Stop Monitoring
-      </Button>
+      </button>
       
       <Button 
         onclick={addTestError} 
@@ -251,7 +252,7 @@
         class="bg-orange-600 hover:bg-orange-700"
       >
         Add Test Error
-      </Button>
+      </button>
     </div>
   </div>
 
@@ -259,7 +260,7 @@
   <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Real-time Events -->
     <div class="lg:col-span-1">
-      <Card class="p-6 bg-slate-800/30 border-slate-600 h-96">
+      <NesCard class="p-6 bg-slate-800/30 border-slate-600 h-96">
         <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
           <Activity class="h-5 w-5" />
           Real-time Events
@@ -300,12 +301,12 @@
             </div>
           {/if}
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- AI Patches -->
     <div class="lg:col-span-1">
-      <Card class="p-6 bg-slate-800/30 border-slate-600 h-96">
+      <NesCard class="p-6 bg-slate-800/30 border-slate-600 h-96">
         <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
           <Brain class="h-5 w-5" />
           AI Generated Patches
@@ -364,12 +365,12 @@
             </div>
           {/if}
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Performance & Clusters -->
     <div class="lg:col-span-1">
-      <Card class="p-6 bg-slate-800/30 border-slate-600 h-96">
+      <NesCard class="p-6 bg-slate-800/30 border-slate-600 h-96">
         <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
           <Target class="h-5 w-5" />
           Performance & Clusters
@@ -419,7 +420,7 @@
             </div>
           </div>
         </div>
-      </Card>
+      </NesCard>
     </div>
   </div>
 
@@ -427,7 +428,7 @@
   {#if selectedEvent || selectedPatch}
     <div class="max-w-7xl mx-auto mt-6">
       {#if selectedEvent}
-        <Card class="p-6 bg-slate-800/30 border-slate-600 mb-6">
+        <NesCard class="p-6 bg-slate-800/30 border-slate-600 mb-6">
           <h3 class="text-lg font-bold mb-4">Event Details</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -462,11 +463,11 @@
               </div>
             </div>
           </div>
-        </Card>
+        </NesCard>
       {/if}
 
       {#if selectedPatch}
-        <Card class="p-6 bg-slate-800/30 border-slate-600">
+        <NesCard class="p-6 bg-slate-800/30 border-slate-600">
           <h3 class="text-lg font-bold mb-4">Patch Details</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -523,7 +524,7 @@
               </div>
             </div>
           </div>
-        </Card>
+        </NesCard>
       {/if}
     </div>
   {/if}

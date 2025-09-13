@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     class?: string;
     children?: import('svelte').Snippet;
@@ -146,52 +147,52 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Standard Variants -->
-          <div class="yorha-card p-4">
+          <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Standard Variants</h3>
             <div class="space-y-3">
-              <Button class="bits-btn" variant="default">Default Button</Button>
-              <Button class="bits-btn" variant="primary">Primary Action</Button>
-              <Button class="bits-btn" variant="yorha" legal>YoRHa Legal</Button>
-              <Button class="bits-btn" variant="outline">Outline Style</Button>
+              <Button class="bits-btn" variant="default">Default Button</button>
+              <Button class="bits-btn" variant="primary">Primary Action</button>
+              <Button class="bits-btn" variant="yorha" legal>YoRHa Legal</button>
+              <Button class="bits-btn" variant="outline">Outline Style</button>
             </div>
           </div>
 
           <!-- Legal AI Variants -->
-          <div class="yorha-card p-4">
+          <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Legal AI Variants</h3>
             <div class="space-y-3">
               <Button class="bits-btn" variant="crimson" confidence="high" legal>
                 Critical Evidence
-              </Button>
+              </button>
               <Button class="bits-btn" variant="gold" confidence="medium" legal>
                 Case Analysis
-              </Button>
+              </button>
               <Button class="bits-btn" variant="primary" confidence="low" legal>
                 Review Required
-              </Button>
+              </button>
               <Button class="bits-btn" variant="outline" loading legal>
                 Processing...
-              </Button>
+              </button>
             </div>
           </div>
 
           <!-- Priority Buttons -->
-          <div class="yorha-card p-4">
+          <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Priority Actions</h3>
             <div class="space-y-3">
               <Button class="bits-btn" priority="critical" legal>
                 <AlertTriangle class="w-4 h-4 mr-2" />
                 Critical Alert
-              </Button>
+              </button>
               <Button class="bits-btn" priority="high" variant="outline">
                 High Priority
-              </Button>
+              </button>
               <Button class="bits-btn" priority="medium" variant="secondary">
                 Medium Priority
-              </Button>
+              </button>
               <Button class="bits-btn" priority="low" variant="ghost">
                 Low Priority
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -207,7 +208,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Search Inputs -->
-          <div class="yorha-card p-4">
+          <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Search & Evidence</h3>
             <div class="space-y-4">
               <Input
@@ -244,7 +245,7 @@
           </div>
 
           <!-- Status Inputs -->
-          <div class="yorha-card p-4">
+          <div class="yorha-nier-bits-card p-4">
             <h3 class="font-semibold mb-3 text-nier-text-primary">Status & Validation</h3>
             <div class="space-y-4">
               <Input
@@ -290,11 +291,11 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <Button class="bits-btn" variant="yorha" legal onclick={() => dialogOpen = true}>
             Case Management
-          </Button>
+          </button>
 
           <Button class="bits-btn" variant="primary" legal onclick={() => evidenceDialogOpen = true}>
             Evidence Upload
-          </Button>
+          </button>
 
           <Button class="bits-btn" variant="outline" legal onclick={runAIAnalysis} loading={aiAnalysisLoading}>
             {#if aiAnalysisLoading}
@@ -302,7 +303,7 @@
             {:else}
               AI Case Analysis
             {/if}
-          </Button>
+          </button>
         </div>
 
         <!-- Case Management Dialog -->
@@ -341,7 +342,7 @@
                   />
                 </div>
 
-                <div class="agent-card p-4">
+                <div class="agent-nier-bits-card p-4">
                   <h3 class="font-semibold text-nier-text-primary mb-2">AI Assistant Recommendations</h3>
                   <ul class="space-y-2 text-sm text-nier-text-secondary">
                     <li class="flex items-center gap-2">
@@ -363,10 +364,10 @@
               <div class="bits-dialog-footer">
                 <Button class="bits-btn" variant="outline" onclick={() => dialogOpen = false}>
                   Cancel
-                </Button>
+                </button>
                 <Button class="bits-btn" variant="primary" legal>
                   Create Case
-                </Button>
+                </button>
               </div>
             </div>
                           {/snippet}
@@ -420,10 +421,10 @@
               <div class="bits-dialog-footer">
                 <Button class="bits-btn" variant="outline" onclick={() => evidenceDialogOpen = false}>
                   Cancel
-                </Button>
+                </button>
                 <Button class="bits-btn" variant="primary" legal onclick={uploadEvidence} disabled={evidenceUploadProgress > 0}>
                   Upload Evidence
-                </Button>
+                </button>
               </div>
             </div>
                           {/snippet}
@@ -440,7 +441,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {#each mockEvidenceItems as item (item.id)}
-            <Card
+            <NesCard
               variant="evidence"
               evidenceCard
               legal
@@ -479,21 +480,21 @@
                     <div class="flex gap-2">
                       <Button size="sm" variant="outline" class="flex-1 bits-btn bits-btn">
                         Review
-                      </Button>
+                      </button>
                       <Button size="sm" variant="primary" class="flex-1 bits-btn bits-btn">
                         Analyze
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 {/if}
               </div>
-            </Card>
+            </NesCard>
           {/each}
         </div>
 
         <!-- AI Analysis Card -->
         <div class="mt-6">
-          <Card
+          <NesCard
             variant="default"
             aiAnalysis
             confidence="high"
@@ -520,16 +521,16 @@
               <div class="flex gap-2">
                 <Button class="bits-btn" size="sm" variant="primary">
                   Accept Analysis
-                </Button>
+                </button>
                 <Button class="bits-btn" size="sm" variant="outline">
                   Request Review
-                </Button>
+                </button>
                 <Button class="bits-btn" size="sm" variant="ghost">
                   Generate Report
-                </Button>
+                </button>
               </div>
             </div>
-          </Card>
+          </NesCard>
         </div>
       </div>
     {/if}

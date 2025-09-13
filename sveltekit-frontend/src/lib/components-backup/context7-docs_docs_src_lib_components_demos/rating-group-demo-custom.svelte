@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { unstable_RatingGroup as RatingGroup } from "bits-ui";
   	import Star from "phosphor-svelte/lib/Star";
   	import type { ComponentProps } from "svelte";
@@ -11,7 +12,7 @@
 		{#each items as item (item.index)}
 			<RatingGroup.Item
 				index={item.index}
-				class="text-foreground data-[state=inactive]:text-muted-foreground data-disabled:cursor-not-allowed size-10 cursor-pointer transition-colors disabled:opacity-50 data-[readonly]:cursor-default md:size-8"
+				class="text-foreground data-[state=inactive]:nes-text is-disabled data-disabled:cursor-not-allowed size-10 cursor-pointer transition-colors disabled:opacity-50 data-[readonly]:cursor-default md:size-8"
 			>
 				<div class="relative size-full">
 					<Star class="size-full fill-current" weight="fill" />

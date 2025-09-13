@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Button, Calendar, Separator } from "bits-ui";
   	import CaretLeft from "phosphor-svelte/lib/CaretLeft";
   	import CaretRight from "phosphor-svelte/lib/CaretRight";
@@ -49,7 +50,7 @@
 </script>
 
 <div
-	class="border-dark-10 bg-background-alt shadow-card mt-6 flex max-w-[324px] flex-col gap-4 rounded-[15px] border p-[22px]"
+	class="border-dark-10 bg-background-alt shadow-nier-bits-card mt-6 flex max-w-[324px] flex-col gap-4 rounded-[15px] border p-[22px]"
 >
 	<Calendar.Root weekdayFormat="short" fixedWeeks={true} type="single" bind:value>
 		{#snippet children({ months, weekdays })}
@@ -73,7 +74,7 @@
 							<Calendar.GridRow class="mb-1 flex w-full justify-between">
 								{#each weekdays as day, i (i)}
 									<Calendar.HeadCell
-										class="text-muted-foreground font-normal! w-10 rounded-md text-xs"
+										class="nes-text is-disabled font-normal! w-10 rounded-md text-xs"
 									>
 										<div>{day.slice(0, 2)}</div>
 									</Calendar.HeadCell>
@@ -90,7 +91,7 @@
 											class="p-0! relative size-10 text-center text-sm"
 										>
 											<Calendar.Day
-												class="rounded-9px text-foreground hover:border-foreground data-selected:bg-foreground data-disabled:text-foreground/30 data-selected:text-background data-unavailable:text-muted-foreground data-disabled:pointer-events-none data-outside-month:pointer-events-none data-selected:font-medium data-unavailable:line-through group relative inline-flex size-10 items-center justify-center whitespace-nowrap border border-transparent bg-transparent p-0 text-sm font-normal"
+												class="rounded-9px text-foreground hover:border-foreground data-selected:bg-foreground data-disabled:text-foreground/30 data-selected:text-background data-unavailable:nes-text is-disabled data-disabled:pointer-events-none data-outside-month:pointer-events-none data-selected:font-medium data-unavailable:line-through group relative inline-flex size-10 items-center justify-center whitespace-nowrap border border-transparent bg-transparent p-0 text-sm font-normal"
 											>
 												<div
 													class="bg-foreground group-data-selected:bg-background group-data-today:block absolute top-[5px] hidden size-1 rounded-full"

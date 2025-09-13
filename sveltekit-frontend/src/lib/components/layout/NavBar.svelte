@@ -1,0 +1,315 @@
+<script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import { page } from '$app/stores';
+  import { browser } from '$app/environment';
+  import { ButtonBits } from '$lib/components/ui/bits-ui';
+
+  interface Props {
+    user?: any;
+    sidebarOpen?: boolean;
+    variant?: 'full' | 'minimal' | 'demo';
+  }
+
+  let {
+    user = null,
+    sidebarOpen = $bindable(false),
+    variant = 'full'
+  }: Props = $props();
+
+  let currentPath = $derived($page.url.pathname);
+  let isDemo = $derived(currentPath.startsWith('/demo'));
+  let isAuth = $derived(currentPath.startsWith('/auth'));
+  let isAdmin = $derived(currentPath.startsWith('/admin'));
+
+  // Main navigation items
+  const mainNavItems = [
+    { path: '/', label: 'Home', icon: '🏠' },
+    { path: '/dashboard/cases', label: 'Cases', icon: '📁' },
+    { path: '/ai/dashboard', label: 'AI Hub', icon: '🤖' },
+    { path: '/evidenceboard', label: 'Evidence', icon: '🔍' },
+    { path: '/persons-of-interest', label: 'POI', icon: '👥' },
+    { path: '/citations', label: 'Citations', icon: '📚' },
+    { path: '/chat', label: 'Chat', icon: '💬' },
+  ];
+
+  // Demo navigation items
+  const demoNavItems = [
+    { path: '/demo/bits-ui', label: 'Components', icon: '🎨' },
+    { path: '/demo/nes-bits-ui', label: 'NES UI', icon: '🎮' },
+    { path: '/demo/gpu-inference', label: 'GPU', icon: '⚡' },
+    { path: '/demo/legal-ai-complete', label: 'Legal AI', icon: '⚖️' },
+    { path: '/all-routes', label: 'All Routes', icon: '🗺️' },
+  ];
+
+  // Admin navigation items
+  const adminNavItems = [
+    { path: '/admin', label: 'Dashboard', icon: '📊' },
+    { path: '/admin/users', label: 'Users', icon: '👤' },
+    { path: '/admin/cluster', label: 'Cluster', icon: '🖥️' },
+    { path: '/admin/performance-dashboard', label: 'Performance', icon: '📈' },
+  ];
+
+  function isActive(path: string): boolean {
+    if (path === '/') return currentPath === '/';
+    return currentPath.startsWith(path);
+  }
+
+  function toggleSidebar() {
+    sidebarOpen = !sidebarOpen;
+  }
+</script>
+
+<header class="navbar-header" data-variant={variant}>
+  <div class="navbar-container">
+    <div class="navbar-content">
+      <!-- Logo and Sidebar Toggle -->
+      <div class="navbar-start">
+        {#if variant === 'full'}
+          <button
+            class="sidebar-toggle nes-btn"
+            onclick={toggleSidebar}
+            aria-label="Toggle sidebar"
+          >
+            {sidebarOpen ? '✕' : '☰'}
+          </button>
+        {/if}
+
+        <a href="/" class="navbar-logo">
+          <span class="logo-text">YoRHa Legal AI</span>
+          {#if isDemo}
+            <span class="badge badge-demo">DEMO</span>
+          {/if}
+          {#if isAdmin}
+            <span class="badge badge-admin">ADMIN</span>
+          {/if}
+        </a>
+      </div>
+
+      <!-- Main Navigation -->
+      <nav class="navbar-center" aria-label="Main navigation">
+        {#if variant === 'minimal'}
+          <!-- Minimal nav for auth pages -->
+          <ButtonBits to="/" variant="ghost" size="sm">Home</ButtonBits>
+          <ButtonBits to="/all-routes" variant="ghost" size="sm">Browse</ButtonBits>
+        {:else if isDemo}
+          <!-- Demo-specific navigation -->
+          {#each demoNavItems as item}
+            <ButtonBits
+              to={item.path}
+              variant={isActive(item.path) ? 'primary' : 'ghost'}
+              size="sm"
+              class="nav-item"
+            >
+              <span class="nav-icon">{item.icon}</span>
+              <span class="nav-label">{item.label}</span>
+            </ButtonBits>
+          {/each}
+        {:else if isAdmin && user?.role === 'admin'}
+          <!-- Admin navigation -->
+          {#each adminNavItems as item}
+            <ButtonBits
+              to={item.path}
+              variant={isActive(item.path) ? 'primary' : 'ghost'}
+              size="sm"
+              class="nav-item"
+            >
+              <span class="nav-icon">{item.icon}</span>
+              <span class="nav-label">{item.label}</span>
+            </ButtonBits>
+          {/each}
+        {:else}
+          <!-- Main navigation -->
+          {#each mainNavItems as item}
+            <ButtonBits
+              to={item.path}
+              variant={isActive(item.path) ? 'primary' : 'ghost'}
+              size="sm"
+              class="nav-item"
+            >
+              <span class="nav-icon">{item.icon}</span>
+              <span class="nav-label">{item.label}</span>
+            </ButtonBits>
+          {/each}
+        {/if}
+      </nav>
+
+      <!-- User Menu / Auth ButtonBitss -->
+      <div class="navbar-end">
+        {#if user}
+          <div class="user-menu">
+            <span class="user-name">{user.name || user.email}</span>
+            <ButtonBits to="/settings" variant="ghost" size="sm">
+              ⚙️ Settings
+            </ButtonBits>
+            <ButtonBits to="/auth/logout" variant="outline" size="sm">
+              Logout
+            </ButtonBits>
+          </div>
+        {:else}
+          <ButtonBits to="/auth/login" variant="outline" size="sm">
+            Login
+          </ButtonBits>
+          <ButtonBits to="/auth/register" variant="primary" size="sm">
+            Register
+          </ButtonBits>
+        {/if}
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .navbar-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--color-bg-secondary, #1a1a2e);
+    border-bottom: 1px solid var(--color-border, #333);
+    backdrop-filter: blur(8px);
+  }
+
+  .navbar-container {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    gap: 1rem;
+  }
+
+  .navbar-start {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .sidebar-toggle {
+    padding: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--color-primary, #f59e0b);
+    font-weight: bold;
+    font-size: 1.25rem;
+  }
+
+  .logo-text {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge {
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .badge-demo {
+    background: rgba(74, 144, 226, 0.2);
+    color: #4a90e2;
+    border: 1px solid #4a90e2;
+  }
+
+  .badge-admin {
+    background: rgba(208, 2, 27, 0.2);
+    color: #d0021b;
+    border: 1px solid #d0021b;
+  }
+
+  .navbar-center {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  :global(.navbar-center .nav-item) {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .nav-icon {
+    font-size: 1rem;
+  }
+
+  .nav-label {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .nav-label {
+      display: inline;
+    }
+  }
+
+  .navbar-end {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .user-name {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .user-name {
+      display: inline;
+    }
+  }
+
+  /* Variant styles */
+  [data-variant="minimal"] .navbar-center {
+    justify-content: flex-start;
+  }
+
+  [data-variant="demo"] {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border-bottom: 2px solid #4a90e2;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .navbar-content {
+      padding: 0.5rem 1rem;
+    }
+
+    .navbar-center {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .navbar-center::-webkit-scrollbar {
+      display: none;
+    }
+  }
+</style>

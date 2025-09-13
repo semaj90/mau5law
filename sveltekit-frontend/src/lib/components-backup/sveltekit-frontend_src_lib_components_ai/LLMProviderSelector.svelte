@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'disabled' has already been declared -->
 <!-- LLM Provider Selector with Bits UI v2 and Real-time Status -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     selectedProvider: LLMProvider | null ;
     disabled?: any;
@@ -249,8 +250,8 @@ https://svelte.dev/e/js_parse_error -->
 					class:text-yorha-text-primary={$isSelected(provider)}
 					class:hover:bg-yorha-bg-tertiary={!$isSelected(provider)}
 				>
-					<Card class="border-none bg-transparent">
-						<CardContent class="p-3">
+					<NesCard class="border-none bg-transparent">
+						<div class="yorha-panel-content" class="p-3">
 							<!-- Provider Header -->
 							<div class="flex items-center justify-between mb-2">
 								<div class="flex items-center space-x-2">
@@ -299,8 +300,8 @@ https://svelte.dev/e/js_parse_error -->
 									</div>
 								</div>
 							{/if}
-						</CardContent>
-					</Card>
+						</div>
+					</NesCard>
 				</div>
 			{/each}
 		</div>

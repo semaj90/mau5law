@@ -13,6 +13,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { caseManagementService } from '$lib/services/case-management-service.js';
@@ -508,7 +509,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="evidence-grid">
         {#each filteredEvidence as evidence (evidence.id)}
           <div
-            class="evidence-card"
+            class="evidence-nier-bits-card"
             class:selected={$selectedEvidence.includes(evidence.id)}
             class:analyzed={evidence.analyzed}
             class:suspicious={evidence.suspiciousIndicators?.length > 0}
@@ -519,7 +520,7 @@ https://svelte.dev/e/js_parse_error -->
             onclick={() => toggleEvidenceSelection(evidence.id)}
           >
             <!-- Evidence Header -->
-            <div class="card-header">
+            <div class="nier-bits-yorha-panel-header">
               <div class="evidence-icon">
                 <svelte:component this={getEvidenceIcon(evidence.evidenceType)} class="w-5 h-5" />
               </div>
@@ -539,7 +540,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
 
             <!-- Evidence Preview -->
-            <div class="card-content">
+            <div class="nier-bits-yorha-panel-content">
               {#if evidence.description}
                 <p class="evidence-description">{evidence.description}</p>
               {/if}
@@ -578,7 +579,7 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
 
             <!-- Card Footer -->
-            <div class="card-footer">
+            <div class="nier-bits-yorha-panel-content">
               <span class="date-created">
                 Added: {new Date(evidence.dateCreated).toLocaleDateString()}
               </span>

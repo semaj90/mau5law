@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Legal Document Editor with UnoCSS + Melt UI -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props { caseId: string | undefined ;,
     documentId: string | undefined ;,
     documentType: "brief" | "contract" | "motion" | "evidence" ;,

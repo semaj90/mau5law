@@ -2,6 +2,7 @@
 <!-- Cases, POI, Evidence, Documents, and more -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { globalSearch, searchServices } from '$lib/services/search-service.js';
   import { hybridSearch } from '$lib/services/hybrid-vector-operations.js';

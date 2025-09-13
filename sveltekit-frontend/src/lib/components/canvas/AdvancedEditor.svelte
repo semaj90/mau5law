@@ -1,6 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onchange?: (event?: unknown) => void;
   }

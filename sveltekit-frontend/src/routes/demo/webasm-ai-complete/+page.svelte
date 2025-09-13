@@ -3,6 +3,7 @@
   Showcases: WASM inference + Go chat service + PostgreSQL memory
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { wasmLlama } from '$lib/services/webasm-llama-complete';
   import * as Card from '$lib/components/ui/card';
@@ -308,7 +309,7 @@
       <Rocket class="h-8 w-8 text-primary" />
       Complete WebAssembly + Go AI Stack
     </h1>
-    <p class="text-muted-foreground">
+    <p class="nes-text is-disabled">
       Native Windows performance with JavaScript flexibility
     </p>
   </div>
@@ -336,7 +337,7 @@
             {#if serviceStatus.wasm.status === 'ready'}<CheckCircle class="h-3 w-3 mr-1" />{:else if serviceStatus.wasm.status === 'connected'}<Activity class="h-3 w-3 mr-1" />{:else if serviceStatus.wasm.status === 'warning' || serviceStatus.wasm.status === 'error'}<AlertCircle class="h-3 w-3 mr-1" />{:else}<Clock class="h-3 w-3 mr-1" />{/if}
             {serviceStatus.wasm.status}
           </Badge>
-          <p class="text-xs text-muted-foreground">{serviceStatus.wasm.message}</p>
+          <p class="text-xs nes-text is-disabled">{serviceStatus.wasm.message}</p>
         </div>
 
         <!-- Go Backend Status -->
@@ -349,7 +350,7 @@
             {#if serviceStatus.go.status === 'ready'}<CheckCircle class="h-3 w-3 mr-1" />{:else if serviceStatus.go.status === 'connected'}<Activity class="h-3 w-3 mr-1" />{:else if serviceStatus.go.status === 'warning' || serviceStatus.go.status === 'error'}<AlertCircle class="h-3 w-3 mr-1" />{:else}<Clock class="h-3 w-3 mr-1" />{/if}
             {serviceStatus.go.status}
           </Badge>
-          <p class="text-xs text-muted-foreground">{serviceStatus.go.message}</p>
+          <p class="text-xs nes-text is-disabled">{serviceStatus.go.message}</p>
         </div>
 
         <!-- PostgreSQL Status -->
@@ -362,7 +363,7 @@
             {#if serviceStatus.postgres.status === 'ready'}<CheckCircle class="h-3 w-3 mr-1" />{:else if serviceStatus.postgres.status === 'connected'}<Activity class="h-3 w-3 mr-1" />{:else if serviceStatus.postgres.status === 'warning' || serviceStatus.postgres.status === 'error'}<AlertCircle class="h-3 w-3 mr-1" />{:else}<Clock class="h-3 w-3 mr-1" />{/if}
             {serviceStatus.postgres.status}
           </Badge>
-          <p class="text-xs text-muted-foreground">{serviceStatus.postgres.message}</p>
+          <p class="text-xs nes-text is-disabled">{serviceStatus.postgres.message}</p>
         </div>
 
         <!-- Ollama Status -->
@@ -375,7 +376,7 @@
             {#if serviceStatus.ollama.status === 'ready'}<CheckCircle class="h-3 w-3 mr-1" />{:else if serviceStatus.ollama.status === 'connected'}<Activity class="h-3 w-3 mr-1" />{:else if serviceStatus.ollama.status === 'warning' || serviceStatus.ollama.status === 'error'}<AlertCircle class="h-3 w-3 mr-1" />{:else}<Clock class="h-3 w-3 mr-1" />{/if}
             {serviceStatus.ollama.status}
           </Badge>
-          <p class="text-xs text-muted-foreground">{serviceStatus.ollama.message}</p>
+          <p class="text-xs nes-text is-disabled">{serviceStatus.ollama.message}</p>
         </div>
       </div>
 
@@ -413,7 +414,7 @@
             >
               <Cpu class="h-3 w-3 mr-1" />
               WASM
-            </Button>
+            </button>
             <Button class="bits-btn" 
               variant={!useWebAssembly ? "default" : "outline"} 
               size="sm"
@@ -421,7 +422,7 @@
             >
               <Code class="h-3 w-3 mr-1" />
               Go
-            </Button>
+            </button>
           </div>
         </div>
 
@@ -481,7 +482,7 @@
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{chatHistory.length} messages</span>
             <Button class="bits-btn" variant="outline" size="sm" onclick={clearChat}>
               Clear Chat
-            </Button>
+            </button>
           </div>
         </div>
       </Card.Header>
@@ -507,7 +508,7 @@
           {/each}
 
           {#if chatHistory.length === 0}
-            <div class="text-center text-muted-foreground py-8">
+            <div class="text-center nes-text is-disabled py-8">
               <MessageSquare class="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>Start a conversation to test the AI stack</p>
               <p class="text-sm">Try: "Explain contract law" or "What is tort liability?"</p>
@@ -515,7 +516,7 @@
           {/if}
 
           {#if isStreamingActive}
-            <div class="flex items-center gap-2 text-muted-foreground">
+            <div class="flex items-center gap-2 nes-text is-disabled">
               <Loader2 class="h-4 w-4 animate-spin" />
               <span>Generating response...</span>
             </div>
@@ -546,7 +547,7 @@
             {:else}
               <Zap class="h-4 w-4" />
             {/if}
-          </Button>
+          </button>
         </div>
       </Card.Content>
     </Card.Root>
@@ -562,7 +563,7 @@
       <div.Content class="space-y-4">
         <div>
           <h4 class="font-medium mb-2">WebAssembly Mode</h4>
-          <ul class="text-sm text-muted-foreground space-y-1">
+          <ul class="text-sm nes-text is-disabled space-y-1">
             <li>• Client-side inference</li>
             <li>• Web Worker threading</li>
             <li>• Zero server calls</li>
@@ -572,7 +573,7 @@
 
         <div>
           <h4 class="font-medium mb-2">Go Backend Mode</h4>
-          <ul class="text-sm text-muted-foreground space-y-1">
+          <ul class="text-sm nes-text is-disabled space-y-1">
             <li>• Server-side processing</li>
             <li>• PostgreSQL memory</li>
             <li>• Conversation history</li>
@@ -582,7 +583,7 @@
 
         <div>
           <h4 class="font-medium mb-2">Technology Stack</h4>
-          <ul class="text-sm text-muted-foreground space-y-1">
+          <ul class="text-sm nes-text is-disabled space-y-1">
             <li>• SvelteKit 2 + Svelte 5</li>
             <li>• llama.cpp + WASM</li>
             <li>• Go + PostgreSQL + pgvector</li>

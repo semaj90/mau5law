@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from 'svelte';
   import Dropdown from '$lib/components/+Dropdown.svelte';
   import Checkbox from '$lib/components/+Checkbox.svelte';
@@ -75,7 +76,7 @@
     <div class="flex items-center gap-2">
       <Checkbox id="autoProcessCheckbox" bind:checked={enableAutoProcessing} label="Enable Auto-Processing" />
     </div>
-    <button class="btn btn-primary w-full mt-4" onclick={handleSubmit}>
+    <button class="btn nes-btn is-primary w-full mt-4" onclick={handleSubmit}>
       Save Automation
     </button>
   </div>

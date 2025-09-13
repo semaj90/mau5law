@@ -3,9 +3,10 @@ Autonomous Engineering Page
 Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { 
     Bot, 
@@ -234,8 +235,8 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
     <!-- System Status Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
       {#each architectureFeatures as feature}
-        <Card>
-          <CardContent class="p-4">
+        <NesCard>
+          <div class="yorha-panel-content" class="p-4">
             <div class="flex items-center justify-between mb-2">
               <feature.icon 
                 class="h-6 w-6 {getStatusColor(feature.status)}" 
@@ -246,8 +247,8 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
             <p class="text-xs text-gray-600 dark:text-gray-400">
               {feature.status ? 'Operational' : 'Offline'}
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/each}
     </div>
 
@@ -258,20 +259,20 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
     />
 
     <!-- Architecture Overview -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           <span class="flex items-center gap-2">
             <Settings class="h-5 w-5" />
             System Architecture
           </span>
-          <Button variant="ghost" size="sm" onclick={() => showArchitecture = !showArchitecture}>
+          <button class="nes-btn" variant="ghost" size="sm" onclick={() => showArchitecture = !showArchitecture}>
             {showArchitecture ? 'Hide' : 'Show'} Details
-          </Button>
-        </CardTitle>
-      </CardHeader>
+          </button>
+        </h3>
+      </div>
       {#if showArchitecture}
-        <CardContent>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {#each architectureFeatures as feature}
               <div class="border rounded-lg p-4">
@@ -301,25 +302,25 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
               </div>
             {/each}
           </div>
-        </CardContent>
+        </div>
       {/if}
-    </Card>
+    </NesCard>
 
     <!-- Integration Examples -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           <span class="flex items-center gap-2">
             <Code class="h-5 w-5" />
             VS Code Extension Integration
           </span>
-          <Button variant="ghost" size="sm" onclick={() => showIntegration = !showIntegration}>
+          <button class="nes-btn" variant="ghost" size="sm" onclick={() => showIntegration = !showIntegration}>
             {showIntegration ? 'Hide' : 'Show'} Examples
-          </Button>
-        </CardTitle>
-      </CardHeader>
+          </button>
+        </h3>
+      </div>
       {#if showIntegration}
-        <CardContent>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {#each integrationExamples as example}
               <div class="border rounded-lg p-4">
@@ -345,19 +346,19 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
               GET /api/copilot/self-prompt?mode=examples
             </div>
           </div>
-        </CardContent>
+        </div>
       {/if}
-    </Card>
+    </NesCard>
 
     <!-- Use Cases -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Activity class="h-5 w-5" />
           Real-World Use Cases
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           {#each useCases as useCase}
             <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -382,18 +383,18 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Implementation Status -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Workflow class="h-5 w-5" />
           Implementation Progress
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-4">
           <div class="flex items-center justify-between">
             <span class="text-sm font-medium">Comprehensive AI Orchestration</span>
@@ -431,8 +432,8 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
               AI agents, and provide comprehensive solutions across webapp, desktop, and mobile platforms.
             </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </div>
 

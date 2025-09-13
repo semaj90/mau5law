@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   let messages: { role: 'user' | 'assistant'; content: string }[] = $state([]);
   let userInput = $state('');
   let isLoading = $state(false);

@@ -14,6 +14,7 @@ https://svelte.dev/e/tag_invalid_name -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     ollamaIntegrationLayer,
@@ -342,7 +343,7 @@ https://svelte.dev/e/tag_invalid_name -->
         <Brain class="w-8 h-8 text-blue-600" />
         Comprehensive Ollama Integration Demo
       </h1>
-      <p class="text-muted-foreground mt-2">
+      <p class="nes-text is-disabled mt-2">
         Complete integration testing for all Ollama services and APIs
       </p>
     </div>
@@ -353,20 +354,20 @@ https://svelte.dev/e/tag_invalid_name -->
       </Badge>
   <Button class="bits-btn" variant="outline" size="sm" onclick={refreshServiceStatus}>
         <Settings class="w-4 h-4" />
-      </Button>
+      </button>
     </div>
   </div>
 
   <!-- Service Status Dashboard -->
   {#if serviceStatus}
-    <Card class="mb-6">
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard class="mb-6">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Activity class="w-5 h-5" />
           Service Status Dashboard
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {#each Object.entries(serviceStatus) as [serviceName, service]}
             {@const badge = getStatusBadge(service.status)}
@@ -379,10 +380,10 @@ https://svelte.dev/e/tag_invalid_name -->
               </div>
               <p class="text-sm font-medium capitalize">{serviceName}</p>
               {#if 'nodes' in service}
-                <p class="text-xs text-muted-foreground">Nodes: {service.nodes}</p>
+                <p class="text-xs nes-text is-disabled">Nodes: {service.nodes}</p>
               {/if}
               {#if 'health' in service}
-                <p class="text-xs text-muted-foreground">Health: {service.health}%</p>
+                <p class="text-xs nes-text is-disabled">Health: {service.health}%</p>
               {/if}
             </div>
           {/each}
@@ -410,20 +411,20 @@ https://svelte.dev/e/tag_invalid_name -->
             </div>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <div class="grid lg:grid-cols-2 gap-6">
     <!-- Test Configuration Panel -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <FileText class="w-5 h-5" />
           Test Configuration
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <!-- Test Message -->
         <div>
           <label class="text-sm font-medium">Test Message:</label>
@@ -449,7 +450,7 @@ https://svelte.dev/e/tag_invalid_name -->
               <Send class="w-4 h-4" />
             {/if}
             Basic Chat
-          </Button>
+          </button>
 
           <Button
             onclick={testDocumentSummary}
@@ -459,7 +460,7 @@ https://svelte.dev/e/tag_invalid_name -->
           >
             <FileText class="w-4 h-4" />
             Document Summary
-          </Button>
+          </button>
 
           <Button
             onclick={testRAGQuery}
@@ -469,7 +470,7 @@ https://svelte.dev/e/tag_invalid_name -->
           >
             <Database class="w-4 h-4" />
             RAG Query
-          </Button>
+          </button>
 
           <Button
             onclick={testDirectAPI}
@@ -479,7 +480,7 @@ https://svelte.dev/e/tag_invalid_name -->
           >
             <Zap class="w-4 h-4" />
             Direct API
-          </Button>
+          </button>
         </div>
 
         <!-- Streaming Test -->
@@ -497,7 +498,7 @@ https://svelte.dev/e/tag_invalid_name -->
               <Activity class="w-4 h-4" />
               Test Streaming
             {/if}
-          </Button>
+          </button>
 
           {#if streamingResponse}
             <div class="mt-4 p-3 bg-muted rounded-lg">
@@ -519,15 +520,15 @@ https://svelte.dev/e/tag_invalid_name -->
           >
             <Zap class="w-4 h-4" />
             Warmup All Services
-          </Button>
+          </button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Response Display -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           <span class="flex items-center gap-2">
             <Brain class="w-5 h-5" />
             Test Results ({responses.length})
@@ -539,14 +540,14 @@ https://svelte.dev/e/tag_invalid_name -->
               onclick={() => responses = []}
             >
               Clear
-            </Button>
+            </button>
           {/if}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <ScrollArea class="h-96">
           {#if responses.length === 0}
-            <div class="text-center text-muted-foreground py-8">
+            <div class="text-center nes-text is-disabled py-8">
               <FileText class="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p>No test results yet</p>
               <p class="text-sm">Run a test to see results here</p>
@@ -554,16 +555,16 @@ https://svelte.dev/e/tag_invalid_name -->
           {:else}
             <div class="space-y-4">
               {#each responses as result}
-                <Card>
-                  <CardHeader class="pb-2">
+                <NesCard>
+                  <div class="yorha-panel-header" class="pb-2">
                     <div class="flex items-center justify-between">
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.type}</span>
-                      <span class="text-xs text-muted-foreground">
+                      <span class="text-xs nes-text is-disabled">
                         {result.processingTime}ms • {result.timestamp.toLocaleTimeString()}
                       </span>
                     </div>
-                  </CardHeader>
-                  <CardContent class="pt-2">
+                  </div>
+                  <div class="yorha-panel-content" class="pt-2">
                     <!-- Response Content -->
                     {#if result.response.response}
                       <div class="mb-3">
@@ -596,7 +597,7 @@ https://svelte.dev/e/tag_invalid_name -->
 
                     <!-- Performance -->
                     {#if result.response.performance}
-                      <div class="flex gap-4 text-xs text-muted-foreground">
+                      <div class="flex gap-4 text-xs nes-text is-disabled">
                         <span>Duration: {result.response.performance.duration}ms</span>
                         <span>Tokens: {result.response.performance.tokens}</span>
                         <span>Model: {result.response.performance.model}</span>
@@ -610,14 +611,14 @@ https://svelte.dev/e/tag_invalid_name -->
                         <p><strong>Services:</strong> {result.response.integration.servicesUsed.join(', ')}</p>
                       </div>
                     {/if}
-                  </CardContent>
-                </Card>
+                  </div>
+                </NesCard>
               {/each}
             </div>
           {/if}
         </ScrollArea>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 </div>
 

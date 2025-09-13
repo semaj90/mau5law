@@ -3,6 +3,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:input) and new syntaxes for event handling is not allowed. Use only the oninput syntax -->
 <!-- YoRHa Main Interface Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
@@ -326,7 +327,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   <section class="yorha-actions">
     <div class="yorha-actions-grid">
       <button
-        class="yorha-action-card yorha-action-primary"
+        class="yorha-action-nier-bits-card yorha-action-primary"
         onclick={() => performRAGQuery()}
         disabled={isLoading}
       >
@@ -339,7 +340,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </button>
 
       <button
-        class="yorha-action-card yorha-action-search"
+        class="yorha-action-nier-bits-card yorha-action-search"
         onclick={() => performSemanticSearch()}
         disabled={isLoading}
       >
@@ -349,7 +350,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </button>
 
       <button
-        class="yorha-action-card yorha-action-health"
+        class="yorha-action-nier-bits-card yorha-action-health"
         onclick={() => checkClusterHealth()}
         disabled={isLoading}
       >
@@ -359,7 +360,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </button>
 
       <button
-        class="yorha-action-card yorha-action-database"
+        class="yorha-action-nier-bits-card yorha-action-database"
         onclick={() => performSemanticSearch('database evidence')}
         disabled={isLoading}
       >

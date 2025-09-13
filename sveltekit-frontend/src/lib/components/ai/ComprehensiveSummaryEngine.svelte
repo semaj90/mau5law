@@ -5,6 +5,7 @@ https://svelte.dev/e/props_duplicate -->
 <!-- Features: Local LLM + Enhanced RAG + Loki.js + Fuse.js + XState + Service Workers -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { useMachine } from '@xstate/svelte';
@@ -490,12 +491,12 @@ https://svelte.dev/e/props_duplicate -->
 
       <div class="processing-controls">
         {#if !isProcessing}
-          <button class="btn-primary" onclick={startComprehensiveSummary}>
+          <button class="nes-btn is-primary" onclick={startComprehensiveSummary}>
             <Play size="16" />
             Start Analysis
           </button>
         {:else}
-          <button class="btn-secondary" onclick={pauseProcessing}>
+          <button class="nes-btn" onclick={pauseProcessing}>
             <Pause size="16" />
             Pause
           </button>

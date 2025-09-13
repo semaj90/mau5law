@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import WebGPUWebAssemblyBridge from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
@@ -155,11 +156,11 @@
 
     <!-- Example Prompts -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>💡 Try These Examples</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">💡 Try These Examples</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {#each examplePrompts as example}
               <div class="border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
@@ -181,17 +182,17 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Technical Specifications -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>🔧 Technical Architecture</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">🔧 Technical Architecture</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {#each technicalSpecs as spec}
               <div class="space-y-3">
@@ -207,17 +208,17 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Performance Benchmarks -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>📊 Performance Targets</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">📊 Performance Targets</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {#each performanceBenchmarks as benchmark}
               <div class="text-center p-4 border rounded-lg bg-gray-50">
@@ -227,17 +228,17 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Architecture Flow Diagram -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>🏗️ Processing Pipeline</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">🏗️ Processing Pipeline</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="overflow-x-auto">
             <div class="flex items-center space-x-4 min-w-max p-4">
               <!-- Input -->
@@ -305,8 +306,8 @@
               <li>• <strong>Cache Intelligence:</strong> Semantic similarity</li>
             </ul>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </main>
 

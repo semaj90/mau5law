@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { setContext } from "svelte";
   interface Props {
     children?: import('svelte').Snippet;

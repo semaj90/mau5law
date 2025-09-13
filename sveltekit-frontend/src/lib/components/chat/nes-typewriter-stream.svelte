@@ -8,6 +8,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte'; });
   import { writable, derived } from 'svelte/store';
   import type { Writable } from 'svelte/store';

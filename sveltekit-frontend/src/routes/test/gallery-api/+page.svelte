@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Tests all gallery functionality including upload, search, and management
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
 
   let apiTests = $state([]);
@@ -244,7 +245,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="results-grid">
           {#each galleryApiTests as test}
             {@const result = testResults[test.name]}
-            <div class="result-card" class:testing={!result && isTestingInProgress}>
+            <div class="result-nier-bits-card" class:testing={!result && isTestingInProgress}>
               <div class="result-header">
                 <h3>{test.name}</h3>
                 {#if result}

@@ -2,7 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications, type Notification } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
   import { AlertCircle, AlertTriangle, Check, Info, X } from "lucide-svelte";
@@ -209,14 +210,14 @@ https://svelte.dev/e/js_parse_error -->
 >
   {#if hiddenCount > 0}
     <div class="mx-auto px-4 max-w-7xl">
-      <Button
+      <button class="nes-btn"
         variant="ghost"
         size="sm"
         onclick={() => (maxVisible += 5)}
         class="mx-auto px-4 max-w-7xl"
       >
         +{hiddenCount} more notifications
-      </Button>
+      </button>
     </div>
   {/if}
 
@@ -284,7 +285,7 @@ https://svelte.dev/e/js_parse_error -->
                   {#if notification.actions && notification.actions.length > 0}
                     <div class="mx-auto px-4 max-w-7xl">
                       {#each notification.actions as action}
-                        <Button
+                        <button class="nes-btn"
                           size="sm"
                           variant={action.variant === "primary"
                             ? "default"
@@ -294,7 +295,7 @@ https://svelte.dev/e/js_parse_error -->
                           class="mx-auto px-4 max-w-7xl"
                         >
                           {action.label}
-                        </Button>
+                        </button>
                       {/each}
                     </div>
                   {/if}
@@ -302,7 +303,7 @@ https://svelte.dev/e/js_parse_error -->
 
                 <!-- Dismiss button -->
                 <div class="mx-auto px-4 max-w-7xl">
-                  <Button
+                  <button class="nes-btn"
                     variant="ghost"
                     size="sm"
                     onclick={() => dismissNotification(notification.id)}
@@ -310,7 +311,7 @@ https://svelte.dev/e/js_parse_error -->
                     aria-label="Dismiss notification"
                   >
                     <X class="mx-auto px-4 max-w-7xl" />
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
@@ -323,14 +324,14 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Dismiss all button for multiple notifications -->
   {#if visibleNotifications.length > 1}
     <div class="mx-auto px-4 max-w-7xl">
-      <Button
+      <button class="nes-btn"
         variant="ghost"
         size="sm"
         onclick={() => dismissAll()}
         class="mx-auto px-4 max-w-7xl"
       >
         Clear all ({$notifications.notifications.length})
-      </Button>
+      </button>
     </div>
   {/if}
 </div>

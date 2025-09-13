@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Svelte 5 runes are used directly without imports
   import { enhance } from '$app/forms';
   // import { Dialog } from 'bits-ui';
@@ -161,7 +162,7 @@
       {mode === 'login' ? 'Login to Legal AI' : 'Create Legal AI Account'}
     </h2>
     
-    <p class="text-sm text-muted-foreground">
+    <p class="text-sm nes-text is-disabled">
         {mode === 'login' 
           ? 'Access your legal case management system with AI-powered analysis'
           : 'Join the next generation of legal professionals with AI assistance'
@@ -256,7 +257,7 @@
             required
           />
           {#if mode === 'register'}
-            <p class="text-xs text-muted-foreground">Must be at least 6 characters</p>
+            <p class="text-xs nes-text is-disabled">Must be at least 6 characters</p>
           {/if}
         </div>
 
@@ -294,7 +295,7 @@
           {:else}
             {mode === 'login' ? 'Sign In' : 'Create Account'}
           {/if}
-        </Button>
+        </button>
 
         <!-- Mode Toggle -->
         <div class="text-center">
@@ -315,7 +316,7 @@
       <!-- Demo Accounts Notice -->
       {#if mode === 'login'}
         <div class="border-t pt-4">
-          <p class="text-xs text-muted-foreground text-center">
+          <p class="text-xs nes-text is-disabled text-center">
             Demo accounts: admin@prosecutor.com / password
           </p>
         </div>

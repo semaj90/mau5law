@@ -1,8 +1,9 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
   import { 
     Zap, Brain, Database, Canvas, Search, Settings, 
@@ -163,34 +164,34 @@
 
     <!-- Quick Stats -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      <Card class="text-center">
-        <CardContent class="pt-6">
+      <NesCard class="text-center">
+        <div class="yorha-panel-content" class="pt-6">
           <Database class="h-8 w-8 mx-auto mb-2 text-blue-600" />
           <div class="text-2xl font-bold">8/9</div>
           <div class="text-sm text-gray-600">Services Active</div>
-        </CardContent>
-      </Card>
-      <Card class="text-center">
-        <CardContent class="pt-6">
+        </div>
+      </NesCard>
+      <NesCard class="text-center">
+        <div class="yorha-panel-content" class="pt-6">
           <Brain class="h-8 w-8 mx-auto mb-2 text-purple-600" />
           <div class="text-2xl font-bold">6</div>
           <div class="text-sm text-gray-600">AI Features</div>
-        </CardContent>
-      </Card>
-      <Card class="text-center">
-        <CardContent class="pt-6">
+        </div>
+      </NesCard>
+      <NesCard class="text-center">
+        <div class="yorha-panel-content" class="pt-6">
           <CheckCircle class="h-8 w-8 mx-auto mb-2 text-green-600" />
           <div class="text-2xl font-bold">12/12</div>
           <div class="text-sm text-gray-600">Components</div>
-        </CardContent>
-      </Card>
-      <Card class="text-center">
-        <CardContent class="pt-6">
+        </div>
+      </NesCard>
+      <NesCard class="text-center">
+        <div class="yorha-panel-content" class="pt-6">
           <Zap class="h-8 w-8 mx-auto mb-2 text-yellow-600" />
           <div class="text-2xl font-bold">Phase 5</div>
           <div class="text-sm text-gray-600">Active</div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </div>
 
@@ -206,17 +207,17 @@
 
     <!-- Overview Tab -->
     <TabsContent value="overview" class="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Sparkles class="h-6 w-6" />
             Phase 5 Enhanced Features
-          </CardTitle>
-          <CardDescription>
+          </h3>
+          <p class="nes-text">
             Advanced AI capabilities with intelligent context awareness and enhanced user experience
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {#each phase5Features as feature}
               <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
@@ -237,15 +238,15 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Performance Improvements -->
-      <Card>
-        <CardHeader>
-          <CardTitle>Performance & Optimization</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Performance & Optimization</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="text-center">
               <Cpu class="h-12 w-12 mx-auto mb-3 text-blue-600" />
@@ -276,19 +277,19 @@
               <Badge variant="outline" class="mt-2">Sub-100ms latency</Badge>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Quick Access -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Try Vector Intelligence</CardTitle>
-            <CardDescription>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Try Vector Intelligence</h3>
+            <p class="nes-text">
               Experience semantic search with AI-powered suggestions
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+            </p>
+          </div>
+          <div class="yorha-panel-content">
             <Button 
               class="w-full" 
               onclick={() => activeTab = 'vector-demo'}
@@ -296,18 +297,18 @@
               <Search class="h-4 w-4 mr-2" />
               Launch Vector Demo
               <ArrowRight class="h-4 w-4 ml-2" />
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </NesCard>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Evidence Canvas</CardTitle>
-            <CardDescription>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Evidence Canvas</h3>
+            <p class="nes-text">
               Interactive evidence management with Fabric.js
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+            </p>
+          </div>
+          <div class="yorha-panel-content">
             <Button 
               variant="outline" 
               class="w-full"
@@ -316,9 +317,9 @@
               <Canvas class="h-4 w-4 mr-2" />
               Open Canvas
               <ArrowRight class="h-4 w-4 ml-2" />
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </NesCard>
       </div>
     </TabsContent>
 
@@ -329,14 +330,14 @@
 
     <!-- Fabric Canvas Tab -->
     <TabsContent value="fabric-canvas">
-      <Card>
-        <CardHeader>
-          <CardTitle>Evidence Management Canvas</CardTitle>
-          <CardDescription>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Evidence Management Canvas</h3>
+          <p class="nes-text">
             Interactive Fabric.js canvas for organizing and annotating evidence
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <FabricCanvas 
             width={800} 
             height={600} 
@@ -345,24 +346,24 @@
             ondelete={(e) => console.log('Object deleted:', e.detail)}
             onselect={(e) => console.log('Object selected:', e.detail)}
           />
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Context7 MCP Tab -->
     <TabsContent value="context7">
       <div class="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Brain class="h-6 w-6" />
               Context7 MCP Service
-            </CardTitle>
-            <CardDescription>
+            </h3>
+            <p class="nes-text">
               Model Context Protocol integration for intelligent assistance
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+            </p>
+          </div>
+          <div class="yorha-panel-content">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h3 class="font-semibold mb-3">Available Tools</h3>
@@ -434,21 +435,21 @@
                 </div>
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     </TabsContent>
 
     <!-- Modernization Checklist Tab -->
     <TabsContent value="modernization">
-      <Card>
-        <CardHeader>
-          <CardTitle>Component Modernization Checklist</CardTitle>
-          <CardDescription>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Component Modernization Checklist</h3>
+          <p class="nes-text">
             SvelteKit 2 best practices, Bits UI, PostgreSQL, pgvector, VLLM integration status
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-6">
             {#each modernizationChecklist as category}
               <div>
@@ -497,8 +498,8 @@
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
   </Tabs>
 </div>

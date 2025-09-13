@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { page } from "$app/state";
   	import type { SidebarNavItem } from "$lib/config/index.js";
   	import { cn } from "$lib/utils/styles.js";
@@ -31,7 +32,7 @@
 				</a>
 			{:else}
 				<span
-					class="text-muted-foreground flex w-full cursor-not-allowed items-center rounded-md px-2.5 py-1.5 text-sm hover:underline"
+					class="nes-text is-disabled flex w-full cursor-not-allowed items-center rounded-md px-2.5 py-1.5 text-sm hover:underline"
 				>
 					{item.title}
 				</span>

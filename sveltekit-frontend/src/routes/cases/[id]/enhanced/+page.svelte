@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 	import { page } from '$app/state';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';

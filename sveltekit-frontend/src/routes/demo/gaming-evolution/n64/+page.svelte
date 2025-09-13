@@ -1,7 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open
+<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open -->
+<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { Button } from 'bits-ui';
   import { Badge } from 'bits-ui';
@@ -174,16 +175,16 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     <!-- Technical Analysis with 3D elements -->
     <section class="tech-panel">
-      <Card.Root class="n64-card">
-        <Card.Header>
-          <Card.Title class="n64-title">
+      <NesCard.Root class="n64-nier-bits-card">
+        <NesCard.Header>
+          <NesCard.Title class="n64-title">
             🎮 Nintendo 64 3D Architecture
           </Card.Title>
-          <Card.Description class="n64-subtitle">
+          <NesCard.Description class="n64-subtitle">
             Reality Co-Processor (RCP) with Anti-Aliasing & Texture Filtering
           </Card.Description>
         </Card.Header>
-        <Card.Content class="n64-content">
+        <NesCard.Content class="n64-content">
 
           <!-- 3D Cube Demo -->
           <div class="cube-demo">
@@ -302,16 +303,16 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     <!-- Interactive 3D Components -->
     <section class="components-panel">
-      <Card.Root class="n64-card">
-        <Card.Header>
-          <Card.Title class="n64-title">
+      <NesCard.Root class="n64-nier-bits-card">
+        <NesCard.Header>
+          <NesCard.Title class="n64-title">
             🎮 3D Interface Elements
           </Card.Title>
-          <Card.Description class="n64-subtitle">
+          <NesCard.Description class="n64-subtitle">
             bits-ui Components with N64 3D Aesthetics & Texture Filtering
           </Card.Description>
         </Card.Header>
-        <Card.Content class="components-3d">
+        <NesCard.Content class="components-3d">
 
           <!-- N64 Controller -->
           <div class="controller-section">
@@ -398,16 +399,16 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     <!-- 3D Game Interface -->
     <section class="game-interface-panel">
-      <Card.Root class="n64-card">
-        <Card.Header>
-          <Card.Title class="n64-title">
+      <NesCard.Root class="n64-nier-bits-card">
+        <NesCard.Header>
+          <NesCard.Title class="n64-title">
             🌟 3D Game Menu System
           </Card.Title>
-          <Card.Description class="n64-subtitle">
+          <NesCard.Description class="n64-subtitle">
             N64-style Menus with Hardware Anti-Aliasing
           </Card.Description>
         </Card.Header>
-        <Card.Content class="interface-3d">
+        <NesCard.Content class="interface-3d">
 
           <!-- 3D Tabs -->
           <Tabs.Root bind:value={activeTab} class="n64-tabs">
@@ -442,15 +443,15 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
                 <!-- 3D Settings -->
                 <div class="settings-3d">
-                  <div class="setting-card">
+                  <div class="setting-nier-bits-card">
                     <span>Resolution</span>
                     <div class="resolution-display">320×240</div>
                   </div>
-                  <div class="setting-card">
+                  <div class="setting-nier-bits-card">
                     <span>Frame Rate</span>
                     <div class="fps-display">30 FPS</div>
                   </div>
-                  <div class="setting-card">
+                  <div class="setting-nier-bits-card">
                     <span>Z-Buffer</span>
                     <div class="zbuffer-display">16-bit</div>
                   </div>
@@ -575,12 +576,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                     <div class="recommendations-grid">
                       {#if legalResults.recommendations && legalResults.recommendations.length > 0}
                         {#each legalResults.recommendations as recommendation, i}
-                          <div class="recommendation-card-3d">
-                            <div class="card-header">
+                          <div class="recommendation-nier-bits-card-3d">
+                            <div class="nier-bits-yorha-panel-header">
                               <Badge.Root class="priority-badge">#{i + 1}</Badge.Root>
                               <span class="case-title">{recommendation.title || `Case ${i + 1}`}</span>
                             </div>
-                            <div class="card-content">
+                            <div class="nier-bits-yorha-panel-content">
                               <p class="case-summary">{recommendation.summary || 'Legal recommendation analysis'}</p>
                               {#if recommendation.similarity_score}
                                 <div class="similarity-bar">
@@ -624,7 +625,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <!-- 3D Dialog Demo -->
           <div class="dialog-section-3d">
             <Button.Root
-              class="n64-btn-primary bits-btn bits-btn"
+              class="n64-nes-btn is-primary bits-btn bits-btn"
               onclick={() => dialogOpen = true}
             >
               🌟 Show N64 Dialog
@@ -712,15 +713,15 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <div class="evidence-analysis-section">
             <h6>🔍 Document Analysis</h6>
             <div class="analysis-grid">
-              <div class="analysis-card">
+              <div class="analysis-nier-bits-card">
                 <span class="analysis-label">Contract Terms:</span>
                 <span class="analysis-value">0 identified</span>
               </div>
-              <div class="analysis-card">
+              <div class="analysis-nier-bits-card">
                 <span class="analysis-label">Key Clauses:</span>
                 <span class="analysis-value">0 found</span>
               </div>
-              <div class="analysis-card">
+              <div class="analysis-nier-bits-card">
                 <span class="analysis-label">Risk Factors:</span>
                 <span class="analysis-value">0 detected</span>
               </div>

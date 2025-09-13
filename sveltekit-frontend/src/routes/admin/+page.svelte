@@ -1,8 +1,9 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
 
   // Icons
@@ -37,10 +38,12 @@
   let isLoading = $state(true);
   let lastUpdated = $state(new Date());
 
-  onMount(async () => {
-    await loadSystemStats();
-    await loadSystemHealth();
-    await loadRecentActivity();
+  onMount(() => {
+    (async () => {
+      await loadSystemStats();
+      await loadSystemHealth();
+      await loadRecentActivity();
+    })();
 
     // Auto-refresh every 30 seconds
     const interval = setInterval(refreshData, 30000);
@@ -176,7 +179,7 @@
         <Shield class="w-8 h-8 text-primary" />
         Admin Dashboard
       </h1>
-      <p class="text-muted-foreground mt-2">
+      <p class="nes-text is-disabled mt-2">
         Legal AI Platform system administration and monitoring
       </p>
     </div>
@@ -195,61 +198,61 @@
       >
         <RefreshCw class="w-4 h-4 {isLoading ? 'animate-spin' : ''}" />
         Refresh
-      </Button>
+      </button>
     </div>
   </div>
 
   <!-- Quick Actions -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <Button
+    <button class="nes-btn"
       onclick={() => goto('/admin/users')}
       variant="outline"
       class="h-20 flex-col gap-2"
     >
       <Users class="w-6 h-6" />
       <span>Manage Users</span>
-    </Button>
+    </button>
 
-    <Button
+    <button class="nes-btn"
       onclick={() => goto('/admin/cluster')}
       variant="outline"
       class="h-20 flex-col gap-2"
     >
       <Server class="w-6 h-6" />
       <span>Cluster Status</span>
-    </Button>
+    </button>
 
-    <Button
+    <button class="nes-btn"
       onclick={() => goto('/admin/gpu-demo')}
       variant="outline"
       class="h-20 flex-col gap-2"
     >
       <Cpu class="w-6 h-6" />
       <span>GPU Monitor</span>
-    </Button>
+    </button>
 
-    <Button
+    <button class="nes-btn"
       onclick={() => goto('/system-status')}
       variant="outline"
       class="h-20 flex-col gap-2"
     >
       <Monitor class="w-6 h-6" />
       <span>System Status</span>
-    </Button>
+    </button>
   </div>
 
   <!-- System Statistics -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
     <div>
-      <divHeader class="pb-3">
-        <divTitle class="text-sm font-medium text-muted-foreground">Total Users</divTitle>
+      <div class="pb-3">
+        <div class="text-sm font-medium nes-text is-disabled">Total Users</div>
       </div>
-      <divContent class="pt-0">
+      <div class="pt-0">
         <div class="flex items-center justify-between">
           <span class="text-2xl font-bold">{systemStats.totalUsers}</span>
-          <Users class="w-5 h-5 text-muted-foreground" />
+          <Users class="w-5 h-5 nes-text is-disabled" />
         </div>
-        <div class="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+        <div class="flex items-center gap-2 text-sm nes-text is-disabled mt-2">
           <div class="w-2 h-2 bg-green-500 rounded-full"></div>
           {systemStats.activeUsers} active
         </div>
@@ -257,15 +260,15 @@
     </div>
 
     <div>
-      <divHeader class="pb-3">
-        <divTitle class="text-sm font-medium text-muted-foreground">Cases</h3>
+      <div class="pb-3">
+        <div class="text-sm font-medium nes-text is-disabled">Cases</div>
       </div>
-      <divContent class="pt-0">
+      <div class="pt-0">
         <div class="flex items-center justify-between">
           <span class="text-2xl font-bold">{systemStats.totalCases}</span>
-          <BarChart3 class="w-5 h-5 text-muted-foreground" />
+          <BarChart3 class="w-5 h-5 nes-text is-disabled" />
         </div>
-        <div class="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+        <div class="flex items-center gap-2 text-sm nes-text is-disabled mt-2">
           <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
           {systemStats.activeCases} active
         </div>
@@ -273,15 +276,15 @@
     </div>
 
     <div>
-      <divHeader class="pb-3">
-        <divTitle class="text-sm font-medium text-muted-foreground">Documents</h3>
+      <div class="pb-3">
+        <div class="text-sm font-medium nes-text is-disabled">Documents</div>
       </div>
-      <divContent class="pt-0">
+      <div class="pt-0">
         <div class="flex items-center justify-between">
           <span class="text-2xl font-bold">{systemStats.totalDocuments}</span>
-          <HardDrive class="w-5 h-5 text-muted-foreground" />
+          <HardDrive class="w-5 h-5 nes-text is-disabled" />
         </div>
-        <div class="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+        <div class="flex items-center gap-2 text-sm nes-text is-disabled mt-2">
           <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
           {systemStats.processedDocuments} processed
         </div>
@@ -289,15 +292,15 @@
     </div>
 
     <div>
-      <divHeader class="pb-3">
-        <divTitle class="text-sm font-medium text-muted-foreground">AI Analyses</h3>
+      <div class="pb-3">
+        <div class="text-sm font-medium nes-text is-disabled">AI Analyses</div>
       </div>
-      <divContent class="pt-0">
+      <div class="pt-0">
         <div class="flex items-center justify-between">
           <span class="text-2xl font-bold">{systemStats.aiAnalyses}</span>
-          <Zap class="w-5 h-5 text-muted-foreground" />
+          <Zap class="w-5 h-5 nes-text is-disabled" />
         </div>
-        <div class="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+        <div class="flex items-center gap-2 text-sm nes-text is-disabled mt-2">
           <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
           Uptime: {systemStats.uptime}
         </div>
@@ -308,16 +311,16 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     <!-- System Health -->
     <div>
-      <divHeader>
-        <divTitle class="flex items-center gap-2">
+      <div>
+        <div class="flex items-center gap-2">
           <Activity class="w-5 h-5" />
           System Health
-        </h3>
-        <divDescription>
+        </div>
+        <div>
           Real-time status of core system components
-        </p>
+        </div>
       </div>
-      <divContent class="space-y-4">
+      <div class="space-y-4">
         {#each [
           { key: 'database', label: 'PostgreSQL Database', icon: Database },
           { key: 'redis', label: 'Redis Cache', icon: HardDrive },
@@ -328,7 +331,7 @@
         ] as service}
           <div class="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
             <div class="flex items-center gap-3">
-              <service.icon class="w-4 h-4 text-muted-foreground" />
+              <service.icon class="w-4 h-4 nes-text is-disabled" />
               <span class="font-medium">{service.label}</span>
             </div>
             <div class="flex items-center gap-2">
@@ -347,24 +350,24 @@
 
     <!-- Recent Activity -->
     <div>
-      <divHeader>
-        <divTitle class="flex items-center gap-2">
+      <div>
+        <div class="flex items-center gap-2">
           <Clock class="w-5 h-5" />
           Recent Activity
-        </h3>
-        <divDescription>
+        </div>
+        <div>
           Latest system events and user actions
-        </p>
+        </div>
       </div>
-      <divContent class="space-y-4">
+      <div class="space-y-4">
         {#if recentActivity.length > 0}
           {#each recentActivity as activity}
             {@const ActivityIcon = getActivityIcon(activity.type)}
             <div class="flex items-start gap-3 p-3 border-l-4 {activity.status === 'success' ? 'border-green-500 bg-green-50' : activity.status === 'error' ? 'border-red-500 bg-red-50' : 'border-blue-500 bg-blue-50'} rounded-r-lg">
-              <ActivityIcon class="w-4 h-4 mt-1 text-muted-foreground" />
+              <ActivityIcon class="w-4 h-4 mt-1 nes-text is-disabled" />
               <div class="flex-1">
                 <p class="text-sm font-medium">{activity.description}</p>
-                <div class="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
+                <div class="flex items-center gap-4 mt-1 text-xs nes-text is-disabled">
                   <span>{activity.user}</span>
                   <span>{formatTimeAgo(activity.timestamp)}</span>
                 </div>
@@ -372,7 +375,7 @@
             </div>
           {/each}
         {:else}
-          <div class="text-center py-8 text-muted-foreground">
+          <div class="text-center py-8 nes-text is-disabled">
             <Activity class="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p>No recent activity</p>
           </div>

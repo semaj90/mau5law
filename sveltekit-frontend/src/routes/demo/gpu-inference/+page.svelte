@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { cognitiveSmartRouter } from '$lib/ai/cognitive-smart-router';
@@ -241,8 +242,8 @@
     <!-- Engine Status Dashboard -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       {#each Object.entries($engineStatus) as [engine, status]}
-        <Card class="transition-all hover:shadow-md">
-          <CardContent class="p-4">
+        <NesCard class="transition-all hover:shadow-md">
+          <div class="yorha-panel-content" class="p-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="text-2xl">{getEngineEmoji(engine)}</span>
@@ -260,17 +261,17 @@
                 {/if}
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/each}
     </div>
 
     <!-- Performance Metrics -->
-    <Card class="mb-6">
-      <CardHeader>
-        <CardTitle>📊 Real-time Performance Metrics</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard class="mb-6">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">📊 Real-time Performance Metrics</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="text-center">
             <p class="text-2xl font-bold text-blue-600">{$performanceMetrics.totalRequests}</p>
@@ -293,18 +294,18 @@
             <p class="text-sm text-slate-600">Active Engines</p>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Main Chat Interface -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
       <!-- Chat Messages -->
       <div class="lg:col-span-2">
-        <Card class="h-[600px] flex flex-col">
-          <CardHeader>
+        <NesCard class="h-[600px] flex flex-col">
+          <div class="yorha-panel-header">
             <div class="flex items-center justify-between">
-              <CardTitle>💬 AI Assistant Chat</CardTitle>
+              <h3 class="nes-text is-primary">💬 AI Assistant Chat</h3>
               <div class="flex gap-2">
                 <Button class="bits-btn" 
                   variant="outline" 
@@ -312,7 +313,7 @@
                   onclick={clearChat}
                 >
                   🗑️ Clear
-                </Button>
+                </button>
                 <select 
                   bind:value={selectedEngine}
                   class="px-3 py-1 text-sm border rounded-md bg-white"
@@ -323,8 +324,8 @@
                 </select>
               </div>
             </div>
-          </CardHeader>
-          <CardContent class="flex-1 flex flex-col p-0">
+          </div>
+          <div class="yorha-panel-content" class="flex-1 flex flex-col p-0">
             
             <!-- Messages Container -->
             <div 
@@ -386,28 +387,28 @@
                       onclick={() => currentInput = "Analyze the key elements of a valid contract"}
                     >
                       📝 Contract Analysis
-                    </Button>
+                    </button>
                     <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
                       onclick={() => currentInput = "What are common legal risks in mergers?"}
                     >
                       ⚖️ Legal Risks
-                    </Button>
+                    </button>
                     <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
                       onclick={() => currentInput = "Test GPU performance with vector embeddings"}
                     >
                       🎮 GPU Test
-                    </Button>
+                    </button>
                     <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
                       onclick={() => currentInput = "Compare different AI engines"}
                     >
                       🚀 Engine Comparison
-                    </Button>
+                    </button>
                   </div>
                 </div>
               {/if}
@@ -434,22 +435,22 @@
                   {:else}
                     ➤ Send
                   {/if}
-                </Button>
+                </button>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
 
       <!-- System Information -->
       <div class="space-y-4">
         
         <!-- Current Session -->
-        <Card>
-          <CardHeader>
-            <CardTitle>🔍 Session Info</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">🔍 Session Info</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-2 text-sm">
               <div>
                 <span class="font-medium">Session ID:</span>
@@ -468,15 +469,15 @@
                 <span>{$messages.length}</span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Engine Capabilities -->
-        <Card>
-          <CardHeader>
-            <CardTitle>⚡ Engine Capabilities</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">⚡ Engine Capabilities</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-3 text-sm">
               <div class="flex items-center gap-2">
                 <span class="text-blue-600">🎮</span>
@@ -507,15 +508,15 @@
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Performance Tips -->
-        <Card>
-          <CardHeader>
-            <CardTitle>💡 Performance Tips</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">💡 Performance Tips</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-2 text-sm text-slate-600">
               <div>• Use <strong>Smart Router</strong> for optimal performance</div>
               <div>• <strong>WebGPU</strong> is fastest for short queries</div>
@@ -523,8 +524,8 @@
               <div>• Cache hits provide <strong>sub-5ms</strong> responses</div>
               <div>• All engines support vector embeddings</div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
       </div>
     </div>

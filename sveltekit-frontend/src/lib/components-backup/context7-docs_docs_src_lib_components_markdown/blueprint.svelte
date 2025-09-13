@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts" module>
+  import 'nes.css/css/nes.min.css';
 </script>
 	export {
 		a,

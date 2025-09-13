@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Command } from "bits-ui";
   	import CalendarBlank from "phosphor-svelte/lib/CalendarBlank";
   	import CodeBlock from "phosphor-svelte/lib/CodeBlock";
@@ -18,12 +19,12 @@
 	<Command.List class="max-h-[280px] overflow-y-auto overflow-x-hidden px-2 pb-2">
 		<Command.Viewport>
 			<Command.Empty
-				class="text-muted-foreground flex w-full items-center justify-center pb-6 pt-8 text-sm"
+				class="nes-text is-disabled flex w-full items-center justify-center pb-6 pt-8 text-sm"
 			>
 				No results found.
 			</Command.Empty>
 			<Command.Group>
-				<Command.GroupHeading class="text-muted-foreground px-3 pb-2 pt-4 text-xs">
+				<Command.GroupHeading class="nes-text is-disabled px-3 pb-2 pt-4 text-xs">
 					Suggestions
 				</Command.GroupHeading>
 				<Command.GroupItems>
@@ -52,7 +53,7 @@
 			</Command.Group>
 			<Command.Separator class="bg-foreground/5 h-px w-full" />
 			<Command.Group>
-				<Command.GroupHeading class="text-muted-foreground px-3 pb-2 pt-4 text-xs">
+				<Command.GroupHeading class="nes-text is-disabled px-3 pb-2 pt-4 text-xs">
 					Components
 				</Command.GroupHeading>
 				<Command.GroupItems>

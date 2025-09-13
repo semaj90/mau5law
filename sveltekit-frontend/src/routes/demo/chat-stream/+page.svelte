@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { PUBLIC_SHOW_CACHE_META } from '$env/static/public';
   
   type Message = { role: 'user' | 'assistant'; content: string };

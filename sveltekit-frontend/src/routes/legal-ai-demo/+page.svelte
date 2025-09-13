@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
     import LegalAIWorkflow from '$lib/components/legal/LegalAIWorkflow.svelte';
     import type { LegalDocumentResponse, RecommendationResponse } from '$lib/services/legal-ai-client';
 
@@ -162,7 +163,7 @@
             <h3>🔧 Technical Implementation</h3>
             
             <div class="tech-grid">
-                <div class="tech-card">
+                <div class="tech-nier-bits-card">
                     <h4>🚄 QUIC/HTTP3 Transport</h4>
                     <ul>
                         <li>Low-latency multiplexed streams</li>
@@ -172,7 +173,7 @@
                     </ul>
                 </div>
 
-                <div class="tech-card">
+                <div class="tech-nier-bits-card">
                     <h4>📋 gRPC Protobuffers</h4>
                     <ul>
                         <li>Type-safe API definitions</li>
@@ -182,7 +183,7 @@
                     </ul>
                 </div>
 
-                <div class="tech-card">
+                <div class="tech-nier-bits-card">
                     <h4>🐹 Go Microservices</h4>
                     <ul>
                         <li>High-performance concurrent processing</li>
@@ -192,7 +193,7 @@
                     </ul>
                 </div>
 
-                <div class="tech-card">
+                <div class="tech-nier-bits-card">
                     <h4>⚡ Svelte 5 Frontend</h4>
                     <ul>
                         <li>Reactive UI with runes ($state, $derived)</li>

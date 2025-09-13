@@ -1,5 +1,6 @@
 <!-- YoRHa Detective Command Center Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
@@ -248,7 +249,7 @@
       
       <!-- System Metrics -->
       <div class="metrics-grid">
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-header">
             <span class="metric-label">ACTIVE CASES</span>
             <span class="metric-icon">📁</span>
@@ -257,7 +258,7 @@
           <div class="metric-trend positive">+2 this week</div>
         </div>
         
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-header">
             <span class="metric-label">EVIDENCE ITEMS</span>
             <span class="metric-icon">🔍</span>
@@ -266,7 +267,7 @@
           <div class="metric-trend positive">+15 today</div>
         </div>
         
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-header">
             <span class="metric-label">PERSONS OF INTEREST</span>
             <span class="metric-icon">👤</span>
@@ -275,7 +276,7 @@
           <div class="metric-trend warning">3 flagged</div>
         </div>
         
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-header">
             <span class="metric-label">AI QUERIES</span>
             <span class="metric-icon">🤖</span>
@@ -427,7 +428,7 @@
     <div class="ai-actions">
       <button class="yorha-btn">Analyze Current Case</button>
       <button class="yorha-btn">Evidence Summary</button>
-      <button class="yorha-btn yorha-btn-primary">EXECUTE QUERY</button>
+      <button class="yorha-btn yorha-nes-btn is-primary">EXECUTE QUERY</button>
     </div>
   </div>
 </YoRHaDetectiveModal>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import BitsUnoDemo from "$lib/components/ui/BitsUnoDemo.svelte";
   import { goto } from '$app/navigation';
 </script>

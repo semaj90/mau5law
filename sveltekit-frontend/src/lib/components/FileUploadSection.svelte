@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Use modular components and types
   import {
     Card,
@@ -239,14 +240,14 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<Card variant="evidence" class="space-y-6">
+<NesCard variant="evidence" class="space-y-6">
   {#snippet header()}
     <div class="space-y-2">
       <h3 class="text-lg font-semibold flex items-center gap-2">
         <CloudUpload class="w-5 h-5" />
         Evidence File Upload
       </h3>
-      <p class="text-sm text-muted-foreground">
+      <p class="text-sm nes-text is-disabled">
         Upload documents, images, videos, or other evidence files for comprehensive AI analysis
       </p>
     </div>
@@ -306,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   {/if}
-</Card>
+</NesCard>
 
 <!-- Styles are now handled by modular components and UnoCSS -->
 

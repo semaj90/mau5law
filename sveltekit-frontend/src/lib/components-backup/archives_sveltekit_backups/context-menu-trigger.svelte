@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { getContext } from 'svelte';
   import type { Writable } from 'svelte/store';
   interface BuilderAction {

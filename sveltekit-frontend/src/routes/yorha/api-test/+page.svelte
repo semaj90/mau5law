@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Advanced API Testing Interface -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Svelte runes are provided globally via src/types/svelte-helpers.d.ts
   import { onMount, onDestroy } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';

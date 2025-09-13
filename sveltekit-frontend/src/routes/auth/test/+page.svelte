@@ -3,6 +3,7 @@
   Tests GPU accelerated authentication, XState integration, and Context7 documentation
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { authStore } from '$lib/stores/auth-store';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
@@ -217,7 +218,7 @@
       <Shield class="h-8 w-8 text-primary" />
       <h1 class="text-3xl font-bold">Legal AI Authentication Test Suite</h1>
     </div>
-    <p class="text-muted-foreground max-w-2xl mx-auto">
+    <p class="nes-text is-disabled max-w-2xl mx-auto">
       Comprehensive testing of GPU-accelerated authentication, XState integration,
       Context7 documentation, and production service clients for the Legal AI Platform.
     </p>
@@ -241,7 +242,7 @@
           {#if !testResults.cluster}<Clock class="h-5 w-5 {getTestStatusColor('cluster')}" />{:else if testResults.cluster.success}<CheckCircle class="h-5 w-5 {getTestStatusColor('cluster')}" />{:else}<AlertCircle class="h-5 w-5 {getTestStatusColor('cluster')}" />{/if}
           <div>
             <div class="font-medium">GPU Cluster</div>
-            <div class="text-sm text-muted-foreground">
+            <div class="text-sm nes-text is-disabled">
               {clusterStatus?.available ? 'Online' : 'Offline'}
             </div>
           </div>
@@ -252,7 +253,7 @@
           {#if !testResults.context7}<Clock class="h-5 w-5 {getTestStatusColor('context7')}" />{:else if testResults.context7.success}<CheckCircle class="h-5 w-5 {getTestStatusColor('context7')}" />{:else}<AlertCircle class="h-5 w-5 {getTestStatusColor('context7')}" />{/if}
           <div>
             <div class="font-medium">Context7 Docs</div>
-            <div class="text-sm text-muted-foreground">
+            <div class="text-sm nes-text is-disabled">
               {testResults.context7?.success ? 'Available' : 'Loading...'}
             </div>
           </div>
@@ -263,7 +264,7 @@
           {#if !testResults.security}<Clock class="h-5 w-5 {getTestStatusColor('security')}" />{:else if testResults.security.success}<CheckCircle class="h-5 w-5 {getTestStatusColor('security')}" />{:else}<AlertCircle class="h-5 w-5 {getTestStatusColor('security')}" />{/if}
           <div>
             <div class="font-medium">Security Analysis</div>
-            <div class="text-sm text-muted-foreground">
+            <div class="text-sm nes-text is-disabled">
               {testResults.security?.success ? 'Operational' : 'Testing...'}
             </div>
           </div>
@@ -274,7 +275,7 @@
           {#if !testResults.validation}<Clock class="h-5 w-5 {getTestStatusColor('validation')}" />{:else if testResults.validation.success}<CheckCircle class="h-5 w-5 {getTestStatusColor('validation')}" />{:else}<AlertCircle class="h-5 w-5 {getTestStatusColor('validation')}" />{/if}
           <div>
             <div class="font-medium">Legal Validation</div>
-            <div class="text-sm text-muted-foreground">
+            <div class="text-sm nes-text is-disabled">
               {testResults.validation?.success ? 'Active' : 'Testing...'}
             </div>
           </div>
@@ -294,7 +295,7 @@
             <Activity class="mr-2 h-4 w-4" />
             Refresh Tests
           {/if}
-        </Button>
+        </button>
       </div>
     </Card.Content>
   </Card.Root>
@@ -329,7 +330,7 @@
               size="sm"
             >
               Fill Test Data
-            </Button>
+            </button>
 
             <LoginForm
               data={mockFormData.login}
@@ -357,7 +358,7 @@
               size="sm"
             >
               Fill Test Data
-            </Button>
+            </button>
 
             <RegisterForm
               data={mockFormData.register}
@@ -452,7 +453,7 @@
               </div>
             </div>
           {:else}
-            <div class="text-center py-8 text-muted-foreground">
+            <div class="text-center py-8 nes-text is-disabled">
               <Cpu class="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>Loading cluster status...</p>
             </div>
@@ -495,7 +496,7 @@
               {/each}
             </div>
           {:else}
-            <div class="text-center py-8 text-muted-foreground">
+            <div class="text-center py-8 nes-text is-disabled">
               <Code class="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>Loading Context7 documentation...</p>
             </div>
@@ -523,7 +524,7 @@
                     {testData.success ? 'Passed' : 'Failed'}
                   </Badge>
                 </div>
-                <div class="text-xs text-muted-foreground mb-2">
+                <div class="text-xs nes-text is-disabled mb-2">
                   {testData.timestamp}
                 </div>
                 <pre class="text-xs bg-muted p-2 rounded overflow-auto max-h-32">

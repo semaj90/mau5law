@@ -2,12 +2,13 @@
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: ')}' is not a valid attribute name -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { invalidateAll } from "$app/navigation";
   import { createEventDispatcher } from "svelte";
   import { superForm } from "sveltekit-superforms";
   // Corrected UI component import paths
   import { Textarea } from "$lib/components/ui";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label";
   import type { Evidence } from "$lib/types/api";
@@ -100,16 +101,16 @@ https://svelte.dev/e/attribute_invalid_name -->
   </div>
 
   <div class="mx-auto px-4 max-w-7xl">
-    <Button type="button" variant="ghost" onclick={() => dispatch("cancel")}
+    <button class="nes-btn" type="button" variant="ghost" onclick={() => dispatch("cancel")}
       >Cancel</Button
     >
-    <Button type="submit" disabled={$submitting}>
+    <button class="nes-btn" type="submit" disabled={$submitting}>
       {#if $submitting}
         Saving...
       {:else}
         {evidence ? "Save Changes" : "Create Evidence"}
       {/if}
-    </Button>
+    </button>
   </div>
 </form>
 

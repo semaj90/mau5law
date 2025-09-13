@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createDialog, createSelect } from '@melt-ui/svelte';
   import { fade } from 'svelte/transition';
   export const title = 'Legal Case Manager';

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Dialog } from 'bits-ui';
   import { fade, fly } from 'svelte/transition';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -54,7 +55,7 @@
 
 <div class="headless-ui-showcase">
   <!-- Header -->
-  <div class="yorha-card p-6 mb-6">
+  <div class="yorha-nier-bits-card p-6 mb-6">
     <h1 class="text-4xl font-bold mb-4 flex items-center gap-4">
       <span class="nes-icon star"></span>
       Headless UI Showcase
@@ -78,11 +79,11 @@
     <div class="space-y-6">
 
       <!-- Melt UI Dialog with NES.css styling -->
-      <Card class="nes-container with-title">
-        <CardHeader>
-          <CardTitle class="nes-text is-primary">🎭 Melt UI Dialog</CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+      <NesCard class="nes-container with-title">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="nes-text is-primary">🎭 Melt UI Dialog</h3>
+        </div>
+        <div class="yorha-panel-content" class="space-y-4">
           <p class="text-sm text-nier-text-secondary">
             Bits UI provides the headless behavior; NES.css supplies the retro styling.
           </p>
@@ -93,8 +94,8 @@
           >
             Open Bits UI Dialog
           </button>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Hybrid Form Example -->
       <div class="nes-container with-title is-rounded">
@@ -158,11 +159,11 @@
     <div class="space-y-6">
 
       <!-- Bits UI Components with NES styling -->
-      <Card class="nes-container with-title">
-        <CardHeader>
-          <CardTitle class="nes-text is-primary">🎯 Bits UI + Styling</CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+      <NesCard class="nes-container with-title">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="nes-text is-primary">🎯 Bits UI + Styling</h3>
+        </div>
+        <div class="yorha-panel-content" class="space-y-4">
           <p class="text-sm text-nier-text-secondary">
             Using your existing Bits UI components with NES.css and YoRHa styling.
           </p>
@@ -175,7 +176,7 @@
               onclick={() => addNotification('success', 'Bits UI Button clicked! 🎮')}
             >
               Hybrid Button
-            </Button>
+            </button>
 
             <Button
               variant="outline"
@@ -183,7 +184,7 @@
               onclick={() => addNotification('warning', 'Warning: Retro mode activated!')}
             >
               Outline + NES
-            </Button>
+            </button>
           </div>
 
           <!-- Status indicators -->
@@ -197,8 +198,8 @@
               <span class="nes-text text-sm">Processing: {selectedValue}</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Interactive Gaming Panel -->
       <div class="nes-container is-dark with-title">
@@ -296,11 +297,11 @@
       </div>
 
       <!-- Advanced Styling Example -->
-      <Card class="bg-nier-bg-secondary border-nier-border-primary">
-        <CardHeader class="border-b border-nier-border-secondary">
-          <CardTitle class="text-nier-accent-warm">🚀 Advanced Integration</CardTitle>
-        </CardHeader>
-        <CardContent class="p-4 space-y-3">
+      <NesCard class="bg-nier-bg-secondary border-nier-border-primary">
+        <div class="yorha-panel-header" class="border-b border-nier-border-secondary">
+          <h3 class="nes-text is-primary" class="text-nier-accent-warm">🚀 Advanced Integration</h3>
+        </div>
+        <div class="yorha-panel-content" class="p-4 space-y-3">
           <p class="text-xs text-nier-text-secondary">
             This card uses Bits UI structure + YoRHa colors + UnoCSS utilities.
           </p>
@@ -314,8 +315,8 @@
             <span>Compatibility:</span>
             <span class="text-nier-accent-warm font-bold">100%</span>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </div>
 </div>

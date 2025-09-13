@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Updated to use melt-ui components
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
@@ -471,7 +472,7 @@ https://svelte.dev/e/js_parse_error -->
       <Button variant="outline" class="mt-4 bits-btn bits-btn" disabled={$isProcessing}>
         <Upload class="mr-2" size={16} />
         Choose Files
-      </Button>
+      </button>
     </div>
   </div>
 
@@ -487,32 +488,32 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Progress Overview -->
   {#if $files.length > 0}
-    <Card class="mt-6">
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard class="mt-6">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           <span>Upload Progress</span>
           <Badge variant={$hasErrors ? "destructive" : "default"}>
             {$completedFiles.length} / {$files.length} completed
           </Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-2">
           <Progress value={$totalProgress} class="w-full" />
-          <p class="text-sm text-muted-foreground">
+          <p class="text-sm nes-text is-disabled">
             Overall Progress: {Math.round($totalProgress)}%
           </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- File List -->
   {#if $files.length > 0}
     <div class="file-list mt-6">
       {#each $files as file (file.id)}
-        <Card class="file-item">
-          <CardContent class="p-4">
+        <NesCard class="file-item">
+          <div class="yorha-panel-content" class="p-4">
             <div class="file-info">
               <!-- File Icon/Preview -->
               <div class="file-preview">
@@ -573,7 +574,7 @@ https://svelte.dev/e/js_parse_error -->
                       onclick={() => openMetadataDialog(file)}
                     >
                       Edit
-                    </Button>
+                    </button>
                   {/if}
 
                   <Button class="bits-btn"
@@ -584,12 +585,12 @@ https://svelte.dev/e/js_parse_error -->
                       file.status === "processing"}
                   >
                     <X size={16} />
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/each}
     </div>
 
@@ -608,7 +609,7 @@ https://svelte.dev/e/js_parse_error -->
           Upload & Process ({$files.filter((f) => f.status === "pending")
             .length} files)
         {/if}
-      </Button>
+      </button>
 
       <Button class="bits-btn"
         variant="outline"
@@ -616,7 +617,7 @@ https://svelte.dev/e/js_parse_error -->
         disabled={$isProcessing}
       >
         Clear All
-      </Button>
+      </button>
     </div>
   {/if}
 
@@ -693,7 +694,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="dialog-actions">
             <Button class="bits-btn" variant="outline" onclick={() => showMetadata.set(false)}>
               Cancel
-            </Button>
+            </button>
             <Button class="bits-btn"
               onclick={() => {
                 if ($selectedFile) {
@@ -703,7 +704,7 @@ https://svelte.dev/e/js_parse_error -->
               }}
             >
               Save
-            </Button>
+            </button>
           </div>
         </div>
       {/if}

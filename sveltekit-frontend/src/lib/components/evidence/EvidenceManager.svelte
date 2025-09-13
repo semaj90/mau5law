@@ -10,6 +10,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
   import {
@@ -274,11 +275,11 @@
 
 <div class="evidence-manager">
   <!-- Embedding Stats Card -->
-  <Card class="mb-6">
-    <CardHeader>
-      <CardTitle>📊 Embedding Status</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard class="mb-6">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">📊 Embedding Status</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
         <div class="stat-item">
           <div class="text-2xl font-bold text-blue-600">{embeddingStats.total}</div>
@@ -306,7 +307,7 @@
           class="text-sm bits-btn bits-btn"
         >
           {loading.stats ? 'Refreshing...' : '🔄 Refresh Stats'}
-        </Button>
+        </button>
 
         <Button
           onclick={triggerEmbeddingBackfill}
@@ -315,18 +316,18 @@
           class="text-sm bits-btn bits-btn"
         >
           {loading.backfill ? 'Processing...' : `🚀 Generate Embeddings (${embeddingStats.withoutEmbeddings})`}
-        </Button>
+        </button>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Upload Section -->
   {#if showUpload}
-    <Card class="mb-6">
-      <CardHeader>
-        <CardTitle>📁 Upload Evidence</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard class="mb-6">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">📁 Upload Evidence</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div
           class="upload-area {dragActive ? 'drag-active' : ''}"
           ondragenter={handleDragEnter}
@@ -355,7 +356,7 @@
               disabled={loading.upload}
             >
               {loading.upload ? 'Uploading...' : 'Select Files'}
-            </Button>
+            </button>
           </div>
         </div>
 
@@ -364,17 +365,17 @@
             <p class="text-blue-700">{uploadProgress}</p>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Search Section -->
   {#if showSearch}
-    <Card class="mb-6">
-      <CardHeader>
-        <CardTitle>🔍 Semantic Search</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard class="mb-6">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">🔍 Semantic Search</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="flex gap-2 mb-4">
           <input
             bind:value={searchQuery}
@@ -388,20 +389,20 @@
             disabled={loading.search || !searchQuery.trim()}
           >
             {loading.search ? 'Searching...' : 'Search'}
-          </Button>
+          </button>
         </div>
 
         {#if showSearchResults}
           <div class="search-results">
             <div class="flex justify-between items-center mb-4">
               <h4 class="font-semibold">Search Results ({searchResults.length})</h4>
-              <Button
+              <button class="nes-btn"
                 onclick={() => { showSearchResults = false; searchResults = []; }}
                 variant="outline"
                 class="bits-btn text-sm"
               >
                 Clear Results
-              </Button>
+              </button>
             </div>
 
             {#if searchResults.length === 0}
@@ -436,15 +437,15 @@
             {/if}
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Evidence Files List -->
-  <Card>
-    <CardHeader>
+  <NesCard>
+    <div class="yorha-panel-header">
       <div class="flex justify-between items-center">
-        <CardTitle>📋 Evidence Files ({evidenceFiles.length})</CardTitle>
+        <h3 class="nes-text is-primary">📋 Evidence Files ({evidenceFiles.length})</h3>
         <Button
           onclick={loadEvidenceFiles}
           disabled={loading.files}
@@ -452,10 +453,10 @@
           class="text-sm bits-btn bits-btn"
         >
           {loading.files ? 'Loading...' : '🔄 Refresh'}
-        </Button>
+        </button>
       </div>
-    </CardHeader>
-    <CardContent>
+    </div>
+    <div class="yorha-panel-content">
       {#if loading.files}
         <div class="text-center py-8">
           <div class="animate-spin h-8 w-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
@@ -503,8 +504,8 @@
           {/each}
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Error Display -->
   {#if error}
@@ -514,13 +515,13 @@
         <div class="error-content">
           <h4 class="error-title">Error</h4>
           <p class="error-message">{error}</p>
-          <Button
+          <button class="nes-btn"
             onclick={() => { error = ''; }}
             variant="outline"
             class="bits-btn mt-3 text-xs dismiss-btn"
           >
             Dismiss
-          </Button>
+          </button>
         </div>
       </div>
     </div>

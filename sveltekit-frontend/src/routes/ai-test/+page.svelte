@@ -1,5 +1,6 @@
 <!-- AI Chat Test Page - Showcasing Svelte 5 + bits-ui + Docker Ollama Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
   import {
@@ -136,7 +137,7 @@
     <!-- System Status Cards -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
       <!-- Ollama Service Status -->
-      <Card class="p-6">
+      <NesCard class="p-6">
         <div class="flex items-center gap-3 mb-4">
           <div class="p-2 bg-blue-100 rounded-lg">
             <Bot class="h-6 w-6 text-blue-600" />
@@ -169,10 +170,10 @@
             </p>
           {/if}
         {/if}
-      </Card>
+      </NesCard>
 
       <!-- Database Status -->
-      <Card class="p-6">
+      <NesCard class="p-6">
         <div class="flex items-center gap-3 mb-4">
           <div class="p-2 bg-green-100 rounded-lg">
             <Database class="h-6 w-6 text-green-600" />
@@ -201,10 +202,10 @@
             </p>
           {/if}
         {/if}
-      </Card>
+      </NesCard>
 
       <!-- GPU/Hardware Status -->
-      <Card class="p-6">
+      <NesCard class="p-6">
         <div class="flex items-center gap-3 mb-4">
           <div class="p-2 bg-purple-100 rounded-lg">
             <Cpu class="h-6 w-6 text-purple-600" />
@@ -224,34 +225,34 @@
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">CUDA 12.9</span>
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">8GB VRAM</span>
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Features Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <Card class="p-4 text-center">
+      <NesCard class="p-4 text-center">
         <MessageCircle class="h-8 w-8 text-blue-600 mx-auto mb-2" />
         <h4 class="font-semibold text-gray-900 mb-1">Real-time Chat</h4>
         <p class="text-sm text-gray-600">Streaming responses with GPU acceleration</p>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 text-center">
+      <NesCard class="p-4 text-center">
         <HardDrive class="h-8 w-8 text-green-600 mx-auto mb-2" />
         <h4 class="font-semibold text-gray-900 mb-1">Local Processing</h4>
         <p class="text-sm text-gray-600">No data sent to external servers</p>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 text-center">
+      <NesCard class="p-4 text-center">
         <Zap class="h-8 w-8 text-yellow-600 mx-auto mb-2" />
         <h4 class="font-semibold text-gray-900 mb-1">Legal Specialized</h4>
         <p class="text-sm text-gray-600">Fine-tuned for legal applications</p>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 text-center">
+      <NesCard class="p-4 text-center">
         <Server class="h-8 w-8 text-purple-600 mx-auto mb-2" />
         <h4 class="font-semibold text-gray-900 mb-1">Docker Integrated</h4>
         <p class="text-sm text-gray-600">Containerized for easy deployment</p>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Chat Interface -->
@@ -272,7 +273,7 @@
     </div>
 
     <!-- Technical Details -->
-    <Card class="p-6">
+    <NesCard class="p-6">
       <h3 class="text-xl font-bold text-gray-900 mb-4">Technical Implementation</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -306,7 +307,7 @@
           </p>
         </div>
       {/if}
-    </Card>
+    </NesCard>
 
     <!-- Refresh Button -->
     <div class="text-center mt-8">
@@ -317,7 +318,7 @@
           <Server class="h-4 w-4" />
         {/if}
         Refresh System Status
-      </Button>
+      </button>
     </div>
   </div>
 </div>

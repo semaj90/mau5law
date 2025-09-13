@@ -14,6 +14,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null } = $props();
 
   import { onMount, createEventDispatcher } from 'svelte';
@@ -387,7 +388,7 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           Send
         {/if}
-      </Button>
+      </button>
       
       <Button 
         onclick={clearChat}
@@ -396,7 +397,7 @@ https://svelte.dev/e/js_parse_error -->
         class="clear-button bits-btn bits-btn"
       >
         Clear
-      </Button>
+      </button>
     </div>
     
     {#if $isStreaming}

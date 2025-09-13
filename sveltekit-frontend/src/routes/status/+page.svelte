@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { Button } from 'bits-ui';
@@ -268,14 +269,14 @@
     <h2 class="text-2xl font-bold text-white mb-6">Integration Test Results</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {#each Object.entries(integrationTests) as [testName, result]}
-        <Card class="bg-gray-800 border-gray-700">
-          <CardHeader>
-            <CardTitle class="flex items-center justify-between text-white">
+        <NesCard class="bg-gray-800 border-gray-700">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center justify-between text-white">
               <span class="capitalize">{testName.replace('-', ' ')}</span>
               <span class="text-xl">{getStatusIcon(result.status)}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             <p class="text-sm {getStatusColor(result.status)} mb-2">
               {result.message}
             </p>
@@ -287,8 +288,8 @@
                 </pre>
               </details>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/each}
     </div>
   </section>
@@ -299,14 +300,14 @@
       <h2 class="text-2xl font-bold text-white mb-6">System Services</h2>
 
       <!-- Databases -->
-      <Card class="mb-6 bg-gray-800 border-gray-700">
-        <CardHeader>
-          <CardTitle class="text-white">Database Services</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard class="mb-6 bg-gray-800 border-gray-700">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-white">Database Services</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {#each Object.entries(systemHealth.services.databases) as [name, service]}
-              <div class="service-card p-3 bg-gray-900 rounded border border-gray-600">
+              <div class="service-nier-bits-card p-3 bg-gray-900 rounded border border-gray-600">
                 <div class="flex items-center justify-between mb-1">
                   <h4 class="font-semibold text-white capitalize">{name}</h4>
                   <span class="text-sm">
@@ -322,18 +323,18 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- AI Services -->
-      <Card class="mb-6 bg-gray-800 border-gray-700">
-        <CardHeader>
-          <CardTitle class="text-white">AI/ML Services</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard class="mb-6 bg-gray-800 border-gray-700">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-white">AI/ML Services</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {#each Object.entries(systemHealth.services.aiServices) as [name, service]}
-              <div class="service-card p-3 bg-gray-900 rounded border border-gray-600">
+              <div class="service-nier-bits-card p-3 bg-gray-900 rounded border border-gray-600">
                 <div class="flex items-center justify-between mb-1">
                   <h4 class="font-semibold text-white capitalize">{name.replace('Service', '')}</h4>
                   <span class="text-sm">
@@ -349,18 +350,18 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- GPU Services -->
-      <Card class="mb-6 bg-gray-800 border-gray-700">
-        <CardHeader>
-          <CardTitle class="text-white">GPU Acceleration Services</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard class="mb-6 bg-gray-800 border-gray-700">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-white">GPU Acceleration Services</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {#each Object.entries(systemHealth.services.gpuServices) as [name, service]}
-              <div class="service-card p-3 bg-gray-900 rounded border border-gray-600">
+              <div class="service-nier-bits-card p-3 bg-gray-900 rounded border border-gray-600">
                 <div class="flex items-center justify-between mb-1">
                   <h4 class="font-semibold text-white capitalize">{name}</h4>
                   <span class="text-sm">
@@ -379,8 +380,8 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </section>
   {/if}
 
@@ -388,8 +389,8 @@
   {#if systemHealth?.performance}
     <section class="mb-12">
       <h2 class="text-2xl font-bold text-white mb-6">Performance Metrics</h2>
-      <Card class="bg-gray-800 border-gray-700">
-        <CardContent class="p-6">
+      <NesCard class="bg-gray-800 border-gray-700">
+        <div class="yorha-panel-content" class="p-6">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="metric-group">
               <h4 class="font-semibold text-white mb-2">System Uptime</h4>
@@ -410,31 +411,31 @@
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </section>
   {/if}
 
   <!-- Live Demo Section -->
   <section class="mb-12">
     <h2 class="text-2xl font-bold text-white mb-6">GPU Cache Integration Demo</h2>
-    <Card class="bg-gray-800 border-gray-700">
-      <CardContent class="p-6">
+    <NesCard class="bg-gray-800 border-gray-700">
+      <div class="yorha-panel-content" class="p-6">
         <GPUCacheIntegrationDemo
           showProgressionDemo={true}
           enableRealTimeMetrics={true}
           debugMode={false}
         />
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </section>
 
   <!-- Architecture Summary -->
   {#if systemHealth?.architecture}
     <section>
       <h2 class="text-2xl font-bold text-white mb-6">Platform Architecture</h2>
-      <Card class="bg-gray-800 border-gray-700">
-        <CardContent class="p-6">
+      <NesCard class="bg-gray-800 border-gray-700">
+        <div class="yorha-panel-content" class="p-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h4 class="font-semibold text-white mb-4">Platform Information</h4>
@@ -467,8 +468,8 @@
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </section>
   {/if}
 </div>

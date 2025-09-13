@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Ollama Agent Shell - Real-time Terminal Modal with Streaming Support -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { OllamaAgentShellProps } from '$lib/types/component-props.js';
 
   import { agentShellMachine } from "$lib/machines/agentShellMachine";
@@ -357,7 +358,7 @@ https://svelte.dev/e/js_parse_error -->
           <Terminal class="h-5 w-5" />
           <h2 class="text-lg font-semibold">Ollama Agent Shell</h2>
           {#if $state.matches("processing")}
-            <span class="text-sm text-muted-foreground animate-pulse"
+            <span class="text-sm nes-text is-disabled animate-pulse"
               >Processing...</span
             >
           {/if}
@@ -389,7 +390,7 @@ https://svelte.dev/e/js_parse_error -->
 
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-1">
-                <span class="text-xs text-muted-foreground">
+                <span class="text-xs nes-text is-disabled">
                   {message.timestamp.toLocaleTimeString()}
                 </span>
                 {#if message.status === "streaming"}

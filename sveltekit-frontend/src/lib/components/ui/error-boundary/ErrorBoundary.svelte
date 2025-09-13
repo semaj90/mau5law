@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { Button } from 'bits-ui';
@@ -74,8 +75,8 @@
 {#if hasError && error}
   <!-- Error State -->
   <div class="min-h-screen bg-nier-bg-primary text-nier-text-primary flex items-center justify-center p-golden-lg">
-    <Card.Root class="bg-nier-bg-secondary border-red-500/30 max-w-2xl w-full">
-      <Card.Header class="text-center pb-golden-lg">
+    <NesCard.Root class="bg-nier-bg-secondary border-red-500/30 max-w-2xl w-full">
+      <NesCard.Header class="text-center pb-golden-lg">
         <div class="mb-golden-md">
           <!-- YoRHa Error Icon -->
           <div class="w-16 h-16 mx-auto bg-red-500/20 rounded-full flex items-center justify-center">
@@ -84,15 +85,15 @@
             </svg>
           </div>
         </div>
-        <Card.Title class="text-2xl font-bold text-red-400 uppercase tracking-wide mb-golden-sm">
+        <NesCard.Title class="text-2xl font-bold text-red-400 uppercase tracking-wide mb-golden-sm">
           System Error Detected
         </Card.Title>
-        <Card.Description class="text-nier-text-secondary">
+        <NesCard.Description class="text-nier-text-secondary">
           The YoRHa Legal AI system encountered an unexpected error. Our androids are investigating the issue.
         </Card.Description>
       </Card.Header>
       
-      <Card.Content class="space-y-golden-lg">
+      <NesCard.Content class="space-y-golden-lg">
         <!-- Error Details -->
         <div class="bg-nier-bg-tertiary border border-nier-border-muted rounded p-golden-md">
           <h3 class="text-sm font-bold text-nier-accent-warm uppercase tracking-wide mb-golden-sm">

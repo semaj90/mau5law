@@ -3,6 +3,7 @@ Agent Orchestrator Component
 Manages AutoGen and CrewAI multi-agent workflows
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import {
@@ -438,19 +439,19 @@ Manages AutoGen and CrewAI multi-agent workflows
   onclick={checkServiceStatus}
       >
         <RefreshCw class="h-4 w-4" />
-      </Button>
+      </button>
     </div>
   </div>
 
   <!-- Workflow Configuration -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Settings class="h-5 w-5" />
         Workflow Configuration
-      </CardTitle>
-    </CardHeader>
-    <CardContent class="space-y-4">
+      </h3>
+    </div>
+    <div class="yorha-panel-content" class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <span id="label-workflow" class="block text-sm font-medium mb-2">Workflow Type</span>
@@ -537,36 +538,36 @@ Manages AutoGen and CrewAI multi-agent workflows
             <Play class="h-4 w-4 mr-2" />
             Execute Workflow
           {/if}
-        </Button>
+        </button>
 
         {#if isProcessing}
           <Button class="bits-btn" variant="outline" onclick={cancelExecution}>
             <Square class="h-4 w-4" />
-          </Button>
+          </button>
         {/if}
 
         {#if conversationMessages.length > 0 || executionResults.length > 0}
           <Button class="bits-btn" variant="outline" onclick={clearResults}>
             Clear
-          </Button>
+          </button>
           <Button class="bits-btn" variant="outline" onclick={downloadResults}>
             <Download class="h-4 w-4" />
-          </Button>
+          </button>
         {/if}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Execution Status -->
   {#if isProcessing || lastUpdate}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Activity class="h-5 w-5" />
           Execution Status
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-sm font-medium">Progress</span>
@@ -589,20 +590,20 @@ Manages AutoGen and CrewAI multi-agent workflows
             <span class="text-gray-700 dark:text-gray-300">{lastUpdate}</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Results Display -->
   {#if selectedProvider === 'autogen' && conversationMessages.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <MessageSquare class="h-5 w-5" />
           AutoGen Conversation ({conversationMessages.length} messages)
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each conversationMessages as message}
             <div class="flex items-start gap-3 p-3 border rounded-lg">
@@ -629,19 +630,19 @@ Manages AutoGen and CrewAI multi-agent workflows
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   {#if selectedProvider === 'crewai' && executionResults.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Users class="h-5 w-5" />
           CrewAI Execution Results ({executionResults.length} tasks)
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-3">
           {#each executionResults as result}
             <div class="border rounded-lg p-4">
@@ -669,20 +670,20 @@ Manages AutoGen and CrewAI multi-agent workflows
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Workflow Templates -->
   {#if showAdvancedControls}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <FileText class="h-5 w-5" />
           Quick Start Templates
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Button
             variant="outline"
@@ -697,7 +698,7 @@ Manages AutoGen and CrewAI multi-agent workflows
               <p class="font-medium">Criminal Case Analysis</p>
               <p class="text-xs text-gray-500">AutoGen multi-agent analysis</p>
             </div>
-          </Button>
+          </button>
 
           <Button
             variant="outline"
@@ -712,7 +713,7 @@ Manages AutoGen and CrewAI multi-agent workflows
               <p class="font-medium">Contract Review</p>
               <p class="text-xs text-gray-500">CrewAI specialized team</p>
             </div>
-          </Button>
+          </button>
 
           <Button
             variant="outline"
@@ -727,7 +728,7 @@ Manages AutoGen and CrewAI multi-agent workflows
               <p class="font-medium">Digital Evidence Review</p>
               <p class="text-xs text-gray-500">Forensic analysis workflow</p>
             </div>
-          </Button>
+          </button>
 
           <Button
             variant="outline"
@@ -742,10 +743,10 @@ Manages AutoGen and CrewAI multi-agent workflows
               <p class="font-medium">Legal Research</p>
               <p class="text-xs text-gray-500">Precedent and statute analysis</p>
             </div>
-          </Button>
+          </button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

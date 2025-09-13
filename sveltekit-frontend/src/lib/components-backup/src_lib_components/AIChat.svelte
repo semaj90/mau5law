@@ -2,6 +2,7 @@
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:keypress) and new syntaxes for event handling is not allowed. Use only the onkeypress syntax -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // @ts-nocheck
   import { onMount } from "svelte";
   import { writable, type Writable } from "svelte/store";

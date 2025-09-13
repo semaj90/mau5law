@@ -3,6 +3,7 @@
 // Frontend client for AI synthesis with real-time streaming
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';

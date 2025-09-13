@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import type { TableOfContents } from "$lib/utils/use-toc.svelte.js";
   	import { onMount } from "svelte";
   	import TocTree from "./toc-tree.svelte";
@@ -56,9 +57,9 @@
 	<ScrollArea.Viewport class="h-[calc(100vh-300px)]">
 		{#if toc?.items?.length}
 			<div class="w-[220px] max-w-[220px] space-y-2 text-sm">
-				<div class="text-muted-foreground -ml-px flex items-center gap-1.5">
+				<div class="nes-text is-disabled -ml-px flex items-center gap-1.5">
 					<List class="size-4 shrink-0" />
-					<p class="text-muted-foreground text-sm">On this page</p>
+					<p class="nes-text is-disabled text-sm">On this page</p>
 				</div>
 				<div class="relative mt-4">
 					<TocTree tree={toc} {activeUrl} />

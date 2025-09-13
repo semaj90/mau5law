@@ -2,6 +2,7 @@
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     caseId?: string;
     placeholder?: string;
@@ -308,10 +309,10 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             <p>{selectedCitation}</p>
           </div>
           <div class="modal-actions">
-            <button class="btn-primary" onclick={() => insertCitation()}>
+            <button class="nes-btn is-primary" onclick={() => insertCitation()}>
               Insert Citation
             </button>
-            <button class="btn-secondary" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
+            <button class="nes-btn" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
               Copy
             </button>
           </div>

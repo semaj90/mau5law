@@ -13,6 +13,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createActor } from 'xstate';
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { userTypingStateMachine, type TypingContext, type TypingState } from '$lib/machines/userTypingStateMachine.js';

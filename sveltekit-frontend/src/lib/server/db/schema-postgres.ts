@@ -24,7 +24,7 @@ import { sql } from "drizzle-orm";
 export const users = pgTable(
   'users',
   {
-    id: uuid().defaultRandom().primaryKey().notNull(),
+    id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
     email: varchar({ length: 255 }).notNull(),
     emailVerified: timestamp('email_verified', { mode: 'string' }),
     hashedPassword: text('hashed_password'),
@@ -84,7 +84,7 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
 // === CASE MANAGEMENT ===
 
 export const cases = pgTable("cases", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseNumber: varchar("case_number", { length: 50 }).notNull(),
   title: varchar({ length: 255 }).notNull(),
   name: varchar({ length: 255 }),
@@ -114,7 +114,7 @@ export const cases = pgTable("cases", {
 // === CRIMINAL RECORDS ===
 
 export const criminals = pgTable("criminals", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   firstName: varchar("first_name", { length: 100 }).notNull(),
   lastName: varchar("last_name", { length: 100 }).notNull(),
   middleName: varchar("middle_name", { length: 100 }),
@@ -146,7 +146,7 @@ export const criminals = pgTable("criminals", {
 // === EVIDENCE MANAGEMENT ===
 
 export const evidence = pgTable("evidence", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid("case_id"),
   criminalId: uuid("criminal_id"),
   title: varchar({ length: 255 }).notNull(),
@@ -180,7 +180,7 @@ export const evidence = pgTable("evidence", {
 // === LEGAL DOCUMENT MANAGEMENT ===
 
 export const legalDocuments = pgTable("legal_documents", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   title: varchar({ length: 500 }).notNull(),
   documentType: varchar("document_type", { length: 50 }).notNull(),
   jurisdiction: varchar({ length: 100 }),
@@ -236,7 +236,7 @@ export const legalDocuments = pgTable("legal_documents", {
 // === CASE ACTIVITIES & TIMELINE ===
 
 export const caseActivities = pgTable("case_activities", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid("case_id").notNull(),
   activityType: varchar("activity_type", { length: 50 }).notNull(),
   title: varchar({ length: 255 }).notNull(),
@@ -257,7 +257,7 @@ export const caseActivities = pgTable("case_activities", {
 // === ATTACHMENT VERIFICATIONS ===
 
 export const attachmentVerifications = pgTable("attachment_verifications", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   attachmentId: uuid("attachment_id").notNull(),
   verifiedBy: uuid("verified_by").notNull(),
   verificationStatus: varchar("verification_status", { length: 50 }).default('pending').notNull(),
@@ -276,7 +276,7 @@ export const attachmentVerifications = pgTable("attachment_verifications", {
 // === CANVAS ANNOTATIONS ===
 
 export const canvasAnnotations = pgTable("canvas_annotations", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   evidenceId: uuid("evidence_id"),
   fabricData: jsonb("fabric_data").notNull(),
   annotationType: varchar("annotation_type", { length: 50 }),
@@ -308,7 +308,7 @@ export const canvasAnnotations = pgTable("canvas_annotations", {
 // === CANVAS STATES ===
 
 export const canvasStates = pgTable("canvas_states", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid("case_id"),
   name: varchar({ length: 255 }).notNull(),
   canvasData: jsonb("canvas_data").notNull(),
@@ -333,7 +333,7 @@ export const canvasStates = pgTable("canvas_states", {
 // === AI REPORTS & ANALYSIS ===
 
 export const aiReports = pgTable("ai_reports", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid("case_id"),
   reportType: varchar("report_type", { length: 50 }).notNull(),
   title: varchar({ length: 255 }).notNull(),
@@ -363,7 +363,7 @@ export const aiReports = pgTable("ai_reports", {
 // === CITATIONS ===
 
 export const citations = pgTable("citations", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid("case_id"),
   documentId: uuid("document_id"),
   citationType: varchar("citation_type", { length: 50 }).notNull(),
@@ -403,7 +403,7 @@ export const citations = pgTable("citations", {
 // === REPORTS ===
 
 export const reports = pgTable("reports", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid("case_id"),
   title: varchar({ length: 255 }).notNull(),
   content: text(),
@@ -431,7 +431,7 @@ export const reports = pgTable("reports", {
 // === SAVED REPORTS ===
 
 export const savedReports = pgTable("saved_reports", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   title: varchar({ length: 300 }).notNull(),
   caseId: uuid("case_id"),
   reportType: varchar("report_type", { length: 50 }).notNull(),
@@ -468,7 +468,7 @@ export const savedReports = pgTable("saved_reports", {
 // === THEMES & UI CUSTOMIZATION ===
 
 export const themes = pgTable("themes", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   name: varchar({ length: 100 }).notNull(),
   description: text(),
   cssVariables: jsonb("css_variables").notNull(),
@@ -489,7 +489,7 @@ export const themes = pgTable("themes", {
 // === PERSONS OF INTEREST ===
 
 export const personsOfInterest = pgTable("persons_of_interest", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid("case_id"),
   name: varchar({ length: 255 }).notNull(),
   aliases: jsonb().default([]).notNull(),
@@ -518,7 +518,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
 // === HASH VERIFICATIONS ===
 
 export const hashVerifications = pgTable("hash_verifications", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   evidenceId: uuid("evidence_id"),
   verifiedHash: varchar("verified_hash", { length: 64 }).notNull(),
   storedHash: varchar("stored_hash", { length: 64 }),
@@ -544,7 +544,7 @@ export const hashVerifications = pgTable("hash_verifications", {
 // === VECTOR EMBEDDINGS FOR AI SEARCH ===
 
 export const contentEmbeddings = pgTable("content_embeddings", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   contentId: uuid("content_id").notNull(),
   contentType: varchar("content_type", { length: 50 }).notNull(),
   textContent: text("text_content").notNull(),
@@ -555,7 +555,7 @@ export const contentEmbeddings = pgTable("content_embeddings", {
 });
 
 export const userEmbeddings = pgTable("user_embeddings", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   userId: uuid("user_id"),
   content: text().notNull(),
   embedding: text().notNull(),
@@ -570,7 +570,7 @@ export const userEmbeddings = pgTable("user_embeddings", {
 ]);
 
 export const chatEmbeddings = pgTable("chat_embeddings", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   conversationId: uuid("conversation_id").notNull(),
   messageId: uuid("message_id").notNull(),
   content: text().notNull(),
@@ -581,7 +581,7 @@ export const chatEmbeddings = pgTable("chat_embeddings", {
 });
 
 export const evidenceVectors = pgTable("evidence_vectors", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   evidenceId: uuid("evidence_id"),
   content: text().notNull(),
   embedding: text().notNull(),
@@ -596,7 +596,7 @@ export const evidenceVectors = pgTable("evidence_vectors", {
 ]);
 
 export const caseEmbeddings = pgTable("case_embeddings", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid("case_id"),
   content: text().notNull(),
   embedding: text().notNull(),
@@ -613,7 +613,7 @@ export const caseEmbeddings = pgTable("case_embeddings", {
 // === RAG (Retrieval Augmented Generation) SESSIONS ===
 
 export const ragSessions = pgTable("rag_sessions", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   sessionId: varchar("session_id", { length: 255 }).notNull(),
   userId: uuid("user_id"),
   title: varchar({ length: 255 }),
@@ -631,7 +631,7 @@ export const ragSessions = pgTable("rag_sessions", {
 ]);
 
 export const ragMessages = pgTable("rag_messages", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   sessionId: varchar("session_id", { length: 255 }).notNull(),
   messageIndex: integer("message_index").notNull(),
   role: varchar({ length: 20 }).notNull(),
@@ -647,7 +647,7 @@ export const ragMessages = pgTable("rag_messages", {
 // === STATUTES ===
 
 export const statutes = pgTable("statutes", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   title: varchar({ length: 255 }).notNull(),
   code: varchar({ length: 100 }).notNull(),
   description: text(),
@@ -662,7 +662,7 @@ export const statutes = pgTable("statutes", {
 // === LEGAL PRECEDENTS ===
 
 export const legalPrecedents = pgTable("legal_precedents", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseTitle: varchar("case_title", { length: 255 }).notNull(),
   citation: varchar({ length: 255 }).notNull(),
   court: varchar({ length: 100 }),
@@ -681,7 +681,7 @@ export const legalPrecedents = pgTable("legal_precedents", {
 // === LEGAL ANALYSIS SESSIONS ===
 
 export const legalAnalysisSessions = pgTable("legal_analysis_sessions", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid("case_id"),
   userId: uuid("user_id"),
   sessionType: varchar("session_type", { length: 50 }).default('case_analysis'),
@@ -710,7 +710,7 @@ export const legalAnalysisSessions = pgTable("legal_analysis_sessions", {
 // === LEGAL RESEARCH ===
 
 export const legalResearch = pgTable("legal_research", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid("case_id"),
   query: text().notNull(),
   searchTerms: jsonb("search_terms").default([]),
@@ -744,7 +744,7 @@ export const legalResearch = pgTable("legal_research", {
 // === VECTOR METADATA ===
 
 export const vectorMetadata = pgTable("vector_metadata", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   documentId: text("document_id").notNull(),
   collectionName: varchar("collection_name", { length: 100 }).notNull(),
   metadata: jsonb().default({}).notNull(),
@@ -758,7 +758,7 @@ export const vectorMetadata = pgTable("vector_metadata", {
 // === CASE SCORING SYSTEM ===
 
 export const caseScores = pgTable("case_scores", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid("case_id").notNull(),
   score: numeric({ precision: 5, scale: 2 }).notNull(),
   riskLevel: varchar("risk_level", { length: 20 }).notNull(),
@@ -784,7 +784,7 @@ export const caseScores = pgTable("case_scores", {
 // === AI QUERY LOGGING SYSTEM ===
 
 export const userAiQueries = pgTable("user_ai_queries", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   userId: uuid("user_id").notNull(),
   caseId: uuid("case_id"),
   query: text().notNull(),
@@ -816,7 +816,7 @@ export const userAiQueries = pgTable("user_ai_queries", {
 // === AUTO-TAGGING SYSTEM ===
 
 export const autoTags = pgTable("auto_tags", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   entityId: uuid("entity_id").notNull(),
   entityType: varchar("entity_type", { length: 50 }).notNull(),
   tag: varchar({ length: 100 }).notNull(),
@@ -838,7 +838,7 @@ export const autoTags = pgTable("auto_tags", {
 // === EMBEDDING CACHE ===
 
 export const embeddingCache = pgTable("embedding_cache", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   textHash: text("text_hash").notNull(),
   model: varchar({ length: 100 }).notNull(),
   createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
@@ -850,7 +850,7 @@ export const embeddingCache = pgTable("embedding_cache", {
 // === DOCUMENT CHUNKS ===
 
 export const documentChunks = pgTable("document_chunks", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   documentId: uuid("document_id").notNull(),
   documentType: varchar("document_type", { length: 50 }).notNull(),
   chunkIndex: integer("chunk_index").notNull(),

@@ -12,6 +12,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { enhance } from '$app/forms';
   import type { ActionData } from './$types';
@@ -224,10 +225,10 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       
       <div class="actions">
-        <button class="btn btn-outline" onclick={loadSampleDocument}>
+        <button class="btn nes-btn" onclick={loadSampleDocument}>
           Load Sample
         </button>
-        <button class="btn btn-outline" onclick={clearAll}>
+        <button class="btn nes-btn" onclick={clearAll}>
           Clear All
         </button>
       </div>
@@ -265,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="input-panel">
         <div class="input-controls">
           <div class="file-upload">
-            <label for="file-input" class="btn btn-outline">
+            <label for="file-input" class="btn nes-btn">
               📁 Upload Document
             </label>
             <input 
@@ -327,7 +328,7 @@ https://svelte.dev/e/js_parse_error -->
           
           <div class="input-footer">
             <button 
-              class="btn btn-primary btn-large"
+              class="btn nes-btn is-primary btn-large"
               onclick={handleSummarize}
               disabled={isLoading || !reportText.trim() || reportText.length < 100}
             >
@@ -360,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="result-header">
               <h3>📋 Document Summary</h3>
               <div class="result-actions">
-                <button id="copy-btn" class="btn btn-outline" onclick={copySummary}>
+                <button id="copy-btn" class="btn nes-btn" onclick={copySummary}>
                   📋 Copy Summary
                 </button>
               </div>
@@ -407,7 +408,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="error-panel">
             <h3>❌ Processing Error</h3>
             <p>{errorMessage}</p>
-            <button class="btn btn-primary" onclick={() => activeTab = 'input'}>
+            <button class="btn nes-btn is-primary" onclick={() => activeTab = 'input'}>
               ← Back to Input
             </button>
           </div>

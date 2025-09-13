@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import { fade, fly, scale } from 'svelte/transition';
   	import { quintOut } from 'svelte/easing';
@@ -148,31 +149,31 @@
 			<h2 class="text-xl font-semibold text-yorha-primary mb-4">Cache Performance Metrics</h2>
 			
 			<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
-				<div class="cache-stat-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
+				<div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
 					<div class="text-2xl font-bold text-yorha-accent">{cacheStats.hits}</div>
 					<div class="text-sm text-yorha-text-muted">Cache Hits</div>
 					<div class="cache-hit-indicator mt-2"></div>
 				</div>
 				
-				<div class="cache-stat-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
+				<div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
 					<div class="text-2xl font-bold text-yorha-warning">{cacheStats.misses}</div>
 					<div class="text-sm text-yorha-text-muted">Cache Misses</div>
 					<div class="cache-miss-indicator mt-2"></div>
 				</div>
 				
-				<div class="cache-stat-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
+				<div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
 					<div class="text-2xl font-bold text-yorha-text-primary">{cacheStats.items_count}</div>
 					<div class="text-sm text-yorha-text-muted">Items Cached</div>
 				</div>
 				
-				<div class="cache-stat-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
+				<div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
 					<div class="text-2xl font-bold text-yorha-text-primary">
 						{Math.round(cacheStats.total_size / 1024)}KB
 					</div>
 					<div class="text-sm text-yorha-text-muted">Cache Size</div>
 				</div>
 				
-				<div class="cache-stat-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
+				<div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4 rounded">
 					<div class="text-2xl font-bold text-yorha-success">{cacheStats.evictions}</div>
 					<div class="text-sm text-yorha-text-muted">Evictions</div>
 				</div>

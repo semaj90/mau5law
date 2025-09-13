@@ -1,6 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   
 
   interface Props {
@@ -70,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn" onclick={() => copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
             <Copy class="w-4 h-4" />
             <span>Copy</span>
-          </Button>
+          </button>
           {#if copied}
             <span class="inline-flex items-center gap-1"><Check class="w-4 h-4" />Copied!</span>
           {/if}
@@ -94,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
       <Button class="bits-btn" onclick={() => closeModal()} variant="secondary" aria-label="Close summary modal">
         <X class="space-y-4" />
         <span class="space-y-4">Close</span>
-      </Button>
+      </button>
     </Dialog.Close>
   </Dialog.Footer>
   </Dialog.Content>

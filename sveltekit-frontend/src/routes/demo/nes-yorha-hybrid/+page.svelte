@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
 
   // Use standard Svelte reactive variables instead of a nonexistent $state helper
@@ -30,7 +31,7 @@
 
 <div class="nes-yorha-demo">
   <!-- Page Header -->
-  <div class="yorha-card p-6 mb-6">
+  <div class="yorha-nier-bits-card p-6 mb-6">
     <h1 class="text-3xl font-bold mb-4 flex items-center gap-4">
       <span class="nes-text is-primary">🎮</span>
       NES.css + YoRHa + UnoCSS Demo
@@ -134,7 +135,7 @@
     <div class="space-y-6">
 
       <!-- Hybrid Card -->
-      <div class="yorha-card p-6">
+      <div class="yorha-nier-bits-card p-6">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
           <span class="nes-icon trophy"></span>
           YoRHa × NES Hybrid

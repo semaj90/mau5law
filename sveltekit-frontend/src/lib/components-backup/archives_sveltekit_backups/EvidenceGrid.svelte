@@ -2,7 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import {
     evidenceActions,
     evidenceGrid,
@@ -231,8 +232,7 @@ https://svelte.dev/e/js_parse_error -->
         </select>
 
         <!-- Sort direction -->
-        <Button
-          variant="secondary"
+        <button class="nes-btn"
           size="sm"
           onclick={() => toggleSort(sortBy)}
           class="mx-auto px-4 max-w-7xl"
@@ -242,11 +242,10 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <SortDesc class="mx-auto px-4 max-w-7xl" />
           {/if}
-        </Button>
+        </button>
 
         <!-- View mode toggle -->
-        <Button
-          variant="secondary"
+        <button class="nes-btn"
           size="sm"
           onclick={() => toggleViewMode()}
           class="mx-auto px-4 max-w-7xl"
@@ -256,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <Grid class="mx-auto px-4 max-w-7xl" />
           {/if}
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -269,21 +268,20 @@ https://svelte.dev/e/js_parse_error -->
           {selectedItems.size} item{selectedItems.size !== 1 ? "s" : ""} selected
         </span>
         <div class="mx-auto px-4 max-w-7xl">
-          <Button
-            variant="secondary"
+          <button class="nes-btn"
             size="sm"
             onclick={() => clearSelection()}
           >
             Clear
-          </Button>
-          <Button variant="secondary" size="sm">
+          </button>
+          <button class="nes-btn" size="sm">
             <Download class="mx-auto px-4 max-w-7xl" />
             Download
-          </Button>
-          <Button variant="secondary" size="sm">
+          </button>
+          <button class="nes-btn" size="sm">
             <Archive class="mx-auto px-4 max-w-7xl" />
             Archive
-          </Button>
+          </button>
         </div>
       </div>
     {/if}
@@ -302,14 +300,13 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <div class="mx-auto px-4 max-w-7xl">Error loading evidence</div>
       <p class="mx-auto px-4 max-w-7xl">{error}</p>
-      <Button
-        variant="secondary"
+      <button class="nes-btn"
         size="sm"
         class="mx-auto px-4 max-w-7xl"
         onclick={() => evidenceActions.loadEvidence(caseId)}
       >
         Try Again
-      </Button>
+      </button>
     </div>
   {:else if $filteredEvidence.length === 0}
     <!-- Empty state -->
@@ -495,7 +492,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="mx-auto px-4 max-w-7xl">
                 <Button variant="ghost" size="sm" class="mx-auto px-4 max-w-7xl">
                   <MoreHorizontal class="mx-auto px-4 max-w-7xl" />
-                </Button>
+                </button>
               </div>
             </div>
           {/each}

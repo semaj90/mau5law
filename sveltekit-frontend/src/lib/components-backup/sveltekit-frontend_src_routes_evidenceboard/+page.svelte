@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import { writable } from 'svelte/store';
   	import { page } from '$app/state';
@@ -338,58 +339,58 @@
 
 		<!-- Stats Cards -->
 		<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-			<Card>
-				<CardHeader class="pb-2">
-					<CardTitle class="text-sm font-medium">Total Evidence</CardTitle>
-				</CardHeader>
-				<CardContent>
+			<NesCard>
+				<div class="yorha-panel-header" class="pb-2">
+					<h3 class="nes-text is-primary" class="text-sm font-medium">Total Evidence</h3>
+				</div>
+				<div class="yorha-panel-content">
 					<div class="text-2xl font-bold text-blue-600">{totalEvidence}</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 
-			<Card>
-				<CardHeader class="pb-2">
-					<CardTitle class="text-sm font-medium">Processing</CardTitle>
-				</CardHeader>
-				<CardContent>
+			<NesCard>
+				<div class="yorha-panel-header" class="pb-2">
+					<h3 class="nes-text is-primary" class="text-sm font-medium">Processing</h3>
+				</div>
+				<div class="yorha-panel-content">
 					<div class="text-2xl font-bold text-yellow-600">{processingCount}</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 
-			<Card>
-				<CardHeader class="pb-2">
-					<CardTitle class="text-sm font-medium">Ready</CardTitle>
-				</CardHeader>
-				<CardContent>
+			<NesCard>
+				<div class="yorha-panel-header" class="pb-2">
+					<h3 class="nes-text is-primary" class="text-sm font-medium">Ready</h3>
+				</div>
+				<div class="yorha-panel-content">
 					<div class="text-2xl font-bold text-green-600">{readyCount}</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 
-			<Card>
-				<CardHeader class="pb-2">
-					<CardTitle class="text-sm font-medium">Context7 AI</CardTitle>
-				</CardHeader>
-				<CardContent>
+			<NesCard>
+				<div class="yorha-panel-header" class="pb-2">
+					<h3 class="nes-text is-primary" class="text-sm font-medium">Context7 AI</h3>
+				</div>
+				<div class="yorha-panel-content">
 					<div class="flex items-center space-x-2">
 						<div class="w-3 h-3 {context7Enabled ? 'bg-green-500' : 'bg-gray-400'} rounded-full"></div>
 						<span class="text-sm font-medium">{context7Enabled ? 'Enabled' : 'Disabled'}</span>
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 		</div>
 
 		<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 			<!-- Upload Section -->
 			<div class="lg:col-span-2">
-				<Card>
-					<CardHeader>
-						<CardTitle class="flex items-center space-x-2">
+				<NesCard>
+					<div class="yorha-panel-header">
+						<h3 class="nes-text is-primary" class="flex items-center space-x-2">
 							<Upload class="h-5 w-5" />
 							<span>Upload Evidence</span>
-						</CardTitle>
-					</CardHeader>
+						</h3>
+					</div>
 
-<CardContent>
+<div class="yorha-panel-content">
   <!-- Fallback Evidence Upload Form -->
   <form onsubmit={handleEvidenceSubmit} enctype="multipart/form-data" class="space-y-6">
   <div class="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center transition-colors duration-200 {isDragover ? 'border-blue-500 bg-blue-50' : 'hover:border-slate-400'}"
@@ -428,7 +429,7 @@
 	<Button type="submit" class="mt-4 w-full" disabled={isUploading}>
 	  <Upload class="h-4 w-4 mr-2" />
 	  {isUploading ? 'Uploading...' : 'Upload Evidence'}
-	</Button>
+	</button>
 
 	<!-- Upload Progress -->
 	{#if isUploading}
@@ -442,13 +443,13 @@
 	  </div>
 	{/if}
   </form>
-</CardContent>
-				</Card>
+</div>
+				</NesCard>
 
 				<!-- Evidence Grid -->
-				<Card class="mt-6">
-					<CardHeader>
-						<CardTitle>Evidence Collection ({filteredEvidence.length})</CardTitle>
+				<NesCard class="mt-6">
+					<div class="yorha-panel-header">
+						<h3 class="nes-text is-primary">Evidence Collection ({filteredEvidence.length})</h3>
 
 						<!-- Search and Filter -->
 						<div class="flex flex-col sm:flex-row gap-4 mt-4">
@@ -466,9 +467,9 @@
 								<option value="document">Documents</option>
 							</select>
 						</div>
-					</CardHeader>
+					</div>
 
-					<CardContent>
+					<div class="yorha-panel-content">
 						{#if filteredEvidence.length === 0}
 							<div class="text-center py-12">
 								<FileText class="h-16 w-16 text-slate-300 mx-auto mb-4" />
@@ -539,33 +540,33 @@
 											<Button size="sm" variant="outline" class="flex-1">
 												<Eye class="h-3 w-3 mr-1" />
 												View
-											</Button>
-											<Button size="sm" variant="outline">
+											</button>
+											<button class="nes-btn" size="sm" variant="outline">
 												<Download class="h-3 w-3" />
-											</Button>
-											<Button size="sm" variant="outline" onclick={() => deleteEvidence(item.id)}>
+											</button>
+											<button class="nes-btn" size="sm" variant="outline" onclick={() => deleteEvidence(item.id)}>
 												<Trash2 class="h-3 w-3" />
-											</Button>
+											</button>
 										</div>
 									</div>
 								{/each}
 							</div>
 						{/if}
-					</CardContent>
-				</Card>
+					</div>
+				</NesCard>
 			</div>
 
 			<!-- AI Insights Panel -->
 			<div class="space-y-6">
 				<!-- Context7 Analysis -->
-				<Card>
-					<CardHeader>
-						<CardTitle class="flex items-center space-x-2">
+				<NesCard>
+					<div class="yorha-panel-header">
+						<h3 class="nes-text is-primary" class="flex items-center space-x-2">
 							<Brain class="h-5 w-5" />
 							<span>AI Insights</span>
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
+						</h3>
+					</div>
+					<div class="yorha-panel-content">
 						{#if context7Enabled}
 							<div class="space-y-4">
 								<div class="flex items-center space-x-2">
@@ -590,19 +591,19 @@
 								<p class="text-sm text-slate-500">Enable Context7 for AI insights</p>
 							</div>
 						{/if}
-					</CardContent>
-				</Card>
+					</div>
+				</NesCard>
 
 				<!-- Semantic Search Results -->
 				{#if semanticSearchResults.length > 0}
-					<Card>
-						<CardHeader>
-							<CardTitle class="flex items-center space-x-2">
+					<NesCard>
+						<div class="yorha-panel-header">
+							<h3 class="nes-text is-primary" class="flex items-center space-x-2">
 								<Search class="h-5 w-5" />
 								<span>Semantic Search</span>
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
+							</h3>
+						</div>
+						<div class="yorha-panel-content">
 							<div class="space-y-3">
 								{#each semanticSearchResults.slice(0, 5) as result}
 									<div class="p-3 bg-slate-50 rounded-md">
@@ -618,32 +619,32 @@
 									</div>
 								{/each}
 							</div>
-						</CardContent>
-					</Card>
+						</div>
+					</NesCard>
 				{/if}
 
 				<!-- Quick Actions -->
-				<Card>
-					<CardHeader>
-						<CardTitle>Quick Actions</CardTitle>
-					</CardHeader>
-					<CardContent>
+				<NesCard>
+					<div class="yorha-panel-header">
+						<h3 class="nes-text is-primary">Quick Actions</h3>
+					</div>
+					<div class="yorha-panel-content">
 						<div class="space-y-3">
 							<Button class="w-full justify-start">
 								<Brain class="h-4 w-4 mr-2" />
 								Generate Case Summary
-							</Button>
+							</button>
 							<Button variant="outline" class="w-full justify-start">
 								<Search class="h-4 w-4 mr-2" />
 								Find Similar Cases
-							</Button>
+							</button>
 							<Button variant="outline" class="w-full justify-start">
 								<Download class="h-4 w-4 mr-2" />
 								Export Evidence Report
-							</Button>
+							</button>
 						</div>
-					</CardContent>
-				</Card>
+					</div>
+				</NesCard>
 			</div>
 		</div>
 	</div>

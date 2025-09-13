@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { useWebGPUCapability } from '$lib/services/webgpu-capability-service';
   let { 

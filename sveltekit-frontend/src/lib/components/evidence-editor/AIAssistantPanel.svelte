@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Badge } from '$lib/components/ui/badge';
   import {
     Button
@@ -176,14 +177,14 @@
   </div>
 
   <!-- Search Section -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Search class="w-5 h-5" />
         Evidence Search
-      </CardTitle>
-    </CardHeader>
-    <CardContent class="space-y-4">
+      </h3>
+    </div>
+    <div class="yorha-panel-content" class="space-y-4">
       <div class="flex gap-2">
         <Input
           bind:value={searchQuery}
@@ -193,7 +194,7 @@
         {#if searchQuery}
           <Button class="bits-btn" onclick={clearSearch} variant="outline" size="sm">
             Clear
-          </Button>
+          </button>
         {/if}
       </div>
 
@@ -235,19 +236,19 @@
           </div>
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Selected Evidence Analysis -->
   {#if selectedNode}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <FileText class="w-5 h-5" />
           Evidence Analysis
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
           <p class="font-medium text-gray-900 dark:text-white">
             {selectedNode.name || selectedNode.title || 'Selected Evidence'}
@@ -263,10 +264,10 @@
           <Button onclick={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn bits-btn">
             <Sparkles class="w-4 h-4 mr-2" />
             {isProcessing ? 'Analyzing...' : 'Analyze with AI'}
-          </Button>
+          </button>
           <Button class="bits-btn" onclick={generateInsights} disabled={isProcessing} variant="outline">
             Generate Insights
-          </Button>
+          </button>
         </div>
 
         <!-- AI Analysis Results -->
@@ -306,20 +307,20 @@
             <p class="text-sm">No AI analysis available yet</p>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- AI Insights -->
   {#if aiInsights.connections.length > 0 || aiInsights.similarEvidence.length > 0 || aiInsights.suggestedActions.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Sparkles class="w-5 h-5" />
           AI Insights
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         {#if aiInsights.connections.length > 0}
           <div>
             <h4 class="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
@@ -388,8 +389,8 @@
             </div>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Empty State -->

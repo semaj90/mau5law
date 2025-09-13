@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { PageData } from './$types.js';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -120,7 +121,7 @@
       <Brain class="w-10 h-10 text-primary" />
       Legal AI Platform
     </h1>
-    <p class="text-lg text-muted-foreground max-w-3xl mx-auto">
+    <p class="text-lg nes-text is-disabled max-w-3xl mx-auto">
       Complete integration showcase featuring Enhanced-Bits orchestrated components, 
       Svelte 5 runes, RAG-powered legal analysis, and real-time vector search
     </p>
@@ -169,11 +170,11 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <!-- Statistics Cards -->
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-2xl font-bold text-primary">{realTimeStats.totalCases}</p>
-              <p class="text-sm text-muted-foreground">Total Cases</p>
+              <p class="text-sm nes-text is-disabled">Total Cases</p>
             </div>
             <Scale class="w-8 h-8 text-primary/60" />
           </div>
@@ -181,11 +182,11 @@
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-2xl font-bold text-primary">{realTimeStats.totalDocuments}</p>
-              <p class="text-sm text-muted-foreground">Documents</p>
+              <p class="text-sm nes-text is-disabled">Documents</p>
             </div>
             <FileText class="w-8 h-8 text-primary/60" />
           </div>
@@ -193,11 +194,11 @@
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-2xl font-bold text-primary">{realTimeStats.totalAnalyses}</p>
-              <p class="text-sm text-muted-foreground">AI Analyses</p>
+              <p class="text-sm nes-text is-disabled">AI Analyses</p>
             </div>
             <Brain class="w-8 h-8 text-primary/60" />
           </div>
@@ -205,11 +206,11 @@
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-2xl font-bold text-primary">{realTimeStats.avgProcessingTime}ms</p>
-              <p class="text-sm text-muted-foreground">Avg Response</p>
+              <p class="text-sm nes-text is-disabled">Avg Response</p>
             </div>
             <Clock class="w-8 h-8 text-primary/60" />
           </div>
@@ -219,14 +220,14 @@
 
     <!-- System Health -->
     <OrchestratedCard.Analysis>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+      <NesCard.Header>
+        <NesCard.Title class="flex items-center gap-2">
           <Activity class="w-5 h-5" />
           System Health
         </Card.Title>
-        <Card.Description>Real-time status of all platform components</Card.Description>
+        <NesCard.Description>Real-time status of all platform components</Card.Description>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
           {#each [
             { key: 'database', label: 'PostgreSQL', icon: Database },
@@ -253,16 +254,16 @@
   <!-- RAG Demo -->
   {#if selectedDemo === 'rag'}
     <OrchestratedCard.AIInsight>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+      <NesCard.Header>
+        <NesCard.Title class="flex items-center gap-2">
           <Brain class="w-5 h-5" />
           RAG Analysis Demo
         </Card.Title>
-        <Card.Description>
+        <NesCard.Description>
           Retrieval-Augmented Generation for legal document analysis
         </Card.Description>
       </Card.Header>
-      <Card.Content class="space-y-4">
+      <NesCard.Content class="space-y-4">
         <div class="flex gap-3">
           <OrchestratedButton.AnalyzeEvidence
             onclick={runRAGDemo}
@@ -278,10 +279,10 @@
             {/if}
           </OrchestratedButton.AnalyzeEvidence>
           
-          <Button variant="outline" onclick={() => goto('/dashboard/search')}>
+          <button class="nes-btn" variant="outline" onclick={() => goto('/dashboard/search')}>
             <Search class="w-4 h-4 mr-2" />
             Open Vector Search
-          </Button>
+          </button>
         </div>
 
         {#if demoResults}
@@ -297,16 +298,16 @@
   <!-- Vector Search Demo -->
   {#if selectedDemo === 'search'}
     <OrchestratedCard.Analysis>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+      <NesCard.Header>
+        <NesCard.Title class="flex items-center gap-2">
           <Search class="w-5 h-5" />
           Vector Search Demo
         </Card.Title>
-        <Card.Description>
+        <NesCard.Description>
           Semantic search across legal documents using pgvector
         </Card.Description>
       </Card.Header>
-      <Card.Content class="space-y-4">
+      <NesCard.Content class="space-y-4">
         <div class="flex gap-3">
           <OrchestratedButton.SearchSimilar
             onclick={runVectorSearchDemo}
@@ -322,10 +323,10 @@
             {/if}
           </OrchestratedButton.SearchSimilar>
           
-          <Button variant="outline" onclick={() => goto('/dashboard/search')}>
+          <button class="nes-btn" variant="outline" onclick={() => goto('/dashboard/search')}>
             <Eye class="w-4 h-4 mr-2" />
             Open Search Dashboard
-          </Button>
+          </button>
         </div>
 
         {#if demoResults}
@@ -339,15 +340,15 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
           <div class="text-center">
             <p class="text-2xl font-bold text-primary">{realTimeStats.vectorDimensions}</p>
-            <p class="text-sm text-muted-foreground">Vector Dimensions</p>
+            <p class="text-sm nes-text is-disabled">Vector Dimensions</p>
           </div>
           <div class="text-center">
             <p class="text-lg font-bold text-primary">{realTimeStats.embeddingModel}</p>
-            <p class="text-sm text-muted-foreground">Embedding Model</p>
+            <p class="text-sm nes-text is-disabled">Embedding Model</p>
           </div>
           <div class="text-center">
             <p class="text-2xl font-bold text-primary">{Math.round(realTimeStats.avgProcessingTime)}ms</p>
-            <p class="text-sm text-muted-foreground">Avg Response Time</p>
+            <p class="text-sm nes-text is-disabled">Avg Response Time</p>
           </div>
         </div>
       </Card.Content>
@@ -358,22 +359,22 @@
   {#if selectedDemo === 'cases'}
     <div class="space-y-6">
       <OrchestratedCard.CaseFile>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <Scale class="w-5 h-5" />
             Sample Cases
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             Live case management with integrated RAG analysis
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           <div class="grid gap-4">
             {#each data.sampleCases as caseItem}
               <div class="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow">
                 <div class="flex-1">
                   <h3 class="font-medium">{caseItem.title}</h3>
-                  <div class="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                  <div class="flex items-center gap-4 mt-2 text-sm nes-text is-disabled">
                     <span class="capitalize">{caseItem.status}</span>
                     <span>{caseItem.documentsCount} documents</span>
                     <span class={getConfidenceClass(caseItem.confidence)}>
@@ -382,14 +383,14 @@
                   </div>
                 </div>
                 <div class="flex gap-2">
-                  <Button 
+                  <button class="nes-btn" 
                     variant="outline" 
                     size="sm"
                     onclick={() => navigateToCase(caseItem.id)}
                   >
                     <Eye class="w-4 h-4 mr-1" />
                     View
-                  </Button>
+                  </button>
                   <OrchestratedButton.AnalyzeEvidence
                     size="sm"
                     onclick={() => navigateToRAG(caseItem.id)}
@@ -406,20 +407,20 @@
 
       <!-- Recent Analyses -->
       <OrchestratedCard.Analysis>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <BarChart3 class="w-5 h-5" />
             Recent AI Analyses
           </Card.Title>
-          <Card.Description>Latest RAG queries and their performance metrics</Card.Description>
+          <NesCard.Description>Latest RAG queries and their performance metrics</Card.Description>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           <div class="space-y-3">
             {#each data.recentAnalyses as analysis}
               <div class="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                 <div class="flex-1">
                   <p class="font-medium text-sm">{analysis.query}</p>
-                  <p class="text-xs text-muted-foreground">
+                  <p class="text-xs nes-text is-disabled">
                     {formatAnalysisDate(new Date(analysis.timestamp))}
                   </p>
                 </div>
@@ -427,7 +428,7 @@
                   <span class={getConfidenceClass(analysis.confidence)}>
                     {Math.round(analysis.confidence * 100)}%
                   </span>
-                  <span class="text-muted-foreground">{analysis.responseTime}ms</span>
+                  <span class="nes-text is-disabled">{analysis.responseTime}ms</span>
                 </div>
               </div>
             {/each}
@@ -439,17 +440,17 @@
 
   <!-- Platform Actions -->
   <div class="flex justify-center gap-4 pt-8">
-    <Button onclick={() => goto('/dashboard/search')} class="gap-2">
+    <button class="nes-btn" onclick={() => goto('/dashboard/search')} class="gap-2">
       <Search class="w-4 h-4" />
       Open Search Dashboard
-    </Button>
-    <Button onclick={() => goto('/cases')} variant="outline" class="gap-2">
+    </button>
+    <button class="nes-btn" onclick={() => goto('/cases')} variant="outline" class="gap-2">
       <Scale class="w-4 h-4" />
       Manage Cases
-    </Button>
-    <Button onclick={() => goto('/auth/login')} variant="outline" class="gap-2">
+    </button>
+    <button class="nes-btn" onclick={() => goto('/auth/login')} variant="outline" class="gap-2">
       <Shield class="w-4 h-4" />
       User Authentication
-    </Button>
+    </button>
   </div>
 </div>

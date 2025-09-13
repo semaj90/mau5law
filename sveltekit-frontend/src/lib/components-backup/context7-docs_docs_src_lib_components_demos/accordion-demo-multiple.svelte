@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import CustomAccordion from "./accordion-demo-custom.svelte";
 
   	const items = [

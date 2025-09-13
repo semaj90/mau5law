@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Button from './Button.svelte';
 
   let underline = $state(false);
@@ -11,9 +12,9 @@
   Demo text using clsx classes and <code>`class:`</code> directive
 </p>
 
-<Button onclick={() => (underline = !underline)}>toggle underline</Button>
-<Button onclick={() => (bold = !bold)}>toggle bold</Button>
-<Button onclick={() => (italic = !italic)}>toggle italic</Button>
-<Button onclick={() => (red = !red)}>toggle red</Button>
+<button class="nes-btn" onclick={() => (underline = !underline)}>toggle underline</button>
+<button class="nes-btn" onclick={() => (bold = !bold)}>toggle bold</button>
+<button class="nes-btn" onclick={() => (italic = !italic)}>toggle italic</button>
+<button class="nes-btn" onclick={() => (red = !red)}>toggle red</button>
 
 

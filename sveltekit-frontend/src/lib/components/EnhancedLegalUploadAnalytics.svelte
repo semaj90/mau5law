@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
@@ -487,17 +488,17 @@
 
 <div class="legal-upload-analytics yorha-container">
   <!-- Enhanced Header with Legal Context -->
-  <Card.Root class="mb-6 yorha-card">
-    <Card.Header>
+  <NesCard.Root class="mb-6 yorha-nier-bits-card">
+    <NesCard.Header>
       <div class="flex justify-between items-start">
         <div>
-          <Card.Title class="yorha-title">
+          <NesCard.Title class="yorha-title">
             🏛️ Legal Document Upload & Analysis
             {#if mode === 'detective'}
               <span class="yorha-badge detective">Detective Mode</span>
             {/if}
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             {#if caseId}
               Case: <span class="font-mono text-blue-400">{caseId}</span>
             {/if}
@@ -537,14 +538,14 @@
 
   <!-- Enhanced AI Prompts with Legal Context -->
   {#if enableAIPrompts && beforeUploadPrompts.length > 0}
-    <Card.Root class="mb-6 yorha-card ai-prompts before-upload">
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+    <NesCard.Root class="mb-6 yorha-nier-bits-card ai-prompts before-upload">
+      <NesCard.Header>
+        <NesCard.Title class="flex items-center gap-2">
           🤖 AI Legal Insights
           <span class="yorha-badge confidence-high">High Confidence</span>
         </Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         {#each beforeUploadPrompts as prompt}
           <div class="ai-prompt yorha-prompt {prompt.category}" data-legal-action="ai-prompt">
             <div class="prompt-header">
@@ -555,7 +556,7 @@
             </div>
             <p class="prompt-content">{prompt.content}</p>
             <div class="prompt-actions">
-              <Button
+              <button class="nes-btn"
                 variant="outline"
                 size="sm"
                 legal
@@ -563,14 +564,14 @@
                 onclick={() => handlePromptReaction(prompt.id, 'accepted')}
               >
                 ✓ Accept
-              </Button>
-              <Button
+              </button>
+              <button class="nes-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
               >
                 ✕ Dismiss
-              </Button>
+              </button>
             </div>
           </div>
         {/each}
@@ -579,8 +580,8 @@
   {/if}
 
   <!-- Enhanced File Upload Zone -->
-  <Card.Root class="mb-6 yorha-card">
-    <Card.Content class="p-0">
+  <NesCard.Root class="mb-6 yorha-nier-bits-card">
+    <NesCard.Content class="p-0">
       <div
         class="file-drop-zone yorha-drop-zone"
         class:drag-over={dragOver}
@@ -614,7 +615,7 @@
               class="hidden"
             />
 
-            <Button
+            <button class="nes-btn"
               variant="yorha"
               size="lg"
               legal
@@ -622,7 +623,7 @@
               onclick={() => fileInput?.click()}
             >
               Select Legal Documents
-            </Button>
+            </button>
           </div>
         {:else}
           <div class="selected-files">
@@ -684,7 +685,7 @@
 
             {#if !isUploading && !isComplete}
               <div class="file-actions">
-                <Button
+                <button class="nes-btn"
                   variant="yorha"
                   size="lg"
                   legal
@@ -698,32 +699,32 @@
                   {:else}
                     📤 Start Upload
                   {/if}
-                </Button>
+                </button>
 
-                <Button
+                <button class="nes-btn"
                   variant="outline"
                   onclick={() => { selectedFiles = []; aiAnalysisResults = []; }}
                 >
                   Clear Files
-                </Button>
+                </button>
 
-                <Button
+                <button class="nes-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => showAdvancedSettings = !showAdvancedSettings}
                 >
                   Advanced Settings
-                </Button>
+                </button>
               </div>
             {/if}
 
             <!-- Advanced Settings Panel -->
             {#if showAdvancedSettings}
-              <Card.Root class="mt-4 yorha-settings">
-                <Card.Header>
-                  <Card.Title>Advanced Settings</Card.Title>
+              <NesCard.Root class="mt-4 yorha-settings">
+                <NesCard.Header>
+                  <NesCard.Title>Advanced Settings</Card.Title>
                 </Card.Header>
-                <Card.Content>
+                <NesCard.Content>
                   <div class="settings-grid">
                     <div class="setting-item">
                       <label for="analysis-depth-select">Analysis Depth</label>
@@ -756,14 +757,14 @@
 
   <!-- Enhanced Upload Progress with Legal Context -->
   {#if isUploading}
-    <Card.Root class="mb-6 yorha-card upload-progress">
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+    <NesCard.Root class="mb-6 yorha-nier-bits-card upload-progress">
+      <NesCard.Header>
+        <NesCard.Title class="flex items-center gap-2">
           ⚡ Processing Legal Documents
           <span class="progress-percentage">{uploadProgress}%</span>
         </Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="progress-bar yorha-progress">
           <div
             class="progress-fill"
@@ -808,12 +809,11 @@
         {/if}
 
         <div class="upload-actions">
-          <Button
-            variant="destructive"
+          <button class="nes-btn is-error"
             onclick={() => uploadActor?.send({ type: 'CANCEL_UPLOAD' })}
           >
             Cancel Upload
-          </Button>
+          </button>
         </div>
       </Card.Content>
     </Card.Root>
@@ -821,9 +821,9 @@
 
   <!-- Enhanced Results with Legal Analysis -->
   {#if isComplete && uploadResults.length > 0}
-    <Card.Root class="mb-6 yorha-card upload-results">
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+    <NesCard.Root class="mb-6 yorha-nier-bits-card upload-results">
+      <NesCard.Header>
+        <NesCard.Title class="flex items-center gap-2">
           ✅ Legal Analysis Complete
           {#if uploadStartTime > 0}
             <span class="processing-time">
@@ -832,7 +832,7 @@
           {/if}
         </Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <!-- Legal Insights Summary -->
         {#if legalInsights}
           <div class="legal-summary yorha-summary">
@@ -869,8 +869,8 @@
         <!-- Detailed Results -->
         <div class="results-list">
           {#each uploadResults as result, index}
-            <Card.Root class={`result-item ${result.success ? 'success' : ''}`}>
-              <Card.Content>
+            <NesCard.Root class={`result-item ${result.success ? 'success' : ''}`}>
+              <NesCard.Content>
                 <div class="result-header">
                   <div class="result-info">
                     <span class="result-filename">{result.fileName}</span>
@@ -948,29 +948,29 @@
 
   <!-- Post-Upload AI Recommendations -->
   {#if enableAIPrompts && afterUploadPrompts.length > 0 && isComplete}
-    <Card.Root class="mb-6 yorha-card ai-prompts after-upload">
-      <Card.Header>
-        <Card.Title>🎯 Recommended Next Steps</Card.Title>
+    <NesCard.Root class="mb-6 yorha-nier-bits-card ai-prompts after-upload">
+      <NesCard.Header>
+        <NesCard.Title>🎯 Recommended Next Steps</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         {#each afterUploadPrompts as prompt}
           <div class="ai-prompt yorha-prompt next-step">
             <p class="prompt-content">{prompt.content}</p>
             <div class="prompt-actions">
-              <Button
+              <button class="nes-btn"
                 variant="yorha"
                 legal
                 priority="high"
                 onclick={() => handlePromptReaction(prompt.id, 'accepted')}
               >
                 Let's Do It
-              </Button>
-              <Button
+              </button>
+              <button class="nes-btn"
                 variant="outline"
                 onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
               >
                 Maybe Later
-              </Button>
+              </button>
             </div>
           </div>
         {/each}
@@ -980,26 +980,26 @@
 
   <!-- Enhanced Analytics Dashboard -->
   {#if enableAnalytics && currentUserInsights}
-    <Card.Root class="analytics-dashboard yorha-card">
-      <Card.Header>
-        <Card.Title>📊 Legal Workflow Analytics</Card.Title>
+    <NesCard.Root class="analytics-dashboard yorha-nier-bits-card">
+      <NesCard.Header>
+        <NesCard.Title>📊 Legal Workflow Analytics</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="analytics-grid">
-          <div class="insight-card">
+          <div class="insight-nier-bits-card">
             <h4>User Behavior Pattern</h4>
             <p class="behavior-pattern">{currentUserInsights.behaviorPattern}</p>
             <p class="engagement-level">Engagement: {currentUserInsights.engagementLevel}</p>
           </div>
 
-          <div class="insight-card">
+          <div class="insight-nier-bits-card">
             <h4>Upload Efficiency</h4>
             <p class="efficiency-score">
               {Math.round(currentUserInsights.uploadEfficiency * 100)}% Success Rate
             </p>
           </div>
 
-          <div class="insight-card">
+          <div class="insight-nier-bits-card">
             <h4>Legal Workflow Recommendations</h4>
             <ul class="recommendations-list">
               {#each currentUserInsights.recommendations as recommendation}
@@ -1014,11 +1014,11 @@
 
   <!-- Error Handling -->
   {#if hasErrors}
-    <Card.Root class="error-section yorha-card error">
-      <Card.Header>
-        <Card.Title>⚠️ Issues Detected</Card.Title>
+    <NesCard.Root class="error-section yorha-nier-bits-card error">
+      <NesCard.Header>
+        <NesCard.Title>⚠️ Issues Detected</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         {#each machineState.context.errors as error}
           <div class="error-item">
             <p>{error}</p>
@@ -1026,18 +1026,17 @@
         {/each}
 
         <div class="error-actions">
-          <Button
-            variant="destructive"
+          <button class="nes-btn is-error"
             onclick={() => uploadActor?.send({ type: 'RETRY_UPLOAD' })}
           >
             Retry Upload
-          </Button>
-          <Button
+          </button>
+          <button class="nes-btn"
             variant="outline"
             onclick={resetUpload}
           >
             Start Over
-          </Button>
+          </button>
         </div>
       </Card.Content>
     </Card.Root>
@@ -1046,31 +1045,31 @@
   <!-- Final Actions -->
   {#if isComplete}
     <div class="final-actions">
-      <Button
+      <button class="nes-btn"
         variant="yorha"
         size="lg"
         legal
         onclick={resetUpload}
       >
         Upload More Documents
-      </Button>
+      </button>
 
       {#if enableAIPrompts}
-        <Button
+        <button class="nes-btn"
           variant="outline"
           onclick={() => uploadActor?.send({ type: 'REQUEST_AI_SUGGESTIONS', context: 'user_requested' })}
         >
           Get More AI Insights
-        </Button>
+        </button>
       {/if}
 
       {#if caseId}
-        <Button
+        <button class="nes-btn"
           variant="ghost"
           onclick={() => goto(`/cases/${caseId}/evidence`)}
         >
           View in Evidence Board
-        </Button>
+        </button>
       {/if}
     </div>
   {/if}

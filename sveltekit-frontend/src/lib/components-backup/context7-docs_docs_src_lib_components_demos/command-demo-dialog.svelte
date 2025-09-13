@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Command, Dialog } from "bits-ui";
   	import CalendarBlank from "phosphor-svelte/lib/CalendarBlank";
   	import CodeBlock from "phosphor-svelte/lib/CodeBlock";
@@ -32,7 +33,7 @@
 			class="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/80"
 		/>
 		<Dialog.Content
-			class="rounded-card-lg bg-background shadow-popover data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95  data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] outline-hidden fixed left-[50%] top-[50%] z-50 w-full max-w-[94%] translate-x-[-50%] translate-y-[-50%] sm:max-w-[490px] md:w-full"
+			class="rounded-nier-bits-card-lg bg-background shadow-popover data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95  data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] outline-hidden fixed left-[50%] top-[50%] z-50 w-full max-w-[94%] translate-x-[-50%] translate-y-[-50%] sm:max-w-[490px] md:w-full"
 		>
 			<Dialog.Title class="sr-only">Command Menu</Dialog.Title>
 			<Dialog.Description class="sr-only">
@@ -49,13 +50,13 @@
 				<Command.List class="max-h-[280px] overflow-y-auto overflow-x-hidden px-2 pb-2">
 					<Command.Viewport>
 						<Command.Empty
-							class="text-muted-foreground flex w-full items-center justify-center pb-6 pt-8 text-sm"
+							class="nes-text is-disabled flex w-full items-center justify-center pb-6 pt-8 text-sm"
 						>
 							No results found.
 						</Command.Empty>
 						<Command.Group>
 							<Command.GroupHeading
-								class="text-muted-foreground px-3 pb-2 pt-4 text-xs"
+								class="nes-text is-disabled px-3 pb-2 pt-4 text-xs"
 							>
 								Suggestions
 							</Command.GroupHeading>
@@ -86,7 +87,7 @@
 						<Command.Separator />
 						<Command.Group>
 							<Command.GroupHeading
-								class="text-muted-foreground px-3 pb-2 pt-4 text-xs"
+								class="nes-text is-disabled px-3 pb-2 pt-4 text-xs"
 							>
 								Components
 							</Command.GroupHeading>

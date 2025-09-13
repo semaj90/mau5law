@@ -1,9 +1,10 @@
 <!-- Legal Precedent Matching System -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import Button from '$lib/components/ui/button/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
@@ -621,7 +622,7 @@
         class="bg-blue-600 hover:bg-blue-700 w-full"
       >
         {analysisInProgress ? 'Analyzing Precedents...' : 'Search Precedents'}
-      </Button>
+      </button>
     </div>
   </div>
 

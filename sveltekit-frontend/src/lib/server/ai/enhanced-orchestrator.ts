@@ -17,7 +17,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import type { PoolConfig } from 'pg';
 import { eq, sql } from 'drizzle-orm';
-import postgres from 'postgres';
+const postgres = require('postgres');
 import { createMachine, createActor, fromPromise, interpret } from 'xstate';
 import { OllamaEmbeddings, ChatOllama } from '@langchain/ollama';
 import { Neo4jVectorStore } from '@langchain/community/vectorstores/neo4j_vector';
@@ -120,7 +120,9 @@ const services = {
   // Database with dynamic port
   postgres: {
     host: process.env.POSTGRES_HOST || 'localhost',
-    port: parseInt(process.env.POSTGRES_PORT || getServicePortWithFallback('postgresql', 5433).toString()),
+    port: parseInt(
+      process.env.POSTGRES_PORT || getServicePortWithFallback('postgresql', 5433).toString()
+    ),
     database: process.env.POSTGRES_DB || 'legal_ai_db',
     user: process.env.POSTGRES_USER || 'legal_admin',
     password: process.env.POSTGRES_PASSWORD || '123456',
@@ -150,16 +152,18 @@ export const db = drizzle(pgConnection, {
 
 // ===== REDIS CONNECTION =====
 
-import { createRedisInstance } from '$lib/server/redis';
 let redis: any;
-try { redis = createRedisInstance(); }
-catch {
+try {
+  // Try to create Redis instance with require fallback
   const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
   redis = new RedisCtor({
     ...services.redis,
     maxRetriesPerRequest: 3,
     retryStrategy: (times: number) => Math.min(times * 50, 2000),
   });
+} catch {
+  console.warn('Redis connection failed, continuing without Redis cache');
+  redis = null;
 }
 
 // ===== UTILITY FUNCTIONS =====
@@ -219,8 +223,8 @@ function calculateSimilarity(doc1: any, doc2: any): number {
   const words1 = new Set(text1.split(/\s+/));
   const words2 = new Set(text2.split(/\s+/));
 
-  const intersection = new Set([...words1].filter((x) => words2.has(x)));
-  const union = new Set([...words1, ...words2]);
+  const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)));
+  const union = new Set([...Array.from(words1), ...Array.from(words2)]);
 
   return intersection.size / union.size;
 }
@@ -247,17 +251,17 @@ QUERY: ${input.query}
   if (input.rankedResults?.length > 0) {
     prompt += `RELEVANT LEGAL SOURCES:
 `;
-  (input.rankedResults as any[]).slice(0, 5).forEach((source: any, i: number) => {
-    const title = source.metadata?.title || `Document ${i + 1}`;
-    const content = source.pageContent || source.content || source.text || '';
-    const relevance = source.crossEncoderScore || source.score || 0;
+    (input.rankedResults as any[]).slice(0, 5).forEach((source: any, i: number) => {
+      const title = source.metadata?.title || `Document ${i + 1}`;
+      const content = source.pageContent || source.content || source.text || '';
+      const relevance = source.crossEncoderScore || source.score || 0;
 
-    prompt += `
+      prompt += `
 ${i + 1}. ${title} (Relevance: ${(relevance * 100).toFixed(1)}%)
 ${content.substring(0, 500)}...
 
 `;
-  });
+    });
   }
 
   // Add Context7 documentation if available
@@ -732,7 +736,7 @@ export class EnhancedAISynthesisOrchestrator {
 
         runGoLlamaPipeline: fromPromise(async ({ input }: { input: any }) => {
           try {
-            const response = await fetch(`${services.goMicroservice.goLlama}/api/generate`, {
+            const response = await fetch(`${services.goMicroservice.enhancedRAG}/api/generate`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -1226,8 +1230,8 @@ TEMPLATE """{{ if .System }}<|system|>
     const words1 = new Set(text1.split(/\s+/));
     const words2 = new Set(text2.split(/\s+/));
 
-    const intersection = new Set([...words1].filter((x) => words2.has(x)));
-    const union = new Set([...words1, ...words2]);
+    const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)));
+    const union = new Set([...Array.from(words1), ...Array.from(words2)]);
 
     return intersection.size / union.size;
   }

@@ -5,6 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 https://svelte.dev/e/component_invalid_directive -->
 <!-- NieR: Automata Themed Rich Text Editor using bits-ui -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     content?: unknown;
     placeholder?: unknown;
@@ -54,7 +55,7 @@ https://svelte.dev/e/component_invalid_directive -->
         onclick={() => editor?.commands.undo()}
       >
         ↶
-      </Button>
+      </button>
       <Button 
         variant="ghost" 
         size="sm" 
@@ -62,7 +63,7 @@ https://svelte.dev/e/component_invalid_directive -->
         onclick={() => editor?.commands.redo()}
       >
         ↷
-      </Button>
+      </button>
     </div>
     
     <Separator orientation="vertical" class="nier-toolbar-separator" />
@@ -96,7 +97,7 @@ https://svelte.dev/e/component_invalid_directive -->
         onclick={() => editor?.chain().focus().toggleBold().run()}
       >
         <strong>B</strong>
-      </Button>
+      </button>
       <Button 
         variant="ghost" 
         size="sm" 
@@ -105,7 +106,7 @@ https://svelte.dev/e/component_invalid_directive -->
         onclick={() => editor?.chain().focus().toggleItalic().run()}
       >
         <em>I</em>
-      </Button>
+      </button>
     </div>
   </div>
   

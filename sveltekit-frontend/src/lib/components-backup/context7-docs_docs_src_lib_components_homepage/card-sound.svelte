@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import HomeToolbar from "$lib/components/homepage/home-toolbar.svelte";
 </script>
 
@@ -14,7 +15,7 @@
 	></div>
 
 	<div
-		class="dark:border:[rgba(254,_254,_254,_0.15)] rounded-card-lg bg-foreground m-1.5 aspect-square overflow-hidden px-[14px] py-2.5 lg:m-2.5 lg:py-3 dark:border dark:bg-[#2A2B2E]"
+		class="dark:border:[rgba(254,_254,_254,_0.15)] rounded-nier-bits-card-lg bg-foreground m-1.5 aspect-square overflow-hidden px-[14px] py-2.5 lg:m-2.5 lg:py-3 dark:border dark:bg-[#2A2B2E]"
 	>
 		<div class="flex items-start justify-between">
 			<span
@@ -30,7 +31,7 @@
 			class="bg-background relative mx-auto mt-3 aspect-square w-[115px] rounded-[50%] sm:w-10/12 lg:mt-[5px] lg:w-[189px] dark:bg-white"
 		>
 			<div
-				class="rounded-card-sm absolute left-1/2 top-2.5 h-4 w-[5px] -translate-x-1/2 bg-rose-500 lg:h-[26px] lg:w-2"
+				class="rounded-nier-bits-card-sm absolute left-1/2 top-2.5 h-4 w-[5px] -translate-x-1/2 bg-rose-500 lg:h-[26px] lg:w-2"
 			></div>
 			<div
 				class="absolute left-2 right-2 top-1/2 flex -translate-y-1/2 items-center justify-between"

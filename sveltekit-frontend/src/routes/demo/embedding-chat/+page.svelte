@@ -1,5 +1,6 @@
 <!-- EmbeddingGemma Chat Demo Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import EmbeddingGemmaChat from "$lib/components/ui/enhanced-bits/EmbeddingGemmaChat.svelte";
   import {
     Button
@@ -113,7 +114,7 @@
           <FileText class="w-4 h-4 mr-2" />
           Load Contract Samples ({sampleLegalDocuments.length})
         {/snippet}
-      </Button>
+      </button>
 
       <Button class="bits-btn"
         variant="outline"
@@ -123,7 +124,7 @@
           <Gavel class="w-4 h-4 mr-2" />
           Load Litigation Cases ({sampleCaseDocuments.length})
         {/snippet}
-      </Button>
+      </button>
 
       <Button class="bits-btn"
         variant="outline"
@@ -133,7 +134,7 @@
         {#snippet children()}
           Clear Documents
         {/snippet}
-      </Button>
+      </button>
 
       <div class="ml-auto bg-gray-100 px-3 py-2 rounded-md text-sm">
         <strong>Current:</strong> {currentDocuments.length} documents

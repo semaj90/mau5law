@@ -3,6 +3,7 @@
   Basic registration without complex dependencies
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
   import {
@@ -110,7 +111,7 @@
 </script>
 
 <div class="w-full max-w-2xl mx-auto">
-  <div class="bg-card p-8 rounded-lg border border-border">
+  <div class="bg-nier-bits-card p-8 rounded-lg border border-border">
     <div class="text-center mb-6">
       <div class="flex items-center justify-center mb-4">
         <Shield class="h-8 w-8 text-primary mr-2" />
@@ -120,7 +121,7 @@
         <UserPlus class="h-5 w-5" />
         Create Account
       </h2>
-      <p class="text-muted-foreground mt-2">
+      <p class="nes-text is-disabled mt-2">
         Register as a legal professional to access the AI-powered legal system
       </p>
     </div>
@@ -309,9 +310,9 @@
               disabled={isLoading}
             >
               {#if showPassword}
-                <EyeOff class="h-4 w-4 text-muted-foreground" />
+                <EyeOff class="h-4 w-4 nes-text is-disabled" />
               {:else}
-                <Eye class="h-4 w-4 text-muted-foreground" />
+                <Eye class="h-4 w-4 nes-text is-disabled" />
               {/if}
             </button>
           </div>
@@ -353,9 +354,9 @@
               disabled={isLoading}
             >
               {#if showConfirmPassword}
-                <EyeOff class="h-4 w-4 text-muted-foreground" />
+                <EyeOff class="h-4 w-4 nes-text is-disabled" />
               {:else}
-                <Eye class="h-4 w-4 text-muted-foreground" />
+                <Eye class="h-4 w-4 nes-text is-disabled" />
               {/if}
             </button>
           </div>
@@ -425,13 +426,13 @@
           <UserPlus class="mr-2 h-4 w-4" />
           Create Legal Professional Account
         {/if}
-      </Button>
+      </button>
     </form>
 
     <!-- Login Link -->
     {#if showLogin}
       <div class="mt-6 text-center">
-        <p class="text-sm text-muted-foreground">
+        <p class="text-sm nes-text is-disabled">
           Already have an account?
           <a 
             href="/auth/login" 

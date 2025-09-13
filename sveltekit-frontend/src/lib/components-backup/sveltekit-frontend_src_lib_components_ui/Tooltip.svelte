@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     content?: string;
     placement?: "top" | "bottom" | "left" | "right";

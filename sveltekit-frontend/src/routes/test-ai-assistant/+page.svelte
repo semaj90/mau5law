@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced/Button.svelte';
   import {
@@ -180,7 +181,7 @@
     </div>
 
     <!-- Control Panel -->
-    <Card class="mb-6 p-6">
+    <NesCard class="mb-6 p-6">
       {#snippet children()}
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">Test Controls</h2>
@@ -193,14 +194,14 @@
               {#snippet children()}
                 {isRunning ? 'Running Tests...' : 'Run All Tests'}
               {/snippet}
-            </Button>
+            </button>
             <Button class="bits-btn"
               variant="default"
               onclick={testSSEStream}
               disabled={isRunning}
             >
               {#snippet children()}Test SSE Stream{/snippet}
-            </Button>
+            </button>
           </div>
         </div>
 
@@ -211,13 +212,13 @@
           </div>
         {/if}
       {/snippet}
-    </Card>
+    </NesCard>
 
     <!-- Test Results -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {#each tests as test}
         {@const result = testResults[test.name]}
-        <Card class="p-6">
+        <NesCard class="p-6">
           {#snippet children()}
             <div class="flex items-start justify-between mb-4">
               <div>
@@ -279,13 +280,13 @@
               </div>
             {/if}
           {/snippet}
-        </Card>
+        </NesCard>
       {/each}
 
       <!-- SSE Stream Test Result -->
       {#if testResults['SSE Stream Test']}
         {@const sseResult = testResults['SSE Stream Test']}
-        <Card class="p-6 lg:col-span-2">
+        <NesCard class="p-6 lg:col-span-2">
           {#snippet children()}
             <div class="flex items-start justify-between mb-4">
               <div>
@@ -320,12 +321,12 @@
               {/if}
             </div>
           {/snippet}
-        </Card>
+        </NesCard>
       {/if}
     </div>
 
     <!-- Summary -->
-    <Card class="mt-6 p-6">
+    <NesCard class="mt-6 p-6">
       {#snippet children()}
         <h2 class="text-xl font-semibold mb-4">Test Summary</h2>
         {@const totalTests = Object.keys(testResults).length}
@@ -360,6 +361,6 @@
           </div>
         {/if}
       {/snippet}
-    </Card>
+    </NesCard>
   </div>
 </div>

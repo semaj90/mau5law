@@ -2,6 +2,7 @@
 https://svelte.dev/e/slot_snippet_conflict -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `<slot>` syntax and `{@render ...}` tags in the same component. Migrate towards `{@render ...}` tags completely -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Button as BitsButton } from 'bits-ui';
   	import { cva, type VariantProps } from 'class-variance-authority';
   	import { cn } from '$lib/utils/cn';

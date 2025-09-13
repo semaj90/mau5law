@@ -8,6 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { legalPlatformClient, type CaseData, type ApiResponse } from '$lib/services/legal-platform-client';

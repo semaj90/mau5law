@@ -7,6 +7,7 @@ https://svelte.dev/e/expected_token -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte'; 
 </script>

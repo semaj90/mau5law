@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Select as BitsSelect } from 'bits-ui';
   import { cn } from '$lib/utils/cn';
   import { ChevronDown, Check } from 'lucide-svelte';
@@ -149,7 +150,7 @@
           {#each Object.entries(groupedOptions) as [category, categoryOptions]}
             {#if category && Object.keys(groupedOptions).length > 1}
               <BitsSelect.Group>
-                <div class="px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <div class="px-2 py-1.5 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">
                   {category}
                 </div>
                 {#each categoryOptions as option (option.value)}
@@ -200,7 +201,7 @@
         {option.label}
       </div>
       {#if option.description}
-        <div class="text-xs text-muted-foreground mt-0.5">
+        <div class="text-xs nes-text is-disabled mt-0.5">
           {option.description}
         </div>
       {/if}

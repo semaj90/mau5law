@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   // ======================================================================
   // ENHANCED LEGAL AI DEMO COMPONENT
@@ -278,11 +279,11 @@ https://svelte.dev/e/attribute_duplicate -->
       <div class="space-y-6">
 
         <!-- Evidence Input -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Add Evidence</CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Add Evidence</h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <Textarea
               bind:value={evidenceText}
               placeholder="Enter evidence content..."
@@ -296,12 +297,12 @@ https://svelte.dev/e/attribute_duplicate -->
             >
               Process Evidence
             </button>
-          </CardContent>
-        </Card>
-          <CardHeader>
-            <CardTitle>Demo Evidence</CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-3">
+          </div>
+        </NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Demo Evidence</h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-3">
             {#each demoEvidences as demo}
               <div class="border rounded-lg p-3">
                 <div class="flex items-center justify-between mb-2">
@@ -319,15 +320,15 @@ https://svelte.dev/e/attribute_duplicate -->
                 </button>
               </div>
             {/each}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- System Controls -->
-        <Card>
-          <CardHeader>
-            <CardTitle>System Controls</CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-3">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">System Controls</h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-3">
             <button type="button" class="bits-btn bits-btn w-full" onclick={() => checkSystemHealth()}>
               Health Check
             </button>
@@ -340,8 +341,8 @@ https://svelte.dev/e/attribute_duplicate -->
             <button type="button" class="bits-btn bits-btn w-full" onclick={() => clearCache()}>
               Clear Cache
             </button>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
 
       <!-- Middle Column: Processing Results -->
@@ -349,14 +350,14 @@ https://svelte.dev/e/attribute_duplicate -->
 
         <!-- Currently Processing -->
         {#if currentProcessing}
-          <Card>
-            <CardHeader>
-              <CardTitle class="flex items-center space-x-2">
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary" class="flex items-center space-x-2">
                 <div class="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
                 <span>Currently Processing</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="space-y-2">
                 <p class="font-medium">{currentProcessing.fileName}</p>
                 <Badge>{currentProcessing.type}</Badge>
@@ -364,16 +365,16 @@ https://svelte.dev/e/attribute_duplicate -->
                   {currentProcessing.content.slice(0, 150)}...
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         {/if}
 
         <!-- Processing Results -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Processing Results ({processingResults.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Processing Results ({processingResults.length})</h3>
+          </div>
+          <div class="yorha-panel-content">
             {#if processingResults.length === 0}
               <p class="text-gray-500 text-center py-4">No results yet</p>
             {:else}
@@ -396,15 +397,15 @@ https://svelte.dev/e/attribute_duplicate -->
                 {/each}
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- AI Recommendations -->
-        <Card>
-          <CardHeader>
-            <CardTitle>AI Recommendations ({aiRecommendations.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">AI Recommendations ({aiRecommendations.length})</h3>
+          </div>
+          <div class="yorha-panel-content">
             {#if aiRecommendations.length === 0}
               <p class="text-gray-500 text-center py-4">No recommendations yet</p>
             {:else}
@@ -423,19 +424,19 @@ https://svelte.dev/e/attribute_duplicate -->
                 {/each}
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
 
       <!-- Right Column: Vector Search & Graph -->
       <div class="space-y-6">
 
         <!-- Vector Similarity Matches -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Vector Similarity Matches ({vectorMatches.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Vector Similarity Matches ({vectorMatches.length})</h3>
+          </div>
+          <div class="yorha-panel-content">
             {#if vectorMatches.length === 0}
               <p class="text-gray-500 text-center py-4">No matches found</p>
             {:else}
@@ -454,15 +455,15 @@ https://svelte.dev/e/attribute_duplicate -->
                 {/each}
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Graph Relationships -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Graph Relationships ({graphRelationships.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Graph Relationships ({graphRelationships.length})</h3>
+          </div>
+          <div class="yorha-panel-content">
             {#if graphRelationships.length === 0}
               <p class="text-gray-500 text-center py-4">No relationships found</p>
             {:else}
@@ -489,15 +490,15 @@ https://svelte.dev/e/attribute_duplicate -->
                 {/each}
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Cache Statistics -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Cache Performance</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Cache Performance</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-3">
               <div class="flex justify-between">
                 <span class="text-sm">Hit Rate:</span>
@@ -530,18 +531,18 @@ https://svelte.dev/e/attribute_duplicate -->
                 </div>
               {/if}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     </div>
 
     <!-- Real-time Updates Footer -->
     {#if realTimeUpdates.length > 0}
-      <Card>
-        <CardHeader>
-          <CardTitle>Real-time Updates ({realTimeUpdates.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Real-time Updates ({realTimeUpdates.length})</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-2 max-h-32 overflow-y-auto">
             {#each realTimeUpdates.slice(-5) as update}
               <div class="flex items-center justify-between text-sm bg-blue-50 rounded p-2">
@@ -552,8 +553,8 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     {/if}
 
   </div>

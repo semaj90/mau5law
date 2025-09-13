@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'autoHide' has already been declared -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     showInline?: any;
     autoHide?: any;
@@ -199,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mt-3 p-3 bg-base-200 rounded-lg">
             <div class="flex items-center justify-between mb-2">
               <span class="text-sm font-medium">Technical Details</span>
-              <Button
+              <button class="nes-btn"
                 variant="outline"
                 size="sm"
                 onclick={() => copyErrorDetails()}
@@ -207,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
                 aria-label="Copy error details"
               >
                 <Copy class="h-4 w-4" />
-              </Button>
+              </button>
             </div>
             <div class="text-xs space-y-1">
               <div>Severity: {currentError.severity}</div>
@@ -233,11 +234,11 @@ https://svelte.dev/e/js_parse_error -->
               <RefreshCw class="h-4 w-4" />
             {/if}
             Retry
-          </Button>
+          </button>
         {/if}
 
         {#if currentError.showDetails}
-          <Button
+          <button class="nes-btn"
             size="sm"
             variant="outline"
             onclick={() => (showDetails = !showDetails)}
@@ -248,17 +249,17 @@ https://svelte.dev/e/js_parse_error -->
             {:else}
               <ChevronDown class="h-4 w-4" />
             {/if}
-          </Button>
+          </button>
         {/if}
 
-        <Button
+        <button class="nes-btn"
           size="sm"
           variant="outline"
           onclick={() => clearError()}
           aria-label="Dismiss error"
         >
           <X class="h-4 w-4" />
-        </Button>
+        </button>
       </div>
     </div>
   {:else}
@@ -293,7 +294,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="mt-4 p-4 bg-base-200 rounded-lg">
                 <div class="flex items-center justify-between mb-3">
                   <h4 class="font-medium">Technical Details</h4>
-                  <Button
+                  <button class="nes-btn"
                     variant="outline"
                     size="sm"
                     onclick={() => copyErrorDetails()}
@@ -302,7 +303,7 @@ https://svelte.dev/e/js_parse_error -->
                   >
                     <Copy class="h-4 w-4" />
                     Copy
-                  </Button>
+                  </button>
                 </div>
                 <div class="text-sm space-y-1 font-mono">
                   <div>Severity: {currentError.severity}</div>
@@ -316,7 +317,7 @@ https://svelte.dev/e/js_parse_error -->
 
         <div class="modal-action">
           {#if currentError.severity === "critical" || currentError.severity === "error"}
-            <Button
+            <button class="nes-btn"
               variant="outline"
               size="sm"
               onclick={() => reportError()}
@@ -324,11 +325,11 @@ https://svelte.dev/e/js_parse_error -->
             >
               <Bug class="h-4 w-4" />
               Report Issue
-            </Button>
+            </button>
           {/if}
 
           {#if currentError.showDetails}
-            <Button
+            <button class="nes-btn"
               variant="outline"
               size="sm"
               onclick={() => (showDetails = !showDetails)}
@@ -341,7 +342,7 @@ https://svelte.dev/e/js_parse_error -->
                 <ChevronDown class="h-4 w-4" />
                 Show Details
               {/if}
-            </Button>
+            </button>
           {/if}
 
           {#if currentError.canRetry}
@@ -357,15 +358,15 @@ https://svelte.dev/e/js_parse_error -->
                 <RefreshCw class="h-4 w-4" />
                 Retry
               {/if}
-            </Button>
+            </button>
           {/if}
 
-          <Button
+          <button class="nes-btn"
             variant={currentError.canRetry ? "outline" : "primary"}
             onclick={() => clearError()}
           >
             {currentError.canRetry ? "Cancel" : "Close"}
-          </Button>
+          </button>
         </div>
       </div>
     </div>

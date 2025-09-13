@@ -1,5 +1,6 @@
 <!-- Grid Layout Component with svelte-brics inspired design -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { cn } from '$lib/utils';
 
   interface Props {

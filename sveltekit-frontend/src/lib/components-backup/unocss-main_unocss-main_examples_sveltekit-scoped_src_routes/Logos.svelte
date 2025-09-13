@@ -2,6 +2,7 @@
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open -->
 <script>
+  import 'nes.css/css/nes.min.css';
 </script>
   import { fade, fly } from "svelte/transition";
   import Toggle from "$lib/Toggle.svelte";
@@ -22,7 +23,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     {/if}
   </div>
 
-  <Button onclick={toggle}>Toggle Svelte Logo</Button>
+  <button class="nes-btn" onclick={toggle}>Toggle Svelte Logo</button>
 </Toggle>
 
 <style>

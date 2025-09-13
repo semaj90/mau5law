@@ -8,8 +8,8 @@ const query = writable('');
 
 let fuse: Fuse<SearchItem> | null = null;
 
-const options: Fuse.IFuseOptions<SearchItem> = {
-  keys: [ 'title', 'body', 'tags' ],
+const options = {
+  keys: ['title', 'body', 'tags'],
   threshold: 0.34,
   ignoreLocation: true,
   includeScore: true,

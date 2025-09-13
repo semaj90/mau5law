@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa System Dashboard -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
@@ -279,7 +280,7 @@ https://svelte.dev/e/js_parse_error -->
     <section class="yorha-overview">
       <div class="yorha-metrics-grid">
         <!-- Database Status -->
-        <div class="yorha-metric-card yorha-card-database">
+        <div class="yorha-metric-nier-bits-card yorha-nier-bits-card-database">
           <div class="yorha-metric-header">
             <Database size={24} />
             <h3>DATABASE</h3>
@@ -303,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <!-- Backend Status -->
-        <div class="yorha-metric-card yorha-card-backend">
+        <div class="yorha-metric-nier-bits-card yorha-nier-bits-card-backend">
           <div class="yorha-metric-header">
             <Cpu size={24} />
             <h3>BACKEND</h3>
@@ -327,7 +328,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <!-- Frontend Status -->
-        <div class="yorha-metric-card yorha-card-frontend">
+        <div class="yorha-metric-nier-bits-card yorha-nier-bits-card-frontend">
           <div class="yorha-metric-header">
             <Monitor size={24} />
             <h3>FRONTEND</h3>
@@ -351,7 +352,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <!-- System Health -->
-        <div class="yorha-metric-card yorha-card-health">
+        <div class="yorha-metric-nier-bits-card yorha-nier-bits-card-health">
           <div class="yorha-metric-header">
             <Zap size={24} />
             <h3>HEALTH</h3>
@@ -384,7 +385,7 @@ https://svelte.dev/e/js_parse_error -->
       </h2>
 
       <div class="yorha-charts-grid">
-        <div class="yorha-chart-card">
+        <div class="yorha-chart-nier-bits-card">
           <h3>CPU USAGE</h3>
           <div class="yorha-chart">
             <div class="yorha-chart-line" style="--height: {systemMetrics.backend.cpuUsage}%"></div>
@@ -392,7 +393,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
 
-        <div class="yorha-chart-card">
+        <div class="yorha-chart-nier-bits-card">
           <h3>MEMORY USAGE</h3>
           <div class="yorha-chart">
             <div class="yorha-chart-line" style="--height: {systemMetrics.backend.memoryUsage}%"></div>
@@ -400,7 +401,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
 
-        <div class="yorha-chart-card">
+        <div class="yorha-chart-nier-bits-card">
           <h3>NETWORK LATENCY</h3>
           <div class="yorha-chart">
             <div class="yorha-chart-line" style="--height: {Math.min(100, systemMetrics.database.latency)}%"></div>

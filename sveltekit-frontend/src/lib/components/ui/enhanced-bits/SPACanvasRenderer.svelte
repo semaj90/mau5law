@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   /**
    * Single Page App Canvas Renderer
    * Full-screen canvas UX with navigation, using gemma3:legal-latest

@@ -2,7 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import {
     AlertTriangle,
     ArrowRight,
@@ -549,15 +550,15 @@ https://svelte.dev/e/js_parse_error -->
           <Button variant="outline" class="w-full justify-start">
             <MessageSquare class="h-4 w-4 mr-2" />
             Contact Support
-          </Button>
+          </button>
           <Button variant="outline" class="w-full justify-start">
             <Video class="h-4 w-4 mr-2" />
             Video Tutorials
-          </Button>
+          </button>
           <Button variant="outline" class="w-full justify-start">
             <Download class="h-4 w-4 mr-2" />
             User Manual (PDF)
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -622,11 +623,11 @@ https://svelte.dev/e/js_parse_error -->
                         .substring(0, 200)}...
                     </div>
 
-                    <Button variant="outline" size="sm">
+                    <button class="nes-btn" variant="outline" size="sm">
                       <Book class="h-4 w-4 mr-2" />
                       Read Full Article
                       <ArrowRight class="h-4 w-4 ml-2" />
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -682,14 +683,14 @@ https://svelte.dev/e/js_parse_error -->
               help you succeed.
             </p>
             <div class="flex gap-3">
-              <Button variant="outline" size="sm">
+              <button class="nes-btn" variant="outline" size="sm">
                 <MessageSquare class="h-4 w-4 mr-2" />
                 Start Live Chat
-              </Button>
-              <Button variant="outline" size="sm">
+              </button>
+              <button class="nes-btn" variant="outline" size="sm">
                 <ExternalLink class="h-4 w-4 mr-2" />
                 Submit Ticket
-              </Button>
+              </button>
             </div>
           </div>
         </div>

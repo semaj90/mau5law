@@ -3,10 +3,11 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced ThinkingStyleToggle with Nier Automata + Harvard Crimson Theme -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from 'svelte';
   import { fade, slide, scale } from 'svelte/transition';
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { cn } from '$lib/utils';
   export let enabled = false;
   export let loading = false;
@@ -97,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if premium && enabled}
         <Crown size={12} class="ml-2 text-harvard-gold opacity-80" />
       {/if}
-    </Button>
+    </button>
     
     <!-- Configuration Button -->
     {#if premium}
@@ -109,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
         disabled={loading}
       >
         <Settings size={14} />
-      </Button>
+      </button>
     {/if}
     
     <!-- Info Button for non-premium users -->
@@ -121,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
         class="upgrade-btn ml-2"
       >
         <Info size={14} class="text-harvard-gold" />
-      </Button>
+      </button>
     {/if}
     
     <!-- Tooltip -->
@@ -179,7 +180,7 @@ https://svelte.dev/e/js_parse_error -->
     >
       <div class="config-header">
         <h4 class="text-foreground font-semibold">Thinking Style Configuration</h4>
-        <p class="text-muted-foreground text-sm">Customize AI reasoning parameters</p>
+        <p class="nes-text is-disabled text-sm">Customize AI reasoning parameters</p>
       </div>
       
       <div class="config-content space-y-4">
@@ -240,12 +241,12 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       
       <div class="config-actions">
-        <Button variant="ghost" size="sm" onclick={() => showConfig = false}>
+        <button class="nes-btn" variant="ghost" size="sm" onclick={() => showConfig = false}>
           Cancel
-        </Button>
-        <Button variant="crimson" size="sm">
+        </button>
+        <button class="nes-btn" variant="crimson" size="sm">
           Save Configuration
-        </Button>
+        </button>
       </div>
     </div>
   {/if}
@@ -262,9 +263,9 @@ https://svelte.dev/e/js_parse_error -->
           <strong>Unlock Advanced AI Reasoning</strong>
           <p>Get step-by-step legal analysis with transparent thinking process</p>
         </div>
-        <Button variant="gold" size="sm" onclick={handleUpgrade}>
+        <button class="nes-btn" variant="gold" size="sm" onclick={handleUpgrade}>
           Upgrade Now
-        </Button>
+        </button>
       </div>
     </div>
   {/if}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Tabs } from "bits-ui";
   	import type { Snippet } from "svelte";
   	import CopySimple from "phosphor-svelte/lib/CopySimple";

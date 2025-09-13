@@ -4,6 +4,7 @@ Connects to Ollama legal model, CUDA services, and MinIO storage
 Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { goto } from '$app/navigation';
   import FabricEvidenceCanvas from '../canvas/FabricEvidenceCanvas.svelte';
@@ -767,7 +768,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
      class:retro-terminal={retroTerminalMode}
      class:particle-effects={particleEffects}>
   <!-- NES×YoRHa Hybrid Header -->
-  <header class="yorha-card border-b-4 border-nier-accent mb-6">
+  <header class="yorha-nier-bits-card border-b-4 border-nier-accent mb-6">
     <div class="w-full px-6 py-8">
       <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
 
@@ -808,15 +809,15 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
           <!-- Evidence Stats with N64 Style -->
           <div class="flex gap-2">
-            <div class="n64-stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all">
+            <div class="n64-stat-nier-bits-card bg-gradient-to-br from-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all">
               <div class="text-xs opacity-80">Total</div>
               <div class="text-xl font-bold">{totalEvidence}</div>
             </div>
-            <div class="n64-stat-card bg-gradient-to-br from-yellow-500 to-orange-600 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all">
+            <div class="n64-stat-nier-bits-card bg-gradient-to-br from-yellow-500 to-orange-600 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all">
               <div class="text-xs opacity-80">Processing</div>
               <div class="text-xl font-bold">{processingCount}</div>
             </div>
-            <div class="n64-stat-card bg-gradient-to-br from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all">
+            <div class="n64-stat-nier-bits-card bg-gradient-to-br from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all">
               <div class="text-xs opacity-80">Ready</div>
               <div class="text-xl font-bold">{readyCount}</div>
             </div>
@@ -1084,7 +1085,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         <!-- Gaming-Style Evidence Cards (Alternative Grid View) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4" style="display: none;">
           {#each filteredEvidence as evidence (evidence.id)}
-            <div class="evidence-card nes-container {selectedEvidence.includes(evidence.id) ? 'is-success' : 'with-title'} relative"
+            <div class="evidence-nier-bits-card nes-container {selectedEvidence.includes(evidence.id) ? 'is-success' : 'with-title'} relative"
                  class:n64-glow={gamingMode && selectedEvidence.includes(evidence.id)}
                  class:yorha-selected={selectedEvidence.includes(evidence.id)}>
 

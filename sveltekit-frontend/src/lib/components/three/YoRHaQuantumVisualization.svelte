@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import * as THREE from 'three';
   import { YoRHaQuantumEffects3D } from './yorha-ui/components/YoRHaQuantumEffects3D';

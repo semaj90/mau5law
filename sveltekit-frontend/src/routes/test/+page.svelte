@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // $state runtime rune is provided globally
   import { aiAgentStore, systemHealth, currentConversation } from '$lib/stores/ai-agent';

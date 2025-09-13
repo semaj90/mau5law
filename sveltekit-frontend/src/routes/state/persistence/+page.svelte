@@ -2,12 +2,13 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   // XState State Persistence Management
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   
   let mounted = $state(false);
   let persistedStates = $state([]);
@@ -174,19 +175,19 @@ https://svelte.dev/e/expected_token -->
     </div>
     
     <div class="stats-grid">
-      <div class="stat-card">
+      <div class="stat-nier-bits-card">
         <span class="stat-number">{persistedStates.length}</span>
         <span class="stat-label">Persisted States</span>
       </div>
-      <div class="stat-card">
+      <div class="stat-nier-bits-card">
         <span class="stat-number">{formatBytes(persistedStates.reduce((sum, s) => sum + s.size, 0))}</span>
         <span class="stat-label">Total Storage</span>
       </div>
-      <div class="stat-card">
+      <div class="stat-nier-bits-card">
         <span class="stat-number">{new Set(persistedStates.map(s => s.machineId)).size}</span>
         <span class="stat-label">Machines</span>
       </div>
-      <div class="stat-card">
+      <div class="stat-nier-bits-card">
         <span class="stat-number">{new Set(persistedStates.map(s => s.userId)).size}</span>
         <span class="stat-label">Users</span>
       </div>
@@ -210,14 +211,14 @@ https://svelte.dev/e/expected_token -->
           <h2>📋 Persisted States ({persistedStates.length})</h2>
           
           <div class="filter-controls">
-            <Button variant="outline" onclick={loadPersistedStates}>
+            <button class="nes-btn" variant="outline" onclick={loadPersistedStates}>
               🔄 Refresh
-            </Button>
+            </button>
           </div>
           
           <div class="states-container">
             {#each persistedStates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as state}
-              <div class="state-card {selectedState?.id === state.id ? 'selected' : ''}"
+              <div class="state-nier-bits-card {selectedState?.id === state.id ? 'selected' : ''}"
                    role="button" tabindex="0"
                 onclick={() => selectedState = selectedState?.id === state.id ? null : state}>
                 <div class="state-header">
@@ -251,7 +252,7 @@ https://svelte.dev/e/expected_token -->
                 </div>
                 
                 <div class="state-actions">
-                  <Button 
+                  <button class="nes-btn" 
                     size="sm"
                     onclick={(e) => {
                       e.stopPropagation();
@@ -260,10 +261,9 @@ https://svelte.dev/e/expected_token -->
                     disabled={restoring}
                   >
                     {restoring ? 'Restoring...' : '🔄 Restore'}
-                  </Button>
+                  </button>
                   
-                  <Button 
-                    variant="destructive"
+                  <button class="nes-btn is-error"
                     size="sm"
                     onclick={(e) => {
                       e.stopPropagation();
@@ -271,7 +271,7 @@ https://svelte.dev/e/expected_token -->
                     }}
                   >
                     🗑️ Delete
-                  </Button>
+                  </button>
                 </div>
               </div>
             {/each}
@@ -280,7 +280,7 @@ https://svelte.dev/e/expected_token -->
         
         {#if selectedState}
           <div class="state-inspector">
-            <div class="inspector-card">
+            <div class="inspector-nier-bits-card">
               <divHeader>
                 <divTitle>🔍 State Inspector</h3>
                 <p class="inspector-subtitle">{selectedState.id}</p>

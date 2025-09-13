@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { openInStackBlitz } from "$lib/utils/open-in-stackblitz.js";
   	import Stackblitz from "$icons/stackblitz.svelte";
   	import { Tooltip } from "bits-ui";

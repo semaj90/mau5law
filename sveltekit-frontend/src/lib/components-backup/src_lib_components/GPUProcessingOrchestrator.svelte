@@ -7,6 +7,7 @@ https://svelte.dev/e/legacy_export_invalid -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { createGPUProcessingActor, type DocumentInput, type ProcessingResult } from '$lib/state/gpu-processing-machine';
   import { Button } from 'bits-ui';
@@ -157,11 +158,11 @@ https://svelte.dev/e/legacy_export_invalid -->
   </div>
 
   <!-- Status Bar -->
-  <Card.Root class="mb-6">
-    <Card.Header>
-      <Card.Title>System Status</Card.Title>
+  <NesCard.Root class="mb-6">
+    <NesCard.Header>
+      <NesCard.Title>System Status</Card.Title>
     </Card.Header>
-    <Card.Content>
+    <NesCard.Content>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <!-- Service Health -->
         <div class="text-center">
@@ -220,11 +221,11 @@ https://svelte.dev/e/legacy_export_invalid -->
   </Card.Root>
 
   <!-- Controls -->
-  <Card.Root class="mb-6">
-    <Card.Header>
-      <Card.Title>Processing Controls</Card.Title>
+  <NesCard.Root class="mb-6">
+    <NesCard.Header>
+      <NesCard.Title>Processing Controls</Card.Title>
     </Card.Header>
-    <Card.Content>
+    <NesCard.Content>
       <div class="flex flex-wrap gap-3">
         {#if !isProcessing}
           <Button.Root
@@ -254,14 +255,14 @@ https://svelte.dev/e/legacy_export_invalid -->
           🗑️ Clear Queue
         </Button.Root>
         
-        <Button.Root
+        <button class="nes-btn".Root
           onclick={() => gpuActor.send({ type: 'SERVICE_HEALTH_CHECK' })}
           variant="outline"
         >
           🔍 Health Check
         </Button.Root>
         
-        <Button.Root
+        <button class="nes-btn".Root
           onclick={() => showDetails = !showDetails}
           variant="outline"
         >
@@ -272,11 +273,11 @@ https://svelte.dev/e/legacy_export_invalid -->
   </Card.Root>
 
   <!-- Add Document Form -->
-  <Card.Root class="mb-6">
-    <Card.Header>
-      <Card.Title>Add Document</Card.Title>
+  <NesCard.Root class="mb-6">
+    <NesCard.Header>
+      <NesCard.Title>Add Document</Card.Title>
     </Card.Header>
-    <Card.Content>
+    <NesCard.Content>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -346,11 +347,11 @@ https://svelte.dev/e/legacy_export_invalid -->
 
     <!-- Queue Tab -->
     <Tabs.Content value="queue" class="mt-4">
-      <Card.Root>
-        <Card.Header>
-          <Card.Title>Processing Queue</Card.Title>
+      <NesCard.Root>
+        <NesCard.Header>
+          <NesCard.Title>Processing Queue</Card.Title>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           {#if processingQueue.length === 0}
             <div class="text-center py-8 text-gray-500">
               📝 No documents in queue
@@ -379,7 +380,7 @@ https://svelte.dev/e/legacy_export_invalid -->
                   </div>
                   
                   <div class="flex gap-2">
-                    <Button.Root
+                    <button class="nes-btn".Root
                       size="sm"
                       variant="outline"
                       onclick={() => cancelDocument(queuedDoc.document.documentId)}
@@ -397,11 +398,11 @@ https://svelte.dev/e/legacy_export_invalid -->
 
     <!-- Active Processing Tab -->
     <Tabs.Content value="active" class="mt-4">
-      <Card.Root>
-        <Card.Header>
-          <Card.Title>Active Processing</Card.Title>
+      <NesCard.Root>
+        <NesCard.Header>
+          <NesCard.Title>Active Processing</Card.Title>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           {#if activeProcessing.size === 0}
             <div class="text-center py-8 text-gray-500">
               ⚡ No active processing
@@ -423,7 +424,7 @@ https://svelte.dev/e/legacy_export_invalid -->
                   </div>
                   
                   <div class="flex gap-2">
-                    <Button.Root
+                    <button class="nes-btn".Root
                       size="sm"
                       variant="outline"
                       onclick={() => cancelDocument(activeDoc.document.documentId)}
@@ -441,11 +442,11 @@ https://svelte.dev/e/legacy_export_invalid -->
 
     <!-- Completed Tab -->
     <Tabs.Content value="completed" class="mt-4">
-      <Card.Root>
-        <Card.Header>
-          <Card.Title>Completed Documents</Card.Title>
+      <NesCard.Root>
+        <NesCard.Header>
+          <NesCard.Title>Completed Documents</Card.Title>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           {#if completedDocuments.size === 0}
             <div class="text-center py-8 text-gray-500">
               ✅ No completed documents
@@ -475,11 +476,11 @@ https://svelte.dev/e/legacy_export_invalid -->
 
     <!-- Errors Tab -->
     <Tabs.Content value="errors" class="mt-4">
-      <Card.Root>
-        <Card.Header>
-          <Card.Title>Processing Errors</Card.Title>
+      <NesCard.Root>
+        <NesCard.Header>
+          <NesCard.Title>Processing Errors</Card.Title>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           {#if errorDocuments.size === 0}
             <div class="text-center py-8 text-gray-500">
               🎉 No errors
@@ -493,7 +494,7 @@ https://svelte.dev/e/legacy_export_invalid -->
                     {errorInfo.error}
                   </div>
                   <div class="flex gap-2">
-                    <Button.Root
+                    <button class="nes-btn".Root
                       size="sm"
                       onclick={() => retryDocument(docId)}
                       class="bg-blue-600 hover:bg-blue-700"

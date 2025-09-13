@@ -4,8 +4,36 @@
  */
 
 import { z } from 'zod';
-import type { EvidenceMetadata } from '$lib/server/db/schema-unified-postgres.js';
+// import type { EvidenceMetadata } from '$lib/server/db/schema-unified-postgres.js';
 import { URL } from "url";
+
+// Define EvidenceMetadata type locally since schema-unified-postgres doesn't exist
+type EvidenceMetadata = {
+  source?: string;
+  type?: string;
+  jurisdiction?: string;
+  practiceArea?: string[];
+  confidentialityLevel?: number;
+  lastModified?: Date;
+  fileSize: number;
+  language?: string;
+  tags?: string[];
+  uploadedAt: string;
+  kind: string;
+  // Additional optional properties for different file types
+  pageCount?: number;
+  isEncrypted?: boolean;
+  resolution?: { width: number; height: number };
+  format?: any;
+  hasAlphaChannel?: boolean;
+  durationSeconds?: number;
+  codec?: string;
+  frameRate?: number;
+  sampleRate?: number;
+  channels?: number;
+  wordCount?: number;
+  characterCount?: number;
+};
 
 // File validation constants
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
@@ -241,7 +269,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             ...baseMetadata,
           } as EvidenceMetadata);
         };
-        img.src = URL.createObjectURL(file);
+        img.src = URL.createObjectURL(file as any);
       });
 
     case 'VIDEO':
@@ -267,7 +295,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             ...baseMetadata,
           } as EvidenceMetadata);
         };
-        video.src = URL.createObjectURL(file);
+        video.src = URL.createObjectURL(file as any);
       });
 
     case 'AUDIO':
@@ -293,7 +321,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
             ...baseMetadata,
           } as EvidenceMetadata);
         };
-        audio.src = URL.createObjectURL(file);
+        audio.src = URL.createObjectURL(file as any);
       });
 
     case 'TEXT':

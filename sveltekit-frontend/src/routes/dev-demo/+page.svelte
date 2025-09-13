@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { superForm } from 'sveltekit-superforms';
   import { zod } from 'sveltekit-superforms/adapters';
@@ -216,14 +217,14 @@
     </div>
 
     <!-- System Status Overview -->
-    <Card class="mb-6 p-6">
+    <NesCard class="mb-6 p-6">
       {#snippet children()}
-        <CardHeader>
+        <div class="yorha-panel-header">
           {#snippet children()}
-            <CardTitle>System Status</CardTitle>
+            <h3 class="nes-text is-primary">System Status</h3>
           {/snippet}
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div class="yorha-panel-content">
           {#snippet children()}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <!-- Authentication Status -->
@@ -259,20 +260,20 @@
               {/each}
             </div>
           {/snippet}
-        </CardContent>
+        </div>
       {/snippet}
-    </Card>
+    </NesCard>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Case Management with Superforms -->
-      <Card class="p-6">
+      <NesCard class="p-6">
         {#snippet children()}
-          <CardHeader class="mb-4">
+          <div class="yorha-panel-header" class="mb-4">
             {#snippet children()}
-              <CardTitle>Create New Case (Superforms + Zod)</CardTitle>
+              <h3 class="nes-text is-primary">Create New Case (Superforms + Zod)</h3>
             {/snippet}
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div class="yorha-panel-content">
             {#snippet children()}
               <form method="POST" use:enhance class="space-y-4">
                 <div>
@@ -363,22 +364,22 @@
 
                 <Button type="submit" class="w-full bits-btn bits-btn">
                   {#snippet children()}Create Case{/snippet}
-                </Button>
+                </button>
               </form>
             {/snippet}
-          </CardContent>
+          </div>
         {/snippet}
-      </Card>
+      </NesCard>
 
       <!-- AI Chat Interface -->
-      <Card class="p-6">
+      <NesCard class="p-6">
         {#snippet children()}
-          <CardHeader class="mb-4">
+          <div class="yorha-panel-header" class="mb-4">
             {#snippet children()}
-              <CardTitle>Legal AI Assistant</CardTitle>
+              <h3 class="nes-text is-primary">Legal AI Assistant</h3>
             {/snippet}
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div class="yorha-panel-content">
             {#snippet children()}
               <div class="space-y-4">
                 <!-- Chat Messages -->
@@ -424,24 +425,24 @@
                     {#snippet children()}
                       {isStreaming ? 'Sending...' : 'Send'}
                     {/snippet}
-                  </Button>
+                  </button>
                 </div>
               </div>
             {/snippet}
-          </CardContent>
+          </div>
         {/snippet}
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Cases List -->
-    <Card class="mt-6 p-6">
+    <NesCard class="mt-6 p-6">
       {#snippet children()}
-        <CardHeader class="mb-4">
+        <div class="yorha-panel-header" class="mb-4">
           {#snippet children()}
-            <CardTitle>Recent Cases</CardTitle>
+            <h3 class="nes-text is-primary">Recent Cases</h3>
           {/snippet}
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div class="yorha-panel-content">
           {#snippet children()}
             {#if cases.length === 0}
               <p class="text-gray-500 text-center py-8">No cases found. Create your first case above!</p>
@@ -469,8 +470,8 @@
               </div>
             {/if}
           {/snippet}
-        </CardContent>
+        </div>
       {/snippet}
-    </Card>
+    </NesCard>
   </div>
 </div>

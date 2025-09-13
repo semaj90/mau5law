@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'maxFileSize' has already been declared -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     multiple?: boolean;
     accept?: string;
@@ -51,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
   import { browser } from "$app/environment";
-  import Button from "$lib/components/ui/Button.svelte";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
   import {
@@ -596,32 +597,30 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="space-y-4">
-        <Button {disabled}>
+        <button class="nes-btn" {disabled}>
           <Paperclip class="space-y-4" />
           Choose Files
-        </Button>
+        </button>
 
         {#if enableCameraCapture}
-          <Button
-            variant="secondary"
+          <button class="nes-btn"
             onclick={handleCameraCaptureClick}
             {disabled}
           >
             <Camera class="space-y-4" />
             Camera
-          </Button>
+          </button>
         {/if}
 
         {#if enableAudioRecording}
-          <Button
-            variant="secondary"
+          <button class="nes-btn"
             onclick={handleAudioRecordingClick}
             {disabled}
             class={isRecording ? "bg-red-100 text-red-700" : ""}
           >
             <Mic class="space-y-4" />
             {isRecording ? "Stop Recording" : "Record Audio"}
-          </Button>
+          </button>
         {/if}
       </div>
     </div>
@@ -649,7 +648,7 @@ https://svelte.dev/e/js_parse_error -->
 
         <div class="space-y-4">
           {#if !autoUpload && files.some((f) => f.status === "pending")}
-            <Button
+            <button class="nes-btn"
               size="sm"
               onclick={() => uploadFiles()}
               disabled={isUploading}
@@ -660,17 +659,17 @@ https://svelte.dev/e/js_parse_error -->
                 <Upload class="space-y-4" />
               {/if}
               Upload All
-            </Button>
+            </button>
           {/if}
 
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => (files = [])}
             disabled={isUploading}
           >
             Clear All
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -737,28 +736,28 @@ https://svelte.dev/e/js_parse_error -->
             <!-- Actions -->
             <div class="space-y-4">
               {#if file.status === "success" && file.url}
-                <Button
+                <button class="nes-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => window.open(file.url, "_blank")}
                   aria-label="View {file.name}"
                 >
                   <Eye class="space-y-4" />
-                </Button>
+                </button>
               {/if}
 
               {#if file.status === "error"}
-                <Button
+                <button class="nes-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => retryUpload(file.id)}
                   aria-label="Retry upload of {file.name}"
                 >
                   <Upload class="space-y-4" />
-                </Button>
+                </button>
               {/if}
 
-              <Button
+              <button class="nes-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => removeFile(file.id)}
@@ -766,7 +765,7 @@ https://svelte.dev/e/js_parse_error -->
                 aria-label="Remove {file.name}"
               >
                 <Trash2 class="space-y-4" />
-              </Button>
+              </button>
             </div>
           </div>
         {/each}

@@ -1,5 +1,6 @@
 <!-- Productivity AI Integration Demo -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   // Import components

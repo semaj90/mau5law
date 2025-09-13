@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Dialog } from '$lib/components/ui/dialog';
   import {
     Button
@@ -104,16 +105,16 @@
           <div class="button-grid">
             <Button class="nes-btn action-btn bits-btn bits-btn" onclick={increaseScore}>
               A BUTTON
-            </Button>
+            </button>
             <Button class="nes-btn action-btn bits-btn bits-btn" onclick={decreaseHealth}>
               B BUTTON
-            </Button>
+            </button>
             <Button class="nes-btn start-btn bits-btn bits-btn" onclick={() => dialogOpen = true}>
               START
-            </Button>
+            </button>
             <Button class="nes-btn select-btn bits-btn bits-btn">
               SELECT
-            </Button>
+            </button>
           </div>
         </div>
       </div>
@@ -124,13 +125,13 @@
       <div class="nes-container">
         <p class="nes-text is-primary">DIRECTIONAL PAD</p>
         <div class="dpad">
-          <Button class="nes-btn dpad-btn dpad-up bits-btn bits-btn">▲</Button>
+          <Button class="nes-btn dpad-btn dpad-up bits-btn bits-btn">▲</button>
           <div class="dpad-middle">
-            <Button class="nes-btn dpad-btn dpad-left bits-btn bits-btn">◄</Button>
+            <Button class="nes-btn dpad-btn dpad-left bits-btn bits-btn">◄</button>
             <div class="dpad-center"></div>
-            <Button class="nes-btn dpad-btn dpad-right bits-btn bits-btn">►</Button>
+            <Button class="nes-btn dpad-btn dpad-right bits-btn bits-btn">►</button>
           </div>
-          <Button class="nes-btn dpad-btn dpad-down bits-btn bits-btn">▼</Button>
+          <Button class="nes-btn dpad-btn dpad-down bits-btn bits-btn">▼</button>
         </div>
       </div>
     </div>
@@ -179,7 +180,7 @@
         <h2 class="nes-text is-primary">GAME SELECT</h2>
         <div class="game-selection-description">
             <div class="game-list">
-              <Card class="nes-container game-card">
+              <NesCard class="nes-container game-nier-bits-card">
                 <div class="game-preview">
                   <div class="game-icon mario-icon"></div>
                   <div class="game-info">
@@ -190,9 +191,9 @@
                     </Badge>
                   </div>
                 </div>
-              </Card>
+              </NesCard>
 
-              <Card class="nes-container game-card">
+              <NesCard class="nes-container game-nier-bits-card">
                 <div class="game-preview">
                   <div class="game-icon zelda-icon"></div>
                   <div class="game-info">
@@ -203,9 +204,9 @@
                     </Badge>
                   </div>
                 </div>
-              </Card>
+              </NesCard>
 
-              <Card class="nes-container game-card">
+              <NesCard class="nes-container game-nier-bits-card">
                 <div class="game-preview">
                   <div class="game-icon metroid-icon"></div>
                   <div class="game-info">
@@ -216,12 +217,12 @@
                     </Badge>
                   </div>
                 </div>
-              </Card>
+              </NesCard>
             </div>
         </div>
         <div class="menu-actions">
-          <Button class="nes-btn is-primary bits-btn bits-btn" onclick={() => dialogOpen = false}>START GAME</Button>
-          <Button class="nes-btn bits-btn bits-btn" onclick={() => dialogOpen = false}>CANCEL</Button>
+          <Button class="nes-btn is-primary bits-btn bits-btn" onclick={() => dialogOpen = false}>START GAME</button>
+          <Button class="nes-btn bits-btn bits-btn" onclick={() => dialogOpen = false}>CANCEL</button>
         </div>
       </div>
       {/snippet}

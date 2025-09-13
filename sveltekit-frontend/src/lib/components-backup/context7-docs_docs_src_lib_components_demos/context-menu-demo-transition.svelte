@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { ContextMenu } from "bits-ui";
   	import CopySimple from "phosphor-svelte/lib/CopySimple";
   	import MouseSimple from "phosphor-svelte/lib/MouseSimple";
@@ -10,7 +11,7 @@
 
 <ContextMenu.Root>
 	<ContextMenu.Trigger
-		class="rounded-card border-input text-muted-foreground flex h-[188px] w-[279px] select-none items-center justify-center border-2 border-dashed bg-transparent font-semibold"
+		class="rounded-nier-bits-card border-input nes-text is-disabled flex h-[188px] w-[279px] select-none items-center justify-center border-2 border-dashed bg-transparent font-semibold"
 	>
 		<div class="flex flex-col items-center justify-center gap-4 text-center">
 			<MouseSimple class="size-8" />
@@ -35,12 +36,12 @@
 								</div>
 								<div class="ml-auto flex items-center gap-px">
 									<kbd
-										class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-[13px]"
+										class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-[13px]"
 									>
 										⌘
 									</kbd>
 									<kbd
-										class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-[11px]"
+										class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-[11px]"
 									>
 										E
 									</kbd>
@@ -56,12 +57,12 @@
 									</div>
 									<div class="ml-auto flex items-center gap-px">
 										<kbd
-											class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-[13px]"
+											class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-[13px]"
 										>
 											⌘
 										</kbd>
 										<kbd
-											class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-[11px]"
+											class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-[11px]"
 										>
 											N
 										</kbd>
@@ -107,12 +108,12 @@
 								</div>
 								<div class="ml-auto flex items-center gap-px">
 									<kbd
-										class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-[13px]"
+										class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-[13px]"
 									>
 										⌘
 									</kbd>
 									<kbd
-										class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-[11px]"
+										class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-[11px]"
 									>
 										D
 									</kbd>

@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Real-time AI-powered editing with mini text box suggestions
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, tick } from 'svelte';
   import { createActor } from 'xstate';
   import { aiProcessingMachine, createAITask, aiTaskCreators } from '$lib/stores/machines';

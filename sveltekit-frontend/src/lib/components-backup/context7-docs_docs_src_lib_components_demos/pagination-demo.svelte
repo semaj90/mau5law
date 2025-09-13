@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Pagination } from "bits-ui";
   	import CaretLeft from "phosphor-svelte/lib/CaretLeft";
   	import CaretRight from "phosphor-svelte/lib/CaretRight";
@@ -8,7 +9,7 @@
 	{#snippet children({ pages, range })}
 		<div class="my-8 flex items-center">
 			<Pagination.PrevButton
-				class="hover:bg-dark-10 disabled:text-muted-foreground mr-[25px] inline-flex size-10 items-center justify-center rounded-[9px] bg-transparent active:scale-[0.98] disabled:cursor-not-allowed hover:disabled:bg-transparent"
+				class="hover:bg-dark-10 disabled:nes-text is-disabled mr-[25px] inline-flex size-10 items-center justify-center rounded-[9px] bg-transparent active:scale-[0.98] disabled:cursor-not-allowed hover:disabled:bg-transparent"
 			>
 				<CaretLeft class="size-6" />
 			</Pagination.PrevButton>
@@ -29,12 +30,12 @@
 				{/each}
 			</div>
 			<Pagination.NextButton
-				class="hover:bg-dark-10 disabled:text-muted-foreground ml-[29px] inline-flex size-10 items-center justify-center rounded-[9px] bg-transparent active:scale-[0.98] disabled:cursor-not-allowed hover:disabled:bg-transparent"
+				class="hover:bg-dark-10 disabled:nes-text is-disabled ml-[29px] inline-flex size-10 items-center justify-center rounded-[9px] bg-transparent active:scale-[0.98] disabled:cursor-not-allowed hover:disabled:bg-transparent"
 			>
 				<CaretRight class="size-6" />
 			</Pagination.NextButton>
 		</div>
-		<p class="text-muted-foreground text-center text-[13px]">
+		<p class="nes-text is-disabled text-center text-[13px]">
 			Showing {range.start} - {range.end}
 		</p>
 	{/snippet}

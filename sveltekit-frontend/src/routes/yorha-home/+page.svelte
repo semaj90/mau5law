@@ -1,5 +1,7 @@
 <!-- YoRHa Interface Home Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
   import {
     Play,

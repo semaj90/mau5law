@@ -1,5 +1,6 @@
 <!-- Modern Bits-UI Dialog Component for Legal AI App -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import * as Dialog from './index';
   import { X } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -77,7 +78,7 @@
           {/if}
 
           {#if description}
-            <Dialog.Description class="text-sm text-muted-foreground legal-dialog-description">
+            <Dialog.Description class="text-sm nes-text is-disabled legal-dialog-description">
               {description}
             </Dialog.Description>
           {/if}
@@ -86,7 +87,7 @@
 
       <!-- Close Button -->
       {#if showClose}
-        <Dialog.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+        <Dialog.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:nes-text is-disabled">
           <X class="h-4 w-4" />
           <span class="sr-only">Close</span>
         </Dialog.Close>

@@ -4,6 +4,7 @@ https://svelte.dev/e/expected_token -->
 <!-- Hybrid Legal Document Analysis Component -->
 <!-- Combines EmbeddingGemma + NES YoRHa 3D + Hybrid Vector APIs -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, tick } from "svelte";
   import {
@@ -626,7 +627,7 @@ https://svelte.dev/e/expected_token -->
             Start Hybrid Analysis
           {/if}
         {/snippet}
-      </Button>
+      </button>
 
       <Button
         variant="outline"
@@ -638,7 +639,7 @@ https://svelte.dev/e/expected_token -->
           <Activity class="w-4 h-4 mr-2" />
           Health Check
         {/snippet}
-      </Button>
+      </button>
 
       <Button class="bits-btn"
         variant="outline"
@@ -649,7 +650,7 @@ https://svelte.dev/e/expected_token -->
           <Eye class="w-4 h-4 mr-2" />
           3D Mode
         {/snippet}
-      </Button>
+      </button>
     </div>
   </div>
 

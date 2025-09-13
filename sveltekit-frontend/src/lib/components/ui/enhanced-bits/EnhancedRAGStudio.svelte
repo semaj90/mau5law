@@ -3,6 +3,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- EnhancedRAG:Studio UI - Complete RAG Management Dashboard -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props { class?: string; children?: import('svelte').Snippet }
   import { onMount } from 'svelte';
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
@@ -232,14 +233,14 @@ https://svelte.dev/e/attribute_duplicate -->
   </div>
 
   <!-- Service Status Bar -->
-  <Card class="mb-6">
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard class="mb-6">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Activity class="w-5 h-5" />
         Service Status
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="flex gap-4">
         <div class="flex items-center gap-2">
           <div class="w-3 h-3 rounded-full {getStatusColor(serviceStatus.services?.redis)}"></div>
@@ -259,8 +260,8 @@ https://svelte.dev/e/attribute_duplicate -->
           </div>
         {/if}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Navigation Tabs -->
   <div class="flex gap-2 mb-6">
@@ -271,7 +272,7 @@ https://svelte.dev/e/attribute_duplicate -->
     >
       <Search class="w-4 h-4" />
       Search
-    </Button>
+    </button>
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'upload' ? 'default' : 'outline'}
@@ -279,7 +280,7 @@ https://svelte.dev/e/attribute_duplicate -->
     >
       <Upload class="w-4 h-4" />
       Upload
-    </Button>
+    </button>
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'crawl' ? 'default' : 'outline'}
@@ -287,7 +288,7 @@ https://svelte.dev/e/attribute_duplicate -->
     >
       <Globe class="w-4 h-4" />
       Crawl
-    </Button>
+    </button>
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'logs' ? 'default' : 'outline'}
@@ -295,7 +296,7 @@ https://svelte.dev/e/attribute_duplicate -->
     >
       <FileText class="w-4 h-4" />
       Logs
-    </Button>
+    </button>
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'settings' ? 'default' : 'outline'}
@@ -303,21 +304,21 @@ https://svelte.dev/e/attribute_duplicate -->
     >
       <Settings class="w-4 h-4" />
       Settings
-    </Button>
+    </button>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Content Area -->
     <div class="lg:col-span-2">
       {#if activeTab === 'search'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Search class="w-5 h-5" />
               Semantic Search
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+            </h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div class="flex gap-2">
               <Input
                 bind:value={searchQuery}
@@ -332,7 +333,7 @@ https://svelte.dev/e/attribute_duplicate -->
                   <Search class="w-4 h-4" />
                 {/if}
                 Search
-              </Button>
+              </button>
             </div>
 
             <!-- Search Results -->
@@ -357,32 +358,32 @@ https://svelte.dev/e/attribute_duplicate -->
                           onclick={() => submitFeedback(result.id, 1)}
                         >
                           👍
-                        </Button>
+                        </button>
                         <Button class="bits-btn"
                           size="sm"
                           variant="outline"
                           onclick={() => submitFeedback(result.id, -1)}
                         >
                           👎
-                        </Button>
+                        </button>
                       </div>
                     </div>
                   </div>
                 {/each}
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
       {:else if activeTab === 'upload'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Upload class="w-5 h-5" />
               Document Upload
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+            </h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div>
               <label for="rag-upload-file" class="block text-sm font-medium mb-2">Select PDF Document</label>
               <input
@@ -400,19 +401,19 @@ https://svelte.dev/e/attribute_duplicate -->
                 <Upload class="w-4 h-4 mr-2" />
               {/if}
               Upload & Process
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </NesCard>
 
       {:else if activeTab === 'crawl'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Globe class="w-5 h-5" />
               Web Crawler
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+            </h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div>
               <label for="rag-crawl-url" class="block text-sm font-medium mb-2">Website URL</label>
               <Input
@@ -429,19 +430,19 @@ https://svelte.dev/e/attribute_duplicate -->
                 <Globe class="w-4 h-4 mr-2" />
               {/if}
               Crawl & Process
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </NesCard>
 
       {:else if activeTab === 'logs'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <FileText class="w-5 h-5" />
               Activity Logs
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-2 max-h-96 overflow-y-auto">
               {#each recentLogs as log}
                 <div class="border-l-4 border-blue-500 pl-4 py-2">
@@ -457,18 +458,18 @@ https://svelte.dev/e/attribute_duplicate -->
                 </div>
               {/each}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
       {:else if activeTab === 'settings'}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Settings class="w-5 h-5" />
               System Settings
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+            </h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div>
               <label for="rag-search-threshold" class="block text-sm font-medium mb-2">Search Threshold</label>
               <Input id="rag-search-threshold" type="number" step="0.1" min="0" max="1" value="0.7" />
@@ -481,23 +482,23 @@ https://svelte.dev/e/attribute_duplicate -->
               <label for="rag-cache-ttl" class="block text-sm font-medium mb-2">Cache TTL (seconds)</label>
               <Input id="rag-cache-ttl" type="number" min="60" max="86400" value="7200" />
             </div>
-            <Button class="bits-btn">Save Settings</Button>
-          </CardContent>
-        </Card>
+            <Button class="bits-btn">Save Settings</button>
+          </div>
+        </NesCard>
       {/if}
     </div>
 
     <!-- Sidebar - Metrics & Monitoring -->
     <div class="space-y-6">
       <!-- Embeddings Overview -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Database class="w-5 h-5" />
             Vector Database
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-2">
             <div class="flex justify-between">
               <span class="text-sm">Total Documents:</span>
@@ -512,18 +513,18 @@ https://svelte.dev/e/attribute_duplicate -->
               <span class="font-medium">~</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- RL Metrics -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Brain class="w-5 h-5" />
             RL Feedback
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-2">
             <div class="flex justify-between">
               <span class="text-sm">Positive Feedback:</span>
@@ -538,18 +539,18 @@ https://svelte.dev/e/attribute_duplicate -->
               <span class="font-medium">{rlMetrics.avgScore || 'N/A'}</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Performance Metrics -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <TrendingUp class="w-5 h-5" />
             Performance
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-2">
             <div class="flex justify-between">
               <span class="text-sm">Avg Response Time:</span>
@@ -564,8 +565,8 @@ https://svelte.dev/e/attribute_duplicate -->
               <span class="font-medium">~</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </div>
 </div>

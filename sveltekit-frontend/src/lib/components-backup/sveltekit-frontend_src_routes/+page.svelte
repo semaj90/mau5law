@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import CanvasBoard from '$lib/components/yorha/CanvasBoard.svelte';
   import YoRHaTable from '$lib/components/yorha/YoRHaTable.svelte';

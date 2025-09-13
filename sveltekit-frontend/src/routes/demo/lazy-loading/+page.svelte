@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Lazy Loading Demo - Shows how to use the lazy loading system -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     LazyLoader,
     LazyChart,
@@ -100,22 +101,22 @@ https://svelte.dev/e/js_parse_error -->
         page load times and reduces memory usage.
       </p>
       <div class="benefits-grid">
-        <div class="benefit-card">
+        <div class="benefit-nier-bits-card">
           <div class="benefit-icon">⚡</div>
           <h3>Faster Loading</h3>
           <p>Components only load when needed, reducing initial bundle size.</p>
         </div>
-        <div class="benefit-card">
+        <div class="benefit-nier-bits-card">
           <div class="benefit-icon">🔋</div>
           <h3>Memory Efficient</h3>
           <p>Lower memory usage by avoiding unnecessary component instantiation.</p>
         </div>
-        <div class="benefit-card">
+        <div class="benefit-nier-bits-card">
           <div class="benefit-icon">🎯</div>
           <h3>Better UX</h3>
           <p>Users see content faster with progressive loading indicators.</p>
         </div>
-        <div class="benefit-card">
+        <div class="benefit-nier-bits-card">
           <div class="benefit-icon">📱</div>
           <h3>Mobile Optimized</h3>
           <p>Especially beneficial on slower mobile connections and devices.</p>
@@ -231,7 +232,7 @@ https://svelte.dev/e/js_parse_error -->
           <h3>Document Repository</h3>
           <div class="document-list">
             {#each mockDocuments.slice(0, 8) as doc}
-              <div class="document-card">
+              <div class="document-nier-bits-card">
                 <div class="doc-icon">📄</div>
                 <div class="doc-info">
                   <h4>{doc.title}</h4>
@@ -265,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
       <p>The lazy loading system offers various presets and customization options:</p>
       <div class="config-grid">
   {#each Object.entries(LAZY_LOAD_PRESETS) as [preset, config]: [LazyLoadPreset, (typeof LAZY_LOAD_PRESETS)[LazyLoadPreset]]}
-          <div class="config-card">
+          <div class="config-nier-bits-card">
             <h4>{preset}</h4>
             <div class="config-details">
               <div class="config-item">

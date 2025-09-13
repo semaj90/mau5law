@@ -3,6 +3,7 @@
   Tests SuperForms + Enhanced Actions pattern
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { enhance } from '$app/forms';
   import { page } from '$app/state';
   import type { PageData } from './$types';

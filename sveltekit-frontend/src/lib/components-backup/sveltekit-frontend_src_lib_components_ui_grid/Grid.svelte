@@ -3,6 +3,7 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <!-- Grid Item Component -->
 <script lang="ts" context="module">
+  import 'nes.css/css/nes.min.css';
 </script>
   interface Props {
     columns: number

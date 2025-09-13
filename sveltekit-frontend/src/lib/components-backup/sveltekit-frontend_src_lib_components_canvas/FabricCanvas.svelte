@@ -1,8 +1,9 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { 
     Upload, Move, RotateCcw, Trash2, ZoomIn, ZoomOut, 
     Save, Download, Image as ImageIcon, FileText 
@@ -315,9 +316,9 @@
 
 <div class="fabric-canvas-container">
   <!-- Toolbar -->
-  <Card class="mb-4">
-    <CardHeader class="pb-3">
-      <CardTitle class="flex items-center justify-between">
+  <NesCard class="mb-4">
+    <div class="yorha-panel-header" class="pb-3">
+      <h3 class="nes-text is-primary" class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <ImageIcon class="h-5 w-5" />
           Evidence Canvas
@@ -328,9 +329,9 @@
         <div class="flex items-center gap-2 text-sm text-gray-600">
           Zoom: {Math.round(zoomLevel * 100)}%
         </div>
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="flex flex-wrap gap-2">
         <!-- File Upload -->
         {#if !readOnly}
@@ -343,55 +344,55 @@
               onchange={handleFileUpload}
               disabled={isLoading}
             />
-            <Button variant="outline" disabled={isLoading}>
+            <button class="nes-btn" variant="outline" disabled={isLoading}>
               <Upload class="h-4 w-4 mr-2" />
               Upload Evidence
-            </Button>
+            </button>
           </label>
         {/if}
 
         <!-- Add Annotation -->
         {#if !readOnly}
-          <Button variant="outline" onclick={addAnnotation}>
+          <button class="nes-btn" variant="outline" onclick={addAnnotation}>
             <FileText class="h-4 w-4 mr-2" />
             Add Note
-          </Button>
+          </button>
         {/if}
 
         <!-- Zoom Controls -->
-        <Button variant="outline" onclick={zoomIn}>
+        <button class="nes-btn" variant="outline" onclick={zoomIn}>
           <ZoomIn class="h-4 w-4" />
-        </Button>
-        <Button variant="outline" onclick={zoomOut}>
+        </button>
+        <button class="nes-btn" variant="outline" onclick={zoomOut}>
           <ZoomOut class="h-4 w-4" />
-        </Button>
-        <Button variant="outline" onclick={resetZoom}>
+        </button>
+        <button class="nes-btn" variant="outline" onclick={resetZoom}>
           <RotateCcw class="h-4 w-4" />
-        </Button>
+        </button>
 
         <!-- Object Controls -->
         {#if selectedObject && !readOnly}
-          <Button variant="destructive" onclick={deleteSelected}>
+          <button class="nes-btn is-error" onclick={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
-          </Button>
+          </button>
         {/if}
 
         <!-- Save & Export -->
         {#if !readOnly}
-          <Button variant="default" onclick={saveCanvas}>
+          <button class="nes-btn" variant="default" onclick={saveCanvas}>
             <Save class="h-4 w-4 mr-2" />
             Save
-          </Button>
+          </button>
         {/if}
         
-        <Button variant="outline" onclick={exportCanvas}>
+        <button class="nes-btn" variant="outline" onclick={exportCanvas}>
           <Download class="h-4 w-4 mr-2" />
           Export
-        </Button>
+        </button>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Canvas -->
   <div class="canvas-wrapper relative border border-gray-200 rounded-lg overflow-hidden">
@@ -412,11 +413,11 @@
 
   <!-- Object Properties Panel -->
   {#if selectedObject}
-    <Card class="mt-4">
-      <CardHeader>
-        <CardTitle class="text-lg">Selected Object</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard class="mt-4">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="text-lg">Selected Object</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-2 gap-4 text-sm">
           <div>
             <label class="font-medium">Type:</label>
@@ -446,8 +447,8 @@
             </div>
           {/if}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

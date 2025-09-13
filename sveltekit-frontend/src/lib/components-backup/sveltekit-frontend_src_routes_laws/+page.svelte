@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "$lib/components/ui/card/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
@@ -74,7 +75,7 @@
   <!-- Header -->
   <div class="text-center space-y-4">
     <h1 class="text-4xl font-bold tracking-tight">Legal Resources</h1>
-    <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+    <p class="text-xl nes-text is-disabled max-w-2xl mx-auto">
       Browse California and state laws with AI-powered search and summaries
     </p>
   </div>
@@ -90,14 +91,14 @@
   <EnhancedFuseSearch maxResults={10} />
 
   <!-- Simple Search -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Search class="h-5 w-5" />
         Search Laws & Regulations
-      </CardTitle>
-    </CardHeader>
-    <CardContent class="space-y-4">
+      </h3>
+    </div>
+    <div class="yorha-panel-content" class="space-y-4">
       <div class="flex gap-2">
         <Input
           placeholder="Search laws, codes, regulations..."
@@ -105,17 +106,17 @@
           onkeydown={handleKeydown}
           class="flex-1"
         />
-        <Button onclick={performSearch} disabled={isSearching || !searchQuery.trim()}>
+        <button class="nes-btn" onclick={performSearch} disabled={isSearching || !searchQuery.trim()}>
           {#if isSearching}
             Loading...
           {:else}
             <Search class="h-4 w-4 mr-2" />
             Search
           {/if}
-        </Button>
+        </button>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Quick Links -->
   <div class="space-y-4">
@@ -126,24 +127,24 @@
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {#each data.quickLinks as link}
-        <Card class="hover:shadow-lg transition-all duration-200">
-          <CardHeader>
-            <CardTitle class="text-lg">{link.title}</CardTitle>
-            <CardDescription>{link.description}</CardDescription>
+        <NesCard class="hover:shadow-lg transition-all duration-200">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-lg">{link.title}</h3>
+            <p class="nes-text">{link.description}</p>
             <div class="flex gap-2">
               <Badge variant="secondary">{link.jurisdiction}</Badge>
               <Badge variant="outline">{link.category}</Badge>
             </div>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div class="yorha-panel-content">
             <Button class="w-full">
               <a href={link.url} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2">
                 <ExternalLink class="h-4 w-4" />
                 Browse {link.title}
               </a>
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </NesCard>
       {/each}
     </div>
   </div>
@@ -157,42 +158,42 @@
       
       <div class="space-y-4">
         {#each searchResults as law}
-          <Card>
-            <CardHeader>
-              <CardTitle>{law.title}</CardTitle>
-              <CardDescription>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">{law.title}</h3>
+              <p class="nes-text">
                 {law.jurisdiction} • {law.category}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+              </p>
+            </div>
+            <div class="yorha-panel-content">
               <p class="mb-4 text-sm">{law.description}</p>
               <div class="flex gap-2">
-                <Button size="sm">
+                <button class="nes-btn" size="sm">
                   <Bot class="h-4 w-4 mr-2" />
                   AI Summary
-                </Button>
-                <Button variant="outline" size="sm">
+                </button>
+                <button class="nes-btn" variant="outline" size="sm">
                   <MessageSquare class="h-4 w-4 mr-2" />
                   AI Chat
-                </Button>
+                </button>
                 {#if law.fullTextUrl}
-                  <Button variant="outline" size="sm">
+                  <button class="nes-btn" variant="outline" size="sm">
                     <a href={law.fullTextUrl} target="_blank" rel="noopener noreferrer">
                       Full Text
                     </a>
-                  </Button>
+                  </button>
                 {/if}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         {/each}
       </div>
     </div>
   {:else if searchQuery && !isSearching}
-    <Card>
-      <CardContent class="py-8 text-center">
-        <p class="text-muted-foreground">No results found for "{searchQuery}"</p>
-      </CardContent>
-    </Card>
+    <NesCard>
+      <div class="yorha-panel-content" class="py-8 text-center">
+        <p class="nes-text is-disabled">No results found for "{searchQuery}"</p>
+      </div>
+    </NesCard>
   {/if}
 </div>

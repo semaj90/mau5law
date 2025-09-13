@@ -2,6 +2,7 @@
 https://svelte.dev/e/element_unclosed -->
 <!-- @migration-task Error while migrating Svelte code: `<div>` was left open -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
   import {
@@ -171,10 +172,10 @@ https://svelte.dev/e/element_unclosed -->
         <div class="flex items-center gap-2">
           <Button class="bits-btn" size="sm" variant="outline" onclick={exportLogs}>
             📤 Export
-          </Button>
+          </button>
           <Button class="bits-btn" size="sm" variant="outline" onclick={clearLogs}>
             🗑️ Clear
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -310,7 +311,7 @@ https://svelte.dev/e/element_unclosed -->
                 <div class="opacity-0 group-hover:opacity-100 transition-opacity">
                   <Button class="bits-btn" size="sm" variant="ghost" onclick={(e) => { e.stopPropagation(); selectEntry(entry); }}>
                     👁️
-                  </Button>
+                  </button>
                 </div>
               </div>
             </button>
@@ -332,7 +333,7 @@ https://svelte.dev/e/element_unclosed -->
           </h3>
           <Button class="bits-btn" variant="ghost" onclick={() => showDetails = false}>
             ✕
-          </Button>
+          </button>
         </div>
 
         <!-- Entry Details -->
@@ -456,10 +457,10 @@ https://svelte.dev/e/element_unclosed -->
             onclick={() => navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
           >
             📋 Copy JSON
-          </Button>
+          </button>
           <Button class="bits-btn" variant="outline" onclick={() => showDetails = false}>
             Close
-          </Button>
+          </button>
         </div>
       </div>
     </div>

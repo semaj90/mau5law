@@ -7,6 +7,7 @@ https://svelte.dev/e/tag_invalid_name -->
   CRT scanning, and other retro visual effects with real-time performance monitoring
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { gpuMetricsBatcher } from '$lib/services/gpuMetricsBatcher';

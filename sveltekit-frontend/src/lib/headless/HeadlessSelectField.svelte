@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import * as Select from '$lib/components/ui/select/index.js';
   import FormField from './FormField.svelte';
 

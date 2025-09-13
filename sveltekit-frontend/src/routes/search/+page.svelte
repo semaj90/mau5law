@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
@@ -250,7 +251,7 @@ https://svelte.dev/e/js_parse_error -->
                 <Search class="space-y-4" />
                 Search
               {/if}
-            </Button>
+            </button>
 
             <Tooltip content="Show/hide advanced search filters">
               <Button class="bits-btn"
@@ -260,7 +261,7 @@ https://svelte.dev/e/js_parse_error -->
               >
                 <Filter class="space-y-4" />
                 Filters
-              </Button>
+              </button>
             </Tooltip>
 
             {#if selectedType || selectedCaseId || threshold !== 0.7 || limit !== 20}
@@ -271,7 +272,7 @@ https://svelte.dev/e/js_parse_error -->
                   onclick={() => clearFilters()}
                 >
                   Clear Filters
-                </Button>
+                </button>
               </Tooltip>
             {/if}
           </div>
@@ -536,19 +537,19 @@ https://svelte.dev/e/js_parse_error -->
             <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <Database class="space-y-4" />
               Browse Cases
-            </Button>
+            </button>
           </a>
           <a href="/evidence" class="space-y-4">
             <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <FileText class="space-y-4" />
               Browse Evidence
-            </Button>
+            </button>
           </a>
           <a href="/ai-assistant" class="space-y-4">
             <Button variant="outline" class="space-y-4 bits-btn bits-btn">
               <Eye class="space-y-4" />
               AI Assistant
-            </Button>
+            </button>
           </a>
         </div>
       </div>

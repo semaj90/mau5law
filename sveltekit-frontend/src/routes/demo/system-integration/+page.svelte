@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     Button
@@ -437,7 +438,7 @@
       <div class="tab-content">
         <div class="overview-grid">
           <!-- Architecture Diagram -->
-          <Card class="architecture-card">
+          <NesCard class="architecture-nier-bits-card">
             <h3>🏗️ System Architecture</h3>
             <div class="architecture-diagram">
               <div class="arch-layer frontend">
@@ -457,10 +458,10 @@
                 <div class="arch-component">Context7 MCP<br><small>Semantic</small></div>
               </div>
             </div>
-          </Card>
+          </NesCard>
 
           <!-- System Metrics -->
-          <Card class="metrics-card">
+          <NesCard class="metrics-nier-bits-card">
             <h3>📈 Performance Metrics</h3>
             <div class="metrics-grid">
               <div class="metric">
@@ -480,10 +481,10 @@
                 <div class="metric-label">Total Requests</div>
               </div>
             </div>
-          </Card>
+          </NesCard>
 
           <!-- Cache Distribution -->
-          <Card class="cache-card">
+          <NesCard class="cache-nier-bits-card">
             <h3>💾 3-Tier Cache Status</h3>
             <div class="cache-tiers">
               <div class="cache-tier l1">
@@ -510,10 +511,10 @@
                 <div class="tier-info">{cacheStats.l3Size}/100k items</div>
               </div>
             </div>
-          </Card>
+          </NesCard>
 
           <!-- Feature Highlights -->
-          <Card class="features-card">
+          <NesCard class="features-nier-bits-card">
             <h3>✨ Key Features</h3>
             <div class="feature-list">
               <div class="feature-item">
@@ -545,7 +546,7 @@
                 </div>
               </div>
             </div>
-          </Card>
+          </NesCard>
         </div>
       </div>
     {/if}
@@ -553,7 +554,7 @@
     <!-- Evidence Upload Tab -->
     {#if activeTab === 'upload'}
       <div class="tab-content">
-        <Card class="upload-card">
+        <NesCard class="upload-nier-bits-card">
           <h3>📤 Evidence File Upload</h3>
           <p>Upload evidence files for processing and storage in the integrated system</p>
 
@@ -595,7 +596,7 @@
                 class="upload-button bits-btn bits-btn"
               >
                 🚀 Process Evidence Files
-              </Button>
+              </button>
 
               {#if processingProgress > 0}
                 <div class="progress-section">
@@ -617,14 +618,14 @@
               <li>🔍 Semantic indexing for search</li>
             </ol>
           </div>
-        </Card>
+        </NesCard>
       </div>
     {/if}
 
     <!-- Semantic Search Tab -->
     {#if activeTab === 'search'}
       <div class="tab-content">
-        <Card class="search-card">
+        <NesCard class="search-nier-bits-card">
           <h3>🔍 Advanced Semantic Search</h3>
           <p>Search across all evidence using GPU-accelerated semantic similarity</p>
 
@@ -642,7 +643,7 @@
                 class="search-button bits-btn bits-btn"
               >
                 {#if isSearching}🔄 Searching...{:else}🔍 Search{/if}
-              </Button>
+              </button>
             </div>
 
             <div class="search-options">
@@ -661,7 +662,7 @@
             <div class="search-results">
               <h4>📊 Search Results</h4>
               {#each searchResults as result}
-                <Card class="result-card">
+                <NesCard class="result-nier-bits-card">
                   <div class="result-header">
                     <h5>{result.title}</h5>
                     <div class="result-meta">
@@ -675,9 +676,9 @@
                   {#if result.url}
                     <Button size="sm" variant="outline" class="view-button bits-btn bits-btn">
                       👁️ View Evidence
-                    </Button>
+                    </button>
                   {/if}
-                </Card>
+                </NesCard>
               {/each}
             </div>
           {/if}
@@ -688,14 +689,14 @@
               <p>Try adjusting your search terms or check system status.</p>
             </div>
           {/if}
-        </Card>
+        </NesCard>
       </div>
     {/if}
 
     <!-- Evidence Canvas Tab -->
     {#if activeTab === 'canvas'}
       <div class="tab-content">
-        <Card class="canvas-card">
+        <NesCard class="canvas-nier-bits-card">
           <h3>🖼️ Interactive Evidence Canvas</h3>
           <p>Drag & drop evidence items, create connections, and visualize case relationships</p>
 
@@ -718,7 +719,7 @@
             <h4>📋 Sample Evidence Items</h4>
             <div class="evidence-samples">
               {#each evidenceItems as evidence}
-                <Card class="evidence-sample"
+                <NesCard class="evidence-sample"
                       onclick={() => addEvidenceToCanvas(evidence)}
                       role="button"
                       tabindex="0">
@@ -732,7 +733,7 @@
                     <div class="sample-title">{evidence.title}</div>
                     <div class="sample-type">{evidence.type}</div>
                   </div>
-                </Card>
+                </NesCard>
               {/each}
             </div>
 
@@ -747,14 +748,14 @@
               </ul>
             </div>
           </div>
-        </Card>
+        </NesCard>
       </div>
     {/if}
 
     <!-- GPU Cache Visualization Tab -->
     {#if activeTab === 'cache'}
       <div class="tab-content">
-        <Card class="cache-card">
+        <NesCard class="cache-nier-bits-card">
           <h3>⚡ GPU Cache & Self-Organizing Map</h3>
           <p>Real-time visualization of the 3-tier cache system and SOM clustering</p>
 
@@ -840,14 +841,14 @@
               </div>
             </div>
           </div>
-        </Card>
+        </NesCard>
       </div>
     {/if}
 
     <!-- Workflow Tab -->
     {#if activeTab === 'workflow'}
       <div class="tab-content">
-        <Card class="workflow-card">
+        <NesCard class="workflow-nier-bits-card">
           <h3>🔄 Evidence Processing Workflow</h3>
           <p>Real-time evidence processing with streaming updates</p>
 
@@ -906,7 +907,7 @@
               </div>
             </div>
           </div>
-        </Card>
+        </NesCard>
       </div>
     {/if}
   </Tabs>

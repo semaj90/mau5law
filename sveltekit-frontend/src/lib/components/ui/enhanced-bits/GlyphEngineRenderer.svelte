@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   /**
    * Glyph Engine Renderer: Gaming LOD architecture for heavy text/UI processing
    * Uses your existing WebGPU texture streaming + N64 style rendering

@@ -2,6 +2,7 @@
 <!-- Real-time GPU-accelerated legal AI visualizations -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import {
     Button
@@ -468,7 +469,7 @@
     </div>
 
     <!-- GPU Capabilities -->
-    <Card class="p-6 mb-8 bg-slate-800/30 border-slate-600">
+    <NesCard class="p-6 mb-8 bg-slate-800/30 border-slate-600">
       <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
         <Cpu class="h-5 w-5" />
         GPU Capabilities
@@ -550,12 +551,12 @@
           </div>
         </div>
       {/if}
-    </Card>
+    </NesCard>
 
     <!-- Performance Metrics -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <!-- GPU Metrics -->
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-green-100">
             <Cpu class="h-5 w-5 text-green-600" />
@@ -567,10 +568,10 @@
             </p>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- Shader Cache -->
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-blue-100">
             <Zap class="h-5 w-5 text-blue-600" />
@@ -583,10 +584,10 @@
             <BarChart class="h-5 w-5 text-purple-600" />
           </div>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- Cache Hit Rate -->
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-purple-100">
             <BarChart3 class="h-5 w-5 text-purple-600" />
@@ -596,10 +597,10 @@
             <p class="text-sm text-gray-400">{formatPercentage(gpuMetrics.cacheHitRate)}</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- Frame Rate -->
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-orange-100">
             <Activity class="h-5 w-5 text-orange-600" />
@@ -609,14 +610,14 @@
             <p class="text-sm text-gray-400">{gpuMetrics.frameRate.toFixed(0)} FPS</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
     </div>
   </div>
 
   <!-- Main Content -->
   <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Visualization Canvas -->
-    <Card class="p-6 bg-slate-800/30 border-slate-600">
+    <NesCard class="p-6 bg-slate-800/30 border-slate-600">
       <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
         <Eye class="h-5 w-5" />
         Legal AI Visualizations
@@ -649,28 +650,28 @@
             disabled={!isInitialized}
             variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}>
             Attention Heatmap
-          </Button>
+          </button>
 
           <Button class="bits-btn text-sm"
             onclick={() => startVisualization('documentNetwork')}
             disabled={!isInitialized}
             variant={activeVisualization === 'documentNetwork' ? 'default' : 'outline'}>
             Document Network
-          </Button>
+          </button>
 
             <Button class="bits-btn text-sm"
               onclick={() => startVisualization('evidenceTimeline')}
               disabled={!isInitialized}
               variant={activeVisualization === 'evidenceTimeline' ? 'default' : 'outline'}>
               Evidence Timeline
-            </Button>
+            </button>
 
           <Button class="bits-btn text-sm"
             onclick={() => startVisualization('textFlow')}
             disabled={!isInitialized}
             variant={activeVisualization === 'textFlow' ? 'default' : 'outline'}>
             Text Flow
-          </Button>
+          </button>
         </div>
 
         <!-- Render Controls -->
@@ -678,7 +679,7 @@
           {#if isRendering}
             <Button onclick={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
               Stop Rendering
-            </Button>
+            </button>
           {/if}
 
           <Button
@@ -687,14 +688,14 @@
             variant="outline"
             class="text-white border-slate-600 hover:bg-slate-700 bits-btn">
             Execute GPU Workload
-          </Button>
+          </button>
         </div>
       </div>
-    </Card>
+    </NesCard>
 
     <!-- Performance Dashboard -->
       <!-- GPU Cluster Metrics -->
-      <Card class="p-6 bg-slate-800/30 border-slate-600">
+      <NesCard class="p-6 bg-slate-800/30 border-slate-600">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
           <Network class="h-5 w-5" />
           GPU Cluster Metrics
@@ -726,8 +727,8 @@
             </div>
           </div>
         </div>
-      </Card>
-      <Card class="p-6 bg-slate-800/30 border-slate-600">
+      </NesCard>
+      <NesCard class="p-6 bg-slate-800/30 border-slate-600">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
           <BarChart3 class="h-5 w-5" />
           Shader Cache Stats
@@ -759,10 +760,10 @@
             <span class="font-bold">{formatBytes(shaderMetrics.memoryUsage)}</span>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- Available Shaders -->
-      <Card class="p-6 bg-slate-800/30 border-slate-600">
+      <NesCard class="p-6 bg-slate-800/30 border-slate-600">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
           <Clock class="h-5 w-5" />
           Available Shaders
@@ -776,7 +777,7 @@
             </div>
           {/each}
         </div>
-      </Card>
+      </NesCard>
     </div>
   </div>
 

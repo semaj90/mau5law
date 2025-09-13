@@ -3,6 +3,7 @@
   Basic registration without complex UI dependencies
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { enhance } from '$app/forms';
   interface Props {
     data?: any;

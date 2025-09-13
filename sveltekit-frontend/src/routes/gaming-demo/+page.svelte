@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import GamingLayout from '$lib/components/gaming/GamingLayout.svelte';
   import GamingPanel from '$lib/components/gaming/GamingPanel.svelte';
   	import GamingButton from '$lib/components/gaming/GamingButton.svelte';

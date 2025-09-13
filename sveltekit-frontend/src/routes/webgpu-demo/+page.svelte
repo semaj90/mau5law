@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import CacheOptimizerDemo from '$lib/components/webgpu/CacheOptimizerDemo.svelte';
   import { onMount } from 'svelte';
   
@@ -41,7 +42,7 @@
     <h2>🏗️ Architecture Overview</h2>
     
     <div class="arch-grid">
-      <div class="arch-card">
+      <div class="arch-nier-bits-card">
         <h3>🎯 WebGPU Compute Shaders</h3>
         <p>
           GPU-accelerated tensor compression and decompression using custom compute shaders 
@@ -55,7 +56,7 @@
         </ul>
       </div>
       
-      <div class="arch-card">
+      <div class="arch-nier-bits-card">
         <h3>⚡ Multi-threaded Workers</h3>
         <p>
           Dedicated worker threads for CPU-intensive operations with SIMD acceleration 
@@ -69,7 +70,7 @@
         </ul>
       </div>
       
-      <div class="arch-card">
+      <div class="arch-nier-bits-card">
         <h3>📦 Service Worker Cache</h3>
         <p>
           Background cache operations using Service Workers for non-blocking 
@@ -83,7 +84,7 @@
         </ul>
       </div>
       
-      <div class="arch-card">
+      <div class="arch-nier-bits-card">
         <h3>🧠 Intelligent Load Balancing</h3>
         <p>
           GPU metrics-based workload distribution with thermal monitoring 
@@ -145,7 +146,7 @@
     <h2>🏛️ Legal AI Use Cases</h2>
     
     <div class="use-case-grid">
-      <div class="use-case-card">
+      <div class="use-case-nier-bits-card">
         <h3>📄 Document Embeddings</h3>
         <p>
           High-throughput embedding generation and caching for legal document analysis, 
@@ -153,7 +154,7 @@
         </p>
       </div>
       
-      <div class="use-case-card">
+      <div class="use-case-nier-bits-card">
         <h3>🔍 Semantic Search</h3>
         <p>
           Real-time semantic search across millions of legal documents with 
@@ -161,7 +162,7 @@
         </p>
       </div>
       
-      <div class="use-case-card">
+      <div class="use-case-nier-bits-card">
         <h3>📊 Case Analytics</h3>
         <p>
           Batch processing of case data, evidence analysis, and legal precedent 
@@ -169,7 +170,7 @@
         </p>
       </div>
       
-      <div class="use-case-card">
+      <div class="use-case-nier-bits-card">
         <h3>🤖 AI Workflows</h3>
         <p>
           Integration with LLM workflows, RAG systems, and AI-powered legal tools 

@@ -1,5 +1,7 @@
 <!-- YoRHa Command Center Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import YoRHaDetectiveCommandCenter from '$lib/components/yorha/YoRHaDetectiveCommandCenter.svelte';
   import { browser } from '$app/environment';

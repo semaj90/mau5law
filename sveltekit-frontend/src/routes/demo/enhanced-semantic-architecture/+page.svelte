@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import EnhancedSemanticIntegration from '$lib/components/demo/EnhancedSemanticIntegration.svelte';
   let pageTitle = $state('🧠 Enhanced Semantic Architecture - Complete Integration Demo');
@@ -108,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
 			<!-- Quick Stats -->
 			<div class="quick-stats grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 				{#if lastTodosUpdate}
-					<div class="stat-card bg-slate-800/30 backdrop-blur-sm border border-green-500/30 rounded-lg p-4">
+					<div class="stat-nier-bits-card bg-slate-800/30 backdrop-blur-sm border border-green-500/30 rounded-lg p-4">
 						<div class="text-2xl font-bold text-green-400">{lastTodosUpdate.count}</div>
 						<div class="text-sm text-slate-300">Intelligent Todos</div>
 						<div class="text-xs text-slate-500">Updated: {lastTodosUpdate.timestamp}</div>
@@ -116,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
 				{/if}
 
 				{#if lastTextAnalysis}
-					<div class="stat-card bg-slate-800/30 backdrop-blur-sm border border-blue-500/30 rounded-lg p-4">
+					<div class="stat-nier-bits-card bg-slate-800/30 backdrop-blur-sm border border-blue-500/30 rounded-lg p-4">
 						<div class="text-2xl font-bold text-blue-400">SOM</div>
 						<div class="text-sm text-slate-300">Semantic Analysis</div>
 						<div class="text-xs text-slate-500">Analyzed: {lastTextAnalysis.timestamp}</div>
@@ -124,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
 				{/if}
 
 				{#if lastPageRankUpdate}
-					<div class="stat-card bg-slate-800/30 backdrop-blur-sm border border-purple-500/30 rounded-lg p-4">
+					<div class="stat-nier-bits-card bg-slate-800/30 backdrop-blur-sm border border-purple-500/30 rounded-lg p-4">
 						<div class="text-2xl font-bold text-purple-400">{lastPageRankUpdate.nodes}</div>
 						<div class="text-sm text-slate-300">PageRank Nodes</div>
 						<div class="text-xs text-slate-500">Updated: {lastPageRankUpdate.timestamp}</div>
@@ -132,7 +133,7 @@ https://svelte.dev/e/js_parse_error -->
 				{/if}
 
 				{#if lastSOMUpdate}
-					<div class="stat-card bg-slate-800/30 backdrop-blur-sm border border-yellow-500/30 rounded-lg p-4">
+					<div class="stat-nier-bits-card bg-slate-800/30 backdrop-blur-sm border border-yellow-500/30 rounded-lg p-4">
 						<div class="text-2xl font-bold text-yellow-400">20×20</div>
 						<div class="text-sm text-slate-300">SOM Grid</div>
 						<div class="text-xs text-slate-500">Updated: {lastSOMUpdate.timestamp}</div>
@@ -258,7 +259,7 @@ https://svelte.dev/e/js_parse_error -->
 					{ metric: '20×20', label: 'SOM Grid', desc: 'Semantic clusters', icon: '🧠', color: 'purple' },
 					{ metric: '~95%', label: 'Cache Hit Rate', desc: 'IndexDB + Redis', icon: '💾', color: 'yellow' }
 				] as metric}
-					<div class="metric-card bg-slate-800/30 backdrop-blur-sm border border-{metric.color}-500/30 rounded-lg p-6 text-center hover:scale-105 transition-transform">
+					<div class="metric-nier-bits-card bg-slate-800/30 backdrop-blur-sm border border-{metric.color}-500/30 rounded-lg p-6 text-center hover:scale-105 transition-transform">
 						<div class="text-4xl mb-2">{metric.icon}</div>
 						<div class="text-3xl font-bold text-{metric.color}-400 mb-1">{metric.metric}</div>
 						<div class="text-lg font-semibold text-white mb-2">{metric.label}</div>

@@ -1,5 +1,6 @@
 <!-- Demo Navigation Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   interface NavItem {

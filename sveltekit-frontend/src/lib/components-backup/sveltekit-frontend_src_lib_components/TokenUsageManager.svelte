@@ -1,9 +1,10 @@
 <!-- TokenUsageManager.svelte - Advanced Token Management with Slider -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable, derived } from 'svelte/store';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
@@ -256,9 +257,9 @@
   });
 </script>
 
-<Card class="token-usage-manager {className}">
-  <CardHeader>
-    <CardTitle class="flex items-center justify-between">
+<NesCard class="token-usage-manager {className}">
+  <div class="yorha-panel-header">
+    <h3 class="nes-text is-primary" class="flex items-center justify-between">
       <div class="flex items-center gap-2">
         <Settings class="h-5 w-5" />
         Token Usage Manager
@@ -266,10 +267,10 @@
       <Badge variant={warningLevel === 'normal' ? 'default' : 'destructive'}>
         {Math.round(usagePercentage)}%
       </Badge>
-    </CardTitle>
-  </CardHeader>
+    </h3>
+  </div>
 
-  <CardContent class="space-y-4">
+  <div class="yorha-panel-content" class="space-y-4">
     <!-- Token Limit Slider -->
     <div class="space-y-2" data-testid="token-limit-section">
       <label for="token-limit-slider" class="text-sm font-medium">
@@ -366,7 +367,7 @@
 
     <!-- Controls -->
     <div class="flex gap-2 flex-wrap">
-      <Button
+      <button class="nes-btn"
         size="sm"
         variant="outline"
         onclick={() => showHistory = !showHistory}
@@ -374,9 +375,9 @@
       >
         <History class="h-4 w-4 mr-1" />
         History
-      </Button>
+      </button>
 
-      <Button
+      <button class="nes-btn"
         size="sm"
         variant="outline"
         onclick={optimizeTokenUsage}
@@ -384,23 +385,23 @@
       >
         <Zap class="h-4 w-4 mr-1" />
         Optimize
-      </Button>
+      </button>
 
-      <Button
+      <button class="nes-btn"
         size="sm"
         variant="outline"
         onclick={resetSession}
       >
         Reset
-      </Button>
+      </button>
 
-      <Button
+      <button class="nes-btn"
         size="sm"
         variant="outline"
         onclick={exportUsageData}
       >
         Export
-      </Button>
+      </button>
     </div>
 
     <!-- Optimization Toggle -->
@@ -467,8 +468,8 @@
         {/if}
       </div>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   .slider::-webkit-slider-thumb {

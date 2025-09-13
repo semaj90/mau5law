@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
 
   }
@@ -554,7 +555,7 @@ https://svelte.dev/e/js_parse_error -->
             spellcheck="false"
             aria-label="Command search"
           />
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => (open = false)}
@@ -562,7 +563,7 @@ https://svelte.dev/e/js_parse_error -->
             aria-label="Close command palette"
           >
             <X class="w-4 h-4" />
-          </Button>
+          </button>
         </div>
       </div>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createBubbler, preventDefault } from 'svelte/legacy';
 
   const bubble = createBubbler();

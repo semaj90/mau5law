@@ -1,5 +1,6 @@
 <script lang="ts">
-  	import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  	import Button from '$lib/components/ui/nes-button.svelte';
   	import { quintOut } from 'svelte/easing';
   	import { fade, fly } from 'svelte/transition';
   	import { modals } from "../../stores/modal";
@@ -175,12 +176,12 @@
 					{#if builtInModal.actions}
 						<div class="space-y-4">
 							{#each builtInModal.actions as action}
-								<Button
+								<button class="nes-btn"
 									variant={action.variant}
 									onclick={() => action.action()}
 								>
 									{action.label}
-								</Button>
+								</button>
 							{/each}
 						</div>
 					{/if}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createMachine, assign } from 'xstate';
   import { useMachine } from '@xstate/svelte';
   // Toast notifications removed - using simple state instead
@@ -189,14 +190,14 @@
   </div>
 {/each}
 
-<Card class="w-full max-w-4xl yorha-card">
-  <CardHeader class="yorha-header">
-    <CardTitle class="flex items-center gap-2">
+<NesCard class="w-full max-w-4xl yorha-nier-bits-card">
+  <div class="yorha-panel-header" class="yorha-header">
+    <h3 class="nes-text is-primary" class="flex items-center gap-2">
       <div class="w-3 h-3 rounded-full" class:bg-green-500={snapshot.matches('idle')}
            class:bg-yellow-500={isLoading} class:bg-red-500={snapshot.matches('error')}></div>
       YoRHa Legal AI Assistant - Gemma3 Legal Latest
-    </CardTitle>
-    <div class="text-sm text-muted-foreground">
+    </h3>
+    <div class="text-sm nes-text is-disabled">
       {#if isLoading}
         Processing legal query with Gemma3-Legal model...
       {:else if snapshot.matches('error')}
@@ -205,9 +206,9 @@
         Ready for legal questions • Press Ctrl+Enter to submit
       {/if}
     </div>
-  </CardHeader>
+  </div>
 
-  <CardContent class="space-y-6">
+  <div class="yorha-panel-content" class="space-y-6">
     <!-- Input Section -->
     <div class="space-y-2">
       <label for="legal-prompt" class="text-sm font-medium">Legal Question</label>
@@ -220,7 +221,7 @@
         class="yorha-textarea"
         disabled={isLoading}
       />
-      <div class="flex justify-between text-xs text-muted-foreground">
+      <div class="flex justify-between text-xs nes-text is-disabled">
         <span>Characters: {promptInput.length}</span>
         <span>Ctrl+Enter to submit</span>
       </div>
@@ -279,7 +280,7 @@
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-medium">Legal AI Response</h3>
-          <div class="flex items-center gap-2 text-xs text-muted-foreground">
+          <div class="flex items-center gap-2 text-xs nes-text is-disabled">
             <div class="w-2 h-2 bg-green-500 rounded-full"></div>
             Gemma3-Legal Latest
           </div>
@@ -325,8 +326,8 @@
         </div>
       </details>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   /* YoRHa Legal AI Assistant Styling */

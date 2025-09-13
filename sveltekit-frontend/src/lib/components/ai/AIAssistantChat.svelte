@@ -2,6 +2,7 @@
 https://svelte.dev/e/bind_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     Button
@@ -229,15 +230,15 @@ https://svelte.dev/e/bind_invalid_expression -->
   }
 </script>
 
-<Card class="w-full" style="height: {height};">
-  <CardHeader class="p-4 border-b">
+<NesCard class="w-full" style="height: {height};">
+  <div class="yorha-panel-header" class="p-4 border-b">
     <div class="flex items-center justify-between">
-      <CardTitle class="flex items-center gap-2">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <span class="text-lg font-semibold">Legal AI Assistant</span>
         <Badge variant={clusterStatus.healthy ? 'default' : 'destructive'} class="text-xs">
           {clusterStatus.healthy ? 'Online' : `${clusterStatus.count}/${clusterStatus.total} Healthy`}
         </Badge>
-      </CardTitle>
+      </h3>
       
       <div class="flex items-center gap-2">
         {#if showSettings}
@@ -250,7 +251,7 @@ https://svelte.dev/e/bind_invalid_expression -->
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-          </Button>
+          </button>
         {/if}
 
         {#if hasConversation}
@@ -262,13 +263,13 @@ https://svelte.dev/e/bind_invalid_expression -->
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-          </Button>
+          </button>
         {/if}
       </div>
     </div>
-  </CardHeader>
+  </div>
 
-  <CardContent class="p-0 flex flex-col" style="height: calc({height} - 80px);">
+  <div class="yorha-panel-content" class="p-0 flex flex-col" style="height: calc({height} - 80px);">
     <!-- Chat Messages -->
     <div 
       bind:this={chatContainer}
@@ -331,7 +332,7 @@ https://svelte.dev/e/bind_invalid_expression -->
             onclick={retryLast}
           >
             Retry
-          </Button>
+          </button>
         </div>
       {/if}
     </div>
@@ -399,7 +400,7 @@ https://svelte.dev/e/bind_invalid_expression -->
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>
             {/if}
-          </Button>
+          </button>
           
           {#if isProcessing()}
             <Button class="bits-btn" 
@@ -410,7 +411,7 @@ https://svelte.dev/e/bind_invalid_expression -->
               <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect x="6" y="6" width="12" height="12" />
               </svg>
-            </Button>
+            </button>
           {/if}
         </div>
       </div>
@@ -424,8 +425,8 @@ https://svelte.dev/e/bind_invalid_expression -->
         </div>
       {/if}
     </div>
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <!-- Settings Dialog -->
 <Dialog.Root open={showSettingsDialog} openchange={(open) => showSettingsDialog = open}>
@@ -490,7 +491,7 @@ https://svelte.dev/e/bind_invalid_expression -->
             onclick={() => aiAssistantManager.checkClusterHealth()}
           >
             Refresh Health
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -501,10 +502,10 @@ https://svelte.dev/e/bind_invalid_expression -->
           disabled={!hasConversation}
         >
           Clear Chat
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={() => showSettingsDialog = false}>
           Close
-        </Button>
+        </button>
       </div>
     </Dialog.Content>
   </Dialog.Portal>
@@ -541,13 +542,13 @@ https://svelte.dev/e/bind_invalid_expression -->
           onclick={() => showExportDialog = false}
         >
           Cancel
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={() => {
           exportConversation();
           showExportDialog = false;
         }}>
           Export JSON
-        </Button>
+        </button>
       </div>
     </Dialog.Content>
   </Dialog.Portal>

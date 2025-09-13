@@ -11,6 +11,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { graphCacheMachine } from '../../../../machines/graph-cache-machine.js';
   import { createActor } from 'xstate';
@@ -209,11 +210,11 @@
     <div class="performance-metrics-container">
       <h3 class="text-lg font-semibold text-white mb-4">GPU Cache Performance</h3>
       <div class="metrics-grid">
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-label">Total Queries</div>
           <div class="metric-value">{cacheMetrics.totalQueries}</div>
         </div>
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-label">Cache Hit Rate</div>
           <div class="metric-value">{(cacheMetrics.hitRate * 100).toFixed(1)}%</div>
           <div class="metric-bar">
@@ -223,11 +224,11 @@
             ></div>
           </div>
         </div>
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-label">Avg Latency</div>
           <div class="metric-value">{cacheMetrics.avgLatency.toFixed(1)}ms</div>
         </div>
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-label">Cache Status</div>
           <div class="metric-value machine-state-{machineState}">{machineState}</div>
         </div>

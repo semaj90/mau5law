@@ -2,11 +2,12 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Input } from '$lib/components/ui/input';
   import Badge from '$lib/components/ui/Badge.svelte';
-  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Loader2, Search, Brain, Zap, Database } from 'lucide-svelte';
   import { context7Service, type VectorIntelligence } from '$lib/services/context7Service';
 
@@ -106,17 +107,17 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <!-- Search Interface -->
-  <Card class="mb-6">
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard class="mb-6">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Search class="h-5 w-5" />
         Semantic Search
-      </CardTitle>
-      <CardDescription>
+      </h3>
+      <p class="nes-text">
         Search across legal documents using natural language and AI-powered similarity matching
-      </CardDescription>
-    </CardHeader>
-    <CardContent class="space-y-4">
+      </p>
+    </div>
+    <div class="yorha-panel-content" class="space-y-4">
       <!-- Search Input -->
       <div class="flex gap-2">
         <Input
@@ -137,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
             <Search class="h-4 w-4 mr-2" />
             Search
           {/if}
-        </Button>
+        </button>
       </div>
 
       <!-- Filters -->
@@ -168,27 +169,27 @@ https://svelte.dev/e/js_parse_error -->
               onclick={() => useSampleQuery(query)}
             >
               {query}
-            </Button>
+            </button>
           {/each}
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Search Results -->
     <div class="lg:col-span-2">
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Database class="h-5 w-5" />
             Search Results
             {#if searchResults?.results.length}
               <Badge variant="secondary">{searchResults.results.length} matches</Badge>
             {/if}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           {#if $isAnalyzing}
             <div class="flex items-center justify-center py-12">
               <div class="text-center">
@@ -245,22 +246,22 @@ https://svelte.dev/e/js_parse_error -->
               <p class="text-sm text-gray-500">Enter a legal research question above</p>
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Sidebar -->
     <div class="space-y-6">
       <!-- AI Suggestions -->
       {#if searchResults?.suggestions.length}
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Zap class="h-5 w-5" />
               AI Suggestions
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-2">
               {#each searchResults.suggestions as suggestion}
                 <div class="p-3 bg-blue-50 rounded-lg text-sm">
@@ -268,22 +269,22 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               {/each}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
 
       <!-- Search History -->
       {#if searchHistory.length > 0}
-        <Card>
-          <CardHeader>
+        <NesCard>
+          <div class="yorha-panel-header">
             <div class="flex items-center justify-between">
-              <CardTitle class="text-lg">Recent Searches</CardTitle>
-              <Button variant="ghost" size="sm" onclick={clearHistory}>
+              <h3 class="nes-text is-primary" class="text-lg">Recent Searches</h3>
+              <button class="nes-btn" variant="ghost" size="sm" onclick={clearHistory}>
                 Clear
-              </Button>
+              </button>
             </div>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-2">
               {#each searchHistory as query}
                 <button
@@ -294,16 +295,16 @@ https://svelte.dev/e/js_parse_error -->
                 </button>
               {/each}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
 
       <!-- System Stats -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-lg">System Status</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-lg">System Status</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-3 text-sm">
             <div class="flex justify-between">
               <span>Vector Database:</span>
@@ -322,8 +323,8 @@ https://svelte.dev/e/js_parse_error -->
               <Badge variant="outline" class="text-green-600">Connected</Badge>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </div>
 </div>

@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- AI Integration Demo - Complete System Showcase -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { prefetchMachine } from '$lib/machines/prefetchMachine';
@@ -357,17 +358,17 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <!-- System Health Status -->
-  <Card class="mb-8 bg-slate-800/50 border-slate-700">
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2 text-slate-100">
+  <NesCard class="mb-8 bg-slate-800/50 border-slate-700">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2 text-slate-100">
         <Activity class="h-5 w-5" />
         System Health Status
-      </CardTitle>
-      <CardDescription class="text-slate-400">
+      </h3>
+      <p class="nes-text" class="text-slate-400">
         Real-time monitoring of all system components
-      </CardDescription>
-    </CardHeader>
-    <CardContent>
+      </p>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         {#each Object.entries(systemHealth) as [service, health]}
           {@const IconComponent = getStatusIcon(service)}
@@ -383,8 +384,8 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Main Demo Tabs -->
   <Tabs defaultValue="webgpu" class="space-y-6">
@@ -409,21 +410,21 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- WebGPU Visualization Tab -->
     <TabsContent value="webgpu" class="space-y-6">
-      <Card class="bg-slate-800/50 border-slate-700">
-        <CardHeader>
-          <CardTitle class="text-slate-100">GPU-Accelerated Vector Visualization</CardTitle>
-          <CardDescription class="text-slate-400">
+      <NesCard class="bg-slate-800/50 border-slate-700">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-slate-100">GPU-Accelerated Vector Visualization</h3>
+          <p class="nes-text" class="text-slate-400">
             Real-time 3D rendering of document embeddings using WebGPU shaders
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-4">
             <div class="flex items-center gap-4 mb-4">
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{embeddings.length} Vectors Loaded</span>
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">WebGPU Enabled</span>
               <Button class="bits-btn" onclick={generateDemoEmbeddings} size="sm">
                 Regenerate Embeddings
-              </Button>
+              </button>
             </div>
 
             <!-- WebGPU Canvas -->
@@ -436,20 +437,20 @@ https://svelte.dev/e/js_parse_error -->
               />
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Ollama Agent Shell Tab -->
     <TabsContent value="ollama" class="space-y-6">
-      <Card class="bg-slate-800/50 border-slate-700">
-        <CardHeader>
-          <CardTitle class="text-slate-100">AI Agent Terminal Interface</CardTitle>
-          <CardDescription class="text-slate-400">
+      <NesCard class="bg-slate-800/50 border-slate-700">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-slate-100">AI Agent Terminal Interface</h3>
+          <p class="nes-text" class="text-slate-400">
             Interactive shell for real-time AI analysis with Ollama and gemma3-legal model
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-4">
             <div class="flex items-center gap-4 mb-4">
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Model: gemma3-legal</span>
@@ -457,20 +458,20 @@ https://svelte.dev/e/js_parse_error -->
               <Button class="bits-btn" onclick={openAgentShell} size="sm">
                 <Terminal class="h-4 w-4 mr-2" />
                 Open Agent Shell
-              </Button>
+              </button>
             </div>
 
             <!-- Integration Test Buttons -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <Button onclick={testOllamaIntegration} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
                 Test AI Analysis
-              </Button>
+              </button>
               <Button onclick={testEmbeddingGeneration} class="bg-green-600 hover:bg-green-700 bits-btn bits-btn">
                 Generate Embeddings
-              </Button>
+              </button>
               <Button onclick={testVectorSimilarity} class="bg-purple-600 hover:bg-purple-700 bits-btn bits-btn">
                 Vector Similarity
-              </Button>
+              </button>
             </div>
 
             <!-- Agent Shell Modal -->
@@ -482,20 +483,20 @@ https://svelte.dev/e/js_parse_error -->
               />
             {/if}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- XState Prefetch Tab -->
     <TabsContent value="prefetch" class="space-y-6">
-      <Card class="bg-slate-800/50 border-slate-700">
-        <CardHeader>
-          <CardTitle class="text-slate-100">AI-Powered Intent Prediction & Prefetching</CardTitle>
-          <CardDescription class="text-slate-400">
+      <NesCard class="bg-slate-800/50 border-slate-700">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-slate-100">AI-Powered Intent Prediction & Prefetching</h3>
+          <p class="nes-text" class="text-slate-400">
             XState machine with Loki.js caching and Fuse.js fuzzy search
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-6">
             <!-- Current State -->
             <div class="flex items-center justify-between">
@@ -509,7 +510,7 @@ https://svelte.dev/e/js_parse_error -->
               </div>
               <Button class="bits-btn" onclick={() => prefetchSend({ type: 'PREDICT_INTENT' })} size="sm">
                 Trigger Prediction
-              </Button>
+              </button>
             </div>
 
             <!-- Metrics Grid -->
@@ -536,29 +537,29 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex gap-4">
               <Button class="bits-btn bg-green-600 hover:bg-green-700" onclick={() => prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm">
                 Simulate Cache Hit
-              </Button>
+              </button>
               <Button class="bits-btn bg-red-600 hover:bg-red-700" onclick={() => prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm">
                 Simulate Cache Miss
-              </Button>
+              </button>
               <Button class="bits-btn" onclick={() => prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">
                 Reset Metrics
-              </Button>
+              </button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Performance Tab -->
     <TabsContent value="performance" class="space-y-6">
-      <Card class="bg-slate-800/50 border-slate-700">
-        <CardHeader>
+      <NesCard class="bg-slate-800/50 border-slate-700">
+        <div class="yorha-panel-header">
           <div class="flex items-center justify-between">
             <div>
-              <CardTitle class="text-slate-100">Performance Metrics</CardTitle>
-              <CardDescription class="text-slate-400">
+              <h3 class="nes-text is-primary" class="text-slate-100">Performance Metrics</h3>
+              <p class="nes-text" class="text-slate-400">
                 Real-time system performance monitoring and statistics
-              </CardDescription>
+              </p>
             </div>
             <Button
              onclick={isMonitoring ? stopPerformanceMonitoring : startPerformanceMonitoring}
@@ -571,10 +572,10 @@ https://svelte.dev/e/js_parse_error -->
                 <Play class="h-4 w-4 mr-2" />
                 Start Monitoring
               {/if}
-            </Button>
+            </button>
           </div>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="p-4 rounded-lg bg-slate-700/30">
               <div class="text-3xl font-bold text-blue-400 mb-2">{performanceMetrics.requests}</div>
@@ -607,8 +608,8 @@ https://svelte.dev/e/js_parse_error -->
               <div class="text-sm text-slate-400">Monitoring Status</div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
   </Tabs>
 

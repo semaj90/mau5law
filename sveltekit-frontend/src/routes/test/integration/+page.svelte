@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import { browser } from '$app/environment';
@@ -285,14 +286,14 @@
 
     <!-- Overview Tab -->
     <TabsContent value="overview" class="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>System Test Results</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">System Test Results</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {#each Object.entries(testResults) as [testName, result]}
-              <div class="test-result-card p-4 bg-gray-800 rounded-lg border border-gray-700">
+              <div class="test-result-nier-bits-card p-4 bg-gray-800 rounded-lg border border-gray-700">
                 <div class="flex items-center justify-between mb-2">
                   <h4 class="font-semibold text-white capitalize">{testName.replace('-', ' ')}</h4>
                   <span class="text-xl">{getStatusIcon(result.status)}</span>
@@ -307,17 +308,17 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Components Tab -->
     <TabsContent value="components" class="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Gaming Component Test Suite</CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-6">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Gaming Component Test Suite</h3>
+        </div>
+        <div class="yorha-panel-content" class="space-y-6">
           <!-- 8-bit NES Components -->
           <div class="component-section">
             <h3 class="text-xl font-semibold text-white mb-4">8-Bit NES Era</h3>
@@ -372,21 +373,21 @@
               </ModernButton>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- APIs Tab -->
     <TabsContent value="apis" class="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>API Endpoint Status</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">API Endpoint Status</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {#each testEndpoints as endpoint}
               {@const status = apiEndpoints[endpoint.name]}
-              <div class="api-status-card p-4 bg-gray-800 rounded-lg border border-gray-700">
+              <div class="api-status-nier-bits-card p-4 bg-gray-800 rounded-lg border border-gray-700">
                 <div class="flex items-center justify-between mb-2">
                   <h4 class="font-semibold text-white">{endpoint.name}</h4>
                   <div class="flex items-center gap-2">
@@ -403,17 +404,17 @@
               </div>
             {/each}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Database Tab -->
     <TabsContent value="database" class="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>PostgreSQL + pgvector Integration</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">PostgreSQL + pgvector Integration</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="database-status">
             <div class="flex items-center gap-4 mb-6">
               <div class="status-indicator">
@@ -425,7 +426,7 @@
             </div>
 
             <div class="space-y-4">
-              <div class="info-card p-4 bg-gray-800 rounded-lg">
+              <div class="info-nier-bits-card p-4 bg-gray-800 rounded-lg">
                 <h4 class="font-semibold text-white mb-2">Database Features</h4>
                 <ul class="space-y-1 text-gray-300">
                   <li>✅ PostgreSQL 17 with pgvector extension</li>
@@ -437,24 +438,24 @@
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
 
     <!-- Live Demo Tab -->
     <TabsContent value="demo" class="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>GPU Cache Integration Demo</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">GPU Cache Integration Demo</h3>
+        </div>
+        <div class="yorha-panel-content">
           <GPUCacheIntegrationDemo
             showProgressionDemo={true}
             enableRealTimeMetrics={true}
             debugMode={false}
           />
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </TabsContent>
   </Tabs.Root>
 </div>

@@ -8,6 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
   import { aiComputationMachine } from '$lib/machines/ai-computation-machine';
@@ -403,7 +404,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="recommendations-section mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- Pick Up Where Left Off -->
       {#if computationHistory.length > 0}
-        <div class="recommendation-card bg-green-50 p-4 rounded-lg border border-green-200">
+        <div class="recommendation-nier-bits-card bg-green-50 p-4 rounded-lg border border-green-200">
           <h4 class="font-semibold text-green-800 mb-2">🔄 Resume</h4>
           <button 
             onclick={pickUpWhereLeftOff}
@@ -416,7 +417,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Did You Mean -->
       {#if recommendations.didYouMean?.length > 0}
-        <div class="recommendation-card bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+        <div class="recommendation-nier-bits-card bg-yellow-50 p-4 rounded-lg border border-yellow-200">
           <h4 class="font-semibold text-yellow-800 mb-2">🤔 Did You Mean</h4>
           <div class="space-y-1">
             {#each recommendations.didYouMean.slice(0, 3) as suggestion}
@@ -433,7 +434,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Others Searched -->
       {#if recommendations.othersSearched?.length > 0}
-        <div class="recommendation-card bg-purple-50 p-4 rounded-lg border border-purple-200">
+        <div class="recommendation-nier-bits-card bg-purple-50 p-4 rounded-lg border border-purple-200">
           <h4 class="font-semibold text-purple-800 mb-2">👥 Others Searched</h4>
           <div class="space-y-1">
             {#each recommendations.othersSearched.slice(0, 3) as search}
@@ -445,7 +446,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Cutting Edge -->
       {#if recommendations.cuttingEdge?.length > 0}
-        <div class="recommendation-card bg-red-50 p-4 rounded-lg border border-red-200">
+        <div class="recommendation-nier-bits-card bg-red-50 p-4 rounded-lg border border-red-200">
           <h4 class="font-semibold text-red-800 mb-2">⚡ Cutting Edge</h4>
           <div class="space-y-1">
             {#each recommendations.cuttingEdge.slice(0, 3) as edge}

@@ -2,6 +2,7 @@
      Provides upload functionality without UI, perfect for integration with custom interfaces -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { minioService, type MinIOFile, type UploadProgress } from '$lib/services/minio-service';
   
   interface ProcessingOptions {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -260,14 +261,14 @@
                   onclick={() => selectAllCases()}
                 >
                   Select All
-                </Button>
+                </button>
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => clearCaseSelection()}
                 >
                   Clear
-                </Button>
+                </button>
               </div>
             </div>
 
@@ -349,7 +350,7 @@
                   <Download class="space-y-4" />
                   Export Data
                 {/if}
-              </Button>
+              </button>
             </TooltipTrigger>
             <TooltipContent>
               <p>Download the configured data export</p>

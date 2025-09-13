@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
   // Badge replaced with span - not available in enhanced-bits
   import Button from '$lib/components/ui/button/Button.svelte';
@@ -235,19 +236,19 @@ https://svelte.dev/e/js_parse_error -->
 <div class="max-w-6xl mx-auto p-6 space-y-6">
   <div class="text-center space-y-2">
     <h1 class="text-4xl font-bold tracking-tight">Evidence Analysis Pipeline</h1>
-    <p class="text-xl text-muted-foreground">AI-powered multi-agent legal document analysis</p>
+    <p class="text-xl nes-text is-disabled">AI-powered multi-agent legal document analysis</p>
   </div>
 
   <!-- Main Analysis Card -->
-  <Card class="w-full">
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">📄 Evidence Upload & Configuration</CardTitle>
-      <CardDescription>
+  <NesCard class="w-full">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">📄 Evidence Upload & Configuration</h3>
+      <p class="nes-text">
         Configure your evidence analysis parameters and upload documents for processing
-      </CardDescription>
-    </CardHeader>
+      </p>
+    </div>
 
-    <CardContent class="space-y-6">
+    <div class="yorha-panel-content" class="space-y-6">
       <!-- Form Configuration -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Case ID -->
@@ -303,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
           disabled={analyzing}
           class="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary hover:file:bg-opacity-80" />
         {#if evidenceFile}
-          <div class="flex items-center gap-2 text-sm text-muted-foreground">
+          <div class="flex items-center gap-2 text-sm nes-text is-disabled">
             <span>📎</span>
             <span>{evidenceFile.name}</span>
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(evidenceFile.size / 1024).toFixed(1)} KB</span>
@@ -322,13 +323,13 @@ https://svelte.dev/e/js_parse_error -->
           rows={12}
           class="font-mono text-sm" />
         {#if evidenceContent}
-          <div class="flex justify-between text-sm text-muted-foreground">
+          <div class="flex justify-between text-sm nes-text is-disabled">
             <span>{evidenceContent.length} characters</span>
             <span>~{Math.ceil(evidenceContent.length / 4)} tokens</span>
           </div>
         {/if}
       </div>
-    </CardContent>
+    </div>
 
     <CardFooter class="flex justify-between">
       <div class="flex items-center gap-2">
@@ -343,41 +344,41 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
     <div class="flex gap-2">
-  <Button class="bits-btn" variant="outline" onclick={resetForm} disabled={analyzing}>Reset</Button>
+  <Button class="bits-btn" variant="outline" onclick={resetForm} disabled={analyzing}>Reset</button>
   <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
-        </Button>
+        </button>
       </div>
     </CardFooter>
-  </Card>
+  </NesCard>
 
   <!-- Error Display -->
   {#if error}
-    <Card class="border-destructive">
-      <CardContent class="pt-6">
+    <NesCard class="border-destructive">
+      <div class="yorha-panel-content" class="pt-6">
         <div class="flex items-center gap-2 text-destructive">
           <span>❌</span>
           <span class="font-semibold">Analysis Error:</span>
           <span>{error}</span>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Progress Display -->
   {#if analyzing}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">🔄 Analysis in Progress</CardTitle>
-        <CardDescription>Multi-agent pipeline processing your evidence document</CardDescription>
-      </CardHeader>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">🔄 Analysis in Progress</h3>
+        <p class="nes-text">Multi-agent pipeline processing your evidence document</p>
+      </div>
 
-      <CardContent class="space-y-6">
+      <div class="yorha-panel-content" class="space-y-6">
         <!-- Overall Progress -->
         <div class="space-y-2">
           <div class="flex justify-between text-sm">
             <span class="font-medium">Overall Progress</span>
-            <span class="text-muted-foreground">{progress.toFixed(0)}%</span>
+            <span class="nes-text is-disabled">{progress.toFixed(0)}%</span>
           </div>
           <Progress value={progress} class="h-3" />
         </div>
@@ -389,9 +390,9 @@ https://svelte.dev/e/js_parse_error -->
             {@const isCompleted = step.status === 'completed'}
             {@const isProcessing = step.status === 'processing'}
 
-            <Card
+            <NesCard
               class="transition-all duration-300 {isActive ? 'ring-2 ring-primary shadow-md' : ''}">
-              <CardContent class="p-4">
+              <div class="yorha-panel-content" class="p-4">
                 <div class="flex items-center gap-4">
                   <!-- Status Icon -->
                   <div class="flex-shrink-0">
@@ -427,10 +428,10 @@ https://svelte.dev/e/js_parse_error -->
                         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Pending</span>
                       {/if}
                     </div>
-                    <p class="text-sm text-muted-foreground">
+                    <p class="text-sm nes-text is-disabled">
                       {step.description}
                     </p>
-                    <p class="text-xs text-muted-foreground">
+                    <p class="text-xs nes-text is-disabled">
                       Est. {step.duration}
                     </p>
                   </div>
@@ -442,12 +443,12 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
                   {/if}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </NesCard>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Results Modal/Display -->
@@ -463,14 +464,14 @@ https://svelte.dev/e/js_parse_error -->
 
         <div class="space-y-4">
           {#each Object.entries(results.outputs) as [key, data]}
-            <Card>
-              <CardHeader>
-                <CardTitle class="text-lg">
+            <NesCard>
+              <div class="yorha-panel-header">
+                <h3 class="nes-text is-primary" class="text-lg">
                   {steps.find((s) => s.key === key)?.icon || '📄'}
                   {key.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </h3>
+              </div>
+              <div class="yorha-panel-content">
                 <div class="bg-muted p-4 rounded-lg">
                   <pre class="text-xs overflow-auto max-h-32 whitespace-pre-wrap">
 										{JSON.stringify(data, null, 2)}
@@ -482,15 +483,15 @@ https://svelte.dev/e/js_parse_error -->
                   class="mt-2 bits-btn bits-btn"
                   onclick={() => viewDetailedResults(data)}>
                   View Details →
-                </Button>
-              </CardContent>
-            </Card>
+                </button>
+              </div>
+            </NesCard>
           {/each}
         </div>
 
         <DialogFooter>
-          <Button class="bits-btn" variant="outline" onclick={() => (showResults = false)}>Close</Button>
-          <Button class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
+          <Button class="bits-btn" variant="outline" onclick={() => (showResults = false)}>Close</button>
+          <Button class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

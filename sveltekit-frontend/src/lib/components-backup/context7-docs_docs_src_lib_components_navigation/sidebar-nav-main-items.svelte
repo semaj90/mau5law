@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { page } from "$app/state";
   	import type { SidebarNavItem } from "$lib/config/index.js";
   	import { cn } from "$lib/utils/styles.js";

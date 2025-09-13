@@ -3,6 +3,7 @@
   Integrates: Fuse.js + MinIO + PostgreSQL + pgvector + Qdrant + Loki.js
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, tick } from 'svelte';
   import { goto } from '$app/navigation';
   import Fuse from 'fuse.js';

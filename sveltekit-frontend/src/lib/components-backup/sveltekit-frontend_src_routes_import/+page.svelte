@@ -1,8 +1,9 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { User } from '$lib/types';
   import { browser } from "$app/environment";
   import { Tooltip } from "$lib/components/ui";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications } from "$lib/stores/notification";
   import {
     AlertCircle,
@@ -312,20 +313,20 @@
               </div>
               <div class="space-y-4">
                 <Tooltip content="Preview file contents">
-                  <Button variant="outline" size="sm" disabled={!filePreview}>
+                  <button class="nes-btn" variant="outline" size="sm" disabled={!filePreview}>
                     <Eye class="space-y-4" />
                     Preview
-                  </Button>
+                  </button>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
-                  <Button
+                  <button class="nes-btn"
                     variant="outline"
                     size="sm"
                     onclick={() => clearImport()}
                   >
                     <X class="space-y-4" />
                     Remove
-                  </Button>
+                  </button>
                 </Tooltip>
               </div>
             </div>
@@ -338,9 +339,9 @@
                 </p>
                 <p class="space-y-4">or click to browse</p>
               </div>
-              <Button variant="outline" onclick={() => fileInput?.click()}>
+              <button class="nes-btn" variant="outline" onclick={() => fileInput?.click()}>
                 Select File
-              </Button>
+              </button>
             </div>
           {/if}
         </div>
@@ -497,7 +498,7 @@
       {#if importFile}
         <div class="space-y-4">
           <div class="space-y-4">
-            <Button
+            <button class="nes-btn"
               onclick={() => performImport()}
               disabled={isImporting}
               class="space-y-4"
@@ -511,12 +512,12 @@
                 <Upload class="space-y-4" />
                 Import Data
               {/if}
-            </Button>
+            </button>
             <Tooltip content="Clear current import and start over">
-              <Button variant="outline" onclick={() => clearImport()}>
+              <button class="nes-btn" variant="outline" onclick={() => clearImport()}>
                 <X class="space-y-4" />
                 Cancel
-              </Button>
+              </button>
             </Tooltip>
           </div>
         </div>
@@ -537,22 +538,22 @@
             <h4 class="space-y-4">Cases</h4>
             <div class="space-y-4">
               <Tooltip content="Download JSON example for cases">
-                <Button
+                <button class="nes-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("cases", "json")}
                 >
                   JSON
-                </Button>
+                </button>
               </Tooltip>
               <Tooltip content="Download CSV example for cases">
-                <Button
+                <button class="nes-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("cases", "csv")}
                 >
                   CSV
-                </Button>
+                </button>
               </Tooltip>
             </div>
           </div>
@@ -561,22 +562,22 @@
             <h4 class="space-y-4">Evidence</h4>
             <div class="space-y-4">
               <Tooltip content="Download JSON example for evidence">
-                <Button
+                <button class="nes-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("evidence", "json")}
                 >
                   JSON
-                </Button>
+                </button>
               </Tooltip>
               <Tooltip content="Download CSV example for evidence">
-                <Button
+                <button class="nes-btn"
                   variant="outline"
                   size="sm"
                   onclick={() => downloadExampleTemplate("evidence", "csv")}
                 >
                   CSV
-                </Button>
+                </button>
               </Tooltip>
             </div>
           </div>
@@ -606,19 +607,19 @@
             <Button variant="outline" class="space-y-4">
               <Download class="space-y-4" />
               Export Data
-            </Button>
+            </button>
           </a>
           <a href="/cases" class="space-y-4">
             <Button variant="outline" class="space-y-4">
               <Database class="space-y-4" />
               View Cases
-            </Button>
+            </button>
           </a>
           <a href="/evidence" class="space-y-4">
             <Button variant="outline" class="space-y-4">
               <FileText class="space-y-4" />
               View Evidence
-            </Button>
+            </button>
           </a>
         </div>
       </div>

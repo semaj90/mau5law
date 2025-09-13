@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { ScrollArea } from "bits-ui";
   	import SidebarNavItems from "$lib/components/navigation/sidebar-nav-items.svelte";
   	import SidebarNavMainItems from "$lib/components/navigation/sidebar-nav-main-items.svelte";
@@ -22,7 +23,7 @@
 								{:else}
 									<div class="pb-4">
 										<h4
-											class="text-muted-foreground mb-1 ml-[9px] rounded-md px-2.5 py-2 pl-4 text-xs font-medium uppercase"
+											class="nes-text is-disabled mb-1 ml-[9px] rounded-md px-2.5 py-2 pl-4 text-xs font-medium uppercase"
 										>
 											{item.title}
 										</h4>

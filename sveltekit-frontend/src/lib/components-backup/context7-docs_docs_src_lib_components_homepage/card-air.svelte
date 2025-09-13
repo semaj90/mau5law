@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import Fan from "phosphor-svelte/lib/Fan";
   	import { Tabs } from "bits-ui";
   	import HomeSlider from "$lib/components/homepage/home-slider.svelte";
@@ -13,7 +14,7 @@
 		class="line_top_gradient absolute -left-10 top-0 h-[1px] w-[calc(100%+50px)] lg:hidden"
 	></div>
 	<div
-		class="rounded-card-lg mx-1.5 my-3 flex aspect-square flex-col justify-between bg-[#e0f2fe] px-3 pb-6 pt-5 lg:m-2.5 lg:px-5 lg:pb-8 dark:bg-[#C7E6FA]"
+		class="rounded-nier-bits-card-lg mx-1.5 my-3 flex aspect-square flex-col justify-between bg-[#e0f2fe] px-3 pb-6 pt-5 lg:m-2.5 lg:px-5 lg:pb-8 dark:bg-[#C7E6FA]"
 	>
 		<div class="flex justify-between">
 			<Tabs.Root value="c" class="flex items-center font-medium">

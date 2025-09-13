@@ -3,6 +3,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- QLorA Training Panel with Checkbox Toggle -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
@@ -172,18 +173,18 @@ https://svelte.dev/e/attribute_duplicate -->
   }
 </script>
 
-<Card class="w-full max-w-4xl mx-auto bg-gradient-to-br from-gray-900 to-gray-800 border-cyan-500/20">
-  <CardHeader class="pb-4">
-    <CardTitle class="text-2xl font-bold text-cyan-400 flex items-center gap-3">
+<NesCard class="w-full max-w-4xl mx-auto bg-gradient-to-br from-gray-900 to-gray-800 border-cyan-500/20">
+  <div class="yorha-panel-header" class="pb-4">
+    <h3 class="nes-text is-primary" class="text-2xl font-bold text-cyan-400 flex items-center gap-3">
       <span class="text-3xl">🧠</span>
       QLorA Training System
       <Badge class="ml-auto" variant={trainingEnabled ? "default" : "secondary"}>
         {trainingEnabled ? 'ENABLED' : 'DISABLED'}
       </Badge>
-    </CardTitle>
-  </CardHeader>
+    </h3>
+  </div>
 
-  <CardContent class="space-y-6">
+  <div class="yorha-panel-content" class="space-y-6">
     <!-- Main Training Toggle -->
     <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-cyan-500/20">
       <div class="space-y-1">
@@ -221,7 +222,7 @@ https://svelte.dev/e/attribute_duplicate -->
         <label for="file-input" class="inline-block">
           <Button class="bg-cyan-600 hover:bg-cyan-700 bits-btn bits-btn">
             Select Files
-          </Button>
+          </button>
         </label>
         
         <input
@@ -260,13 +261,13 @@ https://svelte.dev/e/attribute_duplicate -->
         </div>
         
         {#if trainingEnabled}
-          <Button 
+          <button class="nes-btn" 
             onclick={() => startTraining(selectedFiles)}
             class="bits-btn w-full bg-green-600 hover:bg-green-700"
             disabled={currentJob?.status === 'running'}
           >
             {currentJob?.status === 'running' ? 'Training in Progress...' : 'Start Training'}
-          </Button>
+          </button>
         {/if}
       </div>
     {/if}
@@ -358,17 +359,17 @@ https://svelte.dev/e/attribute_duplicate -->
           {#if currentJob.status === 'running'}
             <Button class="bits-btn" onclick={pauseTraining} variant="outline" size="sm">
               ⏸️ Pause
-            </Button>
+            </button>
             <Button class="bits-btn" onclick={stopTraining} variant="destructive" size="sm">
               ⏹️ Stop
-            </Button>
+            </button>
           {:else if currentJob.status === 'paused'}
             <Button class="bits-btn" onclick={resumeTraining} variant="default" size="sm">
               ▶️ Resume
-            </Button>
+            </button>
             <Button class="bits-btn" onclick={stopTraining} variant="destructive" size="sm">
               ⏹️ Stop
-            </Button>
+            </button>
           {/if}
           
           <Button class="bits-btn" 
@@ -378,7 +379,7 @@ https://svelte.dev/e/attribute_duplicate -->
             class="ml-auto"
           >
             ⚙️ Advanced Config
-          </Button>
+          </button>
         </div>
       </div>
     {/if}
@@ -492,8 +493,8 @@ https://svelte.dev/e/attribute_duplicate -->
         </div>
       </div>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   /* Custom scrollbar for file list */

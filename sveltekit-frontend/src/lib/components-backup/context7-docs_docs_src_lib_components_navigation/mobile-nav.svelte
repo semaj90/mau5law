@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import MobileLink from "./mobile-link.svelte";
   	import { Button } from "$lib/components/ui/button/index.js";
   	import { navigation } from "$lib/config/index.js";
@@ -20,7 +21,7 @@
 			>
 				<MobileMenuIcon {open} />
 				<span class="sr-only">Toggle menu</span>
-			</Button>
+			</button>
 		{/snippet}
 	</Popover.Trigger>
 	<Popover.Portal>
@@ -40,7 +41,7 @@
 					{#each navigation.sidebar as navItem, index (index)}
 						<div class="flex flex-col pt-3" data-index={index}>
 							<h4
-								class="text-muted-foreground mb-2 px-5 text-sm font-medium uppercase"
+								class="nes-text is-disabled mb-2 px-5 text-sm font-medium uppercase"
 							>
 								{navItem.title}
 							</h4>

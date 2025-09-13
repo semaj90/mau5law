@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   let { data = $bindable() } = $props(); // { endpoints: { name: string; path: string; healthy: boolean; message?: string }[] };
 </script>
 
@@ -7,7 +8,7 @@
 
   <div class="endpoint-list">
     {#each data.endpoints as ep}
-      <div class="endpoint-card {ep.healthy ? 'ok' : 'fail'}">
+      <div class="endpoint-nier-bits-card {ep.healthy ? 'ok' : 'fail'}">
         <h2>{ep.name}</h2>
         <p class="path">{ep.path}</p>
         <p class="status">

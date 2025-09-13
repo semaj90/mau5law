@@ -5,6 +5,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- Legal Case Analysis Dialog - Bits UI Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Dialog, Select, Button, Badge, Progress } from 'bits-ui';
   import { legalCaseStore } from '$lib/stores/legal-case.store.svelte';
   import type { LegalCase } from '$lib/types/legal';
@@ -79,7 +80,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
       Analyze Case Documents
-    </Button>
+    </button>
   </Dialog.Trigger>
 
   <Dialog.Content class="legal-dialog max-w-2xl w-full bg-white border border-gray-200 rounded-lg shadow-xl">
@@ -89,8 +90,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       </Dialog.Title>
       <Dialog.Description class="text-gray-600 mt-2">
         Select a case to perform AI-powered legal analysis with compliance checking.
-      </DialogDescription>
-    </DialogHeader>
+      </Dialog.Description>
+    </Dialog.Header>
 
     <div class="p-6 space-y-6">
       <!-- Case Selection -->
@@ -232,7 +233,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         disabled={loading.analysis}
       >
         Cancel
-      </Button>
+      </button>
       <Button
         onclick={handleAnalysis}
         disabled={!selectedCaseForAnalysis || loading.analysis || analysisStatus === 'analyzing'}
@@ -252,8 +253,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         {:else}
           Start Analysis
         {/if}
-      </Button>
-    </DialogFooter>
+      </button>
+    </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
 

@@ -1,5 +1,6 @@
 <!-- Comprehensive Bits-UI Demo for Legal AI App -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import BitsDialog from './dialog/BitsDialog.svelte';
   import BitsSelect from './select/BitsSelect.svelte';
   import BitsInput from './input/BitsInput.svelte';
@@ -116,7 +117,7 @@
     >
       <Plus class="w-4 h-4 mr-2" />
       Create New Case
-    </Button>
+    </button>
 
     <!-- Dialog Component -->
     <BitsDialog
@@ -168,14 +169,14 @@
           onclick={() => showDialog = false}
         >
           Cancel
-        </Button>
+        </button>
         <Button class="bits-btn"
           variant="primary"
           onclick={handleCreateCase}
           disabled={!caseName || !clientName || !selectedCaseType}
         >
           Create Case
-        </Button>
+        </button>
       {/snippet}
     </BitsDialog>
   </section>
@@ -201,10 +202,10 @@
             <div class="flex gap-2">
               <Button class="bits-btn" variant="outline" size="sm">
                 <Eye class="w-4 h-4" />
-              </Button>
+              </button>
               <Button class="bits-btn" variant="outline" size="sm">
                 <Edit class="w-4 h-4" />
-              </Button>
+              </button>
             </div>
           </div>
         </div>

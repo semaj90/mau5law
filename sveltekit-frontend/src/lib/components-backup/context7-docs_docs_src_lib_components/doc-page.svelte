@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { page } from "$app/state";
   	import { cn } from "$lib/utils/styles.js";
   	import type { Component } from "svelte";

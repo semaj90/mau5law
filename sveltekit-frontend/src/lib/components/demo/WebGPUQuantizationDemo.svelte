@@ -8,6 +8,7 @@ https://svelte.dev/e/expected_token -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import { WebGPUBufferUploader, WebGPUBufferUtils_Extended } from '$lib/utils/webgpu-buffer-uploader.js';
@@ -503,7 +504,7 @@ https://svelte.dev/e/expected_token -->
           <button
             onclick={() => runDemo(scenario.id)}
             disabled={demoRunning}
-            class="scenario-card p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all duration-200 text-left {demoRunning ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}"
+            class="scenario-nier-bits-card p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all duration-200 text-left {demoRunning ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}"
           >
             <div class="flex items-start gap-3">
               <span class="text-2xl">{scenario.icon}</span>

@@ -1,4 +1,7 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
   import '../app.css';
   import '../lib/styles/modern-yorha-theme.css';
   import { onMount, setContext } from 'svelte';

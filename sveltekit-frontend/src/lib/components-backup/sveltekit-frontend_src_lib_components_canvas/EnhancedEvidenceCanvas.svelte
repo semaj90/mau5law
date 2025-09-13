@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onevidenceUpdated?: (event?: any) => void;
     onsave?: (event?: any) => void;
@@ -10,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
   import { browser } from "$app/environment";
-  import Button from "$lib/components/ui/Button.svelte";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications } from "$lib/stores/notification";
   import {
     Circle,
@@ -458,30 +459,30 @@ https://svelte.dev/e/js_parse_error -->
       <div
         class="space-y-4"
       >
-        <Button
+        <button class="nes-btn"
           variant={selectedTool === "select" ? "primary" : "outline"}
           size="sm"
           onclick={() => selectTool("select")}
           disabled={readonly}
         >
           <Move class="space-y-4" />
-        </Button>
-        <Button
+        </button>
+        <button class="nes-btn"
           variant={selectedTool === "draw" ? "primary" : "outline"}
           size="sm"
           onclick={() => selectTool("draw")}
           disabled={readonly}
         >
           ✏️
-        </Button>
-        <Button
+        </button>
+        <button class="nes-btn"
           variant={selectedTool === "text" ? "primary" : "outline"}
           size="sm"
           onclick={() => selectTool("text")}
           disabled={readonly}
         >
           <Type class="space-y-4" />
-        </Button>
+        </button>
       </div>
 
       <!-- Shapes -->
@@ -489,20 +490,20 @@ https://svelte.dev/e/js_parse_error -->
         <div
           class="space-y-4"
         >
-          <Button
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={() => addShape("rectangle")}
           >
             <Square class="space-y-4" />
-          </Button>
-          <Button
+          </button>
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={() => addShape("circle")}
           >
             <Circle class="space-y-4" />
-          </Button>
+          </button>
         </div>
       {/if}
 
@@ -510,36 +511,36 @@ https://svelte.dev/e/js_parse_error -->
       <div
         class="space-y-4"
       >
-        <Button
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => undo()}
           disabled={readonly || historyIndex <= 0}
         >
           <Undo class="space-y-4" />
-        </Button>
-        <Button
+        </button>
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => redo()}
           disabled={readonly || historyIndex >= canvasHistory.length - 1}
         >
           <Redo class="space-y-4" />
-        </Button>
+        </button>
       </div>
 
       <!-- Zoom -->
       <div class="space-y-4">
-        <Button variant="outline" size="sm" onclick={() => zoomOut()}>
+        <button class="nes-btn" variant="outline" size="sm" onclick={() => zoomOut()}>
           <ZoomOut class="space-y-4" />
-        </Button>
+        </button>
         <span class="space-y-4"
           >{Math.round(zoom * 100)}%</span
         >
-        <Button variant="outline" size="sm" onclick={() => zoomIn()}>
+        <button class="nes-btn" variant="outline" size="sm" onclick={() => zoomIn()}>
           <ZoomIn class="space-y-4" />
-        </Button>
-        <Button variant="outline" size="sm" onclick={() => resetZoom()}
+        </button>
+        <button class="nes-btn" variant="outline" size="sm" onclick={() => resetZoom()}
           >Reset</Button
         >
       </div>
@@ -548,18 +549,18 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Actions -->
     <div class="space-y-4">
       {#if !readonly}
-        <Button variant="outline" size="sm" onclick={() => deleteSelected()}>
+        <button class="nes-btn" variant="outline" size="sm" onclick={() => deleteSelected()}>
           <Trash2 class="space-y-4" />
-        </Button>
-        <Button variant="outline" size="sm" onclick={() => saveCanvas()}>
+        </button>
+        <button class="nes-btn" variant="outline" size="sm" onclick={() => saveCanvas()}>
           <Save class="space-y-4" />
           Save
-        </Button>
+        </button>
       {/if}
-      <Button variant="outline" size="sm" onclick={() => exportCanvas()}>
+      <button class="nes-btn" variant="outline" size="sm" onclick={() => exportCanvas()}>
         <Download class="space-y-4" />
         Export
-      </Button>
+      </button>
     </div>
   </div>
 

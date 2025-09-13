@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Enhanced lightweight UploadZone with: validation, retry/backoff, cancel, telemetry, embedding + vector storage
   import { embeddingService } from '$lib/services/embedding-service';
   import { postgresqlVectorService as vectorService } from '$lib/services/postgresql-vector-service';

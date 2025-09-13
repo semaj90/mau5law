@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import AdvancedRedisMonitoringDashboard from '$lib/components/redis/AdvancedRedisMonitoringDashboard.svelte';
   
   // Auto-switch to advanced dashboard for next-level features

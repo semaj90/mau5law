@@ -2,7 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  import Button from "$lib/components/ui/Button.svelte";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Dialog as DialogPrimitive } from "bits-ui";
   import {
     AlertTriangle,
@@ -132,14 +133,14 @@ https://svelte.dev/e/js_parse_error -->
           </DialogPrimitive.Description>
         </div>
         <DialogPrimitive.Close let:builder>
-          <Button
+          <button class="nes-btn"
             {...builder}
             variant="ghost"
             size="sm"
             onclick={() => closeModal()}
           >
             ×
-          </Button>
+          </button>
         </DialogPrimitive.Close>
       </div>
 
@@ -214,7 +215,7 @@ https://svelte.dev/e/js_parse_error -->
               >
                 <CheckCircle class="mx-auto px-4 max-w-7xl" />
                 Yes, it's accurate
-              </Button>
+              </button>
 
               <Button
                 variant={validationChoice === "reject" ? "danger" : "outline"}
@@ -223,7 +224,7 @@ https://svelte.dev/e/js_parse_error -->
               >
                 <XCircle class="mx-auto px-4 max-w-7xl" />
                 No, needs correction
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -330,14 +331,14 @@ https://svelte.dev/e/js_parse_error -->
                     onkeydown={(e) =>
                       e.key === "Enter" && (e.preventDefault(), addTag())}
                   />
-                  <Button
+                  <button class="nes-btn"
                     type="button"
                     variant="secondary"
                     size="sm"
                     onclick={() => addTag()}
                   >
                     <Tag class="mx-auto px-4 max-w-7xl" />
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
@@ -346,15 +347,15 @@ https://svelte.dev/e/js_parse_error -->
 
         <!-- Footer -->
         <div class="mx-auto px-4 max-w-7xl">
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             onclick={() => closeModal()}
             disabled={isSubmitting}
           >
             Cancel
-          </Button>
+          </button>
 
-          <Button
+          <button class="nes-btn"
             onclick={() => submitValidation()}
             disabled={!validationChoice || isSubmitting}
             class="mx-auto px-4 max-w-7xl"
@@ -368,7 +369,7 @@ https://svelte.dev/e/js_parse_error -->
               <Save class="mx-auto px-4 max-w-7xl" />
               Submit Validation
             {/if}
-          </Button>
+          </button>
         </div>
       {/if}
     </div>

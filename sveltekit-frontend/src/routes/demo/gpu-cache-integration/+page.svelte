@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import GPUCacheIntegrationDemo from '$lib/components/ui/gaming/demo/GPUCacheIntegrationDemo.svelte';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
@@ -66,7 +67,7 @@
   <section class="technical-details mt-12">
     <h2 class="text-2xl font-bold text-white mb-6">Technical Implementation</h2>
     <div class="details-grid">
-      <div class="detail-card">
+      <div class="detail-nier-bits-card">
         <h3 class="text-lg font-semibold text-white mb-3">NES Memory Architecture</h3>
         <ul class="text-gray-300 space-y-1 text-sm">
           <li>• PRG_ROM: Program code storage</li>
@@ -78,7 +79,7 @@
         </ul>
       </div>
 
-      <div class="detail-card">
+      <div class="detail-nier-bits-card">
         <h3 class="text-lg font-semibold text-white mb-3">GPU Cache Integration</h3>
         <ul class="text-gray-300 space-y-1 text-sm">
           <li>• WebGPU acceleration support</li>
@@ -90,7 +91,7 @@
         </ul>
       </div>
 
-      <div class="detail-card">
+      <div class="detail-nier-bits-card">
         <h3 class="text-lg font-semibold text-white mb-3">N64 Texture Filtering</h3>
         <ul class="text-gray-300 space-y-1 text-sm">
           <li>• Bilinear filtering support</li>
@@ -102,7 +103,7 @@
         </ul>
       </div>
 
-      <div class="detail-card">
+      <div class="detail-nier-bits-card">
         <h3 class="text-lg font-semibold text-white mb-3">YoRHa Quantum Effects</h3>
         <ul class="text-gray-300 space-y-1 text-sm">
           <li>• Holographic interface elements</li>

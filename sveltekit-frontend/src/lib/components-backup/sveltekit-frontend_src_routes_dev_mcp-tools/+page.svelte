@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import MCPToolsDemo from '$lib/components/dev/MCPToolsDemo.svelte';
 </script>
 

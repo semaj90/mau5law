@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Avatar, DropdownMenu } from "bits-ui";
   	import Cardholder from "phosphor-svelte/lib/Cardholder";
   	import CaretRight from "phosphor-svelte/lib/CaretRight";
@@ -40,12 +41,12 @@
 								</div>
 								<div class="ml-auto flex items-center gap-px">
 									<kbd
-										class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-xs"
+										class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-xs"
 									>
 										⌘
 									</kbd>
 									<kbd
-										class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-[10px]"
+										class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-[10px]"
 									>
 										P
 									</kbd>
@@ -60,12 +61,12 @@
 								</div>
 								<div class="ml-auto flex items-center gap-px">
 									<kbd
-										class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-xs"
+										class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-xs"
 									>
 										⌘
 									</kbd>
 									<kbd
-										class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-[10px]"
+										class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-[10px]"
 									>
 										B
 									</kbd>
@@ -80,12 +81,12 @@
 								</div>
 								<div class="ml-auto flex items-center gap-px">
 									<kbd
-										class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-xs"
+										class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-xs"
 									>
 										⌘
 									</kbd>
 									<kbd
-										class="rounded-button border-dark-10 bg-background-alt text-muted-foreground shadow-kbd inline-flex size-5 items-center justify-center border text-[10px]"
+										class="rounded-button border-dark-10 bg-background-alt nes-text is-disabled shadow-kbd inline-flex size-5 items-center justify-center border text-[10px]"
 									>
 										S
 									</kbd>

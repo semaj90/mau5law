@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Button from "$lib/Button.svelte";
 </script>
 
@@ -13,7 +14,7 @@
   </p>
 
   <div>
-    <Button class="mb-2" onclick={() => alert("hello!")}>Hello</Button>
+    <Button class="mb-2" onclick={() => alert("hello!")}>Hello</button>
   </div>
 
   <div class="logo bg-red-100"></div>

@@ -2,6 +2,7 @@
 https://svelte.dev/e/const_tag_invalid_placement -->
 <!-- AI Demo Page - SvelteKit 2.0 + Svelte 5 + Ollama Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import OllamaChatInterface from "$lib/components/OllamaChatInterface.svelte";
   import { Alert, AlertDescription } from "$lib/components/ui/alert";
   import { Badge } from "$lib/components/ui/badge";
@@ -125,14 +126,14 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   </div>
 
   <!-- System Status -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Cpu class="h-5 w-5" />
         System Status
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <!-- Ollama Status -->
         <div class="flex items-center gap-2">
@@ -187,19 +188,19 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           </AlertDescription>
         </Alert>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Model Selection -->
   {#if ollamaStatus === "healthy" && availableModels.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Settings class="h-5 w-5" />
           Model Configuration
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="flex flex-wrap gap-2">
           {#each availableModels as model}
             <Badge
@@ -215,41 +216,41 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <div class="mt-4 flex gap-2">
           <Button class="bits-btn" onclick={testGeneration} variant="outline">
             Test Generation
-          </Button>
+          </button>
           <Button class="bits-btn" onclick={checkOllamaHealth} variant="outline">
             Refresh Status
-          </Button>
+          </button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Chat Interface -->
   {#if ollamaStatus === "healthy"}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center gap-2">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <MessageSquare class="h-5 w-5" />
           Legal AI Chat Interface
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <OllamaChatInterface
           {selectedModel}
           useRAG={true}
           class="min-h-[400px]"
           data-testid="ollama-chat"
         />
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Quick Start Guide -->
-  <Card>
-    <CardHeader>
-      <CardTitle>🚀 Quick Start Guide</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">🚀 Quick Start Guide</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="space-y-4">
         <div>
           <h3 class="font-semibold mb-2">1. Start Ollama Service</h3>
@@ -279,8 +280,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           </code>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 </div>
 
 <style>

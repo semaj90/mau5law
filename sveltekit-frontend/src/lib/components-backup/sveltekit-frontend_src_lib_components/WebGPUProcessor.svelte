@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Integrates with QUIC streaming and attention tracking -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount, onDestroy } from 'svelte';
   	import { writable, derived } from 'svelte/store';
   	import type { PageData } from './$types';

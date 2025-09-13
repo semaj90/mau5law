@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import AiAssistant from '$lib/components/ai/AiAssistant.svelte';
   import {
     Button
@@ -100,11 +101,11 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Input Configuration -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Test Configuration</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Test Configuration</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-2" for="case-id">Case ID:</label><input id="case-id"
@@ -128,44 +129,44 @@
             </p>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- AI Assistant Component -->
-    <Card>
-      <CardHeader>
-        <CardTitle>AI Assistant with Embedding Integration</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">AI Assistant with Embedding Integration</h3>
+      </div>
+      <div class="yorha-panel-content">
         <AiAssistant
           {caseId}
           {contextItems}
           {evidenceText}
         />
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 
   <!-- API Test Section -->
-  <Card class="mt-6">
-    <CardHeader>
-      <CardTitle>Direct API Testing</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard class="mt-6">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Direct API Testing</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="space-y-4">
         <Button
           onclick={testEmbeddingAPI}
           class="mr-2 bits-btn bits-btn"
         >
           Test Embedding API
-        </Button>
+        </button>
 
         <Button class="bits-btn"
           onclick={testEmbeddingService}
           variant="outline"
         >
           Test Embedding Service
-        </Button>
+        </button>
 
         {#if apiTestResult}
           <div class="mt-4 p-4 bg-gray-50 rounded">
@@ -174,8 +175,8 @@
           </div>
         {/if}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 </div>
 
 <style>

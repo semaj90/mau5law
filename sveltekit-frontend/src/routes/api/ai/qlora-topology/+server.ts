@@ -130,7 +130,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         
         if (binaryResponse) {
           // Return binary compressed response
-          return new Response(cachedEntry.data, {
+          return new Response(cachedEntry.data.buffer, {
             status: 200,
             headers: {
               'Content-Type': 'application/octet-stream',

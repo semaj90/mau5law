@@ -2,8 +2,9 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
-  import Button from "$lib/components/ui/Button.svelte";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
   import {
@@ -617,32 +618,30 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="mx-auto px-4 max-w-7xl">
-        <Button {disabled}>
+        <button class="nes-btn" {disabled}>
           <Paperclip class="mx-auto px-4 max-w-7xl" />
           Choose Files
-        </Button>
+        </button>
 
         {#if enableCameraCapture}
-          <Button
-            variant="secondary"
+          <button class="nes-btn"
             onclick={handleCameraCaptureClick}
             {disabled}
           >
             <Camera class="mx-auto px-4 max-w-7xl" />
             Camera
-          </Button>
+          </button>
         {/if}
 
         {#if enableAudioRecording}
-          <Button
-            variant="secondary"
+          <button class="nes-btn"
             onclick={handleAudioRecordingClick}
             {disabled}
             class={isRecording ? "bg-red-100 text-red-700" : ""}
           >
             <Mic class="mx-auto px-4 max-w-7xl" />
             {isRecording ? "Stop Recording" : "Record Audio"}
-          </Button>
+          </button>
         {/if}
       </div>
     </div>
@@ -670,7 +669,7 @@ https://svelte.dev/e/js_parse_error -->
 
         <div class="mx-auto px-4 max-w-7xl">
           {#if !autoUpload && files.some((f) => f.status === "pending")}
-            <Button
+            <button class="nes-btn"
               size="sm"
               onclick={() => uploadFiles()}
               disabled={isUploading}
@@ -681,17 +680,17 @@ https://svelte.dev/e/js_parse_error -->
                 <Upload class="mx-auto px-4 max-w-7xl" />
               {/if}
               Upload All
-            </Button>
+            </button>
           {/if}
 
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => (files = [])}
             disabled={isUploading}
           >
             Clear All
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -758,28 +757,28 @@ https://svelte.dev/e/js_parse_error -->
             <!-- Actions -->
             <div class="mx-auto px-4 max-w-7xl">
               {#if file.status === "success" && file.url}
-                <Button
+                <button class="nes-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => window.open(file.url, "_blank")}
                   aria-label="View {file.name}"
                 >
                   <Eye class="mx-auto px-4 max-w-7xl" />
-                </Button>
+                </button>
               {/if}
 
               {#if file.status === "error"}
-                <Button
+                <button class="nes-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => retryUpload(file.id)}
                   aria-label="Retry upload of {file.name}"
                 >
                   <Upload class="mx-auto px-4 max-w-7xl" />
-                </Button>
+                </button>
               {/if}
 
-              <Button
+              <button class="nes-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() => removeFile(file.id)}
@@ -787,7 +786,7 @@ https://svelte.dev/e/js_parse_error -->
                 aria-label="Remove {file.name}"
               >
                 <Trash2 class="mx-auto px-4 max-w-7xl" />
-              </Button>
+              </button>
             </div>
           </div>
         {/each}

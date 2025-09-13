@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Evidence } from "$lib/data/types";
   import { onMount } from "svelte";
 
@@ -82,7 +83,7 @@
   <div class="evidence-list">
     {#each evidenceList as evd (evd.id)}
       <div
-        class="evidence-card"
+        class="evidence-nier-bits-card"
         draggable={true}
         ondragstart={(e) => handleDragStart(e, evd)}
         role="button"

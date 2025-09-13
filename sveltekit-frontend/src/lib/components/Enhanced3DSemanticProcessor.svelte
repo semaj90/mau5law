@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, onDestroy } from 'svelte';
   import WebGPUWebAssemblyBridge from '$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte';
@@ -241,18 +242,18 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="space-y-6">
   <!-- Control Panel -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         🎯 3D Semantic Analysis
         {#if processing}
           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Processing...</span>
         {:else if results}
           <Badge class="bg-green-100 text-green-800">Complete</Badge>
         {/if}
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="space-y-4">
         <!-- Input -->
         <div>
@@ -289,17 +290,17 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Visualization -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- 3D Spatial View -->
-    <Card>
-      <CardHeader>
-        <CardTitle>📐 3D Spatial Mapping</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">📐 3D Spatial Mapping</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="relative">
           <canvas
             bind:this={canvasRef}
@@ -318,15 +319,15 @@ https://svelte.dev/e/js_parse_error -->
             <p><strong>Nodes:</strong> {spatialPoints.length} semantic clusters in 3D space</p>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Results Panel -->
-    <Card>
-      <CardHeader>
-        <CardTitle>📊 Analysis Results</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">📊 Analysis Results</h3>
+      </div>
+      <div class="yorha-panel-content">
         {#if processing}
           <div class="flex items-center gap-2 text-blue-600">
             <div class="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
@@ -378,8 +379,8 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm mt-1">Using WebGPU + WebAssembly pipeline</p>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 
   <!-- Integration Bridge -->

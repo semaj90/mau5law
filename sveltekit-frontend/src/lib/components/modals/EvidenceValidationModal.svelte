@@ -4,6 +4,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'aiEvent' has already been declared
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     open?: boolean;
     evidence?: unknown;
@@ -142,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
             onclick={() => closeModal()}
           >
             ×
-          </Button>
+          </button>
         </DialogPrimitive.Close>
       </div>
 
@@ -217,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
               >
                 <CheckCircle class="space-y-4" />
                 Yes, it's accurate
-              </Button>
+              </button>
 
               <Button
                 variant={validationChoice === "reject" ? "danger" : "outline"}
@@ -226,7 +227,7 @@ https://svelte.dev/e/js_parse_error -->
               >
                 <XCircle class="space-y-4" />
                 No, needs correction
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -340,7 +341,7 @@ https://svelte.dev/e/js_parse_error -->
                     onclick={() => addTag()}
                   >
                     <Tag class="space-y-4" />
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
@@ -355,7 +356,7 @@ https://svelte.dev/e/js_parse_error -->
             disabled={isSubmitting}
           >
             Cancel
-          </Button>
+          </button>
 
           <Button 
             class="bits-btn"
@@ -371,7 +372,7 @@ https://svelte.dev/e/js_parse_error -->
               <Save class="space-y-4" />
               Submit Validation
             {/if}
-          </Button>
+          </button>
         </div>
       {/if}
     </div>

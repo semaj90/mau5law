@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, onDestroy } from 'svelte';
   import { webLlamaService } from '$lib/ai/webasm-llamacpp';
@@ -225,9 +226,9 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="space-y-6">
   <!-- Header -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         🔗 WebGPU + WebAssembly Integration Bridge
         {#if loading}
           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Initializing...</span>
@@ -236,9 +237,9 @@ https://svelte.dev/e/js_parse_error -->
         {:else if error}
           <Badge class="bg-red-100 text-red-800">Error</Badge>
         {/if}
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       {#if error}
         <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
           <p class="text-red-800 font-medium">❌ Initialization Error</p>
@@ -275,16 +276,16 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- System Status -->
   {#if initialized && systemInfo}
-    <Card>
-      <CardHeader>
-        <CardTitle>🔍 System Status</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">🔍 System Status</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- WebGPU Status -->
           <div class="space-y-2">
@@ -363,17 +364,17 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Interactive Demo -->
   {#if initialized && enableDemo}
-    <Card>
-      <CardHeader>
-        <CardTitle>🧪 Live Demo</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">🧪 Live Demo</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-2" for="input-text">Input Text:</label><textarea id="input-text" 
@@ -399,8 +400,8 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

@@ -11,6 +11,7 @@
   - Multiple material types (basic, phong, PBR)
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount } from 'svelte';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
@@ -373,7 +374,7 @@
   onfocus={handleFocus}
   onblur={handleBlur}
   onkeydown={handleKeyDown}
-  class="n64-card {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
+  class="n64-nier-bits-card {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
   class:clickable
   class:hoverable
   class:disabled
@@ -396,12 +397,12 @@
   aria-busy={loading}
 >
   {#if header}
-    <div class="card-header">
+    <div class="nier-bits-yorha-panel-header">
       {@render header()}
     </div>
   {/if}
 
-  <div class="card-content">
+  <div class="nier-bits-yorha-panel-content">
     {#if loading}
       <div class="loading-overlay">
         <div class="n64-spinner"></div>
@@ -413,7 +414,7 @@
   </div>
 
   {#if footer}
-    <div class="card-footer">
+    <div class="nier-bits-yorha-panel-content">
       {@render footer()}
     </div>
   {/if}

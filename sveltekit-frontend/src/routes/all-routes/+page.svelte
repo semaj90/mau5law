@@ -1,6 +1,8 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import { ButtonBits, CardBits, InputBits, SelectBits, TabsBits } from '$lib/components/ui/bits-ui';
 
   interface RouteStatus {
     path: string;
@@ -282,184 +284,471 @@
   });
 </script>
 
-<div class="min-h-screen bg-nier-bg-primary text-nier-text-primary p-8">
-  <div class="max-w-7xl mx-auto">
-    <!-- Header -->
-    <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-nier-accent-warm mb-4 font-mono">
-        🚀 All Routes Testing Dashboard
-      </h1>
-      <p class="text-nier-text-secondary mb-6">
-        Comprehensive testing and monitoring of all application routes
-      </p>
+<!-- Page Header -->
+<CardBits variant="elevated" class="nes-container with-title">
+  <p class="title">🚀 All Routes Testing Dashboard</p>
 
-      <!-- Stats -->
-      {#if routes.length > 0}
-        <div class="flex justify-center gap-6 mb-6">
-          <div class="bg-green-500/20 text-green-400 px-4 py-2 rounded border border-green-500/30">
-            ✅ Working: {stats.working}
-          </div>
-          <div class="bg-yellow-500/20 text-yellow-400 px-4 py-2 rounded border border-yellow-500/30">
-            🔄 Redirects: {stats.redirects}
-          </div>
-          <div class="bg-red-500/20 text-red-400 px-4 py-2 rounded border border-red-500/30">
-            ❌ Errors: {stats.errors}
-          </div>
-          <div class="bg-blue-500/20 text-blue-400 px-4 py-2 rounded border border-blue-500/30">
-            📊 Total: {stats.total}
-          </div>
+  <div class="route-dashboard">
+    <p class="dashboard-description nes-text is-primary">
+      Comprehensive testing and monitoring of all application routes
+    </p>
+
+    <!-- Stats -->
+    {#if routes.length > 0}
+      <div class="stats-grid">
+        <div class="stat-nier-bits-card nes-badge">
+          <span class="is-success">✅ Working: {stats.working}</span>
         </div>
-      {/if}
-    </div>
-
-    <!-- Controls -->
-    <div class="mb-8 space-y-4">
-      <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-        <!-- Test Button -->
-        <button
-          class="nes-btn is-success"
-          onclick={testAllRoutes}
-          disabled={isLoading}
-        >
-          {#if isLoading}
-            🔄 Testing... {progress}%
-          {:else}
-            🧪 Test All Routes
-          {/if}
-        </button>
-
-        <!-- Search -->
-        <div class="flex gap-4 items-center">
-          <label class="text-nier-text-secondary">Search:</label>
-          <input
-            type="text"
-            class="nes-input"
-            bind:value={searchQuery}
-            placeholder="Filter routes..."
-          />
+        <div class="stat-nier-bits-card nes-badge">
+          <span class="is-warning">🔄 Redirects: {stats.redirects}</span>
+        </div>
+        <div class="stat-nier-bits-card nes-badge">
+          <span class="is-error">❌ Errors: {stats.errors}</span>
+        </div>
+        <div class="stat-nier-bits-card nes-badge">
+          <span class="is-primary">📊 Total: {stats.total}</span>
         </div>
       </div>
+    {/if}
+  </div>
+</CardBits>
 
-      <!-- Category Filter -->
-      <div class="flex flex-wrap gap-2 justify-center">
-        {#each categories as category}
-          <button
-            class="px-3 py-1 rounded text-sm border transition-colors {filter === category.id
-              ? `${category.color} text-white`
-              : 'bg-nier-bg-secondary text-nier-text-secondary border-nier-border-muted hover:bg-nier-bg-tertiary'}"
-            onclick={() => filter = category.id}
-          >
-            {category.name}
-            {#if routes.length > 0}
+<!-- Controls -->
+<CardBits variant="outlined" class="nes-container is-rounded">
+  <div class="controls-section">
+    <div class="control-row">
+      <!-- Test Button -->
+      <ButtonBits
+        variant={isLoading ? "secondary" : "success"}
+        size="lg"
+        loading={isLoading}
+        disabled={isLoading}
+        onclick={testAllRoutes}
+        class="nes-btn {isLoading ? 'is-disabled' : 'is-success'}"
+      >
+        {#if isLoading}
+          🔄 Testing... {progress}%
+        {:else}
+          🧪 Test All Routes
+        {/if}
+      </ButtonBits>
+
+      <!-- Search -->
+      <div class="search-control">
+        <InputBits
+          label="Search Routes"
+          bind:value={searchQuery}
+          placeholder="Filter routes..."
+          variant="outlined"
+          size="md"
+          class="nes-input"
+        />
+      </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="category-filters">
+      {#each categories as category}
+        <ButtonBits
+          variant={filter === category.id ? 'primary' : 'ghost'}
+          size="sm"
+          onclick={() => filter = category.id}
+          class="category-btn nes-btn {filter === category.id ? 'is-primary' : 'is-dark'}"
+        >
+          {category.name}
+          {#if routes.length > 0}
+            <span class="category-count">
               ({routes.filter(r => category.id === 'all' || r.category === category.id).length})
-            {/if}
-          </button>
+            </span>
+          {/if}
+        </ButtonBits>
+      {/each}
+    </div>
+  </div>
+</CardBits>
+
+<!-- Progress Bar -->
+{#if isLoading}
+  <CardBits variant="filled" class="nes-container is-rounded">
+    <div class="progress-section">
+      <div class="nes-container is-dark progress-bar-container">
+        <div
+          class="progress-bar"
+          style="width: {progress}%"
+        ></div>
+      </div>
+      <p class="progress-text nes-text is-primary">
+        Testing routes... {progress}%
+      </p>
+    </div>
+  </CardBits>
+{/if}
+
+<!-- Routes Table -->
+{#if routes.length > 0}
+  <CardBits variant="elevated" class="nes-container with-title">
+    <p class="title">Route Test Results ({filteredRoutes.length} routes)</p>
+
+    <div class="routes-table-container">
+      <div class="routes-grid">
+        {#each filteredRoutes as route (route.path)}
+          <div class="route-nier-bits-card nes-container is-rounded">
+            <div class="route-header">
+              <div class="route-status">
+                <span class="status-indicator {getStatusColor(route.status)} nes-badge">
+                  <span class={route.status >= 200 && route.status < 300 ? 'is-success' : route.status >= 400 ? 'is-error' : 'is-warning'}>
+                    {getStatusText(route.status, route.error)}
+                  </span>
+                </span>
+              </div>
+              <div class="route-actions">
+                {#if route.status >= 200 && route.status < 400}
+                  <ButtonBits
+                    to={route.path}
+                    variant="primary"
+                    size="xs"
+                    class="nes-btn is-primary action-btn"
+                  >
+                    Visit
+                  </ButtonBits>
+                {/if}
+                <ButtonBits
+                  variant="ghost"
+                  size="xs"
+                  onclick={() => testRoute(route).then(result => {
+                    const index = routes.findIndex(r => r.path === route.path);
+                    if (index >= 0) routes[index] = result;
+                  })}
+                  class="nes-btn is-dark action-btn"
+                >
+                  Retest
+                </ButtonBits>
+              </div>
+            </div>
+
+            <div class="route-details">
+              <div class="route-path nes-text is-primary">
+                <code>{route.path}</code>
+              </div>
+              <div class="route-description">
+                {route.description}
+              </div>
+              <div class="route-meta">
+                <span class="category-badge nes-badge">
+                  <span class="is-dark">{getCategoryInfo(route.category).name}</span>
+                </span>
+                <span class="load-time nes-text is-disabled">
+                  {route.loadTime}ms
+                </span>
+              </div>
+            </div>
+          </div>
         {/each}
       </div>
     </div>
+  </CardBits>
+{:else if !isLoading}
+  <CardBits variant="outlined" class="nes-container is-rounded empty-state">
+    <div class="empty-content">
+      <p class="nes-text is-disabled">No routes tested yet.</p>
+      <ButtonBits
+        variant="primary"
+        size="lg"
+        onclick={testAllRoutes}
+        class="nes-btn is-primary"
+      >
+        🚀 Start Testing Routes
+      </ButtonBits>
+    </div>
+  </CardBits>
+{/if}
 
-    <!-- Progress Bar -->
-    {#if isLoading}
-      <div class="mb-6">
-        <div class="bg-nier-bg-secondary rounded-full h-4 overflow-hidden">
-          <div
-            class="bg-nier-accent-warm h-full transition-all duration-300"
-            style="width: {progress}%"
-          ></div>
-        </div>
-        <p class="text-center text-sm text-nier-text-secondary mt-2">
-          Testing routes... {progress}%
-        </p>
-      </div>
-    {/if}
-
-    <!-- Routes Table -->
-    {#if routes.length > 0}
-      <div class="nes-container with-title">
-        <h3 class="title">Route Test Results ({filteredRoutes.length} routes)</h3>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-nier-border-muted">
-                <th class="text-left py-2 px-3">Status</th>
-                <th class="text-left py-2 px-3">Route</th>
-                <th class="text-left py-2 px-3">Description</th>
-                <th class="text-left py-2 px-3">Category</th>
-                <th class="text-left py-2 px-3">Load Time</th>
-                <th class="text-left py-2 px-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each filteredRoutes as route (route.path)}
-                <tr class="border-b border-nier-border-muted/50 hover:bg-nier-bg-secondary/50">
-                  <td class="py-3 px-3">
-                    <span class="font-mono font-bold {getStatusColor(route.status)}">
-                      {getStatusText(route.status, route.error)}
-                    </span>
-                  </td>
-                  <td class="py-3 px-3">
-                    <code class="text-nier-accent-cool text-sm">{route.path}</code>
-                  </td>
-                  <td class="py-3 px-3">
-                    {route.description}
-                  </td>
-                  <td class="py-3 px-3">
-                    <span class="px-2 py-1 rounded text-xs {getCategoryInfo(route.category).color} text-white">
-                      {getCategoryInfo(route.category).name}
-                    </span>
-                  </td>
-                  <td class="py-3 px-3">
-                    <span class="text-nier-text-secondary">
-                      {route.loadTime}ms
-                    </span>
-                  </td>
-                  <td class="py-3 px-3">
-                    <div class="flex gap-2">
-                      {#if route.status >= 200 && route.status < 400}
-                        <a
-                          href={route.path}
-                          target="_blank"
-                          class="text-nier-accent-cool hover:text-nier-accent-warm text-sm underline"
-                        >
-                          Visit
-                        </a>
-                      {/if}
-                      <button
-                        class="text-nier-text-secondary hover:text-nier-text-primary text-sm underline"
-                        onclick={() => testRoute(route).then(result => {
-                          const index = routes.findIndex(r => r.path === route.path);
-                          if (index >= 0) routes[index] = result;
-                        })}
-                      >
-                        Retest
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    {:else if !isLoading}
-      <div class="text-center py-12">
-        <p class="text-nier-text-secondary mb-4">No routes tested yet.</p>
-        <button class="nes-btn is-primary" onclick={testAllRoutes}>
-          🚀 Start Testing Routes
-        </button>
-      </div>
-    {/if}
-
-    <!-- Footer -->
-    <div class="mt-8 text-center text-nier-text-secondary text-sm">
-      <p>🎮 YoRHa Legal AI Platform - Route Testing Dashboard</p>
-      <p>Total Routes Discovered: {ALL_ROUTES.length}</p>
+<!-- Footer -->
+<CardBits variant="outlined" class="nes-container is-rounded footer-nier-bits-card">
+  <div class="footer-content">
+    <p class="nes-text is-warning">🎮 YoRHa Legal AI Platform - Route Testing Dashboard</p>
+    <div class="footer-stats">
+      <span class="nes-badge">
+        <span class="is-primary">Total Routes: {ALL_ROUTES.length}</span>
+      </span>
+      <span class="nes-badge">
+        <span class="is-dark">Categories: {categories.length - 1}</span>
+      </span>
+      {#if routes.length > 0}
+        <span class="nes-badge">
+          <span class="is-success">Success Rate: {Math.round((stats.working / stats.total) * 100)}%</span>
+        </span>
+      {/if}
     </div>
   </div>
-</div>
+</CardBits>
 
 <style>
+  /* Page Layout */
+  .route-dashboard {
+    padding: 1rem 0;
+  }
+
+  .dashboard-description {
+    font-size: 0.875rem !important;
+    margin-bottom: 1.5rem !important;
+    text-align: center;
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .stat-card {
+    text-align: center;
+    font-size: 0.75rem !important;
+  }
+
+  /* Controls Section */
+  .controls-section {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .control-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .control-row {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  .search-control {
+    min-width: 250px;
+  }
+
+  /* Category Filters */
+  .category-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  :global(.category-btn) {
+    font-size: 0.625rem !important;
+    padding: 0.375rem 0.75rem !important;
+  }
+
+  .category-count {
+    font-size: 0.5rem;
+    opacity: 0.8;
+    margin-left: 0.25rem;
+  }
+
+  /* Progress Section */
+  .progress-section {
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .progress-bar-container {
+    position: relative;
+    height: 20px !important;
+    margin-bottom: 1rem !important;
+    background: rgba(26, 26, 46, 0.8) !important;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--n64-primary), var(--n64-secondary));
+    transition: width 0.3s ease;
+    position: relative;
+  }
+
+  .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .progress-text {
+    font-size: 0.875rem !important;
+    margin: 0 !important;
+  }
+
+  /* Routes Grid */
+  .routes-table-container {
+    padding: 1rem 0;
+  }
+
+  .routes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .routes-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Route Cards */
+  .route-card {
+    background: rgba(26, 26, 46, 0.5) !important;
+    border: 2px solid var(--n64-primary) !important;
+    transition: all 0.3s ease;
+  }
+
+  .route-card:hover {
+    border-color: var(--n64-secondary) !important;
+    box-shadow: 0 0 15px rgba(74, 144, 226, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .route-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .route-status {
+    flex-shrink: 0;
+  }
+
+  .status-indicator {
+    font-size: 0.75rem !important;
+    font-family: 'Press Start 2P', cursive !important;
+  }
+
+  .route-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  :global(.action-btn) {
+    font-size: 0.5rem !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+
+  /* Route Details */
+  .route-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .route-path {
+    font-size: 0.75rem !important;
+    word-break: break-all;
+    margin: 0 !important;
+  }
+
+  .route-path code {
+    background: rgba(74, 144, 226, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .route-description {
+    font-size: 0.625rem;
+    color: var(--nier-text-secondary);
+    line-height: 1.4;
+  }
+
+  .route-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .category-badge {
+    font-size: 0.5rem !important;
+  }
+
+  .load-time {
+    font-size: 0.5rem !important;
+    margin: 0 !important;
+  }
+
+  /* Empty State */
+  .empty-state {
+    padding: 3rem 1rem !important;
+    text-align: center;
+    background: rgba(26, 26, 46, 0.3) !important;
+  }
+
+  .empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .empty-content p {
+    font-size: 0.875rem !important;
+    margin: 0 !important;
+  }
+
+  /* Footer */
+  .footer-card {
+    margin-top: 2rem;
+    background: rgba(26, 26, 46, 0.3) !important;
+  }
+
+  .footer-content {
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .footer-content p {
+    font-size: 0.875rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .footer-stats {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-stats .nes-badge {
+    font-size: 0.625rem !important;
+  }
+
+  /* Gaming Enhancements */
+  :global(.nes-container.with-title .title) {
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 1rem !important;
+    color: var(--nes-warning, #f5a623) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Legacy styles preserved */
   .nes-input {
     width: 250px;
   }
@@ -469,6 +758,38 @@
   }
 
   .nes-container {
-    margin: 0;
+    margin: 1rem 0;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 640px) {
+    .control-row {
+      align-items: stretch;
+    }
+
+    .search-control {
+      min-width: auto;
+      width: 100%;
+    }
+
+    .category-filters {
+      gap: 0.25rem;
+    }
+
+    :global(.category-btn) {
+      font-size: 0.5rem !important;
+      padding: 0.25rem 0.5rem !important;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .footer-stats {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
   }
 </style>

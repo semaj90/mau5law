@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { apiFetch } from "$lib/api/clients/api-client";
   import { onMount } from "svelte";
   let canvasEl: HTMLCanvasElement = $state()

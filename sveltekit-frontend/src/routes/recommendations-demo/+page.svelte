@@ -3,6 +3,7 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token > -->
 <!-- Legal AI Recommendations Demo - SSR with Svelte 5 + Melt-UI + Bits-UI v2 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { page } from '$app/state';
   import FOAFModal from '$lib/components/recommendations/FOAFModal.svelte';
   import DidYouMeanSuggestions from '$lib/components/recommendations/DidYouMeanSuggestions.svelte';

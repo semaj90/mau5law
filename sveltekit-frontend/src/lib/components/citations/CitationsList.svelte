@@ -12,6 +12,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   - Detective mode integration
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   const { caseId: string, detectiveMode = false, readonly = false } = $props();
 
   import { onMount, createEventDispatcher } from 'svelte';

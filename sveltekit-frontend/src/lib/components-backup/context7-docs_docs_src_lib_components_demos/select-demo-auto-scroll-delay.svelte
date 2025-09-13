@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Select } from "bits-ui";
   	import Check from "phosphor-svelte/lib/Check";
   	import Palette from "phosphor-svelte/lib/Palette";
@@ -60,9 +61,9 @@
 		class="h-input rounded-9px border-border-input bg-background data-placeholder:text-foreground-alt/50 inline-flex w-[296px] touch-none select-none items-center border px-[11px] text-sm transition-colors"
 		aria-label="Select a theme"
 	>
-		<Palette class="text-muted-foreground mr-[9px] size-6" />
+		<Palette class="nes-text is-disabled mr-[9px] size-6" />
 		{selectedLabel}
-		<CaretUpDown class="text-muted-foreground ml-auto size-6" />
+		<CaretUpDown class="nes-text is-disabled ml-auto size-6" />
 	</Select.Trigger>
 	<Select.Portal>
 		<Select.Content

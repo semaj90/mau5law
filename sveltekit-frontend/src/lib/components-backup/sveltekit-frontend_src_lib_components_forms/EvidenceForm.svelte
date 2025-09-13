@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'data' has already been declared -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     evidence: Evidence | null ;
     data: any
@@ -111,16 +112,16 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <div class="space-y-4">
-    <Button type="button" variant="ghost" onclick={() => dispatch("cancel")}
+    <button class="nes-btn" type="button" variant="ghost" onclick={() => dispatch("cancel")}
       >Cancel</Button
     >
-    <Button type="submit" disabled={$submitting}>
+    <button class="nes-btn" type="submit" disabled={$submitting}>
       {#if $submitting}
         Saving...
       {:else}
         {evidence ? "Save Changes" : "Create Evidence"}
       {/if}
-    </Button>
+    </button>
   </div>
 </form>
 

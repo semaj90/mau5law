@@ -497,7 +497,7 @@ https://svelte.dev/e/js_parse_error -->
             class="flex-1"
             on:keydown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
           />
-          <Button.Root
+          <button class="nes-btn".Root
             type="button"
             variant="outline"
             onclick={addTag}
@@ -622,7 +622,7 @@ https://svelte.dev/e/js_parse_error -->
         
 
         
-          <Button.Root
+          <button class="nes-btn".Root
             type="button"
             variant="outline"
             onclick={resetForm}

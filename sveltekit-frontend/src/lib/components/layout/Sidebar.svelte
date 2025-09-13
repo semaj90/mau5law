@@ -4,6 +4,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     open?: unknown;
   }
@@ -130,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
           <h1 class="text-sm font-semibold text-foreground">
             Enhanced Legal AI
           </h1>
-          <p class="text-xs text-muted-foreground">
+          <p class="text-xs nes-text is-disabled">
             Justice Through Technology
           </p>
         </div>
@@ -140,14 +141,14 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Quick actions -->
     <div class="p-4 border-b border-nier-gray">
       <div class="grid grid-cols-2 gap-2">
-        <Button variant="primary" size="sm" class="justify-start bits-btn bits-btn">
+        <button class="nes-btn is-primary" size="sm" class="justify-start bits-btn bits-btn">
           <Plus class="mr-2 h-4 w-4" />
           New Case
-        </Button>
+        </button>
         <Button variant="ghost" size="sm" class="justify-start bits-btn bits-btn">
           <Search class="mr-2 h-4 w-4" />
           Search
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -203,7 +204,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Analytics section -->
         <div class="pt-4">
           <h3
-            class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider"
+            class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider"
           >
             Analytics
           </h3>
@@ -237,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Settings section -->
         <div class="pt-4">
           <h3
-            class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider"
+            class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider"
           >
             System
           </h3>
@@ -278,7 +279,7 @@ https://svelte.dev/e/js_parse_error -->
         ></div>
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-foreground">System Status</p>
-          <p class="text-xs text-muted-foreground truncate">
+          <p class="text-xs nes-text is-disabled truncate">
             All systems operational
           </p>
         </div>

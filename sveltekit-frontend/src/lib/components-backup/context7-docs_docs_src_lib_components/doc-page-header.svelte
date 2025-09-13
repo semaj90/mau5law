@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import type { DocMetadata } from "$lib/utils/docs.js";
   	import { Tooltip } from "bits-ui";
   	import PageHeaderDescription from "./page-header/page-header-description.svelte";

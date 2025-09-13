@@ -8,6 +8,7 @@ https://svelte.dev/e/expected_token -->
 </script>, template, and <style>.
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from "svelte";
   import {
     Button
@@ -299,15 +300,15 @@ https://svelte.dev/e/expected_token -->
   class="hidden"
 />
 
-<Card class="w-full">
-  <CardHeader class="pb-4">
-    <CardTitle class="flex items-center gap-2">
+<NesCard class="w-full">
+  <div class="yorha-panel-header" class="pb-4">
+    <h3 class="nes-text is-primary" class="flex items-center gap-2">
       <Upload class="h-5 w-5" />
       {compact ? "Upload Files" : "Evidence Upload"}
-    </CardTitle>
-  </CardHeader>
+    </h3>
+  </div>
 
-  <CardContent class="space-y-6">
+  <div class="yorha-panel-content" class="space-y-6">
     <!-- Drop Zone -->
     <div
       class="border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer border-muted-foreground border-opacity-25 hover:border-primary hover:border-opacity-50"
@@ -330,7 +331,7 @@ https://svelte.dev/e/expected_token -->
             <p class="text-sm font-medium">Uploading {currentUploadFile}...</p>
             {#if uploadProgress[currentUploadFile] !== undefined}
               <progress value={uploadProgress[currentUploadFile]} max="100" class="w-64" />
-              <p class="text-xs text-muted-foreground">
+              <p class="text-xs nes-text is-disabled">
                 {Math.round(uploadProgress[currentUploadFile])}% complete
               </p>
             {/if}
@@ -338,12 +339,12 @@ https://svelte.dev/e/expected_token -->
         </div>
       {:else}
         <div class="space-y-4">
-          <Upload class="h-12 w-12 mx-auto text-muted-foreground" />
+          <Upload class="h-12 w-12 mx-auto nes-text is-disabled" />
           <div>
             <p class="text-lg font-medium">
               {selectedFiles.length > 0 ? "Add more files" : "Drop files here or click to browse"}
             </p>
-            <p class="text-sm text-muted-foreground mt-1">
+            <p class="text-sm nes-text is-disabled mt-1">
               Supports: Images, Videos, Audio, Documents (Max {maxSizeMB}MB each)
             </p>
           </div>
@@ -362,21 +363,21 @@ https://svelte.dev/e/expected_token -->
                 {#if previews[file.name]}
                   <img src={previews[file.name]} alt={file.name} class="h-12 w-12 object-cover rounded" />
                 {:else}
-                  <svelte:component this={getFileIcon(file)} class="h-12 w-12 text-muted-foreground" />
+                  <svelte:component this={getFileIcon(file)} class="h-12 w-12 nes-text is-disabled" />
                 {/if}
               </div>
 
               <div class="flex-1 min-w-0">
                 <p class="font-medium truncate">{file.name}</p>
-                <p class="text-sm text-muted-foreground">{formatFileSize(file.size)} • {file.type}</p>
+                <p class="text-sm nes-text is-disabled">{formatFileSize(file.size)} • {file.type}</p>
                 {#if uploadProgress[file.name] !== undefined}
                   <progress value={uploadProgress[file.name]} max="100" class="mt-2 w-full" />
                 {/if}
               </div>
 
-              <Button variant="ghost" size="sm" onclick={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
+              <button class="nes-btn" variant="ghost" size="sm" onclick={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
                 <X class="h-4 w-4" />
-              </Button>
+              </button>
             </div>
           {/each}
         </div>
@@ -430,7 +431,7 @@ https://svelte.dev/e/expected_token -->
           <Label for="tags">Tags</Label>
           <div class="flex gap-2">
             <Input bind:value={tagInput} placeholder="Add a tag" disabled={isUploading} keydown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())} />
-            <Button class="bits-btn" type="button" variant="outline" onclick={addTag} disabled={isUploading}>Add</Button>
+            <Button class="bits-btn" type="button" variant="outline" onclick={addTag} disabled={isUploading}>Add</button>
           </div>
 
           {#if formState.tags.length > 0}
@@ -477,21 +478,21 @@ https://svelte.dev/e/expected_token -->
     {/if}
 
     <div class="flex justify-between items-center pt-4 border-t">
-      <p class="text-sm text-muted-foreground">
+      <p class="text-sm nes-text is-disabled">
         {selectedFiles.length} file{selectedFiles.length !== 1 ? "s" : ""} selected
         {#if multiple}(max {maxFiles}){/if}
       </p>
 
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="outline" onclick={() => oncancel?.()} disabled={isUploading}>Cancel</Button>
+        <Button class="bits-btn" variant="outline" onclick={() => oncancel?.()} disabled={isUploading}>Cancel</button>
 
-        <Button onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
+        <button class="nes-btn" onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
           {#if isUploading}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />Uploading...
           {:else}
             <Upload class="h-4 w-4 mr-2" />Upload {selectedFiles.length} file{selectedFiles.length !== 1 ? "s" : ""}
           {/if}
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -508,8 +509,8 @@ https://svelte.dev/e/expected_token -->
         </div>
       </div>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   /* Minimal local styles; utilities provided by UnoCSS or your CSS framework. */

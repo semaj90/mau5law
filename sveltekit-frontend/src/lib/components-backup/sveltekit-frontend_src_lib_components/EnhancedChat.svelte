@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Chat Component with bits-ui, melt-ui, shadcn-svelte integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount, onDestroy } from 'svelte';
   	import { useMachine } from '@xstate/svelte';
   	import { createMachine, assign } from 'xstate';
@@ -355,22 +356,22 @@ https://svelte.dev/e/js_parse_error -->
 					<span class="text-sm text-red-700">{$state.context.error}</span>
 				</div>
 				<div class="flex space-x-2">
-					<Button 
+					<button class="nes-btn" 
 						size="sm" 
 						variant="outline"
 						onclick={() => send({ type: 'RETRY' })}
 						class="text-red-700 border-red-300 hover:bg-red-50"
 					>
 						Retry
-					</Button>
-					<Button 
+					</button>
+					<button class="nes-btn" 
 						size="sm" 
 						variant="ghost"
 						onclick={() => send({ type: 'CLEAR_ERROR' })}
 						class="text-red-700 hover:bg-red-50"
 					>
 						Dismiss
-					</Button>
+					</button>
 				</div>
 			</div>
 		</div>
@@ -412,7 +413,7 @@ https://svelte.dev/e/js_parse_error -->
 						</svg>
 						Send
 					{/if}
-				</Button>
+				</button>
 			</div>
 		</div>
 		

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import { Button } from '$lib/components/ui/button/index.js';
   	import { Input } from '$lib/components/ui/input/index.js';
@@ -189,11 +190,11 @@
 
 		<!-- System Status Cards -->
 		<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-			<Card>
-				<CardHeader class="pb-2">
-					<CardTitle class="text-sm font-medium">GPU Acceleration</CardTitle>
-				</CardHeader>
-				<CardContent>
+			<NesCard>
+				<div class="yorha-panel-header" class="pb-2">
+					<h3 class="nes-text is-primary" class="text-sm font-medium">GPU Acceleration</h3>
+				</div>
+				<div class="yorha-panel-content">
 					<div class="flex items-center space-x-2">
 						{#if systemMetrics.gpuAcceleration}
 							<CheckCircle class="h-4 w-4 text-green-500" />
@@ -203,14 +204,14 @@
 							<span class="text-sm text-yellow-600">CPU Mode</span>
 						{/if}
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 
-			<Card>
-				<CardHeader class="pb-2">
-					<CardTitle class="text-sm font-medium">Ollama Status</CardTitle>
-				</CardHeader>
-				<CardContent>
+			<NesCard>
+				<div class="yorha-panel-header" class="pb-2">
+					<h3 class="nes-text is-primary" class="text-sm font-medium">Ollama Status</h3>
+				</div>
+				<div class="yorha-panel-content">
 					<div class="flex items-center space-x-2">
 						{#if systemMetrics.ollamaStatus === 'healthy'}
 							<CheckCircle class="h-4 w-4 text-green-500" />
@@ -220,14 +221,14 @@
 							<span class="text-sm text-red-600">Offline</span>
 						{/if}
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 
-			<Card>
-				<CardHeader class="pb-2">
-					<CardTitle class="text-sm font-medium">Processing Speed</CardTitle>
-				</CardHeader>
-				<CardContent>
+			<NesCard>
+				<div class="yorha-panel-header" class="pb-2">
+					<h3 class="nes-text is-primary" class="text-sm font-medium">Processing Speed</h3>
+				</div>
+				<div class="yorha-panel-content">
 					<div class="text-sm">
 						{#if isProcessing}
 							<span class="text-blue-600">{systemMetrics.processingSpeed.toFixed(0)} docs/min</span>
@@ -235,32 +236,32 @@
 							<span class="text-gray-500">Idle</span>
 						{/if}
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 
-			<Card>
-				<CardHeader class="pb-2">
-					<CardTitle class="text-sm font-medium">Case AI Score</CardTitle>
-				</CardHeader>
-				<CardContent>
+			<NesCard>
+				<div class="yorha-panel-header" class="pb-2">
+					<h3 class="nes-text is-primary" class="text-sm font-medium">Case AI Score</h3>
+				</div>
+				<div class="yorha-panel-content">
 					<div class="text-sm font-semibold">
 						{systemMetrics.caseAIScore}/100
 					</div>
 					<Progress value={systemMetrics.caseAIScore} class="h-2 mt-1" />
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 		</div>
 
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 			<!-- Document Processing Panel -->
-			<Card>
-				<CardHeader>
-					<CardTitle class="flex items-center space-x-2">
+			<NesCard>
+				<div class="yorha-panel-header">
+					<h3 class="nes-text is-primary" class="flex items-center space-x-2">
 						<Upload class="h-5 w-5" />
 						<span>Multi-PDF Document Processing</span>
-					</CardTitle>
-				</CardHeader>
-				<CardContent class="space-y-4">
+					</h3>
+				</div>
+				<div class="yorha-panel-content" class="space-y-4">
 					<!-- File Upload -->
 					<div>
 						<label for="pdf-files" class="block text-sm font-medium text-gray-700 mb-2">
@@ -312,7 +313,7 @@
 								<Upload class="h-4 w-4 mr-2" />
 								Process Documents
 							{/if}
-						</Button>
+						</button>
 					</div>
 
 					<!-- Processing Summary -->
@@ -339,18 +340,18 @@
 							</div>
 						</div>
 					{/if}
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 
 			<!-- Enhanced RAG Query Panel -->
-			<Card>
-				<CardHeader>
-					<CardTitle class="flex items-center space-x-2">
+			<NesCard>
+				<div class="yorha-panel-header">
+					<h3 class="nes-text is-primary" class="flex items-center space-x-2">
 						<Search class="h-5 w-5" />
 						<span>Enhanced RAG Query</span>
-					</CardTitle>
-				</CardHeader>
-				<CardContent class="space-y-4">
+					</h3>
+				</div>
+				<div class="yorha-panel-content" class="space-y-4">
 					<!-- Query Input -->
 					<div>
 						<label for="rag-query" class="block text-sm font-medium text-gray-700 mb-2">
@@ -373,7 +374,7 @@
 						>
 							<Brain class="h-4 w-4 mr-2" />
 							Query Enhanced RAG
-						</Button>
+						</button>
 					</div>
 
 					<!-- RAG Results -->
@@ -413,17 +414,17 @@
 							</div>
 						</div>
 					{/if}
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 		</div>
 
 		<!-- Processed Documents Display -->
 		{#if processedDocuments.length > 0}
-			<Card>
-				<CardHeader>
-					<CardTitle>Processed Documents</CardTitle>
-				</CardHeader>
-				<CardContent>
+			<NesCard>
+				<div class="yorha-panel-header">
+					<h3 class="nes-text is-primary">Processed Documents</h3>
+				</div>
+				<div class="yorha-panel-content">
 					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 						{#each processedDocuments as doc}
 							<div class="p-4 border border-gray-200 rounded-lg">
@@ -463,22 +464,22 @@
 							</div>
 						{/each}
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 		{/if}
 
 		<!-- Real-time Logging Panel -->
-		<Card>
-			<CardHeader class="flex flex-row items-center justify-between">
-				<CardTitle class="flex items-center space-x-2">
+		<NesCard>
+			<div class="yorha-panel-header" class="flex flex-row items-center justify-between">
+				<h3 class="nes-text is-primary" class="flex items-center space-x-2">
 					<AlertCircle class="h-5 w-5" />
 					<span>Real-time System Logs</span>
-				</CardTitle>
-				<Button variant="outline" size="sm" onclick={clearLogs}>
+				</h3>
+				<button class="nes-btn" variant="outline" size="sm" onclick={clearLogs}>
 					Clear Logs
-				</Button>
-			</CardHeader>
-			<CardContent>
+				</button>
+			</div>
+			<div class="yorha-panel-content">
 				<div class="bg-gray-900 text-green-400 p-4 rounded-md font-mono text-sm max-h-64 overflow-y-auto">
 					{#if realTimeLogs.length === 0}
 						<div class="text-gray-500">No logs yet...</div>
@@ -488,16 +489,16 @@
 						{/each}
 					{/if}
 				</div>
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 
 		<!-- System Statistics -->
 		{#if processedDocuments.length > 0 || ragResults.length > 0}
-			<Card>
-				<CardHeader>
-					<CardTitle>System Performance Statistics</CardTitle>
-				</CardHeader>
-				<CardContent>
+			<NesCard>
+				<div class="yorha-panel-header">
+					<h3 class="nes-text is-primary">System Performance Statistics</h3>
+				</div>
+				<div class="yorha-panel-content">
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
 						<div>
 							<div class="text-2xl font-bold text-blue-600">{processedDocuments.length}</div>
@@ -516,8 +517,8 @@
 							<div class="text-sm text-gray-600">Avg Prosecution Score</div>
 						</div>
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 		{/if}
 	</div>
 </div>

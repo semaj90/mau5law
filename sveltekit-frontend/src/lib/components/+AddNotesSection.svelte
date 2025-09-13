@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();
@@ -42,11 +43,11 @@
   };
 </script>
 
-<div class="card">
-  <div class="card-header">
+<div class="nier-bits-card">
+  <div class="nier-bits-yorha-panel-header">
     <h3>Add Notes</h3>
   </div>
-  <div class="card-body">
+  <div class="nier-bits-card-body">
     <div class="mb-3">
       <label for="notesContent" class="form-label">Notes:</label>
       <textarea id="notesContent" class="form-control" bind:value={notesContent} rows="5"></textarea>
@@ -69,7 +70,7 @@
         {/each}
       </select>
     </div>
-    <button class="btn btn-primary" onclick={handleSubmit}>Save Notes</button>
+    <button class="btn nes-btn is-primary" onclick={handleSubmit}>Save Notes</button>
   </div>
 </div>
 

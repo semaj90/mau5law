@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { Button } from 'bits-ui';
   import { Progress } from 'bits-ui';
@@ -398,7 +399,7 @@ https://svelte.dev/e/expected_token -->
 
 
 
-              <Button.Root
+              <button class="nes-btn".Root
                 variant="ghost"
                 size="sm"
                 onclick={() => removeFile(file)}

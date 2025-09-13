@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Slider } from "bits-ui";
   	import { cn } from "$lib/utils/styles.js";
 

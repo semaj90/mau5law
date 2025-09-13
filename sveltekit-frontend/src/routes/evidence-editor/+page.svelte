@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
   import { UiButton as Button } from '$lib/components/ui';
@@ -41,7 +42,7 @@
           size="sm"
         >
           {readOnly ? 'Enable Editing' : 'Read Only'}
-        </Button>
+        </button>
 
         <div class="space-y-4">
           {#if caseId}
@@ -81,7 +82,7 @@
     }}
   >
     Got it!
-  </Button>
+  </button>
 </div>
 
 <style>

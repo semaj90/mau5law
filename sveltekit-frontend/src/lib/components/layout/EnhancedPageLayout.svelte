@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { Button } from '$lib/components/ui/enhanced-bits';
   import * as Card from '$lib/components/ui/card';
@@ -66,7 +67,7 @@ https://svelte.dev/e/expected_token -->
   <!-- GPU Status Indicator -->
   {#if showGpuStatus && pageLoaded}
     <div class="gpu-status-overlay">
-      <div.Root class="gpu-status-card">
+      <div.Root class="gpu-status-nier-bits-card">
         <div.Header>
           <div.Title class="gpu-title">🚀 {gpuStatus.gpu}</Card.Title>
         </Card.Header>
@@ -93,7 +94,7 @@ https://svelte.dev/e/expected_token -->
   <!-- Welcome Banner -->
   {#if showWelcome && pageLoaded}
     <div class="welcome-overlay">
-      <div.Root class="welcome-card animate-slide-in">
+      <div.Root class="welcome-nier-bits-card animate-slide-in">
         <div.Header>
           <div.Title>✨ {title}</Card.Title>
           {#if description}

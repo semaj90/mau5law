@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import AIButton from "$lib/components/ai/AIButton.svelte";
   interface Props {
     position?: 

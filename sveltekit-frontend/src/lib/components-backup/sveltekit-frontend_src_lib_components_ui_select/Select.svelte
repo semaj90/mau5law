@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Basic Select wrapper that uses enhanced-bits Select
   import EnhancedSelect from '../enhanced-bits/Select.svelte';
   interface SelectOption {

@@ -1,5 +1,6 @@
 <!-- Vector Pipeline Demo Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob } from '$lib/machines/vector-pipeline-machine';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import {
@@ -65,14 +66,14 @@
 </script>
 
 <div class="w-full max-w-6xl mx-auto p-4 space-y-6">
-  <Card>
-    <CardHeader>
-      <CardTitle class="text-2xl font-bold">Vector Pipeline Demo</CardTitle>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="text-2xl font-bold">Vector Pipeline Demo</h3>
       <p class="text-gray-600">
         XState machine orchestrating PostgreSQL → Redis Streams → Go microservice → CUDA worker → Qdrant
       </p>
-    </CardHeader>
-    <CardContent>
+    </div>
+    <div class="yorha-panel-content">
       <!-- Current State Display -->
       <div class="mb-6">
         <div class="flex items-center gap-2 mb-2">
@@ -92,35 +93,35 @@
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <Button class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
           Submit Single Job
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
           Submit Batch
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={runHealthCheck} variant="outline">
           Health Check
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={resetPipeline} variant="destructive">
           Reset Pipeline
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>
           Enable WebGPU
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>
           Disable WebGPU
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={retryFailedJobs} disabled={!batchInfo?.failedJobs || batchInfo.failedJobs === 0}>
           Retry Failed
-        </Button>
+        </button>
       </div>
 
       <!-- Pipeline Status Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Service Status -->
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-lg">Service Status</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-lg">Service Status</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-2">
               <div class="flex justify-between">
                 <span>PostgreSQL:</span>
@@ -159,15 +160,15 @@
                 </span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Batch Information -->
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-lg">Batch Status</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-lg">Batch Status</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-2">
               <div class="flex justify-between">
                 <span>Total Jobs:</span>
@@ -194,15 +195,15 @@
                 </div>
               {/if}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Performance Metrics -->
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-lg">Performance</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-lg">Performance</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-2">
               <div class="flex justify-between">
                 <span>Processed:</span>
@@ -226,17 +227,17 @@
                 </span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
 
       <!-- Current Jobs Display -->
       {#if batchInfo && batchInfo.jobs.length > 0}
-        <Card class="mt-6">
-          <CardHeader>
-            <CardTitle class="text-lg">Active Jobs</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard class="mt-6">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="text-lg">Active Jobs</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="overflow-x-auto">
               <table class="w-full text-sm">
                 <thead>
@@ -271,16 +272,16 @@
                 </tbody>
               </table>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
 
       <!-- Integration Test Results -->
-      <Card class="mt-6">
-        <CardHeader>
-          <CardTitle class="text-lg">Service Integration Test</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard class="mt-6">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="text-lg">Service Integration Test</h3>
+        </div>
+        <div class="yorha-panel-content">
           <p class="text-sm text-gray-600 mb-4">
             Test connectivity to backend services that the vector pipeline depends on:
           </p>
@@ -297,7 +298,7 @@
             variant="outline"
           >
             Test Enhanced RAG (8094)
-          </Button>
+          </button>
           <Button class="bits-btn"
             onclick={async () => {
               try {
@@ -314,9 +315,9 @@
             variant="outline"
           >
             Test Qdrant (6333)
-          </Button>
-        </CardContent>
-      </Card>
-    </CardContent>
-  </Card>
+          </button>
+        </div>
+      </NesCard>
+    </div>
+  </NesCard>
 </div>

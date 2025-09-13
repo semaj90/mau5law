@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   const { userId: string, onCaseCreated: (caseId: string) = > void = () => {} } = $props();
 
 </script>
@@ -250,13 +251,13 @@ https://svelte.dev/e/js_parse_error -->
 			{#if !isTyping && !isProcessing && currentPrompt}
 				<div class="action-buttons" transition:fade={{ duration: 300 }}>
 					<button 
-						class="btn-primary"
+						class="nes-btn is-primary"
 						on:click={() => showCreateForm = true}
 					>
 						Create Case Instantly
 					</button>
 					<button 
-						class="btn-secondary"
+						class="nes-btn"
 						on:click={() => startTypewriter("🔍 Ready to analyze evidence, detect patterns, and assist with case strategy. What would you like me to focus on?")}
 					>
 						Analyze Evidence
@@ -275,7 +276,7 @@ https://svelte.dev/e/js_parse_error -->
 						<div class="template-grid">
 							{#each quickCaseTemplates as template}
 								<button 
-									class="template-card"
+									class="template-nier-bits-card"
 									on:click={() => createQuickCase(template)}
 									disabled={isProcessing}
 								>
@@ -332,7 +333,7 @@ https://svelte.dev/e/js_parse_error -->
 							
 							<div class="form-actions">
 								<button 
-									class="btn-primary"
+									class="nes-btn is-primary"
 									on:click={createCustomCase}
 									disabled={isProcessing || !caseTitle.trim()}
 								>
@@ -343,7 +344,7 @@ https://svelte.dev/e/js_parse_error -->
 									{/if}
 								</button>
 								<button 
-									class="btn-secondary"
+									class="nes-btn"
 									on:click={() => showCreateForm = false}
 								>
 									Cancel

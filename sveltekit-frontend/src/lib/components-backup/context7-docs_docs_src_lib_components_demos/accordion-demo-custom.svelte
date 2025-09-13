@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Accordion, type WithoutChildrenOrChild } from "bits-ui";
   	import DemoContainer from "../demo-container.svelte";
   	import CustomAccordionItem from "./accordion-demo-custom-item.svelte";

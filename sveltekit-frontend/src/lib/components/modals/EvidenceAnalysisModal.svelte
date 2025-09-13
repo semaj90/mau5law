@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Evidence {
     id: string;
     content: string;
@@ -144,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn" variant="secondary" size="sm">
             <Download class="space-y-4" />
             Export
-          </Button>
+          </button>
           <Button class="bits-btn" 
             variant="primary" 
             size="sm" 
@@ -158,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
               <Brain class="space-y-4" />
               Re-analyze
             {/if}
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -284,7 +285,7 @@ https://svelte.dev/e/js_parse_error -->
               />
               <Button class="bits-btn" size="sm" onclick={() => updateTags()} disabled={!newTags.trim()}>
                 Add
-              </Button>
+              </button>
             </div>
           </div>
         </GridItem>
@@ -313,10 +314,10 @@ https://svelte.dev/e/js_parse_error -->
   
       <Button class="bits-btn" variant="secondary" onclick={() => close()}>
         Close
-      </Button>
+      </button>
       <Button class="bits-btn" variant="primary" onclick={() => onsaveAnalysis?.()}>
         Save Analysis
-      </Button>
+      </button>
     
   {/snippet}
 </Dialog>

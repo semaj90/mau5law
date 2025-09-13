@@ -8,6 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 </script>` element
 https://svelte.dev/e/script_duplicate -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   
   let query = 'contract liability terms'
   let results: any[] = []
@@ -322,7 +323,7 @@ https://svelte.dev/e/script_duplicate -->
         <div class="document-results">
           <h3>📄 Relevant Documents</h3>
           {#each searchResult.searchResults as doc, i}
-            <div class="document-card">
+            <div class="document-nier-bits-card">
               <div class="doc-header">
                 <h4>{doc.filename || `Document ${doc.id}`}</h4>
                 <span class="relevance-score">

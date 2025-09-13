@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   	import { onMount, createEventDispatcher } from 'svelte';
   	import { writable, derived, get } from 'svelte/store';
@@ -369,13 +370,13 @@ https://svelte.dev/e/js_parse_error -->
 	<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
 		
 		<!-- Intelligent Todo Generation -->
-		<div class="card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
+		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-blue-400">🤖 Intelligent Todo Generator</h2>
 			<div class="space-y-4">
 				<button 
 					onclick={() => fetchIntelligentTodos()}
 					disabled={$isProcessing}
-					class="btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 px-4 py-2 rounded-lg font-medium transition-all"
+					class="nes-btn is-primary w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 px-4 py-2 rounded-lg font-medium transition-all"
 				>
 					{$isProcessing ? 'Generating...' : 'Generate from npm check errors'}
 				</button>
@@ -411,7 +412,7 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 
 		<!-- Semantic Analysis -->
-		<div class="card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
+		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-green-400">🔍 Semantic Analysis</h2>
 			<div class="space-y-4">
 				<div>
@@ -426,7 +427,7 @@ https://svelte.dev/e/js_parse_error -->
 				<button 
 					onclick={() => analyzeText(analysisText)}
 					disabled={$isProcessing || !analysisText.trim()}
-					class="btn-secondary w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 disabled:opacity-50 px-4 py-2 rounded-lg font-medium transition-all"
+					class="nes-btn w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 disabled:opacity-50 px-4 py-2 rounded-lg font-medium transition-all"
 				>
 					{$isProcessing ? 'Analyzing...' : 'Analyze with SOM + PageRank'}
 				</button>
@@ -467,7 +468,7 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 
 		<!-- WebGPU Cache Stats -->
-		<div class="card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
+		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-purple-400">⚡ WebGPU Cache</h2>
 			<div class="space-y-4">
 				<div class="webgpu-status">
@@ -520,7 +521,7 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 
 		<!-- Category Statistics -->
-		<div class="card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
+		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-yellow-400">📊 Category Statistics</h2>
 			{#if $categoryStats.length > 0}
 				<div class="category-list space-y-3 max-h-64 overflow-y-auto">
@@ -554,7 +555,7 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 
 		<!-- Real-time System Monitor -->
-		<div class="card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
+		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-red-400">🔥 System Monitor</h2>
 			<div class="space-y-4">
 				<div class="service-grid grid grid-cols-2 gap-2 text-xs">
@@ -590,7 +591,7 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 
 		<!-- Advanced Controls -->
-		<div class="card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
+		<div class="nier-bits-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
 			<h2 class="text-xl font-semibold mb-4 text-indigo-400">⚙️ Advanced Controls</h2>
 			<div class="space-y-4">
 				<div class="control-group">

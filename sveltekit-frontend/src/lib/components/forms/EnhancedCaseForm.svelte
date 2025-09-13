@@ -3,6 +3,7 @@ https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { notifications } from "$lib/stores/notification";
   import type { User } from "$lib/types/user";
   import { createEventDispatcher } from "svelte";

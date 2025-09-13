@@ -97,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     </script>
 
-    <Card class="nier-card p-6">
+    <NesCard class="nier-nier-bits-card p-6">
       <div class="nier-header mb-4">
         <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
       <div class="flex gap-2">
@@ -108,7 +108,7 @@ https://svelte.dev/e/js_parse_error -->
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
           {!user ? 'Sign in to Summarize' : ($aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence')}
-        </Button>
+        </button>
         <Button
           onclick={saveSummary}
           disabled={!$aiGlobalStore.context.summary || $aiGlobalStore.context.loading}
@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
           Save Summary
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {/if}
     </div>
-  </Card>
+  </NesCard>
 
   <style>
     /* Nier.css inspired styles */

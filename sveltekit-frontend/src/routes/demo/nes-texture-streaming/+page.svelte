@@ -1,5 +1,6 @@
 <!-- NES Texture Streaming Demo Page -->
 <script>
+  import 'nes.css/css/nes.min.css';
   import NESTextureStreamer from '$lib/components/ai/NESTextureStreamer.svelte';
   import GPUStreamingChat from '$lib/components/ai/GPUStreamingChat.svelte';
   import { onMount } from 'svelte';
@@ -187,7 +188,7 @@
       <h2>🏗️ System Architecture</h2>
       
       <div class="architecture-grid">
-        <div class="arch-card l1">
+        <div class="arch-nier-bits-card l1">
           <h3>L1 Cache (CHR-ROM)</h3>
           <ul>
             <li>1MB GPU memory budget</li>
@@ -197,7 +198,7 @@
           </ul>
         </div>
         
-        <div class="arch-card l2">
+        <div class="arch-nier-bits-card l2">
           <h3>L2 Cache (System RAM)</h3>
           <ul>
             <li>2MB Node.js memory</li>
@@ -207,7 +208,7 @@
           </ul>
         </div>
         
-        <div class="arch-card l3">
+        <div class="arch-nier-bits-card l3">
           <h3>L3 Cache (Redis)</h3>
           <ul>
             <li>1MB budget of 8GB Redis</li>
@@ -217,7 +218,7 @@
           </ul>
         </div>
         
-        <div class="arch-card storage">
+        <div class="arch-nier-bits-card storage">
           <h3>Storage (PostgreSQL)</h3>
           <ul>
             <li>pgvector for embeddings</li>
@@ -234,7 +235,7 @@
       <h2>📊 Performance Metrics</h2>
       
       <div class="metrics-grid">
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <h4>Memory Hierarchy</h4>
           <div class="metric-bars">
             <div class="metric-bar l1">
@@ -263,7 +264,7 @@
           </div>
         </div>
         
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <h4>LOD Performance</h4>
           <div class="lod-metrics">
             <div class="lod-item">LOD 0: ~100ms (64x64)</div>
@@ -273,7 +274,7 @@
           </div>
         </div>
         
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <h4>Cache Hit Rates</h4>
           <div class="hit-rates">
             <div class="hit-rate">L1: {(Math.random() * 40 + 35).toFixed(1)}%</div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { createEventDispatcher } from 'svelte';
   	import { aiStore } from "../stores/canvas";
   	import Dialog from './Dialog.svelte';

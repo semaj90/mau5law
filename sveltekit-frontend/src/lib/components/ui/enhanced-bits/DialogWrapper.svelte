@@ -1,5 +1,6 @@
 <!-- Dialog Wrapper: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createDialog } from 'melt';
 
   interface Props {

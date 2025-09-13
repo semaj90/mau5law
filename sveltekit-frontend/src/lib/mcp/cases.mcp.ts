@@ -231,10 +231,10 @@ export async function searchCases(query: string, userId: string, filters?: {
     console.log(`🔍 MCP Tool: searchCases("${query}")`);
 
     // Check cache first - use specialized search cache
-    const cached = await cache.getSearchResults(query, 'cases', filters);
-    if (cached) {
+    const cached = await cache.getSearchResults?.(query, 'cases', filters);
+    if (cached && typeof cached === 'object' && 'cases' in cached && 'totalCount' in cached) {
       console.log(`📦 Cache hit for search: ${query}`);
-      return cached;
+      return cached as { cases: CaseData[]; totalCount: number };
     }
 
     // Build query conditions
@@ -301,8 +301,8 @@ export async function getUserCases(userId: string, options: {
     // Check cache
     const cacheKey = `user:${userId}:cases:${JSON.stringify(options)}`;
     const cached = await cache.get(cacheKey);
-    if (cached) {
-      return cached;
+    if (cached && typeof cached === 'object' && 'cases' in cached && 'totalCount' in cached) {
+      return cached as { cases: CaseData[]; totalCount: number };
     }
 
     let conditions = [eq(schema.cases.userId, userId)];

@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
 /**
  * SIMD Tiled UI Shader Embeds System
@@ -758,22 +759,22 @@ export function getCHRPatterns(): string[] {
   <!-- Performance Metrics Dashboard -->
   <div class="metrics-dashboard">
     <div class="metrics-grid">
-      <div class="metric-card">
+      <div class="metric-nier-bits-card">
         <div class="metric-value">{performanceMetrics.tilesGenerated}</div>
         <div class="metric-label">Tiles Generated</div>
       </div>
       
-      <div class="metric-card">
+      <div class="metric-nier-bits-card">
         <div class="metric-value">{performanceMetrics.shadersGenerated}</div>
         <div class="metric-label">Shaders Created</div>
       </div>
       
-      <div class="metric-card">
+      <div class="metric-nier-bits-card">
         <div class="metric-value">{performanceMetrics.compressionAchieved.toFixed(1)}:1</div>
         <div class="metric-label">Compression Ratio</div>
       </div>
       
-      <div class="metric-card">
+      <div class="metric-nier-bits-card">
         <div class="metric-value">{performanceMetrics.totalProcessingTime.toFixed(0)}ms</div>
         <div class="metric-label">Total Time</div>
       </div>
@@ -801,7 +802,7 @@ export function getCHRPatterns(): string[] {
       <h3>Generated Shaders ({generatedShaders.size})</h3>
       <div class="shader-grid">
         {#each Array.from(generatedShaders.entries()).slice(0, 4) as [key, shader]}
-          <div class="shader-card">
+          <div class="shader-nier-bits-card">
             <div class="shader-title">{key}</div>
             <div class="shader-code">
               <pre><code>{shader.slice(0, 200)}...</code></pre>

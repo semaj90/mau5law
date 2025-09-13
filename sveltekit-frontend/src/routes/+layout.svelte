@@ -1,32 +1,34 @@
 <script lang="ts">
-  import '../app.css';
   import 'nes.css/css/nes.min.css';
+  import '../app.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import { page } from '$app/stores';
   import { errorHandler } from '$lib/utils/browser-performance';
   import type { StartupStatus } from '$lib/services/multi-library-startup';
   import { createFeedbackStore, setFeedbackStore } from '$lib/stores/feedback-store.svelte';
   import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
-  import FeedbackWidget from '$lib/components/feedback/FeedbackWidget.svelte';
   import type { FeedbackTrigger } from '$lib/types/feedback';
   import type { Snippet } from 'svelte';
   import { chrCache } from '$lib/gpu/chrrom-cache';
 
-  // Modern button component
-  import ModernButton from '$lib/components/ui/button/Button.svelte';
+  // Import unified layout system
+  import UnifiedLayout from '$lib/components/layout/UnifiedLayout.svelte';
+  import Footer from '$lib/components/layout/Footer.svelte';
 
   // GPU metrics batcher for performance monitoring
   import { initGpuMetricsBatcher, cleanupGpuMetricsBatcher } from '$lib/services/gpuMetricsBatcher';
-  
+
   // Global GPU integration with NES memory architecture
   import { gpuIntegrationService } from '$lib/services/gpu-integration-service';
 
-  // Svelte 5 children prop (optional to avoid undefined .call errors on pages without content)
+  // Svelte 5 children prop
   interface Props {
     children?: Snippet;
+    data?: any;
   }
 
-  const { children } = $props<{ children?: Snippet }>();
+  const { children, data } = $props<{ children?: Snippet; data?: any }>();
 
   let startupStatus = $state<StartupStatus | null>(null);
   let showStartupLog = $state(false);
@@ -178,187 +180,33 @@
 
 <!-- Modern Startup Toast Notification -->
 {#if mounted && showStartupLog && startupStatus}
-  <div class="fixed top-5 right-5 z-50 max-w-sm">
-    <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-golden-lg shadow-lg">
-      <h3 class="text-nier-accent-warm font-bold text-lg uppercase tracking-wide mb-golden-sm">
-        🚀 YoRHa Legal AI Platform
-      </h3>
-      <p class="text-nier-text-secondary mb-golden-md text-sm">
-        Multi-Library Integration Complete
-      </p>
-      <div class="grid grid-cols-2 gap-golden-xs mb-golden-md">
-        {#each Object.entries(startupStatus.services) as [service, status]}
-          <span
-            class="text-xs font-mono px-golden-xs py-1 border rounded {status ? 'border-green-500 bg-green-500/10 text-green-400' : 'border-red-500 bg-red-500/10 text-red-400'}"
-          >
+  <div class="startup-toast nes-container with-title is-rounded">
+    <p class="title">🚀 YoRHa Legal AI Platform</p>
+    <p class="startup-message nes-text is-primary">
+      Multi-Library Integration Complete
+    </p>
+    <div class="service-status">
+      {#each Object.entries(startupStatus.services) as [service, status]}
+        <span class="service-badge nes-badge">
+          <span class={status ? 'is-success' : 'is-error'}>
             {status ? '✅' : '❌'} {service.toUpperCase()}
           </span>
-        {/each}
-      </div>
-      <p class="text-nier-text-muted text-xs text-right font-mono">
-        Initialized in {startupStatus.initTime}ms
-      </p>
+        </span>
+      {/each}
     </div>
+    <p class="init-time nes-text is-disabled">
+      Initialized in {startupStatus.initTime}ms
+    </p>
   </div>
 {/if}
 
-<div class="min-h-screen bg-nier-bg-primary text-nier-text-primary font-mono">
-  <!-- Modern Header with Golden Ratio Grid -->
-  <header class="border-b border-nier-border-muted bg-nier-bg-secondary/50 backdrop-blur-sm sticky top-0 z-40">
-    <div class="container mx-auto px-golden-lg py-golden-md">
-      <div class="flex items-center justify-between gap-golden-lg">
-        <!-- Logo Section -->
-        <div class="flex items-center gap-golden-sm">
-          <h1 class="text-nier-accent-warm font-bold text-2xl tracking-wider uppercase">
-        YoRHa Legal AI
-          </h1>
-          {#if mounted}
-            {#if startupStatus?.initialized}
-              <span class="bg-green-500/20 text-green-400 border-green-500/30 border text-xs px-2 py-1 rounded">
-                🟢 INTEGRATED
-              </span>
-              {#if gpuEnabled}
-                <span class="bg-blue-500/20 text-blue-400 border-blue-500/30 border text-xs px-2 py-1 rounded">
-                  🎮 GPU
-                </span>
-              {/if}
-              {#if nesQuantizationActive}
-                <span class="bg-purple-500/20 text-purple-400 border-purple-500/30 border text-xs px-2 py-1 rounded">
-                  🕹️ NES
-                </span>
-              {/if}
-            {:else}
-              <span class="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 border text-xs px-2 py-1 animate-pulse rounded">
-                🟡 LOADING
-              </span>
-            {/if}
-          {/if}
-        </div>
-
-        <!-- Navigation -->
-        <nav class="hidden md:flex items-center gap-golden-sm">
-          <ModernButton
-        to="/"
-        variant="ghost"
-        size="sm"
-        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
-          >
-        Home
-          </ModernButton>
-          <ModernButton
-        to="/yorha-command-center"
-        variant="ghost"
-        size="sm"
-        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
-          >
-        Command Center
-          </ModernButton>
-          <ModernButton
-        to="/evidenceboard"
-        variant="ghost"
-        size="sm"
-        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
-          >
-        Evidence Board
-          </ModernButton>
-          <ModernButton
-        to="/demo/enhanced-rag-semantic"
-        variant="ghost"
-        size="sm"
-        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
-          >
-        RAG Demo
-          </ModernButton>
-          <ModernButton
-        to="/demo/nes-bits-ui"
-        variant="ghost"
-        size="sm"
-        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
-          >
-        NES UI Demo
-          </ModernButton>
-          <ModernButton
-        to="/demo/gpu-inference"
-        variant="ghost"
-        size="sm"
-        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
-          >
-        🎮 GPU Inference
-          </ModernButton>
-          <ModernButton
-        to="/detective"
-        variant="ghost"
-        size="sm"
-        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
-          >
-        Detective
-          </ModernButton>
-          <ModernButton
-        to="/citations"
-        variant="ghost"
-        size="sm"
-        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
-          >
-        Citations
-          </ModernButton>
-          <ModernButton
-        to="/chat"
-        variant="ghost"
-        size="sm"
-        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
-          >
-        Chat
-          </ModernButton>
-        </nav>
-
-        <!-- Auth Buttons -->
-        <div class="flex items-center gap-golden-sm">
-          <ModernButton
-        to="/demo/gpu-assistant"
-        variant="ghost"
-        size="sm"
-        class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
-          >
-        GPU Assistant Demo
-          </ModernButton>
-          <ModernButton
-        to="/auth/login"
-        variant="outline"
-        size="sm"
-        class="border-nier-accent-warm text-nier-accent-warm hover:bg-nier-accent-warm hover:text-nier-bg-primary"
-          >
-        Login
-          </ModernButton>
-          <ModernButton
-        to="/auth/register"
-        variant="primary"
-        size="sm"
-        class="bg-gradient-to-r from-nier-accent-warm to-nier-accent-cool text-nier-bg-primary font-bold"
-          >
-        Register
-          </ModernButton>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Skip Navigation Link for Screen Readers -->
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-yellow-400 text-black px-4 py-2 rounded">
-    Skip to main content
-  </a>
-
-  <!-- Main Content with Golden Ratio Spacing -->
-  <main id="main-content" class="container mx-auto px-golden-lg py-golden-xl min-h-[calc(100vh-theme(spacing.16))]" aria-label="Main content">
-  {#if mounted && children}
+<UnifiedLayout user={data?.user} variant="full">
+  {#if children}
     {@render children()}
-  {:else if mounted}
-    <!-- Fallback content when no children provided -->
-    <div class="text-center text-nier-text-muted">
-      <p>Loading...</p>
-    </div>
   {/if}
-  </main>
-</div>
+</UnifiedLayout>
+
+<Footer variant="full" showQuickLinks={true} />
 
 <!-- FeedbackWidget temporarily disabled due to Svelte 5 compatibility issues -->
 <!-- TODO: Update FeedbackWidget to use Svelte 5 event patterns -->
@@ -376,92 +224,196 @@
   />
 {/if}
 
-<style>/* Golden Ratio Custom CSS Properties */
-  :global(:root) {
-    --golden-base: 1rem;
-    --golden-xs: calc(var(--golden-base) / 2.618); /* ~0.382rem */
-    --golden-sm: calc(var(--golden-base) / 1.618); /* ~0.618rem */
-    --golden-md: var(--golden-base); /* 1rem */
-    --golden-lg: calc(var(--golden-base) * 1.618); /* ~1.618rem */
-    --golden-xl: calc(var(--golden-base) * 2.618); /* ~2.618rem */
-    --golden-2xl: calc(var(--golden-base) * 4.236); /* ~4.236rem */
+<style>
+/* Startup Toast Notification */
+.startup-toast {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  max-width: 350px;
+  background: linear-gradient(135deg, var(--n64-primary, #4a90e2), var(--n64-secondary, #7ed321)) !important;
+  animation: slideIn 0.5s ease-out;
+}
+
+.startup-toast .title {
+  color: white !important;
+  font-family: 'Press Start 2P', cursive !important;
+  font-size: 0.875rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.startup-message {
+  font-size: 0.625rem !important;
+  color: white !important;
+  margin-bottom: 1rem !important;
+}
+
+.service-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.service-badge {
+  font-size: 0.5rem !important;
+}
+
+.init-time {
+  font-size: 0.5rem !important;
+  text-align: right;
+  margin: 0 !important;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
   }
-/* UnoCSS Golden Ratio Utilities */
-  :global(.p-golden-xs) { padding: var(--golden-xs); }
-  :global(.p-golden-sm) { padding: var(--golden-sm); }
-  :global(.p-golden-md) { padding: var(--golden-md); }
-  :global(.p-golden-lg) { padding: var(--golden-lg); }
-  :global(.p-golden-xl) { padding: var(--golden-xl); }
-  :global(.p-golden-2xl) { padding: var(--golden-2xl); }
-
-  :global(.px-golden-xs) { padding-left: var(--golden-xs); padding-right: var(--golden-xs); }
-  :global(.px-golden-sm) { padding-left: var(--golden-sm); padding-right: var(--golden-sm); }
-  :global(.px-golden-md) { padding-left: var(--golden-md); padding-right: var(--golden-md); }
-  :global(.px-golden-lg) { padding-left: var(--golden-lg); padding-right: var(--golden-lg); }
-  :global(.px-golden-xl) { padding-left: var(--golden-xl); padding-right: var(--golden-xl); }
-
-  :global(.py-golden-xs) { padding-top: var(--golden-xs); padding-bottom: var(--golden-xs); }
-  :global(.py-golden-sm) { padding-top: var(--golden-sm); padding-bottom: var(--golden-sm); }
-  :global(.py-golden-md) { padding-top: var(--golden-md); padding-bottom: var(--golden-md); }
-  :global(.py-golden-lg) { padding-top: var(--golden-lg); padding-bottom: var(--golden-lg); }
-  :global(.py-golden-xl) { padding-top: var(--golden-xl); padding-bottom: var(--golden-xl); }
-
-  :global(.m-golden-xs) { margin: var(--golden-xs); }
-  :global(.m-golden-sm) { margin: var(--golden-sm); }
-  :global(.m-golden-md) { margin: var(--golden-md); }
-  :global(.m-golden-lg) { margin: var(--golden-lg); }
-  :global(.m-golden-xl) { margin: var(--golden-xl); }
-  :global(.m-golden-2xl) { margin: var(--golden-2xl); }
-
-  :global(.mb-golden-xs) { margin-bottom: var(--golden-xs); }
-  :global(.mb-golden-sm) { margin-bottom: var(--golden-sm); }
-  :global(.mb-golden-md) { margin-bottom: var(--golden-md); }
-  :global(.mb-golden-lg) { margin-bottom: var(--golden-lg); }
-  :global(.mb-golden-xl) { margin-bottom: var(--golden-xl); }
-
-  :global(.gap-golden-xs) { gap: var(--golden-xs); }
-  :global(.gap-golden-sm) { gap: var(--golden-sm); }
-  :global(.gap-golden-md) { gap: var(--golden-md); }
-  :global(.gap-golden-lg) { gap: var(--golden-lg); }
-  :global(.gap-golden-xl) { gap: var(--golden-xl); }
-/* Container responsive spacing with golden ratio */
-  :global(.container) {
-    max-width: 90rem;
-    margin: 0 auto;
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
-/* CSS Stretch-to-Fit Utilities */
-  :global(.stretch-fit) {
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+}
+
+/* Global CSS Variables for Unified Theme */
+:global(:root) {
+  /* N64/NES Gaming Colors */
+  --n64-primary: #4a90e2;
+  --n64-secondary: #7ed321;
+  --n64-warning: #f5a623;
+  --n64-error: #d0021b;
+  --n64-success: #50e3c2;
+  --n64-dark: #1a1a2e;
+  --n64-light: #e94560;
+
+  /* YoRHa/NieR Theme Colors */
+  --nier-bg-primary: #0f0f23;
+  --nier-bg-secondary: #1a1a2e;
+  --nier-bg-tertiary: #16213e;
+  --nier-text-primary: #e2e8f0;
+  --nier-text-secondary: #94a3b8;
+  --nier-text-muted: #64748b;
+  --nier-accent-warm: #f59e0b;
+  --nier-accent-cool: #3b82f6;
+  --nier-border: #334155;
+
+  /* Legal AI Theme */
+  --legal-ai-primary: #f59e0b;
+  --legal-ai-secondary: #1e293b;
+  --legal-ai-accent: #50e3c2;
+
+  /* Color aliases for components */
+  --color-primary: var(--legal-ai-primary);
+  --color-secondary: var(--legal-ai-secondary);
+  --color-accent: var(--legal-ai-accent);
+  --color-bg-primary: var(--nier-bg-primary);
+  --color-bg-secondary: var(--nier-bg-secondary);
+  --color-text-primary: var(--nier-text-primary);
+  --color-text-secondary: var(--nier-text-secondary);
+  --color-border: var(--nier-border);
+
+  /* Golden Ratio Spacing */
+  --golden-base: 1rem;
+  --golden-xs: calc(var(--golden-base) / 2.618);
+  --golden-sm: calc(var(--golden-base) / 1.618);
+  --golden-md: var(--golden-base);
+  --golden-lg: calc(var(--golden-base) * 1.618);
+  --golden-xl: calc(var(--golden-base) * 2.618);
+  --golden-2xl: calc(var(--golden-base) * 4.236);
+}
+
+/* Global Typography */
+:global(body) {
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  background: var(--nier-bg-primary);
+  color: var(--nier-text-primary);
+  line-height: 1.5;
+}
+
+:global(.font-retro) {
+  font-family: 'Press Start 2P', cursive !important;
+}
+
+/* Global Layout Utilities */
+:global(.container) {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Smooth transitions */
+:global(*) {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Focus management */
+:global(:focus-visible) {
+  outline: 2px solid var(--n64-primary);
+  outline-offset: 2px;
+}
+
+/* NES/Gaming enhancements */
+:global(.nes-enhanced) {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Scrollbar styling */
+:global(*::-webkit-scrollbar) {
+  width: 8px;
+  height: 8px;
+}
+
+:global(*::-webkit-scrollbar-track) {
+  background: rgba(26, 26, 46, 0.3);
+}
+
+:global(*::-webkit-scrollbar-thumb) {
+  background: var(--n64-primary);
+  border-radius: 4px;
+  border: 1px solid var(--n64-secondary);
+}
+
+:global(*::-webkit-scrollbar-thumb:hover) {
+  background: var(--n64-secondary);
+}
+
+/* Print styles */
+@media print {
+  :global(body) {
+    background: white !important;
+    color: black !important;
   }
 
-  :global(.stretch-fit-content) {
-    flex: 1;
-    width: 100%;
-    min-height: 0; /* Allow flex child to shrink */
+  .startup-toast {
+    display: none !important;
   }
+}
 
-  :global(.full-viewport) {
-    min-height: 100vh;
-    min-width: 100vw;
-    display: flex;
-    flex-direction: column;
-  }
-
-  :global(.flex-stretch) {
-    display: flex;
-    flex: 1;
-    align-items: stretch;
-  }
-/* Smooth transitions for YoRHa theme */
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
   :global(*) {
-    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-/* Typography enhancements */
-  :global(.font-mono) {
-    font-family: 'JetBrains Mono', 'Roboto Mono', 'SF Mono', monospace;
+
+  .startup-toast {
+    animation: none !important;
   }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :global(:root) {
+    --nier-bg-primary: #000;
+    --nier-text-primary: #fff;
+    --n64-primary: #00f;
+    --n64-secondary: #0f0;
+  }
+}
 </style>

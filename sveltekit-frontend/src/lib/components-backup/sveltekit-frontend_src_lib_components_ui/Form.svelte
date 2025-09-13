@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { createFormStore, type FormOptions } from '$lib/stores/form';
   import { notifications } from '$lib/stores/notification';
 
@@ -108,7 +109,7 @@
           class={submitFullWidth ? "w-full" : ""}
         >
           {resetText}
-        </Button>
+        </button>
       {/if}
 
       {#if showSubmitButton}
@@ -120,7 +121,7 @@
           class={submitFullWidth ? "w-full" : ""}
         >
           {submitText}
-        </Button>
+        </button>
       {/if}
     </div>
   {/if}

@@ -1,7 +1,8 @@
 <!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here
 https://svelte.dev/e/unexpected_reserved_word -->
 <script lang="ts">
-  import Button from "$lib/components/ui/Button.svelte";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   // FIX: Import all necessary parts of the Tooltip component
   import Card from "$lib/components/ui/Card.svelte";
   import Form from "$lib/components/ui/Form.svelte";
@@ -177,7 +178,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
 
     <div class="space-y-4">
       <!-- Buttons Demo -->
-      <Card variant="elevated" padding="lg">
+      <NesCard variant="elevated" padding="lg">
         {#snippet header()}
                 <div >
             <h2 class="space-y-4">
@@ -191,18 +192,18 @@ https://svelte.dev/e/unexpected_reserved_word -->
 
         <div class="space-y-4">
           <div class="space-y-4">
-            <Button variant="primary">Primary</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="secondary">Success</Button>
-            <Button variant="danger">Danger</Button>
-            <Button variant="danger">Warning</Button>
-            <Button variant="secondary">Info</Button>
+            <button class="nes-btn is-primary">Primary</button>
+            <button class="nes-btn">Secondary</button>
+            <button class="nes-btn">Success</button>
+            <button class="nes-btn" variant="danger">Danger</button>
+            <button class="nes-btn" variant="danger">Warning</button>
+            <button class="nes-btn">Info</button>
           </div>
 
           <div class="space-y-4">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost">Ghost</Button>
+                <button class="nes-btn" variant="ghost">Ghost</button>
               </TooltipTrigger>
               <TooltipContent>
                 <span>Ghost button (minimal style)</span>
@@ -210,7 +211,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline">Outline</Button>
+                <button class="nes-btn" variant="outline">Outline</button>
               </TooltipTrigger>
               <TooltipContent>
                 <span>Outline button (border only)</span>
@@ -218,7 +219,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button disabled={true}>Disabled</Button>
+                <button class="nes-btn" disabled={true}>Disabled</button>
               </TooltipTrigger>
               <TooltipContent>
                 <span>Disabled button</span>
@@ -226,7 +227,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button loadingKey="demo-loading">Loading</Button>
+                <button class="nes-btn" loadingKey="demo-loading">Loading</button>
               </TooltipTrigger>
               <TooltipContent>
                 <span>Loading button</span>
@@ -235,10 +236,10 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </div>
 
           <div class="space-y-4">
-            <Button size="sm">Extra Small</Button>
-            <Button size="sm">Small</Button>
-            <Button size="md">Medium</Button>
-            <Button size="lg">Large</Button>
+            <button class="nes-btn" size="sm">Extra Small</button>
+            <button class="nes-btn" size="sm">Small</button>
+            <button class="nes-btn" size="md">Medium</button>
+            <button class="nes-btn" size="lg">Large</button>
             <!-- Removed unsupported xl size -->
           </div>
 
@@ -246,20 +247,19 @@ https://svelte.dev/e/unexpected_reserved_word -->
             <Button class="space-y-4">
               <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
               Full Width with Icon
-            </Button>
-            <Button
-              variant="secondary"
+            </button>
+            <button class="nes-btn"
               class="space-y-4"
             >
               <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
               Download Report
-            </Button>
+            </button>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- Notifications Demo -->
-      <Card variant="elevated" padding="lg">
+      <NesCard variant="elevated" padding="lg">
         {#snippet header()}
                 <div >
             <h2 class="space-y-4">
@@ -272,14 +272,13 @@ https://svelte.dev/e/unexpected_reserved_word -->
               {/snippet}
 
         <div class="space-y-4">
-          <Button
-            variant="secondary"
+          <button class="nes-btn"
             class="space-y-4"
             onclick={() => showSuccessNotification()}
           >
             <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
             Show Success
-          </Button>
+          </button>
           <Button
             variant="danger"
             class="space-y-4"
@@ -287,7 +286,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           >
             <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
             Show Error
-          </Button>
+          </button>
           <Button
             variant="danger"
             class="space-y-4"
@@ -295,20 +294,19 @@ https://svelte.dev/e/unexpected_reserved_word -->
           >
             <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
             Show Warning
-          </Button>
-          <Button
-            variant="secondary"
+          </button>
+          <button class="nes-btn"
             class="space-y-4"
             onclick={() => showInfoNotification()}
           >
             <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
             Show Info
-          </Button>
+          </button>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- Modals Demo -->
-      <Card variant="elevated" padding="lg">
+      <NesCard variant="elevated" padding="lg">
         {#snippet header()}
                 <div >
             <h2 class="space-y-4">
@@ -349,10 +347,10 @@ https://svelte.dev/e/unexpected_reserved_word -->
             Prompt Dialog
           </button>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- Interactive Cards Demo -->
-      <Card variant="elevated" padding="lg">
+      <NesCard variant="elevated" padding="lg">
         {#snippet header()}
                 <div >
             <h2 class="space-y-4">
@@ -365,7 +363,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
               {/snippet}
 
         <div class="space-y-4">
-          <Card
+          <NesCard
             variant="outlined"
             interactive
             selected={interactiveCardSelected}
@@ -386,9 +384,9 @@ https://svelte.dev/e/unexpected_reserved_word -->
                 {interactiveCardSelected ? "✅" : "⭕"}
               </div>
             </div>
-          </Card>
+          </NesCard>
 
-          <Card variant="filled" padding="md">
+          <NesCard variant="filled" padding="md">
             {#snippet header()}
                         <div >
                 <h3 class="space-y-4">
@@ -411,19 +409,19 @@ https://svelte.dev/e/unexpected_reserved_word -->
                 </div>
               </div>
                       {/snippet}
-          </Card>
+          </NesCard>
 
-          <Card variant="elevated" loading padding="md">
+          <NesCard variant="elevated" loading padding="md">
             <p class="space-y-4">
               This card is in a loading state...
             </p>
-          </Card>
+          </NesCard>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- Form Demo -->
       <div class="space-y-4">
-        <Card variant="elevated" padding="lg">
+        <NesCard variant="elevated" padding="lg">
           {#snippet header()}
                     <div >
               <h2 class="space-y-4">
@@ -552,12 +550,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
               </div>
                       {/snippet}
           </Form>
-        </Card>
+        </NesCard>
       </div>
     </div>
 
     <!-- Component Features -->
-    <Card variant="outlined" padding="lg" class="space-y-4">
+    <NesCard variant="outlined" padding="lg" class="space-y-4">
       {#snippet header()}
             <div >
           <h2 class="space-y-4">
@@ -615,7 +613,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </ul>
         </div>
       </div>
-    </Card>
+    </NesCard>
   </div>
 </div>
 

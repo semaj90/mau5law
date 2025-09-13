@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createActor } from 'xstate';
   import { onMount, onDestroy } from 'svelte';
   import { enhancedCaseManagementMachine, type EnhancedCaseManagementContext } from '../../machines/enhanced-case-machine-with-cognitive-cache';
@@ -167,7 +168,7 @@
         <divTitle>Database Health</h3>
         <Button class="bits-btn" variant="outline" size="sm" onclick={refreshHealth}>
           Refresh
-        </Button>
+        </button>
       </div>
       <divContent>
         <div class="space-y-2">
@@ -197,7 +198,7 @@
         <divTitle>Cache Metrics</h3>
         <Button class="bits-btn" variant="outline" size="sm" onclick={refreshMetrics}>
           Refresh
-        </Button>
+        </button>
       </div>
       <divContent>
         <div class="space-y-2">
@@ -283,7 +284,7 @@
             class="w-full bits-btn bits-btn"
           >
             {isLoading && currentState === 'creatingCase' ? 'Creating...' : 'Create Case'}
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -311,7 +312,7 @@
             class="w-full bits-btn bits-btn"
           >
             {isLoading && currentState === 'searchingWithCognition' ? 'Searching...' : 'Search with AI'}
-          </Button>
+          </button>
           
           {#if context.searchResults.length > 0}
             <div class="mt-4">
@@ -349,7 +350,7 @@
             disabled={isLoading}
           >
             Load Case (Standard)
-          </Button>
+          </button>
           
           <Button class="bits-btn" 
             variant="outline" 
@@ -357,7 +358,7 @@
             disabled={isLoading}
           >
             Load Case (With Prediction)
-          </Button>
+          </button>
           
           <Button class="bits-btn" 
             variant="outline" 
@@ -365,7 +366,7 @@
             disabled={isLoading}
           >
             Load Case (Cache Priority)
-          </Button>
+          </button>
         </div>
         
         {#if context.currentCase}

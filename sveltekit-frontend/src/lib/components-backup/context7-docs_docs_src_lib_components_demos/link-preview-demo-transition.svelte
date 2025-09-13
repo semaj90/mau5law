@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Avatar, LinkPreview } from "bits-ui";
   	import CalendarBlank from "phosphor-svelte/lib/CalendarBlank";
   	import MapPin from "phosphor-svelte/lib/MapPin";
@@ -58,7 +59,7 @@
 								<h4 class="font-medium">@huntabyte</h4>
 								<p>I do things on the internet.</p>
 								<div
-									class="text-muted-foreground flex items-center gap-[21px] pt-2 text-xs"
+									class="nes-text is-disabled flex items-center gap-[21px] pt-2 text-xs"
 								>
 									<div class="flex items-center text-xs">
 										<MapPin class="mr-1 size-4" />

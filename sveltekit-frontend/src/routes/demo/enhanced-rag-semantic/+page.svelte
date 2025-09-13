@@ -1,5 +1,6 @@
 <!-- Enhanced RAG Semantic Analysis Demo Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import EnhancedRAGDemo from '$lib/components/ai/EnhancedRAGDemo.svelte';
   import {
@@ -106,9 +107,9 @@
     </div>
 
     <!-- System Status -->
-    <Card class="system-status">
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard class="system-status">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           <span>System Status</span>
           <button
             onclick={checkSystemStatus}
@@ -116,9 +117,9 @@
             disabled={loadingStatus}>
             {loadingStatus ? 'Checking...' : 'Refresh'}
           </button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <!-- Enhanced RAG Service -->
           <div class="status-item">
@@ -190,19 +191,19 @@
             </div>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Feature Overview -->
     <div class="features grid grid-cols-1 md:grid-cols-3 gap-6">
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center space-x-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
             <span class="text-2xl">🧠</span>
             <span>Semantic Analysis</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <ul class="text-sm space-y-2">
             <li>• Named Entity Recognition for legal documents</li>
             <li>• Legal concept mapping and relationship analysis</li>
@@ -210,17 +211,17 @@
             <li>• Document complexity scoring</li>
             <li>• 384-dimensional vector embeddings</li>
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center space-x-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
             <span class="text-2xl">🔍</span>
             <span>Enhanced RAG</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <ul class="text-sm space-y-2">
             <li>• Vector similarity search with Qdrant</li>
             <li>• Semantic query expansion</li>
@@ -228,17 +229,17 @@
             <li>• Context-aware result ranking</li>
             <li>• Real-time relevance scoring</li>
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center space-x-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
             <span class="text-2xl">⚡</span>
             <span>AI Integration</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <ul class="text-sm space-y-2">
             <li>• Ollama local LLM integration</li>
             <li>• Context7 MCP multi-core processing</li>
@@ -246,19 +247,19 @@
             <li>• Real-time streaming responses</li>
             <li>• Intelligent caching and indexing</li>
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Main Demo Component -->
     <EnhancedRAGDemo />
 
     <!-- Technical Details -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Technical Architecture</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Technical Architecture</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="architecture-section">
             <h4 class="font-semibold text-gray-900 mb-3">Semantic Analysis Pipeline</h4>
@@ -312,38 +313,38 @@
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Performance Metrics -->
     <div class="performance grid grid-cols-2 md:grid-cols-4 gap-4">
-      <Card class="text-center">
-        <CardContent class="pt-6">
+      <NesCard class="text-center">
+        <div class="yorha-panel-content" class="pt-6">
           <div class="text-3xl font-bold text-blue-600">384D</div>
           <div class="text-sm text-gray-600">Vector Embeddings</div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
-      <Card class="text-center">
-        <CardContent class="pt-6">
+      <NesCard class="text-center">
+        <div class="yorha-panel-content" class="pt-6">
           <div class="text-3xl font-bold text-green-600">&lt;100ms</div>
           <div class="text-sm text-gray-600">Semantic Analysis</div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
-      <Card class="text-center">
-        <CardContent class="pt-6">
+      <NesCard class="text-center">
+        <div class="yorha-panel-content" class="pt-6">
           <div class="text-3xl font-bold text-purple-600">8 Types</div>
           <div class="text-sm text-gray-600">Legal Entities</div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
-      <Card class="text-center">
-        <CardContent class="pt-6">
+      <NesCard class="text-center">
+        <div class="yorha-panel-content" class="pt-6">
           <div class="text-3xl font-bold text-orange-600">95%</div>
           <div class="text-sm text-gray-600">Accuracy Rate</div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </div>
 </div>

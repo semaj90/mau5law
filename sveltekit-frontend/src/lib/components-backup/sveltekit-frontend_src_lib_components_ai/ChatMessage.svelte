@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     message: any
   }
@@ -8,7 +9,7 @@
 
 
 
-  import Button from "$lib/components/ui/Button.svelte";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { chatActions } from "$lib/stores/chatStore";
   import { notifications } from "$lib/stores/notification";
   import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, User as UserIcon } from "lucide-svelte";
@@ -137,7 +138,7 @@
             title="Copy message"
           >
             <Copy class="space-y-4" />
-          </Button>
+          </button>
 
           <!-- Save/Unsave -->
           <Button
@@ -152,7 +153,7 @@
             {:else}
               <StarOff class="space-y-4" />
             {/if}
-          </Button>
+          </button>
 
           <!-- More Options -->
           <Button
@@ -162,7 +163,7 @@
             title="More options"
           >
             <MoreVertical class="space-y-4" />
-          </Button>
+          </button>
         </div>
       </div>
     </div>

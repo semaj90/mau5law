@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import {
     Card,
@@ -189,20 +190,20 @@
   }
 </script>
 
-<Card class="w-full max-w-4xl mx-auto">
-  <CardHeader>
-    <CardTitle class="flex items-center gap-2">
+<NesCard class="w-full max-w-4xl mx-auto">
+  <div class="yorha-panel-header">
+    <h3 class="nes-text is-primary" class="flex items-center gap-2">
       🎨 Legal Evidence Glyph Generator
       <span class="text-sm font-normal text-gray-600">
         {evidenceId ? `Evidence #${evidenceId}` : 'No evidence selected'}
       </span>
-    </CardTitle>
+    </h3>
     <p class="text-sm text-gray-600">
       Generate stylized visual representations of legal evidence using GPU-cached tensor diffusion
     </p>
-  </CardHeader>
+  </div>
   
-  <CardContent class="space-y-6">
+  <div class="yorha-panel-content" class="space-y-6">
     <!-- Prompt Input -->
     <div>
       <label for="generation-prompt" class="block text-sm font-medium mb-2">Generation Prompt</label>
@@ -309,7 +310,7 @@
         class="text-sm bits-btn bits-btn"
       >
         + Add Conditioning Tensor
-      </Button>
+      </button>
       
       <p class="text-xs text-gray-500 mt-1">
         Reuse cached tensors for consistent styling across generations
@@ -489,7 +490,7 @@
         {:else}
           🎨 Generate Glyph
         {/if}
-      </Button>
+      </button>
     </div>
 
     <!-- Error Display -->
@@ -728,8 +729,8 @@
         </div>
       </div>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   /* Custom scrollbar for textarea */

@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Grid Item Component -->
 <script lang="ts" context="module">
+  import 'nes.css/css/nes.min.css';
 </script>
   export interface GridItemProps {
     colSpan?: number;

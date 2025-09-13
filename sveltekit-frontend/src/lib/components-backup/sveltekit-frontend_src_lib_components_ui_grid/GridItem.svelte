@@ -3,6 +3,7 @@ https://svelte.dev/e/state_invalid_placement -->
 <!-- @migration-task Error while migrating Svelte code: `$derived(...)` can only be used as a variable declaration initializer or a class field -->
 <!-- Grid Item Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     colSpan: number
     rowSpan: number

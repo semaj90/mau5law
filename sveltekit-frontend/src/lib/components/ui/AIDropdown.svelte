@@ -1,5 +1,6 @@
 <!-- Production-level AI Dropdown using Melt UI with keyboard shortcuts -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     disabled?: unknown;
     onReportGenerate: (reportType: string) => void;

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Editor } from "@tiptap/core";
   import Image from "@tiptap/extension-image";
   import Placeholder from "@tiptap/extension-placeholder";

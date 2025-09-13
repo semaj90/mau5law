@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- AI Chat Interface Component - SSR-safe with proper hydration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { onDestroy, onMount, tick } from "svelte";
   import { aiStore, conversation, status } from "../../../lib/stores/ai-store";

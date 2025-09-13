@@ -2,6 +2,7 @@
 <!-- Demonstrates RTX 3060 Ti CUDA acceleration for legal document similarity -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import { Button } from '$lib/components/ui/enhanced-bits';
   	// Svelte 5 runes for reactive state
@@ -275,7 +276,7 @@
 				{:else}
 					🚀 GPU Search
 				{/if}
-			</Button>
+			</button>
 		</div>
 		
 		{#if !gpuStatus?.available}
@@ -319,7 +320,7 @@
 			
 			<div class="space-y-4">
 				{#each searchResults as result}
-					<div class="result-card p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+					<div class="result-nier-bits-card p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
 						<div class="flex justify-between items-start mb-2">
 							<h3 class="text-lg font-medium text-gray-900 flex-1">
 								{result.title}

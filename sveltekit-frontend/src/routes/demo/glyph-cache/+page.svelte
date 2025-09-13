@@ -5,6 +5,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { run } from 'svelte/legacy';
 
   import { onMount } from 'svelte';
@@ -514,25 +515,25 @@
         
         {#if $cacheMetrics}
           <div class="metrics-display">
-            <div class="metric-card">
+            <div class="metric-nier-bits-card">
               <h4>Cache Performance</h4>
               <div class="metric-value">{($cacheMetrics.cacheHitRate * 100).toFixed(1)}%</div>
               <div class="metric-label">Hit Rate</div>
             </div>
             
-            <div class="metric-card">
+            <div class="metric-nier-bits-card">
               <h4>Total Glyphs</h4>
               <div class="metric-value">{$cacheMetrics.totalGlyphs}</div>
               <div class="metric-label">Cached</div>
             </div>
             
-            <div class="metric-card">
+            <div class="metric-nier-bits-card">
               <h4>Memory Usage</h4>
               <div class="metric-value">{($cacheMetrics.memoryUsage / 1024).toFixed(1)}</div>
               <div class="metric-label">KB</div>
             </div>
             
-            <div class="metric-card">
+            <div class="metric-nier-bits-card">
               <h4>Render Time</h4>
               <div class="metric-value">{$cacheMetrics.renderingTime.toFixed(2)}</div>
               <div class="metric-label">ms avg</div>

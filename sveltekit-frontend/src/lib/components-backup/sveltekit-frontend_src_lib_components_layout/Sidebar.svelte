@@ -2,13 +2,14 @@
 https://svelte.dev/e/const_tag_invalid_placement -->
 <!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>` or `<Component>` -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     open?: any;
   }
   let { open = false } = $props();
 
   import { page } from "$app/state";
-  import Button from "$lib/components/ui/Button.svelte";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { cn } from "$lib/utils";
   import {
     BarChart3,
@@ -129,7 +130,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           <h1 class="text-sm font-semibold text-foreground">
             Enhanced Legal AI
           </h1>
-          <p class="text-xs text-muted-foreground">
+          <p class="text-xs nes-text is-disabled">
             Justice Through Technology
           </p>
         </div>
@@ -139,14 +140,14 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     <!-- Quick actions -->
     <div class="p-4 border-b border-nier-gray">
       <div class="grid grid-cols-2 gap-2">
-        <Button variant="primary" size="sm" class="justify-start">
+        <button class="nes-btn is-primary" size="sm" class="justify-start">
           <Plus class="mr-2 h-4 w-4" />
           New Case
-        </Button>
+        </button>
         <Button variant="ghost" size="sm" class="justify-start">
           <Search class="mr-2 h-4 w-4" />
           Search
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -202,7 +203,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <!-- Analytics section -->
         <div class="pt-4">
           <h3
-            class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider"
+            class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider"
           >
             Analytics
           </h3>
@@ -236,7 +237,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <!-- Settings section -->
         <div class="pt-4">
           <h3
-            class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider"
+            class="px-3 text-xs font-semibold nes-text is-disabled uppercase tracking-wider"
           >
             System
           </h3>
@@ -277,7 +278,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         ></div>
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-foreground">System Status</p>
-          <p class="text-xs text-muted-foreground truncate">
+          <p class="text-xs nes-text is-disabled truncate">
             All systems operational
           </p>
         </div>

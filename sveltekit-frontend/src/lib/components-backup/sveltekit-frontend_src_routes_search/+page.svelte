@@ -1,9 +1,10 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import { Tooltip } from "$lib/components/ui";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications } from "$lib/stores/notification";
   import {
     AlertCircle,
@@ -238,7 +239,7 @@
 
           <!-- Search Actions -->
           <div class="space-y-4">
-            <Button type="submit" disabled={isSearching || !searchQuery.trim()}>
+            <button class="nes-btn" type="submit" disabled={isSearching || !searchQuery.trim()}>
               {#if isSearching}
                 <Loader2 class="space-y-4" />
                 Searching...
@@ -246,28 +247,28 @@
                 <Search class="space-y-4" />
                 Search
               {/if}
-            </Button>
+            </button>
 
             <Tooltip content="Show/hide advanced search filters">
-              <Button
+              <button class="nes-btn"
                 variant="outline"
                 type="button"
                 onclick={() => (showAdvancedFilters = !showAdvancedFilters)}
               >
                 <Filter class="space-y-4" />
                 Filters
-              </Button>
+              </button>
             </Tooltip>
 
             {#if selectedType || selectedCaseId || threshold !== 0.7 || limit !== 20}
               <Tooltip content="Clear all filters">
-                <Button
+                <button class="nes-btn"
                   variant="outline"
                   type="button"
                   onclick={() => clearFilters()}
                 >
                   Clear Filters
-                </Button>
+                </button>
               </Tooltip>
             {/if}
           </div>
@@ -531,19 +532,19 @@
             <Button variant="outline" class="space-y-4">
               <Database class="space-y-4" />
               Browse Cases
-            </Button>
+            </button>
           </a>
           <a href="/evidence" class="space-y-4">
             <Button variant="outline" class="space-y-4">
               <FileText class="space-y-4" />
               Browse Evidence
-            </Button>
+            </button>
           </a>
           <a href="/ai-assistant" class="space-y-4">
             <Button variant="outline" class="space-y-4">
               <Eye class="space-y-4" />
               AI Assistant
-            </Button>
+            </button>
           </a>
         </div>
       </div>

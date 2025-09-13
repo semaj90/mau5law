@@ -3,6 +3,7 @@ https://svelte.dev/e/tag_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression -->
 <!-- Simple Working Chat Component for CUDA AI Backend -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import {
@@ -159,23 +160,23 @@ https://svelte.dev/e/tag_invalid_name -->
   }
 </script>
 
-<Card class="w-full max-w-4xl mx-auto h-[600px] flex flex-col">
-  <CardHeader>
+<NesCard class="w-full max-w-4xl mx-auto h-[600px] flex flex-col">
+  <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
-      <CardTitle class="flex items-center gap-2">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         🤖 Legal AI Chat
         <Badge variant="outline" class="text-xs">
           <div class="w-2 h-2 rounded-full {getStatusColor()} mr-1"></div>
           {getStatusText()}
         </Badge>
-      </CardTitle>
+      </h3>
       <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>
         Clear Chat
-      </Button>
+      </button>
     </div>
-  </CardHeader>
+  </div>
   
-  <CardContent class="flex-1 flex flex-col gap-4 overflow-hidden">
+  <div class="yorha-panel-content" class="flex-1 flex flex-col gap-4 overflow-hidden">
     <!-- Messages Area -->
     <ScrollArea class="flex-1 p-4 border rounded-lg bg-muted/20">
       <div class="space-y-4">
@@ -209,7 +210,7 @@ https://svelte.dev/e/tag_invalid_name -->
         
         {#if isLoading}
           <div class="flex justify-start">
-            <div class="max-w-[70%] p-3 rounded-lg bg-muted text-muted-foreground">
+            <div class="max-w-[70%] p-3 rounded-lg bg-muted nes-text is-disabled">
               <div class="text-sm font-medium mb-1">🤖 AI Assistant</div>
               <div class="flex items-center gap-2">
                 <div class="animate-pulse">Thinking...</div>
@@ -241,11 +242,11 @@ https://svelte.dev/e/tag_invalid_name -->
         disabled={!inputMessage.trim() || isLoading || connectionStatus !== 'connected'}
       >
         {isLoading ? '⏳' : '📤'} Send
-      </Button>
+      </button>
     </div>
 
     <!-- Status Info -->
-    <div class="text-xs text-muted-foreground flex justify-between items-center">
+    <div class="text-xs nes-text is-disabled flex justify-between items-center">
       <span>
         GPU: RTX 3060 Ti • Model: Gemma3-Legal • Port: 8096
       </span>
@@ -253,8 +254,8 @@ https://svelte.dev/e/tag_invalid_name -->
         {messages.length} messages
       </span>
     </div>
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <!-- Debug Panel (Development Only) -->
 {#if lastResponse && process.env.NODE_ENV === 'development'}

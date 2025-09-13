@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -474,7 +475,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
 <div class="fabric-canvas-container">
   <!-- Toolbar -->
-  <Card class="mb-4">
+  <NesCard class="mb-4">
     <div class="p-4 pb-3">
       <div class="flex items-center justify-between font-semibold text-lg">
         <div class="flex items-center gap-2">
@@ -510,7 +511,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
             <Button class="bits-btn" variant="outline" disabled={isLoading}>
               <Upload class="h-4 w-4 mr-2" />
               Upload Evidence
-            </Button>
+            </button>
           </label>
         {/if}
 
@@ -519,26 +520,26 @@ let uploadProgress = $state<Map<string, number>>(new Map());
           <Button class="bits-btn" variant="outline" onclick={addAnnotation}>
             <FileText class="h-4 w-4 mr-2" />
             Add Note
-          </Button>
+          </button>
         {/if}
 
         <!-- Zoom Controls -->
         <Button class="bits-btn" variant="outline" onclick={zoomIn}>
           <ZoomIn class="h-4 w-4" />
-        </Button>
+        </button>
         <Button class="bits-btn" variant="outline" onclick={zoomOut}>
           <ZoomOut class="h-4 w-4" />
-        </Button>
+        </button>
         <Button class="bits-btn" variant="outline" onclick={resetZoom}>
           <RotateCcw class="h-4 w-4" />
-        </Button>
+        </button>
 
         <!-- Object Controls -->
         {#if hasSelectedObject && !readOnly}
           <Button class="bits-btn" variant="destructive" onclick={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
-          </Button>
+          </button>
         {/if}
 
         <!-- Save & Export -->
@@ -546,16 +547,16 @@ let uploadProgress = $state<Map<string, number>>(new Map());
           <Button class="bits-btn" variant="default" onclick={saveCanvas}>
             <Save class="h-4 w-4 mr-2" />
             Save
-          </Button>
+          </button>
         {/if}
 
         <Button class="bits-btn" variant="outline" onclick={exportCanvas}>
           <Download class="h-4 w-4 mr-2" />
           Export
-        </Button>
+        </button>
       </div>
     </div>
-  </Card>
+  </NesCard>
 
   <!-- Canvas -->
   <div class="canvas-wrapper relative border border-gray-200 rounded-lg overflow-hidden">
@@ -594,7 +595,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
   <!-- Object Properties Panel -->
   {#if selectedObject}
-    <Card class="mt-4">
+    <NesCard class="mt-4">
       <div class="p-4">
         <h3 class="text-lg font-semibold mb-4">Selected Object</h3>
         <div class="grid grid-cols-2 gap-4 text-sm">
@@ -627,7 +628,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
           {/if}
         </div>
       </div>
-    </Card>
+    </NesCard>
   {/if}
 </div>
 

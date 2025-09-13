@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   /**
    * Streaming Workflow Demo Page
    *
@@ -117,21 +118,21 @@
         onclick={() => selectedDemo = 'single'}
       >
         Single Workflow
-      </Button>
+      </button>
       <Button class="bits-btn"
         variant={selectedDemo === 'multiple' ? 'default' : 'ghost'}
         size="sm"
         onclick={() => selectedDemo = 'multiple'}
       >
         Multiple Sessions
-      </Button>
+      </button>
       <Button class="bits-btn"
         variant={selectedDemo === 'dashboard' ? 'default' : 'ghost'}
         size="sm"
         onclick={() => selectedDemo = 'dashboard'}
       >
         Live Dashboard
-      </Button>
+      </button>
     </div>
   </div>
 
@@ -168,9 +169,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Active Sessions Monitor -->
       <div class="lg:col-span-2">
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center justify-between">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center justify-between">
               📊 Active Processing Sessions
               <div class="flex items-center gap-2">
                 <input
@@ -184,12 +185,12 @@
                 </label>
                 <Button class="bits-btn" onclick={loadActiveSessions} variant="outline" size="sm">
                   Refresh
-                </Button>
+                </button>
               </div>
-            </CardTitle>
-          </CardHeader>
+            </h3>
+          </div>
 
-          <CardContent>
+          <div class="yorha-panel-content">
             {#if activeSessions.length === 0}
               <div class="text-center py-8 text-gray-500">
                 <div class="text-4xl mb-2">📭</div>
@@ -227,24 +228,24 @@
                         size="sm"
                       >
                         Cancel
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 {/each}
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
 
       <!-- Quick Start Panel -->
       <div>
-        <Card>
-          <CardHeader>
-            <CardTitle>🚀 Quick Start</CardTitle>
-          </CardHeader>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">🚀 Quick Start</h3>
+          </div>
 
-          <CardContent class="space-y-4">
+          <div class="yorha-panel-content" class="space-y-4">
             <p class="text-sm text-gray-600">
               Launch new evidence processing workflows with different configurations
             </p>
@@ -255,14 +256,14 @@
                 variant="outline"
               >
                 🧬 Neural Sprite Workflow
-              </Button>
+              </button>
 
               <Button class="bits-btn w-full justify-start"
                 onclick={() => selectedDemo = 'multiple'}
                 variant="outline"
               >
                 ⚡ Parallel Processing
-              </Button>
+              </button>
             </div>
 
             <div class="border-t pt-4">
@@ -286,16 +287,16 @@
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Feature Showcase -->
-        <Card class="mt-4">
-          <CardHeader>
-            <CardTitle>🌟 D-Phase Features</CardTitle>
-          </CardHeader>
+        <NesCard class="mt-4">
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">🌟 D-Phase Features</h3>
+          </div>
 
-          <CardContent>
+          <div class="yorha-panel-content">
             <div class="space-y-3 text-sm">
               <div class="flex items-start gap-2">
                 <span class="text-green-600">✅</span>
@@ -337,19 +338,19 @@
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     </div>
   {/if}
 
   <!-- Technical Details -->
-  <Card class="max-w-4xl mx-auto">
-    <CardHeader>
-      <CardTitle>🔧 Technical Architecture</CardTitle>
-    </CardHeader>
+  <NesCard class="max-w-4xl mx-auto">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">🔧 Technical Architecture</h3>
+    </div>
 
-    <CardContent>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
         <div class="space-y-2">
           <h4 class="font-medium text-purple-600">🎭 Frontend (Svelte 5)</h4>
@@ -391,6 +392,6 @@
           </ul>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 </div>

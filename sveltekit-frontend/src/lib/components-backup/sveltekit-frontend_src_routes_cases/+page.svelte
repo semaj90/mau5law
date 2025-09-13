@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { user } from '$lib/stores/user';
   import { goto } from '$app/navigation';
@@ -52,7 +53,7 @@
       <button class="nier-button-primary">
         ➕ New Case
       </button>
-      <button class="btn btn-secondary">
+      <button class="btn nes-btn">
         📤 Import Cases
       </button>
     </div>
@@ -77,7 +78,7 @@
 
   <div class="cases-grid">
     {#each cases as caseItem}
-      <div class="case-card">
+      <div class="case-nier-bits-card">
         <div class="case-header">
           <h3>{caseItem.title}</h3>
           <span class="case-status status-{caseItem.status}">{caseItem.status}</span>
@@ -97,9 +98,9 @@
         </div>
         
         <div class="case-actions">
-          <button class="btn btn-sm btn-primary">View Details</button>
-          <button class="btn btn-sm btn-secondary">Edit Case</button>
-          <button class="btn btn-sm btn-outline">Archive</button>
+          <button class="btn btn-sm nes-btn is-primary">View Details</button>
+          <button class="btn btn-sm nes-btn">Edit Case</button>
+          <button class="btn btn-sm nes-btn">Archive</button>
         </div>
       </div>
     {/each}

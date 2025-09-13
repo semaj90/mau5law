@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Tooltip, Toolbar, Separator } from "bits-ui";
   	import TextB from "phosphor-svelte/lib/TextB";
   	import TextItalic from "phosphor-svelte/lib/TextItalic";

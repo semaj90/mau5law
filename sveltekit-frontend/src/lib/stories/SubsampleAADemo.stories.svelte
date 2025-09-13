@@ -338,10 +338,10 @@ function resetBenchmarks() {
 
   &lt;div class="demo-controls"&gt;
     &lt;div class="control-row"&gt;
-      &lt;button onclick={startDemo} disabled={demoState.isRunning} class="btn-primary"&gt;
+      &lt;button onclick={startDemo} disabled={demoState.isRunning} class="nes-btn is-primary"&gt;
         Start RTX Demo
       &lt;/button&gt;
-      &lt;button onclick={stopDemo} disabled={!demoState.isRunning} class="btn-secondary"&gt;
+      &lt;button onclick={stopDemo} disabled={!demoState.isRunning} class="nes-btn"&gt;
         Stop Demo
       &lt;/button&gt;
       &lt;button onclick={resetBenchmarks} class="btn-tertiary"&gt;
@@ -449,7 +449,7 @@ function resetBenchmarks() {
 
   &lt;div class="test-section"&gt;
     &lt;h4&gt;🧪 Document Processing Test&lt;/h4&gt;
-    &lt;button onclick={processTestDocument} class="btn-primary"&gt;
+    &lt;button onclick={processTestDocument} class="nes-btn is-primary"&gt;
       Test RTX Document Compression
     &lt;/button&gt;
     &lt;p&gt;Processes a 1MB test document with RTX acceleration and neural sprite compression&lt;/p&gt;

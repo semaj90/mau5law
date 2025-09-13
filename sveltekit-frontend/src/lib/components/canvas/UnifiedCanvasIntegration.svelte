@@ -3,6 +3,7 @@
   Combines EvidenceCanvas with YoRHa CanvasBoard for comprehensive evidence visualization
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
@@ -172,32 +173,32 @@
     </div>
     
     <div class="mode-controls">
-      <Button
+      <button class="nes-btn"
         variant={currentMode === 'evidence' ? 'default' : 'outline'}
         size="sm"
         onclick={() => switchMode('evidence')}
         class="bits-btn mode-btn"
       >
         📁 Evidence Only
-      </Button>
+      </button>
       
-      <Button
+      <button class="nes-btn"
         variant={currentMode === 'drawing' ? 'default' : 'outline'}
         size="sm" 
         onclick={() => switchMode('drawing')}
         class="bits-btn mode-btn"
       >
         🎨 Drawing Only
-      </Button>
+      </button>
       
-      <Button
+      <button class="nes-btn"
         variant={currentMode === 'both' ? 'default' : 'outline'}
         size="sm"
         onclick={() => switchMode('both')}
         class="bits-btn mode-btn"
       >
         🔄 Both
-      </Button>
+      </button>
       
       <Button
         variant="outline"
@@ -207,7 +208,7 @@
         class="sync-btn bits-btn"
       >
         {syncInProgress ? '🔄 Syncing...' : '🔄 Sync'}
-      </Button>
+      </button>
       
       <Button
         variant="outline"
@@ -216,7 +217,7 @@
         class="clear-btn bits-btn"
       >
         🗑️ Clear
-      </Button>
+      </button>
     </div>
   </div>
   

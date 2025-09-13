@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { } from 'svelte';
 
   interface Props {
@@ -50,12 +51,12 @@ https://svelte.dev/e/js_parse_error -->
   let showDetails = $state(false);
 </script>
 
-<Card class="w-full max-w-4xl">
-  <CardHeader>
+<NesCard class="w-full max-w-4xl">
+  <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
-      <CardTitle class="text-xl font-semibold">
+      <h3 class="nes-text is-primary" class="text-xl font-semibold">
         Multi-Agent Evidence Analysis
-      </CardTitle>
+      </h3>
       {#if synthesis.caseStrength}
         <Badge class="px-3 py-1 font-medium {strengthColor}">
           Case Strength: {synthesis.caseStrength?.toUpperCase()}
@@ -67,9 +68,9 @@ https://svelte.dev/e/js_parse_error -->
         Case: {analysisData.caseId} • {analysisData.timestamp ?? 'Recently analyzed'}
       </p>
     {/if}
-  </CardHeader>
+  </div>
 
-  <CardContent class="space-y-6">
+  <div class="yorha-panel-content" class="space-y-6">
     <!-- Evidence Summary -->
     {#if evidence.documentType}
       <div>
@@ -237,19 +238,19 @@ https://svelte.dev/e/js_parse_error -->
         onclick={() => showDetails = !showDetails}
       >
         {showDetails ? 'Hide' : 'Show'} Full Analysis
-      </Button>
+      </button>
       
       <Button class="bits-btn" variant="outline" size="sm">
         📊 View Timeline
-      </Button>
+      </button>
       
       <Button class="bits-btn" variant="outline" size="sm">
         🕸️ Relationship Graph  
-      </Button>
+      </button>
       
       <Button class="bits-btn" size="sm">
         📝 Generate Report
-      </Button>
+      </button>
     </div>
 
     <!-- Detailed View -->
@@ -261,8 +262,8 @@ https://svelte.dev/e/js_parse_error -->
         </pre>
       </div>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   /* Custom scrollbar for JSON display */

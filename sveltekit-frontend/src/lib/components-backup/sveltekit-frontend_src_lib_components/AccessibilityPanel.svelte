@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     showPanel?: any;
   }
@@ -12,7 +13,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
 
   import { browser } from "$app/environment";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications } from "$lib/stores/notification";
   import {
     AlertTriangle,
@@ -473,14 +474,14 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <div class="space-y-4">
         <div class="space-y-4">
           <h2 id="accessibility-panel-title" class="space-y-4">Accessibility Panel</h2>
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => (showPanel = false)}
             aria-label="Close accessibility panel"
           >
             ✕
-          </Button>
+          </button>
         </div>
 
         <!-- Accessibility Settings -->
@@ -544,7 +545,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         <div class="space-y-4">
           <div class="space-y-4">
             <h3 class="space-y-4">Accessibility Audit</h3>
-            <Button
+            <button class="nes-btn"
               size="sm"
               onclick={() => runAccessibilityAudit()}
               disabled={isAuditing}
@@ -557,7 +558,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 <RefreshCw class="space-y-4" />
                 Run Audit
               {/if}
-            </Button>
+            </button>
           </div>
 
           {#if isAuditing}
@@ -605,7 +606,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
               >
                 <Download class="space-y-4" />
                 Export Report
-              </Button>
+              </button>
             </div>
 
             <!-- Audit Results -->

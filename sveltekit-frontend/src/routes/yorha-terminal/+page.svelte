@@ -1,5 +1,8 @@
 <!-- YoRHa Terminal Interface with AI Commands -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
 	import { run } from 'svelte/legacy';
 
 	import { onMount } from "svelte";
@@ -361,13 +364,13 @@
 			<div class="role-switcher">
 				<Button class={"role-btn " + (currentRole === 'detective' ? 'active' : '')} onclick={() => switchRole("detective")}>
 					Detective
-				</Button>
+				</button>
 				<Button class={"role-btn " + (currentRole === 'prosecutor' ? 'active' : '')} onclick={() => switchRole("prosecutor")}>
 					Prosecutor
-				</Button>
+				</button>
 				<Button class={"role-btn " + (currentRole === 'admin' ? 'active' : '')} onclick={() => switchRole("admin")}>
 					Admin
-				</Button>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -406,11 +409,11 @@
 
 	<!-- Quick Commands -->
 	<div class="quick-commands">
-		<Button class="bits-btn" onclick={() => { terminalInput = "help"; void executeCommand(); }}>Help</Button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "status"; void executeCommand(); }}>Status</Button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "context7"; void executeCommand(); }}>Test Context7</Button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "analyze contract dispute"; void executeCommand(); }}>Sample Analysis</Button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "clear"; void executeCommand(); }}>Clear</Button>
+		<Button class="bits-btn" onclick={() => { terminalInput = "help"; void executeCommand(); }}>Help</button>
+		<Button class="bits-btn" onclick={() => { terminalInput = "status"; void executeCommand(); }}>Status</button>
+		<Button class="bits-btn" onclick={() => { terminalInput = "context7"; void executeCommand(); }}>Test Context7</button>
+		<Button class="bits-btn" onclick={() => { terminalInput = "analyze contract dispute"; void executeCommand(); }}>Sample Analysis</button>
+		<Button class="bits-btn" onclick={() => { terminalInput = "clear"; void executeCommand(); }}>Clear</button>
 	</div>
 </div>
 

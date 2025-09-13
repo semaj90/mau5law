@@ -1,5 +1,6 @@
 <!-- Enhanced RAG Interface Component for SvelteKit 2 + Svelte 5 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Fuse from 'fuse.js';
   // Svelte 5 reactive state
@@ -245,15 +246,15 @@
   <div class="analytics-panel bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mb-8">
     <h2 class="text-xl font-semibold mb-4">📊 Analytics Dashboard</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="stat-card bg-white rounded-lg p-4 shadow-sm">
+      <div class="stat-nier-bits-card bg-white rounded-lg p-4 shadow-sm">
         <div class="text-2xl font-bold text-blue-600">{analytics.totalDocuments}</div>
         <div class="text-sm text-gray-600">Total Documents</div>
       </div>
-      <div class="stat-card bg-white rounded-lg p-4 shadow-sm">
+      <div class="stat-nier-bits-card bg-white rounded-lg p-4 shadow-sm">
         <div class="text-2xl font-bold text-green-600">{analytics.averageScore.toFixed(2)}</div>
         <div class="text-sm text-gray-600">Average Score</div>
       </div>
-      <div class="stat-card bg-white rounded-lg p-4 shadow-sm">
+      <div class="stat-nier-bits-card bg-white rounded-lg p-4 shadow-sm">
         <div class="text-sm font-medium text-purple-600">
           {analytics.topLabels.join(', ') || 'Loading...'}
         </div>
@@ -285,7 +286,7 @@
         <h3 class="font-semibold mb-3">Found {searchResults.length} results:</h3>
         <div class="space-y-4">
           {#each searchResults as result}
-            <div class="result-card bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
+            <div class="result-nier-bits-card bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
               <div class="flex justify-between items-start mb-2">
                 <span class="inline-block px-2 py-1 rounded-full text-xs font-medium {getLabelColor(result.label)}">
                   {result.label}
@@ -333,7 +334,7 @@
     {:else}
       <div class="grid gap-4">
         {#each documents as doc}
-          <div class="document-card bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <div class="document-nier-bits-card bg-gray-50 rounded-lg p-4 border border-gray-200">
             <div class="flex justify-between items-start mb-3">
               <div class="flex gap-2 items-center">
                 <span class="inline-block px-2 py-1 rounded-full text-xs font-medium {getLabelColor(doc.label)}">

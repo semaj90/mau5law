@@ -2,6 +2,7 @@
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
 	import PS1Surface from '../../../stories/PS1Surface.stories.svelte';
 	import PS1ParallaxDynamic from '../../../stories/PS1ParallaxDynamic.stories.svelte';

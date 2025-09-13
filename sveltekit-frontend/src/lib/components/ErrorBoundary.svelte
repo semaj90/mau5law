@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -206,7 +207,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 aria-label="Copy error details"
               >
                 <Copy class="w-4 h-4" />
-              </Button>
+              </button>
             </div>
             <div class="mx-auto px-4 max-w-7xl">
               <div>Severity: {currentError.severity}</div>
@@ -232,7 +233,7 @@ https://svelte.dev/e/attribute_duplicate -->
               <RefreshCw class="mx-auto px-4 max-w-7xl" />
             {/if}
             Retry
-          </Button>
+          </button>
         {/if}
 
         {#if currentError.showDetails}
@@ -247,7 +248,7 @@ https://svelte.dev/e/attribute_duplicate -->
             {:else}
               <ChevronDown class="mx-auto px-4 max-w-7xl" />
             {/if}
-          </Button>
+          </button>
         {/if}
 
         <Button class="bits-btn"
@@ -257,7 +258,7 @@ https://svelte.dev/e/attribute_duplicate -->
           aria-label="Dismiss error"
         >
           <X class="mx-auto px-4 max-w-7xl" />
-        </Button>
+        </button>
       </div>
     </div>
   {:else}
@@ -301,7 +302,7 @@ https://svelte.dev/e/attribute_duplicate -->
                   >
                     <Copy class="mx-auto px-4 max-w-7xl" />
                     Copy
-                  </Button>
+                  </button>
                 </div>
                 <div class="mx-auto px-4 max-w-7xl">
                   <div>Severity: {currentError.severity}</div>
@@ -323,7 +324,7 @@ https://svelte.dev/e/attribute_duplicate -->
             >
               <Bug class="mx-auto px-4 max-w-7xl" />
               Report Issue
-            </Button>
+            </button>
           {/if}
 
           {#if currentError.showDetails}
@@ -340,7 +341,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 <ChevronDown class="mx-auto px-4 max-w-7xl" />
                 Show Details
               {/if}
-            </Button>
+            </button>
           {/if}
 
           {#if currentError.canRetry}
@@ -356,7 +357,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 <RefreshCw class="mx-auto px-4 max-w-7xl" />
                 Retry
               {/if}
-            </Button>
+            </button>
           {/if}
 
           <Button class="bits-btn"
@@ -364,7 +365,7 @@ https://svelte.dev/e/attribute_duplicate -->
             onclick={() => clearError()}
           >
             {currentError.canRetry ? "Cancel" : "Close"}
-          </Button>
+          </button>
         </div>
       </div>
     </div>

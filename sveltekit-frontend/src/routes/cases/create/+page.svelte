@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Demonstrates complete form enhancement pattern
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { enhance } from '$app/forms';
@@ -115,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
         >
           <ArrowLeft class="h-4 w-4" />
           <span>Back to Cases</span>
-        </Button>
+        </button>
 
         <div class="h-6 border-l border-muted-foreground/20"></div>
 
@@ -123,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
           <h1 class="text-3xl font-bold tracking-tight">
             {data.editMode ? 'Edit Case' : 'Create New Case'}
           </h1>
-          <p class="text-muted-foreground mt-1">
+          <p class="nes-text is-disabled mt-1">
             {data.editMode
               ? 'Update case information and manage evidence'
               : 'Enter case details, upload evidence, and enable AI analysis'
@@ -142,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             <Save class="h-4 w-4" />
             <span>Use Template</span>
-          </Button>
+          </button>
         {/if}
       </div>
     </div>
@@ -191,7 +192,7 @@ https://svelte.dev/e/js_parse_error -->
       <span>Form Enhancement Features</span>
     </h3>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm nes-text is-disabled">
       <div>
         <h4 class="font-medium text-foreground mb-2">SuperForms Integration</h4>
         <ul class="space-y-1">

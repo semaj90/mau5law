@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // PermissionGuard component - Permission-based access control - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
   interface Props {

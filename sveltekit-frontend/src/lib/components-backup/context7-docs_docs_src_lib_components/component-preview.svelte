@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Tabs } from "bits-ui";
   	import { cubicInOut } from "svelte/easing";
   	import { crossfade } from "svelte/transition";
@@ -34,7 +35,7 @@
 >
 	<Tabs.Root class="relative mr-auto w-full" bind:value>
 		<Tabs.List
-			class="h-input-sm rounded-card-sm shadow-mini-inset absolute right-2.5 top-2.5 z-20 flex items-center justify-center bg-neutral-200 px-[4px] dark:border dark:border-neutral-600/30 dark:bg-neutral-950"
+			class="h-input-sm rounded-nier-bits-card-sm shadow-mini-inset absolute right-2.5 top-2.5 z-20 flex items-center justify-center bg-neutral-200 px-[4px] dark:border dark:border-neutral-600/30 dark:bg-neutral-950"
 		>
 			<Tabs.Trigger
 				value="preview"
@@ -85,14 +86,14 @@
 		</Tabs.List>
 		<Tabs.Content value="code" class="ring-transparent!">
 			<div
-				class="![&_pre]:mt-0 ![&_pre]:rounded-card w-full [&_pre]:max-h-[443px] [&_pre]:min-h-[443px] [&_pre]:overflow-auto"
+				class="![&_pre]:mt-0 ![&_pre]:rounded-nier-bits-card w-full [&_pre]:max-h-[443px] [&_pre]:min-h-[443px] [&_pre]:overflow-auto"
 			>
 				{@render children?.()}
 			</div>
 		</Tabs.Content>
 		<Tabs.Content
 			value="preview"
-			class="rounded-card border-muted ring-transparent! relative border-2 bg-zinc-50 dark:bg-neutral-900/50"
+			class="rounded-nier-bits-card border-muted ring-transparent! relative border-2 bg-zinc-50 dark:bg-neutral-900/50"
 		>
 			<div
 				class={cn(

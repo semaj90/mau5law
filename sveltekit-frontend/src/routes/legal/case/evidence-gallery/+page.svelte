@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
@@ -231,10 +232,10 @@
         </div>
         <Button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2">
           📚 LIBRARY
-        </Button>
+        </button>
         <Button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2">
           📊 ANALYSIS
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -249,25 +250,25 @@
             disabled
           >
             🔒 100%
-          </Button>
+          </button>
           <Button 
             class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
             disabled
           >
             📎 CONNECT
-          </Button>
+          </button>
           <Button 
             onclick={addEvidence}
             class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm"
           >
             + ADD EVIDENCE
-          </Button>
+          </button>
           <Button 
             class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
             disabled
           >
             📚 LIBRARY (0)
-          </Button>
+          </button>
         </div>
 
         <!-- Connection Status -->
@@ -371,7 +372,7 @@
                   </div>
                   <Button onclick={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
                     Cancel Connection
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
@@ -448,13 +449,13 @@
         <div class="p-4 border-t space-y-2">
           <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">
             + Add Evidence
-          </Button>
+          </button>
           <Button class="w-full bg-green-600 hover:bg-green-700 text-white">
             🔍 Analyze All
-          </Button>
+          </button>
           <Button class="w-full bg-purple-600 hover:bg-purple-700 text-white">
             📊 Generate Report
-          </Button>
+          </button>
         </div>
       </div>
     </div>

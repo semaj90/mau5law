@@ -4,6 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Expected token >
 https://svelte.dev/e/expected_token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { page } from '$app/state';
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';

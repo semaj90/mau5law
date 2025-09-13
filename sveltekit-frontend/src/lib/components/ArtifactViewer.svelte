@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   const { evidenceId: string, showMetadata: boolean = true, allowDownload: boolean = true, onMetadataExtracted: ((metadata: LegalAIMetadata) = > void) | undefined = undefined } = $props();
 
   import { onMount } from 'svelte';
@@ -150,20 +151,20 @@ https://svelte.dev/e/js_parse_error -->
         <Button onclick={handleDownload} class="flex items-center gap-2 bits-btn bits-btn">
           <Download class="w-4 h-4" />
           Download
-        </Button>
+        </button>
       {/if}
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Image Preview -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Eye class="w-5 h-5" />
             Preview
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           {#if imageUrl}
             <div class="relative">
               <img
@@ -181,18 +182,18 @@ https://svelte.dev/e/js_parse_error -->
               <p class="text-gray-500">No preview available</p>
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Artifact Information -->
-      <Card>
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <Info class="w-5 h-5" />
             Artifact Information
-          </CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
+          </h3>
+        </div>
+        <div class="yorha-panel-content" class="space-y-4">
           <div class="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span class="font-medium text-gray-700">File Size:</span>
@@ -239,20 +240,20 @@ https://svelte.dev/e/js_parse_error -->
               </Badge>
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
 
     <!-- Detailed Analysis -->
     {#if showMetadata && (extractedMetadata || artifact.ai_analysis)}
-      <Card class="mt-6">
-        <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+      <NesCard class="mt-6">
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary" class="flex items-center gap-2">
             <FileText class="w-5 h-5" />
             Legal AI Analysis
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div class="yorha-panel-content">
           <Tabs defaultValue="analysis" class="w-full">
             <TabsList class="grid w-full grid-cols-3">
               <TabsTrigger value="analysis">AI Analysis</TabsTrigger>
@@ -395,8 +396,8 @@ https://svelte.dev/e/js_parse_error -->
               {/if}
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     {/if}
   </div>
 {/if}

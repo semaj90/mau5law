@@ -2,6 +2,7 @@
 <!-- Demonstrates Loki.js + Redis + PostgreSQL caching with real-time statistics -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { Button } from 'bits-ui';
@@ -345,20 +346,20 @@
 <!-- Main Demo Interface -->
 <div class="cache-demo space-y-6">
   <!-- Header -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         <Database size={24} />
         Multi-Layer Cache System Demo
         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Loki.js + Redis + PostgreSQL</span>
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
-      <p class="text-muted-foreground">
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
+      <p class="nes-text is-disabled">
         Interactive demonstration of the comprehensive caching architecture with real-time statistics and performance testing.
       </p>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Main Content Tabs -->
   <Tabs value="operations" class="w-full">
@@ -373,11 +374,11 @@
     <TabsContent value="operations" class="space-y-4">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Cache Operations Form -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Cache Operations</CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Cache Operations</h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div>
               <label class="block text-sm font-medium mb-2">Cache Key</label>
               <Input
@@ -441,7 +442,7 @@
               >
                 <Database class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Database icon" />
                 Set Value
-              </Button>
+              </button>
               <div id="set-cache-help" class="sr-only">
                 Store the entered key-value pair in the multi-layer cache system with specified TTL and priority
               </div>
@@ -462,7 +463,7 @@
               >
                 <RefreshCw class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Refresh icon" />
                 Get Value
-              </Button>
+              </button>
               <div id="get-cache-help" class="sr-only">
                 Retrieve the value associated with the entered key from the cache layers
               </div>
@@ -483,7 +484,7 @@
               >
                 <Trash2 class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Delete icon" />
                 Delete
-              </Button>
+              </button>
               <div id="delete-cache-help" class="sr-only">
                 Remove the specified cache entry from all cache layers permanently
               </div>
@@ -505,18 +506,18 @@
               >
                 <XCircle class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Clear all icon" />
                 Clear All
-              </Button>
+              </button>
               <div id="clear-cache-help" class="sr-only">
                 WARNING: This will permanently remove ALL cached data from all cache layers. This action cannot be undone.
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Test Results -->
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center justify-between">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center justify-between">
               Test Results
               <Button 
                 class="enhanced-bits-btn nes-cache-control n64-enhanced lod-optimized retro-control-btn"
@@ -531,13 +532,13 @@
                 data-operation="clear-results"
               >
                 Clear
-              </Button>
+              </button>
               <div id="clear-results-help" class="sr-only">
                 Clear the test results display panel
               </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-2 max-h-80 overflow-y-auto">
               {#each $testResults as result}
                 <div class="flex items-start gap-2 p-2 rounded border-l-4 
@@ -545,7 +546,7 @@
                             result.type === 'error' ? 'border-red-500 bg-red-50' : 
                             result.type === 'warning' ? 'border-yellow-500 bg-yellow-50' : 
                             'border-blue-500 bg-blue-50'}">
-                  <div class="text-xs text-muted-foreground min-w-fit">
+                  <div class="text-xs nes-text is-disabled min-w-fit">
                     {result.timestamp}
                   </div>
                   <div class="text-sm flex-1">
@@ -555,13 +556,13 @@
               {/each}
               
               {#if $testResults.length === 0}
-                <div class="text-center text-muted-foreground py-8">
+                <div class="text-center nes-text is-disabled py-8">
                   No test results yet. Try some cache operations!
                 </div>
               {/if}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     </TabsContent>
 
@@ -570,11 +571,11 @@
       {#if $cacheStats}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Service Stats -->
-          <Card>
-            <CardHeader class="pb-2">
-              <CardTitle class="text-sm">Service Stats</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard>
+            <div class="yorha-panel-header" class="pb-2">
+              <h3 class="nes-text is-primary" class="text-sm">Service Stats</h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="space-y-2">
                 <div class="flex justify-between">
                   <span class="text-sm">Requests:</span>
@@ -593,16 +594,16 @@
                   <span class="font-mono">{formatPercentage($cacheStats.service.hitRate)}</span>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Overall Performance -->
           {#if $cacheStats.layers}
-            <Card>
-              <CardHeader class="pb-2">
-                <CardTitle class="text-sm">Overall Performance</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <NesCard>
+              <div class="yorha-panel-header" class="pb-2">
+                <h3 class="nes-text is-primary" class="text-sm">Overall Performance</h3>
+              </div>
+              <div class="yorha-panel-content">
                 <div class="space-y-2">
                   <div class="flex justify-between">
                     <span class="text-sm">Total Requests:</span>
@@ -621,16 +622,16 @@
                     <span class="font-mono">{$cacheStats.layers.overall.healthyLayers}/{$cacheStats.layers.overall.totalLayers}</span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </NesCard>
 
             <!-- Layer Statistics -->
             {#each $cacheStats.layers.layers as layer}
-              <Card>
-                <CardHeader class="pb-2">
-                  <CardTitle class="text-sm capitalize">{layer.layer} Layer</CardTitle>
-                </CardHeader>
-                <CardContent>
+              <NesCard>
+                <div class="yorha-panel-header" class="pb-2">
+                  <h3 class="nes-text is-primary" class="text-sm capitalize">{layer.layer} Layer</h3>
+                </div>
+                <div class="yorha-panel-content">
                   <div class="space-y-2">
                     <div class="flex justify-between">
                       <span class="text-sm">Items:</span>
@@ -646,20 +647,20 @@
                     </div>
                     <Progress value={layer.hitRate * 100} class="h-2" />
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </NesCard>
             {/each}
           {/if}
         </div>
       {:else}
-        <Card>
-          <CardContent class="py-8">
-            <div class="text-center text-muted-foreground">
+        <NesCard>
+          <div class="yorha-panel-content" class="py-8">
+            <div class="text-center nes-text is-disabled">
               <Activity class="mx-auto mb-2" size={48} />
               Loading cache statistics...
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
     </TabsContent>
 
@@ -668,9 +669,9 @@
       {#if $healthStatus}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Overall Health -->
-          <Card>
-            <CardHeader>
-              <CardTitle class="flex items-center gap-2">
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary" class="flex items-center gap-2">
                 {#if $healthStatus.healthy}
                   <CheckCircle class="text-green-500" size={20} />
                   System Healthy
@@ -678,9 +679,9 @@
                   <XCircle class="text-red-500" size={20} />
                   System Issues Detected
                 {/if}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="space-y-3">
                 <div class="flex items-center justify-between">
                   <span>Service Health:</span>
@@ -701,15 +702,15 @@
                   {/each}
                 {/if}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Issues & Recommendations -->
-          <Card>
-            <CardHeader>
-              <CardTitle>Issues & Recommendations</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">Issues & Recommendations</h3>
+            </div>
+            <div class="yorha-panel-content">
               {#if $healthStatus.layers?.issues && $healthStatus.layers.issues.length > 0}
                 <div class="space-y-2">
                   {#each $healthStatus.layers.issues as issue}
@@ -724,18 +725,18 @@
                   All systems operating normally
                 </div>
               {/if}
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         </div>
       {:else}
-        <Card>
-          <CardContent class="py-8">
-            <div class="text-center text-muted-foreground">
+        <NesCard>
+          <div class="yorha-panel-content" class="py-8">
+            <div class="text-center nes-text is-disabled">
               <HardDrive class="mx-auto mb-2" size={48} />
               Loading health status...
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
     </TabsContent>
 
@@ -743,11 +744,11 @@
     <TabsContent value="testing" class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Test Controls -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Performance Tests</CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Performance Tests</h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div class="space-y-2">
               <Button 
                 onclick={runPerformanceTest} 
@@ -764,11 +765,11 @@
               >
                 <Zap class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Performance test icon" />
                 Run Batch Performance Test
-              </Button>
+              </button>
               <div id="perf-test-help" class="sr-only">
                 Execute a comprehensive performance test using 100 cache entries across all cache layers
               </div>
-              <p class="text-sm text-muted-foreground">
+              <p class="text-sm nes-text is-disabled">
                 Tests batch operations with 100 cache entries
               </p>
             </div>
@@ -790,11 +791,11 @@
               >
                 <BarChart3 class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Analytics icon" />
                 Test Cache Hit/Miss
-              </Button>
+              </button>
               <div id="hitmiss-test-help" class="sr-only">
                 Validate proper cache hit and miss behavior across the cache layer hierarchy
               </div>
-              <p class="text-sm text-muted-foreground">
+              <p class="text-sm nes-text is-disabled">
                 Validates cache hit and miss behavior
               </p>
             </div>
@@ -816,23 +817,23 @@
               >
                 <RefreshCw class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Refresh statistics icon" />
                 Refresh Statistics
-              </Button>
+              </button>
               <div id="refresh-stats-help" class="sr-only">
                 Update all cache layer statistics, health status, and performance monitoring data
               </div>
-              <p class="text-sm text-muted-foreground">
+              <p class="text-sm nes-text is-disabled">
                 Updates all cache statistics and health status
               </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Test Results Display -->
-        <Card>
-          <CardHeader>
-            <CardTitle>Test Information</CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Test Information</h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div class="p-4 bg-blue-50 rounded">
               <h4 class="font-medium text-blue-900 mb-2">Cache Layer Architecture</h4>
               <ul class="text-sm text-blue-800 space-y-1">
@@ -858,11 +859,11 @@
             {#if $isLoading}
               <div class="text-center py-4">
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p class="text-sm text-muted-foreground mt-2">Running tests...</p>
+                <p class="text-sm nes-text is-disabled mt-2">Running tests...</p>
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
     </TabsContent>
   </Tabs>

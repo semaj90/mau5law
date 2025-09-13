@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { TimeRangeField } from "bits-ui";
 </script>
 
@@ -15,13 +16,13 @@
 					{#each segments as { part, value }, i (part + i)}
 						<div class="inline-block select-none">
 							{#if part === "literal"}
-								<TimeRangeField.Segment {part} class="text-muted-foreground p-1">
+								<TimeRangeField.Segment {part} class="nes-text is-disabled p-1">
 									{value}
 								</TimeRangeField.Segment>
 							{:else}
 								<TimeRangeField.Segment
 									{part}
-									class="rounded-5px hover:bg-muted focus:bg-muted focus:text-foreground aria-[valuetext=Empty]:text-muted-foreground focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
+									class="rounded-5px hover:bg-muted focus:bg-muted focus:text-foreground aria-[valuetext=Empty]:nes-text is-disabled focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
 								>
 									{value}
 								</TimeRangeField.Segment>
@@ -31,7 +32,7 @@
 				{/snippet}
 			</TimeRangeField.Input>
 			{#if type === "start"}
-				<div aria-hidden="true" class="text-muted-foreground pl-1 pr-2">to</div>
+				<div aria-hidden="true" class="nes-text is-disabled pl-1 pr-2">to</div>
 			{/if}
 		{/each}
 	</div>

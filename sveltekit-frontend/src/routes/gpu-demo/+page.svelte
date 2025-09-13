@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- GPU Integration Demo for Legal AI Platform -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import { gpuServiceClient, isGPUAvailable, getGPUUtilization, processLegalDocument } from '$lib/services/gpu-service-client';
   	import type { GPUStatus, GPUMetrics, WorkerStatus, ServiceRegistry, GPUResult } from '$lib/types/gpu-services';

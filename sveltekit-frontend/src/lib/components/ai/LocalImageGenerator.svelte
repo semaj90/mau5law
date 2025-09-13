@@ -4,6 +4,7 @@ Supports Stable Diffusion WebUI, ComfyUI, and Ollama integration
 Production-ready with native Windows support
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { 
     imageGenerationService, 

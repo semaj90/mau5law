@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Dialog } from 'bits-ui';
 
   interface Props {

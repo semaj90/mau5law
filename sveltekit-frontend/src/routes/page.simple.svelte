@@ -1,4 +1,7 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
 
 
@@ -24,34 +27,34 @@
   </div>
 
   <div class="quick-stats">
-    <div class="stat-card">
+    <div class="stat-nier-bits-nier-bits-nier-bits-card">
       <h3>System Uptime</h3>
       <p class="stat-value">{systemInfo.uptime}</p>
     </div>
-    <div class="stat-card">
+    <div class="stat-nier-bits-nier-bits-nier-bits-card">
       <h3>Active Services</h3>
       <p class="stat-value">{systemInfo.activeServices}</p>
     </div>
-    <div class="stat-card">
+    <div class="stat-nier-bits-nier-bits-nier-bits-card">
       <h3>Last Sync</h3>
       <p class="stat-value">{systemInfo.lastSync}</p>
     </div>
   </div>
 
   <div class="action-grid">
-    <a href="/endpoints" class="action-card">
+    <a href="/endpoints" class="action-nier-bits-nier-bits-nier-bits-card">
       <h3>📊 Service Status</h3>
       <p>Monitor backend services and API endpoints</p>
     </a>
-    <a href="/demo/enhanced-rag-semantic" class="action-card">
+    <a href="/demo/enhanced-rag-semantic" class="action-nier-bits-nier-bits-nier-bits-card">
       <h3>🤖 Enhanced RAG Demo</h3>
       <p>Test AI semantic search capabilities</p>
     </a>
-    <a href="/evidence" class="action-card">
+    <a href="/evidence" class="action-nier-bits-nier-bits-nier-bits-card">
       <h3>📁 Evidence Manager</h3>
       <p>Upload and analyze legal documents</p>
     </a>
-    <a href="/chat" class="action-card">
+    <a href="/chat" class="action-nier-bits-nier-bits-nier-bits-card">
       <h3>💬 AI Assistant</h3>
       <p>Interactive legal AI chat interface</p>
     </a>

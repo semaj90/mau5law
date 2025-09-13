@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // $state runtime rune is provided globally
   let message = $state("SvelteKit 2 + Svelte 5 Test Page");
   let count = $state(0);

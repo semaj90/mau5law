@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Card,
     CardHeader,
@@ -161,7 +162,7 @@
           <p>This card uses a custom header snippet with flexible layout options.</p>
         {/snippet}
         {#snippet footer()}
-          <div class="card-footer-actions">
+          <div class="nier-bits-yorha-panel-content-actions">
             <ModernButton variant="outline" size="sm">Cancel</ModernButton>
             <ModernButton variant="primary" size="sm">Continue</ModernButton>
           </div>

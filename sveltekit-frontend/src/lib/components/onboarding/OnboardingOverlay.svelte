@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // @ts-nocheck
   import { onMount } from 'svelte';
 
@@ -322,7 +323,7 @@ https://svelte.dev/e/js_parse_error -->
               {:else}
                 <Play class="w-4 h-4" />
               {/if}
-            </Button>
+            </button>
           {/if}
 
           <Button class="bits-btn"
@@ -332,7 +333,7 @@ https://svelte.dev/e/js_parse_error -->
             aria-label="Close onboarding"
           >
             <X class="w-4 h-4" />
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -400,7 +401,7 @@ https://svelte.dev/e/js_parse_error -->
             <Button class="bits-btn" variant="ghost" size="sm" onclick={() => skipOnboarding()}>
               <SkipForward class="w-4 h-4" />
               Skip Tour
-            </Button>
+            </button>
           {/if}
         </div>
 
@@ -435,7 +436,7 @@ https://svelte.dev/e/js_parse_error -->
           >
             <ArrowLeft class="w-4 h-4" />
             Back
-          </Button>
+          </button>
 
           <Button class="bits-btn" onclick={() => nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
@@ -445,7 +446,7 @@ https://svelte.dev/e/js_parse_error -->
               Next
               <ArrowRight class="w-4 h-4" />
             {/if}
-          </Button>
+          </button>
         </div>
       </div>
     </div>

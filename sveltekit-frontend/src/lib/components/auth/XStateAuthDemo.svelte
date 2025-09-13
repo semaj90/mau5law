@@ -4,6 +4,7 @@
   Uses Bits UI v2 + GPU orchestrator + Context7 documentation
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   // Card components removed - using native HTML elements
   import {
@@ -281,7 +282,7 @@
                 <Shield class="h-4 w-4 mr-2" />
                 Demonstrate XState Login
               {/if}
-            </Button>
+            </button>
           </div>
         </div>
       {/if}
@@ -302,23 +303,23 @@
             <Button class="bits-btn" onclick={demonstrateAI} variant="outline">
               <Brain class="h-4 w-4 mr-2" />
               Test AI Assistant
-            </Button>
+            </button>
 
             <Button class="bits-btn" onclick={demonstrateUpload} variant="outline">
               <Zap class="h-4 w-4 mr-2" />
               Demo File Upload
-            </Button>
+            </button>
 
             <Button class="bits-btn" onclick={demonstrateSessionActivity} variant="outline">
               <Settings class="h-4 w-4 mr-2" />
               Record Activity
-            </Button>
+            </button>
           </div>
 
           <Button onclick={demonstrateLogout} variant="destructive" class="w-full bits-btn bits-btn">
             <LogOut class="h-4 w-4 mr-2" />
             Demonstrate Logout
-          </Button>
+          </button>
         </div>
       {/if}
 
@@ -366,11 +367,11 @@
             <div class="flex gap-2">
               <Button class="bits-btn" onclick={() => demoStep = 'dashboard'} variant="outline">
                 Back to Dashboard
-              </Button>
+              </button>
               <Button class="bits-btn" onclick={demonstrateLogout} variant="destructive">
                 <LogOut class="h-4 w-4 mr-2" />
                 Complete Demo
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -418,7 +419,7 @@
               {/if}
               <AlertDescription>
                 <strong>{notification.title}:</strong> {notification.message}
-                <div class="text-xs text-muted-foreground mt-1">
+                <div class="text-xs nes-text is-disabled mt-1">
                   {notification.timestamp.toLocaleTimeString()}
                 </div>
               </AlertDescription>

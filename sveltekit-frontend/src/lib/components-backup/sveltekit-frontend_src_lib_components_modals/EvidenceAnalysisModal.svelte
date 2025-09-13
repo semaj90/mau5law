@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onevidenceUpdated?: (event?: any) => void;
     onsaveAnalysis?: (event?: any) => void;
@@ -139,12 +140,11 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         
         <div class="space-y-4">
-          <Button variant="secondary" size="sm">
+          <button class="nes-btn" size="sm">
             <Download class="space-y-4" />
             Export
-          </Button>
-          <Button 
-            variant="primary" 
+          </button>
+          <button class="nes-btn is-primary" 
             size="sm" 
             onclick={() => analyzeEvidence()}
             disabled={isAnalyzing}
@@ -156,7 +156,7 @@ https://svelte.dev/e/js_parse_error -->
               <Brain class="space-y-4" />
               Re-analyze
             {/if}
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -280,9 +280,9 @@ https://svelte.dev/e/js_parse_error -->
                 placeholder="Add tags (comma-separated)"
                 class="space-y-4"
               />
-              <Button size="sm" onclick={() => updateTags()} disabled={!newTags.trim()}>
+              <button class="nes-btn" size="sm" onclick={() => updateTags()} disabled={!newTags.trim()}>
                 Add
-              </Button>
+              </button>
             </div>
           </div>
         </GridItem>
@@ -308,12 +308,12 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 
   <svelte:fragment slot="footer" let:close>
-    <Button variant="secondary" onclick={() => close()}>
+    <button class="nes-btn" onclick={() => close()}>
       Close
-    </Button>
-    <Button variant="primary" onclick={() => onsaveAnalysis?.()}>
+    </button>
+    <button class="nes-btn is-primary" onclick={() => onsaveAnalysis?.()}>
       Save Analysis
-    </Button>
+    </button>
   </svelte:fragment>
 </Dialog>
 

@@ -3,6 +3,7 @@ Enhanced AI Chat Assistant for Prosecutors
 Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Props } from "$lib/types/global";
   import {
     Card,
@@ -236,9 +237,9 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 
 <div class="flex flex-col h-full max-w-4xl mx-auto">
   <!-- Chat Header -->
-  <Card class="mb-4">
-    <CardHeader class="pb-3">
-      <CardTitle class="flex items-center justify-between">
+  <NesCard class="mb-4">
+    <div class="yorha-panel-header" class="pb-3">
+      <h3 class="nes-text is-primary" class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <Bot class="w-5 h-5 text-blue-500" />
           Legal AI Assistant
@@ -265,14 +266,14 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
             </Badge>
           {/if}
         </div>
-      </CardTitle>
-    </CardHeader>
-  </Card>
+      </h3>
+    </div>
+  </NesCard>
 
   <!-- Self-Prompt Suggestions -->
   {#if enableSelfPrompting && selfPromptSuggestions.length > 0}
-    <Card class="mb-4">
-      <CardContent class="pt-4">
+    <NesCard class="mb-4">
+      <div class="yorha-panel-content" class="pt-4">
         <h4 class="text-sm font-medium mb-3 flex items-center gap-2">
           <Zap class="w-4 h-4" />
           Suggested Questions
@@ -286,11 +287,11 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
               disabled={isTyping}
             >
               {suggestion}
-            </Button>
+            </button>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Elemental Analysis Tooltip -->
@@ -308,8 +309,8 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   {/if}
 
   <!-- Chat Messages -->
-  <Card class="flex-1 flex flex-col">
-    <CardContent class="flex-1 overflow-y-auto p-4 space-y-4">
+  <NesCard class="flex-1 flex flex-col">
+    <div class="yorha-panel-content" class="flex-1 overflow-y-auto p-4 space-y-4">
       {#each messages as message}
         <div class="flex items-start gap-3 {message.role === 'user' ? 'justify-end' : ''}">
           {#if message.role === 'assistant'}
@@ -373,7 +374,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           </div>
         </div>
       {/if}
-    </CardContent>
+    </div>
 
     <!-- Chat Input -->
     <div class="border-t p-4">
@@ -391,7 +392,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           disabled={isTyping || !currentMessage.trim()}
         >
           <Send class="w-4 h-4" />
-        </Button>
+        </button>
       </div>
       
       <!-- AI Status Indicators -->
@@ -427,7 +428,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         </div>
       {/if}
     </div>
-  </Card>
+  </NesCard>
 </div>
 
 <style>

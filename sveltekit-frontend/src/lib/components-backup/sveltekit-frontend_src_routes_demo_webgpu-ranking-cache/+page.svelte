@@ -8,6 +8,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { integratedCacheSystem, type SearchContext } from '$lib/services/integrated-webgpu-cache-system';
   import CachePerformanceMonitor from '$lib/components/dashboard/CachePerformanceMonitor.svelte';
@@ -419,7 +420,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         <h4>Search Results ({searchResults.length})</h4>
         <div class="results-grid">
           {#each searchResults as result (result.docId)}
-            <div class="result-card rank-{result.rank <= 3 ? result.rank : 'other'}">
+            <div class="result-nier-bits-card rank-{result.rank <= 3 ? result.rank : 'other'}">
               <div class="result-header">
                 <div class="result-rank">#{result.rank}</div>
                 <div class="result-score">{(result.relevanceScore * 100).toFixed(1)}%</div>

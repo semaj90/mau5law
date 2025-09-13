@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Button from "$lib/Button.svelte";
   import ClsxDemo from "$lib/ClsxDemo.svelte";
   import Counter from "$lib/Counter.svelte";
@@ -31,7 +32,7 @@
       class="text-white p-3 rounded mb-3">
       My BG Color should change
     </div>
-    <Button onclick={() => (red = !red)}>Change BG Color: {red ? "Gray" : "Red"}</Button>
+    <button class="nes-btn" onclick={() => (red = !red)}>Change BG Color: {red ? "Gray" : "Red"}</button>
   </div>
 
   <div
@@ -41,7 +42,7 @@
     <RightToLeftDependent />
   </div>
   <div class="mb-10">
-    <Button onclick={() => (rtl = !rtl)}>Toggle direction: {rtl ? "Right-to-left" : "Left-to-right"}</Button>
+    <button class="nes-btn" onclick={() => (rtl = !rtl)}>Toggle direction: {rtl ? "Right-to-left" : "Left-to-right"}</button>
   </div>
 
   <Counter />

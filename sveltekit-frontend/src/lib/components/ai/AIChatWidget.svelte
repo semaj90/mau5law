@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
@@ -233,7 +234,7 @@
               {/if}
 
               <div class="flex-1 max-w-[80%] {message.role === 'user' ? 'order-first' : ''}">
-                <Card.Root
+                <NesCard.Root
                   class="{message.role === 'user'
                     ? 'bg-primary text-primary-foreground'
                     : ''} {message.error ? 'border-red-200 dark:border-red-800' : ''}">
@@ -263,19 +264,19 @@
                             size="sm"
                             onclick={() => copyToClipboard(message.content)}>
                             <Copy class="h-3 w-3" />
-                          </Button>
+                          </button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
                             onclick={() => provideFeedback(message.id, 'positive')}>
                             <ThumbsUp class="h-3 w-3" />
-                          </Button>
+                          </button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
                             onclick={() => provideFeedback(message.id, 'negative')}>
                             <ThumbsDown class="h-3 w-3" />
-                          </Button>
+                          </button>
                         </div>
                       {/if}
                     </div>
@@ -292,7 +293,7 @@
                         class="text-xs h-auto py-1 px-2 bits-btn bits-btn"
                         onclick={() => handleSuggestionClick(suggestion)}>
                         {suggestion}
-                      </Button>
+                      </button>
                     {/each}
                   </div>
                 {/if}
@@ -319,7 +320,7 @@
               <div class="flex-1 max-w-[80%]">
                 <div.Root>
                   <div.Content class="p-3">
-                    <div class="flex items-center gap-2 text-muted-foreground">
+                    <div class="flex items-center gap-2 nes-text is-disabled">
                       <Loader2 class="h-4 w-4 animate-spin" />
                       <span>Thinking...</span>
                     </div>
@@ -348,14 +349,14 @@
           {:else}
             <Send class="h-4 w-4" />
           {/if}
-        </Button>
+        </button>
         <Button class="bits-btn" variant="outline" onclick={clearChat}>
           <X class="h-4 w-4" />
-        </Button>
+        </button>
       </div>
 
       {#if messages.length === 0 && context}
-        <div class="mt-3 text-sm text-muted-foreground">
+        <div class="mt-3 text-sm nes-text is-disabled">
           <p>You can ask questions like:</p>
           <ul class="list-disc list-inside mt-1 space-y-1">
             <li>"Explain this law in simple terms"</li>

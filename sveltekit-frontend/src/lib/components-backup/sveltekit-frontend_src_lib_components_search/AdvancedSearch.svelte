@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props { items: Evidence[] ;,
     onResults: (results: Evidence[]) => void;,
     onSelect: (item: Evidence) => void;,

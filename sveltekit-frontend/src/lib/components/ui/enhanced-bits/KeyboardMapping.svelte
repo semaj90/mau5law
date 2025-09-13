@@ -2,6 +2,7 @@
 <!-- Centralized keyboard shortcut management with legal domain focus -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';

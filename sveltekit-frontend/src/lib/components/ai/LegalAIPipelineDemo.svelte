@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import { 
@@ -270,7 +271,7 @@ https://svelte.dev/e/expected_token -->
         <button 
           onclick={processSingleDocument}
           disabled={!$pipelineReady || isProcessing}
-          class="btn btn-primary"
+          class="btn nes-btn is-primary"
         >
           {#if isProcessing}
             🔄 Processing...
@@ -281,7 +282,7 @@ https://svelte.dev/e/expected_token -->
 
         <button 
           onclick={() => lastProcessedDoc = sampleLegalDocument}
-          class="btn btn-secondary"
+          class="btn nes-btn"
         >
           📋 Load Sample
         </button>
@@ -298,7 +299,7 @@ https://svelte.dev/e/expected_token -->
         <button 
           onclick={testCustomDocument}
           disabled={!$pipelineReady || isProcessing || !lastProcessedDoc.trim()}
-          class="btn btn-primary"
+          class="btn nes-btn is-primary"
         >
           🔬 Test Custom Document
         </button>
@@ -363,7 +364,7 @@ https://svelte.dev/e/expected_token -->
         <button 
           onclick={processBulkDocuments}
           disabled={!$pipelineReady || isBulkProcessing}
-          class="btn btn-primary"
+          class="btn nes-btn is-primary"
         >
           {#if isBulkProcessing}
             🔄 Processing {bulkDocuments.length} documents...

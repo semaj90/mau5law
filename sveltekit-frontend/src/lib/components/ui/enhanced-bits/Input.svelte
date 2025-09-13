@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     class?: string;
     children?: import('svelte').Snippet;
@@ -184,7 +185,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" aria-hidden="true">
         {#if icon}
           {@const IconComponent = icon}
-          <IconComponent class="h-4 w-4 text-muted-foreground" />
+          <IconComponent class="h-4 w-4 nes-text is-disabled" />
         {/if}
       </div>
     {/if}
@@ -192,7 +193,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Search icon for search variant -->
     {#if variant === 'search'}
       <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" aria-hidden="true">
-        <Search class="h-4 w-4 text-muted-foreground" />
+        <Search class="h-4 w-4 nes-text is-disabled" />
       </div>
     {/if}
 
@@ -223,9 +224,9 @@ https://svelte.dev/e/js_parse_error -->
         }}
       >
         {#if showPassword}
-          <EyeOff class="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" aria-hidden="true" />
+          <EyeOff class="h-4 w-4 nes-text is-disabled hover:text-foreground transition-colors" aria-hidden="true" />
         {:else}
-          <Eye class="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" aria-hidden="true" />
+          <Eye class="h-4 w-4 nes-text is-disabled hover:text-foreground transition-colors" aria-hidden="true" />
         {/if}
         <span class="sr-only">{passwordToggleText || (showPassword ? 'Hide password' : 'Show password')}</span>
       </button>
@@ -236,7 +237,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none" aria-hidden="true">
         {#if icon}
           {@const IconComponent = icon}
-          <IconComponent class="h-4 w-4 text-muted-foreground" />
+          <IconComponent class="h-4 w-4 nes-text is-disabled" />
         {/if}
       </div>
     {/if}
@@ -291,7 +292,7 @@ https://svelte.dev/e/js_parse_error -->
       {errorMessage}
     </div>
   {:else if helpText}
-    <div id={helpId} class="mt-1 text-xs text-muted-foreground">
+    <div id={helpId} class="mt-1 text-xs nes-text is-disabled">
       {helpText}
     </div>
   {/if}

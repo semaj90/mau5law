@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';
@@ -175,7 +176,7 @@ https://svelte.dev/e/js_parse_error -->
     
     <div class="header-actions">
       <button 
-        class="action-btn yorha-btn yorha-btn-secondary"
+        class="action-btn yorha-btn yorha-nes-btn"
         onclick={() => showShortcuts = !showShortcuts}
         title="Keyboard shortcuts (Ctrl+/)"
       >
@@ -183,7 +184,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       
       <button 
-        class="action-btn yorha-btn yorha-btn-secondary"
+        class="action-btn yorha-btn yorha-nes-btn"
         onclick={toggleFocusMode}
         title="Focus mode (F10)"
       >
@@ -195,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       
       <button 
-        class="action-btn yorha-btn yorha-btn-secondary"
+        class="action-btn yorha-btn yorha-nes-btn"
         onclick={toggleFullscreen}
         title="Fullscreen (F11)"
       >
@@ -207,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       
       <button 
-        class="action-btn yorha-btn yorha-btn-primary"
+        class="action-btn yorha-btn yorha-nes-btn is-primary"
         onclick={saveDocument}
         title="Save document (Ctrl+S)"
       >
@@ -221,7 +222,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="editor-toolbar" class:dimmed={isFocusMode}>
     <div class="format-group">
       <button 
-        class="format-btn yorha-btn yorha-btn-secondary"
+        class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('bold')}
         title="Bold (Ctrl+B)"
       >
@@ -229,7 +230,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       
       <button 
-        class="format-btn yorha-btn yorha-btn-secondary"
+        class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('italic')}
         title="Italic (Ctrl+I)"
       >
@@ -237,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       
       <button 
-        class="format-btn yorha-btn yorha-btn-secondary"
+        class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('underline')}
         title="Underline"
       >
@@ -247,7 +248,7 @@ https://svelte.dev/e/js_parse_error -->
     
     <div class="format-group">
       <button 
-        class="format-btn yorha-btn yorha-btn-secondary"
+        class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('justifyLeft')}
         title="Align left"
       >
@@ -255,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       
       <button 
-        class="format-btn yorha-btn yorha-btn-secondary"
+        class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('justifyCenter')}
         title="Center"
       >
@@ -263,7 +264,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       
       <button 
-        class="format-btn yorha-btn yorha-btn-secondary"
+        class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('justifyRight')}
         title="Align right"
       >
@@ -273,7 +274,7 @@ https://svelte.dev/e/js_parse_error -->
     
     <div class="format-group">
       <button 
-        class="format-btn yorha-btn yorha-btn-secondary"
+        class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('insertUnorderedList')}
         title="Bullet list"
       >
@@ -281,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       
       <button 
-        class="format-btn yorha-btn yorha-btn-secondary"
+        class="format-btn yorha-btn yorha-nes-btn"
         onclick={() => formatText('insertOrderedList')}
         title="Numbered list"
       >
@@ -329,7 +330,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Keyboard Shortcuts Modal -->
 {#if showShortcuts}
   <div class="shortcuts-overlay" onclick={() => showShortcuts = false}>
-    <div class="shortcuts-modal yorha-card" onclick={(e) => e.stopPropagation()}>
+    <div class="shortcuts-modal yorha-nier-bits-card" onclick={(e) => e.stopPropagation()}>
       <h3 class="shortcuts-title gradient-text-primary">
         Keyboard Shortcuts
       </h3>
@@ -344,7 +345,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       
       <button 
-        class="close-shortcuts yorha-btn yorha-btn-primary"
+        class="close-shortcuts yorha-btn yorha-nes-btn is-primary"
         onclick={() => showShortcuts = false}
       >
         Close

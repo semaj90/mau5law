@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import EnhancedLegalUploadAnalytics from '$lib/components/EnhancedLegalUploadAnalytics.svelte';
@@ -113,20 +114,20 @@
       </div>
 
       <div class="status-section">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => showSystemDialog = true}
         >
           System Status
-        </Button>
-        <Button
+        </button>
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => showConfigDialog = true}
         >
           Demo Config
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -153,11 +154,11 @@
 
   <!-- Context Cards -->
   <div class="context-cards">
-    <Card.Root class="context-card user-card">
-      <Card.Header>
-        <Card.Title>👤 Current User</Card.Title>
+    <NesCard.Root class="context-nier-bits-card user-nier-bits-card">
+      <NesCard.Header>
+        <NesCard.Title>👤 Current User</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="user-info">
           <div class="user-name">{mockUser.name}</div>
           <div class="user-details">
@@ -168,11 +169,11 @@
       </Card.Content>
     </Card.Root>
 
-    <Card.Root class="context-card case-card">
-      <Card.Header>
-        <Card.Title>📁 Active Case</Card.Title>
+    <NesCard.Root class="context-nier-bits-card case-nier-bits-card">
+      <NesCard.Header>
+        <NesCard.Title>📁 Active Case</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="case-info">
           <div class="case-title">{mockCase.title}</div>
           <div class="case-details">
@@ -186,11 +187,11 @@
       </Card.Content>
     </Card.Root>
 
-    <Card.Root class="context-card mode-card">
-      <Card.Header>
-        <Card.Title>🔧 Current Mode</Card.Title>
+    <NesCard.Root class="context-nier-bits-card mode-nier-bits-card">
+      <NesCard.Header>
+        <NesCard.Title>🔧 Current Mode</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="mode-info">
           <div class="mode-badge yorha-badge">
             {demoConfig.mode === 'detective' ? '🕵️ Detective' :
@@ -212,11 +213,11 @@
 
   <!-- Production Warning -->
   {#if !systemStatus.ollama || !systemStatus.database}
-    <Card.Root class="warning-card">
-      <Card.Header>
-        <Card.Title class="warning-title">⚠️ Production Services Status</Card.Title>
+    <NesCard.Root class="warning-nier-bits-card">
+      <NesCard.Header>
+        <NesCard.Title class="warning-title">⚠️ Production Services Status</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="warning-content">
           <p>Some production services are not available. The system will use fallback implementations:</p>
           <ul class="service-list">
@@ -265,11 +266,11 @@
 
   <!-- Feature Highlights -->
   <div class="feature-highlights">
-    <Card.Root class="feature-card">
-      <Card.Header>
-        <Card.Title>🚀 Production Features</Card.Title>
+    <NesCard.Root class="feature-nier-bits-card">
+      <NesCard.Header>
+        <NesCard.Title>🚀 Production Features</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="features-grid">
           <div class="feature-item">
             <div class="feature-icon">🤖</div>
@@ -389,10 +390,10 @@
       </div>
 
       <Dialog.Footer>
-        <Button variant="outline" onclick={() => checkSystemStatus()}>
+        <button class="nes-btn" variant="outline" onclick={() => checkSystemStatus()}>
           Refresh Status
-        </Button>
-        <Button onclick={() => showSystemDialog = false}>Close</Button>
+        </button>
+        <button class="nes-btn" onclick={() => showSystemDialog = false}>Close</button>
       </Dialog.Footer>
     </Dialog.Content>
   </Dialog.Root>
@@ -498,12 +499,12 @@
       </div>
 
       <Dialog.Footer>
-        <Button variant="outline" onclick={() => showConfigDialog = false}>
+        <button class="nes-btn" variant="outline" onclick={() => showConfigDialog = false}>
           Cancel
-        </Button>
-        <Button onclick={() => showConfigDialog = false}>
+        </button>
+        <button class="nes-btn" onclick={() => showConfigDialog = false}>
           Apply Settings
-        </Button>
+        </button>
       </Dialog.Footer>
     </Dialog.Content>
   </Dialog.Root>

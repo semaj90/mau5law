@@ -1,5 +1,6 @@
 <!-- Unified GPU/WASM Integration Demo Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -232,11 +233,11 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
     <!-- System Health Card -->
-    <Card class="lg:col-span-1">
-      <CardHeader>
-        <CardTitle>System Health</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard class="lg:col-span-1">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">System Health</h3>
+      </div>
+      <div class="yorha-panel-content">
         {#if $systemHealth}
           <div class="space-y-3">
             <div class="flex justify-between items-center">
@@ -275,15 +276,15 @@
         {:else}
           <div class="text-center text-gray-500">Loading system health...</div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Operation Controls Card -->
-    <Card class="lg:col-span-2">
-      <CardHeader>
-        <CardTitle>Execute Operations</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard class="lg:col-span-2">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Execute Operations</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-4">
           <!-- Operation Selection -->
           <div>
@@ -338,20 +339,20 @@
             {:else}
               Execute {selectedOperation}
             {/if}
-          </Button>
+          </button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 
   <!-- Results and Metrics -->
   <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
     <!-- Results Card -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Operation Results</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Operation Results</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-4 max-h-96 overflow-y-auto">
           {#if $results.length > 0}
             {#each $results as result (result.id)}
@@ -404,15 +405,15 @@
             </div>
           {/if}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Performance Metrics Card -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Performance Metrics</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Performance Metrics</h3>
+      </div>
+      <div class="yorha-panel-content">
         {#if $metrics?.metrics?.length > 0}
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
@@ -457,8 +458,8 @@
             No metrics available yet. Execute some operations to see performance data.
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 </div>
 

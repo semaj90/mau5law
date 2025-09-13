@@ -4,6 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- YorhaAI Assistant - Advanced Chat Interface with SvelteKit 5 + Bits UI + Melt UI -->
 <!-- Integrates with go-llama, MCP orchestrator, and tensor transport services -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, tick } from 'svelte';
   	import { browser } from '$app/environment';
   	import { createDialog } from 'melt';
@@ -729,7 +730,7 @@ https://svelte.dev/e/js_parse_error -->
 							<h3 {...title} use:title class="font-semibold text-sm">
 								YorhaAI Assistant
 							</h3>
-							<p class="text-xs text-muted-foreground">
+							<p class="text-xs nes-text is-disabled">
 								{connectionStatus === 'connected' ? 'Ready to assist' :
 								 connectionStatus === 'connecting' ? 'Connecting...' :
 								 connectionStatus === 'streaming' ? 'Thinking...' : 'Disconnected'}
@@ -760,7 +761,7 @@ https://svelte.dev/e/js_parse_error -->
 				<!-- Messages Area -->
 				<ScrollArea class="flex-1 p-4" data-scroll-area>
 					{#if !hasMessages}
-						<div class="text-center text-muted-foreground py-8">
+						<div class="text-center nes-text is-disabled py-8">
 							<div class="text-4xl mb-4">></div>
 							<p class="text-sm">
 								Hello! I'm your YorhaAI assistant.<br/>
@@ -849,7 +850,7 @@ https://svelte.dev/e/js_parse_error -->
 				)}>
 					<!-- Context info -->
 					{#if chatSession.context.userIntent !== 'general' || caseID}
-						<div class="flex items-center gap-2 text-xs text-muted-foreground">
+						<div class="flex items-center gap-2 text-xs nes-text is-disabled">
 							{#if chatSession.context.userIntent !== 'general'}
 								<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Intent: {chatSession.context.userIntent}</span>
 							{/if}
@@ -924,7 +925,7 @@ https://svelte.dev/e/js_parse_error -->
 							{/if}
 						</div>
 
-						<div class="text-xs text-muted-foreground">
+						<div class="text-xs nes-text is-disabled">
 							{userActivity.attentionLevel} attention
 						</div>
 					</div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Button } from "bits-ui";
   	import { mode, toggleMode } from "mode-watcher";
   	import { scale } from "svelte/transition";

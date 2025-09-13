@@ -2,6 +2,7 @@
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Button, Card, Dialog, Input, Label, Alert, AlertDescription } from '$lib/components/ui/enhanced-bits';
 
   // Page data (passed from +page.ts load). Define explicitly instead of inline interface in markup.
@@ -225,78 +226,78 @@ https://svelte.dev/e/props_duplicate -->
     <!-- Demo Grid -->
     <div class="demo-grid">
       <!-- Authentication Demo Card -->
-      <Card.Root class="feature-card">
-        <Card.Header>
-          <Card.Title class="text-white text-xl font-bold">
+      <NesCard.Root class="feature-nier-bits-card">
+        <NesCard.Header>
+          <NesCard.Title class="text-white text-xl font-bold">
             🔐 Authentication System
           </Card.Title>
-          <Card.Description class="text-gray-300">
+          <NesCard.Description class="text-gray-300">
             Secure user authentication with enhanced-bits components
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           <div class="actions-grid">
-            <Button
+            <button class="nes-btn"
               onclick={() => openModal('login')}
               variant="primary"
-              class="bits-btn-primary"
+              class="bits-nes-btn is-primary"
             >
               🎮 Login
-            </Button>
-            <Button
+            </button>
+            <button class="nes-btn"
               onclick={() => openModal('register')}
               variant="success"
               class="bits-btn-success"
             >
               ⭐ Register
-            </Button>
+            </button>
           </div>
         </Card.Content>
       </Card.Root>
 
       <!-- Component Library Demo Card -->
-      <Card.Root class="feature-card">
-        <Card.Header>
-          <Card.Title class="text-white text-xl font-bold">
+      <NesCard.Root class="feature-nier-bits-card">
+        <NesCard.Header>
+          <NesCard.Title class="text-white text-xl font-bold">
             🧩 Component Library
           </Card.Title>
-          <Card.Description class="text-gray-300">
+          <NesCard.Description class="text-gray-300">
             Headless UI components with NES styling
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           <div class="actions-grid">
-            <Button variant="outline" class="bits-btn-outline">
+            <Button variant="outline" class="bits-nes-btn">
               📝 Forms
-            </Button>
-            <Button variant="ghost" class="bits-btn-ghost">
+            </button>
+            <Button variant="ghost" class="bits-nes-btn">
               💬 Dialogs
-            </Button>
-            <Button variant="destructive" class="bits-btn-destructive">
+            </button>
+            <button class="nes-btn is-error" class="bits-nes-btn is-error">
               🗑️ Actions
-            </Button>
+            </button>
           </div>
         </Card.Content>
       </Card.Root>
 
       <!-- Legal AI Integration Card -->
-      <Card.Root class="feature-card">
-        <Card.Header>
-          <Card.Title class="text-white text-xl font-bold">
+      <NesCard.Root class="feature-nier-bits-card">
+        <NesCard.Header>
+          <NesCard.Title class="text-white text-xl font-bold">
             ⚖️ Legal AI Integration
           </Card.Title>
-          <Card.Description class="text-gray-300">
+          <NesCard.Description class="text-gray-300">
             AI-powered legal document analysis
           </Card.Description>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           <div class="actions-grid">
-            <Button variant="secondary" class="bits-btn-secondary">
+            <button class="nes-btn" class="bits-nes-btn">
               📊 Analytics
-            </Button>
-            <Button variant="primary" class="bits-btn-primary">
+            </button>
+            <button class="nes-btn is-primary" class="bits-nes-btn is-primary">
               🤖 AI Chat
-            </Button>
+            </button>
           </div>
         </Card.Content>
       </Card.Root>
@@ -386,32 +387,32 @@ https://svelte.dev/e/props_duplicate -->
             type="submit"
             variant="primary"
             disabled={isLoading}
-            class="flex-1 bits-btn-primary"
+            class="flex-1 bits-nes-btn is-primary"
           >
             {#if isLoading}
               ⏳ Processing...
             {:else}
               {mode === 'login' ? '🎮 Login' : '⭐ Register'}
             {/if}
-          </Button>
+          </button>
 
           <Button
             type="button"
             variant="outline"
             onclick={closeModal}
-            class="bits-btn-outline"
+            class="bits-nes-btn"
           >
             ❌ Cancel
-          </Button>
+          </button>
 
           <Button
             type="button"
             variant="secondary"
             onclick={switchMode}
-            class="bits-btn-secondary"
+            class="bits-nes-btn"
           >
             🔄 Switch to {mode === 'login' ? 'Register' : 'Login'}
-          </Button>
+          </button>
         </div>
       </form>
     </div>

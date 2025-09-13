@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { dev } from "$app/environment";
   	import Metadata from "$lib/components/metadata.svelte";
   	import SiteHeader from "$lib/components/site-header.svelte";

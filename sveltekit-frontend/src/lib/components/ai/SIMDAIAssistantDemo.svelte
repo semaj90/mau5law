@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
@@ -246,9 +247,9 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="simd-ai-assistant max-w-6xl mx-auto p-6 space-y-6">
   <!-- Enhanced Status Header with SIMD Info -->
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center justify-between">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center justify-between">
         <span class="flex items-center gap-3">
           🧬 SIMD AI Assistant
           <span class="text-sm font-normal text-gray-500">XState + Ollama + 7-bit Compression</span>
@@ -265,9 +266,9 @@ https://svelte.dev/e/js_parse_error -->
             Session: <span class="font-mono text-blue-600">{context.sessionId?.slice(-8)}</span>
           </div>
         </div>
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
+      </h3>
+    </div>
+    <div class="yorha-panel-content">
       <!-- System Status Grid -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
         <div class="bg-gray-50 p-3 rounded">
@@ -306,15 +307,15 @@ https://svelte.dev/e/js_parse_error -->
           <div class="text-gray-600 mt-1">Instant rendering</div>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
   
   <!-- Query Interface -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Legal AI Query Interface</CardTitle>
-    </CardHeader>
-    <CardContent class="space-y-4">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Legal AI Query Interface</h3>
+    </div>
+    <div class="yorha-panel-content" class="space-y-4">
       <!-- Configuration Controls -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
         <div>
@@ -348,7 +349,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex items-end">
           <Button onclick={toggleSIMD} variant="outline" class="w-full text-sm bits-btn bits-btn">
             {enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
-          </Button>
+          </button>
         </div>
       </div>
       
@@ -369,7 +370,7 @@ https://svelte.dev/e/js_parse_error -->
             class={isProcessing ? 'processing' : ''}
           >
             {isProcessing ? 'Processing...' : 'Submit'}
-          </Button>
+          </button>
         </div>
         
         <!-- Sample Queries -->
@@ -383,23 +384,23 @@ https://svelte.dev/e/js_parse_error -->
               class="text-xs"
             >
               Sample {index + 1}
-            </Button>
+            </button>
           {/each}
           <Button class="bits-btn" onclick={clearConversation} variant="outline" size="sm">
             Clear All
-          </Button>
+          </button>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
   
   <!-- SIMD Processing Results -->
   {#if simdResults?.enabled}
-    <Card>
-      <CardHeader>
-        <CardTitle>🧬 SIMD Compression Results</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">🧬 SIMD Compression Results</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           <div class="text-center">
             <div class={`text-2xl font-bold ${getCompressionColor(simdResults.total_compression_ratio)}`}>
@@ -451,17 +452,17 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
   
   <!-- Live Rendered Components -->
   {#if liveComponents.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle>🎮 Live SIMD Components</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">🎮 Live SIMD Components</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="bg-gray-900 p-4 rounded-lg text-white">
           <div class="text-sm text-gray-300 mb-3">
             Instant UI components generated from compressed tiles ({qualityTier.toUpperCase()} quality):
@@ -479,24 +480,24 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
   
   <!-- AI Response -->
   {#if hasResponse}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           🤖 AI Response
           {#if context.metadata?.simdResults?.enabled}
             <span class="text-sm font-normal text-green-600">
               SIMD Enhanced • {context.metadata.simdResults.total_compression_ratio.toFixed(1)}:1
             </span>
           {/if}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="prose max-w-none">
           <div class="whitespace-pre-wrap bg-white p-4 rounded border">
             {context.response}
@@ -513,17 +514,17 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
   
   <!-- Conversation History -->
   {#if context.conversationHistory && context.conversationHistory.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle>📜 Conversation History</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">📜 Conversation History</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each context.conversationHistory as entry}
             <div class="flex gap-3 p-3 rounded-lg {entry.type === 'user' ? 'bg-blue-50' : 'bg-green-50'}">
@@ -544,29 +545,29 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
   
   <!-- Processing Logs -->
   {#if processingLogs.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex justify-between items-center">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex justify-between items-center">
           📝 System Logs
           <Button class="bits-btn" onclick={() => processingLogs = []} variant="outline" size="sm">
             Clear Logs
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+          </button>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="bg-black text-green-400 p-4 rounded-lg font-mono text-xs max-h-48 overflow-y-auto">
           {#each processingLogs as log}
             <div class="mb-1">{log}</div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

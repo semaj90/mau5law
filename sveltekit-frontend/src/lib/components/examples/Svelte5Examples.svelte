@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type {     Snippet     } from 'svelte';
   import { useIsMobile, useIsTablet, useIsDesktop, useIsDark } from '$lib/utils/media-query.svelte';
   // Props using Svelte 5 children pattern
@@ -75,19 +76,19 @@
         <div class="example-content">
           <h2>Responsive Behavior</h2>
           <div class="info-grid">
-            <div class="info-card" class:active={mobile.matches}>
+            <div class="info-nier-bits-card" class:active={mobile.matches}>
               <strong>Mobile</strong>
               <span>{mobile.matches ? '✅' : '❌'}</span>
             </div>
-            <div class="info-card" class:active={tablet.matches}>
+            <div class="info-nier-bits-card" class:active={tablet.matches}>
               <strong>Tablet</strong>
               <span>{tablet.matches ? '✅' : '❌'}</span>
             </div>
-            <div class="info-card" class:active={desktop.matches}>
+            <div class="info-nier-bits-card" class:active={desktop.matches}>
               <strong>Desktop</strong>
               <span>{desktop.matches ? '✅' : '❌'}</span>
             </div>
-            <div class="info-card" class:active={darkMode.matches}>
+            <div class="info-nier-bits-card" class:active={darkMode.matches}>
               <strong>Dark Mode</strong>
               <span>{darkMode.matches ? '🌙' : '☀️'}</span>
             </div>

@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Legal Case Manager with Production Features -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, tick } from 'svelte';
     import { page } from '$app/stores';
     import { goto } from '$app/navigation';

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import {
     Button
@@ -91,7 +92,7 @@
                   onclick={() => handleAction(notification, action)}
                 >
                   {action.label}
-                </Button>
+                </button>
               {/each}
             </div>
           {/if}

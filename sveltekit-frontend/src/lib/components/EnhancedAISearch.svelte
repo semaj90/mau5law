@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Enhanced AI Search Component with Bits UI and UnoCSS
   // Svelte 5 + Go Microservice + Gemma3-Legal Integration
 
@@ -186,7 +187,7 @@
       >
         <span class="i-tabler-settings w-4 h-4"></span>
         Advanced
-      </Button>
+      </button>
     </div>
 
     <!-- Search Input -->

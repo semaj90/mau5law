@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import type {    Snippet    } from 'svelte';
   	import { Dialog as BitsDialog } from 'bits-ui';
   	import { createEventDispatcher } from 'svelte';

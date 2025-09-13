@@ -2,6 +2,7 @@
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `</script>` attempted to close an element that was not open -->
 <script lang="ts" module>
+  import 'nes.css/css/nes.min.css';
 </script>
 	import type { TimeValue } from "bits-ui";
 	import type { Time } from "@internationalized/date";
@@ -33,13 +34,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 				{#each segments as { part, value }, i (part + value + i)}
 					<div class="inline-block select-none">
 						{#if part === "literal"}
-							<TimeField.Segment {part} class="text-muted-foreground p-1">
+							<TimeField.Segment {part} class="nes-text is-disabled p-1">
 								{value}
 							</TimeField.Segment>
 						{:else}
 							<TimeField.Segment
 								{part}
-								class="rounded-5px hover:bg-muted focus:bg-muted focus:text-foreground aria-[valuetext=Empty]:text-muted-foreground data-invalid:text-destructive focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
+								class="rounded-5px hover:bg-muted focus:bg-muted focus:text-foreground aria-[valuetext=Empty]:nes-text is-disabled data-invalid:text-destructive focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
 							>
 								{value}
 							</TimeField.Segment>

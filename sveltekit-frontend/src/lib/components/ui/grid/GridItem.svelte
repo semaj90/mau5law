@@ -5,6 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 https://svelte.dev/e/js_parse_error -->
 <!-- Grid Item Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     colSpan: number;
     rowSpan: number;

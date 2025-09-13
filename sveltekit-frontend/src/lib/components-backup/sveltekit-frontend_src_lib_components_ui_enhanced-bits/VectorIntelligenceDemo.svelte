@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Button, Select, Input, Card } from './index.js';
   import type { SelectOption } from './index.js';
   import type { VectorSearchResult, SemanticEntity } from '$lib/types/ai';
@@ -275,8 +276,7 @@
         class="flex-1"
       />
 
-      <Button
-        variant="primary"
+      <button class="nes-btn is-primary"
         legal
         loading={isSearching}
         onclick={performVectorSearch}
@@ -289,15 +289,15 @@
           <Search class="w-4 h-4 mr-2" />
           Search
         {/if}
-      </Button>
+      </button>
 
       {#if searchResults.length > 0}
-        <Button
+        <button class="nes-btn"
           variant="outline"
           onclick={clearResults}
         >
           Clear
-        </Button>
+        </button>
       {/if}
     </div>
 
@@ -319,7 +319,7 @@
     <div class="demo-results-section mb-6">
       <h2 class="text-lg font-gothic mb-4 text-nier-text-primary">Extracted Entities</h2>
 
-      <Card variant="yorha" legal class="p-4">
+      <NesCard variant="yorha" legal class="p-4">
         <div class="semantic-entity-container">
           {#each semanticEntities as entity (entity.text)}
             {@const SvelteComponent = entityIcons[entity.type]}
@@ -341,7 +341,7 @@
           <strong>{semanticEntities.length}</strong> entities extracted with
           <strong>{analysisDepth}</strong> analysis depth
         </div>
-      </Card>
+      </NesCard>
     </div>
   {/if}
 
@@ -359,7 +359,7 @@
 
       <div class="space-y-4">
         {#each filteredResults as result (result.id)}
-          <Card
+          <NesCard
             variant="default"
             evidenceCard
             hoverable
@@ -419,16 +419,16 @@
                 </div>
 
                 <div class="flex gap-2">
-                  <Button size="sm" variant="outline">
+                  <button class="nes-btn" size="sm" variant="outline">
                     View Full
-                  </Button>
-                  <Button size="sm" variant="primary">
+                  </button>
+                  <button class="nes-btn" size="sm" variant="primary">
                     Add to Case
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
-          </Card>
+          </NesCard>
         {/each}
       </div>
     </div>
@@ -443,12 +443,12 @@
         Enter a search query to demonstrate advanced semantic analysis and vector similarity matching.
       </p>
       <div class="flex justify-center gap-2">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           onclick={() => searchQuery = 'contract breach non-disclosure agreement'}
         >
           Try Sample Query
-        </Button>
+        </button>
       </div>
     </div>
   {/if}
@@ -457,28 +457,28 @@
   {#if searchResults.length > 0}
     <div class="mt-6 pt-4 border-t border-nier-border-secondary">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-        <div class="agent-card p-3">
+        <div class="agent-nier-bits-card p-3">
           <div class="text-lg font-bold text-nier-text-primary">
             {filteredResults.length}
           </div>
           <div class="text-xs text-nier-text-muted">Results Found</div>
         </div>
 
-        <div class="agent-card p-3">
+        <div class="agent-nier-bits-card p-3">
           <div class="text-lg font-bold text-nier-text-primary">
             {Math.round(Math.max(...searchResults.map(r => r.score)) * 100)}%
           </div>
           <div class="text-xs text-nier-text-muted">Max Confidence</div>
         </div>
 
-        <div class="agent-card p-3">
+        <div class="agent-nier-bits-card p-3">
           <div class="text-lg font-bold text-nier-text-primary">
             {semanticEntities.length}
           </div>
           <div class="text-xs text-nier-text-muted">Entities</div>
         </div>
 
-        <div class="agent-card p-3">
+        <div class="agent-nier-bits-card p-3">
           <div class="text-lg font-bold text-nier-text-primary">
             1.2s
           </div>

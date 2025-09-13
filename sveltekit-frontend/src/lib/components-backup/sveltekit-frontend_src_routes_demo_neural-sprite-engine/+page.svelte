@@ -1,5 +1,6 @@
 <!-- NES-Inspired Neural Sprite Engine Demo -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { fabric } from 'fabric';
@@ -624,22 +625,22 @@
     <div class="dashboard-section">
       <h4>🏆 NES Performance Metrics</h4>
       <div class="metrics-grid">
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-value">{fps}</div>
           <div class="metric-label">FPS</div>
           <div class="metric-target">Target: 60</div>
         </div>
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-value">{Math.round(cacheEfficiency)}%</div>
           <div class="metric-label">Cache Hit</div>
           <div class="metric-target">Target: >90%</div>
         </div>
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-value">&lt;1ms</div>
           <div class="metric-label">Load Time</div>
           <div class="metric-target">NES: 16ms</div>
         </div>
-        <div class="metric-card">
+        <div class="metric-nier-bits-card">
           <div class="metric-value">{Math.round(gpuMemoryUsage)}%</div>
           <div class="metric-label">GPU Memory</div>
           <div class="metric-target">Max: 256MB</div>

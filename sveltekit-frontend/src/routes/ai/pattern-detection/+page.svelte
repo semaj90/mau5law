@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import PatternDetectionInterface from '$lib/components/ai/PatternDetectionInterface.svelte';
 </script>
 

@@ -1,5 +1,6 @@
 <!-- Detective Board - Enhanced 3-Column Grid with NES.css, RabbitMQ & GPU Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	// Badge replaced with span - not available in enhanced-bits
   	import Button from '$lib/components/ui/button/Button.svelte';
   	import {
@@ -410,8 +411,8 @@
 
 <div class="w-full h-full min-h-screen bg-background detective-board-nes">
 	<!-- Header -->
-	<Card class="mb-6">
-		<CardHeader>
+	<NesCard class="mb-6">
+		<div class="yorha-panel-header">
 			<div class="flex justify-between items-center">
 				<div class="flex items-center gap-4">
 					<div
@@ -420,8 +421,8 @@
 						<span class="text-2xl">🕵️</span>
 					</div>
 					<div>
-						<CardTitle class="text-2xl">Detective Board</CardTitle>
-						<p class="text-muted-foreground">Case Evidence Management System</p>
+						<h3 class="nes-text is-primary" class="text-2xl">Detective Board</h3>
+						<p class="nes-text is-disabled">Case Evidence Management System</p>
 					</div>
 				</div>
 
@@ -435,7 +436,7 @@
 						>
 							<span class="mr-2">📋</span>
 							Columns
-						</Button>
+						</button>
 						<Button class="bits-btn"
 							variant={viewMode === 'canvas' ? 'default' : 'outline'}
 							size="sm"
@@ -443,7 +444,7 @@
 						>
 							<span class="mr-2">🎨</span>
 							Canvas
-						</Button>
+						</button>
 					</div>
 
 					<!-- SVELTE 5: No more `$` prefix for store subscriptions in the template -->
@@ -459,7 +460,7 @@
 								{/each}
 								{#if activeUsers.length > 3}
 									<div
-										class="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm border-2 border-background"
+										class="w-8 h-8 bg-muted nes-text is-disabled rounded-full flex items-center justify-center text-sm border-2 border-background"
 									>
 										+{activeUsers.length - 3}
 									</div>
@@ -472,11 +473,11 @@
 					<Button class="bits-btn" size="sm">
 						<span class="mr-2">➕</span>
 						New Case
-					</Button>
+					</button>
 				</div>
 			</div>
-		</CardHeader>
-	</Card>
+		</div>
+	</NesCard>
 
 	<!-- Main Board Area -->
 	<main class="flex-1">
@@ -484,18 +485,18 @@
 			<!-- Columns Container -->
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
 				{#each columns as column (column.id)}
-					<Card class="h-fit">
-						<CardHeader class="pb-3">
+					<NesCard class="h-fit">
+						<div class="yorha-panel-header" class="pb-3">
 							<div class="flex justify-between items-center">
-								<CardTitle class="text-lg flex items-center gap-2">
+								<h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
 									<div class="w-3 h-3 bg-primary rounded-full"></div>
 									{column.title}
-								</CardTitle>
+								</h3>
 								<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{column.items.length}</span>
 							</div>
-						</CardHeader>
+						</div>
 
-						<CardContent class="space-y-4">
+						<div class="yorha-panel-content" class="space-y-4">
 							{#if column.id === 'new'}
 								<UploadZone
 									onUpload={(result) => handleFileUpload(result, column.id)}
@@ -533,14 +534,14 @@
 									</div>
 								{/each}
 							</div>
-						</CardContent>
-					</Card>
+						</div>
+					</NesCard>
 				{/each}
 			</div>
 		{:else}
 			<!-- Canvas Container -->
-			<Card class="h-[calc(100vh-200px)]">
-				<CardContent class="p-0 h-full">
+			<NesCard class="h-[calc(100vh-200px)]">
+				<div class="yorha-panel-content" class="p-0 h-full">
 					<div
 						bind:this={canvasContainer}
 						class="relative w-full h-full bg-slate-50 dark:bg-slate-900 overflow-auto"
@@ -589,15 +590,15 @@
 						<!-- Empty state -->
 						{#if canvasEvidence.length === 0}
 							<div class="absolute inset-0 flex items-center justify-center">
-								<div class="text-center text-muted-foreground">
+								<div class="text-center nes-text is-disabled">
 									<p class="text-lg mb-2">No evidence on canvas</p>
 									<p class="text-sm">Drag evidence here or switch to column view to add items</p>
 								</div>
 							</div>
 						{/if}
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 		{/if}
 	</main>
 </div>
@@ -669,8 +670,8 @@
 				<div class="flex gap-2">
 					<Button class="bits-btn" onclick={runFindSearch} disabled={findModal.loading}>
 						{#if findModal.loading}Searching...{:else}Search{/if}
-					</Button>
-					<Button class="bits-btn" variant="outline" onclick={closeFindModal}>Close</Button>
+					</button>
+					<Button class="bits-btn" variant="outline" onclick={closeFindModal}>Close</button>
 				</div>
 
 				{#if findModal.error}

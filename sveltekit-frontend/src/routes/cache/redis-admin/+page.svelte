@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { PageData, ActionData } from './$types.js';
   import { onMount, onDestroy } from 'svelte';
   import { enhance } from '$app/forms';
@@ -149,7 +150,7 @@
         <Database class="w-8 h-8 text-primary" />
         Redis Cache Admin
       </h1>
-      <p class="text-muted-foreground mt-1">
+      <p class="nes-text is-disabled mt-1">
         Performance management and cache administration
       </p>
     </div>
@@ -178,7 +179,7 @@
       >
         <Activity class="w-4 h-4 {isAutoRefresh ? 'text-green-600' : ''}" />
         {isAutoRefresh ? 'Auto Refresh On' : 'Auto Refresh Off'}
-      </Button>
+      </button>
       
       <!-- Manual Refresh -->
       <OrchestratedButton.Enhanced
@@ -231,84 +232,84 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Redis Server Info -->
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between mb-4">
             <Server class="w-8 h-8 text-primary/60" />
             <Badge variant="outline">{data.redisInfo.version}</Badge>
           </div>
-          <p class="text-sm text-muted-foreground mb-1">Redis Server</p>
+          <p class="text-sm nes-text is-disabled mb-1">Redis Server</p>
           <p class="text-lg font-medium capitalize">{data.redisInfo.mode}</p>
-          <p class="text-xs text-muted-foreground">Role: {data.redisInfo.role}</p>
+          <p class="text-xs nes-text is-disabled">Role: {data.redisInfo.role}</p>
         </Card.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Memory Usage -->
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between mb-4">
             <Memory class="w-8 h-8 text-primary/60" />
             <Badge variant="outline">{data.redisInfo.used_memory}</Badge>
           </div>
-          <p class="text-sm text-muted-foreground mb-1">Memory Usage</p>
+          <p class="text-sm nes-text is-disabled mb-1">Memory Usage</p>
           <p class="text-lg font-medium">{data.redisInfo.used_memory}</p>
-          <p class="text-xs text-muted-foreground">Peak: {data.redisInfo.used_memory_peak}</p>
+          <p class="text-xs nes-text is-disabled">Peak: {data.redisInfo.used_memory_peak}</p>
         </Card.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Operations -->
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between mb-4">
             <Zap class="w-8 h-8 text-primary/60" />
             <Badge variant="outline">{data.redisInfo.instantaneous_ops_per_sec}/s</Badge>
           </div>
-          <p class="text-sm text-muted-foreground mb-1">Operations</p>
+          <p class="text-sm nes-text is-disabled mb-1">Operations</p>
           <p class="text-lg font-medium">{data.redisInfo.total_commands_processed.toLocaleString()}</p>
-          <p class="text-xs text-muted-foreground">Total processed</p>
+          <p class="text-xs nes-text is-disabled">Total processed</p>
         </Card.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Uptime -->
       <OrchestratedCard.Analysis>
-        <Card.Content class="p-6">
+        <NesCard.Content class="p-6">
           <div class="flex items-center justify-between mb-4">
             <Clock class="w-8 h-8 text-primary/60" />
             <Badge variant="outline">Active</Badge>
           </div>
-          <p class="text-sm text-muted-foreground mb-1">Uptime</p>
+          <p class="text-sm nes-text is-disabled mb-1">Uptime</p>
           <p class="text-lg font-medium">{formatUptime(data.redisInfo.uptime_in_seconds)}</p>
-          <p class="text-xs text-muted-foreground">{data.redisInfo.connected_clients} clients</p>
+          <p class="text-xs nes-text is-disabled">{data.redisInfo.connected_clients} clients</p>
         </Card.Content>
       </OrchestratedCard.Analysis>
     </div>
 
     <!-- Hit/Miss Statistics -->
     <OrchestratedCard.Analysis>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+      <NesCard.Header>
+        <NesCard.Title class="flex items-center gap-2">
           <BarChart3 class="w-5 h-5" />
           Cache Performance
         </Card.Title>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div class="text-center">
             <p class="text-2xl font-bold text-green-600">{data.redisInfo.keyspace_hits.toLocaleString()}</p>
-            <p class="text-sm text-muted-foreground">Hits</p>
+            <p class="text-sm nes-text is-disabled">Hits</p>
           </div>
           <div class="text-center">
             <p class="text-2xl font-bold text-red-600">{data.redisInfo.keyspace_misses.toLocaleString()}</p>
-            <p class="text-sm text-muted-foreground">Misses</p>
+            <p class="text-sm nes-text is-disabled">Misses</p>
           </div>
           <div class="text-center">
             <p class="text-2xl font-bold text-yellow-600">{data.redisInfo.expired_keys.toLocaleString()}</p>
-            <p class="text-sm text-muted-foreground">Expired</p>
+            <p class="text-sm nes-text is-disabled">Expired</p>
           </div>
           <div class="text-center">
             <p class="text-2xl font-bold text-primary">
               {((data.redisInfo.keyspace_hits / (data.redisInfo.keyspace_hits + data.redisInfo.keyspace_misses)) * 100).toFixed(1)}%
             </p>
-            <p class="text-sm text-muted-foreground">Hit Rate</p>
+            <p class="text-sm nes-text is-disabled">Hit Rate</p>
           </div>
         </div>
       </Card.Content>
@@ -320,16 +321,16 @@
     <div class="space-y-6">
       <!-- Key Management Tools -->
       <OrchestratedCard.Analysis>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <Key class="w-5 h-5" />
             Key Management
           </Card.Title>
-          <Card.Description>
+          <NesCard.Description>
             Browse and manage Redis keys ({data.keyStats.total_keys} total)
           </Card.Description>
         </Card.Header>
-        <Card.Content class="space-y-4">
+        <NesCard.Content class="space-y-4">
           <!-- Search Filter -->
           <Input
             bind:value={keyFilter}
@@ -343,20 +344,20 @@
               <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
                 <div class="flex-1">
                   <p class="font-mono text-sm">{key.key}</p>
-                  <div class="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+                  <div class="flex items-center gap-4 text-xs nes-text is-disabled mt-1">
                     <span class="capitalize">{key.type}</span>
                     <span>{key.size}</span>
                     <span>TTL: {key.ttl > 0 ? `${key.ttl}s` : 'No expiry'}</span>
                   </div>
                 </div>
                 <div class="flex gap-1">
-                  <Button
+                  <button class="nes-btn"
                     variant="outline"
                     size="sm"
                     onclick={() => viewKeyDetails(key.key)}
                   >
                     <Eye class="w-3 h-3" />
-                  </Button>
+                  </button>
                   <form method="POST" action="?/deleteKey" use:enhance>
                     <input type="hidden" name="key" value={key.key} />
                     <Button
@@ -366,7 +367,7 @@
                       class="text-red-600 hover:bg-red-50"
                     >
                       <Trash2 class="w-3 h-3" />
-                    </Button>
+                    </button>
                   </form>
                 </div>
               </div>
@@ -377,13 +378,13 @@
 
       <!-- Add New Key -->
       <OrchestratedCard.Analysis>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+        <NesCard.Header>
+          <NesCard.Title class="flex items-center gap-2">
             <Plus class="w-5 h-5" />
             Add New Key
           </Card.Title>
         </Card.Header>
-        <Card.Content>
+        <NesCard.Content>
           <form method="POST" action="?/setKey" use:enhance class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Input
@@ -409,7 +410,7 @@
             <Button type="submit" class="gap-2">
               <Plus class="w-4 h-4" />
               Add Key
-            </Button>
+            </button>
           </form>
         </Card.Content>
       </OrchestratedCard.Analysis>
@@ -420,36 +421,36 @@
   {#if selectedTab === 'performance'}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <OrchestratedCard.Analysis>
-        <Card.Header>
-          <Card.Title>Performance Metrics</Card.Title>
+        <NesCard.Header>
+          <NesCard.Title>Performance Metrics</Card.Title>
         </Card.Header>
-        <Card.Content class="space-y-4">
+        <NesCard.Content class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="text-center p-4 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold {getMetricColor(data.performanceMetrics.hit_rate, 80)}">{data.performanceMetrics.hit_rate.toFixed(1)}%</p>
-              <p class="text-sm text-muted-foreground">Hit Rate</p>
+              <p class="text-sm nes-text is-disabled">Hit Rate</p>
             </div>
             <div class="text-center p-4 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold text-primary">{data.performanceMetrics.ops_per_sec}</p>
-              <p class="text-sm text-muted-foreground">Ops/sec</p>
+              <p class="text-sm nes-text is-disabled">Ops/sec</p>
             </div>
             <div class="text-center p-4 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold text-primary">{data.performanceMetrics.latency_avg}ms</p>
-              <p class="text-sm text-muted-foreground">Avg Latency</p>
+              <p class="text-sm nes-text is-disabled">Avg Latency</p>
             </div>
             <div class="text-center p-4 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold {getMemoryColor(data.performanceMetrics.memory_efficiency)}">{data.performanceMetrics.memory_efficiency.toFixed(1)}%</p>
-              <p class="text-sm text-muted-foreground">Memory Efficiency</p>
+              <p class="text-sm nes-text is-disabled">Memory Efficiency</p>
             </div>
           </div>
         </Card.Content>
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
-        <Card.Header>
-          <Card.Title>Key Statistics</Card.Title>
+        <NesCard.Header>
+          <NesCard.Title>Key Statistics</Card.Title>
         </Card.Header>
-        <Card.Content class="space-y-4">
+        <NesCard.Content class="space-y-4">
           <div class="space-y-3">
             <div class="flex justify-between">
               <span>Total Keys</span>
@@ -476,16 +477,16 @@
   <!-- Tools Tab -->
   {#if selectedTab === 'tools'}
     <OrchestratedCard.Analysis>
-      <Card.Header>
-        <Card.Title class="flex items-center gap-2">
+      <NesCard.Header>
+        <NesCard.Title class="flex items-center gap-2">
           <Settings class="w-5 h-5" />
           Administrative Tools
         </Card.Title>
-        <Card.Description class="text-yellow-600">
+        <NesCard.Description class="text-yellow-600">
           ⚠️ Use these tools carefully - they affect the entire cache
         </Card.Description>
       </Card.Header>
-      <Card.Content class="space-y-4">
+      <NesCard.Content class="space-y-4">
         <form method="POST" action="?/flushCache" use:enhance>
           <Button
             type="submit"
@@ -499,10 +500,10 @@
           >
             <Trash2 class="w-4 h-4" />
             Flush All Cache
-          </Button>
+          </button>
         </form>
         
-        <div class="text-sm text-muted-foreground">
+        <div class="text-sm nes-text is-disabled">
           <p>Last updated: {new Date(data.timestamp).toLocaleString()}</p>
         </div>
       </Card.Content>

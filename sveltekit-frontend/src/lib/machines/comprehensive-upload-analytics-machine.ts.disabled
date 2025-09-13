@@ -547,10 +547,12 @@ export const comprehensiveUploadAnalyticsMachine = createMachine({
                   ? { ...prompt, userReaction: event.reaction }
                   : prompt
               ),
-            'performance.userEngagementScore': ({ context, event }) =>
-              event.reaction === 'accepted'
+            performance: ({ context, event }) => ({
+              ...context.performance,
+              userEngagementScore: event.reaction === 'accepted'
                 ? Math.min(context.performance.userEngagementScore + 0.1, 1.0)
                 : context.performance.userEngagementScore
+            })
           })
         },
 

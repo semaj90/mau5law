@@ -1,5 +1,6 @@
 <!-- Enhanced RAG Demo Component with Semantic Analysis -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     semanticAnalyzer,
@@ -187,11 +188,11 @@
   {#if activeTab === 'analyze'}
     <div class="analysis-tab space-y-6">
       <!-- Input Section -->
-      <Card>
-        <CardHeader>
-          <CardTitle>Legal Document Input</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Legal Document Input</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-4">
             <div>
               <label for="legal-text" class="block text-sm font-medium text-gray-700 mb-2">
@@ -217,21 +218,21 @@
                 disabled={isAnalyzing || !sampleLegalText.trim()}
                 class="px-6 bits-btn bits-btn">
                 {isAnalyzing ? 'Analyzing...' : 'Analyze Document'}
-              </Button>
+              </button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Analysis Results -->
       {#if analysisResult}
         <div class="analysis-results grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Entities -->
-          <Card>
-            <CardHeader>
-              <CardTitle>Extracted Entities ({analysisResult.entities.length})</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">Extracted Entities ({analysisResult.entities.length})</h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="space-y-3">
                 {#each analysisResult.entities as entity}
                   <div class="entity-item p-3 border rounded-lg">
@@ -254,15 +255,15 @@
                   </div>
                 {/each}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Concepts -->
-          <Card>
-            <CardHeader>
-              <CardTitle>Legal Concepts ({analysisResult.concepts.length})</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">Legal Concepts ({analysisResult.concepts.length})</h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="space-y-3">
                 {#each analysisResult.concepts as concept}
                   <div class="concept-item p-3 border rounded-lg">
@@ -284,15 +285,15 @@
                   </div>
                 {/each}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Metrics -->
-          <Card>
-            <CardHeader>
-              <CardTitle>Analysis Metrics</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">Analysis Metrics</h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="grid grid-cols-2 gap-4">
                 <div class="metric">
                   <div class="text-2xl font-bold text-blue-600">
@@ -321,15 +322,15 @@
                   <div class="text-sm text-gray-600">Processing Time</div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
 
           <!-- Embeddings Preview -->
-          <Card>
-            <CardHeader>
-              <CardTitle>Vector Embeddings</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <NesCard>
+            <div class="yorha-panel-header">
+              <h3 class="nes-text is-primary">Vector Embeddings</h3>
+            </div>
+            <div class="yorha-panel-content">
               <div class="space-y-2">
                 <div class="text-sm text-gray-600">
                   Generated {analysisResult.summaryEmbedding.length}D vector embedding
@@ -344,8 +345,8 @@
                   First 10 dimensions shown. Full embedding stored in vector database.
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </NesCard>
         </div>
       {/if}
     </div>
@@ -355,11 +356,11 @@
   {#if activeTab === 'query'}
     <div class="query-tab space-y-6">
       <!-- Query Configuration -->
-      <Card>
-        <CardHeader>
-          <CardTitle>Enhanced RAG Query</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">Enhanced RAG Query</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="space-y-4">
             <div>
               <label for="query-text" class="block text-sm font-medium text-gray-700 mb-2">
@@ -417,19 +418,19 @@
                 disabled={isAnalyzing || !queryText.trim()}
                 class="px-6 bits-btn bits-btn">
                 {isAnalyzing ? 'Querying...' : 'Execute RAG Query'}
-              </Button>
+              </button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
 
       <!-- Query Results -->
       {#if ragResponse}
-        <Card>
-          <CardHeader>
-            <CardTitle>Query Results ({ragResponse.totalFound} found)</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary">Query Results ({ragResponse.totalFound} found)</h3>
+          </div>
+          <div class="yorha-panel-content">
             <div class="space-y-4">
               <!-- Query Summary -->
               <div class="query-summary p-3 bg-blue-50 rounded-lg">
@@ -482,8 +483,8 @@
                 {/if}
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/if}
     </div>
   {/if}

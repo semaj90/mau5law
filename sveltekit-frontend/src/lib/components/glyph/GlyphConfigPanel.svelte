@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { GLYPH_PRESETS, type GlyphEmbedRequest, type SIMDGlyphConfig } from '$lib/api/glyph-embeds-client.js';
   

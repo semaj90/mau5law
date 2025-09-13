@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from "svelte";
   import { X } from "lucide-svelte";
   import { quadOut } from "svelte/easing";

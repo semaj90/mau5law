@@ -1,5 +1,6 @@
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { page } from '$app/state';
   import { dev } from '$app/environment';
   // TODO: Convert to $derived: error = page.error

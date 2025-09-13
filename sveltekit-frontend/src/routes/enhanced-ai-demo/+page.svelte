@@ -4,6 +4,7 @@
 <!-- ====================================================================== -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     Button
@@ -105,11 +106,11 @@
 
   <main class="container mx-auto px-4 py-8 space-y-8">
     <!-- System Status Overview -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="text-green-400">✅ System Status: Operational</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="text-green-400">✅ System Status: Operational</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
           <div>
             <div class="text-2xl font-bold text-green-400 mb-2">✅</div>
@@ -132,15 +133,15 @@
             <div class="text-xs text-slate-400">{systemInitialized ? 'Ready' : 'Loading...'}</div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- AI Query Interface -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="text-blue-400">AI Legal Analysis Interface</CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-6">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="text-blue-400">AI Legal Analysis Interface</h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-6">
         <!-- Input Section -->
         <div class="space-y-4">
           <div>
@@ -175,14 +176,14 @@
                 !systemInitialized}
               class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn">
               {processingStatus === 'processing' ? 'Analyzing...' : 'Analyze with AI'}
-            </Button>
+            </button>
 
             <Button class="bits-btn"
               variant="outline"
               onclick={handleClear}
               disabled={processingStatus === 'processing'}>
               Clear
-            </Button>
+            </button>
           </div>
         </div>
 
@@ -243,15 +244,15 @@
             </div>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Architecture & Features -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="text-purple-400">Enhanced RAG Multi-Agent AI Architecture</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="text-purple-400">Enhanced RAG Multi-Agent AI Architecture</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
           <div>
             <h4 class="font-semibold text-blue-400 mb-3">Frontend Stack</h4>
@@ -317,8 +318,8 @@
             </ul>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </main>
 </div>
 

@@ -8,7 +8,7 @@ mcp<script lang="ts">
   }
 
 
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications, type Notification } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
   import { AlertCircle, AlertTriangle, Check, Info, X } from "lucide-svelte";
@@ -194,14 +194,14 @@ mcp<script lang="ts">
 >
   {#if hiddenCount > 0}
     <div class="space-y-4">
-      <Button
+      <button class="nes-btn"
         variant="ghost"
         size="sm"
         onclick={() => (maxVisible += 5)}
         class="space-y-4"
       >
         +{hiddenCount} more notifications
-      </Button>
+      </button>
     </div>
   {/if}
 
@@ -269,7 +269,7 @@ mcp<script lang="ts">
                   {#if notification.actions && notification.actions.length > 0}
                     <div class="space-y-4">
                       {#each notification.actions as action}
-                        <Button
+                        <button class="nes-btn"
                           size="sm"
                           variant={action.variant === "primary"
                             ? "default"
@@ -279,7 +279,7 @@ mcp<script lang="ts">
                           class="space-y-4"
                         >
                           {action.label}
-                        </Button>
+                        </button>
                       {/each}
                     </div>
                   {/if}
@@ -287,7 +287,7 @@ mcp<script lang="ts">
 
                 <!-- Dismiss button -->
                 <div class="space-y-4">
-                  <Button
+                  <button class="nes-btn"
                     variant="ghost"
                     size="sm"
                     onclick={() => dismissNotification(notification.id)}
@@ -295,7 +295,7 @@ mcp<script lang="ts">
                     aria-label="Dismiss notification"
                   >
                     <X class="space-y-4" />
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
@@ -308,14 +308,14 @@ mcp<script lang="ts">
   <!-- Dismiss all button for multiple notifications -->
   {#if visibleNotifications.length > 1}
     <div class="space-y-4">
-      <Button
+      <button class="nes-btn"
         variant="ghost"
         size="sm"
         onclick={() => dismissAll()}
         class="space-y-4"
       >
         Clear all ({$notifications.notifications.length})
-      </Button>
+      </button>
     </div>
   {/if}
 </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
   import { Button, Card } from '$lib/components/ui/enhanced-bits';
   import { onMount } from 'svelte';
@@ -21,14 +22,14 @@
 <div class="evidence-page-container">
   {#if showWelcome && pageLoaded}
     <div class="welcome-banner animate-fade-in">
-      <Card variant="evidence" hoverable fullWidth>
-        <div class="card-header">
-          <h3 class="card-title">🎯 Evidence Board Ready</h3>
-          <p class="card-description">
+      <NesCard variant="evidence" hoverable fullWidth>
+        <div class="nier-bits-yorha-panel-header">
+          <h3 class="nier-bits-nes-text is-primary">🎯 Evidence Board Ready</h3>
+          <p class="nier-bits-nes-text">
             AI-powered evidence management with RTX 3060 Ti acceleration
           </p>
         </div>
-        <div class="card-content">
+        <div class="nier-bits-yorha-panel-content">
         <div class="welcome-stats">
           <div class="stat">
             <span class="stat-label">GPU</span>
@@ -44,16 +45,16 @@
           </div>
         </div>
         </div>
-        <div class="card-footer">
-        <Button
+        <div class="nier-bits-yorha-panel-content">
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => showWelcome = false}
         >
           Get Started →
-        </Button>
+        </button>
         </div>
-      </Card>
+      </NesCard>
     </div>
   {/if}
 

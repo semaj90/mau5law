@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- AI Status Indicator Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   export let isReady = false;
   export let isLoading = false;
   export let provider: "local" | "cloud" | "hybrid" | null = null;

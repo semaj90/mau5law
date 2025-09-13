@@ -2,6 +2,7 @@
 <!-- Professional help panel for displaying available keyboard shortcuts -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { cn } from '$lib/utils/cn';
@@ -184,7 +185,7 @@
     aria-modal="true"
     aria-labelledby="keyboard-help-title"
   >
-    <Card class={cn("w-full max-w-4xl max-h-[90vh] flex flex-col", className)}>
+    <NesCard class={cn("w-full max-w-4xl max-h-[90vh] flex flex-col", className)}>
       <!-- Header -->
       <div class="flex items-center justify-between p-6 border-b border-nier-border-muted">
         <div>
@@ -196,7 +197,7 @@
           </p>
         </div>
         
-        <Button
+        <button class="nes-btn"
           variant="ghost"
           size="sm"
           onclick={() => open = false}
@@ -206,7 +207,7 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
-        </Button>
+        </button>
       </div>
 
       <!-- Search and Filters -->
@@ -329,7 +330,7 @@
           </div>
         </div>
       </div>
-    </Card>
+    </NesCard>
   </div>
 {/if}
 

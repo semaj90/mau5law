@@ -2,6 +2,7 @@
 <!-- Global keyboard shortcut management for the entire application -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { setContext, onMount } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
   import { browser } from '$app/environment';

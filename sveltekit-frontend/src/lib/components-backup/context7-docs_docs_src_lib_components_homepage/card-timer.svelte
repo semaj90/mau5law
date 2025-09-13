@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import X from "phosphor-svelte/lib/X";
   	import HomeSwitch from "$lib/components/homepage/home-switch.svelte";
   	import HomeSelect from "$lib/components/homepage/home-select.svelte";
@@ -55,7 +56,7 @@
 	></div>
 	<div class="m-1.5 lg:m-[10px]">
 		<div
-			class="rounded-card-lg border-border-input shadow-card aspect-square w-full border bg-white p-2 lg:px-[14px] lg:py-3 dark:bg-[#FAF8F5]"
+			class="rounded-nier-bits-card-lg border-border-input shadow-nier-bits-card aspect-square w-full border bg-white p-2 lg:px-[14px] lg:py-3 dark:bg-[#FAF8F5]"
 		>
 			<div class="rounded-15px bg-foreground mb-3 p-1 lg:mb-5 dark:bg-[#171717]">
 				<div class="rounded-xl bg-[rgba(81,84,95,0.6)] px-2 pb-7 pt-3 text-white lg:pb-8">

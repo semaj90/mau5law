@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'color' has already been declared -->
 <!-- Loading Spinner Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     size: 'sm' | 'md' | 'lg' | 'xl' ;
     color: 'blue' | 'green' | 'red' | 'yellow' | 'gray' | 'white' ;

@@ -5,6 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, tick } from 'svelte';
   import { Editor } from '@tiptap/core';
   import StarterKit from '@tiptap/starter-kit';

@@ -5,6 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Complete integration of XState, WebGL, Enhanced RAG, and Context7 MCP -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import {
     Button
@@ -333,7 +334,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- System Status -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div
             class="p-2 rounded-lg"
@@ -346,9 +347,9 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{frameRate}fps</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg" class:bg-green-100={apiActive} class:bg-red-100={!apiActive}>
             <Database class="h-5 w-5 {apiActive ? 'text-green-600' : 'text-red-600'}" />
@@ -358,9 +359,9 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{apiThroughput.toFixed(1)} tasks/s</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div
             class="p-2 rounded-lg"
@@ -376,9 +377,9 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{ragQueryTime}ms</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
-      <Card class="p-4 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
         <div class="flex items-center gap-3">
           <div
             class="p-2 rounded-lg"
@@ -391,11 +392,11 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{systemHealth}% health</p>
           </div>
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- WebGL Canvas -->
-    <Card class="p-6 mb-8 bg-slate-800/50 border-slate-700">
+    <NesCard class="p-6 mb-8 bg-slate-800/50 border-slate-700">
       <h3 class="text-lg font-semibold text-white mb-4">WebGL Vertex Streaming Canvas</h3>
       <div class="flex gap-4 items-start">
         <canvas
@@ -410,19 +411,19 @@ https://svelte.dev/e/js_parse_error -->
             variant="outline"
             class="text-white border-slate-600 hover:bg-slate-700 bits-btn bits-btn">
             Start WebGL Demo
-          </Button>
+          </button>
           <p class="text-sm text-gray-400">
             Frame Rate: {frameRate} fps<br />
             Status: {webglReady ? 'Streaming' : 'Idle'}
           </p>
         </div>
       </div>
-    </Card>
+    </NesCard>
 
     <!-- Control Panel -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
       <!-- Search Controls -->
-      <Card class="p-6 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
         <h3 class="text-lg font-semibold text-white mb-4">Enhanced RAG Search</h3>
         <div class="space-y-4">
           <input
@@ -435,23 +436,23 @@ https://svelte.dev/e/js_parse_error -->
               disabled={!systemInitialized || ragActive}
               class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
               {ragActive ? 'Searching...' : 'Search'}
-            </Button>
+            </button>
             <Button
               onclick={getContext7Recommendations}
               disabled={!systemInitialized}
               variant="outline"
               class="text-white border-slate-600 hover:bg-slate-700 bits-btn bits-btn">
               Get Recommendations
-            </Button>
+            </button>
           </div>
           <div class="text-sm text-gray-400">
             PageRank Score: {pageRankScore.toFixed(3)} | Feedback: {feedbackCount} votes
           </div>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- System Controls -->
-      <Card class="p-6 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
         <h3 class="text-lg font-semibold text-white mb-4">System Controls</h3>
         <div class="space-y-4">
           <Button
@@ -459,25 +460,25 @@ https://svelte.dev/e/js_parse_error -->
             disabled={!systemInitialized || apiActive}
             class="w-full bg-green-600 hover:bg-green-700 bits-btn bits-btn">
             {apiActive ? 'API Active' : 'Start API Coordination'}
-          </Button>
+          </button>
           <Button
             onclick={runFullDemo}
             disabled={!systemInitialized}
             class="w-full bg-purple-600 hover:bg-purple-700 bits-btn bits-btn">
             Run Full Demo
-          </Button>
+          </button>
           <div class="text-sm text-gray-400">
             System Status: {systemInitialized ? 'Initialized' : 'Initializing...'}<br />
             Health: {systemHealth}%
           </div>
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Results Display -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Search Results -->
-      <Card class="p-6 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
         <h3 class="text-lg font-semibold text-white mb-4">Search Results</h3>
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each searchResults as result, index}
@@ -500,7 +501,7 @@ https://svelte.dev/e/js_parse_error -->
                   onclick={() => submitPositiveFeedback(index)}
                   class="text-xs bg-green-600 hover:bg-green-700">
                   👍 Relevant
-                </Button>
+                </button>
               </div>
             </div>
           {:else}
@@ -509,10 +510,10 @@ https://svelte.dev/e/js_parse_error -->
             </p>
           {/each}
         </div>
-      </Card>
+      </NesCard>
 
       <!-- AI Recommendations -->
-      <Card class="p-6 bg-slate-800/50 border-slate-700">
+      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
         <h3 class="text-lg font-semibold text-white mb-4">Context7 MCP Recommendations</h3>
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each recommendations as rec}
@@ -547,7 +548,7 @@ https://svelte.dev/e/js_parse_error -->
             </p>
           {/each}
         </div>
-      </Card>
+      </NesCard>
     </div>
 
     <!-- Footer -->

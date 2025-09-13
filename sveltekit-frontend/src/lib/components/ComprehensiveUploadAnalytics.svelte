@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   /**
    * Comprehensive Upload Analytics Interface
    * Svelte 5 component that integrates with the upload analytics XState machine
@@ -411,10 +412,10 @@
 
         {#if !isUploading && !isComplete}
           <div class="file-actions">
-            <button class="btn-primary" onclick={startUpload}>
+            <button class="nes-btn is-primary" onclick={startUpload}>
               Start Upload & Analysis
             </button>
-            <button class="btn-secondary" onclick={() => { selectedFiles = []; }}>
+            <button class="nes-btn" onclick={() => { selectedFiles = []; }}>
               Clear Files
             </button>
           </div>
@@ -556,13 +557,13 @@
           <p class="prompt-content">{prompt.content}</p>
           <div class="prompt-actions">
             <button
-              class="btn-primary"
+              class="nes-btn is-primary"
               onclick={() => handlePromptReaction(prompt.id, 'accepted')}
             >
               Let's Do It
             </button>
             <button
-              class="btn-secondary"
+              class="nes-btn"
               onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
             >
               Maybe Later
@@ -600,20 +601,20 @@
       <summary>📊 Analytics Dashboard</summary>
 
       <div class="analytics-content">
-        <div class="insight-card">
+        <div class="insight-nier-bits-card">
           <h4>User Behavior Pattern</h4>
           <p class="behavior-pattern">{currentUserInsights.behaviorPattern}</p>
           <p class="engagement-level">Engagement: {currentUserInsights.engagementLevel}</p>
         </div>
 
-        <div class="insight-card">
+        <div class="insight-nier-bits-card">
           <h4>Upload Efficiency</h4>
           <p class="efficiency-score">
             {Math.round(currentUserInsights.uploadEfficiency * 100)}% Success Rate
           </p>
         </div>
 
-        <div class="insight-card">
+        <div class="insight-nier-bits-card">
           <h4>Recommendations</h4>
           <ul class="recommendations-list">
             {#each currentUserInsights.recommendations as recommendation}
@@ -628,12 +629,12 @@
   <!-- Action Buttons -->
   {#if isComplete}
     <div class="final-actions">
-      <button class="btn-primary" onclick={resetUpload}>
+      <button class="nes-btn is-primary" onclick={resetUpload}>
         Upload More Files
       </button>
 
       {#if enableAIPrompts}
-        <button class="btn-secondary" onclick={requestAISuggestions}>
+        <button class="nes-btn" onclick={requestAISuggestions}>
           Get AI Suggestions
         </button>
       {/if}

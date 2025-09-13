@@ -1,5 +1,6 @@
 <!-- WebGPU Acceleration Demo Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
     import WebGPUAccelerationDemo from '$lib/components/demo/WebGPUAccelerationDemo.svelte';
 </script>
 

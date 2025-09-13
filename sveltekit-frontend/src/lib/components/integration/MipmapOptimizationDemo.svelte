@@ -3,6 +3,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
 <!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here -->
 {#snippet default}
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { yorhaWebGPU } from '$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath';
   import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders';
@@ -318,11 +319,11 @@ https://svelte.dev/e/unexpected_reserved_word -->
   </div>
 
   <!-- Initialization Status -->
-  <Card>
-    <CardHeader>
-      <CardTitle>System Status</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">System Status</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-2">
           <div class={`w-3 h-3 rounded-full ${isInitialized ? 'bg-green-500' : 'bg-red-500'}`}></div>
@@ -334,22 +335,22 @@ https://svelte.dev/e/unexpected_reserved_word -->
         {#if !isInitialized && !isProcessing}
           <Button class="bits-btn" onclick={initializeSystem} size="sm">
             🔄 Initialize System
-          </Button>
+          </button>
         {/if}
 
         {#if isProcessing}
           <span class="text-blue-600">⏳ Processing...</span>
         {/if}
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Configuration -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Mipmap Configuration</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Mipmap Configuration</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label class="block text-sm font-medium mb-2" for="max-mip-levels">Max Mip Levels</label><input id="max-mip-levels" 
@@ -396,15 +397,15 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </div>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Legal Documents -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Legal Document Processing</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Legal Document Processing</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="space-y-4">
         <!-- Document List -->
         <div class="grid gap-3">
@@ -426,7 +427,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
                 size="sm"
               >
                 🔥 Process
-              </Button>
+              </button>
             </div>
           {/each}
         </div>
@@ -438,7 +439,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
             disabled={!isInitialized || isProcessing}
           >
             🚀 Batch Process All
-          </Button>
+          </button>
           
           <Button class="bits-btn" 
             onclick={generateMipmapDemo}
@@ -446,67 +447,67 @@ https://svelte.dev/e/unexpected_reserved_word -->
             variant="outline"
           >
             🔥 Mipmap Demo
-          </Button>
+          </button>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Performance Metrics -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-blue-600">{performanceMetrics.totalTexturesProcessed}</div>
           <div class="text-sm text-gray-500">Textures Processed</div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
     
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-green-600">{performanceMetrics.totalMipmapsGenerated}</div>
           <div class="text-sm text-gray-500">Mipmaps Generated</div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
     
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-purple-600">{formatTime(performanceMetrics.averageProcessingTime)}</div>
           <div class="text-sm text-gray-500">Avg Processing Time</div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
     
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-orange-600">{performanceMetrics.memoryEfficiency.toFixed(1)}%</div>
           <div class="text-sm text-gray-500">Memory Efficiency</div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
     
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-red-600">{performanceMetrics.rtxAccelerationUsage}</div>
           <div class="text-sm text-gray-500">RTX Accelerated</div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 
   <!-- System Statistics -->
   {#if systemStats}
-    <Card>
-      <CardHeader>
-        <CardTitle>NES Memory Bank Statistics</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">NES Memory Bank Statistics</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {#each Object.entries(systemStats.banks) as [bankName, bankStats]}
             <div class="p-4 border rounded-lg">
@@ -537,17 +538,17 @@ https://svelte.dev/e/unexpected_reserved_word -->
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Processing Results -->
   {#if processingResults.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle>Recent Processing Results</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Recent Processing Results</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-3">
           {#each processingResults.slice(0, 5) as result}
             <div class="p-3 border rounded-lg">
@@ -587,16 +588,16 @@ https://svelte.dev/e/unexpected_reserved_word -->
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Technical Information -->
-  <Card>
-    <CardHeader>
-      <CardTitle>Technical Architecture</CardTitle>
-    </CardHeader>
-    <CardContent>
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Technical Architecture</h3>
+    </div>
+    <div class="yorha-panel-content">
       <div class="space-y-4">
         <div>
           <h4 class="font-semibold mb-2">🔥 Optimization Features</h4>
@@ -630,8 +631,8 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </ul>
         </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 </div>
 {/snippet}
 

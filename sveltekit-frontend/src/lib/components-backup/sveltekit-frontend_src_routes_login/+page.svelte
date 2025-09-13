@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { superForm } from 'sveltekit-superforms';
   import type { PageData } from './$types';
 
@@ -43,7 +44,7 @@
 </svelte:head>
 
 <div class="login-container">
-  <div class="login-card">
+  <div class="login-nier-bits-card">
     <div class="login-header">
       <div class="logo">⚖️</div>
       <h1>Legal Case Management</h1>

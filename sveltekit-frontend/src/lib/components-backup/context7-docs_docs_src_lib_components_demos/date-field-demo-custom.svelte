@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { DateField } from "bits-ui";
 
   	let {
@@ -21,13 +22,13 @@
 				{#each segments as { part, value }, i (part + i)}
 					<div class="inline-block select-none">
 						{#if part === "literal"}
-							<DateField.Segment {part} class="text-muted-foreground p-1">
+							<DateField.Segment {part} class="nes-text is-disabled p-1">
 								{value}
 							</DateField.Segment>
 						{:else}
 							<DateField.Segment
 								{part}
-								class="rounded-5px hover:bg-muted focus:bg-muted focus:text-foreground aria-[valuetext=Empty]:text-muted-foreground data-invalid:text-destructive focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
+								class="rounded-5px hover:bg-muted focus:bg-muted focus:text-foreground aria-[valuetext=Empty]:nes-text is-disabled data-invalid:text-destructive focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
 							>
 								{value}
 							</DateField.Segment>

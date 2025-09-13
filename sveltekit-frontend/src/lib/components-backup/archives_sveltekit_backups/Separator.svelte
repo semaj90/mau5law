@@ -5,6 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 // Created on 2025-07-20
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Separator } from "bits-ui";
   export let orientation: 'horizontal' | 'vertical' = 'horizontal';
   export let decorative: boolean = false;

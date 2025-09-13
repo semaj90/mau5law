@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { invoke } from '@tauri-apps/api/tauri';
   let uploadResult = $state('');
   let error = $state('');

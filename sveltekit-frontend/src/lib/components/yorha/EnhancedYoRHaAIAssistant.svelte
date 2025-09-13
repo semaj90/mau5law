@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced YoRHa AI Assistant with RAG Integration & Evidence Mode -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Props } from "$lib/types/global";
   import { onMount, onDestroy } from 'svelte';
   import { fly, fade, scale } from 'svelte/transition';
@@ -393,15 +394,15 @@ https://svelte.dev/e/js_parse_error -->
           <!-- Analysis Mode -->
           <div class="analysis-container">
             <div class="analysis-stats">
-              <div class="stat-card">
+              <div class="stat-nier-bits-card">
                 <div class="stat-value">{evidenceItems.length}</div>
                 <div class="stat-label">Evidence Items</div>
               </div>
-              <div class="stat-card">
+              <div class="stat-nier-bits-card">
                 <div class="stat-value">{chatMessages.filter((m) => m.role === 'user').length}</div>
                 <div class="stat-label">Queries</div>
               </div>
-              <div class="stat-card">
+              <div class="stat-nier-bits-card">
                 <div class="stat-value">{$ragTokenCount}</div>
                 <div class="stat-label">Tokens Processed</div>
               </div>

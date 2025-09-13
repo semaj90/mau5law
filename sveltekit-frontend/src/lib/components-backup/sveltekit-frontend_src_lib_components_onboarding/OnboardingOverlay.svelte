@@ -1,6 +1,7 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import {
     ArrowLeft,
     ArrowRight,
@@ -286,7 +287,7 @@
 
         <div class="w-4 h-4">
           {#if autoProgress}
-            <Button
+            <button class="nes-btn"
               variant="ghost"
               size="sm"
               onclick={() => toggleAutoProgress()}
@@ -300,17 +301,17 @@
               {:else}
                 <Play class="w-4 h-4" />
               {/if}
-            </Button>
+            </button>
           {/if}
 
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => closeOnboarding()}
             aria-label="Close onboarding"
           >
             <X class="w-4 h-4" />
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -375,10 +376,10 @@
       <div class="w-4 h-4">
         <div class="w-4 h-4">
           {#if allowSkip}
-            <Button variant="ghost" size="sm" onclick={() => skipOnboarding()}>
+            <button class="nes-btn" variant="ghost" size="sm" onclick={() => skipOnboarding()}>
               <SkipForward class="w-4 h-4" />
               Skip Tour
-            </Button>
+            </button>
           {/if}
         </div>
 
@@ -405,7 +406,7 @@
         </div>
 
         <div class="w-4 h-4">
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => previousStep()}
@@ -413,9 +414,9 @@
           >
             <ArrowLeft class="w-4 h-4" />
             Back
-          </Button>
+          </button>
 
-          <Button onclick={() => nextStep()} size="sm">
+          <button class="nes-btn" onclick={() => nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
               <Check class="w-4 h-4" />
               Complete
@@ -423,7 +424,7 @@
               Next
               <ArrowRight class="w-4 h-4" />
             {/if}
-          </Button>
+          </button>
         </div>
       </div>
     </div>

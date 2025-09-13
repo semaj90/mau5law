@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     data: PageData
   }
@@ -16,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   import { page } from "$app/stores";
   import EvidenceUploadModal from "$lib/components/modals/EvidenceUploadModal.svelte";
   import EvidenceValidationModal from "$lib/components/modals/EvidenceValidationModal.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import AdvancedFileUpload from "$lib/components/upload/AdvancedFileUpload.svelte";
   import ThinkingStyleToggle from "$lib/components/ai/ThinkingStyleToggle.svelte";
@@ -536,7 +537,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <Tooltip content="Refresh evidence list">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => refreshEvidence()}
@@ -546,11 +547,11 @@ https://svelte.dev/e/js_parse_error -->
           <span class:animate-spin={loading}>
             <RefreshCw class="space-y-4" />
           </span>
-        </Button>
+        </button>
       </Tooltip>
 
       <Tooltip content="Toggle filters">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => (showFilters = !showFilters)}
@@ -560,11 +561,11 @@ https://svelte.dev/e/js_parse_error -->
         >
           <Filter class="space-y-4" />
           Filters
-        </Button>
+        </button>
       </Tooltip>
 
       <Tooltip content="Toggle view mode">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
@@ -575,11 +576,11 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <Grid class="space-y-4" />
           {/if}
-        </Button>
+        </button>
       </Tooltip>
 
       <Tooltip content="Advanced file upload">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => handleAdvancedUpload()}
@@ -587,14 +588,14 @@ https://svelte.dev/e/js_parse_error -->
         >
           <Upload class="space-y-4" />
           Advanced Upload
-        </Button>
+        </button>
       </Tooltip>
 
       <Tooltip content="Standard evidence upload">
-        <Button onclick={() => openUploadModal()} class="space-y-4">
+        <button class="nes-btn" onclick={() => openUploadModal()} class="space-y-4">
           <Plus class="space-y-4" />
           Upload Evidence
-        </Button>
+        </button>
       </Tooltip>
     </div>
   </div>
@@ -630,7 +631,7 @@ https://svelte.dev/e/js_parse_error -->
           <option value="collectedBy">Collector</option>
         </select>
 
-        <Button
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
@@ -641,7 +642,7 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <SortDesc class="space-y-4" />
           {/if}
-        </Button>
+        </button>
       </div>
     </div>
 
@@ -723,7 +724,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="space-y-4">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => {
@@ -736,7 +737,7 @@ https://svelte.dev/e/js_parse_error -->
           }}
         >
           Clear Filters
-        </Button>
+        </button>
       </div>
     {/if}
   </div>
@@ -755,7 +756,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <div class="space-y-4">
-          <Button
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={() => bulkOperation("analyze")}
@@ -769,9 +770,9 @@ https://svelte.dev/e/js_parse_error -->
               <Zap class="space-y-4" />
               Quick Analyze
             {/if}
-          </Button>
+          </button>
 
-          <Button
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={() => bulkOperation("verify")}
@@ -780,9 +781,9 @@ https://svelte.dev/e/js_parse_error -->
           >
             <CheckCircle class="space-y-4" />
             Verify
-          </Button>
+          </button>
 
-          <Button
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={() => bulkOperation("archive")}
@@ -791,9 +792,9 @@ https://svelte.dev/e/js_parse_error -->
           >
             <Archive class="space-y-4" />
             Archive
-          </Button>
+          </button>
 
-          <Button
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={() => bulkOperation("export")}
@@ -802,9 +803,9 @@ https://svelte.dev/e/js_parse_error -->
           >
             <Download class="space-y-4" />
             Export
-          </Button>
+          </button>
 
-          <Button
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={() => bulkOperation("delete")}
@@ -813,9 +814,9 @@ https://svelte.dev/e/js_parse_error -->
           >
             <Trash2 class="space-y-4" />
             Delete
-          </Button>
+          </button>
 
-          <Button
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={() => {
@@ -826,7 +827,7 @@ https://svelte.dev/e/js_parse_error -->
             disabled={bulkOperationLoading}
           >
             Cancel
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -845,10 +846,10 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="space-y-4">Error Loading Evidence</h3>
         <div class="space-y-4">{error}</div>
       </div>
-      <Button variant="outline" size="sm" onclick={() => refreshEvidence()}>
+      <button class="nes-btn" variant="outline" size="sm" onclick={() => refreshEvidence()}>
         <RefreshCw class="space-y-4" />
         Retry
-      </Button>
+      </button>
     </div>
   {:else if filteredEvidence.length === 0}
     <div class="space-y-4">
@@ -875,18 +876,18 @@ https://svelte.dev/e/js_parse_error -->
       </p>
       {#if !searchQuery && !selectedType && !selectedStatus && !selectedCollector && !dateFrom && !dateTo}
         <div class="space-y-4">
-          <Button onclick={() => openUploadModal()} class="space-y-4">
+          <button class="nes-btn" onclick={() => openUploadModal()} class="space-y-4">
             <Plus class="space-y-4" />
             Upload Evidence
-          </Button>
-          <Button
+          </button>
+          <button class="nes-btn"
             variant="outline"
             onclick={() => handleAdvancedUpload()}
             class="space-y-4"
           >
             <Upload class="space-y-4" />
             Advanced Upload
-          </Button>
+          </button>
         </div>
       {/if}
     </div>
@@ -902,7 +903,7 @@ https://svelte.dev/e/js_parse_error -->
         </span>
 
         {#if visibleEvidence.length > 0}
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => selectAllEvidence()}
@@ -915,7 +916,7 @@ https://svelte.dev/e/js_parse_error -->
               <Square class="space-y-4" />
             {/if}
             Select All
-          </Button>
+          </button>
         {/if}
       </div>
     </div>
@@ -942,7 +943,7 @@ https://svelte.dev/e/js_parse_error -->
 
                   <div class="space-y-4">
                     <Tooltip content="Evidence actions">
-                      <Button
+                      <button class="nes-btn"
                         variant="ghost"
                         size="sm"
                         tabindex={0}
@@ -950,7 +951,7 @@ https://svelte.dev/e/js_parse_error -->
                         aria-label="Evidence actions menu"
                       >
                         <MoreHorizontal class="space-y-4" />
-                      </Button>
+                      </button>
                     </Tooltip>
                     <ul
                       tabindex={0}
@@ -1067,7 +1068,7 @@ https://svelte.dev/e/js_parse_error -->
 
                 <!-- Enhanced Actions with AI Analysis -->
                 <div class="space-y-4">
-                  <Button 
+                  <button class="nes-btn" 
                     size="sm" 
                     variant="outline"
                     onclick={() => analyzeEvidence(evidence)}
@@ -1084,13 +1085,13 @@ https://svelte.dev/e/js_parse_error -->
                       <Zap class="space-y-4" />
                       Analyze
                     {/if}
-                  </Button>
+                  </button>
                   
                   <a href="/evidence/{evidence.id}" class="space-y-4">
-                    <Button size="sm">
+                    <button class="nes-btn" size="sm">
                       <Eye class="space-y-4" />
                       View
-                    </Button>
+                    </button>
                   </a>
                 </div>
               </div>
@@ -1179,7 +1180,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
 
                 <div class="space-y-4">
-                  <Button 
+                  <button class="nes-btn" 
                     size="sm" 
                     variant="outline"
                     onclick={() => analyzeEvidence(evidence)}
@@ -1196,18 +1197,18 @@ https://svelte.dev/e/js_parse_error -->
                       <Zap class="space-y-4" />
                       Analyze
                     {/if}
-                  </Button>
+                  </button>
 
                   <a href="/evidence/{evidence.id}" class="space-y-4">
-                    <Button size="sm" variant="outline">
+                    <button class="nes-btn" size="sm" variant="outline">
                       <Eye class="space-y-4" />
                       View
-                    </Button>
+                    </button>
                   </a>
 
                   <div class="space-y-4">
                     <Tooltip content="More actions">
-                      <Button
+                      <button class="nes-btn"
                         variant="ghost"
                         size="sm"
                         tabindex={0}
@@ -1216,7 +1217,7 @@ https://svelte.dev/e/js_parse_error -->
                           'Untitled Evidence'}"
                       >
                         <MoreHorizontal class="space-y-4" />
-                      </Button>
+                      </button>
                     </Tooltip>
                     <ul
                       tabindex={0}
@@ -1264,7 +1265,7 @@ https://svelte.dev/e/js_parse_error -->
             aria-label="Previous page"
           >
             Previous
-          </Button>
+          </button>
 
           {#each Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
             const start = Math.max(1, currentPage - 2);
@@ -1279,7 +1280,7 @@ https://svelte.dev/e/js_parse_error -->
               aria-current={page === currentPage ? "page" : undefined}
             >
               {page}
-            </Button>
+            </button>
           {/each}
 
           <Button
@@ -1292,7 +1293,7 @@ https://svelte.dev/e/js_parse_error -->
             aria-label="Next page"
           >
             Next
-          </Button>
+          </button>
         </div>
       </div>
     {/if}
@@ -1324,9 +1325,9 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
           - {analysisModal.evidence.title}
         </h3>
-        <Button variant="ghost" size="sm" onclick={closeAnalysisModal}>
+        <button class="nes-btn" variant="ghost" size="sm" onclick={closeAnalysisModal}>
           ✕
-        </Button>
+        </button>
       </div>
       
       <div class="space-y-4">
@@ -1347,11 +1348,11 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       
       <div class="space-y-4">
-        <Button variant="outline" onclick={closeAnalysisModal}>Close</Button>
-        <Button onclick={() => {
+        <button class="nes-btn" variant="outline" onclick={closeAnalysisModal}>Close</button>
+        <button class="nes-btn" onclick={() => {
           // Save analysis or perform other actions
           closeAnalysisModal();
-        }}>Save Analysis</Button>
+        }}>Save Analysis</button>
       </div>
     </div>
     <div class="space-y-4" onclick={closeAnalysisModal}></div>

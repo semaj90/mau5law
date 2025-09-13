@@ -1,5 +1,6 @@
 <!-- Evidence Upload Board Component with AI Analysis -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -37,11 +38,11 @@
 </script>
 
 <div class="p-6 space-y-6">
-  <Card>
-    <CardHeader>
-      <CardTitle>Evidence Upload & AI Analysis</CardTitle>
-    </CardHeader>
-    <CardContent class="space-y-4">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary">Evidence Upload & AI Analysis</h3>
+    </div>
+    <div class="yorha-panel-content" class="space-y-4">
       <input 
         type="file" 
         change={handleFileUpload}
@@ -68,8 +69,8 @@
           <Textarea readonly value={analysis} rows={10} />
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
 </div>
 
 

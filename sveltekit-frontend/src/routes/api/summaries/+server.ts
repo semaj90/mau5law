@@ -336,14 +336,15 @@ async function getLocalLLMOutput(
         ? `${prompt} (Part of larger document): ${chunk}`
         : prompt;
     const response = await ollamaService.generateResponse(promptText, {
-      model: "gemma3:7b-instruct-q4_K_M",
+      model: 'gemma3:7b-instruct-q4_K_M',
       temperature: 0.3,
-      top_p: 0.9,
-      num_predict: request.depth === "forensic" ? 1000 : 500,
+      // top_p: 0.9, // Not supported in GenerateOptions interface
+      // num_predict: request.depth === "forensic" ? 1000 : 500, // Not supported, use maxTokens instead
+      maxTokens: request.depth === 'forensic' ? 1000 : 500,
     });
 
-    combinedResponse += response.response + "\n\n";
-    totalTokens += response.eval_count || 0;
+    combinedResponse += response.content + '\n\n';
+    totalTokens += response.tokens || 0;
   }
 
   const processingTime = Date.now() - startTime;
@@ -420,9 +421,9 @@ async function getEnhancedRAGOutput(
   const contextSummaryResp = await ollamaService.generateResponse(
     `Summarize the key context from these related documents: ${contextContent.substring(0, 1500)}`,
     {
-      model: "gemma3:7b-instruct-q4_K_M",
+      model: 'gemma3:7b-instruct-q4_K_M',
       temperature: 0.2,
-      num_predict: 300,
+      maxTokens: 300,
     }
   );
 
@@ -430,13 +431,12 @@ async function getEnhancedRAGOutput(
 
   return {
     relevantDocs,
-  contextSummary: contextSummaryResp.response,
+    contextSummary: contextSummaryResp.content,
     searchMetrics: {
       vectorSearchTime: processingTime,
       documentsRetrieved: uniqueResults.length,
       averageRelevance:
-        relevantDocs.reduce((sum, doc) => sum + doc.relevance, 0) /
-        relevantDocs.length,
+        relevantDocs.reduce((sum, doc) => sum + doc.relevance, 0) / relevantDocs.length,
     },
   };
 }

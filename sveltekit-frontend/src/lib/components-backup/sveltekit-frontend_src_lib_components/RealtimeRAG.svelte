@@ -1,5 +1,6 @@
 <!-- Real-time RAG Interface Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     selectedCaseId?: any;
     documentTypes?: any;
@@ -247,7 +248,7 @@
           <div class="space-y-3">
             {#each machineContext.sources as source}
               <div 
-                class="source-card p-4 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors"
+                class="source-nier-bits-card p-4 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors"
                 onclick={() => onResultSelect?.(source)}
               >
                 <div class="flex items-start justify-between">

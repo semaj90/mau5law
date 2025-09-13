@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import HeadlessDemo from "$lib/components/HeadlessDemo.svelte";
   // $state is provided globally via src/types/svelte-helpers.d.ts
   import BitsDemo from "$lib/components/BitsDemo.svelte";

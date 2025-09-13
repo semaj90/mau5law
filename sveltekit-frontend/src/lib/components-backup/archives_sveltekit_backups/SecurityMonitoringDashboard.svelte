@@ -6,7 +6,8 @@ https://svelte.dev/e/js_parse_error -->
   Displays security events, system health, and security metrics
 -->
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
+  import 'nes.css/css/nes.min.css';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications } from "$lib/stores/notification";
   import { getSecurityEvents, type SecurityEvent } from "$lib/utils/security";
   import {
@@ -251,7 +252,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <div class="mx-auto px-4 max-w-7xl">
-      <Button
+      <button class="nes-btn"
         variant="outline"
         size="sm"
         onclick={() => loadSecurityEvents()}
@@ -259,12 +260,12 @@ https://svelte.dev/e/js_parse_error -->
       >
         <RefreshCw class={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
         Refresh
-      </Button>
-      <Button variant="outline" size="sm" onclick={() => exportEvents()}>
+      </button>
+      <button class="nes-btn" variant="outline" size="sm" onclick={() => exportEvents()}>
         <Download class="mx-auto px-4 max-w-7xl" />
         Export
-      </Button>
-      <Button
+      </button>
+      <button class="nes-btn"
         variant="outline"
         size="sm"
         onclick={() => clearAllEvents()}
@@ -272,7 +273,7 @@ https://svelte.dev/e/js_parse_error -->
       >
         <Trash2 class="mx-auto px-4 max-w-7xl" />
         Clear All
-      </Button>
+      </button>
     </div>
   </div>
 
@@ -492,14 +493,14 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
 
-                <Button
+                <button class="nes-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() => toggleEventDetails(index)}
                   class="mx-auto px-4 max-w-7xl"
                 >
                   <Eye class="mx-auto px-4 max-w-7xl" />
-                </Button>
+                </button>
               </div>
             </div>
           {/each}

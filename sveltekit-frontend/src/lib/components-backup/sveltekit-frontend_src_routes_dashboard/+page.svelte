@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import type { AIResponse } from '$lib/types/ai';
 
@@ -86,7 +87,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Cases Panel -->
       <div class="lg:col-span-1">
-        <div class="yorha-card p-6 h-fit">
+        <div class="yorha-nier-bits-card p-6 h-fit">
           <h2 class="text-xl font-mono font-semibold text-white mb-4">Active Cases</h2>
           <div class="space-y-3">
             {#each cases as caseItem}
@@ -111,7 +112,7 @@
       <!-- Main Content -->
       <div class="lg:col-span-2 space-y-6">
         <!-- AI Chat Interface -->
-        <div class="yorha-card p-6">
+        <div class="yorha-nier-bits-card p-6">
           <h2 class="text-xl font-mono font-semibold text-white mb-4">
             Legal AI Assistant
           </h2>
@@ -125,7 +126,7 @@
             />
             <button
               onclick={sendAIMessage}
-              class="yorha-btn yorha-btn-primary px-6 py-2 rounded"
+              class="yorha-btn yorha-nes-btn is-primary px-6 py-2 rounded"
               disabled={!chatMessage.trim()}
             >
               Send
@@ -178,7 +179,7 @@
         </div>
 
         <!-- Evidence Panel -->
-        <div class="yorha-card p-6">
+        <div class="yorha-nier-bits-card p-6">
           <h2 class="text-xl font-mono font-semibold text-white mb-4">
             Evidence & Documents
             {#if selectedCase}
@@ -225,19 +226,19 @@
 
     <!-- System Status -->
     <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="yorha-card p-4 text-center">
+      <div class="yorha-nier-bits-card p-4 text-center">
         <div class="text-2xl font-mono font-bold text-yellow-400">{cases.length}</div>
         <div class="text-sm text-gray-400">Active Cases</div>
       </div>
-      <div class="yorha-card p-4 text-center">
+      <div class="yorha-nier-bits-card p-4 text-center">
         <div class="text-2xl font-mono font-bold text-green-400">{evidence.length}</div>
         <div class="text-sm text-gray-400">Evidence Items</div>
       </div>
-      <div class="yorha-card p-4 text-center">
+      <div class="yorha-nier-bits-card p-4 text-center">
         <div class="text-2xl font-mono font-bold text-blue-400">Gemma3</div>
         <div class="text-sm text-gray-400">AI Model</div>
       </div>
-      <div class="yorha-card p-4 text-center">
+      <div class="yorha-nier-bits-card p-4 text-center">
         <div class="text-2xl font-mono font-bold text-purple-400">Ready</div>
         <div class="text-sm text-gray-400">System Status</div>
       </div>

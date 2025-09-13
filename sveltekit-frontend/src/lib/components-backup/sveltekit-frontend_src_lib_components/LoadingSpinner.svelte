@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'showMessage' has already been declared -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     size: 'sm' | 'md' | 'lg' ;
     message: string

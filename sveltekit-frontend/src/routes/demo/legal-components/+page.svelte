@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Comprehensive Legal Components Demo -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
   import {
     BitsDataTable,

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onsuccess?: (event?: any) => void;
     onclose?: (event?: any) => void;
@@ -13,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
 
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
     import { writable } from "svelte/store";
   import { superForm } from "sveltekit-superforms";
 
@@ -93,16 +94,16 @@ https://svelte.dev/e/js_parse_error -->
         {#if message}<div class="space-y-4">{message}</div>{/if}
         {#if $message}<div class="space-y-4">{$message}</div>{/if}
       <div class="space-y-4">
-        <Button
+        <button class="nes-btn"
           type="button"
           variant="ghost"
           onclick={() => ($isMeltOpen = false)}
         >
           Cancel
-        </Button>
-        <Button type="submit" disabled={$submitting}>
+        </button>
+        <button class="nes-btn" type="submit" disabled={$submitting}>
           {#if $submitting}Logging in...{:else}Login{/if}
-        </Button>
+        </button>
       </div>
     </form>
   </div>

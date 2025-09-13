@@ -13,6 +13,7 @@ https://svelte.dev/e/js_parse_error -->
   - Legal knowledge base integration
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   const { caseId: string | null = null, caseData: Case | null = null, detectiveMode = false, readonly = false, height = '600px' } = $props();
 
   import { onMount, createEventDispatcher, tick } from 'svelte';

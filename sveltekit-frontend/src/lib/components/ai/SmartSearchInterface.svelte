@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   	import { onMount } from 'svelte';
   import { frontendRAG } from '$lib/ai/frontend-rag-pipeline';
@@ -151,7 +152,7 @@
 
 	<!-- System Stats -->
 	{#if systemStats}
-		<Card class="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
+		<NesCard class="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
 				<div class="text-center">
 					<div class="font-semibold text-blue-600">{systemStats.documentsIndexed}</div>
@@ -176,11 +177,11 @@
 					<div class="text-gray-600">Memory</div>
 				</div>
 			</div>
-		</Card>
+		</NesCard>
 	{/if}
 
 	<!-- Search Configuration -->
-	<Card class="p-4">
+	<NesCard class="p-4">
 		<div class="flex flex-wrap gap-4 items-center">
 			<div class="flex items-center gap-2">
 				<label class="text-sm font-medium" for="context">Context:</label><select id="context" bind:value={contextMode} class="border rounded px-2 py-1 text-sm">
@@ -200,7 +201,7 @@
 				SIMD Optimization
 			</label>
 		</div>
-	</Card>
+	</NesCard>
 
 	<!-- Search Input -->
 	<div class="flex gap-2">
@@ -221,12 +222,12 @@
 			{:else}
 				Search
 			{/if}
-		</Button>
+		</button>
 	</div>
 
 	<!-- Search History -->
 	{#if searchHistory.length > 0}
-		<Card class="p-4">
+		<NesCard class="p-4">
 			<h3 class="font-medium mb-2">Recent Searches</h3>
 			<div class="flex flex-wrap gap-2">
 				{#each searchHistory as item}
@@ -238,12 +239,12 @@
 					</button>
 				{/each}
 			</div>
-		</Card>
+		</NesCard>
 	{/if}
 
 	<!-- Results -->
 	{#if results}
-		<Card class="p-6">
+		<NesCard class="p-6">
 			<!-- Response Header -->
 			<div class="flex items-center justify-between mb-4">
 				<h2 class="text-xl font-semibold">Response</h2>
@@ -292,7 +293,7 @@
 					</div>
 				</div>
 			{/if}
-		</Card>
+		</NesCard>
 	{/if}
 </div>
 

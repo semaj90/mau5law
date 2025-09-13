@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 	import { onMount } from 'svelte';
 
 	interface SearchResult {
@@ -288,7 +289,7 @@
 
 			<div class="results-list">
 				{#each results as result}
-					<div class="result-card">
+					<div class="result-nier-bits-card">
 						<div class="result-header">
 							<div class="result-title">
 								<h3>{result.title || 'Untitled Document'}</h3>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { X } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
 

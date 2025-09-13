@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import PerfChart from '$lib/components/PerfChart.svelte';
   import { writable } from 'svelte/store';

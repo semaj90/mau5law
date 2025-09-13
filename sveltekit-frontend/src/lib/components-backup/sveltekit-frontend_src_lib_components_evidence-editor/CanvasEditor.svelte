@@ -2,6 +2,7 @@
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:contextmenu) and new syntaxes for event handling is not allowed. Use only the oncontextmenu syntax -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onnodeUpdate?: (event?: any) => void;
     onnodeSelect?: (event?: any) => void;

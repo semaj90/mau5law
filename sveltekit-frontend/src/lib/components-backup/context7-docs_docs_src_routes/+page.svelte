@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import "$lib/styles/app.css";
   	import { Button } from "bits-ui";
   	import Sparkle from "phosphor-svelte/lib/Sparkle";
@@ -96,7 +97,7 @@
 			<a
 				href="https://github.com/huntabyte/bits-ui/releases"
 				target="_blank"
-				class="rounded-card-lg border-border-input shadow-mini inline-flex gap-2 border bg-white py-1.5 pl-3 pr-4 dark:border-[#F4F4F5]/20 dark:bg-[#242429]"
+				class="rounded-nier-bits-card-lg border-border-input shadow-mini inline-flex gap-2 border bg-white py-1.5 pl-3 pr-4 dark:border-[#F4F4F5]/20 dark:bg-[#242429]"
 			>
 				<Sparkle class="mt-[2px] size-3 lg:size-4" aria-label="Stars" />
 				<span
@@ -174,7 +175,7 @@
 	</h2>
 	<div class="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-x-[15px]">
 		<div
-			class="rounded-card-lg border-border shadow-card col-span-2 overflow-hidden border lg:col-span-1"
+			class="rounded-nier-bits-card-lg border-border shadow-nier-bits-card col-span-2 overflow-hidden border lg:col-span-1"
 		>
 			<div
 				class="dotted_bg rounded-15px bg-background mx-[7px] my-[9px] bg-[radial-gradient(#DEDEDE_1px,transparent_0)] dark:bg-[#1E1E22] dark:bg-[radial-gradient(#36363A_1px,transparent_0)]"
@@ -194,7 +195,7 @@
 				</div>
 
 				<div
-					class="text-muted-foreground px-[14px] pb-4 text-[11px] font-medium lg:text-sm"
+					class="nes-text is-disabled px-[14px] pb-4 text-[11px] font-medium lg:text-sm"
 				>
 					Freedom with foundation.
 				</div>
@@ -202,7 +203,7 @@
 		</div>
 
 		<div
-			class="rounded-card-lg border-border shadow-card dark:bg-muted overflow-hidden border bg-[#F8F8F8]"
+			class="rounded-nier-bits-card-lg border-border shadow-nier-bits-card dark:bg-muted overflow-hidden border bg-[#F8F8F8]"
 		>
 			<div class="bg-transparent px-[7px] py-[9px]">
 				<h3
@@ -221,7 +222,7 @@
 				</div>
 
 				<div
-					class="text-muted-foreground px-[14px] pb-2 text-[11px] font-medium lg:pb-4 lg:text-sm"
+					class="nes-text is-disabled px-[14px] pb-2 text-[11px] font-medium lg:pb-4 lg:text-sm"
 				>
 					Built for everyone, by default.
 				</div>
@@ -229,7 +230,7 @@
 		</div>
 
 		<div
-			class="rounded-card-lg shadow-card overflow-hidden border border-white bg-[#2A2A2E] dark:border-[#F4F4F5]/10 dark:bg-[#3A3C42]"
+			class="rounded-nier-bits-card-lg shadow-nier-bits-card overflow-hidden border border-white bg-[#2A2A2E] dark:border-[#F4F4F5]/10 dark:bg-[#3A3C42]"
 		>
 			<div class="bg-transparent px-[7px] py-[9px]">
 				<h3
@@ -259,7 +260,7 @@
 <footer
 	class="dark:border-foreground/10 flex justify-between border-t border-black/10 px-[22px] pb-10 pt-6"
 >
-	<div class="text-muted-foreground flex items-center gap-2 text-sm font-medium lg:gap-3">
+	<div class="nes-text is-disabled flex items-center gap-2 text-sm font-medium lg:gap-3">
 		<span class="bg-foreground/20 block aspect-square h-3 w-3 rounded-full"></span>2025 Bits UI
 		team
 	</div>
@@ -268,7 +269,7 @@
 			<a
 				href="https://bits-ui.com/llms.txt"
 				target="_blank"
-				class="text-muted-foreground text-sm font-medium"
+				class="nes-text is-disabled text-sm font-medium"
 			>
 				LLMs
 			</a>
@@ -277,14 +278,14 @@
 			<a
 				href="https://github.com/huntabyte/bits-ui"
 				target="_blank"
-				class="text-muted-foreground text-sm font-medium">GitHub</a
+				class="nes-text is-disabled text-sm font-medium">GitHub</a
 			>
 		</li>
 		<li>
 			<a
 				href="https://github.com/huntabyte/bits-ui/releases"
 				target="_blank"
-				class="text-muted-foreground text-sm font-medium">Changelog</a
+				class="nes-text is-disabled text-sm font-medium">Changelog</a
 			>
 		</li>
 	</ul>

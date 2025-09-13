@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import NeuralTopology3DDemo from '$lib/components/ai/NeuralTopology3DDemo.svelte';
   import { onMount } from 'svelte';
@@ -68,7 +69,7 @@ https://svelte.dev/e/expected_token -->
   <div class="technical-details">
     <h2>🔧 Technical Implementation</h2>
     <div class="details-grid">
-      <div class="detail-card">
+      <div class="detail-nier-bits-card">
         <h3>🔤 Transformer Topology</h3>
         <ul>
           <li>Ollama gemma3-legal model for legal context understanding</li>
@@ -78,7 +79,7 @@ https://svelte.dev/e/expected_token -->
         </ul>
       </div>
       
-      <div class="detail-card">
+      <div class="detail-nier-bits-card">
         <h3>🗜️ Autoencoder Topology</h3>
         <ul>
           <li>CHR-ROM pattern compression with 50:1 ratio</li>
@@ -88,7 +89,7 @@ https://svelte.dev/e/expected_token -->
         </ul>
       </div>
       
-      <div class="detail-card">
+      <div class="detail-nier-bits-card">
         <h3>👁️ CNN Topology</h3>
         <ul>
           <li>WebGPU compute shaders for parallel processing</li>
@@ -98,7 +99,7 @@ https://svelte.dev/e/expected_token -->
         </ul>
       </div>
       
-      <div class="detail-card">
+      <div class="detail-nier-bits-card">
         <h3>🔄 RNN Topology</h3>
         <ul>
           <li>Reinforcement learning cache with sequence memory</li>

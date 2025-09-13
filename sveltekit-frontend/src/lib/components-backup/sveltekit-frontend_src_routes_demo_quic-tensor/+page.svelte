@@ -1,11 +1,12 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	// QUIC Tensor Demo - Interactive Testing Interface
   	// Tests did-you-mean suggestions and tensor operations
   	import { onMount, onDestroy } from 'svelte';
   	import { QuicTensorClient, TensorUtils, type Tensor4DInfo } from '$lib/services/quic-tensor-client';
   	import { DidYouMeanClient, SuggestionUtils, type SuggestionResponse } from '$lib/services/did-you-mean-client';
-  	import Button from '$lib/components/ui/Button.svelte';
-  	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  	import Button from '$lib/components/ui/nes-button.svelte';
+  	import NesCard from '$lib/components/ui/nes-card.svelte';
 
   	// Client instances
   	const tensorClient = new QuicTensorClient();
@@ -204,21 +205,21 @@
 		</div>
 
 		<!-- System Status -->
-		<Card class="bg-slate-800/50 border-purple-500/20">
-			<CardHeader>
-				<CardTitle class="text-purple-300 flex items-center gap-2">
+		<NesCard class="bg-slate-800/50 border-purple-500/20">
+			<div class="yorha-panel-header">
+				<h3 class="nes-text is-primary" class="text-purple-300 flex items-center gap-2">
 					📊 System Status
-					<Button 
+					<button class="nes-btn" 
 						onclick={checkHealth} 
 						disabled={isLoading}
 						variant="secondary" 
 						size="sm"
 					>
 						Refresh
-					</Button>
-				</CardTitle>
-			</CardHeader>
-			<CardContent>
+					</button>
+				</h3>
+			</div>
+			<div class="yorha-panel-content">
 				{#if healthStatus}
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
 						<!-- Tensor Service Health -->
@@ -244,16 +245,16 @@
 				{:else}
 					<div class="text-slate-400">Click Refresh to check system health</div>
 				{/if}
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 
 		<div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
 			<!-- Did You Mean Suggestions -->
-			<Card class="bg-slate-800/50 border-blue-500/20">
-				<CardHeader>
-					<CardTitle class="text-blue-300">🎯 Did You Mean - Legal Suggestions</CardTitle>
-				</CardHeader>
-				<CardContent class="space-y-4">
+			<NesCard class="bg-slate-800/50 border-blue-500/20">
+				<div class="yorha-panel-header">
+					<h3 class="nes-text is-primary" class="text-blue-300">🎯 Did You Mean - Legal Suggestions</h3>
+				</div>
+				<div class="yorha-panel-content" class="space-y-4">
 					<!-- Search Input -->
 					<div class="space-y-2">
 						<label class="text-white text-sm font-medium">Search Query</label>
@@ -271,13 +272,13 @@
 						<label class="text-white text-sm font-medium">Sample Queries (with typos)</label>
 						<div class="flex flex-wrap gap-2">
 							{#each sampleQueries as query, index}
-								<Button
+								<button class="nes-btn"
 									onclick={() => useSampleQuery(index)}
 									variant={selectedQuery === index ? "default" : "secondary"}
 									size="sm"
 								>
 									{query}
-								</Button>
+								</button>
 							{/each}
 						</div>
 					</div>
@@ -333,22 +334,22 @@
 
 					<!-- Actions -->
 					<div class="flex gap-2">
-						<Button onclick={fetchSuggestions} disabled={isLoading || !searchQuery.trim()} variant="default" size="sm">
+						<button class="nes-btn" onclick={fetchSuggestions} disabled={isLoading || !searchQuery.trim()} variant="default" size="sm">
 							🔄 Refresh Suggestions
-						</Button>
-						<Button onclick={clearCache} variant="secondary" size="sm">
+						</button>
+						<button class="nes-btn" onclick={clearCache} variant="secondary" size="sm">
 							🗑️ Clear Cache
-						</Button>
+						</button>
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 
 			<!-- Tensor Operations -->
-			<Card class="bg-slate-800/50 border-purple-500/20">
-				<CardHeader>
-					<CardTitle class="text-purple-300">🧮 4D Tensor Operations</CardTitle>
-				</CardHeader>
-				<CardContent class="space-y-4">
+			<NesCard class="bg-slate-800/50 border-purple-500/20">
+				<div class="yorha-panel-header">
+					<h3 class="nes-text is-primary" class="text-purple-300">🧮 4D Tensor Operations</h3>
+				</div>
+				<div class="yorha-panel-content" class="space-y-4">
 					<!-- Document Selection -->
 					<div class="space-y-2">
 						<label class="text-white text-sm font-medium">Sample Legal Document</label>
@@ -379,7 +380,7 @@
 							variant="default"
 						>
 							{isLoading ? '⏳ Processing...' : '🚀 Create 4D Tensor'}
-						</Button>
+						</button>
 
 						{#if tensorInfo}
 							<div class="p-4 bg-slate-700/30 border border-purple-500/30 rounded-lg space-y-2">
@@ -393,9 +394,9 @@
 								</div>
 
 								<div class="flex gap-2 pt-2">
-									<Button onclick={testInterpolation} disabled={isLoading} variant="secondary" size="sm">
+									<button class="nes-btn" onclick={testInterpolation} disabled={isLoading} variant="secondary" size="sm">
 										🔄 Test Tricubic Interpolation
-									</Button>
+									</button>
 								</div>
 							</div>
 						{/if}
@@ -419,32 +420,32 @@
 							</div>
 						</div>
 					{/if}
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 		</div>
 
 		<!-- Error Display -->
 		{#if error}
-			<Card class="bg-red-900/20 border-red-500/30">
-				<CardContent class="p-4">
+			<NesCard class="bg-red-900/20 border-red-500/30">
+				<div class="yorha-panel-content" class="p-4">
 					<div class="flex items-center gap-2 text-red-400">
 						<span>❌</span>
 						<span class="font-medium">Error:</span>
 						<span>{error}</span>
-						<Button onclick={() => error = null} variant="ghost" size="sm" class="ml-auto">
+						<button class="nes-btn" onclick={() => error = null} variant="ghost" size="sm" class="ml-auto">
 							✕
-						</Button>
+						</button>
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</NesCard>
 		{/if}
 
 		<!-- API Documentation -->
-		<Card class="bg-slate-800/30 border-slate-700/50">
-			<CardHeader>
-				<CardTitle class="text-slate-300">📖 API Endpoints</CardTitle>
-			</CardHeader>
-			<CardContent>
+		<NesCard class="bg-slate-800/30 border-slate-700/50">
+			<div class="yorha-panel-header">
+				<h3 class="nes-text is-primary" class="text-slate-300">📖 API Endpoints</h3>
+			</div>
+			<div class="yorha-panel-content">
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
 					<div class="space-y-3">
 						<h4 class="text-white font-medium">Did You Mean API</h4>
@@ -465,8 +466,8 @@
 						</div>
 					</div>
 				</div>
-			</CardContent>
-		</Card>
+			</div>
+		</NesCard>
 	</div>
 </div>
 

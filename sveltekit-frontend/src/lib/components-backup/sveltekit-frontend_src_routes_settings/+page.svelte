@@ -1,6 +1,7 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { notifications } from "$lib/stores/notification";
   import { user } from "$lib/stores/user";
   import { Download, Eye, EyeOff, Palette, RefreshCw, Save, Settings, Shield, Trash2, Upload, User as UserIcon } from "lucide-svelte";
@@ -424,7 +425,7 @@
                       onchange={handleAvatarChange}
                       class="space-y-4"
                     />
-                    <Button
+                    <button class="nes-btn"
                       variant="outline"
                       size="sm"
                       onclick={() =>
@@ -432,16 +433,16 @@
                     >
                       <Upload class="space-y-4" />
                       Upload
-                    </Button>
+                    </button>
                     {#if avatarPreview}
-                      <Button
+                      <button class="nes-btn"
                         variant="outline"
                         size="sm"
                         onclick={() => clearAvatar()}
                       >
                         <Trash2 class="space-y-4" />
                         Remove
-                      </Button>
+                      </button>
                     {/if}
                   </div>
                 </div>
@@ -905,10 +906,10 @@
                     </select>
                   </div>
 
-                  <Button onclick={() => exportUserData()}>
+                  <button class="nes-btn" onclick={() => exportUserData()}>
                     <Download class="space-y-4" />
                     Export My Data
-                  </Button>
+                  </button>
                 </div>
               </div>
 
@@ -964,13 +965,13 @@
                       This will reset all your preferences to default values.
                       This action cannot be undone.
                     </p>
-                    <Button
+                    <button class="nes-btn"
                       variant="outline"
                       onclick={() => resetToDefaults()}
                     >
                       <RefreshCw class="space-y-4" />
                       Reset to Defaults
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -985,11 +986,11 @@
               Changes are saved automatically when you update settings
             </div>
             <div class="space-y-4">
-              <Button variant="outline" onclick={() => loadSettings()}>
+              <button class="nes-btn" variant="outline" onclick={() => loadSettings()}>
                 <RefreshCw class="space-y-4" />
                 Reset Changes
-              </Button>
-              <Button onclick={() => saveSettings()} disabled={isSaving}>
+              </button>
+              <button class="nes-btn" onclick={() => saveSettings()} disabled={isSaving}>
                 {#if isSaving}
                   <RefreshCw class="space-y-4" />
                   Saving...
@@ -997,7 +998,7 @@
                   <Save class="space-y-4" />
                   Save Settings
                 {/if}
-              </Button>
+              </button>
             </div>
           </div>
         </div>

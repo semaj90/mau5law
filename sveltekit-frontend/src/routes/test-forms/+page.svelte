@@ -2,6 +2,7 @@
   Simple SuperForms + Zod + Enhanced Actions Test Page
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { enhance } from '$app/forms';
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';

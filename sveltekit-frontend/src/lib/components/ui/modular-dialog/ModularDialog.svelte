@@ -1,5 +1,6 @@
 <!-- Modular Data-Driven Dialog Component -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Dialog } from 'bits-ui';
   import { X, Loader2, AlertCircle, RefreshCw } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -197,7 +198,7 @@
               <Dialog.Title class="text-lg font-semibold leading-none tracking-tight font-mono">
                 {title}
                 {#if data && entityType === 'case'}
-                  <span class="text-sm text-muted-foreground ml-2">
+                  <span class="text-sm nes-text is-disabled ml-2">
                     #{data.caseNumber || data.id.slice(-6)}
                   </span>
                 {/if}
@@ -205,7 +206,7 @@
             {/if}
             
             {#if description}
-              <Dialog.Description class="text-sm text-muted-foreground font-mono mt-1">
+              <Dialog.Description class="text-sm nes-text is-disabled font-mono mt-1">
                 {description}
               </Dialog.Description>
             {/if}
@@ -240,7 +241,7 @@
             {#if loading}
               {@render loading()}
             {:else}
-              <div class="flex items-center gap-2 text-muted-foreground">
+              <div class="flex items-center gap-2 nes-text is-disabled">
                 <Loader2 class="h-4 w-4 animate-spin" />
                 <span class="font-mono text-sm">Loading data...</span>
               </div>
@@ -255,7 +256,7 @@
                 <AlertCircle class="h-8 w-8 text-destructive" />
                 <div>
                   <p class="font-mono text-sm text-destructive font-medium">Error loading data</p>
-                  <p class="font-mono text-xs text-muted-foreground mt-1">{errorMessage}</p>
+                  <p class="font-mono text-xs nes-text is-disabled mt-1">{errorMessage}</p>
                 </div>
                 <button
                   onclick={refresh}

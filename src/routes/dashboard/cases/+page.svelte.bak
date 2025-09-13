@@ -1,0 +1,168 @@
+<script lang="ts">
+  import { ButtonBits, CardBits, InputBits } from '$lib/components/ui/bits-ui';
+  import { onMount } from 'svelte';
+
+  interface Case {
+    id: string;
+    title: string;
+    status: 'open' | 'closed' | 'pending' | 'review';
+    priority: 'low' | 'medium' | 'high' | 'critical';
+    assignedTo: string;
+    description: string;
+    tags: string[];
+  }
+
+  let cases = $state<Case[]>([]);
+  let searchQuery = $state('');
+  let isLoading = $state(true);
+
+  const mockCases: Case[] = [
+    {
+      id: 'CASE-001',
+      title: 'Corporate Merger Analysis - TechCorp',
+      status: 'open',
+      priority: 'high',
+      assignedTo: 'Sarah Chen',
+      description: 'Due diligence review for TechCorp acquisition.',
+      tags: ['M&A', 'Corporate', 'Due Diligence']
+    },
+    {
+      id: 'CASE-002',
+      title: 'Employment Lawsuit - DataCorp',
+      status: 'pending',
+      priority: 'medium',
+      assignedTo: 'Michael Rodriguez',
+      description: 'Class action suit regarding hiring practices.',
+      tags: ['Employment', 'Litigation']
+    },
+    {
+      id: 'CASE-003',
+      title: 'IP Patent Infringement',
+      status: 'review',
+      priority: 'critical',
+      assignedTo: 'Dr. Emily Watson',
+      description: 'Patent dispute involving AI algorithms.',
+      tags: ['IP', 'Patents', 'AI']
+    }
+  ];
+
+  onMount(() => {
+    setTimeout(() => {
+      cases = mockCases;
+      isLoading = false;
+    }, 500);
+  });
+
+  let filteredCases = $derived(() => {
+    return cases.filter(case_ => 
+      case_.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
+</script>
+
+<svelte:head>
+  <title>Cases Dashboard - YoRHa Legal AI</title>
+</svelte:head>
+
+<div class="cases-dashboard">
+  <div class="dashboard-header nes-container with-title">
+    <p class="title">📁 Cases Dashboard</p>
+  </div>
+
+  <div class="controls">
+    <InputBits bind:value={searchQuery} placeholder="Search cases..." />
+    <ButtonBits variant="primary">➕ New Case</ButtonBits>
+  </div>
+
+  <div class="cases-grid">
+    {#if isLoading}
+      <div class="nes-container is-rounded">
+        <p class="nes-text is-primary">🔄 Loading...</p>
+      </div>
+    {:else}
+      {#each filteredCases as case_ (case_.id)}
+        <CardBits class="case-card">
+          <h3>{case_.title}</h3>
+          <p>{case_.description}</p>
+          <div class="case-meta">
+            <span class="nes-badge">
+              <span class="is-primary">{case_.status}</span>
+            </span>
+            <span class="assigned">👤 {case_.assignedTo}</span>
+          </div>
+          <div class="case-actions">
+            <ButtonBits variant="primary" size="sm">View</ButtonBits>
+            <ButtonBits variant="ghost" size="sm">Edit</ButtonBits>
+          </div>
+        </CardBits>
+      {/each}
+    {/if}
+  </div>
+</div>
+
+<style>
+  .cases-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .dashboard-header {
+    background: linear-gradient(135deg, var(--n64-primary), var(--n64-secondary)) !important;
+    text-align: center;
+  }
+
+  .dashboard-header .title {
+    color: white !important;
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 1.25rem !important;
+  }
+
+  .controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1rem;
+  }
+
+  .case-card {
+    background: rgba(26, 26, 46, 0.6) !important;
+    border: 1px solid var(--nier-border, #334155) !important;
+    padding: 1rem;
+  }
+
+  .case-card h3 {
+    color: var(--nier-text-primary);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .case-card p {
+    color: var(--nier-text-secondary);
+    margin: 0 0 1rem 0;
+  }
+
+  .case-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .assigned {
+    font-size: 0.875rem;
+    color: var(--nier-text-muted);
+  }
+
+  .case-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+</style>

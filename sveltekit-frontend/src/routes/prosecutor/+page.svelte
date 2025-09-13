@@ -6,6 +6,7 @@ Prosecutor Dashboard - Complete Legal AI Workflow
 Features: Case management, evidence upload, AI chat, vector search
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { SearchResults } from "$lib/types/global";
   import {
     Card,
@@ -206,11 +207,11 @@ Features: Case management, evidence upload, AI chat, vector search
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Case Selector -->
-    <Card class="mb-6">
-      <CardHeader>
-        <CardTitle>Active Cases</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard class="mb-6">
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Active Cases</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="flex flex-wrap gap-2">
           {#each cases as caseItem}
             <Button class="bits-btn"
@@ -220,33 +221,33 @@ Features: Case management, evidence upload, AI chat, vector search
             >
               {caseItem.caseNumber} - {caseItem.title}
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{caseItem.status}</span>
-            </Button>
+            </button>
           {/each}
 
           <Button class="bits-btn" variant="outline" size="sm">
             <Plus class="w-4 h-4 mr-1" />
             New Case
-          </Button>
+          </button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Main Dashboard Layout -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
       <!-- Left Column: Evidence & Search -->
       <div class="xl:col-span-2 space-y-6">
         <!-- Vector Search -->
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Search class="w-5 h-5" />
               Enhanced Vector Search
               {#if webGPUEnabled}
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">GPU Accelerated</span>
               {/if}
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
+            </h3>
+          </div>
+          <div class="yorha-panel-content" class="space-y-4">
             <div class="flex gap-2">
               <Input
                 bind:value={searchQuery}
@@ -255,7 +256,7 @@ Features: Case management, evidence upload, AI chat, vector search
               />
               <Button class="bits-btn" onclick={performVectorSearch} disabled={!searchQuery.trim()}>
                 <Search class="w-4 h-4" />
-              </Button>
+              </button>
             </div>
 
             {#if searchResults.length > 0}
@@ -283,8 +284,8 @@ Features: Case management, evidence upload, AI chat, vector search
                 {/each}
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
 
         <!-- Evidence Upload -->
         <EvidenceUploadComponent
@@ -294,14 +295,14 @@ Features: Case management, evidence upload, AI chat, vector search
         />
 
         <!-- Recent Evidence -->
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <FileText class="w-5 h-5" />
               Recent Evidence ({recentEvidence.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             {#if recentEvidence.length === 0}
               <p class="text-gray-500 text-center py-8">No evidence uploaded yet</p>
             {:else}
@@ -334,27 +335,27 @@ Features: Case management, evidence upload, AI chat, vector search
                       {/if}
                       <Button class="bits-btn" variant="ghost" size="sm">
                         <Eye class="w-4 h-4" />
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 {/each}
               </div>
             {/if}
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       </div>
 
       <!-- Right Column: AI Chat & POIs -->
       <div class="space-y-6">
         <!-- Persons of Interest -->
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+        <NesCard>
+          <div class="yorha-panel-header">
+            <h3 class="nes-text is-primary" class="flex items-center gap-2">
               <Users class="w-5 h-5" />
               Persons of Interest ({personsOfInterest.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div class="yorha-panel-content">
             {#if personsOfInterest.length === 0}
               <p class="text-gray-500 text-center py-4">No POIs for this case</p>
             {:else}
@@ -388,9 +389,9 @@ Features: Case management, evidence upload, AI chat, vector search
             <Button variant="outline" size="sm" class="w-full mt-3 bits-btn bits-btn">
               <Plus class="w-4 h-4 mr-1" />
               Add Person of Interest
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </NesCard>
 
         <!-- AI Chat Assistant -->
         <div class="h-96">
@@ -406,8 +407,8 @@ Features: Case management, evidence upload, AI chat, vector search
 
     <!-- System Status Bar -->
     <div class="fixed bottom-4 right-4 z-50">
-      <Card class="bg-black text-white">
-        <CardContent class="p-3">
+      <NesCard class="bg-black text-white">
+        <div class="yorha-panel-content" class="p-3">
           <div class="flex items-center space-x-4 text-xs">
             <div class="flex items-center gap-1">
               <div class="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -430,8 +431,8 @@ Features: Case management, evidence upload, AI chat, vector search
               <span>Gemma3Legal</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     </div>
   </div>
 </div>

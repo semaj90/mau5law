@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   interface Props {
     onaccept?: (event?: unknown) => void;
@@ -82,7 +83,7 @@
         >
           <MessageCircle class="space-y-4" />
           Yes, help me
-        </Button>
+        </button>
 
         <!-- Quick responses -->
         <Button
@@ -93,7 +94,7 @@
         >
           <Lightbulb class="space-y-4" />
           Summarize
-        </Button>
+        </button>
 
         <!-- Dismiss Button -->
         <Button
@@ -104,7 +105,7 @@
           title="Not now"
         >
           <X class="space-y-4" />
-        </Button>
+        </button>
       </div>
     </div>
   </div>

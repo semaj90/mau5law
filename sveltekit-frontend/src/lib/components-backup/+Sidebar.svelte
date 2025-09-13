@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Sidebar navigation logic will go here
   // For now, a simple list of items
   const navItems = [

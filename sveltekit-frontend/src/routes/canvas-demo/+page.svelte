@@ -6,6 +6,7 @@ https://svelte.dev/e/attribute_duplicate -->
   Showcases the complete Evidence Canvas with YoRHa integration
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import UnifiedCanvasIntegration from '$lib/components/canvas/UnifiedCanvasIntegration.svelte';
@@ -124,7 +125,7 @@ https://svelte.dev/e/attribute_duplicate -->
         class="demo-btn bits-btn bits-btn"
       >
         🚀 Run Demo Scenario
-      </Button>
+      </button>
 
       <Button
         class="bits-btn demo-btn"
@@ -133,7 +134,7 @@ https://svelte.dev/e/attribute_duplicate -->
         onclick={() => showEventLog = !showEventLog}
       >
         {showEventLog ? '👁️ Hide' : '👁️ Show'} Event Log
-      </Button>
+      </button>
 
       <Button
         variant="outline"
@@ -142,7 +143,7 @@ https://svelte.dev/e/attribute_duplicate -->
         class="demo-btn bits-btn bits-btn"
       >
         🗑️ Clear Log
-      </Button>
+      </button>
     </div>
   </div>
 

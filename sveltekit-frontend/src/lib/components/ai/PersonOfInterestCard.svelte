@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   interface Props {
     class?: string;
@@ -79,15 +80,15 @@ https://svelte.dev/e/js_parse_error -->
   let showFullDetails = $state(false);
 </script>
 
-<Card class="w-full max-w-md hover:shadow-lg transition-shadow">
-  <CardHeader class="pb-3">
+<NesCard class="w-full max-w-md hover:shadow-lg transition-shadow">
+  <div class="yorha-panel-header" class="pb-3">
     <div class="flex items-start justify-between">
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 bg-gray-200 flex items-center justify-center text-lg rounded-full">
           {roleInfo.icon}
         </div>
         <div>
-          <CardTitle class="text-lg font-semibold">{person.name}</CardTitle>
+          <h3 class="nes-text is-primary" class="text-lg font-semibold">{person.name}</h3>
           <Badge class="mt-1 text-xs {roleInfo.color}">
             {roleInfo.label}
           </Badge>
@@ -109,9 +110,9 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-  </CardHeader>
+  </div>
 
-  <CardContent class="space-y-4">
+  <div class="yorha-panel-content" class="space-y-4">
     <!-- Basic Details -->
     {#if person.details}
       <div>
@@ -212,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
         onclick={() => showFullDetails = !showFullDetails}
       >
         {showFullDetails ? 'Less' : 'More'} Info
-      </Button>
+      </button>
       
       <Button 
         variant="outline" 
@@ -220,20 +221,20 @@ https://svelte.dev/e/js_parse_error -->
         class="flex-1 text-xs bits-btn bits-btn"
       >
         🕸️ Graph View
-      </Button>
+      </button>
       
       {#if person.role === 'suspect'}
         <Button size="sm" class="flex-1 text-xs bits-btn bits-btn">
           📋 Profile
-        </Button>
+        </button>
       {:else if person.role === 'witness'}
         <Button size="sm" class="flex-1 text-xs bits-btn bits-btn">
           📞 Contact
-        </Button>
+        </button>
       {/if}
     </div>
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   .max-h-32 {

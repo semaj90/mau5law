@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, onDestroy } from 'svelte';
   import { chrRomService, getCachedPattern } from '$lib/services/chr-rom-precomputation-service';
@@ -405,7 +406,7 @@ https://svelte.dev/e/js_parse_error -->
    */
   function generateTooltipHTML(data: any): string {
     return `
-      <div class="chr-rom-summary-card api-generated">
+      <div class="chr-rom-summary-nier-bits-card api-generated">
         <h4>Summary</h4>
         <p>${data.summary || data.content || 'No summary available'}</p>
         <div class="metadata">

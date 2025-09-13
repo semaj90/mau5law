@@ -6,6 +6,7 @@ https://svelte.dev/e/expected_token -->
   Quick test to verify editor functionality
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
 
   let editorValue = $state('');

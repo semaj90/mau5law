@@ -1,8 +1,9 @@
 <!-- Legal AI Multi-Model Orchestrator Demo -->
 <script>
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import ExistingServicesOrchestrator from '$lib/components/ai/ExistingServicesOrchestrator.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
 
   let orchestratorReady = $state(false);
   let systemStatus = $state('Checking...');

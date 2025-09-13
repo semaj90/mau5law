@@ -2,12 +2,13 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from "svelte";
   import { draggable } from "../../../lib/actions/draggable";
   import { aiService } from "../../../lib/services/aiService";
   // UI Components
   import { Badge, Card, CardContent, CardFooter, CardHeader, Input, Textarea } from "$lib/components/ui";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import * as ContextMenu from "$lib/components/ui/context-menu";
   // Note: Select component has issues - using native select for now
   // Icons
@@ -208,8 +209,8 @@ https://svelte.dev/e/js_parse_error -->
       aria-label="POI context menu"
     >
       <!-- Card usage fix: replace Card.Root, Card.Header, etc. with Card, CardHeader, CardContent, CardFooter -->
-      <Card class="mx-auto px-4 max-w-7xl">
-        <CardHeader class="pb-2">
+      <NesCard class="mx-auto px-4 max-w-7xl">
+        <div class="yorha-panel-header" class="pb-2">
           <div class="mx-auto px-4 max-w-7xl">
             <div class="mx-auto px-4 max-w-7xl">
               <User class="mx-auto px-4 max-w-7xl" />
@@ -248,8 +249,8 @@ https://svelte.dev/e/js_parse_error -->
               {relationship}
             </Badge>
           {/if}
-        </CardHeader>
-        <CardContent class="space-y-3">
+        </div>
+        <div class="yorha-panel-content" class="space-y-3">
           {#if isEditing}
             <!-- Edit Form -->
             <div class="mx-auto px-4 max-w-7xl">
@@ -422,45 +423,45 @@ https://svelte.dev/e/js_parse_error -->
               {/if}
             </div>
           {/if}
-        </CardContent>
+        </div>
         <CardFooter class="flex justify-between items-center pt-2">
           {#if isEditing}
             <div class="mx-auto px-4 max-w-7xl">
-              <Button size="sm" onclick={() => saveChanges()}>
+              <button class="nes-btn" size="sm" onclick={() => saveChanges()}>
                 <Save class="mx-auto px-4 max-w-7xl" />
                 Save
-              </Button>
-              <Button
+              </button>
+              <button class="nes-btn"
                 size="sm"
                 variant="secondary"
                 onclick={() => cancelEditing()}
               >
                 <X class="mx-auto px-4 max-w-7xl" />
                 Cancel
-              </Button>
+              </button>
             </div>
           {:else}
             <div class="mx-auto px-4 max-w-7xl">
-              <Button
+              <button class="nes-btn"
                 size="sm"
                 variant="secondary"
                 onclick={() => startEditing()}
               >
                 <Edit class="mx-auto px-4 max-w-7xl" />
                 Edit
-              </Button>
-              <Button
+              </button>
+              <button class="nes-btn"
                 size="sm"
                 variant="secondary"
                 onclick={() => summarizePOI()}
               >
                 <Sparkles class="mx-auto px-4 max-w-7xl" />
                 Summarize
-              </Button>
+              </button>
             </div>
           {/if}
         </CardFooter>
-      </Card>
+      </NesCard>
     </div>
   </ContextMenu.Trigger>
   <ContextMenu.Content menu={showContextMenu} class="mx-auto px-4 max-w-7xl">

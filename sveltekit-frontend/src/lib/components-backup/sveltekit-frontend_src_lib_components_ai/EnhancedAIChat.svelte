@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token ; -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';
@@ -504,7 +505,7 @@ https://svelte.dev/e/expected_token -->
   <!-- Chat Messages Area -->
   <div class="flex flex-1 flex-col">
     <!-- Chat Header -->
-    <div class="border-b border-border bg-card p-4">
+    <div class="border-b border-border bg-nier-bits-card p-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-2">
@@ -544,7 +545,7 @@ https://svelte.dev/e/expected_token -->
           </Tooltip.Root>
 
           <!-- Generate Report -->
-          <Button.Root variant="outline" size="sm" onclick={generateReport}>
+          <button class="nes-btn".Root variant="outline" size="sm" onclick={generateReport}>
             <DocumentTextIcon class="mr-2 h-4 w-4" />
             Report
           </Button.Root>
@@ -553,7 +554,7 @@ https://svelte.dev/e/expected_token -->
 
       <!-- Connection Status & Metrics -->
       {#if $processingMetrics.responseTime > 0}
-        <div class="mt-2 flex gap-4 text-xs text-muted-foreground">
+        <div class="mt-2 flex gap-4 text-xs nes-text is-disabled">
           <span>Response: {$processingMetrics.responseTime}ms</span>
           <span>Tokens: {$processingMetrics.tokenCount}</span>
           <span>Confidence: {Math.round($processingMetrics.confidenceScore * 100)}%</span>
@@ -636,7 +637,7 @@ https://svelte.dev/e/expected_token -->
       {#if $isLoading && !$streamingResponse}
         <div class="flex gap-3 justify-start">
           <div class="max-w-[80%] rounded-lg p-3 bg-muted">
-            <div class="flex items-center gap-2 text-muted-foreground">
+            <div class="flex items-center gap-2 nes-text is-disabled">
               <div class="flex gap-1">
                 <div class="h-2 w-2 rounded-full bg-current animate-bounce"></div>
                 <div class="h-2 w-2 rounded-full bg-current animate-bounce [animation-delay:0.1s]"></div>
@@ -651,11 +652,11 @@ https://svelte.dev/e/expected_token -->
 
     <!-- Recommendations Bar -->
     {#if $recommendations.length > 0 || $didYouMean.length > 0}
-      <div class="border-t border-border bg-card p-3">
+      <div class="border-t border-border bg-nier-bits-card p-3">
         <!-- Recommendations -->
         {#if $recommendations.length > 0}
           <div class="mb-2">
-            <p class="text-sm font-medium text-muted-foreground mb-2">Suggestions:</p>
+            <p class="text-sm font-medium nes-text is-disabled mb-2">Suggestions:</p>
             <div class="flex flex-wrap gap-2">
               {#each $recommendations.slice(0, 3) as rec}
                 <Button.Root
@@ -666,7 +667,7 @@ https://svelte.dev/e/expected_token -->
                 >
                   <div>
                     <div class="font-medium text-xs">{rec.title}</div>
-                    <div class="text-xs text-muted-foreground">{rec.description}</div>
+                    <div class="text-xs nes-text is-disabled">{rec.description}</div>
                   </div>
                 </Button.Root>
               {/each}
@@ -677,10 +678,10 @@ https://svelte.dev/e/expected_token -->
         <!-- Did You Mean -->
         {#if $didYouMean.length > 0}
           <div>
-            <p class="text-sm font-medium text-muted-foreground mb-2">Did you mean:</p>
+            <p class="text-sm font-medium nes-text is-disabled mb-2">Did you mean:</p>
             <div class="flex flex-wrap gap-2">
               {#each $didYouMean as suggestion}
-                <Button.Root
+                <button class="nes-btn".Root
                   variant="ghost"
                   size="sm"
                   onclick={() => applyDidYouMean(suggestion)}
@@ -695,7 +696,7 @@ https://svelte.dev/e/expected_token -->
     {/if}
 
     <!-- Message Input -->
-    <div class="border-t border-border bg-card p-4">
+    <div class="border-t border-border bg-nier-bits-card p-4">
       <div class="flex gap-2">
         <Textarea
           bind:this={messageInput}
@@ -718,7 +719,7 @@ https://svelte.dev/e/expected_token -->
       </div>
 
       <!-- Input Helpers -->
-      <div class="mt-2 flex justify-between text-xs text-muted-foreground">
+      <div class="mt-2 flex justify-between text-xs nes-text is-disabled">
         <span>Press Enter to send, Shift+Enter for new line</span>
         <span>{estimateTokenCount(inputText)} tokens</span>
       </div>
@@ -727,7 +728,7 @@ https://svelte.dev/e/expected_token -->
 
   <!-- Analysis Side Panel -->
   {#if showAnalysisPanel}
-    <div class="w-80 border-l border-border bg-card">
+    <div class="w-80 border-l border-border bg-nier-bits-card">
       <div class="h-full flex flex-col">
         <!-- Panel Header -->
         <div class="border-b border-border p-4">
@@ -738,15 +739,15 @@ https://svelte.dev/e/expected_token -->
         <div class="flex-1 overflow-y-auto p-4 space-y-4">
           <!-- Current Analysis -->
           {#if $currentAnalysis}
-            <Card.Root>
-              <Card.Header>
-                <Card.Title class="text-sm">Message Analysis</Card.Title>
+            <NesCard.Root>
+              <NesCard.Header>
+                <NesCard.Title class="text-sm">Message Analysis</Card.Title>
               </Card.Header>
-              <Card.Content class="space-y-3">
+              <NesCard.Content class="space-y-3">
                 <!-- Intent -->
                 {#if $currentAnalysis.intent.length > 0}
                   <div>
-                    <p class="text-xs font-medium text-muted-foreground mb-1">Intent:</p>
+                    <p class="text-xs font-medium nes-text is-disabled mb-1">Intent:</p>
                     <div class="flex flex-wrap gap-1">
                       {#each $currentAnalysis.intent as intent}
                         <Badge.Root variant="secondary" class="text-xs">{intent}</Badge.Root>
@@ -758,7 +759,7 @@ https://svelte.dev/e/expected_token -->
                 <!-- Entities -->
                 {#if $currentAnalysis.entities.length > 0}
                   <div>
-                    <p class="text-xs font-medium text-muted-foreground mb-1">Entities:</p>
+                    <p class="text-xs font-medium nes-text is-disabled mb-1">Entities:</p>
                     <div class="space-y-1">
                       {#each $currentAnalysis.entities as entity}
                         <div class="flex justify-between items-center text-xs">
@@ -773,13 +774,13 @@ https://svelte.dev/e/expected_token -->
                 <!-- Metrics -->
                 <div class="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <p class="text-muted-foreground">Sentiment:</p>
+                    <p class="nes-text is-disabled">Sentiment:</p>
                     <p class="font-medium {getSentimentColor($currentAnalysis.sentiment)}">
                       {$currentAnalysis.sentiment.toFixed(2)}
                     </p>
                   </div>
                   <div>
-                    <p class="text-muted-foreground">Confidence:</p>
+                    <p class="nes-text is-disabled">Confidence:</p>
                     <div class="flex items-center gap-1">
                       <div class="w-8 h-1 bg-muted rounded-full overflow-hidden">
                         <div 
@@ -797,22 +798,22 @@ https://svelte.dev/e/expected_token -->
 
           <!-- RAG Context -->
           {#if $ragContext}
-            <Card.Root>
-              <Card.Header>
-                <Card.Title class="text-sm">Context</Card.Title>
+            <NesCard.Root>
+              <NesCard.Header>
+                <NesCard.Title class="text-sm">Context</Card.Title>
               </Card.Header>
-              <Card.Content class="space-y-3">
+              <NesCard.Content class="space-y-3">
                 <!-- Relevant Documents -->
                 {#if $ragContext.relevant_docs.length > 0}
                   <div>
-                    <p class="text-xs font-medium text-muted-foreground mb-2">Relevant Documents:</p>
+                    <p class="text-xs font-medium nes-text is-disabled mb-2">Relevant Documents:</p>
                     <div class="space-y-2">
                       {#each $ragContext.relevant_docs.slice(0, 3) as doc}
                         <div class="p-2 bg-muted rounded text-xs">
                           <p class="font-medium">{doc.title}</p>
-                          <p class="text-muted-foreground mt-1">{doc.content.slice(0, 100)}...</p>
+                          <p class="nes-text is-disabled mt-1">{doc.content.slice(0, 100)}...</p>
                           <div class="flex justify-between items-center mt-1">
-                            <span class="text-muted-foreground">Relevance:</span>
+                            <span class="nes-text is-disabled">Relevance:</span>
                             <span class="font-medium">{Math.round(doc.relevance * 100)}%</span>
                           </div>
                         </div>
@@ -824,8 +825,8 @@ https://svelte.dev/e/expected_token -->
                 <!-- User History Summary -->
                 {#if $ragContext.user_history.length > 0}
                   <div>
-                    <p class="text-xs font-medium text-muted-foreground mb-1">Recent Activity:</p>
-                    <p class="text-xs text-muted-foreground">
+                    <p class="text-xs font-medium nes-text is-disabled mb-1">Recent Activity:</p>
+                    <p class="text-xs nes-text is-disabled">
                       {$ragContext.user_history.length} recent messages considered
                     </p>
                   </div>
@@ -835,22 +836,22 @@ https://svelte.dev/e/expected_token -->
           {/if}
 
           <!-- Processing Metrics -->
-          <Card.Root>
-            <Card.Header>
-              <Card.Title class="text-sm">Performance</Card.Title>
+          <NesCard.Root>
+            <NesCard.Header>
+              <NesCard.Title class="text-sm">Performance</Card.Title>
             </Card.Header>
-            <Card.Content class="space-y-2 text-xs">
+            <NesCard.Content class="space-y-2 text-xs">
               <div class="flex justify-between">
-                <span class="text-muted-foreground">Response Time:</span>
+                <span class="nes-text is-disabled">Response Time:</span>
                 <span class="font-medium">{$processingMetrics.responseTime}ms</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-muted-foreground">Tokens Processed:</span>
+                <span class="nes-text is-disabled">Tokens Processed:</span>
                 <span class="font-medium">{$processingMetrics.tokenCount}</span>
               </div>
               {#if webgpuAccelerator}
                 <div class="flex justify-between">
-                  <span class="text-muted-foreground">WebGPU:</span>
+                  <span class="nes-text is-disabled">WebGPU:</span>
                   <Badge.Root variant="secondary" class="text-xs">Enabled</Badge.Root>
                 </div>
               {/if}
@@ -878,7 +879,7 @@ https://svelte.dev/e/expected_token -->
         <div class="p-3 bg-muted rounded">
           <p class="text-sm font-medium mb-2">Message:</p>
           <p class="text-sm">{selectedMessage.content}</p>
-          <p class="text-xs text-muted-foreground mt-2">
+          <p class="text-xs nes-text is-disabled mt-2">
             {formatTimestamp(selectedMessage.timestamp)} • {selectedMessage.token_count} tokens
           </p>
         </div>
@@ -891,7 +892,7 @@ https://svelte.dev/e/expected_token -->
               <h4 class="text-sm font-medium mb-2">Intent & Topics</h4>
               <div class="space-y-2">
                 <div>
-                  <p class="text-xs text-muted-foreground">Intent:</p>
+                  <p class="text-xs nes-text is-disabled">Intent:</p>
                   <div class="flex flex-wrap gap-1">
                     {#each selectedMessage.analysis.intent as intent}
                       <Badge.Root variant="secondary">{intent}</Badge.Root>
@@ -901,7 +902,7 @@ https://svelte.dev/e/expected_token -->
                 
                 {#if selectedMessage.analysis.topics.length > 0}
                   <div>
-                    <p class="text-xs text-muted-foreground">Topics:</p>
+                    <p class="text-xs nes-text is-disabled">Topics:</p>
                     <div class="flex flex-wrap gap-1">
                       {#each selectedMessage.analysis.topics as topic}
                         <Badge.Root variant="outline">{topic}</Badge.Root>
@@ -943,9 +944,9 @@ https://svelte.dev/e/expected_token -->
                   <div class="flex justify-between items-center p-2 bg-muted rounded text-sm">
                     <div>
                       <span class="font-medium">{entity.text}</span>
-                      <span class="text-muted-foreground ml-2">({entity.type})</span>
+                      <span class="nes-text is-disabled ml-2">({entity.type})</span>
                     </div>
-                    <span class="text-muted-foreground">{Math.round(entity.confidence * 100)}%</span>
+                    <span class="nes-text is-disabled">{Math.round(entity.confidence * 100)}%</span>
                   </div>
                 {/each}
               </div>
@@ -967,7 +968,7 @@ https://svelte.dev/e/expected_token -->
       </div>
 
       <Dialog.Footer>
-        <Button.Root variant="outline" onclick={() => showAnalysisDetails = false}>
+        <button class="nes-btn".Root variant="outline" onclick={() => showAnalysisDetails = false}>
           Close
         </Button.Root>
       </Dialog.Footer>

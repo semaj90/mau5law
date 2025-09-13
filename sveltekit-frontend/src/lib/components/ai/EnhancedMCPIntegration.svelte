@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     caseId: string | undefined ;
     enableRealtimeUpdates: boolean
@@ -434,7 +435,7 @@
 			<h3>🛠️ MCP Tools Status</h3>
 			<div class="tools-grid">
 				{#each $mcpTools as tool}
-					<div class="tool-card tool-{tool.status}">
+					<div class="tool-nier-bits-card tool-{tool.status}">
 						<div class="tool-name">{tool.name}</div>
 						<div class="tool-stats">
 							<span class="success-count">✅ {tool.successCount}</span>

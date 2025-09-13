@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 /// <reference types="vite/client" />
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import { useMachine } from '@xstate/svelte';
@@ -129,20 +130,20 @@ https://svelte.dev/e/js_parse_error -->
   
   <!-- Error State -->
   {#if hasError}
-    <Card class="mb-6 border-red-200 bg-red-50">
+    <NesCard class="mb-6 border-red-200 bg-red-50">
       <div class="p-4">
         <h3 class="text-lg font-semibold text-red-800 mb-2">Error</h3>
         <p class="text-red-600 mb-4">{$state.context.error}</p>
         <div class="flex gap-2">
           <Button class="bits-btn" variant="outline" size="sm" onclick={handleRetry}>
             Retry
-          </Button>
+          </button>
           <Button class="bits-btn" variant="ghost" size="sm" onclick={handleDismissError}>
             Dismiss
-          </Button>
+          </button>
         </div>
       </div>
-    </Card>
+    </NesCard>
   {/if}
 
   <!-- Loading State -->
@@ -155,7 +156,7 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Case Creation Form (when no case is loaded) -->
   {#if !currentCase && !isLoading}
-    <Card class="mb-6">
+    <NesCard class="mb-6">
       <div class="p-6">
         <h2 class="text-2xl font-bold mb-4">Create New Case</h2>
         <div class="space-y-4">
@@ -194,10 +195,10 @@ https://svelte.dev/e/js_parse_error -->
           
           <Button onclick={handleCreateCase} class="w-full bits-btn bits-btn">
             Create Case
-          </Button>
+          </button>
         </div>
       </div>
-    </Card>
+    </NesCard>
   {/if}
 
   <!-- Case Management Interface (when case is loaded) -->
@@ -205,7 +206,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="space-y-6">
       
       <!-- Case Header -->
-      <Card>
+      <NesCard>
         <div class="p-6">
           <div class="flex justify-between items-start mb-4">
             <div>
@@ -249,7 +250,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-      </Card>
+      </NesCard>
 
       <!-- Navigation Tabs -->
       <div class="border-b border-gray-200">
@@ -270,7 +271,7 @@ https://svelte.dev/e/js_parse_error -->
         
         <!-- Overview Tab -->
         {#if activeTab === 'overview'}
-          <Card>
+          <NesCard>
             <div class="p-6">
               <h3 class="text-lg font-semibold mb-4">Next Actions</h3>
               <ul class="space-y-2">
@@ -282,14 +283,14 @@ https://svelte.dev/e/js_parse_error -->
                 {/each}
               </ul>
             </div>
-          </Card>
+          </NesCard>
         {/if}
 
         <!-- Evidence Tab -->
         {#if activeTab === 'evidence'}
           <div class="space-y-4">
             <!-- Evidence Upload -->
-            <Card>
+            <NesCard>
               <div class="p-6">
                 <h3 class="text-lg font-semibold mb-4">Upload Evidence</h3>
                 <input
@@ -301,13 +302,13 @@ https://svelte.dev/e/js_parse_error -->
                 />
                 <Button class="bits-btn" onclick={triggerFileUpload}>
                   Choose Files
-                </Button>
+                </button>
               </div>
-            </Card>
+            </NesCard>
 
             <!-- Evidence List -->
             {#if evidence.length > 0}
-              <Card>
+              <NesCard>
                 <div class="p-6">
                   <h3 class="text-lg font-semibold mb-4">Evidence Items</h3>
                   <div class="space-y-3">
@@ -319,10 +320,10 @@ https://svelte.dev/e/js_parse_error -->
                             <p class="text-sm text-gray-500">{item.type}</p>
                           </div>
                           <div class="flex gap-2">
-                            <Button class="bits-btn" size="sm" variant="outline">View</Button>
+                            <Button class="bits-btn" size="sm" variant="outline">View</button>
                             <Button class="bits-btn" size="sm" onclick={() => send({ type: 'SELECT_EVIDENCE', evidence: item })}>
                               Select
-                            </Button>
+                            </button>
                           </div>
                         </div>
                         {#if item.aiSummary}
@@ -334,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
                     {/each}
                   </div>
                 </div>
-              </Card>
+              </NesCard>
             {/if}
           </div>
         {/if}
@@ -342,7 +343,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Analysis Tab -->
         {#if activeTab === 'analysis'}
           <div class="space-y-4">
-            <Card>
+            <NesCard>
               <div class="p-6">
                 <h3 class="text-lg font-semibold mb-4">AI Analysis</h3>
                 <div class="flex gap-3 mb-4">
@@ -351,13 +352,13 @@ https://svelte.dev/e/js_parse_error -->
                     disabled={!canStartAIAnalysis}
                   >
                     Start AI Analysis
-                  </Button>
+                  </button>
                   <Button class="bits-btn" 
                     variant="outline"
                     onclick={handleFindSimilarCases}
                   >
                     Find Similar Cases
-                  </Button>
+                  </button>
                 </div>
 
                 {#if aiSummary}
@@ -377,20 +378,20 @@ https://svelte.dev/e/js_parse_error -->
                             <h5 class="font-medium">{similarCase.title}</h5>
                             <p class="text-sm text-gray-500">Similarity: {similarCase.similarity}%</p>
                           </div>
-                          <Button class="bits-btn" size="sm" variant="outline">View</Button>
+                          <Button class="bits-btn" size="sm" variant="outline">View</button>
                         </div>
                       {/each}
                     </div>
                   </div>
                 {/if}
               </div>
-            </Card>
+            </NesCard>
           </div>
         {/if}
 
         <!-- Search Tab -->
         {#if activeTab === 'search'}
-          <Card>
+          <NesCard>
             <div class="p-6">
               <h3 class="text-lg font-semibold mb-4">Search Cases</h3>
               <div class="flex gap-3">
@@ -399,10 +400,10 @@ https://svelte.dev/e/js_parse_error -->
                   placeholder="Enter search query..."
                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <Button class="bits-btn">Search</Button>
+                <Button class="bits-btn">Search</button>
               </div>
             </div>
-          </Card>
+          </NesCard>
         {/if}
       </div>
     </div>
@@ -410,7 +411,7 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Debug Panel (development only) -->
   {#if import.meta.env.DEV}
-    <Card class="mt-8 bg-gray-50">
+    <NesCard class="mt-8 bg-gray-50">
       <div class="p-4">
         <h4 class="text-sm font-semibold mb-2">XState Debug</h4>
         <div class="text-xs space-y-1">
@@ -421,7 +422,7 @@ https://svelte.dev/e/js_parse_error -->
           <p>AI Summary: {aiSummary ? 'Available' : 'None'}</p>
         </div>
       </div>
-    </Card>
+    </NesCard>
   {/if}
 </div>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { PageData } from './$types.js';
   import type { ActionData } from './$types.js';
   import { enhance } from '$app/forms';
@@ -73,22 +74,22 @@
     <h1 class="text-3xl font-bold text-primary mb-2">
       RAG Analysis: {data.caseData.title}
     </h1>
-    <p class="text-muted-foreground">
+    <p class="nes-text is-disabled">
       Status: <span class="font-medium">{data.caseData.status}</span>
     </p>
   </div>
 
   <!-- RAG Query Interface -->
   <OrchestratedCard.Analysis>
-    <Card.Header>
-      <Card.Title>Legal Document Analysis</Card.Title>
-      <Card.Description>
+    <NesCard.Header>
+      <NesCard.Title>Legal Document Analysis</Card.Title>
+      <NesCard.Description>
         Query case documents using advanced RAG (Retrieval-Augmented Generation)
         powered by legal AI models
       </Card.Description>
     </Card.Header>
 
-  <Card.Content class="space-y-4">
+  <NesCard.Content class="space-y-4">
       <!-- Query Form -->
       <form method="POST" action="?/query" use:enhance={handleRAGSubmit}>
         <div class="flex gap-3">
@@ -122,7 +123,7 @@
         <div class="space-y-4 p-4 bg-muted/50 rounded-lg">
           <div class="flex items-center justify-between">
             <h3 class="font-medium text-lg">Analysis Result</h3>
-            <div class="flex gap-4 text-sm text-muted-foreground">
+            <div class="flex gap-4 text-sm nes-text is-disabled">
               <span class={getConfidenceClass(ragResponse.confidence)}>
                 Confidence: {formatConfidence(ragResponse.confidence)}
               </span>
@@ -146,9 +147,9 @@
                   <div class="p-2 bg-background border rounded text-sm">
                     <div class="font-medium">{source.title || `Document ${source.id}`}</div>
                     {#if source.excerpt}
-                      <div class="text-muted-foreground mt-1">"{source.excerpt}"</div>
+                      <div class="nes-text is-disabled mt-1">"{source.excerpt}"</div>
                     {/if}
-                    <div class="text-xs text-muted-foreground mt-1">
+                    <div class="text-xs nes-text is-disabled mt-1">
                       Relevance: {formatConfidence(source.score || 0)}
                     </div>
                   </div>
@@ -163,29 +164,29 @@
 
   <!-- Case Documents -->
   <OrchestratedCard.Evidence>
-    <Card.Header>
+    <NesCard.Header>
       <div class="flex items-center justify-between">
         <div>
-          <Card.Title>Case Documents ({evidenceItems.length})</Card.Title>
-          <Card.Description>Documents available for RAG analysis</Card.Description>
+          <NesCard.Title>Case Documents ({evidenceItems.length})</Card.Title>
+          <NesCard.Description>Documents available for RAG analysis</Card.Description>
         </div>
-        <Button
+        <button class="nes-btn"
           variant="outline"
           onclick={() => showDocuments = !showDocuments}
         >
           {showDocuments ? 'Hide' : 'Show'} Documents
-        </Button>
+        </button>
       </div>
     </Card.Header>
 
     {#if showDocuments}
-      <Card.Content>
+      <NesCard.Content>
         <div class="grid gap-3">
           {#each evidenceItems as evidence}
             <div class="flex items-center justify-between p-3 border rounded-lg">
               <div class="flex-1">
                 <div class="font-medium">{evidence.title}</div>
-                <div class="text-sm text-muted-foreground capitalize">
+                <div class="text-sm nes-text is-disabled capitalize">
                   Type: {evidence.type}
                   Status: {evidence.metadata.processed ? 'Processed' : 'Processing...'}
                 </div>
@@ -194,7 +195,7 @@
                 <div class={getConfidenceClass(evidence.confidence)}>
                   {formatConfidence(evidence.confidence)}
                 </div>
-                <div class="text-xs text-muted-foreground">
+                <div class="text-xs nes-text is-disabled">
                   {new Date(evidence.createdAt).toLocaleDateString()}
                 </div>
               </div>
@@ -207,17 +208,17 @@
 
   <!-- RAG History -->
   {#if data.ragHistory?.length > 0}
-    <Card>
-      <Card.Header>
-        <Card.Title>Recent Analysis History</Card.Title>
-        <Card.Description>Previous RAG queries for this case</Card.Description>
+    <NesCard>
+      <NesCard.Header>
+        <NesCard.Title>Recent Analysis History</Card.Title>
+        <NesCard.Description>Previous RAG queries for this case</Card.Description>
       </Card.Header>
-      <Card.Content>
+      <NesCard.Content>
         <div class="space-y-3">
           {#each data.ragHistory.slice(0, 5) as history}
             <div class="p-3 border rounded-lg">
               <div class="font-medium text-sm mb-1">{history.query}</div>
-              <div class="text-xs text-muted-foreground">
+              <div class="text-xs nes-text is-disabled">
                 {new Date(history.timestamp).toLocaleString()}
                 {history.sources?.length || 0} sources referenced
               </div>
@@ -225,7 +226,7 @@
           {/each}
         </div>
       </Card.Content>
-    </Card>
+    </NesCard>
   {/if}
 </div>
 

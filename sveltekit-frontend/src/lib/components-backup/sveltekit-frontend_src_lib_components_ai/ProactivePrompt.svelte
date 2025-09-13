@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onaccept?: (event?: any) => void;
     ondismiss?: (event?: any) => void;
@@ -6,7 +7,7 @@
   }
 
 
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { aiPersonality } from "$lib/stores/chatStore";
   import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";
   // Array of proactive prompts based on context
@@ -79,7 +80,7 @@
         >
           <MessageCircle class="space-y-4" />
           Yes, help me
-        </Button>
+        </button>
 
         <!-- Quick responses -->
         <Button
@@ -90,7 +91,7 @@
         >
           <Lightbulb class="space-y-4" />
           Summarize
-        </Button>
+        </button>
 
         <!-- Dismiss Button -->
         <Button
@@ -101,7 +102,7 @@
           title="Not now"
         >
           <X class="space-y-4" />
-        </Button>
+        </button>
       </div>
     </div>
   </div>

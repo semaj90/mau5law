@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
@@ -201,9 +202,9 @@
       <p class="detection-subtitle">AI-powered pattern recognition and behavioral analysis</p>
     </div>
     <div class="header-actions">
-      <Button on:click={runPatternAnalysis} disabled={isAnalyzing}>
+      <button class="nes-btn" on:click={runPatternAnalysis} disabled={isAnalyzing}>
         {isAnalyzing ? 'Analyzing...' : 'Run Analysis'}
-      </Button>
+      </button>
     </div>
   </header>
 
@@ -268,7 +269,7 @@
   <!-- Analysis Results Summary -->
   {#if analysisResults}
     <section class="results-summary">
-      <div.Root class="summary-card">
+      <div.Root class="summary-nier-bits-card">
         <div.Header>
           <div.Title>Latest Analysis Results</Card.Title>
           <div.Description>
@@ -321,7 +322,7 @@
       </div>
     {:else}
       {#each filteredPatterns as pattern}
-        <div.Root class="pattern-card">
+        <div.Root class="pattern-nier-bits-card">
           <div.Header>
             <div class="pattern-header">
               <div class="pattern-title-section">
@@ -391,13 +392,13 @@
           </Card.Content>
           
           <div.Footer>
-            <div class="card-actions">
-              <Button variant="outline" size="sm" on:click={() => openPatternDetails(pattern)}>
+            <div class="nier-bits-card-actions">
+              <button class="nes-btn" variant="outline" size="sm" on:click={() => openPatternDetails(pattern)}>
                 View Details
-              </Button>
-              <Button size="sm">
+              </button>
+              <button class="nes-btn" size="sm">
                 Investigate
-              </Button>
+              </button>
             </div>
           </Card.Footer>
         </Card.Root>
@@ -460,7 +461,7 @@
           <h3>Involved Entities</h3>
           <div class="entities-grid">
             {#each selectedPattern.entities as entity}
-              <div class="entity-card">
+              <div class="entity-nier-bits-card">
                 <h4>{entity.name}</h4>
                 <p class="entity-type">{entity.type}</p>
                 <p class="entity-role">{entity.role}</p>
@@ -519,12 +520,12 @@
       </div>
       
       <div class="dialog-actions">
-        <Button variant="outline" on:click={() => showPatternDetails = false}>
+        <button class="nes-btn" variant="outline" on:click={() => showPatternDetails = false}>
           Close
-        </Button>
-        <Button>
+        </button>
+        <button class="nes-btn">
           Start Investigation
-        </Button>
+        </button>
       </div>
     {/if}
   </Dialog.Content>

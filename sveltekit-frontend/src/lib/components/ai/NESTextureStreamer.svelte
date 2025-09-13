@@ -1,5 +1,6 @@
 <!-- NES-Style Texture Streaming Component for Legal Document Visualization -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { N64LODManager } from '$lib/services/n64-lod-manager';
   import SSRWebGPULoader from '$lib/components/SSRWebGPULoader.svelte';

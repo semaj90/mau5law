@@ -1,5 +1,6 @@
 <!-- N64 Gaming-Style MinIO Upload with Retro Progress Bars -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap } from 'lucide-svelte';
   import { toastService } from '$lib/services/toast-service';
@@ -130,16 +131,16 @@
       nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt : null,
       gamingProgress: f.gamingProgress
     }));
-    if (pending.length === 0) { 
-      try { sessionStorage.removeItem(STORAGE_KEY); } catch {}; 
-      return; 
+    if (pending.length === 0) {
+      try { sessionStorage.removeItem(STORAGE_KEY); } catch {};
+      return;
     }
-    try { 
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ 
-        ts: Date.now(), 
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+        ts: Date.now(),
         files: pending,
-        evolutionStage 
-      })); 
+        evolutionStage
+      }));
     } catch {}
   }
 
@@ -214,21 +215,21 @@
     const delay = Math.min(8000, 600 * Math.pow(2, (fs.attempts - 1))) + Math.floor(Math.random() * 300);
     fs.status = 'pending';
     fs.nextRetryAt = Date.now() + delay;
-    if (fs.retryTimeoutId) { 
-      clearTimeout(fs.retryTimeoutId); 
-      fs.retryTimeoutId = null; 
+    if (fs.retryTimeoutId) {
+      clearTimeout(fs.retryTimeoutId);
+      fs.retryTimeoutId = null;
     }
     if (enableToastNotifications) {
       const eta = (delay/1000).toFixed(1);
       if (fs.toastId) {
-        toastService.update(fs.toastId, { 
-          type: 'info', 
-          message: `🎮 Retrying in ${eta}s (attempt ${fs.attempts + 1}/${maxRetries})` 
+        toastService.update(fs.toastId, {
+          type: 'info',
+          message: `🎮 Retrying in ${eta}s (attempt ${fs.attempts + 1}/${maxRetries})`
         });
       } else {
         fs.toastId = toastService.upload(
-          `🎮 ${fs.file.name}`, 
-          `Retrying in ${eta}s (attempt ${fs.attempts + 1}/${maxRetries})`, 
+          `🎮 ${fs.file.name}`,
+          `Retrying in ${eta}s (attempt ${fs.attempts + 1}/${maxRetries})`,
           { dismissible: false }
         );
       }
@@ -242,11 +243,11 @@
       }
     }, delay);
     ensureRetryTicker();
-    telemetry.emit('upload_retry_scheduled', { 
-      file: fs.file.name, 
-      attemptNext: (fs.attempts + 1), 
-      maxRetries, 
-      delayMs: delay 
+    telemetry.emit('upload_retry_scheduled', {
+      file: fs.file.name,
+      attemptNext: (fs.attempts + 1),
+      maxRetries,
+      delayMs: delay
     });
   }
 
@@ -255,7 +256,7 @@
   function ensureRetryTicker() {
     if (retryInterval) return;
     retryInterval = setInterval(() => {
-      const pendingRetries = fileStates.some(f => 
+      const pendingRetries = fileStates.some(f =>
         f.status === 'pending' && f.nextRetryAt && f.nextRetryAt > Date.now()
       );
       if (!pendingRetries) {
@@ -281,11 +282,11 @@
         fs.retryTimeoutId = null;
       }
       if (['uploading','pending','processing'].includes(fs.status)) {
-        return { 
-          ...fs, 
-          status: 'canceled', 
-          progress: fs.status === 'uploading' ? fs.progress : 0, 
-          controller: null 
+        return {
+          ...fs,
+          status: 'canceled',
+          progress: fs.status === 'uploading' ? fs.progress : 0,
+          controller: null
         };
       }
       return fs;
@@ -572,11 +573,11 @@
     const controller = new AbortController();
     fs.controller = controller;
     liveMessage = `🎮 Uploading ${file.name}`;
-    telemetry.emit('upload_start', { 
-      file: file.name, 
-      size: file.size, 
-      type: file.type, 
-      attempt: fs.attempts 
+    telemetry.emit('upload_start', {
+      file: file.name,
+      size: file.size,
+      type: file.type,
+      attempt: fs.attempts
     });
 
     // Update gaming progress theme based on file type
@@ -672,14 +673,15 @@
                 enableAnalysis: true
               }
             );
-            fs.gpuTaskIds = gpuTasks.taskIds;
-            performanceMetrics.gpuTasksSubmitted += gpuTasks.taskIds.length;
+            // Extract task IDs from the array of tasks
+            fs.gpuTaskIds = gpuTasks.map(task => task.id);
+            performanceMetrics.gpuTasksSubmitted += gpuTasks.length;
 
             if (enableToastNotifications) {
               toastService.gpuTask(
                 'N64 Processing',
                 'queued',
-                `${gpuTasks.taskIds.length} GPU tasks queued for ${file.name}`
+                `${gpuTasks.length} GPU tasks queued for ${file.name}`
               );
             }
           } catch (error) {
@@ -699,20 +701,20 @@
             embeddingVector = embedding.vector;
             embeddingDims = embedding.dimensions;
             embeddingModel = embedding.model;
-            telemetry.emit('embedding_complete', { 
-              file: file.name, 
-              model: embedding.model, 
-              dims: embedding.dimensions, 
-              latencyMs: embedding.latencyMs, 
-              source: embedding.source 
+            telemetry.emit('embedding_complete', {
+              file: file.name,
+              model: embedding.model,
+              dims: embedding.dimensions,
+              latencyMs: embedding.latencyMs,
+              source: embedding.source
             });
           } catch (e) {
             embeddingVector = Array.from({ length: 384 }, () => Math.random() - 0.5);
             embeddingDims = 384;
             embeddingModel = 'fallback-random-384';
-            telemetry.emit('embedding_error', { 
-              file: file.name, 
-              error: e instanceof Error ? e.message : 'unknown' 
+            telemetry.emit('embedding_error', {
+              file: file.name,
+              error: e instanceof Error ? e.message : 'unknown'
             });
             console.warn('Embedding generation failed, using fallback vector:', e);
           }
@@ -768,11 +770,11 @@
           );
         }
         serializeSession();
-        telemetry.emit('upload_complete', { 
-          file: file.name, 
-          size: file.size, 
-          durationMs: fs.endTime && fs.startTime ? (fs.endTime.getTime()-fs.startTime.getTime()) : null, 
-          gpuTasks: fs.gpuTaskIds?.length || 0 
+        telemetry.emit('upload_complete', {
+          file: file.name,
+          size: file.size,
+          durationMs: fs.endTime && fs.startTime ? (fs.endTime.getTime()-fs.startTime.getTime()) : null,
+          gpuTasks: fs.gpuTaskIds?.length || 0
         });
       } else {
         const msg = 'No response data';
@@ -818,10 +820,10 @@
           }
         }
       }
-      telemetry.emit(fs.status === 'canceled' ? 'upload_canceled' : 'upload_error', { 
-        file: file.name, 
-        error: fs.error, 
-        attempt: fs.attempts 
+      telemetry.emit(fs.status === 'canceled' ? 'upload_canceled' : 'upload_error', {
+        file: file.name,
+        error: fs.error,
+        attempt: fs.attempts
       });
     } finally {
       fs.controller = null;
@@ -871,20 +873,20 @@
 <!-- N64 Gaming Style MinIO Upload Zone -->
 <div class="n64-upload-container" class:retro>
   <!-- Hidden file input -->
-  <input 
-    bind:this={fileInput} 
-    type="file" 
-    {accept} 
-    {multiple} 
-    disabled={disabled || uploading} 
-    onchange={handleFileSelect} 
-    style="display:none" 
+  <input
+    bind:this={fileInput}
+    type="file"
+    {accept}
+    {multiple}
+    disabled={disabled || uploading}
+    onchange={handleFileSelect}
+    style="display:none"
   />
 
   <!-- Evolution Loader Overlay -->
   {#if showEvolutionLoader}
     <div class="evolution-overlay">
-      <N64EvolutionLoader 
+      <N64EvolutionLoader
         stage={evolutionStage}
         autoEvolution={false}
         ragIntegration={enableGPUProcessing}
@@ -912,7 +914,7 @@
     {#if fileStates.length === 0}
       <div class="n64-upload-prompt">
         <div class="n64-upload-icon">
-          <N64LoadingRing 
+          <N64LoadingRing
             size="lg"
             theme={n64Themes[evolutionStage].theme}
             speed="medium"
@@ -940,7 +942,7 @@
                 <FileText class="w-6 h-6" />
               {/if}
             </div>
-            
+
             <div class="file-info">
               <div class="n64-file-name">{fs.file.name}</div>
               <div class="n64-file-size">{formatFileSize(fs.file.size)}</div>
@@ -969,7 +971,7 @@
                   </span>
                 {/if}
               </div>
-              
+
               <!-- N64 Progress Bar -->
               {#if fs.status !== 'pending' && fs.status !== 'completed' && fs.status !== 'error' && fs.status !== 'canceled'}
                 <N64ProgressBar
@@ -984,43 +986,43 @@
                 />
               {/if}
             </div>
-            
+
             <div class="n64-file-actions">
               {#if fs.status === 'pending' && !uploading}
-                <button 
-                  type="button" 
-                  class="n64-action-btn remove" 
-                  title="Remove" 
-                  onclick={(e) => { e.stopPropagation(); removeFile(index); }} 
+                <button
+                  type="button"
+                  class="n64-action-btn remove"
+                  title="Remove"
+                  onclick={(e) => { e.stopPropagation(); removeFile(index); }}
                   aria-label="Remove file"
                 >
                   ✕
                 </button>
               {:else if fs.status === 'uploading'}
-                <button 
-                  type="button" 
-                  class="n64-action-btn cancel" 
-                  title="Cancel" 
-                  onclick={(e) => { e.stopPropagation(); cancelUpload(index); }} 
+                <button
+                  type="button"
+                  class="n64-action-btn cancel"
+                  title="Cancel"
+                  onclick={(e) => { e.stopPropagation(); cancelUpload(index); }}
                   aria-label="Cancel upload"
                 >
                   ⏹
                 </button>
               {:else if fs.status === 'error' || fs.status === 'canceled'}
-                <button 
-                  type="button" 
-                  class="n64-action-btn retry" 
-                  title="Retry" 
-                  onclick={(e) => { e.stopPropagation(); retryFile(index); uploadFiles(); }} 
+                <button
+                  type="button"
+                  class="n64-action-btn retry"
+                  title="Retry"
+                  onclick={(e) => { e.stopPropagation(); retryFile(index); uploadFiles(); }}
                   aria-label="Retry upload"
                 >
                   ⟳
                 </button>
-                <button 
-                  type="button" 
-                  class="n64-action-btn remove" 
-                  title="Remove" 
-                  onclick={(e) => { e.stopPropagation(); removeFile(index); }} 
+                <button
+                  type="button"
+                  class="n64-action-btn remove"
+                  title="Remove"
+                  onclick={(e) => { e.stopPropagation(); removeFile(index); }}
                   aria-label="Remove file"
                 >
                   ✕
@@ -1106,7 +1108,7 @@
   <div class="n64-upload-actions">
     <button
       type="button"
-      class="n64-upload-button" 
+      class="n64-upload-button"
       class:theme-{evolutionStage}
       disabled={fileStates.length === 0 || uploading || disabled || fileStates.every(f=>['completed','canceled'].includes(f.status))}
       onclick={uploadFiles}
@@ -1120,7 +1122,7 @@
         🎮 UPLOAD TO MINIO [{evolutionStage.toUpperCase()}]
       {/if}
     </button>
-    
+
     {#if uploading}
       <button
         type="button"
@@ -1131,16 +1133,16 @@
         ❌ CANCEL ALL
       </button>
     {/if}
-    
+
     {#if fileStates.length > 0 && !uploading}
       <button
         type="button"
         class="n64-clear-button clear"
-        onclick={() => { 
-          files = []; 
-          fileStates = []; 
-          if (fileInput) fileInput.value = ''; 
-          liveMessage = 'Cleared selected files'; 
+        onclick={() => {
+          files = [];
+          fileStates = [];
+          if (fileInput) fileInput.value = '';
+          liveMessage = 'Cleared selected files';
         }}
         aria-label="Clear selected files"
       >
@@ -1151,7 +1153,7 @@
 
   {#if minioHealthy === false}
     <div class="n64-error-alert" role="alert">
-      <AlertCircle class="w-4 h-4" /> 
+      <AlertCircle class="w-4 h-4" />
       ⚠️ MINIO HEALTH CHECK FAILED – UPLOADS MAY NOT PERSIST
     </div>
   {/if}
@@ -1205,7 +1207,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    box-shadow: 
+    box-shadow:
       inset 0 0 20px rgba(255, 215, 0, 0.1),
       0 0 20px rgba(255, 215, 0, 0.3);
   }
@@ -1225,7 +1227,7 @@
   .n64-drop-zone:hover:not(.uploading) {
     border-color: #FFA500;
     transform: scale(1.02);
-    box-shadow: 
+    box-shadow:
       inset 0 0 30px rgba(255, 165, 0, 0.2),
       0 0 30px rgba(255, 165, 0, 0.5);
   }
@@ -1234,7 +1236,7 @@
     border-color: #FF6B35;
     background: linear-gradient(135deg, #2e1a1a 0%, #3e1616 100%);
     transform: scale(1.05);
-    box-shadow: 
+    box-shadow:
       inset 0 0 40px rgba(255, 107, 53, 0.3),
       0 0 40px rgba(255, 107, 53, 0.7);
   }
@@ -1297,7 +1299,7 @@
     font-size: 1.25rem;
     font-weight: bold;
     color: #FFD700;
-    text-shadow: 
+    text-shadow:
       2px 2px 0 #000,
       -2px -2px 0 #000,
       2px -2px 0 #000,
@@ -1329,7 +1331,7 @@
     text-align: left;
     transition: all 0.3s ease;
     position: relative;
-    box-shadow: 
+    box-shadow:
       inset 0 0 10px rgba(255, 215, 0, 0.1),
       0 0 10px rgba(0, 0, 0, 0.5);
   }
@@ -1417,7 +1419,7 @@
     font-weight: bold;
     font-size: 0.8rem;
     transition: all 0.2s ease;
-    box-shadow: 
+    box-shadow:
       inset 1px 1px 0 rgba(255, 255, 255, 0.3),
       inset -1px -1px 0 rgba(0, 0, 0, 0.3);
   }
@@ -1444,7 +1446,7 @@
     padding: 1.5rem;
     background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     border: 2px solid #FFD700;
-    box-shadow: 
+    box-shadow:
       inset 0 0 20px rgba(255, 215, 0, 0.1),
       0 0 10px rgba(0, 0, 0, 0.5);
   }
@@ -1466,7 +1468,7 @@
     padding: 1.5rem;
     background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
     border: 2px solid #4090FF;
-    box-shadow: 
+    box-shadow:
       inset 0 0 20px rgba(64, 144, 255, 0.1),
       0 0 15px rgba(64, 144, 255, 0.3);
   }
@@ -1554,7 +1556,7 @@
     transition: all 0.3s ease;
     font-size: 0.9rem;
     letter-spacing: 0.5px;
-    box-shadow: 
+    box-shadow:
       inset 2px 2px 0 rgba(255, 255, 255, 0.3),
       inset -2px -2px 0 rgba(0, 0, 0, 0.3),
       0 4px 8px rgba(0, 0, 0, 0.5);
@@ -1563,7 +1565,7 @@
   .n64-upload-button:hover:not(:disabled) {
     background: #FFA500;
     transform: translateY(-2px);
-    box-shadow: 
+    box-shadow:
       inset 2px 2px 0 rgba(255, 255, 255, 0.3),
       inset -2px -2px 0 rgba(0, 0, 0, 0.3),
       0 6px 12px rgba(0, 0, 0, 0.7);
@@ -1586,7 +1588,7 @@
     transition: all 0.2s ease;
     font-size: 0.8rem;
     letter-spacing: 0.5px;
-    box-shadow: 
+    box-shadow:
       inset 1px 1px 0 rgba(255, 255, 255, 0.2),
       inset -1px -1px 0 rgba(0, 0, 0, 0.3);
   }
@@ -1616,7 +1618,7 @@
     gap: 0.75rem;
     font-weight: bold;
     text-shadow: 1px 1px 0 #000;
-    box-shadow: 
+    box-shadow:
       inset 0 0 10px rgba(255, 48, 48, 0.1),
       0 0 10px rgba(255, 48, 48, 0.3);
   }
@@ -1638,24 +1640,24 @@
     .n64-upload-container {
       max-width: 100%;
     }
-    
+
     .n64-drop-zone {
       padding: 1.5rem;
       min-height: 180px;
     }
-    
+
     .n64-metrics-grid {
       grid-template-columns: 1fr 1fr;
     }
-    
+
     .n64-upload-actions {
       flex-direction: column;
     }
-    
+
     .n64-file-item {
       padding: 0.75rem;
     }
-    
+
     .n64-upload-text h3 {
       font-size: 1rem;
     }

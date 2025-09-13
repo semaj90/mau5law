@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Modern search interface with AI-powered suggestions and vector search
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Search, Filter, X, Zap, Brain, Database } from 'lucide-svelte';
   import { createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';

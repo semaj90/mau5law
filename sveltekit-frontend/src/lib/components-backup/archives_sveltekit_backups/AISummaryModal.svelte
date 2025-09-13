@@ -1,7 +1,8 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { aiService } from "../../../lib/services/aiService";
   import Dialog from '../../../lib/components/ui/dialog/Dialog.svelte';
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Badge from '../../../lib/components/ui/Badge.svelte';
   import { Sparkles, Copy, X, AlertCircle, Check } from 'lucide-svelte';
   import { createEventDispatcher } from 'svelte';
@@ -68,10 +69,10 @@
       <!-- Summary Content -->
       <div class="mx-auto px-4 max-w-7xl">
         <div class="mx-auto px-4 max-w-7xl">
-          <Button onclick={() => copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
+          <button class="nes-btn" onclick={() => copyToClipboard()} variant="ghost" size="sm" aria-label="Copy summary to clipboard">
             <Copy class="mx-auto px-4 max-w-7xl" />
             <span class="mx-auto px-4 max-w-7xl">Copy</span>
-          </Button>
+          </button>
           {#if copied}
             <span class="mx-auto px-4 max-w-7xl"><Check class="mx-auto px-4 max-w-7xl" />Copied!</span>
           {/if}
@@ -92,10 +93,10 @@
 
   {#snippet footer()}
     <div  class="mx-auto px-4 max-w-7xl">
-      <Button onclick={() => closeModal()} variant="secondary" aria-label="Close summary modal">
+      <button class="nes-btn" onclick={() => closeModal()} variant="secondary" aria-label="Close summary modal">
         <X class="mx-auto px-4 max-w-7xl" />
         <span class="mx-auto px-4 max-w-7xl">Close</span>
-      </Button>
+      </button>
     </div>
   {/snippet}
 </Dialog>

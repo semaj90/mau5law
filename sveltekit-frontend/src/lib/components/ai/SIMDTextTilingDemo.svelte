@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
+  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -324,16 +325,16 @@ https://svelte.dev/e/expected_token -->
 </script>
 
 <div class="p-6 max-w-7xl mx-auto space-y-6 simd-text-demo">
-  <Card>
-    <CardHeader>
-      <CardTitle class="flex items-center gap-2">
+  <NesCard>
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary" class="flex items-center gap-2">
         🧬 SIMD Text Tiling Demo
         <span class="text-sm font-normal text-gray-500">
           7-bit NES-style Compression with Instantaneous UI Generation
         </span>
-      </CardTitle>
-    </CardHeader>
-    <CardContent class="space-y-6">
+      </h3>
+    </div>
+    <div class="yorha-panel-content" class="space-y-6">
       <!-- Configuration Panel -->
       <div class="grid grid-cols-1 md:grid-cols-5 gap-4 p-4 bg-gray-50 rounded-lg">
         <div>
@@ -376,7 +377,7 @@ https://svelte.dev/e/expected_token -->
             class="w-full text-sm"
           >
             {isProcessing ? '🔄 Processing...' : '🚀 Process Sample'}
-          </Button>
+          </button>
         </div>
       </div>
       
@@ -384,13 +385,13 @@ https://svelte.dev/e/expected_token -->
       <div class="flex flex-wrap gap-2">
         <Button class="bits-btn" onclick={processBatchTexts} disabled={isProcessing} variant="outline" size="sm">
           📦 Batch Process ({sampleTexts.length})
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={benchmarkCompressionLevels} disabled={isProcessing} variant="outline" size="sm">
           🧪 Compression Benchmark
-        </Button>
+        </button>
         <Button class="bits-btn" onclick={clearAll} variant="outline" size="sm">
           🗑️ Clear All
-        </Button>
+        </button>
       </div>
       
       <!-- System Statistics -->
@@ -432,16 +433,16 @@ https://svelte.dev/e/expected_token -->
           </div>
         </div>
       {/if}
-    </CardContent>
-  </Card>
+    </div>
+  </NesCard>
   
   <!-- Live Rendered Components -->
   {#if liveRenderedComponents.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle>🎮 Live Rendered Components (NES-style)</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">🎮 Live Rendered Components (NES-style)</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-4">
           {#each liveRenderedComponents as component (component.id)}
             <div class="border rounded-lg p-4 bg-gray-900 text-white">
@@ -452,17 +453,17 @@ https://svelte.dev/e/expected_token -->
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
   
   <!-- Processing Results -->
   {#if results.length > 0}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {#each results as result (result.id)}
-        <Card class="overflow-hidden">
-          <CardHeader class="pb-2">
-            <CardTitle class="text-lg flex items-center justify-between">
+        <NesCard class="overflow-hidden">
+          <div class="yorha-panel-header" class="pb-2">
+            <h3 class="nes-text is-primary" class="text-lg flex items-center justify-between">
               <span class="truncate">{result.title}</span>
               <div class="flex items-center gap-2">
                 <span class={`px-2 py-1 rounded-full text-xs border ${getQualityTierColor(result.qualityTier)}`}>
@@ -470,13 +471,13 @@ https://svelte.dev/e/expected_token -->
                 </span>
                 <span class="text-xs text-gray-500">{result.processingMode}</span>
               </div>
-            </CardTitle>
+            </h3>
             <div class="text-sm text-gray-500">
               {result.type} • {new Date(result.timestamp).toLocaleTimeString()}
             </div>
-          </CardHeader>
+          </div>
           
-          <CardContent class="space-y-4">
+          <div class="yorha-panel-content" class="space-y-4">
             <!-- Original Text Preview -->
             <div class="text-xs bg-gray-100 p-2 rounded">
               <strong>Original ({result.originalText.length} chars):</strong>
@@ -546,13 +547,13 @@ https://svelte.dev/e/expected_token -->
                 <div><strong>Instant UI:</strong> <span class="text-green-600">✓ Enabled</span></div>
               {/if}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </NesCard>
       {/each}
     </div>
   {:else}
-    <Card>
-      <CardContent class="text-center py-12 text-gray-500">
+    <NesCard>
+      <div class="yorha-panel-content" class="text-center py-12 text-gray-500">
         <div class="text-6xl mb-4">🧬</div>
         <h3 class="text-lg font-medium mb-2">No SIMD Text Processing Results Yet</h3>
         <p class="mb-4">Process your first text with ultra-compressed 7-bit tiling!</p>
@@ -561,30 +562,30 @@ https://svelte.dev/e/expected_token -->
           disabled={isProcessing}
         >
           🚀 Process Sample Text
-        </Button>
-      </CardContent>
-    </Card>
+        </button>
+      </div>
+    </NesCard>
   {/if}
   
   <!-- Processing Logs -->
   {#if processingLogs.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex justify-between items-center">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex justify-between items-center">
           📝 Processing Logs
           <Button class="bits-btn" onclick={() => processingLogs = []} variant="outline" size="sm">
             Clear Logs
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+          </button>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="bg-black text-green-400 p-4 rounded-lg font-mono text-xs max-h-64 overflow-y-auto">
           {#each processingLogs as log}
             <div class="mb-1">{log}</div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

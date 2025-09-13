@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import VectorPipelineDemo from '$lib/components/demo/VectorPipelineDemo.svelte';
   import type { PageData } from './$types';
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from 'svelte';
   import Dropdown from '$lib/components/+Dropdown.svelte';
   import Checkbox from '$lib/components/+Checkbox.svelte';
@@ -72,11 +73,11 @@
   ];
 </script>
 
-<div class="card">
-  <div class="card-header">
+<div class="nier-bits-card">
+  <div class="nier-bits-yorha-panel-header">
     <h3>Automatic File Upload</h3>
   </div>
-  <div class="card-body">
+  <div class="nier-bits-card-body">
     <div class="mb-3">
       <label for="caseSelect" class="form-label">Select Case:</label>
       <Dropdown id="caseSelect" bind:selected={selectedCase} options={caseOptions} />
@@ -95,7 +96,7 @@
     <div class="mb-3 form-check">
       <Checkbox id="tagCheckbox" bind:checked={tag} label="Tag with AI" />
     </div>
-    <button class="btn btn-primary" onclick={handleSubmit}>Upload</button>
+    <button class="btn nes-btn is-primary" onclick={handleSubmit}>Upload</button>
   </div>
 </div>
 

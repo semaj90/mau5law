@@ -1,9 +1,10 @@
 <!-- ContextualBVectorChat.svelte - Enhanced AI Chat with BVector Store Integration -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, createEventDispatcher } from 'svelte';
   import { createEnhancedBVectorStore, type EnhancedBVectorStore, type SearchResult } from '$lib/services/enhanced-bvector-store';
   import { ContextualRLValidator, type ValidationResult } from '$lib/ai/contextual-rl-validator';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/Card';
   import { Badge } from '$lib/components/ui/badge';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
@@ -472,10 +473,10 @@
 <!-- Enhanced Chat Interface -->
 <div class="contextual-bvector-chat {className}">
   <!-- Header with Status and Controls -->
-  <Card class="mb-4">
-    <CardHeader class="pb-3">
+  <NesCard class="mb-4">
+    <div class="yorha-panel-header" class="pb-3">
       <div class="flex items-center justify-between">
-        <CardTitle class="flex items-center gap-2">
+        <h3 class="nes-text is-primary" class="flex items-center gap-2">
           <Brain class="w-5 h-5 text-purple-500" />
           Enhanced Contextual AI
           {#if enableReinforcementLearning}
@@ -490,47 +491,47 @@
               GPU
             </Badge>
           {/if}
-        </CardTitle>
+        </h3>
 
         <div class="flex items-center gap-2">
           <!-- Validation Panel Toggle -->
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => (showValidationPanel = !showValidationPanel)}
             disabled={!validator}
           >
             <TestTube class="w-4 h-4" />
-          </Button>
+          </button>
 
           <!-- Quick Validation -->
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={runQuickValidation}
             disabled={!validator || isRunningValidation}
           >
             ⚡
-          </Button>
+          </button>
 
           <!-- Settings Toggle -->
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => (showMetrics = !showMetrics)}
           >
             <Settings class="w-4 h-4" />
-          </Button>
+          </button>
 
           <!-- Memory Optimization -->
-          <Button
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={optimizeMemory}
             disabled={!bvectorStore}
           >
             🧹
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -539,19 +540,19 @@
         <div class="mt-3 grid grid-cols-4 gap-4 text-xs">
           <div class="text-center">
             <div class="font-semibold">{storeMetrics.totalQueries}</div>
-            <div class="text-muted-foreground">Queries</div>
+            <div class="nes-text is-disabled">Queries</div>
           </div>
           <div class="text-center">
             <div class="font-semibold">{Math.round(storeMetrics.averageLatency)}ms</div>
-            <div class="text-muted-foreground">Avg Latency</div>
+            <div class="nes-text is-disabled">Avg Latency</div>
           </div>
           <div class="text-center">
             <div class="font-semibold">{storeMetrics.gpuAccelerated}</div>
-            <div class="text-muted-foreground">GPU Queries</div>
+            <div class="nes-text is-disabled">GPU Queries</div>
           </div>
           <div class="text-center">
             <div class="font-semibold">{(averageConfidence * 100).toFixed(1)}%</div>
-            <div class="text-muted-foreground">Confidence</div>
+            <div class="nes-text is-disabled">Confidence</div>
           </div>
         </div>
       {/if}
@@ -565,7 +566,7 @@
               Contextual AI Validation
             </h4>
             <div class="flex gap-2">
-              <Button
+              <button class="nes-btn"
                 size="sm"
                 onclick={runContextualValidation}
                 disabled={isRunningValidation}
@@ -576,7 +577,7 @@
                   <TestTube class="w-3 h-3 mr-1" />
                 {/if}
                 Full Test Suite
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -620,14 +621,14 @@
           {/if}
         </div>
       {/if}
-    </CardHeader>
-  </Card>
+    </div>
+  </NesCard>
 
   <!-- Chat History -->
-  <Card class="flex-1 mb-4">
+  <NesCard class="flex-1 mb-4">
     <ScrollArea class="h-96 p-4">
       {#if chatHistory.length === 0}
-        <div class="text-center text-muted-foreground py-8">
+        <div class="text-center nes-text is-disabled py-8">
           <MessageSquare class="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p>Start a conversation with enhanced contextual AI</p>
           <p class="text-sm mt-2">
@@ -693,7 +694,7 @@
                   disabled={lastUserFeedback?.messageId === msg.id}
                 >
                   <ThumbsUp class="w-3 h-3" />
-                </Button>
+                </button>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -702,7 +703,7 @@
                   disabled={lastUserFeedback?.messageId === msg.id}
                 >
                   <ThumbsDown class="w-3 h-3" />
-                </Button>
+                </button>
                 {#if lastUserFeedback?.messageId === msg.id}
                   <span class="text-green-600 text-xs">Feedback recorded</span>
                 {/if}
@@ -710,7 +711,7 @@
             {/if}
 
             <!-- Timestamp -->
-            <div class="text-xs text-muted-foreground mt-1">
+            <div class="text-xs nes-text is-disabled mt-1">
               {msg.timestamp.toLocaleTimeString()}
             </div>
           </div>
@@ -719,24 +720,24 @@
 
       <!-- Loading Indicator -->
       {#if isLoading}
-        <div class="flex items-center gap-2 text-muted-foreground">
+        <div class="flex items-center gap-2 nes-text is-disabled">
           <Loader2 class="w-4 h-4 animate-spin" />
           <span>AI is analyzing context and generating response...</span>
         </div>
       {/if}
     </ScrollArea>
-  </Card>
+  </NesCard>
 
   <!-- Contextual Results Sidebar -->
   {#if showContextualResults && contextualResults.length > 0}
-    <Card class="mb-4">
-      <CardHeader class="pb-2">
-        <CardTitle class="text-sm flex items-center gap-2">
+    <NesCard class="mb-4">
+      <div class="yorha-panel-header" class="pb-2">
+        <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
           <Database class="w-4 h-4" />
           Contextual References ({contextualResults.length})
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-2">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-2">
         {#each contextualResults.slice(0, 5) as result}
           <div class="p-3 bg-muted/50 rounded-lg text-sm">
             <div class="flex items-center justify-between mb-1">
@@ -755,8 +756,8 @@
             </p>
           </div>
         {/each}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 
   <!-- Input Area -->
@@ -781,12 +782,12 @@
       {:else}
         <Brain class="w-4 h-4" />
       {/if}
-    </Button>
+    </button>
   </div>
 
   <!-- Stats Footer -->
   {#if messageCount > 0}
-    <div class="mt-4 text-xs text-muted-foreground text-center">
+    <div class="mt-4 text-xs nes-text is-disabled text-center">
       {messageCount} messages • {contextualResults.length} contextual refs
       • User: {userRole}
       {#if caseId}

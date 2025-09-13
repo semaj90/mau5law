@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import * as monaco from 'monaco-editor';
   import { onDestroy, onMount } from 'svelte';
   let editorContainer: HTMLDivElement = $state()

@@ -1,5 +1,6 @@
 <!-- Combobox Component for Legal AI App -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { Combobox } from 'bits-ui';
   import { Check, ChevronDown, Search, X } from 'lucide-svelte';
   import { cn } from '$lib/utils';

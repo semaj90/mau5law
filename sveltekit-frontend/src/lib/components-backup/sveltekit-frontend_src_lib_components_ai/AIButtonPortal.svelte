@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   interface Props {
     position: | "bottom-right";
@@ -14,7 +15,7 @@ https://svelte.dev/e/expected_token -->
 
 
 
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
       | "bottom-left"
     | "top-right"
     | "top-left" = "bottom-right";
@@ -22,7 +23,7 @@ https://svelte.dev/e/expected_token -->
 
 {#if show}
   <div class="space-y-4" data-position={position}>
-    <Button />
+    <button class="nes-btn" />
   </div>
 {/if}
 

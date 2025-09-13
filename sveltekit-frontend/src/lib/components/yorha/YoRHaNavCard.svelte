@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   let { title, description, path, icon: any, ariaLabel = title } = $props();
 
   import { goto } from '$app/navigation';
@@ -22,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<div class="yorha-nav-card" role="button" tabindex="0" aria-label={ariaLabel}
+<div class="yorha-nav-nier-bits-card" role="button" tabindex="0" aria-label={ariaLabel}
   onclick={handleNavigate} keydown={handleKey} data-path={path}>
   <div class="yorha-nav-header">
     {#if icon}

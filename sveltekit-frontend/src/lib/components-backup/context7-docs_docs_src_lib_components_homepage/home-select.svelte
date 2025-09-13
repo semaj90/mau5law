@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { Select } from "bits-ui";
   	import Check from "phosphor-svelte/lib/Check";
   	import CaretUpDown from "phosphor-svelte/lib/CaretUpDown";
@@ -25,7 +26,7 @@
 	>
 		{selectedLabel}
 		<CaretUpDown
-			class="text-muted-foreground ml-auto mr-[-5px] size-3 lg:size-6 dark:text-[#17171766]"
+			class="nes-text is-disabled ml-auto mr-[-5px] size-3 lg:size-6 dark:text-[#17171766]"
 		/>
 	</Select.Trigger>
 	<Select.Portal>

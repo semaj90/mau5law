@@ -1,5 +1,8 @@
 <svelte:options runes={true} />
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css';
   /* Route Discovery & Enhanced UX (Svelte 5 runes) */
   // @ts-ignore Vite glob (eager for static analysis)
   const pageModules = import.meta.glob('/src/routes/**/+page.(svelte|ts)', { eager: true }) as Record<string, any>;

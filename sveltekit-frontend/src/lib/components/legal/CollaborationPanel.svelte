@@ -6,6 +6,7 @@ Collaboration Panel Component
 Real-time collaboration interface for multiple investigators working on evidence custody
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     collaborationSession: {;
     activeCollaborators: string[];
@@ -201,22 +202,22 @@ Real-time collaboration interface for multiple investigators working on evidence
 
 <div class="collaboration-panel space-y-4">
   {#if !collaborationSession}
-    <Card>
-      <CardContent class="p-6 text-center">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-6 text-center">
         <Users class="w-12 h-12 mx-auto mb-4 text-gray-400" />
         <p class="text-gray-600">No active collaboration session</p>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {:else}
     <!-- Active Participants -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center text-sm">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center text-sm">
           <Users class="w-4 h-4 mr-2" />
           Active Participants ({collaborationSession.participants.length})
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-3">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-3">
         {#each collaborationSession.participants as participant}
           <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
             <div class="flex items-center space-x-3">
@@ -240,18 +241,18 @@ Real-time collaboration interface for multiple investigators working on evidence
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{participant.role}</span>
           </div>
         {/each}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Real-time Chat -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center text-sm">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center text-sm">
           <MessageCircle class="w-4 h-4 mr-2" />
           Team Chat
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="p-0">
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="p-0">
         <!-- Chat messages -->
         <div bind:this={chatContainer} class="h-64 overflow-y-auto p-4 space-y-3 border-b">
           {#if collaborationSession.chatHistory.length === 0}
@@ -324,16 +325,16 @@ Real-time collaboration interface for multiple investigators working on evidence
               class="self-end bits-btn bits-btn"
             >
               <Send class="w-4 h-4" />
-            </Button>
+            </button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Annotations -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between text-sm">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between text-sm">
           <div class="flex items-center">
             <MapPin class="w-4 h-4 mr-2" />
             Annotations ({collaborationSession.annotations.length})
@@ -344,10 +345,10 @@ Real-time collaboration interface for multiple investigators working on evidence
             onclick={() => showAnnotationInput = !showAnnotationInput}
           >
             Add Note
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-3">
+          </button>
+        </h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-3">
         {#if showAnnotationInput}
           <div class="border border-gray-200 rounded-lg p-3 bg-gray-50">
             <Textarea
@@ -358,10 +359,10 @@ Real-time collaboration interface for multiple investigators working on evidence
             <div class="flex space-x-2">
               <Button class="bits-btn" onclick={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
                 Add Annotation
-              </Button>
+              </button>
               <Button class="bits-btn" onclick={() => showAnnotationInput = false} variant="outline" size="sm">
                 Cancel
-              </Button>
+              </button>
             </div>
           </div>
         {/if}
@@ -396,12 +397,12 @@ Real-time collaboration interface for multiple investigators working on evidence
             {/each}
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Session Info -->
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="flex items-center justify-between text-sm text-gray-600">
           <div class="flex items-center space-x-2">
             <Eye class="w-4 h-4" />
@@ -412,8 +413,8 @@ Real-time collaboration interface for multiple investigators working on evidence
             <span>{activeCollaborators.length} active</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

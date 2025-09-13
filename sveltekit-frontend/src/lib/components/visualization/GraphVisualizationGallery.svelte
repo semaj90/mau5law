@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: 'return' outside of function -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { GraphVisualizationEngine, type GraphVisualizationResult, type GraphNode, type GraphEdge } from '$lib/services/graph-visualization-engine';
@@ -286,14 +287,14 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <!-- Generate Button -->
-      <Button
+      <button class="nes-btn"
         variant="legal"
         disabled={$isGenerating}
         onclick={() => generateVisualizationsForAllAlgorithms()}
         class="bits-btn generate-btn"
       >
         {$isGenerating ? 'Generating...' : 'Generate All'}
-      </Button>
+      </button>
     </div>
   </div>
 
@@ -349,7 +350,7 @@ https://svelte.dev/e/js_parse_error -->
             disabled={$isGenerating}
           >
             🔄 Regenerate
-          </Button>
+          </button>
           
           <div class="item-metrics">
             <span class="nes-text is-disabled">
@@ -375,7 +376,7 @@ https://svelte.dev/e/js_parse_error -->
         onclick={() => generateVisualizationsForAllAlgorithms()}
       >
         Generate Visualizations
-      </Button>
+      </button>
     </div>
   {/if}
 

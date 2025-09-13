@@ -1,5 +1,6 @@
 <!-- GPU-Accelerated Streaming Chat Interface with Memory Optimization -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { GPULLMStreamingPipeline } from '$lib/services/gpu-llm-streaming-pipeline';
   import { fade, slide } from 'svelte/transition';

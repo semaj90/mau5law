@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
@@ -283,9 +284,9 @@
       <p class="engine-subtitle">Intelligent suggestions for case strategy and next actions</p>
     </div>
     <div class="header-actions">
-      <Button on:click={generateRecommendations} disabled={isGenerating}>
+      <button class="nes-btn" on:click={generateRecommendations} disabled={isGenerating}>
         {isGenerating ? 'Generating...' : 'Generate Recommendations'}
-      </Button>
+      </button>
     </div>
   </header>
 
@@ -381,7 +382,7 @@
       </div>
     {:else}
       {#each filteredRecommendations as recommendation}
-        <div.Root class="recommendation-card">
+        <div.Root class="recommendation-nier-bits-card">
           <div.Header>
             <div class="recommendation-header">
               <div class="recommendation-title-section">
@@ -473,13 +474,13 @@
           </Card.Content>
           
           <div.Footer>
-            <div class="card-actions">
-              <Button variant="outline" size="sm" on:click={() => openRecommendationDetails(recommendation)}>
+            <div class="nier-bits-card-actions">
+              <button class="nes-btn" variant="outline" size="sm" on:click={() => openRecommendationDetails(recommendation)}>
                 View Details
-              </Button>
-              <Button size="sm" on:click={() => applyRecommendation(recommendation.id)}>
+              </button>
+              <button class="nes-btn" size="sm" on:click={() => applyRecommendation(recommendation.id)}>
                 Apply
-              </Button>
+              </button>
             </div>
           </Card.Footer>
         </Card.Root>
@@ -557,7 +558,7 @@
             <h3>Required Resources</h3>
             <div class="resources-grid">
               {#each selectedRecommendation.resources as resource}
-                <div class="resource-card">
+                <div class="resource-nier-bits-card">
                   <h4>{resource.name}</h4>
                   <p class="resource-type">{resource.type.replace('_', ' ')}</p>
                   <p class="resource-description">{resource.description}</p>
@@ -642,12 +643,12 @@
       </div>
       
       <div class="dialog-actions">
-        <Button variant="outline" on:click={() => showRecommendationDetails = false}>
+        <button class="nes-btn" variant="outline" on:click={() => showRecommendationDetails = false}>
           Close
-        </Button>
-        <Button on:click={() => applyRecommendation(selectedRecommendation.id)}>
+        </button>
+        <button class="nes-btn" on:click={() => applyRecommendation(selectedRecommendation.id)}>
           Apply Recommendation
-        </Button>
+        </button>
       </div>
     {/if}
   </Dialog.Content>

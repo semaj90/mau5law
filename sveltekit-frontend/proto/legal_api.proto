@@ -1,0 +1,453 @@
+syntax = "proto3";
+
+package legal.api;
+
+option go_package = "github.com/legal-ai/proto/legal_api";
+
+// Import common types
+import "google/protobuf/timestamp.proto";
+
+// ========================================
+// User and Authentication
+// ========================================
+
+message User {
+  string id = 1;
+  string email = 2;
+  string name = 3;
+  repeated string roles = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  UserPreferences preferences = 7;
+}
+
+message UserPreferences {
+  string theme = 1; // "nier", "yorha", "gothic"
+  string language = 2;
+  bool notifications_enabled = 3;
+  bool analytics_opt_in = 4;
+}
+
+message AuthRequest {
+  string email = 1;
+  string password = 2;
+  bool remember_me = 3;
+  string client_info = 4;
+}
+
+message AuthResponse {
+  bool success = 1;
+  string token = 2;
+  User user = 3;
+  string error_message = 4;
+  int64 expires_at = 5;
+}
+
+// ========================================
+// Legal Document Core
+// ========================================
+
+message LegalDocument {
+  string id = 1;
+  string title = 2;
+  string content = 3; // For smaller docs (<1MB)
+  string file_url = 4; // For larger docs
+  DocumentType type = 5;
+  repeated string tags = 6;
+  DocumentMetadata metadata = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  string owner_id = 10;
+  repeated string collaborator_ids = 11;
+  DocumentStatus status = 12;
+  SecurityLevel security_level = 13;
+}
+
+enum DocumentType {
+  DOCUMENT_TYPE_UNKNOWN = 0;
+  DOCUMENT_TYPE_CONTRACT = 1;
+  DOCUMENT_TYPE_BRIEF = 2;
+  DOCUMENT_TYPE_EVIDENCE = 3;
+  DOCUMENT_TYPE_CITATION = 4;
+  DOCUMENT_TYPE_RULING = 5;
+  DOCUMENT_TYPE_MOTION = 6;
+  DOCUMENT_TYPE_PLEADING = 7;
+  DOCUMENT_TYPE_CORRESPONDENCE = 8;
+}
+
+enum DocumentStatus {
+  DOCUMENT_STATUS_DRAFT = 0;
+  DOCUMENT_STATUS_REVIEW = 1;
+  DOCUMENT_STATUS_APPROVED = 2;
+  DOCUMENT_STATUS_ARCHIVED = 3;
+  DOCUMENT_STATUS_DELETED = 4;
+}
+
+enum SecurityLevel {
+  SECURITY_LEVEL_PUBLIC = 0;
+  SECURITY_LEVEL_INTERNAL = 1;
+  SECURITY_LEVEL_CONFIDENTIAL = 2;
+  SECURITY_LEVEL_RESTRICTED = 3;
+}
+
+message DocumentMetadata {
+  string jurisdiction = 1;
+  string court_level = 2;
+  repeated Party parties = 3;
+  repeated string practice_areas = 4;
+  float confidence_score = 5;
+  string risk_level = 6;
+  repeated string key_terms = 7;
+  repeated LegalCitation citations = 8;
+  CaseInformation case_info = 9;
+}
+
+message Party {
+  string name = 1;
+  string role = 2; // plaintiff, defendant, counsel, etc.
+  string type = 3; // individual, organization, government
+  ContactInfo contact = 4;
+}
+
+message ContactInfo {
+  string address = 1;
+  string phone = 2;
+  string email = 3;
+  string law_firm = 4;
+}
+
+message LegalCitation {
+  string citation_text = 1;
+  string source = 2;
+  string url = 3;
+  CitationType type = 4;
+}
+
+enum CitationType {
+  CITATION_TYPE_CASE_LAW = 0;
+  CITATION_TYPE_STATUTE = 1;
+  CITATION_TYPE_REGULATION = 2;
+  CITATION_TYPE_SECONDARY = 3;
+}
+
+message CaseInformation {
+  string case_number = 1;
+  string court_name = 2;
+  google.protobuf.Timestamp filing_date = 3;
+  CaseStatus status = 4;
+  repeated string judges = 5;
+}
+
+enum CaseStatus {
+  CASE_STATUS_PENDING = 0;
+  CASE_STATUS_ACTIVE = 1;
+  CASE_STATUS_SETTLED = 2;
+  CASE_STATUS_DISMISSED = 3;
+  CASE_STATUS_DECIDED = 4;
+  CASE_STATUS_APPEALED = 5;
+}
+
+// ========================================
+// Search and Query
+// ========================================
+
+message SearchRequest {
+  string query = 1;
+  repeated SearchFilter filters = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+  SearchType type = 5;
+  bool include_embeddings = 6;
+  SortOptions sort = 7;
+  string user_id = 8;
+}
+
+message SearchFilter {
+  string field = 1;
+  string operator = 2; // eq, ne, gt, lt, in, contains
+  repeated string values = 3;
+}
+
+message SortOptions {
+  string field = 1;
+  bool descending = 2;
+}
+
+enum SearchType {
+  SEARCH_TYPE_FULL_TEXT = 0;
+  SEARCH_TYPE_SEMANTIC = 1;
+  SEARCH_TYPE_VECTOR = 2;
+  SEARCH_TYPE_HYBRID = 3;
+  SEARCH_TYPE_LEGAL_CITATION = 4;
+}
+
+message SearchResponse {
+  repeated SearchResult results = 1;
+  int32 total_count = 2;
+  float max_score = 3;
+  string query_id = 4;
+  int32 processing_time_ms = 5;
+  SearchMetadata metadata = 6;
+}
+
+message SearchResult {
+  LegalDocument document = 1;
+  float score = 2;
+  repeated string highlights = 3;
+  VectorSimilarity similarity = 4;
+  string excerpt = 5;
+  repeated LegalCitation related_citations = 6;
+}
+
+message VectorSimilarity {
+  float cosine_similarity = 1;
+  float euclidean_distance = 2;
+  int32 embedding_dimension = 3;
+  string model_used = 4;
+}
+
+message SearchMetadata {
+  repeated string suggested_queries = 1;
+  repeated SearchFacet facets = 2;
+  bool has_more_results = 3;
+}
+
+message SearchFacet {
+  string field = 1;
+  repeated FacetValue values = 2;
+}
+
+message FacetValue {
+  string value = 1;
+  int32 count = 2;
+}
+
+// ========================================
+// AI and Chat
+// ========================================
+
+message ChatMessage {
+  string id = 1;
+  string session_id = 2;
+  string user_id = 3;
+  string content = 4;
+  MessageType type = 5;
+  repeated Attachment attachments = 6;
+  google.protobuf.Timestamp timestamp = 7;
+  MessageMetadata metadata = 8;
+}
+
+enum MessageType {
+  MESSAGE_TYPE_USER = 0;
+  MESSAGE_TYPE_ASSISTANT = 1;
+  MESSAGE_TYPE_SYSTEM = 2;
+  MESSAGE_TYPE_ERROR = 3;
+  MESSAGE_TYPE_FUNCTION_CALL = 4;
+}
+
+message MessageMetadata {
+  string model_used = 1;
+  int32 tokens_used = 2;
+  float processing_time_ms = 3;
+  repeated string source_documents = 4;
+  float confidence_score = 5;
+}
+
+message ChatRequest {
+  string session_id = 1;
+  string user_id = 2;
+  string message = 3;
+  ChatContext context = 4;
+  ChatOptions options = 5;
+}
+
+message ChatContext {
+  repeated string document_ids = 1;
+  string case_id = 2;
+  repeated string previous_message_ids = 3;
+  map<string, string> variables = 4;
+}
+
+message ChatOptions {
+  string model = 1;
+  float temperature = 2;
+  int32 max_tokens = 3;
+  bool stream = 4;
+  bool include_sources = 5;
+}
+
+message ChatResponse {
+  string response = 1;
+  repeated string sources = 2;
+  float confidence = 3;
+  string model_used = 4;
+  int32 tokens_used = 5;
+  repeated LegalCitation citations = 6;
+  repeated ActionItem action_items = 7;
+}
+
+message ActionItem {
+  string description = 1;
+  ActionPriority priority = 2;
+  google.protobuf.Timestamp due_date = 3;
+  string assigned_to = 4;
+}
+
+enum ActionPriority {
+  ACTION_PRIORITY_LOW = 0;
+  ACTION_PRIORITY_MEDIUM = 1;
+  ACTION_PRIORITY_HIGH = 2;
+  ACTION_PRIORITY_CRITICAL = 3;
+}
+
+message Attachment {
+  string filename = 1;
+  string content_type = 2;
+  int64 size = 3;
+  string url = 4;
+  string checksum = 5;
+}
+
+// ========================================
+// Legal Analysis and AI Services
+// ========================================
+
+message AnalysisRequest {
+  string document_id = 1;
+  AnalysisType type = 2;
+  repeated string specific_queries = 3;
+  AnalysisOptions options = 4;
+  string user_id = 5;
+}
+
+enum AnalysisType {
+  ANALYSIS_TYPE_RISK_ASSESSMENT = 0;
+  ANALYSIS_TYPE_CLAUSE_EXTRACTION = 1;
+  ANALYSIS_TYPE_COMPLIANCE_CHECK = 2;
+  ANALYSIS_TYPE_PRECEDENT_ANALYSIS = 3;
+  ANALYSIS_TYPE_ENTITY_EXTRACTION = 4;
+  ANALYSIS_TYPE_SENTIMENT_ANALYSIS = 5;
+}
+
+message AnalysisOptions {
+  string jurisdiction = 1;
+  repeated string practice_areas = 2;
+  float confidence_threshold = 3;
+  bool include_recommendations = 4;
+}
+
+message AnalysisResponse {
+  string analysis_id = 1;
+  AnalysisType type = 2;
+  repeated AnalysisResult results = 3;
+  float overall_confidence = 4;
+  google.protobuf.Timestamp created_at = 5;
+  repeated Recommendation recommendations = 6;
+}
+
+message AnalysisResult {
+  string category = 1;
+  string finding = 2;
+  float confidence = 3;
+  repeated string supporting_text = 4;
+  repeated LegalCitation citations = 5;
+  RiskLevel risk_level = 6;
+}
+
+enum RiskLevel {
+  RISK_LEVEL_LOW = 0;
+  RISK_LEVEL_MEDIUM = 1;
+  RISK_LEVEL_HIGH = 2;
+  RISK_LEVEL_CRITICAL = 3;
+}
+
+message Recommendation {
+  string title = 1;
+  string description = 2;
+  RecommendationType type = 3;
+  ActionPriority priority = 4;
+  repeated string steps = 5;
+}
+
+enum RecommendationType {
+  RECOMMENDATION_TYPE_ACTION = 0;
+  RECOMMENDATION_TYPE_RESEARCH = 1;
+  RECOMMENDATION_TYPE_REVIEW = 2;
+  RECOMMENDATION_TYPE_COMPLIANCE = 3;
+}
+
+// ========================================
+// System and Health
+// ========================================
+
+message HealthCheckRequest {
+  string service = 1;
+  bool include_details = 2;
+}
+
+message HealthCheckResponse {
+  bool healthy = 1;
+  string status = 2;
+  map<string, string> details = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  string version = 5;
+}
+
+message SystemStatus {
+  string service_name = 1;
+  bool operational = 2;
+  float cpu_usage = 3;
+  float memory_usage = 4;
+  int32 active_connections = 5;
+  int64 requests_per_minute = 6;
+  google.protobuf.Timestamp last_updated = 7;
+}
+
+// ========================================
+// Batch Operations
+// ========================================
+
+message BatchRequest {
+  string batch_id = 1;
+  repeated BatchOperation operations = 2;
+  BatchOptions options = 3;
+  string user_id = 4;
+}
+
+message BatchOperation {
+  string operation_id = 1;
+  string type = 2;
+  map<string, string> parameters = 3;
+}
+
+message BatchOptions {
+  bool parallel_execution = 1;
+  int32 max_concurrency = 2;
+  int32 timeout_seconds = 3;
+  bool continue_on_error = 4;
+}
+
+message BatchResponse {
+  string batch_id = 1;
+  BatchStatus status = 2;
+  repeated BatchResult results = 3;
+  google.protobuf.Timestamp started_at = 4;
+  google.protobuf.Timestamp completed_at = 5;
+  string error_message = 6;
+}
+
+enum BatchStatus {
+  BATCH_STATUS_PENDING = 0;
+  BATCH_STATUS_RUNNING = 1;
+  BATCH_STATUS_COMPLETED = 2;
+  BATCH_STATUS_FAILED = 3;
+  BATCH_STATUS_CANCELLED = 4;
+}
+
+message BatchResult {
+  string operation_id = 1;
+  bool success = 2;
+  string result_data = 3;
+  string error_message = 4;
+  float processing_time_ms = 5;
+}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     size?: 'sm' | 'md' | 'lg' | 'xl';
     theme?: 'classic' | 'gold' | 'red' | 'blue' | 'green' | 'purple';

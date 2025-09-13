@@ -1,9 +1,10 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { ScrollArea } from "bits-ui";
 </script>
 
 <ScrollArea.Root
-	class="border-dark-10 bg-background-alt shadow-card relative overflow-hidden rounded-[10px] border px-4 py-4"
+	class="border-dark-10 bg-background-alt shadow-nier-bits-card relative overflow-hidden rounded-[10px] border px-4 py-4"
 >
 	<ScrollArea.Viewport class="h-full max-h-[200px] w-full max-w-[200px]">
 		<h4 class="text-foreground mb-4 mt-2 text-xl font-semibold leading-none tracking-[-0.01em]">

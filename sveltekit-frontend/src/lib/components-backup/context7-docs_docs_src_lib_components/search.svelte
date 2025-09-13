@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import MagnifyingGlass from "phosphor-svelte/lib/MagnifyingGlass";
   	import { onMount } from "svelte";
   	import { Button, Command, Dialog } from "bits-ui";
@@ -55,7 +56,7 @@
 	}}
 >
 	{#if showTrigger}
-		<Button.Root
+		<button class="nes-btn".Root
 			onclick={() => (dialogOpen = true)}
 			aria-label="Search Docs"
 			class="rounded-input hover:bg-dark-10 focus-visible:ring-foreground focus-visible:ring-offset-background focus-visible:outline-hidden relative -mr-3 ml-auto inline-flex h-10 w-10 touch-manipulation items-center justify-center px-2 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 sm:hidden"
@@ -63,7 +64,7 @@
 			<MagnifyingGlass class="size-5" />
 		</Button.Root>
 		<Dialog.Trigger
-			class="bg-muted text-muted-foreground ring-offset-background hover:bg-dark-10 focus-visible:ring-foreground focus-visible:ring-offset-background focus-visible:outline-hidden relative hidden h-10 items-center justify-between gap-3 whitespace-nowrap rounded-[9px] px-3 text-sm font-normal transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 sm:inline-flex sm:w-72"
+			class="bg-muted nes-text is-disabled ring-offset-background hover:bg-dark-10 focus-visible:ring-foreground focus-visible:ring-offset-background focus-visible:outline-hidden relative hidden h-10 items-center justify-between gap-3 whitespace-nowrap rounded-[9px] px-3 text-sm font-normal transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 sm:inline-flex sm:w-72"
 		>
 			<span class="flex items-center gap-2">
 				<MagnifyingGlass class="size-5" />Search Docs ...
@@ -87,7 +88,7 @@
 			class="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/80"
 		/>
 		<Dialog.Content
-			class="rounded-card-lg bg-background shadow-popover data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-100 outline-hidden duration-400 fixed left-[50%] top-[20%] w-full max-w-[94%] translate-x-[-50%] translate-y-[0%] ease-out sm:max-w-[490px] md:w-full"
+			class="rounded-nier-bits-card-lg bg-background shadow-popover data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-100 outline-hidden duration-400 fixed left-[50%] top-[20%] w-full max-w-[94%] translate-x-[-50%] translate-y-[0%] ease-out sm:max-w-[490px] md:w-full"
 			onCloseAutoFocus={(e) => {
 				e.preventDefault();
 			}}

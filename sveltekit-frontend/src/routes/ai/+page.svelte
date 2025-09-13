@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { page } from "$app/state";
   import ChatInterface from "$lib/components/ai/ChatInterface.svelte";
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -123,7 +124,7 @@
               >
                 <Plus class="w-4 h-4" />
                 New
-              </Button>
+              </button>
             </div>
 
             <!-- Search -->
@@ -190,7 +191,7 @@
                 >
                   <Clock class="w-4 h-4" />
                   History
-                </Button>
+                </button>
               {/if}
 
               <div>
@@ -214,7 +215,7 @@
                 >
                   <Save class="w-4 h-4" />
                   Save
-                </Button>
+                </button>
               {/if}
 
               <Button class="bits-btn"
@@ -224,7 +225,7 @@
               >
                 <Plus class="w-4 h-4" />
                 New Chat
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -258,7 +259,7 @@
                   }}
                 >
                   <span>{prompt}</span>
-                </Button>
+                </button>
               {/each}
             </div>
           </div>

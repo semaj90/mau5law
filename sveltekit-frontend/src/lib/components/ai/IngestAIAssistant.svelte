@@ -2,6 +2,7 @@
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   /**
    * Enhanced AI-Powered Document Ingest Assistant
    * Integrates with your existing AI agent store and production architecture
@@ -215,15 +216,15 @@ https://svelte.dev/e/attribute_duplicate -->
         <span>{error.message}</span>
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() => dismissError(error.id)}>
           ✕
-        </Button>
+        </button>
       </AlertDescription>
     </Alert>
   {/each}
   
   <!-- Progress Indicator -->
   {#if $processingStatus !== 'idle'}
-    <Card>
-      <CardContent class="p-4">
+    <NesCard>
+      <div class="yorha-panel-content" class="p-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm font-medium">
             {$processingStatus === 'processing' ? 'Processing Document...' : 
@@ -231,20 +232,20 @@ https://svelte.dev/e/attribute_duplicate -->
              $processingStatus === 'completed' ? 'Completed Successfully!' : 
              'Processing Failed'}
           </span>
-          <span class="text-sm text-muted-foreground">{$currentProgress}%</span>
+          <span class="text-sm nes-text is-disabled">{$currentProgress}%</span>
         </div>
         <Progress value={$currentProgress} class="w-full" />
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
   
   <!-- Main Input Form -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <Card>
-      <CardHeader>
-        <CardTitle>Document Details</CardTitle>
-      </CardHeader>
-      <CardContent class="space-y-4">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Document Details</h3>
+      </div>
+      <div class="yorha-panel-content" class="space-y-4">
         <div class="space-y-2">
           <Label for="title">Document Title</Label>
           <Input
@@ -269,7 +270,7 @@ https://svelte.dev/e/attribute_duplicate -->
           <Label>Document Type</Label>
           <div class="grid grid-cols-2 gap-2">
             {#each documentTypes as type}
-              <Button 
+              <button class="nes-btn" 
                 variant={selectedDocumentType === type.value ? 'default' : 'outline'}
                 size="sm"
                 onclick={() => selectedDocumentType = type.value}
@@ -278,7 +279,7 @@ https://svelte.dev/e/attribute_duplicate -->
               >
                 <span class="mr-2">{type.icon}</span>
                 {type.label}
-              </Button>
+              </button>
             {/each}
           </div>
         </div>
@@ -301,7 +302,7 @@ https://svelte.dev/e/attribute_duplicate -->
             class="flex-1 bits-btn bits-btn"
           >
             {$isProcessing ? 'Processing...' : '🚀 Ingest Document'}
-          </Button>
+          </button>
           
           <Button class="bits-btn"
             variant="outline"
@@ -309,24 +310,24 @@ https://svelte.dev/e/attribute_duplicate -->
             disabled={!documentTitle.trim() || !documentContent.trim() || $isProcessing}
           >
             ➕ Add to Batch
-          </Button>
+          </button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
     
     <!-- Batch Processing Panel -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           Batch Processing
           {#if $batchDocuments.length > 0}
             <Badge>{$batchDocuments.length} documents</Badge>
           {/if}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         {#if $batchDocuments.length === 0}
-          <div class="text-center text-muted-foreground py-8">
+          <div class="text-center nes-text is-disabled py-8">
             <p>No documents in batch</p>
             <p class="text-sm">Add documents to process multiple files at once</p>
           </div>
@@ -336,7 +337,7 @@ https://svelte.dev/e/attribute_duplicate -->
               <div class="flex items-center justify-between p-2 bg-muted rounded">
                 <div class="flex-1 truncate">
                   <div class="font-medium text-sm truncate">{doc.title}</div>
-                  <div class="text-xs text-muted-foreground">
+                  <div class="text-xs nes-text is-disabled">
                     {doc.type} • {doc.content.length} chars
                   </div>
                 </div>
@@ -346,7 +347,7 @@ https://svelte.dev/e/attribute_duplicate -->
                   onclick={() => removeFromBatch(doc.id)}
                 >
                   ✕
-                </Button>
+                </button>
               </div>
             {/each}
           </div>
@@ -358,7 +359,7 @@ https://svelte.dev/e/attribute_duplicate -->
               class="w-full bits-btn bits-btn"
             >
               {$processingStatus === 'batch_processing' ? 'Processing Batch...' : `🔥 Process ${$batchDocuments.length} Documents`}
-            </Button>
+            </button>
             <Button class="bits-btn"
               variant="outline"
               onclick={() => batchDocuments.set([])}
@@ -367,20 +368,20 @@ https://svelte.dev/e/attribute_duplicate -->
               class="w-full"
             >
               Clear Batch
-            </Button>
+            </button>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
   
   <!-- Results Display -->
   {#if $hasResults}
-    <Card>
-      <CardHeader>
-        <CardTitle>Processing Results</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">Processing Results</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-4">
           {#each $ingestResults as result (result.documentId || result.batchId)}
             <div class="border rounded-lg p-4">
@@ -389,7 +390,7 @@ https://svelte.dev/e/attribute_duplicate -->
                   <div class="font-medium">
                     {result.is_batch ? `Batch: ${result.processed} documents` : result.title}
                   </div>
-                  <div class="text-sm text-muted-foreground">
+                  <div class="text-sm nes-text is-disabled">
                     {result.is_batch ? `Success Rate: ${result.successRate}` : `Type: ${result.type}`}
                   </div>
                 </div>
@@ -398,25 +399,25 @@ https://svelte.dev/e/attribute_duplicate -->
               
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
-                  <div class="text-muted-foreground">Processing Time</div>
+                  <div class="nes-text is-disabled">Processing Time</div>
                   <div class="font-medium">
                     {result.processingTime ? `${result.processingTime.toFixed(1)}ms` : 'N/A'}
                   </div>
                 </div>
                 <div>
-                  <div class="text-muted-foreground">Document ID</div>
+                  <div class="nes-text is-disabled">Document ID</div>
                   <div class="font-mono text-xs">
                     {result.documentId?.substring(0, 8) || result.batchId?.substring(0, 8)}...
                   </div>
                 </div>
                 <div>
-                  <div class="text-muted-foreground">Embedding ID</div>
+                  <div class="nes-text is-disabled">Embedding ID</div>
                   <div class="font-mono text-xs">
                     {result.embeddingId?.substring(0, 8)}...
                   </div>
                 </div>
                 <div>
-                  <div class="text-muted-foreground">Timestamp</div>
+                  <div class="nes-text is-disabled">Timestamp</div>
                   <div class="text-xs">
                     {result.timestamp.toLocaleTimeString()}
                   </div>
@@ -425,17 +426,17 @@ https://svelte.dev/e/attribute_duplicate -->
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
   
   <!-- AI Chat Integration (if active conversation exists) -->
   {#if $currentConversation.length > 0}
-    <Card>
-      <CardHeader>
-        <CardTitle>AI Analysis</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">AI Analysis</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="space-y-4 max-h-60 overflow-y-auto">
           {#each $currentConversation.slice(-2) as message}
             <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
@@ -452,8 +453,8 @@ https://svelte.dev/e/attribute_duplicate -->
             </div>
           {/each}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   {/if}
 </div>
 

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     timelineEvents: Array<{;
     caseId: string
@@ -13,9 +14,9 @@ https://svelte.dev/e/js_parse_error -->
 
 
 
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/card';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
       date: string
     time?: string;
@@ -106,28 +107,28 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<Card class="w-full max-w-4xl">
-  <CardHeader>
+<NesCard class="w-full max-w-4xl">
+  <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
-      <CardTitle class="text-xl font-semibold flex items-center gap-2">
+      <h3 class="nes-text is-primary" class="text-xl font-semibold flex items-center gap-2">
         ⏰ Evidence Timeline
         <Badge variant="outline">{timelineEvents.length} events</Badge>
-      </CardTitle>
+      </h3>
       <div class="flex gap-2">
-        <Button variant="outline" size="sm">
+        <button class="nes-btn" variant="outline" size="sm">
           📊 Timeline Analysis  
-        </Button>
-        <Button variant="outline" size="sm">
+        </button>
+        <button class="nes-btn" variant="outline" size="sm">
           🗂️ Export Timeline
-        </Button>
+        </button>
       </div>
     </div>
     {#if caseId}
       <p class="text-sm text-gray-600">Case: {caseId}</p>
     {/if}
-  </CardHeader>
+  </div>
 
-  <CardContent>
+  <div class="yorha-panel-content">
     {#if sortedEvents.length === 0}
       <div class="text-center py-8 text-gray-500">
         <div class="text-4xl mb-2">📅</div>
@@ -238,20 +239,20 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         
         <div class="flex gap-2">
-          <Button variant="outline" size="sm">
+          <button class="nes-btn" variant="outline" size="sm">
             🔍 Find Gaps
-          </Button>
-          <Button variant="outline" size="sm">
+          </button>
+          <button class="nes-btn" variant="outline" size="sm">
             🕸️ Show Connections
-          </Button>
-          <Button size="sm">
+          </button>
+          <button class="nes-btn" size="sm">
             📝 Generate Report
-          </Button>
+          </button>
         </div>
       </div>
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   /* Timeline custom styles */

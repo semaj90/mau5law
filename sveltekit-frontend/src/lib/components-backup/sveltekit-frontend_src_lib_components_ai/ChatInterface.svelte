@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     height?: any;
     caseId: string | undefined ;
@@ -13,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
 
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import { Textarea } from "$lib/components/ui/textarea/index";
   import {
     aiPersonality,
@@ -366,14 +367,14 @@ https://svelte.dev/e/js_parse_error -->
         />
 
         {#if caseId}
-          <Button
+          <button class="nes-btn"
             variant="outline"
             size="sm"
             onclick={quickAnalyzeEvidence}
             disabled={$isLoading}
           >
             🔍 Quick Analysis
-          </Button>
+          </button>
         {/if}
       </div>
 
@@ -501,7 +502,7 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           <Send class="space-y-4" />
         {/if}
-      </Button>
+      </button>
     </div>
 
     <!-- Enhanced Status Text -->

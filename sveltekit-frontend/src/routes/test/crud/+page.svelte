@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'Button' has already been declared -->
 <!-- Test CRUD Display with SSR UI -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import { enhance } from '$app/forms';
@@ -157,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
         <h1 class="text-3xl font-bold tracking-tight">CRUD Test Dashboard</h1>
-        <p class="text-muted-foreground">Testing SSR, UI Components & Database Operations</p>
+        <p class="nes-text is-disabled">Testing SSR, UI Components & Database Operations</p>
       </div>
 
       <div class="flex flex-wrap gap-2">
@@ -167,7 +168,7 @@ https://svelte.dev/e/js_parse_error -->
           onclick={() => showSystemHealth = !showSystemHealth}
         >
           {showSystemHealth ? 'Hide' : 'Show'} System Health
-        </Button>
+        </button>
 
         <!-- Gaming Era Selector -->
         <select
@@ -183,11 +184,11 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- System Health Panel (Conditional) -->
     {#if showSystemHealth}
-      <Card>
-        <CardHeader>
-          <CardTitle>🔧 System Health Status</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <NesCard>
+        <div class="yorha-panel-header">
+          <h3 class="nes-text is-primary">🔧 System Health Status</h3>
+        </div>
+        <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="space-y-2">
               <h4 class="font-medium">Database</h4>
@@ -195,20 +196,20 @@ https://svelte.dev/e/js_parse_error -->
                 {data.health.database?.connected ? 'Connected' : 'Offline'}
               </Badge>
               {#if data.health.database?.responseTime}
-                <p class="text-sm text-muted-foreground">Response: {data.health.database.responseTime}ms</p>
+                <p class="text-sm nes-text is-disabled">Response: {data.health.database.responseTime}ms</p>
               {/if}
             </div>
 
             <div class="space-y-2">
               <h4 class="font-medium">Server</h4>
               <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">SSR Active</span>
-              <p class="text-sm text-muted-foreground">Cases: {data.cases?.length || 0}</p>
+              <p class="text-sm nes-text is-disabled">Cases: {data.cases?.length || 0}</p>
             </div>
 
             <div class="space-y-2">
               <h4 class="font-medium">UI Framework</h4>
               <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">SvelteKit + bits-ui</span>
-              <p class="text-sm text-muted-foreground">Gaming Era: {gamingEra.toUpperCase()}</p>
+              <p class="text-sm nes-text is-disabled">Gaming Era: {gamingEra.toUpperCase()}</p>
             </div>
           </div>
 
@@ -217,18 +218,18 @@ https://svelte.dev/e/js_parse_error -->
               <p class="text-sm text-red-700">Database Error: {data.health.database.error}</p>
             </div>
           {/if}
-        </CardContent>
-      </Card>
+        </div>
+      </NesCard>
     {/if}
 
     <!-- Create/Edit Form -->
-    <Card>
-      <CardHeader>
-        <CardTitle>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">
           {editingCase ? '✏️ Edit Case' : '➕ Create New Case'}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         <form method="POST" action="?/createCase" use:enhance={handleSubmit}>
           {#if editingCase}
             <input type="hidden" name="id" value={editingCase} />
@@ -359,18 +360,18 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- Cases List -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary" class="flex items-center justify-between">
           📋 Cases List
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{data.cases?.length || 0} total</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+        </h3>
+      </div>
+      <div class="yorha-panel-content">
         {#if data.cases && data.cases.length > 0}
           <div class="space-y-4">
             {#each data.cases as caseItem (caseItem.id)}
@@ -390,10 +391,10 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
 
                     {#if caseItem.description}
-                      <p class="text-sm text-muted-foreground">{caseItem.description}</p>
+                      <p class="text-sm nes-text is-disabled">{caseItem.description}</p>
                     {/if}
 
-                    <div class="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                    <div class="flex flex-wrap gap-2 text-xs nes-text is-disabled">
                       {#if caseItem.category}
                         <span>📂 {caseItem.category}</span>
                       {/if}
@@ -415,7 +416,7 @@ https://svelte.dev/e/js_parse_error -->
                       disabled={isDeleting}
                     >
                       ✏️ Edit
-                    </Button>
+                    </button>
 
                     <Button class="bits-btn"
                       variant="destructive"
@@ -424,7 +425,7 @@ https://svelte.dev/e/js_parse_error -->
                       disabled={isDeleting}
                     >
                       🗑️ Delete
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -432,22 +433,22 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {:else}
           <div class="text-center py-8">
-            <p class="text-muted-foreground">No cases found. Create your first case above!</p>
+            <p class="nes-text is-disabled">No cases found. Create your first case above!</p>
           </div>
         {/if}
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
 
     <!-- SSR Test Results -->
-    <Card>
-      <CardHeader>
-        <CardTitle>🧪 SSR & Hydration Test Results</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <NesCard>
+      <div class="yorha-panel-header">
+        <h3 class="nes-text is-primary">🧪 SSR & Hydration Test Results</h3>
+      </div>
+      <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <h4 class="font-medium mb-2">✅ SSR Status</h4>
-            <ul class="text-sm space-y-1 text-muted-foreground">
+            <ul class="text-sm space-y-1 nes-text is-disabled">
               <li>• Page data loaded: {data ? '✅' : '❌'}</li>
               <li>• Cases from server: {data.cases ? '✅' : '❌'}</li>
               <li>• Database health: {data.health ? '✅' : '❌'}</li>
@@ -457,7 +458,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <div>
             <h4 class="font-medium mb-2">🎮 Component Status</h4>
-            <ul class="text-sm space-y-1 text-muted-foreground">
+            <ul class="text-sm space-y-1 nes-text is-disabled">
               <li>• Gaming UI loaded: ✅</li>
               <li>• bits-ui components: ✅</li>
               <li>• Form validation: ✅</li>
@@ -476,8 +477,8 @@ https://svelte.dev/e/js_parse_error -->
             timestamp: new Date().toISOString()
           }, null, 2)}</pre>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </NesCard>
   </div>
 </ProgressiveGamingProvider>
 

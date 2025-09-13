@@ -3,6 +3,7 @@ Vector Recommendations Widget
 Compact AI recommendations component for sidebar/dashboard use
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     Button
@@ -165,9 +166,9 @@ Compact AI recommendations component for sidebar/dashboard use
   }
 </script>
 
-<Card class="bits-card" variant="default" legal={true}>
-  <CardHeader class="bits-card-header {compact ? 'p-3' : 'p-4'}" variant="default" legal={true}>
-    <CardTitle class="flex items-center justify-between">
+<NesCard class="bits-nier-bits-card" variant="default" legal={true}>
+  <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header {compact ? 'p-3' : 'p-4'}" variant="default" legal={true}>
+    <h3 class="nes-text is-primary" class="flex items-center justify-between">
       <div class="flex items-center gap-2">
         <Lightbulb class="h-4 w-4 text-yellow-600" />
         <span class="{compact ? 'text-sm' : 'text-base'}">AI Recommendations</span>
@@ -184,17 +185,17 @@ Compact AI recommendations component for sidebar/dashboard use
         class="h-7 w-7 p-0 bits-btn bits-btn"
       >
         <RefreshCw class="h-3 w-3 {isLoading ? 'animate-spin' : ''}" />
-      </Button>
-    </CardTitle>
+      </button>
+    </h3>
 
     {#if lastUpdated && !compact}
-      <p class="text-xs text-muted-foreground">
+      <p class="text-xs nes-text is-disabled">
         Updated {formatTimeAgo(lastUpdated)}
       </p>
     {/if}
-  </CardHeader>
+  </div>
 
-  <CardContent class="bits-card-content {compact ? 'p-3' : 'p-4'} pt-0" variant="default" legal={true}>
+  <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content {compact ? 'p-3' : 'p-4'} pt-0" variant="default" legal={true}>
     {#if isLoading}
       <div class="space-y-3">
         {#each Array(maxRecommendations) as _}
@@ -207,9 +208,9 @@ Compact AI recommendations component for sidebar/dashboard use
       </div>
     {:else if recommendations.length === 0}
       <div class="text-center py-6">
-        <Lightbulb class="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-        <p class="text-sm text-muted-foreground">No recommendations available</p>
-        <p class="text-xs text-muted-foreground mt-1">Check back later for AI insights</p>
+        <Lightbulb class="h-8 w-8 nes-text is-disabled mx-auto mb-2" />
+        <p class="text-sm nes-text is-disabled">No recommendations available</p>
+        <p class="text-xs nes-text is-disabled mt-1">Check back later for AI insights</p>
       </div>
     {:else}
       <div class="space-y-3">
@@ -225,10 +226,10 @@ Compact AI recommendations component for sidebar/dashboard use
                 <SvelteComponent class="h-4 w-4" />
                 <span class="font-medium text-sm leading-tight">{rec.title}</span>
               </div>
-              <ChevronRight class="h-3 w-3 text-muted-foreground flex-shrink-0 mt-0.5" />
+              <ChevronRight class="h-3 w-3 nes-text is-disabled flex-shrink-0 mt-0.5" />
             </div>
 
-            <p class="text-xs text-muted-foreground mb-2 line-clamp-2">
+            <p class="text-xs nes-text is-disabled mb-2 line-clamp-2">
               {rec.description}
             </p>
 
@@ -251,7 +252,7 @@ Compact AI recommendations component for sidebar/dashboard use
             </div>
 
             {#if rec.estimatedImpact && !compact}
-              <div class="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+              <div class="flex items-center gap-3 mt-2 text-xs nes-text is-disabled">
                 <span>Time: {rec.estimatedImpact.timeToComplete}min</span>
                 <span>•</span>
                 <span>Success: {rec.estimatedImpact.successProbability}%</span>
@@ -263,7 +264,7 @@ Compact AI recommendations component for sidebar/dashboard use
 
       {#if !compact}
         <div class="mt-4 pt-3 border-t border-border">
-          <div class="flex items-center justify-between text-xs text-muted-foreground">
+          <div class="flex items-center justify-between text-xs nes-text is-disabled">
             <span>Based on your role: {userRole}</span>
             {#if autoRefresh}
               <span>Auto-refresh: {refreshInterval}min</span>
@@ -272,8 +273,8 @@ Compact AI recommendations component for sidebar/dashboard use
         </div>
       {/if}
     {/if}
-  </CardContent>
-</Card>
+  </div>
+</NesCard>
 
 <style>
   /* @unocss-include */

@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Combines login and register into seamless experience
 -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { fade, slide } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';

@@ -2,6 +2,7 @@
 // Combines Hugerte with Melt UI components for legal document editing
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     content?: unknown;
     placeholder?: unknown;

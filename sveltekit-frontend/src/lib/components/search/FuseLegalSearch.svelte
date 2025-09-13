@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import Fuse from 'fuse.js';
   import { onMount } from 'svelte';
   import {
@@ -149,17 +150,17 @@
   <!-- Search Input -->
   <div class="relative">
     <Search
-      class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 nes-text is-disabled" />
     <Input bind:value={searchQuery} {placeholder} keydown={handleKeydown} class="pl-10" />
     {#if isSearching}
       <Loader2
-        class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+        class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin nes-text is-disabled" />
     {/if}
   </div>
 
   <!-- Search Info -->
   {#if searchQuery && searchResults.length > 0}
-    <div class="text-sm text-muted-foreground">
+    <div class="text-sm nes-text is-disabled">
       Found {searchResults.length} results for "{searchQuery}"
       {#if searchResults.length === maxResults}
         (showing top {maxResults})
@@ -185,7 +186,7 @@
             <div.Description class="text-sm">
               {@html law.highlighted.description || law.description}
             </Card.Description>
-            <div class="flex gap-2 text-xs text-muted-foreground">
+            <div class="flex gap-2 text-xs nes-text is-disabled">
               <span>{law.code}</span>
               {#if law.category}
                 <span>•</span>
@@ -204,18 +205,18 @@
                 <Button class="bits-btn" size="sm" onclick={() => handleAIAction(law, 'summary')}>
                   <Bot class="h-3 w-3 mr-1" />
                   AI Summary
-                </Button>
+                </button>
                 <Button class="bits-btn" variant="outline" size="sm" onclick={() => handleAIAction(law, 'chat')}>
                   <Bot class="h-3 w-3 mr-1" />
                   Ask AI
-                </Button>
+                </button>
                 {#if law.fullTextUrl}
                   <Button class="bits-btn" variant="outline" size="sm" asChild>
                     <a href={law.fullTextUrl} target="_blank" rel="noopener noreferrer">
                       <ExternalLink class="h-3 w-3 mr-1" />
                       Full Text
                     </a>
-                  </Button>
+                  </button>
                 {/if}
               </div>
             </Card.Content>
@@ -226,10 +227,10 @@
   {:else if searchQuery && !isSearching}
     <div.Root>
       <div.Content class="py-8 text-center">
-        <p class="text-muted-foreground">
+        <p class="nes-text is-disabled">
           No results found for "{searchQuery}".
         </p>
-        <p class="text-sm text-muted-foreground mt-1">
+        <p class="text-sm nes-text is-disabled mt-1">
           Try adjusting your search terms or use more general keywords.
         </p>
       </Card.Content>

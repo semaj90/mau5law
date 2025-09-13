@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     cases: Case[] ;
   }
@@ -62,23 +63,23 @@
 </script>
 
 <div class="case-stats container mx-auto px-4">
-  <div class="stat-card">
+  <div class="stat-nier-bits-card">
     <div class="stat-value">{stats.total}</div>
     <div class="stat-label">Total Cases</div>
   </div>
-  <div class="stat-card">
+  <div class="stat-nier-bits-card">
     <div class="stat-value">{stats.active}</div>
     <div class="stat-label">Active</div>
   </div>
-  <div class="stat-card">
+  <div class="stat-nier-bits-card">
     <div class="stat-value">{stats.pending}</div>
     <div class="stat-label">Pending</div>
   </div>
-  <div class="stat-card">
+  <div class="stat-nier-bits-card">
     <div class="stat-value">{stats.closed}</div>
     <div class="stat-label">Closed</div>
   </div>
-  <div class="stat-card">
+  <div class="stat-nier-bits-card">
     <div class="stat-value">{stats.recentlyUpdated}</div>
     <div class="stat-label">Recently Updated</div>
   </div>

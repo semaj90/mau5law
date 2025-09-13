@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 
   import { createEventDispatcher } from 'svelte';
   import { Button } from 'bits-ui';
@@ -304,7 +305,7 @@ https://svelte.dev/e/js_parse_error -->
                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getConfidenceColor(entity.confidence)}">
                   {Math.round(entity.confidence * 100)}%
                 </span>
-                <Button.Root 
+                <button class="nes-btn".Root 
                   onclick={() => removeEntity(index)}
                   class="bits-btn p-1 text-red-600 hover:text-red-800 focus:outline-none"
                 >
@@ -344,7 +345,7 @@ https://svelte.dev/e/js_parse_error -->
                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               ></textarea>
             </div>
-            <Button.Root
+            <button class="nes-btn".Root
               onclick={() => removeKeyFact(index)}
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
             >
@@ -383,7 +384,7 @@ https://svelte.dev/e/js_parse_error -->
                 <option value={category}>{category}</option>
               {/each}
             </select>
-            <Button.Root
+            <button class="nes-btn".Root
               onclick={() => removeLegalIssue(index)}
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
             >

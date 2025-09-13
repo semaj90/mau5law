@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import {
     Button
   } from '$lib/components/ui/enhanced-bits';;
@@ -387,7 +388,7 @@ https://svelte.dev/e/js_parse_error -->
             disabled={$isLoading}
           >
             🔍 Quick Analysis
-          </Button>
+          </button>
         {/if}
 
         <div class="mx-auto px-4 max-w-7xl">
@@ -506,7 +507,7 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           <Send class="mx-auto px-4 max-w-7xl" />
         {/if}
-      </Button>
+      </button>
     </div>
 
     <!-- Enhanced Status Text -->

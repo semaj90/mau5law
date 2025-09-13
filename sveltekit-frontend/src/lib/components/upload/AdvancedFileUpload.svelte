@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { Button } from '$lib/components/ui/enhanced-bits';
   import { notifications } from "$lib/stores/notification";
@@ -586,7 +587,7 @@
         <Button class="bits-btn" {disabled}>
           <Paperclip class="container mx-auto px-4" />
           Choose Files
-        </Button>
+        </button>
 
         {#if enableCameraCapture}
           <Button class="bits-btn"
@@ -596,19 +597,18 @@
           >
             <Camera class="container mx-auto px-4" />
             Camera
-          </Button>
+          </button>
         {/if}
 
         {#if enableAudioRecording}
-          <Button
-            variant="secondary"
+          <button class="nes-btn"
             onclick={handleAudioRecordingClick}
             {disabled}
             class={isRecording ? "bg-red-100 text-red-700" : ""}
           >
             <Mic class="container mx-auto px-4" />
             {isRecording ? "Stop Recording" : "Record Audio"}
-          </Button>
+          </button>
         {/if}
       </div>
     </div>
@@ -647,7 +647,7 @@
                 <Upload class="container mx-auto px-4" />
               {/if}
               Upload All
-            </Button>
+            </button>
           {/if}
 
           <Button class="bits-btn"
@@ -657,7 +657,7 @@
             disabled={isUploading}
           >
             Clear All
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -731,7 +731,7 @@
                   aria-label="View {file.name}"
                 >
                   <Eye class="container mx-auto px-4" />
-                </Button>
+                </button>
               {/if}
 
               {#if file.status === "error"}
@@ -742,7 +742,7 @@
                   aria-label="Retry upload of {file.name}"
                 >
                   <Upload class="container mx-auto px-4" />
-                </Button>
+                </button>
               {/if}
 
               <Button class="bits-btn"
@@ -753,7 +753,7 @@
                 aria-label="Remove {file.name}"
               >
                 <Trash2 class="container mx-auto px-4" />
-              </Button>
+              </button>
             </div>
           </div>
         {/each}

@@ -1,5 +1,6 @@
 <!-- Full-Stack Integration Test Page -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
   import BitsDemo from '$lib/components/BitsDemo.svelte';
@@ -348,7 +349,7 @@
           class="bg-blue-600 text-white hover:bg-blue-700 font-bold px-4 py-2 bits-btn bits-btn"
         >
           🔄 REFRESH HEALTH CHECK
-        </Button>
+        </button>
 
         <Button
           onclick={runIntegrationTests}
@@ -356,7 +357,7 @@
           class="bg-green-600 text-white hover:bg-green-700 font-bold px-4 py-2 disabled:opacity-50 bits-btn bits-btn"
         >
           {isRunningTests ? '⏳ RUNNING TESTS...' : '🧪 RUN INTEGRATION TESTS'}
-        </Button>
+        </button>
       </div>
     </div>
   </section>

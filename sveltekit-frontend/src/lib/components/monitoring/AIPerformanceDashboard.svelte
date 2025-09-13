@@ -4,6 +4,7 @@
 -->
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { aiAssistant } from '$lib/stores/ai-assistant.svelte';
   import { pgVectorSearch } from '$lib/services/pgvector-semantic-search';
@@ -284,13 +285,13 @@
   <!-- System Overview -->
   <div class="metrics-grid">
     <!-- System Health Card -->
-    <div class="metric-card system-health">
-      <div class="card-header">
+    <div class="metric-nier-bits-card system-health">
+      <div class="nier-bits-yorha-panel-header">
         <Cpu size={20} />
         <h3>System Health</h3>
       </div>
       
-      <div class="card-content">
+      <div class="nier-bits-yorha-panel-content">
         <div class="metric-row">
           <span class="metric-label">CPU Usage</span>
           <span class="metric-value">{formatPercentage(systemMetrics.cpuUsage)}</span>
@@ -314,13 +315,13 @@
     </div>
 
     <!-- Backend Status Card -->
-    <div class="metric-card backend-status">
-      <div class="card-header">
+    <div class="metric-nier-bits-card backend-status">
+      <div class="nier-bits-yorha-panel-header">
         <Database size={20} />
         <h3>Backend Status</h3>
       </div>
       
-      <div class="card-content">
+      <div class="nier-bits-yorha-panel-content">
         {#each availableBackends as backend}
           {@const status = getBackendStatus(backend)}
           {@const StatusIcon = getStatusIcon(status)}
@@ -343,13 +344,13 @@
     </div>
 
     <!-- Request Metrics Card -->
-    <div class="metric-card request-metrics">
-      <div class="card-header">
+    <div class="metric-nier-bits-card request-metrics">
+      <div class="nier-bits-yorha-panel-header">
         <Zap size={20} />
         <h3>Request Metrics</h3>
       </div>
       
-      <div class="card-content">
+      <div class="nier-bits-yorha-panel-content">
         <div class="metric-row">
           <span class="metric-label">Total Requests</span>
           <span class="metric-value">{systemMetrics.totalRequests.toLocaleString()}</span>
@@ -375,13 +376,13 @@
     </div>
 
     <!-- Performance History Card -->
-    <div class="metric-card performance-history">
-      <div class="card-header">
+    <div class="metric-nier-bits-card performance-history">
+      <div class="nier-bits-yorha-panel-header">
         <Clock size={20} />
         <h3>Performance History</h3>
       </div>
       
-      <div class="card-content">
+      <div class="nier-bits-yorha-panel-content">
         {#if performanceHistory.length > 0}
           <div class="history-chart">
             <!-- Simple ASCII-style chart -->
@@ -430,7 +431,7 @@
     
     <div class="backend-tabs">
       {#each availableBackends as backend}
-        <div class="backend-detail-card">
+        <div class="backend-detail-nier-bits-card">
           <div class="backend-header">
             <h4>{backend.toUpperCase()}</h4>
             <span class="status-badge {getStatusColor(getBackendStatus(backend))}">

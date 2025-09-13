@@ -42,14 +42,14 @@ export interface CacheStats {
 
 class CachingLayer {
   private redis: Redis | null = null;
-  private lruCache: LRUCache<string, any>;
+  private lruCache: InstanceType<typeof LRUCache>;
   private stats: CacheStats;
   private hotCache: Map<string, { data: any; hits: number; lastAccess: number }>;
   private cacheConfig = {
     maxMemory: 512 * 1024 * 1024, // 512MB max memory
     maxItems: 10000,
     hotCacheThreshold: 5, // Hits needed to promote to hot cache
-    compressionThreshold: 1024 // Compress items larger than 1KB
+    compressionThreshold: 1024, // Compress items larger than 1KB
   };
 
   constructor() {
@@ -59,7 +59,7 @@ class CachingLayer {
       misses: 0,
       evictions: 0,
       size: 0,
-      memoryUsage: 0
+      memoryUsage: 0,
     };
     this.hotCache = new Map();
   }
@@ -69,8 +69,9 @@ class CachingLayer {
     try {
       // Stubbed Redis implementation - would normally use actual Redis client
       this.redis = null; // Disable Redis for now
-      
-      if (false) { // Placeholder for actual Redis initialization
+
+      if (false) {
+        // Placeholder for actual Redis initialization
         // this.redis = new Redis({...})
         // Add event handlers here when implementing
       }
@@ -91,7 +92,7 @@ class CachingLayer {
         this.stats.evictions++;
         logger.debug(`[CachingLayer] Evicted key: ${key}`);
       },
-      ttl: 1000 * 60 * 60 // 1 hour default TTL
+      ttl: 1000 * 60 * 60, // 1 hour default TTL
     });
 
     // Periodic cleanup and stats update
@@ -125,10 +126,10 @@ class CachingLayer {
       const lruItem = this.lruCache.get(key);
       if (lruItem) {
         this.stats.hits++;
-        
+
         // Promote to hot cache if accessed frequently
         this.promoteToHotCache(key, lruItem);
-        
+
         logger.debug(`[CachingLayer] LRU cache hit for ${key}`);
         return lruItem;
       }
@@ -139,10 +140,10 @@ class CachingLayer {
           const redisValue = await this.redis.get(key);
           if (redisValue) {
             const data = JSON.parse(redisValue);
-            
+
             // Populate LRU cache
             this.lruCache.set(key, data);
-            
+
             this.stats.hits++;
             logger.debug(`[CachingLayer] Redis cache hit for ${key}`);
             return data;
@@ -154,7 +155,6 @@ class CachingLayer {
 
       this.stats.misses++;
       return null;
-
     } catch (error: any) {
       logger.error(`[CachingLayer] Get failed for ${key}:`, error);
       this.stats.misses++;
@@ -168,14 +168,13 @@ class CachingLayer {
   async set(key: string, value: any, options: CacheOptions = {}): Promise<void> {
     try {
       const ttl = options.ttl || 3600; // Default 1 hour
-      
+
       // Compress large values
-      const dataToStore = this.shouldCompress(value) ? 
-        await this.compress(value) : value;
+      const dataToStore = this.shouldCompress(value) ? await this.compress(value) : value;
 
       // Store in LRU cache
       this.lruCache.set(key, dataToStore, {
-        ttl: ttl * 1000 // Convert to milliseconds
+        ttl: ttl * 1000, // Convert to milliseconds
       });
 
       // Store in Redis if available
@@ -183,10 +182,10 @@ class CachingLayer {
         try {
           const redisValue = JSON.stringify(dataToStore);
           const pipeline = this.redis.pipeline();
-          
+
           pipeline.set(key, redisValue);
           pipeline.expire(key, ttl);
-          
+
           // Add tags for invalidation
           if (options.tags) {
             for (const tag of options.tags) {
@@ -194,7 +193,7 @@ class CachingLayer {
               pipeline.expire(`tag:${tag}`, ttl);
             }
           }
-          
+
           await pipeline.exec();
           logger.debug(`[CachingLayer] Stored ${key} in Redis with TTL ${ttl}s`);
         } catch (error: any) {
@@ -207,7 +206,6 @@ class CachingLayer {
       this.stats.memoryUsage = this.lruCache.calculatedSize || 0;
 
       logger.debug(`[CachingLayer] Cached ${key} with TTL ${ttl}s`);
-
     } catch (error: any) {
       logger.error(`[CachingLayer] Set failed for ${key}:`, error);
     }
@@ -230,7 +228,7 @@ class CachingLayer {
           } catch (e: any) {
             // Fallback to empty keys if method doesn't exist
           }
-          
+
           if (keys && keys.length > 0) {
             // Remove from Redis - handle array properly
             if (keys.length > 0) {
@@ -242,16 +240,16 @@ class CachingLayer {
                 }
               }
             }
-            
+
             // Remove from LRU cache
             for (const key of keys) {
               this.lruCache.delete(key);
               this.hotCache.delete(key);
             }
-            
+
             // Clean up tag set
             await this.redis.del(`tag:${tag}`);
-            
+
             logger.info(`[CachingLayer] Invalidated ${keys.length} keys with tag ${tag}`);
           }
         }
@@ -268,14 +266,14 @@ class CachingLayer {
     try {
       this.lruCache.clear();
       this.hotCache.clear();
-      
+
       if (this.redis) {
         await this.redis.flushall();
       }
-      
+
       this.stats.size = 0;
       this.stats.memoryUsage = 0;
-      
+
       logger.info('[CachingLayer] Cache cleared');
     } catch (error: any) {
       logger.error('[CachingLayer] Clear failed:', error);
@@ -287,13 +285,11 @@ class CachingLayer {
    */
   async warmUp(items: Array<{ key: string; value: any; options?: CacheOptions }>): Promise<void> {
     logger.info(`[CachingLayer] Warming up cache with ${items.length} items`);
-    
-    const warmUpPromises = items.map(item =>
-      this.set(item.key, item.value, item.options)
-    );
-    
+
+    const warmUpPromises = items.map((item) => this.set(item.key, item.value, item.options));
+
     await Promise.all(warmUpPromises);
-    
+
     logger.info('[CachingLayer] Cache warm-up completed');
   }
 
@@ -302,7 +298,7 @@ class CachingLayer {
    */
   async getStats(): Promise<any> {
     const redisInfo = this.redis ? await this.getRedisStats() : null;
-    
+
     return {
       hits: this.stats.hits,
       misses: this.stats.misses,
@@ -313,7 +309,7 @@ class CachingLayer {
       hotCacheSize: this.hotCache.size,
       lruCacheSize: this.lruCache.size,
       redisConnected: !!this.redis,
-      redisStats: redisInfo
+      redisStats: redisInfo,
     };
   }
 
@@ -323,15 +319,15 @@ class CachingLayer {
     // Track access count
     const accessCount = (this.lruCache as any).get(key + ':count') || 0;
     (this.lruCache as any).set(key + ':count', accessCount + 1);
-    
+
     // Promote to hot cache if threshold met
     if (accessCount >= this.cacheConfig.hotCacheThreshold) {
       this.hotCache.set(key, {
         data,
         hits: accessCount,
-        lastAccess: Date.now()
+        lastAccess: Date.now(),
       });
-      
+
       // Limit hot cache size
       if (this.hotCache.size > 100) {
         this.evictFromHotCache();
@@ -343,14 +339,14 @@ class CachingLayer {
     // Find least recently accessed item
     let oldestKey = null;
     let oldestTime = Date.now();
-    
+
     for (const [key, item] of Array.from(this.hotCache.entries())) {
       if (item.lastAccess < oldestTime) {
         oldestTime = item.lastAccess;
         oldestKey = key;
       }
     }
-    
+
     if (oldestKey) {
       this.hotCache.delete(oldestKey);
       logger.debug(`[CachingLayer] Evicted ${oldestKey} from hot cache`);
@@ -370,12 +366,12 @@ class CachingLayer {
 
   private async getRedisStats(): Promise<any> {
     if (!this.redis) return null;
-    
+
     try {
       // Safe Redis method calls with fallbacks
       let info = 'Redis info unavailable';
       let dbSize = 0;
-      
+
       try {
         if ((this.redis as any).info) {
           info = await (this.redis as any).info();
@@ -383,7 +379,7 @@ class CachingLayer {
       } catch (e: any) {
         // Fallback for missing info method
       }
-      
+
       try {
         if ((this.redis as any).dbsize) {
           dbSize = await (this.redis as any).dbsize();
@@ -391,10 +387,10 @@ class CachingLayer {
       } catch (e: any) {
         // Fallback for missing dbsize method
       }
-      
+
       return {
         dbSize,
-        memory: info
+        memory: info,
       };
     } catch (error: any) {
       return null;
@@ -405,18 +401,19 @@ class CachingLayer {
     // Clean up expired hot cache entries
     const now = Date.now();
     const maxAge = 30 * 60 * 1000; // 30 minutes
-    
+
     for (const [key, item] of Array.from(this.hotCache.entries())) {
       if (now - item.lastAccess > maxAge) {
         this.hotCache.delete(key);
       }
     }
-    
+
     // Update memory usage stats
     this.stats.memoryUsage = this.lruCache.calculatedSize || 0;
-    
+
     // Log stats periodically
-    if (Math.random() < 0.1) { // 10% chance
+    if (Math.random() < 0.1) {
+      // 10% chance
       const stats = await this.getStats();
       logger.info('[CachingLayer] Cache stats:', stats);
     }

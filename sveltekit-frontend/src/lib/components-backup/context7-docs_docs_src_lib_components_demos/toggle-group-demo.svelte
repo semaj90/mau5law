@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   	import { ToggleGroup } from "bits-ui";
   	import TextB from "phosphor-svelte/lib/TextB";
   	import TextItalic from "phosphor-svelte/lib/TextItalic";
@@ -10,7 +11,7 @@
 <ToggleGroup.Root
 	bind:value
 	type="multiple"
-	class="h-input rounded-card-sm border-border bg-background-alt shadow-mini flex items-center gap-x-0.5 border px-[4px] py-1"
+	class="h-input rounded-nier-bits-card-sm border-border bg-background-alt shadow-mini flex items-center gap-x-0.5 border px-[4px] py-1"
 >
 	<ToggleGroup.Item
 		aria-label="toggle bold"

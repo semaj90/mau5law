@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   import type { Evidence } from '$lib/types/api';
   	import { onMount } from 'svelte';
   	import { page } from '$app/state';

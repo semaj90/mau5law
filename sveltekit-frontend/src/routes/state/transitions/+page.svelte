@@ -2,12 +2,13 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
 </script>
   // XState Transition Monitoring & Visualization
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/nes-button.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte';
   
   let mounted = $state(false);
   let machineId = $state($page.url.searchParams.get('machine') || 'auth-machine');
@@ -176,9 +177,9 @@ https://svelte.dev/e/expected_token -->
         <option value="gpu-allocation-machine">GPU Allocation Machine</option>
       </select>
       
-      <Button variant="outline" onclick={loadTransitions}>
+      <button class="nes-btn" variant="outline" onclick={loadTransitions}>
         Refresh
-      </Button>
+      </button>
     </div>
   </header>
 
@@ -204,7 +205,7 @@ https://svelte.dev/e/expected_token -->
         
         <div class="timeline-container">
           {#each transitions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as transition, index}
-            <div class="transition-card {getTransitionColor(transition)} {selectedTransition?.id === transition.id ? 'selected' : ''}"
+            <div class="transition-nier-bits-card {getTransitionColor(transition)} {selectedTransition?.id === transition.id ? 'selected' : ''}"
                  role="button" tabindex="0"
                 onclick={() => selectedTransition = selectedTransition?.id === transition.id ? null : transition}>
               <div class="transition-header">
@@ -261,21 +262,21 @@ https://svelte.dev/e/expected_token -->
     {/if}
     
     <div class="transition-controls">
-      <div class="controls-card">
+      <div class="controls-nier-bits-card">
         <divHeader>
           <divTitle>Trigger Transitions</h3>
         </div>
         <divContent>
           <div class="control-buttons">
-            <Button onclick={() => triggerTransition('LOGOUT')}>
+            <button class="nes-btn" onclick={() => triggerTransition('LOGOUT')}>
               Trigger Logout
-            </Button>
-            <Button variant="outline" onclick={() => triggerTransition('REFRESH_TOKEN')}>
+            </button>
+            <button class="nes-btn" variant="outline" onclick={() => triggerTransition('REFRESH_TOKEN')}>
               Refresh Token
-            </Button>
-            <Button variant="outline" onclick={() => triggerTransition('VIEW_PROFILE')}>
+            </button>
+            <button class="nes-btn" variant="outline" onclick={() => triggerTransition('VIEW_PROFILE')}>
               View Profile
-            </Button>
+            </button>
           </div>
           <p class="control-note">
             ⚠️ These are test triggers. In production, transitions are triggered by application events.

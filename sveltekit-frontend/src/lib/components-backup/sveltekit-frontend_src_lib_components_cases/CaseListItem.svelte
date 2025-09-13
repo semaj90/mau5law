@@ -5,6 +5,7 @@ import type { Case } from '$lib/types';
 
 
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     onclick?: (event?: any) => void;
     onstatusChange?: (event?: any) => void;

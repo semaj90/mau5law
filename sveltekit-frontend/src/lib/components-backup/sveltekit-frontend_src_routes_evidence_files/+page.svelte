@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   interface Props {
     caseId: string
   }
@@ -12,7 +13,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
   import { page } from "$app/state";
-  import { Button } from "$lib/components/ui/button";
+  import Button from '$lib/components/ui/nes-button.svelte';
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { notifications } from "$lib/stores/notification";
   import {
@@ -358,7 +359,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <div class="space-y-4">
       <Tooltip content="Refresh files">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => loadEvidenceFiles()}
@@ -366,18 +367,18 @@ https://svelte.dev/e/js_parse_error -->
           aria-label="Refresh evidence files"
         >
           <RefreshCw class={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-        </Button>
+        </button>
       </Tooltip>
 
       <Tooltip content="Upload files">
-        <Button
+        <button class="nes-btn"
           onclick={() => (showUploadModal = true)}
           class="space-y-4"
           disabled={!caseId}
         >
           <Upload class="space-y-4" />
           Upload Files
-        </Button>
+        </button>
       </Tooltip>
     </div>
   </div>
@@ -412,7 +413,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- View Mode Toggle -->
       <Tooltip content="Toggle view mode">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           size="sm"
           onclick={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
@@ -423,7 +424,7 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <Grid class="space-y-4" />
           {/if}
-        </Button>
+        </button>
       </Tooltip>
     </div>
 
@@ -460,12 +461,12 @@ https://svelte.dev/e/js_parse_error -->
           <Button variant="outline" size="sm" class="space-y-4">
             <Download class="space-y-4" />
             Download
-          </Button>
+          </button>
           <Button variant="outline" size="sm" class="space-y-4">
             <Trash2 class="space-y-4" />
             Delete
-          </Button>
-          <Button
+          </button>
+          <button class="nes-btn"
             variant="ghost"
             size="sm"
             onclick={() => {
@@ -475,7 +476,7 @@ https://svelte.dev/e/js_parse_error -->
             }}
           >
             Cancel
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -494,10 +495,10 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="space-y-4">Error Loading Files</h3>
         <div class="space-y-4">{error}</div>
       </div>
-      <Button variant="outline" size="sm" onclick={() => loadEvidenceFiles()}>
+      <button class="nes-btn" variant="outline" size="sm" onclick={() => loadEvidenceFiles()}>
         <RefreshCw class="space-y-4" />
         Retry
-      </Button>
+      </button>
     </div>
   {:else if filteredFiles.length === 0}
     <!-- Drop Zone for Empty State -->
@@ -536,7 +537,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="space-y-4">
             <Plus class="space-y-4" />
             Choose Files
-          </Button>
+          </button>
         </label>
       {/if}
     </div>
@@ -547,7 +548,7 @@ https://svelte.dev/e/js_parse_error -->
         {filteredFiles.length} file{filteredFiles.length !== 1 ? "s" : ""} found
       </span>
 
-      <Button
+      <button class="nes-btn"
         variant="ghost"
         size="sm"
         onclick={() => selectAllFiles()}
@@ -559,7 +560,7 @@ https://svelte.dev/e/js_parse_error -->
           <Square class="space-y-4" />
         {/if}
         Select All
-      </Button>
+      </button>
     </div>
 
     <!-- Files Grid/List -->
@@ -581,9 +582,9 @@ https://svelte.dev/e/js_parse_error -->
                 />
 
                 <div class="space-y-4">
-                  <Button variant="ghost" size="sm" tabindex={0} role="button">
+                  <button class="nes-btn" variant="ghost" size="sm" tabindex={0} role="button">
                     <MoreHorizontal class="space-y-4" />
-                  </Button>
+                  </button>
                   <ul
                     tabindex={0}
                     role="menu"
@@ -688,17 +689,17 @@ https://svelte.dev/e/js_parse_error -->
               <div class="space-y-4">
                 <Tooltip content="View file">
                   <a href={getFileUrl(file)} target="_blank">
-                    <Button variant="outline" size="sm">
+                    <button class="nes-btn" variant="outline" size="sm">
                       <Eye class="space-y-4" />
-                    </Button>
+                    </button>
                   </a>
                 </Tooltip>
 
                 <Tooltip content="Download file">
                   <a href={getFileUrl(file)} download>
-                    <Button variant="outline" size="sm">
+                    <button class="nes-btn" variant="outline" size="sm">
                       <Download class="space-y-4" />
-                    </Button>
+                    </button>
                   </a>
                 </Tooltip>
               </div>
@@ -777,7 +778,7 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
 
       <div class="space-y-4">
-        <Button
+        <button class="nes-btn"
           variant="outline"
           onclick={() => {
             showUploadModal = false;
@@ -788,8 +789,8 @@ https://svelte.dev/e/js_parse_error -->
           disabled={uploading}
         >
           Cancel
-        </Button>
-        <Button
+        </button>
+        <button class="nes-btn"
           onclick={() => uploadSingleFile()}
           disabled={uploading || !uploadFiles}
           class="space-y-4"
@@ -801,7 +802,7 @@ https://svelte.dev/e/js_parse_error -->
             <Upload class="space-y-4" />
             Upload File
           {/if}
-        </Button>
+        </button>
       </div>
     </div>
   </div>

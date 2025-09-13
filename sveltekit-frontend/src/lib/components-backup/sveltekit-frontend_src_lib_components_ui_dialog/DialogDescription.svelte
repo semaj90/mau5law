@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'nes.css/css/nes.min.css';
   // Simple typed prop for dialog description
   interface Props {
     description: any;
