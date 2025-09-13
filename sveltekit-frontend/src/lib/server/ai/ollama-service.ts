@@ -152,7 +152,7 @@ class EnhancedOllamaService extends EventEmitter {
       {
         id: 'gemma3:legal-latest',
         name: 'Gemma 3 Legal Optimized',
-        type: 'gemma3',
+        type: 'gemma3-legal',
         targetLatency: 250,
         memoryFootprint: 640,
         capabilities: ['legal-research', 'legal-analysis', 'document-review'],
@@ -162,7 +162,7 @@ class EnhancedOllamaService extends EventEmitter {
       {
         id: 'legal-bert-onnx',
         name: 'Legal-BERT ONNX Optimized',
-        type: 'legal-bert-onnx',
+        type: 'legal-bert',
         targetLatency: 50,
         memoryFootprint: 128,
         capabilities: [

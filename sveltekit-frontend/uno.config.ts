@@ -350,13 +350,13 @@ export default defineConfig({
     'bits-btn-lg': 'h-11 rounded-md px-8',
     'bits-btn-icon': 'h-10 w-10',
 
-    // Enhanced Card Components
-    'shadcn-card': 'rounded-lg border bg-card text-card-foreground shadow-sm',
-    'shadcn-card-header': 'flex flex-col space-y-1.5 p-6',
-    'shadcn-card-title': 'text-2xl font-semibold leading-none tracking-tight',
-    'shadcn-card-description': 'text-sm text-muted-foreground',
-    'shadcn-card-content': 'p-6 pt-0',
-    'shadcn-card-footer': 'flex items-center p-6 pt-0',
+    // Enhanced Card Components (migrated from shadcn- to bits-)
+    'bits-card': 'rounded-lg border bg-card text-card-foreground shadow-sm',
+    'bits-card-header': 'flex flex-col space-y-1.5 p-6',
+    'bits-card-title': 'text-2xl font-semibold leading-none tracking-tight',
+    'bits-card-description': 'text-sm text-muted-foreground',
+    'bits-card-content': 'p-6 pt-0',
+    'bits-card-footer': 'flex items-center p-6 pt-0',
 
     // Dialog and Modal Components
     'bits-dialog-overlay':
@@ -421,7 +421,7 @@ export default defineConfig({
     'bits-scroll-thumb': 'relative flex-1 rounded-full bg-border',
 
     // NieR + Bits UI Hybrid Components
-    'nier-bits-card': 'yorha-card shadcn-card',
+    'nier-bits-card': 'yorha-card bits-card',
     'nier-bits-button': 'yorha-button bits-btn',
     'nier-bits-input': 'yorha-input bits-input',
     'nier-bits-dialog': 'bits-dialog-content yorha-panel',

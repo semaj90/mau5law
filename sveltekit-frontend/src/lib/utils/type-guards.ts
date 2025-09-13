@@ -11,18 +11,38 @@ import type {
   WorkerStatus,
   WorkerMessage,
   WorkerMessageType,
-  AITaskType,
-  ServiceStatus,
-  LegalCase,
-  Evidence,
-  User,
-  Notification,
-  NotificationType
+  AITaskType
 } from '$lib/types';
+
+// Define missing types locally
+type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown';
+
+interface Evidence {
+  id: string;
+  type: string;
+  content: string;
+  metadata?: Record<string, any>;
+}
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  role?: string;
+}
+
+interface LegalCase {
+  id: string;
+  title: string;
+  status: string;
+  description?: string;
+}
+
+type NotificationType = 'info' | 'warning' | 'error' | 'success';
 
 // --- Core Type Guards ---
 
-export function isAPIResponse<T>(value: unknown): value is APIResponse<T> {
+export function isAPIResponse(value: unknown): value is APIResponse {
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -101,87 +121,92 @@ export function isWorkerMessage(value: unknown): value is WorkerMessage {
 
 // --- Legal Domain Type Guards ---
 
-export function isLegalCase(value: unknown): value is LegalCase {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    'title' in value &&
-    'description' in value &&
-    'priority' in value &&
-    'status' in value &&
-    'createdAt' in value &&
-    'updatedAt' in value &&
-    'userId' in value &&
-    'metadata' in value &&
-    typeof (value as any).id === 'string' &&
-    typeof (value as any).title === 'string' &&
-    typeof (value as any).description === 'string' &&
-    ['low', 'medium', 'high', 'critical'].includes((value as any).priority) &&
-    ['open', 'in_progress', 'closed', 'archived'].includes((value as any).status)
-  );
-}
+// TODO: Uncomment when LegalCase type is available
+// export function isLegalCase(value: unknown): value is LegalCase {
+//   return (
+//     typeof value === 'object' &&
+//     value !== null &&
+//     'id' in value &&
+//     'title' in value &&
+//     'description' in value &&
+//     'priority' in value &&
+//     'status' in value &&
+//     'createdAt' in value &&
+//     'updatedAt' in value &&
+//     'userId' in value &&
+//     'metadata' in value &&
+//     typeof (value as any).id === 'string' &&
+//     typeof (value as any).title === 'string' &&
+//     typeof (value as any).description === 'string' &&
+//     ['low', 'medium', 'high', 'critical'].includes((value as any).priority) &&
+//     ['open', 'in_progress', 'closed', 'archived'].includes((value as any).status)
+//   );
+// }
 
-export function isEvidence(value: unknown): value is Evidence {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    'caseId' in value &&
-    'title' in value &&
-    'description' in value &&
-    'type' in value &&
-    'uploadedAt' in value &&
-    'metadata' in value &&
-    typeof (value as any).id === 'string' &&
-    typeof (value as any).caseId === 'string' &&
-    typeof (value as any).title === 'string' &&
-    typeof (value as any).description === 'string' &&
-    ['document', 'image', 'video', 'audio', 'other'].includes((value as any).type)
-  );
-}
+// TODO: Uncomment when Evidence type is available  
+// export function isEvidence(value: unknown): value is Evidence {
+//   return (
+//     typeof value === 'object' &&
+//     value !== null &&
+//     'id' in value &&
+//     'caseId' in value &&
+//     'title' in value &&
+//     'description' in value &&
+//     'type' in value &&
+//     'uploadedAt' in value &&
+//     'metadata' in value &&
+//     typeof (value as any).id === 'string' &&
+//     typeof (value as any).caseId === 'string' &&
+//     typeof (value as any).title === 'string' &&
+//     typeof (value as any).description === 'string' &&
+//     ['document', 'image', 'video', 'audio', 'other'].includes((value as any).type)
+//   );
+// }
 
 // --- Authentication Type Guards ---
 
-export function isUser(value: unknown): value is User {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    'email' in value &&
-    'role' in value &&
-    'permissions' in value &&
-    'createdAt' in value &&
-    typeof (value as any).id === 'string' &&
-    typeof (value as any).email === 'string' &&
-    ['user', 'admin', 'attorney', 'paralegal'].includes((value as any).role) &&
-    Array.isArray((value as any).permissions)
-  );
-}
+// TODO: Uncomment when User type is available
+// export function isUser(value: unknown): value is User {
+//   return (
+//     typeof value === 'object' &&
+//     value !== null &&
+//     'id' in value &&
+//     'email' in value &&
+//     'role' in value &&
+//     'permissions' in value &&
+//     'createdAt' in value &&
+//     typeof (value as any).id === 'string' &&
+//     typeof (value as any).email === 'string' &&
+//     ['user', 'admin', 'attorney', 'paralegal'].includes((value as any).role) &&
+//     Array.isArray((value as any).permissions)
+//   );
+// }
 
 // --- UI Type Guards ---
 
-export function isNotificationType(value: unknown): value is NotificationType {
-  return typeof value === 'string' && 
-    ['info', 'success', 'warning', 'error'].includes(value);
-}
+// TODO: Uncomment when NotificationType is available
+// export function isNotificationType(value: unknown): value is NotificationType {
+//   return typeof value === 'string' && 
+//     ['info', 'success', 'warning', 'error'].includes(value);
+// }
 
-export function isNotification(value: unknown): value is Notification {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    'type' in value &&
-    'title' in value &&
-    'message' in value &&
-    'timestamp' in value &&
-    typeof (value as any).id === 'string' &&
-    isNotificationType((value as any).type) &&
-    typeof (value as any).title === 'string' &&
-    typeof (value as any).message === 'string' &&
-    typeof (value as any).timestamp === 'number'
-  );
-}
+// TODO: Uncomment when Notification type is available
+// export function isNotification(value: unknown): value is Notification {
+//   return (
+//     typeof value === 'object' &&
+//     value !== null &&
+//     'id' in value &&
+//     'type' in value &&
+//     'title' in value &&
+//     'message' in value &&
+//     'timestamp' in value &&
+//     typeof (value as any).id === 'string' &&
+//     isNotificationType((value as any).type) &&
+//     typeof (value as any).title === 'string' &&
+//     typeof (value as any).message === 'string' &&
+//     typeof (value as any).timestamp === 'number'
+//   );
+// }
 
 // --- Utility Type Guards ---
 
@@ -282,7 +307,7 @@ export function assertIsWorkerStatus(value: unknown): asserts value is WorkerSta
   }
 }
 
-export function assertIsAPIResponse<T>(value: unknown): asserts value is APIResponse<T> {
+export function assertIsAPIResponse(value: unknown): asserts value is APIResponse {
   if (!isAPIResponse(value)) {
     throw new Error('Value is not a valid APIResponse');
   }

@@ -232,7 +232,7 @@
     progress = 0;
 
     const batchSize = 5; // Test 5 routes at a time
-    const batches: typeof ALL_ROUTES[][] = [];
+    const batches: (typeof ALL_ROUTES[number])[][] = [];
 
     for (let i = 0; i < ALL_ROUTES.length; i += batchSize) {
       batches.push(ALL_ROUTES.slice(i, i + batchSize));
@@ -318,7 +318,7 @@
         <!-- Test Button -->
         <button
           class="nes-btn is-success"
-          on:click={testAllRoutes}
+          onclick={testAllRoutes}
           disabled={isLoading}
         >
           {#if isLoading}
@@ -347,7 +347,7 @@
             class="px-3 py-1 rounded text-sm border transition-colors {filter === category.id
               ? `${category.color} text-white`
               : 'bg-nier-bg-secondary text-nier-text-secondary border-nier-border-muted hover:bg-nier-bg-tertiary'}"
-            on:click={() => filter = category.id}
+            onclick={() => filter = category.id}
           >
             {category.name}
             {#if routes.length > 0}
@@ -427,7 +427,7 @@
                       {/if}
                       <button
                         class="text-nier-text-secondary hover:text-nier-text-primary text-sm underline"
-                        on:click={() => testRoute(route).then(result => {
+                        onclick={() => testRoute(route).then(result => {
                           const index = routes.findIndex(r => r.path === route.path);
                           if (index >= 0) routes[index] = result;
                         })}
@@ -445,7 +445,7 @@
     {:else if !isLoading}
       <div class="text-center py-12">
         <p class="text-nier-text-secondary mb-4">No routes tested yet.</p>
-        <button class="nes-btn is-primary" on:click={testAllRoutes}>
+        <button class="nes-btn is-primary" onclick={testAllRoutes}>
           🚀 Start Testing Routes
         </button>
       </div>

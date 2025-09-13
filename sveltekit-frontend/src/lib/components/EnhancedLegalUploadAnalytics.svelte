@@ -69,6 +69,12 @@
   let currentModel = $state('gemma3:270m');
   let analysisDepth = $state<'quick' | 'standard' | 'comprehensive'>('standard');
 
+  const analysisDepthOptions = [
+    { value: 'quick', label: 'Quick Scan' },
+    { value: 'standard', label: 'Standard Analysis' },
+    { value: 'comprehensive', label: 'Comprehensive Review' }
+  ];
+
   // Reactive derived state with legal enhancements
   let contextualPrompts = $derived(
     machineState?.context?.contextualPrompts || []
@@ -715,22 +721,17 @@
             {#if showAdvancedSettings}
               <Card.Root class="mt-4 yorha-settings">
                 <Card.Header>
-                  <Card.Title>Advanced Analysis Settings</Card.Title>
+                  <Card.Title>Advanced Settings</Card.Title>
                 </Card.Header>
                 <Card.Content>
                   <div class="settings-grid">
                     <div class="setting-item">
                       <label for="analysis-depth-select">Analysis Depth</label>
-                      <Select.Root bind:value={analysisDepth}>
-                        <Select.Trigger id="analysis-depth-select">
-                          <Select.Value placeholder="Select depth" />
-                        </Select.Trigger>
-                        <Select.Content>
-                          <Select.Item value="quick">Quick Scan</Select.Item>
-                          <Select.Item value="standard">Standard Analysis</Select.Item>
-                          <Select.Item value="comprehensive">Comprehensive Review</Select.Item>
-                        </Select.Content>
-                      </Select.Root>
+                      <select id="analysis-depth-select" bind:value={analysisDepth} class="enhanced-select">
+                        {#each analysisDepthOptions as opt}
+                          <option value={opt.value}>{opt.label}</option>
+                        {/each}
+                      </select>
                     </div>
 
                     <div class="setting-item">

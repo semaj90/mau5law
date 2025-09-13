@@ -242,14 +242,16 @@ export class GPUThreadCoordinator {
         });
       }
 
-      // Execute thread-safe database operations
-      const dbOperations = operations.map(op => ({
-        type: op.type,
-        table: op.table,
-        id: `${op.table}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        data: op.data,
-        conditions: op.conditions
-      }));
+      // Execute thread-safe database operations (filter out query operations)
+      const dbOperations = operations
+        .filter(op => op.type !== 'query')
+        .map(op => ({
+          type: op.type as 'delete' | 'insert' | 'update',
+          table: op.table,
+          id: `${op.table}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          data: op.data,
+          conditions: op.conditions
+        }));
 
       const success = await threadSafePostgres.batchJsonbOperations(
         dbOperations,

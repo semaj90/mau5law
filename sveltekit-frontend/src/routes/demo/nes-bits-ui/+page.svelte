@@ -1,5 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
+  import { accessibleClick } from '$lib/actions/accessibleClick';
 
   // For now, let's use plain HTML for all components to avoid bits-ui import issues
   // We can add bits-ui later once we have it properly configured
@@ -100,8 +101,20 @@
 
     <!-- Dialog Component -->
     {#if dialogOpen}
-      <div class="dialog-overlay" onclick={() => dialogOpen = false}>
-        <div class="nes-dialog dialog-content" onclick={(e) => e.stopPropagation()}>
+      <div 
+        class="dialog-overlay" 
+        onclick={() => dialogOpen = false}
+        use:accessibleClick={{ handler: () => dialogOpen = false, label: 'Close dialog' }}
+      >
+        <div 
+          class="nes-dialog dialog-content" 
+          onclick={(e) => e.stopPropagation()}
+          use:accessibleClick={{ 
+            handler: (e) => e.stopPropagation(), 
+            role: 'dialog', 
+            label: 'Achievement dialog content' 
+          }}
+        >
           <form method="dialog">
             <h3 class="nes-text is-primary">
               🏆 Achievement Unlocked!
@@ -637,5 +650,23 @@
       background-color: #000000;
       color: #ffffff;
     }
+  }
+
+  /* Accessibility: Enhanced focus styles for interactive elements */
+  [role="button"]:focus-visible,
+  [role="dialog"]:focus-visible {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .dialog-overlay[role="button"] {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .nes-dialog[role="dialog"]:focus-visible {
+    outline: 2px solid #ff6b6b;
+    outline-offset: 4px;
   }
 </style>

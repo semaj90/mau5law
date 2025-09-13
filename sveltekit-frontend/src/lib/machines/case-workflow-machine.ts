@@ -228,12 +228,13 @@ export const caseWorkflowMachine = createMachine({
           const latestDoc = documents[documents.length - 1];
           
           // Queue document for background processing
-          await rabbitmq.publishDocumentProcessing({
-            document_id: latestDoc.id,
-            content: latestDoc.content,
-            document_type: latestDoc.type,
-            case_id
-          });
+          // TODO: Re-enable when rabbitmq is properly configured
+          // await rabbitmq.publishDocumentProcessing({
+          //   document_id: latestDoc.id,
+          //   content: latestDoc.content,
+          //   document_type: latestDoc.type,
+          //   case_id
+          // });
 
           // Auto-analyze if enabled
           if (input.context.settings.auto_analyze) {

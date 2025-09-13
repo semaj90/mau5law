@@ -6,11 +6,12 @@
 
   interface ServiceStatus { healthy: boolean; [key: string]: unknown }
   interface SystemStatus { services?: Record<string, ServiceStatus>; [key: string]: unknown }
+  interface UploadResult { filename?: string; status?: string; documentId?: string; size?: number; embeddingGenerated?: boolean; error?: string; [key:string]: any }
 
-  let uploadResults = $state<unknown[]>([]);
-  let systemStatus = $state<SystemStatus>({});
+  let uploadResults: UploadResult[] = [];
+  let systemStatus: SystemStatus = {};
 
-  function handleUploadComplete(result: any) {
+  function handleUploadComplete(result: UploadResult) {
     console.log('Upload completed:', result);
     uploadResults = [...uploadResults, result];
   }
@@ -102,11 +103,10 @@
   {:else}
     <div class="text-gray-500">Loading system status...</div>
   {/if}
-
   <!-- Simple File Upload Component (UnoCSS attributify) -->
   <!-- Converted UnoCSS attributify props to class to satisfy TS HTMLProps -->
   <div class="mb-8 border border-gray-200 rounded-lg p-4">
-    <SimpleFileUpload uploadcomplete={handleUploadComplete} />
+    <SimpleFileUpload on:uploadcomplete={handleUploadComplete} />
   </div>
 
   <!-- Upload Results -->
@@ -118,7 +118,7 @@
           <div class="p-4 border rounded-lg bg-white shadow-sm">
             <div class="flex justify-between items-start mb-2">
               <h3 class="font-medium">{result.filename || 'Unknown file'}</h3>
-              <span class="px-2 py-1 text-xs rounded {result.status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+              <span class={`px-2 py-1 text-xs rounded ${result.status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                 {result.status}
               </span>
             </div>
@@ -138,6 +138,7 @@
         {/each}
       </div>
     </div>
+  {/if}
   {/if}
 
   <!-- Debug Information -->

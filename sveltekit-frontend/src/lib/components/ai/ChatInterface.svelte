@@ -360,8 +360,9 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Reactive scroll to bottom when new messages arrive
-  // TODO: Convert to $derived: if ($currentConversation?.messages) {
-    tick().then(scrollToBottom)
+  // TODO: Convert to $derived when possible
+  $: if ($currentConversation?.messages) {
+    tick().then(scrollToBottom);
   }
 </script>
 
@@ -386,20 +387,19 @@ https://svelte.dev/e/js_parse_error -->
             disabled={$isLoading}
           >
             🔍 Quick Analysis
-          <Button
-            variant="outline"
-            size="sm"
-            onclick={quickAnalyzeEvidence}
-      <div class="mx-auto px-4 max-w-7xl bits-btn bits-btn">
-        {#if lastAnalysisResult}
-          <span class="mx-auto px-4 max-w-7xl">
-            📊 Confidence: {Math.round(lastAnalysisResult.confidence * 100)}%
-          </span>
+          </Button>
         {/if}
-  <div class="mx-auto px-4 max-w-7xl"><span>AI Active</span></div>
-      </div>
-    </div>
-  </div>
+
+        <div class="mx-auto px-4 max-w-7xl">
+          {#if lastAnalysisResult}
+            <span class="mx-auto px-4 max-w-7xl">
+              📊 Confidence: {Math.round(lastAnalysisResult.confidence * 100)}%
+            </span>
+          {/if}
+          <div class="mx-auto px-4 max-w-7xl">
+            <span>AI Active</span>
+          </div>
+        </div>
 
   <!-- Messages Container -->
   <div

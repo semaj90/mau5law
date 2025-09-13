@@ -562,7 +562,6 @@
     "redis": "^5.7.0",
     "rxdb": "^16.16.0",
     "rxjs": "^7.8.2",
-    "shadcn-svelte": "^1.0.7",
     "sharp": "^0.34.3",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",

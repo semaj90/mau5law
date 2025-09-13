@@ -5,7 +5,7 @@
  * Provides safe, type-aware conversions between different buffer types.
  */
 
-export type BufferLike = ArrayBuffer | Float32Array | Uint8Array | Int32Array | Uint32Array;
+export type BufferLike = ArrayBuffer | Float32Array | Uint8Array | Int32Array | Uint32Array | number[];
 
 /**
  * Safe conversion from ArrayBuffer to Float32Array
@@ -45,7 +45,15 @@ export function float32ArrayToArrayBuffer(array: Float32Array): ArrayBuffer {
     return newBuffer;
   }
   
-  return array.buffer;
+  // Ensure we return an ArrayBuffer, not ArrayBufferLike
+  if (array.buffer instanceof ArrayBuffer) {
+    return array.buffer;
+  } else {
+    // Convert SharedArrayBuffer to ArrayBuffer
+    const newBuffer = new ArrayBuffer(array.byteLength);
+    new Uint8Array(newBuffer).set(new Uint8Array(array.buffer, array.byteOffset, array.byteLength));
+    return newBuffer;
+  }
 }
 
 /**
@@ -73,7 +81,11 @@ export function toFloat32Array(data: BufferLike): Float32Array {
     return new Float32Array(data);
   }
   
-  throw new Error(`Unsupported buffer type: ${data.constructor.name}`);
+  if (Array.isArray(data)) {
+    return new Float32Array(data);
+  }
+  
+  throw new Error(`Unsupported buffer type: ${(data as any)?.constructor?.name || typeof data}`);
 }
 
 /**
@@ -91,7 +103,12 @@ export function toArrayBuffer(data: BufferLike): ArrayBuffer {
     return float32ArrayToArrayBuffer(data as Float32Array);
   }
   
-  throw new Error(`Unsupported buffer type: ${data.constructor.name}`);
+  if (Array.isArray(data)) {
+    const float32Array = new Float32Array(data);
+    return float32ArrayToArrayBuffer(float32Array);
+  }
+  
+  throw new Error(`Unsupported buffer type: ${(data as any)?.constructor?.name || typeof data}`);
 }
 
 /**
@@ -198,7 +215,12 @@ export const BufferDebugUtils = {
     
     if (data instanceof ArrayBuffer) {
       byteLength = data.byteLength;
+    } else if (Array.isArray(data)) {
+      // Handle number[] case
+      elementCount = data.length;
+      byteLength = data.length * 4; // Assuming 4 bytes per number
     } else {
+      // Handle typed arrays
       byteLength = data.byteLength;
       elementCount = data.length;
     }

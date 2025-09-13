@@ -54,13 +54,14 @@ export const nierClasses = {
 } as const;
 
 // Shadcn-compatible classes
-export const shadcnClasses = {
-  button: "bits-btn",
-  buttonDefault: "bits-btn-default",
-  buttonOutline: "bits-btn-outline",
-  card: "shadcn-card",
-  input: "bits-input",
-  label: "bits-label",
-  dialog: "bits-dialog-content",
-  select: "bits-select-trigger",
+// Compatibility class mappings (previously shadcn-prefixed)
+export const compatClasses = {
+  button: 'bits-btn',
+  buttonDefault: 'bits-btn-default',
+  buttonOutline: 'bits-btn-outline',
+  card: 'bits-card',
+  input: 'bits-input',
+  label: 'bits-label',
+  dialog: 'bits-dialog-content',
+  select: 'bits-select-trigger',
 } as const;

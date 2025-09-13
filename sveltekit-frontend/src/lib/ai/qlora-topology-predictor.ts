@@ -929,14 +929,17 @@ class WebGPUTopologyAccelerator {
     // Upload input data
     this.device!.queue.writeBuffer(inputBuffer, 0, inputData.buffer, inputData.byteOffset, inputData.byteLength);
 
+    // Create bind group layout
+    const bindGroupLayout = this.device!.createBindGroupLayout({
+      entries: [
+        { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
+      ]
+    });
+
     // Create bind group
     const bindGroup = this.device!.createBindGroup({
-      layout: this.device!.createBindGroupLayout({
-        entries: [
-          { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
-          { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
-        ]
-      }),
+      layout: bindGroupLayout,
       entries: [
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: outputBuffer } }
@@ -945,7 +948,7 @@ class WebGPUTopologyAccelerator {
 
     // Create compute pipeline
     const pipeline = this.device!.createComputePipeline({
-      layout: this.device!.createPipelineLayout({ bindGroupLayouts: [bindGroup.layout] }),
+      layout: this.device!.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
       compute: { module: this.computeShader!, entryPoint: 'main' }
     });
 

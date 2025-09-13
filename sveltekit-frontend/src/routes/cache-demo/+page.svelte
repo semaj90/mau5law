@@ -13,14 +13,14 @@ https://svelte.dev/e/tag_invalid_name -->
   import { idleDetectionService } from '$lib/machines/idleDetectionMachine';
   import ModernButton from '$lib/components/ui/button/Button.svelte';
 
-  let serviceStatus = $state(null);
-  let wasmStats = $state(null);
-  let idleState = $state(null);
-  let cacheDemo = $state({
+  let serviceStatus: any = null;
+  let wasmStats: any = null;
+  let idleState: any = null;
+  let cacheDemo = {
     loading: false,
     results: null,
     queryTime: 0
-  });
+  };
 
   onMount(async () => {
     // Get initial system status
@@ -43,22 +43,21 @@ https://svelte.dev/e/tag_invalid_name -->
   });
 
   async function runCacheDemo() {
-    cacheDemo.loading = true;
+    cacheDemo = { ...cacheDemo, loading: true };
     const startTime = Date.now();
 
     try {
       // Test graph query with WASM engine
       const result = await wasmGraphEngine.executeQuery(
-        'MATCH (caseItem:Case)-[:HAS_EVIDENCE]->(evidence:Evidence) RETURN case, evidence LIMIT 5'
+        'MATCH (caseItem:Case)-[:HAS_EVIDENCE]->(evidence:Evidence) RETURN caseItem, evidence LIMIT 5'
       );
 
-      cacheDemo.results = result;
-      cacheDemo.queryTime = Date.now() - startTime;
-    } catch (error) {
+      cacheDemo = { ...cacheDemo, results: result, queryTime: Date.now() - startTime };
+    } catch (error: any) {
       console.error('Cache demo failed:', error);
-      cacheDemo.results = { error: error.message };
+      cacheDemo = { ...cacheDemo, results: { error: error?.message || String(error) } };
     } finally {
-      cacheDemo.loading = false;
+      cacheDemo = { ...cacheDemo, loading: false };
     }
   }
 
@@ -99,18 +98,18 @@ https://svelte.dev/e/tag_invalid_name -->
           <div class="flex justify-between">
             <span>Health Score:</span>
             <span class="font-mono {serviceStatus.healthScore >= 80 ? 'text-green-400' : serviceStatus.healthScore >= 60 ? 'text-yellow-400' : 'text-red-400'}">
+            <span class={"font-mono " + (serviceStatus.healthScore >= 80 ? 'text-green-400' : serviceStatus.healthScore >= 60 ? 'text-yellow-400' : 'text-red-400')}>
               {serviceStatus.healthScore}%
             </span>
-          </div>
           <div class="text-xs space-y-1">
             {#each Object.entries(serviceStatus.services) as [name, status]}
               <div class="flex justify-between">
                 <span>{name}:</span>
                 <span class="font-mono {status.online ? 'text-green-400' : 'text-red-400'}">
+                <span class={"font-mono " + (status.online ? 'text-green-400' : 'text-red-400')}>
                   {status.online ? '✅' : '❌'}
                   {status.responseTime ? `${status.responseTime}ms` : ''}
                 </span>
-              </div>
             {/each}
           </div>
           <div class="text-xs text-nier-text-muted mt-2">
@@ -163,9 +162,9 @@ https://svelte.dev/e/tag_invalid_name -->
           <div class="flex justify-between">
             <span>Current State:</span>
             <span class="font-mono {idleDetectionService.isIdle() ? 'text-yellow-400' : 'text-green-400'}">
+            <span class={"font-mono " + (idleDetectionService.isIdle() ? 'text-yellow-400' : 'text-green-400')}>
               {idleDetectionService.isIdle() ? '💤 Idle' : '🏃 Active'}
             </span>
-          </div>
           <div class="flex justify-between">
             <span>Idle Count:</span>
             <span class="font-mono">{idleState.idleCount}</span>
@@ -194,37 +193,37 @@ https://svelte.dev/e/tag_invalid_name -->
 
     <div class="flex gap-4 mb-4">
       <ModernButton
-  onclick={runCacheDemo}
+      <ModernButton
+  on:click={runCacheDemo}
         disabled={cacheDemo.loading}
         class="bg-blue-600 hover:bg-blue-700"
       >
         {cacheDemo.loading ? '⚡ Running...' : '🔍 Run Graph Query'}
       </ModernButton>
-
       <ModernButton
-  onclick={triggerIdle}
+      <ModernButton
+  on:click={triggerIdle}
         variant="outline"
         class="border-yellow-500 text-yellow-400 hover:bg-yellow-500/10"
       >
         💤 Trigger Idle
       </ModernButton>
-
       <ModernButton
-  onclick={triggerActivity}
+      <ModernButton
+  on:click={triggerActivity}
         variant="outline"
         class="border-green-500 text-green-400 hover:bg-green-500/10"
       >
         🏃 Trigger Activity
       </ModernButton>
-
       <ModernButton
-  onclick={clearAllCaches}
+      <ModernButton
+  on:click={clearAllCaches}
         variant="outline"
         class="border-red-500 text-red-400 hover:bg-red-500/10"
       >
         🗑️ Clear Caches
       </ModernButton>
-    </div>
 
     {#if cacheDemo.results}
       <div class="bg-nier-bg-primary border border-nier-border-muted rounded p-4">
@@ -244,12 +243,9 @@ https://svelte.dev/e/tag_invalid_name -->
             <div class="flex justify-between text-sm">
               <span>Source:</span>
               <span class="font-mono px-2 py-1 rounded text-xs
-                {cacheDemo.results.metadata.source === 'wasm' ? 'bg-blue-500/20 text-blue-400' :
-                  cacheDemo.results.metadata.source === 'cache' ? 'bg-green-500/20 text-green-400' :
-                  'bg-yellow-500/20 text-yellow-400'}">
+              <span class={"font-mono px-2 py-1 rounded text-xs " + (cacheDemo.results.metadata.source === 'wasm' ? 'bg-blue-500/20 text-blue-400' : cacheDemo.results.metadata.source === 'cache' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400')}>
                 {cacheDemo.results.metadata.source.toUpperCase()}
               </span>
-            </div>
 
             <div class="grid grid-cols-2 gap-4 text-sm">
               <div>

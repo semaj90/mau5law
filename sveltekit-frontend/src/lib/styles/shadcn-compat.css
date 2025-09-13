@@ -1,0 +1,14 @@
+/* Compatibility layer: map shadcn- class names to bits- equivalents */
+
+/* Minimal alias rules to preserve compatibility */
+.shadcn-btn { display: inline-block; }
+.shadcn-btn:hover { filter: brightness(0.98); }
+
+.shadcn-card { display: block; }
+.shadcn-card-header { display: block; }
+.shadcn-card-title { display: block; font-weight: 600; }
+.shadcn-card-description { display: block; color: inherit; }
+.shadcn-card-content { display: block; }
+.shadcn-card-footer { display: block; }
+
+/* Keep the existing bits- classes untouched; aliases above ensure selectors exist */

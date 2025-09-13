@@ -1,5 +1,6 @@
 /* Golden Ratio CSS Utilities */
 @import './lib/styles/golden-ratio-utilities.css';
+@import './lib/styles/shadcn-compat.css';
 
 
 

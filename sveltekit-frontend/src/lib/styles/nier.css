@@ -19,9 +19,10 @@ body {
   font-family: var(--font-family);
 }
 
-button,
+.button,
 .btn,
-.shadcn-btn {
+.shadcn-btn,
+.bits-btn {
   background: var(--color-secondary);
   color: var(--color-primary);
   border: 1px solid var(--color-border);
@@ -34,13 +35,15 @@ button,
 }
 button:hover,
 .btn:hover,
-.shadcn-btn:hover {
+.shadcn-btn:hover,
+.bits-btn:hover {
   background: var(--color-accent);
   color: var(--color-bg);
 }
 
 .card,
-.shadcn-card {
+.shadcn-card,
+.bits-card {
   background: var(--color-secondary);
   color: var(--color-primary);
   border: 1px solid var(--color-border);

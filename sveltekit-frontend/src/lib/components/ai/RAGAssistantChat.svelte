@@ -4,22 +4,27 @@
 	import { cubicOut } from 'svelte/easing';
 	import { writable } from 'svelte/store';
 
-	// Props (standard Svelte exports)
-	export const userId: string = 'demo-user'; // External reference only
-	export let onCaseCreated: (caseId: string) => void = () => {};
+	// Props using Svelte 5 runes
+	let {
+		onCaseCreated = () => {}
+	}: {
+		onCaseCreated?: (caseId: string) => void;
+	} = $props();
 
-	// Chat state (plain reactive vars)
-	let messages: Array<any> = [];
-	let currentMessage: string = '';
-	let isTyping = false;
-	let isProcessing = false;
-	let chatContainer: HTMLDivElement | null = null;
-	let messageInput: HTMLTextAreaElement | null = null;
+	const userId: string = 'demo-user'; // External reference only
 
-	// Workflow state
-	let workflowActive = false;
-	let currentStep = 0;
-	let workflowData: Record<string, any> = {
+	// Chat state using $state rune
+	let messages = $state<Array<any>>([]);
+	let currentMessage = $state('');
+	let isTyping = $state(false);
+	let isProcessing = $state(false);
+	let chatContainer = $state<HTMLDivElement | null>(null);
+	let messageInput = $state<HTMLTextAreaElement | null>(null);
+
+	// Workflow state using $state
+	let workflowActive = $state(false);
+	let currentStep = $state(0);
+	let workflowData = $state<Record<string, any>>({
 		what: '',
 		who: '',
 		when: '',
@@ -29,12 +34,12 @@
 		priority: 'medium',
 		category: 'criminal',
 		urgency: 'normal'
-	};
+	});
 
-	// RAG ingestion state
-	let isIngesting = false;
-	let ingestionProgress = 0;
-	let ragContext: Array<any> = [];
+	// RAG ingestion state using $state
+	let isIngesting = $state(false);
+	let ingestionProgress = $state(0);
+	let ragContext = $state<Array<any>>([]);
 
 	const workflowSteps = [
 		{

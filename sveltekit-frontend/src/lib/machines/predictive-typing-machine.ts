@@ -243,7 +243,7 @@ export const predictiveTypingMachine = setup({
   actions: {
     updateQuery: assign({
       previousQuery: ({ context }) => context.currentQuery,
-      currentQuery: ({ event }) => {
+      currentQuery: ({ context, event }) => {
         if (event.type === 'TYPE') {
           return context.currentQuery + event.character;
         } else if (event.type === 'DELETE') {

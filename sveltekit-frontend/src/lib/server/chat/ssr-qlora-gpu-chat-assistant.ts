@@ -108,11 +108,7 @@ export class SSRQLorAGPUChatAssistant {
         confidenceLevel: 1.0,
         riskLevel: 'low' as const,
         compressed: true,
-        metadata: {
-          pattern: item.pattern,
-          response: item.response,
-          vectorEmbedding: embeddedPattern
-        }
+        vectorEmbedding: embeddedPattern
       }, patternBuffer, { preferredBank: 'CHR_ROM', compress: true });
     }
   }
@@ -198,7 +194,7 @@ export class SSRQLorAGPUChatAssistant {
           const messageEmbedding = await this.generateEmbedding(userMessage);
 
           // 4. Check GPU cache for similar queries
-          const cacheHit = await this.gpuCache.findSimilar(messageEmbedding, 0.85);
+          const cacheHit = await this.gpuCache.findSimilar(Array.from(messageEmbedding), 0.85);
           if (cacheHit.length > 0) {
             controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
               type: 'cached',
@@ -303,7 +299,7 @@ export class SSRQLorAGPUChatAssistant {
       const embedding = await this.generateEmbedding(interaction.userMessage);
       await this.gpuCache.storeVector(
         `prewarmed_${interaction.id}`,
-        embedding,
+        Array.from(embedding),
         {
           response: interaction.aiResponse,
           feedback: interaction.feedback,
@@ -346,19 +342,20 @@ export class SSRQLorAGPUChatAssistant {
     const messageEmbedding = await this.generateEmbedding(message);
 
     // Search CHR-ROM patterns for instant match
-    const banks = this.nesMemory.getAllBanks();
-    const chrBank = banks.get('CHR_ROM');
+    // TODO: Implement getAllBanks method in NESMemoryArchitecture
+    // const banks = this.nesMemory.getAllBanks();
+    // const chrBank = banks.get('CHR_ROM');
 
-    if (chrBank) {
-      for (const [docId, doc] of chrBank.documents) {
-        if (doc.metadata.vectorEmbedding) {
-          const similarity = this.cosineSimilarity(messageEmbedding, doc.metadata.vectorEmbedding);
-          if (similarity > 0.9) {
-            return doc.metadata.response as string;
-          }
-        }
-      }
-    }
+    // if (chrBank) {
+    //   for (const [docId, doc] of chrBank.documents) {
+    //     if (doc.metadata.vectorEmbedding) {
+    //       const similarity = this.cosineSimilarity(messageEmbedding, doc.metadata.vectorEmbedding);
+    //       if (similarity > 0.9) {
+    //         return doc.metadata.response as string;
+    //       }
+    //     }
+    //   }
+    // }
 
     return null;
   }
@@ -382,11 +379,7 @@ export class SSRQLorAGPUChatAssistant {
         riskLevel: 'low',
         lastAccessed: Date.now(),
         compressed: false,
-        metadata: {
-          vectorEmbedding: embedding,
-          userDictionary: userDictionary.userId,
-          domainContext: userDictionary.domainExpertise.join(',')
-        }
+        vectorEmbedding: embedding
       },
       { extractionType: 'chat_response', userMessage: message },
       { quality: 8, usefulness: 8, accuracy: 8 } // Assume good feedback

@@ -433,8 +433,8 @@ export class ConcurrentJSONSerializer {
     const promises = items.map((item, index) => 
       this.serialize(item, {
         ...batchOptions,
-        // Distribute priority across batch
-        priority: index < items.length / 3 ? 'high' : 'medium'
+        // Remove priority as it's not a valid option
+        // Distribute workload across batch
       })
     );
 

@@ -419,7 +419,10 @@ export const comprehensiveUploadAnalyticsMachine = createMachine({
     idle: {
       entry: assign({
         sessionStartTime: () => Date.now(),
-        'performance.totalStartTime': () => Date.now()
+        performance: ({ context }) => ({
+          ...context.performance,
+          totalStartTime: Date.now()
+        })
       }),
 
       on: {
@@ -428,20 +431,32 @@ export const comprehensiveUploadAnalyticsMachine = createMachine({
           actions: assign({
             files: ({ event }) => event.files,
             totalFiles: ({ event }) => event.files.length,
-            'userAnalytics.caseContext.currentCaseId': ({ event }) => event.caseId,
-            'currentInteraction.events': ({ context }) => [
-              ...context.currentInteraction.events,
-              { type: 'file_selection', timestamp: Date.now(), data: { fileCount: context.files.length } }
-            ]
+            userAnalytics: ({ context, event }) => ({
+              ...context.userAnalytics,
+              caseContext: {
+                ...context.userAnalytics.caseContext,
+                currentCaseId: event.caseId
+              }
+            }),
+            currentInteraction: ({ context }) => ({
+              ...context.currentInteraction,
+              events: [
+                ...context.currentInteraction.events,
+                { type: 'file_selection', timestamp: Date.now(), data: { fileCount: context.files.length } }
+              ]
+            })
           })
         },
 
         TRACK_USER_ACTION: {
           actions: assign({
-            'currentInteraction.events': ({ context, event }) => [
-              ...context.currentInteraction.events,
-              { type: event.action, timestamp: Date.now(), data: event.data }
-            ]
+            currentInteraction: ({ context, event }) => ({
+              ...context.currentInteraction,
+              events: [
+                ...context.currentInteraction.events,
+                { type: event.action, timestamp: Date.now(), data: event.data }
+              ]
+            })
           })
         },
 
@@ -466,8 +481,14 @@ export const comprehensiveUploadAnalyticsMachine = createMachine({
         onDone: {
           target: 'generatingContextualPrompts',
           actions: assign({
-            'userAnalytics.behaviorPattern': ({ event }) => event.output.behaviorPattern || 'intermediate',
-            'performance.userEngagementScore': ({ event }) => event.output.interactionAnalysis?.confidence || 0.5
+            userAnalytics: ({ context, event }) => ({
+              ...context.userAnalytics,
+              behaviorPattern: event.output.behaviorPattern || 'intermediate'
+            }),
+            performance: ({ context, event }) => ({
+              ...context.performance,
+              userEngagementScore: event.output.interactionAnalysis?.confidence || 0.5
+            })
           })
         },
         onError: {
@@ -492,14 +513,17 @@ export const comprehensiveUploadAnalyticsMachine = createMachine({
           target: 'ready',
           actions: assign({
             contextualPrompts: ({ event }) => event.output,
-            'currentInteraction.aiPrompts': ({ context, event }) => [
-              ...context.currentInteraction.aiPrompts,
-              ...event.output.map((prompt: any) => ({
-                prompt: prompt.content,
-                response: '',
-                confidence: prompt.confidence
-              }))
-            ]
+            currentInteraction: ({ context, event }) => ({
+              ...context.currentInteraction,
+              aiPrompts: [
+                ...context.currentInteraction.aiPrompts,
+                ...event.output.map((prompt: any) => ({
+                  prompt: prompt.content,
+                  response: '',
+                  confidence: prompt.confidence
+                }))
+              ]
+            })
           })
         },
         onError: {
@@ -534,10 +558,13 @@ export const comprehensiveUploadAnalyticsMachine = createMachine({
 
         TRACK_USER_ACTION: {
           actions: assign({
-            'currentInteraction.events': ({ context, event }) => [
-              ...context.currentInteraction.events,
-              { type: event.action, timestamp: Date.now(), data: event.data }
-            ]
+            currentInteraction: ({ context, event }) => ({
+              ...context.currentInteraction,
+              events: [
+                ...context.currentInteraction.events,
+                { type: event.action, timestamp: Date.now(), data: event.data }
+              ]
+            })
           })
         }
       }

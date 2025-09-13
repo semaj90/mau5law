@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { cases, citations, users, userSessions, activityLogs, keys } from "./schema";
+import { cases, citations, users, sessions } from "./schema";
 
 export const citationsRelations = relations(citations, ({one}) => ({
 	case: one(cases, {
@@ -12,29 +12,13 @@ export const casesRelations = relations(cases, ({many}) => ({
 	citations: many(citations),
 }));
 
-export const userSessionsRelations = relations(userSessions, ({one}) => ({
+export const sessionsRelations = relations(sessions, ({one}) => ({
 	user: one(users, {
-		fields: [userSessions.userId],
+		fields: [sessions.userId],
 		references: [users.id]
 	}),
 }));
 
 export const usersRelations = relations(users, ({many}) => ({
-	userSessions: many(userSessions),
-	activityLogs: many(activityLogs),
-	keys: many(keys),
-}));
-
-export const activityLogsRelations = relations(activityLogs, ({one}) => ({
-	user: one(users, {
-		fields: [activityLogs.userId],
-		references: [users.id]
-	}),
-}));
-
-export const keysRelations = relations(keys, ({one}) => ({
-	user: one(users, {
-		fields: [keys.userId],
-		references: [users.id]
-	}),
+	sessions: many(sessions),
 }));

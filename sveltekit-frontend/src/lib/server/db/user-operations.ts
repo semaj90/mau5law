@@ -4,8 +4,7 @@
  */
 
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { eq, and, isNull, count, sql, desc } from './index.js';
-import { cosineDistance } from 'drizzle-orm';
+import { eq, and, isNull, count, sql, desc, cosineDistance } from 'drizzle-orm';
 import postgres from 'postgres';
 import bcrypt from 'bcryptjs';
 import { nanoid } from 'nanoid';

@@ -5,11 +5,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- Legal Case Analysis Dialog - Bits UI Component -->
 <script lang="ts">
-  import { Dialog } from 'bits-ui/components/dialog';
-  import { Select } from 'bits-ui/components/select';
-  import { Button } from 'bits-ui/components/button';
-  import { Badge } from 'bits-ui/components/badge';
-  import { Progress } from 'bits-ui/components/progress';
+  import { Dialog, Select, Button, Badge, Progress } from 'bits-ui';
   import { legalCaseStore } from '$lib/stores/legal-case.store.svelte';
   import type { LegalCase } from '$lib/types/legal';
 
@@ -21,13 +17,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   let { open = $bindable(), onOpenChange }: Props = $props();
 
   // Store access
-  const { 
-    filteredCases, 
-    selectedCase, 
-    aiInsights, 
+  const {
+    filteredCases,
+    selectedCase,
+    aiInsights,
     loading,
-    selectCase, 
-    analyzeCase 
+    selectCase,
+    analyzeCase
   } = legalCaseStore;
 
   let selectedCaseForAnalysis = $state<string | null>(null);
@@ -79,7 +75,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   <Dialog.Trigger>
     <Button class="legal-action-btn bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn">
       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
       Analyze Case Documents
@@ -108,8 +104,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           </SelectTrigger>
           <SelectContent class="bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
             {#each filteredCases() as legalCase}
-              <SelectItem 
-                value={legalCase.id} 
+              <SelectItem
+                value={legalCase.id}
                 class="px-3 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
               >
                 <div class="flex items-center justify-between w-full">
@@ -138,7 +134,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             <span class="text-sm text-gray-500">{analysisProgress}%</span>
           </div>
           <Progress.Root value={analysisProgress} max={100} class="w-full">
-            <Progress.Indicator 
+            <Progress.Indicator
               class="h-2 bg-blue-600 rounded-full transition-all duration-300"
               style="width: {analysisProgress}%"
             />
@@ -162,7 +158,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         {@const insights = aiInsights[selectedCaseForAnalysis.id]}
         <div class="space-y-4 border-t border-gray-100 pt-4">
           <h3 class="font-medium text-gray-900">Analysis Results</h3>
-          
+
           <!-- Risk Assessment -->
           {#if insights.riskAssessment}
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
@@ -230,14 +226,14 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     </div>
 
     <Dialog.Footer class="border-t border-gray-100 p-6 flex justify-end space-x-3">
-      <Button class="bits-btn" 
-        variant="outline" 
+      <Button class="bits-btn"
+        variant="outline"
         onclick={() => onOpenChange(false)}
         disabled={loading.analysis}
       >
         Cancel
       </Button>
-      <Button 
+      <Button
         onclick={handleAnalysis}
         disabled={!selectedCaseForAnalysis || loading.analysis || analysisStatus === 'analyzing'}
         class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"

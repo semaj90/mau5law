@@ -153,7 +153,12 @@
       "Bash(PORT=8095 timeout 10s ./legal-recommendation-engine.exe)",
       "Bash(while read file)",
       "Bash(do:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(./run-complete-context7-pipeline.bat)",
+      "Bash(start /b:*)",
+      "Bash(npx playwright:*)",
+      "Bash(PORT=5176 npm run dev)",
+      "Bash(PORT=5178 npm run dev)"
     ],
     "deny": [],
     "ask": []

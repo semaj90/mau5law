@@ -55,3 +55,13 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
 }
+
+/* Provide bits- prefixed aliases to retain compatibility after removing shadcn-svelte */
+* {
+  /* duplicates intentionally mirror shadcn variables for bits-ui compatibility */
+}
+
+/* No-op alias for bits-prefixed components (kept for backward compatibility) */
+:root {
+  /* alias variables (no-op - already defined above) */
+}

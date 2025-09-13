@@ -275,10 +275,10 @@ export const comprehensiveUploadAnalyticsMachine = createMachine({
     events: {} as UploadEvent
   },
   context: ({ input }: { input?: { userAnalytics: UserAnalytics } }) => ({
-    userAnalytics: input?.userAnalytics || {
+    userAnalytics: input?.userAnalytics || ({
       userId: 'anonymous',
       sessionId: `session-${Date.now()}`,
-      behaviorPattern: 'intermediate',
+      behaviorPattern: 'intermediate' as const,
       uploadHistory: {
         totalUploads: 0,
         successRate: 0,
@@ -303,7 +303,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine({
         workflowStage: 'discovery',
         expertise: 'associate'
       }
-    },
+    } as UserAnalytics),
     currentInteraction: {
       startTime: Date.now(),
       events: [],
@@ -313,12 +313,12 @@ export const comprehensiveUploadAnalyticsMachine = createMachine({
     uploadProgress: 0,
     uploadResults: [],
     pipeline: {
-      validation: { status: 'idle', progress: 0 },
-      upload: { status: 'idle', progress: 0 },
-      ocr: { status: 'idle', progress: 0 },
-      aiAnalysis: { status: 'idle', progress: 0 },
-      embedding: { status: 'idle', progress: 0 },
-      indexing: { status: 'idle', progress: 0 }
+      validation: { status: 'idle' as const, progress: 0 },
+      upload: { status: 'idle' as const, progress: 0 },
+      ocr: { status: 'idle' as const, progress: 0 },
+      aiAnalysis: { status: 'idle' as const, progress: 0 },
+      embedding: { status: 'idle' as const, progress: 0 },
+      indexing: { status: 'idle' as const, progress: 0 }
     },
     performance: {
       totalStartTime: 0,
