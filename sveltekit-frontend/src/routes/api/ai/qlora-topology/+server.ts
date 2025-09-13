@@ -1,18 +1,24 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: qlora-topology
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
- * - Cache Strategy: conservative
+ * - Cache Stra    if (trainingMode && result.success) {
+      (response as any).trainingData = {
+        dataFlywheelSamples: 0,
+        modelUpdateApplied: false,
+        accuracyImprovement: result.accuracyMetrics?.accuracyImprovement || 0
+      };
+    }onservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
@@ -102,9 +108,9 @@ function decompressResponse(buffer: Buffer): any {
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const body: QLoRATopologyRequest = await request.json();
-    const { 
-      query, 
-      context = '', 
+    const {
+      query,
+      context = '',
       topologyType = 'general',
       accuracyTarget = 90,
       useCache = true,
@@ -117,20 +123,20 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
 
     const startTime = Date.now();
-    
+
     // Check cache first (cache-aside pattern)
     const cacheKey = generateCacheKey(body);
     let cacheHit = false;
-    
+
     if (useCache) {
       const cachedEntry = cache.get(cacheKey);
       if (cachedEntry && !isExpired(cachedEntry)) {
         console.log(`[QLoRA API] Cache HIT for key: ${cacheKey}`);
         cacheHit = true;
-        
+
         if (binaryResponse) {
           // Return binary compressed response
-          return new Response(cachedEntry.data.buffer, {
+          return new Response(cachedEntry.data as BodyInit, {
             status: 200,
             headers: {
               'Content-Type': 'application/octet-stream',
@@ -156,27 +162,45 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     // Process with unified intelligence (cache miss - expensive operation)
     const result = await orch.processWithUnifiedIntelligence({
       requestId: `qlora_${cacheKey}`,
-      operationType: 'qlora_topology_prediction',
-      query,
+      userId: 'anonymous',
+      documentId: `qlora_${cacheKey}`,
+      operationType: 'predict',
+      priority: 'medium',
       context: {
         documentContext: {
-          content: query,
-          type: topologyType,
+          id: `qlora_${cacheKey}`,
+          type: 'brief',
+          priority: 128,
+          size: query.length,
+          confidenceLevel: 0.9,
+          riskLevel: 'low',
+          lastAccessed: Date.now(),
+          compressed: false,
           metadata: {
-            source: 'api_request',
-            confidence: 1.0
+            caseId: 'api_request'
           }
-        },
+        } as any,
         userSession: {
-          sessionId: 'anonymous',
-          userId: 'anonymous',
-          sessionType: 'api'
-        }
+          sessionType: 'research',
+          focusIntensity: 0.8,
+          documentFlow: ['brief'],
+          interactionVelocity: 1.0,
+          qualityExpectation: 0.9,
+          timeConstraints: 0.5
+        },
+        renderingNeeded: false,
+        realTimeRequired: false
       },
       requirements: {
-        responseFormat: 'json',
+        minAccuracy: 0.8,
         memoryBudget: 1024,
-        maxLatencyMs: 30000
+        maxLatency: 30000,
+        qualityLevel: 'production'
+      },
+      metadata: {
+        timestamp: Date.now(),
+        clientCapabilities: {},
+        previousResults: []
       },
       cachePreferences: {
         enableMultiTierCache: useCache,
@@ -204,9 +228,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const cacheStats = await orch.getCacheStatistics();
 
     const response: QLoRATopologyResponse = {
-      prediction: result.prediction,
-      accuracy: result.accuracy,
-      topology: result.topology,
+      prediction: result.results?.qloraConfig || {},
+      accuracy: (result.performance?.accuracy || 0) * 100,
+      topology: result.results?.renderOptimization || {},
       cacheHit,
       processingTime,
       metrics: {
@@ -218,11 +242,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     };
 
     // Add learning data if in training mode
-    if (trainingMode && result.learningApplied) {
+    if (trainingMode && result.success) {
       response.learningData = {
-        dataFlywheelSamples: result.trainingExamples?.length || 0,
-        modelUpdateApplied: result.modelUpdated || false,
-        accuracyImprovement: result.accuracyGain || 0
+        dataFlywheelSamples: 0,
+        modelUpdateApplied: false,
+        accuracyImprovement: result.accuracyMetrics?.accuracyImprovement || 0
       };
     }
 
@@ -237,12 +261,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       console.log(`[QLoRA API] Cached response with key: ${cacheKey} (${compressedData.length} bytes)`);
     }
 
-    console.log(`[QLoRA API] Processed query in ${processingTime}ms with ${result.accuracy}% accuracy`);
-    
+    console.log(`[QLoRA API] Processed query in ${processingTime}ms with ${(result.performance?.accuracy || 0) * 100}% accuracy`);
+
     if (binaryResponse) {
       // Return binary compressed response
       const compressedData = compressResponse(response);
-      return new Response(compressedData, {
+      return new Response(compressedData as BodyInit, {
         status: 200,
         headers: {
           'Content-Type': 'application/octet-stream',
@@ -258,8 +282,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
   } catch (error: any) {
     console.error('[QLoRA API] Error processing request:', error);
-    
-    return json({ 
+
+    return json({
       error: 'Failed to process QLoRA topology prediction',
       details: error.message
     }, { status: 500 });
@@ -292,10 +316,10 @@ const originalGETHandler: RequestHandler = async () => {
 
   } catch (error: any) {
     console.error('[QLoRA API] Health check failed:', error);
-    
-    return json({ 
+
+    return json({
       status: 'error',
-      error: error.message 
+      error: error.message
     }, { status: 500 });
   }
 };

@@ -78,7 +78,7 @@
   role="article"
   aria-label={item.title}
 >
-  <div class="yorha-panel-header" class="pb-3">
+  <div class="yorha-panel-header pb-3">
     <div class="flex items-start justify-between">
       <div class="flex items-center gap-3">
         <div
@@ -113,7 +113,7 @@
           onclick={() => onView?.(item)}
         >
           <i class="i-lucide-eye w-4 h-4" aria-hidden="true"></i>
-        </button>
+        </Button>
         <Button
           variant="ghost"
           size="sm"
@@ -122,12 +122,12 @@
           onclick={() => onMoreOptions?.(item)}
         >
           <i class="i-lucide-more-horizontal w-4 h-4" aria-hidden="true"></i>
-        </button>
+        </Button>
       </div>
     </div>
   </div>
 
-  <div class="yorha-panel-content" class="space-y-3">
+  <div class="yorha-panel-content space-y-3">
     <!-- Preview/Thumbnail -->
     {#if item.thumbnailUrl}
       <div class="aspect-video bg-muted rounded-md overflow-hidden">

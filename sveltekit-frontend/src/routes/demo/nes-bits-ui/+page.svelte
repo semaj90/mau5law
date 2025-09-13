@@ -102,18 +102,24 @@
 
     <!-- Dialog Component -->
     {#if dialogOpen}
-      <div 
-        class="dialog-overlay" 
+      <div
+        class="dialog-overlay"
+        role="button"
+        tabindex="0"
         onclick={() => dialogOpen = false}
+        onkeydown={(e) => e.key === 'Enter' && (dialogOpen = false)}
         use:accessibleClick={{ handler: () => dialogOpen = false, label: 'Close dialog' }}
       >
-        <div 
-          class="nes-dialog dialog-content" 
+        <div
+          class="nes-dialog dialog-content"
+          role="dialog"
+          tabindex="0"
           onclick={(e) => e.stopPropagation()}
-          use:accessibleClick={{ 
-            handler: (e) => e.stopPropagation(), 
-            role: 'dialog', 
-            label: 'Achievement dialog content' 
+          onkeydown={(e) => e.key === 'Enter' && e.stopPropagation()}
+          use:accessibleClick={{
+            handler: (e) => e.stopPropagation(),
+            role: 'dialog',
+            label: 'Achievement dialog content'
           }}
         >
           <form method="dialog">

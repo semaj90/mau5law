@@ -198,7 +198,7 @@
       >
         <RefreshCw class="w-4 h-4 {isLoading ? 'animate-spin' : ''}" />
         Refresh
-      </button>
+      </Button>
     </div>
   </div>
 

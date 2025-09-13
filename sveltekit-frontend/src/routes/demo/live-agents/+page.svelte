@@ -230,7 +230,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-300 mb-2">Select Agents</label>
+            <div class="block text-sm font-medium text-gray-300 mb-2">Select Agents</div>
             <div class="flex flex-wrap gap-2">
               {#each availableAgents as agent}
                 <button

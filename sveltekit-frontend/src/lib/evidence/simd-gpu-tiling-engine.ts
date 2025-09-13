@@ -97,17 +97,29 @@ export class SIMDGPUTilingEngine {
   };
 
   constructor() {
-    this.initialize().catch(console.error);
+    // Only initialize in browser context
+    if (typeof window !== 'undefined') {
+      this.initialize().catch(console.error);
+    }
   }
 
   private async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
+    // Check if we're in browser context
+    if (typeof window === 'undefined') {
+      console.log(
+        '🚀 SIMD GPU Tiling Engine: Server-side context detected, skipping WebGPU initialization'
+      );
+      return;
+    }
+
     console.log('🚀 Initializing SIMD GPU Tiling Engine...');
 
     // Initialize WebGPU device
     if (!navigator.gpu) {
-      throw new Error('WebGPU not supported - falling back to CPU SIMD only');
+      console.warn('WebGPU not supported - falling back to CPU SIMD only');
+      return;
     }
 
     const adapter = await navigator.gpu.requestAdapter({
@@ -746,8 +758,15 @@ export class SIMDGPUTilingEngine {
   }
 }
 
-// Export singleton instance
-export const simdGPUTilingEngine = new SIMDGPUTilingEngine();
+// Export singleton instance with lazy initialization for browser context
+let _simdGPUTilingEngine: SIMDGPUTilingEngine | null = null;
+
+export const simdGPUTilingEngine = (() => {
+  if (!_simdGPUTilingEngine) {
+    _simdGPUTilingEngine = new SIMDGPUTilingEngine();
+  }
+  return _simdGPUTilingEngine;
+})();
 
 // Additional utility functions
 export function calculateOptimalTileSize(imageWidth: number, imageHeight: number): number {
