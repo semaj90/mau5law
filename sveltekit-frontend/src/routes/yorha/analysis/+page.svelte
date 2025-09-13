@@ -11,12 +11,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
-  import { 
-    BarChart3, 
-    TrendingUp, 
-    Target, 
-    AlertCircle, 
-    Brain, 
+  import {
+    BarChart3,
+    TrendingUp,
+    Target,
+    AlertCircle,
+    Brain,
     Activity,
     Database,
     Clock
@@ -64,7 +64,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       timestamp: '2 hours ago'
     },
     {
-      id: 'ANA-002', 
+      id: 'ANA-002',
       case_id: 'CASE-2024-088',
       type: 'Behavioral Analysis',
       status: 'processing',
@@ -103,38 +103,38 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <span class="nav-icon">⌂</span>
           COMMAND CENTER
         </a>
-        
+
         <a href="/yorha/cases" class="nav-item">
           <span class="nav-text">ACTIVE CASES</span>
           <span class="nav-count">8</span>
         </a>
-        
+
         <a href="/evidenceboard" class="nav-item">
           <span class="nav-icon">📁</span>
           EVIDENCE
         </a>
-        
+
         <a href="/yorha/persons" class="nav-item">
           <span class="nav-icon">👤</span>
           PERSONS OF INTEREST
         </a>
-        
+
         <button class="nav-item analysis-active">
           <span class="nav-icon">📊</span>
           ANALYSIS
         </button>
-        
+
         <a href="/yorha/search" class="nav-item">
           <span class="nav-icon">🔍</span>
           GLOBAL SEARCH
         </a>
-        
+
         <a href="/yorha/terminal" class="nav-item">
           <span class="nav-icon">></span>
           TERMINAL
         </a>
       </div>
-      
+
       <div class="nav-section">
         <a href="/yorha/config" class="nav-item">
           <span class="nav-icon">⚙</span>
@@ -159,7 +159,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         <h1 class="analysis-title">ANALYSIS</h1>
         <div class="analysis-subtitle">AI-Powered Investigation Intelligence</div>
       </div>
-      
+
       <div class="header-right">
         <Button class="header-btn bits-btn bits-btn">
           <Brain class="w-4 h-4" />
@@ -312,14 +312,14 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                     {/if}
                   </div>
                 </div>
-                
+
                 <div class="analysis-findings">
                   {analysis.findings}
                 </div>
-                
+
                 <div class="analysis-footer">
                   <span class="analysis-timestamp">{analysis.timestamp}</span>
-                  <Button class="bits-btn" size="sm" variant="outline">View Details</button>
+                  <Button class="bits-btn" size="sm" variant="outline">View Details</Button>
                 </div>
               </div>
             {/each}

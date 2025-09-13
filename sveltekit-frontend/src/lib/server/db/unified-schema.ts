@@ -272,51 +272,53 @@ export const criminals = pgTable("criminals", {
 // === CASE MANAGEMENT ===
 
 export const cases = pgTable(
-  "cases",
+  'cases',
   {
-    id: uuid("id").primaryKey().defaultRandom(),
-    caseNumber: varchar("case_number", { length: 50 }).notNull().unique(),
-    title: varchar("title", { length: 255 }).notNull(),
-    name: varchar("name", { length: 255 }), // Alias for title for backward compatibility
-    description: text("description"),
-    incidentDate: timestamp("incident_date", { mode: "date" }),
-    location: text("location"),
-    priority: varchar("priority", { length: 20 }).default("medium").notNull(), // low, medium, high, urgent
-    status: varchar("status", { length: 20 }).default("open").notNull(), // open, investigating, trial, closed, dismissed
-    category: varchar("category", { length: 50 }), // felony, misdemeanor, etc.
-    dangerScore: integer("danger_score").default(0).notNull(), // 0-100
-    estimatedValue: decimal("estimated_value", { precision: 12, scale: 2 }), // monetary value involved
-    jurisdiction: varchar("jurisdiction", { length: 100 }),
-    leadProsecutor: uuid("lead_prosecutor").references(() => users.id),
-    userId: uuid("user_id").references(() => users.id), // Missing field
-    assignedTeam: jsonb("assigned_team").default([]).notNull(), // user IDs
-    tags: jsonb("tags").default([]).notNull(), // case tags
-    aiSummary: text("ai_summary"),
-    aiTags: jsonb("ai_tags").default([]).notNull(),
-    metadata: jsonb("metadata").default({}).notNull(), // flexible data storage
+    id: uuid('id').primaryKey().defaultRandom(),
+    caseNumber: varchar('case_number', { length: 50 }).notNull().unique(),
+    title: varchar('title', { length: 255 }).notNull(),
+    name: varchar('name', { length: 255 }), // Alias for title for backward compatibility
+    description: text('description'),
+    incidentDate: timestamp('incident_date', { mode: 'date' }),
+    location: text('location'),
+    priority: varchar('priority', { length: 20 }).default('medium').notNull(), // low, medium, high, urgent
+    status: varchar('status', { length: 20 }).default('open').notNull(), // open, investigating, trial, closed, dismissed
+    category: varchar('category', { length: 50 }), // felony, misdemeanor, etc.
+    dangerScore: integer('danger_score').default(0).notNull(), // 0-100
+    estimatedValue: decimal('estimated_value', { precision: 12, scale: 2 }), // monetary value involved
+    jurisdiction: varchar('jurisdiction', { length: 100 }),
+    leadProsecutor: uuid('lead_prosecutor').references(() => users.id),
+    userId: uuid('user_id').references(() => users.id), // Missing field
+    assignedTeam: jsonb('assigned_team').default([]).notNull(), // user IDs
+    tags: jsonb('tags').default([]).notNull(), // case tags
+    aiSummary: text('ai_summary'),
+    aiTags: jsonb('ai_tags').default([]).notNull(),
+    metadata: jsonb('metadata').default({}).notNull(), // flexible data storage
 
     // Vector embeddings for semantic search
-    titleEmbedding: vector("title_embedding", { dimensions: 1536 }), // OpenAI embedding
-    descriptionEmbedding: vector("description_embedding", { dimensions: 1536 }),
-    fullTextEmbedding: vector("full_text_embedding", { dimensions: 1536 }), // Combined content
+    titleEmbedding: vector('title_embedding', { dimensions: 1536 }), // OpenAI embedding
+    descriptionEmbedding: vector('description_embedding', { dimensions: 1536 }),
+    fullTextEmbedding: vector('full_text_embedding', { dimensions: 1536 }), // Combined content
 
-    createdBy: uuid("created_by").references(() => users.id),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
-    closedAt: timestamp("closed_at", { mode: "date" }),
+    createdBy: uuid('created_by').references(() => users.id),
+    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+    closedAt: timestamp('closed_at', { mode: 'date' }),
   },
   (table) => ({
     // Vector similarity search indexes
-    titleEmbeddingIdx: index("cases_title_embedding_idx").on(table.titleEmbedding),
-    descriptionEmbeddingIdx: index("cases_description_embedding_idx").on(table.descriptionEmbedding),  
-    fullTextEmbeddingIdx: index("cases_fulltext_embedding_idx").on(table.fullTextEmbedding),
+    titleEmbeddingIdx: index('cases_title_embedding_idx').on(table.titleEmbedding),
+    descriptionEmbeddingIdx: index('cases_description_embedding_idx').on(
+      table.descriptionEmbedding
+    ),
+    fullTextEmbeddingIdx: index('cases_fulltext_embedding_idx').on(table.fullTextEmbedding),
 
     // Traditional indexes for fast filtering
-    statusIdx: index("cases_status_idx").on(table.status),
-    priorityIdx: index("cases_priority_idx").on(table.priority),
-    categoryIdx: index("cases_category_idx").on(table.category),
-    caseNumberIdx: index("cases_case_number_idx").on(table.caseNumber),
-  }),
+    statusIdx: index('cases_status_idx').on(table.status),
+    priorityIdx: index('cases_priority_idx').on(table.priority),
+    categoryIdx: index('cases_category_idx').on(table.category),
+    caseNumberIdx: index('cases_case_number_idx').on(table.caseNumber),
+  })
 );
 
 // === CASE-CRIMINAL RELATIONSHIPS ===
@@ -1033,6 +1035,94 @@ export const notesRelations = relations(notes, ({ one }) => ({
   }),
   user: one(users, {
     fields: [notes.userId],
+    references: [users.id],
+  }),
+}));
+
+// Pattern Analysis Tables - pgvector integration for user pattern discovery
+export const userDocuments = pgTable(
+  "user_documents",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    source: text("source"), // e.g. "minio://bucket/key" or "note", etc.
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+    embedding: vector("embedding", { dimensions: 1536 }), // Gemma embedding dimension
+  },
+  (table) => ({
+    userIdIdx: index("idx_user_documents_user_id").on(table.userId),
+    createdAtIdx: index("idx_user_documents_created_at").on(table.createdAt),
+    embeddingIdx: index("idx_user_documents_embedding").using(
+      "ivfflat",
+      table.embedding.op("vector_cosine_ops")
+    ),
+  })
+);
+
+export const userPatterns = pgTable(
+  "user_patterns",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    patternLabel: text("pattern_label"),
+    patternSummary: text("pattern_summary"),
+    patternType: text("pattern_type").default("document"), // 'document', 'cluster', 'trend'
+    confidence: decimal("confidence", { precision: 3, scale: 2 }).default("0.0"),
+    representativeDocId: integer("representative_doc_id").references(() => userDocuments.id),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+    embedding: vector("embedding", { dimensions: 1536 }),
+  },
+  (table) => ({
+    userIdIdx: index("idx_user_patterns_user_id").on(table.userId),
+    embeddingIdx: index("idx_user_patterns_embedding").using(
+      "ivfflat",
+      table.embedding.op("vector_cosine_ops")
+    ),
+  })
+);
+
+export const patternSessions = pgTable(
+  "pattern_sessions",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    sessionType: text("session_type").default("analysis"), // 'analysis', 'clustering', 'trend'
+    queryText: text("query_text"),
+    resultsCount: integer("results_count").default(0),
+    avgConfidence: decimal("avg_confidence", { precision: 3, scale: 2 }).default("0.0"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => ({
+    userIdIdx: index("idx_pattern_sessions_user_id").on(table.userId),
+  })
+);
+
+// Relations for pattern analysis tables
+export const userDocumentsRelations = relations(userDocuments, ({ one, many }) => ({
+  user: one(users, {
+    fields: [userDocuments.userId],
+    references: [users.id],
+  }),
+  patterns: many(userPatterns),
+}));
+
+export const userPatternsRelations = relations(userPatterns, ({ one }) => ({
+  user: one(users, {
+    fields: [userPatterns.userId],
+    references: [users.id],
+  }),
+  representativeDoc: one(userDocuments, {
+    fields: [userPatterns.representativeDocId],
+    references: [userDocuments.id],
+  }),
+}));
+
+export const patternSessionsRelations = relations(patternSessions, ({ one }) => ({
+  user: one(users, {
+    fields: [patternSessions.userId],
     references: [users.id],
   }),
 }));

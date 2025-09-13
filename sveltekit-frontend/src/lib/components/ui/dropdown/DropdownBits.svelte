@@ -1,5 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
+  import '$lib/styles/dropdown-global.css';
   import { DropdownMenu as DropdownPrimitive } from "bits-ui";
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
@@ -61,7 +62,7 @@
 </DropdownPrimitive.Root>
 
 <!-- Dropdown Item Component -->
-<script lang="ts" context="module">
+<script lang="ts" module>
   export interface DropdownItemProps {
     class?: string;
     disabled?: boolean;
@@ -106,34 +107,3 @@
     {/if}
   </DropdownPrimitive.Label>
 {/snippet}
-
-<style>
-  :global(.legal-ai-dropdown) {
-    font-family: var(--legal-ai-font-family-sans);
-    animation: legal-ai-fade-in 150ms ease-out;
-  }
-
-  :global(.legal-ai-dropdown-trigger) {
-    cursor: pointer;
-  }
-
-  :global(.legal-ai-dropdown-item) {
-    font-family: var(--legal-ai-font-family-sans);
-  }
-
-  :global(.legal-ai-dropdown-item:focus) {
-    outline: 2px solid var(--legal-ai-primary);
-    outline-offset: 2px;
-  }
-
-  @keyframes legal-ai-fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(-4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-</style>

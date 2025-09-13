@@ -1,5 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
+  import '$lib/styles/tooltip-global.css';
   import { Tooltip as TooltipPrimitive } from "bits-ui";
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
@@ -50,25 +51,3 @@
     <TooltipPrimitive.Arrow class="fill-amber-400" />
   </TooltipPrimitive.Content>
 </TooltipPrimitive.Root>
-
-<style>
-  :global(.legal-ai-tooltip) {
-    font-family: var(--legal-ai-font-family-sans);
-    animation: legal-ai-fade-in 150ms ease-out;
-  }
-
-  :global(.legal-ai-tooltip-trigger) {
-    cursor: help;
-  }
-
-  @keyframes legal-ai-fade-in {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-</style>

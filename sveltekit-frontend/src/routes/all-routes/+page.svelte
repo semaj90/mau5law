@@ -753,9 +753,7 @@
     width: 250px;
   }
 
-  table {
-    border-collapse: collapse;
-  }
+  /* Remove unused table styles */
 
   .nes-container {
     margin: 1rem 0;

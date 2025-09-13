@@ -1,0 +1,436 @@
+<!--
+EvidenceBoard.svelte - Main evidence board component with Fabric.js canvas
+Provides drag-drop positioning, zoom, selection, and object management
+-->
+<script lang="ts">
+  import { onMount, onDestroy } from 'svelte';
+  import { fabric } from 'fabric';
+  import {
+    boardObjects,
+    selectedObjects,
+    canvasSize,
+    zoomLevel,
+    boardActions
+  } from '$lib/stores/boardStore';
+  import type { BoardObject } from '$lib/types';
+
+  // Props
+  export let caseId: string;
+  export let readonly = false;
+
+  // Component state
+  let canvas: fabric.Canvas;
+  let canvasElement: HTMLCanvasElement;
+  let fabricObjects = new Map<string, fabric.Object>();
+  let isInitialized = false;
+
+  // Initialize Fabric.js canvas
+  onMount(() => {
+    initializeCanvas();
+    loadBoardState();
+  });
+
+  onDestroy(() => {
+    if (canvas) {
+      canvas.dispose();
+    }
+  });
+
+  function initializeCanvas() {
+    canvas = new fabric.Canvas(canvasElement, {
+      width: $canvasSize.width,
+      height: $canvasSize.height,
+      backgroundColor: '#212529',
+      selection: !readonly,
+      interactive: !readonly
+    });
+
+    // Canvas event listeners
+    canvas.on('object:moving', handleObjectMove);
+    canvas.on('object:scaling', handleObjectScale);
+    canvas.on('object:rotating', handleObjectRotate);
+    canvas.on('selection:created', handleSelectionChange);
+    canvas.on('selection:updated', handleSelectionChange);
+    canvas.on('selection:cleared', () => selectedObjects.set([]));
+    canvas.on('mouse:wheel', handleZoom);
+
+    isInitialized = true;
+  }
+
+  function loadBoardState() {
+    boardActions.loadBoard(caseId);
+  }
+
+  // Handle object movement
+  function handleObjectMove(e: fabric.IEvent) {
+    const obj = e.target;
+    if (obj && obj.data) {
+      const boardObj = obj.data as BoardObject;
+      boardActions.updateObject(boardObj.id, {
+        position: { x: obj.left || 0, y: obj.top || 0 }
+      });
+    }
+  }
+
+  // Handle object scaling
+  function handleObjectScale(e: fabric.IEvent) {
+    const obj = e.target;
+    if (obj && obj.data) {
+      const boardObj = obj.data as BoardObject;
+      boardActions.updateObject(boardObj.id, {
+        size: {
+          width: (obj.width || 0) * (obj.scaleX || 1),
+          height: (obj.height || 0) * (obj.scaleY || 1)
+        }
+      });
+    }
+  }
+
+  // Handle object rotation
+  function handleObjectRotate(e: fabric.IEvent) {
+    const obj = e.target;
+    if (obj && obj.data) {
+      const boardObj = obj.data as BoardObject;
+      boardActions.updateObject(boardObj.id, {
+        metadata: {
+          ...boardObj.metadata,
+          rotation: obj.angle || 0
+        }
+      });
+    }
+  }
+
+  // Handle selection changes
+  function handleSelectionChange(e: fabric.IEvent) {
+    const activeObjects = canvas.getActiveObjects();
+    const selectedIds = activeObjects
+      .map(obj => (obj.data as BoardObject)?.id)
+      .filter(Boolean);
+    selectedObjects.set(selectedIds);
+  }
+
+  // Handle mouse wheel zoom
+  function handleZoom(opt: fabric.IEvent) {
+    const delta = (opt.e as WheelEvent).deltaY;
+    let zoom = canvas.getZoom();
+    zoom *= 0.999 ** delta;
+
+    if (zoom > 20) zoom = 20;
+    if (zoom < 0.01) zoom = 0.01;
+
+    canvas.zoomToPoint({ x: (opt.e as MouseEvent).offsetX, y: (opt.e as MouseEvent).offsetY }, zoom);
+    zoomLevel.set(zoom);
+
+    opt.e.preventDefault();
+    opt.e.stopPropagation();
+  }
+
+  // React to board objects changes
+  $: if (isInitialized && $boardObjects) {
+    updateCanvasObjects($boardObjects);
+  }
+
+  // React to canvas size changes
+  $: if (canvas && $canvasSize) {
+    canvas.setDimensions({ width: $canvasSize.width, height: $canvasSize.height });
+  }
+
+  // Update canvas objects based on store
+  function updateCanvasObjects(objects: BoardObject[]) {
+    if (!canvas) return;
+
+    // Clear canvas
+    canvas.clear();
+    fabricObjects.clear();
+
+    // Add objects to canvas
+    objects.forEach(obj => {
+      createFabricObject(obj);
+    });
+
+    // Render canvas
+    canvas.renderAll();
+  }
+
+  // Create Fabric.js object from BoardObject
+  function createFabricObject(boardObj: BoardObject) {
+    let fabricObj: fabric.Object;
+
+    switch (boardObj.type) {
+      case 'image':
+        if (boardObj.url) {
+          fabric.Image.fromURL(boardObj.url, (img) => {
+            img.set({
+              left: boardObj.position.x,
+              top: boardObj.position.y,
+              selectable: !readonly,
+              hasControls: !readonly,
+              hasBorders: !readonly
+            });
+            img.data = boardObj;
+
+            if (boardObj.size) {
+              img.scaleToWidth(boardObj.size.width);
+            }
+
+            canvas.add(img);
+            fabricObjects.set(boardObj.id, img);
+          }, { crossOrigin: 'anonymous' });
+        }
+        break;
+
+      case 'text':
+        fabricObj = new fabric.Textbox(boardObj.content || '', {
+          left: boardObj.position.x,
+          top: boardObj.position.y,
+          width: boardObj.size?.width || 300,
+          fontSize: 16,
+          fill: '#ffffff',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          padding: 10,
+          selectable: !readonly,
+          hasControls: !readonly,
+          hasBorders: !readonly
+        });
+        fabricObj.data = boardObj;
+        canvas.add(fabricObj);
+        fabricObjects.set(boardObj.id, fabricObj);
+        break;
+
+      case 'note':
+        fabricObj = new fabric.Rect({
+          left: boardObj.position.x,
+          top: boardObj.position.y,
+          width: boardObj.size?.width || 200,
+          height: boardObj.size?.height || 100,
+          fill: 'rgba(255, 255, 0, 0.3)',
+          stroke: '#ffff00',
+          strokeWidth: 2,
+          selectable: !readonly,
+          hasControls: !readonly,
+          hasBorders: !readonly
+        });
+
+        const noteText = new fabric.Textbox(boardObj.content || '', {
+          left: boardObj.position.x + 10,
+          top: boardObj.position.y + 10,
+          width: (boardObj.size?.width || 200) - 20,
+          fontSize: 14,
+          fill: '#000000',
+          selectable: false
+        });
+
+        const noteGroup = new fabric.Group([fabricObj, noteText], {
+          left: boardObj.position.x,
+          top: boardObj.position.y,
+          selectable: !readonly,
+          hasControls: !readonly,
+          hasBorders: !readonly
+        });
+
+        noteGroup.data = boardObj;
+        canvas.add(noteGroup);
+        fabricObjects.set(boardObj.id, noteGroup);
+        break;
+    }
+  }
+
+  // Add evidence from drag-drop
+  export function addEvidenceFromDrop(evidence: any, x: number, y: number) {
+    const boardObjectId = boardActions.addEvidenceToBoard(
+      evidence.id,
+      evidence.minioUrl,
+      evidence.type,
+      { x, y }
+    );
+    return boardObjectId;
+  }
+
+  // Keyboard shortcuts
+  function handleKeyDown(e: KeyboardEvent) {
+    if (!canvas) return;
+
+    switch (e.key) {
+      case 'Delete':
+      case 'Backspace':
+        deleteSelectedObjects();
+        break;
+      case 'a':
+      case 'A':
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          selectAllObjects();
+        }
+        break;
+      case 'z':
+      case 'Z':
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          // TODO: Implement undo
+        }
+        break;
+    }
+  }
+
+  function deleteSelectedObjects() {
+    $selectedObjects.forEach(id => {
+      boardActions.removeObject(id);
+    });
+  }
+
+  function selectAllObjects() {
+    const allIds = $boardObjects.map(obj => obj.id);
+    selectedObjects.set(allIds);
+  }
+
+  // Save board state
+  function saveBoard() {
+    boardActions.saveBoard(caseId);
+  }
+
+  // Auto-arrange objects
+  function autoArrange() {
+    boardActions.autoArrange();
+  }
+
+  // Export canvas as image
+  function exportAsImage() {
+    if (!canvas) return;
+
+    const dataURL = canvas.toDataURL({
+      format: 'png',
+      quality: 1.0
+    });
+
+    const link = document.createElement('a');
+    link.download = `evidence-board-${caseId}.png`;
+    link.href = dataURL;
+    link.click();
+  }
+</script>
+
+<svelte:window on:keydown={handleKeyDown} />
+
+<div class="evidence-board-container">
+  <!-- Board Header -->
+  <div class="board-header nes-container is-dark">
+    <h3 class="title">🔍 Evidence Board</h3>
+
+    <div class="board-controls">
+      {#if !readonly}
+        <button class="nes-btn is-primary" on:click={autoArrange}>
+          Auto Arrange
+        </button>
+        <button class="nes-btn is-success" on:click={saveBoard}>
+          Save Board
+        </button>
+      {/if}
+
+      <button class="nes-btn" on:click={exportAsImage}>
+        Export PNG
+      </button>
+
+      <div class="zoom-controls">
+        <span class="nes-text">Zoom: {Math.round($zoomLevel * 100)}%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas Container -->
+  <div class="canvas-container nes-container is-dark">
+    <canvas bind:this={canvasElement} id="evidence-board-canvas"></canvas>
+
+    <!-- Canvas Overlay Info -->
+    {#if $boardObjects.length === 0}
+      <div class="empty-board-message">
+        <div class="nes-container is-centered">
+          <p class="nes-text">🎯 Drag evidence from the sidebar to start building your board</p>
+          <p class="nes-text is-disabled">Use mouse wheel to zoom, drag to move objects</p>
+        </div>
+      </div>
+    {/if}
+  </div>
+
+  <!-- Board Stats -->
+  <div class="board-stats nes-container is-dark">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="nes-text is-primary">Objects:</span>
+        <span class="nes-text">{$boardObjects.length}</span>
+      </div>
+      <div class="stat-item">
+        <span class="nes-text is-success">Selected:</span>
+        <span class="nes-text">{$selectedObjects.length}</span>
+      </div>
+      <div class="stat-item">
+        <span class="nes-text is-warning">Zoom:</span>
+        <span class="nes-text">{Math.round($zoomLevel * 100)}%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .evidence-board-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 1rem;
+  }
+
+  .board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .board-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .zoom-controls {
+    margin-left: 1rem;
+  }
+
+  .canvas-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 600px;
+    background: #212529;
+  }
+
+  #evidence-board-canvas {
+    display: block;
+    border: 2px solid #495057;
+  }
+
+  .empty-board-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .board-stats {
+    padding: 0.5rem 1rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>

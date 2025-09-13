@@ -421,7 +421,7 @@
 						<span class="text-2xl">🕵️</span>
 					</div>
 					<div>
-						<h3 class="nes-text is-primary" class="text-2xl">Detective Board</h3>
+						<h3 class="nes-text is-primary text-2xl">Detective Board</h3>
 						<p class="nes-text is-disabled">Case Evidence Management System</p>
 					</div>
 				</div>
@@ -436,7 +436,7 @@
 						>
 							<span class="mr-2">📋</span>
 							Columns
-						</button>
+						</Button>
 						<Button class="bits-btn"
 							variant={viewMode === 'canvas' ? 'default' : 'outline'}
 							size="sm"
@@ -444,7 +444,7 @@
 						>
 							<span class="mr-2">🎨</span>
 							Canvas
-						</button>
+						</Button>
 					</div>
 
 					<!-- SVELTE 5: No more `$` prefix for store subscriptions in the template -->
@@ -473,7 +473,7 @@
 					<Button class="bits-btn" size="sm">
 						<span class="mr-2">➕</span>
 						New Case
-					</button>
+					</Button>
 				</div>
 			</div>
 		</div>
@@ -486,9 +486,9 @@
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
 				{#each columns as column (column.id)}
 					<NesCard class="h-fit">
-						<div class="yorha-panel-header" class="pb-3">
+						<div class="yorha-panel-header pb-3">
 							<div class="flex justify-between items-center">
-								<h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
+								<h3 class="nes-text is-primary text-lg flex items-center gap-2">
 									<div class="w-3 h-3 bg-primary rounded-full"></div>
 									{column.title}
 								</h3>
@@ -496,7 +496,7 @@
 							</div>
 						</div>
 
-						<div class="yorha-panel-content" class="space-y-4">
+						<div class="yorha-panel-content space-y-4">
 							{#if column.id === 'new'}
 								<UploadZone
 									onUpload={(result) => handleFileUpload(result, column.id)}
@@ -541,7 +541,7 @@
 		{:else}
 			<!-- Canvas Container -->
 			<NesCard class="h-[calc(100vh-200px)]">
-				<div class="yorha-panel-content" class="p-0 h-full">
+				<div class="yorha-panel-content p-0 h-full">
 					<div
 						bind:this={canvasContainer}
 						class="relative w-full h-full bg-slate-50 dark:bg-slate-900 overflow-auto"
@@ -670,8 +670,8 @@
 				<div class="flex gap-2">
 					<Button class="bits-btn" onclick={runFindSearch} disabled={findModal.loading}>
 						{#if findModal.loading}Searching...{:else}Search{/if}
-					</button>
-					<Button class="bits-btn" variant="outline" onclick={closeFindModal}>Close</button>
+					</Button>
+					<Button class="bits-btn" variant="outline" onclick={closeFindModal}>Close</Button>
 				</div>
 
 				{#if findModal.error}

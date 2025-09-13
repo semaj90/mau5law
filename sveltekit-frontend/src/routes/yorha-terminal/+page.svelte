@@ -409,11 +409,11 @@
 
 	<!-- Quick Commands -->
 	<div class="quick-commands">
-		<Button class="bits-btn" onclick={() => { terminalInput = "help"; void executeCommand(); }}>Help</button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "status"; void executeCommand(); }}>Status</button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "context7"; void executeCommand(); }}>Test Context7</button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "analyze contract dispute"; void executeCommand(); }}>Sample Analysis</button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "clear"; void executeCommand(); }}>Clear</button>
+		<Button class="bits-btn" onclick={() => { terminalInput = "help"; void executeCommand(); }}>Help</Button>
+		<Button class="bits-btn" onclick={() => { terminalInput = "status"; void executeCommand(); }}>Status</Button>
+		<Button class="bits-btn" onclick={() => { terminalInput = "context7"; void executeCommand(); }}>Test Context7</Button>
+		<Button class="bits-btn" onclick={() => { terminalInput = "analyze contract dispute"; void executeCommand(); }}>Sample Analysis</Button>
+		<Button class="bits-btn" onclick={() => { terminalInput = "clear"; void executeCommand(); }}>Clear</Button>
 	</div>
 </div>
 

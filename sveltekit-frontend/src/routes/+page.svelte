@@ -939,12 +939,14 @@
   }
 
   /* Accessibility improvements */
+  /* svelte-ignore css-unused-selector */
   .demo-route-card a:focus {
     outline: 2px solid #fbbf24;
     outline-offset: 2px;
     border-radius: 0.75rem;
   }
 
+  /* svelte-ignore css-unused-selector */
   .demo-route-card a:focus-visible {
     box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
   }

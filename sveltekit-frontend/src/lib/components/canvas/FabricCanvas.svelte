@@ -511,7 +511,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
             <Button class="bits-btn" variant="outline" disabled={isLoading}>
               <Upload class="h-4 w-4 mr-2" />
               Upload Evidence
-            </button>
+            </Button>
           </label>
         {/if}
 
@@ -520,26 +520,26 @@ let uploadProgress = $state<Map<string, number>>(new Map());
           <Button class="bits-btn" variant="outline" onclick={addAnnotation}>
             <FileText class="h-4 w-4 mr-2" />
             Add Note
-          </button>
+          </Button>
         {/if}
 
         <!-- Zoom Controls -->
         <Button class="bits-btn" variant="outline" onclick={zoomIn}>
           <ZoomIn class="h-4 w-4" />
-        </button>
+        </Button>
         <Button class="bits-btn" variant="outline" onclick={zoomOut}>
           <ZoomOut class="h-4 w-4" />
-        </button>
+        </Button>
         <Button class="bits-btn" variant="outline" onclick={resetZoom}>
           <RotateCcw class="h-4 w-4" />
-        </button>
+        </Button>
 
         <!-- Object Controls -->
         {#if hasSelectedObject && !readOnly}
           <Button class="bits-btn" variant="destructive" onclick={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
-          </button>
+          </Button>
         {/if}
 
         <!-- Save & Export -->
@@ -547,13 +547,13 @@ let uploadProgress = $state<Map<string, number>>(new Map());
           <Button class="bits-btn" variant="default" onclick={saveCanvas}>
             <Save class="h-4 w-4 mr-2" />
             Save
-          </button>
+          </Button>
         {/if}
 
         <Button class="bits-btn" variant="outline" onclick={exportCanvas}>
           <Download class="h-4 w-4 mr-2" />
           Export
-        </button>
+        </Button>
       </div>
     </div>
   </NesCard>
