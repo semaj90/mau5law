@@ -1,6 +1,8 @@
+/* Professional Legal AI Platform Theme */
+@import './lib/styles/professional-theme.css';
+
 /* Golden Ratio CSS Utilities */
 @import './lib/styles/golden-ratio-utilities.css';
-@import './lib/styles/shadcn-compat.css';
 
 
 

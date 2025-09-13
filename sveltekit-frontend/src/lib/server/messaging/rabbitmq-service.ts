@@ -199,6 +199,45 @@ class RabbitMQService extends EventEmitter {
   get queueNames() {
     return this.queues;
   }
+
+  /**
+   * Health check method for compatibility
+   */
+  async healthCheck(): Promise<{ healthy: boolean; queues?: any }> {
+    try {
+      if (!this.isConnected) {
+        await this.connect();
+      }
+      const queueStats = await this.getQueueStats();
+      return { healthy: this.isConnected, queues: queueStats };
+    } catch (error) {
+      return { healthy: false, error: (error as any).message };
+    }
+  }
+
+  /**
+   * Generic publish method for compatibility
+   */
+  async publish(exchange: string, routingKey: string, message: any, options: any = {}): Promise<boolean> {
+    if (!this.isConnected || !this.channel) {
+      await this.connect();
+    }
+
+    try {
+      if (!this.channel) return false;
+
+      const messageBuffer = Buffer.from(typeof message === 'string' ? message : JSON.stringify(message));
+      const published = this.channel.publish(exchange, routingKey, messageBuffer, {
+        persistent: true,
+        ...options
+      });
+
+      return published;
+    } catch (error) {
+      logger.error('[RabbitMQ] Failed to publish message:', error);
+      return false;
+    }
+  }
 }
 
 export const rabbitmqService = new RabbitMQService();

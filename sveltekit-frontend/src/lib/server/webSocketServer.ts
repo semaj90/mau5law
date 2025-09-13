@@ -51,15 +51,24 @@ async function* streamQLoRAResponse(request: StreamingQLoRARequest): AsyncGenera
     // Process with unified intelligence
     const startTime = Date.now();
     const result = await orch.processWithUnifiedIntelligence({
+      requestId: `websocket_${Date.now()}`,
+      operationType: 'qlora_topology_prediction',
       query,
-      context: '',
-      type: topologyType,
-      options: {
-        useCache: true,
-        accuracyTarget,
-        enableLearning: false,
-        webgpuAcceleration: true,
-        realTimeOptimization: true
+      context: {
+        documentContext: {
+          content: query,
+          type: topologyType,
+          metadata: {
+            source: 'websocket_request',
+            confidence: 1.0
+          }
+        }
+      },
+      optimization: {
+        targetAccuracy: accuracyTarget,
+        maxProcessingTime: 30000,
+        cacheStrategy: 'adaptive',
+        qualityPreference: 'balanced'
       }
     });
 

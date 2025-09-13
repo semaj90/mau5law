@@ -199,8 +199,8 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
 
 export const actions: Actions = {
   logout: async ({ cookies }) => {
-    // Clear the auth-session cookie
-    cookies.delete('auth-session', { path: '/' });
+    // Clear the legal_ai_session cookie (matches Lucia v3 config)
+    cookies.delete('legal_ai_session', { path: '/' });
 
     // Redirect back to homepage after logout
     throw redirect(303, '/');

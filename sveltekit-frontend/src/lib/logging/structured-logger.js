@@ -17,6 +17,12 @@ class StructuredLogger {
   async logEvent(entry) {
     console.info('[event]', entry.type || 'generic', entry.message || '');
   }
+  async logDocumentProcessing(entry) {
+    console.debug('[doc:process]', entry.documentId || 'unknown', entry.operation || 'unknown');
+  }
+  async logSearch(entry) {
+    console.debug('[search]', entry.query || 'unknown', entry.resultsCount || 0);
+  }
 }
 
 export const logger = new StructuredLogger();
