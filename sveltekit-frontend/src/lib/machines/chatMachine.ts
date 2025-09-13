@@ -3,7 +3,7 @@
  * Handles chat conversation state with streaming support
  */
 
-import { createMachine, assign, fromPromise, type StateFrom } from 'xstate';
+import { createMachine, assign, fromPromise, createActor, type StateFrom } from 'xstate';
 
 // Message types
 export interface ChatMessage {
@@ -128,7 +128,7 @@ export const chatMachine = createMachine({
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => `Chat error: ${event.error?.message || 'Unknown error'}`,
+            error: ({ event }) => `Chat error: ${event.error instanceof Error ? event.error.message : 'Unknown error'}`,
             status: 'error',
           }),
         },
@@ -190,4 +190,4 @@ export const chatMachine = createMachine({
 
 // Export types for use in components
 export type ChatMachineState = StateFrom<typeof chatMachine>;
-export type ChatMachineActor = ReturnType<typeof chatMachine.createActor>;
+export type ChatMachineActor = ReturnType<typeof createActor>;

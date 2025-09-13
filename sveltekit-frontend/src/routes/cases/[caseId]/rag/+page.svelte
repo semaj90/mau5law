@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open
-https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</CardContent>` attempted to close an element that was not open -->
 <script lang="ts">
   import type { PageData } from './$types.js';
   import type { ActionData } from './$types.js';

@@ -397,13 +397,13 @@ export class WebGPUBufferUploader {
       return quantized.data.buffer.slice(
         quantized.data.byteOffset,
         quantized.data.byteOffset + quantized.data.byteLength
-      );
+      ) as ArrayBuffer;
     }
     if (quantized.data instanceof Uint16Array || quantized.data instanceof Int8Array) {
       return quantized.data.buffer.slice(
         quantized.data.byteOffset,
         quantized.data.byteOffset + quantized.data.byteLength
-      );
+      ) as ArrayBuffer;
     }
     throw new Error(`Unsupported quantized data type: ${quantized.data.constructor.name}`);
   }

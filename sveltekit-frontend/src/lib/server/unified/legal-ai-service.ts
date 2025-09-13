@@ -4,10 +4,10 @@
  */
 
 import { db } from '../db';
-import { evidence, cases, documents } from '../db/unified-schema';
+import { evidence, cases, legalDocuments as documents } from '../db/schema';
 import { cache } from '../cache/redis';
 import { minioStorage } from '../storage/minio';
-import { qdrantStore } from '../vector/qdrant';
+// import { qdrantStore } from '../vector/qdrant'; // TODO: Fix qdrant integration
 import { embedText } from '../ai/embedder';
 import { createId } from '@paralleldrive/cuid2';
 import { eq, sql } from 'drizzle-orm';

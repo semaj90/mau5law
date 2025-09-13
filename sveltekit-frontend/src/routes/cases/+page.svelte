@@ -7,7 +7,7 @@
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import { z } from 'zod';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     Dialog,
@@ -52,9 +52,9 @@
     tags: z.string().optional()
   });
 
-  // Props from load function
+  // Props from load function  
   let { data }: { data: PageData } = $props();
-  let form: ActionData | null = null;
+  let form: ActionData | null = $state(null);
 
   // Superforms for type-safe form handling
   const createCaseForm = superForm(data.createCaseForm, {
@@ -175,7 +175,7 @@
   $effect(() => {
     if (createFormData && typeof createFormData.update === 'function') {
       const current = get(createFormData);
-      if (current?.priority !== createFormPriority) {
+      if (current && typeof current === 'object' && 'priority' in current && current.priority !== createFormPriority) {
         createFormData.update((c: any) => ({ ...c, priority: createFormPriority }));
       }
     }
@@ -184,7 +184,7 @@
   $effect(() => {
     if (createFormData && typeof createFormData.update === 'function') {
       const current = get(createFormData);
-      if (current?.status !== createFormStatus) {
+      if (current && typeof current === 'object' && 'status' in current && current.status !== createFormStatus) {
         createFormData.update((c: any) => ({ ...c, status: createFormStatus }));
       }
     }
@@ -193,7 +193,7 @@
   $effect(() => {
     if (evidenceFormData && typeof evidenceFormData.update === 'function') {
       const current = get(evidenceFormData);
-      if (current?.evidenceType !== evidenceFormType) {
+      if (current && typeof current === 'object' && 'evidenceType' in current && current.evidenceType !== evidenceFormType) {
         evidenceFormData.update((c: any) => ({ ...c, evidenceType: evidenceFormType }));
       }
     }
@@ -347,7 +347,10 @@
       if (evidenceFormData && typeof evidenceFormData.update === 'function') {
         evidenceFormData.update((c: any) => ({ ...c, caseId: data.activeCase.id }));
       } else if (evidenceFormData && typeof evidenceFormData.set === 'function') {
-        evidenceFormData.set({ ...(get(evidenceFormData) as any), caseId: data.activeCase.id });
+        const current = get(evidenceFormData);
+        if (current && typeof current === 'object') {
+          evidenceFormData.set({ ...current, caseId: data.activeCase.id });
+        }
       }
     }
   });

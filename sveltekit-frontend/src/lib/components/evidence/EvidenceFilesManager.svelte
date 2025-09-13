@@ -9,27 +9,32 @@
 	id?: string;
   }
 
-  export let files: EvidenceFile[] = [];
-  export let readonly: boolean = false;
-  export let maxFiles: number = 10;
-
-  const dispatch = createEventDispatcher<{
-	upload: { files: File[] };
-	remove: { index: number };
-  }>();
+  let {
+    files = $bindable([]),
+    readonly = false,
+    maxFiles = 10,
+    onupload,
+    onremove
+  }: {
+    files?: EvidenceFile[];
+    readonly?: boolean;
+    maxFiles?: number;
+    onupload?: (event: { files: File[] }) => void;
+    onremove?: (event: { index: number }) => void;
+  } = $props();
 
   function handleChange(e: Event) {
 	const input = e.target as HTMLInputElement;
 	if (!input.files) return;
 	const selected = Array.from(input.files);
-	dispatch('upload', { files: selected });
+	onupload?.({ files: selected });
 	// reset input so same file can be re-selected
 	input.value = '';
   }
 
   function removeFile(index: number) {
 	if (readonly) return;
-	dispatch('remove', { index });
+	onremove?.({ index });
   }
 </script>
 
@@ -46,7 +51,7 @@
 		  <span class="size">({Math.round(f.size / 1024)} KB)</span>
 		</div>
 		<div class="actions">
-		  <button type="button" on:click={() => removeFile(i)} disabled={readonly}>Remove</button>
+		  <button type="button" onclick={() => removeFile(i)} disabled={readonly}>Remove</button>
 		</div>
 	  </li>
 	{/each}
@@ -55,7 +60,7 @@
   {#if !readonly}
 	<div class="upload">
 	  <label class="upload-label">
-		<input type="file" multiple on:change={handleChange} />
+		<input type="file" multiple onchange={handleChange} />
 		Add files
 	  </label>
 	  <div class="hint">You can add up to {maxFiles} files.</div>

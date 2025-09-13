@@ -9,6 +9,7 @@ https://svelte.dev/e/js_parse_error -->
   import type { HTMLInputAttributes } from 'svelte/elements';
   import { cn } from '$lib/utils/cn';
   import { Search, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-svelte';
+  import { accessibleClick } from '$lib/actions/accessibleClick';
 
   interface InputProps extends Omit<HTMLInputAttributes, 'size'> {
     /** Input variant */
@@ -215,10 +216,11 @@ https://svelte.dev/e/js_parse_error -->
     {#if isPassword}
       <button
         type="button"
-        class="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 rounded transition-colors"
-        onclick={() => showPassword = !showPassword}
-        aria-label={passwordToggleText || (showPassword ? 'Hide password' : 'Show password')}
-        tabindex="0"
+        class="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        use:accessibleClick={{ 
+          handler: () => showPassword = !showPassword,
+          label: passwordToggleText || (showPassword ? 'Hide password' : 'Show password')
+        }}
       >
         {#if showPassword}
           <EyeOff class="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" aria-hidden="true" />

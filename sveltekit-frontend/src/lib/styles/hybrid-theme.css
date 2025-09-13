@@ -1,0 +1,126 @@
+/**
+ * Hybrid Theme: Enhanced-Bits + UnoCSS + NES.css + N64 Gaming
+ * 90% regular DOM, 10% canvas for glyph-heavy processes
+ */
+
+/* Base Enhanced-Bits + NES.css theme */
+@import 'nes.css/css/nes.min.css';
+
+/* Enhanced-Bits N64 color palette */
+:root {
+  /* N64 inspired colors */
+  --n64-blue: #0066cc;
+  --n64-red: #cc0000;
+  --n64-green: #00cc66;
+  --n64-yellow: #cccc00;
+
+  /* YoRHa inspired */
+  --yorha-white: #d4c5b0;
+  --yorha-black: #454138;
+  --yorha-gold: #cd9a5b;
+
+  /* NES.css overrides for legal AI */
+  --nes-primary: var(--n64-blue);
+  --nes-success: var(--n64-green);
+  --nes-warning: var(--n64-yellow);
+  --nes-error: var(--n64-red);
+}
+
+/* Enhanced-Bits Legal UI Components */
+.enhanced-bits-card {
+  @apply nes-container is-dark;
+  background: linear-gradient(135deg, var(--yorha-black), #2a2a2a);
+  border: 2px solid var(--yorha-gold);
+}
+
+.enhanced-bits-button {
+  @apply nes-btn;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.enhanced-bits-input {
+  @apply nes-input;
+  background: var(--yorha-black);
+  color: var(--yorha-white);
+  border-color: var(--yorha-gold);
+}
+
+/* Gaming Canvas Integration */
+.glyph-engine-container {
+  position: relative;
+  background: var(--yorha-black);
+  border: 2px solid var(--n64-blue);
+  border-radius: 0; /* NES.css style */
+}
+
+.glyph-engine-canvas {
+  image-rendering: pixelated; /* N64 style */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  background: transparent;
+}
+
+/* Accessibility for canvas elements */
+.glyph-engine-container[role="application"] {
+  outline: 2px solid var(--yorha-gold) when focus-visible;
+}
+
+/* Legal document specific styling */
+.legal-evidence-card {
+  @apply enhanced-bits-card;
+  border-left: 4px solid var(--n64-green);
+}
+
+.legal-case-priority-critical {
+  border-color: var(--n64-red) !important;
+  box-shadow: 0 0 10px rgba(204, 0, 0, 0.3);
+}
+
+.legal-case-priority-high {
+  border-color: var(--n64-yellow) !important;
+}
+
+.legal-case-priority-medium {
+  border-color: var(--n64-blue) !important;
+}
+
+.legal-case-priority-low {
+  border-color: var(--n64-green) !important;
+}
+
+/* N64 texture-style backgrounds for special areas */
+.texture-background {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      var(--yorha-black),
+      var(--yorha-black) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+}
+
+/* Responsive design for both regular and canvas components */
+@media (max-width: 768px) {
+  .glyph-engine-canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .enhanced-bits-card {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+}
+
+/* Animation utilities for gaming feel */
+.gaming-transition {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gaming-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}

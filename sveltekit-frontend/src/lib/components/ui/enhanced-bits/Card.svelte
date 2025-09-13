@@ -61,7 +61,7 @@
 
   // Reactive card classes using $derived
   let cardClasses = $derived(cn(
-    'shadcn-card',
+    'bits-card',
     {
       'yorha-card-elevated shadow-lg': variant === 'elevated',
       'border-2': variant === 'outline',
@@ -171,7 +171,7 @@
 
 <style>/* @unocss-include */
 /* Enhanced card animations for legal AI context */
-  :global(.shadcn-card) {
+  :global(.shadcn-card), :global(.bits-card) {
     position: relative;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }

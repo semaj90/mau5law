@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import type { ServerLoad as PageServerLoad, Actions } from "@sveltejs/kit";
+import type { Actions } from '@sveltejs/kit';
 // Server-only cognitive system modules
 import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache.server';
 import { multidimensionalRoutingMatrix } from '$lib/routing/multidimensional-routing-matrix.server';

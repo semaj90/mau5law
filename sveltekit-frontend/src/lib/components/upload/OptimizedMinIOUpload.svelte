@@ -2,7 +2,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap } from 'lucide-svelte';
-  import { Progress } from 'bits-ui/components/progress';
+  import { Progress } from 'bits-ui';
   import { toastService } from '$lib/services/toast-service';
   import { gpuService } from '$lib/services/gpu-acceleration-service';
   import { vectorService } from '$lib/services/postgresql-vector-service';

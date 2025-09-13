@@ -31,6 +31,15 @@ export interface NESColorPalette {
   background: string[];
   sprites: string[];
   ui: string[];
+  // Individual color properties for direct access
+  black?: string;
+  white?: string;
+  darkGray?: string;
+  lightGray?: string;
+  red?: string;
+  blue?: string;
+  green?: string;
+  yellow?: string;
 }
 
 export interface SNESColorPalette {
@@ -38,6 +47,25 @@ export interface SNESColorPalette {
   sprites: string[];
   ui: string[];
   effects: string[];
+  // Individual color properties for direct access
+  black?: string;
+  white?: string;
+  darkGray?: string;
+  lightGray?: string;
+  red?: string;
+  blue?: string;
+  green?: string;
+  yellow?: string;
+  // SNES-specific additional colors
+  purple?: string;
+  orange?: string;
+  cyan?: string;
+  magenta?: string;
+  pink?: string;
+  lime?: string;
+  // Gradient support
+  primaryGradient?: string[];
+  secondaryGradient?: string[];
 }
 
 export interface N64ButtonConfig {

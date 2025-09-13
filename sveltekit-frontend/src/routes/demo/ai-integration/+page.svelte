@@ -8,49 +8,28 @@ https://svelte.dev/e/js_parse_error -->
   import { prefetchMachine } from '$lib/machines/prefetchMachine';
   import OllamaAgentShell from '$lib/components/ai/ollama-agent-shell.svelte';
   import WebGPUViewer from '$lib/components/ai/webgpu-viewer.svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  import { Button, Card, CardHeader, CardTitle, CardContent, CardDescription } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
   import { Play, Pause, Brain, Cpu, Database, Zap, Globe, Activity, Terminal, Eye } from 'lucide-svelte';
+  import type { PageData } from './$types';
 
-  // XState Prefetch Machine
+  // XState Prefetch Machine (use the `snapshot` store returned by useMachine)
   const { snapshot: prefetchState, send: prefetchSend } = useMachine(prefetchMachine);
 
-  // Component State
-  let systemHealth = $state({
-    go: { status: 'checking' },
-    ollama: { status: 'checking' },
-    postgres: { status: 'checking' },
-    redis: { status: 'checking' }
-  });
+  // Props from server-side loading
+  export let data: PageData;
 
-  let embeddings = $state<number[][]>([]);
-  let labels = $state<string[]>([]);
-  let agentShellOpen = $state(false);
-  let isMonitoring = $state(false);
-  let performanceMetrics = $state({
-    requests: 0,
-    avgResponseTime: 0,
-    cacheHitRate: 0,
-    embeddingsGenerated: 0,
-    vectorSimilarityQueries: 0
-  });
+  // Component State - Initialize from server data
+  let systemHealth = data.systemHealth;
+  let embeddings = data.initialEmbeddings;
+  let labels = data.initialLabels;
+  let agentShellOpen = false;
+  let isMonitoring = false;
+  let performanceMetrics = data.performanceMetrics;
 
-  // Demo data
-  const demoDocuments = [
-    { id: 'doc1', title: 'Contract Analysis', content: 'This contract contains liability clauses...' },
-    { id: 'doc2', title: 'Legal Precedent', content: 'Similar cases show evidence patterns...' },
-    { id: 'doc3', title: 'Risk Assessment', content: 'Based on the evidence, the risk factors...' },
-    { id: 'doc4', title: 'Compliance Review', content: 'The regulatory framework requires...' }
-  ];
+  // Use server-loaded demo data
+  const demoDocuments = data.demoDocuments;
 
   onMount(() => {
     // Disabled auto health checks to prevent CORS errors
@@ -101,26 +80,59 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   async function generateDemoEmbeddings() {
-    // Simulate generating embeddings for demo documents
-    const mockEmbeddings = demoDocuments.map((_, index) => {
-      const base = index * 0.25;
-      return [
-        Math.sin(base) * 0.5 + Math.random() * 0.1,
-        Math.cos(base) * 0.5 + Math.random() * 0.1,
-        Math.sin(base * 2) * 0.3 + Math.random() * 0.1
-      ];
-    });
+    try {
+      // Use the server's API to generate real embeddings for demo documents
+      const embeddingPromises = demoDocuments.map(async (doc) => {
+        const response = await fetch('/api/embeddings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: `${doc.title}: ${doc.content}`,
+            model: 'nomic-embed-text'
+          })
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          return result.success ? result.data.embedding.slice(0, 3) : null; // Take first 3 dimensions for 3D viz
+        }
+        return null;
+      });
 
-    embeddings = mockEmbeddings;
-    labels = demoDocuments.map(doc => doc.title);
+      const newEmbeddings = await Promise.all(embeddingPromises);
+      
+      // Filter out failed requests and fallback to demo data if needed
+      const validEmbeddings = newEmbeddings.filter(emb => emb !== null);
+      
+      if (validEmbeddings.length > 0) {
+        embeddings = validEmbeddings;
+      } else {
+        // Fallback to demo embeddings if API calls fail
+        embeddings = demoDocuments.map((_, index) => {
+          const base = index * 0.25;
+          return [
+            Math.sin(base) * 0.5 + Math.random() * 0.1,
+            Math.cos(base) * 0.5 + Math.random() * 0.1,
+            Math.sin(base * 2) * 0.3 + Math.random() * 0.1
+          ];
+        });
+      }
 
-    // Update prefetch machine with embedding data
-    prefetchSend({
-      type: 'UPDATE_EMBEDDINGS',
-      embeddings: mockEmbeddings
-    });
+      labels = demoDocuments.map(doc => doc.title);
 
-    performanceMetrics.embeddingsGenerated = demoDocuments.length;
+      // Update prefetch machine with embedding data
+      prefetchSend({
+        type: 'UPDATE_EMBEDDINGS',
+        embeddings: embeddings
+      });
+
+      performanceMetrics.embeddingsGenerated = embeddings.length;
+    } catch (error) {
+      console.error('Failed to generate embeddings:', error);
+      // Use fallback demo data
+      embeddings = data.initialEmbeddings;
+      labels = data.initialLabels;
+    }
   }
 
   async function testOllamaIntegration() {
@@ -169,7 +181,8 @@ https://svelte.dev/e/js_parse_error -->
       performanceMetrics.requests++;
       const startTime = performance.now();
 
-      const response = await fetch('http://localhost:8080/generate-embedding', {
+      // Use your existing SvelteKit API endpoint
+      const response = await fetch('/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -184,19 +197,24 @@ https://svelte.dev/e/js_parse_error -->
       );
 
       if (response.ok) {
-        const data = await response.json();
-  console.log('Generated embedding:', data.embedding?.slice(0, 5));
-        performanceMetrics.embeddingsGenerated++;
+        const result = await response.json();
+        
+        if (result.success) {
+          console.log('Generated embedding:', result.data.embedding?.slice(0, 5));
+          performanceMetrics.embeddingsGenerated++;
 
-        // Cache hit simulation
-        performanceMetrics.cacheHitRate = Math.min(
-          95,
-          performanceMetrics.cacheHitRate + Math.random() * 10
-        );
+          // Cache hit simulation
+          performanceMetrics.cacheHitRate = Math.min(
+            95,
+            performanceMetrics.cacheHitRate + Math.random() * 10
+          );
 
-        return data.embedding;
+          return result.data.embedding;
+        } else {
+          throw new Error(result.error || 'Embedding generation failed');
+        }
       } else {
-        throw new Error(`Embedding generation failed: ${response.statusText}`);
+        throw new Error(`API request failed: ${response.statusText}`);
       }
     } catch (error) {
       console.error('Embedding generation test failed:', error);
@@ -209,7 +227,8 @@ https://svelte.dev/e/js_parse_error -->
       performanceMetrics.requests++;
       performanceMetrics.vectorSimilarityQueries++;
 
-      const response = await fetch('http://localhost:8080/search-similar', {
+      // Use your SvelteKit API endpoint for vector similarity
+      const response = await fetch('/api/embeddings/similarity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -220,15 +239,20 @@ https://svelte.dev/e/js_parse_error -->
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log('Similarity search results:', data);
+        const result = await response.json();
+        
+        if (result.success) {
+          console.log('Similarity search results:', result.data);
 
-        // Update cache statistics
-        prefetchSend({ type: 'CACHE_HIT', resource: 'similarity_search' });
+          // Update cache statistics
+          prefetchSend({ type: 'CACHE_HIT', resource: 'similarity_search' });
 
-        return data;
+          return result.data;
+        } else {
+          throw new Error(result.error || 'Similarity search failed');
+        }
       } else {
-        throw new Error(`Similarity search failed: ${response.statusText}`);
+        throw new Error(`API request failed: ${response.statusText}`);
       }
     } catch (error) {
       console.error('Vector similarity test failed:', error);
@@ -298,18 +322,26 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  // Reactive prefetch statistics
-  let prefetchStats = $derived({
-    state: $prefetchState.value,
-    confidence: $prefetchState.context.confidence,
-    cacheHits: $prefetchState.context.metrics.hits,
-    cacheMisses: $prefetchState.context.metrics.misses,
-    queueLength: $prefetchState.context.prefetchQueue.length
-  });
+  // Reactive prefetch statistics using Svelte reactivity and the XState `state` store
+  let prefetchStats: any = {
+    state: 'unknown',
+    confidence: 0,
+    cacheHits: 0,
+    cacheMisses: 0,
+    queueLength: 0
+  };
 
-  let hitRate = $derived(prefetchStats.cacheHits + prefetchStats.cacheMisses > 0
+  $: prefetchStats = {
+    state: $prefetchState.value,
+    confidence: $prefetchState.context?.confidence ?? 0,
+    cacheHits: $prefetchState.context?.metrics?.hits ?? 0,
+    cacheMisses: $prefetchState.context?.metrics?.misses ?? 0,
+    queueLength: $prefetchState.context?.prefetchQueue?.length ?? 0
+  };
+
+  $: hitRate = (prefetchStats.cacheHits + prefetchStats.cacheMisses) > 0
     ? Math.round((prefetchStats.cacheHits / (prefetchStats.cacheHits + prefetchStats.cacheMisses)) * 100)
-    : 0);
+    : 0;
 </script>
 
 <div class="ai-integration-demo min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
@@ -529,7 +561,7 @@ https://svelte.dev/e/js_parse_error -->
               </CardDescription>
             </div>
             <Button
-              onclick={isMonitoring ? stopPerformanceMonitoring : startPerformanceMonitoring}
+             onclick={isMonitoring ? stopPerformanceMonitoring : startPerformanceMonitoring}
               class={isMonitoring ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}
             >
               {#if isMonitoring}

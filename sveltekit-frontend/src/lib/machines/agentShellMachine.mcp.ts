@@ -2,9 +2,9 @@
 import { createMachine, assign } from "xstate";
 import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient';
 import { productionServiceClient, services } from '../services/productionServiceClient';
-// import { mcpTools, type MCPToolResponse } from '../../mcp/index';
+import { mcpTools, type MCPToolResponse } from '../../mcp/index';
 import type { Evidence, User } from "$lib/types/index.js"; 
-// import type { Case } from "$lib/types/index.js";
+import type { Case } from "$lib/types/case";
 
 // Enhanced context with MCP tool integration
 export interface AgentShellContext {

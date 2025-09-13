@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
+  import { page } from '$app/stores';
   import {
     Brain, Activity, Zap, Shield, Search, Users, BarChart3,
     Database, Folder, Eye, TrendingUp, Clock, AlertCircle,
@@ -8,7 +9,7 @@
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import * as Card from '$lib/components/ui/card';
   import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
 
@@ -93,6 +94,15 @@
       stats: '156 active records'
     },
     {
+      title: '🎮 SPA Canvas',
+      description: 'Full-screen gaming UX with gemma3:legal-latest',
+      href: '/spa',
+      icon: Brain,
+      gradient: 'from-purple-600 to-blue-700',
+      stats: 'NEW',
+      isNew: true
+    },
+    {
       title: 'Text Editor',
       description: 'NieR-themed rich text editor',
       href: '/text-editor',
@@ -139,6 +149,27 @@
       case 'down': return 'text-red-400';
       default: return 'text-gray-400';
     }
+  }
+
+  // derive user id (slug) from the page load data (falls back to demo)
+  let userId = $state('demo-user');
+
+  // update `userId` whenever the `$page` store changes (runes-mode friendly)
+  const _unsub_userId = page.subscribe(($p) => {
+    userId = $p?.data?.userId ?? $p?.data?.sessionId ?? 'demo-user';
+  });
+
+  onDestroy(() => {
+    _unsub_userId();
+  });
+
+  function handleCaseCreated(caseId: string) {
+    console.log('New case created:', caseId);
+    // navigate to case or show a notification here
+  }
+
+  function handleCaseCreatedEvent(e: CustomEvent<string>) {
+    console.log('New case created (event):', e.detail);
   }
 </script>
 
@@ -245,6 +276,28 @@
 
             <!-- Special glow effect -->
             <div class="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-teal-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+
+          <!-- SPA Canvas Button -->
+          <a
+            href="/spa"
+            class="group relative overflow-hidden rounded-lg bg-gradient-to-br from-purple-600 to-blue-700 p-6 text-white hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+            aria-label="SPA Canvas: Full-screen gaming UX with gemma3:legal-latest"
+          >
+            <div class="relative z-10">
+              <div class="flex items-center justify-between mb-4">
+                <div class="relative">
+                  <Brain class="w-8 h-8 animate-pulse" />
+                  <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
+                </div>
+                <div class="text-xs opacity-75 font-medium bg-green-400/20 px-2 py-1 rounded">NEW</div>
+              </div>
+              <h3 class="font-bold text-lg mb-2">🎮 SPA Canvas</h3>
+              <p class="text-sm opacity-90">Full-screen gaming UX with gemma3:legal-latest</p>
+            </div>
+
+            <!-- Special gaming glow effect -->
+            <div class="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-blue-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           </a>
 
           <!-- All Routes Button -->
@@ -416,19 +469,32 @@
               <strong>RAG-powered</strong> legal research integration. Just describe your situation and watch the magic happen!
             </p>
           </div>
+          {#if systemMetrics.totalCases === 0}
+            <div class="p-6">
+              <div class="text-yellow-300 font-medium">No cases yet</div>
+              <p class="text-sm text-gray-400">Start by creating a new case to enable the AI assistant.</p>
+              <a href="/cases/create" class="mt-3 inline-block text-emerald-400 hover:underline">Create a case →</a>
+            </div>
+          {:else}
+            <RAGAssistantChat
+              userId={userId}
+              onCaseCreated={(caseId: string) => {
+                // ignore invalid sentinel id "0"
+                if (caseId === '0' || caseId === 0) {
+                  console.warn('Received invalid case id "0" — ignoring.');
+                  return;
+                }
+                handleCaseCreated(caseId);
+              }}
+              on:caseCreated={handleCaseCreatedEvent}
+            />
+          {/if}
 
-          <RAGAssistantChat
-            userId="demo-user"
-            onCaseCreated={(caseId) => {
-              console.log('New case created:', caseId);
-              // Could navigate to case or show success notification
-            }}
-          />
-        </div>
-      </div>
-    </section>
-  </div>
-</ProductionLayout>
+              </div>
+              </div>
+            </section>
+            </div>
+          </ProductionLayout>
 
 <style>
   .yorha-3d-panel {

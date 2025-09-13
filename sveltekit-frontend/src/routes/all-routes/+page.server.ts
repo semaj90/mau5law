@@ -1,8 +1,8 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import type { RouteDefinition } from '$lib/data/routes-config';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export interface SystemHealthData {
   system_overview: {
@@ -67,9 +67,9 @@ export interface RoutePageData {
 
 async function checkServiceHealth(): Promise<SystemHealthData> {
   const services = [
-    { name: 'PostgreSQL', port: 5433 },  // Updated to match dynamic port
+    { name: 'PostgreSQL', port: 5433 }, // Updated to match dynamic port
     { name: 'Redis', port: 6379 },
-    { name: 'Ollama Primary', port: 11436 },  // Updated to match dynamic port
+    { name: 'Ollama Primary', port: 11436 }, // Updated to match dynamic port
     { name: 'Enhanced RAG', port: 8094 },
     { name: 'Upload Service', port: 8093 },
     { name: 'Neo4j', port: 7474 },
@@ -77,40 +77,54 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
     { name: 'Qdrant', port: 6333 },
   ];
 
+  // Helper that prefers global fetch but falls back to node-fetch when needed.
+  // Using a runtime fallback and Promise.race for timeout avoids relying on AbortController types
+  const fetchWithFallback = async (url: string, opts?: any, timeoutMs = 2000) => {
+    const globalFetch = (globalThis as any).fetch;
+    const fetchFn = globalFetch ?? (await import('node-fetch')).default;
+    return Promise.race([
+      fetchFn(url, opts),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs)),
+    ]);
+  };
+
   const serviceResults = await Promise.allSettled(
     services.map(async (service) => {
       try {
-        // Simple TCP connection test with timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000);
-
         const startTime = Date.now();
 
-        // For HTTP services, try a simple fetch
+        // For HTTP services, try a simple fetch with timeout
         if ([8094, 8093, 7474, 9000, 6333, 11436].includes(service.port)) {
-          const response = await fetch(`http://localhost:${service.port}/health`, {
-            signal: controller.signal,
-            method: 'GET',
-          }).catch(() => null);
+          let response: any = null;
+          try {
+            response = await fetchWithFallback(
+              `http://localhost:${service.port}/health`,
+              {
+                method: 'GET',
+              },
+              2000
+            );
+          } catch {
+            response = null;
+          }
 
-          clearTimeout(timeoutId);
           const responseTime = Date.now() - startTime;
 
           return {
             ...service,
-            status: response?.ok ? 'healthy' : ('degraded' as const),
+            status: response && response.ok ? ('healthy' as const) : ('degraded' as const),
             response_time: responseTime,
           };
         }
 
-        // For database services, assume healthy for now
-        clearTimeout(timeoutId);
+        // For non-HTTP services (e.g., DB), assume healthy for now
+        const responseTime = Date.now() - startTime;
         return {
           ...service,
           status: 'healthy' as const,
-          response_time: 50, // Mock response time
+          response_time: responseTime || 50, // Mock response time
         };
-      } catch (error) {
+      } catch (err) {
         return {
           ...service,
           status: 'down' as const,

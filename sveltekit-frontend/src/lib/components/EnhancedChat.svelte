@@ -1,21 +1,45 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: can't migrate `let messageInput = '';` to `$state` because there's a variable named state.
-     Rename the variable and try again or migrate by hand. -->
 <!-- Enhanced Chat Component with bits-ui, melt-ui, shadcn-svelte integration -->
 <script lang="ts">
+  import { onMount, onDestroy, tick } from 'svelte';
+  import { useMachine } from '@xstate/svelte';
+  import { createMachine, assign } from 'xstate';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { cn } from '$lib/utils/cn';
+  import { chatStore } from '$lib/stores/chat';
+  import type { ChatMessage, ChatSession } from '$lib/types/chat';
 
-  	import { onMount, onDestroy } from 'svelte';
-  	import { useMachine } from '@xstate/svelte';
-  	import { createMachine, assign } from 'xstate';
-  	import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
-  	import { cn } from '$lib/utils/cn';
-  	import { chatStore } from '$lib/stores/chat';
-  	import type { ChatMessage, ChatSession } from '$lib/types/chat';
+  // Local state
+  let messageInput: string = '';
+  let chatContainer: HTMLDivElement | null = null;
 
+  // UnoCSS + bits-ui base styles
+  import 'uno.css';
+
+	// Keep local messageInput / chatContainer as plain locals (no $state collision)
+	// Auto-scroll integration for Svelte 5 + bits-ui: subscribe to the machine state on mount
+	let machineUnsub: (() => void) | undefined;
+
+	onMount(() => {
+		// subscribe to the XState store when it's available (it will be assigned later in the file)
+		if (typeof state !== 'undefined' && state?.subscribe) {
+			machineUnsub = state.subscribe((s: any) => {
+				if (s?.context?.messages?.length) {
+					// wait for DOM updates then scroll
+					tick().then(() => scrollToBottom());
+				}
+			});
+		}
+	});
+
+	onDestroy(() => {
+		machineUnsub?.();
+	});
+	// Available models (kept simple — no melt-ui / shadcn-svelte dependencies)
+	const models = [
+		{ value: 'gemma3-legal', label: 'Gemma3 Legal', description: 'Legal-specialized model' },
+		{ value: 'gemma3:latest', label: 'Gemma3 General', description: 'General purpose model' },
+		{ value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' }
+	];
   	// Enhanced Chat Machine with proper error handling
   	const enhancedChatMachine = createMachine({
   		id: 'enhancedChat',
@@ -197,10 +221,10 @@ https://svelte.dev/e/js_parse_error -->
   					}
   				};
 
-  				return { 
-  					userMessage, 
-  					aiResponse, 
-  					confidence: data.confidence || 0.8 
+  				return {
+  					userMessage,
+  					aiResponse,
+  					confidence: data.confidence || 0.8
   				};
   			}
   		}
@@ -215,16 +239,7 @@ https://svelte.dev/e/js_parse_error -->
   		{ value: 'gemma3-legal', label: 'Gemma3 Legal', description: 'Legal-specialized model' },
   		{ value: 'gemma3:latest', label: 'Gemma3 General', description: 'General purpose model' },
   		{ value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' }
-  	]);
-
-  	function handleSend() {
-  		if (messageInput.trim() && !$state.matches('sending')) {
-  			send({ type: 'SEND', message: messageInput.trim() });
-  			messageInput = '';
-  		}
-  	}
-
-  	function handleKeyPress(event: KeyboardEvent) {
+const { state, send } = useMachine(enhancedChatMachine);
   		if (event.key === 'Enter' && !event.shiftKey) {
   			event.preventDefault();
   			handleSend();
@@ -267,12 +282,12 @@ https://svelte.dev/e/js_parse_error -->
 				<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Confidence: {Math.round($state.context.confidence * 100)}%</span>
 			{/if}
 		</div>
-		
+
 		<div class="flex items-center space-x-2">
-			<label for="model-select" class="text-sm font-medium text-gray-700">Model:</label>
-			<select 
-				id="model-select"
-				bind:value={$state.context.model}
+	// Auto-scroll when messages update
+	$: if ($state.context.messages.length > 0) {
+		tick().then(() => scrollToBottom());
+	}
 				change={(e) => send({ type: 'SET_MODEL', model: e.target.value })}
 				class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 			>
@@ -284,16 +299,16 @@ https://svelte.dev/e/js_parse_error -->
 	</div>
 
 	<!-- Messages Area -->
-	<div 
+	<div
 		class="messages-container flex-1 min-h-96 max-h-96 overflow-y-auto p-4 bg-white rounded-lg border shadow-sm"
 		bind:this={chatContainer}
 	>
-		{#if $state.context.messages.length === 0}
-			<div class="empty-state text-center text-gray-500 mt-16">
-				<div class="mb-4">
-					<svg class="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-4.906-1.456l-3.5 2.37A1 1 0 013.75 20.5v-8.25C3.75 7.365 7.615 3.5 12 3.5s8.25 3.865 8.25 8.5z"></path>
-					</svg>
+			<select
+				id="model-select"
+				value={$state.context.model}
+				on:change={(e) => send({ type: 'SET_MODEL', model: (e.currentTarget as HTMLSelectElement).value })}
+				class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+			>
 				</div>
 				<h3 class="text-lg font-medium text-gray-900 mb-2">Welcome to Legal AI</h3>
 				<p class="text-gray-500">Ask me about legal documents, contracts, or any legal questions you have.</p>
@@ -306,8 +321,8 @@ https://svelte.dev/e/js_parse_error -->
 				)}>
 					<div class={cn(
 						"message-bubble max-w-[70%] rounded-lg px-4 py-3 shadow-sm",
-						message.role === 'user' 
-							? 'bg-blue-600 text-white rounded-br-sm' 
+						message.role === 'user'
+							? 'bg-blue-600 text-white rounded-br-sm'
 							: 'bg-gray-100 text-gray-900 rounded-bl-sm border'
 					)}>
 						<div class="message-content">
@@ -357,17 +372,17 @@ https://svelte.dev/e/js_parse_error -->
 					<span class="text-sm text-red-700">{$state.context.error}</span>
 				</div>
 				<div class="flex space-x-2">
-					<Button 
-						class="bits-btn text-red-700 border-red-300 hover:bg-red-50" 
-						size="sm" 
+					<Button
+						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
+						size="sm"
 						variant="outline"
 						onclick={() => send({ type: 'RETRY' })}
 					>
 						Retry
 					</Button>
-					<Button 
-						class="bits-btn text-red-700 hover:bg-red-50" 
-						size="sm" 
+					<Button
+						class="bits-btn text-red-700 hover:bg-red-50"
+						size="sm"
 						variant="ghost"
 						onclick={() => send({ type: 'CLEAR_ERROR' })}
 					>
@@ -375,22 +390,22 @@ https://svelte.dev/e/js_parse_error -->
 					</Button>
 				</div>
 			</div>
-		</div>
-	{/if}
-
-	<!-- Input Area -->
-	<div class="input-area p-4 bg-white border rounded-lg shadow-sm">
-		<div class="flex space-x-3">
-			<div class="flex-1">
-				<textarea
-					bind:value={messageInput}
-					keydown={handleKeyPress}
-					placeholder="Ask me about legal documents, contracts, or any legal questions..."
-					disabled={$state.matches('sending')}
-					class="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
-					rows="3"
-				></textarea>
-			</div>
+					<Button
+						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
+						size="sm"
+						variant="outline"
+						on:click={() => send({ type: 'RETRY' })}
+					>
+						Retry
+					</Button>
+					<Button
+						class="bits-btn text-red-700 hover:bg-red-50"
+						size="sm"
+						variant="ghost"
+						on:click={() => send({ type: 'CLEAR_ERROR' })}
+					>
+						Dismiss
+					</Button>
 			<div class="flex flex-col justify-end">
 				<Button
 					onclick={handleSend}
@@ -400,26 +415,26 @@ https://svelte.dev/e/js_parse_error -->
 						messageInput.trim() && !$state.matches('sending')
 							? "bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
 							: "bg-gray-300 text-gray-500 cursor-not-allowed"
-					)}
-				>
-					{#if $state.matches('sending')}
-						<svg class="w-4 h-4 animate-spin mr-2" fill="none" viewBox="0 0 24 24">
-							<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" opacity="0.25"></circle>
-							<path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" opacity="0.75"></path>
-						</svg>
-						Sending...
+				<textarea
+					bind:value={messageInput}
+					on:keydown={handleKeyPress}
+					placeholder="Ask me about legal documents, contracts, or any legal questions..."
+					disabled={$state.matches('sending')}
+					class="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+					rows="3"
+				></textarea>
 					{:else}
 						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-						</svg>
-						Send
-					{/if}
-				</Button>
-			</div>
-		</div>
-		
-		<!-- Input helpers -->
-		<div class="mt-2 flex items-center justify-between text-xs text-gray-500">
+				<Button
+					on:click={handleSend}
+					disabled={!messageInput.trim() || $state.matches('sending')}
+					class={cn(
+						"px-6 py-3 rounded-lg font-medium transition-colors",
+						messageInput.trim() && !$state.matches('sending')
+							? "bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
+							: "bg-gray-300 text-gray-500 cursor-not-allowed"
+					)}
+				>
 			<span>Press Enter to send, Shift+Enter for new line</span>
 			<span class="flex items-center space-x-1">
 				<span class="w-2 h-2 rounded-full bg-green-500"></span>
@@ -439,22 +454,22 @@ https://svelte.dev/e/js_parse_error -->
 	.typing-indicator div:nth-child(3) {
 		animation-delay: 0.2s;
 	}
-	
+
 	/* Custom scrollbar */
 	.messages-container::-webkit-scrollbar {
 		width: 6px;
 	}
-	
+
 	.messages-container::-webkit-scrollbar-track {
 		background: #f1f5f9;
 		border-radius: 3px;
 	}
-	
+
 	.messages-container::-webkit-scrollbar-thumb {
 		background: #cbd5e1;
 		border-radius: 3px;
 	}
-	
+
 	.messages-container::-webkit-scrollbar-thumb:hover {
 		background: #94a3b8;
 	}

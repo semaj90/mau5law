@@ -3,6 +3,7 @@
  */
 
 export type JobType =
+  // Original types
   | 'document-analysis'
   | 'entity-extraction'
   | 'legal-classification'
@@ -12,10 +13,20 @@ export type JobType =
   | 'similarity-search'
   | 'evidence-processing'
   | 'case-analysis'
-  | 'compliance-check';
+  | 'compliance-check'
+  // Additional types from orchestrator
+  | 'legal_document_analysis'
+  | 'cuda_acceleration'
+  | 'vector_embedding'
+  | 'case_similarity'
+  | 'evidence-analysis'
+  | 'relationship-mapping'
+  | 'pattern-detection'
+  | 'forensic-timeline';
 
 export type JobStatus =
   | 'pending'
+  | 'queued'
   | 'processing'
   | 'completed'
   | 'failed'
@@ -28,6 +39,7 @@ export interface JobDefinition {
   priority: number;
   payload: Record<string, any>;
   metadata?: Record<string, any>;
+  dependencies?: string[];
   createdAt: Date;
   updatedAt: Date;
   retryCount?: number;

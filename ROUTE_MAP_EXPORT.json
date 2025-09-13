@@ -1,459 +1,1213 @@
 {
-  "generated": "2025-09-10T18:08:40.701Z",
-  "filters": {
-    "applied": true,
-    "category": null,
-    "status": null,
-    "tag": null,
-    "search": "legal"
-  },
+  "generated": "2025-09-13T03:48:11.806Z",
   "counts": {
-    "total": {
-      "config": 295,
-      "fileBased": 294,
-      "api": 13
+    "totalFiles": 1281,
+    "uniqueRoutes": 1258
+  },
+  "fileRoutes": [
+    {
+      "route": "/+error",
+      "files": [
+        "+error.svelte"
+      ]
     },
-    "displayed": {
-      "config": 12,
-      "fileBased": 53
+    {
+      "route": "/+layout.server",
+      "files": [
+        "+layout.server.ts"
+      ]
     },
-    "issues": {
-      "configMissingFiles": 0,
-      "filesMissingConfig": 0
+    {
+      "route": "/",
+      "files": [
+        "+layout.svelte",
+        "+layout.ts",
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/+page.server",
+      "files": [
+        "+page.server.ts"
+      ]
+    },
+    {
+      "route": "/+page.svelte",
+      "files": [
+        "+page.svelte.modern"
+      ]
+    },
+    {
+      "route": "/.well-known/appspecific/com.chrome.devtools.json",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/admin",
+      "files": [
+        "+layout.svelte",
+        "+layout.ts",
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/admin/+layout.svelte",
+      "files": [
+        "+layout.svelte.bak"
+      ]
+    },
+    {
+      "route": "/admin/+page.svelte",
+      "files": [
+        "+page.svelte.broken"
+      ]
+    },
+    {
+      "route": "/admin/cluster",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/admin/gpu-demo",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/admin/gpu-demo/+page.svelte",
+      "files": [
+        "+page.svelte.backup"
+      ]
+    },
+    {
+      "route": "/admin/performance-dashboard",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/admin/redis",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/admin/redis/detailed",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/admin/server.test",
+      "files": [
+        "server.test.ts"
+      ]
+    },
+    {
+      "route": "/admin/users/+page.server",
+      "files": [
+        "+page.server.ts"
+      ]
+    },
+    {
+      "route": "/admin/users",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/admin/users/[userId]/+page.server",
+      "files": [
+        "+page.server.ts"
+      ]
+    },
+    {
+      "route": "/admin/users/[userId]",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai/case-scoring",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai/dashboard",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai/document-drafting",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai/enhanced-mcp",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai/modular",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai/orchestrator",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai/pattern-detection",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai/processing",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai/recommendations",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai/wwwh-demo",
+      "files": [
+        "wwwh-demo.svelte"
+      ]
+    },
+    {
+      "route": "/ai-assistant",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai-assistant/+page.svelte",
+      "files": [
+        "+page.svelte.fixed"
+      ]
+    },
+    {
+      "route": "/ai-demo",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai-summary",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai-test",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/ai-upload-demo",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/aiassistant",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/all-routes/$types.d",
+      "files": [
+        "$types.d.ts"
+      ]
+    },
+    {
+      "route": "/all-routes/+page.server",
+      "files": [
+        "+page.server.ts"
+      ]
+    },
+    {
+      "route": "/all-routes",
+      "files": [
+        "+page.svelte"
+      ]
+    },
+    {
+      "route": "/api/activities",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/activities/[activityId]",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/admin/cache-dashboard",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/admin/cluster/events",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/admin/cluster/restart",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/admin/cluster/scale",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/admin/cluster/status",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/admin/health",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/agent-logs",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/agent-orchestrate",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/analyze",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/analyze/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384367"
+      ]
+    },
+    {
+      "route": "/api/ai/analyze-element",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/analyze-element/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384363"
+      ]
+    },
+    {
+      "route": "/api/ai/analyze-evidence",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/analyze-evidence/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384365"
+      ]
+    },
+    {
+      "route": "/api/ai/ask",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/ask/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384369"
+      ]
+    },
+    {
+      "route": "/api/ai/case-scoring",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/case-scoring/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384371"
+      ]
+    },
+    {
+      "route": "/api/ai/chat",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/chat/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384330"
+      ]
+    },
+    {
+      "route": "/api/ai/chat/server-new",
+      "files": [
+        "server-new.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/chat-mock",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/chat-mock/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384322"
+      ]
+    },
+    {
+      "route": "/api/ai/chat-simple",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/chat-sse",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/chat-sse/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384328"
+      ]
+    },
+    {
+      "route": "/api/ai/connect",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/connect-mock",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/context",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/context/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384372"
+      ]
+    },
+    {
+      "route": "/api/ai/conversation/save",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/conversation/save/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384335"
+      ]
+    },
+    {
+      "route": "/api/ai/conversation/[conversationId]",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/conversation/[conversationId]/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384332"
+      ]
+    },
+    {
+      "route": "/api/ai/cuda-accelerated",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/cuda-accelerated/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384374"
+      ]
+    },
+    {
+      "route": "/api/ai/deep-analysis",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/deep-analysis/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384376"
+      ]
+    },
+    {
+      "route": "/api/ai/document-drafting",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/document-drafting/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384448"
+      ]
+    },
+    {
+      "route": "/api/ai/document-drafting/history",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/document-drafting/history/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384449"
+      ]
+    },
+    {
+      "route": "/api/ai/document-drafting/recent",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/document-drafting/recent/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384451"
+      ]
+    },
+    {
+      "route": "/api/ai/document-drafting/templates",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/document-drafting/templates/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384452"
+      ]
+    },
+    {
+      "route": "/api/ai/document-drafting/types",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/document-drafting/types/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384454"
+      ]
+    },
+    {
+      "route": "/api/ai/embed",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/embed/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384378"
+      ]
+    },
+    {
+      "route": "/api/ai/embedding",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/embedding/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384380"
+      ]
+    },
+    {
+      "route": "/api/ai/embeddings",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/embeddings/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384382"
+      ]
+    },
+    {
+      "route": "/api/ai/enhanced-chat",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/enhanced-chat/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384336"
+      ]
+    },
+    {
+      "route": "/api/ai/enhanced-grpo",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/enhanced-grpo/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384384"
+      ]
+    },
+    {
+      "route": "/api/ai/enhanced-legal-search",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/enhanced-legal-search/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384338"
+      ]
+    },
+    {
+      "route": "/api/ai/enhanced-microservice",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/enhanced-microservice/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384386"
+      ]
+    },
+    {
+      "route": "/api/ai/evidence-search",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/evidence-search/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384340"
+      ]
+    },
+    {
+      "route": "/api/ai/find",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/find/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384342"
+      ]
+    },
+    {
+      "route": "/api/ai/generate",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/generate/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384461"
+      ]
+    },
+    {
+      "route": "/api/ai/generate-report",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/generate-report/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384459"
+      ]
+    },
+    {
+      "route": "/api/ai/gpu",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/gpu/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384388"
+      ]
+    },
+    {
+      "route": "/api/ai/health",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/health/cloud",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/health/local",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/health/local-fixed",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/health-mock",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/history",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/history/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384390"
+      ]
+    },
+    {
+      "route": "/api/ai/inference",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/inference/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384392"
+      ]
+    },
+    {
+      "route": "/api/ai/ingest",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/ingest/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384394"
+      ]
+    },
+    {
+      "route": "/api/ai/lawpdfs",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/lawpdfs/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384455"
+      ]
+    },
+    {
+      "route": "/api/ai/legal/analyze",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/legal/analyze/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384397"
+      ]
+    },
+    {
+      "route": "/api/ai/legal-bert",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/legal-bert/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384395"
+      ]
+    },
+    {
+      "route": "/api/ai/legal-research",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/legal-research/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384344"
+      ]
+    },
+    {
+      "route": "/api/ai/legal-search",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/legal-search/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384348"
+      ]
+    },
+    {
+      "route": "/api/ai/legal-search-cached",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/legal-search-cached/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384346"
+      ]
+    },
+    {
+      "route": "/api/ai/load-model",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/load-model/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384399"
+      ]
+    },
+    {
+      "route": "/api/ai/multi-agent",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/multi-agent/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384401"
+      ]
+    },
+    {
+      "route": "/api/ai/ollama/analyze-behavior",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/ollama/analyze-behavior/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384406"
+      ]
+    },
+    {
+      "route": "/api/ai/ollama/analyze-legal-document",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/ollama/analyze-legal-document/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384408"
+      ]
+    },
+    {
+      "route": "/api/ai/ollama/generate-prompts",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/ollama/generate-prompts/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384463"
+      ]
+    },
+    {
+      "route": "/api/ai/ollama-gemma3",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/ollama-gemma3/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384403"
+      ]
+    },
+    {
+      "route": "/api/ai/ollama-simd",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/ollama-simd/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384405"
+      ]
+    },
+    {
+      "route": "/api/ai/predictive-typing",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/predictive-typing/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384410"
+      ]
+    },
+    {
+      "route": "/api/ai/process-document",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/process-document/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384412"
+      ]
+    },
+    {
+      "route": "/api/ai/process-enhanced",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/process-enhanced/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384414"
+      ]
+    },
+    {
+      "route": "/api/ai/process-evidence",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/process-evidence/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384415"
+      ]
+    },
+    {
+      "route": "/api/ai/prompt",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/prompt/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384417"
+      ]
+    },
+    {
+      "route": "/api/ai/qlora-topology",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/qlora-topology/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384419"
+      ]
+    },
+    {
+      "route": "/api/ai/query",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/query/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384350"
+      ]
+    },
+    {
+      "route": "/api/ai/redis-optimized-analyze",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/redis-optimized-chat",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/rl-rag",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/rl-rag/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384421"
+      ]
+    },
+    {
+      "route": "/api/ai/search",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/search/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384352"
+      ]
+    },
+    {
+      "route": "/api/ai/self-prompt",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/self-prompt/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384423"
+      ]
+    },
+    {
+      "route": "/api/ai/status",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/suggest",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/suggest/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384425"
+      ]
+    },
+    {
+      "route": "/api/ai/suggestions",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/suggestions/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384427"
+      ]
+    },
+    {
+      "route": "/api/ai/suggestions/health",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/suggestions/rate",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/suggestions/rate/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384428"
+      ]
+    },
+    {
+      "route": "/api/ai/suggestions/stream",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/suggestions/stream/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384430"
+      ]
+    },
+    {
+      "route": "/api/ai/summarize",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/summarize/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384432"
+      ]
+    },
+    {
+      "route": "/api/ai/summarize/cache/[key]",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/summarize/cache/[key]/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384433"
+      ]
+    },
+    {
+      "route": "/api/ai/summarize/stream",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/summarize/stream/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384435"
+      ]
+    },
+    {
+      "route": "/api/ai/sveltekit-api-routes",
+      "files": [
+        "sveltekit-api-routes.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/tag",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/tag/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384436"
+      ]
+    },
+    {
+      "route": "/api/ai/tensor",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/tensor/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384438"
+      ]
+    },
+    {
+      "route": "/api/ai/test-gemma3",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/test-ollama",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/test-orchestrator",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/unified",
+      "files": [
+        "+server.ts"
+      ]
+    },
+    {
+      "route": "/api/ai/unified/+server.ts",
+      "files": [
+        "+server.ts.backup-1757657384441"
+      ]
     }
-  },
-  "data": {
-    "configRoutes": [
-      {
-        "id": "demo-gpu-legal-ai",
-        "label": "GPU Legal AI",
-        "route": "/demo/gpu-legal-ai",
-        "category": "demo",
-        "status": "active",
-        "tags": [
-          "gpu",
-          "legal",
-          "ai"
-        ]
-      },
-      {
-        "id": "demo-gpu-legal-ai-lawpdfs",
-        "label": "Lawpdfs",
-        "route": "/demo/gpu-legal-ai/lawpdfs",
-        "category": "demo",
-        "status": "active",
-        "tags": [
-          "auto-generated",
-          "demo",
-          "showcase"
-        ]
-      },
-      {
-        "id": "demo-hybrid-legal-analysis",
-        "label": "Hybrid Legal Analysis",
-        "route": "/demo/hybrid-legal-analysis",
-        "category": "demo",
-        "status": "active",
-        "tags": [
-          "auto-generated",
-          "demo",
-          "showcase"
-        ]
-      },
-      {
-        "id": "demo-legal-ai-complete",
-        "label": "Complete Legal AI",
-        "route": "/demo/legal-ai-complete",
-        "category": "demo",
-        "status": "active",
-        "tags": [
-          "legal",
-          "ai",
-          "complete"
-        ]
-      },
-      {
-        "id": "demo-legal-ai-platform",
-        "label": "Legal Ai Platform",
-        "route": "/demo/legal-ai-platform",
-        "category": "demo",
-        "status": "active",
-        "tags": [
-          "auto-generated",
-          "demo",
-          "showcase"
-        ]
-      },
-      {
-        "id": "demo-legal-components",
-        "label": "Legal Components",
-        "route": "/demo/legal-components",
-        "category": "demo",
-        "status": "active",
-        "tags": [
-          "auto-generated",
-          "demo",
-          "showcase"
-        ]
-      },
-      {
-        "id": "demo-legal-search",
-        "label": "Legal Search",
-        "route": "/demo/legal-search",
-        "category": "demo",
-        "status": "active",
-        "tags": [
-          "auto-generated",
-          "demo",
-          "showcase"
-        ]
-      },
-      {
-        "id": "laws",
-        "label": "Legal Resources",
-        "route": "/laws",
-        "category": "legal",
-        "status": "active",
-        "tags": [
-          "laws",
-          "resources",
-          "database"
-        ]
-      },
-      {
-        "id": "legal-ai-suite",
-        "label": "Legal AI Suite",
-        "route": "/legal-ai-suite",
-        "category": "main",
-        "status": "active",
-        "tags": [
-          "legal",
-          "ai",
-          "suite",
-          "comprehensive"
-        ]
-      },
-      {
-        "id": "documents",
-        "label": "Document Processing",
-        "route": "/legal/documents",
-        "category": "legal",
-        "status": "active",
-        "tags": [
-          "documents",
-          "legal",
-          "processing"
-        ]
-      },
-      {
-        "id": "search",
-        "label": "Legal Search",
-        "route": "/search",
-        "category": "main",
-        "status": "active",
-        "tags": [
-          "search",
-          "semantic",
-          "legal"
-        ]
-      },
-      {
-        "id": "test-n64-legal-progress",
-        "label": "N64 Legal Progress",
-        "route": "/test/n64-legal-progress",
-        "category": "dev",
-        "status": "development",
-        "tags": [
-          "auto-generated",
-          "testing",
-          "development"
-        ]
-      }
-    ],
-    "fileRoutes": [
-      {
-        "file": "src/routes/ai/+page.svelte",
-        "route": "/ai",
-        "title": "AI Legal Assistant"
-      },
-      {
-        "file": "src/routes/ai-assistant/+page.svelte",
-        "route": "/ai-assistant",
-        "title": "Legal AI Assistant"
-      },
-      {
-        "file": "src/routes/ai-demo/+page.svelte",
-        "route": "/ai-demo",
-        "title": "Legal AI System Demo"
-      },
-      {
-        "file": "src/routes/ai-test/+page.svelte",
-        "route": "/ai-test",
-        "title": "🤖 Enhanced AI Legal Assistant"
-      },
-      {
-        "file": "src/routes/assistant/+page.svelte",
-        "route": "/assistant",
-        "title": "AI Legal Assistant"
-      },
-      {
-        "file": "src/routes/auth/+page.svelte",
-        "route": "/auth",
-        "title": "Legal AI Platform"
-      },
-      {
-        "file": "src/routes/auth/login/+page.svelte",
-        "route": "/auth/login",
-        "title": "Legal AI Platform"
-      },
-      {
-        "file": "src/routes/auth/login/simple/+page.svelte",
-        "route": "/auth/login/simple",
-        "title": "Legal AI Platform (Simple)"
-      },
-      {
-        "file": "src/routes/auth/register/+page.svelte",
-        "route": "/auth/register",
-        "title": "Legal AI Platform"
-      },
-      {
-        "file": "src/routes/auth/test/+page.svelte",
-        "route": "/auth/test",
-        "title": "Legal AI Authentication Test Suite"
-      },
-      {
-        "file": "src/routes/cases/+page.svelte",
-        "route": "/cases",
-        "title": "Legal Cases"
-      },
-      {
-        "file": "src/routes/chat/+page.svelte",
-        "route": "/chat",
-        "title": "Legal AI Assistant"
-      },
-      {
-        "file": "src/routes/chat-demo/+page.svelte",
-        "route": "/chat-demo",
-        "title": "⚖️ Legal AI Chat Demo"
-      },
-      {
-        "file": "src/routes/demo/ai-assistant/+page.svelte",
-        "route": "/demo/ai-assistant",
-        "title": "🤖 Legal AI Assistant Demo"
-      },
-      {
-        "file": "src/routes/demo/component-gallery/+page.svelte",
-        "route": "/demo/component-gallery",
-        "title": "Legal Document Analysis"
-      },
-      {
-        "file": "src/routes/demo/glyph-generator/+page.svelte",
-        "route": "/demo/glyph-generator",
-        "title": "🎨 Legal Evidence Glyph Generator"
-      },
-      {
-        "file": "src/routes/demo/gpu-legal-ai/+page.svelte",
-        "route": "/demo/gpu-legal-ai",
-        "title": null
-      },
-      {
-        "file": "src/routes/demo/gpu-legal-ai/lawpdfs/+page.svelte",
-        "route": "/demo/gpu-legal-ai/lawpdfs",
-        "title": "Legal PDF Processing Pipeline"
-      },
-      {
-        "file": "src/routes/demo/hybrid-legal-analysis/+page.svelte",
-        "route": "/demo/hybrid-legal-analysis",
-        "title": null
-      },
-      {
-        "file": "src/routes/demo/instant-search/+page.svelte",
-        "route": "/demo/instant-search",
-        "title": "Instant Legal Search Demo"
-      },
-      {
-        "file": "src/routes/demo/integrated-system/+page.svelte",
-        "route": "/demo/integrated-system",
-        "title": "Integrated Legal AI System Demo"
-      },
-      {
-        "file": "src/routes/demo/legal-ai-complete/+page.svelte",
-        "route": "/demo/legal-ai-complete",
-        "title": "Legal AI System Demo"
-      },
-      {
-        "file": "src/routes/demo/legal-ai-platform/+page.svelte",
-        "route": "/demo/legal-ai-platform",
-        "title": null
-      },
-      {
-        "file": "src/routes/demo/legal-components/+page.svelte",
-        "route": "/demo/legal-components",
-        "title": "Legal Components Demo"
-      },
-      {
-        "file": "src/routes/demo/legal-search/+page.svelte",
-        "route": "/demo/legal-search",
-        "title": null
-      },
-      {
-        "file": "src/routes/demo/real-time-search/+page.svelte",
-        "route": "/demo/real-time-search",
-        "title": "Real-Time Legal Search"
-      },
-      {
-        "file": "src/routes/demo/recommendation-system/+page.svelte",
-        "route": "/demo/recommendation-system",
-        "title": "🎮 Legal AI Platform"
-      },
-      {
-        "file": "src/routes/demo/streaming-workflow/+page.svelte",
-        "route": "/demo/streaming-workflow",
-        "title": "🏛️ Streaming Legal Evidence Processing"
-      },
-      {
-        "file": "src/routes/demo/system-summary/+page.svelte",
-        "route": "/demo/system-summary",
-        "title": "⚖️ Legal AI System"
-      },
-      {
-        "file": "src/routes/demo/wasm-parser/+page.svelte",
-        "route": "/demo/wasm-parser",
-        "title": "🧠 WASM Legal Document Parser"
-      },
-      {
-        "file": "src/routes/demo/webgpu-graph/+page.svelte",
-        "route": "/demo/webgpu-graph",
-        "title": "WebGPU Legal Document Graph Demonstration"
-      },
-      {
-        "file": "src/routes/demos/nes-auth/+page.svelte",
-        "route": "/demos/nes-auth",
-        "title": "YoRHa Legal AI Platform"
-      },
-      {
-        "file": "src/routes/dev-demo/+page.svelte",
-        "route": "/dev-demo",
-        "title": "Legal AI Platform Development Demo"
-      },
-      {
-        "file": "src/routes/document-editor-demo/+page.svelte",
-        "route": "/document-editor-demo",
-        "title": "Legal Document Editor Demo"
-      },
-      {
-        "file": "src/routes/frameworks-demo/+page.svelte",
-        "route": "/frameworks-demo",
-        "title": "Legal AI Demo"
-      },
-      {
-        "file": "src/routes/investigation/+page.svelte",
-        "route": "/investigation",
-        "title": "🔍 Legal Investigation Workspace"
-      },
-      {
-        "file": "src/routes/laws/+page.svelte",
-        "route": "/laws",
-        "title": "Legal Resources"
-      },
-      {
-        "file": "src/routes/legal-ai-suite/+page.svelte",
-        "route": "/legal-ai-suite",
-        "title": "⚖️ Legal AI Suite"
-      },
-      {
-        "file": "src/routes/legal/documents/+page.svelte",
-        "route": "/legal/documents",
-        "title": "Legal Documents"
-      },
-      {
-        "file": "src/routes/nier-showcase/+page.svelte",
-        "route": "/nier-showcase",
-        "title": "YoRHa Legal Division"
-      },
-      {
-        "file": "src/routes/showcase/+page.svelte",
-        "route": "/showcase",
-        "title": "Enhanced Legal AI Showcase"
-      },
-      {
-        "file": "src/routes/summarize/+page.svelte",
-        "route": "/summarize",
-        "title": "🏛️ Legal Document Summarization"
-      },
-      {
-        "file": "src/routes/system-status/+page.svelte",
-        "route": "/system-status",
-        "title": "🎯 Legal AI Platform System Status"
-      },
-      {
-        "file": "src/routes/test-enhanced-upload/+page.svelte",
-        "route": "/test-enhanced-upload",
-        "title": "🚀 Enhanced Legal Upload Test"
-      },
-      {
-        "file": "src/routes/test-integration/+page.svelte",
-        "route": "/test-integration",
-        "title": "🤖 Gemma3 Legal AI Integration Test"
-      },
-      {
-        "file": "src/routes/test-xstate/+page.svelte",
-        "route": "/test-xstate",
-        "title": "XState Legal Case Machine Test"
-      },
-      {
-        "file": "src/routes/test/n64-legal-progress/+page.svelte",
-        "route": "/test/n64-legal-progress",
-        "title": null
-      },
-      {
-        "file": "src/routes/ui-demo/+page.svelte",
-        "route": "/ui-demo",
-        "title": "🏛️ Legal Case Management System"
-      },
-      {
-        "file": "src/routes/validation/+page.svelte",
-        "route": "/validation",
-        "title": "🏗️ Legal AI Platform Integration Validation"
-      },
-      {
-        "file": "src/routes/w1/+page.svelte",
-        "route": "/w1",
-        "title": "⚖️ Legal AI Platform"
-      },
-      {
-        "file": "src/routes/yorha-dashboard/+page.svelte",
-        "route": "/yorha-dashboard",
-        "title": "YoRHa Legal AI Command Center"
-      },
-      {
-        "file": "src/routes/yorha-demo/+page.svelte",
-        "route": "/yorha-demo",
-        "title": "YoRHa Legal AI Demonstration"
-      },
-      {
-        "file": "src/routes/yorha-terminal/+page.svelte",
-        "route": "/yorha-terminal",
-        "title": "YoRHa Legal AI Terminal"
-      }
-    ],
-    "apiEndpoints": [
-      "/api/health",
-      "/api/routes",
-      "/api/services",
-      "/api/v1/ai/summary",
-      "/api/v1/cluster",
-      "/api/v1/gpu/index",
-      "/api/v1/lb",
-      "/api/v1/legal",
-      "/api/v1/quic",
-      "/api/v1/rag",
-      "/api/v1/recommendations",
-      "/api/v1/state",
-      "/api/v1/upload"
-    ],
-    "configMissingFiles": [],
-    "filesMissingConfig": []
-  },
-  "analytics": null
+  ]
 }

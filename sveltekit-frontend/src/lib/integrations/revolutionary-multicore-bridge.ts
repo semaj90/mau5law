@@ -422,12 +422,12 @@ export class RevolutionaryMulticoreBridge {
 
     try {
       const agentRequest: ComprehensiveAgentRequest = {
-        query: request.query,
-        type: 'legal_analysis',
+        prompt: request.query,
         context: request.context,
         options: {
           priority: request.options?.priority || 'medium',
-          enableGPU: request.options?.enableFlashAttention || false
+          analysisType: 'legal_research',
+          useMulticoreAnalysis: request.options?.enableFlashAttention || false
         }
       };
       

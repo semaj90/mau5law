@@ -64,6 +64,10 @@ export const CompoundButton = Object.assign(ButtonComponent, {
 export { default as EnhancedBitsDemo } from "./EnhancedBitsDemo.svelte";
 export { default as VectorIntelligenceDemo } from "./VectorIntelligenceDemo.svelte";
 
+// Keyboard Management components
+export { default as KeyboardMapping } from "./KeyboardMapping.svelte";
+export { default as KeyboardHelp } from "./KeyboardHelp.svelte";
+
 // Types and utilities
 export type * from "./types";
 export * from "../enhanced/button-variants";

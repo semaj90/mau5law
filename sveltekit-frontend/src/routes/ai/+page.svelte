@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import ChatInterface from "$lib/components/ai/ChatInterface.svelte";
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import {
     chatActions,
     chatStore,

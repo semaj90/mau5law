@@ -152,12 +152,13 @@ export class WebGPULangChainBridge {
       
       // Parallel extraction of different legal elements
       const [summary, contractTerms, entities, risks] = await Promise.all([
-        langExtractService.generateLegalSummary(text, config.documentType).catch(() => null),
+        langExtractService.generateLegalSummary(text, config.documentType === 'general' ? 'evidence' : config.documentType === 'case' ? 'case_law' : config.documentType).catch(() => null),
         config.documentType === 'contract' 
           ? langExtractService.extractContractTerms(text).catch(() => null)
           : Promise.resolve(null),
-        langExtractService.extractLegalEntities(text).catch(() => []),
-        langExtractService.assessLegalRisks(text).catch(() => [])
+        langExtractService.extractLegalEntities({ text, documentType: config.documentType === 'general' ? 'evidence' : config.documentType === 'case' ? 'case_law' : config.documentType, extractionType: 'entities' }).catch(() => []),
+        // assessLegalRisks not available, return empty array
+        Promise.resolve([])
       ]);
       
       const processingTime = Date.now() - startTime;
@@ -220,7 +221,7 @@ export class WebGPULangChainBridge {
         const embeddings = await getBatchLegalEmbeddings(
           sections.map(section => ({
             text: section,
-            documentType: config.documentType,
+            documentType: config.documentType === 'general' ? 'case' : config.documentType,
             practiceArea: config.practiceArea
           }))
         );
@@ -241,7 +242,7 @@ export class WebGPULangChainBridge {
         // Standard embedding generation
         const legalQuery = {
           text,
-          documentType: config.documentType,
+          documentType: config.documentType === 'general' ? 'case' : config.documentType,
           practiceArea: config.practiceArea
         };
         
@@ -346,7 +347,7 @@ export class WebGPULangChainBridge {
       embeddingCache: cacheStats,
       langchainService: {
         available: ollamaAvailable,
-        models: ollamaAvailable ? await langExtractService.getAvailableModels() : []
+        models: ollamaAvailable ? await langExtractService.listAvailableModels() : []
       }
     };
   }

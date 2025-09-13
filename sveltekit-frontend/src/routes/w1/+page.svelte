@@ -274,19 +274,19 @@ https://svelte.dev/e/expected_token -->
 				<div class="dashboard-sections">
 					<div class="recent-cases">
 						<h3>🔥 Priority Cases</h3>
-						{#each cases.filter(c => c.priority === 'urgent' || c.priority === 'high') as case}
-							<div class="case-preview">
-								<div class="case-header">
-									<h4>{case.title}</h4>
-									<span class="priority priority-{case.priority}">{case.priority}</span>
+						{#each cases.filter(c => c.priority === 'urgent' || c.priority === 'high') as cse}
+								<div class="case-preview">
+									<div class="case-header">
+										<h4>{cse.title}</h4>
+										<span class="priority priority-{cse.priority}">{cse.priority}</span>
+									</div>
+									<div class="case-stats">
+										<span>📁 {cse.evidence} evidence</span>
+										<span>🤖 {cse.aiConfidence}% AI confidence</span>
+										<span>⏰ {cse.deadline}</span>
+									</div>
 								</div>
-								<div class="case-stats">
-									<span>📁 {case.evidence} evidence</span>
-									<span>🤖 {case.aiConfidence}% AI confidence</span>
-									<span>⏰ {case.deadline}</span>
-								</div>
-							</div>
-						{/each}
+							{/each}
 					</div>
 
 					<div class="ai-insights">
@@ -313,27 +313,27 @@ https://svelte.dev/e/expected_token -->
 			<div class="cases-view" transition:fade={{ duration: 300 }}>
 				<h2>📂 Case Management</h2>
 				<div class="cases-grid">
-					{#each cases as case}
+					{#each cases as cse}
 						<div class="case-card">
 							<div class="case-header">
-								<h3>{case.title}</h3>
+								<h3>{cse.title}</h3>
 								<div class="case-badges">
-									<span class="status status-{case.status}">{case.status}</span>
-									<span class="priority priority-{case.priority}">{case.priority}</span>
+									<span class={"status status-" + cse.status}>{cse.status}</span>
+									<span class={"priority priority-" + cse.priority}>{cse.priority}</span>
 								</div>
 							</div>
 							<div class="case-metrics">
 								<div class="metric">
 									<span class="metric-label">Evidence Items</span>
-									<span class="metric-value">{case.evidence}</span>
+									<span class="metric-value">{cse.evidence}</span>
 								</div>
 								<div class="metric">
 									<span class="metric-label">AI Confidence</span>
-									<span class="metric-value">{case.aiConfidence}%</span>
+									<span class="metric-value">{cse.aiConfidence}%</span>
 								</div>
 								<div class="metric">
 									<span class="metric-label">Last Activity</span>
-									<span class="metric-value">{case.lastActivity}</span>
+									<span class="metric-value">{cse.lastActivity}</span>
 								</div>
 							</div>
 							<div class="case-actions">
@@ -663,7 +663,7 @@ https://svelte.dev/e/expected_token -->
 
 	.cases-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(350px, 1fr);
+		grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 		gap: 1.5rem;
 	}
 

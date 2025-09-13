@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
   let searchHistory = $state<any[]>([]);
 
   // Polling interval for job status
-  let statusPollingInterval = $state<number | null >(null);
+  let statusPollingInterval = $state<ReturnType<typeof setInterval> | null>(null);
 
   // Load cases on component mount
   onMount(async () => {
@@ -621,7 +621,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md">
       <h2 class="text-xl font-semibold mb-4">Create New Case</h2>
 
-      <form submit={async (e) => { e.preventDefault(); await createCase(); }}>
+      <form onsubmit={async (e) => { e.preventDefault(); await createCase(); }}>
         <div class="form-group mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2" for="-case-title-">
             Case Title *
@@ -703,13 +703,13 @@ https://svelte.dev/e/js_parse_error -->
     <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md">
       <h2 class="text-xl font-semibold mb-4">Upload Evidence</h2>
 
-      <form submit={async (e) => { e.preventDefault(); await handleFileUpload(); }}>
+      <form onsubmit={async (e) => { e.preventDefault(); await handleFileUpload(); }}>
         <div class="form-group mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2" for="-select-file-">
             Select File *
           </label><input id="-select-file-"
             type="file"
-            change={handleFileSelect}
+            onchange={handleFileSelect}
             required
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.mp4,.avi,.zip"
@@ -765,7 +765,7 @@ https://svelte.dev/e/js_parse_error -->
 {#if showSearchModal}
   <div class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
     <div class="modal-content bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center mb-6">
+        <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-semibold">Search Evidence - {selectedCase?.title}</h2>
         <button
           onclick={() => { showSearchModal = false; clearSearch(); }}
@@ -776,7 +776,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <!-- Search Form -->
-      <form submit={async (e) => { e.preventDefault(); await performSearch(); }}>
+      <form on:submit={async (e) => { e.preventDefault(); await performSearch(); }}>
         <div class="flex gap-4 mb-6">
           <div class="flex-1">
             <input

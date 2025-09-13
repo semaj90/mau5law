@@ -325,7 +325,7 @@ export class ThreadSafePostgres {
         const cacheDoc = await cognitiveCache.retrieveJsonbDocument(queryId);
         if (cacheDoc) {
           cacheDoc.metadata.gpuProcessed = true;
-          cacheDoc.metadata.gpuProcessingTime = Date.now();
+          (cacheDoc.metadata as any).gpuProcessingTime = Date.now();
         }
       }
     } catch (error) {

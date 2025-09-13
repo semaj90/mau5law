@@ -31,6 +31,16 @@ export const NES_COLOR_PALETTE: NESColorPalette & {
     '#bcbcbc'   // Light gray
   ],
   
+  // Individual color properties for direct access
+  black: '#0f0f0f',
+  white: '#fcfcfc',
+  darkGray: '#7c7c7c',
+  lightGray: '#bcbcbc',
+  red: '#f83800',
+  blue: '#3cbcfc',
+  green: '#92cc41',
+  yellow: '#f7d51d',
+  
   // Status colors (NES-compatible)
   success: '#92cc41',    // Green
   warning: '#f7d51d',    // Yellow
@@ -39,16 +49,7 @@ export const NES_COLOR_PALETTE: NESColorPalette & {
 };
 
 // SNES Color Palette (enhanced 16-bit)
-export const SNES_COLOR_PALETTE: SNESColorPalette & {
-  purple: string;
-  orange: string;
-  cyan: string;
-  magenta: string;
-  pink: string;
-  lime: string;
-  primaryGradient: string[];
-  secondaryGradient: string[];
-} = {
+export const SNES_COLOR_PALETTE: SNESColorPalette = {
   background: [
     '#0f0f0f',  // Black
     '#7c7c7c',  // Dark gray
@@ -73,14 +74,26 @@ export const SNES_COLOR_PALETTE: SNESColorPalette & {
     '#38fcfc',  // Cyan
     '#fc38fc'   // Magenta
   ],
-  // Additional 16-bit colors (preserved)
+  
+  // Individual color properties for direct access
+  black: '#0f0f0f',
+  white: '#fcfcfc',
+  darkGray: '#7c7c7c',
+  lightGray: '#bcbcbc',
+  red: '#f83800',
+  blue: '#3cbcfc',
+  green: '#92cc41',
+  yellow: '#f7d51d',
+  
+  // Additional 16-bit colors
   purple: '#8b41fc',
   orange: '#fc9838', 
   cyan: '#38fcfc',
   magenta: '#fc38fc',
   pink: '#fc9cfc',
   lime: '#9cfc38',
-  // Gradient definitions for SNES-style depth (preserved)
+  
+  // Gradient definitions for SNES-style depth
   primaryGradient: ['#3cbcfc', '#0084ff', '#0050cc'],
   secondaryGradient: ['#f7d51d', '#cc8800', '#996600']
 };

@@ -478,14 +478,14 @@
 		<div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
 			<!-- Suggestions Sidebar -->
 			<div class="lg:col-span-1 space-y-4">
-				<div.Root>
-					<div.Header>
-						<div.Title class="text-sm font-semibold flex items-center gap-2">
+				<Card.Root>
+					<Card.Header>
+						<Card.Title class="text-sm font-semibold flex items-center gap-2">
 							<Search class="h-4 w-4" />
 							Suggested Questions
 						</Card.Title>
 					</Card.Header>
-					<div.Content>
+					<Card.Content>
 						<div class="space-y-2">
 							{#each suggestedQuestions.slice(0, 4) as question}
 								<button
@@ -500,14 +500,14 @@
 				</Card.Root>
 
 				<!-- Current Mode Info -->
-				<div.Root>
-					<div.Header>
-						<div.Title class="text-sm font-semibold flex items-center gap-2">
+				<Card.Root>
+					<Card.Header>
+						<Card.Title class="text-sm font-semibold flex items-center gap-2">
 							{#if getAnalysisModeIcon(analysisMode)}{@const IconComponent = getAnalysisModeIcon(analysisMode)}<IconComponent class="h-4 w-4" />{/if}
 							Current Mode
 						</Card.Title>
 					</Card.Header>
-					<div.Content>
+					<Card.Content>
 						<div class="space-y-2">
 							<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{analysisMode.replace('_', ' ')}</span>
 							<p class="text-xs text-gray-400">
@@ -538,7 +538,7 @@
 
 			<!-- Main Chat Area -->
 			<div class="lg:col-span-3">
-				<div.Root class="h-[75vh] flex flex-col">
+				<Card.Root class="h-[75vh] flex flex-col">
 					<!-- Messages Area -->
 					<div
 						bind:this={chatContainer}
