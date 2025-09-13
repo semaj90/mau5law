@@ -12,7 +12,7 @@ graph TB
         WASM[WebAssembly Modules]
     end
 
-    %% Frontend Layer  
+    %% Frontend Layer
     subgraph "⚡ SvelteKit Frontend (Port 5173)"
         UI[Svelte 5 Components]
         Router[SvelteKit Router]
@@ -22,7 +22,7 @@ graph TB
 
     %% API Layer - Organized by Domain
     subgraph "🔗 SvelteKit API Layer (/api/*)"
-        
+
         %% AI & Machine Learning APIs
         subgraph "🤖 AI/ML APIs (65+ endpoints)"
             AI_Core["/api/ai/inference/+server.ts<br/>🔥 Ollama Integration"]
@@ -35,7 +35,7 @@ graph TB
             AI_Analysis["/api/ai/deep-analysis/+server.ts<br/>🔍 Deep Analysis"]
         end
 
-        %% Document & Processing APIs  
+        %% Document & Processing APIs
         subgraph "📄 Document APIs (45+ endpoints)"
             DOC_Upload["/api/documents/upload/+server.ts<br/>📤 Upload Processing"]
             DOC_Process["/api/ai/process-document/+server.ts<br/>⚙️ AI Processing"]
@@ -85,7 +85,7 @@ graph TB
             RAG_Vector["/api/rag/vector<br/>📊 Vector Operations"]
             RAG_Health["/api/rag/health<br/>💚 Service Health"]
         end
-        
+
         subgraph "🧠 PyTorch Cache System"
             Cache_L1[L1: Memory Cache<br/>⚡ 10,000 items]
             Cache_L2[L2: Redis Cache<br/>🔄 Distributed]
@@ -94,7 +94,7 @@ graph TB
 
         subgraph "🎮 CUDA Workers"
             CUDA_Embed[Embedding Generation<br/>🚀 30x Faster]
-            CUDA_Similar[Similarity Search<br/>📊 16x Faster] 
+            CUDA_Similar[Similarity Search<br/>📊 16x Faster]
             CUDA_Attention[Attention Mechanisms<br/>🧠 Legal Context]
             CUDA_Memory[GPU Memory Mgmt<br/>⚡ RTX 3060 Ti]
         end
@@ -107,7 +107,7 @@ graph TB
             PG_Vector[(pgvector Extension<br/>📊 Vector Embeddings)]
             PG_Analytics[(Analytics DB<br/>📈 Metrics, Reports)]
         end
-        
+
         subgraph "⚡ Redis Cluster"
             Redis_Cache[(Redis Cache<br/>🗄️ Session, API Cache)]
             Redis_Queue[(Redis Queue<br/>⚙️ Background Jobs)]
@@ -117,6 +117,7 @@ graph TB
         subgraph "📁 File Storage"
             MinIO[(MinIO S3<br/>📁 Document Storage)]
             Local_Cache[(Local Cache<br/>⚡ Temp Files)]
+            indexdb? lokijs(client)
         end
     end
 
@@ -175,7 +176,7 @@ graph TB
     CASE_Mgmt --> PG_Main
     AUTH_Login --> PG_Main
     RAG_Ingest --> PG_Vector
-    
+
     %% File Storage
     DOC_Upload --> MinIO
     RAG_Ingest --> MinIO
@@ -216,7 +217,7 @@ graph TB
 ### **🤖 AI/ML Endpoints (65+ APIs)**
 ```
 Core Intelligence:
-/api/ai/inference/          → Ollama LLM Integration  
+/api/ai/inference/          → Ollama LLM Integration
 /api/ai/enhanced-microservice/ → NEW CUDA RAG Service
 /api/ai/gpu/               → GPU Acceleration
 /api/ai/tensor/            → Tensor Operations
@@ -225,7 +226,7 @@ Core Intelligence:
 
 Legal AI Specialized:
 /api/ai/legal-search/      → Legal Document Search
-/api/ai/legal-research/    → Case Law Research  
+/api/ai/legal-research/    → Case Law Research
 /api/ai/evidence-search/   → Evidence Discovery
 /api/ai/case-scoring/      → Case Strength Analysis
 /api/ai/document-drafting/ → Legal Document Generation
@@ -255,7 +256,7 @@ Upload & Ingestion:
 
 Processing & Parsing:
 /api/documents/parse/      → Document Parsing
-/api/documents/ocr/       → OCR Processing  
+/api/documents/ocr/       → OCR Processing
 /api/documents/extract/   → Data Extraction
 /api/documents/metadata/  → Metadata Generation
 
@@ -361,11 +362,11 @@ Browser → /api/ai/legal-search → Vector Search → Legal APIs → Case Law �
 ```
 POST /api/rag/query
 - Intelligent document-aware queries
-- CUDA-accelerated similarity search  
+- CUDA-accelerated similarity search
 - Multi-level PyTorch caching
 - Memory-enhanced responses
 
-POST /api/rag/ingest  
+POST /api/rag/ingest
 - Document ingestion with AI processing
 - Automatic vectorization
 - Metadata extraction

@@ -21,74 +21,88 @@
     fullWidth?: boolean;
   }
 
-  let { 
-    children, 
-    title = 'YoRHa Legal AI', 
-    subtitle = 'Advanced Investigation Platform',
+  let {
+    children,
+    title = 'Legal AI Platform',
+    subtitle = 'Professional Legal Intelligence Suite',
     showBreadcrumbs = true,
-    fullWidth = false 
+    fullWidth = false
   }: Props = $props();
 
-  // Navigation configuration
+  // Professional navigation configuration
   const mainNavItems = [
-    { 
+    {
       id: 'dashboard',
-      href: '/', 
-      label: 'Command Center', 
-      icon: Database, 
-      description: 'Main dashboard and overview'
+      href: '/',
+      label: 'Dashboard',
+      icon: Home,
+      description: 'Executive overview and key metrics'
     },
-    { 
+    {
       id: 'cases',
-      href: '/cases', 
-      label: 'Cases', 
+      href: '/cases',
+      label: 'Case Management',
       icon: Folder,
-      description: 'Legal case management'
+      description: 'Legal case tracking and documentation'
     },
-    { 
+    {
       id: 'evidence',
-      href: '/evidence', 
-      label: 'Evidence', 
+      href: '/evidenceboard',
+      label: 'Evidence Analysis',
       icon: Eye,
-      description: 'Evidence collection and analysis'
+      description: 'Digital evidence collection and forensics'
     },
-    { 
-      id: 'persons',
-      href: '/persons', 
-      label: 'Persons', 
-      icon: Users,
-      description: 'Persons of interest tracking'
-    },
-    { 
-      id: 'analysis',
-      href: '/analysis', 
-      label: 'Analysis', 
-      icon: BarChart3,
-      description: 'Data analysis and insights'
-    },
-    { 
-      id: 'search',
-      href: '/search', 
-      label: 'Search', 
+    {
+      id: 'research',
+      href: '/demo/enhanced-rag-semantic',
+      label: 'Legal Research',
       icon: Search,
-      description: 'Universal search interface'
+      description: 'AI-powered legal research and precedents'
+    },
+    {
+      id: 'chat',
+      href: '/chat',
+      label: 'AI Assistant',
+      icon: MessageSquare,
+      description: 'Intelligent legal consultation'
+    },
+    {
+      id: 'analysis',
+      href: '/analysis',
+      label: 'Analytics',
+      icon: BarChart3,
+      description: 'Data insights and trend analysis'
     }
   ];
 
   const toolsNavItems = [
-    { 
-      id: 'terminal',
-      href: '/terminal', 
-      label: 'Terminal', 
+    {
+      id: 'yorha-command',
+      href: '/yorha-command-center',
+      label: 'Command Center',
       icon: Terminal,
-      description: 'Command line interface'
+      description: 'Advanced system controls'
     },
-    { 
+    {
+      id: 'gpu-inference',
+      href: '/demo/gpu-inference',
+      label: 'GPU Processing',
+      icon: Zap,
+      description: 'High-performance AI inference'
+    },
+    {
       id: 'settings',
-      href: '/settings', 
-      label: 'Settings', 
+      href: '/settings',
+      label: 'Settings',
       icon: Settings,
-      description: 'System configuration'
+      description: 'Platform configuration'
+    },
+    {
+      id: 'admin',
+      href: '/admin',
+      label: 'Administration',
+      icon: Database,
+      description: 'System administration'
     }
   ];
 
@@ -208,30 +222,30 @@
     ></div>
   {/if}
 
-  <!-- Sidebar Navigation -->
+  <!-- Professional Sidebar Navigation -->
   <aside class={cn(
-    "fixed top-0 left-0 h-full bg-slate-900 border-r border-slate-700 transition-all duration-300 z-40 shadow-xl",
-    isSidebarOpen ? "w-72" : "w-16",
+    "fixed top-0 left-0 h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-amber-500/20 transition-all duration-300 z-40 shadow-2xl",
+    isSidebarOpen ? "w-80" : "w-18",
     isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
   )}>
     <div class="flex flex-col h-full">
-      <!-- Sidebar Header -->
-      <div class="p-4 border-b border-slate-700 bg-gradient-to-r from-slate-900 to-slate-800">
+      <!-- Professional Sidebar Header -->
+      <div class="p-6 border-b border-amber-500/20 bg-gradient-to-r from-slate-900/95 to-slate-800/95 backdrop-blur-sm">
         <div class="flex items-center justify-between">
-          <div class={cn("flex items-center gap-3", !isSidebarOpen && "justify-center")}>
-            <div class="professional-logo-container p-2 bg-slate-800/50 rounded-lg">
-              <Zap class="w-6 h-6 text-amber-400" />
+          <div class={cn("flex items-center gap-4", !isSidebarOpen && "justify-center")}>
+            <div class="professional-logo-container p-3 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg shadow-amber-500/25">
+              <Zap class="w-7 h-7 text-slate-900 font-bold" />
             </div>
             {#if isSidebarOpen}
               <div class="flex flex-col">
-                <h1 class="text-lg font-semibold text-amber-400 tracking-wide">Legal AI Platform</h1>
-                <p class="text-xs text-slate-400">Professional Investigation Suite</p>
+                <h1 class="text-xl font-bold text-amber-400 tracking-tight">Legal AI Platform</h1>
+                <p class="text-sm text-slate-400 font-medium">Professional Intelligence Suite</p>
               </div>
             {/if}
           </div>
           {#if isSidebarOpen}
-            <button 
-              class="p-1 text-gray-400 hover:text-yellow-400 transition-colors lg:hidden"
+            <button
+              class="p-2 text-slate-400 hover:text-amber-400 transition-colors lg:hidden rounded-lg hover:bg-slate-800/50"
               onclick={toggleMobileMenu}
             >
               <X class="w-5 h-5" />
@@ -240,87 +254,90 @@
         </div>
       </div>
 
-      <!-- Navigation Menu -->
-      <nav class="flex-1 p-4 space-y-6 overflow-y-auto">
+      <!-- Professional Navigation Menu -->
+      <nav class="flex-1 p-6 space-y-8 overflow-y-auto">
         <!-- Main Navigation -->
-        <div class="space-y-2">
+        <div class="space-y-3">
           {#if isSidebarOpen}
-            <h3 class="text-xs uppercase tracking-wider text-gray-500 font-bold mb-3">Navigation</h3>
+            <h3 class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-4 border-b border-amber-500/20 pb-2">Core Functions</h3>
           {/if}
           {#each mainNavItems as item}
             <button
               class={cn(
-                "w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 group",
-                currentPath === item.href || currentPath.startsWith(item.href + '/') 
-                  ? "bg-yellow-600/20 border border-yellow-600/50 text-yellow-400" 
-                  : "text-gray-400 hover:text-yellow-400 hover:bg-gray-800/50",
+                "w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group relative",
+                currentPath === item.href || currentPath.startsWith(item.href + '/')
+                  ? "bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-amber-500/50 text-amber-400 shadow-lg shadow-amber-500/25"
+                  : "text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30",
                 !isSidebarOpen && "justify-center"
               )}
               onclick={(e) => handleNavigation(item.href, e)}
               title={!isSidebarOpen ? item.label : ''}
             >
-              <item.icon class="w-5 h-5 flex-shrink-0" />
+              <item.icon class="w-6 h-6 flex-shrink-0" />
               {#if isSidebarOpen}
                 <div class="flex-1 text-left">
-                  <div class="font-medium">{item.label}</div>
-                  <div class="text-xs text-gray-500 group-hover:text-gray-400">{item.description}</div>
+                  <div class="font-semibold text-base">{item.label}</div>
+                  <div class="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">{item.description}</div>
                 </div>
               {/if}
             </button>
           {/each}
         </div>
 
-        <!-- Tools Section -->
-        <div class="space-y-2">
+        <!-- Professional Tools Section -->
+        <div class="space-y-3">
           {#if isSidebarOpen}
-            <h3 class="text-xs uppercase tracking-wider text-gray-500 font-bold mb-3">Tools</h3>
+            <h3 class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-4 border-b border-amber-500/20 pb-2">Advanced Tools</h3>
           {/if}
           {#each toolsNavItems as item}
             <button
               class={cn(
-                "w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200",
-                currentPath === item.href || currentPath.startsWith(item.href + '/') 
-                  ? "bg-yellow-600/20 border border-yellow-600/50 text-yellow-400" 
-                  : "text-gray-400 hover:text-yellow-400 hover:bg-gray-800/50",
+                "w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group",
+                currentPath === item.href || currentPath.startsWith(item.href + '/')
+                  ? "bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-amber-500/50 text-amber-400 shadow-lg shadow-amber-500/25"
+                  : "text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30",
                 !isSidebarOpen && "justify-center"
               )}
               onclick={(e) => handleNavigation(item.href, e)}
               title={!isSidebarOpen ? item.label : ''}
             >
-              <item.icon class="w-5 h-5 flex-shrink-0" />
+              <item.icon class="w-6 h-6 flex-shrink-0" />
               {#if isSidebarOpen}
-                <span class="font-medium">{item.label}</span>
+                <div class="flex-1 text-left">
+                  <div class="font-semibold">{item.label}</div>
+                  <div class="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">{item.description}</div>
+                </div>
               {/if}
             </button>
           {/each}
         </div>
 
-        <!-- System Status -->
+        <!-- Professional System Status -->
         {#if isSidebarOpen}
-          <div class="space-y-3 pt-6 border-t border-yellow-600/30">
-            <h3 class="text-xs uppercase tracking-wider text-gray-500 font-bold">System Status</h3>
-            <div class="space-y-2">
+          <div class="space-y-4 pt-6 border-t border-amber-500/20">
+            <h3 class="text-xs uppercase tracking-wider text-slate-500 font-bold">System Health</h3>
+            <div class="bg-slate-800/40 rounded-xl p-4 space-y-3 border border-slate-700/50">
               <div class="flex items-center justify-between text-sm">
-                <span class="text-gray-400">AI Engine</span>
-                <div class="flex items-center gap-1">
-                  <div class={cn("w-2 h-2 rounded-full", systemStatus.ai ? "bg-green-400" : "bg-red-400")}></div>
-                  <span class={getStatusColor(systemStatus.ai)}>{systemStatus.ai ? 'Online' : 'Offline'}</span>
+                <span class="text-slate-400 font-medium">AI Engine</span>
+                <div class="flex items-center gap-2">
+                  <div class={cn("w-3 h-3 rounded-full animate-pulse", systemStatus.ai ? "bg-green-400" : "bg-red-400")}></div>
+                  <span class={cn("font-semibold", getStatusColor(systemStatus.ai))}>{systemStatus.ai ? 'Online' : 'Offline'}</span>
                 </div>
               </div>
-              
+
               <div class="flex items-center justify-between text-sm">
-                <span class="text-gray-400">Database</span>
-                <div class="flex items-center gap-1">
-                  <div class={cn("w-2 h-2 rounded-full", systemStatus.database ? "bg-green-400" : "bg-red-400")}></div>
-                  <span class={getStatusColor(systemStatus.database)}>{systemStatus.database ? 'Active' : 'Error'}</span>
+                <span class="text-slate-400 font-medium">Database</span>
+                <div class="flex items-center gap-2">
+                  <div class={cn("w-3 h-3 rounded-full animate-pulse", systemStatus.database ? "bg-green-400" : "bg-red-400")}></div>
+                  <span class={cn("font-semibold", getStatusColor(systemStatus.database))}>{systemStatus.database ? 'Active' : 'Error'}</span>
                 </div>
               </div>
-              
+
               <div class="flex items-center justify-between text-sm">
-                <span class="text-gray-400">GPU Accel</span>
-                <div class="flex items-center gap-1">
-                  <div class={cn("w-2 h-2 rounded-full", systemStatus.gpu ? "bg-green-400" : "bg-yellow-400")}></div>
-                  <span class={getStatusColor(systemStatus.gpu)}>{systemStatus.gpu ? 'Enabled' : 'Limited'}</span>
+                <span class="text-slate-400 font-medium">GPU Acceleration</span>
+                <div class="flex items-center gap-2">
+                  <div class={cn("w-3 h-3 rounded-full animate-pulse", systemStatus.gpu ? "bg-green-400" : "bg-yellow-400")}></div>
+                  <span class={cn("font-semibold", systemStatus.gpu ? "text-green-400" : "text-yellow-400")}>{systemStatus.gpu ? 'Enabled' : 'Limited'}</span>
                 </div>
               </div>
             </div>
@@ -328,17 +345,24 @@
         {/if}
       </nav>
 
-      <!-- Sidebar Footer -->
+      <!-- Professional Sidebar Footer -->
       {#if isSidebarOpen}
-        <div class="p-4 border-t border-yellow-600/30">
-          <div class="text-xs text-gray-500 space-y-1">
-            <div class="flex justify-between">
-              <span>Time:</span>
-              <span class="text-yellow-400 font-mono">{formatTime(currentTime)}</span>
-            </div>
-            <div class="flex justify-between">
-              <span>Date:</span>
-              <span class="text-gray-300">{formatDate(currentTime)}</span>
+        <div class="p-6 border-t border-amber-500/20">
+          <div class="bg-slate-800/40 rounded-xl p-4 border border-slate-700/50">
+            <div class="text-sm text-slate-400 space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Local Time:</span>
+                <span class="text-amber-400 font-mono font-bold">{formatTime(currentTime)}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Date:</span>
+                <span class="text-slate-300 font-semibold">{formatDate(currentTime)}</span>
+              </div>
+              <div class="pt-2 border-t border-slate-600/50">
+                <div class="text-xs text-slate-500 text-center">
+                  Platform Status: <span class="text-green-400 font-semibold">Operational</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -346,28 +370,28 @@
     </div>
   </aside>
 
-  <!-- Main Content Area -->
+  <!-- Professional Main Content Area -->
   <div class={cn(
-    "min-h-screen transition-all duration-300",
-    isSidebarOpen ? "ml-72" : "ml-16"
+    "min-h-screen transition-all duration-300 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900",
+    isSidebarOpen ? "ml-80" : "ml-18"
   )}>
-    <!-- Top Header Bar -->
-    <header class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-700 shadow-sm">
-      <div class="flex items-center justify-between p-4">
-        <!-- Header Left -->
-        <div class="flex items-center gap-4">
-          <button 
-            class="p-2 text-gray-400 hover:text-yellow-400 transition-colors"
+    <!-- Professional Top Header Bar -->
+    <header class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-amber-500/20 shadow-xl">
+      <div class="flex items-center justify-between p-6">
+        <!-- Professional Header Left -->
+        <div class="flex items-center gap-6">
+          <button
+            class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 rounded-lg hover:bg-slate-800/50"
             onclick={toggleSidebar}
           >
-            <Menu class="w-5 h-5" />
+            <Menu class="w-6 h-6" />
           </button>
 
-          <button 
-            class="p-2 text-gray-400 hover:text-yellow-400 transition-colors lg:hidden"
+          <button
+            class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 lg:hidden rounded-lg hover:bg-slate-800/50"
             onclick={toggleMobileMenu}
           >
-            <Menu class="w-5 h-5" />
+            <Menu class="w-6 h-6" />
           </button>
 
           <!-- Breadcrumbs -->
@@ -391,85 +415,98 @@
           {/if}
         </div>
 
-        <!-- Header Center - Page Title -->
+        <!-- Professional Header Center - Page Title -->
         <div class="flex-1 text-center hidden lg:block">
-          <h1 class="text-lg font-semibold text-amber-400 tracking-wide">{title}</h1>
+          <h1 class="text-2xl font-bold text-amber-400 tracking-tight">{title}</h1>
           {#if subtitle}
-            <p class="text-sm text-slate-400">{subtitle}</p>
+            <p class="text-base text-slate-400 font-medium">{subtitle}</p>
           {/if}
         </div>
 
         <!-- Header Right -->
         <div class="flex items-center gap-3">
-          <!-- Client-Side AI Chat Toggle -->
+          <!-- Professional AI Chat Toggle -->
           <div class="relative">
-            <button 
-              class="p-2 text-gray-400 hover:text-green-400 transition-colors relative group"
+            <button
+              class="p-3 text-slate-400 hover:text-green-400 transition-all duration-300 relative group rounded-lg hover:bg-slate-800/50"
               onclick={() => showClientChat = !showClientChat}
-              title="Client-Side AI Chat (Gemma 270MB)"
+              title="AI Assistant (Gemma 270MB)"
             >
-              <MessageSquare class="w-5 h-5" />
-              <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full group-hover:animate-pulse"></div>
+              <MessageSquare class="w-6 h-6" />
+              <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-green-400 to-green-500 rounded-full group-hover:animate-pulse shadow-lg shadow-green-500/50"></div>
             </button>
           </div>
 
-          <!-- Notifications -->
+          <!-- Professional Notifications -->
           <div class="relative">
-            <button 
-              class="p-2 text-gray-400 hover:text-yellow-400 transition-colors relative"
+            <button
+              class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 relative rounded-lg hover:bg-slate-800/50"
               onclick={() => showNotifications = !showNotifications}
             >
-              <Bell class="w-5 h-5" />
-              <div class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+              <Bell class="w-6 h-6" />
+              <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-red-400 to-red-500 rounded-full shadow-lg shadow-red-500/50"></div>
             </button>
           </div>
 
-          <!-- User Menu -->
+          <!-- Professional User Menu -->
           {#if authStore.isAuthenticated}
             <div class="relative group">
-              <button class="flex items-center gap-2 p-2 text-gray-400 hover:text-yellow-400 transition-colors">
-                <User class="w-5 h-5" />
-                <span class="hidden sm:inline text-sm font-medium">
-                  {authStore.user?.firstName || 'User'}
-                </span>
+              <button class="flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 rounded-lg hover:bg-slate-800/50">
+                <div class="w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center shadow-lg">
+                  <span class="text-slate-900 font-bold text-sm">{(authStore.user?.firstName || 'U')[0].toUpperCase()}</span>
+                </div>
+                <div class="hidden sm:block text-left">
+                  <div class="text-sm font-semibold text-white">
+                    {authStore.user?.firstName || 'User'}
+                  </div>
+                  <div class="text-xs text-slate-400">Legal Professional</div>
+                </div>
                 <ChevronDown class="w-4 h-4 group-hover:rotate-180 transition-transform" />
               </button>
-              
-              <!-- Dropdown Menu -->
-              <div class="absolute right-0 top-full mt-2 w-48 bg-yorha-bg-secondary border border-yellow-600/30 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                <div class="p-2 space-y-1">
-                  <button 
-                    class="w-full flex items-center gap-2 p-2 text-gray-400 hover:text-yellow-400 hover:bg-gray-800/50 rounded transition-colors text-left"
+
+              <!-- Professional Dropdown Menu -->
+              <div class="absolute right-0 top-full mt-2 w-56 bg-slate-800/95 backdrop-blur-md border border-amber-500/20 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                <div class="p-3 space-y-2">
+                  <button
+                    class="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 rounded-lg transition-all duration-300 text-left"
                     onclick={(e) => handleNavigation('/profile', e)}
                   >
-                    <User class="w-4 h-4" />
-                    Profile
+                    <User class="w-5 h-5" />
+                    <span class="font-medium">Profile Settings</span>
                   </button>
-                  <button 
-                    class="w-full flex items-center gap-2 p-2 text-gray-400 hover:text-yellow-400 hover:bg-gray-800/50 rounded transition-colors text-left"
+                  <button
+                    class="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 rounded-lg transition-all duration-300 text-left"
                     onclick={(e) => handleNavigation('/settings', e)}
                   >
-                    <Settings class="w-4 h-4" />
-                    Settings
+                    <Settings class="w-5 h-5" />
+                    <span class="font-medium">Platform Settings</span>
                   </button>
-                  <hr class="my-2 border-gray-600" />
-                  <button 
-                    class="w-full flex items-center gap-2 p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors text-left"
+                  <hr class="my-2 border-slate-600/50" />
+                  <button
+                    class="w-full flex items-center gap-3 p-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-300 text-left"
                     onclick={handleLogout}
                   >
-                    <LogOut class="w-4 h-4" />
-                    Logout
+                    <LogOut class="w-5 h-5" />
+                    <span class="font-medium">Sign Out</span>
                   </button>
                 </div>
               </div>
             </div>
           {:else}
-            <button 
-              class="nes-legal-priority-high yorha-3d-button text-sm"
-              onclick={(e) => handleNavigation('/auth/login', e)}
-            >
-              Login
-            </button>
+            <div class="flex items-center gap-3">
+              <button
+                class="px-6 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-semibold"
+                onclick={(e) => handleNavigation('/auth/login', e)}
+              >
+                Sign In
+              </button>
+              <button
+                class="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 hover:from-amber-600 hover:to-amber-700 transition-all duration-300 rounded-lg font-bold shadow-lg shadow-amber-500/25"
+                onclick={(e) => handleNavigation('/auth/register', e)}
+              >
+                Get Started
+              </button>
+            </div>
           {/if}
         </div>
       </div>
@@ -483,26 +520,31 @@
       {@render children()}
     </main>
 
-    <!-- Floating Client-Side AI Chat -->
+    <!-- Professional Floating Client-Side AI Chat -->
     {#if showClientChat}
-      <div class="fixed bottom-6 right-6 z-50 w-80 max-w-[calc(100vw-2rem)]">
-        <ClientSideAIChat collapsed={false} showStatus={true} />
+      <div class="fixed bottom-8 right-8 z-50 w-96 max-w-[calc(100vw-2rem)]">
+        <div class="bg-slate-800/95 backdrop-blur-md border border-amber-500/20 rounded-2xl shadow-2xl shadow-amber-500/10">
+          <ClientSideAIChat collapsed={false} showStatus={true} />
+        </div>
       </div>
     {/if}
 
-    <!-- Footer -->
-    <footer class="border-t border-yellow-600/30 bg-yorha-bg-secondary/50 backdrop-blur-sm p-4">
-      <div class="container mx-auto flex items-center justify-between text-sm text-gray-500">
-        <div class="flex items-center gap-4">
-          <span>© 2024 YoRHa Legal AI Platform</span>
-          <div class="flex items-center gap-1">
-            <Activity class="w-4 h-4" />
-            <span>System Operational</span>
+    <!-- Professional Footer -->
+    <footer class="border-t border-amber-500/20 bg-slate-900/95 backdrop-blur-md shadow-xl p-6">
+      <div class="container mx-auto flex items-center justify-between text-sm text-slate-400">
+        <div class="flex items-center gap-6">
+          <span class="font-semibold">© 2024 Legal AI Platform - Professional Intelligence Suite</span>
+          <div class="flex items-center gap-2">
+            <Activity class="w-5 h-5 text-green-400" />
+            <span class="text-green-400 font-medium">All Systems Operational</span>
           </div>
         </div>
-        <div class="flex items-center gap-4">
-          <span class="font-mono">{formatTime(currentTime)}</span>
-          <Zap class="w-4 h-4 text-yellow-400" />
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-2">
+            <Calendar class="w-4 h-4" />
+            <span class="font-mono font-semibold">{formatTime(currentTime)}</span>
+          </div>
+          <Zap class="w-5 h-5 text-amber-400" />
         </div>
       </div>
     </footer>
@@ -511,48 +553,59 @@
 
 <style>
   .yorha-production-layout {
-    @apply min-h-screen bg-yorha-bg-primary text-white;
-    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    @apply min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white;
+    font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
   }
-/* Enhanced scrollbars for better UX */
+/* Professional enhanced scrollbars */
   :global(.yorha-production-layout *::-webkit-scrollbar) {
-    width: 8px;
-    height: 8px;
+    width: 12px;
+    height: 12px;
   }
 
   :global(.yorha-production-layout *::-webkit-scrollbar-track) {
-    background: rgba(255, 215, 0, 0.1);
-    border-radius: 4px;
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 6px;
   }
 
   :global(.yorha-production-layout *::-webkit-scrollbar-thumb) {
-    background: rgba(255, 215, 0, 0.4);
-    border-radius: 4px;
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.6), rgba(217, 119, 6, 0.6));
+    border-radius: 6px;
+    border: 2px solid rgba(15, 23, 42, 0.8);
   }
 
   :global(.yorha-production-layout *::-webkit-scrollbar-thumb:hover) {
-    background: rgba(255, 215, 0, 0.6);
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.8), rgba(217, 119, 6, 0.8));
   }
-/* Animation for neural sprite effects */
-  :global(.neural-sprite-active) {
-    animation: neural-pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes neural-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+/* Professional animation effects */
+  :global(.professional-glow) {
+    animation: professional-glow 3s ease-in-out infinite;
   }
 
-  /* Responsive typography */
+  @keyframes professional-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.1); }
+    50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); }
+  }
+
+  /* Enhanced backdrop blur effects */
+  .backdrop-blur-md {
+    backdrop-filter: blur(12px) saturate(180%);
+  }
+
+  /* Professional responsive typography */
   @media (max-width: 768px) {
     .yorha-production-layout {
-      font-size: 14px;
+      font-size: 15px;
     }
   }
 
   @media (max-width: 640px) {
     .yorha-production-layout {
-      font-size: 13px;
+      font-size: 14px;
     }
+  }
+
+  /* Professional smooth transitions */
+  :global(*) {
+    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   }
 </style>

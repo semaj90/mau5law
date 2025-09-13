@@ -711,10 +711,21 @@ func parsePortOrDefault(portStr string, defaultPort int) int {
 func main() {
 	server := NewLegalAIQuicServer()
 
+	// Create auth handler
+	authHandler := NewAuthHandler(server.redisClient)
+
 	// Setup HTTP/3 routes
 	mux := http.NewServeMux()
-	mux.HandleFunc("/legal/analyze", server.handleDocumentAnalysis)
-	mux.HandleFunc("/legal/recommend", server.handleRecommendations)
+
+	// Authentication routes
+	mux.HandleFunc("/auth/register", authHandler.HandleRegister)
+	mux.HandleFunc("/auth/login", authHandler.HandleLogin)
+	mux.HandleFunc("/auth/validate", authHandler.HandleValidateSession)
+	mux.HandleFunc("/auth/logout", authHandler.HandleLogout)
+
+	// Protected legal AI routes (require authentication)
+	mux.HandleFunc("/legal/analyze", authHandler.RequireAuth(server.handleDocumentAnalysis))
+	mux.HandleFunc("/legal/recommend", authHandler.RequireAuth(server.handleRecommendations))
 	mux.HandleFunc("/legal/result", server.handleResult)
 	mux.HandleFunc("/health", server.handleHealth)
 

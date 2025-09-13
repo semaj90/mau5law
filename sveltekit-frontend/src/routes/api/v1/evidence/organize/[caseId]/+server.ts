@@ -65,16 +65,16 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const evidenceResult = await evidenceService.listByCase(caseId, {
       page: 1,
       limit: 1000,
-      filters
+      ...(filters && { filters })
     });
 
-    if (!evidenceResult.success) {
+    if (!evidenceResult || !evidenceResult.data) {
       return error(
         500,
         makeHttpErrorPayload({
           message: 'Failed to retrieve evidence',
           code: 'EVIDENCE_FETCH_FAILED',
-          details: evidenceResult.error
+          details: 'Service returned invalid response'
         })
       );
     }
@@ -179,7 +179,7 @@ async function organizeByCategory(evidence: any[]) {
 
   return {
     type: 'category',
-    categories: Object.values(categories).sort((a, b) => b.priority - a.priority),
+    categories: Object.values(categories).sort((a: any, b: any) => (b.priority || 0) - (a.priority || 0)),
     metadata: {
       totalCategories: Object.keys(categories).length,
       method: 'evidence_type_classification'

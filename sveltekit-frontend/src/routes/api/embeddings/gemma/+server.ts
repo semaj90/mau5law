@@ -21,10 +21,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { text, metadata } = body;
 
         if (!text || typeof text !== 'string') {
-          return json({
-            error: 'Text is required and must be a string',
-            timestamp: new Date().toISOString()
-          }, { status: 400 });
+          return json(
+            {
+              error: 'Text is required and must be a string',
+              timestamp: new Date().toISOString(),
+            },
+            { status: 400 }
+          );
         }
 
         const result = await gemmaEmbeddingService.generateEmbedding(text, metadata);
@@ -36,7 +39,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           metadata: result.metadata,
           error: result.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'batch':
@@ -44,16 +47,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documents, options = {} } = body;
 
         if (!documents || !Array.isArray(documents)) {
-          return json({
-            error: 'Documents array is required',
-            timestamp: new Date().toISOString()
-          }, { status: 400 });
+          return json(
+            {
+              error: 'Documents array is required',
+              timestamp: new Date().toISOString(),
+            },
+            { status: 400 }
+          );
         }
 
-        const batchResult = await gemmaEmbeddingService.generateBatchEmbeddings(
-          documents,
-          options
-        );
+        const batchResult = await gemmaEmbeddingService.generateBatchEmbeddings(documents, options);
 
         return json({
           action: 'gemma_batch_embeddings',
@@ -61,7 +64,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           results: batchResult.results,
           summary: batchResult.summary,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'store':
@@ -69,36 +72,42 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documentId, content, docMetadata } = body;
 
         if (!documentId || !content) {
-          return json({
-            error: 'documentId and content are required',
-            timestamp: new Date().toISOString()
-          }, { status: 400 });
+          return json(
+            {
+              error: 'documentId and content are required',
+              timestamp: new Date().toISOString(),
+            },
+            { status: 400 }
+          );
         }
 
         // Generate embedding
         const embeddingResult = await gemmaEmbeddingService.generateEmbedding(content, {
           documentId,
-          ...docMetadata
+          ...docMetadata,
         });
 
         if (!embeddingResult.success) {
-          return json({
-            error: `Embedding generation failed: ${embeddingResult.error}`,
-            timestamp: new Date().toISOString()
-          }, { status: 500 });
+          return json(
+            {
+              error: `Embedding generation failed: ${embeddingResult.error}`,
+              timestamp: new Date().toISOString(),
+            },
+            { status: 500 }
+          );
         }
 
-        // Store in pgvector (need to handle dimension mismatch)
+        // Store in pgvector (Gemma generates 768-dimensional embeddings)
         let finalEmbedding = embeddingResult.embedding;
 
-        // Pad or truncate to 1536 dimensions for pgvector compatibility
-        if (finalEmbedding && finalEmbedding.length !== 1536) {
-          if (finalEmbedding.length < 1536) {
+        // Ensure embedding is 768 dimensions for pgvector compatibility
+        if (finalEmbedding && finalEmbedding.length !== 768) {
+          if (finalEmbedding.length < 768) {
             // Pad with zeros
-            finalEmbedding = [...finalEmbedding, ...Array(1536 - finalEmbedding.length).fill(0)];
+            finalEmbedding = [...finalEmbedding, ...Array(768 - finalEmbedding.length).fill(0)];
           } else {
             // Truncate
-            finalEmbedding = finalEmbedding.slice(0, 1536);
+            finalEmbedding = finalEmbedding.slice(0, 768);
           }
         }
 
@@ -108,7 +117,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           finalEmbedding!,
           {
             ...docMetadata,
-            embeddingMetadata: embeddingResult.metadata
+            embeddingMetadata: embeddingResult.metadata,
           }
         );
 
@@ -119,7 +128,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           embeddingMetadata: embeddingResult.metadata,
           storageError: storeResult.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'health':
@@ -134,7 +143,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           version: healthResult.version,
           error: healthResult.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'model-info':
@@ -147,15 +156,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
           modelInfo: infoResult.modelInfo,
           error: infoResult.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       default:
-        return json({
-          error: `Unknown action: ${action}`,
-          availableActions: ['generate', 'batch', 'store', 'health', 'model-info'],
-          timestamp: new Date().toISOString()
-        }, { status: 400 });
+        return json(
+          {
+            error: `Unknown action: ${action}`,
+            availableActions: ['generate', 'batch', 'store', 'health', 'model-info'],
+            timestamp: new Date().toISOString(),
+          },
+          { status: 400 }
+        );
     }
 
   } catch (error) {

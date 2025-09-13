@@ -1,24 +1,16 @@
+// Svelte 5 + SvelteKit global type declarations
 /// <reference types="svelte" />
 /// <reference types="vite/client" />
-/// <reference types="@webgpu/types" />
 
 declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      [elemName: string]: any;
-    }
-    interface Element {}
-    interface ElementClass {}
-    interface ElementAttributesProperty {
-      props: {};
-    }
-    interface ElementChildrenAttribute {
-      children: {};
-    }
-  }
-  
+  // WebGPU support (avoid conflict with @webgpu/types)
   interface Navigator {
-    gpu?: GPU;
+    gpu?: any; // Use 'any' to avoid Navigator interface conflicts
+  }
+
+  // Global WebGPU types (simplified)
+  interface GPU {
+    requestAdapter(): Promise<any>;
   }
 }
 

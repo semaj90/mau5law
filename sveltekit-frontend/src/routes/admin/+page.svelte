@@ -4,9 +4,9 @@
   import Button from '$lib/components/ui/button/Button.svelte';
   import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
-  
+
   // Icons
-  import { 
+  import {
     Settings, Users, Activity, Database, Cpu, HardDrive,
     Shield, BarChart3, Clock, CheckCircle, AlertTriangle,
     RefreshCw, Eye, Zap, Server, Network, Monitor
@@ -41,7 +41,7 @@
     await loadSystemStats();
     await loadSystemHealth();
     await loadRecentActivity();
-    
+
     // Auto-refresh every 30 seconds
     const interval = setInterval(refreshData, 30000);
     return () => clearInterval(interval);
@@ -156,7 +156,7 @@
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    
+
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
     return `${Math.floor(diffMins / 1440)}d ago`;
@@ -180,15 +180,15 @@
         Legal AI Platform system administration and monitoring
       </p>
     </div>
-    
+
     <div class="flex items-center gap-3">
       <Badge variant="secondary" class="gap-1">
         <Clock class="w-3 h-3" />
         Updated {formatTimeAgo(lastUpdated.toISOString())}
       </Badge>
-      
-      <Button 
-        variant="outline" 
+
+      <Button
+        variant="outline"
         onclick={refreshData}
         disabled={isLoading}
         class="gap-2"
@@ -201,36 +201,36 @@
 
   <!-- Quick Actions -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <Button 
+    <Button
       onclick={() => goto('/admin/users')}
-      variant="outline" 
+      variant="outline"
       class="h-20 flex-col gap-2"
     >
       <Users class="w-6 h-6" />
       <span>Manage Users</span>
     </Button>
-    
-    <Button 
+
+    <Button
       onclick={() => goto('/admin/cluster')}
-      variant="outline" 
+      variant="outline"
       class="h-20 flex-col gap-2"
     >
       <Server class="w-6 h-6" />
       <span>Cluster Status</span>
     </Button>
-    
-    <Button 
+
+    <Button
       onclick={() => goto('/admin/gpu-demo')}
-      variant="outline" 
+      variant="outline"
       class="h-20 flex-col gap-2"
     >
       <Cpu class="w-6 h-6" />
       <span>GPU Monitor</span>
     </Button>
-    
-    <Button 
+
+    <Button
       onclick={() => goto('/system-status')}
-      variant="outline" 
+      variant="outline"
       class="h-20 flex-col gap-2"
     >
       <Monitor class="w-6 h-6" />
@@ -242,7 +242,7 @@
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
     <div>
       <divHeader class="pb-3">
-        <divTitle class="text-sm font-medium text-muted-foreground">Total Users</h3>
+        <divTitle class="text-sm font-medium text-muted-foreground">Total Users</divTitle>
       </div>
       <divContent class="pt-0">
         <div class="flex items-center justify-between">

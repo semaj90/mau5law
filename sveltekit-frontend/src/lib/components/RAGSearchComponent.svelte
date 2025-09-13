@@ -42,12 +42,16 @@
     isSearching = true;
     errorMessage = null;
     try {
-      const response = await fetch('/api/embed/search', {
+      // Use the new enhanced semantic search API for better performance
+      const response = await fetch('/api/rag/semantic-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: searchQuery,
-          ...searchConfig
+          limit: searchConfig.limit,
+          threshold: searchConfig.threshold,
+          // Optional filters can be added here
+          filters: {}
         })
       });
 
@@ -56,22 +60,54 @@
       }
 
       const data = await response.json();
-      searchResults = data.results;
-      ragResponse = data.ragResponse;
-      // Add to search history
-      searchHistory.unshift({
-        query: searchQuery,
-        resultCount: data.results.length,
-        timestamp: new Date(),
-        hasRAGResponse: !!data.ragResponse
-      });
-      // Keep only last 5 searches
-      if (searchHistory.length > 5) {
-        searchHistory = searchHistory.slice(0, 5);
-      }
-      // Cache the query using unified service registry
-      if (data.results.length > 0) {
-        await unifiedServiceRegistry.cacheGraphQuery(searchQuery, data, 300);
+
+      if (data.success) {
+        searchResults = data.results;
+
+        // If includeRAGResponse is enabled, generate a response using the retrieved documents
+        if (searchConfig.includeRAGResponse && data.results.length > 0) {
+          try {
+            const ragResponse = await fetch('/api/rag/enhanced', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                query: searchQuery,
+                mode: 'semantic_search', // Use our enhanced semantic search mode
+                limit: searchConfig.limit,
+                threshold: searchConfig.threshold
+              })
+            });
+
+            if (ragResponse.ok) {
+              const ragData = await ragResponse.json();
+              ragResponse = ragData.success ? ragData.answer : null;
+            }
+          } catch (ragError) {
+            console.warn('RAG response generation failed:', ragError);
+            ragResponse = null;
+          }
+        }
+
+        // Add to search history
+        searchHistory.unshift({
+          query: searchQuery,
+          resultCount: data.results.length,
+          timestamp: new Date(),
+          hasRAGResponse: !!ragResponse,
+          processingTime: data.processingTime || 0
+        });
+
+        // Keep only last 5 searches
+        if (searchHistory.length > 5) {
+          searchHistory = searchHistory.slice(0, 5);
+        }
+
+        // Cache the query using unified service registry
+        if (data.results.length > 0) {
+          await unifiedServiceRegistry.cacheGraphQuery(searchQuery, data, 300);
+        }
+      } else {
+        throw new Error(data.error || 'Search request failed');
       }
     } catch (error) {
       errorMessage = error.message;
@@ -151,7 +187,7 @@
         Vector search with AI-powered responses
       </p>
     </div>
-    
+
     <!-- System Status -->
     {#if systemStatus}
       <div class="flex items-center gap-2 text-sm">
@@ -263,7 +299,7 @@
       <h3 class="font-bold text-nier-accent-warm mb-4">
         Search Results ({searchResults.length})
       </h3>
-      
+
       <div class="space-y-4">
         {#each searchResults as result}
           <div class="bg-nier-bg-primary border border-nier-border-muted rounded p-4">
@@ -282,7 +318,7 @@
                 </span>
               </div>
             </div>
-            
+
             <div class="text-nier-text-primary text-sm leading-relaxed">
               {@html highlightMatch(result.chunk_text, searchQuery)}
             </div>
@@ -334,16 +370,16 @@
   .space-y-4::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   .space-y-4::-webkit-scrollbar-track {
     background: var(--nier-bg-tertiary);
   }
-  
+
   .space-y-4::-webkit-scrollbar-thumb {
     background: var(--nier-accent-warm);
     border-radius: 3px;
   }
-  
+
   /* Highlighting for search matches */
   :global(mark) {
     background-color: rgba(255, 255, 0, 0.3);

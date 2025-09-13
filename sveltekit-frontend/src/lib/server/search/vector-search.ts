@@ -38,11 +38,11 @@ if (!browser) {
       cache = cacheModule.cache;
     } catch (error: any) {
       console.warn("Redis cache not available:", error);
-      cache = { 
-        get: async () => null, 
+      cache = {
+        get: async () => null,
         set: async () => {},
         getSearchResults: async () => null,
-        setSearchResults: async () => {}
+        setSearchResults: async () => {},
       };
     }
     try {
@@ -72,16 +72,23 @@ export interface VectorSearchResult {
   type: "case" | "evidence" | "document";
 }
 // Search options interface
-export interface VectorSearchOptions {
+interface VectorSearchOptions {
   limit?: number;
   offset?: number;
   threshold?: number;
   useCache?: boolean;
   fallbackToQdrant?: boolean;
-  useFuzzySearch?: boolean;
-  useLocalDb?: boolean;
-  filters?: Record<string, any>;
-  searchType?: "similarity" | "hybrid" | "semantic" | "fuzzy" | "exact";
+  filters?: {
+    documentType?: string;
+    category?: string;
+    date?: string;
+    author?: string;
+    jurisdiction?: string;
+    parties?: string | string[];
+    [key: string]: any;
+  };
+  searchType?: 'semantic' | 'keyword' | 'hybrid';
+  useEnhancedSemanticSearch?: boolean; // New option for enhanced semantic search API
 }
 // Local database using Loki.js for client-side search
 let lokiDb: any = null;
@@ -444,7 +451,8 @@ export async function vectorSearch(
     useCache = true,
     fallbackToQdrant = true,
     filters = {},
-    searchType = "hybrid",
+    searchType = 'hybrid',
+    useEnhancedSemanticSearch = true, // New option for our enhanced API
   } = options;
 
   // Check cache first using specialized search cache
@@ -463,6 +471,73 @@ export async function vectorSearch(
   let source = "pgvector";
 
   try {
+    // NEW: Use enhanced semantic search API if available (preferred method)
+    if (useEnhancedSemanticSearch && typeof fetch !== 'undefined') {
+      try {
+        const semanticResponse = await fetch('/api/rag/semantic-search', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query,
+            limit,
+            threshold,
+            filters: {
+              ...filters,
+              // Convert our search filters to semantic search format
+              category: filters.documentType || filters.category,
+              jurisdiction: filters.jurisdiction,
+              parties: filters.parties ? [filters.parties].flat() : undefined,
+            },
+          }),
+        });
+
+        if (semanticResponse.ok) {
+          const semanticData = await semanticResponse.json();
+
+          if (semanticData.success && semanticData.results?.length > 0) {
+            // Convert semantic search results to our VectorSearchResult format
+            results = semanticData.results.map((result: any) => ({
+              id: result.id,
+              content: result.content || `Document: ${result.title}`,
+              title: result.title,
+              score: result.semantic_score || 1 - result.distance,
+              confidence: result.semantic_score || 1 - result.distance,
+              relevance: result.relevance_level || 'medium',
+              metadata: {
+                ...result.metadata,
+                document_type: result.document_type,
+                distance: result.distance,
+                semantic_score: result.semantic_score,
+                source: 'enhanced_semantic_search',
+              },
+              similarity: result.semantic_score || 1 - result.distance,
+              created_at: result.created_at,
+              url: result.metadata?.url,
+            }));
+
+            source = 'enhanced_semantic_search';
+
+            // Cache the enhanced results
+            if (useCache) {
+              await cache.setSearchResults(query, 'vector', options, results);
+            }
+
+            return {
+              results: results.slice(offset, offset + limit),
+              executionTime: Date.now() - startTime,
+              source,
+              totalResults: results.length,
+            };
+          }
+        }
+      } catch (error) {
+        console.warn('Enhanced semantic search failed, falling back to traditional search:', error);
+      }
+    }
+
+    // Fallback to original search methods if enhanced semantic search fails
     // 0) Legal documents search via pgvector first (uses 768-dim Ollama embeddings)
     if (isPostgreSQL) {
       const legalResults = await searchLegalDocumentsPgvector(query, {
@@ -487,7 +562,7 @@ export async function vectorSearch(
         }
       } catch (err: any) {
         console.warn(
-          "Cases/Evidence pgvector search failed, continuing:",
+          'Cases/Evidence pgvector search failed, continuing:',
           (err as Error)?.message || err
         );
       }
@@ -495,23 +570,21 @@ export async function vectorSearch(
       // Development fallback: text search
       const textResults = await searchWithTextFallback(query, options);
       results = mergeSearchResults(results, textResults);
-      source = "text_fallback";
+      source = 'text_fallback';
     }
     // Fallback to Qdrant if no results or poor quality results
     if (
       fallbackToQdrant &&
       results.length < 5 &&
       qdrant &&
-      typeof qdrant.isHealthy === "function" &&
+      typeof qdrant.isHealthy === 'function' &&
       (await qdrant.isHealthy())
     ) {
       const qdrantResults = await searchWithQdrant(query, options);
       if (qdrantResults.length > 0) {
         // Merge and deduplicate results
         results = mergeSearchResults(results, qdrantResults);
-        source = results.some((r) => r.source === "pgvector")
-          ? "hybrid"
-          : "qdrant";
+        source = results.some((r) => r.source === 'pgvector') ? 'hybrid' : 'qdrant';
       }
     }
     // Fallback to local DB (Loki.js) if enabled
@@ -519,7 +592,7 @@ export async function vectorSearch(
       const localResults = await searchWithLoki(query, options);
       if (localResults.length > 0) {
         results = mergeSearchResults(results, localResults);
-        source = "local_db";
+        source = 'local_db';
       }
     }
     // Fallback to fuzzy search if enabled
@@ -527,7 +600,7 @@ export async function vectorSearch(
       const fuzzyResults = await searchWithFuzzy(query, options);
       if (fuzzyResults.length > 0) {
         results = mergeSearchResults(results, fuzzyResults);
-        source = "fuzzy_search";
+        source = 'fuzzy_search';
       }
     }
     // Cache successful results using specialized search cache
@@ -588,10 +661,12 @@ async function searchWithPgVector(
       ORDER BY embedding <=> ${sql.raw(vectorString)}::vector
       LIMIT ${limit}
     `;
-    
+
     const searchResults: any = await db.execute(sqlQuery);
-    const rows: any[] = Array.isArray(searchResults) ? searchResults : ((searchResults as any)?.rows ?? []);
-    
+    const rows: any[] = Array.isArray(searchResults)
+      ? searchResults
+      : ((searchResults as any)?.rows ?? []);
+
     rows.forEach((row: any) => {
       results.push({
         id: row.id,
@@ -603,7 +678,7 @@ async function searchWithPgVector(
         type: 'case',
       });
     });
-    
+
     // Also search evidence table
     const evidenceSqlQuery = sql`
       SELECT
@@ -617,10 +692,10 @@ async function searchWithPgVector(
       ORDER BY embedding <=> ${sql.raw(vectorString)}::vector
       LIMIT ${limit}
     `;
-    
+
     const evidenceResults: any = await db.execute(evidenceSqlQuery);
     const evidenceRows: any[] = Array.isArray(evidenceResults) ? evidenceResults : ((evidenceResults as any)?.rows ?? []);
-    
+
     evidenceRows.forEach((row: any) => {
       results.push({
         id: row.id,

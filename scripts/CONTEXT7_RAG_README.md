@@ -27,9 +27,10 @@ A comprehensive documentation retrieval and search system that integrates Contex
 ## 📚 Supported Libraries
 
 - **TypeScript**: Types, interfaces, generics, decorators, modules
-- **WebGPU**: Shaders, buffers, compute, rendering, pipelines
+- **WebGPU**: Shaders, buffers, compute, rendering, pipelines, TypeScript integration
 - **PostgreSQL 17**: JSONB, indexes, performance, replication
 - **Drizzle ORM**: Schema, queries, migrations, relations
+- **SvelteKit 2**: Routes, hooks, TypeScript config, WebGPU integration
 
 ## 🚀 Quick Start
 
@@ -211,6 +212,34 @@ const response = await fetch('/api/context7/docs', {
 const { results } = await response.json();
 ```
 
+### WebGPU TypeScript Integration
+
+```typescript
+// Search for WebGPU TypeScript patterns
+const webgpuDocs = await fetch('/api/context7/docs', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    action: 'search',
+    query: 'WebGPU TypeScript @webgpu/types GPUDevice',
+    library: 'webgpu',
+    limit: 10
+  })
+});
+
+// Get SvelteKit + WebGPU integration examples
+const svelteKitWebGPU = await fetch('/api/context7/docs', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    action: 'search',
+    query: 'SvelteKit 2 WebGPU Chrome browser integration',
+    library: 'sveltekit',
+    limit: 5
+  })
+});
+```
+
 ### Direct Go RAG Query
 
 ```typescript
@@ -262,6 +291,162 @@ const (
 )
 ```
 
+## 🔥 WebGPU TypeScript Integration Guide
+
+### Setup Requirements
+
+```json
+// tsconfig.json - Essential WebGPU TypeScript configuration
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "types": ["@webgpu/types", "vite/client"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"]
+  }
+}
+```
+
+```bash
+# Install WebGPU TypeScript definitions
+npm install --save-dev @webgpu/types@0.1.64
+
+# Chrome Requirements
+# - Chrome 113+ with WebGPU enabled
+# - chrome://flags/#enable-webgpu
+# - HTTPS for production deployment
+```
+
+### SvelteKit 2 + WebGPU Pattern
+
+```typescript
+// src/lib/services/webgpu-service.ts
+import type { GPUDevice, GPUAdapter, GPUBuffer } from '@webgpu/types';
+
+export class WebGPUService {
+  private device: GPUDevice | null = null;
+  private adapter: GPUAdapter | null = null;
+
+  async initialize(): Promise<boolean> {
+    if (!navigator.gpu) {
+      console.warn('WebGPU not supported');
+      return false;
+    }
+
+    try {
+      this.adapter = await navigator.gpu.requestAdapter();
+      if (!this.adapter) return false;
+
+      this.device = await this.adapter.requestDevice();
+      return true;
+    } catch (error) {
+      console.error('WebGPU initialization failed:', error);
+      return false;
+    }
+  }
+
+  // Tensor operations for legal AI processing
+  async processLegalTensors(data: Float32Array): Promise<Float32Array> {
+    if (!this.device) throw new Error('WebGPU not initialized');
+
+    const buffer = this.device.createBuffer({
+      size: data.byteLength,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      mappedAtCreation: true
+    });
+
+    new Float32Array(buffer.getMappedRange()).set(data);
+    buffer.unmap();
+
+    // Compute shader processing
+    return this.runComputeShader(buffer);
+  }
+}
+```
+
+### Svelte 5 Component Integration
+
+```svelte
+<!-- src/lib/components/WebGPUTensorProcessor.svelte -->
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import type { GPUDevice } from '@webgpu/types';
+
+  let webgpuSupported = $state(false);
+  let device = $state<GPUDevice | null>(null);
+  let processingResults = $state<string[]>([]);
+
+  onMount(async () => {
+    if (navigator.gpu) {
+      const adapter = await navigator.gpu.requestAdapter();
+      if (adapter) {
+        device = await adapter.requestDevice();
+        webgpuSupported = true;
+      }
+    }
+  });
+
+  async function processLegalData() {
+    if (!device) return;
+
+    // WebGPU tensor processing for legal AI
+    const inputData = new Float32Array([1, 2, 3, 4]);
+    // ... processing logic
+  }
+</script>
+
+{#if webgpuSupported}
+  <button onclick={processLegalData}>Process with WebGPU</button>
+{:else}
+  <p>WebGPU not supported - using CPU fallback</p>
+{/if}
+```
+
+### Browser Compatibility Detection
+
+```typescript
+// src/lib/utils/webgpu-diagnostics.ts
+export interface WebGPUSupport {
+  isSupported: boolean;
+  isChrome: boolean;
+  chromeVersion?: number;
+  adapterInfo?: {
+    vendor: string;
+    architecture: string;
+  };
+}
+
+export async function checkWebGPUSupport(): Promise<WebGPUSupport> {
+  const result: WebGPUSupport = {
+    isSupported: false,
+    isChrome: /Chrome/.test(navigator.userAgent)
+  };
+
+  if (result.isChrome) {
+    const match = navigator.userAgent.match(/Chrome\/(\d+)/);
+    result.chromeVersion = match ? parseInt(match[1]) : 0;
+  }
+
+  if (navigator.gpu) {
+    try {
+      const adapter = await navigator.gpu.requestAdapter();
+      if (adapter) {
+        result.isSupported = true;
+        const info = await adapter.requestAdapterInfo();
+        result.adapterInfo = {
+          vendor: info.vendor,
+          architecture: info.architecture
+        };
+      }
+    } catch (error) {
+      console.warn('WebGPU adapter request failed:', error);
+    }
+  }
+
+  return result;
+}
+```
+
 ## 🎯 Use Cases
 
 1. **Documentation Search**: Semantic search across TypeScript, WebGPU, PostgreSQL, and Drizzle ORM docs
@@ -269,6 +454,7 @@ const (
 3. **Integration Guidance**: Get context-aware integration advice
 4. **Best Practices**: Discover recommended patterns and practices
 5. **Error Resolution**: Find solutions to common issues
+6. **WebGPU TypeScript**: Complete WebGPU + SvelteKit 2 + Chrome integration patterns
 
 ## 🔍 Troubleshooting
 
@@ -295,6 +481,26 @@ const (
    - Verify embeddings were generated
    - Lower the similarity threshold
 
+5. **WebGPU TypeScript errors**
+   ```bash
+   # Ensure @webgpu/types is installed
+   npm install --save-dev @webgpu/types@0.1.64
+
+   # Check tsconfig.json includes WebGPU types
+   grep "@webgpu/types" tsconfig.json
+
+   # Test Chrome WebGPU support
+   chrome://flags/#enable-webgpu
+   ```
+
+6. **SvelteKit 2 WebGPU integration issues**
+   ```typescript
+   // Use Svelte 5 runes syntax, not export let
+   let webgpuDevice = $state<GPUDevice | null>(null);
+
+   // Not: export let webgpuDevice: GPUDevice | null = null;
+   ```
+
 ### Debug Commands
 
 ```bash
@@ -310,6 +516,14 @@ PGPASSWORD=123456 psql -h localhost -p 5433 -U legal_admin -d legal_ai_db -c "SE
 curl -X POST http://localhost:11434/api/embeddings \
   -H "Content-Type: application/json" \
   -d '{"model": "embeddinggemma:latest", "prompt": "test"}'
+
+# Test WebGPU TypeScript integration
+curl -X POST http://localhost:8090/api/rag/search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "WebGPU TypeScript SvelteKit Chrome", "library": "webgpu"}'
+
+# Check WebGPU documentation availability
+curl http://localhost:8090/api/rag/topics?library=webgpu
 ```
 
 ## 🚀 Integration with Enhanced RAG

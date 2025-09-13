@@ -1,0 +1,68 @@
+# SvelteKit Frontend with Authentication - Docker Configuration
+FROM node:20-alpine AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+RUN npm ci --only=production && npm cache clean --force
+
+# Development stage with hot reload
+FROM base AS development
+WORKDIR /app
+
+# Copy all source files
+COPY . .
+RUN npm ci
+
+# Copy environment configuration
+COPY .env.example .env
+
+# Expose port for Vite dev server (configurable via PORT env var)
+EXPOSE ${PORT:-5174}
+
+# Development command with dynamic port support
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "${PORT:-5174}"]
+
+# Build stage
+FROM base AS builder
+WORKDIR /app
+
+# Copy source and dependencies
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Set build environment
+ENV NODE_ENV=production
+
+# Build the application
+RUN npm run build
+
+# Production stage
+FROM base AS production
+WORKDIR /app
+
+# Copy built application
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/package.json ./package.json
+COPY --from=deps /app/node_modules ./node_modules
+
+# Create non-root user for security
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 sveltekit
+
+# Set ownership
+RUN chown -R sveltekit:nodejs /app
+USER sveltekit
+
+# Expose port (configurable)
+EXPOSE ${PORT:-3000}
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:${PORT:-3000}/api/health || exit 1
+
+# Production command
+CMD ["node", "build"]

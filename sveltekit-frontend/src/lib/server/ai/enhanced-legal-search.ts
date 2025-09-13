@@ -41,10 +41,10 @@ const initializeLegalDocuments = loadLegalDocuments();
 // Embedding generation helper
 async function generateEmbedding(text: string, options?: { model?: string }): Promise<number[]> {
   const embeddings = new OllamaEmbeddings({
-    model: "nomic-embed-text",
-    baseUrl: "http://localhost:11434",
+    model: 'nomic-embed-text',
+    baseUrl: 'http://localhost:11434',
   });
-  
+
   try {
     const result = await embeddings.embedQuery(text);
     return result;
@@ -54,7 +54,7 @@ async function generateEmbedding(text: string, options?: { model?: string }): Pr
   }
 }
 
-// Custom embeddings class for Nomic Embed integration  
+// Custom embeddings class for Nomic Embed integration
 export class NomicEmbeddings extends Embeddings {
   constructor() {
     super({});
@@ -63,14 +63,14 @@ export class NomicEmbeddings extends Embeddings {
   async embedDocuments(texts: string[]): Promise<number[][]> {
     const embeddings = [];
     for (const text of texts) {
-      const embedding = await generateEmbedding(text, { model: "local" });
+      const embedding = await generateEmbedding(text, { model: 'local' });
       embeddings.push(embedding || []);
     }
     return embeddings;
   }
 
   async embedQuery(text: string): Promise<number[]> {
-    const embedding = await generateEmbedding(text, { model: "local" });
+    const embedding = await generateEmbedding(text, { model: 'local' });
     return embedding || [];
   }
 }
@@ -100,8 +100,8 @@ const defaultConfig: LegalSearchConfig = {
     exact_match: 3.0,
     jurisdiction: 1.5,
     category: 1.3,
-    recency: 1.2
-  }
+    recency: 1.2,
+  },
 };
 
 // Enhanced Legal Search Result
@@ -144,18 +144,18 @@ export class EnhancedLegalSearchService {
     try {
       // Initialize memory vector store with legal documents
       await this.initializeMemoryVectorStore();
-      
+
       // Attempt to initialize pgvector store
       await this.initializePgVectorStore();
     } catch (error: any) {
-      console.warn("Vector store initialization warning:", error);
+      console.warn('Vector store initialization warning:', error);
     }
   }
 
   private async initializeMemoryVectorStore() {
     try {
       const legalDocuments = await initializeLegalDocuments;
-      const documents = legalDocuments.map(doc => ({
+      const documents = legalDocuments.map((doc) => ({
         pageContent: `${doc.title}\n\n${doc.description}\n\n${doc.content}`,
         metadata: {
           id: doc.id,
@@ -164,18 +164,15 @@ export class EnhancedLegalSearchService {
           category: doc.category,
           code: doc.code,
           sections: doc.sections || [],
-          url: doc.url
-        }
+          url: doc.url,
+        },
       }));
 
-      this.memoryVectorStore = await MemoryVectorStore.fromDocuments(
-        documents,
-        this.embeddings
-      );
+      this.memoryVectorStore = await MemoryVectorStore.fromDocuments(documents, this.embeddings);
 
       console.log(`✅ Memory vector store initialized with ${documents.length} documents`);
     } catch (error: any) {
-      console.error("Memory vector store initialization failed:", error);
+      console.error('Memory vector store initialization failed:', error);
     }
   }
 
@@ -187,23 +184,23 @@ export class EnhancedLegalSearchService {
           postgresConnectionOptions: {
             connectionString: import.meta.env.DATABASE_URL,
           },
-          tableName: "search_index",
+          tableName: 'search_index',
           columns: {
-            idColumnName: "id",
-            vectorColumnName: "embedding",
-            contentColumnName: "content", 
-            metadataColumnName: "metadata",
+            idColumnName: 'id',
+            vectorColumnName: 'embedding',
+            contentColumnName: 'content',
+            metadataColumnName: 'metadata',
           },
-          distanceStrategy: "cosine" as any,
+          distanceStrategy: 'cosine' as any,
         };
 
         // Initialize PGVector store
         this.pgVectorStore = new (PGVectorStore as any)(this.embeddings, pgConfig);
 
-        console.log("✅ PGVector store initialized");
+        console.log('✅ PGVector store initialized');
       }
     } catch (error: any) {
-      console.warn("PGVector store initialization failed (fallback to memory):", error);
+      console.warn('PGVector store initialization failed (fallback to memory):', error);
     }
   }
 
@@ -215,11 +212,79 @@ export class EnhancedLegalSearchService {
       category?: string;
       maxResults?: number;
       useAI?: boolean;
+      useEnhancedSemanticSearch?: boolean; // New option for enhanced search
     } = {}
   ): Promise<LegalSearchResult[]> {
     const results: LegalSearchResult[] = [];
 
     try {
+      // NEW: Try enhanced semantic search first (preferred method)
+      if (options.useEnhancedSemanticSearch !== false && typeof fetch !== 'undefined') {
+        try {
+          const semanticResponse = await fetch('/api/rag/semantic-search', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              query,
+              limit: options.maxResults || this.config.maxResults,
+              threshold: this.config.similarityThreshold,
+              filters: {
+                category: options.category,
+                jurisdiction: options.jurisdiction,
+              },
+            }),
+          });
+
+          if (semanticResponse.ok) {
+            const semanticData = await semanticResponse.json();
+
+            if (semanticData.success && semanticData.results?.length > 0) {
+              // Convert semantic search results to our LegalSearchResult format
+              const enhancedResults: LegalSearchResult[] = semanticData.results.map(
+                (result: any) => ({
+                  id: result.id,
+                  title: result.title,
+                  content: result.content || `Document: ${result.title}`,
+                  description: result.metadata?.description || result.metadata?.summary,
+                  jurisdiction: result.metadata?.jurisdiction || options.jurisdiction || 'unknown',
+                  category:
+                    result.document_type ||
+                    result.metadata?.category ||
+                    options.category ||
+                    'general',
+                  url: result.metadata?.url,
+                  code: result.metadata?.code,
+                  sections: result.metadata?.sections
+                    ? [result.metadata.sections].flat()
+                    : undefined,
+                  score: result.semantic_score || 1 - result.distance,
+                  confidence: result.semantic_score || 1 - result.distance,
+                  relevance: result.relevance_level || 'medium',
+                  searchType: 'vector' as const,
+                  metadata: {
+                    ...result.metadata,
+                    semantic_score: result.semantic_score,
+                    distance: result.distance,
+                    source: 'enhanced_semantic_search',
+                  },
+                })
+              );
+
+              console.log(`✅ Enhanced semantic search returned ${enhancedResults.length} results`);
+              return enhancedResults.slice(0, options.maxResults || this.config.maxResults);
+            }
+          }
+        } catch (error) {
+          console.warn(
+            'Enhanced semantic search failed, falling back to traditional search:',
+            error
+          );
+        }
+      }
+
+      // Fallback to original search methods if enhanced semantic search fails
       // 1. Vector similarity search
       if (this.config.useVector) {
         const vectorResults = await this.performVectorSearch(query, options);
@@ -240,26 +305,22 @@ export class EnhancedLegalSearchService {
       const finalResults = this.deduplicateAndRankResults(results, query, options);
 
       return finalResults.slice(0, options.maxResults || this.config.maxResults);
-
     } catch (error: any) {
-      console.error("Enhanced legal search failed:", error);
+      console.error('Enhanced legal search failed:', error);
       return await this.performFallbackSearch(query, options);
     }
   }
 
   // Vector similarity search using LangChain.js
-  private async performVectorSearch(
-    query: string,
-    options: any
-  ): Promise<LegalSearchResult[]> {
+  private async performVectorSearch(query: string, options: any): Promise<LegalSearchResult[]> {
     const results: LegalSearchResult[] = [];
 
     try {
       // Use PGVector if available, otherwise use memory store
       const vectorStore = this.pgVectorStore || this.memoryVectorStore;
-      
+
       if (!vectorStore) {
-        throw new Error("No vector store available");
+        throw new Error('No vector store available');
       }
 
       // Perform similarity search
@@ -273,11 +334,11 @@ export class EnhancedLegalSearchService {
         if (score >= this.config.similarityThreshold) {
           results.push({
             id: doc.metadata?.id || `vec_${Date.now()}_${Math.random()}`,
-            title: doc.metadata?.title || "Legal Document",
+            title: doc.metadata?.title || 'Legal Document',
             content: doc.pageContent,
             description: doc.metadata?.description,
-            jurisdiction: doc.metadata?.jurisdiction || "unknown",
-            category: doc.metadata?.category || "general",
+            jurisdiction: doc.metadata?.jurisdiction || 'unknown',
+            category: doc.metadata?.category || 'general',
             code: doc.metadata?.code,
             sections: doc.metadata?.sections || [],
             url: doc.metadata?.url,
@@ -287,27 +348,27 @@ export class EnhancedLegalSearchService {
             relevanceFactors: {
               semantic: score,
               exact_match: this.calculateExactMatch(query, doc.pageContent),
-              jurisdiction_match: this.calculateJurisdictionMatch(options.jurisdiction, doc.metadata?.jurisdiction),
-              category_match: this.calculateCategoryMatch(options.category, doc.metadata?.category)
+              jurisdiction_match: this.calculateJurisdictionMatch(
+                options.jurisdiction,
+                doc.metadata?.jurisdiction
+              ),
+              category_match: this.calculateCategoryMatch(options.category, doc.metadata?.category),
             },
-            metadata: doc.metadata || {}
+            metadata: doc.metadata || {},
           });
         }
       }
 
       console.log(`🔍 Vector search found ${results.length} results`);
     } catch (error: any) {
-      console.warn("Vector search failed:", error);
+      console.warn('Vector search failed:', error);
     }
 
     return results;
   }
 
   // Hybrid search combining multiple approaches
-  private async performHybridSearch(
-    query: string,
-    options: any
-  ): Promise<LegalSearchResult[]> {
+  private async performHybridSearch(query: string, options: any): Promise<LegalSearchResult[]> {
     const results: LegalSearchResult[] = [];
 
     try {
@@ -318,9 +379,8 @@ export class EnhancedLegalSearchService {
       // Fuzzy matching on static legal documents
       const fuzzyResults = await this.performFuzzySearch(query, options);
       results.push(...fuzzyResults);
-
     } catch (error: any) {
-      console.warn("Hybrid search failed:", error);
+      console.warn('Hybrid search failed:', error);
     }
 
     return results;
@@ -332,24 +392,21 @@ export class EnhancedLegalSearchService {
     options: any
   ): Promise<LegalSearchResult[]> {
     // Database search disabled for now - returning empty results
-    console.log("Database search disabled - using static data only");
+    console.log('Database search disabled - using static data only');
     return [];
   }
 
   // Fuzzy search on static documents
-  private async performFuzzySearch(
-    query: string,
-    options: any
-  ): Promise<LegalSearchResult[]> {
+  private async performFuzzySearch(query: string, options: any): Promise<LegalSearchResult[]> {
     const results: LegalSearchResult[] = [];
 
     try {
       const legalDocuments = await initializeLegalDocuments;
       const queryLower = query.toLowerCase();
-      
+
       for (const doc of legalDocuments) {
         const score = this.calculateFuzzyScore(queryLower, doc);
-        
+
         if (score > 0.3) {
           results.push({
             id: doc.id,
@@ -367,27 +424,26 @@ export class EnhancedLegalSearchService {
             relevanceFactors: {
               semantic: score * 0.7,
               exact_match: this.calculateExactMatch(query, doc.content),
-              jurisdiction_match: this.calculateJurisdictionMatch(options.jurisdiction, doc.jurisdiction),
-              category_match: this.calculateCategoryMatch(options.category, doc.category)
-            }
+              jurisdiction_match: this.calculateJurisdictionMatch(
+                options.jurisdiction,
+                doc.jurisdiction
+              ),
+              category_match: this.calculateCategoryMatch(options.category, doc.category),
+            },
           });
         }
       }
-
     } catch (error: any) {
-      console.warn("Fuzzy search failed:", error);
+      console.warn('Fuzzy search failed:', error);
     }
 
     return results;
   }
 
   // Fallback search for when other methods fail
-  private async performFallbackSearch(
-    query: string,
-    options: any
-  ): Promise<LegalSearchResult[]> {
-    console.log("🔄 Using fallback search");
-    
+  private async performFallbackSearch(query: string, options: any): Promise<LegalSearchResult[]> {
+    console.log('🔄 Using fallback search');
+
     const legalDocuments = await initializeLegalDocuments;
     const queryLower = query.toLowerCase();
     const results: LegalSearchResult[] = [];
@@ -420,9 +476,12 @@ export class EnhancedLegalSearchService {
           relevanceFactors: {
             semantic: 0.5,
             exact_match: titleMatch ? 1.0 : 0.0,
-            jurisdiction_match: this.calculateJurisdictionMatch(options.jurisdiction, doc.jurisdiction),
-            category_match: this.calculateCategoryMatch(options.category, doc.category)
-          }
+            jurisdiction_match: this.calculateJurisdictionMatch(
+              options.jurisdiction,
+              doc.jurisdiction
+            ),
+            category_match: this.calculateCategoryMatch(options.category, doc.category),
+          },
         });
       }
     }
@@ -433,11 +492,11 @@ export class EnhancedLegalSearchService {
   // Utility methods
   private buildMetadataFilter(options: any): Record<string, any> | undefined {
     const filter: Record<string, any> = {};
-    
+
     if (options.jurisdiction && options.jurisdiction !== 'all') {
       filter.jurisdiction = options.jurisdiction;
     }
-    
+
     if (options.category && options.category !== 'all') {
       filter.category = options.category;
     }
@@ -447,8 +506,8 @@ export class EnhancedLegalSearchService {
 
   private calculateFuzzyScore(query: string, doc: any): number {
     let score = 0;
-    const queryTerms = query.split(' ').filter(term => term.length > 2);
-    
+    const queryTerms = query.split(' ').filter((term) => term.length > 2);
+
     for (const term of queryTerms) {
       if (doc.title.toLowerCase().includes(term)) score += 0.4;
       if (doc.description.toLowerCase().includes(term)) score += 0.3;
@@ -462,7 +521,7 @@ export class EnhancedLegalSearchService {
   private calculateExactMatch(query: string, text: string): number {
     const queryLower = query.toLowerCase();
     const textLower = text.toLowerCase();
-    
+
     if (textLower.includes(queryLower)) {
       return queryLower.length / textLower.length;
     }
@@ -484,7 +543,7 @@ export class EnhancedLegalSearchService {
       vector: 0.9,
       hybrid: 0.8,
       fuzzy: 0.7,
-      fallback: 0.6
+      fallback: 0.6,
     };
 
     return Math.min(baseConfidence[searchType] * score, 1.0);
@@ -502,7 +561,7 @@ export class EnhancedLegalSearchService {
   ): LegalSearchResult[] {
     // Remove duplicates by ID
     const uniqueResults = new Map<string, LegalSearchResult>();
-    
+
     for (const result of results) {
       const existing = uniqueResults.get(result.id);
       if (!existing || result.score > existing.score) {
@@ -511,14 +570,14 @@ export class EnhancedLegalSearchService {
     }
 
     // Apply boosting factors and re-rank
-    const boostedResults = Array.from(uniqueResults.values()).map(result => {
+    const boostedResults = Array.from(uniqueResults.values()).map((result) => {
       let boostedScore = result.score;
-      
+
       // Apply boosts
       if (result.relevanceFactors.exact_match > 0.8) {
         boostedScore *= this.config.boostFactors.exact_match;
       }
-      
+
       if (result.title.toLowerCase().includes(query.toLowerCase())) {
         boostedScore *= this.config.boostFactors.title;
       }
@@ -533,7 +592,7 @@ export class EnhancedLegalSearchService {
 
       return {
         ...result,
-        score: Math.min(boostedScore, 1.0)
+        score: Math.min(boostedScore, 1.0),
       };
     });
 
@@ -543,7 +602,7 @@ export class EnhancedLegalSearchService {
       if (Math.abs(a.score - b.score) > 0.05) {
         return b.score - a.score;
       }
-      
+
       // Secondary sort by search type preference
       const typeOrder = { vector: 3, hybrid: 2, fallback: 1 };
       return typeOrder[b.searchType] - typeOrder[a.searchType];

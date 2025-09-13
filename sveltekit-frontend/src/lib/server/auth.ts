@@ -248,6 +248,103 @@ export class AuthService {
     // Invalidate all existing sessions to force re-login
     await this.invalidateUserSessions(userId);
   }
+
+  /**
+   * Get case by ID (for RAG pages)
+   */
+  async getCaseById(caseId: string) {
+    try {
+      // This would fetch from cases table in production
+      // For now, return mock data
+      return {
+        id: caseId,
+        title: `Case ${caseId}`,
+        description: 'Mock case description',
+        status: 'active',
+        created_at: new Date(),
+        updated_at: new Date()
+      };
+    } catch (error) {
+      console.error('Failed to get case by ID:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Get documents for a case
+   */
+  async getCaseDocuments(caseId: string) {
+    try {
+      // This would fetch from documents table in production
+      // For now, return mock data
+      return [
+        {
+          id: `doc_${caseId}_1`,
+          title: 'Sample Document 1',
+          type: 'pdf',
+          uploaded_at: new Date(),
+          processed: true
+        },
+        {
+          id: `doc_${caseId}_2`,
+          title: 'Sample Document 2',
+          type: 'docx',
+          uploaded_at: new Date(),
+          processed: true
+        }
+      ];
+    } catch (error) {
+      console.error('Failed to get case documents:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get total number of cases
+   */
+  async getTotalCases(): Promise<number> {
+    try {
+      // This would count from cases table in production
+      return 42; // Mock data
+    } catch (error) {
+      console.error('Failed to get total cases:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Get total number of documents
+   */
+  async getTotalDocuments(): Promise<number> {
+    try {
+      // This would count from documents table in production
+      return 156; // Mock data
+    } catch (error) {
+      console.error('Failed to get total documents:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Get sample cases for demo page
+   */
+  async getSampleCases(limit: number = 5) {
+    try {
+      // This would fetch from cases table in production
+      // For now, return mock data
+      return Array.from({ length: limit }, (_, i) => ({
+        id: `case_${i + 1}`,
+        title: `Sample Case ${i + 1}`,
+        description: `Description for case ${i + 1}`,
+        status: i % 2 === 0 ? 'active' : 'closed',
+        created_at: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
+        updated_at: new Date()
+      }));
+    } catch (error) {
+      console.error('Failed to get sample cases:', error);
+      return [];
+    }
+  }
 }
 
 export const authService = new AuthService();

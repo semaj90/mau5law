@@ -219,16 +219,16 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           lastChecked: new Date().toISOString()
         },
         testingMetrics: {
-          totalDocuments: Number(counts[0].count) || 0,
-          totalSessions: Number(counts[1].count) || 0,
-          documentsToday: Number(todayDocs[0].count) || 0,
+          totalDocuments: Number((counts[0] as any)?.count) || 0,
+          totalSessions: Number((counts[1] as any)?.count) || 0,
+          documentsToday: Number((todayDocs[0] as any)?.count) || 0,
           averageProcessingTime: Math.round(metricsData.avgProcessingTime || 0),
           cacheHitRate: Math.round(cacheHitRate * 100) / 100
         }
       },
       meta: {
-        totalDocuments: Number(counts[0].count) || 0,
-        totalSessions: Number(counts[1].count) || 0,
+        totalDocuments: Number((counts[0] as any)?.count) || 0,
+        totalSessions: Number((counts[1] as any)?.count) || 0,
         serverRenderTime,
         testingEnvironment: true
       }
