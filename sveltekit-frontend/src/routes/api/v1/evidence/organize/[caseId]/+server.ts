@@ -2,16 +2,18 @@
  * Evidence Organization API Route
  * POST /api/v1/evidence/organize/[caseId] - Organize evidence for a case
  * Supports multiple organization modes with AI clustering using Gemma embeddings
+ * Phase 1: Added recursive chain analysis for deep evidence hierarchy processing
  */
 
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
+import { evidenceChainService } from '$lib/services/evidence-chain-integration';
 import { z } from 'zod';
 
 // Organization request schema
 const OrganizationRequestSchema = z.object({
-  organizationMode: z.enum(['category', 'timeline', 'priority', 'ai_clusters', 'chain_custody']),
+  organizationMode: z.enum(['category', 'timeline', 'priority', 'ai_clusters', 'chain_custody', 'recursive_chain']),
   filters: z.object({
     evidenceType: z.string().optional(),
     dateRange: z.string().optional(),
@@ -100,6 +102,9 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         break;
       case 'chain_custody':
         organizationStructure = await organizeByChainOfCustody(evidence);
+        break;
+      case 'recursive_chain': // NEW RECURSIVE MODE - Phase 1
+        organizationStructure = await organizeByRecursiveChain(evidence);
         break;
       default:
         organizationStructure = await organizeByCategory(evidence);
@@ -378,6 +383,43 @@ async function organizeByChainOfCustody(evidence: any[]) {
 }
 
 /**
+ * PHASE 1: Organize evidence using recursive chain analysis
+ * Deep hierarchical analysis of evidence relationships
+ */
+async function organizeByRecursiveChain(evidence: any[]) {
+  try {
+    console.log(`Starting recursive chain analysis for ${evidence.length} evidence items`);
+
+    // Use the evidence chain integration service for recursive processing
+    const caseId = evidence[0]?.case_id || 'unknown';
+    const recursiveResult = await evidenceChainService.organizeEvidenceByRecursiveChain(
+      caseId,
+      evidence
+    );
+
+    console.log(`Recursive chain analysis completed: ${recursiveResult.hierarchy.length} root nodes`);
+
+    return {
+      type: 'recursive_chain',
+      hierarchy: recursiveResult.hierarchy,
+      metrics: recursiveResult.metrics,
+      metadata: {
+        ...recursiveResult.metadata,
+        organizationMethod: 'recursive_evidence_chain_analysis',
+        phase: 'phase_1_implementation'
+      }
+    };
+
+  } catch (error) {
+    console.error('Error in recursive chain organization:', error);
+
+    // Fallback to regular chain of custody organization
+    console.log('Falling back to standard chain of custody organization');
+    return await organizeByChainOfCustody(evidence);
+  }
+}
+
+/**
  * Get embeddings for evidence using MCP server
  */
 async function getEvidenceEmbeddings(evidence: any[]) {
@@ -648,7 +690,7 @@ function extractClusterKeywords(evidence: any[]): string[] {
   });
 
   return Object.entries(wordCounts)
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) => (b[1] as number) - (a[1] as number))
     .slice(0, 5)
     .map(([word]) => word);
 }
