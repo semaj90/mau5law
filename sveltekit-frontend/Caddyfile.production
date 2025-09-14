@@ -1,0 +1,158 @@
+# Production Caddy Configuration with QUIC/HTTP3 Optimization
+# Caddy v2.8.4 - Legal AI Platform Production Setup
+
+# Production SvelteKit application with QUIC/HTTP3
+legal-ai.yourdomain.com {
+    # Enable HTTP/3 with optimized settings
+    header Alt-Svc "h3=\":443\"; ma=2592000, h3-29=\":443\"; ma=2592000"
+
+    # Security headers for production
+    header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    header X-Content-Type-Options "nosniff"
+    header X-Frame-Options "DENY"
+    header X-XSS-Protection "1; mode=block"
+    header Referrer-Policy "strict-origin-when-cross-origin"
+    header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' wss: https:;"
+
+    # Rate limiting for production
+    rate_limit {
+        zone static_files {
+            key {remote_host}
+            events 1000
+            window 15m
+        }
+        zone api_calls {
+            key {remote_host}
+            events 100
+            window 1m
+        }
+    }
+
+    # API routes with stricter rate limits
+    handle /api/* {
+        rate_limit api_calls
+        reverse_proxy localhost:5173 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Static assets with caching
+    handle_path /assets/* {
+        rate_limit static_files
+        header Cache-Control "public, max-age=31536000, immutable"
+        file_server
+    }
+
+    # Main application
+    reverse_proxy localhost:5173 {
+        # Production connection settings
+        transport http {
+            keepalive 30s
+            keepalive_idle_conns 10
+        }
+
+        # Health checks
+        health_uri /health
+        health_interval 30s
+        health_timeout 10s
+
+        # Load balancing for multiple instances
+        # lb_policy round_robin
+
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Compression with QUIC optimization
+    encode {
+        gzip 6
+        minimum_length 1000
+    }
+
+    # Logging for production
+    log {
+        output file /var/log/caddy/legal-ai-access.log
+        format json
+    }
+
+    # QUIC-specific optimizations
+    protocols h1 h2 h3
+}
+
+# Development override (uncomment for dev)
+# :5178 {
+#     # HTTP/3 with relaxed settings for dev
+#     header Alt-Svc "h3=\":5178\"; ma=86400"
+#
+#     # Development CORS headers
+#     header Access-Control-Allow-Origin "*"
+#     header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+#     header Access-Control-Allow-Headers "Content-Type, Authorization"
+#
+#     # Reverse proxy to Vite dev server
+#     reverse_proxy localhost:5177 {
+#         header_up Host {host}
+#         header_up X-Real-IP {remote_host}
+#     }
+#
+#     # Basic compression for dev
+#     encode gzip
+# }
+
+# MinIO S3 Gateway with QUIC (if using MinIO directly)
+minio.yourdomain.com {
+    header Alt-Svc "h3=\":443\"; ma=86400"
+
+    # MinIO security headers
+    header X-Content-Type-Options "nosniff"
+    header X-Frame-Options "SAMEORIGIN"
+
+    reverse_proxy localhost:9000 {
+        transport http {
+            keepalive 30s
+        }
+    }
+
+    encode gzip
+}
+
+# Redis Insight (optional, for production monitoring)
+redis-insight.yourdomain.com {
+    # Basic auth for Redis insight
+    basicauth {
+        admin $2a$14$hashed_password_here
+    }
+
+    reverse_proxy localhost:8001
+}
+
+# Health check endpoint
+:8082 {
+    header Alt-Svc "h3=\":8082\"; ma=86400"
+
+    handle /health {
+        respond 200 {
+            body `{
+                "status": "healthy",
+                "service": "legal-ai-platform",
+                "protocol": "QUIC/HTTP3",
+                "timestamp": "{time.now}",
+                "version": "1.0.0"
+            }`
+            close
+        }
+    }
+
+    handle /metrics {
+        # Metrics endpoint for monitoring
+        reverse_proxy localhost:9090
+    }
+
+    # Default health response
+    respond "QUIC/HTTP3 Legal AI Platform Ready" 200
+}

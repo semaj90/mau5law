@@ -13,7 +13,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
-import { db, sql } from '$lib/server/db/drizzle';
+import { db } from '$lib/server/db/drizzle';
+import { sql } from 'drizzle-orm';
 import * as schema from '$lib/server/db/schema-postgres';
 import { requireAuth } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
 

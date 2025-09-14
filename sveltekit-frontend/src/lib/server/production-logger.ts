@@ -34,6 +34,7 @@ export interface LogContext {
   role?: string;
   newTitle?: string;
   contentLength?: number;
+  messageCount?: number;
 }
 
 export interface LogEntry {

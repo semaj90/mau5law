@@ -11,7 +11,8 @@
   import { cn } from '$lib/utils';
   import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
   import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
-  import { Button, Card } from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
   import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
 
   let isLoading = $state(false);
@@ -688,7 +689,7 @@
         <div class="demo-routes-grid">
           {#each demoRoutes as route (route.path)}
             <div class="demo-route-modal">
-              <Card.Root class="demo-route-card bg-gradient-to-br {getCategoryColor(route.category)} border-2 hover:scale-105 transition-all duration-300 cursor-pointer">
+              <Card class="demo-route-card bg-gradient-to-br {getCategoryColor(route.category)} border-2 hover:scale-105 transition-all duration-300 cursor-pointer p-4 rounded-lg shadow-lg" clickable={true}>
                 <a href={route.path} class="block p-6 group">
                   <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3">
@@ -734,7 +735,7 @@
                     </div>
                   </div>
                 </a>
-              </Card.Root>
+              </Card>
             </div>
           {/each}
         </div>

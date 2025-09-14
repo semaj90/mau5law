@@ -67,7 +67,7 @@
 
 <div class="demo-navigation">
   <!-- Floating Navigation Button -->
-  <button 
+  <button
     class="nav-toggle fixed top-4 right-4 z-50 w-12 h-12 bg-green-600 hover:bg-green-700 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center text-white font-bold text-lg"
     onclick={toggleNav}
     class:rotate-45={isOpen}
@@ -81,7 +81,7 @@
       <h3 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
         🧭 Demo Navigation
       </h3>
-      
+
       <div class="space-y-3">
         {#each navItems as item}
           <button
@@ -109,25 +109,25 @@
       <div class="mt-6 pt-4 border-t border-gray-700">
         <h4 class="text-sm font-semibold text-blue-400 mb-3">🔧 Quick Actions</h4>
         <div class="grid grid-cols-2 gap-2">
-          <button 
+          <button
             class="px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
             onclick={() => window.open('http://localhost:8081/api/health', '_blank')}
           >
             💚 Health
           </button>
-          <button 
+          <button
             class="px-3 py-2 bg-purple-600 hover:bg-purple-700 rounded text-sm transition-colors"
             onclick={() => navigateTo(navItems[0])}
           >
             🤖 AI Demo
           </button>
-          <button 
+          <button
             class="px-3 py-2 bg-yellow-600 hover:bg-yellow-700 rounded text-sm transition-colors"
             onclick={() => window.open('http://localhost:8081/test', '_blank')}
           >
             🧪 Test UI
           </button>
-          <button 
+          <button
             class="px-3 py-2 bg-gray-600 hover:bg-gray-700 rounded text-sm transition-colors"
             onclick={() => navigateTo({ href: '/dev/mcp-tools', external: false } as NavItem)}
           >
@@ -160,36 +160,38 @@
       </div>
     </div>
   {/if}
-
   <!-- Backdrop -->
   {#if isOpen}
-    <div 
-      class="fixed inset-0 bg-black/50 z-30"
-      onclick={toggleNav}
-    ></div>
+    <button
+      type="button"
+      aria-label="Close navigation"
+      class="fixed inset-0 bg-black/50 z-30 backdrop-btn"
+      on:click={toggleNav}
+      on:keydown={(e) => e.key === 'Escape' && toggleNav()}
+      tabindex="0"
+    ></button>
   {/if}
-</div>
 
 <style>
   .nav-toggle {
     backdrop-filter: blur(10px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
-  
+
   .nav-panel {
     backdrop-filter: blur(20px);
     box-shadow: 0 20px 64px rgba(0, 0, 0, 0.4);
   }
-  
+
   .nav-item.active {
     background: rgba(34, 197, 94, 0.1);
     border-color: rgb(34, 197, 94);
   }
-  
+
   .rotate-45 {
     transform: rotate(45deg);
   }
-  
+
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -200,10 +202,20 @@
       transform: translateY(0);
     }
   }
-  
+
   .animate-slideIn {
     animation: slideIn 0.3s ease-out;
   }
+
+  /* Remove native button chrome for the full-screen backdrop while keeping utility classes' background */
+  .backdrop-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 </style>
-
-

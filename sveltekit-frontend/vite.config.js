@@ -38,12 +38,19 @@ export default defineConfig({
 		}
 	],
 	server: {
-		port: parseInt(process.env.PORT) || 5174,
+		port: parseInt(process.env.PORT) || 5173,
 		strictPort: false,
 		host: '0.0.0.0',
 		hmr: {
-			port: 24678, // Fixed WebSocket port to avoid conflicts
-			host: 'localhost'
+			// Dynamic HMR port based on main port (original port + 1000)
+			port: parseInt(process.env.PORT) ? parseInt(process.env.PORT) + 1000 : 6173,
+			host: '0.0.0.0', // Allow external connections for Docker
+			clientPort: parseInt(process.env.PORT) ? parseInt(process.env.PORT) + 1000 : 6173
+		},
+		// WebSocket configuration for multi-instance support
+		ws: {
+			port: parseInt(process.env.PORT) ? parseInt(process.env.PORT) + 2000 : 7173,
+			host: '0.0.0.0'
 		}
 	},
 	preview: {
@@ -125,7 +132,7 @@ export default defineConfig({
 	assetsInclude: ['**/*.wasm'],
 	define: {
 		'process.env.NODE_ENV': '"development"',
-		'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5433/legal_ai_db"',
+		'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5434/legal_ai_db"',
 		'process.env.REDIS_URL': '"redis://localhost:6379"'
 		// Removed REDIS_PASSWORD since Redis server doesn't require authentication
 	}

@@ -27,7 +27,7 @@ const vector = customType<{
   default: boolean;
 }>({
   dataType(config: { dimensions?: number } = {}) {
-    return `vector(${config?.dimensions || 384})`;
+    return `vector(${config?.dimensions || 768})`;
   },
   toDriver(value: number[]): string {
     return `[${value.join(',')}]`;
@@ -75,8 +75,8 @@ export const cases = pgTable(
     userId: integer('user_id').references(() => users.id),
 
     // Vector embeddings
-    titleEmbedding: vector('title_embedding', { dimensions: 384 }),
-    descriptionEmbedding: vector('description_embedding', { dimensions: 384 }),
+    titleEmbedding: vector('title_embedding', { dimensions: 768 }),
+    descriptionEmbedding: vector('description_embedding', { dimensions: 768 }),
 
     // Metadata
     metadata: jsonb('metadata'),
@@ -112,8 +112,8 @@ export const documents = pgTable(
     mimeType: varchar('mime_type', { length: 255 }),
 
     // Vector embeddings
-    contentEmbedding: vector('content_embedding', { dimensions: 384 }),
-    titleEmbedding: vector('title_embedding', { dimensions: 384 }),
+    contentEmbedding: vector('content_embedding', { dimensions: 768 }),
+    titleEmbedding: vector('title_embedding', { dimensions: 768 }),
 
     // Metadata and processing info
     metadata: jsonb('metadata'),
@@ -148,8 +148,8 @@ export const evidence = pgTable(
     content: text('content'),
 
     // Vector embeddings
-    titleEmbedding: vector('title_embedding', { dimensions: 384 }),
-    contentEmbedding: vector('content_embedding', { dimensions: 384 }),
+    titleEmbedding: vector('title_embedding', { dimensions: 768 }),
+    contentEmbedding: vector('content_embedding', { dimensions: 768 }),
 
     // Evidence-specific fields
     relevanceScore: integer('relevance_score'), // 0-100
@@ -178,7 +178,7 @@ export const vectorSearchLogs = pgTable(
   {
     id: serial('id').primaryKey(),
     query: text('query').notNull(),
-    queryEmbedding: vector('query_embedding', { dimensions: 384 }),
+    queryEmbedding: vector('query_embedding', { dimensions: 768 }),
     resultsCount: integer('results_count'),
     searchTimeMs: integer('search_time_ms'),
     userId: integer('user_id').references(() => users.id),

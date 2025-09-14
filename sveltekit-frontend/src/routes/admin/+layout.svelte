@@ -199,12 +199,12 @@ https://svelte.dev/e/js_parse_error -->
             <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
               <span class="text-amber-400 font-bold text-sm">{(userEmail || currentUserValue?.email || 'U')[0].toUpperCase()}</span>
             </div>
-            <button
+            <Button
               onclick={() => AuthStore.logout()}
               class="px-4 py-2 bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500/20 hover:border-red-500 transition-all duration-300 rounded-lg text-sm font-medium"
             >
               Sign Out
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -232,7 +232,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="mt-8 pt-6 border-t border-amber-500/20">
           <div class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-4">Executive Actions</div>
           <div class="space-y-3">
-            <button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
+            <Button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
               <div class="flex items-center gap-3">
                 <span class="text-green-400">🟢</span>
                 <div>
@@ -240,8 +240,8 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="text-xs text-slate-500">Monitor platform status</div>
                 </div>
               </div>
-            </button>
-            <button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
+            </Button>
+            <Button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
               <div class="flex items-center gap-3">
                 <span class="text-blue-400">💾</span>
                 <div>
@@ -249,8 +249,8 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="text-xs text-slate-500">Secure system backup</div>
                 </div>
               </div>
-            </button>
-            <button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
+            </Button>
+            <Button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
               <div class="flex items-center gap-3">
                 <span class="text-purple-400">🗑️</span>
                 <div>
@@ -258,7 +258,7 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="text-xs text-slate-500">Optimize performance</div>
                 </div>
               </div>
-            </button>
+            </Button>
           </div>
         </div>
       </aside>
@@ -295,12 +295,12 @@ https://svelte.dev/e/js_parse_error -->
         <div class="text-red-400 font-semibold">Current Role: {currentUserValue?.role ? currentUserValue.role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Unauthorized'}</div>
         <div class="text-xs text-slate-500 mt-2">Contact your system administrator for access</div>
       </div>
-      <button
+      <Button
         onclick={() => goto('/')}
         class="px-8 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-medium"
       >
         Return to Dashboard
-      </button>
+      </Button>
     </div>
   </div>
 {/if}

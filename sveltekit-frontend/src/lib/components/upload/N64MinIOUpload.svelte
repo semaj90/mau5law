@@ -9,6 +9,7 @@
   import { embeddingService } from '$lib/services/embedding-service';
   import { telemetry } from '$lib/services/telemetry-service';
   import { uploadTelemetry } from '$lib/services/upload-telemetry-service';
+  import { CONFIG } from '$lib/config/production-config.js';
   // Import our N64 gaming components
   import N64ProgressBar from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
   import N64LoadingRing from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';
@@ -37,12 +38,16 @@
     onUploadError,
     multiple = false,
     disabled = false,
-    accept = '.pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff',
-    maxSize = 100 * 1024 * 1024,
-    maxConcurrency = 3,
+    accept = CONFIG.minio.allowedMimeTypes.map(type => {
+      const ext = type.split('/')[1];
+      return `.${ext === 'vnd.openxmlformats-officedocument.wordprocessingml.document' ? 'docx' :
+              ext === 'msword' ? 'doc' : ext}`;
+    }).join(','),
+    maxSize = CONFIG.minio.maxFileSize,
+    maxConcurrency = CONFIG.performance.maxConcurrentUploads,
     enableGPUProcessing = true,
     enableToastNotifications = true,
-    maxRetries = 3,
+    maxRetries = CONFIG.performance.retryAttempts,
     gamingTheme = 'n64',
     retro = true,
     animateEvolution = true

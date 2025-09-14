@@ -34,37 +34,61 @@ export { default as EvidenceAIAnalysis } from "./EvidenceAIAnalysis.svelte";
 export { default as SearchInput } from "./SearchInput.svelte";
 export { default as Board } from "./Board.svelte";
 
-// Compound component exports (primary exports with .Root, .Content syntax)
-export const Card = Object.assign(CardComponent, {
+// =============================================================================
+// ENHANCED-BITS DUAL IMPORT APPROACH FOR SSR COMPATIBILITY
+// =============================================================================
+//
+// Problem: Vite's SSR import wrapper system (__vite_ssr_import_X__) doesn't work
+// well with Object.assign compound components, causing runtime errors.
+//
+// Solution: Provide both direct imports and compound components:
+//
+// ✅ DIRECT IMPORTS (SSR-Safe, Recommended for SSR environments):
+//   import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
+//
+// ✅ NAMED IMPORTS (SSR-Safe, Clean syntax):
+//   import { Card, CardHeader } from '$lib/components/ui/enhanced-bits';
+//
+// ⚠️ COMPOUND IMPORTS (Use with caution in SSR):
+//   import { CardCompound } from '$lib/components/ui/enhanced-bits';
+//   <CardCompound.Root> // May not work in all SSR scenarios
+//
+// =============================================================================
+
+// Direct component exports for enhanced-bits (SSR-compatible)
+export { default as Card } from './Card.svelte';
+export { default as CardHeader } from './CardHeader.svelte';
+export { default as CardTitle } from './CardTitle.svelte';
+export { default as CardDescription } from './CardDescription.svelte';
+export { default as CardContent } from './CardContent.svelte';
+export { default as CardFooter } from './CardFooter.svelte';
+
+// Compound component exports for non-SSR or CSR-only scenarios
+export const CardCompound = {
   Root: CardComponent,
   Header: CardHeaderComponent,
   Title: CardTitleComponent,
   Description: CardDescriptionComponent,
   Content: CardContentComponent,
   Footer: CardFooterComponent,
-});
+} as const;
 
-export const Dialog = Object.assign(DialogComponent, {
+export const DialogCompound = {
   Root: DialogComponent,
   Content: DialogComponent,
   Trigger: ButtonComponent,
   Title: CardTitleComponent,
   Description: CardDescriptionComponent,
-});
+} as const;
 
-export const Select = Object.assign(SelectComponent, {
+export const SelectCompound = {
   Root: SelectComponent,
   Content: SelectComponent,
   Item: SelectComponent,
   Trigger: ButtonComponent,
   Group: SelectComponent,
   Value: SelectComponent,
-});
-
-// Compound Button for consistency
-export const CompoundButton = Object.assign(ButtonComponent, {
-  Root: ButtonComponent,
-});
+} as const;
 
 // Demo components
 export { default as EnhancedBitsDemo } from "./EnhancedBitsDemo.svelte";

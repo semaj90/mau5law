@@ -1,9 +1,9 @@
 <!-- Detective Board - Enhanced 3-Column Grid with NES.css, RabbitMQ & GPU Integration -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  	// Badge replaced with span - not available in enhanced-bits
-  	import Button from '$lib/components/ui/Button.svelte';
+  	import { Button } from '$lib/components/ui/enhanced-bits';
   	import * as Card from '$lib/components/ui/card';
+  	import { Badge } from '$lib/components/ui/badge';
   	import { page } from '$app/stores';
   	import Fuse from 'fuse.js';
   	import { dndzone } from 'svelte-dnd-action';
@@ -422,26 +422,24 @@
 				<div class="flex items-center gap-4">
 					<!-- View Mode Switcher -->
 					<div class="flex gap-2">
-						<button
+						<Button
+							variant={viewMode === 'columns' ? 'default' : 'outline'}
 							class="bits-btn"
-							class:button-default={viewMode === 'columns'}
-							class:button-outline={viewMode !== 'columns'}
 							onclick={() => switchViewMode('columns')}
 							aria-pressed={viewMode === 'columns'}
 						>
 							<span class="mr-2">📋</span>
 							Columns
-						</button>
-						<button
+						</Button>
+						<Button
+							variant={viewMode === 'canvas' ? 'default' : 'outline'}
 							class="bits-btn"
-							class:button-default={viewMode === 'canvas'}
-							class:button-outline={viewMode !== 'canvas'}
 							onclick={() => switchViewMode('canvas')}
 							aria-pressed={viewMode === 'canvas'}
 						>
 							<span class="mr-2">🎨</span>
 							Canvas
-						</button>
+						</Button>
 					</div>
 
 					<!-- SVELTE 5: No more `$` prefix for store subscriptions in the template -->
@@ -463,7 +461,7 @@
 									</div>
 								{/if}
 							</div>
-							<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{activeUsers.length} online</span>
+							<Badge variant="outline">{activeUsers.length} online</Badge>
 						</div>
 					{/if}
 
@@ -489,7 +487,7 @@
 									<div class="w-3 h-3 bg-primary rounded-full"></div>
 									{column.title}
 								</h3>
-								<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{column.items.length}</span>
+								<Badge variant="secondary">{column.items.length}</Badge>
 							</div>
 						</div>
 
@@ -604,44 +602,54 @@
 {#if contextMenu.show}
 	<div class="fixed z-50" style="left: {contextMenu.x}px; top: {contextMenu.y}px;">
 		<div class="bg-background border border-border rounded-md shadow-lg py-1 min-w-[200px]">
-			<button
-				class="w-full text-left px-3 py-2 hover:bg-muted text-sm"
+			<Button
+				variant="ghost"
+				class="w-full justify-start bits-btn"
+				size="sm"
 				onclick={() => { window.open(`/evidence/${contextMenu.item?.id}`, '_blank'); closeContextMenu(); }}
 			>
 				View Details
-			</button>
-			<button
-				class="w-full text-left px-3 py-2 hover:bg-muted text-sm"
+			</Button>
+			<Button
+				variant="ghost"
+				class="w-full justify-start bits-btn"
+				size="sm"
 				onclick={() => { window.location.href = `/evidence/${contextMenu.item?.id}/edit`; closeContextMenu(); }}
 			>
 				Edit
-			</button>
+			</Button>
 			<div class="border-t border-border my-1"></div>
-			<button
-				class="w-full text-left px-3 py-2 hover:bg-muted text-sm"
+			<Button
+				variant="ghost"
+				class="w-full justify-start bits-btn"
+				size="sm"
 				onmouseenter={(e) => showMiniModal('citation', e)}
 				onmouseleave={hideMiniModal}
 				onclick={() => saveTo('savedcitations')}
 			>
 				Add to /savedcitations
-			</button>
-			<button
-				class="w-full text-left px-3 py-2 hover:bg-muted text-sm"
+			</Button>
+			<Button
+				variant="ghost"
+				class="w-full justify-start bits-btn"
+				size="sm"
 				onmouseenter={(e) => showMiniModal('mcpcontext', e)}
 				onmouseleave={hideMiniModal}
 				onclick={() => saveTo('mcpcontext')}
 			>
 				Add to MCP Context (LLM)
-			</button>
+			</Button>
 			<div class="border-t border-border my-1"></div>
-			<button
-				class="w-full text-left px-3 py-2 hover:bg-muted text-sm"
+			<Button
+				variant="ghost"
+				class="w-full justify-start bits-btn"
+				size="sm"
 				onmouseenter={(e) => showMiniModal('find', e)}
 				onmouseleave={hideMiniModal}
 				onclick={openFindModal}
 			>
 				Find Related...
-			</button>
+			</Button>
 		</div>
 	</div>
 {/if}

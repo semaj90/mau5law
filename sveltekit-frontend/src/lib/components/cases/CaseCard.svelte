@@ -2,8 +2,8 @@
 
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { createContextMenu, melt } from '@melt-ui/svelte'
-  import { fly, scale } from 'svelte/transition'
+  import { createContextMenu } from '@melt-ui/svelte';
+  import { fly, scale } from 'svelte/transition';
   import {
     FileText,
     Users,
@@ -16,7 +16,10 @@
     AlertTriangle,
     Clock,
     CheckCircle
-  } from 'lucide-svelte'
+  } from 'lucide-svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import * as Card from '$lib/components/ui/card';
+  import { Badge } from '$lib/components/ui/badge';
 
 
 
@@ -141,7 +144,7 @@
   const currentPriority = priorityConfig[caseData.priority]
 </script>
 
-<div
+<Card.Root
   class="case-nier-bits-card {currentPriority.class} group relative overflow-hidden"
   role="article"
   aria-label="Case {caseData.id}"
@@ -177,19 +180,21 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <span class="{currentStatus.class}">
+        <Badge variant="outline" class="{currentStatus.class}">
           {#key currentStatus.icon}
             <currentStatus.icon class="w-3 h-3 mr-1" />
           {/key}
           {currentStatus.label}
-        </span>
+        </Badge>
 
-        <button
-          class="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-nier-white/50 dark:hover:bg-nier-black/50 nier-transition"
+        <Button
+          variant="ghost"
+          size="sm"
+          class="opacity-0 group-hover:opacity-100 bits-btn"
           aria-label="More options"
         >
           <MoreVertical class="w-5 h-5 text-nier-gray dark:text-nier-silver" />
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -246,9 +251,9 @@
     {#if caseData.tags && caseData.tags.length > 0}
       <div class="flex flex-wrap gap-2 mb-4">
         {#each caseData.tags as tag}
-          <span class="text-xs px-2 py-1 rounded-full bg-nier-white/50 dark:bg-nier-black/50 text-nier-gray dark:text-nier-silver">
+          <Badge variant="secondary" class="text-xs">
             #{tag}
-          </span>
+          </Badge>
         {/each}
       </div>
     {/if}
@@ -288,25 +293,28 @@
 
     <!-- Action Buttons -->
     <div class="flex gap-2 mt-4">
-      <button
+      <Button
         onclick={() => onView(caseData.id)}
-        class="nier-button-primary text-sm px-4 py-2 flex-1"
+        class="bits-btn flex-1"
+        size="sm"
       >
-        <Eye class="w-4 h-4" />
+        <Eye class="w-4 h-4 mr-2" />
         View Details
-      </button>
-      <button
+      </Button>
+      <Button
         onclick={() => onEdit(caseData.id)}
-        class="nier-button-outline text-sm px-4 py-2"
+        variant="outline"
+        class="bits-btn"
+        size="sm"
       >
         <Edit class="w-4 h-4" />
-      </button>
+      </Button>
     </div>
   </div>
 
   <!-- Digital Effect on Hover -->
   <div class="absolute inset-0 bg-gradient-to-br from-transparent to-digital-green/5 opacity-0 group-hover:opacity-100 pointer-events-none nier-transition"></div>
-</div>
+</Card.Root>
 
 <!-- Context Menu -->
 {#if $open}
@@ -314,39 +322,47 @@
     class="nier-panel p-2 min-w-[200px] z-50"
     transitionscale={{ duration: 200, start: 0.95 }}
   >
-    <button
+    <Button
       onclick={() => onView(caseData.id)}
-      class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-nier-white/50 dark:hover:bg-nier-black/50 nier-transition w-full text-left"
+      variant="ghost"
+      class="bits-btn w-full justify-start"
+      size="sm"
     >
-      <Eye class="w-4 h-4 text-nier-gray dark:text-nier-silver" />
-      <span>View Details</span>
-    </button>
+      <Eye class="w-4 h-4 mr-3" />
+      View Details
+    </Button>
 
-    <button
+    <Button
       onclick={() => onEdit(caseData.id)}
-      class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-nier-white/50 dark:hover:bg-nier-black/50 nier-transition w-full text-left"
+      variant="ghost"
+      class="bits-btn w-full justify-start"
+      size="sm"
     >
-      <Edit class="w-4 h-4 text-nier-gray dark:text-nier-silver" />
-      <span>Edit Case</span>
-    </button>
+      <Edit class="w-4 h-4 mr-3" />
+      Edit Case
+    </Button>
 
     <div class="h-px bg-nier-light-gray dark:bg-nier-gray/30 my-2"></div>
 
-    <button
+    <Button
       onclick={() => onArchive(caseData.id)}
-      class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-nier-amber/10 text-nier-amber nier-transition w-full text-left"
+      variant="ghost"
+      class="bits-btn w-full justify-start text-nier-amber hover:bg-nier-amber/10"
+      size="sm"
     >
-      <Archive class="w-4 h-4" />
-      <span>Archive</span>
-    </button>
+      <Archive class="w-4 h-4 mr-3" />
+      Archive
+    </Button>
 
-    <button
+    <Button
       onclick={() => onDelete(caseData.id)}
-      class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-harvard-crimson/10 text-harvard-crimson nier-transition w-full text-left"
+      variant="ghost"
+      class="bits-btn w-full justify-start text-harvard-crimson hover:bg-harvard-crimson/10"
+      size="sm"
     >
-      <Trash2 class="w-4 h-4" />
-      <span>Delete</span>
-    </button>
+      <Trash2 class="w-4 h-4 mr-3" />
+      Delete
+    </Button>
   </div>
 {/if}
 

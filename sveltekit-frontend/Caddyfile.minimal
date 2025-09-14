@@ -1,0 +1,34 @@
+# Minimal QUIC/HTTP3 Development Configuration
+# Just proxy frontend with QUIC enabled
+
+:5178 {
+    # HTTP/3 Alt-Svc header
+    header Alt-Svc "h3=\":5178\"; ma=3600"
+
+    # CORS for development
+    header Access-Control-Allow-Origin "*"
+    header Access-Control-Allow-Methods "*"
+    header Access-Control-Allow-Headers "*"
+    header Access-Control-Allow-Credentials "true"
+
+    # Handle preflight
+    @options method OPTIONS
+    handle @options {
+        respond 200
+    }
+
+    # Reverse proxy to Vite dev server
+    reverse_proxy localhost:5174 {
+        header_up Host {host}
+    }
+
+    # Basic compression
+    encode gzip
+
+    # Verbose logging for dev
+    log {
+        output stdout
+        format console
+        level DEBUG
+    }
+}

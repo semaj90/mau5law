@@ -844,6 +844,40 @@ class EnhancedOllamaService extends EventEmitter {
   }
 
   /**
+   * Generate completion (alias for generate method)
+   */
+  async generateCompletion(prompt: string, options?: any) {
+    return this.generate({ prompt, ...options });
+  }
+
+  /**
+   * Health check for the service
+   */
+  async healthCheck() {
+    try {
+      const isAvailable = await this.isAvailable();
+      return {
+        status: isAvailable ? 'healthy' : 'unhealthy',
+        service: 'ollama',
+        timestamp: new Date().toISOString(),
+        details: {
+          available: isAvailable,
+          models: this.availableModels.length,
+          queue: this.requestQueue.length,
+          cache: this.cache.size,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 'error',
+        service: 'ollama',
+        timestamp: new Date().toISOString(),
+        error: error?.message || 'Unknown error',
+      };
+    }
+  }
+
+  /**
    * Clear cache
    */
   clearCache() {

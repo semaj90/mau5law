@@ -6,6 +6,7 @@ declare module 'fabric';
 // Redis service shape used across the codebase (trimmed to commonly used methods)
 declare interface SimpleRedis {
   connect: (...args: unknown[]) => Promise<unknown>;
+  disconnect: (...args: unknown[]) => Promise<unknown>;
   ping: (...args: unknown[]) => Promise<unknown>;
   quit: (...args: unknown[]) => Promise<unknown>;
   xAdd: (...args: unknown[]) => Promise<unknown>;
@@ -27,7 +28,12 @@ declare interface SimpleRedis {
   subscribe: (...args: unknown[]) => Promise<unknown>;
   psubscribe: (...args: unknown[]) => Promise<unknown>;
   on: (event: string, cb: (...args: unknown[]) => void) => void;
-  pipeline: (...args: unknown[]) => { lpush?: (...a: unknown[]) => unknown; ltrim?: (...a: unknown[]) => unknown; expire?: (...a: unknown[]) => unknown; exec?: (...a: unknown[]) => unknown };
+  pipeline: (...args: unknown[]) => {
+    lpush?: (...a: unknown[]) => unknown;
+    ltrim?: (...a: unknown[]) => unknown;
+    expire?: (...a: unknown[]) => unknown;
+    exec?: (...a: unknown[]) => unknown;
+  };
   /** Redis Streams helpers used by some workers */
   xInfoStream: (stream: string) => Promise<unknown>;
   xRevRange: (stream: string, start: string, end: string, opts?: unknown) => Promise<unknown>;

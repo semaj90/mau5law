@@ -1,14 +1,37 @@
 version: '3.8'
 
 services:
-  # SvelteKit Frontend Service
+  # SvelteKit Frontend Service - Main
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: legal-ai-frontend
     ports:
+      # Main SvelteKit ports
       - "5173:5173"
+      - "5174:5174"
+      - "5175:5175"
+      - "5176:5176"
+      - "5177:5177"
+      - "5178:5178"
+      - "5179:5179"
+      # HMR WebSocket ports (original + 1000)
+      - "6173:6173"
+      - "6174:6174"
+      - "6175:6175"
+      - "6176:6176"
+      - "6177:6177"
+      - "6178:6178"
+      - "6179:6179"
+      # Custom WebSocket ports (original + 2000)
+      - "7173:7173"
+      - "7174:7174"
+      - "7175:7175"
+      - "7176:7176"
+      - "7177:7177"
+      - "7178:7178"
+      - "7179:7179"
     environment:
       - NODE_ENV=development
       - PUBLIC_API_URL=http://localhost:8080
@@ -53,7 +76,7 @@ services:
       - POSTGRES_PASSWORD=123456
       - POSTGRES_HOST_AUTH_METHOD=md5
     ports:
-      - "5433:5432"  # Use 5433 to avoid conflict with existing PostgreSQL
+      - "5434:5432"  # Map to 5434 to match existing configuration
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./sql/init:/docker-entrypoint-initdb.d
@@ -181,6 +204,33 @@ services:
       retries: 3
     depends_on:
       - redis
+
+  # QUIC Server for high-performance protocols
+  quic-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.quic
+    container_name: legal-ai-quic
+    ports:
+      - "4433:4433/udp"
+      - "4434:4434/udp"
+      - "8095:8095"
+    environment:
+      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - REDIS_URL=redis://:redis@redis:6379/0
+      - REDIS_PASSWORD=redis
+      - QUIC_PORT=4433
+      - OLLAMA_URL=http://host.docker.internal:11434
+      - ENABLE_GPU=true
+    volumes:
+      - ./go-services:/app/services
+      - ./protobuf:/app/protobuf
+    networks:
+      - legal-ai-network
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
 
 volumes:
   postgres_data:

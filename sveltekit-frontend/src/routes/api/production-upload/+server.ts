@@ -11,7 +11,7 @@ import path from 'path';
 import { qdrantService } from '$lib/services/qdrantService';
 // Placeholder services to avoid compile errors if originals missing
 
-import { cases, legalDocuments } from '$lib/server/db/enhanced-legal-schema';
+import { cases, legalDocuments } from '$lib/server/db/schema-postgres';
 
 import { eq } from 'drizzle-orm';
 

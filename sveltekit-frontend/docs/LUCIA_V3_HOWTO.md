@@ -26,7 +26,7 @@ Create or edit your `.env` (do NOT commit credentials):
 
 ```env
 # .env
-DATABASE_URL=postgres://legal_admin:123456@localhost:5433/legal_ai_db
+DATABASE_URL=postgres://legal_admin:123456@localhost:5434/legal_ai_db
 LUCIA_SECRET=some-long-random-secret
 LUCIA_REDIRECT_URL=http://localhost:5173/auth/callback
 ```

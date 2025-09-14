@@ -12,7 +12,8 @@ const authMachine = createMachine({
     user: undefined,
     authToken: undefined,
     error: undefined,
-    retryCount: 0
+    retryCount: 0,
+    performanceMetrics: undefined
   },
   states: {
     idle: {
@@ -44,7 +45,12 @@ const authMachine = createMachine({
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => event.error.message,
+            error: ({ event }) => {
+              const err = event.error;
+              return err && typeof err === 'object' && 'message' in err
+                ? String((err as Error).message)
+                : String(err || 'Unknown error');
+            },
             retryCount: ({ context }) => context.retryCount + 1
           })
         }
@@ -79,7 +85,12 @@ const authMachine = createMachine({
         onError: {
           target: 'idle',
           actions: assign({
-            error: ({ event }) => event.error.message,
+            error: ({ event }) => {
+              const err = event.error;
+              return err && typeof err === 'object' && 'message' in err
+                ? String((err as Error).message)
+                : String(err || 'Unknown error');
+            },
             user: undefined,
             authToken: undefined
           })
@@ -112,8 +123,8 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       authActor.start();
 
       // Verify initial state
-      expect(authActor.getSnapshot().value).toBe('idle');
-      expect(authActor.getSnapshot().context.user).toBeUndefined();
+      expect((authActor.getSnapshot() as any).value).toBe('idle');
+      expect((authActor.getSnapshot() as any).context.user).toBeUndefined();
 
       // Send login event
       authActor.send({
@@ -202,7 +213,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       });
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      expect(authActor.getSnapshot().value).toBe('error');
+      expect((authActor.getSnapshot() as any).value).toBe('error');
       expect(authActor.getSnapshot().context.retryCount).toBe(1);
 
       // Second attempt - should fail
@@ -212,7 +223,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       });
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      expect(authActor.getSnapshot().value).toBe('error');
+      expect((authActor.getSnapshot() as any).value).toBe('error');
       expect(authActor.getSnapshot().context.retryCount).toBe(2);
 
       // Third attempt - should succeed
@@ -222,7 +233,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       });
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      expect(authActor.getSnapshot().value).toBe('authenticated');
+      expect((authActor.getSnapshot() as any).value).toBe('authenticated');
       expect(authActor.getSnapshot().context.authToken).toBe('success-token');
 
       authActor.stop();
@@ -241,7 +252,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       });
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      expect(authActor.getSnapshot().value).toBe('authenticated');
+      expect((authActor.getSnapshot() as any).value).toBe('authenticated');
 
       // Simulate token expiration (important for gRPC streams)
       authActor.send({ type: 'TOKEN_EXPIRED' });
