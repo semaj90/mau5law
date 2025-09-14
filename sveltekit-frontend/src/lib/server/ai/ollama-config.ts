@@ -26,46 +26,50 @@ export const MODELS: Record<string, ModelConfig> = {
       num_thread: 8, // Parallel processing threads
       repeat_penalty: 1.1,
       seed: 42,
-      stop: ['User:', 'Human:', '\n\n\n']
-    }
+      stop: ['User:', 'Human:', '\n\n\n'],
+    },
   },
   'nomic-embed-text': {
     name: 'nomic-embed-text',
     type: 'embedding',
     capabilities: ['embeddings'],
     embeddingDimension: 768,
-    contextWindow: 8192
+    contextWindow: 8192,
   },
-  'bge-large-en': {
-    name: 'bge-large-en',
+  embeddinggemma: {
+    name: 'embeddinggemma',
     type: 'embedding',
     capabilities: ['embeddings'],
-    embeddingDimension: 1024,
-    contextWindow: 512
-  }
+    embeddingDimension: 768,
+    contextWindow: 8192,
+    temperature: 0.0, // Deterministic embeddings
+    systemPrompt:
+      'Generate high-quality semantic embeddings for legal document analysis and retrieval.',
+  },
 };
 
 // Fallback chain configuration - llama3.2 removed
 export const FALLBACK_CHAIN = {
   'legal-analysis': [
-    'gemma3-legal:latest'   // Only gemma3-legal
+    'gemma3-legal:latest', // Only gemma3-legal
   ],
   'text-generation': [
-    'gemma3-legal:latest'   // Only gemma3-legal
+    'gemma3-legal:latest', // Only gemma3-legal
   ],
-  'embeddings': [
-    'nomic-embed-text:latest'  // Only nomic-embed
-  ]
+  embeddings: [
+    'embeddinggemma', // Primary: Google's EmbeddingGemma
+    'nomic-embed-text', // Fallback: Nomic embedding model
+  ],
 };
 
 export const OLLAMA_CONFIG: OllamaConfig = {
   baseUrl: import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434',
   defaultModel: 'gemma3-legal:latest',
-  embeddingModel: 'nomic-embed-text:latest',
+  embeddingModel: 'embeddinggemma',
   fallbackModel: 'gemma3-legal:latest',
   fallbackModels: {
     legal: 'gemma3-legal:latest',
-    general: 'gemma3-legal:latest'
+    general: 'gemma3-legal:latest',
   },
   timeout: 60000, // 60 seconds for complex legal analysis
   maxRetries: 3,
@@ -76,7 +80,7 @@ export const OLLAMA_CONFIG: OllamaConfig = {
     enabled: true,
     layers: 35, // Number of layers to offload to GPU
     mainGpu: 0,
-    tensorSplit: null
+    tensorSplit: null,
   },
 
   // Performance optimization
@@ -84,7 +88,7 @@ export const OLLAMA_CONFIG: OllamaConfig = {
     batchSize: 32,
     parallelRequests: 4,
     cacheEnabled: true,
-    cacheTTL: 3600 // 1 hour cache
+    cacheTTL: 3600, // 1 hour cache
   },
 
   // Advanced features from blueprint
@@ -94,8 +98,8 @@ export const OLLAMA_CONFIG: OllamaConfig = {
     multiModalIndexing: true,
     reinforcementLearning: false, // Can be enabled later
     webGpuAcceleration: true,
-    intelligentFallback: true // Enable smart model selection
-  }
+    intelligentFallback: true, // Enable smart model selection
+  },
 };
 
 /**

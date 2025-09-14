@@ -377,7 +377,7 @@
           <Plus class="h-4 w-4" />
           New Case
         {/snippet}
-      </button>
+      </Button>
     </div>
 
     <!-- Stats Overview -->
@@ -450,7 +450,7 @@
               {/if}
               AI Search
             {/snippet}
-          </button>
+          </Button>
 
           <Select
             options={[
@@ -491,14 +491,14 @@
             {#snippet children()}
               ← Back to Cases
             {/snippet}
-          </button>
+          </Button>
           <div class="flex gap-2">
             <Button class="bits-btn" variant="outline" size="sm" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
               {#snippet children()}
                 <Plus class="h-4 w-4 mr-2" />
                 Add Evidence
               {/snippet}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -549,7 +549,7 @@
                       <Plus class="h-4 w-4 mr-2" />
                       Add First Evidence
                     {/snippet}
-                  </button>
+                  </Button>
                 </div>
               {/snippet}
             </NesCard>
@@ -573,7 +573,7 @@
                             {#snippet children()}
                               <Edit2 class="h-4 w-4" />
                             {/snippet}
-                          </button>
+                          </Button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
@@ -582,7 +582,7 @@
                             {#snippet children()}
                               <Trash2 class="h-4 w-4" />
                             {/snippet}
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -662,7 +662,7 @@
                           <Plus class="h-4 w-4 mr-2" />
                           Create Your First Case
                         {/snippet}
-                      </button>
+                      </Button>
                     </div>
                   {/snippet}
                 </NesCard>
@@ -871,12 +871,12 @@
       <div class="flex justify-end gap-2">
         <Button class="bits-btn" variant="outline" type="button" onclick={() => createCaseDialogOpen = false}>
           {#snippet children()}Cancel{/snippet}
-        </button>
+        </Button>
         <Button class="bits-btn" type="submit" disabled={isCreatingCase || !$createFormData.title?.trim()}>
           {#snippet children()}
             {#if isCreatingCase}Creating...{:else}Create Case{/if}
           {/snippet}
-        </button>
+        </Button>
       </div>
     </form>
     <div aria-live="polite" class="sr-only">{isCreatingCase ? 'Creating case' : ''}</div>
@@ -945,12 +945,12 @@
       <div class="flex justify-end gap-2">
         <Button class="bits-btn" variant="outline" type="button" onclick={() => addEvidenceDialogOpen = false}>
           {#snippet children()}Cancel{/snippet}
-        </button>
+        </Button>
         <Button class="bits-btn" type="submit" disabled={isAddingEvidence || !$evidenceFormData.title?.trim()}>
           {#snippet children()}
             {#if isAddingEvidence}Adding...{:else}Add Evidence{/if}
           {/snippet}
-        </button>
+        </Button>
       </div>
     </form>
     <div aria-live="polite" class="sr-only">{isAddingEvidence ? 'Adding evidence' : ''}</div>
@@ -969,10 +969,10 @@
     <AlertDialog.Footer>
       <Button class="bits-btn" variant="outline" onclick={() => deleteEvidenceDialogOpen = false}>
         {#snippet children()}Cancel{/snippet}
-      </button>
+      </Button>
       <Button class="bits-btn" variant="destructive" onclick={deleteEvidence}>
         {#snippet children()}Delete Evidence{/snippet}
-      </button>
+      </Button>
     </AlertDialog.Footer>
   </AlertDialog.Content>
 </AlertDialog.Root>

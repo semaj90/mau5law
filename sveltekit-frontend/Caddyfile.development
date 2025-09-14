@@ -1,0 +1,141 @@
+# Development Caddy Configuration with QUIC/HTTP3
+# Caddy v2.8.4 - Legal AI Platform Development Setup
+
+# Development SvelteKit server with relaxed QUIC settings
+:5178 {
+    # HTTP/3 with shorter cache times for dev
+    header Alt-Svc "h3=\":5178\"; ma=3600"
+
+    # Development CORS headers (permissive for local dev)
+    header Access-Control-Allow-Origin "*"
+    header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+    header Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, Accept, Origin"
+    header Access-Control-Allow-Credentials "true"
+
+    # Handle preflight requests
+    @options {
+        method OPTIONS
+    }
+    handle @options {
+        respond 200
+    }
+
+    # Reverse proxy to Vite dev server
+    reverse_proxy localhost:5174 {
+        # Development connection settings (more permissive)
+        transport http {
+            keepalive 10s
+            keepalive_idle_conns 2
+        }
+
+        # Pass through dev headers
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+
+        # Handle dev server restarts gracefully
+        fail_duration 1s
+        max_fails 3
+    }
+
+    # Basic compression for dev (lighter than production)
+    encode gzip
+
+    # Development logging (more verbose)
+    log {
+        output stdout
+        format console
+        level DEBUG
+    }
+
+    # HTTP/3 enabled by default in modern Caddy
+}
+
+# Alternative dev server on different port for testing
+:5179 {
+    header Alt-Svc "h3=\":5179\"; ma=3600"
+    header Access-Control-Allow-Origin "*"
+
+    reverse_proxy localhost:5176 {
+        fail_duration 1s
+    }
+
+    encode gzip
+}
+
+# Local MinIO development server (disabled - port conflict)
+# :9001 {
+#     header Alt-Svc "h3=\":9001\"; ma=3600"
+#     header Access-Control-Allow-Origin "*"
+#     header Access-Control-Allow-Methods "*"
+#     header Access-Control-Allow-Headers "*"
+#
+#     # Handle MinIO console
+#     handle /minio/* {
+#         reverse_proxy localhost:9001
+#     }
+#
+#     # Handle S3 API
+#     reverse_proxy localhost:9000 {
+#         header_up Host {host}
+#     }
+# }
+
+# Development Redis Insight (no auth for local dev)
+:8001 {
+    reverse_proxy localhost:8001
+}
+
+# Development health check with detailed info
+:8082 {
+    header Alt-Svc "h3=\":8082\"; ma=3600"
+
+    handle /health {
+        respond 200 {
+            body `{
+                "status": "healthy",
+                "environment": "development",
+                "service": "legal-ai-platform-dev",
+                "protocol": "QUIC/HTTP3",
+                "vite_server": "localhost:5177",
+                "caddy_proxy": "localhost:5178",
+                "minio": "localhost:9000",
+                "timestamp": "{time.now}",
+                "version": "dev"
+            }`
+            close
+        }
+    }
+
+    handle /dev-info {
+        respond 200 {
+            body `{
+                "development_urls": {
+                    "frontend": "http://localhost:5178",
+                    "frontend_direct": "http://localhost:5177",
+                    "minio_console": "http://localhost:9001",
+                    "minio_api": "http://localhost:9000",
+                    "redis_insight": "http://localhost:8001",
+                    "health": "http://localhost:8082/health"
+                },
+                "quic_enabled": true,
+                "cors_enabled": true,
+                "logging": "verbose"
+            }`
+            close
+        }
+    }
+
+    # Default health response for dev
+    respond "QUIC/HTTP3 Development Server Ready 🚀" 200
+}
+
+# WebSocket proxy for HMR (Hot Module Replacement)
+:24678 {
+    reverse_proxy localhost:24678 {
+        # WebSocket-specific settings
+        header_up Upgrade {>Upgrade}
+        header_up Connection {>Connection}
+    }
+}

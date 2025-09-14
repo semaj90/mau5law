@@ -4,7 +4,7 @@
     auto_https off
 }
 
-# Main application reverse proxy
+# Main application reverse proxy with dynamic port support
 :8080 {
     # Enable CORS for API endpoints
     header {
@@ -13,20 +13,26 @@
         Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
     }
 
-    # Proxy to SvelteKit frontend
-    reverse_proxy frontend:5173 {
+    # Load balance across multiple SvelteKit instances
+    reverse_proxy frontend:5173 frontend:5174 frontend:5175 frontend:5176 frontend:5177 frontend:5178 frontend:5179 {
         header_up Host {host}
         header_up X-Real-IP {remote}
         header_up X-Forwarded-For {remote}
         header_up X-Forwarded-Proto {scheme}
+        lb_policy round_robin
+        health_uri /
+        health_interval 30s
+        health_timeout 5s
     }
 
-    # Handle WebSocket connections for HMR
+    # Handle WebSocket connections for HMR across all ports
     @websocket {
         header Connection *Upgrade*
         header Upgrade websocket
     }
-    reverse_proxy @websocket frontend:5173
+    reverse_proxy @websocket frontend:5173 frontend:5174 frontend:5175 frontend:5176 frontend:5177 frontend:5178 frontend:5179 {
+        lb_policy least_conn
+    }
 
     # Logging
     log {
@@ -35,6 +41,15 @@
         level INFO
     }
 }
+
+# Individual port access for development (5173-5179)
+:5170 { reverse_proxy frontend:5173 }
+:5171 { reverse_proxy frontend:5174 }
+:5172 { reverse_proxy frontend:5175 }
+:5180 { reverse_proxy frontend:5176 }
+:5181 { reverse_proxy frontend:5177 }
+:5182 { reverse_proxy frontend:5178 }
+:5183 { reverse_proxy frontend:5179 }
 
 # HTTPS configuration (optional, for production)
 https://localhost {

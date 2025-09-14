@@ -42,6 +42,11 @@ export interface CaseScoringResult {
   ai_analysis?: string;
   processing_time?: number;
   timestamp?: Date;
+  performanceMetrics?: {
+    protocol?: string;
+    responseTime?: number;
+    accuracy?: number;
+  };
 }
 
 export interface ScoringAnalysis {

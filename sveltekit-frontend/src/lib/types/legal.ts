@@ -187,6 +187,13 @@ export interface ServiceStatus {
   error?: string;
 }
 
+export interface ProcessingResult {
+  success: boolean;
+  processedData?: any;
+  error?: string;
+  metadata?: Record<string, any>;
+}
+
 // AI Model Configuration
 export interface AIModelConfig {
   modelName: string;

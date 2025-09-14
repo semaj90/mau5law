@@ -19,13 +19,13 @@ export const POST: RequestHandler = async ({ request }) => {
       if (!isValid) {
         const errorResponse = legal.api.AuthResponse.create({
           success: false,
-          errorMessage: 'Invalid credentials'
+          errorMessage: 'Invalid credentials',
         });
 
         const encoded = legal.api.AuthResponse.encode(errorResponse).finish();
-        return new Response(encoded, {
+        return new Response(Buffer.from(encoded), {
           status: 401,
-          headers: { 'Content-Type': 'application/x-protobuf' }
+          headers: { 'Content-Type': 'application/x-protobuf' },
         });
       }
 
@@ -41,25 +41,25 @@ export const POST: RequestHandler = async ({ request }) => {
           theme: 'nier',
           language: 'en',
           notificationsEnabled: true,
-          analyticsOptIn: false
-        }
+          analyticsOptIn: false,
+        },
       });
 
       const authResponse = legal.api.AuthResponse.create({
         success: true,
         token: 'jwt_token_here',
         user: user,
-        expiresAt: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+        expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
       });
 
       const encoded = legal.api.AuthResponse.encode(authResponse).finish();
-      return new Response(encoded, {
+      return new Response(Buffer.from(encoded), {
         status: 200,
         headers: {
           'Content-Type': 'application/x-protobuf',
           'X-Protocol-Version': '1.0',
-          'X-Performance-Mode': 'protobuf'
-        }
+          'X-Performance-Mode': 'protobuf',
+        },
       });
     } else {
       // JSON fallback for compatibility

@@ -7,6 +7,7 @@
   import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount } from 'svelte';
   import { writable } from 'svelte/store';
+  import { CONFIG } from '$lib/config/production-config.js';
   interface UploadFile {
     id: string;
     file: File;
@@ -40,8 +41,8 @@
   let {
     caseId = '',
     disabled = false,
-    maxFileSize = 100 * 1024 * 1024, // 100MB
-    acceptedTypes = ['image/*', 'application/pdf', 'text/*', '.docx', '.xlsx'],
+    maxFileSize = CONFIG.minio.maxFileSize,
+    acceptedTypes = CONFIG.minio.allowedMimeTypes,
     enableCudaAcceleration = true,
     enableGpuOptimization = true,
     useMsvcOptimizations = true

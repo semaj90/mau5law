@@ -1,16 +1,20 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
+  import type { Case } from '$lib/types/api';
+  import { Input } from '$lib/components/ui/input';
+  import * as Select from '$lib/components/ui/select';
+  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Search, Filter, SortAsc, SortDesc } from 'lucide-svelte';
+
   interface Props {
-    cases: Case[] ;
-    filteredCases: Case[] ;
-    searchQuery: string
-    statusFilter: string
-    sortBy: string
-    sortOrder: 'asc' | 'desc' ;
+    cases: Case[];
+    filteredCases: Case[];
+    searchQuery: string;
+    statusFilter: string;
+    sortBy: string;
+    sortOrder: 'asc' | 'desc';
   }
+
   let {
     cases = [],
     filteredCases = [],
@@ -38,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
   // - Stores: URL state management, user preferences
   // - Services: ExportService, NotificationService
   // - Components: DateRangePicker, MultiSelect, BulkActionBar
-  import type { Case } from '$lib/types/api';
+
   // TODO: Enhanced filter interface
   // interface AdvancedFilters {
   //   status: string[];
@@ -50,7 +54,8 @@ https://svelte.dev/e/js_parse_error -->
   //   hasAttachments: boolean
   //   lastActivityDays: number
   // }
-  $effect(() => { {
+
+  $effect(() => {
     // TODO: IMPLEMENT ADVANCED FILTERING LOGIC
     // =======================================
     // 1. Debounced search with fuzzy matching
@@ -66,18 +71,21 @@ https://svelte.dev/e/js_parse_error -->
     //   threshold: 0.3,
     //   includeScore: true
     // });
+
     // Simple filtering logic (STUB)
     filteredCases = cases.filter(c => {
       if (statusFilter !== 'all' && c.status !== statusFilter) return false;
       if (searchQuery && !c.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     });
+
     // TODO: IMPLEMENT ADVANCED SORTING
     // ===============================
     // 1. Multi-column sorting
     // 2. Custom sort functions for complex types
     // 3. Stable sorting preservation
     // 4. Sort direction indicators in UI
+
     // Simple sorting (STUB)
     filteredCases.sort((a, b) => {
       const aVal = a[sortBy as keyof Case];
@@ -85,36 +93,61 @@ https://svelte.dev/e/js_parse_error -->
       const compare = aVal > bVal ? 1 : -1;
       return sortOrder === 'asc' ? compare : -compare;
     });
-  }
+  });
 </script>
 
-<div class="space-y-4">
-  <div class="space-y-4">
-    <input 
-      type="text" 
+<div class="flex flex-wrap gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border">
+  <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+    <Search class="w-4 h-4 text-gray-500" />
+    <Input
       bind:value={searchQuery}
       placeholder="Search cases..."
-      class="space-y-4"
+      class="flex-1"
     />
-    
-    <select bind:value={statusFilter} class="space-y-4">
-      <option value="all">All Statuses</option>
-      <option value="active">Active</option>
-      <option value="pending">Pending</option>
-      <option value="closed">Closed</option>
-    </select>
-    
-    <select bind:value={sortBy} class="space-y-4">
-      <option value="createdAt">Created Date</option>
-      <option value="title">Title</option>
-      <option value="status">Status</option>
-    </select>
-    
-    <select bind:value={sortOrder} class="space-y-4">
-      <option value="desc">Descending</option>
-      <option value="asc">Ascending</option>
-    </select>
   </div>
+
+  <div class="flex items-center gap-2">
+    <Filter class="w-4 h-4 text-gray-500" />
+    <Select.Root bind:value={statusFilter}>
+      <Select.Trigger class="w-[140px]">
+        <Select.Value placeholder="Status" />
+      </Select.Trigger>
+      <Select.Content>
+        <Select.Item value="all">All Statuses</Select.Item>
+        <Select.Item value="active">Active</Select.Item>
+        <Select.Item value="pending">Pending</Select.Item>
+        <Select.Item value="closed">Closed</Select.Item>
+      </Select.Content>
+    </Select.Root>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <Select.Root bind:value={sortBy}>
+      <Select.Trigger class="w-[130px]">
+        <Select.Value placeholder="Sort by" />
+      </Select.Trigger>
+      <Select.Content>
+        <Select.Item value="createdAt">Created Date</Select.Item>
+        <Select.Item value="title">Title</Select.Item>
+        <Select.Item value="status">Status</Select.Item>
+      </Select.Content>
+    </Select.Root>
+  </div>
+
+  <Button
+    variant="outline"
+    size="sm"
+    class="bits-btn"
+    onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
+  >
+    {#if sortOrder === 'asc'}
+      <SortAsc class="w-4 h-4 mr-2" />
+      Ascending
+    {:else}
+      <SortDesc class="w-4 h-4 mr-2" />
+      Descending
+    {/if}
+  </Button>
 </div>
 
 <style>

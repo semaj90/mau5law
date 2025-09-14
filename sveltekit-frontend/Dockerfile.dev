@@ -31,5 +31,5 @@ ENV RTX_3060_OPTIMIZATION=true
 ENV CONTEXT7_MULTICORE=true
 ENV OLLAMA_GPU_LAYERS=30
 
-# Start Vite dev server
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
+# Start Vite dev server (without local Redis startup)
+CMD ["npm", "run", "dev:quic:simple", "--", "--host", "0.0.0.0", "--port", "5173"]
