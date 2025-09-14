@@ -38,38 +38,77 @@ async function getOrchestrator(): Promise<UnifiedCacheEnhancedOrchestrator> {
 /**
  * Stream QLoRA processing with binary compression
  */
-async function* streamQLoRAResponse(request: StreamingQLoRARequest): AsyncGenerator<StreamingResponse> {
+async function* streamQLoRAResponse(
+  request: StreamingQLoRARequest
+): AsyncGenerator<StreamingResponse> {
   const { query, topologyType = 'general', accuracyTarget = 90, streamBinary = true } = request;
 
   try {
     yield { type: 'status', message: 'Initializing QLoRA predictor...' };
 
     const orch = await getOrchestrator();
-    
+
     yield { type: 'status', message: 'Generating topology prediction...' };
 
     // Process with unified intelligence
     const startTime = Date.now();
     const result = await orch.processWithUnifiedIntelligence({
       requestId: `websocket_${Date.now()}`,
-      operationType: 'qlora_topology_prediction',
-      query,
+      userId: 'websocket_user',
+      documentId: 'websocket_doc',
+      operationType: 'predict',
+      priority: 'high',
+      requirements: {
+        minAccuracy: accuracyTarget * 0.9,
+        maxLatency: 5000,
+        memoryBudget: 512,
+        qualityLevel: 'production',
+      },
       context: {
+        userSession: { userId: 'websocket_user', sessionId: 'ws_session', preferences: {} } as any,
         documentContext: {
-          content: query,
-          type: topologyType,
+          id: 'websocket_doc',
+          type:
+            topologyType === 'legal'
+              ? 'brief'
+              : topologyType === 'technical'
+                ? 'evidence'
+                : 'brief',
+          priority: 128,
+          size: query.length,
+          confidenceLevel: 0.85,
+          riskLevel: 'medium',
+          lastAccessed: Date.now(),
+          compressed: false,
           metadata: {
-            source: 'websocket_request',
-            confidence: 1.0
-          }
-        }
+            caseId: 'websocket_session',
+            aiGenerated: true,
+          },
+        },
+        renderingNeeded: streamBinary,
+        realTimeRequired: true,
+      },
+      metadata: {
+        timestamp: Date.now(),
+        clientCapabilities: { webgpu: true, streaming: true },
+      },
+      cachePreferences: {
+        enableMultiTierCache: true,
+        enableWebGPUCache: true,
+        enableSummarizeCache: true,
+        enableRabbitMQCache: false,
+        cacheStrategy: 'adaptive',
+        maxLatencyMs: 5000,
+        minAccuracyThreshold: accuracyTarget * 0.9,
       },
       optimization: {
+        predictiveAccuracy: 0.75,
         targetAccuracy: accuracyTarget,
-        maxProcessingTime: 30000,
-        cacheStrategy: 'adaptive',
-        qualityPreference: 'balanced'
-      }
+        learningRate: 0.05,
+        useReinforcementLearning: true,
+        useWebGPUAcceleration: true,
+        useAsyncOrchestration: true,
+      },
     });
 
     const processingTime = Date.now() - startTime;
@@ -90,16 +129,16 @@ async function* streamQLoRAResponse(request: StreamingQLoRARequest): AsyncGenera
         topology: {
           nodes: (result as any).topology?.nodes || 10,
           edges: (result as any).topology?.edges || 15,
-          connectivity: (result as any).topology?.connectivity || 0.75
-        }
+          connectivity: (result as any).topology?.connectivity || 0.75,
+        },
       },
       accuracy: (result as any).accuracy,
       topology: {
         structure: (result as any).topology?.structure || 'hierarchical',
         complexity: (result as any).topology?.complexity || 0.68,
-        patternMatch: (result as any).topology?.patternMatch || 0.82
+        patternMatch: (result as any).topology?.patternMatch || 0.82,
       },
-      cacheHit: result.cacheHit,
+      cacheHit: result.cacheMetrics.totalCacheHitRate > 0,
       processingTime,
       metrics: {
         hmmPredictionScore: metrics.hmmAccuracy,
@@ -108,27 +147,27 @@ async function* streamQLoRAResponse(request: StreamingQLoRARequest): AsyncGenera
         cacheEfficiency: cacheStats.hitRate,
         tensorOperations: 45000,
         memoryUsage: 128,
-        gpuUtilization: metrics.webgpuEnabled ? 85 : 0
+        gpuUtilization: metrics.webgpuEnabled ? 85 : 0,
       },
       binaryMetadata: {
         compressionRatio: 1,
         originalSize: 0,
         compressedSize: 0,
-        encoding: 'gzip'
-      }
+        encoding: 'gzip',
+      },
     };
 
     if (streamBinary) {
       yield { type: 'status', message: 'Compressing binary response...' };
-      
+
       // Encode to binary with compression
       const binaryData = QLoRABinaryCodec.encode(qloraResponse);
       const compressionStats = QLoRABinaryCodec.getCompressionStats(qloraResponse, binaryData);
-      
+
       // Update metadata
       qloraResponse.binaryMetadata = {
         ...compressionStats,
-        encoding: 'gzip'
+        encoding: 'gzip',
       };
 
       yield {
@@ -138,27 +177,33 @@ async function* streamQLoRAResponse(request: StreamingQLoRARequest): AsyncGenera
           compressionRatio: compressionStats.compressionRatio,
           originalSize: compressionStats.originalSize,
           compressedSize: compressionStats.compressedSize,
-          cacheHit: result.cacheHit,
-          processingTime
-        }
+          cacheHit: result.cacheMetrics.totalCacheHitRate > 0,
+          processingTime,
+        },
       };
     } else {
       // Stream as JSON tokens for demonstration
-      const responseText = `QLoRA Prediction: ${(result as any).accuracy}% accuracy, ${result.cacheHit ? 'cache hit' : 'cache miss'}, ${processingTime}ms processing time. Topology: ${qloraResponse.topology.structure} structure with ${qloraResponse.prediction.topology.nodes} nodes.`;
-      
+      const responseText = `QLoRA Prediction: ${(result as any).accuracy}% accuracy, ${result.cacheMetrics.totalCacheHitRate > 0 ? 'cache hit' : 'cache miss'}, ${processingTime}ms processing time. Topology: ${qloraResponse.topology.structure} structure with ${qloraResponse.prediction.topology.nodes} nodes.`;
+
       const tokens = responseText.split(' ');
-      
+
       for (const token of tokens) {
-        await new Promise(resolve => setTimeout(resolve, 50)); // Simulate streaming
+        await new Promise((resolve) => setTimeout(resolve, 50)); // Simulate streaming
         yield { type: 'token', value: token + ' ' };
       }
     }
 
-    yield { type: 'end', message: 'QLoRA processing complete', metadata: { accuracy: (result as any).accuracy, processingTime } };
-
+    yield {
+      type: 'end',
+      message: 'QLoRA processing complete',
+      metadata: { accuracy: (result as any).accuracy, processingTime },
+    };
   } catch (error: any) {
     console.error('[WebSocket] QLoRA streaming error:', error);
-    yield { type: 'error', message: `QLoRA processing failed: ${(error as any)?.message || 'Unknown error'}` };
+    yield {
+      type: 'error',
+      message: `QLoRA processing failed: ${(error as any)?.message || 'Unknown error'}`,
+    };
   }
 }
 
@@ -180,10 +225,12 @@ export function createWebSocketServer() {
         for await (const event of streamQLoRAResponse(requestData)) {
           if (event.type === 'binary') {
             // Send binary data directly
-            ws.send(JSON.stringify({
-              type: 'binary_metadata',
-              metadata: event.metadata
-            }));
+            ws.send(
+              JSON.stringify({
+                type: 'binary_metadata',
+                metadata: event.metadata,
+              })
+            );
             ws.send(event.data);
           } else {
             // Send JSON event
@@ -192,10 +239,12 @@ export function createWebSocketServer() {
         }
       } catch (error: any) {
         console.error('[WebSocket] Message processing error:', error);
-        ws.send(JSON.stringify({ 
-          type: 'error', 
-          message: 'Failed to process request: ' + error.message 
-        }));
+        ws.send(
+          JSON.stringify({
+            type: 'error',
+            message: 'Failed to process request: ' + error.message,
+          })
+        );
       }
     });
 
@@ -208,10 +257,12 @@ export function createWebSocketServer() {
     });
 
     // Send welcome message
-    ws.send(JSON.stringify({
-      type: 'status',
-      message: 'Connected to Binary QLoRA WebSocket server'
-    }));
+    ws.send(
+      JSON.stringify({
+        type: 'status',
+        message: 'Connected to Binary QLoRA WebSocket server',
+      })
+    );
   });
 
   return wss;

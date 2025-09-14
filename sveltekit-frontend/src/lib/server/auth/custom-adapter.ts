@@ -1,5 +1,29 @@
 // Custom Drizzle PostgreSQL Adapter for Lucia with fixed JOIN queries
-import type { Adapter, DatabaseSession, DatabaseUser } from 'lucia';
+// import { type Adapter, type DatabaseSession, type DatabaseUser } from 'lucia';
+
+// Temporary type stubs for Lucia (not installed)
+interface Adapter {
+  deleteSession(sessionId: string): Promise<void>;
+  deleteUserSessions(userId: string): Promise<void>;
+  getSessionAndUser(sessionId: string): Promise<[session: DatabaseSession | null, user: DatabaseUser | null]>;
+  getUserSessions(userId: string): Promise<DatabaseSession[]>;
+  setSession(session: DatabaseSession): Promise<void>;
+  updateSessionExpiration(sessionId: string, expiresAt: Date): Promise<void>;
+}
+
+interface DatabaseSession {
+  id: string;
+  userId: string; // Main property used in code
+  user_id?: string; // For DB compatibility
+  expiresAt: Date; // Main property used in code
+  expires_at?: Date; // For DB compatibility
+  attributes: Record<string, any>;
+}
+
+interface DatabaseUser {
+  id: string;
+  attributes: Record<string, any>;
+}
 import { db } from '$lib/server/db/drizzle';
 import { sessions, users } from '$lib/server/db/schema-postgres';
 import { eq, lte } from 'drizzle-orm';

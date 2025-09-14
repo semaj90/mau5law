@@ -204,37 +204,33 @@
 
   <!-- Quick Actions -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <button class="nes-btn"
+    <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/admin/users')}
       variant="outline"
-      class="h-20 flex-col gap-2"
     >
       <Users class="w-6 h-6" />
       <span>Manage Users</span>
     </button>
 
-    <button class="nes-btn"
+    <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/admin/cluster')}
       variant="outline"
-      class="h-20 flex-col gap-2"
     >
       <Server class="w-6 h-6" />
       <span>Cluster Status</span>
     </button>
 
-    <button class="nes-btn"
+    <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/admin/gpu-demo')}
       variant="outline"
-      class="h-20 flex-col gap-2"
     >
       <Cpu class="w-6 h-6" />
       <span>GPU Monitor</span>
     </button>
 
-    <button class="nes-btn"
+    <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/system-status')}
       variant="outline"
-      class="h-20 flex-col gap-2"
     >
       <Monitor class="w-6 h-6" />
       <span>System Status</span>

@@ -100,25 +100,25 @@ Route: /cases/[caseId]
     <nav class="case-nav">
       <button
         class="nes-btn {activeTab === 'board' ? 'is-primary' : ''}"
-        on:click={() => handleTabChange('board')}
+        onclick={() => handleTabChange('board')}
       >
         🎯 Evidence Board
       </button>
       <button
         class="nes-btn {activeTab === 'timeline' ? 'is-primary' : ''}"
-        on:click={() => handleTabChange('timeline')}
+        onclick={() => handleTabChange('timeline')}
       >
         ⏱️ Timeline
       </button>
       <button
         class="nes-btn {activeTab === 'reports' ? 'is-primary' : ''}"
-        on:click={() => handleTabChange('reports')}
+        onclick={() => handleTabChange('reports')}
       >
         📝 Reports
       </button>
       <button
         class="nes-btn {activeTab === 'chat' ? 'is-primary' : ''}"
-        on:click={() => handleTabChange('chat')}
+        onclick={() => handleTabChange('chat')}
       >
         💬 AI Chat
       </button>
@@ -185,7 +185,7 @@ Route: /cases/[caseId]
       <div class="reports-view nes-container is-dark">
         <div class="reports-header">
           <h2 class="nes-text is-primary">📝 Case Reports</h2>
-          <button class="nes-btn is-success" on:click={toggleReportEditor}>
+          <button class="nes-btn is-success" onclick={toggleReportEditor}>
             + New Report
           </button>
         </div>

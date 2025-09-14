@@ -11,8 +11,11 @@
  */
 
 import { Worker } from "worker_threads";
-import path from "path";
-import os from "os";
+import { EventEmitter } from "events";
+import * as path from "path";
+import * as os from "os";
+
+const cpus = os.cpus;
 
 export type Job = {
   id: string;
@@ -24,7 +27,37 @@ export type Job = {
   metadata?: Record<string, any>;
 };
 
-export class WorkerPool {
+export interface WorkerJobData {
+  id: string;
+  type: 'ocr' | 'audio' | 'video' | 'document' | 'embedding' | 'json';
+  payload: any;
+  options?: JobOptions;
+}
+
+export interface WorkerJobResult {
+  success: boolean;
+  data?: any;
+  error?: string;
+  processingTime: number;
+  metadata?: Record<string, any>;
+}
+
+export interface JobOptions {
+  priority?: number;
+  timeout?: number;
+  retryAttempts?: number;
+  metadata?: Record<string, any>;
+}
+
+export interface WorkerPoolOptions {
+  maxWorkers?: number;
+  minWorkers?: number;
+  idleTimeout?: number;
+  jobTimeout?: number;
+  retryAttempts?: number;
+}
+
+export class SimpleWorkerPool {
   pool: Worker[] = [];
   queue: Job[] = [];
   free: boolean[] = [];
@@ -32,7 +65,7 @@ export class WorkerPool {
 
   constructor(num = Math.max(1, Math.floor(os.cpus().length / 2))) {
     for (let i = 0; i < num; i++) {
-      const workerPath = path.resolve(__dirname, "ingest-worker.js");
+      const workerPath = new URL('./ingest-worker.js', import.meta.url).pathname;
       const w = new Worker(workerPath);
 
       this.pool.push(w);
@@ -112,7 +145,7 @@ export class WorkerPool {
 }
 
 // Instantiate a shared pool export
-export const sharedWorkerPool = new WorkerPool();
+export const sharedWorkerPool = new SimpleWorkerPool();
 
 class WorkerInstance {
   public readonly id: string;
@@ -204,7 +237,7 @@ class PriorityQueue<T> {
   }
 }
 
-export class WorkerPool extends EventEmitter {
+export class AdvancedWorkerPool extends EventEmitter {
   private workers: Map<string, WorkerInstance> = new Map();
   private jobQueue = new PriorityQueue<{
     jobData: WorkerJobData;
@@ -232,7 +265,7 @@ export class WorkerPool extends EventEmitter {
     };
 
     // Worker script path
-    this.workerScript = path.join(__dirname, 'worker.js');
+    this.workerScript = new URL('./worker.js', import.meta.url).pathname;
 
     // Start with minimum workers
     this.scaleWorkers();
@@ -356,7 +389,7 @@ export class WorkerPool extends EventEmitter {
   }
 
   private getAvailableWorker(): WorkerInstance | null {
-    for (const worker of this.workers.values()) {
+    for (const worker of Array.from(this.workers.values())) {
       if (!worker.busy) {
         return worker;
       }
@@ -415,7 +448,7 @@ export class WorkerPool extends EventEmitter {
     const now = Date.now();
     const workersToRemove: string[] = [];
 
-    for (const [workerId, worker] of this.workers) {
+    for (const [workerId, worker] of Array.from(this.workers.entries())) {
       if (
         !worker.busy &&
         this.workers.size > this.options.minWorkers &&
@@ -460,7 +493,7 @@ export class WorkerPool extends EventEmitter {
     this.jobQueue.clear();
 
     // Terminate all workers
-    for (const worker of this.workers.values()) {
+    for (const worker of Array.from(this.workers.values())) {
       worker.terminate();
     }
     this.workers.clear();
@@ -470,14 +503,17 @@ export class WorkerPool extends EventEmitter {
 }
 
 // Singleton instance
-let workerPool: WorkerPool | null = null;
+let workerPool: AdvancedWorkerPool | null = null;
 
-export function getWorkerPool(options?: WorkerPoolOptions): WorkerPool {
+export function getWorkerPool(options?: WorkerPoolOptions): AdvancedWorkerPool {
   if (!workerPool) {
-    workerPool = new WorkerPool(options);
+    workerPool = new AdvancedWorkerPool(options);
   }
   return workerPool;
 }
+
+// Export the primary WorkerPool as the AdvancedWorkerPool
+export { AdvancedWorkerPool as WorkerPool };
 
 export async function shutdownWorkerPool(graceful = true, timeout = 30000): Promise<void> {
   if (workerPool) {

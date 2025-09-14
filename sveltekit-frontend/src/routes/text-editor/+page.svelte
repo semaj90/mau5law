@@ -7,7 +7,6 @@ https://svelte.dev/e/expected_token -->
 -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-</script>
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
   import {
     Card,
@@ -17,6 +16,7 @@ https://svelte.dev/e/expected_token -->
   } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { FileText, Save, Download, Share2, Settings } from 'lucide-svelte';
+  import { NesCard } from '$lib/components/ui/nes-ui';
   
   // Editor state
   let editorValue = $state('');
@@ -25,12 +25,12 @@ https://svelte.dev/e/expected_token -->
   let isModified = $state(false);
   
   // Document metadata
-  let documentStats = $derived({
+  let documentStats = $derived(() => ({
     words: editorValue.trim() ? editorValue.trim().split(/\s+/).length : 0,
     characters: editorValue.length,
     charactersNoSpaces: editorValue.replace(/\s/g, '').length,
     paragraphs: editorValue.trim() ? editorValue.split(/\n\s*\n/).length : 0
-  });
+  }));
 
   function handleEditorChange(value: string) {
     editorValue = value;
@@ -143,7 +143,7 @@ https://svelte.dev/e/expected_token -->
   <!-- Editor Container -->
   <div class="editor-container">
     <NesCard class="editor-nier-bits-card">
-      <div class="yorha-panel-content" class="editor-content">
+      <div class="yorha-panel-content editor-content">
         <NierRichTextEditor
           bind:value={editorValue}
           placeholder="Begin your investigation notes or legal document here..."

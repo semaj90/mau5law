@@ -117,98 +117,263 @@
       <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
         <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full mx-4">
           <div class="p-6">
-    {/if}
+            <!-- Main Content -->
+            <div class="flex items-start gap-3">
+              <!-- Icon -->
+              <div class="flex-shrink-0">
+                {#if status === 'loading'}
+                  <div class="relative">
+                    <svelte:component
+                      this={getOperationIcon(operation)}
+                      class="{iconSize[size]} {getStatusColor(status)} animate-pulse"
+                    />
+                    {#if operation === 'ai' || operation === 'gpu'}
+                      <div class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"></div>
+                    {/if}
+                  </div>
+                {:else}
+                  <svelte:component
+                    this={getStatusIcon(status)}
+                    class="{iconSize[size]} {getStatusColor(status)}"
+                  />
+                {/if}
+              </div>
 
-    {#if variant === 'modal'}
+              <!-- Content -->
+              <div class="flex-1 min-w-0">
+                <!-- Title -->
+                <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">
+                  {title}
+                </h3>
+
+                <!-- Description -->
+                {#if description}
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {description}
+                  </p>
+                {/if}
+
+                <!-- Progress Bar -->
+                {#if showProgress && status === 'loading'}
+                  <div class="mt-3">
+                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                      <span>Progress</span>
+                      <span>{Math.round($progressTween)}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div
+                        class="h-2 rounded-full transition-all duration-300 {operation === 'ai' ? 'bg-blue-500' : operation === 'gpu' ? 'bg-purple-500' : operation === 'cpu' ? 'bg-orange-500' : 'bg-green-500'}"
+                        style="width: {$progressTween}%"
+                      ></div>
+                    </div>
+                  </div>
+                {/if}
+
+                <!-- Time Information -->
+                {#if isLoading && (showEstimate || elapsedTime > 0)}
+                  <div class="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                    {#if elapsedTime > 0}
+                      <span class="flex items-center gap-1">
+                        <Clock class="w-3 h-3" />
+                        Elapsed: {formatTime(elapsedTime)}
+                      </span>
+                    {/if}
+                    {#if showEstimate && estimatedTime > 0}
+                      <span>
+                        ETA: {formatTime(estimatedTime - elapsedTime)}
+                      </span>
+                    {/if}
+                  </div>
+                {/if}
+
+                <!-- Operation Details -->
+                {#if operation && status === 'loading'}
+                  <div class="mt-2">
+                    <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
+                      {operation === 'ai' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                       operation === 'gpu' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
+                       operation === 'cpu' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
+                       'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}">
+                      {operation.toUpperCase()} Processing
+                    </span>
+                  </div>
+                {/if}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {:else if variant === 'modal'}
       <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full">
         <div class="p-6">
-    {/if}
-
-    <!-- Main Content -->
-    <div class="flex items-start gap-3">
-      <!-- Icon -->
-      <div class="flex-shrink-0">
-        {#if status === 'loading'}
-          <div class="relative">
-            <svelte:component
-              this={getOperationIcon(operation)}
-              class="{iconSize[size]} {getStatusColor(status)} animate-pulse"
-            />
-            {#if operation === 'ai' || operation === 'gpu'}
-              <div class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"></div>
-            {/if}
-          </div>
-        {:else}
-          <svelte:component
-            this={getStatusIcon(status)}
-            class="{iconSize[size]} {getStatusColor(status)}"
-          />
-        {/if}
-      </div>
-
-      <!-- Content -->
-      <div class="flex-1 min-w-0">
-        <!-- Title -->
-        <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">
-          {title}
-        </h3>
-
-        <!-- Description -->
-        {#if description}
-          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            {description}
-          </p>
-        {/if}
-
-        <!-- Progress Bar -->
-        {#if showProgress && status === 'loading'}
-          <div class="mt-3">
-            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-              <span>Progress</span>
-              <span>{Math.round($progressTween)}%</span>
+          <!-- Main Content -->
+          <div class="flex items-start gap-3">
+            <!-- Icon -->
+            <div class="flex-shrink-0">
+              {#if status === 'loading'}
+                <div class="relative">
+                  <svelte:component
+                    this={getOperationIcon(operation)}
+                    class="{iconSize[size]} {getStatusColor(status)} animate-pulse"
+                  />
+                  {#if operation === 'ai' || operation === 'gpu'}
+                    <div class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"></div>
+                  {/if}
+                </div>
+              {:else}
+                <svelte:component
+                  this={getStatusIcon(status)}
+                  class="{iconSize[size]} {getStatusColor(status)}"
+                />
+              {/if}
             </div>
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div
-                class="h-2 rounded-full transition-all duration-300 {operation === 'ai' ? 'bg-blue-500' : operation === 'gpu' ? 'bg-purple-500' : operation === 'cpu' ? 'bg-orange-500' : 'bg-green-500'}"
-                style="width: {$progressTween}%"
-              ></div>
+
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <!-- Title -->
+              <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">
+                {title}
+              </h3>
+
+              <!-- Description -->
+              {#if description}
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  {description}
+                </p>
+              {/if}
+
+              <!-- Progress Bar -->
+              {#if showProgress && status === 'loading'}
+                <div class="mt-3">
+                  <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    <span>Progress</span>
+                    <span>{Math.round($progressTween)}%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div
+                      class="h-2 rounded-full transition-all duration-300 {operation === 'ai' ? 'bg-blue-500' : operation === 'gpu' ? 'bg-purple-500' : operation === 'cpu' ? 'bg-orange-500' : 'bg-green-500'}"
+                      style="width: {$progressTween}%"
+                    ></div>
+                  </div>
+                </div>
+              {/if}
+
+              <!-- Time Information -->
+              {#if isLoading && (showEstimate || elapsedTime > 0)}
+                <div class="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                  {#if elapsedTime > 0}
+                    <span class="flex items-center gap-1">
+                      <Clock class="w-3 h-3" />
+                      Elapsed: {formatTime(elapsedTime)}
+                    </span>
+                  {/if}
+                  {#if showEstimate && estimatedTime > 0}
+                    <span>
+                      ETA: {formatTime(estimatedTime - elapsedTime)}
+                    </span>
+                  {/if}
+                </div>
+              {/if}
+
+              <!-- Operation Details -->
+              {#if operation && status === 'loading'}
+                <div class="mt-2">
+                  <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
+                    {operation === 'ai' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                     operation === 'gpu' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
+                     operation === 'cpu' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
+                     'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}">
+                    {operation.toUpperCase()} Processing
+                  </span>
+                </div>
+              {/if}
             </div>
           </div>
-        {/if}
-
-        <!-- Time Information -->
-        {#if isLoading && (showEstimate || elapsedTime > 0)}
-          <div class="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-            {#if elapsedTime > 0}
-              <span class="flex items-center gap-1">
-                <Clock class="w-3 h-3" />
-                Elapsed: {formatTime(elapsedTime)}
-              </span>
-            {/if}
-            {#if showEstimate && estimatedTime > 0}
-              <span>
-                ETA: {formatTime(estimatedTime - elapsedTime)}
-              </span>
-            {/if}
-          </div>
-        {/if}
-
-        <!-- Operation Details -->
-        {#if operation && status === 'loading'}
-          <div class="mt-2">
-            <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
-              {operation === 'ai' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-               operation === 'gpu' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
-               operation === 'cpu' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
-               'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}">
-              {operation.toUpperCase()} Processing
-            </span>
-          </div>
-        {/if}
+        </div>
       </div>
-    </div>
+    {:else}
+      <div class="p-6">
+        <!-- Main Content -->
+        <div class="flex items-start gap-3">
+          <!-- Icon -->
+          <div class="flex-shrink-0">
+            {#if status === 'loading'}
+              <div class="relative">
+                <svelte:component
+                  this={getOperationIcon(operation)}
+                  class="{iconSize[size]} {getStatusColor(status)} animate-pulse"
+                />
+                {#if operation === 'ai' || operation === 'gpu'}
+                  <div class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"></div>
+                {/if}
+              </div>
+            {:else}
+              <svelte:component
+                this={getStatusIcon(status)}
+                class="{iconSize[size]} {getStatusColor(status)}"
+              />
+            {/if}
+          </div>
 
-    {#if variant === 'overlay' || variant === 'modal'}
+          <!-- Content -->
+          <div class="flex-1 min-w-0">
+            <!-- Title -->
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">
+              {title}
+            </h3>
+
+            <!-- Description -->
+            {#if description}
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                {description}
+              </p>
+            {/if}
+
+            <!-- Progress Bar -->
+            {#if showProgress && status === 'loading'}
+              <div class="mt-3">
+                <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  <span>Progress</span>
+                  <span>{Math.round($progressTween)}%</span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div
+                    class="h-2 rounded-full transition-all duration-300 {operation === 'ai' ? 'bg-blue-500' : operation === 'gpu' ? 'bg-purple-500' : operation === 'cpu' ? 'bg-orange-500' : 'bg-green-500'}"
+                    style="width: {$progressTween}%"
+                  ></div>
+                </div>
+              </div>
+            {/if}
+
+            <!-- Time Information -->
+            {#if isLoading && (showEstimate || elapsedTime > 0)}
+              <div class="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                {#if elapsedTime > 0}
+                  <span class="flex items-center gap-1">
+                    <Clock class="w-3 h-3" />
+                    Elapsed: {formatTime(elapsedTime)}
+                  </span>
+                {/if}
+                {#if showEstimate && estimatedTime > 0}
+                  <span>
+                    ETA: {formatTime(estimatedTime - elapsedTime)}
+                  </span>
+                {/if}
+              </div>
+            {/if}
+
+            <!-- Operation Details -->
+            {#if operation && status === 'loading'}
+              <div class="mt-2">
+                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
+                  {operation === 'ai' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                   operation === 'gpu' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
+                   operation === 'cpu' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
+                   'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'}">
+                  {operation.toUpperCase()} Processing
+                </span>
+              </div>
+            {/if}
           </div>
         </div>
       </div>

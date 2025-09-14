@@ -371,7 +371,7 @@
   <!-- Authentication Status -->
   <NesCard>
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         {#if isAuthenticated}
           <span class="w-3 h-3 bg-green-500 rounded-full"></span>
           Authentication Status: Connected
@@ -391,7 +391,7 @@
       {:else if authError}
         <div class="text-red-600 space-y-2">
           <p><strong>Error:</strong> {authError}</p>
-          <Button class="bits-btn" onclick={goToLogin} variant="default">Go to Login</button>
+          <Button class="bits-btn" onclick={goToLogin} variant="default">Go to Login</Button>
         </div>
       {:else}
         <p class="text-gray-500">Checking authentication...</p>
@@ -408,25 +408,25 @@
       <div class="flex flex-wrap gap-3">
   <Button class="bits-btn" onclick={runAuthenticatedCRUDTest} disabled={isLoading || !isAuthenticated} variant="default">
           {isLoading ? '⏳ Testing...' : '🚀 Run Authenticated CRUD Test'}
-        </button>
+        </Button>
   <Button class="bits-btn" onclick={() => checkAuth()} disabled={isLoading} variant="secondary">
           🔍 Check Auth
-        </button>
+        </Button>
   <Button class="bits-btn" onclick={testAuthenticatedGET} disabled={isLoading || !isAuthenticated} variant="secondary">
           📋 Test GET
-        </button>
+        </Button>
   <Button class="bits-btn" onclick={testAuthenticatedPOST} disabled={isLoading || !isAuthenticated} variant="secondary">
           📝 Test POST
-        </button>
+        </Button>
   <Button class="bits-btn" onclick={() => testAuthenticatedPUT()} disabled={isLoading || !isAuthenticated} variant="secondary">
           ✏️ Test PUT
-        </button>
+        </Button>
   <Button class="bits-btn" onclick={() => testAuthenticatedDELETE()} disabled={isLoading || !isAuthenticated} variant="secondary">
           🗑️ Test DELETE
-        </button>
+        </Button>
   <Button class="bits-btn" onclick={clearResults} variant="ghost">
           🧹 Clear Results
-        </button>
+        </Button>
       </div>
 
       {#if !isAuthenticated}

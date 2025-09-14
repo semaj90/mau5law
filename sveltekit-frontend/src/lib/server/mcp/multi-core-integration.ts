@@ -48,8 +48,9 @@ export class MCPMultiCoreClient {
   private cores = new Map<string, MCPWorkerCore>();
   private activeTasks = new Map<string, MCPTask>();
   private baseUrl: string;
-  private healthCheckInterval: number | null = null;
-  private loadBalancingStrategy: 'round-robin' | 'least-loaded' | 'capability-based' = 'least-loaded';
+  private healthCheckInterval: NodeJS.Timeout | null = null;
+  private loadBalancingStrategy: 'round-robin' | 'least-loaded' | 'capability-based' =
+    'least-loaded';
 
   constructor(baseUrl: string = 'http://localhost:3002') {
     this.baseUrl = baseUrl;
@@ -58,11 +59,11 @@ export class MCPMultiCoreClient {
 
   private async initializeClient() {
     logger.info('[MCP Multi-Core] Initializing client...');
-    
+
     try {
       await this.discoverCores();
       this.startHealthChecking();
-      
+
       logger.info(`[MCP Multi-Core] Client initialized with ${this.cores.size} cores`);
     } catch (error) {
       logger.error('[MCP Multi-Core] Initialization failed:', error);
@@ -80,10 +81,10 @@ export class MCPMultiCoreClient {
       }
 
       const data = await response.json();
-      
+
       // Clear existing cores
       this.cores.clear();
-      
+
       // Add discovered cores
       if (data.cores && Array.isArray(data.cores)) {
         for (const coreData of data.cores) {
@@ -99,11 +100,11 @@ export class MCPMultiCoreClient {
             processingQueue: coreData.processingQueue || 0,
             averageResponseTime: coreData.averageResponseTime || 1000,
           };
-          
+
           this.cores.set(core.id, core);
         }
       }
-      
+
       logger.info(`[MCP Multi-Core] Discovered ${this.cores.size} worker cores`);
     } catch (error) {
       logger.error('[MCP Multi-Core] Core discovery failed:', error);
@@ -160,7 +161,7 @@ export class MCPMultiCoreClient {
   async submitTask(task: MCPTask): Promise<MCPResponse> {
     const startTime = Date.now();
     task.startTime = startTime;
-    
+
     try {
       // Select optimal core for the task
       const selectedCore = this.selectOptimalCore(task);
@@ -194,8 +195,8 @@ export class MCPMultiCoreClient {
 
       // Update core metrics
       selectedCore.currentLoad = Math.max(0, selectedCore.currentLoad - 1);
-      selectedCore.averageResponseTime = 
-        (selectedCore.averageResponseTime * 0.9) + (processingTime * 0.1);
+      selectedCore.averageResponseTime =
+        selectedCore.averageResponseTime * 0.9 + processingTime * 0.1;
 
       // Remove from active tasks
       this.activeTasks.delete(task.id);
@@ -216,13 +217,12 @@ export class MCPMultiCoreClient {
 
       logger.info(`[MCP Multi-Core] Task ${task.id} completed in ${processingTime}ms`);
       return mcpResponse;
-
     } catch (error) {
       // Clean up on error
       this.activeTasks.delete(task.id);
-      
+
       logger.error(`[MCP Multi-Core] Task ${task.id} failed:`, error);
-      
+
       return {
         success: false,
         taskId: task.id,
@@ -238,12 +238,12 @@ export class MCPMultiCoreClient {
    * Select the optimal worker core for a given task
    */
   private selectOptimalCore(task: MCPTask): MCPWorkerCore | null {
-    const availableCores = Array.from(this.cores.values())
-      .filter(core => 
-        core.status === 'online' && 
+    const availableCores = Array.from(this.cores.values()).filter(
+      (core) =>
+        core.status === 'online' &&
         core.currentLoad < core.maxLoad &&
         this.coreSupportsTask(core, task)
-      );
+    );
 
     if (availableCores.length === 0) {
       return null;
@@ -251,17 +251,17 @@ export class MCPMultiCoreClient {
 
     switch (this.loadBalancingStrategy) {
       case 'least-loaded':
-        return availableCores.reduce((best, current) => 
-          (current.currentLoad / current.maxLoad) < (best.currentLoad / best.maxLoad) ? current : best
+        return availableCores.reduce((best, current) =>
+          current.currentLoad / current.maxLoad < best.currentLoad / best.maxLoad ? current : best
         );
 
       case 'capability-based':
         // Prefer cores with specific capabilities for the task type
-        const capableCores = availableCores.filter(core => 
-          core.capabilities.includes(task.type) || core.capabilities.includes('all')
+        const capableCores = availableCores.filter(
+          (core) => core.capabilities.includes(task.type) || core.capabilities.includes('all')
         );
-        return capableCores.length > 0 
-          ? capableCores.reduce((best, current) => 
+        return capableCores.length > 0
+          ? capableCores.reduce((best, current) =>
               current.averageResponseTime < best.averageResponseTime ? current : best
             )
           : availableCores[0];
@@ -281,9 +281,8 @@ export class MCPMultiCoreClient {
     if (core.capabilities.includes('all')) {
       return true;
     }
-    
-    return core.capabilities.includes(task.type) || 
-           core.capabilities.length === 0; // If no specific capabilities, assume it supports all
+
+    return core.capabilities.includes(task.type) || core.capabilities.length === 0; // If no specific capabilities, assume it supports all
   }
 
   /**
@@ -291,10 +290,10 @@ export class MCPMultiCoreClient {
    */
   async submitParallelTasks(tasks: MCPTask[]): Promise<MCPResponse[]> {
     logger.info(`[MCP Multi-Core] Submitting ${tasks.length} parallel tasks`);
-    
-    const taskPromises = tasks.map(task => this.submitTask(task));
+
+    const taskPromises = tasks.map((task) => this.submitTask(task));
     const results = await Promise.allSettled(taskPromises);
-    
+
     return results.map((result, index) => {
       if (result.status === 'fulfilled') {
         return result.value;
@@ -330,16 +329,18 @@ export class MCPMultiCoreClient {
    */
   getPerformanceMetrics() {
     const cores = Array.from(this.cores.values());
-    const onlineCores = cores.filter(core => core.status === 'online');
-    
+    const onlineCores = cores.filter((core) => core.status === 'online');
+
     return {
       totalCores: cores.length,
       onlineCores: onlineCores.length,
       totalLoad: cores.reduce((sum, core) => sum + core.currentLoad, 0),
       totalCapacity: cores.reduce((sum, core) => sum + core.maxLoad, 0),
-      averageResponseTime: onlineCores.length > 0 
-        ? onlineCores.reduce((sum, core) => sum + core.averageResponseTime, 0) / onlineCores.length
-        : 0,
+      averageResponseTime:
+        onlineCores.length > 0
+          ? onlineCores.reduce((sum, core) => sum + core.averageResponseTime, 0) /
+            onlineCores.length
+          : 0,
       activeTasks: this.activeTasks.size,
       loadBalancingStrategy: this.loadBalancingStrategy,
     };
@@ -361,11 +362,11 @@ export class MCPMultiCoreClient {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = null;
     }
-    
+
     // Cancel any active tasks
     this.activeTasks.clear();
     this.cores.clear();
-    
+
     logger.info('[MCP Multi-Core] Client disconnected');
   }
 }

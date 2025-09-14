@@ -1,8 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import 'nes.css/css/nes.min.css';
-  import 'nes.css/css/nes.min.css';
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
   import {
@@ -11,10 +9,9 @@
     CheckCircle, FileText, MapPin, Calendar, Edit3
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
-  import * as Card from '$lib/components/ui/card';
-  import { ButtonBits, CardBits, DialogBits } from '$lib/components/ui/bits-ui';
+  import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
+  import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
+  import { Button, Card } from '$lib/components/ui/enhanced-bits';
   import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
 
   let isLoading = $state(false);
@@ -303,23 +300,14 @@
   }
 
   // derive user id (slug) from the page load data (falls back to demo)
-  let userId = $state('demo-user');
+  let userId = $derived($page?.data?.userId ?? $page?.data?.sessionId ?? 'demo-user');
 
-  // update `userId` whenever the `$page` store changes (runes-mode friendly)
-  const _unsub_userId = page.subscribe(($p) => {
-    userId = $p?.data?.userId ?? $p?.data?.sessionId ?? 'demo-user';
-  });
-
-  onDestroy(() => {
-    _unsub_userId();
-  });
-
-  function handleCaseCreated(caseId: string) {
+  function handleCaseCreated(caseId: string | number) {
     console.log('New case created:', caseId);
     // navigate to case or show a notification here
   }
 
-  function handleCaseCreatedEvent(e: CustomEvent<string>) {
+  function handleCaseCreatedEvent(e: CustomEvent<string | number>) {
     console.log('New case created (event):', e.detail);
   }
 </script>
@@ -329,11 +317,14 @@
   <meta name="description" content="Professional legal investigation platform with AI-powered analysis and intelligent case management" />
 </svelte:head>
 
-<ProductionLayout title="Command Center" subtitle="Central Operations Hub">
-  <div class="space-y-8">
-    <!-- Hero Statistics -->
-    <section aria-label="System statistics overview">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<EvidenceBoardLayout
+  title="LEGAL AI COMMAND CENTER"
+  caseInfo="CORPORATE ESPIONAGE INVESTIGATION"
+  demoMode={true}
+>
+  {#snippet children()}
+    <!-- Hero Statistics (Evidence Board Style) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <div class="yorha-3d-panel p-6">
         <div class="flex items-center justify-between mb-2">
           <div class="p-2 bg-blue-600/20 rounded-lg">
@@ -378,7 +369,6 @@
         <div class="text-sm text-gray-400">Evidence Items</div>
       </div>
     </div>
-    </section>
 
     <!-- Quick Actions -->
     <section aria-label="Quick action shortcuts">
@@ -698,7 +688,7 @@
         <div class="demo-routes-grid">
           {#each demoRoutes as route (route.path)}
             <div class="demo-route-modal">
-              <CardBits class="demo-route-card bg-gradient-to-br {getCategoryColor(route.category)} border-2 hover:scale-105 transition-all duration-300 cursor-pointer">
+              <Card.Root class="demo-route-card bg-gradient-to-br {getCategoryColor(route.category)} border-2 hover:scale-105 transition-all duration-300 cursor-pointer">
                 <a href={route.path} class="block p-6 group">
                   <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3">
@@ -744,7 +734,7 @@
                     </div>
                   </div>
                 </a>
-              </CardBits>
+              </Card.Root>
             </div>
           {/each}
         </div>
@@ -817,23 +807,83 @@
           {:else}
             <RAGAssistantChat
               userId={userId}
-              onCaseCreated={(caseId: string) => {
+              onCaseCreated={(caseId) => {
                 // ignore invalid sentinel id "0"
                 if (caseId === '0' || caseId === 0) {
                   console.warn('Received invalid case id "0" — ignoring.');
                   return;
                 }
                 handleCaseCreated(caseId);
+                // Also call the event handler
+                handleCaseCreatedEvent({ detail: caseId } as CustomEvent<string | number>);
               }}
-              on:caseCreated={handleCaseCreatedEvent}
             />
           {/if}
 
               </div>
               </div>
             </section>
-            </div>
-          </ProductionLayout>
+  {/snippet}
+
+  {#snippet rightPanel()}
+    <!-- Right Status Panel (matching Evidence Board) -->
+    <div class="space-y-4">
+      <!-- Active Tasks -->
+      <div class="nes-container is-rounded">
+        <h3 class="nes-text is-primary mb-4">📋 ACTIVE TASKS</h3>
+        <div class="space-y-2">
+          <EvidenceCard
+            title="Corporate Espionage Investigation"
+            description="Investigation active"
+            status="active"
+            type="case"
+          />
+          <EvidenceCard
+            title="Missing Person: Dr. Sarah Chen"
+            description="Person of interest located"
+            status="active"
+            type="person"
+          />
+          <EvidenceCard
+            title="Financial Fraud Analysis"
+            description="Analysis in progress"
+            status="pending"
+            type="analysis"
+          />
+          <EvidenceCard
+            title="Security Breach Analysis"
+            description="Completed investigation"
+            status="active"
+            type="security"
+          />
+        </div>
+      </div>
+
+      <!-- System Status -->
+      <div class="nes-container is-rounded">
+        <h3 class="nes-text is-success mb-4">⚡ SYSTEM STATUS</h3>
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between">
+            <span>Cases Active:</span>
+            <span class="nes-text is-primary">{systemMetrics.activeCases}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>AI Analyses:</span>
+            <span class="nes-text is-success">{systemMetrics.aiAnalyses}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Response Time:</span>
+            <span class="nes-text is-warning">{systemMetrics.responseTime}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Uptime:</span>
+            <span class="nes-text is-success">{systemMetrics.systemUptime}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  {/snippet}
+</EvidenceBoardLayout>
 
 <style>
   .yorha-3d-panel {

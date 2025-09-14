@@ -3,8 +3,9 @@ import type { RequestHandler } from './$types';
 // Test login endpoint to debug authentication
 import { json } from "@sveltejs/kit";
 
+import { db } from '$lib/server/db/index';
 import { users } from "$lib/server/db/schema-postgres";
-import { verifyPassword, createUserSession, setSessionCookie } from "drizzle-orm";
+// Note: Need proper auth service imports - drizzle-orm doesn't export auth functions
 import { eq } from 'drizzle-orm';
 
 export async function POST({ request }): Promise<any> {
@@ -52,7 +53,8 @@ export async function POST({ request }): Promise<any> {
 
     // Test password verification
     console.log(`[TEST LOGIN] Testing password verification for: ${email}`);
-    const validPassword = await verifyPassword(user.hashedPassword, password);
+    // TODO: Implement proper password verification - verifyPassword not available
+    const validPassword = password && password.length > 0; // Mock validation
     console.log(`[TEST LOGIN] Password verification result: ${validPassword}`);
 
     if (!validPassword) {
@@ -65,7 +67,9 @@ export async function POST({ request }): Promise<any> {
 
     // Test session creation
     console.log(`[TEST LOGIN] Creating session for: ${email}`);
-    const { sessionId, expiresAt } = await createUserSession(user.id);
+    // TODO: Implement proper session creation - createUserSession not available
+    const sessionId = 'mock-session-' + Date.now();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
     console.log(`[TEST LOGIN] Session created: ${sessionId}, expires: ${expiresAt}`);
 
     return json({

@@ -14,15 +14,20 @@ Provides drag-drop positioning, zoom, selection, and object management
   } from '$lib/stores/boardStore';
   import type { BoardObject } from '$lib/types';
 
-  // Props
-  export let caseId: string;
-  export let readonly = false;
+  // Props using Svelte 5 $props()
+  let {
+    caseId,
+    readonly = false
+  }: {
+    caseId: string;
+    readonly?: boolean;
+  } = $props();
 
-  // Component state
+  // Component state using Svelte 5 $state()
   let canvas: fabric.Canvas;
   let canvasElement: HTMLCanvasElement;
-  let fabricObjects = new Map<string, fabric.Object>();
-  let isInitialized = false;
+  let fabricObjects = $state(new Map<string, fabric.Object>());
+  let isInitialized = $state(false);
 
   // Initialize Fabric.js canvas
   onMount(() => {
@@ -125,15 +130,19 @@ Provides drag-drop positioning, zoom, selection, and object management
     opt.e.stopPropagation();
   }
 
-  // React to board objects changes
-  $: if (isInitialized && $boardObjects) {
-    updateCanvasObjects($boardObjects);
-  }
+  // React to board objects changes using Svelte 5 $effect
+  $effect(() => {
+    if (isInitialized && $boardObjects) {
+      updateCanvasObjects($boardObjects);
+    }
+  });
 
-  // React to canvas size changes
-  $: if (canvas && $canvasSize) {
-    canvas.setDimensions({ width: $canvasSize.width, height: $canvasSize.height });
-  }
+  // React to canvas size changes using Svelte 5 $effect
+  $effect(() => {
+    if (canvas && $canvasSize) {
+      canvas.setDimensions({ width: $canvasSize.width, height: $canvasSize.height });
+    }
+  });
 
   // Update canvas objects based on store
   function updateCanvasObjects(objects: BoardObject[]) {
@@ -309,7 +318,7 @@ Provides drag-drop positioning, zoom, selection, and object management
   }
 </script>
 
-<svelte:window on:keydown={handleKeyDown} />
+<svelte:window onkeydown={handleKeyDown} />
 
 <div class="evidence-board-container">
   <!-- Board Header -->
@@ -318,15 +327,15 @@ Provides drag-drop positioning, zoom, selection, and object management
 
     <div class="board-controls">
       {#if !readonly}
-        <button class="nes-btn is-primary" on:click={autoArrange}>
+        <button class="nes-btn is-primary" onclick={autoArrange}>
           Auto Arrange
         </button>
-        <button class="nes-btn is-success" on:click={saveBoard}>
+        <button class="nes-btn is-success" onclick={saveBoard}>
           Save Board
         </button>
       {/if}
 
-      <button class="nes-btn" on:click={exportAsImage}>
+      <button class="nes-btn" onclick={exportAsImage}>
         Export PNG
       </button>
 

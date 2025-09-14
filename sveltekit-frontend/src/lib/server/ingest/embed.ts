@@ -341,7 +341,7 @@ export async function embedContent(
   options: {
     audioPath?: string; // For audio content
   } = {}
-): Promise<EmbeddingResult> {
+): Promise<EmbeddingResult | BatchEmbeddingResult> {
   if (typeof content === 'string') {
     // Text content
     return await embedText(content);
@@ -367,7 +367,7 @@ export async function embedContent(
 
   return {
     success: false,
-    error: `Unsupported content type for embedding: ${contentType}`
+    error: `Unsupported content type for embedding: ${contentType}`,
   };
 }
 

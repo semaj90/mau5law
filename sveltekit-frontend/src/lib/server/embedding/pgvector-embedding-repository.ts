@@ -1,28 +1,39 @@
 
 // PgVector-backed implementation of EmbeddingRepository with Gemma embeddings priority.
 import { db } from '../db/index';
-import { legal_documents, documentChunks } from '../db/schema-postgres';
+import { legalDocuments, documentChunks } from '../db/schema-postgres';
 import { sql } from 'drizzle-orm';
 import { splitText } from './text-splitter';
 // Use the higher-level embedder which includes Redis/L1 caching and provider fallbacks
 import { embedText } from '../ai/embedder';
-import type { EmbeddingRepository, IngestionJobRequest, SimilarityQueryOptions, SimilarityResult, IngestionJobStatus } from './embedding-repository';
+import type {
+  EmbeddingRepository,
+  IngestionJobRequest,
+  SimilarityQueryOptions,
+  SimilarityResult,
+  IngestionJobStatus,
+} from './embedding-repository';
 import { enqueue, processNext as queueProcessNext, getStatus } from './ingestion-queue';
 
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 
 async function embedContent(text: string, model: string): Promise<number[]> {
   // Try Gemma embeddings first, with fallback chain
-  const models = model === DEFAULT_MODEL ? 
-    ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text'] : 
-    [model, 'embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text'];
-  
+  const models =
+    model === DEFAULT_MODEL
+      ? ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text']
+      : [model, 'embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text'];
+
   for (const tryModel of models) {
     try {
       // embedText handles cache lookups (memory/Redis) and caches results
       const emb = await embedText(text, tryModel);
-      const embedding = Array.isArray(emb) ? emb : (emb && typeof emb === 'object' && 'embedding' in emb ? (emb as any).embedding as number[] : []);
-      
+      const embedding = Array.isArray(emb)
+        ? emb
+        : emb && typeof emb === 'object' && 'embedding' in emb
+          ? ((emb as any).embedding as number[])
+          : [];
+
       if (embedding.length > 0) {
         return embedding;
       }
@@ -31,7 +42,7 @@ async function embedContent(text: string, model: string): Promise<number[]> {
       continue;
     }
   }
-  
+
   throw new Error(`All embedding models failed for text: ${text.substring(0, 100)}...`);
 }
 

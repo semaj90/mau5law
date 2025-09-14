@@ -3,7 +3,8 @@
  * Integrates neural topology scaffolds with SvelteKit 2, PostgreSQL, pgvector, and Drizzle ORM
  */
 
-import { db, sql } from '$lib/server/db/drizzle';
+import { db } from '$lib/server/db/drizzle';
+import { sql } from 'drizzle-orm';
 import {
   users,
   legalDocuments,
@@ -16,11 +17,28 @@ import type {
   QLoRATopologyState,
   QLoRAConfig,
   TopologyPrediction,
-  AssetPrediction,
-  HMMSOMState,
-  EmbeddingShard,
-  CHRManifest
+  // AssetPrediction, // Not exported
+  // HMMSOMState,     // Not exported
+  // EmbeddingShard,  // Not exported
+  // CHRManifest      // Not exported
 } from '$lib/ai/qlora-topology-predictor.js';
+
+// Stub types for missing exports
+interface AssetPrediction {
+  [key: string]: any; // Allow any properties
+}
+
+interface HMMSOMState {
+  [key: string]: any; // Allow any properties
+}
+
+interface EmbeddingShard {
+  [key: string]: any; // Allow any properties
+}
+
+interface CHRManifest {
+  [key: string]: any; // Allow any properties
+}
 
 // Mock data generators
 export const mockDataGenerators = {
@@ -33,7 +51,7 @@ export const mockDataGenerators = {
       id: string;
       title: string;
       content: string;
-      type: typeof documentTypes[number];
+      type: (typeof documentTypes)[number];
       status: 'active';
       confidenceLevel: number;
       riskLevel: 'low' | 'medium' | 'high';
@@ -73,9 +91,9 @@ export const mockDataGenerators = {
         try {
           const raw = await nomicEmbed(`${title}\n\n${content}`);
           if (Array.isArray(raw)) {
-            embedding = raw.slice(0, EMB_DIM);
-          } else if (raw instanceof Float32Array || raw instanceof Float64Array) {
-            embedding = Array.from(raw).slice(0, EMB_DIM);
+            embedding = (raw as number[]).slice(0, EMB_DIM);
+          } else if ((raw as any) instanceof Float32Array || (raw as any) instanceof Float64Array) {
+            embedding = Array.from(raw as Float32Array).slice(0, EMB_DIM);
           } else {
             // unexpected shape -> fallback
             embedding = makeRandomVec(i);
@@ -89,7 +107,9 @@ export const mockDataGenerators = {
 
       // Ensure correct dimensionality
       if (embedding.length < EMB_DIM) {
-        embedding = embedding.concat(Array.from({ length: EMB_DIM - embedding.length }, () => Math.random() * 2 - 1));
+        embedding = embedding.concat(
+          Array.from({ length: EMB_DIM - embedding.length }, () => Math.random() * 2 - 1)
+        );
       } else if (embedding.length > EMB_DIM) {
         embedding = embedding.slice(0, EMB_DIM);
       }
@@ -101,18 +121,21 @@ export const mockDataGenerators = {
         type: docType,
         status: 'active' as const,
         confidenceLevel: 0.8 + Math.random() * 0.2,
-        riskLevel: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)] as 'low' | 'medium' | 'high',
+        riskLevel: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)] as
+          | 'low'
+          | 'medium'
+          | 'high',
         priority: Math.floor(Math.random() * 255),
         metadata: {
           complexity: Math.random(),
           wordCount: 500 + Math.floor(Math.random() * 2000),
           legalDomain: docType,
           jurisdiction: 'US',
-          practiceArea: 'corporate'
+          practiceArea: 'corporate',
         },
         embedding,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       mockDocs.push(doc);
@@ -135,20 +158,24 @@ export const mockDataGenerators = {
         documentType: docType,
         complexity: Math.random(),
         userPattern: {
-          sessionType: ['research', 'analysis', 'drafting', 'review'][Math.floor(Math.random() * 4)] as any,
+          sessionType: ['research', 'analysis', 'drafting', 'review'][
+            Math.floor(Math.random() * 4)
+          ] as any,
           focusIntensity: Math.random(),
           documentFlow: [docType],
           interactionVelocity: Math.random() * 5,
           qualityExpectation: 0.7 + Math.random() * 0.3,
-          timeConstraints: Math.random()
+          timeConstraints: Math.random(),
         },
-        contextEmbedding: new Float32Array(Array.from({ length: 1536 }, () => Math.random() * 2 - 1)),
+        contextEmbedding: new Float32Array(
+          Array.from({ length: 1536 }, () => Math.random() * 2 - 1)
+        ),
         temporalFeatures: {
           timeOfDay: Math.floor(Math.random() * 24),
           dayOfWeek: Math.floor(Math.random() * 7),
-          seasonality: Math.sin(2 * Math.PI * Date.now() / (365 * 24 * 60 * 60 * 1000)),
+          seasonality: Math.sin((2 * Math.PI * Date.now()) / (365 * 24 * 60 * 60 * 1000)),
           workloadPressure: Math.random(),
-          recentPerformance: 0.6 + Math.random() * 0.4
+          recentPerformance: 0.6 + Math.random() * 0.4,
         },
         currentConfig: {
           rank: 8 + Math.floor(Math.random() * 24),
@@ -158,9 +185,9 @@ export const mockDataGenerators = {
           learningRate: 1e-4 + Math.random() * 2e-4,
           batchSize: 2 + Math.floor(Math.random() * 6),
           epochs: 2 + Math.floor(Math.random() * 6),
-          quantizationBits: [4, 8][Math.floor(Math.random() * 2)]
+          quantizationBits: [4, 8][Math.floor(Math.random() * 2)] as 4 | 8,
         },
-        performanceHistory: []
+        performanceHistory: [],
       };
       states.push(state);
     }
@@ -187,17 +214,17 @@ export const mockDataGenerators = {
                 width: 20,
                 height: 20,
                 timestamp: Date.now(),
-                hash: `hash_${i}_${Date.now()}`
+                hash: `hash_${i}_${Date.now()}`,
               },
               userAction: ['search', 'analyze', 'draft', 'review'][Math.floor(Math.random() * 4)],
               assetTypes: [assetTypes[Math.floor(Math.random() * assetTypes.length)]],
               confidence: 0.7 + Math.random() * 0.3,
-              frequency: Math.floor(Math.random() * 100)
+              frequency: Math.floor(Math.random() * 100),
             },
             probability: 0.6 + Math.random() * 0.4,
             timeToStateMs: 100 + Math.random() * 2000,
-            assetIds: [`asset_${i}_1`, `asset_${i}_2`]
-          }
+            assetIds: [`asset_${i}_1`, `asset_${i}_2`],
+          },
         ],
         recommendedAssets: [
           {
@@ -206,13 +233,13 @@ export const mockDataGenerators = {
             confidence: 0.8 + Math.random() * 0.2,
             preloadPriority: Math.floor(Math.random() * 10),
             estimatedLoadTimeMs: 50 + Math.random() * 500,
-            cacheStrategy: ['precompute', 'lazy', 'hybrid'][Math.floor(Math.random() * 3)] as any
-          }
+            cacheStrategy: ['precompute', 'lazy', 'hybrid'][Math.floor(Math.random() * 3)] as any,
+          },
         ],
         chrPatternIds: [`chr_pattern_${i}`],
         totalConfidence: 0.75 + Math.random() * 0.25,
         predictionLatencyMs: 5 + Math.random() * 20,
-        cacheHitRatio: 0.6 + Math.random() * 0.4
+        cacheHitRatio: 0.6 + Math.random() * 0.4,
       };
       predictions.push(prediction);
     }
@@ -231,7 +258,7 @@ export const mockDataGenerators = {
         id: `shard_${Date.now()}_${i}`,
         dim: 1536,
         vec: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
       shards.push(shard);
     }
@@ -250,13 +277,13 @@ export const mockDataGenerators = {
         id: `chr_manifest_${Date.now()}_${i}`,
         keys: [`chr_key_${i}_1`, `chr_key_${i}_2`, `chr_key_${i}_3`],
         ttlSec: 300 + Math.random() * 3600,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
       manifests.push(manifest);
     }
 
     return manifests;
-  }
+  },
 };
 
 // Database sync operations
@@ -275,33 +302,37 @@ export const databaseSync = {
       for (let i = 0; i < mockDocs.length; i += batchSize) {
         const batch = mockDocs.slice(i, i + batchSize);
 
-        await db.insert(legalDocuments).values(batch.map(doc => ({
-          id: doc.id,
-          title: doc.title,
-          content: doc.content,
-          documentType: doc.type,
-          status: doc.status,
-          confidenceLevel: doc.confidenceLevel,
-          riskLevel: doc.riskLevel,
-          priority: doc.priority,
-          metadata: doc.metadata,
-          createdAt: doc.createdAt,
-          updatedAt: doc.updatedAt
-        })));
+        await db.insert(legalDocuments).values(
+          batch.map((doc) => ({
+            id: doc.id,
+            title: doc.title,
+            content: doc.content,
+            documentType: doc.type,
+            status: doc.status,
+            confidenceLevel: doc.confidenceLevel,
+            riskLevel: doc.riskLevel,
+            priority: doc.priority,
+            metadata: doc.metadata,
+            createdAt: doc.createdAt,
+            updatedAt: doc.updatedAt,
+          }))
+        );
 
         // Insert vector embeddings separately
-        await db.insert(vectorEmbeddings).values(batch.map(doc => ({
-          id: `embedding_${doc.id}`,
-          documentId: doc.id,
-          embedding: sql`${JSON.stringify(doc.embedding)}::vector`,
-          model: 'mock_ada_002',
-          dimensions: 1536,
-          metadata: {
-            source: 'mock_generator',
-            documentType: doc.type,
-            confidence: doc.confidenceLevel
-          }
-        })));
+        await db.insert(vectorEmbeddings).values(
+          batch.map((doc) => ({
+            id: `embedding_${doc.id}`,
+            documentId: doc.id,
+            embedding: sql`${JSON.stringify(doc.embedding)}::vector`,
+            model: 'mock_ada_002',
+            dimensions: 1536,
+            metadata: {
+              source: 'mock_generator',
+              documentType: doc.type,
+              confidence: doc.confidenceLevel,
+            },
+          }))
+        );
       }
 
       console.log(`✅ Synced ${mockDocs.length} mock legal documents with vector embeddings`);
@@ -321,26 +352,28 @@ export const databaseSync = {
     const mockStates = mockDataGenerators.generateMockQLoRAStates(10);
 
     try {
-      await db.insert(qloraTrainingJobs).values(mockStates.map((state, index) => ({
-        id: `job_${state.id}`,
-        documentId: `mock_doc_${Date.now()}_${index}`,
-        configJson: state.currentConfig,
-        status: 'completed' as const,
-        topologyStateJson: {
-          id: state.id,
-          documentType: state.documentType,
-          complexity: state.complexity,
-          userPattern: state.userPattern,
-          temporalFeatures: state.temporalFeatures
-        },
-        accuracy: 0.85 + Math.random() * 0.15,
-        trainingTime: 1000 + Math.random() * 5000,
-        metadata: {
-          mockData: true,
-          generatedAt: new Date().toISOString(),
-          predictionAccuracy: 0.9 + Math.random() * 0.1
-        }
-      })));
+      await db.insert(qloraTrainingJobs).values(
+        mockStates.map((state, index) => ({
+          id: `job_${state.id}`,
+          documentId: `mock_doc_${Date.now()}_${index}`,
+          configJson: state.currentConfig,
+          status: 'completed' as const,
+          topologyStateJson: {
+            id: state.id,
+            documentType: state.documentType,
+            complexity: state.complexity,
+            userPattern: state.userPattern,
+            temporalFeatures: state.temporalFeatures,
+          },
+          accuracy: 0.85 + Math.random() * 0.15,
+          trainingTime: 1000 + Math.random() * 5000,
+          metadata: {
+            mockData: true,
+            generatedAt: new Date().toISOString(),
+            predictionAccuracy: 0.9 + Math.random() * 0.1,
+          },
+        }))
+      );
 
       console.log(`✅ Synced ${mockStates.length} QLoRA training jobs`);
       return { success: true, count: mockStates.length };
@@ -359,21 +392,23 @@ export const databaseSync = {
     const mockPredictions = mockDataGenerators.generateMockAssetPredictions(15);
 
     try {
-      await db.insert(predictiveAssetCache).values(mockPredictions.map((prediction, index) => ({
-        id: `cache_${Date.now()}_${index}`,
-        userId: 'mock_user',
-        assetId: prediction.recommendedAssets[0]?.assetId || `asset_${index}`,
-        predictionData: prediction,
-        confidence: prediction.totalConfidence,
-        hitCount: Math.floor(Math.random() * 50),
-        lastHit: new Date(),
-        ttl: new Date(Date.now() + 3600000), // 1 hour TTL
-        metadata: {
-          cacheStrategy: prediction.recommendedAssets[0]?.cacheStrategy,
-          chrPatternIds: prediction.chrPatternIds,
-          predictionLatency: prediction.predictionLatencyMs
-        }
-      })));
+      await db.insert(predictiveAssetCache).values(
+        mockPredictions.map((prediction, index) => ({
+          id: `cache_${Date.now()}_${index}`,
+          userId: 'mock_user',
+          assetId: prediction.recommendedAssets[0]?.assetId || `asset_${index}`,
+          predictionData: prediction,
+          confidence: prediction.totalConfidence,
+          hitCount: Math.floor(Math.random() * 50),
+          lastHit: new Date(),
+          ttl: new Date(Date.now() + 3600000), // 1 hour TTL
+          metadata: {
+            cacheStrategy: prediction.recommendedAssets[0]?.cacheStrategy,
+            chrPatternIds: prediction.chrPatternIds,
+            predictionLatency: prediction.predictionLatencyMs,
+          },
+        }))
+      );
 
       console.log(`✅ Synced ${mockPredictions.length} predictive asset cache entries`);
       return { success: true, count: mockPredictions.length };
@@ -381,7 +416,7 @@ export const databaseSync = {
       console.error('❌ Failed to sync predictive asset cache:', error);
       return { success: false, error: error.message };
     }
-  }
+  },
 };
 
 // Vector search operations
@@ -389,7 +424,11 @@ export const vectorSearch = {
   /**
    * Perform similarity search using pgvector
    */
-  async performSimilaritySearch(queryEmbedding: number[], limit: number = 5, threshold: number = 0.7) {
+  async performSimilaritySearch(
+    queryEmbedding: number[],
+    limit: number = 5,
+    threshold: number = 0.7
+  ) {
     try {
       const results = await db
         .select({
@@ -400,13 +439,17 @@ export const vectorSearch = {
             title: legalDocuments.title,
             content: legalDocuments.content,
             documentType: legalDocuments.documentType,
-            confidenceLevel: legalDocuments.confidenceLevel
-          }
+            confidenceLevel: legalDocuments.confidenceLevel,
+          },
         })
         .from(vectorEmbeddings)
         .innerJoin(legalDocuments, eq(vectorEmbeddings.documentId, legalDocuments.id))
-        .where(sql`1 - (${vectorEmbeddings.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`}) > ${threshold}`)
-        .orderBy(sql`${vectorEmbeddings.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`}`)
+        .where(
+          sql`1 - (${vectorEmbeddings.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`}) > ${threshold}`
+        )
+        .orderBy(
+          sql`${vectorEmbeddings.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`}`
+        )
         .limit(limit);
 
       return results;
@@ -428,7 +471,7 @@ export const vectorSearch = {
           documentId: vectorEmbeddings.documentId,
           embedding: vectorEmbeddings.embedding,
           model: vectorEmbeddings.model,
-          dimensions: vectorEmbeddings.dimensions
+          dimensions: vectorEmbeddings.dimensions,
         })
         .from(vectorEmbeddings)
         .where(inArray(vectorEmbeddings.documentId, documentIds));
@@ -438,7 +481,7 @@ export const vectorSearch = {
       console.error('❌ Failed to get document embeddings:', error);
       throw error;
     }
-  }
+  },
 };
 
 // Comprehensive sync orchestrator
@@ -453,11 +496,14 @@ export const syncOrchestrator = {
       legalDocuments: await databaseSync.syncMockLegalDocuments(),
       qloraTraining: await databaseSync.syncQLoRATrainingData(),
       predictiveCache: await databaseSync.syncPredictiveAssetCache(),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     const totalSynced = Object.values(results)
-      .filter(r => typeof r === 'object' && r.success)
+      .filter(
+        (r): r is { success: boolean; count: number } =>
+          typeof r === 'object' && r.success && 'count' in r
+      )
       .reduce((sum, r) => sum + (r.count || 0), 0);
 
     console.log(`✅ Full sync complete: ${totalSynced} records synced`);
@@ -469,8 +515,8 @@ export const syncOrchestrator = {
       performance: {
         syncDuration: '~2-5 seconds',
         cachePrewarmed: true,
-        vectorIndexReady: true
-      }
+        vectorIndexReady: true,
+      },
     };
   },
 
@@ -483,7 +529,7 @@ export const syncOrchestrator = {
       pgvector: false,
       drizzle: false,
       redis: false,
-      mockDataReady: false
+      mockDataReady: false,
     };
 
     try {
@@ -492,7 +538,9 @@ export const syncOrchestrator = {
       checks.database = true;
 
       // Test pgvector extension
-      const vectorTest = await sql<{ available: boolean }>`SELECT true as available WHERE EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'vector')`;
+      const vectorTest = await sql<{
+        available: boolean;
+      }>`SELECT true as available WHERE EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'vector')`;
       checks.pgvector = vectorTest.length > 0;
 
       // Test Drizzle ORM functionality
@@ -506,7 +554,7 @@ export const syncOrchestrator = {
       return {
         status: Object.values(checks).every(Boolean) ? 'healthy' : 'partial',
         checks,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     } catch (error) {
       console.error('❌ Health check failed:', error);
@@ -514,8 +562,8 @@ export const syncOrchestrator = {
         status: 'error',
         checks,
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
-  }
+  },
 };

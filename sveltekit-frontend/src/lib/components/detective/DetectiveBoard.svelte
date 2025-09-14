@@ -2,18 +2,12 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   	// Badge replaced with span - not available in enhanced-bits
-  	import Button from '$lib/components/ui/button/Button.svelte';
-  	import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  	import * as ContextMenu from '$lib/components/ui/context-menu';
+  	import Button from '$lib/components/ui/Button.svelte';
+  	import * as Card from '$lib/components/ui/card';
   	import { page } from '$app/stores';
   	import Fuse from 'fuse.js';
   	import { dndzone } from 'svelte-dnd-action';
-  	import { onDestroy, onMount } from 'svelte';
+  	import { onMount } from 'svelte';
   	import { Activity, Database, MessageSquare, Cpu, Zap, HardDrive } from 'lucide-svelte';
 
   	// SVELTE 5: External, app-wide stores are still valid.
@@ -88,17 +82,20 @@
 
   	// --- Component Logic & Functions ---
 
+  	// Subscribe to evidence store using $effect (runs automatically)
+  	$effect(() => {
+  		const unsubscribeEvidence = evidenceStore.subscribe((value) => {
+  			evidenceStoreState = value;
+  		});
+  		return () => {
+  			unsubscribeEvidence();
+  		};
+  	});
+
   	// Enhanced system initialization
   	onMount(async () => {
   		await initializeEnhancedSystems();
   		setupRealTimeUpdates();
-  		// Subscribe to evidence store
-  		const unsubscribeEvidence = evidenceStore.subscribe((value) => {
-  			evidenceStoreState = value;
-  		});
-  		onDestroy(() => {
-  			unsubscribeEvidence();
-  		});
   	});
 
   	async function initializeEnhancedSystems() {
@@ -407,7 +404,7 @@
 
 <div class="w-full h-full min-h-screen bg-background detective-board-nes">
 	<!-- Header -->
-	<Card class="mb-6 nes-container is-rounded">
+	<Card.Root class="mb-6 nes-container is-rounded">
 		<div class="yorha-panel-header">
 			<div class="flex justify-between items-center">
 				<div class="flex items-center gap-4">
@@ -425,22 +422,26 @@
 				<div class="flex items-center gap-4">
 					<!-- View Mode Switcher -->
 					<div class="flex gap-2">
-						<Button class="bits-btn"
-							variant={viewMode === 'columns' ? 'default' : 'outline'}
-							size="sm"
+						<button
+							class="bits-btn"
+							class:button-default={viewMode === 'columns'}
+							class:button-outline={viewMode !== 'columns'}
 							onclick={() => switchViewMode('columns')}
+							aria-pressed={viewMode === 'columns'}
 						>
 							<span class="mr-2">📋</span>
 							Columns
-						</Button>
-						<Button class="bits-btn"
-							variant={viewMode === 'canvas' ? 'default' : 'outline'}
-							size="sm"
+						</button>
+						<button
+							class="bits-btn"
+							class:button-default={viewMode === 'canvas'}
+							class:button-outline={viewMode !== 'canvas'}
 							onclick={() => switchViewMode('canvas')}
+							aria-pressed={viewMode === 'canvas'}
 						>
 							<span class="mr-2">🎨</span>
 							Canvas
-						</Button>
+						</button>
 					</div>
 
 					<!-- SVELTE 5: No more `$` prefix for store subscriptions in the template -->
@@ -473,7 +474,7 @@
 				</div>
 			</div>
 		</div>
-	</Card>
+	</Card.Root>
 
 	<!-- Main Board Area -->
 	<main class="flex-1">
@@ -481,7 +482,7 @@
 			<!-- Columns Container -->
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
 				{#each columns as column (column.id)}
-					<Card class="h-fit nes-container is-rounded">
+					<Card.Root class="h-fit nes-container is-rounded">
 						<div class="yorha-panel-header pb-3">
 							<div class="flex justify-between items-center">
 								<h3 class="nes-text is-primary text-lg flex items-center gap-2">
@@ -531,12 +532,12 @@
 								{/each}
 							</div>
 						</div>
-					</Card>
+					</Card.Root>
 				{/each}
 			</div>
 		{:else}
 			<!-- Canvas Container -->
-			<Card class="h-[calc(100vh-200px)] nes-container is-rounded">
+			<Card.Root class="h-[calc(100vh-200px)] nes-container is-rounded">
 				<div class="yorha-panel-content p-0 h-full">
 					<div
 						bind:this={canvasContainer}
@@ -594,7 +595,7 @@
 						{/if}
 					</div>
 				</div>
-			</Card>
+			</Card.Root>
 		{/if}
 	</main>
 </div>

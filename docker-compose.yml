@@ -1,4 +1,49 @@
+version: '3.8'
+
 services:
+  # SvelteKit Frontend Service
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: legal-ai-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+      - PUBLIC_API_URL=http://localhost:8080
+      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=redis
+      - OLLAMA_URL=http://host.docker.internal:11434
+    volumes:
+      - ./src:/app/src
+      - ./static:/app/static
+      - ./svelte.config.js:/app/svelte.config.js
+      - ./vite.config.js:/app/vite.config.js
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - legal-ai-network
+
+  # Caddy Reverse Proxy
+  caddy:
+    image: caddy:2-alpine
+    container_name: legal-ai-caddy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+    networks:
+      - legal-ai-network
+
   postgres:
     image: pgvector/pgvector:pg17
     container_name: legal-ai-postgres
@@ -149,6 +194,10 @@ volumes:
   qdrant_data:
     driver: local
   fastapi_cache:
+    driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
     driver: local
 
 networks:

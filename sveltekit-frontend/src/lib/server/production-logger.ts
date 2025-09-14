@@ -28,6 +28,12 @@ export interface LogContext {
   eventLoopDelay?: string | number;
   serviceHealth?: string | number;
   processingTime?: number;
+  conversationId?: string;
+  messageId?: string;
+  title?: string;
+  role?: string;
+  newTitle?: string;
+  contentLength?: number;
 }
 
 export interface LogEntry {

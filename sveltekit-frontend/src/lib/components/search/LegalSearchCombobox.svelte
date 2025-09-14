@@ -53,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
   let { similarityThreshold = $bindable() } = $props(); // 0.7;
   let { includeMetadata = $bindable() } = $props(); // true;
   let { disabled = $bindable() } = $props(); // false;
-  let { class = $bindable() } = $props(); // "";
+  let { class: className = $bindable("") } = $props();
   // State
   let open = $state(false);
   let inputValue = value;
@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
     : searchResults;
 </script>
 
-<div class={cn("relative w-full", class)}>
+<div class={cn("relative w-full", className)}>
   <Combobox.Root bind:open bind:inputValue {disabled} class="w-full">
     
     <!-- Search Input -->

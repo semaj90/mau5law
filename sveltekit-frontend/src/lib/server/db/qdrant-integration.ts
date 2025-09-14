@@ -8,7 +8,13 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import postgres from 'postgres';
 import { eq, and, sql } from 'drizzle-orm';
 import crypto from "crypto";
-import { legalDocuments, cases, vectorMetadata, type Case } from './schema-postgres';
+import {
+  legalDocuments,
+  cases,
+  vectorMetadata,
+  type Case,
+  type LegalDocument,
+} from './schema-postgres';
 
 // ============================================================================
 // CONFIGURATION
@@ -32,14 +38,11 @@ export interface PostgreSQLConfig {
 // ============================================================================
 
 export class QdrantPostgreSQLService {
-  private qdrant: QdrantClient;
-  private postgres: postgres.Sql;
+  private qdrant: InstanceType<typeof QdrantClient>;
+  private postgres: ReturnType<typeof postgres>;
   private db: ReturnType<typeof drizzle>;
 
-  constructor(
-    qdrantConfig: QdrantConfig,
-    postgresConfig: PostgreSQLConfig
-  ) {
+  constructor(qdrantConfig: QdrantConfig, postgresConfig: PostgreSQLConfig) {
     // Initialize Qdrant client
     this.qdrant = new QdrantClient({
       url: `http://${qdrantConfig.host}:${qdrantConfig.port}`,
@@ -74,8 +77,7 @@ export class QdrantPostgreSQLService {
       schema: {
         legalDocuments,
         cases,
-        vectorOperations,
-        qdrantCollections,
+        vectorMetadata,
       },
     });
   }
@@ -92,7 +94,7 @@ export class QdrantPostgreSQLService {
     try {
       // Check if collection exists in Qdrant
       const collections = await this.qdrant.getCollections();
-      const exists = collections.collections.some(c => c.name === collectionName);
+      const exists = collections.collections.some((c) => c.name === collectionName);
 
       if (!exists) {
         // Create collection in Qdrant
@@ -118,22 +120,28 @@ export class QdrantPostgreSQLService {
 
       // Ensure collection record in PostgreSQL
       await this.db
-        .insert(qdrantCollections)
+        .insert(vectorMetadata)
         .values({
-          name: collectionName,
-          vectorSize,
-          distance,
-          status: 'active',
-        })
-        .onConflictDoUpdate({
-          target: qdrantCollections.name,
-          set: {
+          documentId: `collection_${collectionName}`,
+          collectionName: collectionName,
+          metadata: {
             vectorSize,
             distance,
+            status: 'active',
+          },
+          contentHash: crypto.createHash('md5').update(collectionName).digest('hex'),
+        })
+        .onConflictDoUpdate({
+          target: vectorMetadata.collectionName,
+          set: {
+            metadata: {
+              vectorSize,
+              distance,
+              status: 'active',
+            },
             updatedAt: new Date(),
           },
         });
-
     } catch (error: any) {
       console.error(`❌ Failed to ensure collection ${collectionName}:`, error);
       throw error;
@@ -148,13 +156,18 @@ export class QdrantPostgreSQLService {
     const operationId = crypto.randomUUID();
 
     try {
-      // Create operation record
-      await this.db.insert(vectorOperations).values({
-        id: operationId,
-        operationType: 'sync',
-        entityType: 'document',
-        entityId: documentId,
-        status: 'processing',
+      // Create operation record in vectorMetadata
+      await this.db.insert(vectorMetadata).values({
+        documentId: documentId,
+        collectionName: 'operations',
+        metadata: {
+          operationId,
+          operationType: 'sync',
+          entityType: 'document',
+          entityId: documentId,
+          status: 'processing',
+        },
+        contentHash: operationId,
       });
 
       // Get document with embeddings
@@ -177,15 +190,19 @@ export class QdrantPostgreSQLService {
       await this.ensureCollection(doc.qdrantCollection || 'legal_documents');
 
       // Create Qdrant point
-      const point = createQdrantPoint(documentId, doc.contentEmbedding, {
-        title: doc.title,
-        document_type: doc.documentType,
-        practice_area: doc.practiceArea,
-        case_id: doc.caseId,
-        user_id: doc.userId,
-        created_at: doc.createdAt?.toISOString(),
-        metadata: doc.metadata,
-      });
+      const point = {
+        id: documentId,
+        vector: doc.contentEmbedding,
+        payload: {
+          title: doc.title,
+          document_type: doc.documentType,
+          practice_area: doc.practiceArea,
+          case_id: doc.caseId,
+          user_id: doc.userId,
+          created_at: doc.createdAt?.toISOString(),
+          metadata: doc.metadata,
+        },
+      };
 
       // Upsert to Qdrant
       await this.qdrant.upsert(doc.qdrantCollection || 'legal_documents', {
@@ -202,32 +219,39 @@ export class QdrantPostgreSQLService {
         })
         .where(eq(legalDocuments.id, documentId));
 
-      // Update operation as completed
+      // Update operation as completed in vectorMetadata
       await this.db
-        .update(vectorOperations)
+        .update(vectorMetadata)
         .set({
-          status: 'completed',
-          qdrantSynced: true,
-          qdrantSyncedAt: new Date(),
-          completedAt: new Date(),
+          metadata: {
+            operationId,
+            status: 'completed',
+            qdrantSynced: true,
+            qdrantSyncedAt: new Date(),
+            completedAt: new Date(),
+          },
+          updatedAt: new Date(),
         })
-        .where(eq(vectorOperations.id, operationId));
+        .where(eq(vectorMetadata.contentHash, operationId));
 
       console.log(`✅ Synced document ${documentId} to Qdrant`);
       return true;
-
     } catch (error: any) {
       console.error(`❌ Failed to sync document ${documentId}:`, error);
 
-      // Update operation as failed
+      // Update operation as failed in vectorMetadata
       await this.db
-        .update(vectorOperations)
+        .update(vectorMetadata)
         .set({
-          status: 'failed',
-          error: error.message,
-          completedAt: new Date(),
+          metadata: {
+            operationId,
+            status: 'failed',
+            error: error.message,
+            completedAt: new Date(),
+          },
+          updatedAt: new Date(),
         })
-        .where(eq(vectorOperations.id, operationId));
+        .where(eq(vectorMetadata.contentHash, operationId));
 
       return false;
     }
@@ -438,9 +462,8 @@ export class QdrantPostgreSQLService {
         offset += batchSize;
 
         // Add small delay to prevent overwhelming the services
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
-
     } catch (error: any) {
       results.errors.push(`Batch sync error: ${error.message}`);
     }
@@ -478,7 +501,7 @@ export class QdrantPostgreSQLService {
     try {
       const collectionsResponse = await this.qdrant.getCollections();
       qdrant = true;
-      collections = collectionsResponse.collections.map(c => c.name);
+      collections = collectionsResponse.collections.map((c) => c.name);
     } catch (error: any) {
       console.error('Qdrant health check failed:', error);
     }

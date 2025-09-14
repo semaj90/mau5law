@@ -15,8 +15,8 @@ const schemaPromise = import('../db/schema-postgres.js').then(m => m).catch(() =
 
 // Enhanced RabbitMQ Manager with improved error handling and type safety
 export class RabbitMQManager extends EventEmitter {
-  private connection: Connection | null = null;
-  private channel: Channel | null = null;
+  private connection: any = null;
+  private channel: any = null;
   private embeddings: OllamaEmbeddings;
   private isInitialized = false;
   private reconnectAttempts = 0;
@@ -49,7 +49,7 @@ export class RabbitMQManager extends EventEmitter {
 
   constructor(private url = 'amqp://localhost:5672') {
     super();
-    
+
     // Initialize Gemma embeddings with centralized config
     this.embeddings = new OllamaEmbeddings({
       baseUrl: ENV_CONFIG.OLLAMA_URL,
@@ -95,18 +95,18 @@ export class RabbitMQManager extends EventEmitter {
   private async loadServices(): Promise<void> {
     try {
       console.log('📦 Loading services...');
-      
+
       this.redisService = await redisServicePromise;
       this.lokiRedisCache = await lokiRedisPromise;
       this.enhancedRAGPipeline = await ragPipelinePromise;
       this.instantSearchEngine = await searchEnginePromise;
-      
+
       const dbModule = await dbPromise;
       if (dbModule) {
         this.db = dbModule.db;
         this.sql = dbModule.sql;
       }
-      
+
       this.schema = await schemaPromise;
 
       console.log('✅ Services loaded successfully');
@@ -401,7 +401,9 @@ export class RabbitMQManager extends EventEmitter {
       if (this.enhancedRAGPipeline?.indexDocument) {
         const indexResult = await this.enhancedRAGPipeline.indexDocument(docData);
         if (indexResult.success) {
-          console.log(`✅ Document ${document_id} indexed with ${indexResult.chunksCreated} chunks`);
+          console.log(
+            `✅ Document ${document_id} indexed with ${indexResult.chunksCreated} chunks`
+          );
         }
       }
 
@@ -800,7 +802,9 @@ export class RabbitMQManager extends EventEmitter {
     this.reconnectAttempts++;
     const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
 
-    console.log(`🔄 Reconnection attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts} in ${delay}ms`);
+    console.log(
+      `🔄 Reconnection attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts} in ${delay}ms`
+    );
 
     setTimeout(async () => {
       try {

@@ -16,6 +16,7 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
+import { json } from '@sveltejs/kit';
 import { URL } from "url";
 
 import { ContextService } from "$lib/services/context-service";

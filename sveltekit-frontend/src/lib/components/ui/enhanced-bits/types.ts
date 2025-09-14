@@ -32,6 +32,84 @@ export type ComponentPriority = 'high' | 'medium' | 'low';
 export type ComponentCategory = 'form' | 'display' | 'interaction' | 'layout';
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
 
+// Legal AI specific types
+export interface EvidenceItem {
+  id: string;
+  title: string;
+  type: "document" | "image" | "video" | "audio" | "transcript" | "digital";
+  priority: "critical" | "high" | "medium" | "low";
+  confidence?: number;
+  metadata?: Record<string, unknown>;
+  createdAt: Date;
+  updatedAt: Date;
+  thumbnailUrl?: string;
+  hash?: string;
+}
+
+export interface CaseData {
+  id: string;
+  title: string;
+  type: string;
+  status: "active" | "closed" | "pending";
+  evidence: EvidenceItem[];
+  priority: "critical" | "high" | "medium" | "low";
+  assignedTo?: string;
+}
+
+export interface AIAnalysis {
+  confidence: number;
+  entities: Array<{
+    text: string;
+    type: string;
+    confidence: number;
+  }>;
+  themes: Array<{
+    topic: string;
+    weight: number;
+  }>;
+  summary: string;
+}
+
+export interface VectorSearchResult {
+  id: string;
+  score: number;
+  content: string;
+  metadata?: Record<string, any>;
+  embedding?: number[];
+  highlights?: string[];
+}
+
+export interface SemanticEntity {
+  id: string;
+  type: string;
+  text?: string;
+  properties: Record<string, any>;
+  relationships?: Array<{
+    target: string;
+    type: string;
+    properties?: Record<string, any>;
+  }>;
+}
+
+export interface SelectOption {
+  value: string;
+  label: string;
+  description?: string;
+  disabled?: boolean;
+  category?: string;
+}
+
+// Board-specific types
+export interface BoardItem {
+  id: string;
+  x: number;
+  y: number;
+  width?: number;
+  height?: number;
+  data: any;
+  type: 'evidence' | 'note' | 'connection' | 'marker';
+}
+
 // Chat and recommendation types for UI components
 export interface ChatMessage {
   id: string;

@@ -19,14 +19,14 @@
     ...restProps
   }: Props = $props();
 
-  $: containerClass = [
+  let containerClass = $derived([
     'nes-container',
     title && 'with-title',
     dark && 'is-dark',
     rounded && 'is-rounded',
     centered && 'is-centered',
     className
-  ].filter(Boolean).join(' ');
+  ].filter(Boolean).join(' '));
 </script>
 
 <div class={containerClass} {...restProps}>

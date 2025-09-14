@@ -38,7 +38,7 @@ export class IngestionService {
     console.log('🚀 Initializing Ingestion Service...');
 
     // Start XState workflow actor
-    if (!this.workflowActor.getSnapshot().status) {
+    if (!(this.workflowActor.getSnapshot() as any).status) {
       this.workflowActor.start();
       console.log('✅ XState workflow actor started');
     }
@@ -84,7 +84,7 @@ export class IngestionService {
 
       // Track in LokiJS
       const trackedJob = jobTracker.addJob(job);
-      
+
       // Cache for quick access
       await cache.set(`job:${job.id}`, job, 3600); // 1 hour TTL
 
@@ -113,8 +113,8 @@ export class IngestionService {
       return {
         success: true,
         jobId: job.id,
-        queuePosition: workflowState.context.jobQueue.length,
-        estimatedTime: chunks.length * 2 // Rough estimate: 2 seconds per chunk
+        queuePosition: (workflowState.context as any).jobQueue.length,
+        estimatedTime: chunks.length * 2, // Rough estimate: 2 seconds per chunk
       };
 
     } catch (error) {
@@ -151,7 +151,7 @@ export class IngestionService {
       console.log(`📤 Published job ${job.id} (${job.chunks.length} chunks) to RabbitMQ`);
     } catch (error) {
       console.error(`❌ Failed to publish job ${job.id} to RabbitMQ:`, error);
-      
+
       // Fallback to Redis if RabbitMQ fails
       if (this.config.enableRedisQueues) {
         await this.publishJobToRedis(job);
@@ -192,7 +192,7 @@ export class IngestionService {
     if (job.metadata.priority === 'high') {
       return 'evidence.embedding.priority';
     }
-    
+
     // Default embedding queue
     return 'evidence.embedding.queue';
   }
@@ -238,9 +238,9 @@ export class IngestionService {
     const stats = context.stats || {};
     const processed = stats.processedJobs || 0;
     const total = context.jobQueue.length + processed;
-    
+
     if (total === 0) return 100;
-    
+
     return Math.round((processed / total) * 100);
   }
 
@@ -276,16 +276,17 @@ export class IngestionService {
 
       // Get current workflow state
       const workflowState = this.workflowActor.getSnapshot();
-      const isCurrentJob = workflowState.context.currentJob?.id === jobId;
+      const isCurrentJob = (workflowState.context as any).currentJob?.id === jobId;
 
       return {
         success: true,
         job,
         workflow: {
           isCurrentJob,
-          currentState: workflowState.value,
-          queuePosition: workflowState.context.jobQueue.findIndex((j: any) => j.id === jobId) + 1
-        }
+          currentState: (workflowState as any).value,
+          queuePosition:
+            (workflowState.context as any).jobQueue.findIndex((j: any) => j.id === jobId) + 1,
+        },
       };
     } catch (error) {
       return {
@@ -303,14 +304,14 @@ export class IngestionService {
       // Update job tracker
       const currentJob = jobTracker.getJob(jobId);
       if (currentJob) {
-        jobTracker.updateJob(jobId, { 
-          state: 'queued', 
+        jobTracker.updateJob(jobId, {
+          state: 'queued',
           error: undefined,
           retryCount: (currentJob.retryCount || 0) + 1,
           metadata: {
             ...currentJob.metadata,
-            retriedAt: new Date().toISOString()
-          }
+            retriedAt: new Date().toISOString(),
+          } as any,
         });
 
         // Re-publish to queue
@@ -339,10 +340,10 @@ export class IngestionService {
       this.workflowActor.send({ type: 'CANCEL_JOB', jobId });
 
       // Update tracking
-      jobTracker.updateJob(jobId, { 
-        state: 'failed', 
+      jobTracker.updateJob(jobId, {
+        state: 'failed',
         error: 'Cancelled by user',
-        completedAt: new Date().toISOString()
+        completedAt: new Date().toISOString(),
       });
 
       return {
@@ -391,13 +392,13 @@ export class IngestionService {
     return {
       ...dashboardData,
       workflow: {
-        state: workflowState.value,
+        state: (workflowState as any).value,
         context: {
-          currentJob: workflowState.context.currentJob,
-          queueLength: workflowState.context.jobQueue.length,
-          stats: workflowState.context.stats,
-          concurrency: workflowState.context.concurrency
-        }
+          currentJob: (workflowState.context as any).currentJob,
+          queueLength: (workflowState.context as any).jobQueue.length,
+          stats: (workflowState.context as any).stats,
+          concurrency: (workflowState.context as any).concurrency,
+        },
       },
       system: {
         uptime: process.uptime(),
@@ -406,9 +407,9 @@ export class IngestionService {
         config: {
           enableRabbitMQ: this.config.enableRabbitMQ,
           enableRedisQueues: this.config.enableRedisQueues,
-          maxConcurrency: this.config.maxConcurrency
-        }
-      }
+          maxConcurrency: this.config.maxConcurrency,
+        },
+      },
     };
   }
 
@@ -435,11 +436,11 @@ export class IngestionService {
 
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down Ingestion Service...');
-    
+
     if (this.workflowActor) {
       this.workflowActor.stop();
     }
-    
+
     await jobTracker.save();
     console.log('✅ Ingestion Service shutdown complete');
   }

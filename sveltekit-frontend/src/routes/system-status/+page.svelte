@@ -1,15 +1,8 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced/Button.svelte';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import Badge from '$lib/components/ui/modular/Badge.svelte';
-  import { cn } from '$lib/utils';
+  import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
+  import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
 
   // Svelte 5 runes
   let systemStatus = $state<Record<string, any>>({});
@@ -149,237 +142,201 @@
   });
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-6">
-  <div class="max-w-6xl mx-auto">
-    <!-- Header -->
-    <div class="mb-8 text-center">
-      <h1 class="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-        🎯 Legal AI Platform System Status
-      </h1>
-      <p class="text-xl text-gray-600">Complete Development Environment Health Check</p>
-      <p class="text-lg text-gray-500 mt-2">SvelteKit 2 + Svelte 5 + Go Microservices + PostgreSQL + Ollama + SSE</p>
+<EvidenceBoardLayout
+  title="SYSTEM STATUS MONITOR"
+  caseInfo="DEVELOPMENT ENVIRONMENT HEALTH CHECK"
+  demoMode={true}
+  {rightPanel}
+>
+  {#snippet rightPanel()}
+    <!-- Authentication Status Panel -->
+    <div class="nes-container is-rounded evidence-panel mb-4">
+      <h3 class="nes-text is-primary mb-3">🔐 Authentication Status</h3>
+      {#if authStatus}
+        <div class="space-y-2">
+          <EvidenceCard
+            title="Auth Status"
+            description={authStatus.hasUser ? "Authenticated" : "Not Authenticated"}
+            status={authStatus.hasUser ? "active" : "pending"}
+            type="auth"
+            connections={1}
+          />
+          {#if authStatus.user}
+            <div class="text-xs text-gray-600 p-2 nes-container is-rounded bg-blue-50">
+              User ID: {authStatus.user.id.substring(0, 8)}...
+            </div>
+          {/if}
+        </div>
+      {:else}
+        <p class="nes-text text-xs">Loading authentication status...</p>
+      {/if}
     </div>
 
-    <!-- Quick Actions -->
-    <NesCard class="mb-8 p-6">
-      {#snippet children()}
-        <div class="yorha-panel-header" class="mb-4">
-          {#snippet children()}
-            <h3 class="nes-text is-primary">🚀 Development Actions</h3>
-          {/snippet}
-        </div>
-        <div class="yorha-panel-content">
-          {#snippet children()}
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Button class="bits-btn" onclick={runAllTests} disabled={isRunning} variant="default">
-                {#snippet children()}
-                  {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
-                {/snippet}
-              </button>
+    <!-- Quick Actions Panel -->
+    <div class="nes-container is-rounded evidence-panel">
+      <h3 class="nes-text is-warning mb-3">🚀 Quick Actions</h3>
+      <div class="space-y-2">
+        <button
+          class="nes-btn is-primary w-full text-xs"
+          onclick={runAllTests}
+          disabled={isRunning}
+        >
+          {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
+        </button>
+        <button
+          class="nes-btn is-success w-full text-xs"
+          onclick={createDevSession}
+        >
+          🔑 Create Dev Session
+        </button>
+        <button
+          class="nes-btn is-normal w-full text-xs"
+          onclick={checkAuthStatus}
+        >
+          👤 Check Auth Status
+        </button>
+        <button
+          class="nes-btn is-error w-full text-xs"
+          onclick={clearSession}
+        >
+          🚪 Clear Session
+        </button>
+      </div>
+    </div>
+  {/snippet}
 
-              <Button class="bits-btn" onclick={createDevSession} variant="outline">
-                {#snippet children()}🔑 Create Dev Session{/snippet}
-              </button>
-
-              <Button class="bits-btn" onclick={checkAuthStatus} variant="outline">
-                {#snippet children()}👤 Check Auth Status{/snippet}
-              </button>
-
-              <Button class="bits-btn" onclick={clearSession} variant="destructive">
-                {#snippet children()}🚪 Clear Session{/snippet}
-              </button>
-            </div>
-          {/snippet}
-        </div>
-      {/snippet}
-    </NesCard>
-
-    <!-- Authentication Status -->
-    <NesCard class="mb-8 p-6">
-      {#snippet children()}
-        <div class="yorha-panel-header" class="mb-4">
-          {#snippet children()}
-            <h3 class="nes-text is-primary">🔐 Authentication Status</h3>
-          {/snippet}
-        </div>
-        <div class="yorha-panel-content">
-          {#snippet children()}
-            {#if authStatus}
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-3">
-                  <div class="flex items-center gap-3">
-                    <Badge variant={authStatus.hasUser ? 'success' : 'secondary'}>
-                      {#snippet children()}
-                        {authStatus.hasUser ? '✅ Authenticated' : '❌ Not Authenticated'}
-                      {/snippet}
-                    </Badge>
-                    {#if authStatus.user}
-                      <span class="text-sm text-gray-600">
-                        User ID: {authStatus.user.id.substring(0, 8)}...
-                      </span>
-                    {/if}
-                  </div>
-
-                  <p class="text-sm bg-blue-50 p-3 rounded-lg">
-                    💡 {authStatus.hint}
-                  </p>
-                </div>
-
-                <div class="bg-gray-50 p-4 rounded-lg">
-                  <h4 class="font-semibold mb-2">Request Info</h4>
-                  <p class="text-sm text-gray-600">Request ID: {authStatus.requestId}</p>
-                  {#if authStatus.serviceRoute}
-                    <p class="text-sm text-gray-600">Service Route: {authStatus.serviceRoute}</p>
-                  {/if}
-                </div>
-              </div>
-            {:else}
-              <p class="text-gray-500">Loading authentication status...</p>
-            {/if}
-          {/snippet}
-        </div>
-      {/snippet}
-    </NesCard>
-
-    <!-- System Tests -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <!-- Main System Tests Content -->
+  <main class="space-y-6">
+    <!-- System Tests Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {#each tests as test}
         {@const result = testResults[test.name]}
-        <NesCard class="p-6">
+        <EvidenceCard
+          title={test.name}
+          description={test.description}
+          status={result?.success ? "active" : result ? "pending" : "pending"}
+          type="system"
+          connections={result?.status || 0}
+        >
           {#snippet children()}
-            <div class="yorha-panel-header" class="mb-4">
-              {#snippet children()}
-                <div class="flex items-start justify-between">
-                  <div>
-                    <h3 class="nes-text is-primary" class="text-lg">{test.name}</h3>
-                    <p class="text-sm text-gray-600 mt-1">{test.description}</p>
-                    <p class="text-xs text-gray-500 mt-1 font-mono">
-                      {test.method || 'GET'} {test.endpoint}
-                    </p>
-                  </div>
-                  <Badge variant={result?.success ? 'success' : result ? 'destructive' : 'secondary'}>
-                    {#snippet children()}
-                      {result?.success ? '✅ PASS' : result ? '❌ FAIL' : '⏳ PENDING'}
-                    {/snippet}
-                  </Badge>
-                </div>
-              {/snippet}
-            </div>
+            <div class="nes-container is-rounded bg-gray-50 p-3">
+              <div class="text-xs mb-2">
+                <strong class="nes-text is-primary">{test.method || 'GET'}</strong> {test.endpoint}
+              </div>
 
-            <div class="yorha-panel-content">
-              {#snippet children()}
-                {#if result}
-                  <div class="space-y-3">
-                    <div class="flex items-center gap-2">
-                      <span class="text-sm font-medium">Status:</span>
-                      <Badge variant={result.success ? 'outline' : 'destructive'}>
-                        {#snippet children()}
-                          {result.status || 'N/A'}
-                        {/snippet}
-                      </Badge>
+              {#if result}
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center">
+                    <span class="nes-text">Status:</span>
+                    <span class="nes-text {result.success ? 'is-success' : 'is-error'}">
+                      {result?.success ? '✅ PASS' : '❌ FAIL'}
+                    </span>
+                  </div>
+
+                  {#if result.error}
+                    <div class="nes-container is-rounded bg-red-50 p-2">
+                      <p class="text-xs text-red-700">Error: {result.error}</p>
                     </div>
+                  {/if}
 
-                    {#if result.error}
-                      <div class="bg-red-50 p-3 rounded-lg">
-                        <p class="text-sm text-red-700 font-medium">Error:</p>
-                        <p class="text-sm text-red-600">{result.error}</p>
-                      </div>
-                    {/if}
+                  {#if result.data && result.success && typeof result.data === 'object'}
+                    <div class="nes-container is-rounded bg-green-50 p-2">
+                      <p class="text-xs text-green-700">✅ Response received</p>
+                    </div>
+                  {/if}
 
-                    {#if result.data && result.success}
-                      <details class="bg-green-50 p-3 rounded-lg">
-                        <summary class="text-sm font-medium text-green-700 cursor-pointer">
-                          ✅ Response Data
-                        </summary>
-                        <pre class="text-xs mt-2 overflow-auto max-h-32 bg-white p-2 rounded border">
-{typeof result.data === 'object' ? JSON.stringify(result.data, null, 2) : result.data}
-                        </pre>
-                      </details>
-                    {/if}
-
-                    <p class="text-xs text-gray-500">
-                      Tested: {new Date(result.timestamp).toLocaleString()}
-                    </p>
-                  </div>
-                {:else}
-                  <p class="text-gray-400 text-sm">Waiting for test to run...</p>
-                {/if}
-              {/snippet}
+                  <p class="text-xs text-gray-500">
+                    {new Date(result.timestamp).toLocaleString()}
+                  </p>
+                </div>
+              {:else}
+                <p class="nes-text text-xs">⏳ Waiting for test...</p>
+              {/if}
             </div>
           {/snippet}
-        </NesCard>
+        </EvidenceCard>
       {/each}
     </div>
 
-    <!-- URLs and Access Points -->
-    <NesCard class="p-6">
-      {#snippet children()}
-        <div class="yorha-panel-header" class="mb-4">
+    <!-- Available Endpoints Grid -->
+    <div class="nes-container is-rounded evidence-panel">
+      <h3 class="nes-text is-success mb-4">🌐 Available Endpoints & Demos</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <EvidenceCard
+          title="🎨 Frontend Demos"
+          description="Interactive web interface demos"
+          status="active"
+          type="frontend"
+          connections={4}
+        >
           {#snippet children()}
-            <h3 class="nes-text is-primary">🌐 Available Endpoints & Demos</h3>
-          {/snippet}
-        </div>
-        <div class="yorha-panel-content">
-          {#snippet children()}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <!-- Frontend Demos -->
-              <div class="bg-blue-50 p-4 rounded-lg">
-                <h4 class="font-semibold text-blue-800 mb-2">🎨 Frontend Demos</h4>
-                <ul class="text-sm space-y-1">
-                  <li><a href="/dev-demo" class="text-blue-600 hover:underline">Development Demo</a></li>
-                  <li><a href="/ai-assistant" class="text-blue-600 hover:underline">AI Assistant (SSE)</a></li>
-                  <li><a href="/test-ai-assistant" class="text-blue-600 hover:underline">Integration Tests</a></li>
-                  <li><a href="/system-status" class="text-blue-600 hover:underline">System Status (This Page)</a></li>
-                </ul>
-              </div>
-
-              <!-- API Endpoints -->
-              <div class="bg-green-50 p-4 rounded-lg">
-                <h4 class="font-semibold text-green-800 mb-2">🔗 API Endpoints</h4>
-                <ul class="text-sm space-y-1">
-                  <li><code class="bg-white px-1 rounded">/api/auth/debug</code></li>
-                  <li><code class="bg-white px-1 rounded">/api/dev-auth</code></li>
-                  <li><code class="bg-white px-1 rounded">/api/cases</code></li>
-                  <li><code class="bg-white px-1 rounded">/api/ai/chat-sse</code></li>
-                </ul>
-              </div>
-
-              <!-- Go Services -->
-              <div class="bg-purple-50 p-4 rounded-lg">
-                <h4 class="font-semibold text-purple-800 mb-2">⚡ Go Services</h4>
-                <ul class="text-sm space-y-1">
-                  <li><code class="bg-white px-1 rounded">:8094 Enhanced RAG</code></li>
-                  <li><code class="bg-white px-1 rounded">:8093 Upload Service</code></li>
-                  <li><code class="bg-white px-1 rounded">:11434 Ollama API</code></li>
-                  <li><code class="bg-white px-1 rounded">:5432 PostgreSQL</code></li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="mt-6 p-4 bg-yellow-50 rounded-lg">
-              <h4 class="font-semibold text-yellow-800 mb-2">🎯 Current Status Summary</h4>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div>
-                  <span class="font-medium">Development Server:</span>
-                  <p class="text-yellow-700">http://localhost:5176</p>
-                </div>
-                <div>
-                  <span class="font-medium">Authentication:</span>
-                  <p class="text-yellow-700">DEV_BYPASS_AUTH enabled</p>
-                </div>
-                <div>
-                  <span class="font-medium">Database:</span>
-                  <p class="text-yellow-700">35 tables ready</p>
-                </div>
-                <div>
-                  <span class="font-medium">AI Models:</span>
-                  <p class="text-yellow-700">gemma3-legal + nomic-embed</p>
-                </div>
-              </div>
+            <div class="space-y-1 text-xs">
+              <a href="/dev-demo" class="nes-text is-primary block">• Development Demo</a>
+              <a href="/ai-assistant" class="nes-text is-primary block">• AI Assistant (SSE)</a>
+              <a href="/test-ai-assistant" class="nes-text is-primary block">• Integration Tests</a>
+              <a href="/system-status" class="nes-text is-primary block">• System Status</a>
             </div>
           {/snippet}
+        </EvidenceCard>
+
+        <EvidenceCard
+          title="🔗 API Endpoints"
+          description="REST API service endpoints"
+          status="active"
+          type="api"
+          connections={4}
+        >
+          {#snippet children()}
+            <div class="space-y-1 text-xs">
+              <code class="nes-text is-success block">/api/auth/debug</code>
+              <code class="nes-text is-success block">/api/dev-auth</code>
+              <code class="nes-text is-success block">/api/cases</code>
+              <code class="nes-text is-success block">/api/ai/chat-sse</code>
+            </div>
+          {/snippet}
+        </EvidenceCard>
+
+        <EvidenceCard
+          title="⚡ Go Services"
+          description="Microservice backend ports"
+          status="active"
+          type="service"
+          connections={4}
+        >
+          {#snippet children()}
+            <div class="space-y-1 text-xs">
+              <code class="nes-text is-warning block">:8094 Enhanced RAG</code>
+              <code class="nes-text is-warning block">:8093 Upload Service</code>
+              <code class="nes-text is-warning block">:11434 Ollama API</code>
+              <code class="nes-text is-warning block">:5432 PostgreSQL</code>
+            </div>
+          {/snippet}
+        </EvidenceCard>
+      </div>
+
+      <!-- Current Status Summary -->
+      <div class="nes-container is-rounded bg-yellow-50 p-4">
+        <h4 class="nes-text is-warning mb-3">🎯 Current Status Summary</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="text-xs">
+            <span class="nes-text font-bold">Development Server:</span>
+            <p class="text-yellow-700">http://localhost:5176</p>
+          </div>
+          <div class="text-xs">
+            <span class="nes-text font-bold">Authentication:</span>
+            <p class="text-yellow-700">DEV_BYPASS_AUTH enabled</p>
+          </div>
+          <div class="text-xs">
+            <span class="nes-text font-bold">Database:</span>
+            <p class="text-yellow-700">35 tables ready</p>
+          </div>
+          <div class="text-xs">
+            <span class="nes-text font-bold">AI Models:</span>
+            <p class="text-yellow-700">gemma3-legal + nomic-embed</p>
+          </div>
         </div>
-      {/snippet}
-    </NesCard>
-  </div>
-</div>
+      </div>
+    </div>
+  </main>
+</EvidenceBoardLayout>

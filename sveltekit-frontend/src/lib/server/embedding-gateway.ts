@@ -31,10 +31,10 @@ export async function getEmbeddingViaGate(
     const status = await getEmbeddingServiceStatus();
     if (status.activeService !== 'none') {
       const embedding = await embedWithService(text, model);
-      return { 
-        embedding, 
-        backend: status.activeService === 'local' ? 'local_gemma3' : 'nomic_api' as BackendId, 
-        model 
+      return {
+        embedding,
+        backend: status.activeService === 'local' ? 'ollama' : ('fastapi' as BackendId),
+        model,
       };
     }
   } catch (error) {

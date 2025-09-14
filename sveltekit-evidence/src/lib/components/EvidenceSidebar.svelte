@@ -8,16 +8,16 @@ Handles file uploads, evidence display, and drag-to-board functionality
   import { boardActions } from '$lib/stores/boardStore';
   import type { Evidence } from '$lib/types';
 
-  // Props
-  interface Props {
+  // Props using Svelte 5 $props()
+  let {
+    caseId
+  }: {
     caseId: string;
-  }
+  } = $props();
 
-  let { caseId }: Props = $props();
-
-  // Component state
-  let files = $state<FileList | null>(null);
-  let fileInput = $state<HTMLInputElement>();
+  // Component state using Svelte 5 $state()
+  let files: FileList | null = null;
+  let fileInput: HTMLInputElement | null = null;
   let isUploading = $state(false);
   let uploadProgress = $state(0);
   let draggedEvidence = $state<Evidence | null>(null);
@@ -80,7 +80,7 @@ Handles file uploads, evidence display, and drag-to-board functionality
   function handleDragStart(event: DragEvent, evidence: Evidence) {
     draggedEvidence = evidence;
     event.dataTransfer?.setData('text/plain', evidence.id);
-    event.dataTransfer!.effectAllowed = 'copy';
+    if (event.dataTransfer) event.dataTransfer.effectAllowed = 'copy';
   }
 
   function handleDragEnd() {
@@ -120,23 +120,24 @@ Handles file uploads, evidence display, and drag-to-board functionality
   }
 
   // Format upload date
-  function formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString() + ' ' + new Date(date).toLocaleTimeString();
+  function formatDate(date: Date | string): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
   }
 
-  // Filter evidence by type
+  // Filter evidence by type using Svelte 5 $state() and $derived()
   let evidenceFilter = $state('all');
   let filteredEvidence = $derived($currentEvidence.filter(evidence => {
     if (evidenceFilter === 'all') return true;
     return evidence.type === evidenceFilter;
   }));
 
-  // Search evidence
+  // Search evidence using Svelte 5 $state() and $derived()
   let searchQuery = $state('');
   let searchedEvidence = $derived(filteredEvidence.filter(evidence =>
     evidence.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    evidence.notes?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    evidence.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    (evidence.notes && evidence.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (evidence.tags || []).some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   ));
 </script>
 
@@ -149,7 +150,7 @@ Handles file uploads, evidence display, and drag-to-board functionality
       <input
         type="file"
         bind:this={fileInput}
-        on:change={handleFileChange}
+        onchange={handleFileChange}
         multiple
         accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt"
         class="nes-input"
@@ -171,7 +172,7 @@ Handles file uploads, evidence display, and drag-to-board functionality
 
     <button
       class="nes-btn is-primary upload-btn"
-      on:click={uploadEvidence}
+      onclick={uploadEvidence}
       disabled={!files || files.length === 0 || isUploading}
     >
       {isUploading ? 'Uploading...' : 'Upload Evidence'}
@@ -194,7 +195,7 @@ Handles file uploads, evidence display, and drag-to-board functionality
       <input
         type="text"
         placeholder="Search evidence..."
-        bind:value={searchQuery}
+bind:value={searchQuery}
         class="nes-input search-input"
       />
 
@@ -214,12 +215,12 @@ Handles file uploads, evidence display, and drag-to-board functionality
         <div
           class="evidence-item nes-container"
           draggable="true"
-          on:dragstart={(e) => handleDragStart(e, evidence)}
-          on:dragend={handleDragEnd}
+          ondragstart={(e) => handleDragStart(e, evidence)}
+          ondragend={handleDragEnd}
           role="button"
           tabindex="0"
-          on:click={() => addEvidenceToBoard(evidence)}
-          on:keydown={(e) => e.key === 'Enter' && addEvidenceToBoard(evidence)}
+          onclick={() => addEvidenceToBoard(evidence)}
+          onkeydown={(e) => e.key === 'Enter' && addEvidenceToBoard(evidence)}
         >
           <div class="evidence-header">
             <span class="file-icon">{getFileIcon(evidence.type)}</span>
@@ -255,7 +256,7 @@ Handles file uploads, evidence display, and drag-to-board functionality
           <div class="evidence-actions">
             <button
               class="nes-btn is-small is-success"
-              on:click|stopPropagation={() => addEvidenceToBoard(evidence)}
+              onclick={(e) => { e.stopPropagation(); addEvidenceToBoard(evidence); }}
               title="Add to board"
             >
               📌
@@ -266,7 +267,7 @@ Handles file uploads, evidence display, and drag-to-board functionality
               target="_blank"
               class="nes-btn is-small"
               title="Open file"
-              on:click|stopPropagation
+              onclick={(e) => e.stopPropagation()}
             >
               👁️
             </a>

@@ -30,7 +30,7 @@ interface CachedQuery {
 }
 
 class DatabasePoolService {
-  private pools: Map<string, postgres.Sql> = new Map();
+  private pools: Map<string, ReturnType<typeof postgres>> = new Map();
   private drizzleInstances: Map<string, PostgresJsDatabase<Record<string, never>>> = new Map();
   private connectionString: string;
   private config: DatabasePoolConfig;
@@ -42,8 +42,8 @@ class DatabasePoolService {
   private readonly CONNECTION_STATS_PREFIX = 'db:stats:';
 
   constructor() {
-    this.connectionString = process.env.DATABASE_URL ||
-      'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
+    this.connectionString =
+      process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
 
     this.config = {
       host: process.env.DB_HOST || 'localhost',
@@ -55,14 +55,14 @@ class DatabasePoolService {
       idle_timeout: parseInt(process.env.DB_IDLE_TIMEOUT || '30'),
       connect_timeout: parseInt(process.env.DB_CONNECT_TIMEOUT || '10'),
       prepare: process.env.NODE_ENV === 'production',
-      ssl: process.env.DB_SSL === 'true' ? 'require' : false
+      ssl: process.env.DB_SSL === 'true' ? 'require' : false,
     };
   }
 
   /**
    * Get or create a connection pool for a specific context
    */
-  async getPool(context: string = 'default'): Promise<postgres.Sql> {
+  async getPool(context: string = 'default'): Promise<ReturnType<typeof postgres>> {
     const poolKey = `${context}:${this.config.database}`;
 
     if (this.pools.has(poolKey)) {
@@ -79,7 +79,7 @@ class DatabasePoolService {
       ...this.config,
       ...dynamicConfig,
       onnotice: () => {}, // Suppress notices
-      debug: process.env.NODE_ENV === 'development'
+      debug: process.env.NODE_ENV === 'development',
     });
 
     this.pools.set(poolKey, pool);
@@ -92,7 +92,9 @@ class DatabasePoolService {
   /**
    * Get Drizzle instance with connection pooling
    */
-  async getDrizzle(context: string = 'default'): Promise<PostgresJsDatabase<Record<string, never>>> {
+  async getDrizzle(
+    context: string = 'default'
+  ): Promise<PostgresJsDatabase<Record<string, never>>> {
     const poolKey = `drizzle:${context}`;
 
     if (this.drizzleInstances.has(poolKey)) {
@@ -145,7 +147,7 @@ class DatabasePoolService {
           params,
           timestamp: Date.now(),
           result,
-          ttl
+          ttl,
         };
 
         await redisService.set(
@@ -194,7 +196,7 @@ class DatabasePoolService {
         totalConnections: parseInt(stats.total || '0'),
         activeConnections: parseInt(stats.active || '0'),
         avgResponseTime: parseFloat(stats.avgResponse || '0'),
-        lastUpdate: parseInt(stats.lastUpdate || '0')
+        lastUpdate: parseInt(stats.lastUpdate || '0'),
       };
     } catch (error) {
       console.warn('Failed to get connection stats:', error);
@@ -218,7 +220,7 @@ class DatabasePoolService {
 
     return {
       max: Math.floor(adjustedSize),
-      idle_timeout: stats.avgResponseTime > 1000 ? 60 : this.config.idle_timeout
+      idle_timeout: stats.avgResponseTime > 1000 ? 60 : this.config.idle_timeout,
     };
   }
 
@@ -297,13 +299,13 @@ class DatabasePoolService {
       totalPools: this.pools.size,
       totalDrizzleInstances: this.drizzleInstances.size,
       cacheSize: this.queryCache.size,
-      pools: {}
+      pools: {},
     };
 
     for (const [key, pool] of this.pools) {
       (stats.pools as any)[key] = {
         // Add any available pool stats
-        status: 'active' // postgres-js doesn't expose detailed stats
+        status: 'active', // postgres-js doesn't expose detailed stats
       };
     }
 
