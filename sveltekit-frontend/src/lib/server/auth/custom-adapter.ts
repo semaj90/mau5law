@@ -1,5 +1,5 @@
-// Custom Drizzle PostgreSQL Adapter for Lucia with fixed JOIN query
-import type { Adapter, DatabaseSession, DatabaseUser } from "lucia";
+// Custom Drizzle PostgreSQL Adapter for Lucia with fixed JOIN queries
+import type { Adapter, DatabaseSession, DatabaseUser } from 'lucia';
 import { db } from '$lib/server/db/drizzle';
 import { sessions, users } from '$lib/server/db/schema-postgres';
 import { eq, lte } from 'drizzle-orm';
@@ -68,6 +68,12 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         id: user.id,
         attributes: {
           email: user.email,
+          firstName: null,
+          lastName: null,
+          role: 'user',
+          isActive: true,
+          avatarUrl: null,
+          name: null,
         },
       };
 

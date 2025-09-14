@@ -69,12 +69,7 @@ export class SSRQLorAGPUChatAssistant {
 
   constructor() {
     this.nesMemory = new NESMemoryArchitecture();
-    this.gpuCache = new WebGPUSOMCache({
-      maxNodes: 50000,
-      dimensions: 1536,
-      learningRate: 0.01,
-      neighborhoodRadius: 2.0
-    });
+    this.gpuCache = new WebGPUSOMCache();
 
     this.userDictionaries = new Map();
     this.ssrContextCache = new Map();
@@ -100,16 +95,22 @@ export class SSRQLorAGPUChatAssistant {
       const embeddedPattern = await this.generateEmbedding(item.pattern);
 
       // Store in NES CHR-ROM for instant pattern matching
-      await this.nesMemory.allocateDocument({
-        id: `pattern_${index}`,
-        type: 'precedent' as const,
-        priority: 255, // Maximum priority
-        size: patternBuffer.byteLength,
-        confidenceLevel: 1.0,
-        riskLevel: 'low' as const,
-        compressed: true,
-        vectorEmbedding: embeddedPattern
-      }, patternBuffer, { preferredBank: 'CHR_ROM', compress: true });
+      await this.nesMemory.allocateDocument(
+        {
+          id: `pattern_${index}`,
+          type: 'precedent' as const,
+          priority: 255, // Maximum priority
+          size: patternBuffer.byteLength,
+          confidenceLevel: 1.0,
+          riskLevel: 'low' as const,
+          compressed: true,
+          metadata: {
+            vectorEmbedding: embeddedPattern,
+          },
+        },
+        patternBuffer.buffer,
+        { preferredBank: 'CHR_ROM', compress: true }
+      );
     }
   }
 
@@ -379,7 +380,9 @@ export class SSRQLorAGPUChatAssistant {
         riskLevel: 'low',
         lastAccessed: Date.now(),
         compressed: false,
-        vectorEmbedding: embedding
+        metadata: {
+          vectorEmbedding: embedding,
+        },
       },
       { extractionType: 'chat_response', userMessage: message },
       { quality: 8, usefulness: 8, accuracy: 8 } // Assume good feedback
