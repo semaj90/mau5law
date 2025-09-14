@@ -20,6 +20,7 @@ const sql = postgres(DATABASE_URL, {
 export const db = drizzle(sql, { schema });
 
 // Export sql connection for direct queries
+export { sql };
 export const pool = sql; // alias for consistency (postgres.js instance)
 // Connection health check
 export async function testDatabaseConnection(): Promise<{

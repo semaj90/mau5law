@@ -160,7 +160,7 @@ class DatabasePoolService {
       }
     }
 
-    return result;
+    return result as T;
   }
 
   /**
@@ -172,7 +172,9 @@ class DatabasePoolService {
     try {
       const keys = await redisService.keys(`${this.QUERY_CACHE_PREFIX}${pattern}*`);
       if (keys.length > 0) {
-        await redisService.del(...keys);
+        for (const key of keys) {
+          await redisService.del(key);
+        }
         console.log(`🗑️ Invalidated ${keys.length} cached queries`);
       }
     } catch (error) {

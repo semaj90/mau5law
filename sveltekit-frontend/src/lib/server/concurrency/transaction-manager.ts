@@ -57,10 +57,10 @@ export class TransactionManager {
     console.log(`📝 Starting transaction ${transactionId} with ${isolationLevel} isolation`);
 
     try {
-      return await sql.begin(async (tx) => {
+      return (await sql.begin(async (tx) => {
         // Set isolation level
         await tx`SET TRANSACTION ISOLATION LEVEL ${sql(isolationLevel)}`;
-        
+
         // Set statement timeout
         if (timeout) {
           await tx`SET statement_timeout = ${timeout}`;
@@ -74,7 +74,7 @@ export class TransactionManager {
           console.error(`❌ Transaction ${transactionId} failed:`, error);
           throw error;
         }
-      });
+      })) as T;
 
     } finally {
       // Clean up locks and transaction context
@@ -125,21 +125,15 @@ export class TransactionManager {
     fn: (ctx: TransactionContext) => Promise<T>,
     options: TransactionOptions = {}
   ): Promise<T> {
-    return this.withTransactionAndLock(
-      'evidence',
-      evidenceId,
-      fn,
-      LOCK_MODES.EXCLUSIVE,
-      {
-        ...options,
-        isolationLevel: 'SERIALIZABLE', // Highest isolation for custody
-        metadata: { 
-          ...options.metadata, 
-          operationType: 'chain_of_custody',
-          evidenceId 
-        }
-      }
-    );
+    return this.withTransactionAndLock('evidence', evidenceId, fn, LOCK_MODES.EXCLUSIVE, {
+      ...options,
+      isolationLevel: 'SERIALIZABLE', // Highest isolation for custody
+      metadata: {
+        ...options.metadata,
+        operationType: 'chain_of_custody',
+        evidenceId,
+      },
+    });
   }
 
   /**
@@ -151,21 +145,15 @@ export class TransactionManager {
     fn: (ctx: TransactionContext) => Promise<T>,
     options: TransactionOptions = {}
   ): Promise<T> {
-    return this.withTransactionAndLock(
-      'case',
-      caseId,
-      fn,
-      LOCK_MODES.EXCLUSIVE,
-      {
-        ...options,
-        isolationLevel: 'REPEATABLE READ',
-        metadata: { 
-          ...options.metadata, 
-          operationType: 'case_modification',
-          caseId 
-        }
-      }
-    );
+    return this.withTransactionAndLock('case', caseId, fn, LOCK_MODES.EXCLUSIVE, {
+      ...options,
+      isolationLevel: 'REPEATABLE READ',
+      metadata: {
+        ...options.metadata,
+        operationType: 'case_modification',
+        caseId,
+      },
+    });
   }
 
   /**
@@ -179,23 +167,17 @@ export class TransactionManager {
     options: TransactionOptions = {}
   ): Promise<T> {
     const mode = isReadOnly ? LOCK_MODES.SHARED : LOCK_MODES.EXCLUSIVE;
-    
-    return this.withTransactionAndLock(
-      'document',
-      documentId,
-      fn,
-      mode,
-      {
-        ...options,
-        isolationLevel: isReadOnly ? 'READ COMMITTED' : 'REPEATABLE READ',
-        metadata: { 
-          ...options.metadata, 
-          operationType: 'document_analysis',
-          documentId,
-          readOnly: isReadOnly
-        }
-      }
-    );
+
+    return this.withTransactionAndLock('document', documentId, fn, mode, {
+      ...options,
+      isolationLevel: isReadOnly ? 'READ COMMITTED' : 'REPEATABLE READ',
+      metadata: {
+        ...options.metadata,
+        operationType: 'document_analysis',
+        documentId,
+        readOnly: isReadOnly,
+      },
+    });
   }
 
   /**
@@ -207,22 +189,16 @@ export class TransactionManager {
     fn: (ctx: TransactionContext) => Promise<T>,
     options: TransactionOptions = {}
   ): Promise<T> {
-    return this.withTransactionAndLock(
-      'vector_index',
-      indexName,
-      fn,
-      LOCK_MODES.EXCLUSIVE,
-      {
-        ...options,
-        isolationLevel: 'SERIALIZABLE',
-        timeout: 60000, // Vector operations can take longer
-        metadata: { 
-          ...options.metadata, 
-          operationType: 'vector_index_update',
-          indexName 
-        }
-      }
-    );
+    return this.withTransactionAndLock('vector_index', indexName, fn, LOCK_MODES.EXCLUSIVE, {
+      ...options,
+      isolationLevel: 'SERIALIZABLE',
+      timeout: 60000, // Vector operations can take longer
+      metadata: {
+        ...options.metadata,
+        operationType: 'vector_index_update',
+        indexName,
+      },
+    });
   }
 
   /**
@@ -235,7 +211,7 @@ export class TransactionManager {
   ): Promise<T> {
     return this.withTransaction(async (ctx) => {
       // Sort entities to prevent deadlocks (consistent ordering)
-      const sortedEntities = [...entities].sort((a, b) => 
+      const sortedEntities = [...entities].sort((a, b) =>
         `${a.type}:${a.id}`.localeCompare(`${b.type}:${b.id}`)
       );
 
@@ -256,10 +232,10 @@ export class TransactionManager {
           throw new Error(`Failed to acquire lock for ${entity.type} ${entity.id}`);
         }
 
-        ctx.locks.push({ 
-          entityType: entity.type, 
-          entityId: entity.id, 
-          mode: entity.mode || LOCK_MODES.EXCLUSIVE 
+        ctx.locks.push({
+          entityType: entity.type,
+          entityId: entity.id,
+          mode: entity.mode || LOCK_MODES.EXCLUSIVE,
         });
       }
 
@@ -297,7 +273,7 @@ export class TransactionManager {
 
     for (const [id, ctx] of this.activeTransactions.entries()) {
       const age = now - ctx.startTime.getTime();
-      
+
       // Clean up transactions older than 5 minutes
       if (age > 300000) {
         await this.cleanupTransaction(id);
@@ -344,7 +320,7 @@ export class TransactionManager {
   }> {
     const transactions = Array.from(this.activeTransactions.values());
     const now = Date.now();
-    
+
     let oldestTransaction: { id: string; age: number } | undefined;
     let totalLocks = 0;
 
