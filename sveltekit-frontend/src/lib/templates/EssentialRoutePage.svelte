@@ -1,0 +1,185 @@
+<!--
+Essential Route Page Template with CSS Bits UI Integration
+Use this template for all essential routes
+-->
+<script lang="ts">
+	import 'nes.css/css/nes.min.css';
+	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
+	import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
+	import { Button } from '$lib/components/ui/enhanced-bits';
+	import * as Card from '$lib/components/ui/card';
+	import { ButtonBits, CardBits, DialogBits } from '$lib/components/ui/bits-ui';
+
+	// Props
+	interface Props {
+		pageTitle: string;
+		description?: string;
+		showBackButton?: boolean;
+		className?: string;
+		children?: import('svelte').Snippet;
+	}
+
+	let {
+		pageTitle,
+		description = '',
+		showBackButton = false,
+		className = '',
+		children
+	}: Props = $props();
+
+	let isLoading = $state(false);
+	let isClient = $state(false);
+
+	onMount(() => {
+		isClient = true;
+	});
+
+	function goBack() {
+		if (browser) {
+			window.history.back();
+		}
+	}
+</script>
+
+<svelte:head>
+	<title>{pageTitle} - Legal AI Platform</title>
+	<meta name="description" content={description || pageTitle} />
+</svelte:head>
+
+<ProductionLayout>
+	<div class="essential-route-page {className}">
+		<!-- Header -->
+		<Card.Root class="mb-6 nes-container is-rounded">
+			<Card.Header>
+				<div class="flex justify-between items-center">
+					<div class="flex items-center gap-4">
+						{#if showBackButton}
+							<Button
+								variant="outline"
+								size="sm"
+								onclick={goBack}
+								class="nes-btn is-primary"
+							>
+								← Back
+							</Button>
+						{/if}
+						<div>
+							<Card.Title class="nes-text is-primary text-2xl">
+								{pageTitle}
+							</Card.Title>
+							{#if description}
+								<Card.Description class="nes-text is-disabled mt-1">
+									{description}
+								</Card.Description>
+							{/if}
+						</div>
+					</div>
+					<div class="flex items-center gap-2">
+						<span class="nes-badge is-success">Active</span>
+						<div class="nes-text is-disabled text-sm">
+							{$page.url.pathname}
+						</div>
+					</div>
+				</div>
+			</Card.Header>
+		</Card.Root>
+
+		<!-- Main Content -->
+		<main class="essential-route-main">
+			{#if isClient}
+				{#if children}
+					{@render children()}
+				{:else}
+					<!-- Default placeholder content -->
+					<Card.Root class="nes-container is-rounded">
+						<Card.Content class="p-8 text-center">
+							<div class="mb-4">
+								<div class="text-6xl mb-4">🚧</div>
+								<h2 class="nes-text is-primary text-xl mb-2">
+									Page Under Development
+								</h2>
+								<p class="nes-text is-disabled">
+									This essential route needs implementation.
+									Current path: {$page.url.pathname}
+								</p>
+							</div>
+							<div class="flex justify-center gap-4 mt-6">
+								<Button class="nes-btn is-primary" onclick={goBack}>
+									Go Back
+								</Button>
+								<Button
+									variant="outline"
+									class="nes-btn"
+									onclick={() => window.location.href = '/'}
+								>
+									Home
+								</Button>
+							</div>
+						</Card.Content>
+					</Card.Root>
+				{/if}
+			{:else}
+				<!-- Loading state -->
+				<Card.Root class="nes-container is-rounded">
+					<Card.Content class="p-8 text-center">
+						<div class="nes-text is-disabled">
+							<div class="animate-pulse">Loading...</div>
+						</div>
+					</Card.Content>
+				</Card.Root>
+			{/if}
+		</main>
+	</div>
+</ProductionLayout>
+
+<style>
+	@import url('https://unpkg.com/nes.css@2.3.0/css/nes.min.css');
+	@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
+
+	.essential-route-page {
+		min-height: 100vh;
+		font-family: 'Press Start 2P', cursive;
+		background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+		color: #fff;
+		padding: 1rem;
+	}
+
+	.essential-route-main {
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+
+	/* NES.css theme integration */
+	:global(.nes-container.is-rounded) {
+		border-image-slice: 2;
+		border-image-width: 2px;
+		border-image-outset: 0;
+		border-image-source: url("data:image/svg+xml,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' fill='none' stroke='%23fff' stroke-width='2' rx='8'/></svg>");
+	}
+
+	:global(.nes-btn) {
+		font-family: 'Press Start 2P', cursive !important;
+		font-size: 0.75rem !important;
+	}
+
+	:global(.nes-text) {
+		font-family: 'Press Start 2P', cursive;
+	}
+
+	:global(.nes-badge) {
+		font-family: 'Press Start 2P', cursive;
+		font-size: 0.6rem;
+	}
+
+	@media (max-width: 768px) {
+		.essential-route-page {
+			padding: 0.5rem;
+		}
+
+		:global(.nes-text.text-2xl) {
+			font-size: 1rem !important;
+		}
+	}
+</style>

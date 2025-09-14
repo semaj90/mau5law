@@ -118,16 +118,16 @@ export class CopilotIndexOptimizer {
     try {
       // Step 1: Parse and process the copilot content
       const rawIndex = await this.parseCopilotContent(copilotContent);
-      
+
       // Step 2: Apply Context7 pattern recognition and boosting
       const enhancedEntries = await this.applyContext7Patterns(rawIndex.entries);
-      
+
       // Step 3: Generate semantic clusters for better organization
       const semanticClusters = await this.generateSemanticClusters(enhancedEntries);
-      
+
       // Step 4: Create optimized search index
       const searchIndex = await this.createOptimizedSearchIndex(enhancedEntries);
-      
+
       // Step 5: Apply performance optimizations
       const optimizedEntries = await this.applyPerformanceOptimizations(enhancedEntries);
 
@@ -170,15 +170,10 @@ export class CopilotIndexOptimizer {
       useCache?: boolean;
     } = {}
   ): Promise<RAGSearchResult[]> {
-    const { 
-      limit = 10, 
-      includePatterns = true, 
-      boostContext7 = true, 
-      useCache = true 
-    } = options;
+    const { limit = 10, includePatterns = true, boostContext7 = true, useCache = true } = options;
 
     const cacheKey = `${query}:${JSON.stringify(options)}`;
-    
+
     // Check cache first
     if (useCache && this.searchCache.has(cacheKey)) {
       this.performanceMetrics.cacheHits++;
@@ -193,11 +188,10 @@ export class CopilotIndexOptimizer {
       }
 
       // Step 1: Perform base semantic search
-      const baseResults = (await simdIndexProcessor.semanticSearch(
-        query, 
-        this.optimizedIndex, 
-        { limit: limit * 2, preferEnhanced: true }
-      )) as RAGSearchResult[];
+      const baseResults = (await simdIndexProcessor.semanticSearch(query, this.optimizedIndex, {
+        limit: limit * 2,
+        preferEnhanced: true,
+      })) as RAGSearchResult[];
 
       // Step 2: Apply Context7 pattern boosting
       let enhancedResults = baseResults;
@@ -244,19 +238,16 @@ export class CopilotIndexOptimizer {
     try {
       // Analyze current code context
       const codeContext = this.analyzeCodeContext(currentCode, cursor, language);
-      
+
       // Find relevant patterns
       const relevantPatterns = this.findRelevantPatterns(codeContext);
-      
+
       // Generate suggestions based on patterns and index
-      const suggestions = await this.generatePatternBasedSuggestions(
-        codeContext, 
-        relevantPatterns
-      );
+      const suggestions = await this.generatePatternBasedSuggestions(codeContext, relevantPatterns);
 
       // Rank suggestions by relevance and confidence
       return suggestions
-        .sort((a, b) => (b.priority * b.confidence) - (a.priority * a.confidence))
+        .sort((a, b) => b.priority * b.confidence - a.priority * a.confidence)
         .slice(0, 10);
     } catch (error: any) {
       console.error('Suggestion generation failed:', error);
@@ -270,12 +261,12 @@ export class CopilotIndexOptimizer {
   private async parseCopilotContent(content: string): Promise<CopilotIndex> {
     // Extract different sections from copilot.md
     const sections = this.extractContentSections(content);
-    
+
     const entries: CopilotIndexEntry[] = [];
-    
+
     for (const section of sections) {
       const embedding = await simdIndexProcessor.generateEmbeddings(section.content);
-      
+
       entries.push({
         id: `copilot_${section.id}`,
         filePath: `copilot.md#${section.id}`,
@@ -314,11 +305,11 @@ export class CopilotIndexOptimizer {
    */
   private extractContentSections(content: string) {
     const sections = [];
-    
+
     // Split by headers and code blocks
     const headerRegex = /^(#{1,6})\s+(.+)$/gm;
     const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
-    
+
     let lastIndex = 0;
     let match;
     let sectionId = 0;
@@ -328,15 +319,15 @@ export class CopilotIndexOptimizer {
       const headerLevel = match[1].length;
       const headerText = match[2];
       const headerStart = match.index;
-      
+
       // Find the end of this section (next header of same or higher level)
       const nextHeaderRegex = new RegExp(`^#{1,${headerLevel}}\\s+`, 'gm');
       nextHeaderRegex.lastIndex = headerStart + match[0].length;
       const nextMatch = nextHeaderRegex.exec(content);
-      
+
       const sectionEnd = nextMatch ? nextMatch.index : content.length;
       const sectionContent = content.substring(headerStart, sectionEnd);
-      
+
       sections.push({
         id: `section_${sectionId++}`,
         title: headerText,
@@ -351,7 +342,7 @@ export class CopilotIndexOptimizer {
     while ((codeMatch = codeBlockRegex.exec(content)) !== null) {
       const language = codeMatch[1] || 'text';
       const code = codeMatch[2];
-      
+
       sections.push({
         id: `code_${sectionId++}`,
         title: `Code: ${language}`,
@@ -370,14 +361,14 @@ export class CopilotIndexOptimizer {
   private async applyContext7Patterns(entries: CopilotIndexEntry[]): Promise<CopilotIndexEntry[]> {
     return entries.map((entry: any) => {
       const matchingPatterns = this.findMatchingPatterns(entry.content);
-      
+
       if (matchingPatterns.length > 0) {
         // Calculate boost based on matching patterns
         const totalBoost = matchingPatterns.reduce((sum, pattern) => sum + pattern.boostFactor, 0);
-        
+
         // Apply boost to relevance score
         entry.metadata.relevanceScore = Math.min(1.0, entry.metadata.relevanceScore + totalBoost);
-        
+
         // Update priority if we have high-priority patterns
         const hasHighPriority = matchingPatterns.some((p: any) => p.priority === 'high');
         if (hasHighPriority && entry.metadata.priority !== 'high') {
@@ -386,7 +377,7 @@ export class CopilotIndexOptimizer {
 
         this.performanceMetrics.patternMatches++;
       }
-      
+
       return entry;
     });
   }
@@ -396,20 +387,21 @@ export class CopilotIndexOptimizer {
    */
   private async applyContext7Boosting(query: string, results: RAGSearchResult[]): Promise<RAGSearchResult[]> {
     const queryPatterns = this.findMatchingPatterns(query);
-    
+
     return results.map((result: any) => {
       const contentPatterns = this.findMatchingPatterns(result.document.content);
-      
+
       // Find overlapping patterns between query and content
-      const overlappingPatterns = queryPatterns.filter((qp: any) => contentPatterns.some((cp: any) => cp.category === qp.category)
+      const overlappingPatterns = queryPatterns.filter((qp: any) =>
+        contentPatterns.some((cp: any) => cp.category === qp.category)
       );
-      
+
       if (overlappingPatterns.length > 0) {
         const boost = overlappingPatterns.reduce((sum, pattern) => sum + pattern.boostFactor, 0);
         result.score = Math.min(1.0, result.score + boost);
         result.explanation += ` [Context7 boost: +${boost.toFixed(2)}]`;
       }
-      
+
       // Ensure required properties are present
       if (!result.type && result.document?.type) {
         result.type = result.document.type;
@@ -417,7 +409,7 @@ export class CopilotIndexOptimizer {
       if (!result.type) {
         result.type = 'document'; // Default fallback
       }
-      
+
       return result;
     });
   }
@@ -427,7 +419,7 @@ export class CopilotIndexOptimizer {
    */
   private findMatchingPatterns(content: string): Context7Pattern[] {
     const cacheKey = this.hashContent(content);
-    
+
     if (this.patternCache.has(cacheKey)) {
       return this.patternCache.get(cacheKey)!;
     }
@@ -436,11 +428,12 @@ export class CopilotIndexOptimizer {
       // Check if pattern regex matches content
       const regex = new RegExp(pattern.pattern, 'gi');
       const hasMatch = regex.test(content);
-      
+
       // Check if any keywords are present
-      const hasKeywords = pattern.keywords.some((keyword: any) => content.toLowerCase().includes(keyword.toLowerCase())
+      const hasKeywords = pattern.keywords.some((keyword: any) =>
+        content.toLowerCase().includes(keyword.toLowerCase())
       );
-      
+
       return hasMatch || hasKeywords;
     });
 
@@ -454,33 +447,36 @@ export class CopilotIndexOptimizer {
   private async generateSemanticClusters(entries: CopilotIndexEntry[]) {
     // Use the enhanced RAG store's SOM clustering
     const { somRAG } = enhancedRAGStore;
-    
+
     // Train with all embeddings
     for (const entry of entries) {
       await somRAG.trainIncremental(Array.from(entry.embedding), {
-        source: entry.metadata.source,
-        type: 'document',
-        jurisdiction: 'unknown',
-        practiceArea: ['general'],
-        confidentialityLevel: 1,
-        lastModified: new Date(),
-        fileSize: entry.metadata.fileSize,
-        language: entry.language,
-        tags: [],
         id: entry.id,
+        title: entry.filePath.split('/').pop() || entry.id,
         content: entry.content,
-        metadata: entry.metadata,
+        type: 'document' as const,
+        metadata: {
+          source: entry.metadata.source,
+          type: 'document',
+          jurisdiction: 'unknown',
+          practiceArea: ['general'],
+          confidentialityLevel: 1,
+          lastModified: new Date(),
+          fileSize: entry.metadata.fileSize,
+          language: entry.language || 'unknown',
+          tags: [],
+        },
       });
     }
 
     const booleanClusters = somRAG.getClusters();
-    
+
     // Transform BooleanCluster to expected format
     return booleanClusters.map((cluster, index) => ({
       id: `cluster_${index}`,
       centroid: new Float32Array([]), // Empty for now, could be calculated from members
       memberIds: [], // Could be extracted from cluster data if available
-      relevantTerms: [] // Could be derived from cluster analysis
+      relevantTerms: [], // Could be derived from cluster analysis
     }));
   }
 
@@ -490,13 +486,14 @@ export class CopilotIndexOptimizer {
   private async createOptimizedSearchIndex(entries: CopilotIndexEntry[]) {
     // Create inverted index for fast text search
     const invertedIndex = new Map<string, string[]>();
-    
+
     entries.forEach((entry: any) => {
-      const words = entry.content.toLowerCase()
+      const words = entry.content
+        .toLowerCase()
         .replace(/[^\w\s]/g, ' ')
         .split(/\s+/)
         .filter((word: any) => word.length > 2);
-      
+
       words.forEach((word: any) => {
         if (!invertedIndex.has(word)) {
           invertedIndex.set(word, []);
@@ -650,7 +647,7 @@ export class CopilotIndexOptimizer {
    */
   private generateSvelte5Suggestions(context: any, pattern: Context7Pattern) {
     const suggestions = [];
-    
+
     if (context.currentLine.includes('let ') && !context.currentLine.includes('$props')) {
       suggestions.push({
         text: 'let { prop = "default" } = $props();',
@@ -676,7 +673,7 @@ export class CopilotIndexOptimizer {
 
   private generateSvelteKitSuggestions(context: any, pattern: Context7Pattern) {
     const suggestions = [];
-    
+
     if (context.currentLine.includes('export') && context.language === 'typescript') {
       suggestions.push({
         text: 'export const load: PageServerLoad = async ({ params }) => {\n  return {\n    // data\n  };\n};',
@@ -715,35 +712,41 @@ export class CopilotIndexOptimizer {
   private determineSectionPriority(title: string, content: string): 'high' | 'medium' | 'low' {
     const highPriorityKeywords = ['svelte 5', 'sveltekit', 'best practices', 'patterns'];
     const mediumPriorityKeywords = ['typescript', 'drizzle', 'ui'];
-    
+
     const titleLower = title.toLowerCase();
     const contentLower = content.toLowerCase();
-    
-    if (highPriorityKeywords.some((keyword: any) => titleLower.includes(keyword) || contentLower.includes(keyword)
-    )) {
+
+    if (
+      highPriorityKeywords.some(
+        (keyword: any) => titleLower.includes(keyword) || contentLower.includes(keyword)
+      )
+    ) {
       return 'high';
     }
-    
-    if (mediumPriorityKeywords.some((keyword: any) => titleLower.includes(keyword) || contentLower.includes(keyword)
-    )) {
+
+    if (
+      mediumPriorityKeywords.some(
+        (keyword: any) => titleLower.includes(keyword) || contentLower.includes(keyword)
+      )
+    ) {
       return 'medium';
     }
-    
+
     return 'low';
   }
 
   private determineCodePriority(language: string, code: string): 'high' | 'medium' | 'low' {
     const highPriorityLanguages = ['svelte', 'typescript'];
     const highPriorityPatterns = ['$props', '$state', '$derived', 'PageServerLoad'];
-    
+
     if (highPriorityLanguages.includes(language)) {
       return 'high';
     }
-    
+
     if (highPriorityPatterns.some((pattern: any) => code.includes(pattern))) {
       return 'high';
     }
-    
+
     return 'medium';
   }
 
@@ -751,7 +754,7 @@ export class CopilotIndexOptimizer {
     const totalBytes = entries.reduce((sum, entry) => {
       return sum + entry.content.length + (entry.embedding.length * 4); // 4 bytes per float
     }, 0);
-    
+
     return totalBytes / (1024 * 1024); // Convert to MB
   }
 

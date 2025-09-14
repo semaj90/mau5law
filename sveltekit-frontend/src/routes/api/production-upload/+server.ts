@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
 
 // Production-Quality Document Upload API
 // Integrates PostgreSQL, Qdrant, OCR, Gemma3, XState, RabbitMQ, Neo4j

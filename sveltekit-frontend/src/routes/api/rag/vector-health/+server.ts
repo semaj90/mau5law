@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import { json } from "@sveltejs/kit";
-import { db, documents, embeddings } from "drizzle-orm";
+import { db } from '$lib/server/db';
 import { sql } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 

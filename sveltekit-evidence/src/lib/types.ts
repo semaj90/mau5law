@@ -49,6 +49,7 @@ export interface Report {
   title: string;
   content: string;
   createdAt: Date;
+  updatedAt?: Date;
   createdBy: string;
   type: 'investigation' | 'forensic' | 'witness' | 'summary';
   status: 'draft' | 'final' | 'reviewed';

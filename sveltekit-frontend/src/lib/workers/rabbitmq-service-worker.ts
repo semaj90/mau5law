@@ -46,7 +46,7 @@ export class RabbitMQServiceWorker {
 
     const timestamp = new Date().toISOString();
     const prefix = this.config.enableN64Logging ? '🎮 [RabbitMQ Worker]' : '[RabbitMQ Worker]';
-    
+
     switch (type) {
       case 'error':
         console.error(`${prefix} ❌ ${timestamp}: ${message}`);
@@ -94,9 +94,12 @@ export class RabbitMQServiceWorker {
         await this.startConsumer(queueName, handler);
       }
 
-      this.log(this.config.enableN64Logging ? 
-        '🎮 RABBITMQ WORKER ONLINE - READY FOR LEGAL AI PROCESSING!' : 
-        'RabbitMQ Service Worker started successfully', 'success');
+      this.log(
+        this.config.enableN64Logging
+          ? '🎮 RABBITMQ WORKER ONLINE - READY FOR LEGAL AI PROCESSING!'
+          : 'RabbitMQ Service Worker started successfully',
+        'success'
+      );
 
     } catch (error: any) {
       this.isRunning = false;
@@ -113,10 +116,13 @@ export class RabbitMQServiceWorker {
 
     this.isRunning = false;
     await rabbitmqService.disconnect();
-    
-    this.log(this.config.enableN64Logging ? 
-      '🎮 RABBITMQ WORKER SHUTDOWN COMPLETE' : 
-      'RabbitMQ Service Worker stopped', 'success');
+
+    this.log(
+      this.config.enableN64Logging
+        ? '🎮 RABBITMQ WORKER SHUTDOWN COMPLETE'
+        : 'RabbitMQ Service Worker stopped',
+      'success'
+    );
   }
 
   /**
@@ -132,9 +138,9 @@ export class RabbitMQServiceWorker {
         // Add timeout wrapper
         await Promise.race([
           handler(message, originalMessage),
-          new Promise((_, reject) => 
+          new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Processing timeout')), this.config.processingTimeout)
-          )
+          ),
         ]);
 
         const processingTime = Date.now() - startTime;
@@ -146,7 +152,7 @@ export class RabbitMQServiceWorker {
       } catch (error: any) {
         this.processingStats.errors++;
         this.log(`Error processing message from ${queueName}: ${error.message}`, 'error');
-        
+
         // Handle retry logic here if needed
         throw error;
       }
@@ -160,31 +166,31 @@ export class RabbitMQServiceWorker {
     // Document processing handler
     this.registerHandler(QUEUES.DOCUMENT_PROCESSING, async (message) => {
       this.log(`🧠 Processing document: ${message.documentId || 'unknown'}`);
-      
+
       // Simulate document processing
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Publish to next stage
       await publishToQueue(QUEUES.VECTOR_EMBEDDING, {
         ...message,
         stage: 'embedding_ready',
-        processedAt: Date.now()
+        processedAt: Date.now(),
       });
     });
 
     // File upload handler
     this.registerHandler(QUEUES.FILE_UPLOAD, async (message) => {
       this.log(`📁 Processing file upload: ${message.fileName || 'unknown'}`);
-      
+
       // Handle file upload processing
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       if (message.evidenceId) {
         await publishToQueue(QUEUES.EVIDENCE_ANALYSIS, {
           evidenceId: message.evidenceId,
           fileName: message.fileName,
           stage: 'analysis_ready',
-          cudaAccelerated: message.cudaAccelerated || false
+          cudaAccelerated: message.cudaAccelerated || false,
         });
       }
     });
@@ -192,24 +198,24 @@ export class RabbitMQServiceWorker {
     // Vector embedding handler
     this.registerHandler(QUEUES.VECTOR_EMBEDDING, async (message) => {
       this.log(`🔤 Generating embeddings for: ${message.documentId || 'unknown'}`);
-      
+
       // Simulate embedding generation
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       await publishToQueue(QUEUES.SEARCH_INDEXING, {
         ...message,
         embeddings: 'generated',
-        stage: 'indexing_ready'
+        stage: 'indexing_ready',
       });
     });
 
     // Evidence analysis handler
     this.registerHandler(QUEUES.EVIDENCE_ANALYSIS, async (message) => {
       this.log(`🔍 Analyzing evidence: ${message.evidenceId || 'unknown'}`);
-      
+
       // Simulate AI analysis
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       await publishToQueue(QUEUES.CASE_UPDATES, {
         caseId: message.caseId,
         evidenceId: message.evidenceId,
@@ -217,41 +223,41 @@ export class RabbitMQServiceWorker {
         insights: {
           confidence: 0.85,
           keyEntities: ['contract', 'signature', 'date'],
-          summary: 'Legal document analysis completed'
-        }
+          summary: 'Legal document analysis completed',
+        },
       });
     });
 
     // RAG processing handler
     this.registerHandler(QUEUES.RAG_PROCESSING, async (message) => {
       this.log(`🤖 RAG processing query: ${message.query?.substring(0, 50) || 'unknown'}...`);
-      
+
       // Simulate RAG processing
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
       // Could publish result back to a response queue
     });
 
     // Email notifications handler
     this.registerHandler(QUEUES.EMAIL_NOTIFICATIONS, async (message) => {
       this.log(`📧 Sending notification: ${message.type || 'unknown'}`);
-      
+
       // Simulate email sending
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 800));
     });
 
     // Search indexing handler
     this.registerHandler(QUEUES.SEARCH_INDEXING, async (message) => {
       this.log(`🔍 Indexing for search: ${message.documentId || 'unknown'}`);
-      
+
       // Simulate search index update
-      await new Promise(resolve => setTimeout(resolve, 1200));
+      await new Promise((resolve) => setTimeout(resolve, 1200));
     });
 
     // Case updates handler
     this.registerHandler(QUEUES.CASE_UPDATES, async (message) => {
       this.log(`⚖️ Processing case update: ${message.caseId || 'unknown'}`);
-      
+
       // Simulate case update processing
       await new Promise(resolve => setTimeout(resolve, 600));
     });
@@ -263,8 +269,8 @@ export class RabbitMQServiceWorker {
   private updateAvgProcessingTime(processingTime: number): void {
     const currentAvg = this.processingStats.avgProcessingTime;
     const messageCount = this.processingStats.messagesProcessed;
-    
-    this.processingStats.avgProcessingTime = 
+
+    this.processingStats.avgProcessingTime =
       (currentAvg * (messageCount - 1) + processingTime) / messageCount;
   }
 
@@ -298,11 +304,15 @@ export class RabbitMQServiceWorker {
    */
   async publishMessage(queueName: string, message: any): Promise<boolean> {
     try {
-      const success = await rabbitmqService.publish(queueName, {
-        ...message,
-        publishedAt: Date.now(),
-        workerVersion: '1.0.0'
-      });
+      const success = await rabbitmqService.publish(
+        'workers', // exchange name
+        queueName, // routing key
+        {
+          ...message,
+          publishedAt: Date.now(),
+          workerVersion: '1.0.0',
+        }
+      );
 
       if (success) {
         this.log(`Message published to ${queueName}`, 'success');

@@ -14,24 +14,26 @@ export interface APIResponse<T = any> {
 }
 
 export function apiSuccess<T>(data: T, status = 200): Response {
-  return json<APIResponse<T>>({
-    success: true,
-    data,
-    timestamp: Date.now(),
-  }, { status });
+  return json(
+    {
+      success: true,
+      data,
+      timestamp: Date.now(),
+    },
+    { status }
+  );
 }
 
-export function apiError(
-  error: string | object,
-  status: number,
-  requestId?: string
-): Response {
-  return json<APIResponse>({
-    success: false,
-    error,
-    timestamp: Date.now(),
-    requestId
-  }, { status });
+export function apiError(error: string | object, status: number, requestId?: string): Response {
+  return json(
+    {
+      success: false,
+      error,
+      timestamp: Date.now(),
+      requestId,
+    },
+    { status }
+  );
 }
 
 /**

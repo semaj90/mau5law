@@ -20,11 +20,15 @@ export default defineConfig({
 		}
 	},
 
-	// CSS imports for NES.css
-	css: {
-		preprocessorOptions: {
-			scss: {
-				additionalData: '@import "nes.css/css/nes.min.css";'
+	// Build optimization
+	build: {
+		target: 'es2020',
+		rollupOptions: {
+			external: [],
+			output: {
+				manualChunks: {
+					fabric: ['fabric']
+				}
 			}
 		}
 	}

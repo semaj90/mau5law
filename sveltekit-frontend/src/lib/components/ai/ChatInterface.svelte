@@ -388,7 +388,7 @@ https://svelte.dev/e/js_parse_error -->
             disabled={$isLoading}
           >
             🔍 Quick Analysis
-          </button>
+          </Button>
         {/if}
 
         <div class="mx-auto px-4 max-w-7xl">

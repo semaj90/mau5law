@@ -34,7 +34,7 @@ export async function testOrchestratorIntegration(): Promise<{
         maxTokens: 200,
       },
       metadata: {
-        source: 'test',
+        source: 'api' as const,
         timestamp: Date.now(),
       },
     };
@@ -85,7 +85,7 @@ export async function testOrchestratorIntegration(): Promise<{
         maxTokens: 300,
       },
       metadata: {
-        source: 'test',
+        source: 'api' as const,
         timestamp: Date.now(),
       },
     };
@@ -108,7 +108,9 @@ export async function testOrchestratorIntegration(): Promise<{
       console.log(`❌ Legal analysis test failed: ${legalResult.error}`);
     }
   } catch (error) {
-    console.log(`❌ Legal analysis test error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.log(
+      `❌ Legal analysis test error: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
     results.push({
       test: 'Legal Analysis',
       success: false,
@@ -134,7 +136,7 @@ export async function testOrchestratorIntegration(): Promise<{
         priority: 'normal',
       },
       metadata: {
-        source: 'test',
+        source: 'api' as const,
         timestamp: Date.now(),
       },
     };
@@ -146,9 +148,10 @@ export async function testOrchestratorIntegration(): Promise<{
       orchestrator: embeddingResult.orchestratorUsed,
       model: embeddingResult.modelUsed,
       latency: embeddingResult.executionMetrics.totalLatency,
-      response: typeof embeddingResult.response === 'string' ? 
-        `Generated ${embeddingResult.response.length} chars` : 
-        'Embedding generated',
+      response:
+        typeof embeddingResult.response === 'string'
+          ? `Generated ${embeddingResult.response.length} chars`
+          : 'Embedding generated',
     });
 
     if (embeddingResult.success) {
@@ -158,7 +161,9 @@ export async function testOrchestratorIntegration(): Promise<{
       console.log(`❌ Embedding test failed: ${embeddingResult.error}`);
     }
   } catch (error) {
-    console.log(`❌ Embedding test error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.log(
+      `❌ Embedding test error: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
     results.push({
       test: 'Embedding Generation',
       success: false,
@@ -187,7 +192,7 @@ export async function testOrchestratorIntegration(): Promise<{
         maxTokens: 150,
       },
       metadata: {
-        source: 'test',
+        source: 'api' as const,
         timestamp: Date.now(),
       },
     };
@@ -205,12 +210,16 @@ export async function testOrchestratorIntegration(): Promise<{
 
     if (realtimeResult.success) {
       successCount++;
-      console.log(`✅ Realtime test passed - ${realtimeResult.orchestratorUsed} orchestrator (${realtimeResult.executionMetrics.totalLatency.toFixed(2)}ms)`);
+      console.log(
+        `✅ Realtime test passed - ${realtimeResult.orchestratorUsed} orchestrator (${realtimeResult.executionMetrics.totalLatency.toFixed(2)}ms)`
+      );
     } else {
       console.log(`❌ Realtime test failed: ${realtimeResult.error}`);
     }
   } catch (error) {
-    console.log(`❌ Realtime test error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.log(
+      `❌ Realtime test error: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
     results.push({
       test: 'Realtime Chat',
       success: false,
@@ -240,9 +249,13 @@ export async function testOrchestratorIntegration(): Promise<{
     successCount++;
     console.log(`✅ Status check passed - Bridge: ${status.bridge.status}`);
     console.log(`   Server Orchestrator: ${status.serverOrchestrator.status || 'unknown'}`);
-    console.log(`   Client Orchestrator: ${status.clientOrchestrator.modelsLoaded || 0} models loaded`);
+    console.log(
+      `   Client Orchestrator: ${status.clientOrchestrator.modelsLoaded || 0} models loaded`
+    );
   } catch (error) {
-    console.log(`❌ Status check error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.log(
+      `❌ Status check error: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
     results.push({
       test: 'Bridge Status',
       success: false,
@@ -252,10 +265,12 @@ export async function testOrchestratorIntegration(): Promise<{
 
   const totalTests = 5;
   const successRate = (successCount / totalTests) * 100;
-  
+
   console.log('\n📊 Test Summary:');
   console.log(`   Tests passed: ${successCount}/${totalTests} (${successRate.toFixed(1)}%)`);
-  console.log(`   Total requests processed: ${llmOrchestratorBridge.getPerformanceMetrics().totalRequests}`);
+  console.log(
+    `   Total requests processed: ${llmOrchestratorBridge.getPerformanceMetrics().totalRequests}`
+  );
 
   const summary = `LLM Orchestrator Integration: ${successCount}/${totalTests} tests passed (${successRate.toFixed(1)}%)`;
 
@@ -275,7 +290,7 @@ export async function quickHealthCheck(): Promise<{
   try {
     const status = await llmOrchestratorBridge.getStatus();
     const healthy = status.bridge.status === 'healthy' || status.bridge.status === 'degraded';
-    
+
     return {
       healthy,
       status,
@@ -304,14 +319,18 @@ export async function testSpecificOrchestrator(
       sessionId: 'test-session',
     },
     options: {
-      model: orchestratorType === 'server' ? 'server-orchestrator' : 
-             orchestratorType === 'client' ? 'gemma270m' : 'auto',
+      model:
+        orchestratorType === 'server'
+          ? 'server-orchestrator'
+          : orchestratorType === 'client'
+            ? 'gemma270m'
+            : 'auto',
       priority: 'normal',
       temperature: 0.3,
       maxTokens: 200,
     },
     metadata: {
-      source: 'specific-test',
+      source: 'api' as const,
       timestamp: Date.now(),
     },
   };
@@ -322,8 +341,9 @@ export async function testSpecificOrchestrator(
       success: result.success,
       orchestratorUsed: result.orchestratorUsed,
       expectedOrchestrator: orchestratorType,
-      matchesExpected: result.orchestratorUsed === orchestratorType || 
-                      (orchestratorType === 'mcp' && result.orchestratorUsed === 'mcp'),
+      matchesExpected:
+        result.orchestratorUsed === orchestratorType ||
+        (orchestratorType === 'mcp' && result.orchestratorUsed === 'hybrid'),
       response: result.response,
       metrics: result.executionMetrics,
       error: result.error,

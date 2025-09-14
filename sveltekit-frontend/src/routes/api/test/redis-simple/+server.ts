@@ -5,11 +5,14 @@
 
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { redisService } from '$lib/server/redis/redis-service';
+import { getRedisService } from '$lib/server/redis/redis-service';
 
 export const GET: RequestHandler = async () => {
   try {
     const start = performance.now();
+
+    // Get Redis service instance
+    const redisService = getRedisService();
 
     // Test Redis service health
     const isHealthy = redisService.isHealthy();
@@ -19,14 +22,18 @@ export const GET: RequestHandler = async () => {
     const testKey = 'test:simple-connection';
     const testValue = `test-${Date.now()}`;
 
-    // Set value
-    const setResult = await redisService.set(testKey, testValue, 60);
+    // Set value using cache method
+    await redisService.setCache(testKey, testValue, 60);
 
-    // Get value
-    const getValue = await redisService.get(testKey);
+    // Get value using cache method
+    const getValue = await redisService.getCache(testKey);
 
-    // Delete value
-    const deleteResult = await redisService.del(testKey);
+    // Delete value using cache method (if available)
+    try {
+      await redisService.deleteCache?.(testKey);
+    } catch (e) {
+      console.log('Delete method not available:', e);
+    }
 
     const end = performance.now();
 

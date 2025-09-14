@@ -6,6 +6,7 @@ import type { RequestHandler } from './$types';
 
 import { documentUpdateLoop } from "$lib/services/documentUpdateLoop";
 import { documents, document_chunks, cases, users } from '$lib/db/schema';
+import { documentVectors, queryVectors } from '$lib/db/schema/vectors';
 import { URL } from "url";
 
 // ============================================================================

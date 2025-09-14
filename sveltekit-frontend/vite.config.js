@@ -58,11 +58,55 @@ export default defineConfig({
 			external: ['simdjson', 'node-simdjson', '@stomp/stompjs'],
 			output: {
 				manualChunks: {
+					// AI & ML components - Heavy processing
+					'ai-core': [
+						'$lib/components/ai/RAGAssistantChat.svelte',
+						'$lib/components/ai/VectorSearch.svelte',
+						'$lib/services/ollama-service.ts',
+						'$lib/services/enhanced-rag-semantic-analyzer.ts'
+					],
+
+					// Canvas & Visualization - Heavy rendering
+					'canvas-fabric': [
+						'$lib/components/canvas/FabricCanvas.svelte',
+						'$lib/components/canvas/EvidenceNode.svelte',
+						'$lib/components/detective/DetectiveBoard.svelte',
+						'fabric'
+					],
+
+					// GPU Processing - CUDA/WebGPU
+					'gpu-processing': [
+						'$lib/services/gpu-acceleration-service.ts',
+						'$lib/services/webgpu-service.ts',
+						'$lib/services/cuda-vector-integration',
+						'$lib/webgpu/webgpu-ai-engine'
+					],
+
+					// Legal Document Processing
+					'legal-processing': [
+						'$lib/services/document-processor.ts',
+						'$lib/services/evidence-analyzer.ts',
+						'$lib/services/legal-workflow-service.ts'
+					],
+
+					// WebAssembly & Performance
+					'wasm-performance': [
+						'$lib/wasm/vector-wasm-wrapper',
+						'$lib/wasm/gpu-wasm-init',
+						'$lib/services/webgpu-wasm-service',
+						'$lib/services/wasm-accelerated-cache-ops'
+					],
+
+					// UI Components - Heavy libraries
+					'ui-heavy': [
+						'$lib/components/ui/enhanced-bits',
+						'$lib/components/layout/ProductionLayout.svelte',
+						'$lib/templates/EssentialRoutePage.svelte'
+					],
+
+					// Existing chunks
 					'webgpu-ai': ['$lib/webgpu/webgpu-ai-engine'],
-					'cognitive-router': ['$lib/ai/cognitive-smart-router'],
-					'gpu-inference': ['$lib/services/cuda-vector-integration'],
-					'wasm-ops': ['$lib/wasm/vector-wasm-wrapper', '$lib/wasm/gpu-wasm-init'],
-					'performance': ['$lib/services/webgpu-wasm-service', '$lib/services/wasm-accelerated-cache-ops']
+					'cognitive-router': ['$lib/ai/cognitive-smart-router']
 				}
 			}
 		}

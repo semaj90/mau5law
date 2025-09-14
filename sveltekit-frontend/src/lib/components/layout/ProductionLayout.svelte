@@ -531,21 +531,21 @@
     {/if}
 
     <!-- Professional Footer -->
-    <footer class="border-t border-amber-500/20 bg-slate-900/95 backdrop-blur-md shadow-xl p-6">
-      <div class="container mx-auto flex items-center justify-between text-sm text-slate-400">
-        <div class="flex items-center gap-6">
-          <span class="font-semibold">© 2024 Legal AI Platform - Professional Intelligence Suite</span>
-          <div class="flex items-center gap-2">
-            <Activity class="w-5 h-5 text-green-400" />
-            <span class="text-green-400 font-medium">All Systems Operational</span>
+    <footer class="border-t border-amber-500/20 bg-slate-900/95 backdrop-blur-md shadow-xl p-2">
+      <div class="container mx-auto flex items-center justify-between text-xs text-slate-400">
+        <div class="flex items-center gap-3">
+          <span class="font-medium">© 2024 Legal AI Platform</span>
+          <div class="flex items-center gap-1">
+            <Activity class="w-3 h-3 text-green-400" />
+            <span class="text-green-400 font-medium text-xs">Operational</span>
           </div>
         </div>
-        <div class="flex items-center gap-6">
-          <div class="flex items-center gap-2">
-            <Calendar class="w-4 h-4" />
-            <span class="font-mono font-semibold">{formatTime(currentTime)}</span>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-1">
+            <Calendar class="w-3 h-3" />
+            <span class="font-mono font-medium text-xs">{formatTime(currentTime)}</span>
           </div>
-          <Zap class="w-5 h-5 text-amber-400" />
+          <Zap class="w-3 h-3 text-amber-400" />
         </div>
       </div>
     </footer>

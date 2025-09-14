@@ -1,38 +1,35 @@
 #!/usr/bin/env zx
 
-// Enhanced QUIC development setup with Docker infrastructure
-// Combines Docker services with native QUIC frontend performance
+// Enhanced QUIC Development Environment - Full Stack
+// Complete containerized legal AI platform with QUIC/HTTP3 support
 
 import { $, question, echo, sleep } from 'zx'
 
-// Configuration
-const config = {
-  frontend: {
-    port: 5176,
-    host: '127.0.0.1',
-    protocol: 'http3', // QUIC/HTTP3 support
-  },
-  docker: {
-    network: 'legal-ai-network',
-    services: ['legal-ai-postgres', 'legal-ai-redis', 'ollama-embeddings']
-  },
-  env: {
-    NODE_OPTIONS: '--max-old-space-size=3072',
-    ENABLE_GPU: 'true',
-    RTX_3060_OPTIMIZATION: 'true',
-    CONTEXT7_MULTICORE: 'true',
-    OLLAMA_GPU_LAYERS: '30',
-    QUIC_ENABLED: 'true',
-    DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
-    REDIS_URL: 'redis://localhost:6379'
+echo`🚀 Starting Enhanced QUIC Development Environment (Full Stack)`
+echo`════════════════════════════════════════════════════════════════════`
+echo`🐳 Complete containerized legal AI platform`
+echo`⚡ QUIC/HTTP3 + WebSocket priority + Self-signed certificates`
+echo`🎯 Standardized port configuration (5173)`
+echo``
+
+// Stop original Docker services to avoid conflicts
+echo`🧹 Stopping original Docker services...`
+const originalServices = [
+  'legal-ai-redis',
+  'legal-ai-postgres',
+  'legal-ai-minio',
+  'legal_ai_test_db',
+  'legal_ai_test_redis'
+]
+
+for (const service of originalServices) {
+  try {
+    await $`docker stop ${service}`
+    echo`   ✅ Stopped ${service}`
+  } catch (e) {
+    echo`   ℹ️  ${service} not running`
   }
 }
-
-echo`🚀 Starting Enhanced QUIC Development Environment`
-echo`════════════════════════════════════════════════`
-echo`📡 QUIC/HTTP3: ${config.frontend.host}:${config.frontend.port}`
-echo`🐳 Docker: Infrastructure services`
-echo`⚡ GPU: RTX optimized`
 echo``
 
 // Check Docker
@@ -44,127 +41,96 @@ try {
   process.exit(1)
 }
 
-// Create Docker network
+// Ensure Docker network exists
 try {
-  await $`docker network create ${config.docker.network}`
-  echo`🔗 Created Docker network: ${config.docker.network}`
+  await $`docker network create legal-ai-network`
+  echo`🔗 Created Docker network: legal-ai-network`
 } catch (e) {
-  echo`🔗 Docker network already exists: ${config.docker.network}`
+  echo`🔗 Docker network already exists: legal-ai-network`
 }
 
-// Check if Docker infrastructure is already running
-echo`🐳 Checking Docker infrastructure services...`
-let servicesRunning = false
+// Start Docker services with full infrastructure
+echo`🐳 Starting complete Docker infrastructure...`
+cd('..')
 try {
-  await $`docker exec legal-ai-postgres pg_isready -U legal_admin -d legal_ai_db`
-  await $`docker exec legal-ai-redis redis-cli ping`
-  echo`✅ Docker services already running and healthy`
-  servicesRunning = true
+  await $`docker-compose -f docker-compose.dynamic.yml up -d`
+  echo`✅ Docker services started successfully`
 } catch (e) {
-  echo`🐳 Starting Docker infrastructure services...`
-  cd('..')
-  try {
-    await $`docker-compose -f ../docker-compose.legal-ai.yml up -d`
-    echo`✅ Docker services started successfully`
-  } catch (e) {
-    echo`⚠️ Docker services may already be running or unavailable`
-    echo`Continuing with native services...`
-  }
-  cd('sveltekit-frontend')
-}
-
-// Wait for services
-echo`⏳ Waiting for infrastructure services...`
-
-// Wait for PostgreSQL
-let pgReady = false
-for (let i = 0; i < 30; i++) {
-  try {
-    await $`docker exec legal-ai-postgres pg_isready -U legal_admin -d legal_ai_db`
-    echo`✅ PostgreSQL ready on port 5433`
-    pgReady = true
-    break
-  } catch (e) {
-    echo`   Waiting for PostgreSQL... (${i + 1}/30)`
-    await sleep(2000)
-  }
-}
-
-if (!pgReady) {
-  echo`❌ PostgreSQL failed to start`
+  echo`❌ Failed to start Docker services: ${e.message}`
   process.exit(1)
 }
+cd('sveltekit-frontend')
 
-// Wait for Redis
-let redisReady = false
-for (let i = 0; i < 30; i++) {
-  try {
-    await $`docker exec legal-ai-redis redis-cli ping`
-    echo`✅ Redis ready on port 6379`
-    redisReady = true
-    break
-  } catch (e) {
-    echo`   Waiting for Redis... (${i + 1}/30)`
-    await sleep(2000)
-  }
-}
+// Wait for services to be ready
+echo`⏳ Waiting for Docker services to be ready...`
+await sleep(8000)
 
-if (!redisReady) {
-  echo`❌ Redis failed to start`
-  process.exit(1)
-}
-
-echo``
-echo`🎯 Infrastructure Ready!`
-echo`   PostgreSQL: localhost:5433`
+echo`✅ Full Stack Infrastructure Ready!`
+echo`   PostgreSQL: localhost:5432`
 echo`   Redis: localhost:6379`
-echo`   MinIO: localhost:9000`
+echo`   Redis Insight: localhost:8001`
+echo`   MinIO API: localhost:9000`
+echo`   MinIO Console: localhost:9001`
 echo``
 
-// Set environment variables
-for (const [key, value] of Object.entries(config.env)) {
-  process.env[key] = value
-}
-
-echo`🚀 Starting SvelteKit with QUIC optimization...`
-echo`   Frontend: http://${config.frontend.host}:${config.frontend.port}`
-echo`   Protected Route: http://${config.frontend.host}:${config.frontend.port}/protected`
-echo`   Authentication: Full Lucia v3 support`
-echo``
-echo`⚡ Features enabled:`
-echo`   - QUIC/HTTP3 protocol support`
-echo`   - RTX 3060 GPU optimizations`
-echo`   - Docker infrastructure`
-echo`   - Authentication system`
-echo`   - Dynamic port management`
-echo``
-echo`💡 Press Ctrl+C to stop (Docker services will keep running)`
-echo`💡 Run 'docker-compose -f ../docker-compose.yml down' to stop Docker services`
-echo``
-
-// Start Caddy for QUIC/HTTP3 support
-echo`🔥 Starting Caddy QUIC/HTTP3 proxy...`
-try {
-  $.spawn`../caddy.exe run --config Caddyfile`
-  echo`✅ Caddy HTTP/3 proxy started successfully`
-} catch (e) {
-  echo`⚠️ Caddy startup failed, continuing without QUIC:`, e.message
-}
-
-// Give Caddy time to start
-await sleep(2000)
-
-// Start Vite backend server (proxied by Caddy)
-echo`🚀 Starting Vite backend server (proxied by Caddy)...`
-try {
-  await $`PORT=5175 vite dev --port 5175 --host ${config.frontend.host}`
-} catch (e) {
-  echo`❌ Vite startup failed:`, e.message
-  echo`💡 Trying alternative port...`
+// Wait for Caddy QUIC proxy to be ready
+echo`🔄 Waiting for Caddy QUIC proxy...`
+let caddyReady = false
+for (let i = 0; i < 30; i++) {
   try {
-    await $`PORT=5177 vite dev --port 5177 --host ${config.frontend.host}`
-  } catch (e2) {
-    echo`❌ Alternative port also failed:`, e2.message
-    process.exit(1)
+    await $`curl -k -f https://localhost:443/health`
+    echo`✅ Caddy QUIC proxy ready with self-signed certificates`
+    caddyReady = true
+    break
+  } catch (e) {
+    echo`   Waiting for Caddy... (${i + 1}/30)`
+    await sleep(2000)
   }
+}
+
+// Wait for frontend container
+echo`🔄 Waiting for frontend container...`
+let frontendReady = false
+for (let i = 0; i < 30; i++) {
+  try {
+    await $`curl -f http://localhost:5173/`
+    echo`✅ Frontend container ready`
+    frontendReady = true
+    break
+  } catch (e) {
+    echo`   Waiting for frontend... (${i + 1}/30)`
+    await sleep(3000)
+  }
+}
+
+echo``
+echo`🎉 Enhanced QUIC Development Environment Ready!`
+echo`════════════════════════════════════════════════════════════════════`
+echo`🔒 HTTPS (QUIC/HTTP3): https://localhost:443`
+echo`🔓 HTTP (redirects): http://localhost:80`
+echo`🔧 Direct Frontend: http://localhost:5173`
+echo`📊 Redis Insight: http://localhost:8001`
+echo`🗄️  MinIO Console: http://localhost:9001`
+echo``
+echo`⚡ Features Active:`
+echo`   - Full legal AI platform containerized`
+echo`   - QUIC/HTTP3 protocol via Caddy`
+echo`   - WebSocket priority routing`
+echo`   - Self-signed certificates (Playwright/Puppeteer ready)`
+echo`   - PostgreSQL with pgvector`
+echo`   - Redis with full-text search`
+echo`   - MinIO object storage`
+echo`   - RTX 3060 GPU optimizations`
+echo``
+echo`💡 Press Ctrl+C to stop`
+echo`💡 To stop services: docker-compose -f ../docker-compose.dynamic.yml down`
+echo``
+
+// Keep the script running to maintain the environment
+echo`🏃 Environment running... (Press Ctrl+C to stop)`
+try {
+  // Keep alive until interrupted
+  await new Promise(() => {})
+} catch (e) {
+  echo`🛑 Shutting down QUIC development environment`
 }

@@ -4,9 +4,9 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
 import type { ApiResponse, ApiError } from '../../types/api.js';
-import type { APIResponse as UnifiedAPIResponse, FormSubmissionResult } from '$lib/types';
-import path from "path";
-import { URL } from "url";
+import type { APIResponse as UnifiedAPIResponse } from '$lib/types';
+import path from 'path';
+import { URL } from 'url';
 
 // Standard response interface
 export interface StandardApiResponse<T = any> {
@@ -65,8 +65,8 @@ export function apiSuccess<T>(
       requestId,
       processingTime,
       version: '2.0',
-      ...(pagination && { pagination })
-    }
+      ...(pagination && { pagination }),
+    },
   };
 
   return json(response);
@@ -86,20 +86,20 @@ export function apiError(
       code: error.code,
       message: error.message,
       details: error.details,
-      timestamp: error.timestamp
+      timestamp: error.timestamp,
     };
     statusCode = error.statusCode;
   } else if (error instanceof Error) {
     apiErrorData = {
       code: 'INTERNAL_ERROR',
       message: error.message,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   } else {
     apiErrorData = {
       code: 'UNKNOWN_ERROR',
       message: typeof error === 'string' ? error : 'Unknown error occurred',
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -110,8 +110,8 @@ export function apiError(
       timestamp: new Date().toISOString(),
       requestId,
       processingTime,
-      version: '2.0'
-    }
+      version: '2.0',
+    },
   };
 
   return json(response, { status: statusCode });
@@ -123,18 +123,18 @@ export function validationError(
   requestId: string = generateRequestId(),
   processingTime: number = 0
 ): Response {
-  const details = validationResult.errors.reduce((acc, err) => {
-    const path = err.path.join('.');
-    acc[path] = err.message;
-    return acc;
-  }, {} as Record<string, string>);
-
-  const apiErr = new ApiErrorClass(
-    'Validation failed',
-    'VALIDATION_ERROR',
-    400,
-    { fields: details }
+  const details = validationResult.errors.reduce(
+    (acc, err) => {
+      const path = err.path.join('.');
+      acc[path] = err.message;
+      return acc;
+    },
+    {} as Record<string, string>
   );
+
+  const apiErr = new ApiErrorClass('Validation failed', 'VALIDATION_ERROR', 400, {
+    fields: details,
+  });
 
   return apiError(apiErr, requestId, processingTime);
 }
@@ -143,11 +143,11 @@ export function validationError(
 export function buildSuccessResponse<T>(
   data: T,
   metadata: { processingTimeMs: number; requestId: string }
-): UnifiedAPIResponse<T> {
+): UnifiedAPIResponse {
   return {
     success: true,
     data,
-    metadata: { ...metadata, timestamp: new Date().toISOString() }
+    metadata: { ...metadata, timestamp: new Date().toISOString() },
   };
 }
 
@@ -155,21 +155,21 @@ export function buildErrorResponse(
   code: string,
   message: string,
   metadata: { processingTimeMs: number; requestId: string }
-): UnifiedAPIResponse<never> {
+): UnifiedAPIResponse {
   return {
     success: false,
     error: { code, message },
-    metadata: { ...metadata, timestamp: new Date().toISOString() }
-  } as UnifiedAPIResponse<never>;
+    metadata: { ...metadata, timestamp: new Date().toISOString() },
+  } as UnifiedAPIResponse;
 }
 
 export function buildFormSubmissionResult<T>(
-  result: Omit<FormSubmissionResult<T>, 'metadata'>,
+  result: any,
   metadata: { processingTimeMs: number; requestId: string }
-): FormSubmissionResult<T> {
+): any {
   return {
     ...result,
-    metadata: { ...metadata, timestamp: new Date().toISOString() }
+    metadata: { ...metadata, timestamp: new Date().toISOString() },
   };
 }
 

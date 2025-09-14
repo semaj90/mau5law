@@ -3,7 +3,7 @@
  * Simulates AI-powered case analysis with mock data
  */
 
-import type { Evidence, Case, Report } from '$lib/types/types';
+import type { Evidence, Case, Report } from '$lib/types';
 
 export interface RAGDemoQuery {
   query: string;

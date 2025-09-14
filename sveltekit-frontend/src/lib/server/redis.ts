@@ -16,7 +16,8 @@ function buildRedisOptions() {
     ...baseConfig,
     password: password || undefined,
     maxRetriesPerRequest: null as any,
-    lazyConnect: false,
+    lazyConnect: true, // Changed to true to prevent immediate connection
+    maxRetriesPerRequest: 1, // Limit retries to prevent flooding
     // If URL was provided separately, include it in options form
     ...(url ? { host: undefined } : {}),
   } as any;

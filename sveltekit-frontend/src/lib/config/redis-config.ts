@@ -25,8 +25,8 @@ export const REDIS_BASE_CONFIG: RedisOptions = {
   keepAlive: 30000,
   family: 4,
   
-  // Performance optimization
-  maxRetriesPerRequest: 3,
+  // Performance optimization - reduced retries to prevent flooding
+  maxRetriesPerRequest: 1,
   retryDelayOnFailover: 100,
   enableReadyCheck: true,
   

@@ -1,12 +1,12 @@
 /**
  * Enhanced RAG Query API Endpoint
- * 
+ *
  * Provides RESTful access to the enhanced RAG pipeline with:
  * - Legal document retrieval with pgvector similarity search
  * - Custom legal reranking for improved relevance
  * - Contextual compression and advanced generation
  * - Comprehensive error handling and logging
- * 
+ *
  * @route POST /api/rag/query
  */
 
@@ -15,11 +15,11 @@ import type { RequestHandler } from './$types';
 import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
 import type { RAGQuery, RAGResponse } from '$lib/services/enhanced-rag-pipeline';
 import { rateLimiter } from '$lib/server/rate-limiter'; // Assuming rate limiting exists
-import { authenticate } from '$lib/server/auth'; // Assuming auth helper exists
+import { requireAuth } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
 
 export const POST: RequestHandler = async ({ request, cookies, getClientAddress }) => {
   const startTime = Date.now();
-  
+
   try {
     // Rate limiting protection
     const clientIp = getClientAddress();
@@ -147,7 +147,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
 
   } catch (error: any) {
     console.error('RAG Query API Error:', error);
-    
+
     // Determine error type and appropriate response
     let statusCode = 500;
     let errorMessage = 'Internal server error during RAG query processing';
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
 export const GET: RequestHandler = async () => {
   try {
     const stats = await enhancedRAGPipeline.getSystemStats();
-    
+
     return json({
       success: true,
       status: 'healthy',

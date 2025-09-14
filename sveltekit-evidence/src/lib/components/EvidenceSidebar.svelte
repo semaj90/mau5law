@@ -9,14 +9,18 @@ Handles file uploads, evidence display, and drag-to-board functionality
   import type { Evidence } from '$lib/types';
 
   // Props
-  export let caseId: string;
+  interface Props {
+    caseId: string;
+  }
+
+  let { caseId }: Props = $props();
 
   // Component state
-  let files: FileList | null = null;
-  let fileInput: HTMLInputElement;
-  let isUploading = false;
-  let uploadProgress = 0;
-  let draggedEvidence: Evidence | null = null;
+  let files = $state<FileList | null>(null);
+  let fileInput = $state<HTMLInputElement>();
+  let isUploading = $state(false);
+  let uploadProgress = $state(0);
+  let draggedEvidence = $state<Evidence | null>(null);
 
   // File upload handler
   async function uploadEvidence() {
@@ -33,7 +37,7 @@ Handles file uploads, evidence display, and drag-to-board functionality
       }
 
       // Clear file input
-      fileInput.value = '';
+      if (fileInput) fileInput.value = '';
       files = null;
 
     } catch (error) {
@@ -121,19 +125,19 @@ Handles file uploads, evidence display, and drag-to-board functionality
   }
 
   // Filter evidence by type
-  let evidenceFilter = 'all';
-  $: filteredEvidence = $currentEvidence.filter(evidence => {
+  let evidenceFilter = $state('all');
+  let filteredEvidence = $derived($currentEvidence.filter(evidence => {
     if (evidenceFilter === 'all') return true;
     return evidence.type === evidenceFilter;
-  });
+  }));
 
   // Search evidence
-  let searchQuery = '';
-  $: searchedEvidence = filteredEvidence.filter(evidence =>
+  let searchQuery = $state('');
+  let searchedEvidence = $derived(filteredEvidence.filter(evidence =>
     evidence.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
     evidence.notes?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     evidence.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  ));
 </script>
 
 <div class="evidence-sidebar">
