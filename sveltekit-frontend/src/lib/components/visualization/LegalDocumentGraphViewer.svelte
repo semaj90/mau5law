@@ -25,13 +25,13 @@ https://svelte.dev/e/js_parse_error -->
   // COMPONENT PROPS
   // ============================================================================
 
-  let { graphId = $bindable() } = $props(); // string = 'legal-network-main';
-  let { width = $bindable() } = $props(); // number = 800;
-  let { height = $bindable() } = $props(); // number = 600;
-  let { enablePhysics = $bindable() } = $props(); // boolean = true;
-  let { enableStreaming = $bindable() } = $props(); // boolean = true;
-  let { maxNodes = $bindable() } = $props(); // number = 10000;
-  let { class = $bindable() } = $props(); // string = '';
+  let { graphId = $bindable()  }: { graphId = $bindable() : any } = $props(); // string = 'legal-network-main';
+  let { width = $bindable()  }: { width = $bindable() : any } = $props(); // number = 800;
+  let { height = $bindable()  }: { height = $bindable() : any } = $props(); // number = 600;
+  let { enablePhysics = $bindable()  }: { enablePhysics = $bindable() : any } = $props(); // boolean = true;
+  let { enableStreaming = $bindable()  }: { enableStreaming = $bindable() : any } = $props(); // boolean = true;
+  let { maxNodes = $bindable()  }: { maxNodes = $bindable() : any } = $props(); // number = 10000;
+  let { class = $bindable()  }: { class = $bindable() : any } = $props(); // string = '';
 
   // ============================================================================
   // REACTIVE STORES
@@ -75,8 +75,7 @@ https://svelte.dev/e/js_parse_error -->
   // ============================================================================
   // WEBGPU & CANVAS MANAGEMENT
   // ============================================================================
-  let canvas = $state<HTMLCanvasElement;
-  let graphEngine: WebGPULegalDocumentGraph | null >(null);
+  let canvas = $state<HTMLCanvasElementlet graphEngine: WebGPULegalDocumentGraph | null>(null)(null);
   let tensorStore = $state<DimensionalTensorStore | null >(null);
   let animationFrame = $state<number | null >(null);
   let resizeObserver = $state<ResizeObserver | null >(null);
@@ -577,13 +576,13 @@ https://svelte.dev/e/js_parse_error -->
       <div class="error-icon">⚠️</div>
       <h3>WebGPU Error</h3>
       <p>{$error}</p>
-      <button onclick={() => window.location.reload()}>Reload Page</button>
+      <button on:click={() => window.location.reload()}>Reload Page</button>
     </div>
   {/if}
 
   <!-- WebGPU Canvas -->
   <canvas 
-    bind:this={canvas}
+    bind:this={canvas as any}
     class="graph-canvas"
     class:interactive={$canInteract}
     {width} 
@@ -615,15 +614,15 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Controls Panel -->
   {#if $canInteract}
     <div class="controls-panel">
-      <button onclick={resetCamera} title="Reset Camera">
+      <button on:click={resetCamera} title="Reset Camera">
         🎯
       </button>
       
-      <button onclick={togglePhysics} title="Toggle Physics" class:active={enablePhysics}>
+      <button on:click={togglePhysics} title="Toggle Physics" class:active={enablePhysics}>
         ⚡
       </button>
       
-      <button onclick={() => $renderState.autoRotate = !$renderState.autoRotate} 
+      <button on:click={() => $renderState.autoRotate = !$renderState.autoRotate} 
               title="Auto Rotate" 
               class:active={$renderState.autoRotate}>
         🔄
@@ -637,11 +636,11 @@ https://svelte.dev/e/js_parse_error -->
         <option value="precedent">Precedents</option>
       </select>
 
-      <button onclick={saveGraphState} title="Save State">
+      <button on:click={saveGraphState} title="Save State">
         💾
       </button>
 
-      <button onclick={async () => {
+      <button on:click={async () => {
         const blob = await exportImage();
         if (blob) {
           const url = URL.createObjectURL(blob);

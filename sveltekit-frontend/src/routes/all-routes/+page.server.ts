@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 import { error } from '@sveltejs/kit';
 import type { RouteDefinition } from '$lib/data/routes-config';
 import * as fs from 'fs';
@@ -11,12 +11,7 @@ export interface SystemHealthData {
     uptime_hours: number;
     last_updated: string;
   };
-  services: Array<{
-    name: string;
-    status: 'healthy' | 'degraded' | 'down';
-    port?: number;
-    response_time?: number;
-  }>;
+  services: Array<any>;
   performance: {
     cpu_usage: number;
     memory_usage: number;
@@ -44,12 +39,7 @@ export interface RoutePageData {
   systemHealth: SystemHealthData | null;
   userSession: UserSession;
   availableRoutes: RouteDefinition[];
-  recentOperations: Array<{
-    operation: string;
-    timestamp: string;
-    status: 'success' | 'error' | 'pending';
-    protocol?: string;
-  }>;
+  recentOperations: Array<any>;
   routeInventory?: {
     generated: string;
     counts: {
@@ -112,7 +102,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
 
           return {
             ...service,
-            status: response && response.ok ? ('healthy' as const) : ('degraded' as const),
+            status: response && (response as { ok?: any }).ok ? ('healthy' as const) : ('degraded' as const),
             response_time: responseTime,
           };
         }
@@ -135,7 +125,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
   );
 
   const healthyServices = serviceResults.filter(
-    (result) => result.status === 'fulfilled' && result.value.status === 'healthy'
+    (result) => (result as { status?: any; value?: any }).status === 'fulfilled' && (result as { status?: any; value?: any }).value.status === 'healthy'
   ).length;
 
   return {
@@ -146,8 +136,8 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
       last_updated: new Date().toISOString(),
     },
     services: serviceResults.map((result) =>
-      result.status === 'fulfilled'
-        ? result.value
+      (result as { status?: any; value?: any }).status === 'fulfilled'
+        ? (result as { status?: any; value?: any }).value
         : {
             name: 'Unknown Service',
             status: 'down' as const,

@@ -144,7 +144,7 @@
       const maxScore = selectedConfidence === 'low' ? 0.7 : 1.0;
 
       return searchResults.filter(result =>
-        result.score >= minScore && result.score < maxScore
+        (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).score >= minScore && (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).score < maxScore
       );
     })()
   );
@@ -183,7 +183,7 @@
       searchResults = mockSearchResults.map(result => ({
         ...result,
         score: Math.random() * 0.3 + 0.7, // Random score between 0.7-1.0
-        highlights: result.highlights.filter(() => Math.random() > 0.3) // Random highlights
+        highlights: (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).highlights.filter(() => Math.random() > 0.3) // Random highlights
       }));
 
       // Mock entity extraction
@@ -285,25 +285,25 @@
         variant="primary"
         legal
         loading={isSearching}
-        onclick={performVectorSearch}
+        on:click={performVectorSearch}
         disabled={!searchQuery.trim()}
       >
-        {#if isSearching}
+{#if isSearching}
           <Zap class="w-4 h-4 mr-2 animate-pulse" />
           Analyzing...
         {:else}
           <Search class="w-4 h-4 mr-2" />
           Search
         {/if}
-      </button>
+</Button>
 
       {#if searchResults.length > 0}
         <Button class="bits-btn"
           variant="outline"
-          onclick={clearResults}
+          on:click={clearResults}
         >
-          Clear
-        </button>
+Clear
+</Button>
       {/if}
     </div>
 
@@ -325,7 +325,7 @@
     <div class="demo-results-section mb-6">
       <h2 class="text-lg font-gothic mb-4 text-nier-text-primary">Extracted Entities</h2>
 
-      <NesCard variant="yorha" legal class="p-4">
+      <div variant="yorha" legal class="p-4 nes-container">
         <div class="semantic-entity-container">
           {#each semanticEntities as entity (entity.text)}
             {@const SvelteComponent = entityIcons[entity.type]}
@@ -347,7 +347,7 @@
           <strong>{semanticEntities.length}</strong> entities extracted with
           <strong>{analysisDepth}</strong> analysis depth
         </div>
-      </NesCard>
+      </div>
     </div>
   {/if}
 
@@ -364,16 +364,15 @@
       </div>
 
       <div class="space-y-4">
-        {#each filteredResults as result (result.id)}
-          <NesCard
+        {#each filteredResults as result ((result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).id)}
+          <div
             variant="default"
             evidenceCard
             hoverable
             clickable
-            class="vector-result-item"
-          >
-            {@const SvelteComponent_1 = result.source.type === 'case' ? Scale :
-                          result.source.type === 'precedent' ? FileText :
+            class="vector-result-item nes-container">
+            {@const SvelteComponent_1 = (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).source.type === 'case' ? Scale :
+                          (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).source.type === 'precedent' ? FileText :
                           FileText}
             <div class="space-y-3">
               <!-- Result Header -->
@@ -383,26 +382,26 @@
                     class="w-4 h-4 text-nier-text-muted"
                   />
                   <span class="text-sm font-medium text-nier-text-primary">
-                    {result.source.name}
+                    {(result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).source.name}
                   </span>
                 </div>
 
-                <div class={cn('vector-confidence-badge', getConfidenceBadgeClass(result.score))}>
-                  {formatConfidence(result.score)}
+                <div class={cn('vector-confidence-badge', getConfidenceBadgeClass((result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).score))}>
+                  {formatConfidence((result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).score)}
                 </div>
               </div>
 
               <!-- Result Content -->
               <div class="text-sm text-nier-text-secondary leading-relaxed">
-                {@html result.content.replace(
-                  new RegExp(`(${result.highlights.join('|')})`, 'gi'),
+                {@html (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).content.replace(
+                  new RegExp(`(${(result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).highlights.join('|')})`, 'gi'),
                   '<span class="vector-highlight">$1</span>'
                 )}
               </div>
 
               <!-- Result Metadata -->
               <div class="vector-metadata-grid">
-                {#each Object.entries(result.metadata) as [key, value]}
+                {#each Object.entries((result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).metadata) as [key, value]}
                   <div class="flex flex-col">
                     <span class="text-xs font-medium text-nier-text-muted uppercase tracking-wide">
                       {key.replace(/([A-Z])/g, ' $1').toLowerCase()}
@@ -417,7 +416,7 @@
               <!-- Action Buttons -->
               <div class="flex items-center justify-between pt-2 border-t border-nier-border-muted">
                 <div class="flex gap-2">
-                  {#each result.highlights as highlight}
+                  {#each (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).highlights as highlight}
                     <span class="text-xs px-2 py-1 bg-nier-bg-tertiary rounded text-nier-text-secondary">
                       {highlight}
                     </span>
@@ -426,15 +425,15 @@
 
                 <div class="flex gap-2">
                   <Button class="bits-btn" size="sm" variant="outline">
-                    View Full
-                  </button>
+View Full
+</Button>
                   <Button class="bits-btn" size="sm" variant="primary">
-                    Add to Case
-                  </button>
+Add to Case
+</Button>
                 </div>
               </div>
             </div>
-          </NesCard>
+          </div>
         {/each}
       </div>
     </div>
@@ -451,10 +450,11 @@
       <div class="flex justify-center gap-2">
         <Button class="bits-btn"
           variant="outline"
-          onclick={() => searchQuery = 'contract breach non-disclosure agreement'}
+          on:click={() =>
+searchQuery = 'contract breach non-disclosure agreement'}
         >
           Try Sample Query
-        </button>
+</Button>
       </div>
     </div>
   {/if}

@@ -95,7 +95,7 @@ Compact AI recommendations component for sidebar/dashboard use
         }
       });
 
-      recommendations = result.slice(0, maxRecommendations);
+      recommendations = (result as { slice?: any }).slice(0, maxRecommendations);
       lastUpdated = new Date();
     } catch (error) {
       console.error('Failed to load recommendations:', error);
@@ -166,9 +166,9 @@ Compact AI recommendations component for sidebar/dashboard use
   }
 </script>
 
-<NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-  <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header {compact ? 'p-3' : 'p-4'}" variant="default" legal={true}>
-    <h3 class="nes-text is-primary" class="flex items-center justify-between">
+<div class="bits-nier-bits-card nes-container">
+  <div class="yorha-panel-header bits-nier-bits-yorha-panel-header {compact ? 'p-3' : 'p-4'}" variant="default" legal={true}>
+    <h3 class="nes-text is-primary flex items-center justify-between">
       <div class="flex items-center gap-2">
         <Lightbulb class="h-4 w-4 text-yellow-600" />
         <span class="{compact ? 'text-sm' : 'text-base'}">AI Recommendations</span>
@@ -180,12 +180,12 @@ Compact AI recommendations component for sidebar/dashboard use
       <Button
         variant="ghost"
         size="sm"
-        onclick={loadRecommendations}
+        on:click={loadRecommendations}
         disabled={isLoading}
         class="h-7 w-7 p-0 bits-btn bits-btn"
       >
-        <RefreshCw class="h-3 w-3 {isLoading ? 'animate-spin' : ''}" />
-      </button>
+<RefreshCw class="h-3 w-3 {isLoading ? 'animate-spin' : ''}" />
+
     </h3>
 
     {#if lastUpdated && !compact}
@@ -195,7 +195,7 @@ Compact AI recommendations component for sidebar/dashboard use
     {/if}
   </div>
 
-  <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content {compact ? 'p-3' : 'p-4'} pt-0" variant="default" legal={true}>
+  <div class="yorha-panel-content bits-nier-bits-yorha-panel-content {compact ? 'p-3' : 'p-4'} pt-0" variant="default" legal={true}>
     {#if isLoading}
       <div class="space-y-3">
         {#each Array(maxRecommendations) as _}
@@ -219,7 +219,7 @@ Compact AI recommendations component for sidebar/dashboard use
           <button
             type="button"
             class="w-full text-left p-3 rounded-lg border-l-4 {getRecommendationColor(rec.type)} hover:shadow-md transition-all duration-200"
-            onclick={() => onRecommendationClick(rec)}
+            on:click={() => onRecommendationClick(rec)}
           >
             <div class="flex items-start justify-between mb-2">
               <div class="flex items-center gap-2">
@@ -258,7 +258,7 @@ Compact AI recommendations component for sidebar/dashboard use
                 <span>Success: {rec.estimatedImpact.successProbability}%</span>
               </div>
             {/if}
-          </button>
+
         {/each}
       </div>
 
@@ -272,9 +272,8 @@ Compact AI recommendations component for sidebar/dashboard use
           </div>
         </div>
       {/if}
-    {/if}
   </div>
-</NesCard>
+</div>
 
 <style>
   /* @unocss-include */

@@ -1,5 +1,5 @@
 
-import type { User } from "./user";
+import type { User } from './user.js';
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm/table";
 import {
   cases,

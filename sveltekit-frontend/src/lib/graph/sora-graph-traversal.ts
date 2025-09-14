@@ -58,11 +58,7 @@ export interface GraphTraversalQuery {
 export interface GraphTraversalResult {
   nodes: Map<string, GraphNode>;
   edges: Map<string, GraphEdge>;
-  paths: Array<{
-    nodes: string[];
-    totalWeight: number;
-    confidence: number;
-  }>;
+  paths: Array<any>;
   statistics: {
     traversalTime: number;
     nodesVisited: number;
@@ -193,10 +189,10 @@ export class SoraGraphTraversal {
       }
 
       // Generate visualization data
-      result.visualizationData = await this.generateVisualizationData(result);
+      (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).visualizationData = await this.generateVisualizationData(result);
 
       const traversalTime = performance.now() - startTime;
-      result.statistics.traversalTime = traversalTime;
+      (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).statistics.traversalTime = traversalTime;
 
       // Update metrics
       this.metrics.totalTraversals++;
@@ -224,7 +220,7 @@ export class SoraGraphTraversal {
   private async semanticSimilarityTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
-    const paths: Array<{ nodes: string[]; totalWeight: number; confidence: number }> = [];
+    const paths: Array< = [];
 
     let nodesVisited = 0;
     let edgesTraversed = 0;
@@ -271,7 +267,7 @@ export class SoraGraphTraversal {
           positions: new Float32Array(0),
           colors: new Float32Array(0),
           connections: new Uint32Array(0),
-          metadata: {}
+          metadata: Record<string, any>
         }
       };
 
@@ -311,7 +307,7 @@ export class SoraGraphTraversal {
   private async jsSemanticTraversal(query: GraphTraversalQuery, embeddings: Map<string, Float32Array>): Promise<any> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
-    const paths: Array<{ nodes: string[]; totalWeight: number; confidence: number }> = [];
+    const paths: Array< = [];
 
     let nodesVisited = 0;
     let edgesTraversed = 0;
@@ -353,9 +349,9 @@ export class SoraGraphTraversal {
   private async breadthFirstTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
-    const paths: Array<{ nodes: string[]; totalWeight: number; confidence: number }> = [];
+    const paths: Array< = [];
 
-    const queue: Array<{ nodeId: string; depth: number; path: string[]; weight: number }> = [];
+    const queue: Array< = [];
     const visited = new Set<string>();
 
     let nodesVisited = 0;
@@ -425,7 +421,7 @@ export class SoraGraphTraversal {
         positions: new Float32Array(0),
         colors: new Float32Array(0),
         connections: new Uint32Array(0),
-        metadata: {}
+        metadata: Record<string, any>
       }
     };
   }
@@ -436,9 +432,9 @@ export class SoraGraphTraversal {
   private async depthFirstTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
-    const paths: Array<{ nodes: string[]; totalWeight: number; confidence: number }> = [];
+    const paths: Array< = [];
 
-    const stack: Array<{ nodeId: string; depth: number; path: string[]; weight: number }> = [];
+    const stack: Array< = [];
     const visited = new Set<string>();
 
     let nodesVisited = 0;
@@ -510,7 +506,7 @@ export class SoraGraphTraversal {
         positions: new Float32Array(0),
         colors: new Float32Array(0),
         connections: new Uint32Array(0),
-        metadata: {}
+        metadata: Record<string, any>
       }
     };
   }
@@ -522,7 +518,7 @@ export class SoraGraphTraversal {
     // Use Dijkstra's algorithm for weighted shortest paths
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
-    const paths: Array<{ nodes: string[]; totalWeight: number; confidence: number }> = [];
+    const paths: Array< = [];
 
     const distances = new Map<string, number>();
     const previous = new Map<string, string | null>();
@@ -607,7 +603,7 @@ export class SoraGraphTraversal {
         positions: new Float32Array(0),
         colors: new Float32Array(0),
         connections: new Uint32Array(0),
-        metadata: {}
+        metadata: Record<string, any>
       }
     };
   }
@@ -615,14 +611,9 @@ export class SoraGraphTraversal {
   /**
    * Generate visualization data for Moogle
    */
-  private async generateVisualizationData(result: GraphTraversalResult): Promise<{
-    positions: Float32Array;
-    colors: Float32Array;
-    connections: Uint32Array;
-    metadata: any;
-  }> {
-    const nodeCount = result.nodes.size;
-    const edgeCount = result.edges.size;
+  private async generateVisualizationData(result: GraphTraversalResult): Promise<any> {
+    const nodeCount = (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes.size;
+    const edgeCount = (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).edges.size;
 
     // Positions (x, y, z for each node)
     const positions = new Float32Array(nodeCount * 3);
@@ -635,7 +626,7 @@ export class SoraGraphTraversal {
     const nodeIndexMap = new Map<string, number>();
 
     // Process nodes
-    for (const [nodeId, node] of result.nodes) {
+    for (const [nodeId, node] of (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes) {
       nodeIndexMap.set(nodeId, nodeIndex);
 
       // Position
@@ -655,7 +646,7 @@ export class SoraGraphTraversal {
 
     // Process edges
     let edgeIndex = 0;
-    for (const [edgeId, edge] of result.edges) {
+    for (const [edgeId, edge] of (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).edges) {
       const sourceIndex = nodeIndexMap.get(edge.source);
       const targetIndex = nodeIndexMap.get(edge.target);
 
@@ -674,8 +665,8 @@ export class SoraGraphTraversal {
         nodeCount,
         edgeCount: edgeIndex,
         boundingBox: this.calculateBoundingBox(positions),
-        nodeTypes: this.getNodeTypeDistribution(result.nodes),
-        edgeTypes: this.getEdgeTypeDistribution(result.edges)
+        nodeTypes: this.getNodeTypeDistribution((result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes),
+        edgeTypes: this.getEdgeTypeDistribution((result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).edges)
       }
     };
   }
@@ -737,7 +728,7 @@ export class SoraGraphTraversal {
         id: `sim_node_${i}`,
         type: 'concept',
         label: `Similar Concept ${i}`,
-        properties: {},
+        properties: Record<string, any>,
         position: { x: Math.random() * 100, y: Math.random() * 100, z: Math.random() * 100 },
         metadata: {
           importance: Math.random(),
@@ -759,7 +750,7 @@ export class SoraGraphTraversal {
       target: targetId,
       type: 'RELATED_TO',
       weight: Math.random(),
-      properties: {},
+      properties: Record<string, any>,
       metadata: {
         confidence: Math.random() * 0.3 + 0.7,
         strength: Math.random(),
@@ -796,9 +787,9 @@ export class SoraGraphTraversal {
     return node;
   }
 
-  private async getNodeNeighbors(nodeId: string, relationshipTypes?: string[]): Promise<Array<{ node: GraphNode; edge: GraphEdge }>> {
+  private async getNodeNeighbors(nodeId: string, relationshipTypes?: string[]): Promise<Array<any> {
     // Mock neighbor retrieval
-    const neighbors: Array<{ node: GraphNode; edge: GraphEdge }> = [];
+    const neighbors: Array< = [];
 
     for (let i = 0; i < Math.floor(Math.random() * 5) + 1; i++) {
       const neighborId = `neighbor_${nodeId}_${i}`;
@@ -811,7 +802,7 @@ export class SoraGraphTraversal {
           target: neighborId,
           type: 'RELATED_TO',
           weight: Math.random(),
-          properties: {},
+          properties: Record<string, any>,
           metadata: {
             confidence: Math.random() * 0.3 + 0.7,
             strength: Math.random(),
@@ -903,7 +894,7 @@ export class SoraGraphTraversal {
 
   private async enhanceWithMemoryData(result: GraphTraversalResult): Promise<GraphTraversalResult> {
     // Enhance nodes with NES memory bank information
-    for (const [nodeId, node] of result.nodes) {
+    for (const [nodeId, node] of (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes) {
       const memoryDoc = nesMemory.getDocument(nodeId);
       if (memoryDoc) {
         node.metadata.memoryBank = this.getMemoryBankName(memoryDoc.bankId);

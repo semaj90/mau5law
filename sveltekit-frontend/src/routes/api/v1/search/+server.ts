@@ -3,7 +3,7 @@ import { orchestrator } from '$lib/services/unified-legal-orchestrator';
 import { qdrant } from '$lib/server/vector/qdrant-manager';
 import { db, vectorSearch } from '$lib/server/database/connection';
 import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Unified Search API with hybrid vector + text + filtered search
 export const POST: RequestHandler = async ({ request }) => {
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // If hybrid search wasn't used by orchestrator, do it manually
     let finalResults = response;
-    if (type === 'hybrid' && response._metadata?.execution_path !== 'hybrid') {
+    if (type === 'hybrid' && (response as { _metadata?: any })._metadata?.execution_path !== 'hybrid') {
       finalResults = await performHybridSearch(query, queryEmbedding, filters, limit, threshold, collections);
     }
 
@@ -79,10 +79,10 @@ export const POST: RequestHandler = async ({ request }) => {
         case_id,
         filters_count: Object.keys(filters).length,
         results_count: finalResults.results?.length || 0,
-        execution_path: response._metadata?.execution_path
+        execution_path: (response as { _metadata?: any })._metadata?.execution_path
       },
       response_time_ms: Date.now() - startTime,
-      cache_hit: response._metadata?.cached || false
+      cache_hit: (response as { _metadata?: any })._metadata?.cached || false
     });
 
     return json({
@@ -93,9 +93,9 @@ export const POST: RequestHandler = async ({ request }) => {
           query,
           search_type: type,
           total_results: finalResults.results?.length || 0,
-          execution_path: response._metadata?.execution_path,
+          execution_path: (response as { _metadata?: any })._metadata?.execution_path,
           latency_ms: Date.now() - startTime,
-          cached: response._metadata?.cached,
+          cached: (response as { _metadata?: any })._metadata?.cached,
           threshold_used: threshold,
           collections_searched: collections
         },
@@ -290,22 +290,22 @@ function combineSearchResults(results: PromiseSettledResult<any>[], query: strin
   
   // Process each search result
   for (const result of results) {
-    if (result.status === 'fulfilled' && result.value?.results) {
-      for (const item of result.value.results) {
+    if ((result as { status?: any; value?: any; title?: any; content_preview?: any }).status === 'fulfilled' && (result as { status?: any; value?: any; title?: any; content_preview?: any }).value?.results) {
+      for (const item of (result as { status?: any; value?: any; title?: any; content_preview?: any }).value.results) {
         // Avoid duplicates
-        if (!seenIds.has(item.id)) {
-          seenIds.add(item.id);
+        if (!seenIds.has((item as { id?: any; source?: any; score?: any }).id)) {
+          seenIds.add((item as { id?: any; source?: any; score?: any }).id);
           combinedResults.push({
             ...item,
-            _hybrid_sources: [result.value.metadata?.source || 'unknown']
+            _hybrid_sources: [(result as { status?: any; value?: any; title?: any; content_preview?: any }).value.metadata?.source || 'unknown']
           });
         } else {
           // Merge sources for duplicates
-          const existing = combinedResults.find(r => r.id === item.id);
-          if (existing && !existing._hybrid_sources.includes(item.source)) {
-            existing._hybrid_sources.push(item.source);
+          const existing = combinedResults.find(r => r.id === (item as { id?: any; source?: any; score?: any }).id);
+          if (existing && !existing._hybrid_sources.includes((item as { id?: any; source?: any; score?: any }).source)) {
+            existing._hybrid_sources.push((item as { id?: any; source?: any; score?: any }).source);
             // Boost score for items found in multiple sources
-            existing.score = Math.min((existing.score + item.score) / 2 * 1.1, 1.0);
+            existing.score = Math.min((existing.score + (item as { id?: any; source?: any; score?: any }).score) / 2 * 1.1, 1.0);
           }
         }
       }
@@ -347,7 +347,7 @@ function extractCommonTerms(results: any[]): string[] {
   const termCounts = new Map<string, number>();
   
   for (const result of results) {
-    const text = (result.title + ' ' + (result.content_preview || '')).toLowerCase();
+    const text = ((result as { status?: any; value?: any; title?: any; content_preview?: any }).title + ' ' + ((result as { status?: any; value?: any; title?: any; content_preview?: any }).content_preview || '')).toLowerCase();
     const words = text.match(/\b\w{4,}\b/g) || [];
     
     for (const word of words) {

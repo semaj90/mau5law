@@ -1,4 +1,4 @@
-import type { LegalDocument } from "./types/legal";
+import type { LegalDocument } from './types/legal.js';
 /**
  * RAG Pipeline Integration Service
  * Orchestrates enhanced text processing, MMR summarization, and cross-encoder reranking
@@ -126,7 +126,7 @@ export class RAGPipelineIntegrator {
 
       if (this.config.enableMMRSummarization) {
         const topDocuments = rerankedResults
-          .filter((result) => result.score >= this.config.rerankThreshold)
+          .filter((result) => (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).score >= this.config.rerankThreshold)
           .slice(0, 10)
           .map((result) => result as LegalDocument);
 
@@ -388,7 +388,7 @@ export class RAGPipelineIntegrator {
     query: string,
     documents: LegalDocument[],
     request?: Partial<SummaryRequest>
-  ): Promise<{ summary: string }> {
+  ): Promise<any> {
     try {
       const { generateMMRSummary } = await import('./mmr-summary-generator');
       const config = {
@@ -397,7 +397,7 @@ export class RAGPipelineIntegrator {
         lambda: 0.7,
       };
       const result = await generateMMRSummary(documents, query, config);
-      return { summary: result.summary };
+      return { summary: (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).summary };
     } catch (error: any) {
       console.warn('[RAGPipeline] MMR summarization failed, using fallback:', error);
       return { summary: this.generateFallbackSummary(documents as SearchResult[], query) };
@@ -523,15 +523,15 @@ export async function testRAGPipelineIntegration(): Promise<boolean> {
     });
 
     const isValid =
-      result.summary.length > 0 &&
-      result.rerankedResults.length > 0 &&
-      result.confidence > 0 &&
-      result.metadata.processingTime > 0;
+      (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).summary.length > 0 &&
+      (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).rerankedResults.length > 0 &&
+      (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).confidence > 0 &&
+      (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).metadata.processingTime > 0;
 
     console.log('[test] RAG pipeline integration:', isValid ? 'PASS' : 'FAIL');
-    console.log('[test] Result summary:', result.summary.substring(0, 100) + '...');
-    console.log('[test] Processed documents:', result.metadata.documentsProcessed);
-    console.log('[test] Confidence:', result.confidence.toFixed(3));
+    console.log('[test] Result summary:', (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).summary.substring(0, 100) + '...');
+    console.log('[test] Processed documents:', (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).metadata.documentsProcessed);
+    console.log('[test] Confidence:', (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).confidence.toFixed(3));
 
     return isValid;
   } catch (error: any) {

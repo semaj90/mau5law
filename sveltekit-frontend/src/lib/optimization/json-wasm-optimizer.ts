@@ -71,7 +71,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   }
 
   // === High-Performance JSON Operations ===
-  async parseJSON<T = any>(jsonString: string): Promise<{ data: T; stats: OptimizedJSON }> {
+  async parseJSON<T = any>(jsonString: string): Promise<any> {
     const startTime = performance.now();
     let result: T;
     let wasm_acceleration = false;
@@ -105,7 +105,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     return { data: result, stats };
   }
 
-  async stringifyJSON(data: any): Promise<{ json: string; stats: OptimizedJSON }> {
+  async stringifyJSON(data: any): Promise<any> {
     const startTime = performance.now();
     let result: string;
     let wasm_acceleration = false;
@@ -128,7 +128,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     this.recordPerformance('stringify', stringifyTime);
 
     const stats: OptimizedJSON = {
-      original_size: result.length,
+      original_size: (result as { length?: any }).length,
       compressed_size: 0,
       compression_ratio: 1,
       parse_time_ms: 0,
@@ -140,7 +140,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   }
 
   // === Compression with LZ4 ===
-  async compressJSON(data: any): Promise<{ compressed: Uint8Array; stats: OptimizedJSON }> {
+  async compressJSON(data: any): Promise<any> {
     const { json, stats } = await this.stringifyJSON(data);
     const startTime = performance.now();
 
@@ -165,7 +165,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     };
   }
 
-  async decompressJSON<T = any>(compressed: Uint8Array): Promise<{ data: T; stats: OptimizedJSON }> {
+  async decompressJSON<T = any>(compressed: Uint8Array): Promise<any> {
     const startTime = performance.now();
 
     let decompressed: string;
@@ -448,7 +448,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   }
 
   private estimateSize(data: any): number {
-    if (typeof data === 'string') return data.length * 2;
+    if (typeof data === 'string') return (data as { length?: any }).length * 2;
     if (typeof data === 'number') return 8;
     if (typeof data === 'boolean') return 1;
     if (data === null || data === undefined) return 0;
@@ -490,7 +490,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   generateBarrelExports(modules: string[]): string {
     const exports = modules.map((module: any) => {
       const name = module.split('/').pop()?.replace('.ts', '') || module;
-      return `export { default as ${this.toCamelCase(name)} } from './${module}';`;
+      return `export { default as ${this.toCamelCase(name)} } from './${module}.js';`;
     }).join('\n');
 
     return `// Auto-generated barrel exports for tree-shaking optimization\n${exports}\n`;
@@ -601,11 +601,7 @@ export function createHighPerformanceJSONProcessor(): JSONWebAssemblyOptimizer {
 export const jsonWasmOptimizer = new JSONWebAssemblyOptimizer();
 ;
 // === Utility Functions ===
-export async function optimizeJSONForTransport(data: any): Promise<{
-  optimized: string | Uint8Array;
-  stats: OptimizedJSON;
-  useCompression: boolean;
-}> {
+export async function optimizeJSONForTransport(data: any): Promise<any> {
   const { json, stats: stringifyStats } = await jsonWasmOptimizer.stringifyJSON(data);
   
   // Decide whether to use compression based on size
@@ -631,7 +627,7 @@ export async function optimizeJSONForTransport(data: any): Promise<{
 export async function parseOptimizedTransport<T = any>(
   data: string | Uint8Array,
   isCompressed: boolean
-): Promise<{ data: T; stats: OptimizedJSON }> {
+): Promise<any> {
   if (isCompressed && data instanceof Uint8Array) {
     return jsonWasmOptimizer.decompressJSON<T>(data);
   } else {

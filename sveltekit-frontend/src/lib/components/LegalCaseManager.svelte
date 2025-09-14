@@ -37,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
       jurisdiction: string;
       priority: 'low' | 'medium' | 'high' | 'urgent';
       description: string;
-      key_dates: Array<{ date: string; description: string }>;
+      key_dates: Array;
     }
     documents: {
       uploaded_files: File[];
@@ -45,17 +45,17 @@ https://svelte.dev/e/js_parse_error -->
       processing_status: 'pending' | 'processing' | 'completed' | 'error';
     }
     evidence: {
-      extracted_entities: Array<{ type: string; value: string; confidence: number }>;
+      extracted_entities: Array;
       key_facts: string[];
       legal_issues: string[];
-      precedents: Array<{ case_name: string; relevance: number; summary: string }>;
+      precedents: Array;
     }
     ai_analysis: {
       case_strength_score: number;
       predicted_outcome: string;
       risk_factors: string[];
       recommendations: string[];
-      similar_cases: Array<{ id: string; title: string; similarity: number }>;
+      similar_cases: Array;
     }
     review: {
       final_review: string;
@@ -121,9 +121,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Auto-save functionality
-  let autoSaveTimeout = $state<NodeJS.Timeout;
-
-  $effect(() => {
+  let autoSaveTimeout = $state<NodeJS.Timeout$effect(() = | null>(null)() {
     if ($formData) {
       clearTimeout(autoSaveTimeout));
       autoSaveTimeout = setTimeout(() => {
@@ -163,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.update(data => ({
         ...data,
         documents: {
-          ...data.documents,
+          ...(data as { documents?: any }).documents,
           uploaded_files: files,
           processing_status: 'processing'
         }
@@ -205,7 +203,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.update(data => ({
         ...data,
         documents: {
-          ...data.documents,
+          ...(data as { documents?: any }).documents,
           ocr_results: ocrResults,
           processing_status: 'completed'
         }
@@ -223,7 +221,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.update(data => ({
         ...data,
         documents: {
-          ...data.documents,
+          ...(data as { documents?: any }).documents,
           processing_status: 'error'
         }
       }));
@@ -248,11 +246,11 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      if (!response.ok) {
+      if (!(response as { ok?: any; json?: any }).ok) {
         throw new Error('Evidence extraction failed');
       }
 
-      const evidenceData = await response.json();
+      const evidenceData = await (response as { ok?: any; json?: any }).json();
 
       formData.update(data => ({
         ...data,
@@ -285,11 +283,11 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      if (!response.ok) {
+      if (!(response as { ok?: any; json?: any }).ok) {
         throw new Error('AI analysis failed');
       }
 
-      const analysisData = await response.json();
+      const analysisData = await (response as { ok?: any; json?: any }).json();
 
       formData.update(data => ({
         ...data,
@@ -337,17 +335,17 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify($formData)
       });
 
-      if (!response.ok) {
+      if (!(response as { ok?: any; json?: any }).ok) {
         throw new Error('Case submission failed');
       }
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; json?: any }).json();
 
       // Clear form data
       localStorage.removeItem(`legal-case-form-${caseId || 'new'}`);
 
       // Redirect to case details
-      window.location.href = `/cases/${result.case_id}`;
+      window.location.href = `/cases/${(result as { case_id?: any }).case_id}`;
 
     } catch (error) {
       console.error('❌ Case submission failed:', error);
@@ -441,8 +439,7 @@ https://svelte.dev/e/js_parse_error -->
       <div transitislide={{ duration: 300, easing: cubicOut }}>
         <ReviewSubmitForm
           bind:data={$formData.review}
-          fullCaseData={$formData}
-          submit={submitForm}
+          fullCaseData={$formData} on:submit={submitForm}
           prev={prevStep}
           isValid={$stepValidation}
         />

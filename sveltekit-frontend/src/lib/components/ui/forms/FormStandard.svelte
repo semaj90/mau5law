@@ -64,8 +64,8 @@
       return onSubmit({ formElement, formData, action, cancel, submitter, controller });
     }
     return async ({ result, update }) => {
-      if (result.type === 'failure' && result.data?.validationErrors) {
-        validationErrors = result.data.validationErrors;
+      if ((result as { type?: any; data?: any }).type === 'failure' && (result as { type?: any; data?: any }).data?.validationErrors) {
+        validationErrors = (result as { type?: any; data?: any }).data.validationErrors;
       }
       await update();
     };

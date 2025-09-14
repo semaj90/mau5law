@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * SvelteKit 2 API Route: K-Means Clustering
@@ -84,11 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Fetch embeddings from multiple sources for redundancy
     let embeddings: number[][] = [];
-    let documentMetadata: Array<{
-      id: string;
-      type: string;
-      keywords: string[];
-    }> = [];
+    let documentMetadata: Array< = [];
 
     try {
       // Primary: PostgreSQL with pgvector
@@ -135,11 +131,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
       // Add Qdrant results if not already present
       for (const result of qdrantResults) {
-        if (!mergedDocuments.has(result.id) && result.vector) {
-          mergedDocuments.set(result.id, {
-            id: result.id,
-            embedding: result.vector,
-            metadata: result.payload || {},
+        if (!mergedDocuments.has((result as { id?: any; vector?: any; payload?: any }).id) && (result as { id?: any; vector?: any; payload?: any }).vector) {
+          mergedDocuments.set((result as { id?: any; vector?: any; payload?: any }).id, {
+            id: (result as { id?: any; vector?: any; payload?: any }).id,
+            embedding: (result as { id?: any; vector?: any; payload?: any }).vector,
+            metadata: (result as { id?: any; vector?: any; payload?: any }).payload || {},
             source: "qdrant",
           });
         }

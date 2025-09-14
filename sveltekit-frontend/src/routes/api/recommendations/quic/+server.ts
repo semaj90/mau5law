@@ -2,7 +2,7 @@
 // Integrates with running QUIC Tensor Server (port 4433)
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 
 // Import QUIC recommendation engine (will be available after build)
@@ -86,14 +86,14 @@ export const GET: RequestHandler = async ({ url }) => {
     });
 
     // Performance monitoring headers
-    response.headers.set('X-Response-Time', `${totalTime.toFixed(2)}ms`);
-    response.headers.set('X-Protocol', recommendations.protocol);
-    response.headers.set('X-Cache-Status', recommendations.cacheHit ? 'HIT' : 'MISS');
-    response.headers.set(
+    (response as { headers?: any }).headers.set('X-Response-Time', `${totalTime.toFixed(2)}ms`);
+    (response as { headers?: any }).headers.set('X-Protocol', recommendations.protocol);
+    (response as { headers?: any }).headers.set('X-Cache-Status', recommendations.cacheHit ? 'HIT' : 'MISS');
+    (response as { headers?: any }).headers.set(
       'X-GPU-Used',
       recommendations.tensorMetrics.tensorCoresUsed ? 'true' : 'false'
     );
-    response.headers.set(
+    (response as { headers?: any }).headers.set(
       'X-SIMD-Optimized',
       recommendations.metadata.simdOptimized ? 'true' : 'false'
     );
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
         totalQueries: batchQueries.length,
         successfulQueries: successful.length,
         results: batchResults.map((result) =>
-          result.status === 'fulfilled' ? result.value : { error: result.reason?.message }
+          (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value : { error: (result as { status?: any; value?: any; reason?: any }).reason?.message }
         ),
         performance: {
           totalBatchTime: totalTime,

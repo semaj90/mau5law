@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   const started = performance.now();
 
-  const promises: Promise<{ count: number; primes?: number[] }>[] = [];
+  const promises: Promise<[] = [];
 
   for (let i = 0; i < workerCount; i++) {
     const start = i * segmentSize;

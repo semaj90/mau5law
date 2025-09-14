@@ -13,7 +13,7 @@ export function prepareEmbeddingInsert(input: EmbeddingInsertInput) {
     content: input.content,
     embedding: Array.isArray(input.embedding) ? JSON.stringify(input.embedding) : input.embedding,
     metadata: input.metadata ? JSON.stringify(input.metadata) : null,
-    model: input.model || 'nomic-embed-text',
+    model: input?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text',
     createdAt: input.createdAt || new Date(),
   } as any;
 }

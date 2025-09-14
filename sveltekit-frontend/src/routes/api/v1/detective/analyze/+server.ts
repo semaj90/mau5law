@@ -307,11 +307,11 @@ function analyzeTimeline(evidence: any[]): any {
   // Mock implementation - would analyze actual timestamps and patterns
   return {
     events: evidence.map((item, index) => ({
-      id: item.id,
-      timestamp: item.createdAt,
-      type: item.evidenceType,
+      id: (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).id,
+      timestamp: (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).createdAt,
+      type: (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).evidenceType,
       significance: Math.random() * 0.5 + 0.5, // Mock significance score
-      description: `Evidence item: ${item.title}`,
+      description: `Evidence item: ${(item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).title}`,
     })),
     patterns: [
       {
@@ -330,7 +330,7 @@ function analyzeTimeline(evidence: any[]): any {
 function analyzeConnections(evidence: any[]): any {
   return {
     connections: evidence.slice(0, 3).map((item, index) => ({
-      sourceId: item.id,
+      sourceId: (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).id,
       targetId: evidence[(index + 1) % evidence.length]?.id,
       connectionType: 'related',
       strength: Math.random() * 0.4 + 0.6,
@@ -341,7 +341,7 @@ function analyzeConnections(evidence: any[]): any {
         type: 'strong_connection',
         confidence: 0.89,
         description: 'Multiple evidence items share common characteristics',
-        items: evidence.slice(0, 2).map(item => item.id),
+        items: evidence.slice(0, 2).map(item => (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).id),
       },
     ],
   };

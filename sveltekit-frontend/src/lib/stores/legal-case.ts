@@ -7,7 +7,7 @@ const legalCaseActor = browser ? createActor(legalCaseMachine).start() : null;
 const initialSnapshot = legalCaseActor?.getSnapshot();
 
 // Svelte 5 reactive store
-export const legalCaseStore = $state<{ context: Record<string, any> }>({
+export const legalCaseStore = $state({
   context: ((initialSnapshot && (initialSnapshot as any).context) as Record<string, any>) || {
     cases: [],
     selectedCase: null,

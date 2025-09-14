@@ -339,19 +339,19 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex flex-wrap gap-2 mb-2">
             <button
               class="nes-btn is-primary"
-              onclick={() => switchRenderMode('hybrid-sync')}
+              on:click={() => switchRenderMode('hybrid-sync')}
             >
               Hybrid Sync
             </button>
             <button
               class="nes-btn"
-              onclick={() => switchRenderMode('2d-overlay')}
+              on:click={() => switchRenderMode('2d-overlay')}
             >
               2D Overlay
             </button>
             <button
               class="nes-btn"
-              onclick={() => switchRenderMode('3d-embedded')}
+              on:click={() => switchRenderMode('3d-embedded')}
             >
               3D Embedded
             </button>
@@ -360,19 +360,19 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex flex-wrap gap-2">
             <button
               class="nes-btn is-warning"
-              onclick={toggleCRTEffect}
+              on:click={toggleCRTEffect}
             >
               📺 Toggle CRT
             </button>
             <button
               class="nes-btn is-error"
-              onclick={clearCache}
+              on:click={clearCache}
             >
               🗑️ Clear Cache
             </button>
             <button
               class="nes-btn is-success"
-              onclick={resetDemo}
+              on:click={resetDemo}
             >
               🔄 Reset
             </button>
@@ -385,7 +385,7 @@ https://svelte.dev/e/js_parse_error -->
               <FinalFantasyButton
                 variant="magic"
                 size="small"
-                onclick={() => showYoRHaModal = true}
+                on:click={() => showYoRHaModal = true}
                 icon="🤖"
               >
                 {#snippet children()}YoRHa 3D{/snippet}
@@ -394,7 +394,7 @@ https://svelte.dev/e/js_parse_error -->
               <FinalFantasyButton
                 variant="item"
                 size="small"
-                onclick={() => showNESModal = true}
+                on:click={() => showNESModal = true}
                 icon="🎮"
               >
                 {#snippet children()}NES Cache{/snippet}
@@ -403,7 +403,7 @@ https://svelte.dev/e/js_parse_error -->
               <FinalFantasyButton
                 variant="success"
                 size="small"
-                onclick={() => showWebGLModal = true}
+                on:click={() => showWebGLModal = true}
                 icon="🌟"
               >
                 {#snippet children()}WebGL GPU{/snippet}
@@ -412,7 +412,7 @@ https://svelte.dev/e/js_parse_error -->
               <FinalFantasyButton
                 variant="primary"
                 size="small"
-                onclick={() => showHybridModal = true}
+                on:click={() => showHybridModal = true}
                 icon="⚡"
               >
                 {#snippet children()}Hybrid Sync{/snippet}
@@ -475,7 +475,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             class="nes-btn w-full"
             class:is-primary={currentDemo === 'buttons'}
-            onclick={() => currentDemo = 'buttons'}
+            on:click={() => currentDemo = 'buttons'}
           >
             🔘 NES Buttons
           </button>
@@ -483,7 +483,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             class="nes-btn w-full"
             class:is-primary={currentDemo === 'containers'}
-            onclick={() => currentDemo = 'containers'}
+            on:click={() => currentDemo = 'containers'}
           >
             📦 Containers
           </button>
@@ -491,7 +491,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             class="nes-btn w-full"
             class:is-primary={currentDemo === 'progress'}
-            onclick={() => currentDemo = 'progress'}
+            on:click={() => currentDemo = 'progress'}
           >
             📊 Progress Bars
           </button>
@@ -590,7 +590,7 @@ https://svelte.dev/e/js_parse_error -->
     {/snippet}
 
     {#snippet actions()}
-  <FinalFantasyButton variant="secondary" onclick={() => showYoRHaModal = false}>
+  <FinalFantasyButton variant="secondary" on:click={() => showYoRHaModal = false}>
         {#snippet children()}Close{/snippet}
       </FinalFantasyButton>
     {/snippet}
@@ -653,7 +653,7 @@ https://svelte.dev/e/js_parse_error -->
     {/snippet}
 
     {#snippet actions()}
-  <FinalFantasyButton variant="secondary" onclick={() => showNESModal = false}>
+  <FinalFantasyButton variant="secondary" on:click={() => showNESModal = false}>
         {#snippet children()}Close{/snippet}
       </FinalFantasyButton>
     {/snippet}
@@ -727,7 +727,7 @@ https://svelte.dev/e/js_parse_error -->
     </FinalFantasyContainer>
 
     <svelte:fragment slot="actions">
-  <FinalFantasyButton variant="secondary" onclick={() => showWebGLModal = false}>
+  <FinalFantasyButton variant="secondary" on:click={() => showWebGLModal = false}>
         Close
       </FinalFantasyButton>
     </svelte:fragment>
@@ -792,7 +792,7 @@ https://svelte.dev/e/js_parse_error -->
     </FinalFantasyContainer>
 
     <svelte:fragment slot="actions">
-  <FinalFantasyButton variant="secondary" onclick={() => showHybridModal = false}>
+  <FinalFantasyButton variant="secondary" on:click={() => showHybridModal = false}>
         Close
       </FinalFantasyButton>
     </svelte:fragment>

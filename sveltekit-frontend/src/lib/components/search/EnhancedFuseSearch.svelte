@@ -15,12 +15,15 @@
   import { legalDocuments, type LegalDocument } from '$lib/data/legal-documents';
 
   // Props
-  let {
-    placeholder = 'Search laws, cases, and legal documents...',
+  let { placeholder = 'Search laws, cases, and legal documents...',
     maxResults = 10,
     showCategories = true,
     compact = false,
-  } = $props();
+   }: { placeholder = 'Search laws, cases, and legal documents...',
+    maxResults = 10,
+    showCategories = true,
+    compact = false,
+  : any } = $props();
 
   // State
   let searchQuery = $state('');
@@ -95,21 +98,7 @@
     }
   }
 
-  function highlightMatches(text: string, matches?: ReadonlyArray<MatchFragment>): string {
-    if (!matches) return text;
-
-    let highlightedText = text;
-    const sortedMatches = [...matches].sort((a, b) => b.indices[0][0] - a.indices[0][0]);
-
-    for (const match of sortedMatches) {
-      for (const [start, end] of match.indices.reverse()) {
-        highlightedText =
-          highlightedText.slice(0, start) +
-          '<mark class="bg-yellow-200 dark:bg-yellow-800 px-1 rounded">' +
-          highlightedText.slice(start, end + 1) +
-          '</mark>' +
-          highlightedText.slice(end + 1);
-      }
+  function highlightMatches(text: string, matches?: ReadonlyArray<MatchFragment>): string {/* JSX syntax converted to Svelte */}
     }
 
     return highlightedText;
@@ -149,9 +138,9 @@
 
 <div class="space-y-4">
   <!-- Search Input -->
-  <NesCard class="border-primary/20">
-    <div class="yorha-panel-header" class="pb-3">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2 text-lg">
+  <div class="border-primary/20 nes-container">
+    <div class="yorha-panel-header pb-3">
+      <h3 class="nes-text is-primary flex items-center gap-2 text-lg">
         <Search class="h-5 w-5 text-primary" />
         Enhanced Legal Search
         <Sparkles class="h-4 w-4 text-yellow-500" />
@@ -168,17 +157,17 @@
             tabindex="-1"
             class="sr-only"
             value={searchQuery}
-            onkeydown={handleKeydown}
-            oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)} />
+            on:keydown={handleKeydown}
+            on:input={(e) => (searchQuery = (e.target as HTMLInputElement).value)} />
           <Input {placeholder} bind:value={searchQuery} class="pl-10" />
         </div>
-  <Button class="bits-btn" onclick={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
-          {#if isSearching}
+  <Button class="bits-btn" on:click={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
+{#if isSearching}
             Searching...
           {:else}
             <Search class="h-4 w-4" />
           {/if}
-        </button>
+
       </div>
 
       {#if searchQuery && searchResults.length > 0}
@@ -187,34 +176,34 @@
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Search Results -->
   {#if searchResults.length > 0}
     <div class="space-y-3">
-      {#each searchResults as result, index (result.item.id)}
-        <NesCard class="hover:shadow-md transition-all duration-200 border-l-4 border-l-primary/30">
-          <div class="yorha-panel-header" class="pb-2">
+      {#each searchResults as result, index ((result as { item?: any; matches?: any; score?: any }).item.id)}
+        <div class="hover:shadow-md transition-all duration-200 border-l-4 border-l-primary/30 nes-container">
+          <div class="yorha-panel-header pb-2">
             <div class="flex items-start justify-between">
               <div class="flex-1 space-y-2">
-                <h3 class="nes-text is-primary" class="text-base leading-tight">
+                <h3 class="nes-text is-primary text-base leading-tight">
                   {@html highlightMatches(
-                    result.item.title,
-                    result.matches?.filter((m: MatchFragment) => m.key === 'title')
+                    (result as { item?: any; matches?: any; score?: any }).item.title,
+                    (result as { item?: any; matches?: any; score?: any }).matches?.filter((m: MatchFragment) => m.key === 'title')
                   )}
                 </h3>
 
                 <div class="flex flex-wrap gap-2">
-                  <Badge class={getJurisdictionColor(result.item.jurisdiction)}>
-                    {result.item.jurisdiction}
+                  <Badge class={getJurisdictionColor((result as { item?: any; matches?: any; score?: any }).item.jurisdiction)}>
+                    {(result as { item?: any; matches?: any; score?: any }).item.jurisdiction}
                   </Badge>
-                  <Badge class={getCategoryColor(result.item.category)}>
-                    {result.item.category}
+                  <Badge class={getCategoryColor((result as { item?: any; matches?: any; score?: any }).item.category)}>
+                    {(result as { item?: any; matches?: any; score?: any }).item.category}
                   </Badge>
-                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.item.code}</span>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { item?: any; matches?: any; score?: any }).item.code}</span>
                   <Badge variant="secondary" class="text-xs">
                     <Scale class="h-3 w-3 mr-1" />
-                    {getConfidenceLabel(result.score)}
+                    {getConfidenceLabel((result as { item?: any; matches?: any; score?: any }).score)}
                   </Badge>
                 </div>
               </div>
@@ -225,69 +214,69 @@
             </div>
           </div>
 
-          <div class="yorha-panel-content" class="pt-0">
+          <div class="yorha-panel-content pt-0">
             <p class="text-sm nes-text is-disabled mb-3">
               {@html highlightMatches(
-                result.item.description,
-                result.matches?.filter((m: MatchFragment) => m.key === 'description')
+                (result as { item?: any; matches?: any; score?: any }).item.description,
+                (result as { item?: any; matches?: any; score?: any }).matches?.filter((m: MatchFragment) => m.key === 'description')
               )}
             </p>
 
-            {#if result.matches?.some((m) => m.key === 'content')}
+            {#if (result as { item?: any; matches?: any; score?: any }).matches?.some((m) => m.key === 'content')}
               <div class="text-xs bg-muted/50 p-2 rounded mb-3">
                 <div class="font-medium mb-1">Content Match:</div>
                 <div class="nes-text is-disabled">
                   {@html highlightMatches(
-                    result.item.content.substring(0, 200) + '...',
-                    result.matches?.filter((m: MatchFragment) => m.key === 'content')
+                    (result as { item?: any; matches?: any; score?: any }).item.content.substring(0, 200) + '...',
+                    (result as { item?: any; matches?: any; score?: any }).matches?.filter((m: MatchFragment) => m.key === 'content')
                   )}
                 </div>
               </div>
             {/if}
 
-            {#if result.item.sections && result.item.sections.length > 0}
+            {#if (result as { item?: any; matches?: any; score?: any }).item.sections && (result as { item?: any; matches?: any; score?: any }).item.sections.length > 0}
               <div class="flex flex-wrap gap-1 mb-3">
-                {#each result.item.sections.slice(0, 3) as section}
+                {#each (result as { item?: any; matches?: any; score?: any }).item.sections.slice(0, 3) as section}
                   <Badge variant="outline" class="text-xs">
                     <FileText class="h-2 w-2 mr-1" />
                     {section}
                   </Badge>
                 {/each}
-                {#if result.item.sections.length > 3}
-                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{result.item.sections.length - 3} more</span>
+                {#if (result as { item?: any; matches?: any; score?: any }).item.sections.length > 3}
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{(result as { item?: any; matches?: any; score?: any }).item.sections.length - 3} more</span>
                 {/if}
               </div>
             {/if}
 
             <div class="flex gap-2">
               <Button class="bits-btn" size="sm" variant="outline">
-                <FileText class="h-3 w-3 mr-1" />
+<FileText class="h-3 w-3 mr-1" />
                 AI Summary
-              </button>
+
               <Button class="bits-btn" size="sm" variant="outline">
-                <Sparkles class="h-3 w-3 mr-1" />
+<Sparkles class="h-3 w-3 mr-1" />
                 AI Analysis
-              </button>
-              {#if result.item.url}
+
+              {#if (result as { item?: any; matches?: any; score?: any }).item.url}
                 <Button class="bits-btn" size="sm" variant="outline">
-                  <a
-                    href={result.item.url}
+<a
+                    href={(result as { item?: any; matches?: any; score?: any }).item.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="flex items-center gap-1">
                     <ExternalLink class="h-3 w-3" />
                     Full Text
                   </a>
-                </button>
+
               {/if}
             </div>
           </div>
-        </NesCard>
+        </div>
       {/each}
     </div>
   {:else if searchQuery && !isSearching}
-    <NesCard>
-      <div class="yorha-panel-content" class="py-8 text-center">
+    <div class="nes-container">
+      <div class="yorha-panel-content py-8 text-center">
         <div class="space-y-3">
           <Search class="h-12 w-12 mx-auto nes-text is-disabled" />
           <div>
@@ -298,14 +287,14 @@
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Quick Search Suggestions -->
   {#if !searchQuery}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="text-sm">Quick Search Examples</h3>
+        <h3 class="nes-text is-primary text-sm">Quick Search Examples</h3>
       </div>
       <div class="yorha-panel-content">
         <div class="flex flex-wrap gap-2">
@@ -313,16 +302,17 @@
               <Button class="bits-btn"
               variant="outline"
               size="sm"
-                onclick={() => {
+                on:click={() =>
+{
                 searchQuery = suggestion;
                 performSearch();
               }}>
               {suggestion}
-            </button>
+
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

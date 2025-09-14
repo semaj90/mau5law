@@ -19,11 +19,9 @@ https://svelte.dev/e/js_parse_error -->
   const commandHistory = writable<CommandResult[]>([]);
   const holographicData = writable<HolographicData[]>([]);
   // 3D visualization elements
-  let canvas3D = $state<HTMLCanvasElement;
-  let glContext: WebGLRenderingContext | null >(null);
-  let animationId = $state<number;
-  // System metrics
-  let metrics >(writable<SystemMetrics>({
+  let canvas3D = $state<HTMLCanvasElementlet glContext: WebGLRenderingContext | null>(null)(null);
+  let animationId = $state<number// System metrics
+  let metrics | null>(null)(writable<SystemMetrics>({
     cpu_usage: 45.2,
     memory_usage: 67.8,
     gpu_utilization: 89.3,
@@ -225,12 +223,12 @@ https://svelte.dev/e/js_parse_error -->
     const time = timestamp * 0.001;
     // Update holographic data rotations
     holographicData.update(data => 
-      data.map(item => ({
+      (data as { map?: any; summary?: any }).map(item => ({
         ...item,
         rotation: {
-          x: item.rotation.x + (item.animation === 'rotate' ? 0.01 : 0),
-          y: item.rotation.y + (item.animation === 'rotate' ? 0.02 : 0),
-          z: item.rotation.z + (item.animation === 'rotate' ? 0.005 : 0)
+          x: (item as { rotation?: any; animation?: any }).rotation.x + ((item as { rotation?: any; animation?: any }).animation === 'rotate' ? 0.01 : 0),
+          y: (item as { rotation?: any; animation?: any }).rotation.y + ((item as { rotation?: any; animation?: any }).animation === 'rotate' ? 0.02 : 0),
+          z: (item as { rotation?: any; animation?: any }).rotation.z + ((item as { rotation?: any; animation?: any }).animation === 'rotate' ? 0.005 : 0)
         }
       }))
     );
@@ -251,16 +249,16 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // Route command to appropriate system
       const response = await routeCommand(command);
-      result.status = 'SUCCESS';
-      result.output = response.output;
-      result.data = response.data;
+      (result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).status = 'SUCCESS';
+      (result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).output = (response as { output?: any; data?: any; ok?: any; json?: any }).output;
+      (result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).data = (response as { output?: any; data?: any; ok?: any; json?: any }).data;
     } catch (error) {
-      result.status = 'ERROR';
-      result.output = error instanceof Error ? error.message : 'Unknown error';
+      (result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).status = 'ERROR';
+      (result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).output = error instanceof Error ? error.message : 'Unknown error';
     } finally {
       isProcessingCommand = false;
       commandHistory.update(history => 
-        history.map(cmd => cmd.id === result.id ? result : cmd)
+        history.map(cmd => cmd.id === (result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).id ? result : cmd)
       );
     }
   }
@@ -287,10 +285,10 @@ https://svelte.dev/e/js_parse_error -->
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: cmd, source: 'yorha-interface' })
     });
-    if (response.ok) {
-      const data = await response.json();
+    if ((response as { output?: any; data?: any; ok?: any; json?: any }).ok) {
+      const data = await (response as { output?: any; data?: any; ok?: any; json?: any }).json();
       return {
-        output: `Legal analysis complete. ${data.summary || 'Analysis processed.'}`,
+        output: `Legal analysis complete. ${(data as { map?: any; summary?: any }).summary || 'Analysis processed.'}`,
         data: data
       };
     } else {
@@ -622,22 +620,22 @@ https://svelte.dev/e/js_parse_error -->
           {#each $commandHistory as result}
             <div class="border-b border-cyan-900 pb-2">
               <div class="flex justify-between items-center mb-1">
-                <span class="text-cyan-300 text-sm">$ {result.command}</span>
+                <span class="text-cyan-300 text-sm">$ {(result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).command}</span>
                 <span 
                   class="text-xs px-2 py-1 rounded"
-                  class:bg-green-900={result.status === 'SUCCESS'}
-                  class:bg-red-900={result.status === 'ERROR'}
-                  class:bg-yellow-900={result.status === 'PROCESSING'}
-                  class:text-green-300={result.status === 'SUCCESS'}
-                  class:text-red-300={result.status === 'ERROR'}
-                  class:text-yellow-300={result.status === 'PROCESSING'}
+                  class:bg-green-900={(result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).status === 'SUCCESS'}
+                  class:bg-red-900={(result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).status === 'ERROR'}
+                  class:bg-yellow-900={(result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).status === 'PROCESSING'}
+                  class:text-green-300={(result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).status === 'SUCCESS'}
+                  class:text-red-300={(result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).status === 'ERROR'}
+                  class:text-yellow-300={(result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).status === 'PROCESSING'}
                 >
-                  {result.status}
+                  {(result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).status}
                 </span>
               </div>
-              <div class="text-white text-sm font-mono">{result.output}</div>
+              <div class="text-white text-sm font-mono">{(result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).output}</div>
               <div class="text-xs text-gray-500 mt-1">
-                [{result.module}] {new Date(result.timestamp).toLocaleTimeString()}
+                [{(result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).module}] {new Date((result as { status?: any; output?: any; data?: any; id?: any; command?: any; module?: any; timestamp?: any }).timestamp).toLocaleTimeString()}
               </div>
             </div>
           {/each}

@@ -24,8 +24,7 @@ interface BackfillResult {
   processed: number;
   success: number;
   failed: number;
-  errors: Array<{ id: number; error: string }>;
-}
+  errors: Array<any>
 
 export class EmbeddingBackfillWorker {
   private isRunning = false;
@@ -81,15 +80,15 @@ export class EmbeddingBackfillWorker {
 
         await Promise.allSettled(
           batch.map(async (file) => {
-            result.processed++;
+            (result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).processed++;
             try {
               await this.processEvidenceFile(file);
-              result.success++;
+              (result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).success++;
               console.log(`✅ Processed ${file.title} (ID: ${file.id})`);
             } catch (error) {
-              result.failed++;
+              (result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).failed++;
               const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-              result.errors.push({ id: file.id, error: errorMsg });
+              (result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).errors.push({ id: file.id, error: errorMsg });
               console.error(`❌ Failed to process ${file.title} (ID: ${file.id}):`, errorMsg);
             }
           })
@@ -99,7 +98,7 @@ export class EmbeddingBackfillWorker {
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
 
-      console.log(`🎉 Backfill complete! Processed: ${result.processed}, Success: ${result.success}, Failed: ${result.failed}`);
+      console.log(`🎉 Backfill complete! Processed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).processed}, Success: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).success}, Failed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).failed}`);
       return result;
 
     } finally {
@@ -168,7 +167,7 @@ export class EmbeddingBackfillWorker {
           // Get file from MinIO and extract text
           const fileUrl = await minioService.getFileUrl(file.storage_bucket, file.object_name, 60);
           const response = await fetch(fileUrl);
-          const fileText = await response.text();
+          const fileText = await (response as { text?: any; json?: any; ok?: any; statusText?: any }).text();
           textContent += '\n\n' + fileText;
         } catch (error) {
           console.warn(`Failed to extract text from ${file.object_name}:`, error);
@@ -179,7 +178,7 @@ export class EmbeddingBackfillWorker {
         try {
           const fileUrl = await minioService.getFileUrl(file.storage_bucket, file.object_name, 60);
           const response = await fetch(fileUrl);
-          const jsonData = await response.json();
+          const jsonData = await (response as { text?: any; json?: any; ok?: any; statusText?: any }).json();
           textContent += '\n\n' + JSON.stringify(jsonData, null, 2);
         } catch (error) {
           console.warn(`Failed to extract JSON from ${file.object_name}:`, error);
@@ -197,7 +196,7 @@ export class EmbeddingBackfillWorker {
   /**
    * Generate embedding for text content
    */
-  private async generateEmbedding(text: string): Promise<{ embedding: number[]; model: string; dimensions: number }> {
+  private async generateEmbedding(text: string): Promise<any> {
     // Call our embedding API endpoint
     const response = await fetch('http://localhost:5174/api/ai/embed', {
       method: 'POST',
@@ -209,13 +208,13 @@ export class EmbeddingBackfillWorker {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Embedding API error: ${response.statusText}`);
+    if (!(response as { text?: any; json?: any; ok?: any; statusText?: any }).ok) {
+      throw new Error(`Embedding API error: ${(response as { text?: any; json?: any; ok?: any; statusText?: any }).statusText}`);
     }
 
-    const result = await response.json();
+    const result = await (response as { text?: any; json?: any; ok?: any; statusText?: any }).json();
 
-    if (!result.embedding) {
+    if (!(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).embedding) {
       throw new Error('No embedding returned from API');
     }
 
@@ -242,12 +241,7 @@ export class EmbeddingBackfillWorker {
   /**
    * Get statistics about embedding status
    */
-  async getStats(): Promise<{
-    total: number;
-    withEmbeddings: number;
-    withoutEmbeddings: number;
-    percentage: number;
-  }> {
+  async getStats(): Promise<any> {
     const [totalResult, withEmbeddingsResult] = await Promise.all([
       query('SELECT COUNT(*) as count FROM evidence_files'),
       query('SELECT COUNT(*) as count FROM evidence_files WHERE embeddings IS NOT NULL')

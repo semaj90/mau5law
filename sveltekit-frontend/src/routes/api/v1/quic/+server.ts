@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * QUIC Services Management API - Central Hub for All QUIC Services
@@ -108,10 +108,10 @@ export const GET: RequestHandler = async ({ url }) => {
     serviceResults.forEach((result, index) => {
       const serviceName = Object.keys(QUIC_SERVICES_CONFIG)[index];
       
-      if (result.status === 'fulfilled') {
-        services[serviceName] = result.value;
+      if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
+        services[serviceName] = (result as { status?: any; value?: any; reason?: any }).value;
         
-        switch (result.value.status) {
+        switch ((result as { status?: any; value?: any; reason?: any }).value.status) {
           case 'healthy':
             healthyCount++;
             break;
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async ({ url }) => {
             fallback: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].fallbackPort
           },
           url: 'N/A',
-          error: result.reason?.message || 'Unknown error',
+          error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error',
           features: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].features
         };
         unhealthyCount++;

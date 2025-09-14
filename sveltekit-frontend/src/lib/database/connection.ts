@@ -2,12 +2,12 @@
 
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from 'postgres';
-import * as schema from './schema.js';
+import * as schema from './schema.js.js';
 
 // Get DATABASE_URL from environment with fallback
 const DATABASE_URL = import.meta.env.VITE_DATABASE_URL ||
   import.meta.env.DATABASE_URL ||
-  'postgresql://postgres:123456@localhost:5432/legal_ai_db';
+  'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
 
 // Create PostgreSQL connection using postgres.js
 const sql = postgres(DATABASE_URL, {
@@ -23,11 +23,7 @@ export const db = drizzle(sql, { schema });
 export { sql };
 export const pool = sql; // alias for consistency (postgres.js instance)
 // Connection health check
-export async function testDatabaseConnection(): Promise<{
-  success: boolean;
-  message: string;
-  details?: unknown;
-}> {
+export async function testDatabaseConnection(): Promise<any> {
   try {
     // Test basic connection
     const result = await pool`SELECT version();`;
@@ -86,7 +82,7 @@ export async function vectorSimilaritySearch(
     return {
       success: true,
       results: result,
-      count: Array.isArray(result) ? result.length : 0,
+      count: Array.isArray(result) ? (result as { length?: any }).length : 0,
     };
   } catch (error: any) {
     return {
@@ -163,7 +159,7 @@ export async function hybridSemanticSearch(
     return {
       success: true,
       results: result,
-      count: Array.isArray(result) ? result.length : 0,
+      count: Array.isArray(result) ? (result as { length?: any }).length : 0,
       query,
       queryEmbedding: queryEmbedding.slice(0, 5),
     };
@@ -226,7 +222,7 @@ export async function closeDatabaseConnection(): Promise<any> {
 export async function executeSQL(query: string, params: any[] = []) {
   try {
     const result = await pool.unsafe(query, params);
-    return { success: true, data: result, rowCount: Array.isArray(result) ? result.length : 0 };
+    return { success: true, data: result, rowCount: Array.isArray(result) ? (result as { length?: any }).length : 0 };
   } catch (error: any) {
     return { success: false, error: error.message };
   }

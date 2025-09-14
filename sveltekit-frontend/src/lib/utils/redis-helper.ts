@@ -102,12 +102,7 @@ export async function checkRedisHealth(): Promise<boolean> {
 /**
  * Get Redis connection info and stats
  */
-export async function getRedisInfo(): Promise<{
-  connected: boolean;
-  info?: any;
-  memory?: any;
-  stats?: any;
-}> {
+export async function getRedisInfo(): Promise<any> {
   try {
     const client = getRedisClient();
     // Best-effort readiness check (types may not expose status)

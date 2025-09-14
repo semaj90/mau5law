@@ -102,16 +102,16 @@
         body: formData
       });
 
-      const data = await response.json();
+      const data = await (response as { json?: any; ok?: any }).json();
 
       testResults = [...testResults, {
         test: 'File Upload + AI Analysis',
-        status: response.ok && data.success ? 'PASS' : 'FAIL',
+        status: (response as { json?: any; ok?: any }).ok && (data as { success?: any; confidence?: any }).success ? 'PASS' : 'FAIL',
         data: data,
         timestamp: new Date().toISOString()
       }];
 
-      if (response.ok && data.success) {
+      if ((response as { json?: any; ok?: any }).ok && (data as { success?: any; confidence?: any }).success) {
         uploadResult = data;
 
         // Test file listing after upload
@@ -246,26 +246,26 @@
 
     <div class="results-list">
       {#each testResults as result}
-        <div class="result-item" class:pass={result.status === 'PASS' || result.status === 'COMPLETE'} class:fail={result.status === 'FAIL' || result.status === 'ERROR'}>
+        <div class="result-item" class:pass={(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status === 'PASS' || (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status === 'COMPLETE'} class:fail={(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status === 'FAIL' || (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status === 'ERROR'}>
           <div class="result-header">
-            <span class="test-name">{result.test}</span>
-            <span class="test-status status-{result.status.toLowerCase()}">{result.status}</span>
+            <span class="test-name">{(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).test}</span>
+            <span class="test-status status-{(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status.toLowerCase()}">{(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status}</span>
           </div>
 
-          {#if result.message}
-            <p class="result-message">{result.message}</p>
+          {#if (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).message}
+            <p class="result-message">{(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).message}</p>
           {/if}
 
-          {#if result.error}
-            <p class="result-error">❌ {result.error}</p>
+          {#if (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).error}
+            <p class="result-error">❌ {(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).error}</p>
           {/if}
 
-          <div class="result-timestamp">{new Date(result.timestamp).toLocaleTimeString()}</div>
+          <div class="result-timestamp">{new Date((result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).timestamp).toLocaleTimeString()}</div>
 
-          {#if result.data && typeof result.data === 'object'}
+          {#if (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).data && typeof (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).data === 'object'}
             <details class="result-details">
               <summary>View Details</summary>
-              <pre>{JSON.stringify(result.data, null, 2)}</pre>
+              <pre>{JSON.stringify((result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).data, null, 2)}</pre>
             </details>
           {/if}
         </div>
@@ -449,12 +449,12 @@
     background: white;
   }
 
-  .result-item.pass {
+  .result-(item as { pass?: any; fail?: any }).pass {
     border-color: #28a745;
     background: #f8fff8;
   }
 
-  .result-item.fail {
+  .result-(item as { pass?: any; fail?: any }).fail {
     border-color: #dc3545;
     background: #fff8f8;
   }

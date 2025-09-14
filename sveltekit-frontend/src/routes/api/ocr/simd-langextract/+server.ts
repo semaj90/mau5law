@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { simdTextTilingEngine, type TextTileConfig } from '$lib/ai/simd-text-tiling-engine.js';
 import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis';
@@ -32,18 +32,7 @@ interface SIMDLangExtractResponse {
   
   // Enhanced SIMD fields
   simd_results: {
-    compressed_tiles: Array<{
-      id: string;
-      compressed_data: number[]; // 7-byte representation as array
-      semantic_hash: string;
-      compression_ratio: number;
-      metadata: {
-        token_count: number;
-        semantic_density: number;
-        pattern_id: string;
-        categories: string[];
-      };
-    }>;
+    compressed_tiles: Array<any>;
     gpu_buffer_data: number[];
     vertex_buffer_cache: string; // Base64 encoded ArrayBuffer
     ui_components: {
@@ -171,7 +160,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     
     if (enable_vertex_caching) {
       // Cache vertex buffer separately for reuse
-      await cache.set(vertexKey, response.simd_results.vertex_buffer_cache, cacheExpiration);
+      await cache.set(vertexKey, (response as { simd_results?: any }).simd_results.vertex_buffer_cache, cacheExpiration);
       
       // Cache full SIMD result
       await cache.set(textKey, response, cacheExpiration);
@@ -182,18 +171,18 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       // Cache search results for discovery
       await cacheSearchResults(text, 'simd-tensor', [{ 
         id: textKey, 
-        score: response.simd_results.processing_stats.semantic_preservation_score 
+        score: (response as { simd_results?: any }).simd_results.processing_stats.semantic_preservation_score 
       }], { 
         model, 
         tags, 
-        compression_ratio: response.simd_results.processing_stats.total_compression_ratio,
-        gpu_utilization: response.simd_results.processing_stats.gpu_utilization
+        compression_ratio: (response as { simd_results?: any }).simd_results.processing_stats.total_compression_ratio,
+        gpu_utilization: (response as { simd_results?: any }).simd_results.processing_stats.gpu_utilization
       });
     }
 
     const totalTime = Date.now() - startTime;
     
-    console.log(`✅ SIMD LangExtract complete: ${totalTime}ms, ${response.simd_results.processing_stats.total_compression_ratio.toFixed(1)}:1 compression`);
+    console.log(`✅ SIMD LangExtract complete: ${totalTime}ms, ${(response as { simd_results?: any }).simd_results.processing_stats.total_compression_ratio.toFixed(1)}:1 compression`);
     
     return json(response);
     
@@ -286,7 +275,7 @@ async function getStandardEmbedding(
       
       if (resp.ok) {
         const data = await resp.json() as { embedding: number[] };
-        return data.embedding;
+        return (data as { tokenCount?: any; semanticDensity?: any; patternId?: any; categories?: any; embedding?: any }).embedding;
       }
     }
     
@@ -321,7 +310,7 @@ async function getStandardEmbedding(
 
 // Batch processing endpoint
 export async function handleBatchProcessing(
-  texts: Array<{ text: string; metadata?: any }>,
+  texts: Array<,
   config: Partial<TextTileConfig>
 ): Promise<any[]> {
   console.log(`🚀 SIMD batch processing: ${texts.length} texts`);
@@ -330,12 +319,12 @@ export async function handleBatchProcessing(
   
   return results.map((result, index) => ({
     index,
-    original_text: result.originalText,
-    compressed_tiles: result.compressedTiles.length,
-    total_compression_ratio: result.processingStats.totalCompressionRatio,
-    gpu_utilization: result.processingStats.gpuUtilization,
-    semantic_preservation: result.processingStats.semanticPreservationScore,
-    instant_render: result.uiComponents.instantRender
+    original_text: (result as { originalText?: any; compressedTiles?: any; processingStats?: any; uiComponents?: any }).originalText,
+    compressed_tiles: (result as { originalText?: any; compressedTiles?: any; processingStats?: any; uiComponents?: any }).compressedTiles.length,
+    total_compression_ratio: (result as { originalText?: any; compressedTiles?: any; processingStats?: any; uiComponents?: any }).processingStats.totalCompressionRatio,
+    gpu_utilization: (result as { originalText?: any; compressedTiles?: any; processingStats?: any; uiComponents?: any }).processingStats.gpuUtilization,
+    semantic_preservation: (result as { originalText?: any; compressedTiles?: any; processingStats?: any; uiComponents?: any }).processingStats.semanticPreservationScore,
+    instant_render: (result as { originalText?: any; compressedTiles?: any; processingStats?: any; uiComponents?: any }).uiComponents.instantRender
   }));
 }
 
@@ -360,7 +349,7 @@ export async function handleBenchmarkTesting(
       compression_targets: compressionTargets,
       sample_texts: sampleTexts.length
     },
-    compression_results: {},
+    compression_results: Record<string, any>,
     performance_stats: {
       total_processing_time: 0,
       avg_compression_ratio: 0,

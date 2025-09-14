@@ -1,11 +1,11 @@
 
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async () => {
   const health = {
     timestamp: new Date().toISOString(),
-    services: {},
+    services: Record<string, any>,
     overall: 'unknown'
   };
 
@@ -38,10 +38,10 @@ export const GET: RequestHandler = async () => {
           });
           const responseTime = Date.now() - start;
           
-          if (response.ok) {
+          if ((response as { ok?: any; status?: any; json?: any }).ok) {
             return { status: 'healthy', responseTime };
           } else {
-            return { status: 'unhealthy', error: `HTTP ${response.status}` };
+            return { status: 'unhealthy', error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
           }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
@@ -60,15 +60,15 @@ export const GET: RequestHandler = async () => {
           });
           const responseTime = Date.now() - start;
           
-          if (response.ok) {
-            const data = await response.json();
+          if ((response as { ok?: any; status?: any; json?: any }).ok) {
+            const data = await (response as { ok?: any; status?: any; json?: any }).json();
             return { 
               status: 'healthy', 
               responseTime,
-              models: data.models?.length || 0
+              models: (data as { models?: any }).models?.length || 0
             };
           } else {
-            return { status: 'unhealthy', error: `HTTP ${response.status}` };
+            return { status: 'unhealthy', error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
           }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
@@ -88,10 +88,10 @@ export const GET: RequestHandler = async () => {
           });
           const responseTime = Date.now() - start;
           
-          if (response.ok) {
+          if ((response as { ok?: any; status?: any; json?: any }).ok) {
             return { status: 'healthy', responseTime };
           } else {
-            return { status: 'unhealthy', error: `HTTP ${response.status}` };
+            return { status: 'unhealthy', error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
           }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
@@ -139,8 +139,8 @@ export const GET: RequestHandler = async () => {
 
   results.forEach((result) => {
     totalCount++;
-    if (result.status === 'fulfilled') {
-      const service = result.value;
+    if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
+      const service = (result as { status?: any; value?: any; reason?: any }).value;
       health.services[service.name] = service;
       if (service.status === 'healthy') {
         healthyCount++;
@@ -149,7 +149,7 @@ export const GET: RequestHandler = async () => {
       // Handle rejected promises
       health.services[`unknown_${totalCount}`] = {
         status: 'unhealthy',
-        error: result.reason?.message || 'Unknown error'
+        error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error'
       };
     }
   });

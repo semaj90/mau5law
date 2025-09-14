@@ -142,7 +142,7 @@
     
     <!-- Health Status Toggle -->
     <button 
-      onclick={() => showHealthStatus = !showHealthStatus}
+      on:click={() => showHealthStatus = !showHealthStatus}
       class="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
     >
       {showHealthStatus ? 'Hide' : 'Show'} Health Status
@@ -204,14 +204,14 @@
         class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
       <button
-        onclick={runAllTests}
+        on:click={runAllTests}
         disabled={$isProcessing}
         class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {$isProcessing ? 'Testing...' : 'Run All Tests'}
       </button>
       <button
-        onclick={clearResults}
+        on:click={clearResults}
         class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
       >
         Clear
@@ -224,7 +224,7 @@
       <div class="flex flex-wrap gap-2 mt-1">
         {#each sampleQueries as query}
           <button
-            onclick={() => testQuery = query}
+            on:click={() => testQuery = query}
             class="px-2 py-1 bg-blue-100 text-blue-800 rounded hover:bg-blue-200 text-xs"
           >
             {query.substring(0, 50)}...
@@ -241,7 +241,7 @@
         <h3 class="font-semibold text-sm mb-2">{method.name}</h3>
         <p class="text-xs text-gray-600 mb-3">{method.description}</p>
         <button
-          onclick={() => runTest(method)}
+          on:click={() => runTest(method)}
           disabled={$isProcessing}
           class="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 text-sm"
         >
@@ -270,38 +270,38 @@
       <h2 class="text-2xl font-semibold">Test Results</h2>
       
       {#each testResults as result}
-        <div class="border rounded-lg p-4 {result.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
+        <div class="border rounded-lg p-4 {(result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
           <div class="flex justify-between items-start mb-3">
             <div>
-              <h3 class="font-semibold {result.success ? 'text-green-800' : 'text-red-800'}">
-                {result.method} {result.success ? '✅' : '❌'}
+              <h3 class="font-semibold {(result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).success ? 'text-green-800' : 'text-red-800'}">
+                {(result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).method} {(result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).success ? '✅' : '❌'}
               </h3>
-              <p class="text-sm text-gray-600">{result.description}</p>
+              <p class="text-sm text-gray-600">{(result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).description}</p>
             </div>
             <div class="text-right text-sm text-gray-500">
-              <div>{result.timestamp}</div>
-              <div>{result.duration}ms</div>
+              <div>{(result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).timestamp}</div>
+              <div>{(result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).duration}ms</div>
             </div>
           </div>
 
           <div class="mb-3">
             <h4 class="font-medium text-sm mb-1">Query:</h4>
-            <p class="text-sm text-gray-700 bg-gray-100 p-2 rounded">{result.query}</p>
+            <p class="text-sm text-gray-700 bg-gray-100 p-2 rounded">{(result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).query}</p>
           </div>
 
-          {#if result.success && result.response}
+          {#if (result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).success && (result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).response}
             <div class="mb-3">
               <h4 class="font-medium text-sm mb-1">Response:</h4>
               <div class="text-sm bg-white p-3 rounded border max-h-48 overflow-y-auto">
-                {result.response}
+                {(result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).response}
               </div>
             </div>
           {/if}
 
-          {#if result.error}
+          {#if (result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).error}
             <div>
               <h4 class="font-medium text-sm mb-1">Error:</h4>
-              <p class="text-sm text-red-700 bg-red-100 p-2 rounded">{result.error}</p>
+              <p class="text-sm text-red-700 bg-red-100 p-2 rounded">{(result as { success?: any; method?: any; description?: any; timestamp?: any; duration?: any; query?: any; response?: any; error?: any }).error}</p>
             </div>
           {/if}
         </div>

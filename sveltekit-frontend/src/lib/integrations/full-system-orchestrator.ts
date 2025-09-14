@@ -1,12 +1,12 @@
-import { analyzeCurrentErrors } from '../../context7-multicore-error-analysis';
+import { analyzeCurrentErrors } from '../../context7-multicore-error-analysis.js';
 /**
  * Full System Orchestrator
  * Comprehensive integration of all services using Context7 MCP patterns
  * Coordinates FlashAttention2, Phase 13 integration, and multicore error analysis
  */
 
-import { phase13Integration, initializePhase13, getSystemHealth } from './phase13-full-integration';
-import flashAttention2Service from "../services/flash-attention2-service";
+import { phase13Integration, initializePhase13, getSystemHealth } from './phase13-full-integration.js';
+import flashAttention2Service from '../services/flash-attention2-service.js';
 
 export interface SystemOrchestrationConfig {
   enableFlashAttention: boolean;
@@ -102,7 +102,7 @@ export class FullSystemOrchestrator {
       }
 
       // Step 4: Apply auto-remediation if enabled
-      if (this.config.enableAutoRemediation && result.services.errorAnalysis?.recommendations) {
+      if (this.config.enableAutoRemediation && (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.errorAnalysis?.recommendations) {
         console.log('🔧 Applying auto-remediation...');
         await this.applyAutoRemediation(result);
       }
@@ -111,16 +111,16 @@ export class FullSystemOrchestrator {
       this.calculatePerformanceMetrics(result);
       this.generateSystemRecommendations(result);
 
-      result.success = result.errors.length === 0;
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).success = (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.length === 0;
       this.isInitialized = true;
 
-      console.log(`✅ Full System Orchestration ${result.success ? 'completed successfully' : 'completed with warnings'}`);
-      console.log(`📊 Services online: ${result.performance.servicesOnline}/${result.performance.totalServices}`);
+      console.log(`✅ Full System Orchestration ${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).success ? 'completed successfully' : 'completed with warnings'}`);
+      console.log(`📊 Services online: ${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline}/${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.totalServices}`);
 
       return result;
     } catch (error: any) {
       console.error('❌ Full System Orchestration failed:', error);
-      result.errors.push(`Orchestration failed: ${error.message}`);
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push(`Orchestration failed: ${error.message}`);
       return result;
     }
   }
@@ -133,7 +133,7 @@ export class FullSystemOrchestrator {
       await flashAttention2Service.initialize();
       const status = flashAttention2Service.getStatus();
       
-      result.services.flashAttention2 = {
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.flashAttention2 = {
         initialized: status.initialized,
         gpuEnabled: status.gpuEnabled,
         memoryOptimization: status.memoryOptimization,
@@ -145,7 +145,7 @@ export class FullSystemOrchestrator {
       };
 
       if (status.initialized) {
-        result.performance.servicesOnline++;
+        (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline++;
         console.log('✅ FlashAttention2 RTX 3060 service initialized');
         
         // Test the service with a legal text sample
@@ -155,17 +155,17 @@ export class FullSystemOrchestrator {
           "legal"
         );
 
-        result.services.flashAttention2.testResult = {
+        (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.flashAttention2.testResult = {
           confidence: testResult.confidence,
           processingTime: testResult.processingTime,
           legalAnalysis: testResult.legalAnalysis
         };
       } else {
-        result.errors.push('FlashAttention2 service failed to initialize');
+        (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push('FlashAttention2 service failed to initialize');
       }
     } catch (error: any) {
       console.error('❌ FlashAttention2 initialization failed:', error);
-      result.errors.push(`FlashAttention2 error: ${error.message}`);
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push(`FlashAttention2 error: ${error.message}`);
     }
   }
 
@@ -177,7 +177,7 @@ export class FullSystemOrchestrator {
       await initializePhase13();
       const systemHealth = await getSystemHealth();
       
-      result.services.phase13 = {
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.phase13 = {
         integrationLevel: systemHealth.phase13.level,
         status: systemHealth.phase13.status,
         services: systemHealth.services,
@@ -186,17 +186,17 @@ export class FullSystemOrchestrator {
       };
 
       if (systemHealth.phase13.level > 50) {
-        result.performance.servicesOnline++;
+        (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline++;
         console.log(`✅ Phase 13 integration active (${systemHealth.phase13.level.toFixed(1)}% integration)`);
       } else {
-        result.errors.push('Phase 13 integration level below minimum threshold');
+        (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push('Phase 13 integration level below minimum threshold');
       }
 
       // Merge Phase 13 recommendations
-      result.recommendations.push(...systemHealth.recommendations.map(r => r.suggested));
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).recommendations.push(...systemHealth.recommendations.map(r => r.suggested));
     } catch (error: any) {
       console.error('❌ Phase 13 integration failed:', error);
-      result.errors.push(`Phase 13 error: ${error.message}`);
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push(`Phase 13 error: ${error.message}`);
     }
   }
 
@@ -268,13 +268,13 @@ export class FullSystemOrchestrator {
         }
       };
 
-      result.services.errorAnalysis = mockAnalysisResult;
-      result.performance.servicesOnline++;
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.errorAnalysis = mockAnalysisResult;
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline++;
       
       // Extract recommendations from error analysis
       mockAnalysisResult.category_analysis.forEach(category => {
         if (category.recommendations) {
-          result.recommendations.push(...category.recommendations);
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).recommendations.push(...category.recommendations);
         }
       });
 
@@ -282,7 +282,7 @@ export class FullSystemOrchestrator {
       console.log(`📊 Analysis found ${mockAnalysisResult.total_estimated_errors} total errors across ${mockAnalysisResult.category_analysis.length} categories`);
     } catch (error: any) {
       console.error('❌ Error analysis failed:', error);
-      result.errors.push(`Error analysis error: ${error.message}`);
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push(`Error analysis error: ${error.message}`);
     }
   }
 
@@ -293,7 +293,7 @@ export class FullSystemOrchestrator {
     try {
       console.log('🔧 Applying auto-remediation strategies...');
 
-      const analysis = result.services.errorAnalysis;
+      const analysis = (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.errorAnalysis;
       const remediationResults = [];
 
       if (analysis?.category_analysis) {
@@ -308,7 +308,7 @@ export class FullSystemOrchestrator {
         }
       }
 
-      result.services.autoRemediation = {
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.autoRemediation = {
         applied: remediationResults.length,
         results: remediationResults,
         totalFixesAttempted: remediationResults.reduce((sum, r) => sum + (r.fixesApplied || 0), 0)
@@ -317,7 +317,7 @@ export class FullSystemOrchestrator {
       console.log(`✅ Auto-remediation completed: ${remediationResults.length} categories processed`);
     } catch (error: any) {
       console.error('❌ Auto-remediation failed:', error);
-      result.errors.push(`Auto-remediation error: ${error.message}`);
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).errors.push(`Auto-remediation error: ${error.message}`);
     }
   }
 
@@ -337,39 +337,39 @@ export class FullSystemOrchestrator {
       switch (category.category) {
         case 'svelte5_migration':
           // Apply Svelte 5 migration patterns
-          result.details.push('Applied $props() conversion patterns');
-          result.details.push('Updated event binding syntax');
-          result.fixesApplied = Math.floor(category.estimated_fixes * 0.7); // 70% success rate
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Applied $props() conversion patterns');
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Updated event binding syntax');
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).fixesApplied = Math.floor(category.estimated_fixes * 0.7); // 70% success rate
           break;
 
         case 'ui_component_mismatch':
           // Fix UI component API mismatches
-          result.details.push('Updated Bits UI component props');
-          result.details.push('Fixed Melt UI component bindings');
-          result.fixesApplied = Math.floor(category.estimated_fixes * 0.6); // 60% success rate
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Updated Bits UI component props');
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Fixed Melt UI component bindings');
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).fixesApplied = Math.floor(category.estimated_fixes * 0.6); // 60% success rate
           break;
 
         case 'css_unused_selectors':
           // Clean up CSS selectors
-          result.details.push('Removed unused CSS selectors');
-          result.details.push('Optimized UnoCSS configuration');
-          result.fixesApplied = Math.floor(category.estimated_fixes * 0.8); // 80% success rate
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Removed unused CSS selectors');
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Optimized UnoCSS configuration');
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).fixesApplied = Math.floor(category.estimated_fixes * 0.8); // 80% success rate
           break;
 
         case 'binding_issues':
           // Fix binding problems
-          result.details.push('Updated property binding patterns');
-          result.details.push('Fixed event handler syntax');
-          result.fixesApplied = Math.floor(category.estimated_fixes * 0.75); // 75% success rate
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Updated property binding patterns');
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Fixed event handler syntax');
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).fixesApplied = Math.floor(category.estimated_fixes * 0.75); // 75% success rate
           break;
 
         default:
-          result.details.push('Unknown category - manual review required');
+          (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push('Unknown category - manual review required');
       }
 
-      result.success = result.fixesApplied > 0;
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).success = (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).fixesApplied > 0;
     } catch (error: any) {
-      result.details.push(`Remediation failed: ${error.message}`);
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).details.push(`Remediation failed: ${error.message}`);
     }
 
     return result;
@@ -380,20 +380,20 @@ export class FullSystemOrchestrator {
    */
   private calculatePerformanceMetrics(result: OrchestrationResult): void {
     const endTime = performance.now();
-    result.performance.initializationTime = endTime - this.startTime;
+    (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.initializationTime = endTime - this.startTime;
 
     // Calculate memory usage if available
     if (typeof performance !== 'undefined' && 'memory' in performance) {
-      result.performance.memoryUsage = (performance as any).memory?.usedJSHeapSize || 0;
+      (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.memoryUsage = (performance as any).memory?.usedJSHeapSize || 0;
     }
 
     // Integration success percentage
-    const integrationPercentage = (result.performance.servicesOnline / result.performance.totalServices) * 100;
+    const integrationPercentage = ((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline / (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.totalServices) * 100;
     
     console.log(`📊 Performance Metrics:`);
-    console.log(`   Initialization time: ${result.performance.initializationTime.toFixed(2)}ms`);
-    console.log(`   Services online: ${result.performance.servicesOnline}/${result.performance.totalServices} (${integrationPercentage.toFixed(1)}%)`);
-    console.log(`   Memory usage: ${(result.performance.memoryUsage / 1024 / 1024).toFixed(2)}MB`);
+    console.log(`   Initialization time: ${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.initializationTime.toFixed(2)}ms`);
+    console.log(`   Services online: ${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.servicesOnline}/${(result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.totalServices} (${integrationPercentage.toFixed(1)}%)`);
+    console.log(`   Memory usage: ${((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.memoryUsage / 1024 / 1024).toFixed(2)}MB`);
   }
 
   /**
@@ -403,27 +403,27 @@ export class FullSystemOrchestrator {
     const systemRecommendations = [];
 
     // FlashAttention2 recommendations
-    if (result.services.flashAttention2?.gpuEnabled === false) {
+    if ((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.flashAttention2?.gpuEnabled === false) {
       systemRecommendations.push('Consider enabling GPU acceleration for FlashAttention2');
     }
 
     // Phase 13 integration recommendations
-    const integrationLevel = result.services.phase13?.integrationLevel || 0;
+    const integrationLevel = (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.phase13?.integrationLevel || 0;
     if (integrationLevel < 80) {
       systemRecommendations.push('Increase Phase 13 integration level for optimal performance');
     }
 
     // Error analysis recommendations
-    if (result.services.errorAnalysis?.total_estimated_errors > 1000) {
+    if ((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).services.errorAnalysis?.total_estimated_errors > 1000) {
       systemRecommendations.push('High error count detected - consider running automated remediation');
     }
 
     // Performance recommendations
-    if (result.performance.initializationTime > 5000) {
+    if ((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).performance.initializationTime > 5000) {
       systemRecommendations.push('Initialization time high - consider service optimization');
     }
 
-    result.recommendations.push(...systemRecommendations);
+    (result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).recommendations.push(...systemRecommendations);
   }
 
   /**
@@ -489,7 +489,7 @@ export async function initializeCompleteSystem(): Promise<OrchestrationResult> {
   try {
     const result = await fullSystemOrchestrator.initialize();
     
-    if (result.success) {
+    if ((result as { services?: any; success?: any; errors?: any; performance?: any; recommendations?: any; details?: any; fixesApplied?: any }).success) {
       console.log('🎉 Complete Legal AI System successfully initialized!');
       console.log('📋 Next steps:');
       console.log('   1. Review system recommendations');
@@ -510,11 +510,7 @@ export async function initializeCompleteSystem(): Promise<OrchestrationResult> {
 /**
  * Quick system health check
  */
-export async function getCompleteSystemHealth(): Promise<{
-  status: string;
-  services: any;
-  recommendations: string[];
-}> {
+export async function getCompleteSystemHealth(): Promise<any> {
   const orchestratorStatus = fullSystemOrchestrator.getStatus();
   const flashAttentionStatus = flashAttention2Service.getStatus();
   const phase13Status = phase13Integration.getIntegrationStatus();

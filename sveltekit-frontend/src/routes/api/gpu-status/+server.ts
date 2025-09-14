@@ -1,5 +1,5 @@
 import { json } from "@sveltejs/kit";
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 
 const GO_BASE = import.meta.env.GO_SERVICE_URL || import.meta.env.GO_SERVER_URL || import.meta.env.GO_MICROSERVICE_URL || "http://localhost:8084";

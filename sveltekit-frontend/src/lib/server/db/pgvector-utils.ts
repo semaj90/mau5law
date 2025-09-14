@@ -3,13 +3,13 @@
  * Provides proper vector similarity search and embedding operations
  */
 
-import { db, sql } from './index.js';
+import { db, sql } from './index.js.js';
 import type { 
   chatMessages, 
   chatRecommendations, 
   evidence, 
   documentEmbeddings 
-} from './schema-unified.js';
+} from './schema-unified.js.js';
 
 export interface VectorSearchResult {
   id: string;
@@ -389,12 +389,7 @@ export function calculateCosineSimilarity(a: number[], b: number[]): number {
 /**
  * Health check for pgvector functionality
  */
-export async function pgvectorHealthCheck(): Promise<{
-  available: boolean;
-  version?: string;
-  functions: string[];
-  error?: string;
-}> {
+export async function pgvectorHealthCheck(): Promise<any> {
   try {
     // Check if pgvector extension exists
     const extensionCheck = await db.execute(sql`

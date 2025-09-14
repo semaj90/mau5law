@@ -5,14 +5,14 @@
  */
 
 import { createMachine, assign, fromPromise } from 'xstate';
-import { db } from '../server/db/index';
+import { db } from '../server/db/index.js';
 import {
   cases,
   evidence,
   legalDocuments,
   documentChunks,
   users,
-} from '../server/db/schema-postgres';
+} from '../server/db/schema-postgres.js';
 import { sql, eq, and, desc } from 'drizzle-orm';
 
 // Temporary type definition to fix import issues
@@ -44,15 +44,7 @@ export interface EnhancedLegalCaseContext {
   } | null;
 
   // Evidence Management
-  evidenceList: Array<{
-    id: string;
-    case_id: string;
-    title: string;
-    description?: string;
-    evidence_type: string;
-    created_at: Date;
-    embedding_status?: 'pending' | 'processing' | 'completed' | 'failed';
-  }>;
+  evidenceList: Array<any>;
 
   // AI Analysis
   aiAnalysis: {
@@ -62,12 +54,7 @@ export interface EnhancedLegalCaseContext {
       keyFindings?: string[];
       recommendations?: string[];
       confidence?: number;
-      similarity_cases?: Array<{
-        id: string;
-        title: string;
-        similarity_score: number;
-      }>;
-    };
+      similarity_cases?: Array<any>;
     processingStep?: 'embedding' | 'analysis' | 'similarity_search' | 'report_generation';
   };
 
@@ -85,13 +72,7 @@ export interface EnhancedLegalCaseContext {
   dbStatus: 'connected' | 'disconnected' | 'error';
 
   // Background tasks
-  backgroundTasks: Array<{
-    id: string;
-    type: 'vector_embedding' | 'ai_analysis' | 'similarity_search';
-    status: 'queued' | 'processing' | 'completed' | 'failed';
-    progress?: number;
-  }>;
-}
+  backgroundTasks: Array<any>
 
 export type EnhancedLegalCaseEvent =
   // Case operations
@@ -140,8 +121,8 @@ export const enhancedLegalCaseMachine = createMachine(
     id: 'enhancedLegalCase',
     initial: 'initializing',
     types: {
-      context: {} as EnhancedLegalCaseContext,
-      events: {} as EnhancedLegalCaseEvent,
+      context: Record<string, any> as EnhancedLegalCaseContext,
+      events: Record<string, any> as EnhancedLegalCaseEvent,
     },
     context: {
       currentCase: null,
@@ -149,8 +130,8 @@ export const enhancedLegalCaseMachine = createMachine(
       aiAnalysis: {
         status: 'idle',
       },
-      formData: {},
-      validationErrors: {},
+      formData: Record<string, any>,
+      validationErrors: Record<string, any>,
       loading: false,
       error: null,
       retryCount: 0,
@@ -253,7 +234,7 @@ export const enhancedLegalCaseMachine = createMachine(
               currentCase: ({ event }) => (event as any).output,
               loading: false,
               error: null,
-              formData: {},
+              formData: Record<string, any>,
               lastSyncTime: () => new Date(),
             }),
           },

@@ -22,8 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   // Store for selected node
   export const selectedNode = writable(null);
   // Props
-  let canvasComponent = $state<CanvasEditor;
-  let currentSelectedNode = $state<any >(null);
+  let canvasComponent = $state<CanvasEditorlet currentSelectedNode = $state<any | null>(null)(null);
   // Subscribe to selected node changes
   selectedNode.subscribe(node >(> {
     currentSelectedNode = node);

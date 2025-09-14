@@ -70,21 +70,21 @@ https://svelte.dev/e/component_invalid_directive -->
           confidenceThreshold: aiConfidenceThreshold
         })
       });
-      const data = await response.json();
-      if (data.success) {
-        searchResults = data.results;
-        mcpContext = data.mcpContext;
+      const data = await (response as { json?: any; ok?: any }).json();
+      if ((data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).success) {
+        searchResults = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).results;
+        mcpContext = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).mcpContext;
         // Update memory graph with search interaction
         await updateMemoryWithAIContext({
           userId: 'current-user',
           query: searchQuery,
-          results: data.results.length,
-          aiModel: data.metadata?.model,
-          confidence: data.metadata?.confidence,
-          processingTime: data.metadata?.processingTime
+          results: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).results.length,
+          aiModel: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.model,
+          confidence: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.confidence,
+          processingTime: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.processingTime
         });
       } else {
-        console.error('Search failed:', data.error);
+        console.error('Search failed:', (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).error);
         searchResults = [];
       }
     } catch (error) {
@@ -104,9 +104,9 @@ https://svelte.dev/e/component_invalid_directive -->
 
     try {
       const response = await fetch(`/api/ai/find?q=${encodeURIComponent(searchQuery)}`);
-      const data = await response.json();
-      if (data.success) {
-        suggestions = data.suggestions;
+      const data = await (response as { json?: any; ok?: any }).json();
+      if ((data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).success) {
+        suggestions = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).suggestions;
       }
     } catch (error) {
       console.error('Failed to get suggestions:', error);
@@ -243,9 +243,9 @@ https://svelte.dev/e/component_invalid_directive -->
   async function updatePhase13Status() {
     try {
       const response = await fetch('/api/phase13/integration?action=health');
-      if (response.ok) {
-        const data = await response.json();
-        systemHealth = data.data;
+      if ((response as { json?: any; ok?: any }).ok) {
+        const data = await (response as { json?: any; ok?: any }).json();
+        systemHealth = (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).data;
         phase13Status = systemHealth.phase13;
       }
     } catch (error) {
@@ -265,8 +265,8 @@ https://svelte.dev/e/component_invalid_directive -->
           suggestion
         })
       });
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { json?: any; ok?: any }).ok) {
+        const result = await (response as { json?: any; ok?: any }).json();
         console.log('✅ Suggestion applied via Phase 13:', result);
         // Update system status after applying suggestion
         await updatePhase13Status();
@@ -364,7 +364,7 @@ https://svelte.dev/e/component_invalid_directive -->
                 {#each suggestions as suggestion}
                   <button
                     class="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white font-mono text-sm transition-colors"
-                    onclick={() => selectSuggestion(suggestion)}
+                    on:click={() => selectSuggestion(suggestion)}
                   >
                     <Search class="w-4 h-4 inline mr-2" />
                     {suggestion}
@@ -383,7 +383,7 @@ https://svelte.dev/e/component_invalid_directive -->
               { value: 'documents', label: 'DOCUMENTS', icon: Calendar, color: 'purple' }
             ] as filter}
               <button
-                onclick={() => selectedType = filter.value}
+                on:click={() => selectedType = filter.value}
                 class="nier-filter-btn {selectedType === filter.value ? 'active' : ''} {filter.color}"
                 in:scale={{ duration: 200, start: 0.9 }}
               >
@@ -394,7 +394,7 @@ https://svelte.dev/e/component_invalid_directive -->
             
             <!-- Advanced Options Toggle -->
             <button
-              onclick={() => showAdvanced = !showAdvanced}
+              on:click={() => showAdvanced = !showAdvanced}
               class="nier-filter-btn advanced {showAdvanced ? 'active' : ''}"
             >
               <Zap class="w-4 h-4" />
@@ -444,7 +444,7 @@ https://svelte.dev/e/component_invalid_directive -->
                     {#each searchHistory.slice(0, 3) as query}
                       <button
                         class="block w-full text-left text-gray-400 hover:text-white font-mono text-xs p-1 rounded hover:bg-gray-700 transition-colors"
-                        onclick={() => selectHistory(query)}
+                        on:click={() => selectHistory(query)}
                       >
                         {query}
                       </button>
@@ -457,7 +457,7 @@ https://svelte.dev/e/component_invalid_directive -->
 
           <!-- AI Search Button -->
           <button
-            onclick={performAISearch}
+            on:click={performAISearch}
             disabled={isSearching || !searchQuery.trim()}
             class="nier-search-btn w-full py-4 bg-yellow-400 hover:bg-yellow-300 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-mono font-bold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
             data-testid="ai-search-btn"
@@ -477,10 +477,10 @@ https://svelte.dev/e/component_invalid_directive -->
         <!-- Search Results -->
         {#if searchResults.length > 0}
           <div class="nier-results border-t border-yellow-400/30 max-h-96 overflow-y-auto" data-testid="search-results">
-            {#each searchResults as result, index (result.id)}
+            {#each searchResults as result, index ((result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).id)}
               <div 
                 class="nier-result-item border-b border-gray-700/50 p-4 hover:bg-gray-800/50 cursor-pointer transition-all duration-200 group"
-                onclick={() => selectResult(result)}
+                on:click={() => selectResult(result)}
                 in:fly={{ x: -20, duration: 300, delay: index * 50 }}
                 data-testid="result-item"
               >
@@ -495,42 +495,42 @@ https://svelte.dev/e/component_invalid_directive -->
                   <div class="flex-1 min-w-0">
                     <div class="flex items-start justify-between gap-2 mb-2">
                       <h3 class="nier-result-title text-white font-mono font-bold text-lg leading-tight group-hover:text-yellow-400 transition-colors">
-                        {result.title}
+                        {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).title}
                       </h3>
                       
                       <!-- AI Confidence Badge -->
-                      {#if result.aiConfidence}
+                      {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).aiConfidence}
                         <div class="nier-confidence-badge flex-shrink-0" data-testid="ai-confidence">
                           <Brain class="w-3 h-3" />
-                          {Math.round(result.aiConfidence * 100)}%
+                          {Math.round((result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).aiConfidence * 100)}%
                         </div>
                       {/if}
                     </div>
                     
                     <p class="nier-result-excerpt text-gray-300 text-sm mb-3 line-clamp-2 leading-relaxed">
-                      {result.excerpt}
+                      {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).excerpt}
                     </p>
                     
                     <!-- Result Metadata -->
                     <div class="flex items-center flex-wrap gap-3 text-xs">
                       <span class="nier-type-badge bg-gray-800 border border-gray-600 px-2 py-1">
-                        {result.type?.toUpperCase()}
+                        {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).type?.toUpperCase()}
                       </span>
                       
-                      {#if result.relevanceScore}
+                      {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).relevanceScore}
                         <span class="text-blue-400 flex items-center gap-1">
                           <Target class="w-3 h-3" />
-                          {Math.round(result.relevanceScore * 100)}% relevant
+                          {Math.round((result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).relevanceScore * 100)}% relevant
                         </span>
                       {/if}
                       
-                      <span class="text-gray-500">{result.lastModified}</span>
+                      <span class="text-gray-500">{(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).lastModified}</span>
                       
                       <!-- Highlights -->
-                      {#if result.highlights && result.highlights.length > 0}
+                      {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights && (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights.length > 0}
                         <div class="flex items-center gap-1">
                           <Sparkles class="w-3 h-3 text-yellow-400" />
-                          <span class="text-yellow-400">{result.highlights.length} highlights</span>
+                          <span class="text-yellow-400">{(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights.length} highlights</span>
                         </div>
                       {/if}
                     </div>
@@ -576,7 +576,7 @@ https://svelte.dev/e/component_invalid_directive -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               {#each autoSuggestions as suggestion}
                 <div class="nier-suggestion-nier-bits-card bg-gray-800/50 border border-gray-600 p-4 hover:border-yellow-400/50 transition-colors group cursor-pointer"
-                     onclick={() => applyAutoSuggestion(suggestion)}>
+                     on:click={() => applyAutoSuggestion(suggestion)}>
                   <div class="flex items-start gap-3">
                     <div class="nier-priority-indicator {suggestion.priority} w-3 h-3 rounded-full flex-shrink-0 mt-1"></div>
                     <div class="flex-1">

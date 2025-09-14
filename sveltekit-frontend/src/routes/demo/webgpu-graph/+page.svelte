@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
     databaseStats: {
       totalRecords: 0,
       storageUsed: 'Unknown',
-      tables: [] as Array<{ name: string; count: number }>
+      tables: [] as Array
     }
   });
 
@@ -445,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
           class:active={$demoState.currentStep === index + 1}
           class:completed={$demoState.currentStep > index + 1}
           disabled={!$canProceed}
-          onclick={() => demoState.update(s => ({ ...s, currentStep: index + 1 }))}
+          on:click={() => demoState.update(s => ({ ...s, currentStep: index + 1 }))}
         >
           <span class="step-number">{index + 1}</span>
           <span class="step-title">{step.title}</span>
@@ -489,7 +489,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
 
-          <button onclick={nextStep} disabled={!$webgpuSupported} class="primary-button">
+          <button on:click={nextStep} disabled={!$webgpuSupported} class="primary-button">
             Initialize System
           </button>
         </div>
@@ -513,7 +513,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <div class="action-buttons">
             <button
-              onclick={generateSampleData}
+              on:click={generateSampleData}
               disabled={$demoState.isGeneratingData || $demoState.dataGenerated}
               class="primary-button"
             >
@@ -522,7 +522,7 @@ https://svelte.dev/e/js_parse_error -->
             </button>
 
             {#if $demoState.dataGenerated}
-              <button onclick={nextStep} class="secondary-button">
+              <button on:click={nextStep} class="secondary-button">
                 Continue to Storage
               </button>
             {/if}
@@ -560,11 +560,11 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <div class="action-buttons">
-            <button onclick={async () => { await updateDatabaseStats(); }} class="secondary-button">
+            <button on:click={async () => { await updateDatabaseStats(); }} class="secondary-button">
               Refresh Stats
             </button>
 
-            <button onclick={nextStep} class="primary-button">
+            <button on:click={nextStep} class="primary-button">
               Launch Visualization
             </button>
           </div>
@@ -596,20 +596,20 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <div class="visualization-controls">
-            <button onclick={() => $graphViewer?.resetCamera()} class="control-button">
+            <button on:click={() => $graphViewer?.resetCamera()} class="control-button">
               🎯 Reset Camera
             </button>
 
-            <button onclick={() => $graphViewer?.togglePhysics()} class="control-button">
+            <button on:click={() => $graphViewer?.togglePhysics()} class="control-button">
               ⚡ Toggle Physics
             </button>
 
-            <button onclick={() => $graphViewer?.focusOnNode('case-001')} class="control-button">
+            <button on:click={() => $graphViewer?.focusOnNode('case-001')} class="control-button">
               🔍 Focus on Case
             </button>
           </div>
 
-          <button onclick={nextStep} class="primary-button">
+          <button on:click={nextStep} class="primary-button">
             Test Vector Search
           </button>
         </div>
@@ -629,7 +629,7 @@ https://svelte.dev/e/js_parse_error -->
                 class="search-input"
                 keydown={(e) => e.key === 'Enter' && performVectorSearch()}
               />
-              <button onclick={performVectorSearch} class="search-button">
+              <button on:click={performVectorSearch} class="search-button">
                 🔍 Search
               </button>
             </div>
@@ -653,24 +653,24 @@ https://svelte.dev/e/js_parse_error -->
               {#each $demoState.searchResults as result}
                 <div class="result-item">
                   <div class="result-header">
-                    <span class="result-title">{result.metadata?.title || result.id}</span>
+                    <span class="result-title">{(result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).metadata?.title || (result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).id}</span>
                     <span class="result-similarity">
-                      {(result.similarity * 100).toFixed(1)}% match
+                      {((result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).similarity * 100).toFixed(1)}% match
                     </span>
                   </div>
                   <div class="result-content">
-                    {result.content.substring(0, 200)}...
+                    {(result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).content.substring(0, 200)}...
                   </div>
                   <div class="result-meta">
-                    <span class="result-type">{result.sourceType}</span>
-                    <span class="result-lod">LOD {result.ragLevel}</span>
+                    <span class="result-type">{(result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).sourceType}</span>
+                    <span class="result-lod">LOD {(result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).ragLevel}</span>
                   </div>
                 </div>
               {/each}
             </div>
           {/if}
 
-          <button onclick={nextStep} class="primary-button">
+          <button on:click={nextStep} class="primary-button">
             Test Server Sync
           </button>
         </div>
@@ -720,14 +720,14 @@ https://svelte.dev/e/js_parse_error -->
 
           <div class="action-buttons">
             <button
-              onclick={syncToServer}
+              on:click={syncToServer}
               disabled={!$syncStatus.isOnline}
               class="primary-button"
             >
               Sync to Server
             </button>
 
-            <button onclick={async () => { await syncService.clearCache(); }} class="secondary-button">
+            <button on:click={async () => { await syncService.clearCache(); }} class="secondary-button">
               Clear Cache
             </button>
           </div>
@@ -746,7 +746,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Navigation Controls -->
     <footer class="demo-navigation">
       <button
-        onclick={prevStep}
+        on:click={prevStep}
         disabled={$demoState.currentStep === 1}
         class="nav-button prev"
       >
@@ -758,7 +758,7 @@ https://svelte.dev/e/js_parse_error -->
       </span>
 
       <button
-        onclick={nextStep}
+        on:click={nextStep}
         disabled={$demoState.currentStep === $demoState.maxSteps}
         class="nav-button next"
       >

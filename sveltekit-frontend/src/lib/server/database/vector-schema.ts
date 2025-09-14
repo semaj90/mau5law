@@ -14,7 +14,7 @@ import {
 
 // Custom pgvector column type for Drizzle
 const vector = (name: string, dimensions: number) =>
-  customType<{ data: number[] }>({
+  customType({
     dataType() {
       return `vector(${dimensions})`;
     },

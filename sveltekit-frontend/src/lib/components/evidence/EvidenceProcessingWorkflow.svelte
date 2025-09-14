@@ -53,15 +53,28 @@
   }
 
   // Svelte props (exported)
-  export let evidenceId: string = `evidence_${Date.now()}`;
-  export let autoStart: boolean = false;
-  export let neuralSpriteEnabled: boolean = true;
-  export let onCompleted: ((result: any) => void) | undefined;
-  export let onError: ((error: string) => void) | undefined;
-  export let sessionId: string | null = null;
-  export let endpoint: string = '/api/evidence/process/stream';
+  interface Props {
+    evidenceId?: string;
+    autoStart?: boolean;
+    neuralSpriteEnabled?: boolean;
+    onCompleted?: ((result: any) => void) | undefined;
+    onError?: ((error: string) => void) | undefined;
+    sessionId?: string | null;
+    endpoint?: string;
+  }
 
-  const dispatch = createEventDispatcher();
+  let {
+    evidenceId = `evidence_${Date.now()}`,
+    autoStart = false,
+    neuralSpriteEnabled = true,
+    onCompleted,
+    onError,
+    sessionId = null,
+    endpoint = '/api/evidence/process/stream'
+  }: Props = $props();
+
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
 
   // xState actor for client-side state management
   const actor = createActor(evidenceProcessingMachine);
@@ -230,13 +243,13 @@
 
       if (typeof currentState.matches === 'function' && currentState.matches('completed')) {
         onCompleted?.(currentState.context);
-        dispatch('completed', currentState.context);
+        onCompleted?.(currentState.context);
         disconnectStream();
       }
       if (typeof currentState.matches === 'function' && currentState.matches('error')) {
         const msg = (currentState.context.errors || []).join(', ');
         onError?.(msg);
-        dispatch('error', msg);
+        onError?.(msg);
       }
     });
 
@@ -412,9 +425,9 @@
   }
 </script>
 
-<NesCard class="w-full max-w-4xl mx-auto">
+<div class="w-full max-w-4xl mx-auto nes-container">
   <div class="yorha-panel-header">
-    <h3 class="nes-text is-primary" class="flex items-center gap-2">
+    <h3 class="nes-text is-primary flex items-center gap-2">
       🏛️ Legal Evidence Processing Workflow
       <span class="text-sm font-normal text-gray-600">
         {evidenceId}
@@ -425,7 +438,7 @@
     </p>
   </div>
 
-  <div class="yorha-panel-content" class="space-y-6">
+  <div class="yorha-panel-content space-y-6">
     <!-- File Upload Section -->
     {#if !selectedFile && !isProcessing && !isCompleted}
       <div
@@ -437,7 +450,7 @@
         class:bg-blue-50={dragOver}
         on:drop={handleFileDrop}
         on:dragover={handleDragOver}
-        on:dragleave={handleDragLeave}
+        ondragleave={handleDragLeave}
       >
         <div class="space-y-4">
           <div class="text-4xl">📄</div>
@@ -681,7 +694,6 @@
         </div>
       </div>
     {/if}
-    {/if}
 
     <!-- Cancelled State -->
     {#if isCancelled}
@@ -699,4 +711,4 @@
       </div>
     {/if}
   </div>
-</NesCard>
+</div>

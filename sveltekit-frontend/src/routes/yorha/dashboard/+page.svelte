@@ -37,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   let isLoading = $state(!data.initialLoad);
-  let lastUpdate = $state(new Date(data.timestamp);
+  let lastUpdate = $state(new Date(data.timestamp));
   // Data update intervals
   let metricsInterval = $state<ReturnType<typeof setInterval> | null>(null);
   let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
@@ -127,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
   function generateHistoryData(baseValue: number, points = 30): number[] {
     return Array.from({ length: points }, (_, i) => {
       const variation = (Math.random() - 0.5) * 20;
-      return Math.max(0, Math.min(100, baseValue + variation);
+      return Math.max(0, Math.min(100, baseValue + variation));
     });
   }
 
@@ -284,8 +284,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="yorha-metric-header">
             <Database size={24} />
             <h3>DATABASE</h3>
-            <{getStatusIcon(systemMetrics.database.connected ? 'healthy' : 'error')} size={20}
-                             class={getStatusColor(systemMetrics.database.connected ? 'healthy' : 'error')} />
+            
           </div>
           <div class="yorha-metric-stats">
             <div class="yorha-stat">
@@ -308,8 +307,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="yorha-metric-header">
             <Cpu size={24} />
             <h3>BACKEND</h3>
-            <{getStatusIcon(systemMetrics.backend.healthy ? 'healthy' : 'error')} size={20}
-                             class={getStatusColor(systemMetrics.backend.healthy ? 'healthy' : 'error')} />
+            
           </div>
           <div class="yorha-metric-stats">
             <div class="yorha-stat">
@@ -332,8 +330,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="yorha-metric-header">
             <Monitor size={24} />
             <h3>FRONTEND</h3>
-            <{getStatusIcon('healthy')} size={20}
-                             class={getStatusColor('healthy')} />
+            
           </div>
           <div class="yorha-metric-stats">
             <div class="yorha-stat">
@@ -356,8 +353,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="yorha-metric-header">
             <Zap size={24} />
             <h3>HEALTH</h3>
-            <{getStatusIcon('healthy')} size={20}
-                             class={getStatusColor('healthy')} />
+            
           </div>
           <div class="yorha-metric-stats">
             <div class="yorha-stat">

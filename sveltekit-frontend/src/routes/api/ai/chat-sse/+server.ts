@@ -16,7 +16,7 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
 import { ollamaService } from '$lib/server/services/OllamaService.js';
 import { logger } from '$lib/server/production-logger.js';

@@ -85,29 +85,29 @@ https://svelte.dev/e/attribute_duplicate -->
 			clearInterval(progressInterval);
 			uploadProgress = 100;
 
-			const result = await response.json();
+			const result = await (response as { json?: any }).json();
 			processingTime = performance.now() - startTime;
 
-			if (result.success) {
+			if ((result as { success?: any; data?: any; error?: any }).success) {
 				uploadStatus = 'completed';
-				results = result.data;
+				results = (result as { success?: any; data?: any; error?: any }).data;
 				
 				addLog('✅ Upload completed successfully!');
 				addLog(`📊 Processed in ${processingTime.toFixed(2)}ms`);
-				addLog(`📄 Text length: ${result.data.textLength} characters`);
-				addLog(`🧩 Chunks created: ${result.data.chunksCount}`);
-				addLog(`🧮 Embeddings generated: ${result.data.embeddingsCount}`);
-				addLog(`📐 Embedding dimensions: ${result.data.embeddingDimensions}`);
-				addLog(`🗄️ Stored in MinIO: ${result.data.minioPath}`);
+				addLog(`📄 Text length: ${(result as { success?: any; data?: any; error?: any }).data.textLength} characters`);
+				addLog(`🧩 Chunks created: ${(result as { success?: any; data?: any; error?: any }).data.chunksCount}`);
+				addLog(`🧮 Embeddings generated: ${(result as { success?: any; data?: any; error?: any }).data.embeddingsCount}`);
+				addLog(`📐 Embedding dimensions: ${(result as { success?: any; data?: any; error?: any }).data.embeddingDimensions}`);
+				addLog(`🗄️ Stored in MinIO: ${(result as { success?: any; data?: any; error?: any }).data.minioPath}`);
 				
 				// Log all processing steps
-				result.data.processingSteps.forEach((step: string) => {
+				(result as { success?: any; data?: any; error?: any }).data.processingSteps.forEach((step: string) => {
 					addLog(step);
 				});
 
 			} else {
 				uploadStatus = 'error';
-				addLog(`❌ Upload failed: ${result.error}`);
+				addLog(`❌ Upload failed: ${(result as { success?: any; data?: any; error?: any }).error}`);
 			}
 
 		} catch (error: any) {
@@ -209,10 +209,10 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 				class:has-file={selectedFile}
 				class:uploading={uploadStatus === 'uploading'}
 				class:processing={uploadStatus === 'processing'}
-				ondrop={handleDrop}
-			 role="region" aria-label="Drop zone" ondragover={handleDragOver}
-			 role="button" tabindex="0"
-                onclick={() => fileInput?.click()}
+				on:drop={handleDrop}
+			 role="button" aria-label="Drop zone" on:dragover={handleDragOver}
+			 tabindex="0"
+                on:click={() => fileInput?.click()}
 				role="button"
 				tabindex="0"
 			>
@@ -220,7 +220,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 					bind:this={fileInput}
 					type="file"
 					accept=".pdf,.txt,.doc,.docx"
-					onchange={handleFileSelect}
+					on:change={handleFileSelect}
 					style="display: none"
 				/>
 
@@ -265,7 +265,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 			<!-- Action Buttons -->
 			<div class="actions">
 				<button
-					onclick={testGemmaUpload}
+					on:click={testGemmaUpload}
 					disabled={!selectedFile || uploadStatus === 'uploading' || uploadStatus === 'processing'}
 					class="primary-button"
 				>
@@ -277,7 +277,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 				</button>
 
 				<button
-					onclick={testWithLegalPDF}
+					on:click={testWithLegalPDF}
 					disabled={uploadStatus === 'uploading' || uploadStatus === 'processing'}
 					class="secondary-button"
 				>
@@ -285,7 +285,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 				</button>
 
 				<button
-					onclick={clearAll}
+					on:click={clearAll}
 					disabled={uploadStatus === 'uploading' || uploadStatus === 'processing'}
 					class="clear-button"
 				>

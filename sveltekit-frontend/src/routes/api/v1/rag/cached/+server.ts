@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { enhancedRAGQueryWithCache } from '$lib/services/enhanced-rag-semantic-analyzer';
 import { cachedRAGService } from '$lib/services/cached-rag-service';
 import { enhancedCachingService } from '$lib/services/enhanced-caching-service';

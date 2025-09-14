@@ -3,7 +3,7 @@ import { createRedisInstance, createRedisClientSet } from '$lib/server/redis';
 
 export const GET = async () => {
   const started = Date.now();
-  const checks: any = { ping: {}, rw: {}, pubsub: {} };
+  const checks: any = { ping: Record<string, any>, rw: Record<string, any>, pubsub: Record<string, any> };
   let overallOk = true;
 
   // Simple ping
@@ -43,7 +43,7 @@ export const GET = async () => {
     const channel = `healthz:deep:pubsub:${Math.random().toString(36).slice(2)}`;
     const payload = JSON.stringify({ t: Date.now() });
     const t0 = Date.now();
-    const result = await new Promise<{ ok: boolean; latencyMs?: number; error?: string }>((resolve) => {
+    const result = await new Promise<((resolve) => {
       let settled = false;
       const timeout = setTimeout(() => {
         if (!settled) {
@@ -62,7 +62,7 @@ export const GET = async () => {
       });
     });
     checks.pubsub = result;
-    if (!result.ok) overallOk = false;
+    if (!(result as { ok?: any }).ok) overallOk = false;
     await Promise.all([primary.quit(), subscriber.quit(), publisher.quit()].map(p => p.catch(()=>{})));
   } catch (e: any) {
     checks.pubsub = { ok: false, error: e.message };

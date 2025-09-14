@@ -2,7 +2,7 @@ import { json, error } from "@sveltejs/kit";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 import { spawn } from "child_process";
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 
@@ -159,7 +159,7 @@ async function parseAnalysisOutputs(
       sessionId,
       status: "failed",
       step: "parsing_outputs",
-      outputs: {},
+      outputs: Record<string, any>,
       error: err instanceof Error ? err.message : "Unknown parsing error"
     };
   }
@@ -184,7 +184,7 @@ export const GET: RequestHandler = async ({ url }) => {
       sessionId,
       status: "processing",
       step: "running_analysis",
-      outputs: {}
+      outputs: Record<string, any>
     });
   }
 };

@@ -114,12 +114,12 @@ async function generateOpenAIEmbedding(text: string): Promise<number[]> {
     }),
   });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-    throw new Error(`OpenAI API error: ${response.statusText} - ${JSON.stringify(errorData)}`);
+  if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
+    const errorData = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json().catch(() => ({ error: 'Unknown error' }));
+    throw new Error(`OpenAI API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText} - ${JSON.stringify(errorData)}`);
   }
-  const data = await response.json();
-  return ensureDim(data.data[0].embedding, TARGET_DIM);
+  const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
+  return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).data[0].embedding, TARGET_DIM);
 }
 
 // Nomic Embed via Ollama
@@ -138,21 +138,21 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
       }),
     });
 
-    if (!response.ok) {
-      throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
+    if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
+      throw new Error(`Ollama API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).status} ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText}`);
     }
 
-    const data = await response.json();
+    const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
     // Support { embedding }, { embeddings }, and OpenAI-like { data: [{ embedding }] }
-    if (Array.isArray(data?.embedding)) return ensureDim(data.embedding, TARGET_DIM);
+    if (Array.isArray(data?.embedding)) return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).embedding, TARGET_DIM);
     if (Array.isArray(data?.embeddings)) {
       // Could be array of numbers or array of arrays depending on provider
-      if (Array.isArray(data.embeddings[0]))
-        return ensureDim(data.embeddings[0] as number[], TARGET_DIM);
-      return ensureDim(data.embeddings as number[], TARGET_DIM);
+      if (Array.isArray((data as { data?: any; embedding?: any; embeddings?: any }).embeddings[0]))
+        return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).embeddings[0] as number[], TARGET_DIM);
+      return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).embeddings as number[], TARGET_DIM);
     }
-    if (Array.isArray(data?.data) && Array.isArray(data.data[0]?.embedding)) {
-      return ensureDim(data.data[0].embedding, TARGET_DIM);
+    if (Array.isArray(data?.data) && Array.isArray((data as { data?: any; embedding?: any; embeddings?: any }).data[0]?.embedding)) {
+      return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).data[0].embedding, TARGET_DIM);
     }
     return [];
   } catch (error: any) {
@@ -169,7 +169,7 @@ async function generateCpuEmbedding(text: string): Promise<number[]> {
   if (!pipeline) throw new Error('@xenova/transformers pipeline not available');
   const extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
   const result = await extractor(text, { pooling: 'mean', normalize: true });
-  const arr = Array.from(result.data as Float32Array);
+  const arr = Array.from((result as { data?: any }).data as Float32Array);
   return ensureDim(arr, TARGET_DIM);
 }
 // Batch embedding generation for efficiency
@@ -235,11 +235,11 @@ async function generateOpenAIBatchEmbeddings(texts: string[]): Promise<(number[]
     }),
   });
 
-  if (!response.ok) {
-    throw new Error(`OpenAI API error: ${response.statusText}`);
+  if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
+    throw new Error(`OpenAI API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText}`);
   }
-  const data = await response.json();
-  return data.data.map((item: any) => ensureDim(item.embedding, TARGET_DIM));
+  const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
+  return (data as { data?: any; embedding?: any; embeddings?: any }).(data as { data?: any; embedding?: any; embeddings?: any }).map((item: any) => ensureDim((item as { embedding?: any }).embedding, TARGET_DIM));
 }
 
 // Nomic batch embedding generation
@@ -263,21 +263,21 @@ async function generateNomicBatchEmbeddings(
         }),
       });
 
-      if (!response.ok) {
+      if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
         throw new Error(
-          `Ollama API error: ${response.status} ${response.statusText}`
+          `Ollama API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).status} ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText}`
         );
       }
 
-      const data = await response.json();
-      if (Array.isArray(data?.embedding)) return data.embedding;
+      const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
+      if (Array.isArray(data?.embedding)) return (data as { data?: any; embedding?: any; embeddings?: any }).embedding;
       if (Array.isArray(data?.embeddings)) {
-        if (Array.isArray(data.embeddings[0]))
-          return data.embeddings[0] as number[];
-        return data.embeddings as number[];
+        if (Array.isArray((data as { data?: any; embedding?: any; embeddings?: any }).embeddings[0]))
+          return (data as { data?: any; embedding?: any; embeddings?: any }).embeddings[0] as number[];
+        return (data as { data?: any; embedding?: any; embeddings?: any }).embeddings as number[];
       }
-      if (Array.isArray(data?.data) && Array.isArray(data.data[0]?.embedding)) {
-        return data.data[0].embedding;
+      if (Array.isArray(data?.data) && Array.isArray((data as { data?: any; embedding?: any; embeddings?: any }).data[0]?.embedding)) {
+        return (data as { data?: any; embedding?: any; embeddings?: any }).data[0].embedding;
       }
       return null;
     } catch (error: any) {

@@ -5,7 +5,7 @@
  */
 
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
-import { parallelCacheOrchestrator } from './parallel-cache-orchestrator.js';
+import { parallelCacheOrchestrator } from './parallel-cache-orchestrator.js.js';
 import { browser } from '$app/environment';
 
 export interface GlyphRenderingRequest {
@@ -338,12 +338,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
   /**
    * Quantize glyph data based on legal document requirements
    */
-  private async quantizeGlyphData(request: GlyphRenderingRequest): Promise<{
-    originalSize: number;
-    compressedSize: number;
-    compressionRatio: number;
-    qualityScore: number;
-  }> {
+  private async quantizeGlyphData(request: GlyphRenderingRequest): Promise<any> {
     const originalSize = request.glyphData.byteLength;
     let compressedSize: number;
     let qualityScore: number;
@@ -391,11 +386,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
       outputTexture: GPUTexture;
       renderParams: GPUBuffer;
     }
-  ): Promise<{
-    success: boolean;
-    renderTime: number;
-    memoryUsed: number;
-  }> {
+  ): Promise<any> {
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
     }
@@ -525,13 +516,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
   /**
    * Get performance statistics
    */
-  async getGlyphCacheStats(): Promise<{
-    totalShaders: number;
-    totalMemoryMB: number;
-    averageRenderTime: number;
-    cacheHitRate: number;
-    quantizationEfficiency: number;
-  }> {
+  async getGlyphCacheStats(): Promise<any> {
     const shaders = Array.from(this.glyphShaderCache.values());
     
     return {

@@ -10,14 +10,14 @@ https://svelte.dev/e/js_parse_error -->
   	import { advancedCache } from '$lib/services/advanced-cache-manager';
 
   	// Props
-  	let { text = $bindable() } = $props(); // string = '';
-  	let { speed = $bindable() } = $props(); // number = 50; // milliseconds per character
-  	let { showCursor = $bindable() } = $props(); // boolean = true;
-  	let { cursorChar = $bindable() } = $props(); // string = '▋';
-  	let { cacheKey = $bindable() } = $props(); // string = '';
-  	let { userActivity = $bindable() } = $props(); // UserActivity[] = [];
-  	let { enableThinking = $bindable() } = $props(); // boolean = true;
-  	let { autoStart = $bindable() } = $props(); // boolean = true;
+  	let { text = $bindable()  }: { text = $bindable() : any } = $props(); // string = '';
+  	let { speed = $bindable()  }: { speed = $bindable() : any } = $props(); // number = 50; // milliseconds per character
+  	let { showCursor = $bindable()  }: { showCursor = $bindable() : any } = $props(); // boolean = true;
+  	let { cursorChar = $bindable()  }: { cursorChar = $bindable() : any } = $props(); // string = '▋';
+  	let { cacheKey = $bindable()  }: { cacheKey = $bindable() : any } = $props(); // string = '';
+  	let { userActivity = $bindable()  }: { userActivity = $bindable() : any } = $props(); // UserActivity[] = [];
+  	let { enableThinking = $bindable()  }: { enableThinking = $bindable() : any } = $props(); // boolean = true;
+  	let { autoStart = $bindable()  }: { autoStart = $bindable() : any } = $props(); // boolean = true;
 
   	// Types
   	interface UserActivity {
@@ -50,11 +50,7 @@ https://svelte.dev/e/js_parse_error -->
   let replaySpeed = $state(1.0);
 
   	// Event dispatcher
-  	const dispatch = createEventDispatcher<{
-  		complete: void;
-  		progress: { progress: number; phase: string };
-  		activityComplete: void;
-  	}>();
+  	const dispatch = createEventDispatcher();
 
   	// Thinking phrases for different phases
   	const thinkingPhrases = {
@@ -82,9 +78,7 @@ https://svelte.dev/e/js_parse_error -->
   let typingInterval = $state<NodeJS.Timeout;
   let cursorInterval = $state<NodeJS.Timeout;
   	let thinkingInterval: NodeJS.Timeout;
-  	let activityTimeout: NodeJS.Timeout;
-
-  	onMount(() => {
+  	let activityTimeout: NodeJS.TimeoutonMount(() = | null>(null)() {
   		if (autoStart) {
   			startTypewriter());
   		}
@@ -398,10 +392,10 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Advanced Controls (for development/debugging) -->
 {#if $$props.showControls}
 	<div class="typewriter-controls" in:fade={{ delay: 500 }}>
-		<button onclick={pause} disabled={!isTyping || isPaused}>Pause</button>
-		<button onclick={resume} disabled={!isPaused}>Resume</button>
-		<button onclick={restart}>Restart</button>
-		<button onclick={stop}>Stop</button>
+		<button on:click={pause} disabled={!isTyping || isPaused}>Pause</button>
+		<button on:click={resume} disabled={!isPaused}>Resume</button>
+		<button on:click={restart}>Restart</button>
+		<button on:click={stop}>Stop</button>
 		
 		<div class="speed-controls">
 			<label>
@@ -410,8 +404,7 @@ https://svelte.dev/e/js_parse_error -->
 					type="range" 
 					min="10" 
 					max="200" 
-					bind:value={speed}
-					change={() => setSpeed(speed)}
+					bind:value={speed} on:change={() => setSpeed(speed)}
 				/>
 				<span>{speed}ms</span>
 			</label>
@@ -423,8 +416,7 @@ https://svelte.dev/e/js_parse_error -->
 					min="0.1" 
 					max="5" 
 					step="0.1"
-					bind:value={replaySpeed}
-					change={() => setReplaySpeed(replaySpeed)}
+					bind:value={replaySpeed} on:change={() => setReplaySpeed(replaySpeed)}
 				/>
 				<span>{replaySpeed}x</span>
 			</label>

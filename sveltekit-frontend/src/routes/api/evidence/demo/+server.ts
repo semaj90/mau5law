@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { json } from '@sveltejs/kit';
 import { writeFile } from 'fs/promises';
 import { mkdir } from 'fs/promises';

@@ -17,7 +17,7 @@
  */
 
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Auto-Tagging API Endpoint

@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';
 import { Pool } from 'pg';
 
@@ -260,7 +260,7 @@ async function getDatabaseSuggestions(
   }
 
   const result = await db.query(sql, params);
-  return result.rows;
+  return (result as { rows?: any }).rows;
 }
 
 async function getSemanticSuggestions(query: string, maxResults: number): Promise<any> {
@@ -285,7 +285,7 @@ async function getSemanticSuggestions(query: string, maxResults: number): Promis
       [`%${query}%`, maxResults]
     );
 
-    return result.rows;
+    return (result as { rows?: any }).rows;
   } catch (error: any) {
     console.warn('Semantic search failed:', error);
     return [];

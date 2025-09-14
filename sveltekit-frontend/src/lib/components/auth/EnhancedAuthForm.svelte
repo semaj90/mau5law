@@ -52,9 +52,9 @@
   });
 
   // Form element references for focus management
-  let emailInput = $state<HTMLInputElement>();
-  let passwordInput = $state<HTMLInputElement>();
-  let firstNameInput = $state<HTMLInputElement>();
+  let emailInput: HTMLInputElement = $state(undefined as any);
+  let passwordInput: HTMLInputElement = $state(undefined as any);
+  let firstNameInput: HTMLInputElement = $state(undefined as any);
 
   // Enhanced validation with security requirements
   let validation = $derived(() => {
@@ -107,8 +107,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })
       });
-      const result = await response.json();
-      formState.emailExists = result.exists;
+      const result = await (response as { json?: any; ok?: any }).json();
+      formState.emailExists = (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).exists;
     } catch (error) {
       console.error('Email check failed:', error);
     }
@@ -157,11 +157,11 @@
         })
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (response.ok) {
-        formState.success = result.message || `${mode === 'login' ? 'Login' : 'Registration'} successful!`;
-        if (mode === 'register' && result.requiresVerification) {
+      if ((response as { json?: any; ok?: any }).ok) {
+        formState.success = (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).message || `${mode === 'login' ? 'Login' : 'Registration'} successful!`;
+        if (mode === 'register' && (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).requiresVerification) {
           formState.verificationSent = true;
           formState.success = 'Please check your email to verify your account.';
         }
@@ -173,10 +173,10 @@
         setTimeout(() => {
           resetForm();
           open = false;
-          onSuccess?.(result.user);
-        }, mode === 'register' && result.requiresVerification ? 3000 : 1500);
+          onSuccess?.((result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).user);
+        }, mode === 'register' && (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).requiresVerification ? 3000 : 1500);
       } else {
-        formState.error = result.error || 'Authentication failed';
+        formState.error = (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).error || 'Authentication failed';
         await logAuthEvent('failed', authContext, result);
       }
     } catch (err) {
@@ -191,8 +191,8 @@
   async function getClientIP(): Promise<string> {
     try {
       const response = await fetch('/api/client-ip');
-      const data = await response.json();
-      return data.ip || 'unknown';
+      const data = await (response as { json?: any; ok?: any }).json();
+      return (data as { ip?: any }).ip || 'unknown';
     } catch {
       return 'unknown';
     }
@@ -254,9 +254,9 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
-      const result = await response.json();
-      if (response.ok) {
-        onSuccess?.(result.user);
+      const result = await (response as { json?: any; ok?: any }).json();
+      if ((response as { json?: any; ok?: any }).ok) {
+        onSuccess?.((result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).user);
         open = false;
       }
     } catch (error) {
@@ -313,7 +313,7 @@
         </Dialog.Description>
       </div>
 
-      <form submit={handleSubmit} class="space-y-4">
+      <form on:submit={handleSubmit} class="space-y-4">
         <!-- Success Message -->
         {#if formState.success}
           <Alert variant="default" class="border-green-200 bg-green-50 text-green-800">
@@ -415,7 +415,7 @@
             />
             <button
               type="button"
-              onclick={() => formState.showPassword = !formState.showPassword}
+              on:click={() => formState.showPassword = !formState.showPassword}
               class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
               {#if formState.showPassword}
@@ -470,7 +470,7 @@
               />
               <button
                 type="button"
-                onclick={() => formState.showConfirmPassword = !formState.showConfirmPassword}
+                on:click={() => formState.showConfirmPassword = !formState.showConfirmPassword}
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
               >
                 {#if formState.showConfirmPassword}
@@ -526,7 +526,7 @@
           class="w-full bits-btn bits-btn"
           disabled={formState.loading || !validation.isValid}
         >
-          {#if formState.loading}
+{#if formState.loading}
             <svg class="mr-2 h-4 w-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
@@ -534,7 +534,6 @@
           {:else}
             {mode === 'login' ? 'Sign In' : 'Create Account'}
           {/if}
-        </button>
 
         <!-- Guest Mode -->
         {#if allowGuestMode && mode === 'login'}
@@ -542,18 +541,18 @@
             type="button"
             variant="outline"
             class="w-full bits-btn bits-btn"
-            onclick={handleGuestLogin}
+            on:click={handleGuestLogin}
             disabled={formState.loading}
           >
-            Continue as Guest
-          </button>
+Continue as Guest
+
         {/if}
 
         <!-- Mode Toggle -->
         <div class="text-center">
           <button 
             type="button"
-            onclick={toggleMode}
+            on:click={toggleMode}
             class="text-sm text-primary hover:underline"
             disabled={formState.loading}
           >
@@ -561,7 +560,7 @@
               ? "Don't have an account? Sign up" 
               : "Already have an account? Sign in"
             }
-          </button>
+
         </div>
       </form>
 

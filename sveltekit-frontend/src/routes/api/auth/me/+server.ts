@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Current User API Endpoint
@@ -52,7 +52,7 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         permissions: ['read', 'write', 'analyze'],
         isActive: true,
         emailVerified: true,
-        metadata: {},
+        metadata: Record<string, any>,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       },

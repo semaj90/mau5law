@@ -6,7 +6,7 @@ import {
   reports,
   statutes,
   users
-} from "../server/db/schema-postgres";
+} from '../server/db/schema-postgres.js';
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm/table";
 
 // Core database types
@@ -343,7 +343,7 @@ export interface AIResponse {
   confidence?: number;
   contextUsed?: unknown[];
   suggestions?: string[];
-  actions?: Array<{ type: string; text: string; data?: unknown }>;
+  actions?: Array<any>;
   metadata?: {
     provider: "local" | "hybrid" | "cloud";
     model: string;

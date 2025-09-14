@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Memory cache with timestamps for development
 const memoryCache = new Map<string, { value: any; expires: number; timestamp: number }>();
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     
     const now = Date.now();
-    const entries: Array<{ key: string; value: any; timestamp: number }> = [];
+    const entries: Array< = [];
     
     // Get recent entries matching prefix
     for (const [key, cached] of memoryCache.entries()) {

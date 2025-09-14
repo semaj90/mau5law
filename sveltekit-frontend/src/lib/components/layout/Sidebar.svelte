@@ -5,13 +5,13 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
+  import { page } from "$app/state";
+  import Button from '$lib/components/ui/button/Button.svelte';
+
   interface Props {
     open?: unknown;
   }
   let { open = false }: Props = $props();
-
-  import { page } from "$app/state";
-  import { Button } from '$lib/components/ui/enhanced-bits';
   import { cn } from "$lib/utils";
   import {
     BarChart3,
@@ -104,7 +104,7 @@ https://svelte.dev/e/js_parse_error -->
 {#if open}
   <div
     class="fixed inset-0 z-40 bg-black/50 lg:hidden"
-    onclick={closeSidebar}
+    on:click={closeSidebar}
     role="button"
     tabindex="0"
     keydown={(e) => e.key === "Enter" && closeSidebar()}
@@ -141,14 +141,14 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Quick actions -->
     <div class="p-4 border-b border-nier-gray">
       <div class="grid grid-cols-2 gap-2">
-        <button class="nes-btn is-primary" size="sm" class="justify-start bits-btn bits-btn">
+        <button class="nes-btn is-primary justify-start bits-btn bits-btn">
           <Plus class="mr-2 h-4 w-4" />
           New Case
         </button>
         <Button variant="ghost" size="sm" class="justify-start bits-btn bits-btn">
-          <Search class="mr-2 h-4 w-4" />
+<Search class="mr-2 h-4 w-4" />
           Search
-        </button>
+</Button>
       </div>
     </div>
 
@@ -159,42 +159,42 @@ https://svelte.dev/e/js_parse_error -->
         <div class="space-y-1">
           {#each navigation as item}
             <a
-              href={item.href}
+              href={(item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).href}
               class={cn(
                 "group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
-                item.current
+                (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).current
                   ? "bg-harvard-crimson text-white shadow-nier-glow"
                   : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
               )}
-              onclick={closeSidebar}
+              on:click={closeSidebar}
             >
               <div class="flex items-center">
-                {@const Icon = item.icon}
+                {@const Icon = (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).icon}
                 <Icon
                   class={cn(
                     "mr-3 h-5 w-5 flex-shrink-0",
-                    item.current
+                    (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).current
                       ? "text-white"
                       : "text-muted-foreground group-hover:text-foreground"
                   )}
                 />
-                {item.name}
+                {(item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).name}
               </div>
 
-              {#if item.badge}
+              {#if (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).badge}
                 <span
                   class={cn(
                     "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
-                    item.current
+                    (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).current
                       ? "bg-white/20 text-white"
                       : "bg-harvard-crimson text-white"
                   )}
                 >
-                  {item.badge}
+                  {(item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).badge}
                 </span>
               {/if}
 
-              {#if item.current}
+              {#if (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).current}
                 <ChevronRight class="h-4 w-4 text-white" />
               {/if}
             </a>
@@ -211,25 +211,25 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mt-2 space-y-1">
             {#each analytics as item}
               <a
-                href={item.href}
+                href={(item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).href}
                 class={cn(
                   "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
-                  item.current
+                  (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).current
                     ? "bg-harvard-crimson text-white shadow-nier-glow"
                     : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
                 )}
-                onclick={closeSidebar}
+                on:click={closeSidebar}
               >
-                {@const Icon = item.icon}
+                {@const Icon = (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).icon}
                 <Icon
                   class={cn(
                     "mr-3 h-5 w-5 flex-shrink-0",
-                    item.current
+                    (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).current
                       ? "text-white"
                       : "text-muted-foreground group-hover:text-foreground"
                   )}
                 />
-                {item.name}
+                {(item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).name}
               </a>
             {/each}
           </div>
@@ -245,25 +245,25 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mt-2 space-y-1">
             {#each settings as item}
               <a
-                href={item.href}
+                href={(item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).href}
                 class={cn(
                   "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
-                  item.current
+                  (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).current
                     ? "bg-harvard-crimson text-white shadow-nier-glow"
                     : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
                 )}
-                onclick={closeSidebar}
+                on:click={closeSidebar}
               >
-                {@const Icon = item.icon}
+                {@const Icon = (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).icon}
                 <Icon
                   class={cn(
                     "mr-3 h-5 w-5 flex-shrink-0",
-                    item.current
+                    (item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).current
                       ? "text-white"
                       : "text-muted-foreground group-hover:text-foreground"
                   )}
                 />
-                {item.name}
+                {(item as { href?: any; current?: any; icon?: any; name?: any; badge?: any }).name}
               </a>
             {/each}
           </div>

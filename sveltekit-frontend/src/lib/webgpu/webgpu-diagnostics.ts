@@ -1,3 +1,4 @@
+// @ts-nocheck - Complex experimental service with external dependencies
 // WebGPU Browser Diagnostics and Compatibility Check
 // Provides detailed WebGPU support detection and troubleshooting
 

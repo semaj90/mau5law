@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  let { content = null, placeholder = "Start writing your legal report...", autosave = true, reportId = "", caseId = "" } = $props();
+  let { content = null, placeholder = "Start writing your legal report...", autosave = true, reportId = "", caseId = ""  }: { content = null, placeholder = "Start writing your legal report...", autosave = true, reportId = "", caseId = "" : any } = $props();
 
   import { Editor } from "@tiptap/core";
   import Color from "@tiptap/extension-color";
@@ -462,14 +462,14 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => saveContent()}
+        on:click={() => saveContent()}
         title="Save (Ctrl+S)"
       >
         <Save size="18" />
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => importDocument()}
+        on:click={() => importDocument()}
         title="Import Document"
       >
         <Upload size="18" />
@@ -480,11 +480,11 @@ https://svelte.dev/e/js_parse_error -->
           <ChevronDown size="14" />
         </button>
         <div class="mx-auto px-4 max-w-7xl">
-          <button onclick={() => exportDocument("html")}>Export as HTML</button
+          <button on:click={() => exportDocument("html")}>Export as HTML</button
           >
-          <button onclick={() => exportDocument("json")}>Export as JSON</button
+          <button on:click={() => exportDocument("json")}>Export as JSON</button
           >
-          <button onclick={() => exportDocument("pdf")}>Export as PDF</button>
+          <button on:click={() => exportDocument("pdf")}>Export as PDF</button>
         </div>
       </div>
     </div>
@@ -496,7 +496,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:disabled={!state.canUndo}
-        onclick={() => editor?.commands.undo()}
+        on:click={() => editor?.commands.undo()}
         title="Undo (Ctrl+Z)"
       >
         <Undo size="18" />
@@ -504,7 +504,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:disabled={!state.canRedo}
-        onclick={() => editor?.commands.redo()}
+        on:click={() => editor?.commands.redo()}
         title="Redo (Ctrl+Shift+Z)"
       >
         <Redo size="18" />
@@ -518,7 +518,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mx-auto px-4 max-w-7xl">
         <select
           bind:value={state.currentFontFamily}
-          onchange={(e) =>
+          on:change={(e) =>
             setFontFamily((e.target as HTMLSelectElement).value)}
         >
           {#each fontFamilies as font}
@@ -530,7 +530,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isBold}
-        onclick={() => toggleBold()}
+        on:click={() => toggleBold()}
         title="Bold (Ctrl+B)"
       >
         <Bold size="18" />
@@ -538,7 +538,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isItalic}
-        onclick={() => toggleItalic()}
+        on:click={() => toggleItalic()}
         title="Italic (Ctrl+I)"
       >
         <Italic size="18" />
@@ -546,7 +546,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isUnderline}
-        onclick={() => toggleUnderline()}
+        on:click={() => toggleUnderline()}
         title="Underline (Ctrl+U)"
       >
         <Underline size="18" />
@@ -554,7 +554,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isStrike}
-        onclick={() => toggleStrike()}
+        on:click={() => toggleStrike()}
         title="Strikethrough"
       >
         <Strikethrough size="18" />
@@ -569,7 +569,7 @@ https://svelte.dev/e/js_parse_error -->
         <input
           type="color"
           bind:value={state.currentColor}
-          onchange={(e) => setTextColor((e.target as HTMLInputElement).value)}
+          on:change={(e) => setTextColor((e.target as HTMLInputElement).value)}
           title="Text Color"
         />
         <Type size="18" />
@@ -585,7 +585,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="mx-auto px-4 max-w-7xl"
               style="background-color: {color}"
-              onclick={() => setHighlight(color)}
+              on:click={() => setHighlight(color)}
               title={color === "transparent"
                 ? "Remove highlight"
                 : `Highlight with ${color}`}
@@ -605,7 +605,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "left"}
-        onclick={() => setAlignment("left")}
+        on:click={() => setAlignment("left")}
         title="Align Left"
       >
         <AlignLeft size="18" />
@@ -613,7 +613,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "center"}
-        onclick={() => setAlignment("center")}
+        on:click={() => setAlignment("center")}
         title="Align Center"
       >
         <AlignCenter size="18" />
@@ -621,7 +621,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "right"}
-        onclick={() => setAlignment("right")}
+        on:click={() => setAlignment("right")}
         title="Align Right"
       >
         <AlignRight size="18" />
@@ -629,7 +629,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "justify"}
-        onclick={() => setAlignment("justify")}
+        on:click={() => setAlignment("justify")}
         title="Justify"
       >
         <AlignJustify size="18" />
@@ -643,7 +643,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isList}
-        onclick={() => editor?.chain().focus().toggleBulletList().run()}
+        on:click={() => editor?.chain().focus().toggleBulletList().run()}
         title="Bullet List"
       >
         <List size="18" />
@@ -651,7 +651,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isOrderedList}
-        onclick={() => editor?.chain().focus().toggleOrderedList().run()}
+        on:click={() => editor?.chain().focus().toggleOrderedList().run()}
         title="Numbered List"
       >
         <ListOrdered size="18" />
@@ -659,7 +659,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isQuote}
-        onclick={() => editor?.chain().focus().toggleBlockquote().run()}
+        on:click={() => editor?.chain().focus().toggleBlockquote().run()}
         title="Quote"
       >
         <Quote size="18" />
@@ -667,7 +667,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isCode}
-        onclick={() => editor?.chain().focus().toggleCodeBlock().run()}
+        on:click={() => editor?.chain().focus().toggleCodeBlock().run()}
         title="Code Block"
       >
         <Code size="18" />
@@ -680,14 +680,14 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => insertImage()}
+        on:click={() => insertImage()}
         title="Insert Image"
       >
         <ImageIcon size="18" />
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => insertTable()}
+        on:click={() => insertTable()}
         title="Insert Table"
       >
         <TableIcon size="18" />
@@ -700,7 +700,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => adjustZoom(-10)}
+        on:click={() => adjustZoom(-10)}
         title="Zoom Out"
       >
         <ZoomOut size="18" />
@@ -708,7 +708,7 @@ https://svelte.dev/e/js_parse_error -->
       <span class="mx-auto px-4 max-w-7xl">{currentZoom}%</span>
       <button
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => adjustZoom(10)}
+        on:click={() => adjustZoom(10)}
         title="Zoom In"
       >
         <ZoomIn size="18" />
@@ -717,7 +717,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={showGrid}
-        onclick={() => (showGrid = !showGrid)}
+        on:click={() => (showGrid = !showGrid)}
         title="Toggle Grid"
       >
         <Grid size="18" />
@@ -725,7 +725,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <button
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => toggleFullscreen()}
+        on:click={() => toggleFullscreen()}
         title="Toggle Fullscreen"
       >
         {#if isFullscreen}

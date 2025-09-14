@@ -86,15 +86,15 @@ https://svelte.dev/e/expected_token -->
       </div>
 
       <div class="header-actions">
-        <button class="action-btn save-btn" onclick={handleSave} disabled={!isModified}>
+        <button class="action-btn save-btn" on:click={handleSave} disabled={!isModified}>
           <Save size={16} />
           Save
         </button>
-        <button class="action-btn" onclick={handleDownload}>
+        <button class="action-btn" on:click={handleDownload}>
           <Download size={16} />
           Download
         </button>
-        <button class="action-btn" onclick={handleShare}>
+        <button class="action-btn" on:click={handleShare}>
           <Share2 size={16} />
           Share
         </button>
@@ -142,7 +142,7 @@ https://svelte.dev/e/expected_token -->
 
   <!-- Editor Container -->
   <div class="editor-container">
-    <NesCard class="editor-nier-bits-card">
+    <div class="editor-nier-bits-card nes-container">
       <div class="yorha-panel-content editor-content">
         <NierRichTextEditor
           bind:value={editorValue}
@@ -152,7 +152,7 @@ https://svelte.dev/e/expected_token -->
           autosave={false}
         />
       </div>
-    </NesCard>
+    </div>
   </div>
 </div>
 

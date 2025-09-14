@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { logger } from "$lib/server/logger";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { apiSuccess, apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
 
 // Mock Ollama service for now - replace with actual service when available
@@ -15,7 +15,7 @@ const ollamaService = {
       return false;
     }
   },
-  async listModels(): Promise<Array<{ name: string }>> {
+  async listModels(): Promise<Array<any> {
     try {
       const response = await fetch('http://localhost:11434/api/tags');
       if (response.ok) {

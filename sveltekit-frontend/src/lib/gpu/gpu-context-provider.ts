@@ -4,9 +4,9 @@
  * Implements proper type narrowing for shader loading and resource management
  */
 
-import type { HybridGPUContext } from './hybrid-gpu-context.js';
-import { GPU_CONFIG, CLIENT_ENV } from '../config/env.js';
-import type { GPUBackend, BackendCapabilities, MemoryUsageTracker, TrackedBuffer } from './types.js';
+import type { HybridGPUContext } from './hybrid-gpu-context.js.js';
+import { GPU_CONFIG, CLIENT_ENV } from '../config/env.js.js';
+import type { GPUBackend, BackendCapabilities, MemoryUsageTracker, TrackedBuffer } from './types.js.js';
 
 export type GPUBackendType = GPUBackend;
 
@@ -122,7 +122,7 @@ export class GPUContextProvider {
   }
 
   /** Force switch backend best-effort (does not guarantee chosen backend if unsupported). */
-  async forceBackend(preferred: GPUBackendType): Promise<{ success: boolean; active: GPUBackendType }> {
+  async forceBackend(preferred: GPUBackendType): Promise<any> {
     const ok = await this.reinitialize({ preferredBackend: preferred, requireCompute: false, debug: false });
     return { success: ok, active: this.getActiveBackend() };
   }

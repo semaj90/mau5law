@@ -7,7 +7,7 @@
  */
 
 import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
-import { langChainOllamaService } from './langchain-ollama-service.js';
+import { langChainOllamaService } from './langchain-ollama-service.js.js';
 import { webgpuLangChainBridge } from '$lib/server/webgpu-langchain-bridge.js';
 
 export interface TextTileConfig {
@@ -141,7 +141,7 @@ export class SIMDTextTilingEngine {
       });
 
       // Convert embeddings to Float32Array format for SIMD processing
-      const embeddings = result.embeddings.sectionEmbeddings || [result.embeddings.documentEmbedding];
+      const embeddings = (result as { embeddings?: any }).embeddings.sectionEmbeddings || [(result as { embeddings?: any }).embeddings.documentEmbedding];
       
       return embeddings.map(embedding => 
         embedding instanceof Float32Array ? embedding : new Float32Array(embedding)
@@ -156,7 +156,7 @@ export class SIMDTextTilingEngine {
         chunks.map(async chunk => {
           try {
             const result = await langChainOllamaService.processDocument(chunk);
-            return new Float32Array(result.embeddings[0] || new Array(this.config.vectorDimensions).fill(0.1));
+            return new Float32Array((result as { embeddings?: any }).embeddings[0] || new Array(this.config.vectorDimensions).fill(0.1));
           } catch {
             return new Float32Array(new Array(this.config.vectorDimensions).fill(Math.random() * 0.1));
           }
@@ -201,11 +201,11 @@ export class SIMDTextTilingEngine {
       console.log(`🧮 SIMD tiling applied: ${combinedEmbeddings.length} → ${tilingResult.chunks.length} chunks (${tilingResult.tensorCompressionRatio.toFixed(1)}:1)`);
       
       // Extract compressed data from chunks
-      const compressedData = new Float32Array(tilingResult.chunks.reduce((acc, chunk) => acc + chunk.data.length, 0));
+      const compressedData = new Float32Array(tilingResult.chunks.reduce((acc, chunk) => acc + chunk.(data as { type?: any; length?: any; semanticDensity?: any; tokenCount?: any; categories?: any; patternId?: any }).length, 0));
       let compressedOffset = 0;
       for (const chunk of tilingResult.chunks) {
         compressedData.set(chunk.data, compressedOffset);
-        compressedOffset += chunk.data.length;
+        compressedOffset += chunk.(data as { type?: any; length?: any; semanticDensity?: any; tokenCount?: any; categories?: any; patternId?: any }).length;
       }
       
       return compressedData;
@@ -337,12 +337,7 @@ export class SIMDTextTilingEngine {
   private async generateUIComponents(
     tiles: CompressedTextTile[],
     metadata: any
-  ): Promise<{
-    instantRender: boolean;
-    componentData: ArrayBuffer;
-    renderingInstructions: string;
-    cssOptimized: string;
-  }> {
+  ): Promise<any> {
     const componentMap = new Map<string, any>();
     
     // Generate component data from tiles
@@ -390,7 +385,7 @@ export class SIMDTextTilingEngine {
   
   private calculateSemanticValue(data: Float32Array): number {
     const sum = Array.from(data).reduce((a, b) => a + Math.abs(b), 0);
-    return Math.floor((sum / data.length) * 16383) % 16383; // 14-bit value
+    return Math.floor((sum / (data as { type?: any; length?: any; semanticDensity?: any; tokenCount?: any; categories?: any; patternId?: any }).length) * 16383) % 16383; // 14-bit value
   }
   
   private encodeFrequency(text: string): number {
@@ -412,7 +407,7 @@ export class SIMDTextTilingEngine {
   }
   
   private identifyPattern(data: Float32Array): string {
-    const mean = Array.from(data).reduce((a, b) => a + b, 0) / data.length;
+    const mean = Array.from(data).reduce((a, b) => a + b, 0) / (data as { type?: any; length?: any; semanticDensity?: any; tokenCount?: any; categories?: any; patternId?: any }).length;
     if (mean > 0.5) return 'high-semantic';
     if (mean < -0.5) return 'low-semantic';
     return 'neutral';
@@ -506,7 +501,7 @@ export class SIMDTextTilingEngine {
    * Batch process multiple texts for UI component generation
    */
   async processBatchTexts(
-    texts: Array<{ text: string; metadata?: any }>,
+    texts: Array<,
     options: Partial<TextTileConfig> = {}
   ): Promise<TextEmbeddingResult[]> {
     const config = { ...this.config, ...options };

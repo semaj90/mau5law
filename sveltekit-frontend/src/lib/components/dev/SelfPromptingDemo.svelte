@@ -15,14 +15,7 @@
   // Agent orchestration state
   const activeAgents = writable<Set<string>>(new Set());
   const agentResults = writable<AgentResult[]>([]);
-  const orchestrationLog = writable<Array<{
-    timestamp: string;
-    phase: string;
-    agent?: string;
-    prompt: string;
-    result?: unknown;
-    selfPrompt?: string;
-  }>>([]);
+  const orchestrationLog = writable<Array>([]);
   const isRunning = writable(false);
   const currentPhase = writable<string>('idle');
 
@@ -81,13 +74,7 @@
   ];
 
   // Agent communication visualization
-  const agentCommunications = writable<Array<{
-    from: string;
-    to: string;
-    message: string;
-    timestamp: string;
-    type: 'prompt' | 'result' | 'self-prompt';
-  }>>([]);
+  const agentCommunications = writable<Array>([]);
 
   // Real-time agent status
   const agentStatus = writable<Record<string, {
@@ -419,7 +406,7 @@
       agent,
       prompt,
       result,
-      selfPrompt: result.selfPrompt
+      selfPrompt: (result as { selfPrompt?: any; agent?: any; result?: any }).selfPrompt
     }]);
   }
 
@@ -571,7 +558,7 @@
 
       <div class="flex gap-3 mt-6">
         <button
-          onclick={executeWorkflow}
+          on:click={executeWorkflow}
           disabled={$isRunning}
           class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -587,7 +574,7 @@
 
         {#if $isRunning}
           <button
-            onclick={stopWorkflow}
+            on:click={stopWorkflow}
             class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
           >
             Stop
@@ -595,7 +582,7 @@
         {/if}
 
         <button
-          onclick={clearLogs}
+          on:click={clearLogs}
           disabled={$isRunning}
           class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
         >
@@ -633,7 +620,7 @@
 
       <div class="mt-4 pt-4 border-t border-gray-200">
         <button
-          onclick={demonstrateContext7Integration}
+          on:click={demonstrateContext7Integration}
           disabled={$isRunning}
           class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:opacity-50"
         >
@@ -721,9 +708,9 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each $agentResults as result}
           <div class="border border-gray-200 rounded-lg p-4">
-            <h4 class="font-medium text-gray-900 mb-2">{result.agent}</h4>
+            <h4 class="font-medium text-gray-900 mb-2">{(result as { selfPrompt?: any; agent?: any; result?: any }).agent}</h4>
             <div class="text-sm text-gray-600 mb-2">
-              {typeof result.result === 'string' ? result.result : JSON.stringify(result.result).substring(0, 100) + '...'}
+              {typeof (result as { selfPrompt?: any; agent?: any; result?: any }).result === 'string' ? (result as { selfPrompt?: any; agent?: any; result?: any }).result : JSON.stringify((result as { selfPrompt?: any; agent?: any; result?: any }).result).substring(0, 100) + '...'}
             </div>
             <div class="flex items-center justify-between text-xs">
               <span class="text-green-600">Completed</span>

@@ -33,8 +33,7 @@
     actionsSnippet?: (row: TableRow, index: number) => any;
   }
 
-  let {
-    columns,
+  let { columns,
     data = [],
     loading = false,
     selectable = false,
@@ -50,9 +49,25 @@
     glitchEffect = false,
     theme = 'dark',
     actionsSnippet
-  } = $props();
+   }: { columns,
+    data = [],
+    loading = false,
+    selectable = false,
+    sortable = true,
+    pagination = false,
+    pageSize = 10,
+    totalItems = 0,
+    className = '',
+    dense = false,
+    hover = true,
+    striped = true,
+    bordered = true,
+    glitchEffect = false,
+    theme = 'dark',
+    actionsSnippet
+  : any } = $props();
 
-  let selectedRows = $state<Set<string | number>>(new Set());
+  let selectedRows = $state<Set<string | number>(0)>(new Set());
   let sortColumn = $state<string | null>(null);
   let sortDirection = $state<'asc' | 'desc'>('asc');
   let currentPage = $state(1);
@@ -177,7 +192,7 @@
         <span class="yorha-selection-count">
           {selectedRows.size} SELECTED
         </span>
-        <button class="yorha-action-btn" onclick={() => selectedRows.clear()}>
+        <button class="yorha-action-btn" on:click={() => selectedRows.clear()}>
           CLEAR SELECTION
         </button>
       </div>
@@ -196,7 +211,7 @@
                 class="yorha-checkbox"
                 checked={selectedRows.size === paginatedData.length && paginatedData.length > 0}
                 indeterminate={selectedRows.size > 0 && selectedRows.size < paginatedData.length}
-                onchange={toggleAllSelection}
+                on:change={toggleAllSelection}
               />
             </th>
           {/if}
@@ -208,7 +223,7 @@
               class:yorha-sorted-asc={sortColumn === column.key && sortDirection === 'asc'}
               class:yorha-sorted-desc={sortColumn === column.key && sortDirection === 'desc'}
               style:width={column.width}
-              onclick={() => handleSort(column)}
+              on:click={() => handleSort(column)}
             >
               <div class="yorha-header-content">
                 <span class="yorha-header-text">{column.title}</span>
@@ -260,7 +275,7 @@
                     type="checkbox"
                     class="yorha-checkbox"
                     checked={selectedRows.has(row.id)}
-                    onchange={() => toggleRowSelection(row.id)}
+                    on:change={() => toggleRowSelection(row.id)}
                   />
                 </td>
               {/if}
@@ -306,14 +321,14 @@
         <button 
           class="yorha-pagination-btn"
           disabled={currentPage === 1}
-          onclick={() => currentPage = 1}
+          on:click={() => currentPage = 1}
         >
           ⟨⟨
         </button>
         <button 
           class="yorha-pagination-btn"
           disabled={currentPage === 1}
-          onclick={() => currentPage--}
+          on:click={() => currentPage--}
         >
           ⟨
         </button>
@@ -325,14 +340,14 @@
         <button 
           class="yorha-pagination-btn"
           disabled={currentPage === totalPages}
-          onclick={() => currentPage++}
+          on:click={() => currentPage++}
         >
           ⟩
         </button>
         <button 
           class="yorha-pagination-btn"
           disabled={currentPage === totalPages}
-          onclick={() => currentPage = totalPages}
+          on:click={() => currentPage = totalPages}
         >
           ⟩⟩
         </button>

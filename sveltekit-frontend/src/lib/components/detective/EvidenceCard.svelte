@@ -1,10 +1,29 @@
 <!-- EvidenceCard.svelte - Fixed for Svelte 5 -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  // Badge replaced with span - not available in enhanced-bits
-  import Button from "$lib/components/ui/button/Button.svelte";
-  import { Card, CardContent, CardHeader } from '$lib/components/ui/enhanced-bits';
-  import type { Evidence } from "$lib/types/index";
+  import Button from "$lib/components/ui/Button.svelte";
+  import * as Card from '$lib/components/ui/card';
+
+  // Define Evidence interface locally
+  interface Evidence {
+    id: string;
+    title: string;
+    fileName?: string;
+    fileSize?: number;
+    createdAt?: string | Date;
+    tags?: string[];
+    evidenceType?: string;
+    type?: string;
+    thumbnailUrl?: string;
+    aiSummary?: string;
+    analysis?: {
+      aiSummary?: string;
+    };
+    timeline?: {
+      createdAt?: string | Date;
+    };
+    hash?: string;
+  }
 
   // --- SVELTE 5 PROPS ---
   // The new way to define props using runes with callback functions
@@ -68,30 +87,30 @@
   }
 </script>
 
-<Card
+<Card.Root
   class="nes-container is-rounded group hover:shadow-md transition-shadow duration-200 cursor-pointer"
   role="article"
-  aria-label={item.title}
+  aria-label={(item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).title}
 >
   <div class="yorha-panel-header pb-3">
     <div class="flex items-start justify-between">
       <div class="flex items-center gap-3">
         <div
           class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center {getTypeColor(
-            item.evidenceType || item.type || 'document'
+            (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).evidenceType || (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).type || 'document'
           )}"
         >
           <i
-            class="{getEvidenceIcon(item.evidenceType || item.type || 'document')} w-5 h-5"
+            class="{getEvidenceIcon((item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).evidenceType || (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).type || 'document')} w-5 h-5"
             aria-hidden="true"
           ></i>
         </div>
         <div class="min-w-0 flex-1">
           <h3 class="font-semibold text-sm text-foreground truncate">
-            {item.title}
+            {(item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).title}
           </h3>
           <p class="text-xs nes-text is-disabled truncate">
-            {item.fileName || "No filename"}
+            {(item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).fileName || "No filename"}
           </p>
         </div>
       </div>
@@ -105,7 +124,7 @@
           size="sm"
           class="h-8 w-8 p-0 bits-btn bits-btn"
           aria-label="View Evidence"
-          onclick={() => onView?.(item)}
+          on:click={() => onView?.(item)}
         >
           <i class="i-lucide-eye w-4 h-4" aria-hidden="true"></i>
         </Button>
@@ -114,7 +133,7 @@
           size="sm"
           class="h-8 w-8 p-0 bits-btn bits-btn"
           aria-label="More Options"
-          onclick={() => onMoreOptions?.(item)}
+          on:click={() => onMoreOptions?.(item)}
         >
           <i class="i-lucide-more-horizontal w-4 h-4" aria-hidden="true"></i>
         </Button>
@@ -124,10 +143,10 @@
 
   <div class="yorha-panel-content space-y-3">
     <!-- Preview/Thumbnail -->
-    {#if item.thumbnailUrl}
+    {#if (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).thumbnailUrl}
       <div class="aspect-video bg-muted rounded-md overflow-hidden">
         <img
-          src={item.thumbnailUrl}
+          src={(item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).thumbnailUrl}
           alt="Evidence preview"
           class="w-full h-full object-cover"
           loading="lazy"
@@ -140,26 +159,26 @@
         <div class="text-center">
           <i
             class="{getEvidenceIcon(
-              item.evidenceType || item.type || 'document'
+              (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).evidenceType || (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).type || 'document'
             )} w-8 h-8 mx-auto mb-2 text-muted-foreground"
             aria-hidden="true"
           ></i>
           <p class="text-xs nes-text is-disabled capitalize">
-            {item.evidenceType || item.type || 'document'}
+            {(item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).evidenceType || (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).type || 'document'}
           </p>
         </div>
       </div>
     {/if}
 
     <!-- AI Summary Preview -->
-    {#if item.aiSummary || item.analysis?.aiSummary}
+    {#if (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).aiSummary || (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).analysis?.aiSummary}
       <div class="bg-muted/50 rounded-md p-3 space-y-2">
         <div class="flex items-center gap-2">
           <i class="i-lucide-brain w-4 h-4 text-primary" aria-hidden="true"></i>
           <span class="text-xs font-medium text-primary">AI Summary</span>
         </div>
         <p class="text-xs nes-text is-disabled line-clamp-2">
-          {item.aiSummary || item.analysis?.aiSummary}
+          {(item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).aiSummary || (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).analysis?.aiSummary}
         </p>
       </div>
     {/if}
@@ -167,13 +186,13 @@
     <!-- Metadata -->
     <div class="space-y-3">
       <!-- Tags -->
-      {#if item.tags && item.tags.length > 0}
+      {#if (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).tags && (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).tags.length > 0}
         <div class="flex flex-wrap gap-1">
-          {#each item.tags.slice(0, 3) as tag}
+          {#each (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).tags.slice(0, 3) as tag}
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
           {/each}
-          {#if item.tags.length > 3}
-            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{item.tags.length - 3}</span>
+          {#if (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).tags.length > 3}
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{(item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).tags.length - 3}</span>
           {/if}
         </div>
       {/if}
@@ -182,12 +201,12 @@
       <div
         class="flex items-center justify-between text-xs nes-text is-disabled"
       >
-        <span>{formatFileSize(item.fileSize || 0)}</span>
-        <span>{formatDate(item.createdAt || item.timeline?.createdAt || new Date())}</span>
+        <span>{formatFileSize((item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).fileSize || 0)}</span>
+        <span>{formatDate((item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).createdAt || (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).timeline?.createdAt || new Date())}</span>
       </div>
 
       <!-- Hash Verification -->
-      {#if item.hash}
+      {#if (item as { title?: any; evidenceType?: any; type?: any; fileName?: any; thumbnailUrl?: any; aiSummary?: any; analysis?: any; tags?: any; fileSize?: any; createdAt?: any; timeline?: any; hash?: any }).hash}
         <div class="flex items-center gap-2">
           <i
             class="i-lucide-shield-check w-4 h-4 text-green-600"
@@ -198,7 +217,7 @@
       {/if}
     </div>
   </div>
-</Card>
+</Card.Root>
 
 <style>
   /* @unocss-include */

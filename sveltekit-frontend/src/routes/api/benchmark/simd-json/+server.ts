@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { 
   benchmarkJSONParsing,
   getSIMDStatus,
@@ -201,8 +201,8 @@ export const GET: RequestHandler = async ({ url }) => {
         
         for (const testScenario of scenarios) {
           const response = await fetch(`/api/benchmark/simd-json?scenario=${testScenario}&iterations=${Math.min(iterations, 500)}`);
-          const result = await response.json();
-          comparisonResults[testScenario] = result.data;
+          const result = await (response as { json?: any }).json();
+          comparisonResults[testScenario] = (result as { data?: any; speedup?: any }).data;
         }
         
         return json({
@@ -213,7 +213,7 @@ export const GET: RequestHandler = async ({ url }) => {
             summary: {
               totalTests: scenarios.length,
               avgSpeedup: Object.values(comparisonResults).reduce((sum: number, result: any) => 
-                sum + (result.speedup || 1), 0) / scenarios.length,
+                sum + ((result as { data?: any; speedup?: any }).speedup || 1), 0) / scenarios.length,
               totalTestTime: performance.now() - startTime
             }
           }

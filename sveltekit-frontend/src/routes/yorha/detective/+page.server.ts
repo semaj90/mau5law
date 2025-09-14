@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 // Import canonical DB exports (central index)
 import { db, helpers } from '$lib/server/db';
 import { cases, evidence } from '$lib/server/db';

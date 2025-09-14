@@ -47,7 +47,7 @@ function createFormStore(options: FormOptions = {}) {
   const initialState: FormState = {
     fields: initialFields,
     values: initialValues,
-    errors: {},
+    errors: Record<string, any>,
     isSubmitting: false,
     isValid: true,
     isDirty: false,

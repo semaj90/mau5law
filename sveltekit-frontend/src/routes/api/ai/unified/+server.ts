@@ -23,7 +23,7 @@
 
 import { json } from '@sveltejs/kit';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {

@@ -11,7 +11,7 @@
   	import { avatarStore } from "../stores/avatarStore";
   	import Avatar from './Avatar.svelte';
   let dropdownOpen = $state(false);
-  let dropdownElement = $state<HTMLElement>();
+  let dropdownElement: HTMLElement = $state(undefined as any);
   	onMount(() => {
   		// Close dropdown when clicking outside
   		function handleClickOutside(event: MouseEvent) {
@@ -38,7 +38,7 @@
 <div class="user-dropdown" bind:this={dropdownElement}>
 	<button 
 		class="user-trigger"
-		onclick={() => toggleDropdown()}
+		on:click={() => toggleDropdown()}
 		aria-expanded={dropdownOpen}
 		aria-haspopup="true"
 	>
@@ -104,7 +104,7 @@
 					My Cases
 				</a>
 				
-				<button type="button" class="dropdown-item logout" onclick={() => handleLogout()}>
+				<button type="button" class="dropdown-item logout" on:click={() => handleLogout()}>
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M6 15H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3M13 11l3-3-3-3M8 8h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 					</svg>
@@ -236,10 +236,10 @@
 		background: var(--bg-secondary, #f3f4f6);
 		color: var(--text-primary, #111827);
 }
-	.dropdown-item.logout {
+	.dropdown-(item as { logout?: any }).logout {
 		color: #dc2626;
 }
-	.dropdown-item.logout:hover {
+	.dropdown-(item as { logout?: any }).logout:hover {
 		background: #fef2f2;
 		color: #b91c1c;
 }

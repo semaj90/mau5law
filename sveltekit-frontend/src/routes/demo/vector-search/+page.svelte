@@ -91,12 +91,12 @@
         }),
       });
 
-      if (!response.ok) {
+      if (!(response as { ok?: any; json?: any }).ok) {
         throw new Error('Search failed');
       }
 
-      const data = await response.json();
-      results = data.results || [];
+      const data = await (response as { ok?: any; json?: any }).json();
+      results = (data as { results?: any }).results || [];
 
       // Track successful search for feedback
       if (searchInteractionId && vectorSearchFeedback) {
@@ -146,12 +146,12 @@
   </div>
 
   <!-- Search Configuration -->
-  <NesCard class="mb-8">
+  <div class="mb-8 nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Search Configuration</h3>
       <p class="nes-text">Configure your semantic search parameters</p>
     </div>
-    <div class="yorha-panel-content" class="space-y-6">
+    <div class="yorha-panel-content space-y-6">
       <!-- Search Query -->
       <div class="space-y-2">
         <Label for="query">Search Query</Label>
@@ -162,15 +162,15 @@
             placeholder="Enter your legal search query..."
             class="flex-1"
             keydown={(e) => e.key === 'Enter' && performSearch()} />
-          <Button class="bits-btn" onclick={performSearch} disabled={searching || !query.trim()}>
-            {#if searching}
+          <Button class="bits-btn" on:click={performSearch} disabled={searching || !query.trim()}>
+{#if searching}
               <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               Searching...
             {:else}
               <Search class="mr-2 h-4 w-4" />
               Search
             {/if}
-          </button>
+
         </div>
       </div>
 
@@ -250,15 +250,15 @@
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Search Results -->
   {#if error}
-    <NesCard class="border-destructive">
-      <div class="yorha-panel-content" class="pt-6">
+    <div class="border-destructive nes-container">
+      <div class="yorha-panel-content pt-6">
         <p class="text-destructive">{error}</p>
       </div>
-    </NesCard>
+    </div>
   {:else if results.length > 0}
     <div class="space-y-4">
       <h2 class="text-2xl font-semibold flex items-center gap-2">
@@ -267,27 +267,27 @@
       </h2>
 
       {#each results as result, index}
-        <NesCard class="hover:shadow-lg transition-shadow">
+        <div class="hover:shadow-lg transition-shadow nes-container">
           <div class="yorha-panel-header">
             <div class="flex items-start justify-between">
               <div class="flex-1">
-                <h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
+                <h3 class="nes-text is-primary text-lg flex items-center gap-2">
                   {@const Icon = typeIcons[documentType]}
                   <Icon class="h-5 w-5" />
                   Result #{index + 1}
                 </h3>
-                <p class="nes-text" class="mt-1">
-                  {result.metadata?.filename || result.metadata?.title || 'Untitled'}
+                <p class="nes-text mt-1">
+                  {(result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).metadata?.filename || (result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).metadata?.title || 'Untitled'}
                 </p>
               </div>
-              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{formatScore(result.score)}</span>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{formatScore((result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).score)}</span>
             </div>
           </div>
-          <div class="yorha-panel-content" class="space-y-4">
+          <div class="yorha-panel-content space-y-4">
             <!-- Content Preview -->
             <div class="bg-muted p-4 rounded-lg">
               <p class="text-sm line-clamp-3">
-                {result.content}
+                {(result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).content}
               </p>
             </div>
 
@@ -299,7 +299,7 @@
               </div>
               <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
                 <TooltipProvider>
-                  {#each Object.entries(result.rankingFactors) as [factor, value]}
+                  {#each Object.entries((result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).rankingFactors) as [factor, value]}
                     <Tooltip>
                       <TooltipTrigger>
                         <div class="text-center p-2 bg-muted rounded">
@@ -333,19 +333,19 @@
             </div>
 
             <!-- Explanation -->
-            {#if result.explanation}
+            {#if (result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).explanation}
               <div class="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
                 <p class="text-sm text-blue-800 dark:text-blue-200">
                   <strong>Why this result:</strong>
-                  {result.explanation}
+                  {(result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).explanation}
                 </p>
               </div>
             {/if}
 
             <!-- Metadata -->
-            {#if result.metadata && Object.keys(result.metadata).length > 0}
+            {#if (result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).metadata && Object.keys((result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).metadata).length > 0}
               <div class="flex flex-wrap gap-2">
-                {#each Object.entries(result.metadata).slice(0, 5) as [key, value]}
+                {#each Object.entries((result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).metadata).slice(0, 5) as [key, value]}
                   {#if typeof value === 'string' || typeof value === 'number'}
                     <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{key}: {value}</span>
                   {/if}
@@ -353,27 +353,27 @@
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
       {/each}
     </div>
   {:else if searching}
-    <NesCard>
-      <div class="yorha-panel-content" class="py-12">
+    <div class="nes-container">
+      <div class="yorha-panel-content py-12">
         <div class="flex flex-col items-center justify-center space-y-4">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           <p class="nes-text is-disabled">Searching through vectors...</p>
         </div>
       </div>
-    </NesCard>
+    </div>
   {:else}
-    <NesCard>
-      <div class="yorha-panel-content" class="py-12 text-center">
+    <div class="nes-container">
+      <div class="yorha-panel-content py-12 text-center">
         <Search class="mx-auto h-12 w-12 nes-text is-disabled mb-4" />
         <p class="nes-text is-disabled">
           Enter a search query to find semantically similar documents
         </p>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

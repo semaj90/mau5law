@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // End-to-End Vector Pipeline Test
 // Tests: Document Upload → Embedding → Search → Results
@@ -61,9 +61,9 @@ class VectorPipelineTest {
     this.testResults = {
       timestamp: new Date().toISOString(),
       status: 'running',
-      steps: {},
+      steps: Record<string, any>,
       errors: [],
-      performance: {}
+      performance: Record<string, any>
     };
 
     try {

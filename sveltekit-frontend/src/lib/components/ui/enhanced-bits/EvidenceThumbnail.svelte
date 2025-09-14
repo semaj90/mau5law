@@ -24,7 +24,7 @@
 
   let isPlaying = $state(false);
   let isLoaded = $state(false);
-  let aiHighlights = $state<Array<{x: number, y: number, width: number, height: number, confidence: number}>>([]);
+  let aiHighlights = $state<any[]>([])([]);
 
   // Size configurations
   let sizeClasses = $derived({
@@ -90,7 +90,7 @@
   });
 </script>
 
-<div class={containerClasses} onclick={handleThumbnailClick} {...restProps}>
+<div class={containerClasses} on:click={handleThumbnailClick} {...restProps}>
   {#if evidence.thumbnailUrl}
     <!-- Image/Video Thumbnail -->
     <img

@@ -114,18 +114,18 @@ https://svelte.dev/e/js_parse_error -->
   				}
   			});
   			processingProgress.set(50);
-  			if (response.ok) {
-  				const result = await response.json();
-  				todos.set(result.data || []);
+  			if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+  				const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+  				todos.set((result as { data?: any; status?: any; value?: any }).data || []);
   				processingProgress.set(100);
   				// Update system status
   				systemStatus.update(status => ({
   					...status,
   					semantic_architecture: true
   				}));
-  				dispatch('todos-updated', { count: result.data?.length || 0 });
+  				dispatch('todos-updated', { count: (result as { data?: any; status?: any; value?: any }).data?.length || 0 });
   			} else {
-  				console.error('Failed to fetch todos:', response.statusText);
+  				console.error('Failed to fetch todos:', (response as { ok?: any; json?: any; statusText?: any }).statusText);
   			}
   		} catch (error) {
   			console.error('Error fetching intelligent todos:', error);
@@ -147,16 +147,16 @@ https://svelte.dev/e/js_parse_error -->
   				}
   			});
   			processingProgress.set(70);
-  			if (response.ok) {
-  				const result = await response.json();
-  				semanticAnalysis.set(result.data);
+  			if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+  				const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+  				semanticAnalysis.set((result as { data?: any; status?: any; value?: any }).data);
   				processingProgress.set(100);
   				dispatch('text-analyzed', { 
   					text, 
-  					analysis: result.data 
+  					analysis: (result as { data?: any; status?: any; value?: any }).data 
   				});
   			} else {
-  				console.error('Failed to analyze text:', response.statusText);
+  				console.error('Failed to analyze text:', (response as { ok?: any; json?: any; statusText?: any }).statusText);
   			}
   		} catch (error) {
   			console.error('Error analyzing text:', error);
@@ -170,9 +170,9 @@ https://svelte.dev/e/js_parse_error -->
   		if (!browser) return;
   		try {
   			const response = await fetch('/api/enhanced-semantic/cache-stats');
-  			if (response.ok) {
-  				const result = await response.json();
-  				cacheStats.set(result.data);
+  			if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+  				const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+  				cacheStats.set((result as { data?: any; status?: any; value?: any }).data);
   			}
   		} catch (error) {
   			console.error('Error fetching cache stats:', error);
@@ -193,15 +193,15 @@ https://svelte.dev/e/js_parse_error -->
   			services.map(async service => {
   				try {
   					const response = await fetch(service.url);
-  					return { [service.key]: response.ok };
+  					return { [service.key]: (response as { ok?: any; json?: any; statusText?: any }).ok };
   				} catch {
   					return { [service.key]: false };
   				}
   			})
   		);
   		const newStatus = statusChecks.reduce((acc, result) => {
-  			if (result.status === 'fulfilled') {
-  				return { ...acc, ...result.value };
+  			if ((result as { data?: any; status?: any; value?: any }).status === 'fulfilled') {
+  				return { ...acc, ...(result as { data?: any; status?: any; value?: any }).value };
   			}
   			return acc;
   		}, get(systemStatus));
@@ -298,8 +298,7 @@ https://svelte.dev/e/js_parse_error -->
   	// Real-time updates
   let updateInterval = $state<any;
   	function startRealTimeUpdates() {
-  		if (updateInterval) clearInterval(updateInterval);
-  		updateInterval >(setInterval(async () => {
+  		if (updateInterval) clearInterval(updateInterval)updateInterval | null>(null)(setInterval(async () => {
   			await Promise.all([
   				fetchCacheStats(),
   				checkSystemStatus()
@@ -374,7 +373,7 @@ https://svelte.dev/e/js_parse_error -->
 			<h2 class="text-xl font-semibold mb-4 text-blue-400">🤖 Intelligent Todo Generator</h2>
 			<div class="space-y-4">
 				<button 
-					onclick={() => fetchIntelligentTodos()}
+					on:click={() => fetchIntelligentTodos()}
 					disabled={$isProcessing}
 					class="nes-btn is-primary w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 px-4 py-2 rounded-lg font-medium transition-all"
 				>
@@ -425,7 +424,7 @@ https://svelte.dev/e/js_parse_error -->
 				</div>
 				
 				<button 
-					onclick={() => analyzeText(analysisText)}
+					on:click={() => analyzeText(analysisText)}
 					disabled={$isProcessing || !analysisText.trim()}
 					class="nes-btn w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 disabled:opacity-50 px-4 py-2 rounded-lg font-medium transition-all"
 				>
@@ -450,13 +449,13 @@ https://svelte.dev/e/js_parse_error -->
 
 						<div class="visualization-controls mt-3 flex space-x-2">
 							<button 
-								onclick={() => showSOMVisualization = !showSOMVisualization}
+								on:click={() => showSOMVisualization = !showSOMVisualization}
 								class="text-xs px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded transition-colors"
 							>
 								{showSOMVisualization ? 'Hide' : 'Show'} SOM
 							</button>
 							<button 
-								onclick={() => showPageRankGraph = !showPageRankGraph}
+								on:click={() => showPageRankGraph = !showPageRankGraph}
 								class="text-xs px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded transition-colors"
 							>
 								{showPageRankGraph ? 'Hide' : 'Show'} PageRank
@@ -568,7 +567,7 @@ https://svelte.dev/e/js_parse_error -->
 				</div>
 
 				<button 
-					onclick={checkSystemStatus}
+					on:click={checkSystemStatus}
 					class="btn-danger w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 px-4 py-2 rounded-lg font-medium transition-all text-sm"
 				>
 					Refresh Status
@@ -598,13 +597,13 @@ https://svelte.dev/e/js_parse_error -->
 					<label class="block text-sm font-medium mb-2">Real-time Updates</label>
 					<div class="flex space-x-2">
 						<button 
-							onclick={startRealTimeUpdates}
+							on:click={startRealTimeUpdates}
 							class="btn-sm bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-xs transition-colors"
 						>
 							Start
 						</button>
 						<button 
-							onclick={stopRealTimeUpdates}
+							on:click={stopRealTimeUpdates}
 							class="btn-sm bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs transition-colors"
 						>
 							Stop

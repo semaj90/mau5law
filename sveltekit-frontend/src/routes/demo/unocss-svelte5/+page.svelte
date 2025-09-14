@@ -21,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
 
   	const handleSubmit = async () => {
   		loading = true;
-  		await new Promise(resolve => setTimeout(resolve, 2000);
+  		await new Promise(resolve => setTimeout(resolve, 2000));
   		message = `Hello ${name}! UnoCSS + Svelte 5 integration successful! 🎉`;
   		loading = false;
   	};
@@ -46,20 +46,26 @@ https://svelte.dev/e/js_parse_error -->
 		<!-- Feature Grid -->
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 			<!-- Enhanced Button Showcase -->
-			<NesCard elevated class="p-6 space-y-4">
+			<div elevated class="p-6 space-y-4 nes-container">
 				<h3 class="text-xl font-semibold">Enhanced Buttons</h3>
 				<div class="space-y-3">
-					<Button class="bits-btn" variant="nier">NieR Style</button>
+					<Button class="bits-btn" variant="nier">
+NieR Style
+
 					<Button class="bits-btn" variant="default" {loading}>
-						{loading ? 'Processing...' : 'Default Style'}
-					</button>
-					<Button class="bits-btn" variant="outline" size="sm">Small Outline</button>
-					<Button class="bits-btn" variant="destructive" size="lg">Large Destructive</button>
+{loading ? 'Processing...' : 'Default Style'}
+
+					<Button class="bits-btn" variant="outline" size="sm">
+Small Outline
+
+					<Button class="bits-btn" variant="destructive" size="lg">
+Large Destructive
+
 				</div>
-			</NesCard>
+			</div>
 
 			<!-- Enhanced Inputs -->
-			<NesCard class="p-6 space-y-4">
+			<div class="p-6 space-y-4 nes-container">
 				<h3 class="text-xl font-semibold">Enhanced Inputs</h3>
 				<Input
 					bind:value={name}
@@ -75,10 +81,10 @@ https://svelte.dev/e/js_parse_error -->
 					icon="mail"
 					placeholder="your@email.com"
 				/>
-			</NesCard>
+			</div>
 
 			<!-- UnoCSS Utilities -->
-			<NesCard interactive class="p-6 space-y-4 hover:scale-105 transition-transform">
+			<div interactive class="p-6 space-y-4 hover:scale-105 transition-transform nes-container">
 				<h3 class="text-xl font-semibold">UnoCSS Magic</h3>
 				<div class="space-y-2">
 					<div class="h-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded"></div>
@@ -91,22 +97,22 @@ https://svelte.dev/e/js_parse_error -->
 						<span class="text-sm">Tabler Icons</span>
 					</div>
 				</div>
-			</NesCard>
+			</div>
 
 			<!-- NieR Theme Components -->
-			<NesCard class="{nierClasses.nier-bits-card} p-6 space-y-4">
+			<div class="{nierClasses.nier-bits-card} p-6 space-y-4 nes-container">
 				<h3 class="text-xl font-semibold">NieR Theme Components</h3>
 				<div class="yorha-evidence-item p-4 text-sm">
 					Evidence Item Style
 				</div>
 				<div class="ai-status-indicator bg-ai-status-online"></div>
 				<p class="text-nier-text-secondary">Themed with NieR colors</p>
-			</NesCard>
+			</div>
 
 			<!-- Interactive Demo -->
-			<NesCard class="p-6 space-y-4 col-span-full lg:col-span-2">
+			<div class="p-6 space-y-4 col-span-full lg:col-span-2 nes-container">
 				<h3 class="text-xl font-semibold">Interactive Demo</h3>
-				<form submit={preventDefault(handleSubmit)} class="space-y-4">
+				<form on:submit={preventDefault(handleSubmit)} class="space-y-4">
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<Input
 							bind:value={name}
@@ -128,8 +134,8 @@ https://svelte.dev/e/js_parse_error -->
 						{loading}
 						disabled={!name || !email}
 					>
-						{loading ? 'Processing...' : 'Test Integration'}
-					</button>
+{loading ? 'Processing...' : 'Test Integration'}
+
 				</form>
 				
 				{#if message}
@@ -137,11 +143,11 @@ https://svelte.dev/e/js_parse_error -->
 						<p class="text-green-800">{message}</p>
 					</div>
 				{/if}
-			</NesCard>
+			</div>
 		</div>
 
 		<!-- Performance Stats -->
-		<NesCard class="p-6">
+		<div class="p-6 nes-container">
 			<h3 class="text-xl font-semibold mb-4">🎯 Performance Benefits</h3>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 				<div class="text-center space-y-2">
@@ -157,10 +163,10 @@ https://svelte.dev/e/js_parse_error -->
 					<p class="text-sm nes-text is-disabled">Svelte 5 runes compatibility</p>
 				</div>
 			</div>
-		</NesCard>
+		</div>
 
 		<!-- Technical Details -->
-		<NesCard class="p-6">
+		<div class="p-6 nes-container">
 			<h3 class="text-xl font-semibold mb-4">🔧 Technical Implementation</h3>
 			<div class="prose prose-sm max-w-none">
 				<ul class="space-y-2 text-sm nes-text is-disabled">
@@ -173,7 +179,7 @@ https://svelte.dev/e/js_parse_error -->
 					<li>✅ <strong>Legal AI ready</strong> with evidence management components</li>
 				</ul>
 			</div>
-		</NesCard>
+		</div>
 	</div>
 </div>
 

@@ -47,7 +47,8 @@
         <Button
           variant="ghost"
           size="sm"
-          on:click={() => isOpen = false}
+          on:click={() =>
+isOpen = false}
           aria-label="Close accessibility settings"
           class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
@@ -82,7 +83,7 @@
                     aria-pressed={config.fontSize === size}
                   >
                     {size.charAt(0).toUpperCase() + size.slice(1).replace('-', ' ')}
-                  </button>
+</Button>
                 {/each}
               </div>
             </div>
@@ -105,7 +106,7 @@
                   class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
                     {config.enableHighContrast ? 'translate-x-6' : 'translate-x-1'}"
                 ></span>
-              </button>
+</Button>
             </div>
 
             <!-- Reduced Motion -->

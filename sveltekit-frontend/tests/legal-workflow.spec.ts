@@ -467,7 +467,7 @@ test.describe('Development Utilities', () => {
       links.map(link => ({
         href: link.getAttribute('href'),
         text: link.textContent?.trim(),
-        visible: link.offsetParent !== null
+        visible: (link as HTMLElement).offsetParent !== null
       }))
     );
     

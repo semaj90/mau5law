@@ -294,14 +294,7 @@ export class GpuVectorProcessor {
     similarityThreshold: number;
     topK: number;
     useAdaptiveQuantization: boolean;
-  }): Promise<{
-    processedVectors: Float32Array[];
-    processingTime: number;
-    memoryUsed: number;
-    quantizationApplied: string;
-    gpuUtilization: number;
-    cacheHitRate: number;
-  }> {
+  }): Promise<any> {
     const start = performance.now();
     const processedVectors = await this.processBatch(params.inputVectors);
     const processingTime = performance.now() - start;

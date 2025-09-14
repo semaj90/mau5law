@@ -36,17 +36,17 @@ https://svelte.dev/e/expected_token -->
 
   // Svelte 5 runes for hybrid analysis state
   let selectedDocument = $state<any>(null);
-  let selectedAnalysisTypes = $state<Set<string>>(new Set(['semantic_similarity', 'entity_extraction']));
+  let selectedAnalysisTypes = $state<Set<string>('')>(new Set(['semantic_similarity', 'entity_extraction']));
   let analysisResults = $state<any>(null);
   let isAnalyzing = $state(false);
   let comparisonMode = $state(false);
-  let selectedDocuments = $state<Set<string>>(new Set());
+  let selectedDocuments = $state<Set<string>('')>(new Set());
   let visualizationMode = $state<'graph' | 'timeline' | 'heatmap'>('graph');
   let currentTab = $state<'analysis' | 'comparison' | 'batch' | 'visualization'>('analysis');
 
   // Derived state for analysis capabilities
   let availableAnalyses = $derived(
-    Object.entries(data.analysisCapabilities).map(([key, capability]) => ({
+    Object.entries((data as { analysisCapabilities?: any; sampleDocuments?: any; recentAnalyses?: any }).analysisCapabilities).map(([key, capability]) => ({
       id: key,
       ...capability
     }))
@@ -85,9 +85,9 @@ https://svelte.dev/e/expected_token -->
         body: formData
       });
 
-      const result = await response.json();
-      if (result.success) {
-        analysisResults = result.results;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).success) {
+        analysisResults = (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).results;
       }
     } catch (error) {
       console.error('Analysis failed:', error);
@@ -194,7 +194,7 @@ https://svelte.dev/e/expected_token -->
         { id: 'visualization', label: 'Data Visualization', icon: Eye }
       ] as tab}
         <button
-          onclick={() => currentTab = tab.id}
+          on:click={() => currentTab = tab.id}
           class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {currentTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
@@ -210,20 +210,20 @@ https://svelte.dev/e/expected_token -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Document Selection -->
       <OrchestratedCard.CaseFile>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <FileText class="w-5 h-5" />
             Document Selection
-          </Card.Title>
-          <NesCard.Description>
+          </div.Title>
+          <div.Description class="nes-container">
             Choose a document for comprehensive multi-modal analysis
-          </Card.Description>
-        </Card.Header>
-        <NesCard.Content class="space-y-4">
+          </div.Description>
+        </div.Header>
+        <div.Content class="space-y-4 nes-container">
           <div class="grid gap-3 max-h-96 overflow-y-auto">
-            {#each data.sampleDocuments as document}
+            {#each (data as { analysisCapabilities?: any; sampleDocuments?: any; recentAnalyses?: any }).sampleDocuments as document}
               <button
-                onclick={() => selectedDocument = document}
+                on:click={() => selectedDocument = document}
                 class="p-4 border rounded-lg text-left transition-all hover:shadow-md
                        {selectedDocument?.id === document.id ? 'border-primary bg-primary/5' : 'hover:border-primary/50'}"
               >
@@ -250,21 +250,21 @@ https://svelte.dev/e/expected_token -->
               </button>
             {/each}
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.CaseFile>
 
       <!-- Analysis Configuration -->
       <OrchestratedCard.Analysis>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <Settings class="w-5 h-5" />
             Analysis Configuration
-          </Card.Title>
-          <NesCard.Description>
+          </div.Title>
+          <div.Description class="nes-container">
             Select analysis types and run multi-modal processing
-          </Card.Description>
-        </Card.Header>
-        <NesCard.Content class="space-y-6">
+          </div.Description>
+        </div.Header>
+        <div.Content class="space-y-6 nes-container">
           <!-- Available Analysis Types -->
           <div class="space-y-3">
             <h4 class="font-medium">Analysis Types</h4>
@@ -274,7 +274,7 @@ https://svelte.dev/e/expected_token -->
                   <input
                     type="checkbox"
                     checked={selectedAnalysisTypes.has(analysis.id)}
-                    onchange={() => toggleAnalysisType(analysis.id)}
+                    on:change={() => toggleAnalysisType(analysis.id)}
                     class="rounded border-gray-300"
                   />
                   <div class="flex-1">
@@ -295,7 +295,7 @@ https://svelte.dev/e/expected_token -->
           <!-- Analysis Controls -->
           <div class="border-t pt-4">
             <OrchestratedButton.AnalyzeEvidence
-              onclick={runHybridAnalysis}
+              on:click={runHybridAnalysis}
               disabled={!selectedDocument || selectedAnalysisTypes.size === 0 || isAnalyzing}
               class="w-full gap-2"
             >
@@ -327,23 +327,23 @@ https://svelte.dev/e/expected_token -->
               </div>
             {/if}
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.Analysis>
     </div>
 
     <!-- Analysis Results -->
     {#if analysisResults}
       <OrchestratedCard.AIInsight>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <BarChart3 class="w-5 h-5" />
             Analysis Results
-          </Card.Title>
-          <NesCard.Description>
+          </div.Title>
+          <div.Description class="nes-container">
             Multi-modal analysis completed with {formatConfidence(analysisResults.confidence)} confidence
-          </Card.Description>
-        </Card.Header>
-        <NesCard.Content class="space-y-6">
+          </div.Description>
+        </div.Header>
+        <div.Content class="space-y-6 nes-container">
           <!-- Overall Results Summary -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="text-center p-4 bg-muted/50 rounded-lg">
@@ -368,15 +368,15 @@ https://svelte.dev/e/expected_token -->
               <div class="border rounded-lg p-4">
                 <div class="flex items-center gap-2 mb-3">
                   <Badge class={getAnalysisTypeColor(analysisType)}>{analysisType.replace('_', ' ')}</Badge>
-                  {#if result.confidence}
-                    <Badge variant="outline">{formatConfidence(result.confidence)} confidence</Badge>
+                  {#if (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).confidence}
+                    <Badge variant="outline">{formatConfidence((result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).confidence)} confidence</Badge>
                   {/if}
                 </div>
 
-                {#if analysisType === 'semantic_similarity' && result.similarDocuments}
+                {#if analysisType === 'semantic_similarity' && (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).similarDocuments}
                   <div class="space-y-2">
                     <h5 class="font-medium">Similar Documents</h5>
-                    {#each result.similarDocuments as doc}
+                    {#each (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).similarDocuments as doc}
                       <div class="flex items-center justify-between p-2 bg-muted/30 rounded">
                         <span class="text-sm">{doc.title}</span>
                         <Badge variant="outline">{formatConfidence(doc.similarity)} similarity</Badge>
@@ -385,11 +385,11 @@ https://svelte.dev/e/expected_token -->
                   </div>
                 {/if}
 
-                {#if analysisType === 'entity_extraction' && result.entities}
+                {#if analysisType === 'entity_extraction' && (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).entities}
                   <div class="space-y-2">
-                    <h5 class="font-medium">Extracted Entities ({result.entityCount})</h5>
+                    <h5 class="font-medium">Extracted Entities ({(result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).entityCount})</h5>
                     <div class="flex flex-wrap gap-2">
-                      {#each result.entities as entity}
+                      {#each (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).entities as entity}
                         <Badge variant="secondary" class="gap-1">
                           {entity.text}
                           <span class="text-xs opacity-70">({entity.type})</span>
@@ -399,24 +399,24 @@ https://svelte.dev/e/expected_token -->
                   </div>
                 {/if}
 
-                {#if analysisType === 'risk_assessment' && result.riskScore !== undefined}
+                {#if analysisType === 'risk_assessment' && (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskScore !== undefined}
                   <div class="space-y-3">
                     <div class="flex items-center justify-between">
                       <span class="font-medium">Risk Assessment</span>
-                      <Badge class={getRiskLevelColor(result.riskLevel)}>
-                        {result.riskLevel} risk
+                      <Badge class={getRiskLevelColor((result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskLevel)}>
+                        {(result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskLevel} risk
                       </Badge>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        class="h-2 rounded-full {result.riskScore > 0.7 ? 'bg-red-500' : result.riskScore > 0.4 ? 'bg-yellow-500' : 'bg-green-500'}"
-                        style="width: {result.riskScore * 100}%"
+                        class="h-2 rounded-full {(result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskScore > 0.7 ? 'bg-red-500' : (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskScore > 0.4 ? 'bg-yellow-500' : 'bg-green-500'}"
+                        style="width: {(result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskScore * 100}%"
                       ></div>
                     </div>
-                    {#if result.riskFactors}
+                    {#if (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskFactors}
                       <div class="space-y-1">
                         <h6 class="text-sm font-medium">Risk Factors:</h6>
-                        {#each result.riskFactors as factor}
+                        {#each (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskFactors as factor}
                           <div class="flex items-center gap-2 text-sm nes-text is-disabled">
                             <AlertTriangle class="w-3 h-3" />
                             {factor}
@@ -432,43 +432,42 @@ https://svelte.dev/e/expected_token -->
 
           <!-- Action Buttons -->
           <div class="flex gap-3 pt-4 border-t">
-            <button class="nes-btn" variant="outline" onclick={() => analysisResults = null}>
+            <button class="nes-btn" variant="outline" on:click={() => analysisResults = null}>
               Clear Results
             </button>
-            <button class="nes-btn" variant="outline" onclick={() => currentTab = 'visualization'}>
+            <button class="nes-btn" variant="outline" on:click={() => currentTab = 'visualization'}>
               <Eye class="w-4 h-4 mr-2" />
               View Visualization
             </button>
-            <button class="nes-btn" onclick={() => goto('/dashboard/search')}>
+            <button class="nes-btn" on:click={() => goto('/dashboard/search')}>
               <Search class="w-4 h-4 mr-2" />
               Search Similar
             </button>
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.AIInsight>
     {/if}
-  {/if}
 
   <!-- Document Comparison Tab -->
   {#if currentTab === 'comparison'}
     <OrchestratedCard.Analysis>
-      <NesCard.Header>
-        <NesCard.Title class="flex items-center gap-2">
+      <div.Header class="nes-container">
+        <div.Title class="flex items-center gap-2 nes-container">
           <BarChart3 class="w-5 h-5" />
           Document Comparison
-        </Card.Title>
-        <NesCard.Description>
+        </div.Title>
+        <div.Description class="nes-container">
           Compare multiple documents using advanced similarity analysis
-        </Card.Description>
-      </Card.Header>
-      <NesCard.Content class="space-y-6">
+        </div.Description>
+      </div.Header>
+      <div.Content class="space-y-6 nes-container">
         <div class="grid gap-3">
-          {#each data.sampleDocuments as document}
+          {#each (data as { analysisCapabilities?: any; sampleDocuments?: any; recentAnalyses?: any }).sampleDocuments as document}
             <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50">
               <input
                 type="checkbox"
                 checked={selectedDocuments.has(document.id)}
-                onchange={() => toggleDocumentSelection(document.id)}
+                on:change={() => toggleDocumentSelection(document.id)}
                 class="rounded border-gray-300"
               />
               <div class="flex-1">
@@ -486,27 +485,27 @@ https://svelte.dev/e/expected_token -->
           disabled={selectedDocuments.size < 2}
           class="w-full gap-2"
         >
-          <BarChart3 class="w-4 h-4" />
+<BarChart3 class="w-4 h-4" />
           Compare Selected Documents ({selectedDocuments.size})
-        </button>
-      </Card.Content>
+
+      </div.Content>
     </OrchestratedCard.Analysis>
   {/if}
 
   <!-- Recent Analyses -->
   <OrchestratedCard.Analysis>
-    <NesCard.Header>
-      <NesCard.Title class="flex items-center gap-2">
+    <div.Header class="nes-container">
+      <div.Title class="flex items-center gap-2 nes-container">
         <Clock class="w-5 h-5" />
         Recent Hybrid Analyses
-      </Card.Title>
-      <NesCard.Description>
+      </div.Title>
+      <div.Description class="nes-container">
         Latest multi-modal analysis results and performance metrics
-      </Card.Description>
-    </Card.Header>
-    <NesCard.Content>
+      </div.Description>
+    </div.Header>
+    <div.Content class="nes-container">
       <div class="space-y-3">
-        {#each data.recentAnalyses as analysis}
+        {#each (data as { analysisCapabilities?: any; sampleDocuments?: any; recentAnalyses?: any }).recentAnalyses as analysis}
           <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-1">
@@ -528,14 +527,14 @@ https://svelte.dev/e/expected_token -->
                   {formatConfidence(analysis.results.overallScore)}
                 </Badge>
               {/if}
-              <button class="nes-btn" variant="ghost" size="sm" onclick={() => navigateToDocument(analysis.documentId)}>
+              <button class="nes-btn" variant="ghost" size="sm" on:click={() => navigateToDocument(analysis.documentId)}>
                 <Eye class="w-3 h-3" />
-              </button>
+
             </div>
           </div>
         {/each}
       </div>
-    </Card.Content>
+    </div.Content>
   </OrchestratedCard.Analysis>
 </div>
 

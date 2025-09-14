@@ -136,7 +136,7 @@ export const documentUploadMachine = createMachine(
     initial: 'idle',
     context: {
       formData: null,
-      validationErrors: {},
+      validationErrors: Record<string, any>,
       uploadProgress: 0,
       uploadedFile: null,
       processingProgress: 0,
@@ -376,7 +376,7 @@ export const caseCreationMachine = createMachine(
     initial: 'idle',
     context: {
       formData: null,
-      validationErrors: {},
+      validationErrors: Record<string, any>,
       createdCase: null,
       relatedDocuments: [],
       error: null,
@@ -563,10 +563,10 @@ export const searchMachine = createMachine(
     context: {
       query: null,
       results: [],
-      validationErrors: {},
+      validationErrors: Record<string, any>,
       isSearching: false,
       searchHistory: [],
-      filters: {},
+      filters: Record<string, any>,
       pagination: {
         page: 1,
         pageSize: 20,
@@ -771,7 +771,7 @@ export const aiAnalysisMachine = createMachine(
     initial: 'idle',
     context: {
       analysisData: null,
-      validationErrors: {},
+      validationErrors: Record<string, any>,
       analysisResults: null,
       confidence: 0,
       processingTime: 0,

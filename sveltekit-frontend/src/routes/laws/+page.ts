@@ -1,4 +1,4 @@
-import type { PageLoad } from "./$types";
+import type { PageLoad } from './$types.js';
 import { error } from '@sveltejs/kit';
 
 export const load: PageLoad = async ({ fetch, url, depends }) => {

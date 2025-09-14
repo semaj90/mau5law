@@ -13,7 +13,7 @@
     let uploadProgress = $state(0);
     let currentStep = $state<'upload' | 'analysis' | 'recommendations' | 'complete'>('upload');
     let error = $state<string | null>(null);
-    let servicesHealth = $state<{ quicServer: boolean; recommendationEngine: boolean } | null>(null);
+    let servicesHealth = $state(null);
 
     // Processing options
     let processingOptions = $state({
@@ -130,7 +130,7 @@
             <span class="status-indicator {servicesHealth?.recommendationEngine ? 'online' : 'offline'}">
                 Recommendation Engine {servicesHealth?.recommendationEngine ? '🟢' : '🔴'}
             </span>
-            <button onclick={checkServicesHealth} class="refresh-btn">🔄</button>
+            <button on:click={checkServicesHealth} class="refresh-btn">🔄</button>
         </div>
     </div>
 
@@ -159,7 +159,7 @@
         <div class="error-message">
             <span class="error-icon">❌</span>
             <span>{error}</span>
-            <button onclick={reset} class="retry-btn">Try Again</button>
+            <button on:click={reset} class="retry-btn">Try Again</button>
         </div>
     {/if}
 
@@ -170,7 +170,7 @@
                 <input 
                     type="file" 
                     accept=".pdf,.doc,.docx,.txt" 
-                    onchange={handleFileSelect}
+                    on:change={handleFileSelect}
                     class="file-input"
                     id="file-upload"
                 />
@@ -209,7 +209,7 @@
             </div>
 
             <button 
-                onclick={processDocument}
+                on:click={processDocument}
                 disabled={!canProcess}
                 class="process-btn"
             >
@@ -380,9 +380,9 @@
     <!-- Action Buttons -->
     {#if currentStep === 'complete'}
         <div class="action-buttons">
-            <button onclick={reset} class="secondary-btn">Analyze Another Document</button>
+            <button on:click={reset} class="secondary-btn">Analyze Another Document</button>
             <button 
-                onclick={() => dispatch('export', { analysisResult, recommendations })}
+                on:click={() => dispatch('export', { analysisResult, recommendations })}
                 class="primary-btn"
             >
                 Export Results

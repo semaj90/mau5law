@@ -7,11 +7,13 @@
   import DropdownMenuItem from './dropdown-menu/DropdownMenuItem.svelte';
   import DropdownMenuSeparator from './dropdown-menu/DropdownMenuSeparator.svelte';
   // Component props
-  let { 
-    items = [],
+  let { items = [],
     trigger = 'Menu',
     ...props 
-  } = $props();
+   }: { items = [],
+    trigger = 'Menu',
+    ...props 
+  : any } = $props();
 </script>
 
 <DropdownMenuRoot {...props}>
@@ -19,15 +21,15 @@
   
   <DropdownMenuContent>
     {#each items as item, index}
-      {#if item.separator}
+      {#if (item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).separator}
         <DropdownMenuSeparator />
       {:else}
         <DropdownMenuItem 
-          value={item.value}
-          disabled={item.disabled || false}
-          onclick={() => item.onClick?.(item.value)}
+          value={(item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).value}
+          disabled={(item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).disabled || false}
+          on:click={() => (item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).onClick?.((item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).value)}
         >
-          {item.label}
+          {(item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).label}
         </DropdownMenuItem>
       {/if}
     {/each}

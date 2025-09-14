@@ -77,12 +77,12 @@ async function queryOllama(prompt: string, model: string = LEGAL_MODEL): Promise
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Ollama request failed: ${response.status} - ${response.statusText}`);
+    if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`Ollama request failed: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status} - ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    const data: OllamaResponse = await response.json();
-    return data.response;
+    const data: OllamaResponse = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+    return (data as { response?: any }).response;
   } catch (error) {
     console.error('Ollama query failed:', error);
     throw new Error(`AI service unavailable: ${error}`);
@@ -103,13 +103,13 @@ async function getCudaEmbedding(text: string): Promise<number[] | null> {
       })
     });
 
-    if (!response.ok) {
+    if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
       console.warn('CUDA service unavailable for embeddings');
       return null;
     }
 
-    const result = await response.json();
-    return result.embedding || null;
+    const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+    return (result as { embedding?: any }).embedding || null;
   } catch (error) {
     console.warn('CUDA embedding failed:', error);
     return null;

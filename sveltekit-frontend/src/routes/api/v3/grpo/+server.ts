@@ -1,7 +1,7 @@
 // GRPO (Guided Reasoning and Policy Optimization) Thinking Response API v3
 // Advanced search and recommendation engine for legal reasoning chains with timestamp analysis
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import {
   storeGrpoThinkingResponse,
@@ -52,27 +52,27 @@ async function ensureGrpoInitialized() {
 async function withGrpoRateLimit(request: Request, handler: () => Promise<Response>): Promise<Response> {
   const result = grpoRateLimiter.check(request);
 
-  if (!result.allowed) {
-    const retryAfter = Math.ceil((result.resetTime! - Date.now()) / 1000);
+  if (!(result as { allowed?: any; resetTime?: any; remaining?: any }).allowed) {
+    const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000);
 
     return json({
       success: false,
       error: 'GRPO rate limit exceeded. Please wait before making more requests.',
       retryAfter,
-      resetTime: new Date(result.resetTime!).toISOString()
+      resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()
     }, {
       status: 429,
       headers: {
         'Retry-After': retryAfter.toString(),
         'X-RateLimit-Remaining': '0',
-        'X-RateLimit-Reset': result.resetTime!.toString()
+        'X-RateLimit-Reset': (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString()
       }
     });
   }
 
   const response = await handler();
-  response.headers.set('X-RateLimit-Remaining', result.remaining!.toString());
-  response.headers.set('X-RateLimit-Reset', result.resetTime!.toString());
+  (response as { headers?: any }).headers.set('X-RateLimit-Remaining', (result as { allowed?: any; resetTime?: any; remaining?: any }).remaining!.toString());
+  (response as { headers?: any }).headers.set('X-RateLimit-Reset', (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString());
 
   return response;
 }
@@ -83,32 +83,32 @@ function validateGrpoThinkingResponse(data: any): { valid: boolean; error?: stri
     return { valid: false, error: 'Invalid request body' };
   }
 
-  if (!data.conversationId || typeof data.conversationId !== 'string') {
+  if (!(data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).conversationId || typeof (data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).conversationId !== 'string') {
     return { valid: false, error: 'conversationId is required' };
   }
 
-  if (!data.messageId || typeof data.messageId !== 'string') {
+  if (!(data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).messageId || typeof (data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).messageId !== 'string') {
     return { valid: false, error: 'messageId is required' };
   }
 
-  if (!data.originalQuery || typeof data.originalQuery !== 'string') {
+  if (!(data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).originalQuery || typeof (data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).originalQuery !== 'string') {
     return { valid: false, error: 'originalQuery is required' };
   }
 
-  if (!data.thinkingChain || typeof data.thinkingChain !== 'string') {
+  if (!(data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).thinkingChain || typeof (data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).thinkingChain !== 'string') {
     return { valid: false, error: 'thinkingChain is required' };
   }
 
-  if (data.thinkingChain.length < 50) {
+  if ((data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).thinkingChain.length < 50) {
     return { valid: false, error: 'thinkingChain must be at least 50 characters' };
   }
 
-  if (data.thinkingChain.length > 50000) {
+  if ((data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).thinkingChain.length > 50000) {
     return { valid: false, error: 'thinkingChain too long (max 50000 characters)' };
   }
 
-  if (typeof data.confidenceLevel !== 'undefined' &&
-      (typeof data.confidenceLevel !== 'number' || data.confidenceLevel < 0 || data.confidenceLevel > 1)) {
+  if (typeof (data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).confidenceLevel !== 'undefined' &&
+      (typeof (data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).confidenceLevel !== 'number' || (data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).confidenceLevel < 0 || (data as { conversationId?: any; messageId?: any; originalQuery?: any; thinkingChain?: any; confidenceLevel?: any }).confidenceLevel > 1)) {
     return { valid: false, error: 'confidenceLevel must be a number between 0 and 1' };
   }
 

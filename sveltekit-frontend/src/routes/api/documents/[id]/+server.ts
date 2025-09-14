@@ -3,7 +3,7 @@ import { json } from "@sveltejs/kit";
 import { db } from "$lib/server/db/index";
 import { documentMetadata } from "$lib/server/db/schema-unified";
 import { eq } from "drizzle-orm";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Real Document API Endpoint - No Mock Data

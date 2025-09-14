@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { startupFlagService, type StartupServiceSummary } from '$lib/services/startup-flag-service';
 import { readFile } from 'fs/promises';
 import { existsSync } from 'fs';

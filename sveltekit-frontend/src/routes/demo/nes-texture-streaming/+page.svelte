@@ -125,7 +125,7 @@
       <div class="control-grid">
         <div class="control-group">
           <label for="document-select">Document:</label>
-          <select id="document-select" bind:value={selectedDocument} onchange={handleDocumentChange}>
+          <select id="document-select" bind:value={selectedDocument} on:change={handleDocumentChange}>
             {#each sampleDocuments as doc}
               <option value={doc.id}>{doc.name}</option>
             {/each}
@@ -334,13 +334,13 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
-  .status-item.connected,
-  .status-item.active,
-  .status-item.healthy {
+  .status-(item as { connected?: any; active?: any; healthy?: any; error?: any }).connected,
+  .status-(item as { connected?: any; active?: any; healthy?: any; error?: any }).active,
+  .status-(item as { connected?: any; active?: any; healthy?: any; error?: any }).healthy {
     border-color: #22c55e;
   }
   
-  .status-item.error {
+  .status-(item as { connected?: any; active?: any; healthy?: any; error?: any }).error {
     border-color: #ef4444;
   }
   

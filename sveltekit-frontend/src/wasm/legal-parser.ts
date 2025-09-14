@@ -5,7 +5,7 @@
  */
 
 // === Memory Management ===
-import { allocateVectorMemory, freeVectorMemory } from './vector-operations';
+import { allocateVectorMemory, freeVectorMemory } from './vector-operations.js';
 
 // === Legal Document Structure ===
 class LegalDocument {
@@ -114,13 +114,13 @@ function split(str: string, delimiter: string): Array<string> {
   let pos = indexOf(str, delimiter, start);
   
   while (pos >= 0) {
-    result.push(substring(str, start, pos));
+    (result as { push?: any }).push(substring(str, start, pos));
     start = pos + delimiter.length;
     pos = indexOf(str, delimiter, start);
   }
   
   if (start < str.length) {
-    result.push(substring(str, start));
+    (result as { push?: any }).push(substring(str, start));
   }
   
   return result;

@@ -1,5 +1,5 @@
 import { fail } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from './$types';
+import type { Actions, PageServerLoad } from './$types.js';
 import { superValidate, message } from 'sveltekit-superforms/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
       description: '',
       priority: 'medium' as const
     },
-    errors: {},
+    errors: Record<string, any>,
     valid: true,
     posted: false
   };
@@ -213,7 +213,7 @@ export const actions: Actions = {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              ...(locals.orchestrator.apiKey ? { Authorization: `Bearer ${locals.orchestrator.apiKey}` } : {})
+              ...(locals.orchestrator.apiKey ? { Authorization: `Bearer ${locals.orchestrator.apiKey}` } : Record<string, any>)
             },
             body: JSON.stringify(ingestionPayload)
           }).catch((err) => console.error('Ingestion service request failed:', err));
@@ -384,7 +384,7 @@ export const actions: Actions = {
       //       }))
       //     },
       //     // If pgvector column exists, persist the vector
-      //     ...(vector ? { embedding: vector as any } : {})
+      //     ...(vector ? { embedding: vector as any } : Record<string, any>)
       //     title,
       //     description: description || null,
       //     priority,

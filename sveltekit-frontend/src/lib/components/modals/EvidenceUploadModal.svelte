@@ -3,10 +3,10 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { , createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
 
 
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/button/Button.svelte';
   
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
   import { formatFileSize } from "$lib/utils/file-utils";
@@ -72,9 +72,10 @@ https://svelte.dev/e/js_parse_error -->
           <Upload class="container mx-auto px-4" />
           <h2 class="container mx-auto px-4">Upload Evidence</h2>
         </div>
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => closeModal()}>
+        <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+closeModal()}>
           <X class="container mx-auto px-4" />
-        </button>
+</Button>
       </div>
 
       <!-- Body -->
@@ -86,10 +87,10 @@ https://svelte.dev/e/js_parse_error -->
           aria-label="Evidence file drop zone"
           aria-describedby="evidence-dropzone-instructions"
           class="container mx-auto px-4"
-          ondrop={handleDrop}
-          ondragover={handleDragOver}
+          on:drop={handleDrop}
+          on:dragover={handleDragOver}
           ondragleave={handleDragLeave}
-          onclick={() => fileInput?.click()}
+          on:click={() => fileInput?.click()}
           keydown={(e) =>
             (e.key === "Enter" || e.key === " ") && fileInput?.click()}
         >
@@ -100,16 +101,16 @@ https://svelte.dev/e/js_parse_error -->
           <p id="evidence-dropzone-instructions" class="container mx-auto px-4">
             Support for images, documents, audio, and video files
           </p>
-          <Button class="bits-btn" variant="outline" onclick={() => fileInput?.click()}>
+          <Button class="bits-btn" variant="outline" on:click={() =>
+fileInput?.click()}>
             Choose Files
-          </button>
+</Button>
           <input
             bind:this={fileInput}
             type="file"
             multiple
             class="container mx-auto px-4"
-            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls"
-            change={handleFileSelect}
+            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls" on:change={handleFileSelect}
           />
         </div>
 
@@ -175,10 +176,11 @@ https://svelte.dev/e/js_parse_error -->
                       <Button class="bits-btn"
                         variant="ghost"
                         size="sm"
-                        onclick={() => removeFile(file.id)}
+                        on:click={() =>
+removeFile(file.id)}
                       >
                         <X class="container mx-auto px-4" />
-                      </button>
+</Button>
                     </div>
                   </div>
                 {/if}
@@ -205,14 +207,16 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <div class="container mx-auto px-4">
-          <Button class="bits-btn" variant="outline" onclick={() => closeModal()}>
+          <Button class="bits-btn" variant="outline" on:click={() =>
+closeModal()}>
             {activeUploads.length > 0 ? "Continue in Background" : "Close"}
-          </button>
+</Button>
 
           {#if completedUploads.length > 0}
-            <Button class="bits-btn" onclick={() => dispatch("viewEvidence", completedUploads)}>
+            <Button class="bits-btn" on:click={() =>
+dispatch("viewEvidence", completedUploads)}>
               View Evidence
-            </button>
+</Button>
           {/if}
         </div>
       </div>

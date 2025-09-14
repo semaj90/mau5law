@@ -54,11 +54,11 @@ https://svelte.dev/e/js_parse_error -->
   	];
 
   	// Event handlers
-  	const handleProviderSelected = (event: CustomEvent<{ provider: LLMProvider }>) => {
+  	const handleProviderSelected = (event: CustomEvent) => {
   		selectedProvider = event.detail.provider;
   	};
 
-  	const handleStatusChanged = (event: CustomEvent<{ provider: LLMProvider status: string }>) => {
+  	const handleStatusChanged = (event: CustomEvent) => {
   		console.log(`Provider ${event.detail.provider.name} status changed to ${event.detail.status}`);
   	};
 
@@ -229,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
 	</div>
 
 	<!-- Provider Selection -->
-	<NesCard>
+	<div class="nes-container">
 		<div class="yorha-panel-header">
 			<h3 class="nes-text is-primary">LLM Provider Configuration</h3>
 		</div>
@@ -240,48 +240,48 @@ https://svelte.dev/e/js_parse_error -->
 				on:statusChanged={handleStatusChanged}
 			/>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- System Metrics -->
 	<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-		<NesCard>
-			<div class="yorha-panel-content" class="p-4">
+		<div class="nes-container">
+			<div class="yorha-panel-content p-4">
 				<div class="text-2xl font-bold text-yorha-primary">{$systemMetrics?.totalTasksProcessed || 0}</div>
 				<div class="text-sm text-yorha-text-secondary">Tasks Processed</div>
 			</div>
-		</NesCard>
+		</div>
 		
-		<NesCard>
-			<div class="yorha-panel-content" class="p-4">
+		<div class="nes-container">
+			<div class="yorha-panel-content p-4">
 				<div class="text-2xl font-bold text-yorha-accent">{$systemMetrics?.averageResponseTime?.toFixed(0) || 0}ms</div>
 				<div class="text-sm text-yorha-text-secondary">Avg Response Time</div>
 			</div>
-		</NesCard>
+		</div>
 		
-		<NesCard>
-			<div class="yorha-panel-content" class="p-4">
+		<div class="nes-container">
+			<div class="yorha-panel-content p-4">
 				<div class="flex items-center space-x-2">
 					<div class="text-2xl font-bold text-yorha-warning">{$systemMetrics?.currentLoad?.toFixed(1) || 0}%</div>
 					<Progress value={$systemMetrics?.currentLoad || 0} class="flex-1 h-2" />
 				</div>
 				<div class="text-sm text-yorha-text-secondary">System Load</div>
 			</div>
-		</NesCard>
+		</div>
 		
-		<NesCard>
-			<div class="yorha-panel-content" class="p-4">
+		<div class="nes-container">
+			<div class="yorha-panel-content p-4">
 				<div class="text-2xl font-bold text-yorha-success">{$systemMetrics?.availableWorkers || 0}</div>
 				<div class="text-sm text-yorha-text-secondary">Available Workers</div>
 			</div>
-		</NesCard>
+		</div>
 	</div>
 
 	<!-- Task Controls -->
-	<NesCard>
+	<div class="nes-container">
 		<div class="yorha-panel-header">
 			<h3 class="nes-text is-primary">AI Task Processing</h3>
 		</div>
-		<div class="yorha-panel-content" class="space-y-4">
+		<div class="yorha-panel-content space-y-4">
 			<!-- Test Input -->
 			<div>
 				<label class="block text-sm font-medium text-yorha-text-primary mb-2" for="-test-input-">
@@ -299,7 +299,7 @@ https://svelte.dev/e/js_parse_error -->
 					<button class="nes-btn" 
 						variant="outline"
 						disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
-						onclick={() => processTask(task)}
+						on:click={() => processTask(task)}
 						class="bits-btn h-auto p-3 flex flex-col items-start space-y-1"
 					>
 						<div class="flex items-center space-x-2">
@@ -315,72 +315,72 @@ https://svelte.dev/e/js_parse_error -->
 			<div class="flex items-center justify-center pt-4 border-t border-yorha-border">
 				<Button
 					disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
-					onclick={processParallelTasks}
+					on:click={processParallelTasks}
 					class="bg-yorha-primary hover:bg-yorha-primary/80 bits-btn bits-btn"
 				>
-					{#if isProcessing}
+{#if isProcessing}
 						<div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
 						Processing...
 					{:else}
 						🚀 Run All Tasks in Parallel
 					{/if}
-				</button>
+</Button>
 			</div>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- Results -->
 	{#if processingResults.length > 0}
-		<NesCard>
+		<div class="nes-container">
 			<div class="yorha-panel-header">
 				<h3 class="nes-text is-primary">Processing Results</h3>
 			</div>
 			<div class="yorha-panel-content">
 				<div class="space-y-3 max-h-96 overflow-y-auto">
-					{#each processingResults as result (result.taskId)}
+					{#each processingResults as result ((result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).taskId)}
 						<div 
 							class="p-3 bg-yorha-bg-secondary rounded-md border border-yorha-border"
 							transitionfly={{ y: -20, duration: 300 }}
 						>
 							<div class="flex items-center justify-between mb-2">
 								<div class="flex items-center space-x-2">
-									<Badge class={result.success ? 'bg-yorha-success' : 'bg-yorha-danger'}>
-										{result.success ? 'SUCCESS' : 'ERROR'}
+									<Badge class={(result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).success ? 'bg-yorha-success' : 'bg-yorha-danger'}>
+										{(result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).success ? 'SUCCESS' : 'ERROR'}
 									</Badge>
 									<span class="text-sm text-yorha-text-secondary">
-										Task ID: {result.taskId.slice(-8)}
+										Task ID: {(result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).taskId.slice(-8)}
 									</span>
 								</div>
 								<div class="text-xs text-yorha-text-tertiary">
-									{formatDuration(result.duration)}
+									{formatDuration((result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).duration)}
 								</div>
 							</div>
 							
-							{#if result.success && result.result}
+							{#if (result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).success && (result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).result}
 								<div class="text-sm bg-yorha-bg-primary p-2 rounded border">
 									<pre class="whitespace-pre-wrap text-yorha-text-primary overflow-x-auto">
-{JSON.stringify(result.result, null, 2)}
+{JSON.stringify((result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).result, null, 2)}
 									</pre>
 								</div>
 							{/if}
 							
-							{#if result.metrics}
+							{#if (result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).metrics}
 								<div class="flex items-center space-x-4 mt-2 text-xs text-yorha-text-secondary">
-									<span>Tokens: {result.metrics.tokensProcessed}</span>
-									<span>Throughput: {result.metrics.throughput} t/s</span>
-									<span>Memory: {result.metrics.memoryUsed}</span>
+									<span>Tokens: {(result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).metrics.tokensProcessed}</span>
+									<span>Throughput: {(result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).metrics.throughput} t/s</span>
+									<span>Memory: {(result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).metrics.memoryUsed}</span>
 								</div>
 							{/if}
 						</div>
 					{/each}
 				</div>
 			</div>
-		</NesCard>
+		</div>
 	{/if}
 
 	<!-- Worker Status -->
 	{#if $workerStatus && $workerStatus.length > 0}
-		<NesCard>
+		<div class="nes-container">
 			<div class="yorha-panel-header">
 				<h3 class="nes-text is-primary">Worker Status</h3>
 			</div>
@@ -408,7 +408,7 @@ https://svelte.dev/e/js_parse_error -->
 					{/each}
 				</div>
 			</div>
-		</NesCard>
+		</div>
 	{/if}
 </div>
 

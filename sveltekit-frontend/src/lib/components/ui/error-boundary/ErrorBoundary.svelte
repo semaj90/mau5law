@@ -75,8 +75,8 @@
 {#if hasError && error}
   <!-- Error State -->
   <div class="min-h-screen bg-nier-bg-primary text-nier-text-primary flex items-center justify-center p-golden-lg">
-    <NesCard.Root class="bg-nier-bg-secondary border-red-500/30 max-w-2xl w-full">
-      <NesCard.Header class="text-center pb-golden-lg">
+    <div.Root class="bg-nier-bg-secondary border-red-500/30 max-w-2xl w-full nes-container">
+      <div.Header class="text-center pb-golden-lg nes-container">
         <div class="mb-golden-md">
           <!-- YoRHa Error Icon -->
           <div class="w-16 h-16 mx-auto bg-red-500/20 rounded-full flex items-center justify-center">
@@ -85,15 +85,15 @@
             </svg>
           </div>
         </div>
-        <NesCard.Title class="text-2xl font-bold text-red-400 uppercase tracking-wide mb-golden-sm">
+        <div.Title class="text-2xl font-bold text-red-400 uppercase tracking-wide mb-golden-sm nes-container">
           System Error Detected
-        </Card.Title>
-        <NesCard.Description class="text-nier-text-secondary">
+        </div.Title>
+        <div.Description class="text-nier-text-secondary nes-container">
           The YoRHa Legal AI system encountered an unexpected error. Our androids are investigating the issue.
-        </Card.Description>
-      </Card.Header>
+        </div.Description>
+      </div.Header>
       
-      <NesCard.Content class="space-y-golden-lg">
+      <div.Content class="space-y-golden-lg nes-container">
         <!-- Error Details -->
         <div class="bg-nier-bg-tertiary border border-nier-border-muted rounded p-golden-md">
           <h3 class="text-sm font-bold text-nier-accent-warm uppercase tracking-wide mb-golden-sm">
@@ -129,7 +129,7 @@
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-golden-sm justify-center">
           <ModernButton 
-            onclick={resetError}
+            on:click={resetError}
             variant="primary"
             class="bg-gradient-to-r from-nier-accent-warm to-nier-accent-cool text-nier-bg-primary"
           >
@@ -137,7 +137,7 @@
           </ModernButton>
           
           <ModernButton 
-            onclick={reloadPage}
+            on:click={reloadPage}
             variant="outline"
             class="border-nier-accent-cool text-nier-accent-cool hover:bg-nier-accent-cool hover:text-nier-bg-primary"
           >
@@ -160,8 +160,8 @@
             <code class="text-red-400 font-mono">{errorId}</code>
           </p>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   </div>
 {:else if fallback}
   {@render fallback()}

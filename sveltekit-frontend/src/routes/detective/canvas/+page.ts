@@ -1,4 +1,4 @@
-import type { PageLoad } from './$types';
+import type { PageLoad } from './$types.js';
 
 export const load: PageLoad = async ({ params, url, fetch }) => {
   // Load any canvas-specific data here

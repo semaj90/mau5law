@@ -233,10 +233,8 @@
 
   	const { state, send } = useMachine(enhancedChatMachine);
   let messageInput = $state('');
-  let chatContainer = $state<HTMLDivElement;
-
-  	// Available models
-  	const models >([
+  let chatContainer = $state<HTMLDivElement// Available models
+  	const models | null>(null)([
   		{ value: 'gemma3-legal', label: 'Gemma3 Legal', description: 'Legal-specialized model' },
   		{ value: 'gemma3:latest', label: 'Gemma3 General', description: 'General purpose model' },
   		{ value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' }
@@ -288,8 +286,7 @@ const { state, send } = useMachine(enhancedChatMachine);
 	// Auto-scroll when messages update
 	$: if ($state.context.messages.length > 0) {
 		tick().then(() => scrollToBottom());
-	}
-				change={(e) => send({ type: 'SET_MODEL', model: e.target.value })}
+	} on:change={(e) => send({ type: 'SET_MODEL', model: e.target.value })}
 				class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 			>
 				{#each models as model}
@@ -377,58 +374,48 @@ const { state, send } = useMachine(enhancedChatMachine);
 						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
 						size="sm"
 						variant="outline"
-						onclick={() => send({ type: 'RETRY' })}
+						on:click={() =>
+send({ type: 'RETRY' })}
 					>
 						Retry
-					</button>
+</Button>
 					<Button
 						class="bits-btn text-red-700 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						onclick={() => send({ type: 'CLEAR_ERROR' })}
+						on:click={() =>
+send({ type: 'CLEAR_ERROR' })}
 					>
 						Dismiss
-					</button>
+</Button>
 				</div>
 			</div>
 					<Button
 						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
 						size="sm"
 						variant="outline"
-						on:click={() => send({ type: 'RETRY' })}
+						on:click={() =>
+send({ type: 'RETRY' })}
 					>
 						Retry
-					</button>
+</Button>
 					<Button
 						class="bits-btn text-red-700 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						on:click={() => send({ type: 'CLEAR_ERROR' })}
+						on:click={() =>
+send({ type: 'CLEAR_ERROR' })}
 					>
 						Dismiss
-					</button>
+</Button>
 			<div class="flex flex-col justify-end">
-				<Button
-					onclick={handleSend}
-					disabled={!messageInput.trim() || $state.matches('sending')}
-					class={cn(
-						"px-6 py-3 rounded-lg font-medium transition-colors",
-						messageInput.trim() && !$state.matches('sending')
-							? "bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
-							: "bg-gray-300 text-gray-500 cursor-not-allowed"
-				<textarea
-					bind:value={messageInput}
-					on:keydown={handleKeyPress}
-					placeholder="Ask me about legal documents, contracts, or any legal questions..."
-					disabled={$state.matches('sending')}
-					class="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
-					rows="3"
-				></textarea>
-					{:else}
-						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<Button
 					on:click={handleSend}
 					disabled={!messageInput.trim() || $state.matches('sending')}
+					class={/* JSX syntax converted to Svelte */}
+						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<Button
+					on:click={disabled}
 					class={cn(
 						"px-6 py-3 rounded-lg font-medium transition-colors",
 						messageInput.trim() && !$state.matches('sending')

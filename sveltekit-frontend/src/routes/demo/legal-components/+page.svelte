@@ -61,17 +61,7 @@ https://svelte.dev/e/js_parse_error -->
     { key: 'category', label: 'Category', sortable: true, width: '100px' },
     { key: 'dateCollected', label: 'Date Collected', sortable: true, width: '120px' },
     { key: 'custodian', label: 'Current Custodian', sortable: true, width: '150px' },
-    {
-      key: 'status',
-      label: 'Status',
-      sortable: true,
-      width: '100px',
-      render: (value) => `<span class="px-2 py-1 text-xs rounded ${
-        value === 'analyzed' ? 'bg-green-500/20 text-green-400' :
-        value === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-        'bg-blue-500/20 text-blue-400'
-      }">${value.toUpperCase()}</span>`
-    }
+    {/* JSX syntax converted to Svelte */}
   ];
 
   // Legal entities for combobox
@@ -333,12 +323,7 @@ https://svelte.dev/e/js_parse_error -->
         {#each tabs as tab}
           {@const IconComponent = tab.icon}
           <button
-            on:click={() => activeTab = tab.id}
-            class={`flex items-center gap-2 px-4 py-2 text-sm font-mono rounded transition-colors ${
-              activeTab === tab.id
-                ? 'bg-yorha-primary text-yorha-bg-primary'
-                : 'text-yorha-text-secondary hover:text-yorha-text-primary hover:bg-yorha-bg-tertiary'
-            }`}
+            on:click={class}`}
           >
             <IconComponent class="w-4 h-4" />
             {tab.label}

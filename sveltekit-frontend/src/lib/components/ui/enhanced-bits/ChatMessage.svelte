@@ -45,8 +45,8 @@ https://svelte.dev/e/expected_token -->
 </div>
 <!-- Chat Message: Svelte 5, Bits UI, UnoCSS, analytics logging -->
   import { User, Bot, AlertTriangle } from 'lucide-svelte';
-  let { message = $bindable() } = $props(); // { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string };
-  let { analyticsLog = $bindable() } = $props(); // (event: any) => void = () => {};
+  let { message = $bindable()  }: { message = $bindable() : any } = $props(); // { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string };
+  let { analyticsLog = $bindable()  }: { analyticsLog = $bindable() : any } = $props(); // (event: any) => void = () => {};
 
   // TODO: Convert to $derived: if (message && message.content) {
     analyticsLog({ event: 'chat_message_rendered', role: message.role, timestamp: Date.now() })

@@ -1,7 +1,7 @@
 // 🔧 Component Type Definitions (resolved duplicate export conflicts)
 // Centralizes commonly used UI component prop & event types
 
-import type { UploadedFile } from './global';
+import type { UploadedFile } from './global.js';
 
 // =====================================================
 // FILE UPLOAD COMPONENT FIX
@@ -142,10 +142,9 @@ export interface SearchFilters {
 }
 
 export interface SearchFacets {
-  types: Array<{ name: string; count: number }>;
-  statuses: Array<{ name: string; count: number }>;
-  dates: Array<{ name: string; count: number }>;
-}
+  types: Array<any>;
+  statuses: Array<any>;
+  dates: Array<any>
 
 // =====================================================
 // AI & ML COMPONENT FIXES
@@ -183,11 +182,7 @@ export interface Toast {
   title: string;
   message: string;
   duration?: number;
-  actions?: Array<{
-    label: string;
-    action: () => void;
-  }>;
-}
+  actions?: Array<any>
 
 export interface Notification extends Toast {
   read: boolean;

@@ -143,10 +143,10 @@ https://svelte.dev/e/js_parse_error -->
 				})
 			});
 
-			if (response.ok) {
-				const result = await response.json();
-				startTypewriter(`✅ Case "${template.title}" created successfully! Case ID: ${result.data.id}`);
-				onCaseCreated(result.data.id);
+			if ((response as { ok?: any; json?: any }).ok) {
+				const result = await (response as { ok?: any; json?: any }).json();
+				startTypewriter(`✅ Case "${template.title}" created successfully! Case ID: ${(result as { data?: any }).data.id}`);
+				onCaseCreated((result as { data?: any }).data.id);
 				
 				// Reset form
 				setTimeout(() => {
@@ -181,10 +181,10 @@ https://svelte.dev/e/js_parse_error -->
 				})
 			});
 
-			if (response.ok) {
-				const result = await response.json();
+			if ((response as { ok?: any; json?: any }).ok) {
+				const result = await (response as { ok?: any; json?: any }).json();
 				startTypewriter(`✅ Case "${caseTitle}" created successfully! Ready to assist with evidence collection and analysis.`);
-				onCaseCreated(result.data.id);
+				onCaseCreated((result as { data?: any }).data.id);
 				
 				// Reset form
 				caseTitle = '';
@@ -215,7 +215,7 @@ https://svelte.dev/e/js_parse_error -->
 	{#if isVisible}
 		<div 
 			class="ai-assistant-panel"
-			transition:fly={{ y: 50, duration: 500, easing: cubicOut }}
+			transitionFly={{ y: 50, duration: 500, easing: cubicOut }}
 		>
 			<!-- AI Avatar and Status -->
 			<div class="ai-header">
@@ -249,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
 
 			<!-- Action Buttons -->
 			{#if !isTyping && !isProcessing && currentPrompt}
-				<div class="action-buttons" transition:fade={{ duration: 300 }}>
+				<div class="action-buttons" transitionFade={{ duration: 300 }}>
 					<button 
 						class="nes-btn is-primary"
 						on:click={() => showCreateForm = true}
@@ -267,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
 
 			<!-- Quick Case Creation Panel -->
 			{#if showCreateForm}
-				<div class="case-creation-panel" transition:fly={{ y: 20, duration: 400 }}>
+				<div class="case-creation-panel" transitionFly={{ y: 20, duration: 400 }}>
 					<h4>⚡ Instant Case Creation</h4>
 					
 					<!-- Quick Templates -->
@@ -277,8 +277,7 @@ https://svelte.dev/e/js_parse_error -->
 							{#each quickCaseTemplates as template}
 								<button 
 									class="template-nier-bits-card"
-									on:click={() => createQuickCase(template)}
-									disabled={isProcessing}
+									on:click={disabled}
 								>
 									<div class="template-title">{template.title}</div>
 									<div class="template-priority priority-{template.priority}">
@@ -334,8 +333,7 @@ https://svelte.dev/e/js_parse_error -->
 							<div class="form-actions">
 								<button 
 									class="nes-btn is-primary"
-									on:click={createCustomCase}
-									disabled={isProcessing || !caseTitle.trim()}
+									on:click={disabled}
 								>
 									{#if isProcessing}
 										Creating...

@@ -20,7 +20,7 @@ https://svelte.dev/e/js_parse_error -->
     Button
   } from '$lib/components/ui/enhanced-bits';;
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
-  let { analysisData = $bindable() } = $props(); // {
+  let { analysisData = $bindable()  }: { analysisData = $bindable() : any } = $props(); // {
     evidenceAnalysis?: unknown;
     personsData?: unknown;
     caseSynthesis?: unknown;
@@ -51,10 +51,10 @@ https://svelte.dev/e/js_parse_error -->
   let showDetails = $state(false);
 </script>
 
-<NesCard class="w-full max-w-4xl">
+<div class="w-full max-w-4xl nes-container">
   <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
-      <h3 class="nes-text is-primary" class="text-xl font-semibold">
+      <h3 class="nes-text is-primary text-xl font-semibold">
         Multi-Agent Evidence Analysis
       </h3>
       {#if synthesis.caseStrength}
@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 
-  <div class="yorha-panel-content" class="space-y-6">
+  <div class="yorha-panel-content space-y-6">
     <!-- Evidence Summary -->
     {#if evidence.documentType}
       <div>
@@ -235,22 +235,23 @@ https://svelte.dev/e/js_parse_error -->
       <Button class="bits-btn" 
         variant="outline" 
         size="sm"
-        onclick={() => showDetails = !showDetails}
+        on:click={() =>
+showDetails = !showDetails}
       >
         {showDetails ? 'Hide' : 'Show'} Full Analysis
-      </button>
+</Button>
       
       <Button class="bits-btn" variant="outline" size="sm">
-        📊 View Timeline
-      </button>
+📊 View Timeline
+</Button>
       
       <Button class="bits-btn" variant="outline" size="sm">
-        🕸️ Relationship Graph  
-      </button>
+🕸️ Relationship Graph
+</Button>
       
       <Button class="bits-btn" size="sm">
-        📝 Generate Report
-      </button>
+📝 Generate Report
+</Button>
     </div>
 
     <!-- Detailed View -->
@@ -263,7 +264,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   </div>
-</NesCard>
+</div>
 
 <style>
   /* Custom scrollbar for JSON display */

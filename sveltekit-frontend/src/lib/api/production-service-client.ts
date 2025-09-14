@@ -4,7 +4,7 @@
  * Simplified wrapper around the main production client for testing purposes
  */
 
-import type { ServiceRequest, ServiceResponse } from './production-client';
+import type { ServiceRequest, ServiceResponse } from './production-client.js';
 
 export interface IntegrationServiceRequest {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -48,20 +48,20 @@ class ProductionServiceClient {
 
       let data: any;
       try {
-        data = await response.json();
+        data = await (response as { json?: any; text?: any; status?: any; headers?: any }).json();
       } catch (parseError) {
         // Handle non-JSON responses
         data = {
           error: 'Non-JSON response',
-          text: await response.text(),
+          text: await (response as { json?: any; text?: any; status?: any; headers?: any }).text(),
           parseError: parseError.message
         };
       }
 
       return {
         data,
-        status: response.status,
-        headers: Object.fromEntries(response.headers.entries()),
+        status: (response as { json?: any; text?: any; status?: any; headers?: any }).status,
+        headers: Object.fromEntries((response as { json?: any; text?: any; status?: any; headers?: any }).headers.entries()),
         protocol: 'HTTP/1.1',
         service: this.extractServiceFromEndpoint(endpoint),
         latency
@@ -78,7 +78,7 @@ class ProductionServiceClient {
           code: 'NETWORK_ERROR'
         },
         status: 0, // Indicates network failure
-        headers: {},
+        headers: Record<string, any>,
         protocol: 'HTTP/1.1',
         service: this.extractServiceFromEndpoint(endpoint),
         latency
@@ -117,7 +117,7 @@ class ProductionServiceClient {
   async checkServiceHealth(servicePath: string = '/health'): Promise<boolean> {
     try {
       const response = await this.get(servicePath);
-      return response.status >= 200 && response.status < 300;
+      return (response as { json?: any; text?: any; status?: any; headers?: any }).status >= 200 && (response as { json?: any; text?: any; status?: any; headers?: any }).status < 300;
     } catch (error) {
       return false;
     }
@@ -137,13 +137,7 @@ class ProductionServiceClient {
   }
 
   // Performance benchmarking utility
-  async benchmark(endpoint: string, options: IntegrationServiceRequest, iterations: number = 5): Promise<{
-    averageLatency: number;
-    minLatency: number;
-    maxLatency: number;
-    successRate: number;
-    results: ServiceResponse[];
-  }> {
+  async benchmark(endpoint: string, options: IntegrationServiceRequest, iterations: number = 5): Promise<any> {
     const results: ServiceResponse[] = [];
     let successCount = 0;
 
@@ -151,7 +145,7 @@ class ProductionServiceClient {
       const result = await this.makeRequest(endpoint, options);
       results.push(result);
 
-      if (result.status >= 200 && result.status < 300) {
+      if ((result as { status?: any }).status >= 200 && (result as { status?: any }).status < 300) {
         successCount++;
       }
     }

@@ -1,10 +1,10 @@
 /// <reference types="vite/client" />
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 import { fail } from "@sveltejs/kit";
 import { z } from 'zod';
 import { superValidate } from 'sveltekit-superforms/server';
 import { zod } from "sveltekit-superforms/adapters";
-import type { Actions } from './$types';
+import type { Actions } from './$types.js';
 
 const UPLOAD_SERVICE_URL = import.meta.env.UPLOAD_SERVICE_URL || 'http://localhost:8093';
 

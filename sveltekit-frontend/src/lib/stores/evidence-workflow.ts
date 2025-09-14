@@ -36,7 +36,7 @@ type EvidenceEvents =
 const evidenceProcessingMachine = createMachine({
   id: 'evidenceProcessor',
   initial: 'idle',
-  types: {} as { context: EvidenceContext; events: EvidenceEvents },
+  types: Record<string, any> as { context: EvidenceContext; events: EvidenceEvents },
   context: {
     file: null,
     evidenceId: '',

@@ -24,7 +24,7 @@
  * 7-bit glyph compression and sub-millisecond response times.
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { topologyPredictiveAnalyticsEngine } from '$lib/ai/topology-predictive-analytics-engine.js';
 import { enhancedRAGGlyphSystem } from '$lib/ai/enhanced-rag-glyph-system.js';
@@ -67,26 +67,14 @@ interface PredictiveTypingResponse {
   success: boolean;
   
   // Predictive suggestions
-  suggestions: Array<{
-    text: string;
-    confidence: number;
-    intent: string;
-    topology_score: number;
-    source: 'predictive' | 'glyph' | 'cached';
-    reasoning: string;
-  }>;
+  suggestions: Array<any>;
   
   // Analytics insights
   analytics: {
     predicted_intent: string;
     intent_confidence: number;
     session_trajectory: string[];
-    topology_insights: Array<{
-      cluster_id: number;
-      relevance: number;
-      concepts: string[];
-    }>;
-  };
+    topology_insights: Array<any>;
   
   // Performance metrics
   performance: {

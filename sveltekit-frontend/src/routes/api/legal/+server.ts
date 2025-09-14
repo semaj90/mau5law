@@ -1,6 +1,6 @@
 // Enhanced SvelteKit API routes for legal AI integration
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { lucia } from '$lib/auth/lucia';
 import Redis from 'ioredis';
 
@@ -12,11 +12,7 @@ const MCP_ENDPOINT = process.env.MCP_ENDPOINT || 'http://localhost:3000';
 
 interface LegalJobRequest {
   case_id: string;
-  messages: Array<{
-    role: 'user' | 'assistant' | 'system';
-    content: string;
-    message_id?: string;
-  }>;
+  messages: Array<any>;
   model_config?: {
     model_type?: 'gemma3' | 'gemma-local' | 'autogen' | 'crewai';
     temperature?: number;
@@ -31,11 +27,7 @@ interface LegalJobRequest {
   };
   workflow_config?: {
     workflow_type?: 'autogen' | 'crewai' | 'sequential';
-    agents?: Array<{
-      agent_type: string;
-      system_prompt: string;
-    }>;
-  };
+    agents?: Array<any>;
 }
 
 // POST /api/legal - Submit legal AI job

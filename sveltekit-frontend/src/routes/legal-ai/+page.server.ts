@@ -4,7 +4,7 @@
  * Integrates with our decoupled architecture
  */
 
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
 import { desc, eq } from 'drizzle-orm';
@@ -18,21 +18,8 @@ export interface LegalAIPageData {
       models: string[];
       error: string | null;
     };
-    recentSessions: Array<{
-      id: string;
-      sessionName: string;
-      messageCount: number;
-      lastActivity: string;
-      documentsProcessed: number;
-    }>;
-    recentDocuments: Array<{
-      id: string;
-      title: string;
-      summary: string;
-      documentType: string;
-      createdAt: string;
-      keyTerms: string[];
-    }>;
+    recentSessions: Array<any>;
+    recentDocuments: Array<any>;
     serviceStatus: {
       postgresql: boolean;
       ollama: boolean;

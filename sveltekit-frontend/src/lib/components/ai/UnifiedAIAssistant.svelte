@@ -67,11 +67,7 @@
   		caseId = '',
   		evidenceContext = [] as any[],
   		readonly = false
-  	} = $props<{
-  		caseId?: string;
-  		evidenceContext?: any[];
-  		readonly?: boolean;
-  	}>();
+  	} = $props();
 
   	// Initialize AI systems
   	onMount(async () => {
@@ -156,14 +152,14 @@
   					const { type, data } = event.data;
   					switch (type) {
   						case 'init-complete':
-  							aiBackends.webgpu.initialized = data.success;
-  							aiBackends.webgpu.status = data.success ? 'ready' : 'error';
+  							aiBackends.webgpu.initialized = (data as { success?: any; error?: any; gpuUtilization?: any }).success;
+  							aiBackends.webgpu.status = (data as { success?: any; error?: any; gpuUtilization?: any }).success ? 'ready' : 'error';
   							break;
   						case 'task-complete':
   							handleWebGPUTaskComplete(data);
   							break;
   						case 'error':
-  							console.error('❌ WebGPU Worker Error:', data.error);
+  							console.error('❌ WebGPU Worker Error:', (data as { success?: any; error?: any; gpuUtilization?: any }).error);
   							break;
   					}
   				};
@@ -182,15 +178,15 @@
   	function handleWebGPUTaskComplete(data: any) {
   		console.log('✅ WebGPU task completed:', data);
   		// Update performance metrics
-  		performanceMetrics.gpuUtilization = data.gpuUtilization || 0;
+  		performanceMetrics.gpuUtilization = (data as { success?: any; error?: any; gpuUtilization?: any }).gpuUtilization || 0;
   	}
 
   	async function loadConversationHistory() {
   		if (caseId) {
   			try {
   				const response = await fetch(`/api/legal/conversations/${caseId}`);
-  				if (response.ok) {
-  					const history = await response.json();
+  				if ((response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).ok) {
+  					const history = await (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).json();
   					messages = history.messages || [];
   					await scrollToBottom();
   				}
@@ -226,11 +222,11 @@
   			const aiMessage = {
   				id: `msg-${Date.now()}-assistant`,
   				role: 'assistant',
-  				content: response.content,
+  				content: (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).content,
   				timestamp: new Date().toISOString(),
   				processingTime,
-  				backend: response.backend,
-  				tokensPerSecond: response.tokensPerSecond || 0,
+  				backend: (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).backend,
+  				tokensPerSecond: (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).tokensPerSecond || 0,
   				caseId
   			};
 
@@ -238,7 +234,7 @@
 
   			// Update performance metrics
   			performanceMetrics.responseTime = processingTime;
-  			performanceMetrics.tokensPerSecond = response.tokensPerSecond || 0;
+  			performanceMetrics.tokensPerSecond = (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).tokensPerSecond || 0;
   			performanceMetrics.contextLength = messages.length;
 
   			await scrollToBottom();
@@ -344,13 +340,13 @@
   			})
   		});
 
-  		if (!response.ok) {
-  			throw new Error(`vLLM API error: ${response.status}`);
+  		if (!(response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).ok) {
+  			throw new Error(`vLLM API error: ${(response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).status}`);
   		}
 
-  		const result = await response.json();
+  		const result = await (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).json();
   		return {
-  			content: result.choices?.[0]?.message?.content || 'No response',
+  			content: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).choices?.[0]?.message?.content || 'No response',
   			backend: 'vLLM',
   			tokensPerSecond: 0 // vLLM doesn't provide this directly
   		};
@@ -371,15 +367,15 @@
   			})
   		});
 
-  		if (!response.ok) {
-  			throw new Error(`Ollama API error: ${response.status}`);
+  		if (!(response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).ok) {
+  			throw new Error(`Ollama API error: ${(response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).status}`);
   		}
 
-  		const result = await response.json();
+  		const result = await (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).json();
   		return {
-  			content: result.message?.content || 'No response',
+  			content: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).message?.content || 'No response',
   			backend: 'Ollama',
-  			tokensPerSecond: result.eval_duration ? (result.eval_count || 0) / (result.eval_duration / 1000000000) : 0
+  			tokensPerSecond: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).eval_duration ? ((result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).eval_count || 0) / ((result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).eval_duration / 1000000000) : 0
   		};
   	}
 
@@ -405,14 +401,14 @@
   			stream: false
   		});
 
-  		if (!result.success) {
-  			throw new Error(result.error || 'Go microservice error');
+  		if (!(result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).success) {
+  			throw new Error((result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).error || 'Go microservice error');
   		}
 
   		return {
-  			content: result.data?.content || result.data?.response || 'No response',
+  			content: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).data?.content || (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).data?.response || 'No response',
   			backend: 'Go Microservice',
-  			tokensPerSecond: result.metadata?.tokensPerSecond || 0
+  			tokensPerSecond: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).metadata?.tokensPerSecond || 0
   		};
   	}
 
@@ -529,15 +525,15 @@
 <!-- Unified AI Assistant Interface -->
 <div class="h-full flex flex-col bg-background">
 	<!-- Header -->
-	<NesCard class="mb-4">
-		<div class="yorha-panel-header" class="pb-3">
+	<div class="mb-4 nes-container">
+		<div class="yorha-panel-header pb-3">
 			<div class="flex justify-between items-center">
 				<div class="flex items-center gap-4">
 					<div class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
 						<Bot class="w-5 h-5 text-primary" />
 					</div>
 					<div>
-						<h3 class="nes-text is-primary" class="text-xl">Legal AI Assistant</h3>
+						<h3 class="nes-text is-primary text-xl">Legal AI Assistant</h3>
 						<p class="text-sm nes-text is-disabled">Powered by multiple AI backends with GPU acceleration</p>
 					</div>
 				</div>
@@ -559,22 +555,22 @@
 						</Badge>
 					</div>
 					
-					<Button class="bits-btn" variant="outline" size="sm" onclick={exportConversation}>
-						<Download class="w-4 h-4 mr-1" />
+					<Button class="bits-btn" variant="outline" size="sm" on:click={exportConversation}>
+<Download class="w-4 h-4 mr-1" />
 						Export
-					</button>
-					<Button class="bits-btn" variant="outline" size="sm" onclick={clearConversation}>
-						<Square class="w-4 h-4 mr-1" />
+</Button>
+					<Button class="bits-btn" variant="outline" size="sm" on:click={clearConversation}>
+<Square class="w-4 h-4 mr-1" />
 						Clear
-					</button>
+</Button>
 				</div>
 			</div>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- Performance Metrics -->
-	<NesCard class="mb-4">
-		<div class="yorha-panel-content" class="py-3">
+	<div class="mb-4 nes-container">
+		<div class="yorha-panel-content py-3">
 			<div class="flex justify-between items-center text-sm">
 				<div class="flex gap-6">
 					<span class="flex items-center gap-1">
@@ -600,11 +596,11 @@
 				</div>
 			</div>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- Chat Messages -->
-	<NesCard class="flex-1 mb-4">
-		<div class="yorha-panel-content" class="p-0 h-full">
+	<div class="flex-1 mb-4 nes-container">
+		<div class="yorha-panel-content p-0 h-full">
 			<div 
 				bind:this={chatContainer}
 				class="h-full overflow-y-auto p-4 space-y-4"
@@ -676,11 +672,11 @@
 				{/if}
 			</div>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- Input Area -->
-	<NesCard>
-		<div class="yorha-panel-content" class="p-4">
+	<div class="nes-container">
+		<div class="yorha-panel-content p-4">
 			<div class="flex items-center gap-2">
 				<div class="flex-1 relative">
 					<Input
@@ -696,45 +692,49 @@
 						<Button
 							variant="ghost"
 							size="sm"
-							onclick={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
+							on:click={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
 							class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 bits-btn bits-btn"
 							disabled={readonly}
 						>
-							{#if voiceRecording.isRecording}
+{#if voiceRecording.isRecording}
 								<MicOff class="w-4 h-4 text-red-500" />
 							{:else}
 								<Mic class="w-4 h-4" />
 							{/if}
-						</button>
+</Button>
 					{/if}
 				</div>
 				
 				<Button class="bits-btn" 
-					onclick={sendMessage}
+					on:click={sendMessage}
 					disabled={!currentMessage.trim() || isProcessing || readonly}
 				>
-					<Send class="w-4 h-4 mr-1" />
+<Send class="w-4 h-4 mr-1" />
 					Send
-				</button>
+</Button>
 			</div>
 			
 			<!-- Quick Actions -->
 			<div class="flex gap-2 mt-3 flex-wrap">
-				<Button class="bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'Analyze the evidence in this case'}>
+				<Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+currentMessage = 'Analyze the evidence in this case'}>
 					🔍 Analyze Evidence
-				</button>
-				<Button class="bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'What are the key legal issues?'}>
+</Button>
+				<Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+currentMessage = 'What are the key legal issues?'}>
 					⚖️ Legal Issues
-				</button>
-				<Button class="bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'Generate a case summary'}>
+</Button>
+				<Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+currentMessage = 'Generate a case summary'}>
 					📋 Case Summary
-				</button>
-				<Button class="bits-btn" variant="outline" size="sm" onclick={() => currentMessage = 'Find relevant precedents'}>
+</Button>
+				<Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+currentMessage = 'Find relevant precedents'}>
 					📚 Find Precedents
-				</button>
+</Button>
 			</div>
 		</div>
-	</NesCard>
+	</div>
 </div>
 
 <style>

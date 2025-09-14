@@ -110,7 +110,7 @@ const initialContext: VectorPipelineContext = {
 };
 
 export const vectorPipelineMachine = setup({
-  types: {} as {
+  types: Record<string, any> as {
     context: VectorPipelineContext;
     events: VectorPipelineEvent;
   },
@@ -321,8 +321,8 @@ export const vectorPipelineMachine = setup({
 
       return retryResults.map((result, index) => ({
         job: failedJobs[index],
-        success: result.status === 'fulfilled',
-        result: result.status === 'fulfilled' ? result.value : result.reason,
+        success: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled',
+        result: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value : (result as { status?: any; value?: any; reason?: any }).reason,
       }));
     }),
 

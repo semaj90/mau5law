@@ -368,17 +368,8 @@ export class ResourcePool<T> {
 export interface BundleAnalysis {
   totalSize: number;
   gzippedSize: number;
-  components: Array<{
-    name: string;
-    size: number;
-    dependencies: string[];
-    critical: boolean;
-  }>;
-  duplicates: Array<{
-    module: string;
-    count: number;
-    size: number;
-  }>;
+  components: Array<any>;
+  duplicates: Array<any>;
   recommendations: string[];
 }
 

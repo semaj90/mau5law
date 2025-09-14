@@ -330,8 +330,8 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     }),
 
     loadContext: assign({
-      userDictionary: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.userDictionary : {},
-      systemStatus: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.systemStatus : {}
+      userDictionary: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.userDictionary : Record<string, any>,
+      systemStatus: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.systemStatus : Record<string, any>
     }),
 
     addUserMessage: assign({

@@ -12,15 +12,21 @@
     maxLines?: number;
   }
 
-  let {
-    title = "YORHA LEGAL TERMINAL v4.0.0",
+  let { title = "YORHA LEGAL TERMINAL v4.0.0",
     prompt = "YoRHa:legal>",
     history = [],
     currentInput = "",
     isActive = true,
     onCommand,
     maxLines = 100
-  } = $props();
+   }: { title = "YORHA LEGAL TERMINAL v4.0.0",
+    prompt = "YoRHa:legal>",
+    history = [],
+    currentInput = "",
+    isActive = true,
+    onCommand,
+    maxLines = 100
+  : any } = $props();
 
   let terminalRef: HTMLDivElement
   let inputRef: HTMLInputElement
@@ -289,7 +295,7 @@
         bind:value={currentCommand}
         class="command-input"
         disabled={isProcessing}
-        onkeydown={handleKeyDown}
+        on:keydown={handleKeyDown}
         placeholder=""
         spellcheck="false"
         autocomplete="off"

@@ -5,7 +5,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
 import { reinforcementLearningCache as serverCache } from '$lib/caching/reinforcement-learning-cache.server';
 
@@ -330,7 +330,7 @@ async function updateRLModels(request: Asset3DSearchRequest, results: Asset3DSea
 
   // Update server-side RL cache with result quality
   for (const result of results.slice(0, 3)) {
-    serverCache.set(`quality_${result.assetId}`, result.predictedUsage);
+    serverCache.set(`quality_${(result as { assetId?: any; predictedUsage?: any }).assetId}`, (result as { assetId?: any; predictedUsage?: any }).predictedUsage);
   }
 
   console.log(`🧠 Updated RL models with ${results.length} search results`);

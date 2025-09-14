@@ -13,7 +13,7 @@
 
   // Typing machine state
   let typingState = $state<TypingState>('idle');
-  let typingContext = $state<TypingContext>();
+  let typingContext: TypingContext = $state(undefined as any);
   let contextualPrompts = $state<string[]>([]);
   let userAnalytics = $state<any>({});
   let mcpWorkerStatus = $state<'idle' | 'processing' | 'ready'>('idle');
@@ -23,7 +23,7 @@
   let uploadStatus = $state<'idle' | 'uploading' | 'completed' | 'error'>('idle');
 
   // Chat/RAG interface
-  let chatMessages = $state<Array<{type: 'user' | 'assistant', content: string, timestamp: number}>>([]);
+  let chatMessages = $state<any[]>([])([]);
   let isProcessingChat = $state(false);
 
   // Real-time analytics
@@ -49,21 +49,21 @@
         body: formData
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
       
-      if (result.success) {
-        uploadResults = result.data;
+      if ((result as { success?: any; data?: any; error?: any }).success) {
+        uploadResults = (result as { success?: any; data?: any; error?: any }).data;
         uploadStatus = 'completed';
         
         // Add system message about successful upload
         chatMessages = [...chatMessages, {
           type: 'assistant',
-          content: `✅ Successfully processed "${file.name}" with Gemma embeddings! The document is now searchable with ${result.data.embeddingsCount} vector embeddings. You can ask questions about the content.`,
+          content: `✅ Successfully processed "${file.name}" with Gemma embeddings! The document is now searchable with ${(result as { success?: any; data?: any; error?: any }).data.embeddingsCount} vector embeddings. You can ask questions about the content.`,
           timestamp: Date.now()
         }];
       } else {
         uploadStatus = 'error';
-        console.error('Upload failed:', result.error);
+        console.error('Upload failed:', (result as { success?: any; data?: any; error?: any }).error);
       }
     } catch (error) {
       uploadStatus = 'error';
@@ -132,7 +132,7 @@
   /**
    * Handle typing state changes
    */
-  function handleTypingStateChange(event: CustomEvent<{state: TypingState, context: TypingContext}>) {
+  function handleTypingStateChange(event: CustomEvent) {
     typingState = event.detail.state;
     typingContext = event.detail.context;
     
@@ -150,21 +150,21 @@
   /**
    * Handle contextual prompts
    */
-  function handleContextualPrompts(event: CustomEvent<{prompts: string[], context: TypingContext}>) {
+  function handleContextualPrompts(event: CustomEvent) {
     contextualPrompts = event.detail.prompts;
   }
 
   /**
    * Handle analytics updates
    */
-  function handleAnalyticsUpdate(event: CustomEvent<{analytics: any}>) {
+  function handleAnalyticsUpdate(event: CustomEvent) {
     userAnalytics = event.detail.analytics;
   }
 
   /**
    * Handle MCP worker status
    */
-  function handleMCPWorkerStatus(event: CustomEvent<{status: 'idle' | 'processing' | 'ready'}>) {
+  function handleMCPWorkerStatus(event: CustomEvent) {
     mcpWorkerStatus = event.detail.status;
   }
 
@@ -266,7 +266,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
           bind:this={fileInput}
           type="file"
           accept=".pdf,.txt,.doc,.docx"
-          onchange={(e) => {
+          on:change={(e) => {
             const file = e.target.files?.[0];
             if (file) {
               uploadedFile = file;
@@ -277,7 +277,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
         />
         
         <button
-          onclick={() => fileInput?.click()}
+          on:click={() => fileInput?.click()}
           disabled={uploadStatus === 'uploading'}
           class="upload-button"
         >
@@ -289,7 +289,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
         </button>
 
         <button
-          onclick={testWithLegalPDF}
+          on:click={testWithLegalPDF}
           disabled={uploadStatus === 'uploading'}
           class="test-button"
         >
@@ -359,7 +359,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
               {#each contextualPrompts as prompt}
                 <button
                   class="prompt-button"
-                  onclick={() => applyContextualPrompt(prompt)}
+                  on:click={() => applyContextualPrompt(prompt)}
                 >
                   {prompt}
                 </button>
@@ -373,7 +373,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
               bind:value={userInput}
               placeholder="Ask questions about your uploaded document..."
               rows="3"
-              onkeydown={(e) => {
+              on:keydown={(e) => {
                 if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                   e.preventDefault();
                   handleChatSubmit();
@@ -382,7 +382,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
               disabled={isProcessingChat}
             ></textarea>
             <button
-              onclick={handleChatSubmit}
+              on:click={handleChatSubmit}
               disabled={!userInput.trim() || isProcessingChat}
               class="send-button"
             >

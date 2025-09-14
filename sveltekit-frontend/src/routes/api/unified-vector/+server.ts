@@ -5,7 +5,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { unifiedVectorOrchestrator } from '$lib/services/unified-vector-orchestrator';
 import type { UnifiedVectorRequest } from '$lib/services/unified-vector-orchestrator';
 

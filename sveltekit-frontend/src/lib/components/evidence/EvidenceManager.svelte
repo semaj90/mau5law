@@ -51,11 +51,13 @@
     showSearch?: boolean;
   }
 
-  let {
-    caseId = '',
+  let { caseId = '',
     showUpload = true,
     showSearch = true
-  } = $props();
+   }: { caseId = '',
+    showUpload = true,
+    showSearch = true
+  : any } = $props();
 
   // State
   let evidenceFiles = $state<EvidenceFile[]>([]);
@@ -92,9 +94,9 @@
     loading.files = true;
     try {
       const response = await fetch('/api/evidence-files?limit=50');
-      const result = await response.json();
-      if (result.success) {
-        evidenceFiles = result.items.map((item: any) => ({
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success) {
+        evidenceFiles = (result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).items.map((item: any) => ({
           ...item,
           hasEmbedding: true // We'll check this when we get embedding status
         }));
@@ -111,9 +113,9 @@
     loading.stats = true;
     try {
       const response = await fetch('/api/evidence-embeddings');
-      const result = await response.json();
-      if (result.success) {
-        embeddingStats = result.stats;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success) {
+        embeddingStats = (result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).stats;
       }
     } catch (err) {
       console.error('Failed to load embedding stats:', err);
@@ -144,12 +146,12 @@
           body: formData
         });
 
-        const result = await response.json();
-        if (!result.success) {
-          throw new Error(result.error || 'Upload failed');
+        const result = await (response as { json?: any }).json();
+        if (!(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success) {
+          throw new Error((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).error || 'Upload failed');
         }
 
-        if (result.duplicate) {
+        if ((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).duplicate) {
           uploadProgress = `${file.name} already exists (duplicate detected)`;
         } else {
           uploadProgress = `${file.name} uploaded successfully`;
@@ -179,12 +181,12 @@
         body: JSON.stringify({ action: 'backfill' })
       });
 
-      const result = await response.json();
-      if (result.success) {
-        uploadProgress = `Backfill complete! Processed: ${result.result.processed}, Success: ${result.result.success}, Failed: ${result.result.failed}`;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success) {
+        uploadProgress = `Backfill complete! Processed: ${(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).processed}, Success: ${(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success}, Failed: ${(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).failed}`;
         await loadEmbeddingStats();
       } else {
-        throw new Error(result.error);
+        throw new Error((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).error);
       }
     } catch (err) {
       error = `Embedding backfill failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
@@ -207,12 +209,12 @@
       if (caseId) params.set('case_id', caseId);
 
       const response = await fetch(`/api/evidence-embeddings?${params}`);
-      const result = await response.json();
-      if (result.success) {
-        searchResults = result.results;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success) {
+        searchResults = (result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).results;
         showSearchResults = true;
       } else {
-        throw new Error(result.error);
+        throw new Error((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).error);
       }
     } catch (err) {
       error = `Search failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
@@ -271,11 +273,15 @@
       handleFileUpload(e.dataTransfer.files);
     }
   }
+
+
+// Auto-generated default export
+export default {};
 </script>
 
 <div class="evidence-manager">
   <!-- Embedding Stats Card -->
-  <NesCard class="mb-6">
+  <div class="mb-6 nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">📊 Embedding Status</h3>
     </div>
@@ -301,29 +307,29 @@
 
       <div class="flex gap-2">
         <Button
-          onclick={loadEmbeddingStats}
+          on:click={loadEmbeddingStats}
           disabled={loading.stats}
           variant="outline"
           class="text-sm bits-btn bits-btn"
         >
-          {loading.stats ? 'Refreshing...' : '🔄 Refresh Stats'}
-        </button>
+{loading.stats ? 'Refreshing...' : '🔄 Refresh Stats'}
+</Button>
 
         <Button
-          onclick={triggerEmbeddingBackfill}
+          on:click={triggerEmbeddingBackfill}
           disabled={loading.backfill || embeddingStats.withoutEmbeddings === 0}
           variant="secondary"
           class="text-sm bits-btn bits-btn"
         >
-          {loading.backfill ? 'Processing...' : `🚀 Generate Embeddings (${embeddingStats.withoutEmbeddings})`}
-        </button>
+{loading.backfill ? 'Processing...' : `🚀 Generate Embeddings (${embeddingStats.withoutEmbeddings})`}
+</Button>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Upload Section -->
   {#if showUpload}
-    <NesCard class="mb-6">
+    <div class="mb-6 nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">📁 Upload Evidence</h3>
       </div>
@@ -332,15 +338,15 @@
           class="upload-area {dragActive ? 'drag-active' : ''}"
           ondragenter={handleDragEnter}
           ondragleave={handleDragLeave}
-          ondragover={handleDragOver}
-          role="region" aria-label="Drop zone" ondrop={handleDrop}
+          on:dragover={handleDragOver}
+          role="region" aria-label="Drop zone" on:drop={handleDrop}
         >
           <input
             bind:this={fileInput}
             type="file"
             multiple
             class="hidden"
-            onchange={(e: Event) => {
+            on:change={(e: Event) => {
               const target = e.currentTarget as HTMLInputElement;
               if (target?.files) handleFileUpload(target.files);
             }}
@@ -352,11 +358,12 @@
             <p class="text-sm text-gray-600 mb-4">Supports PDFs, images, documents, and more</p>
 
             <Button class="bits-btn"
-              onclick={() => fileInput?.click()}
+              on:click={() =>
+fileInput?.click()}
               disabled={loading.upload}
             >
               {loading.upload ? 'Uploading...' : 'Select Files'}
-            </button>
+</Button>
           </div>
         </div>
 
@@ -366,12 +373,12 @@
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Search Section -->
   {#if showSearch}
-    <NesCard class="mb-6">
+    <div class="mb-6 nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">🔍 Semantic Search</h3>
       </div>
@@ -382,14 +389,14 @@
             type="text"
             placeholder="Search for similar evidence..."
             class="flex-1 px-3 py-2 border rounded-lg"
-            onkeydown={(e) => e.key === 'Enter' && performSemanticSearch()}
+            on:keydown={(e) => e.key === 'Enter' && performSemanticSearch()}
           />
           <Button class="bits-btn"
-            onclick={performSemanticSearch}
+            on:click={performSemanticSearch}
             disabled={loading.search || !searchQuery.trim()}
           >
-            {loading.search ? 'Searching...' : 'Search'}
-          </button>
+{loading.search ? 'Searching...' : 'Search'}
+</Button>
         </div>
 
         {#if showSearchResults}
@@ -397,12 +404,12 @@
             <div class="flex justify-between items-center mb-4">
               <h4 class="font-semibold">Search Results ({searchResults.length})</h4>
               <button class="nes-btn"
-                onclick={() => { showSearchResults = false; searchResults = []; }}
+                on:click={() => { showSearchResults = false; searchResults = []; }}
                 variant="outline"
                 class="bits-btn text-sm"
               >
                 Clear Results
-              </button>
+</Button>
             </div>
 
             {#if searchResults.length === 0}
@@ -413,20 +420,20 @@
                   <div class="search-result-item p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                     <div class="flex justify-between items-start">
                       <div class="flex-1">
-                        <h5 class="font-medium text-gray-900">{result.title}</h5>
-                        {#if result.description}
-                          <p class="text-sm text-gray-600 mt-1">{result.description}</p>
+                        <h5 class="font-medium text-gray-900">{(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).title}</h5>
+                        {#if (result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).description}
+                          <p class="text-sm text-gray-600 mt-1">{(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).description}</p>
                         {/if}
                         <div class="flex gap-4 mt-2 text-xs text-gray-500">
-                          <span>📁 {result.evidence_type}</span>
-                          <span>📄 {result.mime_type}</span>
-                          <span>📅 {formatDate(result.uploaded_at)}</span>
-                          <span>💾 {formatFileSize(result.file_size)}</span>
+                          <span>📁 {(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).evidence_type}</span>
+                          <span>📄 {(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).mime_type}</span>
+                          <span>📅 {formatDate((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).uploaded_at)}</span>
+                          <span>💾 {formatFileSize((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).file_size)}</span>
                         </div>
                       </div>
                       <div class="text-right ml-4">
                         <div class="similarity-score text-lg font-bold text-green-600">
-                          {Math.round(result.similarity * 100)}%
+                          {Math.round((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).similarity * 100)}%
                         </div>
                         <div class="text-xs text-gray-500">similarity</div>
                       </div>
@@ -438,22 +445,22 @@
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Evidence Files List -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <div class="flex justify-between items-center">
         <h3 class="nes-text is-primary">📋 Evidence Files ({evidenceFiles.length})</h3>
         <Button
-          onclick={loadEvidenceFiles}
+          on:click={loadEvidenceFiles}
           disabled={loading.files}
           variant="outline"
           class="text-sm bits-btn bits-btn"
         >
-          {loading.files ? 'Loading...' : '🔄 Refresh'}
-        </button>
+{loading.files ? 'Loading...' : '🔄 Refresh'}
+</Button>
       </div>
     </div>
     <div class="yorha-panel-content">
@@ -505,7 +512,7 @@
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Error Display -->
   {#if error}
@@ -516,12 +523,12 @@
           <h4 class="error-title">Error</h4>
           <p class="error-message">{error}</p>
           <button class="nes-btn"
-            onclick={() => { error = ''; }}
+            on:click={() => { error = ''; }}
             variant="outline"
             class="bits-btn mt-3 text-xs dismiss-btn"
           >
             Dismiss
-          </button>
+</Button>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Comprehensive Service Orchestration System
 // Manages all 37 Go binaries with intelligent routing and health monitoring

@@ -202,7 +202,7 @@
                 type="text"
                 placeholder="Add tags (comma separated)"
                 class="space-y-4"
-                onblur={(e) => {
+                on:blur={(e) => {
                   const tags = (e.target as HTMLInputElement).value.split(',').map(t => t.trim()).filter(t => t);
                   currentNote.tags = tags;
                 }}
@@ -212,8 +212,7 @@
             <RichTextEditor
               content={currentNote.content}
               placeholder="Start writing your note..."
-              save={handleEditorSave}
-              change={handleEditorChange}
+              save={handleEditorSave} on:change={handleEditorChange}
               autoSave={true}
               autoSaveDelay={3000}
             />
@@ -283,7 +282,7 @@
 
             <button
               type="button"
-              onclick={() => createNewNote()}
+              on:click={() => createNewNote()}
               class="space-y-4"
             >
               <Plus class="space-y-4" />
@@ -304,7 +303,7 @@
             {#each $filteredNotes as note (note.id)}
               <button
                 type="button"
-                onclick={() => viewNote(note)}
+                on:click={() => viewNote(note)}
                 class="space-y-4"
               >
                 <div class="space-y-4">

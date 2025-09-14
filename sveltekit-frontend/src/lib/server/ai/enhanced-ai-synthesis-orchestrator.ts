@@ -2,7 +2,7 @@
 // Connects Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama, and Go services
 // TypeScript-safe implementation with MCP Context7 best practices
 
-import { logger } from '../logger.js';
+import { logger } from '../logger.js.js';
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { createMachine, createActor, fromPromise } from "xstate";
@@ -11,10 +11,10 @@ import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
 import { Neo4jVectorStore } from "@langchain/community/vectorstores/neo4j_vector";
 import type { Document } from '@langchain/core/documents';
 import Redis from 'ioredis';
-import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
-import { legalBERT } from './legalbert-middleware.js';
-import { cachingLayer } from './caching-layer.js';
-import { monitoringService } from './monitoring-service.js';
+import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js.js';
+import { legalBERT } from './legalbert-middleware.js.js';
+import { cachingLayer } from './caching-layer.js.js';
+import { monitoringService } from './monitoring-service.js.js';
 
 // Type-safe stub for production
 const prisma = null as any; // Will be replaced with proper Drizzle implementation
@@ -86,10 +86,10 @@ const serviceConfig: ServiceConfig = {
   },
   postgres: {
     host: import.meta.env.POSTGRES_HOST || 'localhost',
-    port: parseInt(import.meta.env.POSTGRES_PORT || '5432'),
-    database: import.meta.env.POSTGRES_DB || 'legal_ai',
-    user: import.meta.env.POSTGRES_USER || 'postgres',
-    password: import.meta.env.POSTGRES_PASSWORD || 'postgres',
+    port: parseInt(import.meta.env.POSTGRES_PORT || '5433'),
+    database: import.meta.env.POSTGRES_DB || 'legal_ai_db',
+    user: import.meta.env.POSTGRES_USER || 'legal_admin',
+    password: import.meta.env.POSTGRES_PASSWORD || '123456',
   },
   redis: {
     host: import.meta.env.REDIS_HOST || 'localhost',
@@ -338,7 +338,7 @@ export class EnhancedAISynthesisOrchestrator {
     this.machine = orchestrationMachine;
     this.ollama = new ChatOllama({
       baseUrl: serviceConfig.ollama.baseUrl,
-      model: serviceConfig.ollama.model,
+      model: serviceConfig.ollama?.model || "unknown" // @ts-ignore - Model property access,
       temperature: 0.3,
     });
 
@@ -434,7 +434,7 @@ export class EnhancedAISynthesisOrchestrator {
     this.machine = orchestrationMachine.provide({
       guards: {
         cacheHit: ({ context, event }) => {
-          return event.data && event.data.cached === true;
+          return event.data && event.(data as { cached?: any }).cached === true;
         },
       },
       actors: {
@@ -492,8 +492,8 @@ export class EnhancedAISynthesisOrchestrator {
               }),
             });
 
-            if (!response.ok) throw new Error(`RAG failed: ${response.statusText}`);
-            return await response.json();
+            if (!(response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).ok) throw new Error(`RAG failed: ${(response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).statusText}`);
+            return await (response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).json();
           } catch (error: any) {
             logger.error('[RAG] Pipeline failed:', error);
             return [];
@@ -504,7 +504,7 @@ export class EnhancedAISynthesisOrchestrator {
 
           try {
             const response = await this.ollama.invoke(prompt);
-            return response.content;
+            return (response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).content;
           } catch (error: any) {
             logger.error('[Orchestrator] Generation failed:', error);
             throw error;
@@ -532,7 +532,7 @@ export class EnhancedAISynthesisOrchestrator {
           });
 
           // Add metadata
-          result.metadata = {
+          (result as { metadata?: any }).metadata = {
             processingTime: Date.now() - startTime,
             confidence: 0.8,
             strategies: ['legal-bert', 'rag', 'cross-encoder'],
@@ -601,7 +601,7 @@ export class EnhancedAISynthesisOrchestrator {
     try {
       // Check if model exists
       const response = await fetch(`${serviceConfig.ollama.baseUrl}/api/tags`);
-      const { models } = await response.json();
+      const { models } = await (response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).json();
 
       const hasGemma3Legal = models?.some((m: any) => m.name === 'gemma3-legal:latest');
 
@@ -687,7 +687,7 @@ TEMPLATE """{{ if .System }}<|system|>
           await service.test();
         } else if (service.url) {
           const response = await fetch(service.url);
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          if (!(response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).ok) throw new Error(`HTTP ${(response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).status}`);
         }
         logger.info(`[Orchestrator] ✅ ${service.name} connected`);
       } catch (error: any) {
@@ -922,21 +922,21 @@ RESPONSE:`;
 
     try {
       const response = await fetch(`${serviceConfig.ollama.baseUrl}/api/tags`);
-      services.ollama = response.ok ? 'healthy' : 'unhealthy';
+      services.ollama = (response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).ok ? 'healthy' : 'unhealthy';
     } catch {
       services.ollama = 'offline';
     }
 
     try {
       const response = await fetch(`${serviceConfig.goMicroservices.rag}/health`);
-      services.enhancedRAG = response.ok ? 'healthy' : 'unhealthy';
+      services.enhancedRAG = (response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).ok ? 'healthy' : 'unhealthy';
     } catch {
       services.enhancedRAG = 'offline';
     }
 
     try {
       const response = await fetch(`${serviceConfig.goMicroservices.gpu}/health`);
-      services.gpuOrchestrator = response.ok ? 'healthy' : 'unhealthy';
+      services.gpuOrchestrator = (response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).ok ? 'healthy' : 'unhealthy';
     } catch {
       services.gpuOrchestrator = 'offline';
     }

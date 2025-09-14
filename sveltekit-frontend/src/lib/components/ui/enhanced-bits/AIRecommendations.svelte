@@ -44,7 +44,7 @@
   onMount(fetchRecommendations);
 </script>
 
-<NesCard class="w-full">
+<div class="w-full nes-container">
   <div class="yorha-panel-header">
     <h3 class="nes-text is-primary">AI Recommendations</h3>
   </div>
@@ -65,5 +65,5 @@
       </ul>
     {/if}
   </div>
-</NesCard>
+</div>
 

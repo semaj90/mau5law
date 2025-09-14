@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Database CRUD Test API
 // Tests PostgreSQL, pgvector, and Drizzle ORM integration

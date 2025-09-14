@@ -24,7 +24,7 @@ TODO: Implement RAG functionality, vector search, document context
 			// 	headers: { 'Content-Type': 'application/json' },
 			// 	body: JSON.stringify({ query })
 			// });
-			// results = await response.json();
+			// results = await (response as { json?: any }).json();
 
 			// Simulate search for now
 			setTimeout(() => {
@@ -87,8 +87,8 @@ TODO: Implement RAG functionality, vector search, document context
 					<Card.Header>
 						<Card.Title class="nes-text is-primary">
 							Legal Document Search
-						</Card.Title>
-					</Card.Header>
+						</div.Title>
+					</div.Header>
 					<Card.Content>
 						<div class="space-y-4">
 							<div>
@@ -101,11 +101,11 @@ TODO: Implement RAG functionality, vector search, document context
 										type="text"
 										bind:value={query}
 										placeholder="What evidence supports the prosecution's case?"
-										onkeydown={(e) => e.key === 'Enter' && handleRAGSearch()}
+										on:keydown={(e) => e.key === 'Enter' && handleRAGSearch()}
 									/>
 									<Button
 										class="nes-btn is-primary"
-										onclick={handleRAGSearch}
+										on:click={handleRAGSearch}
 										disabled={isSearching || !query.trim()}
 									>
 										{#if isSearching}
@@ -113,7 +113,6 @@ TODO: Implement RAG functionality, vector search, document context
 										{:else}
 											Search
 										{/if}
-									</Button>
 								</div>
 							</div>
 
@@ -125,37 +124,36 @@ TODO: Implement RAG functionality, vector search, document context
 									</h3>
 									{#each results as result}
 										<div class="nes-container with-title is-centered">
-											<p class="title">{result.title}</p>
-											<p class="text-sm">{result.snippet}</p>
+											<p class="title">{(result as { title?: any; snippet?: any; relevance?: any }).title}</p>
+											<p class="text-sm">{(result as { title?: any; snippet?: any; relevance?: any }).snippet}</p>
 											<div class="flex justify-between items-center mt-2">
 												<span class="nes-badge is-success">
-													{Math.round(result.relevance * 100)}% match
+													{Math.round((result as { title?: any; snippet?: any; relevance?: any }).relevance * 100)}% match
 												</span>
 												<Button size="sm" class="nes-btn">
 													View Document
-												</Button>
 											</div>
 										</div>
 									{/each}
 								</div>
 							{/if}
 						</div>
-					</Card.Content>
-				</Card.Root>
+					</div.Content>
+				</div.Root>
 
 				<!-- Chat Interface -->
 				<Card.Root class="nes-container is-rounded">
 					<Card.Header>
 						<Card.Title class="nes-text is-primary">
 							RAG Assistant Chat
-						</Card.Title>
-					</Card.Header>
+						</div.Title>
+					</div.Header>
 					<Card.Content class="p-0">
 						<div class="h-96">
 							<RAGAssistantChat />
 						</div>
-					</Card.Content>
-				</Card.Root>
+					</div.Content>
+				</div.Root>
 			</div>
 
 			<!-- Features Sidebar -->
@@ -164,8 +162,8 @@ TODO: Implement RAG functionality, vector search, document context
 					<Card.Header>
 						<Card.Title class="nes-text is-primary text-sm">
 							RAG Features
-						</Card.Title>
-					</Card.Header>
+						</div.Title>
+					</div.Header>
 					<Card.Content>
 						<div class="space-y-4">
 							{#each features as feature}
@@ -182,30 +180,27 @@ TODO: Implement RAG functionality, vector search, document context
 								</div>
 							{/each}
 						</div>
-					</Card.Content>
-				</Card.Root>
+					</div.Content>
+				</div.Root>
 
 				<!-- Quick Actions -->
 				<Card.Root class="nes-container is-rounded mt-6">
 					<Card.Header>
 						<Card.Title class="nes-text is-primary text-sm">
 							Quick Actions
-						</Card.Title>
-					</Card.Header>
+						</div.Title>
+					</div.Header>
 					<Card.Content>
 						<div class="space-y-2">
 							<Button class="nes-btn w-full text-xs" size="sm">
 								Search Similar Cases
-							</Button>
 							<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
 								Browse Legal Database
-							</Button>
 							<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
 								View Search History
-							</Button>
 						</div>
-					</Card.Content>
-				</Card.Root>
+					</div.Content>
+				</div.Root>
 			</div>
 		</div>
 	{/snippet}

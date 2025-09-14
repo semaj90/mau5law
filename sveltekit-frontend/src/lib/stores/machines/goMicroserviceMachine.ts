@@ -6,7 +6,7 @@
 
 import { createMachine, assign, fromPromise } from 'xstate';
 // Types sourced from local machine types module
-import type { GoMicroserviceContext, GoServiceRequest, GoServiceResponse } from './types';
+import type { GoMicroserviceContext, GoServiceRequest, GoServiceResponse } from './types.js';
 
 const DEFAULT_TIMEOUT = 30_000; // 30s
 const HEALTH_CHECK_INTERVAL = 60_000; // 60s

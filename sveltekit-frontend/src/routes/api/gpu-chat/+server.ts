@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { error } from '@sveltejs/kit';
 
 // Environment variable for Go GPU server URL (updated to use new inference endpoint)
@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Create inference request for the Go GPU server
         const inferenceRequest = {
             prompt: body.prompt,
-            model: body.model || 'legal:latest',
+            model: body?.model || "unknown" // @ts-ignore - Model property access || 'legal:latest',
             max_tokens: body.max_tokens || 512,
             temperature: body.temperature || 0.1,
             use_gpu: true

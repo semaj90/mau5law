@@ -12,13 +12,13 @@
     type RAGQuery,
     type RAGResponse,
   } from '$lib/services/enhanced-rag-semantic-analyzer';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/button/Button.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
 
   // Reactive state using runes
   let sampleLegalText = $state(`
@@ -172,14 +172,14 @@
       class="tab px-4 py-2 font-medium {activeTab === 'analyze'
         ? 'border-b-2 border-blue-500 text-blue-600'
         : 'text-gray-500 hover:text-gray-700'}"
-      onclick={() => (activeTab = 'analyze')}>
+      on:click={() => (activeTab = 'analyze')}>
       Document Analysis
     </button>
     <button
       class="tab px-4 py-2 font-medium {activeTab === 'query'
         ? 'border-b-2 border-blue-500 text-blue-600'
         : 'text-gray-500 hover:text-gray-700'}"
-      onclick={() => (activeTab = 'query')}>
+      on:click={() => (activeTab = 'query')}>
       Enhanced RAG Query
     </button>
   </div>
@@ -188,7 +188,7 @@
   {#if activeTab === 'analyze'}
     <div class="analysis-tab space-y-6">
       <!-- Input Section -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Legal Document Input</h3>
         </div>
@@ -214,21 +214,21 @@
                 )} words
               </div>
               <Button
-                onclick={analyzeDocument}
+                on:click={analyzeDocument}
                 disabled={isAnalyzing || !sampleLegalText.trim()}
                 class="px-6 bits-btn bits-btn">
-                {isAnalyzing ? 'Analyzing...' : 'Analyze Document'}
-              </button>
+{isAnalyzing ? 'Analyzing...' : 'Analyze Document'}
+
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Analysis Results -->
       {#if analysisResult}
         <div class="analysis-results grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Entities -->
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">Extracted Entities ({analysisResult.entities.length})</h3>
             </div>
@@ -256,10 +256,10 @@
                 {/each}
               </div>
             </div>
-          </NesCard>
+          </div>
 
           <!-- Concepts -->
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">Legal Concepts ({analysisResult.concepts.length})</h3>
             </div>
@@ -286,10 +286,10 @@
                 {/each}
               </div>
             </div>
-          </NesCard>
+          </div>
 
           <!-- Metrics -->
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">Analysis Metrics</h3>
             </div>
@@ -323,10 +323,10 @@
                 </div>
               </div>
             </div>
-          </NesCard>
+          </div>
 
           <!-- Embeddings Preview -->
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">Vector Embeddings</h3>
             </div>
@@ -346,7 +346,7 @@
                 </div>
               </div>
             </div>
-          </NesCard>
+          </div>
         </div>
       {/if}
     </div>
@@ -356,7 +356,7 @@
   {#if activeTab === 'query'}
     <div class="query-tab space-y-6">
       <!-- Query Configuration -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Enhanced RAG Query</h3>
         </div>
@@ -414,19 +414,19 @@
 
             <div class="flex justify-end">
               <Button
-                onclick={performRAGQuery}
+                on:click={performRAGQuery}
                 disabled={isAnalyzing || !queryText.trim()}
                 class="px-6 bits-btn bits-btn">
-                {isAnalyzing ? 'Querying...' : 'Execute RAG Query'}
-              </button>
+{isAnalyzing ? 'Querying...' : 'Execute RAG Query'}
+
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Query Results -->
       {#if ragResponse}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Query Results ({ragResponse.totalFound} found)</h3>
           </div>
@@ -454,16 +454,16 @@
                 {#each ragResponse.results as result}
                   <div class="result-item p-4 border border-gray-200 rounded-lg">
                     <div class="flex justify-between items-start mb-2">
-                      <h4 class="font-medium text-gray-900">{result.title}</h4>
+                      <h4 class="font-medium text-gray-900">{(result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).title}</h4>
                       <span class="text-sm text-blue-600 font-medium">
-                        {Math.round(result.relevanceScore * 100)}% match
+                        {Math.round((result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).relevanceScore * 100)}% match
                       </span>
                     </div>
-                    <p class="text-sm text-gray-600 mb-3">{result.excerpt}</p>
+                    <p class="text-sm text-gray-600 mb-3">{(result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).excerpt}</p>
 
-                    {#if result.entities && result.entities.length > 0}
+                    {#if (result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).entities && (result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).entities.length > 0}
                       <div class="entities flex flex-wrap gap-1">
-                        {#each result.entities.slice(0, 5) as entity}
+                        {#each (result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).entities.slice(0, 5) as entity}
                           <span
                             class="inline-flex items-center px-2 py-1 rounded text-xs {getEntityColor(
                               entity.type
@@ -484,7 +484,7 @@
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
     </div>
   {/if}

@@ -8,24 +8,18 @@
   import { page } from '$app/state';
   import type { PageData } from './$types';
 
-  let { data = $bindable() } = $props(); // PageData;
+  let { data }: { data: any } = $props(); // PageData;
   let isSubmitting = $state(false);
 
   // Enhanced form submission
   function createEnhancedSubmit() {
-    return enhance(({ formData, action, cancel }) => {
-      isSubmitting = true;
-      // Add metadata to form submission
-      formData.append('metadata', JSON.stringify({
-        submitTime: new Date().toISOString(),
-        userAgent: navigator.userAgent
-      }));
+    return enhance);
       return async ({ result, update }) => {
         isSubmitting = false;
-        if (result.type === 'success') {
-          console.log('✅ Form submitted successfully:', result.data);
-        } else if (result.type === 'failure') {
-          console.log('❌ Form submission failed:', result.data);
+        if ((result as { type?: any; data?: any }).type === 'success') {
+          console.log('✅ Form submitted successfully:', (result as { type?: any; data?: any }).data);
+        } else if ((result as { type?: any; data?: any }).type === 'failure') {
+          console.log('❌ Form submission failed:', (result as { type?: any; data?: any }).data);
         }
 
         await update();
@@ -66,7 +60,7 @@
   <form 
     method="POST" 
     action="?/testAction"
-    use:createEnhancedSubmit()
+    use:createEnhancedSubmit
     class="space-y-6 bg-white p-6 rounded-lg shadow-md"
   >
     <!-- Title Field -->
@@ -78,7 +72,7 @@
         id="title"
         name="title"
         type="text"
-        value={data.form.data.title}
+        value={(data as { form?: any; title?: any; description?: any; priority?: any }).form.(data as { form?: any; title?: any; description?: any; priority?: any }).title}
         placeholder="Enter a title"
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         class:border-red-500={page.form?.errors?.title}
@@ -98,7 +92,7 @@
         id="description"
         name="description"
         rows="4"
-        value={data.form.data.description}
+        value={(data as { form?: any; title?: any; description?: any; priority?: any }).form.(data as { form?: any; title?: any; description?: any; priority?: any }).description}
         placeholder="Enter a description (optional)"
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       ></textarea>
@@ -112,7 +106,7 @@
       <select
         id="priority"
         name="priority"
-        value={data.form.data.priority}
+        value={(data as { form?: any; title?: any; description?: any; priority?: any }).form.(data as { form?: any; title?: any; description?: any; priority?: any }).priority}
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       >
         <option value="low">Low Priority</option>
@@ -147,7 +141,7 @@
   <div class="mt-8 p-4 bg-gray-50 rounded-lg">
     <h3 class="text-lg font-semibold mb-3">Debug Information</h3>
     <div class="space-y-2 text-sm">
-      <div><strong>Form Data:</strong> {JSON.stringify(data.form.data, null, 2)}</div>
+      <div><strong>Form Data:</strong> {JSON.stringify((data as { form?: any; title?: any; description?: any; priority?: any }).form.data, null, 2)}</div>
       <div><strong>Page Form:</strong> {JSON.stringify(page.form, null, 2)}</div>
       <div><strong>Is Submitting:</strong> {isSubmitting}</div>
     </div>

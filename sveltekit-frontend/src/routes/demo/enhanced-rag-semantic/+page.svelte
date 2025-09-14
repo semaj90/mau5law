@@ -107,12 +107,12 @@
     </div>
 
     <!-- System Status -->
-    <NesCard class="system-status">
+    <div class="system-status nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           <span>System Status</span>
           <button
-            onclick={checkSystemStatus}
+            on:click={checkSystemStatus}
             class="text-sm px-3 py-1 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200"
             disabled={loadingStatus}>
             {loadingStatus ? 'Checking...' : 'Refresh'}
@@ -192,13 +192,13 @@
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
 
     <!-- Feature Overview -->
     <div class="features grid grid-cols-1 md:grid-cols-3 gap-6">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
+          <h3 class="nes-text is-primary flex items-center space-x-2">
             <span class="text-2xl">🧠</span>
             <span>Semantic Analysis</span>
           </h3>
@@ -212,11 +212,11 @@
             <li>• 384-dimensional vector embeddings</li>
           </ul>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
+          <h3 class="nes-text is-primary flex items-center space-x-2">
             <span class="text-2xl">🔍</span>
             <span>Enhanced RAG</span>
           </h3>
@@ -230,11 +230,11 @@
             <li>• Real-time relevance scoring</li>
           </ul>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
+          <h3 class="nes-text is-primary flex items-center space-x-2">
             <span class="text-2xl">⚡</span>
             <span>AI Integration</span>
           </h3>
@@ -248,14 +248,14 @@
             <li>• Intelligent caching and indexing</li>
           </ul>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Main Demo Component -->
     <EnhancedRAGDemo />
 
     <!-- Technical Details -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Technical Architecture</h3>
       </div>
@@ -314,37 +314,37 @@
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Performance Metrics -->
     <div class="performance grid grid-cols-2 md:grid-cols-4 gap-4">
-      <NesCard class="text-center">
-        <div class="yorha-panel-content" class="pt-6">
+      <div class="text-center nes-container">
+        <div class="yorha-panel-content pt-6">
           <div class="text-3xl font-bold text-blue-600">384D</div>
           <div class="text-sm text-gray-600">Vector Embeddings</div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="text-center">
-        <div class="yorha-panel-content" class="pt-6">
+      <div class="text-center nes-container">
+        <div class="yorha-panel-content pt-6">
           <div class="text-3xl font-bold text-green-600">&lt;100ms</div>
           <div class="text-sm text-gray-600">Semantic Analysis</div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="text-center">
-        <div class="yorha-panel-content" class="pt-6">
+      <div class="text-center nes-container">
+        <div class="yorha-panel-content pt-6">
           <div class="text-3xl font-bold text-purple-600">8 Types</div>
           <div class="text-sm text-gray-600">Legal Entities</div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="text-center">
-        <div class="yorha-panel-content" class="pt-6">
+      <div class="text-center nes-container">
+        <div class="yorha-panel-content pt-6">
           <div class="text-3xl font-bold text-orange-600">95%</div>
           <div class="text-sm text-gray-600">Accuracy Rate</div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 </div>

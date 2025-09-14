@@ -1,4 +1,4 @@
-import { getUserById } from './db/queries.js';
+import { getUserById } from './db/queries.js.js';
 
 // import { type RequestEvent } from "@sveltejs/kit";
 
@@ -9,7 +9,7 @@ interface RequestEvent {
     delete(name: string, options?: any): void;
   };
 }
-import { signJWT, verifyJWT, type JWTPayload } from './authUtils.js';
+import { signJWT, verifyJWT, type JWTPayload } from './authUtils.js.js';
 
 // In-memory session store (for development)
 const sessions = new Map<string, Session>();
@@ -28,7 +28,7 @@ export interface User {
 }
 export async function validateSessionToken(
   token: string,
-): Promise<{ session: Session | null; user: User | null }> {
+): Promise<any> {
   try {
     // Try JWT token validation
     const payload = verifyJWT(token) as JWTPayload | null;

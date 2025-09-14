@@ -53,8 +53,7 @@ export interface UserAnalytics {
   performance: {
     averageTaskTime: Record<string, number>;
     accuracyScores: Record<string, number>;
-    productivityTrends: Array<{ date: string; score: number }>;
-  };
+    productivityTrends: Array<any>;
   preferences: {
     aiAssistanceLevel: 'minimal' | 'moderate' | 'extensive';
     notificationFrequency: 'real-time' | 'hourly' | 'daily';
@@ -73,8 +72,7 @@ export interface RecommendationState {
   behaviorInsights: {
     patterns: string[];
     suggestions: string[];
-    trends: Array<{ metric: string; trend: 'up' | 'down' | 'stable'; change: number }>;
-  };
+    trends: Array<any>;
 
   // AI Models
   isAnalyzing: boolean;
@@ -316,7 +314,7 @@ export const recommendationActions = {
   /**
    * Track recommendation accuracy based on user feedback
    */
-  updateAccuracyMetrics(feedback: Array<{ helpful: boolean; confidence: number }>): void {
+  updateAccuracyMetrics(feedback: Array<): void {
     if (feedback.length === 0) return;
 
     const accuracy = feedback.reduce((sum, f) =>
@@ -332,10 +330,7 @@ export const recommendationActions = {
   /**
    * Update recommendation settings
    */
-  updateSettings(settings: Partial<{
-    enableRealTimeAnalysis: boolean;
-    privacyLevel: 'minimal' | 'standard' | 'enhanced';
-  }>): void {
+  updateSettings(settings: Partial): void {
     recommendationStore.update(state => ({
       ...state,
       ...settings

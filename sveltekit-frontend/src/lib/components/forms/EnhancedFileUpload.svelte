@@ -5,6 +5,10 @@ https://svelte.dev/e/expected_token -->
   Enhanced File Upload Component with Superforms and Zod Validation
   Features: Drag & drop, progress tracking, AI processing, validation, preview
   Cleaned: removed duplicated script/markup and ensured single <script>
+
+
+// Auto-generated default export
+export default {};
 </script>, template, and <style>.
 -->
 <script lang="ts">
@@ -85,8 +89,8 @@ https://svelte.dev/e/expected_token -->
   let fileInput: HTMLInputElement;
   let isDragOver = $state(false);
   let selectedFiles = $state<File[] >([]);
-  let uploadProgress = $state<Record<string, number> >({});
-  let previews = $state<Record<string, string> >({});
+  let uploadProgress = $state<Record<string, number>(0) >({});
+  let previews = $state<Record<string, string>('') >({});
   let isUploading = $state(false);
   let currentUploadFile = $state("");
 
@@ -106,7 +110,7 @@ https://svelte.dev/e/expected_token -->
     enableSummarization: false,
     isAdmissible: false,
   });
-  let errors = $state<Record<string, string[]> >({});
+  let errors = $state<Record<string, string[]>([]) >({});
 
   // Options
   const evidenceTypes = [
@@ -295,20 +299,19 @@ https://svelte.dev/e/expected_token -->
   bind:this={fileInput}
   type="file"
   {multiple}
-  accept={acceptedTypes.join(",")}
-  change={handleFileSelect}
+  accept={acceptedTypes.join(",")} on:change={handleFileSelect}
   class="hidden"
 />
 
-<NesCard class="w-full">
-  <div class="yorha-panel-header" class="pb-4">
-    <h3 class="nes-text is-primary" class="flex items-center gap-2">
+<div class="w-full nes-container">
+  <div class="yorha-panel-header pb-4">
+    <h3 class="nes-text is-primary flex items-center gap-2">
       <Upload class="h-5 w-5" />
       {compact ? "Upload Files" : "Evidence Upload"}
     </h3>
   </div>
 
-  <div class="yorha-panel-content" class="space-y-6">
+  <div class="yorha-panel-content space-y-6">
     <!-- Drop Zone -->
     <div
       class="border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer border-muted-foreground border-opacity-25 hover:border-primary hover:border-opacity-50"
@@ -316,10 +319,10 @@ https://svelte.dev/e/expected_token -->
       class:bg-primary/5={isDragOver}
       class:opacity-50={disabled}
       class:cursor-not-allowed={disabled}
-      ondragover={handleDragOver}
+      on:dragover={handleDragOver}
       ondragleave={handleDragLeave}
-      role="button" ondrop={handleDrop}
-      onclick={openFileDialog}
+      role="button" on:drop={handleDrop}
+      on:click={openFileDialog}
       keydown={(e: KeyboardEvent) => e.key === "Enter" && openFileDialog()}
       tabindex="0"
       aria-label="File upload area"
@@ -375,7 +378,7 @@ https://svelte.dev/e/expected_token -->
                 {/if}
               </div>
 
-              <button class="nes-btn" variant="ghost" size="sm" onclick={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
+              <button class="nes-btn" variant="ghost" size="sm" on:click={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
                 <X class="h-4 w-4" />
               </button>
             </div>
@@ -431,7 +434,9 @@ https://svelte.dev/e/expected_token -->
           <Label for="tags">Tags</Label>
           <div class="flex gap-2">
             <Input bind:value={tagInput} placeholder="Add a tag" disabled={isUploading} keydown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())} />
-            <Button class="bits-btn" type="button" variant="outline" onclick={addTag} disabled={isUploading}>Add</button>
+            <Button class="bits-btn" type="button" variant="outline" on:click={addTag} disabled={isUploading}>
+Add
+</Button>
           </div>
 
           {#if formState.tags.length > 0}
@@ -439,9 +444,9 @@ https://svelte.dev/e/expected_token -->
               {#each formState.tags as tag}
                 <Badge variant="secondary" class="gap-1 inline-flex items-center">
                   <span>{tag}</span>
-                  <button type="button" class="ml-2" onclick={() => removeTag(tag)} disabled={isUploading} aria-label="Remove tag">
+                  <button type="button" class="ml-2" on:click={() => removeTag(tag)} disabled={isUploading} aria-label="Remove tag">
                     <X class="h-3 w-3" />
-                  </button>
+</Button>
                 </Badge>
               {/each}
             </div>
@@ -484,15 +489,17 @@ https://svelte.dev/e/expected_token -->
       </p>
 
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="outline" onclick={() => oncancel?.()} disabled={isUploading}>Cancel</button>
+        <Button class="bits-btn" variant="outline" on:click={() =>
+oncancel?.()} disabled={isUploading}>Cancel
+</Button>
 
-        <button class="nes-btn" onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
+        <button class="nes-btn" on:click={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
           {#if isUploading}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />Uploading...
           {:else}
             <Upload class="h-4 w-4 mr-2" />Upload {selectedFiles.length} file{selectedFiles.length !== 1 ? "s" : ""}
           {/if}
-        </button>
+</Button>
       </div>
     </div>
 
@@ -510,7 +517,7 @@ https://svelte.dev/e/expected_token -->
       </div>
     {/if}
   </div>
-</NesCard>
+</div>
 
 <style>
   /* Minimal local styles; utilities provided by UnoCSS or your CSS framework. */

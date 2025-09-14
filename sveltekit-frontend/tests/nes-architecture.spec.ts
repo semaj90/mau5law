@@ -71,7 +71,7 @@ test.describe('NES Legal AI Architecture Tests', () => {
           });
           
           // Log response status and any errors
-          const status = response?.status();
+          const status = response?.status;
           console.log(`📊 Route: ${route} | Status: ${status}`);
           
           if (status && status >= 500) {

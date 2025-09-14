@@ -25,7 +25,7 @@ export interface Redis {
 // lib/server/ai/caching-layer.ts
 // Advanced caching layer for AI synthesis results with Redis and LRU fallback
 
-import { logger } from './logger';
+import { logger } from './logger.js';
 export interface CacheOptions {
   ttl?: number; // Time to live in seconds
   tags?: string[]; // Tags for cache invalidation
@@ -283,10 +283,10 @@ class CachingLayer {
   /**
    * Warm up cache with frequently accessed items
    */
-  async warmUp(items: Array<{ key: string; value: any; options?: CacheOptions }>): Promise<void> {
+  async warmUp(items: Array<): Promise<void> {
     logger.info(`[CachingLayer] Warming up cache with ${items.length} items`);
 
-    const warmUpPromises = items.map((item) => this.set(item.key, item.value, item.options));
+    const warmUpPromises = items.map((item) => this.set((item as { key?: any; value?: any; options?: any; lastAccess?: any }).key, (item as { key?: any; value?: any; options?: any; lastAccess?: any }).value, (item as { key?: any; value?: any; options?: any; lastAccess?: any }).options));
 
     await Promise.all(warmUpPromises);
 
@@ -341,8 +341,8 @@ class CachingLayer {
     let oldestTime = Date.now();
 
     for (const [key, item] of Array.from(this.hotCache.entries())) {
-      if (item.lastAccess < oldestTime) {
-        oldestTime = item.lastAccess;
+      if ((item as { key?: any; value?: any; options?: any; lastAccess?: any }).lastAccess < oldestTime) {
+        oldestTime = (item as { key?: any; value?: any; options?: any; lastAccess?: any }).lastAccess;
         oldestKey = key;
       }
     }
@@ -403,7 +403,7 @@ class CachingLayer {
     const maxAge = 30 * 60 * 1000; // 30 minutes
 
     for (const [key, item] of Array.from(this.hotCache.entries())) {
-      if (now - item.lastAccess > maxAge) {
+      if (now - (item as { key?: any; value?: any; options?: any; lastAccess?: any }).lastAccess > maxAge) {
         this.hotCache.delete(key);
       }
     }

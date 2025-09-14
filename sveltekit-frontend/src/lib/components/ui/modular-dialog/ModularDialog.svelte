@@ -101,7 +101,7 @@
       }
 
       if (result) {
-        data = result.data || result;
+        data = (result as { data?: any }).data || result;
         lastFetch = Date.now();
         onDataLoad?.(data);
         dispatch('dataLoad', data);
@@ -156,7 +156,7 @@
   });
 
   // Subscribe to reactive data changes
-  let unsubscribe = $state<(() => void) | null>(null);
+  let unsubscribe = $state<(() =>(null) void) | null>(null);
   $effect(() => {
     if (entityType && entityId) {
       const key = `${entityType}:${entityId}`;
@@ -199,7 +199,7 @@
                 {title}
                 {#if data && entityType === 'case'}
                   <span class="text-sm nes-text is-disabled ml-2">
-                    #{data.caseNumber || data.id.slice(-6)}
+                    #{(data as { caseNumber?: any; id?: any }).caseNumber || (data as { caseNumber?: any; id?: any }).id.slice(-6)}
                   </span>
                 {/if}
               </Dialog.Title>
@@ -215,7 +215,7 @@
           <!-- Refresh button -->
           {#if entityType && entityId}
             <button
-              onclick={refresh}
+              on:click={refresh}
               disabled={isLoading}
               class="p-1 rounded-sm opacity-70 hover:opacity-100 transition-opacity disabled:opacity-50 mr-2"
               title="Refresh data"
@@ -243,7 +243,7 @@
             {:else}
               <div class="flex items-center gap-2 nes-text is-disabled">
                 <Loader2 class="h-4 w-4 animate-spin" />
-                <span class="font-mono text-sm">Loading data...</span>
+                <span class="font-mono text-sm">Loading (data as { caseNumber?: any; id?: any })...</span>
               </div>
             {/if}
           </div>
@@ -259,7 +259,7 @@
                   <p class="font-mono text-xs nes-text is-disabled mt-1">{errorMessage}</p>
                 </div>
                 <button
-                  onclick={refresh}
+                  on:click={refresh}
                   class="px-3 py-1 text-xs bg-muted hover:bg-muted/80 rounded-md font-mono transition-colors"
                 >
                   Try Again

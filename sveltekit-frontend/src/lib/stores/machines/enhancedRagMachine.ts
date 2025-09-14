@@ -16,7 +16,7 @@ type RagEvent =
 
 export const enhancedRagMachine = createMachine({
   id: 'enhancedRag',
-  types: {} as {
+  types: Record<string, any> as {
     context: RagContext;
     events: RagEvent;
   },

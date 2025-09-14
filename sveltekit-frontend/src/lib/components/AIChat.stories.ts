@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import AIChat from './AIChat.svelte';
+import AIChat from './AIChat.svelte.js';
 
 const meta = {
   title: 'Business/AIChat',

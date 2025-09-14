@@ -33,13 +33,7 @@ export const documentEmbeddings = pgTable(
     chunkText: text("chunk_text").notNull(),
     embedding: vector("embedding", { dimensions: 384 }), // For nomic-embed-text (optimized)
     metadata: jsonb("metadata")
-      .$type<{
-        pageNumber?: number;
-        section?: string;
-        highlighted?: boolean;
-        confidence?: number;
-        [key: string]: any;
-      }>()
+      .$type()
       .default({}),
     modelUsed: text("model_used").default("nomic-embed-text"),
     createdAt: timestamp("created_at").defaultNow(),
@@ -77,14 +71,7 @@ export const searchQueries = pgTable(
     searchType: text("search_type").notNull().default("semantic"), // 'semantic', 'keyword', 'hybrid'
     resultsCount: integer("results_count").default(0),
     results: jsonb("results")
-      .$type<{
-        items: Array<{
-          documentId: string;
-          documentType: string;
-          similarity: number;
-          snippet: string;
-          metadata?: any;
-        }>;
+      .$type;
         totalFound: number;
         searchTime: number;
       }>()
@@ -118,13 +105,7 @@ export const aiModels = pgTable(
     embeddingDimensions: integer("embedding_dimensions"),
     contextLength: integer("context_length"),
     config: jsonb("config")
-      .$type<{
-        baseUrl?: string;
-        apiKey?: string;
-        temperature?: number;
-        maxTokens?: number;
-        [key: string]: any;
-      }>()
+      .$type()
       .default({}),
     isActive: integer("is_active").notNull().default(1),
     createdAt: timestamp("created_at").defaultNow(),

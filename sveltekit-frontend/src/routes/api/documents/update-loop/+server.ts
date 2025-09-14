@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Document Update Loop API
 // Handles document changes with automatic re-embedding and re-ranking

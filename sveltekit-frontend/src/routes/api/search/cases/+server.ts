@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Optimized case search API endpoint
 // Supports multiple search strategies with automatic fallbacks

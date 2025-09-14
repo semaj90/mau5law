@@ -28,12 +28,12 @@ https://svelte.dev/e/props_duplicate -->
   } from 'lucide-svelte';
 
   // Props
-  let { targetId = $bindable() } = $props(); // string;
-  let { targetType = $bindable() } = $props(); // 'case' | 'evidence' | 'legal_document' | 'cross_analysis' = 'case';
-  let { depth = $bindable() } = $props(); // 'quick' | 'comprehensive' | 'forensic' = 'comprehensive';
-  let { enableStreaming = $bindable() } = $props(); // true;
-  let { enableUserActivity = $bindable() } = $props(); // true;
-  let { enableRAG = $bindable() } = $props(); // true;
+  let { targetId = $bindable()  }: { targetId = $bindable() : any } = $props(); // string;
+  let { targetType = $bindable()  }: { targetType = $bindable() : any } = $props(); // 'case' | 'evidence' | 'legal_document' | 'cross_analysis' = 'case';
+  let { depth = $bindable()  }: { depth = $bindable() : any } = $props(); // 'quick' | 'comprehensive' | 'forensic' = 'comprehensive';
+  let { enableStreaming = $bindable()  }: { enableStreaming = $bindable() : any } = $props(); // true;
+  let { enableUserActivity = $bindable()  }: { enableUserActivity = $bindable() : any } = $props(); // true;
+  let { enableRAG = $bindable()  }: { enableRAG = $bindable() : any } = $props(); // true;
 
   // XState machine integration
   const { state, send, context } = useMachine(aiSummaryMachine);
@@ -205,11 +205,11 @@ https://svelte.dev/e/props_duplicate -->
       body: JSON.stringify(request)
     });
 
-    if (!response.ok) {
-      throw new Error(`Summary API error: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; body?: any; json?: any }).ok) {
+      throw new Error(`Summary API error: ${(response as { ok?: any; statusText?: any; body?: any; json?: any }).statusText}`);
     }
 
-    const reader = response.body?.getReader();
+    const reader = (response as { ok?: any; statusText?: any; body?: any; json?: any }).body?.getReader();
     const decoder = new TextDecoder();
 
     if (!reader) {
@@ -244,68 +244,68 @@ https://svelte.dev/e/props_duplicate -->
       body: JSON.stringify(request)
     });
 
-    if (!response.ok) {
-      throw new Error(`Summary API error: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; body?: any; json?: any }).ok) {
+      throw new Error(`Summary API error: ${(response as { ok?: any; statusText?: any; body?: any; json?: any }).statusText}`);
     }
 
-    const result = await response.json();
-    if (result.success) {
-      synthesisResult.set(result.result);
+    const result = await (response as { ok?: any; statusText?: any; body?: any; json?: any }).json();
+    if ((result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).success) {
+      synthesisResult.set((result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).result);
       processingStats.set({
-        totalTime: result.metadata.processingTime,
-        tokensGenerated: result.result.sources.find(s => s.type === 'llm')?.details.tokens || 0,
-        documentsRetrieved: result.result.sources.find(s => s.type === 'rag')?.details.documentsUsed || 0,
-        confidenceScore: result.result.confidence
+        totalTime: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).metadata.processingTime,
+        tokensGenerated: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).(result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).sources.find(s => s.type === 'llm')?.details.tokens || 0,
+        documentsRetrieved: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).(result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).sources.find(s => s.type === 'rag')?.details.documentsUsed || 0,
+        confidenceScore: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).(result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).confidence
       });
       summaryProgress.set(100);
       currentStep = 'Summary completed successfully';
     } else {
-      throw new Error(result.error || 'Unknown error');
+      throw new Error((result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).error || 'Unknown error');
     }
 
     isProcessing = false;
   }
 
   function handleStreamingChunk(data) {
-    switch (data.type) {
+    switch ((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).type) {
       case 'status':
-        currentStep = data.message;
-        summaryProgress.set(data.progress);
+        currentStep = (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).message;
+        summaryProgress.set((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).progress);
         break;
       case 'llm_chunk':
         streamingData.update(chunks => [...chunks, {
           type: 'llm',
-          content: data.content,
+          content: (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).content,
           timestamp: Date.now()
         }]);
         break;
       case 'complete':
-        synthesisResult.set(data.result);
+        synthesisResult.set((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).result);
         summaryProgress.set(100);
         currentStep = 'Summary completed successfully';
         isProcessing = false;
         break;
       case 'error':
-        errorMessage = data.error;
+        errorMessage = (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).error;
         isProcessing = false;
         break;
     }
   }
 
   function updateStreamingProgress(data) {
-    summaryProgress.set(data.progress * 100);
-    if (data.result) {
+    summaryProgress.set((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).progress * 100);
+    if ((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).result) {
       streamingData.update(chunks => [...chunks, {
         type: 'chunk',
-        content: data.result.content,
-        chunkIndex: data.chunkIndex,
+        content: (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).(result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).content,
+        chunkIndex: (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).chunkIndex,
         timestamp: Date.now()
       }]);
     }
   }
 
   function handleSummaryCompletion(data) {
-    synthesisResult.set(data.summary);
+    synthesisResult.set((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).summary);
     isProcessing = false;
     summaryProgress.set(100);
     currentStep = 'Summary completed successfully';
@@ -320,7 +320,7 @@ https://svelte.dev/e/props_duplicate -->
   }
 
   function handleProcessingError(data) {
-    errorMessage = data.error || 'Unknown processing error';
+    errorMessage = (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).error || 'Unknown processing error';
     isProcessing = false;
   }
 
@@ -370,12 +370,12 @@ https://svelte.dev/e/props_duplicate -->
     if (!result) return;
 
     const exportData = {
-      summary: result.summary,
-      keyInsights: result.keyInsights,
-      actionItems: result.actionItems,
-      confidence: result.confidence,
-      sources: result.sources,
-      nextSteps: result.nextSteps,
+      summary: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).summary,
+      keyInsights: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).keyInsights,
+      actionItems: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).actionItems,
+      confidence: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).confidence,
+      sources: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).sources,
+      nextSteps: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).nextSteps,
       metadata: {
         targetId,
         targetType,
@@ -431,7 +431,7 @@ https://svelte.dev/e/props_duplicate -->
       <button
         class="btn-advanced"
         class:active={showAdvancedOptions}
-        onclick={() => showAdvancedOptions = !showAdvancedOptions}
+        on:click={() => showAdvancedOptions = !showAdvancedOptions}
       >
         <Settings size="16" />
         Advanced
@@ -491,16 +491,16 @@ https://svelte.dev/e/props_duplicate -->
 
       <div class="processing-controls">
         {#if !isProcessing}
-          <button class="nes-btn is-primary" onclick={startComprehensiveSummary}>
+          <button class="nes-btn is-primary" on:click={startComprehensiveSummary}>
             <Play size="16" />
             Start Analysis
           </button>
         {:else}
-          <button class="nes-btn" onclick={pauseProcessing}>
+          <button class="nes-btn" on:click={pauseProcessing}>
             <Pause size="16" />
             Pause
           </button>
-          <button class="btn-danger" onclick={stopProcessing}>
+          <button class="btn-danger" on:click={stopProcessing}>
             <Square size="16" />
             Stop
           </button>
@@ -569,7 +569,7 @@ https://svelte.dev/e/props_duplicate -->
             <option value="json">JSON</option>
             <option value="txt">Text</option>
           </select>
-          <button class="btn-export" onclick={exportSummary} disabled={!canExport}>
+          <button class="btn-export" on:click={exportSummary} disabled={!canExport}>
             <Download size="16" />
             Export
           </button>

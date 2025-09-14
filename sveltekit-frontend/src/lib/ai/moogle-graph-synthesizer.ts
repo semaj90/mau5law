@@ -20,7 +20,7 @@ type NESMemoryArchitecture = { allocateCHR_ROM?: (size: number) => any; writeCHR
 type DimensionalTensorStore = { storeTensorSlice?: (name: string, slice: any) => Promise<void>; getStats?: () => any };
 type SOMWebGPUCache = { getCachedLayout: (key: string) => any; setCachedLayout: (key: string, layout: any) => void };
 type GPUTensorWorker = { processVertexBuffer: (data: Float32Array) => Promise<ArrayBuffer> };
-import type { SoraGraphNode, SoraGraphEdge, SoraTraversalPath } from './sora-graph-traversal.js';
+import type { SoraGraphNode, SoraGraphEdge, SoraTraversalPath } from './sora-graph-traversal.js.js';
 import path from "path";
 type GraphNode = { id: string; properties: any };
 type GraphEdge = { id: string; source: string; target: string; weight: number };
@@ -74,8 +74,8 @@ export interface Moogle2DOutput {
   base64: string;
   svg: string;
   metadata: {
-    nodePositions: Array<{ id: string; x: number; y: number }>;
-    edgePositions: Array<{ id: string; points: number[] }>;
+    nodePositions: Array<any>;
+    edgePositions: Array<any>;
     bounds: { minX: number; maxX: number; minY: number; maxY: number };
     renderTime: number;
   };
@@ -91,16 +91,11 @@ export interface Moogle3DMesh {
   indexBuffer: ArrayBuffer;
 
   // LOD (Level of Detail) meshes
-  lodMeshes: Array<{
-    level: number;
-    vertices: Float32Array;
-    indices: Uint32Array;
-    triangleCount: number;
-  }>;
+  lodMeshes: Array<any>;
 
   metadata: {
-    nodePositions: Array<{ id: string; x: number; y: number; z: number }>;
-    edgeGeometry: Array<{ id: string; start: number[]; end: number[]; curve?: number[] }>;
+    nodePositions: Array<any>;
+    edgeGeometry: Array<any>;
     boundingBox: { min: number[]; max: number[]; center: number[] };
     meshStats: { vertexCount: number; triangleCount: number; memoryUsage: number };
     renderTime: number;
@@ -109,9 +104,9 @@ export interface Moogle3DMesh {
 
 export interface MoogleReinforcementVisualization {
   qValueHeatmap: ImageData;
-  pathHighlights: Array<{ path: string[]; score: number; color: string }>;
+  pathHighlights: Array<any>;
   rewardSurface: Moogle3DMesh;
-  trainingProgress: Array<{ episode: number; reward: number; pathLength: number }>;
+  trainingProgress: Array<any>;
   optimalPolicy: Map<string, string>; // state -> best action
 }
 
@@ -798,7 +793,7 @@ export class MoogleGraphSynthesizer {
   async synthesizeReinforcementVisualization(
     paths: SoraTraversalPath[],
     qValues: Map<string, Map<string, number>>,
-    rewardHistory: Array<{ episode: number; reward: number; pathLength: number }>,
+    rewardHistory: Array<,
     config: Partial<MoogleVisualizationConfig> = {}
   ): Promise<MoogleReinforcementVisualization> {
     const { nodes, edges } = this.extractGraphElements(paths);
@@ -843,7 +838,7 @@ export class MoogleGraphSynthesizer {
   async storeInNESMemory(
     visualization: Moogle2DOutput | Moogle3DMesh,
     region: 'CHR_ROM' | 'texture_cache' = 'CHR_ROM'
-  ): Promise<{ region: string; offset: number; size: number }> {
+  ): Promise<any> {
     try {
       let data: ArrayBuffer;
       let id: string;
@@ -1598,7 +1593,7 @@ export class MoogleGraphSynthesizer {
   ): Promise<Map<string, { x: number; y: number }>> {
     try {
       // Create embeddings for SOM analysis
-      const nodeEmbeddings: Array<{ id: string; embedding: Float32Array }> = [];
+      const nodeEmbeddings: Array< = [];
 
       for (const [nodeId, node] of nodes) {
         if (node.embedding) {
@@ -1613,7 +1608,7 @@ export class MoogleGraphSynthesizer {
 
       // Use SOM cache for clustering-based layout
       const clusterResults = await this.somCache.clusterEmbeddings(
-        nodeEmbeddings.map(n => ({ id: n.id, embedding: n.embedding, metadata: {} })),
+        nodeEmbeddings.map(n => ({ id: n.id, embedding: n.embedding, metadata: Record<string, any> })),
         {
           clusters: Math.min(10, Math.sqrt(nodeEmbeddings.length)),
           dimensions: 2
@@ -1759,7 +1754,7 @@ export class MoogleGraphSynthesizer {
   private async storeInOptimizedNESMemory(
     visualization: Moogle2DOutput | Moogle3DMesh,
     compressionLevel: 'low' | 'medium' | 'high' = 'medium'
-  ): Promise<{ region: string; offset: number; size: number; compressed: boolean }> {
+  ): Promise<any> {
     try {
       let data: ArrayBuffer;
       let id: string;
@@ -1852,12 +1847,7 @@ export class MoogleGraphSynthesizer {
   /**
    * Get enhanced cache statistics with tensor store integration
    */
-  public async getEnhancedCacheStats(): Promise<{
-    renderingCache: { size: number; memoryUsage: number; hitRate: number };
-    tensorStore: { totalSlices: number; totalSize: number; cacheHitRate: number };
-    somCache: { clusters: number; embeddings: number; memoryUsage: number };
-    gpuWorker: { activeJobs: number; completedJobs: number; averageTime: number };
-  }> {
+  public async getEnhancedCacheStats(): Promise<any> {
     try {
       const tensorStats = await this.tensorStore.getStats();
       const somStats = await this.somCache.getStats();

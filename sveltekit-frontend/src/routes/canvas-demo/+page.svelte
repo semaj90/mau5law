@@ -121,29 +121,28 @@ https://svelte.dev/e/attribute_duplicate -->
       <Button
         variant="outline"
         size="sm"
-        onclick={runDemoScenario}
+        on:click={runDemoScenario}
         class="demo-btn bits-btn bits-btn"
       >
-        🚀 Run Demo Scenario
-      </button>
+🚀 Run Demo Scenario
 
       <Button
         class="bits-btn demo-btn"
         variant="outline"
         size="sm"
-        onclick={() => showEventLog = !showEventLog}
+        on:click={() =>
+showEventLog = !showEventLog}
       >
         {showEventLog ? '👁️ Hide' : '👁️ Show'} Event Log
-      </button>
 
       <Button
         variant="outline"
         size="sm"
-        onclick={clearEventLog}
+        on:click={clearEventLog}
         class="demo-btn bits-btn bits-btn"
       >
-        🗑️ Clear Log
-      </button>
+🗑️ Clear Log
+
     </div>
   </div>
 

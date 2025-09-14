@@ -3,7 +3,7 @@
 
 import { pgTable, uuid, varchar, text, timestamp, integer, decimal, boolean, jsonb, vector } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm/relations';
-import { users, cases, evidence, legalDocuments } from './unified-schema';
+import { users, cases, evidence, legalDocuments } from './unified-schema.js';
 
 // Evidence Chain of Custody
 export const evidenceChainOfCustody = pgTable("evidence_chain_of_custody", {

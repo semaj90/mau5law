@@ -117,11 +117,7 @@ export interface MetricsAggregation {
     cls: number;
     fcp: number;
   };
-  topRoutes: Array<{
-    route: string;
-    requests: number;
-    averageTime: number;
-  }>;
+  topRoutes: Array<any>;
   cognitiveMetrics: CognitiveMetrics;
 }
 

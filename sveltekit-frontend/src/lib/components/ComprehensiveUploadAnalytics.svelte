@@ -338,13 +338,13 @@
           <div class="prompt-actions">
             <button
               class="btn-accept"
-              onclick={() => handlePromptReaction(prompt.id, 'accepted')}
+              on:click={() => handlePromptReaction(prompt.id, 'accepted')}
             >
               ✓ Accept
             </button>
             <button
               class="btn-dismiss"
-              onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
+              on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
             >
               ✕ Dismiss
             </button>
@@ -362,8 +362,8 @@
     class="file-drop-zone"
     class:drag-over={dragOver}
     class:has-files={selectedFiles.length > 0}
-    ondrop={handleDrop}
-    ondragover={handleDragOver}
+    on:drop={handleDrop}
+    on:dragover={handleDragOver}
     ondragleave={handleDragLeave}
   >
     {#if selectedFiles.length === 0}
@@ -378,12 +378,12 @@
           type="file"
           multiple
           accept={allowedTypes.join(',')}
-          onchange={handleFileSelect}
+          on:change={handleFileSelect}
           style="display: none;"
         />
         <button
           class="btn-select-files"
-          onclick={() => fileInput?.click()}
+          on:click={() => fileInput?.click()}
         >
           Select Files
         </button>
@@ -412,10 +412,10 @@
 
         {#if !isUploading && !isComplete}
           <div class="file-actions">
-            <button class="nes-btn is-primary" onclick={startUpload}>
+            <button class="nes-btn is-primary" on:click={startUpload}>
               Start Upload & Analysis
             </button>
-            <button class="nes-btn" onclick={() => { selectedFiles = []; }}>
+            <button class="nes-btn" on:click={() => { selectedFiles = []; }}>
               Clear Files
             </button>
           </div>
@@ -475,7 +475,7 @@
       </div>
 
       <div class="upload-actions">
-        <button class="btn-cancel" onclick={cancelUpload}>
+        <button class="btn-cancel" on:click={cancelUpload}>
           Cancel Upload
         </button>
       </div>
@@ -504,32 +504,32 @@
 
       <div class="results-list">
         {#each uploadResults as result}
-          <div class="result-item" class:success={result.success} class:error={!result.success}>
+          <div class="result-item" class:success={(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success} class:error={!(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success}>
             <div class="result-info">
-              <span class="result-filename">{result.fileName}</span>
-              {#if result.success}
-                <span class="result-document-id">ID: {result.documentId}</span>
+              <span class="result-filename">{(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).fileName}</span>
+              {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success}
+                <span class="result-document-id">ID: {(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).documentId}</span>
               {/if}
             </div>
 
-            {#if result.success && result.aiInsights}
+            {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success && (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights}
               <div class="ai-insights">
                 <h4>AI Analysis Results</h4>
-                <p class="insights-summary">{result.aiInsights.aiInsights?.summary}</p>
+                <p class="insights-summary">{(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.aiInsights?.summary}</p>
 
-                {#if result.aiInsights.keyEntities}
+                {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.keyEntities}
                   <div class="entities">
                     <strong>Key Entities:</strong>
-                    {#each result.aiInsights.keyEntities as entity}
+                    {#each (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.keyEntities as entity}
                       <span class="entity-tag">{entity.value} ({entity.type})</span>
                     {/each}
                   </div>
                 {/if}
 
-                {#if result.aiInsights.suggestedTags}
+                {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.suggestedTags}
                   <div class="suggested-tags">
                     <strong>Suggested Tags:</strong>
-                    {#each result.aiInsights.suggestedTags as tag}
+                    {#each (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.suggestedTags as tag}
                       <span class="tag">{tag}</span>
                     {/each}
                   </div>
@@ -537,9 +537,9 @@
               </div>
             {/if}
 
-            {#if !result.success && result.errorMessage}
+            {#if !(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success && (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).errorMessage}
               <div class="error-message">
-                <strong>Error:</strong> {result.errorMessage}
+                <strong>Error:</strong> {(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).errorMessage}
               </div>
             {/if}
           </div>
@@ -558,13 +558,13 @@
           <div class="prompt-actions">
             <button
               class="nes-btn is-primary"
-              onclick={() => handlePromptReaction(prompt.id, 'accepted')}
+              on:click={() => handlePromptReaction(prompt.id, 'accepted')}
             >
               Let's Do It
             </button>
             <button
               class="nes-btn"
-              onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
+              on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
             >
               Maybe Later
             </button>
@@ -585,10 +585,10 @@
       {/each}
 
       <div class="error-actions">
-        <button class="btn-retry" onclick={retryUpload}>
+        <button class="btn-retry" on:click={retryUpload}>
           Retry Upload
         </button>
-        <button class="btn-reset" onclick={resetUpload}>
+        <button class="btn-reset" on:click={resetUpload}>
           Start Over
         </button>
       </div>
@@ -629,12 +629,12 @@
   <!-- Action Buttons -->
   {#if isComplete}
     <div class="final-actions">
-      <button class="nes-btn is-primary" onclick={resetUpload}>
+      <button class="nes-btn is-primary" on:click={resetUpload}>
         Upload More Files
       </button>
 
       {#if enableAIPrompts}
-        <button class="nes-btn" onclick={requestAISuggestions}>
+        <button class="nes-btn" on:click={requestAISuggestions}>
           Get AI Suggestions
         </button>
       {/if}
@@ -909,11 +909,11 @@
     border-left: 4px solid #e5e7eb;
   }
 
-  .result-item.success {
+  .result-(item as { success?: any; error?: any }).success {
     border-left-color: #10b981;
   }
 
-  .result-item.error {
+  .result-(item as { success?: any; error?: any }).error {
     border-left-color: #ef4444;
   }
 

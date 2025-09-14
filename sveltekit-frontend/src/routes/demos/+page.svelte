@@ -42,10 +42,8 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 state management
   let selectedDemo = $state('overview');
   let isLoading = $state(false);
-  let scrollElement = $state<HTMLElement;
-
-  // All demo routes organized by category
-  const demoCategories >([
+  let scrollElement = $state<HTMLElement// All demo routes organized by category
+  const demoCategories | null>(null)([
     {
       id: 'overview',
       title: 'DEMOS OVERVIEW',
@@ -373,9 +371,9 @@ https://svelte.dev/e/js_parse_error -->
       <div class="yorha-nav-bar">
         <Button.Root
           class="yorha-nav-btn bits-btn bits-btn"
-          onclick={goHome}
+          on:click={goHome}
         >
-          <Home size={16} />
+<Home size={16} />
           HOME
         </Button.Root>
 
@@ -416,11 +414,11 @@ https://svelte.dev/e/js_parse_error -->
         {#each demoCategories as category}
           <button
             class="yorha-category-btn {selectedDemo === category.id ? 'active' : ''}"
-            onclick={() => scrollToCategory(category.id)}
+            on:click={() => scrollToCategory(category.id)}
           >
-            <{category.icon} size={16} />
+            
             {category.title}
-          </button>
+</Button>
         {/each}
       </div>
     </div>
@@ -446,7 +444,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="yorha-overview-grid">
           {#each allDemos as demo}
             <div class="yorha-demo-nier-bits-card yorha-demo-nier-bits-card-overview" role="button" tabindex="0"
-                onclick={() => handleDemoNavigation(demo.path)}>
+                on:click={() => handleDemoNavigation(demo.path)}>
               <div class="yorha-demo-header">
                 <h3 class="yorha-demo-title">{demo.title}</h3>
                 <Badge class="{getStatusColor(demo.status)}">
@@ -473,7 +471,7 @@ https://svelte.dev/e/js_parse_error -->
         <section id="category-{category.id}" class="yorha-demo-category">
           <div class="yorha-category-header">
             <h2 class="yorha-category-title" style="color: {category.color}">
-              <{category.icon} size={24} />
+              
               {category.title}
             </h2>
             <p class="yorha-category-description">{category.description}</p>
@@ -482,7 +480,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="yorha-demos-grid">
             {#each category.demos as demo}
               <div class="yorha-demo-nier-bits-card" role="button" tabindex="0"
-                onclick={() => handleDemoNavigation(demo.path)}>
+                on:click={() => handleDemoNavigation(demo.path)}>
                 <div class="yorha-demo-header">
                   <h3 class="yorha-demo-title">{demo.title}</h3>
                   <Badge class="{getStatusColor(demo.status)}">
@@ -500,7 +498,7 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="yorha-demo-actions">
                     <Button.Root
                       class="yorha-demo-btn bits-btn bits-btn"
-                      onclick={(e) => {
+                      on:click={(e) => {
                         e.stopPropagation();
                         handleDemoNavigation(demo.path);
                       }}
@@ -547,7 +545,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="yorha-footer-actions">
             <Button.Root
               class="yorha-btn yorha-nes-btn is-primary bits-btn bits-btn"
-              onclick={goHome}
+              on:click={goHome}
             >
               <ArrowLeft size={16} />
               RETURN TO HOMEPAGE

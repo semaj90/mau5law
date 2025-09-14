@@ -33,13 +33,13 @@ https://svelte.dev/e/js_parse_error -->
   async function fetchDashboardData() {
     try {
       const response = await fetch('/api/ingestion/comprehensive?action=get_dashboard');
-      const result = await response.json();
-      if (result.success) {
-        dashboardData.set(result.dashboard);
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; dashboard?: any; error?: any; jobId?: any; message?: any }).success) {
+        dashboardData.set((result as { success?: any; dashboard?: any; error?: any; jobId?: any; message?: any }).dashboard);
         isConnected = true;
         errorMessage = '';
       } else {
-        errorMessage = result.error || 'Failed to fetch dashboard data';
+        errorMessage = (result as { success?: any; dashboard?: any; error?: any; jobId?: any; message?: any }).error || 'Failed to fetch dashboard data';
       }
     } catch (error) {
       errorMessage = `Connection error: ${error.message}`;
@@ -78,15 +78,15 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      const result = await response.json();
-      if (result.success) {
-        submissionStatus = `✅ Job submitted: ${result.jobId}`;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; dashboard?: any; error?: any; jobId?: any; message?: any }).success) {
+        submissionStatus = `✅ Job submitted: ${(result as { success?: any; dashboard?: any; error?: any; jobId?: any; message?: any }).jobId}`;
         // Reset form
         newJob = { documentId: '', text: '', chunks: 1, priority: 'normal' };
         // Refresh dashboard
         await fetchDashboardData();
       } else {
-        submissionStatus = `❌ Error: ${result.error}`;
+        submissionStatus = `❌ Error: ${(result as { success?: any; dashboard?: any; error?: any; jobId?: any; message?: any }).error}`;
       }
     } catch (error) {
       submissionStatus = `❌ Network error: ${error.message}`;
@@ -101,12 +101,12 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify({ action, ...params })
       });
 
-      const result = await response.json();
-      if (result.success) {
-        console.log(`✅ ${action}:`, result.message);
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; dashboard?: any; error?: any; jobId?: any; message?: any }).success) {
+        console.log(`✅ ${action}:`, (result as { success?: any; dashboard?: any; error?: any; jobId?: any; message?: any }).message);
         await fetchDashboardData();
       } else {
-        console.error(`❌ ${action}:`, result.error);
+        console.error(`❌ ${action}:`, (result as { success?: any; dashboard?: any; error?: any; jobId?: any; message?: any }).error);
       }
     } catch (error) {
       console.error(`❌ ${action} failed:`, error);
@@ -202,7 +202,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <!-- Manual Refresh -->
           <button 
-            onclick={fetchDashboardData}
+            on:click={fetchDashboardData}
             class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-sm"
           >
             Refresh
@@ -255,19 +255,19 @@ https://svelte.dev/e/js_parse_error -->
           <h2 class="text-xl font-bold text-gray-900">Workflow Control</h2>
           <div class="flex space-x-2">
             <button 
-              onclick={() => controlWorkflow('pause_processing')}
+              on:click={() => controlWorkflow('pause_processing')}
               class="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"
             >
               Pause
             </button>
             <button 
-              onclick={() => controlWorkflow('resume_processing')}
+              on:click={() => controlWorkflow('resume_processing')}
               class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
             >
               Resume
             </button>
             <button 
-              onclick={() => controlWorkflow('clear_completed')}
+              on:click={() => controlWorkflow('clear_completed')}
               class="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600"
             >
               Clear Completed
@@ -343,7 +343,7 @@ https://svelte.dev/e/js_parse_error -->
         
         <div class="mt-4 flex justify-between items-center">
           <button 
-            onclick={submitTestJob}
+            on:click={submitTestJob}
             class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             Submit Job
@@ -455,7 +455,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       {/if}
-    {/if}
   </div>
 </div>
 

@@ -34,7 +34,7 @@
   };
 
   function handleClose(notification: Notification) {
-    notifications.remove(notification.id);
+    notifications.remove((notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).id);
   }
 
   // Clean up notifications on component destroy (e.g., app shutdown or navigation)
@@ -47,17 +47,17 @@
     action: NonNullable<Notification["actions"]>[0]
   ) {
     action.action();
-    notifications.remove(notification.id);
+    notifications.remove((notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).id);
   }
 </script>
 
 <!-- Notification Container -->
 <div class="space-y-4">
-  {#each $notifications.notifications as notification (notification.id)}
+  {#each $notifications.notifications as notification ((notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).id)}
     <div
       class={`
         relative p-4 rounded-lg border shadow-lg backdrop-blur-sm
-        ${colorClasses[notification.type]}
+        ${colorClasses[(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).type]}
       `}
       in:fly={{ x: 300, duration: 300, easing: quintOut }}
       out:fly={{ x: 300, duration: 200, easing: quintOut  }}
@@ -66,33 +66,34 @@
         <!-- Icon -->
         <div class="space-y-4">
           <iconify-icon
-            icon={icons[notification.type]}
-            class={`w-5 h-5 ${iconColorClasses[notification.type]}`}
+            icon={icons[(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).type]}
+            class={`w-5 h-5 ${iconColorClasses[(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).type]}`}
           ></iconify-icon>
         </div>
 
         <!-- Content -->
         <div class="space-y-4">
           <p class="space-y-4">
-            {notification.title}
+            {(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).title}
           </p>
-          {#if notification.message}
+          {#if (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).message}
             <p class="space-y-4">
-              {notification.message}
+              {(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).message}
             </p>
           {/if}
 
           <!-- Actions -->
-          {#if notification.actions && notification.actions.length > 0}
+          {#if (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).actions && (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).actions.length > 0}
             <div class="space-y-4">
-              {#each notification.actions as action}
+              {#each (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).actions as action}
                 <Button class="bits-btn"
                   size="sm"
                   variant={action.variant || "secondary"}
-                  onclick={() => handleAction(notification, action)}
+                  on:click={() =>
+handleAction(notification, action)}
                 >
                   {action.label}
-                </button>
+</Button>
               {/each}
             </div>
           {/if}
@@ -103,22 +104,22 @@
           <button
             type="button"
             class="space-y-4"
-            onclick={() => handleClose(notification)}
+            on:click={() => handleClose(notification)}
           >
             <span class="space-y-4">Dismiss</span>
             <iconify-icon icon="ph:x" class="space-y-4"></iconify-icon>
-          </button>
+</Button>
         </div>
       </div>
 
       <!-- Progress bar for timed notifications -->
-      {#if notification.duration && notification.duration > 0}
+      {#if (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).duration && (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).duration > 0}
         <div
           class="space-y-4"
         >
           <div
             class="space-y-4"
-            style="animation: shrink {notification.duration}ms linear forwards;"
+            style="animation: shrink {(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).duration}ms linear forwards;"
           ></div>
         </div>
       {/if}

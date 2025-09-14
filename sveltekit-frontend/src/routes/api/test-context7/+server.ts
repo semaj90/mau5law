@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { getSvelte5Docs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';
 
 type DocSnippet = {

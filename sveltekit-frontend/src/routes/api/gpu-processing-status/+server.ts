@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 export interface GPUProcessingStatus {
   stage: string;
@@ -38,7 +38,7 @@ async function checkOllamaStatus(): Promise<boolean> {
   }
 }
 
-async function checkModels(): Promise<{ gemma3Legal: boolean; nomicEmbed: boolean }> {
+async function checkModels(): Promise<any> {
   try {
     const response = await fetch('http://localhost:11434/api/tags');
     if (!response.ok) return { gemma3Legal: false, nomicEmbed: false };
@@ -55,7 +55,7 @@ async function checkModels(): Promise<{ gemma3Legal: boolean; nomicEmbed: boolea
   }
 }
 
-async function runTypeScriptCheck(): Promise<{ total: number; sample: string[] }> {
+async function runTypeScriptCheck(): Promise<any> {
   try {
     if (typeof window === 'undefined') {
       const { spawn } = await import('child_process');

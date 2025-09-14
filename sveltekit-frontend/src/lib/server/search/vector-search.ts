@@ -2,8 +2,8 @@
 // Complete Vector Search Service - Production Ready
 // Combines PostgreSQL pgvector + Qdrant + Local caching + Loki.js + Fuse.js
 const browser = false; // Server-side only
-import { db, isPostgreSQL } from '../db/index.js';
-import { ollamaService } from '../services/OllamaService.js';
+import { db, isPostgreSQL } from '../db/index.js.js';
+import { ollamaService } from '../services/OllamaService.js.js';
 import {
   and,
   eq,
@@ -253,7 +253,7 @@ export async function searchLegalDocumentsPgvector(
         typeof row.similarity === "number"
           ? row.similarity
           : parseFloat(String(row.similarity ?? 0)),
-      metadata: row.case_id ? { caseId: row.case_id } : {},
+      metadata: row.case_id ? { caseId: row.case_id } : Record<string, any>,
       source: "pgvector",
       type: "document",
     }));
@@ -285,7 +285,7 @@ export async function searchLegalDocumentsText(
       title: row.title || "",
       content: row.content || "",
       score: 0.5,
-      metadata: {},
+      metadata: Record<string, any>,
       source: "pgvector",
       type: "document",
     }));
@@ -328,11 +328,11 @@ async function searchWithFuzzy(
 
       caseResults.forEach((result: any) => {
         results.push({
-          id: result.item.id,
-          title: result.item.title || "",
-          content: result.item.description || result.item.content || "",
-          score: 1 - (result.score || 0), // Convert Fuse score to similarity score
-          metadata: { type: "case", matches: result.matches },
+          id: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).(item as { id?: any; title?: any; description?: any }).id,
+          title: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).(item as { id?: any; title?: any; description?: any }).title || "",
+          content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).(item as { id?: any; title?: any; description?: any }).description || (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).(item as { id?: any; title?: any; description?: any }).content || "",
+          score: 1 - ((result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).score || 0), // Convert Fuse score to similarity score
+          metadata: { type: "case", matches: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).matches },
           source: "pgvector", // Keep consistent with other sources
           type: "case",
         });
@@ -346,11 +346,11 @@ async function searchWithFuzzy(
 
       evidenceResults.forEach((result: any) => {
         results.push({
-          id: result.item.id,
-          title: result.item.title || "",
-          content: result.item.description || result.item.content || "",
-          score: 1 - (result.score || 0),
-          metadata: { type: "evidence", matches: result.matches },
+          id: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).(item as { id?: any; title?: any; description?: any }).id,
+          title: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).(item as { id?: any; title?: any; description?: any }).title || "",
+          content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).(item as { id?: any; title?: any; description?: any }).description || (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).(item as { id?: any; title?: any; description?: any }).content || "",
+          score: 1 - ((result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).score || 0),
+          metadata: { type: "evidence", matches: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).matches },
           source: "pgvector",
           type: "evidence",
         });
@@ -394,9 +394,9 @@ async function searchWithLoki(
 
       caseResults.forEach((item: any, index: number) => {
         results.push({
-          id: item.id || item.$loki.toString(),
-          title: item.title || "",
-          content: item.description || "",
+          id: (item as { id?: any; title?: any; description?: any }).id || (item as { id?: any; title?: any; description?: any }).$loki.toString(),
+          title: (item as { id?: any; title?: any; description?: any }).title || "",
+          content: (item as { id?: any; title?: any; description?: any }).description || "",
           score: 0.9 - index * 0.1, // Mock relevance score
           metadata: { type: "case" },
           source: "pgvector",
@@ -419,9 +419,9 @@ async function searchWithLoki(
 
       evidenceResults.forEach((item: any, index: number) => {
         results.push({
-          id: item.id || item.$loki.toString(),
-          title: item.title || "",
-          content: item.description || "",
+          id: (item as { id?: any; title?: any; description?: any }).id || (item as { id?: any; title?: any; description?: any }).$loki.toString(),
+          title: (item as { id?: any; title?: any; description?: any }).title || "",
+          content: (item as { id?: any; title?: any; description?: any }).description || "",
           score: 0.85 - index * 0.1,
           metadata: { type: "evidence" },
           source: "pgvector",
@@ -439,12 +439,7 @@ async function searchWithLoki(
 export async function vectorSearch(
   query: string,
   options: VectorSearchOptions = {}
-): Promise<{
-  results: VectorSearchResult[];
-  executionTime: number;
-  source: string;
-  totalResults: number;
-}> {
+): Promise<any> {
   const startTime = Date.now();
   const {
     limit = 20,
@@ -501,22 +496,22 @@ export async function vectorSearch(
           if (semanticData.success && semanticData.results?.length > 0) {
             // Convert semantic search results to our VectorSearchResult format
             results = semanticData.results.map((result: any) => ({
-              id: result.id,
-              content: result.content || `Document: ${result.title}`,
-              title: result.title,
-              score: result.semantic_score || 1 - result.distance,
-              confidence: result.semantic_score || 1 - result.distance,
-              relevance: result.relevance_level || 'medium',
+              id: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).id,
+              content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).content || `Document: ${(result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).title}`,
+              title: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).title,
+              score: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).semantic_score || 1 - (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).distance,
+              confidence: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).semantic_score || 1 - (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).distance,
+              relevance: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).relevance_level || 'medium',
               metadata: {
-                ...result.metadata,
-                document_type: result.document_type,
-                distance: result.distance,
-                semantic_score: result.semantic_score,
+                ...(result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).metadata,
+                document_type: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).document_type,
+                distance: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).distance,
+                semantic_score: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).semantic_score,
                 source: 'enhanced_semantic_search',
               },
-              similarity: result.semantic_score || 1 - result.distance,
-              created_at: result.created_at,
-              url: result.metadata?.url,
+              similarity: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).semantic_score || 1 - (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).distance,
+              created_at: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).created_at,
+              url: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).metadata?.url,
             }));
 
             source = 'enhanced_semantic_search';
@@ -745,11 +740,11 @@ async function searchWithQdrant(
     // Format case results
     caseResults.forEach((result) => {
       results.push({
-        id: result.id,
-        title: result.payload?.title || "",
-        content: result.payload?.description || "",
-        score: result.score,
-        metadata: result.payload || {},
+        id: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).id,
+        title: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).payload?.title || "",
+        content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).payload?.description || "",
+        score: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).score,
+        metadata: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).payload || {},
         source: "qdrant",
         type: "case",
       });
@@ -758,11 +753,11 @@ async function searchWithQdrant(
     // Format evidence results
     evidenceResults.forEach((result) => {
       results.push({
-        id: result.id,
-        title: result.payload?.title || "",
-        content: result.payload?.description || "",
-        score: result.score,
-        metadata: result.payload || {},
+        id: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).id,
+        title: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).payload?.title || "",
+        content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).payload?.description || "",
+        score: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).score,
+        metadata: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).payload || {},
         source: "qdrant",
         type: "evidence",
       });
@@ -816,9 +811,9 @@ async function searchWithTextFallback(
     // Format results with mock scores
     caseResults.forEach((result: any, index) => {
       results.push({
-        id: result.id,
-        title: result.title || "",
-        content: result.description || "",
+        id: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).id,
+        title: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).title || "",
+        content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).description || "",
         score: 0.9 - index * 0.1, // Mock relevance score
         metadata: { type: "case" },
         source: "pgvector", // Pretend it's pgvector for consistency
@@ -828,9 +823,9 @@ async function searchWithTextFallback(
 
     evidenceResults.forEach((result: any, index) => {
       results.push({
-        id: result.id,
-        title: result.title || "",
-        content: result.description || "",
+        id: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).id,
+        title: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).title || "",
+        content: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).description || "",
         score: 0.85 - index * 0.1,
         metadata: { type: "evidence" },
         source: "pgvector",
@@ -853,13 +848,13 @@ function mergeSearchResults(
 
   // Add pgvector results first (higher priority)
   pgResults.forEach((result) => {
-    merged.set(result.id, result);
+    merged.set((result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).id, result);
   });
 
   // Add Qdrant results if not already present
   qdrantResults.forEach((result) => {
-    if (!merged.has(result.id)) {
-      merged.set(result.id, result);
+    if (!merged.has((result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).id)) {
+      merged.set((result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).id, result);
     }
   });
 

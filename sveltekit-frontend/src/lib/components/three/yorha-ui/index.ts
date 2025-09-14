@@ -15,7 +15,7 @@ export {
   type YoRHaGradient,
   type YoRHaAnimation,
   type YoRHaTransform
-} from './YoRHaUI3D';
+} from './YoRHaUI3D.js';
 
 // Anti-Aliasing Enhanced System
 export {
@@ -24,21 +24,21 @@ export {
   type AntiAliasingConfig,
   type ShaderEnhancements,
   AntiAliasingUtils
-} from './YoRHaAntiAliasing3D';
+} from './YoRHaAntiAliasing3D.js';
 
 // Import for local use in utility functions
-import { YoRHaButton3D } from './components/YoRHaButton3D';
-import { YoRHaPanel3D } from './components/YoRHaPanel3D';
-import { YoRHaInput3D } from './components/YoRHaInput3D';
-import { YoRHaModal3D } from './components/YoRHaModal3D';
-import { YoRHaLayout3D, YoRHaLayoutPresets } from './YoRHaLayout3D';
-import { createYoRHaUIDemo } from './YoRHaUIExample';
+import { YoRHaButton3D } from './components/YoRHaButton3D.js';
+import { YoRHaPanel3D } from './components/YoRHaPanel3D.js';
+import { YoRHaInput3D } from './components/YoRHaInput3D.js';
+import { YoRHaModal3D } from './components/YoRHaModal3D.js';
+import { YoRHaLayout3D, YoRHaLayoutPresets } from './YoRHaLayout3D.js';
+import { createYoRHaUIDemo } from './YoRHaUIExample.js';
 
 // Core UI Components
-export { YoRHaButton3D, type YoRHaButton3DOptions } from './components/YoRHaButton3D';
-export { YoRHaPanel3D, type YoRHaPanel3DOptions } from './components/YoRHaPanel3D';
-export { YoRHaInput3D, type YoRHaInput3DOptions } from './components/YoRHaInput3D';
-export { YoRHaModal3D, type YoRHaModal3DOptions } from './components/YoRHaModal3D';
+export { YoRHaButton3D, type YoRHaButton3DOptions } from './components/YoRHaButton3D.js';
+export { YoRHaPanel3D, type YoRHaPanel3DOptions } from './components/YoRHaPanel3D.js';
+export { YoRHaInput3D, type YoRHaInput3DOptions } from './components/YoRHaInput3D.js';
+export { YoRHaModal3D, type YoRHaModal3DOptions } from './components/YoRHaModal3D.js';
 
 // Layout System
 export {
@@ -48,10 +48,10 @@ export {
   type YoRHaChildLayout,
   type YoRHaPosition3D,
   type YoRHaPadding3D
-} from './YoRHaLayout3D';
+} from './YoRHaLayout3D.js';
 
 // Complete Example
-export { YoRHaUIExample, createYoRHaUIDemo } from './YoRHaUIExample';
+export { YoRHaUIExample, createYoRHaUIDemo } from './YoRHaUIExample.js';
 
 // Utility functions for common use cases
 export const YoRHaUtils = {
@@ -259,7 +259,7 @@ export const YoRHaQuickSetup = {
   /**
    * Create a toolbar with common actions
    */
-  createToolbar: (actions: Array<{ text: string; icon?: string; variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'danger' }>) => {
+  createToolbar: (actions: Array<) => {
     const toolbar = YoRHaLayoutPresets.createToolbar();
     const buttons: YoRHaButton3D[] = [];
 
@@ -291,5 +291,5 @@ export function initYoRHaUI(container: HTMLElement) {
 
 // Re-export Three.js for convenience (if needed)
 export * as THREE from 'three';
-export * from './api/YoRHaAPIClient';
-export * from './webgpu/YoRHaWebGPUMath';
+export * from './api/YoRHaAPIClient.js';
+export * from './webgpu/YoRHaWebGPUMath.js';

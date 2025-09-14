@@ -15,7 +15,7 @@ https://svelte.dev/e/js_parse_error -->
   import FeedbackIntegration from '$lib/components/feedback/FeedbackIntegration.svelte';
 
   // Svelte 5 state management
-  let files = $state<FileList>();
+  let files: FileList = $state(undefined as any);
   let verboseMode = $state(false);
   let thinkingMode = $state(false);
   let isUploading = $state(false);
@@ -24,8 +24,7 @@ https://svelte.dev/e/js_parse_error -->
   let analysisResult = $state<any>(null);
 
   // Feedback integration
-  let feedbackIntegration = $state<any;
-  let currentInteractionId: string | null >(null);
+  let feedbackIntegration = $state<anylet currentInteractionId: string | null>(null)(null);
   let uploadStartTime = $state(0);
 
   async function handleUpload() {
@@ -123,14 +122,14 @@ https://svelte.dev/e/js_parse_error -->
   context={{ component: 'FileUpload' }}
   let:feedback
 >
-<NesCard class="w-full max-w-2xl mx-auto">
+<div class="w-full max-w-2xl mx-auto nes-container">
   <div class="yorha-panel-header">
-    <h3 class="nes-text is-primary" class="flex items-center gap-2">
+    <h3 class="nes-text is-primary flex items-center gap-2">
       <FileUp />
       Document Upload and Analysis
     </h3>
   </div>
-  <div class="yorha-panel-content" class="space-y-6">
+  <div class="yorha-panel-content space-y-6">
     <div class="grid w-full items-center gap-1.5">
       <Label for_="file-upload">PDF or XML Document</Label>
       <Input id="file-upload" type="file" bind:files accept=".pdf,.xml" />
@@ -147,15 +146,14 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
 
-    <Button onclick={handleUpload} disabled={isUploading} class="w-full bits-btn bits-btn">
-      {#if isUploading}
+    <Button on:click={handleUpload} disabled={isUploading} class="w-full bits-btn bits-btn">
+{#if isUploading}
         <Loader2 class="mr-2 h-4 w-4 animate-spin" />
         Uploading...
       {:else}
         <FileUp class="mr-2 h-4 w-4" />
         Upload and Analyze
       {/if}
-    </button>
 
     {#if isUploading}
       <Progress value={uploadProgress} class="w-full" />
@@ -169,17 +167,17 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
 
     {#if analysisResult}
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Analysis Summary</h3>
         </div>
         <div class="yorha-panel-content">
           <pre class="whitespace-pre-wrap text-sm">{JSON.stringify(analysisResult, null, 2)}</pre>
         </div>
-      </NesCard>
+      </div>
     {/if}
   </div>
-</NesCard>
+</div>
 </FeedbackIntegration>
 
 

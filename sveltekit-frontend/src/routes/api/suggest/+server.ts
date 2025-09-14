@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // "Did You Mean?" Suggestions API - SSR compatible with fuzzy search
 import { json, error } from '@sveltejs/kit';
@@ -126,12 +126,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   const mockRequest = new Request(url);
   
   return await GET({ 
-    params: {}, 
+    params: Record<string, any>, 
     url: new URL(url), 
     fetch,
     request: mockRequest,
     route: { id: '/api/suggest' },
-    locals: {},
+    locals: Record<string, any>,
     platform: undefined,
     isDataRequest: false,
     isSubRequest: false
@@ -281,13 +281,13 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
       const peopleResults = peopleFuse.search(query).slice(0, Math.ceil(limit / 3));
       peopleResults.forEach(result => {
         suggestions.push({
-          label: result.item.name,
-          entityId: result.item.id,
+          label: (result as { item?: any; score?: any }).item.name,
+          entityId: (result as { item?: any; score?: any }).item.id,
           type: 'PERSON',
-          score: 1 - (result.score || 0),
-          description: `${result.item.role} specializing in ${result.item.specialization}`,
+          score: 1 - ((result as { item?: any; score?: any }).score || 0),
+          description: `${(result as { item?: any; score?: any }).item.role} specializing in ${(result as { item?: any; score?: any }).item.specialization}`,
           icon: 'user',
-          tags: ['legal', 'professional', result.item.specialization]
+          tags: ['legal', 'professional', (result as { item?: any; score?: any }).item.specialization]
         });
       });
     }
@@ -303,13 +303,13 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
       const caseResults = casesFuse.search(query).slice(0, Math.ceil(limit / 3));
       caseResults.forEach(result => {
         suggestions.push({
-          label: result.item.title,
-          entityId: result.item.id,
+          label: (result as { item?: any; score?: any }).item.title,
+          entityId: (result as { item?: any; score?: any }).item.id,
           type: 'CASE',
-          score: 1 - (result.score || 0),
-          description: result.item.description,
+          score: 1 - ((result as { item?: any; score?: any }).score || 0),
+          description: (result as { item?: any; score?: any }).item.description,
           icon: 'folder',
-          tags: ['case', result.item.status]
+          tags: ['case', (result as { item?: any; score?: any }).item.status]
         });
       });
     }
@@ -325,13 +325,13 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
       const docResults = docsFuse.search(query).slice(0, Math.ceil(limit / 3));
       docResults.forEach(result => {
         suggestions.push({
-          label: result.item.title,
-          entityId: result.item.id,
+          label: (result as { item?: any; score?: any }).item.title,
+          entityId: (result as { item?: any; score?: any }).item.id,
           type: 'DOCUMENT',
-          score: 1 - (result.score || 0),
-          description: `${result.item.type} in ${result.item.category}`,
+          score: 1 - ((result as { item?: any; score?: any }).score || 0),
+          description: `${(result as { item?: any; score?: any }).item.type} in ${(result as { item?: any; score?: any }).item.category}`,
           icon: 'file-text',
-          tags: ['document', result.item.type, result.item.category]
+          tags: ['document', (result as { item?: any; score?: any }).item.type, (result as { item?: any; score?: any }).item.category]
         });
       });
     }

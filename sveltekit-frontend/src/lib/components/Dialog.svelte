@@ -9,18 +9,20 @@ https://svelte.dev/e/js_parse_error -->
   	import { fade, fly } from 'svelte/transition';
   	import { Bot, Send, User, X } from 'lucide-svelte';
 
-  	let { title = 'AI Assistant', open = false } = $props<{
+  	interface Props {
   		title?: string;
   		open?: boolean;
-  	}>();
+  	}
+
+  	let { title = 'AI Assistant', open = false }: Props = $props();
 
   	const dispatch = createEventDispatcher();
-  let dialogElement = $state<HTMLElement;
+  let dialogElement = $state<HTMLElement | null>(null);
   	let promptInput: HTMLTextAreaElement;
   	let messagesContainer: HTMLElement;
 
   	// Vibe options
-  	const vibes >([
+  	const vibes = [
   		{ id: 'professional', label: 'Professional', description: 'Formal and structured' },
   		{ id: 'concise', label: 'Concise', description: 'Brief and to the point' },
   		{ id: 'investigative', label: 'Investigative', description: 'Thorough and analytical' },
@@ -181,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
 	<div 
 		class="mx-auto px-4 max-w-7xl"
 		transitifade={{ duration: 200  "
-		onclick={() => handleBackdropClick()}
+		on:click={() => handleBackdropClick()}
 		keydown={handleKeydown}
 		role="dialog"
 		aria-modal="true"
@@ -191,14 +193,7 @@ https://svelte.dev/e/js_parse_error -->
 		<div 
 			class="mx-auto px-4 max-w-7xl"
 			bind:this={dialogElement}
-			transitifly={{ y: 50, duration: 300, easing: quintOut  "
-		>
-			<!-- Header -->
-			<div class="mx-auto px-4 max-w-7xl">
-				<h2 id="dialog-title" class="mx-auto px-4 max-w-7xl">{title}</h2>
-				<button
-					class="mx-auto px-4 max-w-7xl"
-					onclick={() => handleClose()}
+			/* transition removed */
 					aria-label="Close dialog"
 				>
 					<X size={20} />
@@ -213,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
 						<button
 							class="mx-auto px-4 max-w-7xl"
 						 class:active={selectedVibe === vibe.id}
-							onclick={() => handleVibeChange(vibe.id)}
+							on:click={() => handleVibeChange(vibe.id)}
 							title={vibe.description}
 						>
 							{vibe.label}
@@ -302,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
 					></textarea>
 					<button
 						class="mx-auto px-4 max-w-7xl"
-						onclick={() => handleSubmit()}
+						on:click={() => handleSubmit()}
 						disabled={!currentPrompt.trim() || isGenerating}
 						aria-label="Send message"
 					>
@@ -312,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
 				<div class="mx-auto px-4 max-w-7xl">
 					<span>Press Ctrl+Enter to send</span>
 					{#if history.length > 0}
-						<button class="mx-auto px-4 max-w-7xl" onclick={() => clearHistory()}>
+						<button class="mx-auto px-4 max-w-7xl" on:click={() => clearHistory()}>
 							Clear History
 						</button>
 					{/if}

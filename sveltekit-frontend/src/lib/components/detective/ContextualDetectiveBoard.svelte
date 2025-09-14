@@ -37,18 +37,14 @@
   }: Props = $props();
   
   // Event dispatcher
-  const dispatch = createEventDispatcher<{
-    connectionMapGenerated: { map: any; metadata: any };
-    contextualPromptTriggered: { prompts: string[]; context: TypingContext };
-    evidenceAnalyzed: { evidence: any; analysis: any };
-  }>();
+  const dispatch = createEventDispatcher();
   
   // State
   let userInput = $state('');
   let connectionMap = $state<any>(null);
   let isGeneratingMap = $state(false);
   let currentTypingState = $state<TypingState>('idle');
-  let typingContext = $state<TypingContext>();
+  let typingContext: TypingContext = $state(undefined as any);
   let contextualPrompts = $state<string[]>([]);
   let detectiveAnalysis = $state<any>(null);
   let evidenceList = $state(initialEvidence);
@@ -97,9 +93,9 @@
   async function loadCaseEvidence() {
     try {
       const response = await fetch(`/api/v1/evidence/by-case/${caseId}`);
-      if (response.ok) {
-        const data = await response.json();
-        evidenceList = data.evidence || [];
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        evidenceList = (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).evidence || [];
       }
     } catch (error) {
       console.error('Failed to load case evidence:', error);
@@ -135,18 +131,18 @@
       
       // Handle real-time updates
       wsManager.onMessage('connection_map_update', (data) => {
-        if (data.action === 'generated') {
-          connectionMap = data.connectionMap;
+        if ((data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).action === 'generated') {
+          connectionMap = (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).connectionMap;
           console.log('[Collaboration] Connection map updated by remote user');
         }
       });
       
       wsManager.onMessage('evidence_analysis', (data) => {
-        if (data.action === 'completed') {
+        if ((data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).action === 'completed') {
           // Update evidence list with remote analysis
           evidenceList = evidenceList.map(item => 
-            item.id === data.evidenceId 
-              ? { ...item, metadata: { ...item.metadata, aiAnalysis: data.analysis } }
+            (item as { id?: any; metadata?: any }).id === (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).evidenceId 
+              ? { ...item, metadata: { ...(item as { id?: any; metadata?: any }).metadata, aiAnalysis: (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).analysis } }
               : item
           );
           console.log('[Collaboration] Evidence analysis updated by remote user');
@@ -174,7 +170,7 @@
   /**
    * Handle typing state changes from the headless listener
    */
-  function handleTypingStateChange(event: CustomEvent<{ state: TypingState; context: TypingContext }>) {
+  function handleTypingStateChange(event: CustomEvent) {
     currentTypingState = event.detail.state;
     typingContext = event.detail.context;
     
@@ -192,7 +188,7 @@
   /**
    * Handle contextual prompts from typing behavior
    */
-  function handleContextualPrompt(event: CustomEvent<{ prompts: string[]; context: TypingContext }>) {
+  function handleContextualPrompt(event: CustomEvent) {
     contextualPrompts = [...event.detail.prompts];
     
     // Add detective-specific contextual prompts
@@ -215,7 +211,7 @@
   /**
    * Handle analytics updates from typing behavior
    */
-  function handleAnalyticsUpdate(event: CustomEvent<{ analytics: any }>) {
+  function handleAnalyticsUpdate(event: CustomEvent) {
     if (enableAnalytics) {
       console.log('[ContextualDetectiveBoard] Analytics update:', event.detail.analytics);
     }
@@ -241,8 +237,8 @@
         })
       });
       
-      if (response.ok) {
-        detectiveAnalysis = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        detectiveAnalysis = await (response as { ok?: any; json?: any }).json();
         
         // Generate enhanced contextual prompts based on analysis
         const enhancedPrompts = generateEnhancedPrompts(detectiveAnalysis);
@@ -279,18 +275,18 @@
         })
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        connectionMap = data.data.connectionMap;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        connectionMap = (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).(data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).connectionMap;
         
         // Send to collaborators
         if (wsManager) {
-          wsManager.sendConnectionMapUpdate(connectionMap, data.data.metadata);
+          wsManager.sendConnectionMapUpdate(connectionMap, (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).(data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).metadata);
         }
         
         dispatch('connectionMapGenerated', {
           map: connectionMap,
-          metadata: data.data.metadata
+          metadata: (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).(data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).metadata
         });
       }
     } catch (error) {
@@ -402,7 +398,6 @@
               <span class="value">{collaborationStats.typingUsers}</span>
             </div>
           {/if}
-        {/if}
       </div>
     {/if}
   </header>
@@ -427,10 +422,10 @@
       ></textarea>
       
       <div class="input-actions">
-        <button type="button" onclick={generateConnectionMap} disabled={isGeneratingMap}>
+        <button type="button" on:click={generateConnectionMap} disabled={isGeneratingMap}>
           {isGeneratingMap ? 'Generating...' : 'Generate Connection Map'}
         </button>
-        <button type="button" onclick={clearInput}>Clear</button>
+        <button type="button" on:click={clearInput}>Clear</button>
       </div>
     </section>
 
@@ -443,7 +438,7 @@
             <button 
               type="button" 
               class="prompt-button"
-              onclick={() => selectContextualPrompt(prompt)}
+              on:click={() => selectContextualPrompt(prompt)}
             >
               {prompt}
             </button>

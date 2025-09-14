@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { rabbitmqServiceWorker, startRabbitMQWorker, stopRabbitMQWorker, QUEUES } from '$lib/workers/rabbitmq-service-worker.js';
 
 // GET: Get worker status and health information

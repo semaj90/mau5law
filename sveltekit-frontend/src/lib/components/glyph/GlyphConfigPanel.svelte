@@ -156,21 +156,21 @@ https://svelte.dev/e/expected_token -->
     <h2 class="text-xl font-semibold text-blue-400">Glyph Configuration</h2>
     <div class="flex gap-2">
       <button 
-        onclick={exportConfig}
+        on:click={exportConfig}
         class="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded transition-colors"
         title="Export config to clipboard"
       >
         Export
       </button>
       <button 
-        onclick={importConfig}
+        on:click={importConfig}
         class="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded transition-colors"
         title="Import config from clipboard"
       >
         Import
       </button>
       <button 
-        onclick={resetToDefaults}
+        on:click={resetToDefaults}
         class="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded transition-colors"
         title="Reset to defaults"
       >
@@ -243,7 +243,7 @@ https://svelte.dev/e/expected_token -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
       {#each Object.entries(GLYPH_PRESETS) as [key, preset]}
         <button 
-          onclick={() => loadPreset(key as keyof typeof GLYPH_PRESETS)}
+          on:click={() => loadPreset(key as keyof typeof GLYPH_PRESETS)}
           class="px-3 py-2 text-sm rounded transition-colors {selectedPreset === key && !useCustomStyle ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}"
         >
           {key}
@@ -361,7 +361,7 @@ https://svelte.dev/e/expected_token -->
   <!-- Advanced Options -->
   <div class="border-t border-gray-700 pt-6">
     <button 
-      onclick={() => showAdvanced = !showAdvanced}
+      on:click={() => showAdvanced = !showAdvanced}
       class="flex items-center text-sm text-gray-400 hover:text-white transition-colors mb-4"
     >
       <span class="mr-2">{showAdvanced ? '▼' : '▶'}</span>
@@ -422,7 +422,7 @@ https://svelte.dev/e/expected_token -->
   <!-- Action Buttons -->
   <div class="border-t border-gray-700 pt-6 space-y-3">
     <button 
-      onclick={handleGenerate}
+      on:click={handleGenerate}
       disabled={isLoading}
       class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-medium py-3 px-4 rounded-md transition-colors"
     >
@@ -430,7 +430,7 @@ https://svelte.dev/e/expected_token -->
     </button>
     
     <button 
-      onclick={handleGenerateVariations}
+      on:click={handleGenerateVariations}
       disabled={isLoading}
       class="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-colors"
     >

@@ -5,7 +5,7 @@
 
 import { json, error } from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import {
   canonicalResultCache,
   type CanonicalResult,
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Validate results format
     const results: CanonicalResult[] = body.results.map((result: any, index: number) => {
-      if (!result.docId || typeof result.score !== 'number') {
+      if (!(result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).docId || typeof (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).score !== 'number') {
         throw error(
           400,
           makeHttpErrorPayload({
@@ -161,12 +161,12 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       return {
-        docId: result.docId,
-        score: Math.max(0, Math.min(1, result.score)), // Clamp to [0, 1]
-        flags: result.flags || 0,
-        summaryHash: result.summaryHash || '',
-        targetUrlId: result.targetUrlId,
-        metadata: result.metadata,
+        docId: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).docId,
+        score: Math.max(0, Math.min(1, (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).score)), // Clamp to [0, 1]
+        flags: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).flags || 0,
+        summaryHash: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).summaryHash || '',
+        targetUrlId: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).targetUrlId,
+        metadata: (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).metadata,
       };
     });
 

@@ -11,13 +11,7 @@ Tests the demo RAG functionality with a working interface
 
   let query = $state('');
   let isLoading = $state(false);
-  let chatHistory = $state<Array<{
-    type: 'user' | 'ai';
-    content: string;
-    timestamp: Date;
-    sources?: any[];
-    reasoning?: string[];
-  }>>([]);
+  let chatHistory = $state<any[]>([])([]);
 
   // Sample queries for testing
   const sampleQueries = [
@@ -110,7 +104,7 @@ Tests the demo RAG functionality with a working interface
   <div class="chat-header">
     <h3 class="nes-text is-primary">🤖 Demo AI Chat</h3>
     <div class="chat-controls">
-      <button class="nes-btn is-warning" onclick={clearChat}>
+      <button class="nes-btn is-warning" on:click={clearChat}>
         Clear Chat
       </button>
     </div>
@@ -123,7 +117,7 @@ Tests the demo RAG functionality with a working interface
       {#each sampleQueries as sampleQuery}
         <button
           class="nes-btn is-normal"
-          onclick={() => useSampleQuery(sampleQuery)}
+          on:click={() => useSampleQuery(sampleQuery)}
         >
           {sampleQuery}
         </button>
@@ -147,17 +141,9 @@ Tests the demo RAG functionality with a working interface
         <div class="message-content nes-container">
           {#if message.type === 'ai' && message.content.includes('# Case Summary')}
             <!-- Render markdown-like content for summaries -->
-            {@html message.content
-              .replace(/# (.*)/g, '<h4 class="summary-title">$1</h4>')
-              .replace(/## (.*)/g, '<h5 class="summary-section">$1</h5>')
-              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-              .replace(/\n/g, '<br>')
-            }
+            {/* JSX syntax converted to Svelte */}
           {:else}
-            {@html message.content
-              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-              .replace(/\n/g, '<br>')
-            }
+            {/* JSX syntax converted to Svelte */}
           {/if}
 
           {#if message.sources && message.sources.length > 0}
@@ -227,14 +213,14 @@ Tests the demo RAG functionality with a working interface
         class="nes-textarea"
         placeholder="Ask about evidence, patterns, timeline, suspects, or request a case summary..."
         bind:value={query}
-        onkeydown={handleKeydown}
+        on:keydown={handleKeydown}
         disabled={isLoading}
         rows="3"
       ></textarea>
     </div>
     <button
       class="nes-btn is-primary"
-      onclick={sendQuery}
+      on:click={sendQuery}
       disabled={!query.trim() || isLoading}
     >
       {isLoading ? 'Thinking...' : 'Send'}

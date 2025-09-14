@@ -36,9 +36,8 @@ https://svelte.dev/e/js_parse_error -->
   	// State management
   let mounted = $state(false);
   let showTooltip = $state(false);
-  let buttonElement = $state<HTMLButtonElement;
-  	// Size configurations
-  	const sizeClasses >({
+  let buttonElement = $state<HTMLButtonElement// Size configurations
+  	const sizeClasses | null>(null)({
   		sm: 'w-12 h-12 text-sm',
   		md: 'w-16 h-16 text-base',
   		lg: 'w-20 h-20 text-lg'
@@ -133,12 +132,12 @@ https://svelte.dev/e/js_parse_error -->
 				{loading ? 'animate-pulse' : ''}
 			"
 			{disabled}
-			onclick={handleClick}
+			on:click={handleClick}
 			keydown={handleKeydown}
-			onmouseenter={showTooltipHandler}
-			onmouseleave={hideTooltipHandler}
-			onfocus={showTooltipHandler}
-			onblur={hideTooltipHandler}
+			on:mouseenter={showTooltipHandler}
+			on:mouseleave={hideTooltipHandler}
+			on:focus={showTooltipHandler}
+			on:blur={hideTooltipHandler}
 			aria-label={tooltip}
 			in:fly={{ y: 100, duration: 500, easing: quintOut }}
 		>

@@ -12,10 +12,10 @@
  * ✅ Physics simulation for legal relationship networks
  */
 
-import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache';
-import { YoRHaAntiAliased3D } from '../components/three/yorha-ui/YoRHaAntiAliasing3D';
-import type { AntiAliasingConfig, YoRHaAAStyle } from '../components/three/yorha-ui/YoRHaAntiAliasing3D';
-import { NESMemoryArchitecture } from '../memory/nes-memory-architecture';
+import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache.js';
+import { YoRHaAntiAliased3D } from '../components/three/yorha-ui/YoRHaAntiAliasing3D.js';
+import type { AntiAliasingConfig, YoRHaAAStyle } from '../components/three/yorha-ui/YoRHaAntiAliasing3D.js';
+import { NESMemoryArchitecture } from '../memory/nes-memory-architecture.js';
 
 // Physics-aware GPU configuration
 export interface PhysicsAwareGPUConfig {
@@ -201,17 +201,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
       antiAliasingQuality?: 'low' | 'medium' | 'high' | 'ultra';
       compressionTarget?: number; // Target compression ratio
     } = {}
-  ): Promise<{
-    extractedData: any;
-    neuralSprite: any;
-    physicsState: LegalDocumentPhysics;
-    performanceMetrics: {
-      processingTime: number;
-      gflopsUsed: number;
-      compressionAchieved: number;
-      semanticFidelity: number;
-    };
-  }> {
+  ): Promise<any> {
     const startTime = performance.now();
     
     console.log(`🔍 Processing legal document ${documentId} with full GPU acceleration...`);
@@ -294,7 +284,7 @@ export class PhysicsAwareLegalGPUOrchestrator {
     // RTX hardware detection logic
     try {
       const gpuInfo = await this.queryGPUCapabilities();
-      this.config.rtxModel = gpuInfo.model as any;
+      this.config.rtxModel = gpuInfo?.model || "unknown" // @ts-ignore - Model property access as any;
       this.config.cudaCores = gpuInfo.cudaCores;
       this.config.tensorCores = gpuInfo.tensorCores;
       this.config.vramGB = gpuInfo.vramGB;

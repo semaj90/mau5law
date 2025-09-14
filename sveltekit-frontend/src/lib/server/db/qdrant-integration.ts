@@ -14,7 +14,7 @@ import {
   vectorMetadata,
   type Case,
   type LegalDocument,
-} from './schema-postgres';
+} from './schema-postgres.js';
 
 // ============================================================================
 // CONFIGURATION
@@ -272,13 +272,7 @@ export class QdrantPostgreSQLService {
       usePostgreSQL?: boolean;
       useQdrant?: boolean;
     } = {}
-  ): Promise<{
-    results: Array<{
-      id: string;
-      score: number;
-      document: LegalDocument;
-      source: 'postgresql' | 'qdrant';
-    }>;
+  ): Promise<;
     performance: {
       postgresqlTime?: number;
       qdrantTime?: number;
@@ -295,12 +289,7 @@ export class QdrantPostgreSQLService {
       useQdrant = true,
     } = options;
 
-    const results: Array<{
-      id: string;
-      score: number;
-      document: LegalDocument;
-      source: 'postgresql' | 'qdrant';
-    }> = [];
+    const results: Array< = [];
 
     let postgresqlTime: number | undefined;
     let qdrantTime: number | undefined;
@@ -371,11 +360,11 @@ export class QdrantPostgreSQLService {
           const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]));
 
           for (const result of qdrantResults) {
-            const document = docMap.get(result.id.toString());
+            const document = docMap.get((result as { id?: any; score?: any }).id.toString());
             if (document) {
               results.push({
-                id: result.id.toString(),
-                score: result.score,
+                id: (result as { id?: any; score?: any }).id.toString(),
+                score: (result as { id?: any; score?: any }).score,
                 document,
                 source: 'qdrant',
               });
@@ -390,9 +379,9 @@ export class QdrantPostgreSQLService {
     // Deduplicate and sort results
     const uniqueResults = new Map();
     for (const result of results) {
-      const existing = uniqueResults.get(result.id);
-      if (!existing || result.score > existing.score) {
-        uniqueResults.set(result.id, result);
+      const existing = uniqueResults.get((result as { id?: any; score?: any }).id);
+      if (!existing || (result as { id?: any; score?: any }).score > existing.score) {
+        uniqueResults.set((result as { id?: any; score?: any }).id, result);
       }
     }
 
@@ -417,11 +406,7 @@ export class QdrantPostgreSQLService {
   async batchSyncToQdrant(
     entityType: 'document' | 'case',
     batchSize: number = 100
-  ): Promise<{
-    synced: number;
-    failed: number;
-    errors: string[];
-  }> {
+  ): Promise<any> {
     const results = { synced: 0, failed: 0, errors: [] as string[] };
 
     try {
@@ -475,16 +460,7 @@ export class QdrantPostgreSQLService {
   // HEALTH CHECK AND MONITORING
   // ============================================================================
 
-  async healthCheck(): Promise<{
-    postgresql: boolean;
-    qdrant: boolean;
-    collections: string[];
-    syncStatus: {
-      totalDocuments: number;
-      syncedDocuments: number;
-      pendingSyncs: number;
-    };
-  }> {
+  async healthCheck(): Promise<any> {
     let postgresql = false;
     let qdrant = false;
     let collections: string[] = [];
@@ -566,7 +542,7 @@ export const createQdrantService = (
   const defaultPostgresConfig: PostgreSQLConfig = {
     connectionString:
       import.meta.env.DATABASE_URL ||
-      `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5432'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db'}`,
+      `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5433'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db'}`,
     ...postgresConfig,
   };
 

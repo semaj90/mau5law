@@ -2,7 +2,7 @@
 import { evidence, hashVerifications, users } from "$lib/server/db/schema-postgres";
 import { json } from "@sveltejs/kit";
 import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ error: "Evidence not found" }, { status: 404 });
     }
     const item = evidenceItem[0];
-    const storedHash = item.hash;
+    const storedHash = (item as { hash?: any; fileName?: any }).hash;
     const result = storedHash?.toLowerCase() === verifiedHash.toLowerCase();
 
     // Insert verification record using Drizzle
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       success: true,
       result,
       evidenceId,
-      fileName: item.fileName,
+      fileName: (item as { hash?: any; fileName?: any }).fileName,
       verifiedHash: verifiedHash.toLowerCase(),
       storedHash,
       verificationId: verificationResult[0]?.id,

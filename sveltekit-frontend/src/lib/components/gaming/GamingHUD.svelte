@@ -12,15 +12,21 @@
   		accuracyScore?: number;
   		isOnline?: boolean;
   	}
-  	let { 
-  		userLevel = 1,
+  	let { userLevel = 1,
   		experience = 750,
   		maxExperience = 1000,
   		currentCase = "CASE-2024-001",
   		documentsAnalyzed = 47,
   		accuracyScore = 94.2,
   		isOnline = true
-  	} = $props();
+  	 }: { userLevel = 1,
+  		experience = 750,
+  		maxExperience = 1000,
+  		currentCase = "CASE-2024-001",
+  		documentsAnalyzed = 47,
+  		accuracyScore = 94.2,
+  		isOnline = true
+  	: any } = $props();
   	let currentTime = $state('00:00:00');
   	let glowEffect = $state(false);
   	// Experience bar percentage

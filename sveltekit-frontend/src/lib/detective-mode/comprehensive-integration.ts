@@ -4,10 +4,10 @@
  * Handles integration between various detective mode components
  */
 
-import { caseScoringServiceGrpc } from '../server/services/CaseScoringServiceGrpc';
-import { evidenceStore } from '../stores/evidence-unified';
-import type { Case, Evidence } from '../types/api';
-import type { CaseScoringRequest, CaseScoringResult } from '../types/scoring';
+import { caseScoringServiceGrpc } from '../server/services/CaseScoringServiceGrpc.js';
+import { evidenceStore } from '../stores/evidence-unified.js';
+import type { Case, Evidence } from '../types/api.js';
+import type { CaseScoringRequest, CaseScoringResult } from '../types/scoring.js';
 
 interface DetectiveSystemStatus {
   grpc: {
@@ -232,8 +232,8 @@ export class ComprehensiveIntegration {
 
       console.log('✅ Case scored:', {
         caseId: caseData.id,
-        score: result.score,
-        protocol: result.performanceMetrics?.protocol || 'JSON'
+        score: (result as { score?: any; performanceMetrics?: any }).score,
+        protocol: (result as { score?: any; performanceMetrics?: any }).performanceMetrics?.protocol || 'JSON'
       });
 
       return result;

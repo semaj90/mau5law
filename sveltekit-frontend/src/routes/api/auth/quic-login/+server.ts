@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { quicAuthClient, setSessionCookie } from '$lib/services/quic-auth-client';
 import { db } from '$lib/server/db';

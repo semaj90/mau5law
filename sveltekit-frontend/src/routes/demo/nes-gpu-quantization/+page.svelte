@@ -304,7 +304,7 @@
           <h3 class="title">Result</h3>
           <div class="text-center">
             <canvas
-              bind:this={canvas}
+              bind:this={canvas as any}
               class="border-2 border-nier-border-muted max-w-full h-auto pixel-art"
               style="image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;"
             ></canvas>

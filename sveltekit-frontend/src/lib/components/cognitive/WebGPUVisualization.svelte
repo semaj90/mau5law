@@ -2,12 +2,15 @@
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { useWebGPUCapability } from '$lib/services/webgpu-capability-service';
-  let { 
-    gpuOrchestrator,
+  let { gpuOrchestrator,
     width = 800,
     height = 400,
     visualizationMode = 'neural-network' // 'neural-network', 'quantum-field', 'consciousness-map', 'matrix-flow'
-  } = $props();
+   }: { gpuOrchestrator,
+    width = 800,
+    height = 400,
+    visualizationMode = 'neural-network' // 'neural-network', 'quantum-field', 'consciousness-map', 'matrix-flow'
+  : any } = $props();
   let canvas = $state<HTMLCanvasElement | null>(null);
   let gpu = $state<GPUDevice | null>(null);
   let context = $state<GPUCanvasContext | null>(null);
@@ -416,7 +419,7 @@
       <span class="text-gray-400">FPS: {fps}</span>
       <button 
         class="bg-blue-600/20 border border-blue-600/50 text-blue-300 hover:bg-blue-600/30 px-3 py-1 rounded text-xs"
-        onclick={switchMode}
+        on:click={switchMode}
       >
         Switch Mode
       </button>
@@ -425,7 +428,7 @@
   
   <div class="relative">
     <canvas 
-      bind:this={canvas}
+      bind:this={canvas as any}
       {width}
       {height}
       class="border border-gray-600 rounded bg-black"
@@ -466,7 +469,6 @@
           {#if webgpuCapability.getCapabilities()?.fallbackReason}
             <span class="text-gray-500">({webgpuCapability.getCapabilities()?.fallbackReason})</span>
           {/if}
-        {/if}
       </div>
     {/if}
   </div>

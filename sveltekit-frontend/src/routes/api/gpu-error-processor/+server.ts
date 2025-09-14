@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // ======================================================================
 // GPU ERROR PROCESSOR API ENDPOINT
@@ -38,11 +38,11 @@ async function runTypeScriptCheck(): Promise<ProcessResult> {
 		});
 
 		checkProcess.stdout?.on('data', (data) => {
-			output += data.toString();
+			output += (data as { toString?: any }).toString();
 		});
 
 		checkProcess.stderr?.on('data', (data) => {
-			errors += data.toString();
+			errors += (data as { toString?: any }).toString();
 		});
 
 		checkProcess.on('close', (code) => {
@@ -107,19 +107,19 @@ async function handleTypeScriptCheck(): Promise<any> {
 	const result = await runTypeScriptCheck();
 
 	// Parse error count from output
-	const errorLines = result.output
+	const errorLines = (result as { output?: any; success?: any; duration?: any; errors?: any; exitCode?: any }).output
 		.split('\n')
 		.filter((line) => line.includes('error TS') || (line.includes('Found ') && line.includes('error')));
 
 	const errorCount = errorLines.length;
 
 	return json({
-		success: result.success,
+		success: (result as { output?: any; success?: any; duration?: any; errors?: any; exitCode?: any }).success,
 		errorCount,
-		duration: result.duration,
-		output: result.output,
-		errors: result.errors,
-		exitCode: result.exitCode,
+		duration: (result as { output?: any; success?: any; duration?: any; errors?: any; exitCode?: any }).duration,
+		output: (result as { output?: any; success?: any; duration?: any; errors?: any; exitCode?: any }).output,
+		errors: (result as { output?: any; success?: any; duration?: any; errors?: any; exitCode?: any }).errors,
+		exitCode: (result as { output?: any; success?: any; duration?: any; errors?: any; exitCode?: any }).exitCode,
 		timestamp: new Date().toISOString()
 	});
 }

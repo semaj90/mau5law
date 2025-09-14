@@ -172,8 +172,8 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   async function getMCPStats() {
     try {
       const response = await fetch('http://localhost:3002/mcp/metrics');
-      if (response.ok) {
-        return await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        return await (response as { ok?: any; json?: any }).json();
       }
       return { active_workers: 16, rps: 0, avg_response_ms: 0 };
     } catch {
@@ -593,12 +593,12 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     margin-bottom: 10px;
   }
 
-  .alert-item.warning {
+  .alert-(item as { warning?: any; error?: any }).warning {
     background: rgba(252, 252, 84, 0.1);
     border-left: 4px solid #fcfc54;
   }
 
-  .alert-item.error {
+  .alert-(item as { warning?: any; error?: any }).error {
     background: rgba(252, 84, 84, 0.1);
     border-left: 4px solid #fc5454;
   }

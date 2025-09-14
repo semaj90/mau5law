@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { goTensorService, type TensorRequest, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client';
 
 // Initialize tensor service connection
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ url }) => {
           request: {
             id: testRequest.id,
             documentId: testRequest.documentId,
-            dataLength: testRequest.data.length,
+            dataLength: testRequest.(data as { length?: any }).length,
             operation: testRequest.operation
           },
           testVector: Array.from(testData).slice(0, 10), // First 10 values for preview
@@ -133,17 +133,17 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         data: {
-          id: response.id,
-          success: response.success,
-          result: response.result ? {
-            processedData: response.result.processedData ? Array.from(response.result.processedData) : undefined,
-            embeddings: response.result.embeddings ? Array.from(response.result.embeddings) : undefined,
-            metadata: response.result.metadata,
-            similarity: response.result.similarity,
-            processingTime: response.result.processingTime
+          id: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).id,
+          success: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).success,
+          result: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result ? {
+            processedData: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.processedData ? Array.from((response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.processedData) : undefined,
+            embeddings: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.embeddings ? Array.from((response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.embeddings) : undefined,
+            metadata: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.metadata,
+            similarity: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.similarity,
+            processingTime: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.processingTime
           } : undefined,
-          error: response.error,
-          timestamp: response.timestamp,
+          error: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).error,
+          timestamp: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).timestamp,
           source: 'go-service'
         }
       });
@@ -155,13 +155,13 @@ export const POST: RequestHandler = async ({ request }) => {
         id: tensorRequest.id,
         success: true,
         result: {
-          processedData: operation === 'process' ? Array.from(mockTensorData(data.length)) : undefined,
+          processedData: operation === 'process' ? Array.from(mockTensorData((data as { length?: any }).length)) : undefined,
           embeddings: ['vectorize', 'analyze'].includes(operation) ? Array.from(mockTensorData(768)) : undefined,
           metadata: {
             operation,
             documentId,
             processedAt: new Date().toISOString(),
-            dataSize: data.length,
+            dataSize: (data as { length?: any }).length,
             mockMode: true
           },
           similarity: operation === 'similarity' ? Math.random() * 0.3 + 0.7 : undefined,
@@ -217,17 +217,17 @@ export const PUT: RequestHandler = async ({ request }) => {
         success: true,
         data: {
           responses: responses.map(response => ({
-            id: response.id,
-            success: response.success,
-            result: response.result ? {
-              processedData: response.result.processedData ? Array.from(response.result.processedData) : undefined,
-              embeddings: response.result.embeddings ? Array.from(response.result.embeddings) : undefined,
-              metadata: response.result.metadata,
-              similarity: response.result.similarity,
-              processingTime: response.result.processingTime
+            id: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).id,
+            success: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).success,
+            result: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result ? {
+              processedData: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.processedData ? Array.from((response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.processedData) : undefined,
+              embeddings: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.embeddings ? Array.from((response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.embeddings) : undefined,
+              metadata: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.metadata,
+              similarity: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.similarity,
+              processingTime: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).result.processingTime
             } : undefined,
-            error: response.error,
-            timestamp: response.timestamp
+            error: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).error,
+            timestamp: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).timestamp
           })),
           batchSize: responses.length,
           source: 'go-service'
@@ -241,7 +241,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         id: req.id,
         success: true,
         result: {
-          processedData: req.operation === 'process' ? Array.from(mockTensorData(Array.isArray(req.data) ? req.data.length : 768)) : undefined,
+          processedData: req.operation === 'process' ? Array.from(mockTensorData(Array.isArray(req.data) ? req.(data as { length?: any }).length : 768)) : undefined,
           embeddings: ['vectorize', 'analyze'].includes(req.operation) ? Array.from(mockTensorData(768)) : undefined,
           metadata: {
             operation: req.operation,

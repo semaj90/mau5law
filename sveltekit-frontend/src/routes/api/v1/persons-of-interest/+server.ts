@@ -41,7 +41,7 @@ class PersonsOfInterestCRUDService {
     const offset = (page - 1) * limit;
     const [totalRow] = (await db.execute(
       sql`SELECT COUNT(*)::int AS count FROM persons_of_interest`
-    )) as unknown as Array<{ count: number }>;
+    )) as unknown as Array<any>;
     const rows = await db.select().from(personsOfInterest).limit(limit).offset(offset);
     const total = totalRow?.count ?? rows.length;
     const totalPages = Math.max(1, Math.ceil(total / limit));
@@ -55,7 +55,7 @@ class PersonsOfInterestCRUDService {
     const offset = (page - 1) * limit;
     const [totalRow] = (await db.execute(
       sql`SELECT COUNT(*)::int AS count FROM persons_of_interest WHERE threat_level = ${riskLevel}`
-    )) as unknown as Array<{ count: number }>;
+    )) as unknown as Array<any>;
     const rows = await db
       .select()
       .from(personsOfInterest)
@@ -68,19 +68,19 @@ class PersonsOfInterestCRUDService {
   }
 
   async create(data: CreatePersonOfInterestData) {
-    const caseId = data.caseId || data.caseIds?.[0] || null;
+    const caseId = (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).caseId || (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).caseIds?.[0] || null;
     const [row] = await db
       .insert(personsOfInterest)
       .values({
-        name: data.name,
+        name: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).name,
         caseId: caseId as any,
-        aliases: data.aliases ?? [],
-        relationship: data.relationship,
-        threatLevel: data.threatLevel ?? 'low',
-        status: data.status ?? 'active',
-        profileData: data.profileData ?? {},
-        tags: data.tags ?? [],
-        position: data.position ?? {},
+        aliases: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).aliases ?? [],
+        relationship: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).relationship,
+        threatLevel: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).threatLevel ?? 'low',
+        status: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).status ?? 'active',
+        profileData: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).profileData ?? {},
+        tags: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).tags ?? [],
+        position: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).position ?? {},
         createdBy: this.userId as any,
       })
       .returning({ id: personsOfInterest.id });
@@ -137,14 +137,14 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 
     return json({
       success: true,
-      data: result.data,
+      data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data,
       pagination: {
-        page: result.page,
-        limit: result.limit,
-        total: result.total,
-        totalPages: result.totalPages,
-        hasNext: result.page < result.totalPages,
-        hasPrev: result.page > 1
+        page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page,
+        limit: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).limit,
+        total: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).total,
+        totalPages: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
+        hasNext: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page < (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
+        hasPrev: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page > 1
       },
       meta: {
         userId: locals.user.id,

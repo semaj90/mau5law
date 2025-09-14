@@ -156,9 +156,9 @@
   <main class="py-8">
     <!-- Mathematical Concepts Section -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-2xl">🧮 Mathematical Foundations</h3>
+          <h3 class="nes-text is-primary text-2xl">🧮 Mathematical Foundations</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -176,15 +176,15 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Enhanced 3D Processor Component -->
     <div class="max-w-full mx-auto mb-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-2xl">🎯 Live 3D Semantic Processor</h3>
+            <h3 class="nes-text is-primary text-2xl">🎯 Live 3D Semantic Processor</h3>
           </div>
           <div class="yorha-panel-content">
             <Enhanced3DSemanticProcessor 
@@ -195,15 +195,15 @@
               enableAutocomplete={true}
             />
           </div>
-        </NesCard>
+        </div>
       </div>
     </div>
 
     <!-- Optimization Techniques -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-2xl">⚡ Optimization Techniques</h3>
+          <h3 class="nes-text is-primary text-2xl">⚡ Optimization Techniques</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -218,14 +218,14 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Performance Metrics -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-2xl">📊 Performance Benchmarks</h3>
+          <h3 class="nes-text is-primary text-2xl">📊 Performance Benchmarks</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -238,14 +238,14 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Pipeline Architecture Diagram -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-2xl">🏗️ Processing Pipeline Architecture</h3>
+          <h3 class="nes-text is-primary text-2xl">🏗️ Processing Pipeline Architecture</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="overflow-x-auto">
@@ -316,7 +316,7 @@
             </ul>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </main>
 

@@ -11,8 +11,7 @@
   		closable?: boolean;
   		children: any
   	}
-  	let { 
-  		title,
+  	let { title,
   		subtitle,
   		variant = 'default',
   		borderGlow = false,
@@ -20,7 +19,15 @@
   		minimizable = false,
   		closable = false,
   		children
-  	} = $props();
+  	 }: { title,
+  		subtitle,
+  		variant = 'default',
+  		borderGlow = false,
+  		scanEffect = false,
+  		minimizable = false,
+  		closable = false,
+  		children
+  	: any } = $props();
   	let isMinimized = $state(false);
   	let isClosed = $state(false);
   	function toggleMinimize() {
@@ -56,7 +63,7 @@
 				{#if minimizable}
 					<button 
 						class="control-button minimize" 
-						onclick={toggleMinimize}
+						on:click={toggleMinimize}
 						aria-label={isMinimized ? 'Expand panel' : 'Minimize panel'}
 					>
 						{isMinimized ? '▲' : '▼'}
@@ -66,7 +73,7 @@
 				{#if closable}
 					<button 
 						class="control-button close" 
-						onclick={closePanel}
+						on:click={closePanel}
 						aria-label="Close panel"
 					>
 						✕

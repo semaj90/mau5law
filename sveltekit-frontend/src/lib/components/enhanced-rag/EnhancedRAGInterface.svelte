@@ -8,14 +8,14 @@
   let documents = $state<unknown[]>([]);
   let searchResults = $state<unknown[]>([]);
   let isLoading = $state(false);
-  let embeddings = $state<Map<string, number[]>>(new Map());
+  let embeddings = $state<Map<string, number[]>([])>(new Map());
   let analytics = $state({
     totalDocuments: 0,
     averageScore: 0,
     topLabels: [] as string[]
   });
   // Fuse.js search instance
-  let fuseSearch = $state<Fuse<any> | null >(null);
+  let fuseSearch = $state<Fuse<any>(null) | null >(null);
   // Configuration
   const config = {
     ollamaHost: 'http://localhost:11434',
@@ -129,10 +129,10 @@
             prompt: doc.content
           })
         });
-        if (response.ok) {
-          const result = await response.json();
-          embeddings.set(doc.id, result.embedding);
-          console.log(`✅ Generated ${result.embedding?.length || 0}-dim embedding for doc ${doc.id}`);
+        if ((response as { ok?: any; json?: any }).ok) {
+          const result = await (response as { ok?: any; json?: any }).json();
+          embeddings.set(doc.id, (result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).embedding);
+          console.log(`✅ Generated ${(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).embedding?.length || 0}-dim embedding for doc ${doc.id}`);
         }
       } catch (error) {
         console.warn(`⚠️ Embedding failed for doc ${doc.id}:`, error);
@@ -174,8 +174,8 @@
     }
     const results = fuseSearch.search(searchQuery);
     searchResults = results.map(result => ({
-      ...result.item,
-      searchScore: 1 - (result.score || 0) // Convert distance to similarity
+      ...(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).item,
+      searchScore: 1 - ((result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).score || 0) // Convert distance to similarity
     }));
     console.log(`🔍 Search "${searchQuery}" returned ${searchResults.length} results`);
   }
@@ -221,9 +221,9 @@
           stream: false
         })
       });
-      if (response.ok) {
-        const result = await response.json();
-        alert(`AI Analysis:\n\n${result.response}`);
+      if ((response as { ok?: any; json?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any }).json();
+        alert(`AI Analysis:\n\n${(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).response}`);
       } else {
         alert('AI analysis failed. Make sure Ollama is running with gemma3-legal model.');
       }
@@ -274,7 +274,7 @@
         class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
       <button
-        onclick={() => performSearch()}
+        on:click={() => performSearch()}
         class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
       >
         Search
@@ -288,26 +288,26 @@
           {#each searchResults as result}
             <div class="result-nier-bits-card bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
               <div class="flex justify-between items-start mb-2">
-                <span class="inline-block px-2 py-1 rounded-full text-xs font-medium {getLabelColor(result.label)}">
-                  {result.label}
+                <span class="inline-block px-2 py-1 rounded-full text-xs font-medium {getLabelColor((result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).label)}">
+                  {(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).label}
                 </span>
                 <div class="flex gap-2 text-sm">
-                  <span class="score {getScoreColor(result.score)}">
-                    Score: {result.score.toFixed(2)}
+                  <span class="score {getScoreColor((result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).score)}">
+                    Score: {(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).score.toFixed(2)}
                   </span>
                   <span class="search-score text-gray-600">
-                    Match: {(result.searchScore * 100).toFixed(0)}%
+                    Match: {((result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).searchScore * 100).toFixed(0)}%
                   </span>
                 </div>
               </div>
-              <p class="text-gray-800 mb-2">{result.summary}</p>
-              <p class="text-sm text-gray-600 mb-3">{result.content}</p>
+              <p class="text-gray-800 mb-2">{(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).summary}</p>
+              <p class="text-sm text-gray-600 mb-3">{(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).content}</p>
               <div class="flex justify-between items-center">
                 <div class="text-xs text-gray-500">
-                  {result.metadata.wordCount} words • {result.metadata.legalTerms.length} legal terms
+                  {(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).metadata.wordCount} words • {(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).metadata.legalTerms.length} legal terms
                 </div>
                 <button
-                  onclick={() => analyzeDocument(result)}
+                  on:click={() => analyzeDocument(result)}
                   class="px-3 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 transition-colors"
                 >
                   🤖 AI Analyze
@@ -388,7 +388,7 @@
                 Source: {doc.source} • {doc.metadata.wordCount} words • {doc.timestamp.toLocaleDateString()}
               </div>
               <button
-                onclick={() => analyzeDocument(doc)}
+                on:click={() => analyzeDocument(doc)}
                 class="px-3 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 transition-colors"
               >
                 🤖 Analyze with AI

@@ -63,7 +63,7 @@
     for (const check of healthChecks) {
       try {
         const response = await fetch(check.endpoint);
-        systemHealth.services[check.name] = response.ok ? 'healthy' : 'unhealthy';
+        systemHealth.services[check.name] = (response as { ok?: any; text?: any; json?: any; status?: any }).ok ? 'healthy' : 'unhealthy';
       } catch (error) {
         systemHealth.services[check.name] = 'error';
         console.error(`Health check failed for ${check.name}:`, error);
@@ -119,17 +119,17 @@
               status: 'open'
             })
           });
-          return { success: response.ok, details: await response.text() };
+          return { success: (response as { ok?: any; text?: any; json?: any; status?: any }).ok, details: await (response as { ok?: any; text?: any; json?: any; status?: any }).text() };
         }
       },
       {
         name: 'Multi-Protocol Service Discovery',
         test: async () => {
           const response = await fetch('/api/comprehensive-integration');
-          const result = await response.json();
+          const result = await (response as { ok?: any; text?: any; json?: any; status?: any }).json();
           return {
-            success: response.ok && result.system_overview?.healthy_services > 0,
-            details: `${result.system_overview?.healthy_services || 0}/${result.system_overview?.total_services || 0} services healthy`
+            success: (response as { ok?: any; text?: any; json?: any; status?: any }).ok && (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).system_overview?.healthy_services > 0,
+            details: `${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).system_overview?.healthy_services || 0}/${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).system_overview?.total_services || 0} services healthy`
           };
         }
       },
@@ -138,8 +138,8 @@
         test: async () => {
           const response = await fetch('/api/v1/quic/metrics');
           return {
-            success: response.ok,
-            details: response.ok ? 'QUIC metrics accessible' : 'QUIC metrics unavailable'
+            success: (response as { ok?: any; text?: any; json?: any; status?: any }).ok,
+            details: (response as { ok?: any; text?: any; json?: any; status?: any }).ok ? 'QUIC metrics accessible' : 'QUIC metrics unavailable'
           };
         }
       },
@@ -147,10 +147,10 @@
         name: 'Upload Service Health',
         test: async () => {
           const response = await fetch('/api/v1/upload?action=health');
-          const result = await response.json();
+          const result = await (response as { ok?: any; text?: any; json?: any; status?: any }).json();
           return {
-            success: response.ok && result.service,
-            details: result.service ? `${result.service} - ${result.status}` : 'Service unavailable'
+            success: (response as { ok?: any; text?: any; json?: any; status?: any }).ok && (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).service,
+            details: (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).service ? `${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).service} - ${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).status}` : 'Service unavailable'
           };
         }
       },
@@ -166,8 +166,8 @@
             })
           });
           return {
-            success: response.status < 500, // Accept 404 or other client errors as "working"
-            details: `RAG endpoint responding (${response.status})`
+            success: (response as { ok?: any; text?: any; json?: any; status?: any }).status < 500, // Accept 404 or other client errors as "working"
+            details: `RAG endpoint responding (${(response as { ok?: any; text?: any; json?: any; status?: any }).status})`
           };
         }
       },
@@ -175,13 +175,13 @@
         name: 'Database Persistence',
         test: async () => {
           const response = await fetch('/api/test-database-persistence');
-          if (!response.ok) {
+          if (!(response as { ok?: any; text?: any; json?: any; status?: any }).ok) {
             return { success: false, details: 'Database test endpoint unavailable' };
           }
-          const result = await response.json();
+          const result = await (response as { ok?: any; text?: any; json?: any; status?: any }).json();
           return {
-            success: result.database?.connected || false,
-            details: `Connected: ${result.database?.connected}, Migrations: ${result.database?.migrations}`
+            success: (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).database?.connected || false,
+            details: `Connected: ${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).database?.connected}, Migrations: ${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).database?.migrations}`
           };
         }
       }
@@ -196,12 +196,12 @@
         const result = await testCase.test();
         testResults.push({
           name: testCase.name,
-          status: result.success ? 'passed' : 'failed',
-          details: result.details,
+          status: (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).success ? 'passed' : 'failed',
+          details: (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).details,
           timestamp: new Date().toISOString()
         });
 
-        if (result.success) {
+        if ((result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).success) {
           systemHealth.integration.passed_tests++;
         } else {
           systemHealth.integration.failed_tests++;
@@ -243,7 +243,7 @@
         const response = await fetch(endpoint);
         results.push({
           protocol,
-          status: response.ok ? 'available' : 'unavailable',
+          status: (response as { ok?: any; text?: any; json?: any; status?: any }).ok ? 'available' : 'unavailable',
           latency: Date.now(), // Simplified latency measurement
           endpoint
         });
@@ -345,19 +345,18 @@
 
       <div class="flex gap-4">
         <Button
-          onclick={runSystemHealthCheck}
+          on:click={runSystemHealthCheck}
           class="bg-blue-600 text-white hover:bg-blue-700 font-bold px-4 py-2 bits-btn bits-btn"
         >
-          🔄 REFRESH HEALTH CHECK
-        </button>
+🔄 REFRESH HEALTH CHECK
 
         <Button
-          onclick={runIntegrationTests}
+          on:click={runIntegrationTests}
           disabled={isRunningTests}
           class="bg-green-600 text-white hover:bg-green-700 font-bold px-4 py-2 disabled:opacity-50 bits-btn bits-btn"
         >
-          {isRunningTests ? '⏳ RUNNING TESTS...' : '🧪 RUN INTEGRATION TESTS'}
-        </button>
+{isRunningTests ? '⏳ RUNNING TESTS...' : '🧪 RUN INTEGRATION TESTS'}
+
       </div>
     </div>
   </section>
@@ -385,16 +384,16 @@
           {#each testResults as result}
             <div class="bg-[#EAE8E1] border border-[#D1CFC7] p-4 rounded">
               <div class="flex justify-between items-start mb-2">
-                <h3 class="font-bold text-sm">{result.name}</h3>
+                <h3 class="font-bold text-sm">{(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).name}</h3>
                 <span class="text-lg">
-                  {#if result.status === 'passed'}✅
-                  {:else if result.status === 'failed'}❌
+                  {#if (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).status === 'passed'}✅
+                  {:else if (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).status === 'failed'}❌
                   {:else}⚠️{/if}
                 </span>
               </div>
-              <div class="text-xs opacity-75">{result.details}</div>
+              <div class="text-xs opacity-75">{(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).details}</div>
               <div class="text-xs opacity-50 mt-1">
-                {new Date(result.timestamp).toLocaleString()}
+                {new Date((result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).timestamp).toLocaleString()}
               </div>
             </div>
           {/each}

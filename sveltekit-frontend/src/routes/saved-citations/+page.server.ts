@@ -1,6 +1,6 @@
 
 import { caseService } from "$lib/services/caseService";
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {

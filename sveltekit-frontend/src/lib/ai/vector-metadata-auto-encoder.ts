@@ -7,8 +7,8 @@
  * topology-aware retrieval with predictive analytics.
  */
 
-import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js';
-import type { SIMDProcessingResult } from '../evidence/simd-gpu-tiling-engine.js';
+import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js.js';
+import type { SIMDProcessingResult } from '../evidence/simd-gpu-tiling-engine.js.js';
 
 // Vector encoding configurations for different use cases
 interface VectorEncodingConfig {
@@ -44,7 +44,7 @@ interface EncodedVectorMetadata {
     spatial_index: Float32Array;
     temporal_index: number[];
     frequency_index: Map<string, number>;
-    similarity_graph: Map<string, Array<{id: string, weight: number}>>;
+    similarity_graph: Map<string, Array<any>;
   };
 
   // Compressed glyph representations for instant retrieval
@@ -59,16 +59,8 @@ interface EncodedVectorMetadata {
   // Metadata for enhanced RAG
   rag_metadata: {
     contextual_anchors: string[];
-    retrieval_patterns: Array<{
-      query_type: string;
-      relevance_boost: number;
-      context_requirements: string[];
-    }>;
-    semantic_relationships: Array<{
-      related_id: string;
-      relationship_type: string;
-      strength: number;
-    }>;
+    retrieval_patterns: Array<any>;
+    semantic_relationships: Array<any>;
     predictive_suggestions: string[];
   };
 
@@ -143,13 +135,7 @@ class VectorMetadataAutoEncoder {
       optimize_for?: 'retrieval' | 'storage' | 'accuracy';
       enable_predictive?: boolean;
     } = {}
-  ): Promise<{
-    encoded_metadata: EncodedVectorMetadata;
-    index_operations: Array<{
-      index_id: string;
-      operation: 'insert' | 'update' | 'upsert';
-      status: 'success' | 'pending' | 'failed';
-    }>;
+  ): Promise<;
     encoding_stats: any;
   }> {
     console.log(`🔄 Encoding LOD entry ${lodEntry.id} to vector metadata...`);
@@ -241,29 +227,10 @@ class VectorMetadataAutoEncoder {
       boost_recent?: boolean;
       include_svg_context?: boolean;
     } = {}
-  ): Promise<{
-    results: Array<{
-      entry_id: string;
-      relevance_score: number;
-      lod_match: string;
-      glyph_summary: {
-        visual_representation: string;
-        semantic_summary: string;
-        context_anchors: string[];
-      };
-      vector_similarity: number;
-      predictive_confidence: number;
-      rag_context: string;
-      svg_visualization?: string;
-    }>;
+  ): Promise<;
     enhanced_context: string;
     predictive_queries: string[];
-    topology_insights: Array<{
-      relationship: string;
-      entries: string[];
-      strength: number;
-    }>;
-  }> {
+    topology_insights: Array<any>> {
     console.log(`🔍 Glyph-based RAG retrieval for: "${query}"`);
 
     const startTime = Date.now();
@@ -286,7 +253,7 @@ class VectorMetadataAutoEncoder {
     // Phase 4: Generate glyph-based summaries
     const enhancedResults = await Promise.all(
       topologyFiltered.slice(0, options.max_results || 10).map(async (result) => {
-        const encodedMetadata = this.encodingCache.get(result.entry_id);
+        const encodedMetadata = this.encodingCache.get((result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).entry_id);
         if (!encodedMetadata) return null;
 
         const glyphSummary = await this.generateGlyphSummary(encodedMetadata, query);
@@ -296,12 +263,12 @@ class VectorMetadataAutoEncoder {
           : undefined;
 
         return {
-          entry_id: result.entry_id,
-          relevance_score: result.similarity_score,
-          lod_match: result.matched_lod,
+          entry_id: (result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).entry_id,
+          relevance_score: (result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).similarity_score,
+          lod_match: (result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).matched_lod,
           glyph_summary: glyphSummary,
-          vector_similarity: result.vector_similarity,
-          predictive_confidence: result.predictive_confidence,
+          vector_similarity: (result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).vector_similarity,
+          predictive_confidence: (result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).predictive_confidence,
           rag_context: ragContext,
           svg_visualization: svgVisualization
         };
@@ -333,13 +300,7 @@ class VectorMetadataAutoEncoder {
   /**
    * Generate LOD-level embeddings from cache entry
    */
-  private async generateLODEmbeddings(lodEntry: LODCacheEntry): Promise<{
-    glyph: Float32Array;
-    tile: Float32Array;
-    block: Float32Array;
-    section: Float32Array;
-    document: Float32Array;
-  }> {
+  private async generateLODEmbeddings(lodEntry: LODCacheEntry): Promise<any> {
     const embeddings = {
       glyph: new Float32Array(this.config.embedding_dimensions),
       tile: new Float32Array(this.config.embedding_dimensions),
@@ -411,13 +372,7 @@ class VectorMetadataAutoEncoder {
   private async performSemanticClustering(
     embeddings: any,
     lodEntry: LODCacheEntry
-  ): Promise<{
-    cluster_assignments: Int32Array;
-    cluster_centers: Float32Array[];
-    cluster_count: number;
-    intra_cluster_distances: Float32Array;
-    inter_cluster_distances: Float32Array[];
-  }> {
+  ): Promise<any> {
     return this.semanticClusterModel.performClustering(embeddings, lodEntry);
   }
 
@@ -466,7 +421,7 @@ class VectorMetadataAutoEncoder {
     });
 
     // Build similarity graph (simplified)
-    const similarityGraph = new Map<string, Array<{id: string, weight: number}>>();
+    const similarityGraph = new Map<string, Array<any>();
     similarityGraph.set(lodEntry.id, [
       { id: `similar-${lodEntry.id}-1`, weight: 0.8 },
       { id: `similar-${lodEntry.id}-2`, weight: 0.6 },
@@ -587,16 +542,8 @@ class VectorMetadataAutoEncoder {
     entryId: string,
     encodedMetadata: EncodedVectorMetadata,
     targetIndexes?: string[]
-  ): Promise<Array<{
-    index_id: string;
-    operation: 'insert' | 'update' | 'upsert';
-    status: 'success' | 'pending' | 'failed';
-  }>> {
-    const operations: Array<{
-      index_id: string;
-      operation: 'insert' | 'update' | 'upsert';
-      status: 'success' | 'pending' | 'failed';
-    }> = [];
+  ): Promise<Array<any> {
+    const operations: Array< = [];
     const indexesToUpdate = targetIndexes || Array.from(this.searchIndexes.keys());
 
     for (const indexId of indexesToUpdate) {
@@ -628,7 +575,7 @@ class VectorMetadataAutoEncoder {
     entryId: string,
     metadata: EncodedVectorMetadata,
     config: SearchIndexIntegration
-  ): Promise<{ operation: 'insert' | 'update' | 'upsert'; success: boolean }> {
+  ): Promise<any> {
     // Simulate index operations - would integrate with actual search engines
     console.log(`📊 Updating ${config.index_type} index ${indexId} for entry ${entryId}`);
 
@@ -685,13 +632,7 @@ class VectorMetadataAutoEncoder {
     queryEmbedding: Float32Array,
     lodPreference: string,
     maxResults: number
-  ): Promise<Array<{
-    entry_id: string;
-    similarity_score: number;
-    vector_similarity: number;
-    predictive_confidence: number;
-    matched_lod: string;
-  }>> {
+  ): Promise<Array<any> {
     const results = [];
 
     for (const [entryId, metadata] of this.encodingCache.entries()) {
@@ -741,7 +682,7 @@ class VectorMetadataAutoEncoder {
   private async applyTopologyFiltering(results: any[], query: string): Promise<any[]> {
     // Apply topology-aware filtering based on structural relationships
     return results.filter(result => {
-      const metadata = this.encodingCache.get(result.entry_id);
+      const metadata = this.encodingCache.get((result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).entry_id);
       if (!metadata) return false;
 
       // Simple topology filtering - would be more sophisticated
@@ -813,7 +754,7 @@ class VectorMetadataAutoEncoder {
     const suggestions = new Set<string>();
 
     results.forEach(result => {
-      result.glyph_summary.context_anchors.forEach((anchor: string) => {
+      (result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).glyph_summary.context_anchors.forEach((anchor: string) => {
         if (anchor && anchor.length > 3 && !anchor.includes('cluster')) {
           suggestions.add(anchor);
         }
@@ -833,7 +774,7 @@ class VectorMetadataAutoEncoder {
       if (!relationshipMap.has(key)) {
         relationshipMap.set(key, []);
       }
-      relationshipMap.get(key)!.push(result.entry_id);
+      relationshipMap.get(key)!.push((result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).entry_id);
     });
 
     for (const [relationship, entries] of relationshipMap.entries()) {

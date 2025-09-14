@@ -10,15 +10,13 @@ https://svelte.dev/e/js_parse_error -->
   }
   import { onMount } from 'svelte';
   let alerts = $state<any[] >([]);
-  let sustained = $state<{ sustainedP99Breaches:number; threshold:number; lastP99OkTs:number } | null >(null);
+  let sustained = $state(null);
   let loading = $state(true);
   let error = $state<string | null >(null);
   let autoRefresh = $state(true);
-  let interval = $state<any;
-
-  async function load(){
+  let interval = $state<anyasync function load(){
     try {
-      const res >(await fetch('/api/v1/alerts'));
+      const res | null>(null)(await fetch('/api/v1/alerts'));
       const data = await res.json();
       alerts = data.alerts || [];
       const quicRes = await fetch('/api/v1/quic/push', { method:'POST', body: JSON.stringify({ latencySamples: [] }), headers:{'content-type':'application/json'} });
@@ -40,8 +38,8 @@ https://svelte.dev/e/js_parse_error -->
           p99 streak: {sustained.sustainedP99Breaches}/{sustained.threshold}
         </span>
       {/if}
-      <button onclick={() => autoRefresh = !autoRefresh} class="text-xs border px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800">{autoRefresh? 'Pause':'Resume'}</button>
-      <button onclick={load} class="text-xs border px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800">Refresh</button>
+      <button on:click={() => autoRefresh = !autoRefresh} class="text-xs border px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800">{autoRefresh? 'Pause':'Resume'}</button>
+      <button on:click={load} class="text-xs border px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800">Refresh</button>
     </div>
   </div>
   {#if loading}

@@ -10,11 +10,13 @@ import type { Case } from '$lib/types';
     onclick?: (event?: any) => void;
     onstatusChange?: (event?: any) => void;
   }
-  let {
-    caseData,
+  let { caseData,
     isActive = false,
     disabled = false
-  } = $props();
+   }: { caseData,
+    isActive = false,
+    disabled = false
+  : any } = $props();
 
 
 
@@ -80,8 +82,8 @@ import type { Case } from '$lib/types';
   class="space-y-4"
   class:active={isActive}
   class:disabled
-  onclick={handleClick}
-  onkeydown={(e) => e.key === "Enter" && handleClick()}
+  on:click={handleClick}
+  on:keydown={(e) => e.key === "Enter" && handleClick()}
   role="button"
   tabindex={0}
 >
@@ -147,8 +149,8 @@ import type { Case } from '$lib/types';
       <select
         class="space-y-4"
         value={caseData.status}
-        onchange={handleStatusChange}
-        onclick={(e) => e.stopPropagation()}
+        on:change={handleStatusChange}
+        on:click={(e) => e.stopPropagation()}
       >
         <option value="open">Open</option>
         <option value="in_progress">In Progress</option>

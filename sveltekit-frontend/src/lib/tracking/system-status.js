@@ -13,7 +13,7 @@ export class SystemStatusTracker {
     // Docker services
     this.services.set("postgres", {
       status: "pending",
-      port: 5432,
+      port: 5433,
       health_endpoint: "psql connection test",
     });
     this.services.set("redis", {
@@ -83,7 +83,7 @@ export class SystemStatusTracker {
     // Use database health check from our created files
     return {
       status: "healthy",
-      connection: "postgresql://legal_admin@localhost:5432/legal_ai_db",
+      connection: "postgresql://legal_admin@localhost:5433/legal_ai_db",
     };
   }
 

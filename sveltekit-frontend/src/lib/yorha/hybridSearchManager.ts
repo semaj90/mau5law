@@ -1,5 +1,5 @@
-import { ensureLocalIndex, addOrUpdateDocuments } from './localSearch';
-import type { LocalLegalDoc } from './localSearch';
+import { ensureLocalIndex, addOrUpdateDocuments } from './localSearch.js';
+import type { LocalLegalDoc } from './localSearch.js';
 
 let lokiDb: any = null;
 let lokiCollection: any = null;
@@ -38,7 +38,7 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
     const res = await fetch(`/api/yorha/legal-data?limit=${maxDocs}`);
     if (res.ok) {
       const data = await res.json();
-      const raw = data.results || data.documents || [];
+      const raw = (data as { results?: any; documents?: any; matches?: any }).results || (data as { results?: any; documents?: any; matches?: any }).documents || [];
       const docs: LocalLegalDoc[] = raw.map((d: any, i: number) => ({
         id: d.id || d.uuid || i + 1,
         title: d.title || d.name || `Document ${i + 1}`,
@@ -69,7 +69,7 @@ export async function reRankWithPgVector(query: string, current: any[], endpoint
     const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     if (!res.ok) return current;
     const data = await res.json();
-    const scores: any[] = data.results || data.matches || [];
+    const scores: any[] = (data as { results?: any; documents?: any; matches?: any }).results || (data as { results?: any; documents?: any; matches?: any }).matches || [];
     if (!Array.isArray(scores) || scores.length === 0) return current;
     const scoreMap = new Map<any, number>();
     for (const s of scores) {
@@ -77,10 +77,10 @@ export async function reRankWithPgVector(query: string, current: any[], endpoint
       scoreMap.set(s.id ?? s.document_id ?? s.documentId, norm);
     }
     return current.map(item => {
-      const raw = scoreMap.get(item.id);
+      const raw = scoreMap.get((item as { id?: any; source?: any }).id);
       if (raw == null) return item;
       const scaled = raw <= 1 ? Math.round(raw * 100) : Math.round(Math.min(100, raw));
-      return { ...item, relevance: scaled, source: item.source || 'hybrid' };
+      return { ...item, relevance: scaled, source: (item as { id?: any; source?: any }).source || 'hybrid' };
     }).sort((a, b) => b.relevance - a.relevance);
   } catch (e: any) {
     console.warn('[HybridSearch] re-rank failed', e);

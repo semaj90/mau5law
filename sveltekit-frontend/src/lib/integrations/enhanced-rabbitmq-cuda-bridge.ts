@@ -342,11 +342,11 @@ class EnhancedRabbitMQCudaBridge {
         body: JSON.stringify(jobData)
       });
       
-      if (!response.ok) {
-        throw new Error(`CUDA service error: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`CUDA service error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
       
-      const result = await response.json();
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
       return result;
       
     } catch (error) {
@@ -364,8 +364,8 @@ class EnhancedRabbitMQCudaBridge {
         method: 'GET'
       } as any);
       
-      if (response.ok) {
-        const health = await response.json();
+      if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
+        const health = await (response as { ok?: any; statusText?: any; json?: any }).json();
         this.cudaHealthy = health.status === 'healthy' && health.ready_workers > 0;
         
         rabbitMQCudaState.update(state => ({
@@ -445,7 +445,7 @@ class EnhancedRabbitMQCudaBridge {
       'legal_cuda_results',
       Buffer.from(JSON.stringify(message)),
       { 
-        priority: result.success ? 5 : 8, // Higher priority for errors
+        priority: (result as { success?: any }).success ? 5 : 8, // Higher priority for errors
         persistent: true 
       }
     );

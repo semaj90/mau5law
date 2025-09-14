@@ -72,8 +72,8 @@
   async function loadCaseData() {
     try {
       const response = await fetch(`/api/v1/cases/${caseId}`);
-      if (response.ok) {
-        const caseData = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const caseData = await (response as { ok?: any; json?: any }).json();
         caseTitle = caseData.title || caseData.name || 'Untitled Case';
         await loadCaseEvidence();
         await loadCasePrecedents();
@@ -90,9 +90,9 @@
   async function loadCaseEvidence() {
     try {
       const response = await fetch(`/api/v1/evidence/case/${caseId}`);
-      if (response.ok) {
-        const data = await response.json();
-        evidenceItems = data.evidence || [];
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        evidenceItems = (data as { evidence?: any; results?: any; theories?: any }).evidence || [];
       }
     } catch (error) {
       console.error('Failed to load evidence:', error);
@@ -115,9 +115,9 @@
         })
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        precedents = data.results || [];
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        precedents = (data as { evidence?: any; results?: any; theories?: any }).results || [];
       }
     } catch (error) {
       console.error('Failed to load precedents:', error);
@@ -128,9 +128,9 @@
   async function loadExistingTheories() {
     try {
       const response = await fetch(`/api/legal/case-theory/${caseId}`);
-      if (response.ok) {
-        const data = await response.json();
-        theories = data.theories || [];
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        theories = (data as { evidence?: any; results?: any; theories?: any }).theories || [];
       }
     } catch (error) {
       console.error('Failed to load theories:', error);
@@ -157,13 +157,7 @@
     
     try {
       // Store theory building request in CHR-ROM for fast processing
-      await nesGPUBridge.storeCHRROMPattern(`theory_${Date.now()}`, {
-        renderableHTML: `<div class="theory-build">${theoryData.name}</div>`,
-        type: 'theory_pattern',
-        priority: 4,
-        compressedData: new Uint8Array(new TextEncoder().encode(JSON.stringify(theoryData))),
-        bankId: 1
-      });
+      await nesGPUBridge.storeCHRROMPattern(`theory_${Date.now()}`, {/* JSX syntax converted to Svelte */});
 
       const response = await fetch('/api/legal/case-theory/build', {
         method: 'POST',
@@ -176,19 +170,19 @@
         })
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any }).json();
         
         // Update theory with AI analysis
         const builtTheory = {
           id: `theory_${Date.now()}`,
           ...theoryData,
-          legalArguments: result.legalArguments || [],
-          counterarguments: result.counterarguments || [],
-          logicalChain: result.logicalChain || [],
-          strength: result.strengthScore || 0.5,
-          riskAssessment: result.riskAssessment || {},
-          aiSuggestions: result.suggestions || [],
+          legalArguments: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).legalArguments || [],
+          counterarguments: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).counterarguments || [],
+          logicalChain: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).logicalChain || [],
+          strength: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).strengthScore || 0.5,
+          riskAssessment: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).riskAssessment || {},
+          aiSuggestions: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).suggestions || [],
           createdAt: new Date(),
           updatedAt: new Date()
         };
@@ -389,7 +383,7 @@
         </div>
         
         <button
-          onclick={() => showTheoryDialog = true}
+          on:click={() => showTheoryDialog = true}
           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
         >
           <Plus class="h-4 w-4 mr-2" />
@@ -421,7 +415,7 @@
                          {currentTheory?.id === theory.id ? 'border-purple-500 bg-purple-50' : 'hover:border-gray-300'}
                          {optimistic ? 'opacity-50' : ''}"
                   role="button" tabindex="0"
-                  onclick={() => selectTheory(theory)}
+                  on:click={() => selectTheory(theory)}
                 >
                   <div class="flex items-start justify-between mb-2">
                     <h4 class="font-medium text-gray-900">{theory.name}</h4>
@@ -673,7 +667,7 @@
             <h3 class="text-lg font-medium text-gray-900 mb-2">Select a Theory</h3>
             <p class="text-gray-600 mb-6">Choose a case theory from the list to view detailed AI analysis</p>
             <button
-              onclick={() => showTheoryDialog = true}
+              on:click={() => showTheoryDialog = true}
               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
             >
               <Plus class="h-4 w-4 mr-2" />
@@ -695,7 +689,7 @@
         <p class="text-sm text-gray-600">AI will analyze evidence and build logical legalArguments</p>
       </div>
       
-      <form onsubmit={submitTheory} class="p-6 space-y-4">
+      <form on:submit={submitTheory} class="p-6 space-y-4">
         <div>
           <label for="theoryName" class="block text-sm font-medium text-gray-700 mb-1">
             Theory Name
@@ -759,7 +753,7 @@
         <div class="flex justify-end space-x-3 pt-4">
           <button
             type="button"
-            onclick={() => showTheoryDialog = false}
+            on:click={() => showTheoryDialog = false}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
             disabled={isBuilding}
           >

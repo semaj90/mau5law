@@ -24,14 +24,19 @@
     ThumbsDown,
   } from 'lucide-svelte';
 
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     context = null,
     title = 'AI Legal Assistant',
     placeholder = 'Ask about legal matters...',
     caseId = null,
     documentId = null,
-  } = $props();
+   }: { open = $bindable(false),
+    context = null,
+    title = 'AI Legal Assistant',
+    placeholder = 'Ask about legal matters...',
+    caseId = null,
+    documentId = null,
+  : any } = $props();
 
   let messages = $state([]);
   let currentMessage = $state('');
@@ -234,10 +239,10 @@
               {/if}
 
               <div class="flex-1 max-w-[80%] {message.role === 'user' ? 'order-first' : ''}">
-                <NesCard.Root
+                <div.Root
                   class="{message.role === 'user'
                     ? 'bg-primary text-primary-foreground'
-                    : ''} {message.error ? 'border-red-200 dark:border-red-800' : ''}">
+                    : ''} {message.error ? 'border-red-200 dark:border-red-800' : ''} nes-container">
                   <div.Content class="p-3">
                     <div
                       class="prose prose-sm max-w-none {message.role === 'user'
@@ -262,21 +267,24 @@
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            onclick={() => copyToClipboard(message.content)}>
+                            on:click={() =>
+copyToClipboard(message.content)}>
                             <Copy class="h-3 w-3" />
-                          </button>
+</Button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            onclick={() => provideFeedback(message.id, 'positive')}>
+                            on:click={() =>
+provideFeedback(message.id, 'positive')}>
                             <ThumbsUp class="h-3 w-3" />
-                          </button>
+</Button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            onclick={() => provideFeedback(message.id, 'negative')}>
+                            on:click={() =>
+provideFeedback(message.id, 'negative')}>
                             <ThumbsDown class="h-3 w-3" />
-                          </button>
+</Button>
                         </div>
                       {/if}
                     </div>
@@ -291,9 +299,10 @@
                         variant="outline"
                         size="sm"
                         class="text-xs h-auto py-1 px-2 bits-btn bits-btn"
-                        onclick={() => handleSuggestionClick(suggestion)}>
+                        on:click={() =>
+handleSuggestionClick(suggestion)}>
                         {suggestion}
-                      </button>
+</Button>
                     {/each}
                   </div>
                 {/if}
@@ -318,7 +327,7 @@
                 </div>
               </div>
               <div class="flex-1 max-w-[80%]">
-                <div.Root>
+                <Card.Root>
                   <div.Content class="p-3">
                     <div class="flex items-center gap-2 nes-text is-disabled">
                       <Loader2 class="h-4 w-4 animate-spin" />
@@ -343,16 +352,16 @@
           keydown={handleKeydown}
           disabled={isLoading}
           class="flex-1" />
-        <Button class="bits-btn" onclick={sendMessage} disabled={isLoading || !currentMessage.trim()}>
-          {#if isLoading}
+        <Button class="bits-btn" on:click={sendMessage} disabled={isLoading || !currentMessage.trim()}>
+{#if isLoading}
             <Loader2 class="h-4 w-4 animate-spin" />
           {:else}
             <Send class="h-4 w-4" />
           {/if}
-        </button>
-        <Button class="bits-btn" variant="outline" onclick={clearChat}>
-          <X class="h-4 w-4" />
-        </button>
+</Button>
+        <Button class="bits-btn" variant="outline" on:click={clearChat}>
+<X class="h-4 w-4" />
+</Button>
       </div>
 
       {#if messages.length === 0 && context}

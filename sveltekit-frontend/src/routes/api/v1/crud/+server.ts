@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Comprehensive CRUD REST API - Legal AI Platform
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         if (!id) return error(400, ensureError({ message: 'ID required for read operation' }));
 
         result = await db.select().from(table).where(eq((table as any).id, id)).limit(1);
-        if (result.length === 0) {
+        if ((result as { length?: any }).length === 0) {
           return error(404, ensureError({ message: `${entity} with ID ${id} not found` }));
         }
         return json({
@@ -326,7 +326,7 @@ export const POST: RequestHandler = async ({ request }) => {
         result = await db.insert(table).values(createData).returning();
 
         // If this is a document or evidence with content, trigger embedding generation
-        if ((entity === 'evidence' || entity === 'legalDocuments') && data.content) {
+        if ((entity === 'evidence' || entity === 'legalDocuments') && (data as { content?: any; title?: any }).content) {
           try {
             await apiOrchestrator.routeRequest(
               'enhancedRAG',
@@ -336,8 +336,8 @@ export const POST: RequestHandler = async ({ request }) => {
                 body: JSON.stringify({
                   id: result[0].id,
                   entity: entity,
-                  content: data.content,
-                  title: data.title
+                  content: (data as { content?: any; title?: any }).content,
+                  title: (data as { content?: any; title?: any }).title
                 })
               }
             );
@@ -364,7 +364,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
         result = await db.update(table).set(updateData).where(eq((table as any).id, id)).returning();
 
-        if (result.length === 0) {
+        if ((result as { length?: any }).length === 0) {
           return error(404, ensureError({ message: `${entity} with ID ${id} not found` }));
         }
 
@@ -380,7 +380,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Perform deletion
         result = await db.delete(table).where(eq((table as any).id, id)).returning();
 
-        if (result.length === 0) {
+        if ((result as { length?: any }).length === 0) {
           return error(404, ensureError({ message: `${entity} with ID ${id} not found` }));
         }
 

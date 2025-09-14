@@ -23,14 +23,7 @@ https://svelte.dev/e/tag_invalid_name -->
   import { ScrollArea } from '$lib/components/ui/scroll-area';
 
   // Svelte 5 runes for state management
-  let messages = $state<Array<{
-    role: 'user' | 'assistant' | 'system';
-    content: string;
-    timestamp: string;
-    confidence?: number;
-    tokensPerSecond?: number;
-    taskId?: string;
-  }>>([]);
+  let messages = $state<any[]>([])([]);
 
   let inputMessage = $state('');
   let isLoading = $state(false);
@@ -160,23 +153,23 @@ https://svelte.dev/e/tag_invalid_name -->
   }
 </script>
 
-<NesCard class="w-full max-w-4xl mx-auto h-[600px] flex flex-col">
+<div class="w-full max-w-4xl mx-auto h-[600px] flex flex-col nes-container">
   <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         🤖 Legal AI Chat
         <Badge variant="outline" class="text-xs">
           <div class="w-2 h-2 rounded-full {getStatusColor()} mr-1"></div>
           {getStatusText()}
         </Badge>
       </h3>
-      <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>
-        Clear Chat
-      </button>
+      <Button class="bits-btn" variant="ghost" size="sm" on:click={clearMessages}>
+Clear Chat
+</Button>
     </div>
   </div>
   
-  <div class="yorha-panel-content" class="flex-1 flex flex-col gap-4 overflow-hidden">
+  <div class="yorha-panel-content flex-1 flex flex-col gap-4 overflow-hidden">
     <!-- Messages Area -->
     <ScrollArea class="flex-1 p-4 border rounded-lg bg-muted/20">
       <div class="space-y-4">
@@ -238,11 +231,11 @@ https://svelte.dev/e/tag_invalid_name -->
         class="flex-1"
       />
       <Button class="bits-btn" 
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={!inputMessage.trim() || isLoading || connectionStatus !== 'connected'}
       >
-        {isLoading ? '⏳' : '📤'} Send
-      </button>
+{isLoading ? '⏳' : '📤'} Send
+</Button>
     </div>
 
     <!-- Status Info -->
@@ -255,7 +248,7 @@ https://svelte.dev/e/tag_invalid_name -->
       </span>
     </div>
   </div>
-</NesCard>
+</div>
 
 <!-- Debug Panel (Development Only) -->
 {#if lastResponse && process.env.NODE_ENV === 'development'}

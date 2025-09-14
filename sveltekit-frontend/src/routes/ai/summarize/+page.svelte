@@ -94,8 +94,8 @@ TODO: Implement document upload, AI summarization, export functionality
 						<Card.Title class="nes-text is-primary flex items-center gap-2">
 							<Upload class="w-5 h-5" />
 							Document Upload
-						</Card.Title>
-					</Card.Header>
+						</div.Title>
+					</div.Header>
 					<Card.Content>
 						<div class="space-y-4">
 							<!-- File Upload -->
@@ -106,7 +106,7 @@ TODO: Implement document upload, AI summarization, export functionality
 								<input
 									type="file"
 									accept=".pdf,.doc,.docx,.txt"
-									onchange={handleFileUpload}
+									on:change={handleFileUpload}
 									class="nes-input"
 									disabled={isUploading}
 								/>
@@ -133,16 +133,16 @@ TODO: Implement document upload, AI summarization, export functionality
 								</div>
 							{/if}
 						</div>
-					</Card.Content>
-				</Card.Root>
+					</div.Content>
+				</div.Root>
 
 				<!-- Summary Options -->
 				<Card.Root class="nes-container is-rounded">
 					<Card.Header>
 						<Card.Title class="nes-text is-primary">
 							Summary Options
-						</Card.Title>
-					</Card.Header>
+						</div.Title>
+					</div.Header>
 					<Card.Content>
 						<div class="space-y-4">
 							{#each summaryTypes as type}
@@ -165,7 +165,7 @@ TODO: Implement document upload, AI summarization, export functionality
 							<div class="pt-4 border-t border-gray-600">
 								<Button
 									class="nes-btn is-primary w-full"
-									onclick={generateSummary}
+									on:click={generateSummary}
 									disabled={!selectedFile || isUploading || isSummarizing}
 								>
 									{#if isSummarizing}
@@ -175,11 +175,10 @@ TODO: Implement document upload, AI summarization, export functionality
 										<Brain class="w-4 h-4 mr-2" />
 										Generate Summary
 									{/if}
-								</Button>
 							</div>
 						</div>
-					</Card.Content>
-				</Card.Root>
+					</div.Content>
+				</div.Root>
 			</div>
 
 			<!-- Summary Output -->
@@ -189,19 +188,18 @@ TODO: Implement document upload, AI summarization, export functionality
 						<div class="flex justify-between items-center">
 							<Card.Title class="nes-text is-primary">
 								AI Summary
-							</Card.Title>
+							</div.Title>
 							{#if summary}
 								<Button
 									size="sm"
 									class="nes-btn"
-									onclick={exportSummary}
+									on:click={exportSummary}
 								>
 									<Download class="w-3 h-3 mr-1" />
 									Export
-								</Button>
 							{/if}
 						</div>
-					</Card.Header>
+					</div.Header>
 					<Card.Content>
 						{#if isSummarizing}
 							<div class="text-center py-8">
@@ -253,8 +251,8 @@ TODO: Implement document upload, AI summarization, export functionality
 								</div>
 							</div>
 						{/if}
-					</Card.Content>
-				</Card.Root>
+					</div.Content>
+				</div.Root>
 
 				<!-- Recent Summaries -->
 				<Card.Root class="nes-container is-rounded mt-6">
@@ -262,16 +260,16 @@ TODO: Implement document upload, AI summarization, export functionality
 						<Card.Title class="nes-text is-primary text-sm flex items-center gap-2">
 							<Clock class="w-4 h-4" />
 							Recent Summaries
-						</Card.Title>
-					</Card.Header>
+						</div.Title>
+					</div.Header>
 					<Card.Content>
 						<div class="space-y-2">
 							<div class="text-xs nes-text is-disabled text-center">
 								No recent summaries
 							</div>
 						</div>
-					</Card.Content>
-				</Card.Root>
+					</div.Content>
+				</div.Root>
 			</div>
 		</div>
 	{/snippet}

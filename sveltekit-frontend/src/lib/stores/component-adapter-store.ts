@@ -75,7 +75,7 @@ export function createComponentAdapter<TData = any>(
           loading: false,
           error: null,
           data: initialData,
-          meta: {}
+          meta: Record<string, any>
         });
       },
       setLoading: (loading: boolean) => {
@@ -93,7 +93,7 @@ export function createComponentAdapter<TData = any>(
  * Simplifies complex chat component state
  */
 export interface ChatData {
-  messages: Array<{ role: 'user' | 'assistant'; content: string; timestamp?: number }>;
+  messages: Array<any>;
   currentInput: string;
   isTyping: boolean;
   connectionStatus: 'connected' | 'disconnected' | 'connecting';
@@ -156,7 +156,7 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
   const adapter = createComponentAdapter<SearchData>({
     query: '',
     results: [],
-    filters: {},
+    filters: Record<string, any>,
     pagination: { page: 1, limit: 20, total: 0 },
     sortBy: 'relevance',
     sortOrder: 'desc'
@@ -213,8 +213,8 @@ export function createUploadAdapter(
 ): ComponentAdapter<UploadData> {
   const adapter = createComponentAdapter<UploadData>({
     files: [],
-    uploadProgress: {},
-    uploadStatus: {},
+    uploadProgress: Record<string, any>,
+    uploadStatus: Record<string, any>,
     maxFileSize: options.maxFileSize || 10 * 1024 * 1024, // 10MB
     allowedTypes: options.allowedTypes || ['*'],
     multiple: options.multiple ?? true
@@ -296,8 +296,8 @@ export function createFormAdapter(
 ): ComponentAdapter<FormData> {
   const adapter = createComponentAdapter<FormData>({
     values: initialValues,
-    errors: {},
-    touched: {},
+    errors: Record<string, any>,
+    touched: Record<string, any>,
     isSubmitting: false,
     isValid: true
   });
@@ -341,7 +341,7 @@ export function createFormAdapter(
     },
     clearErrors: () => {
       adapter.actions.update({
-        errors: {},
+        errors: Record<string, any>,
         isValid: true
       });
     },

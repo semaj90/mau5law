@@ -3,6 +3,10 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
   import 'nes.css/css/nes.min.css';
+
+
+// Auto-generated default export
+export default {};
 </script>
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
@@ -118,33 +122,33 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
       
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`API request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
       
-      const result = await response.json();
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
       
       // Update machine state with results
       send({
         type: 'RESPONSE_RECEIVED',
-        response: result.response,
+        response: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).response,
         metadata: {
-          model: result.model,
-          tokensPerSecond: result.performance_metrics.tokens_per_second,
-          totalDuration: result.total_duration,
-          simdResults: result.simd_results
+          model: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).model,
+          tokensPerSecond: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).performance_metrics.tokens_per_second,
+          totalDuration: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).total_duration,
+          simdResults: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results
         }
       });
       
       // Store SIMD results for visualization
-      if (result.simd_results?.enabled) {
-        simdResults = result.simd_results;
-        await generateLiveComponents(result.simd_results);
-        addLog(`✅ SIMD compression: ${result.simd_results.total_compression_ratio.toFixed(1)}:1 ratio`);
-        addLog(`🎨 Generated ${result.simd_results.instant_ui_components.length} UI components`);
+      if ((result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results?.enabled) {
+        simdResults = (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results;
+        await generateLiveComponents((result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results);
+        addLog(`✅ SIMD compression: ${(result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results.total_compression_ratio.toFixed(1)}:1 ratio`);
+        addLog(`🎨 Generated ${(result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results.instant_ui_components.length} UI components`);
       }
       
-      addLog(`⚡ Response generated: ${result.performance_metrics.tokens_per_second?.toFixed(1)} tokens/sec`);
+      addLog(`⚡ Response generated: ${(result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).performance_metrics.tokens_per_second?.toFixed(1)} tokens/sec`);
       
       queryInput = '';
       
@@ -247,9 +251,9 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="simd-ai-assistant max-w-6xl mx-auto p-6 space-y-6">
   <!-- Enhanced Status Header with SIMD Info -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center justify-between">
+      <h3 class="nes-text is-primary flex items-center justify-between">
         <span class="flex items-center gap-3">
           🧬 SIMD AI Assistant
           <span class="text-sm font-normal text-gray-500">XState + Ollama + 7-bit Compression</span>
@@ -308,14 +312,14 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
   
   <!-- Query Interface -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Legal AI Query Interface</h3>
     </div>
-    <div class="yorha-panel-content" class="space-y-4">
+    <div class="yorha-panel-content space-y-4">
       <!-- Configuration Controls -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
         <div>
@@ -347,9 +351,9 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         
         <div class="flex items-end">
-          <Button onclick={toggleSIMD} variant="outline" class="w-full text-sm bits-btn bits-btn">
-            {enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
-          </button>
+          <Button on:click={toggleSIMD} variant="outline" class="w-full text-sm bits-btn bits-btn">
+{enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
+
         </div>
       </div>
       
@@ -362,41 +366,42 @@ https://svelte.dev/e/js_parse_error -->
             placeholder="Enter your legal AI query..."
             class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             disabled={isProcessing}
-            onkeydown={(e) => e.key === 'Enter' && submitQuery()}
+            on:keydown={(e) => e.key === 'Enter' && submitQuery()}
           />
           <Button
-            onclick={submitQuery}
+            on:click={submitQuery}
             disabled={isProcessing || !queryInput.trim()}
             class={isProcessing ? 'processing' : ''}
           >
-            {isProcessing ? 'Processing...' : 'Submit'}
-          </button>
+{isProcessing ? 'Processing...' : 'Submit'}
+
         </div>
         
         <!-- Sample Queries -->
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as sample, index}
             <Button class="bits-btn"
-              onclick={() => loadSampleQuery(index)}
+              on:click={() =>
+loadSampleQuery(index)}
               variant="outline"
               size="sm"
               disabled={isProcessing}
               class="text-xs"
             >
               Sample {index + 1}
-            </button>
+
           {/each}
-          <Button class="bits-btn" onclick={clearConversation} variant="outline" size="sm">
-            Clear All
-          </button>
+          <Button class="bits-btn" on:click={clearConversation} variant="outline" size="sm">
+Clear All
+
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
   
   <!-- SIMD Processing Results -->
   {#if simdResults?.enabled}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">🧬 SIMD Compression Results</h3>
       </div>
@@ -453,12 +458,12 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   {/if}
   
   <!-- Live Rendered Components -->
   {#if liveComponents.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">🎮 Live SIMD Components</h3>
       </div>
@@ -481,14 +486,14 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
   
   <!-- AI Response -->
   {#if hasResponse}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           🤖 AI Response
           {#if context.metadata?.simdResults?.enabled}
             <span class="text-sm font-normal text-green-600">
@@ -515,12 +520,12 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   {/if}
   
   <!-- Conversation History -->
   {#if context.conversationHistory && context.conversationHistory.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">📜 Conversation History</h3>
       </div>
@@ -546,18 +551,19 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
   
   <!-- Processing Logs -->
   {#if processingLogs.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex justify-between items-center">
+        <h3 class="nes-text is-primary flex justify-between items-center">
           📝 System Logs
-          <Button class="bits-btn" onclick={() => processingLogs = []} variant="outline" size="sm">
+          <Button class="bits-btn" on:click={() =>
+processingLogs = []} variant="outline" size="sm">
             Clear Logs
-          </button>
+
         </h3>
       </div>
       <div class="yorha-panel-content">
@@ -567,7 +573,7 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

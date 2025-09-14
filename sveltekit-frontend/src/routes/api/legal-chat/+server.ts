@@ -5,7 +5,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { legalChatMemory, type ChatMessage, type ConversationContext } from '$lib/services/chat-memory-service';
 import { cachedVectorSearch } from '$lib/services/cached-vector-search';
 import { gemmaEmbeddingService } from '$lib/services/embedding-generator';
@@ -124,17 +124,17 @@ export const POST: RequestHandler = async ({ request }) => {
         
         if (searchResults.length > 0) {
           ragSources = searchResults.map(result => ({
-            documentId: result.documentId,
-            content: result.content.substring(0, 300) + '...',
-            similarity: result.similarity,
-            memoryBank: result.memoryBank,
-            priority: result.priority
+            documentId: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).documentId,
+            content: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).content.substring(0, 300) + '...',
+            similarity: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).similarity,
+            memoryBank: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).memoryBank,
+            priority: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).priority
           }));
           
           // Build context from search results
           ragContext = searchResults
             .slice(0, 3) // Top 3 results
-            .map(result => result.content.substring(0, 500))
+            .map(result => (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).content.substring(0, 500))
             .join('\n\n');
           
           console.log(`🎮 RAG search found ${searchResults.length} relevant documents`);

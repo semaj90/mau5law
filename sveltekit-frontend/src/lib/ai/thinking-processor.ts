@@ -57,40 +57,40 @@ export class ThinkingProcessor {
       }),
     });
 
-    if (!response.ok) {
-      throw new Error(`Analysis failed: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`Analysis failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
 
-    if (!result.success) {
-      throw new Error(result.error || 'Analysis failed');
+    if (!(result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).success) {
+      throw new Error((result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).error || 'Analysis failed');
     }
 
     // Return enhanced analysis if GRPO was used
-    if (useGRPO && result.analysis.structured_reasoning) {
+    if (useGRPO && (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.structured_reasoning) {
       return {
-        thinking: result.analysis.thinking || '',
-        analysis: result.analysis.response || result.analysis.analysis || result.analysis,
-        confidence: result.analysis.confidence,
-        reasoning_steps: result.analysis.reasoning_steps || [],
+        thinking: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.thinking || '',
+        analysis: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.response || (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.analysis || (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis,
+        confidence: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.confidence,
+        reasoning_steps: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.reasoning_steps || [],
         metadata: {
-          ...result.metadata,
+          ...(result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata,
           grpo_enhanced: true,
-          recommendations_count: result.analysis.recommendations?.length || 0,
-          temporal_score: result.analysis.temporal_score,
-          structured_reasoning: result.analysis.structured_reasoning,
+          recommendations_count: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.recommendations?.length || 0,
+          temporal_score: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.temporal_score,
+          structured_reasoning: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.structured_reasoning,
         },
       };
     }
 
     // Standard analysis response
     return {
-      thinking: result.analysis.thinking || '',
-      analysis: result.analysis.analysis || result.analysis,
-      confidence: result.metadata.confidence,
-      reasoning_steps: result.analysis.reasoning_steps || [],
-      metadata: result.metadata,
+      thinking: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.thinking || '',
+      analysis: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.analysis || (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis,
+      confidence: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata.confidence,
+      reasoning_steps: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.reasoning_steps || [],
+      metadata: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata,
     };
   }
 
@@ -242,12 +242,12 @@ export class ThinkingProcessor {
 
     const response = await fetch(`/api/analyze?${params}`);
 
-    if (!response.ok) {
-      throw new Error(`Failed to get analysis history: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`Failed to get analysis history: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    const result = await response.json();
-    return result.success ? result.analyses : [];
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+    return (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).success ? (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analyses : [];
   }
 }
 

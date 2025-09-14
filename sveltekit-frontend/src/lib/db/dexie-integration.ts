@@ -75,12 +75,7 @@ export interface UserSession {
   userId?: string;
   startTime: Date;
   endTime?: Date;
-  activities: Array<{
-    type: 'search' | 'chat' | 'document_view' | 'graph_explore';
-    timestamp: Date;
-    data: Record<string, any>;
-  }>;
-}
+  activities: Array<any>
 
 export interface CacheEntry {
   id?: number;

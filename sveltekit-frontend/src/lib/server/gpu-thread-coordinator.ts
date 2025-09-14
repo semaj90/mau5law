@@ -4,9 +4,9 @@
  * Coordinates between cognitive cache, PostgreSQL, and JSON serialization
  */
 
-import { threadSafePostgres } from './thread-safe-postgres.js';
-import { concurrentSerializer } from './concurrent-json-serializer.js';
-import { cognitiveCache } from '../services/cognitive-cache-integration.js';
+import { threadSafePostgres } from './thread-safe-postgres.js.js';
+import { concurrentSerializer } from './concurrent-json-serializer.js.js';
+import { cognitiveCache } from '../services/cognitive-cache-integration.js.js';
 import { performance } from 'perf_hooks';
 
 interface GPUTask {
@@ -194,12 +194,7 @@ export class GPUThreadCoordinator {
    * Batch database operations with GPU-optimized serialization
    */
   async batchDatabaseOperations<T>(
-    operations: Array<{
-      type: 'insert' | 'update' | 'delete' | 'query';
-      table: string;
-      data: T;
-      conditions?: Record<string, any>;
-    }>,
+    operations: Array<,
     options: {
       atomic?: boolean;
       gpuSerialize?: boolean;
@@ -392,9 +387,9 @@ export class GPUThreadCoordinator {
       // For now, fall back to CPU but mark as GPU processed
       const result = await this.executeCPUFallback(task);
       
-      result.method = 'webgpu';
-      result.performance.gpuUtilization = 0.8;
-      result.performance.computeTime = performance.now() - start;
+      (result as { method?: any; performance?: any; result?: any }).method = 'webgpu';
+      (result as { method?: any; performance?: any; result?: any }).performance.gpuUtilization = 0.8;
+      (result as { method?: any; performance?: any; result?: any }).performance.computeTime = performance.now() - start;
 
       return result;
     } catch (error) {
@@ -672,7 +667,7 @@ export class GPUThreadCoordinator {
       averagePerformance,
       memoryUsage: {
         cognitive_cache: cognitiveCache.getCacheStats(),
-        postgres_connections: {}, // Would get from threadSafePostgres
+        postgres_connections: Record<string, any>, // Would get from threadSafePostgres
         serializer_stats: concurrentSerializer.getStats()
       }
     };
@@ -703,7 +698,7 @@ export async function gpuVectorSearch(
     dimensions?: number;
     batchSize?: number;
   }
-): Promise<Array<{ index: number; similarity: number }>> {
+): Promise<Array<any> {
   const config = {
     dimensions: options?.dimensions || queryVector.length,
     batchSize: options?.batchSize || 1000,
@@ -713,21 +708,16 @@ export async function gpuVectorSearch(
   };
 
   const result = await gpuCoordinator.computeVectorSimilarity(queryVector, candidateVectors, config);
-  return result.result?.matches || [];
+  return (result as { method?: any; performance?: any; result?: any }).result?.matches || [];
 }
 
 export async function gpuBatchDatabase<T>(
-  operations: Array<{
-    type: 'insert' | 'update' | 'delete' | 'query';
-    table: string;
-    data: T;
-    conditions?: Record<string, any>;
-  }>,
+  operations: Array<,
   options?: {
     atomic?: boolean;
     gpuSerialize?: boolean;
   }
 ): Promise<boolean> {
   const result = await gpuCoordinator.batchDatabaseOperations(operations, options);
-  return result.result?.success || false;
+  return (result as { method?: any; performance?: any; result?: any }).result?.success || false;
 }

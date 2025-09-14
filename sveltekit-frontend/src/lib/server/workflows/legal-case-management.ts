@@ -16,12 +16,7 @@ export interface LegalCaseContext {
   createdBy: string;
   evidenceItems: string[];
   personsOfInterest: string[];
-  timeline: Array<{
-    date: string;
-    event: string;
-    description: string;
-    category: string;
-  }>;
+  timeline: Array<any>;
   analysis: {
     strengths: string[];
     weaknesses: string[];
@@ -30,12 +25,7 @@ export interface LegalCaseContext {
     confidenceLevel: number;
   };
   documents: string[];
-  deadlines: Array<{
-    date: string;
-    description: string;
-    type: 'filing' | 'hearing' | 'discovery' | 'settlement' | 'trial';
-    completed: boolean;
-  }>;
+  deadlines: Array<any>;
   budget: {
     allocated: number;
     spent: number;
@@ -338,8 +328,8 @@ export const legalCaseManagementMachine = createMachine({
   id: 'legalCaseManagement',
 
   types: {
-    context: {} as LegalCaseContext,
-    events: {} as LegalCaseEvent,
+    context: Record<string, any> as LegalCaseContext,
+    events: Record<string, any> as LegalCaseEvent,
   },
 
   context: {

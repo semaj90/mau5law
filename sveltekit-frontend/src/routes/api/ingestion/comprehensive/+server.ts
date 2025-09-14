@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { ingestionService } from '$lib/server/workflows/ingestion-service.js';
 
 // Initialize the ingestion service
@@ -29,16 +29,16 @@ export const POST: RequestHandler = async ({ request }) => {
 
         const result = await ingestionService.submitDocument(documentId, chunks, metadata);
         
-        if (!result.success) {
+        if (!(result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).success) {
           return json(result, { status: 400 });
         }
 
         return json({
           success: true,
-          jobId: result.jobId,
-          queuePosition: result.queuePosition,
-          estimatedTime: result.estimatedTime,
-          trackingUrl: `/api/ingestion/comprehensive?action=get_job&jobId=${result.jobId}`
+          jobId: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).jobId,
+          queuePosition: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).queuePosition,
+          estimatedTime: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).estimatedTime,
+          trackingUrl: `/api/ingestion/comprehensive?action=get_job&jobId=${(result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).jobId}`
         });
       }
 
@@ -51,14 +51,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
         const result = await ingestionService.getJobStatus(jobId);
         
-        if (!result.success) {
-          return json({ success: false, error: result.error }, { status: 404 });
+        if (!(result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).success) {
+          return json({ success: false, error: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).error }, { status: 404 });
         }
 
         return json({
           success: true,
-          job: result.job,
-          workflow: result.workflow
+          job: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).job,
+          workflow: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).workflow
         });
       }
 
@@ -80,13 +80,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
         const result = await ingestionService.retryJob(jobId);
         
-        if (!result.success) {
-          return json({ success: false, error: result.error }, { status: 400 });
+        if (!(result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).success) {
+          return json({ success: false, error: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).error }, { status: 400 });
         }
 
         return json({
           success: true,
-          message: result.message
+          message: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).message
         });
       }
 
@@ -99,13 +99,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
         const result = await ingestionService.cancelJob(jobId);
         
-        if (!result.success) {
-          return json({ success: false, error: result.error }, { status: 400 });
+        if (!(result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).success) {
+          return json({ success: false, error: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).error }, { status: 400 });
         }
 
         return json({
           success: true,
-          message: result.message
+          message: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).message
         });
       }
 
@@ -113,8 +113,8 @@ export const POST: RequestHandler = async ({ request }) => {
         const result = await ingestionService.pauseProcessing();
 
         return json({
-          success: result.success,
-          message: result.message
+          success: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).success,
+          message: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).message
         });
       }
 
@@ -122,8 +122,8 @@ export const POST: RequestHandler = async ({ request }) => {
         const result = await ingestionService.resumeProcessing();
 
         return json({
-          success: result.success,
-          message: result.message
+          success: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).success,
+          message: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).message
         });
       }
 
@@ -139,13 +139,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
         const result = await ingestionService.setConcurrency(concurrency);
         
-        if (!result.success) {
-          return json({ success: false, error: result.error }, { status: 400 });
+        if (!(result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).success) {
+          return json({ success: false, error: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).error }, { status: 400 });
         }
 
         return json({
           success: true,
-          message: result.message
+          message: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).message
         });
       }
 
@@ -153,8 +153,8 @@ export const POST: RequestHandler = async ({ request }) => {
         const result = await ingestionService.clearCompletedJobs();
 
         return json({
-          success: result.success,
-          message: result.message
+          success: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).success,
+          message: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).message
         });
       }
 
@@ -162,8 +162,8 @@ export const POST: RequestHandler = async ({ request }) => {
         const result = await ingestionService.resetStats();
 
         return json({
-          success: result.success,
-          message: result.message
+          success: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).success,
+          message: (result as { success?: any; jobId?: any; queuePosition?: any; estimatedTime?: any; error?: any; job?: any; workflow?: any; message?: any }).message
         });
       }
 

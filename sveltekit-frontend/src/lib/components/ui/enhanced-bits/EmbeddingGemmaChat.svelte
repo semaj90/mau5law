@@ -28,13 +28,7 @@
   }: Props = $props();
 
   // Svelte 5 state management
-  let messages = $state<Array<{
-    role: 'user' | 'assistant' | 'system';
-    content: string;
-    timestamp: string;
-    metadata?: any;
-    references?: any[];
-  }>>([]);
+  let messages = $state<any[]>([])([]);
 
   let messageInput = $state("");
   let isLoading = $state(false);
@@ -43,7 +37,7 @@
   let contextLimit = $state(5);
   let similarityThreshold = $state(0.4);
   let messagesContainer: HTMLElement;
-  let inputElement = $state<HTMLTextAreaElement>();
+  let inputElement: HTMLTextAreaElement = $state(undefined as any);
 
   // Enhanced embedding options - use derived for reactive updates
   let embeddingOptions = $derived({
@@ -118,8 +112,8 @@
             assistantResponse += `**📚 Found ${ragResult.similarDocuments.length} relevant documents:**\n\n`;
 
             ragResult.similarDocuments.forEach((result, index) => {
-              const doc = result.document;
-              assistantResponse += `**Document ${index + 1}** (Similarity: ${(result.similarity * 100).toFixed(1)}%)\n`;
+              const doc = (result as { document?: any; similarity?: any; queued?: any }).document;
+              assistantResponse += `**Document ${index + 1}** (Similarity: ${((result as { document?: any; similarity?: any; queued?: any }).similarity * 100).toFixed(1)}%)\n`;
               assistantResponse += `${doc.content.substring(0, 200)}${doc.content.length > 200 ? '...' : ''}\n`;
               if (doc.metadata.practiceArea) {
                 assistantResponse += `*Practice Area: ${doc.metadata.practiceArea}*\n`;
@@ -188,11 +182,11 @@
             body: JSON.stringify(ragRequest),
           });
 
-          if (!response.ok) {
-            throw new Error(`RAG API fallback error: ${response.status} ${response.statusText}`);
+          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+            throw new Error(`RAG API fallback error: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status} ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
           }
 
-          responseData = await response.json();
+          responseData = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
 
           if (!responseData.success) {
             throw new Error(responseData.error || "RAG query failed");
@@ -244,11 +238,11 @@
           }),
         });
 
-        if (!response.ok) {
+        if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
           throw new Error("Failed to get AI response");
         }
 
-        responseData = await response.json();
+        responseData = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
 
         if (!responseData.success || !responseData.data) {
           throw new Error(responseData.error || "Invalid response format");
@@ -256,9 +250,9 @@
 
         messages = [...messages, {
           role: 'assistant',
-          content: responseData.data.content,
+          content: responseData.(data as { infrastructureUsed?: any; model?: any; dimensions?: any; cacheHits?: any; totalDocuments?: any; practiceArea?: any; content?: any; metadata?: any }).content,
           timestamp: new Date().toLocaleTimeString(),
-          metadata: responseData.data.metadata
+          metadata: responseData.(data as { infrastructureUsed?: any; model?: any; dimensions?: any; cacheHits?: any; totalDocuments?: any; practiceArea?: any; content?: any; metadata?: any }).metadata
         }];
       }
 
@@ -401,7 +395,7 @@
           doc
         );
 
-        if (result.queued) successCount++;
+        if ((result as { document?: any; similarity?: any; queued?: any }).queued) successCount++;
       }
 
       notifications.add({
@@ -470,7 +464,8 @@
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        onclick={() => useAdvancedRAG = !useAdvancedRAG}
+        on:click={() =>
+useAdvancedRAG = !useAdvancedRAG}
         disabled={isLoading}
       >
         {#snippet children()}
@@ -482,29 +477,29 @@
             Quick Mode
           {/if}
         {/snippet}
-      </button>
+</Button>
 
       {#if showDocumentAnalysis}
         <Button class="bits-btn"
           variant="outline"
           size="sm"
-          onclick={analyzeDocuments}
+          on:click={analyzeDocuments}
           disabled={isLoading || availableDocuments.length === 0}
         >
-          {#snippet children()}
+{#snippet children()}
             <Search class="w-4 h-4 mr-1" />
             Analyze Docs
           {/snippet}
-        </button>
+</Button>
       {/if}
 
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        onclick={checkServiceHealth}
+        on:click={checkServiceHealth}
         disabled={isLoading}
       >
-        {#snippet children()}
+{#snippet children()}
           <Activity class={`w-4 h-4 mr-1 ${
             serviceHealth?.status === 'healthy' ? 'text-green-500' :
             serviceHealth?.status === 'degraded' ? 'text-yellow-500' :
@@ -512,19 +507,19 @@
           }`} />
           Health
         {/snippet}
-      </button>
+</Button>
 
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        onclick={queueEmbeddingJobs}
+        on:click={queueEmbeddingJobs}
         disabled={isLoading || availableDocuments.length === 0}
       >
-        {#snippet children()}
+{#snippet children()}
           <Database class="w-4 h-4 mr-1" />
           Queue Jobs
         {/snippet}
-      </button>
+</Button>
     </div>
   </div>
 
@@ -536,12 +531,12 @@
           RAG Context: {selectedDocuments.length > 0 ? selectedDocuments.length : availableDocuments.length} of {availableDocuments.length} documents
         </span>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="outline" size="xs" onclick={addDocument}>
-            {#snippet children()}
+          <Button class="bits-btn" variant="outline" size="xs" on:click={addDocument}>
+{#snippet children()}
               <FileText class="w-3 h-3 mr-1" />
               Add Doc
             {/snippet}
-          </button>
+</Button>
           <label class="text-xs text-gray-600 flex items-center gap-1">
             Threshold:
             <input
@@ -564,7 +559,7 @@
               <input
                 type="checkbox"
                 checked={selectedDocuments.includes(doc)}
-                onchange={() => toggleDocumentSelection(index)}
+                on:change={() => toggleDocumentSelection(index)}
                 class="w-3 h-3"
               />
               <span class="text-xs text-gray-600 truncate">
@@ -638,8 +633,8 @@
             ? "Ask me to analyze your documents with EmbeddingGemma... (Enter to send)"
             : "Type your message... (Enter to send)"}
           class="resize-none min-h-[50px] max-h-[120px]"
-          onkeydown={handleKeyDown}
-          oninput={autoResize}
+          on:keydown={handleKeyDown}
+          on:input={autoResize}
           disabled={isLoading}
         />
       </div>
@@ -647,17 +642,17 @@
       <Button class="bits-btn"
         variant="default"
         size="default"
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={isLoading || !messageInput.trim()}
       >
-        {#snippet children()}
+{#snippet children()}
           {#if isLoading}
             <Loader2 class="w-4 h-4 animate-spin" />
           {:else}
             <Send class="w-4 h-4" />
           {/if}
         {/snippet}
-      </button>
+</Button>
     </div>
 
     <!-- Status Bar -->

@@ -40,7 +40,7 @@ export async function createUserSession(
   days = 30,
   ipAddress?: string,
   userAgent?: string
-): Promise<{ sessionId: string; expiresAt: Date }> {
+): Promise<any> {
   const sessionId = await generateId(40);
   const expiresAt = createDate({ days });
   await db.insert(sessionsTable).values({
@@ -49,7 +49,7 @@ export async function createUserSession(
     expires_at: expiresAt,
     ip_address: ipAddress,
     user_agent: userAgent,
-    session_context: {},
+    session_context: Record<string, any>,
   });
   return { sessionId, expiresAt };
 }

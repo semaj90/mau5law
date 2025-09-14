@@ -11,13 +11,11 @@ https://svelte.dev/e/attribute_invalid_name -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/button/Button.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { serviceStatus } from '$lib/stores/chatStore';
 
   // Use the XState machine through the store
@@ -55,7 +53,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   });
 </script>
 
-<NesCard class="flex flex-col h-[70vh] max-w-3xl mx-auto my-8">
+<div class="flex flex-col h-[70vh] max-w-3xl mx-auto my-8 nes-container">
   <div class="flex items-center justify-between border-b p-4">
     <div>
       <h2 class="text-xl font-semibold">Legal AI Assistant</h2>
@@ -69,9 +67,9 @@ https://svelte.dev/e/attribute_invalid_name -->
         {/if}
       </p>
     </div>
-  <Button class="bits-btn" variant="outline" size="sm" onclick={handleClear}>
-      Clear Chat
-    </button>
+  <Button class="bits-btn" variant="outline" size="sm" on:click={handleClear}>
+Clear Chat
+
   </div>
 
   <!-- Chat messages -->
@@ -99,7 +97,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 
   <!-- Input area -->
   <div class="border-t p-4">
-    <form onsubmit|preventDefault={handleSubmit} class="flex space-x-2">
+    <form on:submit|preventDefault={handleSubmit} class="flex space-x-2">
       <Input
         type="text"
         placeholder="Ask about your legal case..."
@@ -108,11 +106,11 @@ https://svelte.dev/e/attribute_invalid_name -->
         class="flex-1"
       />
       <Button class="bits-btn" type="submit" disabled={$state.matches('loading') || !userInput.trim()}>
-        {$state.matches('loading') ? 'Thinking...' : 'Send'}
-      </button>
+{$state.matches('loading') ? 'Thinking...' : 'Send'}
+
     </form>
   </div>
-</NesCard>
+</div>
 
 <style>
   .chat-message {

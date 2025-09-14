@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * QUIC Vector Proxy API - High-Performance Vector Operations

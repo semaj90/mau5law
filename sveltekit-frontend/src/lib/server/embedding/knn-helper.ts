@@ -56,8 +56,8 @@ export function topKNearest<T extends string | number | symbol = string>(
 ): { id: T; score: number }[] {
   if (!Array.isArray(query)) return [];
   const results = items.map(item => {
-	const score = cosineSimilarity(query, item.embedding);
-	return { id: item.id, score };
+	const score = cosineSimilarity(query, (item as { embedding?: any; id?: any }).embedding);
+	return { id: (item as { embedding?: any; id?: any }).id, score };
   });
   results.sort((a, b) => b.score - a.score);
   return results.slice(0, Math.max(0, Math.min(k, results.length)));

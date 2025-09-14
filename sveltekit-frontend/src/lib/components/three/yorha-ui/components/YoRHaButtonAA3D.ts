@@ -6,9 +6,9 @@
 import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
-import { YoRHaAntiAliased3D } from '../YoRHaAntiAliasing3D';
-import type { YoRHaAAStyle, AntiAliasingConfig } from '../YoRHaAntiAliasing3D';
-import { YORHA_COLORS } from '../YoRHaUI3D';
+import { YoRHaAntiAliased3D } from '../YoRHaAntiAliasing3D.js';
+import type { YoRHaAAStyle, AntiAliasingConfig } from '../YoRHaAntiAliasing3D.js';
+import { YORHA_COLORS } from '../YoRHaUI3D.js';
 
 export interface YoRHaButtonAA3DOptions extends Omit<YoRHaAAStyle, 'variant'> {
   text?: string;

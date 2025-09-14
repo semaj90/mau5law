@@ -186,7 +186,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button 
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" 
-      onclick={() => { componentError = null; }}
+      on:click={() => { componentError = null; }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -337,11 +337,11 @@
       {#each quickActions as action}
         <button
           class="action-nier-bits-card border rounded-lg p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg {getActionColor(action.color)} {selectedCard === action.id ? 'scale-95' : ''}"
-          onclick={() => handleQuickAction(action)}
+          on:click={() => handleQuickAction(action)}
           role="button"
           tabindex="0"
           aria-label="{action.label} - {action.icon}"
-          onkeydown={(e) => {
+          on:keydown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
               handleQuickAction(action);
@@ -378,7 +378,7 @@
           recentActivity = [{
             id: Date.now(),
             action: 'Search Query Executed',
-            target: `"${result.detail.title}"`,
+            target: `"${(result as { detail?: any }).detail.title}"`,
             time: 'just now',
             type: 'ai'
           }, ...recentActivity.slice(0, 4)];
@@ -421,11 +421,11 @@
 <!-- YoRHa Case Creation Modal -->
 {#if showCaseModal}
   <div class="modal-backdrop fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" 
-       onclick={handleModalBackdropClick}
+       on:click={handleModalBackdropClick}
        role="dialog"
        aria-modal="true"
        aria-labelledby="case-modal-title">
-    <div class="modal-content max-w-4xl w-full" onclick={(e) => e.stopPropagation()}>
+    <div class="modal-content max-w-4xl w-full" on:click={(e) => e.stopPropagation()}>
       <YoRHaCaseForm 
         on:success={handleCaseCreationSuccess}
         on:error={handleCaseCreationError}

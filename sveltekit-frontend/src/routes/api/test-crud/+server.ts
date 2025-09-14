@@ -8,7 +8,7 @@ import { json, error } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // GET - Test database connection and list users
 export const GET: RequestHandler = async ({ url }) => {

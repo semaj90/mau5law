@@ -10,9 +10,9 @@
  * - Thread-safe multi-core parallelism with SIMD acceleration
  */
 
-import { cache } from './cache/redis.js';
-import { gpuCoordinator } from './gpu-thread-coordinator.js';
-import { textureStreamer } from '../gpu/texture-streaming-service.js';
+import { cache } from './cache/redis.js.js';
+import { gpuCoordinator } from './gpu-thread-coordinator.js.js';
+import { textureStreamer } from '../gpu/texture-streaming-service.js.js';
 
 interface GPUMetrics {
   gpuUtilization: number;
@@ -457,12 +457,7 @@ export class WebGPURedisOptimizer {
   /**
    * Batch operations with parallel processing
    */
-  async batchOperations(operations: Array<{
-    type: 'get' | 'set';
-    key: string;
-    value?: any;
-    options?: any;
-  }>): Promise<any[]> {
+  async batchOperations(operations: Array<): Promise<any[]> {
     const batchSize = this.OPTIMAL_BATCH_SIZE;
     const results: any[] = [];
 
@@ -489,13 +484,7 @@ export class WebGPURedisOptimizer {
   /**
    * Get performance metrics and optimization statistics
    */
-  async getOptimizationStats(): Promise<{
-    gpuMetrics: GPUMetrics;
-    threadPoolStats: Record<string, number>;
-    cacheHitRatio: number;
-    averageResponseTime: number;
-    compressionRatio: number;
-  }> {
+  async getOptimizationStats(): Promise<any> {
     const currentMetrics = await this.getGPUMetrics();
     
     return {
@@ -550,7 +539,7 @@ export const optimizedCache = {
     });
   },
 
-  async batch(operations: Array<{ type: 'get' | 'set'; key: string; value?: any; options?: any }>): Promise<any[]> {
+  async batch(operations: Array<): Promise<any[]> {
     return webgpuRedisOptimizer.batchOperations(operations);
   },
 

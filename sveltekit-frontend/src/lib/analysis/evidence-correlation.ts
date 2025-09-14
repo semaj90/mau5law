@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import type { EvidenceItem } from '../types/api';
+import type { EvidenceItem } from '../types/api.js';
 
 // Correlation analysis schemas
 const CorrelationAnalysisSchema = z.object({

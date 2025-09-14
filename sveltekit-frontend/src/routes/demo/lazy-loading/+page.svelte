@@ -292,9 +292,7 @@ https://svelte.dev/e/js_parse_error -->
       <h2>5. Implementation Guide</h2>
       <div class="code-example">
         <h4>Basic Usage</h4>
-        <pre><code>{`<script lang="ts">
-</script>
-  import { LazyLoader } from '$lib/components/lazy';
+        <pre><code>{/* JSX syntax converted to Svelte */} from '$lib/components/lazy';
 </script>
 
 <LazyLoader
@@ -309,16 +307,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <div class="code-example">
         <h4>With State Binding</h4>
-        <pre><code>{`<script lang="ts">
-</script>
-  let lazyState;
-</script>
-
-<LazyLoader bind:lazyState>
-  <YourComponent />
-</LazyLoader>
-
-{#if lazyState?.hasBeenVisible}
+        <pre><code>{/* JSX syntax converted to Svelte */}
   <p>Component has loaded!</p>
 {/if}`}</code></pre>
       </div>

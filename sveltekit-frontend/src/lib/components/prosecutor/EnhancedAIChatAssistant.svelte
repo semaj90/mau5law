@@ -92,8 +92,8 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           currentPhase: 'evidence_review'
         })
       });
-      const result = await response.json();
-      selfPromptSuggestions = result.suggestions || [
+      const result = await (response as { json?: any }).json();
+      selfPromptSuggestions = (result as { suggestions?: any }).suggestions || [
         "Analyze evidence strength for this case",
         "Find similar cases with comparable evidence",
         "Identify potential defense arguments",
@@ -123,7 +123,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           context: 'legal_analysis'
         })
       });
-      const analysis = await response.json();
+      const analysis = await (response as { json?: any }).json();
       elementAnalysis = analysis;
     } catch (error) {
       console.error('Element analysis failed:', error);
@@ -237,9 +237,9 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 
 <div class="flex flex-col h-full max-w-4xl mx-auto">
   <!-- Chat Header -->
-  <NesCard class="mb-4">
-    <div class="yorha-panel-header" class="pb-3">
-      <h3 class="nes-text is-primary" class="flex items-center justify-between">
+  <div class="mb-4 nes-container">
+    <div class="yorha-panel-header pb-3">
+      <h3 class="nes-text is-primary flex items-center justify-between">
         <div class="flex items-center gap-2">
           <Bot class="w-5 h-5 text-blue-500" />
           Legal AI Assistant
@@ -268,12 +268,12 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         </div>
       </h3>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Self-Prompt Suggestions -->
   {#if enableSelfPrompting && selfPromptSuggestions.length > 0}
-    <NesCard class="mb-4">
-      <div class="yorha-panel-content" class="pt-4">
+    <div class="mb-4 nes-container">
+      <div class="yorha-panel-content pt-4">
         <h4 class="text-sm font-medium mb-3 flex items-center gap-2">
           <Zap class="w-4 h-4" />
           Suggested Questions
@@ -283,15 +283,16 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
             <Button class="bits-btn" 
               variant="outline" 
               size="sm"
-              onclick={() => useSelfPrompt(suggestion)}
+              on:click={() =>
+useSelfPrompt(suggestion)}
               disabled={isTyping}
             >
               {suggestion}
-            </button>
+
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Elemental Analysis Tooltip -->
@@ -309,8 +310,8 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   {/if}
 
   <!-- Chat Messages -->
-  <NesCard class="flex-1 flex flex-col">
-    <div class="yorha-panel-content" class="flex-1 overflow-y-auto p-4 space-y-4">
+  <div class="flex-1 flex flex-col nes-container">
+    <div class="yorha-panel-content flex-1 overflow-y-auto p-4 space-y-4">
       {#each messages as message}
         <div class="flex items-start gap-3 {message.role === 'user' ? 'justify-end' : ''}">
           {#if message.role === 'assistant'}
@@ -388,11 +389,11 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           />
         </div>
         <Button class="bits-btn" 
-          onclick={sendMessage}
+          on:click={sendMessage}
           disabled={isTyping || !currentMessage.trim()}
         >
-          <Send class="w-4 h-4" />
-        </button>
+<Send class="w-4 h-4" />
+
       </div>
       
       <!-- AI Status Indicators -->
@@ -428,7 +429,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 </div>
 
 <style>

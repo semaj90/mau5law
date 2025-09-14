@@ -79,33 +79,36 @@
           variant="outline"
           size="sm"
           class="space-y-4 bits-btn bits-btn"
-          onclick={() => handleAccept()}
+          on:click={() =>
+handleAccept()}
         >
           <MessageCircle class="space-y-4" />
           Yes, help me
-        </button>
+</Button>
 
         <!-- Quick responses -->
         <Button
           variant="ghost"
           size="sm"
           class="space-y-4 bits-btn bits-btn"
-          onclick={() => onquickResponse?.()}
+          on:click={() =>
+onquickResponse?.()}
         >
           <Lightbulb class="space-y-4" />
           Summarize
-        </button>
+</Button>
 
         <!-- Dismiss Button -->
         <Button
           variant="ghost"
           size="sm"
           class="space-y-4 bits-btn bits-btn"
-          onclick={() => handleDismiss()}
+          on:click={() =>
+handleDismiss()}
           title="Not now"
         >
           <X class="space-y-4" />
-        </button>
+</Button>
       </div>
     </div>
   </div>

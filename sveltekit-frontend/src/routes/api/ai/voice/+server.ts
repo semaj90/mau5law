@@ -20,7 +20,7 @@
 import { json } from '@sveltejs/kit';
 import { SpeechService } from "$lib/services/speech-service";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 export async function POST({ request }): Promise<any> {
   try {

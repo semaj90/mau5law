@@ -1,5 +1,5 @@
 // Minimal shim for bits-ui exports used by the app. Expand as needed.
-import ComponentFallback from './ComponentFallback.svelte';
+import ComponentFallback from './ComponentFallback.svelte.js';
 
 // Re-export a default object for `import bits from 'bits-ui'` patterns
 export default {
@@ -26,4 +26,4 @@ export const Badge = ComponentFallback;
 export const Card = ComponentFallback;
 ;
 // Provide types entry for TypeScript consumers (optional)
-export { default as Component } from './ComponentFallback.svelte';
+export { default as Component } from './ComponentFallback.svelte.js';

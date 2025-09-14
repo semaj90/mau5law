@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import FileUploadGemma3 from './FileUploadGemma3.svelte';
+import FileUploadGemma3 from './FileUploadGemma3.svelte.js';
 
 const meta = {
   title: 'AI/FileUploadGemma3',

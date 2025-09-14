@@ -58,12 +58,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   
 
   // Event dispatcher
-  const dispatch = createEventDispatcher<{
-    upload: { file: EvidenceFile; analysis?: any };
-    error: { message: string; file?: EvidenceFile };
-    progress: { totalProgress: number; stats: ProcessingStats };
-    complete: { files: EvidenceFile[]; stats: ProcessingStats };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // State
   let dragActive = $state(false);
@@ -247,7 +242,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 
   // Upload file to server
-  async function uploadFile(evidenceFile: EvidenceFile): Promise<{ url: string }> {
+  async function uploadFile(evidenceFile: EvidenceFile): Promise {
     const formData = new FormData();
     formData.append('file', evidenceFile.file);
     formData.append('metadata', JSON.stringify(evidenceFile.metadata));
@@ -255,10 +250,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       method: 'POST',
       body: formData
     });
-    if (!response.ok) {
-      throw new Error(`Upload failed: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`Upload failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
-    return await response.json();
+    return await (response as { ok?: any; statusText?: any; json?: any }).json();
   }
 
   // Extract metadata from file
@@ -315,13 +310,13 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         })
       });
 
-      const result = await response.json();
-      if (result.success && result.data.result) {
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      if ((result as { success?: any; data?: any; metadata?: any; processingTime?: any }).success && (result as { success?: any; data?: any; metadata?: any; processingTime?: any }).(data as { extractedText?: any; tags?: any; confidence?: any; aiAnalysis?: any }).result) {
         return {
-          aiAnalysis: `GPU-accelerated analysis completed with ${result.data.result.metadata?.confidence || 85}% confidence`,
-          confidence: result.data.result.metadata?.confidence || 0.85,
+          aiAnalysis: `GPU-accelerated analysis completed with ${(result as { success?: any; data?: any; metadata?: any; processingTime?: any }).(data as { extractedText?: any; tags?: any; confidence?: any; aiAnalysis?: any }).(result as { success?: any; data?: any; metadata?: any; processingTime?: any }).metadata?.confidence || 85}% confidence`,
+          confidence: (result as { success?: any; data?: any; metadata?: any; processingTime?: any }).(data as { extractedText?: any; tags?: any; confidence?: any; aiAnalysis?: any }).(result as { success?: any; data?: any; metadata?: any; processingTime?: any }).metadata?.confidence || 0.85,
           tags: [...(evidenceFile.metadata?.tags || []), 'gpu-analyzed', 'ai-processed'],
-          processingTime: result.data.result.processingTime
+          processingTime: (result as { success?: any; data?: any; metadata?: any; processingTime?: any }).(data as { extractedText?: any; tags?: any; confidence?: any; aiAnalysis?: any }).(result as { success?: any; data?: any; metadata?: any; processingTime?: any }).processingTime
         };
       }
       throw new Error('Analysis failed');
@@ -393,12 +388,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     on:dragenter={handleDragEnter}
     on:dragleave={handleDragLeave}
     on:dragover|preventDefault
-    on:drop={handleDrop}
-    onkeydown={(e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        document.getElementById('file-input')?.click();
-      }
+    on:drop={onkeydown}
     }}
   >
     <div class="upload-content">
@@ -437,11 +427,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         type="file"
         multiple
         accept={acceptedTypes.join(',')}
-        onchange={handleFileSelect}
+        on:change={handleFileSelect}
         style="display: none"
       />
       
-      <button class="browse-button" onclick={() => document.getElementById('file-input')?.click()}>
+      <button class="browse-button" on:click={() => document.getElementById('file-input')?.click()}>
         📁 Browse Files
       </button>
     </div>
@@ -453,7 +443,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       <div class="stats-header">
         <h4>📊 Processing Statistics</h4>
         {#if files.length > 1}
-          <button class="clear-button" onclick={clearAll}>
+          <button class="clear-button" on:click={clearAll}>
             🗑️ Clear All
           </button>
         {/if}
@@ -505,7 +495,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
                   {/if}
                 </div>
               </div>
-              <button class="remove-button" onclick={() => removeFile(file.id)}>
+              <button class="remove-button" on:click={() => removeFile(file.id)}>
                 ❌
               </button>
             </div>
@@ -698,17 +688,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     border-radius: 8px;
   }
 
-  .stat-item.completed {
+  .stat-(item as { completed?: any; processing?: any; failed?: any }).completed {
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.3);
   }
 
-  .stat-item.processing {
+  .stat-(item as { completed?: any; processing?: any; failed?: any }).processing {
     background: rgba(59, 130, 246, 0.2);
     border: 1px solid rgba(59, 130, 246, 0.3);
   }
 
-  .stat-item.failed {
+  .stat-(item as { completed?: any; processing?: any; failed?: any }).failed {
     background: rgba(239, 68, 68, 0.2);
     border: 1px solid rgba(239, 68, 68, 0.3);
   }

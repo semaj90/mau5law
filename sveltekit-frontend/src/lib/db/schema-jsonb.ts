@@ -20,7 +20,7 @@ import {
   sql
 } from "drizzle-orm";
 // Custom vector type for pgvector
-const vector = customType<{ data: number[]; driverData: string }>({
+const vector = customType({
   dataType() {
     return 'vector(1536)';
   },
@@ -93,11 +93,7 @@ export interface Recommendation {
 
 export interface RiskAssessment {
   overall_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  risk_factors: Array<{
-    factor: string;
-    impact: string;
-    probability: number;
-  }>;
+  risk_factors: Array<any>;
   mitigation: string[];
 }
 
@@ -175,7 +171,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
       "mitigation": []
     },
     "confidence_score": 0,
-    "processing_metrics": {}
+    "processing_metrics": Record<string, any>
   }'::jsonb`).notNull(),
   
   // Processing fields

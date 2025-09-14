@@ -1,6 +1,6 @@
 // @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/svelte';
-import AIAssistantMachine from './AIAssistantMachineComponent.svelte';
+import AIAssistantMachine from './AIAssistantMachineComponent.svelte.js';
 
 // NOTE: Typing loosened due to Storybook + Svelte 5 (runes) inference friction; casting to any to avoid blocking TS errors.
 const meta: any = {

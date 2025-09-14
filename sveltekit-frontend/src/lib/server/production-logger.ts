@@ -4,8 +4,8 @@
  */
 
 const dev = import.meta.env.NODE_ENV === 'development';
-import { getConfig } from '../config/unified-config.js';
-import type { LoggingConfig } from '../config/unified-config.js';
+import { getConfig } from '../config/unified-config.js.js';
+import type { LoggingConfig } from '../config/unified-config.js.js';
 
 // Log levels in order of severity
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
@@ -591,10 +591,7 @@ export class ProductionLogger {
     return { ...this.metrics };
   }
 
-  public async getHealthStatus(): Promise<{
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    details: any;
-  }> {
+  public async getHealthStatus(): Promise<any> {
     const details = {
       totalLogs: this.metrics.totalLogs,
       errorRate: this.metrics.errorRate,

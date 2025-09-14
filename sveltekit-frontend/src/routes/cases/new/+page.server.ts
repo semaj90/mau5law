@@ -1,4 +1,4 @@
-import type { Actions } from "./$types";
+import type { Actions } from './$types.js';
 
 import { cases } from "$lib/server/db/schema-postgres";
 import { fail, redirect } from "@sveltejs/kit";

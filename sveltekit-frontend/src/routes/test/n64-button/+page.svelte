@@ -152,7 +152,7 @@
             <h3>{test.name}</h3>
             <N643DButton
               {...test.props}
-              onclick={() => handleButtonClick(test.name)}
+              on:click={() => handleButtonClick(test.name)}
             >
               {test.props.children || 'Test Button'}
             </N643DButton>
@@ -170,10 +170,10 @@
         {:else}
           <div class="results-list">
             {#each testResults as result}
-              <div class="result-item" class:success={result.result.includes('SUCCESS')} class:failed={result.result.includes('FAILED')}>
-                <span class="test-name">{result.test}</span>
-                <span class="test-result">{result.result}</span>
-                <span class="test-time">{result.timestamp}</span>
+              <div class="result-item" class:success={(result as { result?: any; test?: any; timestamp?: any }).(result as { result?: any; test?: any; timestamp?: any }).includes('SUCCESS')} class:failed={(result as { result?: any; test?: any; timestamp?: any }).(result as { result?: any; test?: any; timestamp?: any }).includes('FAILED')}>
+                <span class="test-name">{(result as { result?: any; test?: any; timestamp?: any }).test}</span>
+                <span class="test-result">{(result as { result?: any; test?: any; timestamp?: any }).result}</span>
+                <span class="test-time">{(result as { result?: any; test?: any; timestamp?: any }).timestamp}</span>
               </div>
             {/each}
           </div>
@@ -187,7 +187,7 @@
       <div class="performance-buttons">
         <N643DButton
           variant="primary"
-          onclick={() => handleButtonClick('Performance Test')}
+          on:click={() => handleButtonClick('Performance Test')}
         >
           Click Test ({buttonClickCount} clicks)
         </N643DButton>
@@ -199,7 +199,7 @@
           enableParticles={true}
           enableLighting={true}
           enableReflections={true}
-          onclick={() => handleButtonClick('High-Performance Test')}
+          on:click={() => handleButtonClick('High-Performance Test')}
         >
           High-Performance Test
         </N643DButton>
@@ -212,14 +212,14 @@
       <div class="route-buttons">
         <N643DButton
           variant="info"
-          onclick={() => window.location.href = '/gallery'}
+          on:click={() => window.location.href = '/gallery'}
         >
           Test Gallery Route
         </N643DButton>
 
         <N643DButton
           variant="secondary"
-          onclick={() => window.open('/gallery', '_blank')}
+          on:click={() => window.open('/gallery', '_blank')}
         >
           Open Gallery in New Tab
         </N643DButton>
@@ -333,11 +333,11 @@
     border-left: 4px solid #6c757d;
   }
 
-  .result-item.success {
+  .result-(item as { success?: any; failed?: any }).success {
     border-left-color: #28a745;
   }
 
-  .result-item.failed {
+  .result-(item as { success?: any; failed?: any }).failed {
     border-left-color: #dc3545;
   }
 

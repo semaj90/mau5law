@@ -3,7 +3,7 @@
  * Validates actual PostgreSQL database connectivity
  */
 
-import { pool } from './drizzle';
+import { pool } from './drizzle.js';
 
 export async function validateDatabaseOnStartup() {
   let client;
@@ -15,8 +15,8 @@ export async function validateDatabaseOnStartup() {
     const result = await client.query('SELECT NOW() as current_time, version() as pg_version');
 
     console.log('✅ Database health check passed');
-    console.log(`🗄️ PostgreSQL connected at: ${result.rows[0].current_time}`);
-    console.log(`📊 Database version: ${result.rows[0].pg_version.split(',')[0]}`);
+    console.log(`🗄️ PostgreSQL connected at: ${(result as { rows?: any }).rows[0].current_time}`);
+    console.log(`📊 Database version: ${(result as { rows?: any }).rows[0].pg_version.split(',')[0]}`);
 
     // Check if essential tables exist
     const tableCheck = await client.query(`

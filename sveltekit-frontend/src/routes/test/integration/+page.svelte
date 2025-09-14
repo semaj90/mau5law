@@ -23,10 +23,10 @@
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
 
   // Test state
-  let testResults = $state<Record<string, { status: 'pending' | 'passed' | 'failed'; message: string; details?: any }>>({});
+  let testResults = $state<Record<string, { status: 'pending' | 'passed' | 'failed'; message: stringdetails?: any } | null>(null)()>({});
   let isRunningTests = $state(false);
   let postgresStatus = $state<'connecting' | 'connected' | 'error'>('connecting');
-  let apiEndpoints = $state<Record<string, { status: 'pending' | 'online' | 'offline'; latency?: number }>>({});
+  let apiEndpoints = $state<Record<string, { status: 'pending' | 'online' | 'offline'latency?: number } | null>(null)()>({});
 
   // API test endpoints to check
   const testEndpoints = [
@@ -127,8 +127,8 @@
         headers: { 'Accept': 'application/json' }
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if ((response as { ok?: any; json?: any; status?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; status?: any }).json();
         postgresStatus = 'connected';
         testResults['postgresql'] = {
           status: 'passed',
@@ -136,7 +136,7 @@
           details: data
         };
       } else {
-        throw new Error(`Database connection failed: ${response.status}`);
+        throw new Error(`Database connection failed: ${(response as { ok?: any; json?: any; status?: any }).status}`);
       }
     } catch (error) {
       postgresStatus = 'error';
@@ -161,7 +161,7 @@
         const endTime = performance.now();
         const latency = Math.round(endTime - startTime);
 
-        if (response.ok || response.status === 404) { // 404 is OK for endpoints that don't exist yet
+        if ((response as { ok?: any; json?: any; status?: any }).ok || (response as { ok?: any; json?: any; status?: any }).status === 404) { // 404 is OK for endpoints that don't exist yet
           apiEndpoints[endpoint.name] = {
             status: 'online',
             latency
@@ -258,7 +258,7 @@
 
     <div class="flex gap-4 mb-6">
       <Button.Root
-  onclick={runIntegrationTests}
+  on:click={runIntegrationTests}
         disabled={isRunningTests}
         class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold bits-btn bits-btn"
       >
@@ -286,7 +286,7 @@
 
     <!-- Overview Tab -->
     <TabsContent value="overview" class="space-y-6">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">System Test Results</h3>
         </div>
@@ -296,34 +296,34 @@
               <div class="test-result-nier-bits-card p-4 bg-gray-800 rounded-lg border border-gray-700">
                 <div class="flex items-center justify-between mb-2">
                   <h4 class="font-semibold text-white capitalize">{testName.replace('-', ' ')}</h4>
-                  <span class="text-xl">{getStatusIcon(result.status)}</span>
+                  <span class="text-xl">{getStatusIcon((result as { status?: any; message?: any; details?: any }).status)}</span>
                 </div>
-                <p class="text-sm {getStatusColor(result.status)} mb-2">{result.message}</p>
-                {#if result.details}
+                <p class="text-sm {getStatusColor((result as { status?: any; message?: any; details?: any }).status)} mb-2">{(result as { status?: any; message?: any; details?: any }).message}</p>
+                {#if (result as { status?: any; message?: any; details?: any }).details}
                   <details class="text-xs text-gray-400">
                     <summary class="cursor-pointer">Details</summary>
-                    <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">{JSON.stringify(result.details, null, 2)}</pre>
+                    <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">{JSON.stringify((result as { status?: any; message?: any; details?: any }).details, null, 2)}</pre>
                   </details>
                 {/if}
               </div>
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- Components Tab -->
     <TabsContent value="components" class="space-y-6">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Gaming Component Test Suite</h3>
         </div>
-        <div class="yorha-panel-content" class="space-y-6">
+        <div class="yorha-panel-content space-y-6">
           <!-- 8-bit NES Components -->
           <div class="component-section">
             <h3 class="text-xl font-semibold text-white mb-4">8-Bit NES Era</h3>
             <div class="flex gap-4 flex-wrap">
-              <NES8BitButton variant="primary" onclick={() => console.log('NES Button Clicked!')}>
+              <NES8BitButton variant="primary" on:click={() => console.log('NES Button Clicked!')}>
                 NES Primary
               </NES8BitButton>
               <NES8BitButton variant="success" enableSound={true}>
@@ -374,12 +374,12 @@
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- APIs Tab -->
     <TabsContent value="apis" class="space-y-6">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">API Endpoint Status</h3>
         </div>
@@ -405,12 +405,12 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- Database Tab -->
     <TabsContent value="database" class="space-y-6">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">PostgreSQL + pgvector Integration</h3>
         </div>
@@ -439,12 +439,12 @@
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- Live Demo Tab -->
     <TabsContent value="demo" class="space-y-6">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">GPU Cache Integration Demo</h3>
         </div>
@@ -455,7 +455,7 @@
             debugMode={false}
           />
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
   </Tabs.Root>
 </div>

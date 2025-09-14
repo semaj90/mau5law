@@ -184,7 +184,7 @@ export class UnifiedAPIRouter {
       return this.createErrorResponse(
         dev ? String(err) : 'Internal server error',
         500,
-        { requestId, encoding: 'json', startTime, params: {}, query: event.url.searchParams }
+        { requestId, encoding: 'json', startTime, params: Record<string, any>, query: event.url.searchParams }
       );
     }
   }

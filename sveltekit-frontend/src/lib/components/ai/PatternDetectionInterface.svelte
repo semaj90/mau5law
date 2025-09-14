@@ -80,9 +80,9 @@
         }
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        patterns = data.patterns || [];
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        patterns = (data as { patterns?: any }).patterns || [];
       }
     } catch (error) {
       console.error('Error loading patterns:', error);
@@ -107,12 +107,12 @@
         body: JSON.stringify(analysisRequest)
       });
       
-      if (response.ok) {
-        const result = await response.json();
-        analysisResults = result.analysis;
-        patterns = result.patterns || [];
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        analysisResults = (result as { analysis?: any; patterns?: any }).analysis;
+        patterns = (result as { analysis?: any; patterns?: any }).patterns || [];
       } else {
-        throw new Error(`Analysis failed: ${response.statusText}`);
+        throw new Error(`Analysis failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
       }
     } catch (error) {
       console.error('Error running pattern analysis:', error);
@@ -202,7 +202,7 @@
       <p class="detection-subtitle">AI-powered pattern recognition and behavioral analysis</p>
     </div>
     <div class="header-actions">
-      <button class="nes-btn" on:click={runPatternAnalysis} disabled={isAnalyzing}>
+      <button class="nes-btn" on:click={disabled}>
         {isAnalyzing ? 'Analyzing...' : 'Run Analysis'}
       </button>
     </div>
@@ -270,13 +270,13 @@
   {#if analysisResults}
     <section class="results-summary">
       <div.Root class="summary-nier-bits-card">
-        <div.Header>
-          <div.Title>Latest Analysis Results</Card.Title>
+        <Card.Header>
+          <div.Title>Latest Analysis Results</div.Title>
           <div.Description>
             Completed: {new Date(analysisResults.timestamp).toLocaleString()}
-          </Card.Description>
+          </div.Description>
         </Card.Header>
-        <div.Content>
+        <Card.Content>
           <div class="summary-metrics">
             <div class="metric">
               <span class="metric-value">{analysisResults.totalPatterns}</span>
@@ -323,12 +323,12 @@
     {:else}
       {#each filteredPatterns as pattern}
         <div.Root class="pattern-nier-bits-card">
-          <div.Header>
+          <Card.Header>
             <div class="pattern-header">
               <div class="pattern-title-section">
                 <div class="pattern-icon">{getPatternTypeIcon(pattern.type)}</div>
                 <div>
-                  <div.Title class="pattern-title">{pattern.title}</Card.Title>
+                  <div.Title class="pattern-title">{pattern.title}</div.Title>
                   <span class="pattern-type-badge {getPatternTypeColor(pattern.type)}">
                     {pattern.type}
                   </span>
@@ -343,10 +343,10 @@
             </div>
             <div.Description class="pattern-description">
               {pattern.description}
-            </Card.Description>
+            </div.Description>
           </Card.Header>
           
-          <div.Content>
+          <Card.Content>
             <div class="pattern-stats">
               <div class="stat">
                 <span class="stat-label">Significance</span>
@@ -400,7 +400,7 @@
                 Investigate
               </button>
             </div>
-          </Card.Footer>
+          </div.Footer>
         </Card.Root>
       {/each}
     {/if}

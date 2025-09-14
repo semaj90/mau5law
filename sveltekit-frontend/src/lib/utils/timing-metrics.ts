@@ -112,7 +112,7 @@ class TimingMetricsCollector {
       cumulativeLayoutShift,
 
       // Server timing (populated during fetch)
-      serverTiming: {},
+      serverTiming: Record<string, any>,
 
       // Custom marks
       customMarks: { ...this.customMarks },
@@ -196,7 +196,7 @@ class TimingMetricsCollector {
         url: typeof input === 'string' ? input : input.toString(),
         method: init?.method || 'GET',
         clientDuration,
-        serverTiming: {},
+        serverTiming: Record<string, any>,
         requestId,
         status: 0,
         error: error instanceof Error ? error.message : 'Unknown error',

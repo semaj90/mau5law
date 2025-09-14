@@ -40,7 +40,7 @@
     try {
       processing.set(true);
       error.set(null);
-      result.set(null);
+      (result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).set(null);
       sources.set([]);
       events.set([]);
       progress.set(0);
@@ -75,19 +75,19 @@
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Request failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).ok) {
+        throw new Error(`Request failed: ${(response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).statusText}`);
       }
 
-      const data = await response.json();
+      const data = await (response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).json();
 
-      if (enableStreaming && data.streamId) {
+      if (enableStreaming && (data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).streamId) {
         // Connect to SSE stream
-        streamId.set(data.streamId);
-        connectToStream(data.streamId);
+        streamId.set((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).streamId);
+        connectToStream((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).streamId);
       } else {
         // Non-streaming result
-        result.set(data);
+        (result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).set(data);
         processing.set(false);
         // Add to conversation history
         addToHistory(query, data);
@@ -114,16 +114,16 @@
     eventSource.addEventListener('status', (event) => {
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'status', data, timestamp: Date.now() }]);
-      if (data.message) {
-        currentStage.set(data.message);
+      if ((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).message) {
+        currentStage.set((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).message);
       }
     });
 
     eventSource.addEventListener('progress', (event) => {
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'progress', data, timestamp: Date.now() }]);
-      if (data.stage) {
-        currentStage.set(`${data.stage}: ${data.progress.toFixed(0)}%`);
+      if ((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).stage) {
+        currentStage.set(`${(data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).stage}: ${(data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).progress.toFixed(0)}%`);
       }
       // Update overall progress based on stage
       const stageProgress = {
@@ -133,16 +133,16 @@
         'prompt_construction': 0.85,
         'quality_assessment': 1.0
       };
-      const baseProgress = stageProgress[data.stage] || 0;
-      const stageContribution = data.progress / 100 * 0.2; // Each stage contributes 20%
+      const baseProgress = stageProgress[(data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).stage] || 0;
+      const stageContribution = (data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).progress / 100 * 0.2; // Each stage contributes 20%
       progress.set((baseProgress - 0.2 + stageContribution) * 100);
     });
 
     eventSource.addEventListener('stage', (event) => {
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'stage', data, timestamp: Date.now() }]);
-      if (data.stage === 'retrieval' && data.status === 'complete') {
-        console.log(`Found ${data.sourceCount} sources`);
+      if ((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).stage === 'retrieval' && (data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).status === 'complete') {
+        console.log(`Found ${(data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).sourceCount} sources`);
       }
     });
 
@@ -154,7 +154,7 @@
 
     eventSource.addEventListener('complete', (event) => {
       const data = JSON.parse(event.data);
-      result.set(data);
+      (result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).set(data);
       processing.set(false);
       progress.set(100);
       currentStage.set('Complete');
@@ -169,7 +169,7 @@
 
     eventSource.addEventListener('error', (event) => {
       const data = event.data ? JSON.parse(event.data) : { error: 'Stream error' };
-      error.set(data.error || 'Stream error');
+      error.set((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).error || 'Stream error');
       processing.set(false);
       if (eventSource) {
         eventSource.close();
@@ -210,7 +210,7 @@
         })
       });
 
-      if (response.ok) {
+      if ((response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).ok) {
         console.log('Feedback submitted successfully');
       }
     } catch (err) {
@@ -224,7 +224,7 @@
   async function checkHealth() {
     try {
       const response = await fetch('/api/ai-synthesizer');
-      const health = await response.json();
+      const health = await (response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).json();
       console.log('Health status:', health);
       return health;
     } catch (err) {
@@ -246,10 +246,10 @@
       content: query,
       timestamp: new Date()
     });
-    if (response.enhancedPrompt) {
+    if ((response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).enhancedPrompt) {
       conversationHistory.push({
         role: 'assistant',
-        content: response.enhancedPrompt.queryPrompt,
+        content: (response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).enhancedPrompt.queryPrompt,
         timestamp: new Date()
       });
     }
@@ -298,7 +298,7 @@
 ></textarea>
     
     <button 
-      onclick={submitQuery}
+      on:click={submitQuery}
       disabled={$processing || !query}
       class="submit-btn"
     >
@@ -340,39 +340,39 @@
       
       <div class="metadata">
         <h4>Metadata</h4>
-        <p>Request ID: {$result.metadata.requestId}</p>
-        <p>Processing Time: {$result.metadata.processingTime}ms</p>
-        <p>Confidence: {($result.metadata.confidence * 100).toFixed(1)}%</p>
-        <p>Quality Score: {($result.metadata.qualityScore * 100).toFixed(1)}%</p>
-        <p>Cached: {$result.metadata.cached ? 'Yes' : 'No'}</p>
+        <p>Request ID: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.requestId}</p>
+        <p>Processing Time: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.processingTime}ms</p>
+        <p>Confidence: {($(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.confidence * 100).toFixed(1)}%</p>
+        <p>Quality Score: {($(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.qualityScore * 100).toFixed(1)}%</p>
+        <p>Cached: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.cached ? 'Yes' : 'No'}</p>
       </div>
 
       <div class="processed-query">
         <h4>Processed Query</h4>
-        <p><strong>Original:</strong> {$result.processedQuery.original}</p>
-        <p><strong>Enhanced:</strong> {$result.processedQuery.enhanced}</p>
-        <p><strong>Intent:</strong> {$result.processedQuery.intent}</p>
-        <p><strong>Complexity:</strong> {($result.processedQuery.complexity * 100).toFixed(0)}%</p>
+        <p><strong>Original:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.original}</p>
+        <p><strong>Enhanced:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.enhanced}</p>
+        <p><strong>Intent:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.intent}</p>
+        <p><strong>Complexity:</strong> {($(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.complexity * 100).toFixed(0)}%</p>
         
-        {#if $result.processedQuery.legalConcepts.length > 0}
-          <p><strong>Legal Concepts:</strong> {$result.processedQuery.legalConcepts.join(', ')}</p>
+        {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.legalConcepts.length > 0}
+          <p><strong>Legal Concepts:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.legalConcepts.join(', ')}</p>
         {/if}
       </div>
 
       <div class="retrieved-context">
         <h4>Retrieved Context</h4>
-        <p>Total Sources: {$result.retrievedContext.totalSources}</p>
-        <p>Strategies: {$result.retrievedContext.searchStrategies.join(', ')}</p>
+        <p>Total Sources: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.totalSources}</p>
+        <p>Strategies: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.searchStrategies.join(', ')}</p>
         
-        {#if $result.retrievedContext.summary}
+        {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary}
           <div class="summary">
             <h5>Summary</h5>
-            <p>{$result.retrievedContext.summary.abstractive}</p>
+            <p>{$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary.abstractive}</p>
             
-            {#if $result.retrievedContext.summary.keyPoints.length > 0}
+            {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary.keyPoints.length > 0}
               <h5>Key Points</h5>
               <ul>
-                {#each $result.retrievedContext.summary.keyPoints as point}
+                {#each $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary.keyPoints as point}
                   <li>{point}</li>
                 {/each}
               </ul>
@@ -382,7 +382,7 @@
 
         <div class="sources-list">
           <h5>Top Sources</h5>
-          {#each $result.retrievedContext.sources.slice(0, 5) as source, i}
+          {#each $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.sources.slice(0, 5) as source, i}
             <div class="source-item">
               <h6>{i + 1}. {source.title}</h6>
               <p>Type: {source.type}</p>
@@ -399,27 +399,27 @@
         <h4>Enhanced Prompt</h4>
         <details>
           <summary>System Prompt</summary>
-          <pre>{$result.enhancedPrompt.systemPrompt}</pre>
+          <pre>{$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).enhancedPrompt.systemPrompt}</pre>
         </details>
         <details>
           <summary>Context Prompt</summary>
-          <pre>{$result.enhancedPrompt.contextPrompt}</pre>
+          <pre>{$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).enhancedPrompt.contextPrompt}</pre>
         </details>
         <details>
           <summary>Instructions</summary>
           <ul>
-            {#each $result.enhancedPrompt.instructions as instruction}
+            {#each $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).enhancedPrompt.instructions as instruction}
               <li>{instruction}</li>
             {/each}
           </ul>
         </details>
       </div>
 
-      {#if $result.metadata.recommendations?.length > 0}
+      {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.recommendations?.length > 0}
         <div class="recommendations">
           <h4>Recommendations</h4>
           <ul>
-            {#each $result.metadata.recommendations as rec}
+            {#each $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.recommendations as rec}
               <li>{rec}</li>
             {/each}
           </ul>
@@ -430,7 +430,7 @@
         <h4>Provide Feedback</h4>
         <div class="rating-buttons">
           {#each [1, 2, 3, 4, 5] as rating}
-            <button onclick={() => submitFeedback(rating)}>
+            <button on:click={() => submitFeedback(rating)}>
               {rating} Star{rating > 1 ? 's' : ''}
             </button>
           {/each}

@@ -1,12 +1,12 @@
-import { getContext7MulticoreService } from "../services/context7-multicore";
+import { getContext7MulticoreService } from '../services/context7-multicore.js';
 /**
  * Full Stack Legal AI Workflow Integration
  * Orchestrates the complete system: VS Code tasks + Agent orchestration + GPU processing
  * Designed to work seamlessly with .vscode/tasks.json
  */
 
-import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from "./comprehensive-agent-orchestration";
-import { flashAttentionMulticoreBridge, type FlashAttentionMulticoreRequest } from "../services/flash-attention-multicore";
+import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from './comprehensive-agent-orchestration.js';
+import { flashAttentionMulticoreBridge, type FlashAttentionMulticoreRequest } from '../services/flash-attention-multicore.js';
 
 export interface FullStackWorkflowRequest {
   mode: 'error_analysis' | 'legal_processing' | 'system_diagnostic' | 'performance_test';
@@ -151,7 +151,7 @@ export class FullStackLegalAIWorkflow {
       }
 
       const totalTime = performance.now() - startTime;
-      result.performance.totalTime = totalTime;
+      (result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).performance.totalTime = totalTime;
 
       console.log(`✅ Workflow '${request.mode}' completed in ${totalTime.toFixed(2)}ms`);
       return result;
@@ -236,12 +236,12 @@ export class FullStackLegalAIWorkflow {
     let gpuUtilization = 0;
 
     analysisResults.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
-        const { type, result: data } = result.value;
+      if ((result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).status === 'fulfilled') {
+        const { type, result: data } = (result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).value;
         results[type] = data;
 
         if (type === 'orchestration') {
-          agentsUsed = data.systemStatus?.agentsExecuted || 0;
+          agentsUsed = (data as { systemStatus?: any }).systemStatus?.agentsExecuted || 0;
         }
         if (type === 'gpu') {
           gpuUtilization = 0.75; // Estimated GPU usage
@@ -328,8 +328,8 @@ export class FullStackLegalAIWorkflow {
     // Process results
     const results: any = {};
     processingResults.forEach(result => {
-      if (result.status === 'fulfilled') {
-        const { type, result: data } = result.value;
+      if ((result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).status === 'fulfilled') {
+        const { type, result: data } = (result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).value;
         results[type] = data;
       }
     });
@@ -405,8 +405,8 @@ export class FullStackLegalAIWorkflow {
     const results: any = {};
 
     testResults.forEach(result => {
-      if (result.status === 'fulfilled') {
-        const { type, result: data } = result.value;
+      if ((result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).status === 'fulfilled') {
+        const { type, result: data } = (result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).value;
         results[type] = data;
       }
     });
@@ -534,7 +534,7 @@ export class FullStackLegalAIWorkflow {
       return {
         success: true,
         processingTime: performance.now() - startTime,
-        utilization: result.systemMetrics?.gpuUtilization || 0
+        utilization: (result as { performance?: any; status?: any; value?: any; systemMetrics?: any }).systemMetrics?.gpuUtilization || 0
       };
     } catch (error: any) {
       return {

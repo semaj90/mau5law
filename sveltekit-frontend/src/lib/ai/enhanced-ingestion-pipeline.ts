@@ -23,8 +23,8 @@ import { resolveLibraryId, getLibraryDocs } from '$lib/mcp-context72-get-library
 const copilotOrchestrator = async (prompt: string, options: any): Promise<any> => ({
   selfPrompt: "Mock copilot analysis completed",
 });
-import type { DocumentEmbedding } from './som-rag-system.js';
-import { SelfOrganizingMapRAG } from './som-rag-system.js';
+import type { DocumentEmbedding } from './som-rag-system.js.js';
+import { SelfOrganizingMapRAG } from './som-rag-system.js.js';
 import { QdrantService } from '$lib/server/services/qdrant-service';
 import { Pool } from 'pg';
 
@@ -164,8 +164,8 @@ export class EnhancedIngestionPipeline {
     successful: 0,
     failed: 0,
     avg_processing_time: 0,
-    cluster_distribution: {},
-    evidence_type_distribution: {},
+    cluster_distribution: Record<string, any>,
+    evidence_type_distribution: Record<string, any>,
   };
   private copilotContext: CopilotArchitectureContext | null = null;
   private multimodalProcessors: Map<string, any> = new Map();
@@ -586,11 +586,7 @@ export class EnhancedIngestionPipeline {
       cluster_id?: number;
     },
     limit: number = 10
-  ): Promise<{
-    documents: any[];
-    clusters_searched: number[];
-    processing_time: number;
-  }> {
+  ): Promise<any> {
     const startTime = Date.now();
 
     try {
@@ -634,10 +630,10 @@ export class EnhancedIngestionPipeline {
       });
 
       const documents = searchResults.map((result: any) => ({
-        id: result.id,
-        content: result.payload?.content || "",
-        score: result.score,
-        metadata: result.payload?.metadata || {},
+        id: (result as { id?: any; payload?: any; score?: any }).id,
+        content: (result as { id?: any; payload?: any; score?: any }).payload?.content || "",
+        score: (result as { id?: any; payload?: any; score?: any }).score,
+        metadata: (result as { id?: any; payload?: any; score?: any }).payload?.metadata || {},
       }));
 
       const clustersSearched: number[] = Array.from(
@@ -766,12 +762,7 @@ export class EnhancedIngestionPipeline {
       .substring(0, 512); // Limit length for embedding model
   }
 
-  private async extractEntitiesAndKeywords(content: string): Promise<{
-    entities: string[];
-    keywords: string[];
-    confidence: number;
-    language: string;
-  }> {
+  private async extractEntitiesAndKeywords(content: string): Promise<any> {
     // Mock implementation for entity extraction
     // In real implementation, this would use NLP libraries like spaCy or NLTK
 
@@ -804,10 +795,7 @@ export class EnhancedIngestionPipeline {
     await this.somRAG.trainSOM([document]);
   }
 
-  private async assignToCluster(document: DocumentEmbedding): Promise<{
-    cluster: number;
-    boolean_pattern: boolean[][];
-  }> {
+  private async assignToCluster(document: DocumentEmbedding): Promise<any> {
     // This would normally be handled by the SOM system
     // Mock implementation
     const clusterId = Math.floor(Math.random() * 8);
@@ -889,12 +877,7 @@ export class EnhancedIngestionPipeline {
   /**
    * Process multimodal evidence with Claude Desktop integration
    */
-  async processMultimodalEvidence(evidence: MultimodalEvidence): Promise<{
-    processing_result: ProcessingResult;
-    anchor_points: AnchorPoint[];
-    timeline_segments?: TimelineSegment[];
-    copilot_analysis?: string;
-  }> {
+  async processMultimodalEvidence(evidence: MultimodalEvidence): Promise<any> {
     console.log(
       `🔍 Processing multimodal evidence: ${evidence.metadata.filename}`
     );
@@ -1118,11 +1101,7 @@ export class EnhancedIngestionPipeline {
       legal_relevance?: "high" | "medium" | "low";
       confidence_threshold?: number;
     }
-  ): Promise<{
-    results: any[];
-    anchor_context: Map<string, AnchorPoint[]>;
-    copilot_insights?: string;
-  }> {
+  ): Promise<any> {
     // Use enhanced search from parent class
     const searchResults = await this.enhancedSearch(query, {
       evidence_type: filters?.evidence_types?.[0],

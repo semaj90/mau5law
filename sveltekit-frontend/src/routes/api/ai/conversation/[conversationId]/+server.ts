@@ -18,7 +18,7 @@
 
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 

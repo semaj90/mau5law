@@ -4,7 +4,7 @@
 // ======================================================================
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import didYouMeanModule from '$lib/services/did-you-mean-quic-graph.js';
 type DidYouMeanQuery = any;
 const didYouMeanService: any = (didYouMeanModule as any)?.didYouMeanService ?? didYouMeanModule;
@@ -95,8 +95,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
       status: 200,
       headers: {
         'X-Processing-Time': processingTime.toString(),
-        'X-Suggestions-Count': result.suggestions.length.toString(),
-        'X-QUIC-Streams': result.cacheInfo.quicStreamsUsed.toString(),
+        'X-Suggestions-Count': (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).suggestions.length.toString(),
+        'X-QUIC-Streams': (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.quicStreamsUsed.toString(),
         'Cache-Control': 'public, max-age=300', // 5 minutes cache
         Vary: 'Accept-Encoding',
       },
@@ -152,11 +152,11 @@ export const POST: RequestHandler = async ({ request }) => {
         streamStats: didYouMeanService.getStreamStats(),
         version: '1.0',
         optimizations: {
-          quicEnabled: result.cacheInfo.quicStreamsUsed > 0,
-          graphTraversalUsed: (result.cacheInfo.graphTraversalTime || 0) > 0,
+          quicEnabled: (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.quicStreamsUsed > 0,
+          graphTraversalUsed: ((result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.graphTraversalTime || 0) > 0,
           cacheHitRatio:
-            result.cacheInfo.cacheHits /
-            (result.cacheInfo.cacheHits + result.cacheInfo.cacheMisses),
+            (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.cacheHits /
+            ((result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.cacheHits + (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.cacheMisses),
         },
       },
     };
@@ -165,10 +165,10 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 200,
       headers: {
         'X-Processing-Time': processingTime.toString(),
-        'X-Suggestions-Count': result.suggestions.length.toString(),
-        'X-QUIC-Streams': result.cacheInfo.quicStreamsUsed.toString(),
-        'X-Graph-Nodes': result.graphContext?.nodesTraversed?.toString() || '0',
-        'X-Cache-Hit-Ratio': response.metadata.optimizations.cacheHitRatio.toFixed(3),
+        'X-Suggestions-Count': (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).suggestions.length.toString(),
+        'X-QUIC-Streams': (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.quicStreamsUsed.toString(),
+        'X-Graph-Nodes': (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).graphContext?.nodesTraversed?.toString() || '0',
+        'X-Cache-Hit-Ratio': (response as { metadata?: any }).metadata.optimizations.cacheHitRatio.toFixed(3),
         'Cache-Control': 'public, max-age=300'
       }
     });

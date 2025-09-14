@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: `</Card.Content>` attempted to close an element that was not open
+<!-- @migration-task Error while migrating Svelte code: `</div.Content>` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</Card.Content>` attempted to close an element that was not open -->
+<!-- @migration-task Error while migrating Svelte code: `</div.Content>` attempted to close an element that was not open -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
@@ -75,16 +75,16 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     <!-- Technical Analysis Panel -->
     <section class="analysis-panel">
-      <NesCard.Card class="snes-nier-bits-card">
-        <NesCard.CardHeader>
-          <NesCard.CardTitle class="snes-title">
+      <div.Card class="snes-nier-bits-card nes-container">
+        <div.CardHeader class="nes-container">
+          <div.CardTitle class="snes-title nes-container">
             🎮 16-bit SNES Era Analysis
-          </Card.CardTitle>
-          <NesCard.CardDescription class="snes-subtitle">
+          </div.CardTitle>
+          <div.CardDescription class="snes-subtitle nes-container">
             Super Nintendo Entertainment System Visual Characteristics
-          </Card.CardDescription>
-        </Card.CardHeader>
-        <NesCard.CardContent class="technical-specs">
+          </div.CardDescription>
+        </div.CardHeader>
+        <div.CardContent class="technical-specs nes-container">
 
           <div class="spec-grid">
             <div class="spec-item">
@@ -125,22 +125,22 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </div>
           </div>
 
-        </Card.CardContent>
-      </Card.Card>
+        </div.CardContent>
+      </div.Card>
     </section>
 
     <!-- Interactive Components Panel -->
     <section class="components-panel">
-      <NesCard.Card class="snes-nier-bits-card">
-        <NesCard.CardHeader>
-          <NesCard.CardTitle class="snes-title">
+      <div.Card class="snes-nier-bits-card nes-container">
+        <div.CardHeader class="nes-container">
+          <div.CardTitle class="snes-title nes-container">
             🕹️ 16-bit UI Components
-          </Card.CardTitle>
-          <NesCard.CardDescription class="snes-subtitle">
+          </div.CardTitle>
+          <div.CardDescription class="snes-subtitle nes-container">
             bits-ui Components with SNES Aesthetics
-          </Card.CardDescription>
-        </Card.CardHeader>
-        <NesCard.CardContent class="components-grid">
+          </div.CardDescription>
+        </div.CardHeader>
+        <div.CardContent class="components-grid nes-container">
 
           <!-- Buttons Section -->
           <div class="component-section">
@@ -199,22 +199,22 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </div>
           </div>
 
-        </Card.CardContent>
-      </Card.Card>
+        </div.CardContent>
+      </div.Card>
     </section>
 
     <!-- Game UI Recreation -->
     <section class="game-ui-panel">
-      <NesCard.Card class="snes-nier-bits-card">
-        <NesCard.CardHeader>
-          <NesCard.CardTitle class="snes-title">
+      <div.Card class="snes-nier-bits-card nes-container">
+        <div.CardHeader class="nes-container">
+          <div.CardTitle class="snes-title nes-container">
             👾 16-bit Game Interface
-          </Card.CardTitle>
-          <NesCard.CardDescription class="snes-subtitle">
+          </div.CardTitle>
+          <div.CardDescription class="snes-subtitle nes-container">
             Classic SNES Menu & Dialog Recreation
-          </Card.CardDescription>
-        </Card.CardHeader>
-        <NesCard.CardContent class="game-interface">
+          </div.CardDescription>
+        </div.CardHeader>
+        <div.CardContent class="game-interface nes-container">
 
           <!-- RPG-style Tabs -->
           <Tabs.Root bind:value={activeTab} class="snes-tabs">
@@ -276,7 +276,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <div class="dialog-section">
             <Button.Root
               class="snes-btn snes-nes-btn is-primary bits-btn bits-btn"
-              onclick={() => dialogOpen = true}
+              on:click={() => dialogOpen = true}
             >
               🗨️ Open Message Box
             </Button.Root>
@@ -296,7 +296,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                     <div class="dialog-actions">
                       <Button.Root
                         class="snes-btn snes-btn-confirm bits-btn bits-btn"
-                        onclick={() => dialogOpen = false}
+                        on:click={() => dialogOpen = false}
                       >
                         ✓ OK
                       </Button.Root>
@@ -307,8 +307,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </Dialog.Root>
           </div>
 
-        </Card.CardContent>
-      </Card.Card>
+        </div.CardContent>
+      </div.Card>
     </section>
 
   </main>

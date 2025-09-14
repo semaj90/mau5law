@@ -64,7 +64,7 @@
   let suggestions = $state<string[]>([]);
   let error = $state<string | null>(null);
   let searchMode = $state<'semantic' | 'keyword' | 'hybrid'>('semantic');
-  let selectedTypes = $state<Set<string>>(new Set());
+  let selectedTypes = $state<Set<string>('')>(new Set());
   let similarityThreshold = $state(0.7);
   // Search suggestions for different legal domains
   const searchSuggestions = [
@@ -113,16 +113,16 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
-      if (!response.ok) {
-        throw new Error(`Search failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
-      const data: SearchResponse = await response.json();
-      if (!data.success) {
+      const data: SearchResponse = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      if (!(data as { success?: any; results?: any; query_info?: any; suggestions?: any }).success) {
         throw new Error('Search request failed');
       }
-      results = data.results;
-      searchInfo = data.query_info;
-      suggestions = data.suggestions || [];
+      results = (data as { success?: any; results?: any; query_info?: any; suggestions?: any }).results;
+      searchInfo = (data as { success?: any; results?: any; query_info?: any; suggestions?: any }).query_info;
+      suggestions = (data as { success?: any; results?: any; query_info?: any; suggestions?: any }).suggestions || [];
       console.log('Vector search results:', data);
     } catch (err) {
       console.error('Search error:', err);
@@ -193,15 +193,15 @@
         pgvector + AI
       </Badge>
       <Button class="bits-btn" variant="outline" size="sm">
-        <Settings class="w-4 h-4 mr-2" />
+<Settings class="w-4 h-4 mr-2" />
         Settings
-      </button>
+
     </div>
   </div>
   
   <!-- Search Interface - Enhanced-Bits orchestrated -->
   <OrchestratedCard.Analysis>
-    <NesCard.Content class="p-6">
+    <div.Content class="p-6 nes-container">
       <div class="space-y-4">
         <!-- Search Input -->
         <div class="relative">
@@ -214,7 +214,7 @@
             disabled={loading}
           />
           <OrchestratedButton.SearchSimilar
-            onclick={performSearch}
+            on:click={performSearch}
             disabled={loading || !query.trim()}
             class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2"
           >
@@ -255,7 +255,7 @@
           
           {#each documentTypes as docType}
             <button
-              onclick={() => toggleDocumentType(docType.value)}
+              on:click={() => toggleDocumentType(docType.value)}
               class="flex items-center gap-2 px-3 py-1 rounded-full border transition-all
                      {selectedTypes.has(docType.value) 
                        ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary' 
@@ -263,7 +263,7 @@
             >
               {@render docType.icon({ class: "w-3 h-3" })}
               <span class="text-xs">{docType.label}</span>
-            </button>
+
           {/each}
           
           <div class="ml-auto flex items-center gap-2">
@@ -280,29 +280,29 @@
           </div>
         </div>
       </div>
-    </Card.Content>
+    </div.Content>
   </OrchestratedCard.Analysis>
   
   <!-- Search Results -->
   {#if searchInfo}
     <OrchestratedCard.Evidence>
-      <NesCard.Header>
+      <div.Header class="nes-container">
         <div class="flex items-center justify-between">
-          <NesCard.Title class="flex items-center gap-2">
+          <div.Title class="flex items-center gap-2 nes-container">
             <Database class="w-5 h-5" />
             Search Results ({results.length})
-          </Card.Title>
+          </div.Title>
           <div class="flex items-center gap-4 text-sm text-nier-text-muted">
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{formatSearchTime(searchInfo.search_time_ms)}</span>
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{searchInfo.embedding_model}</span>
           </div>
         </div>
-        <NesCard.Description>
+        <div.Description class="nes-container">
           Query: "{searchInfo.processed_query}" • Total: {searchInfo.total_results} matches
-        </Card.Description>
-      </Card.Header>
+        </div.Description>
+      </div.Header>
       
-      <NesCard.Content class="space-y-4">
+      <div.Content class="space-y-4 nes-container">
         {#if loading}
           <div class="text-center py-8">
             <div class="animate-spin w-8 h-8 border-4 border-nier-accent-warm border-t-transparent rounded-full mx-auto"></div>
@@ -312,9 +312,9 @@
           <div class="text-center py-8">
             <AlertCircle class="w-8 h-8 text-red-500 mx-auto mb-2" />
             <p class="text-red-600">{error}</p>
-            <Button onclick={performSearch} variant="outline" size="sm" class="mt-2 bits-btn">
-              Retry Search
-            </button>
+            <Button on:click={performSearch} variant="outline" size="sm" class="mt-2 bits-btn">
+Retry Search
+
           </div>
         {:else if results.length === 0}
           <div class="text-center py-8">
@@ -332,39 +332,39 @@
                   </div>
                   <div>
                     <h3 class="font-medium text-nier-text-primary hover:text-nier-accent-warm cursor-pointer">
-                      {result.title || `Document ${result.document_id.slice(0, 8)}`}
+                      {(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).title || `Document ${(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).document_id.slice(0, 8)}`}
                     </h3>
                     <div class="flex items-center gap-2 mt-1">
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.document_type.replace('_', ' ')}</span>
-                      {#if result.case_id}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {result.case_id.slice(0, 8)}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).document_type.replace('_', ' ')}</span>
+                      {#if (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).case_id}
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).case_id.slice(0, 8)}</span>
                       {/if}
-                      {#if result.metadata.file_type}
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.metadata.file_type.toUpperCase()}</span>
+                      {#if (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.file_type}
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.file_type.toUpperCase()}</span>
                       {/if}
                     </div>
                   </div>
                 </div>
                 
                 <div class="flex items-center gap-2">
-                  <Badge class="text-xs {getSimilarityColor(result.similarity_score)}">
-                    {getSimilarityLabel(result.similarity_score)}
+                  <Badge class="text-xs {getSimilarityColor((result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).similarity_score)}">
+                    {getSimilarityLabel((result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).similarity_score)}
                   </Badge>
                   <span class="text-xs font-mono text-nier-text-muted">
-                    {(result.similarity_score * 100).toFixed(1)}%
+                    {((result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).similarity_score * 100).toFixed(1)}%
                   </span>
                 </div>
               </div>
               
               <p class="text-sm text-nier-text-secondary leading-relaxed mb-3">
-                {result.content_preview}
+                {(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).content_preview}
               </p>
               
-              {#if result.highlights && result.highlights.length > 0}
+              {#if (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).highlights && (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).highlights.length > 0}
                 <div class="mb-3">
                   <h4 class="text-xs font-medium text-nier-text-muted mb-2">Key Highlights:</h4>
                   <div class="flex flex-wrap gap-1">
-                    {#each result.highlights.slice(0, 3) as highlight}
+                    {#each (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).highlights.slice(0, 3) as highlight}
                       <span class="text-xs px-2 py-1 bg-nier-accent-warm/10 text-nier-accent-warm rounded">
                         {highlight}
                       </span>
@@ -375,53 +375,53 @@
               
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4 text-xs text-nier-text-muted">
-                  {#if result.metadata.upload_date}
+                  {#if (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.upload_date}
                     <div class="flex items-center gap-1">
                       <Clock class="w-3 h-3" />
-                      {new Date(result.metadata.upload_date).toLocaleDateString()}
+                      {new Date((result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.upload_date).toLocaleDateString()}
                     </div>
                   {/if}
-                  {#if result.metadata.confidence}
+                  {#if (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.confidence}
                     <div class="flex items-center gap-1">
                       <CheckCircle class="w-3 h-3" />
-                      {(result.metadata.confidence * 100).toFixed(1)}% confidence
+                      {((result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.confidence * 100).toFixed(1)}% confidence
                     </div>
                   {/if}
                 </div>
                 
                 <div class="flex items-center gap-2">
                   <Button class="bits-btn" variant="ghost" size="sm">
-                    <Eye class="w-4 h-4 mr-1" />
+<Eye class="w-4 h-4 mr-1" />
                     View
-                  </button>
+
                   <Button class="bits-btn" variant="ghost" size="sm">
-                    <ChevronRight class="w-4 h-4" />
-                  </button>
+<ChevronRight class="w-4 h-4" />
+
                 </div>
               </div>
             </div>
           {/each}
         {/if}
-      </Card.Content>
+      </div.Content>
     </OrchestratedCard.Evidence>
   {/if}
   
   <!-- Search Suggestions -->
-  <NesCard.Root>
-    <NesCard.Header>
-      <NesCard.Title class="flex items-center gap-2">
+  <div.Root class="nes-container">
+    <div.Header class="nes-container">
+      <div.Title class="flex items-center gap-2 nes-container">
         <Lightbulb class="w-5 h-5" />
         Search Suggestions
-      </Card.Title>
-      <NesCard.Description>
+      </div.Title>
+      <div.Description class="nes-container">
         Try these common legal research queries
-      </Card.Description>
-    </Card.Header>
-    <NesCard.Content>
+      </div.Description>
+    </div.Header>
+    <div.Content class="nes-container">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         {#each searchSuggestions as suggestion}
           <button
-            onclick={() => setSuggestionQuery(suggestion)}
+            on:click={() => setSuggestionQuery(suggestion)}
             class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10 
                    rounded-lg transition-colors border border-transparent hover:border-nier-accent-warm/20"
             disabled={loading}
@@ -430,22 +430,22 @@
               <span>{suggestion}</span>
               <ChevronRight class="w-4 h-4 text-nier-text-muted" />
             </div>
-          </button>
+
         {/each}
       </div>
-    </Card.Content>
-  </Card.Root>
+    </div.Content>
+  </div.Root>
   
   <!-- Performance Metrics -->
   {#if searchInfo}
-    <NesCard.Root>
-      <NesCard.Header>
-        <NesCard.Title class="flex items-center gap-2">
+    <div.Root class="nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="flex items-center gap-2 nes-container">
           <TrendingUp class="w-5 h-5" />
           Search Performance
-        </Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+        </div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
           <div>
             <div class="text-nier-text-muted">Query Processing</div>
@@ -464,7 +464,7 @@
             <div class="font-medium capitalize">{searchMode}</div>
           </div>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   {/if}
 </div>

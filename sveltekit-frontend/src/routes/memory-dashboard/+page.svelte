@@ -48,13 +48,13 @@
     isLoading = true;
     try {
       const response = await fetch('/api/memory/neural?action=optimize');
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
+      if ((result as { success?: any; error?: any }).success) {
         // Reload data after optimization
         await loadData();
       } else {
-        error = result.error || 'Optimization failed';
+        error = (result as { success?: any; error?: any }).error || 'Optimization failed';
       }
     } catch (err) {
       console.error('Optimization failed:', err);
@@ -91,7 +91,7 @@
       {/if}
       <button
         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        onclick={triggerOptimization}
+        on:click={triggerOptimization}
         disabled={isLoading}
       >
         {isLoading ? 'Optimizing...' : 'Run Optimization'}
@@ -165,7 +165,6 @@
         </div>
       </div>
     {/if}
-  {/if}
 
   {#if memoryPrediction}
     <!-- Memory Prediction -->
@@ -231,7 +230,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <button
         class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 text-left transition-colors"
-        onclick={loadData}
+        on:click={loadData}
         disabled={isLoading}
       >
         <div class="font-medium mb-1">Refresh Data</div>
@@ -240,7 +239,7 @@
 
       <button
         class="p-4 border border-blue-300 rounded-lg hover:bg-blue-50 text-left transition-colors"
-        onclick={triggerOptimization}
+        on:click={triggerOptimization}
         disabled={isLoading}
       >
         <div class="font-medium mb-1 text-blue-700">Run Optimization</div>

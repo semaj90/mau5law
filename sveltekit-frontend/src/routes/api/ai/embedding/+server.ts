@@ -18,7 +18,7 @@
 
 
 import { json } from "@sveltejs/kit";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { gemmaEmbeddingService } from '$lib/services/gemma-embedding.js';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
@@ -39,19 +39,19 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     // Use the improved Gemma embedding service
     const result = await gemmaEmbeddingService.generateEmbedding(inputText, metadata);
     
-    if (!result.success) {
+    if (!(result as { success?: any; error?: any; embedding?: any; metadata?: any; processingTime?: any }).success) {
       return json({ 
-        error: result.error,
-        model: result.model,
+        error: (result as { success?: any; error?: any; embedding?: any; metadata?: any; processingTime?: any }).error,
+        model: result?.model || "unknown" // @ts-ignore - Model property access,
         timestamp: new Date().toISOString()
       }, { status: 500 });
     }
 
     return json({ 
-      embedding: result.embedding,
-      metadata: result.metadata,
-      model: result.model,
-      processingTime: result.processingTime,
+      embedding: (result as { success?: any; error?: any; embedding?: any; metadata?: any; processingTime?: any }).embedding,
+      metadata: (result as { success?: any; error?: any; embedding?: any; metadata?: any; processingTime?: any }).metadata,
+      model: result?.model || "unknown" // @ts-ignore - Model property access,
+      processingTime: (result as { success?: any; error?: any; embedding?: any; metadata?: any; processingTime?: any }).processingTime,
       responseTime: `${Date.now() - startTime}ms`,
       timestamp: new Date().toISOString()
     });

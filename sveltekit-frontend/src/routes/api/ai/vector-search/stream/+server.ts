@@ -17,7 +17,7 @@
  */
 
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Streaming (SSE) vector search endpoint.
 // Usage: GET /api/ai/vector-search/stream?query=...&limit=8&threshold=0.2&model=...&mode=simple
@@ -25,7 +25,7 @@ import type { RequestHandler } from './$types.js';
 
 import { getEmbeddingRepository } from '$lib/server/embedding/embedding-repository';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 const originalGETHandler: RequestHandler = (async ({ url }) => {
   const query = url.searchParams.get('query') || '';

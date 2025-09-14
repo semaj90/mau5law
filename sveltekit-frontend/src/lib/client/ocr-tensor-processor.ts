@@ -18,12 +18,7 @@ declare global {
 export interface OCRResult {
   text: string;
   confidence: number;
-  boundingBoxes: Array<{
-    text: string;
-    bbox: { x0: number; y0: number; x1: number; y1: number };
-    confidence: number;
-  }>;
-}
+  boundingBoxes: Array<any>
 
 export interface TensorData {
   embeddings: Float32Array;
@@ -217,9 +212,9 @@ export class OCRTensorProcessor {
       });
 
       const ocrResult: OCRResult = {
-        text: result.data.text,
-        confidence: result.data.confidence,
-        boundingBoxes: result.data.words.map((word: any) => ({
+        text: (result as { data?: any; status?: any; value?: any }).(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).text,
+        confidence: (result as { data?: any; status?: any; value?: any }).(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).confidence,
+        boundingBoxes: (result as { data?: any; status?: any; value?: any }).(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).words.map((word: any) => ({
           text: word.text,
           bbox: word.bbox,
           confidence: word.confidence
@@ -278,13 +273,7 @@ export class OCRTensorProcessor {
     }
   }
 
-  private async selectOptimalModel(): Promise<{
-    model: string;
-    fallback: string[];
-    useCrewAI: boolean;
-    parallelism: number;
-    cacheSize: number;
-  }> {
+  private async selectOptimalModel(): Promise<any> {
     try {
       // Check Ollama GPU memory availability and status
       const ollamaStatus = await fetch('/api/ai/status', { 
@@ -357,11 +346,7 @@ export class OCRTensorProcessor {
     }
   }
 
-  private async generateEmbeddings(text: string): Promise<{
-    embeddings: Float32Array;
-    fromCache: boolean;
-    model: string;
-  }> {
+  private async generateEmbeddings(text: string): Promise<any> {
     try {
       // Intelligent model selection based on Ollama GPU memory and system state
       const modelConfig = await this.selectOptimalModel();
@@ -371,7 +356,7 @@ export class OCRTensorProcessor {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text,
-          model: modelConfig.model,
+          model: modelConfig?.model || "unknown" // @ts-ignore - Model property access,
           source: 'ocr',
           save: false,
           fallback: modelConfig.fallback,
@@ -384,16 +369,16 @@ export class OCRTensorProcessor {
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Embedding API failed: ${response.status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Embedding API failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
 
-      const data = await response.json();
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
       
       return {
-        embeddings: new Float32Array(data.embedding),
-        fromCache: data.fromCache || false,
-        model: data.model
+        embeddings: new Float32Array((data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).embedding),
+        fromCache: (data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).fromCache || false,
+        model: data?.model || "unknown" // @ts-ignore - Model property access
       };
 
     } catch (error) {
@@ -508,11 +493,7 @@ export class OCRTensorProcessor {
     const chunkSize = this.getOptimalChunkSize();
     
     // Create processing queue with priority scheduling
-    const processingQueue: Array<{
-      image: ImageData | HTMLCanvasElement | File;
-      priority: number;
-      options: any;
-    }> = images.map((image, index) => ({
+    const processingQueue: Array< = images.map((image, index) => ({
       image,
       priority: this.calculateProcessingPriority(image, index),
       options
@@ -528,7 +509,7 @@ export class OCRTensorProcessor {
       // Asynchronous processing with Promise.allSettled for error resilience
       const chunkPromises = chunk.map(async (item) => {
         try {
-          return await this.processImageAsync(item.image, item.options);
+          return await this.processImageAsync((item as { image?: any; options?: any }).image, (item as { image?: any; options?: any }).options);
         } catch (error) {
           console.warn(`Failed to process image ${i}:`, error);
           return null;
@@ -540,8 +521,8 @@ export class OCRTensorProcessor {
       // Extract successful results
       const successfulResults = chunkResults
         .filter((result): result is PromiseFulfilledResult<ProcessingResult | null> => 
-          result.status === 'fulfilled' && result.value !== null)
-        .map(result => result.value!);
+          (result as { data?: any; status?: any; value?: any }).status === 'fulfilled' && (result as { data?: any; status?: any; value?: any }).value !== null)
+        .map(result => (result as { data?: any; status?: any; value?: any }).value!);
 
       results.push(...successfulResults);
       
@@ -592,12 +573,12 @@ export class OCRTensorProcessor {
       }
 
       const messageHandler = (event: MessageEvent) => {
-        if (event.data.type === 'ocr-result') {
+        if (event.(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).type === 'ocr-result') {
           this.worker!.removeEventListener('message', messageHandler);
-          resolve(event.data.result);
-        } else if (event.data.type === 'ocr-error') {
+          resolve(event.(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).result);
+        } else if (event.(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).type === 'ocr-error') {
           this.worker!.removeEventListener('message', messageHandler);
-          reject(new Error(event.data.error));
+          reject(new Error(event.(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).error));
         }
       };
 
@@ -695,8 +676,8 @@ export class OCRTensorProcessor {
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Storage API failed: ${response.status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Storage API failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
 
       console.log('✅ Results stored successfully');

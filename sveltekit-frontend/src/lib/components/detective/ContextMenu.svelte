@@ -46,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
       const res = await fetch('/api/audit/semantic', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: `Audit evidence ${item.id}` })
+        body: JSON.stringify({ query: `Audit evidence ${(item as { id?: any; fileUrl?: any; fileName?: any }).id}` })
       });
       if (!res.ok) throw new Error('Failed to audit evidence');
       const data = await res.json();
@@ -63,7 +63,7 @@ https://svelte.dev/e/js_parse_error -->
       const res = await fetch('/api/agent/trigger', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ evidenceId: item.id })
+        body: JSON.stringify({ evidenceId: (item as { id?: any; fileUrl?: any; fileName?: any }).id })
       });
       if (!res.ok) throw new Error('Failed to trigger agent review');
     closeMenu();
@@ -82,8 +82,8 @@ https://svelte.dev/e/js_parse_error -->
     // Load available cases
     try {
       const response = await fetch("/api/cases");
-      if (response.ok) {
-        cases = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        cases = await (response as { ok?: any; json?: any }).json();
   }
     } catch (error) {
       console.error("Failed to load cases:", error);
@@ -97,18 +97,18 @@ https://svelte.dev/e/js_parse_error -->
     closeMenu();
   }
   function viewEvidence() {
-    if (item) window.open(`/evidence/${item.id}`, "_blank");
+    if (item) window.open(`/evidence/${(item as { id?: any; fileUrl?: any; fileName?: any }).id}`, "_blank");
     closeMenu();
   }
   function editEvidence() {
-    if (item) window.location.href = `/evidence/${item.id}/edit`;
+    if (item) window.location.href = `/evidence/${(item as { id?: any; fileUrl?: any; fileName?: any }).id}/edit`;
     closeMenu();
   }
   function downloadEvidence() {
-    if (item && item.fileUrl) {
+    if (item && (item as { id?: any; fileUrl?: any; fileName?: any }).fileUrl) {
       const link = document.createElement("a");
-      link.href = item.fileUrl;
-      link.download = item.fileName || "evidence";
+      link.href = (item as { id?: any; fileUrl?: any; fileName?: any }).fileUrl;
+      link.download = (item as { id?: any; fileUrl?: any; fileName?: any }).fileName || "evidence";
       link.click();
   }
     closeMenu();
@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
   function deleteEvidence() {
     if (item && confirm("Are you sure you want to delete this evidence?")) {
       // Implementation for deleting evidence
-      console.log("Delete evidence:", item.id);
+      console.log("Delete evidence:", (item as { id?: any; fileUrl?: any; fileName?: any }).id);
   }
     closeMenu();
   }
@@ -139,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
     menu={menuOpen}
     class="space-y-4"
     style="position:fixed;left:{x}px;top:{y}px;"
-    onkeydown={(e) => {
+    on:keydown={(e) => {
       if (e.key === "Escape") closeMenu();
     }}
     aria-label="Evidence context menu"

@@ -69,8 +69,8 @@ https://svelte.dev/e/expected_token -->
     <div class="gpu-status-overlay">
       <div.Root class="gpu-status-nier-bits-card">
         <div.Header>
-          <div.Title class="gpu-title">🚀 {gpuStatus.gpu}</Card.Title>
-        </Card.Header>
+          <div.Title class="gpu-title">🚀 {gpuStatus.gpu}</div.Title>
+        </div.Header>
         <div.Content>
           <div class="gpu-metrics">
             <div class="metric">
@@ -86,8 +86,8 @@ https://svelte.dev/e/expected_token -->
               <span class="value">{gpuStatus.temperature}</span>
             </div>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </div>
   {/if}
 
@@ -96,11 +96,11 @@ https://svelte.dev/e/expected_token -->
     <div class="welcome-overlay">
       <div.Root class="welcome-nier-bits-card animate-slide-in">
         <div.Header>
-          <div.Title>✨ {title}</Card.Title>
+          <div.Title>✨ {title}</div.Title>
           {#if description}
-            <div.Description>{description}</Card.Description>
+            <div.Description>{description}</div.Description>
           {/if}
-        </Card.Header>
+        </div.Header>
         <div.Content>
           <div class="welcome-features">
             <div class="feature">
@@ -116,8 +116,8 @@ https://svelte.dev/e/expected_token -->
               <span>Vector Search</span>
             </div>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </div>
   {/if}
 

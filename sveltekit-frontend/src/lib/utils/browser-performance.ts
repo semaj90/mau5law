@@ -109,13 +109,7 @@ export class BrowserPerformanceMonitor {
 
 // Browser error handling and reporting
 export class BrowserErrorHandler {
-  private errors: Array<{
-    message: string;
-    source: string;
-    line: number;
-    column: number;
-    timestamp: number;
-  }> = [];
+  private errors: Array< = [];
 
   constructor() {
     this.initializeErrorHandling();

@@ -89,7 +89,7 @@
 				
 				<button 
 					class="collapse-button"
-					onclick={toggleSidebar}
+					on:click={toggleSidebar}
 					aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
 				>
 					{sidebarCollapsed ? '▶' : '◀'}
@@ -285,7 +285,7 @@ text-transform: uppercase {}
 		transform: translateX(2px);
 	}
 	
-	.nav-item.active {
+	.nav-(item as { active?: any }).active {
 		background: var(--yorha-bg-tertiary, #2a2a2a);
 		border-color: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-secondary, #ffd700);

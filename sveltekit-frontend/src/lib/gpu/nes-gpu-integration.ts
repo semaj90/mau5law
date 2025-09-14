@@ -107,7 +107,7 @@ const nesMemory = {
 };
 const webgpuPolyfill = {
   init: () => Promise.resolve(),
-  getDeviceInfo: () => ({ vendor: 'stub', renderer: 'stub', device: {} as GPUDevice })
+  getDeviceInfo: () => ({ vendor: 'stub', renderer: 'stub', device: Record<string, any> as GPUDevice })
 };
 const wasmAccelerator = {
   process: () => Promise.resolve(new ArrayBuffer(1024)),

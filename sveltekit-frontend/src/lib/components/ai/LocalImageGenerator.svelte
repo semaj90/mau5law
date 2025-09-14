@@ -42,7 +42,7 @@ Production-ready with native Windows support
   let selectedImage = $state<ImageGenerationResult | null>(null);
   let generationHistory = $state<ImageGenerationResult[]>([]);
   // Provider status
-  let providerStatus = $state<Map<string, string>>(new Map());
+  let providerStatus = $state<Map<string, string>('')>(new Map());
 
   onMount(() => {
     // Load provider status
@@ -94,31 +94,31 @@ Production-ready with native Windows support
     if (caseId && onImageGenerated) {
       // Create evidence record for the generated image
       const evidence = {
-        id: `generated_${result.id}`,
-        title: `AI Generated: ${result.prompt.substring(0, 50)}...`,
-        description: `Generated image from prompt: ${result.prompt}`,
+        id: `generated_${(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).id}`,
+        title: `AI Generated: ${(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt.substring(0, 50)}...`,
+        description: `Generated image from prompt: ${(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt}`,
         evidenceType: 'image',
-        fileUrl: result.imageUrl,
+        fileUrl: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).imageUrl,
         metadata: {
           aiGenerated: true,
-          provider: result.provider,
-          parameters: result.parameters,
-          generatedAt: result.timestamp
+          provider: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).provider,
+          parameters: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).parameters,
+          generatedAt: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).timestamp
         },
-        tags: ['ai-generated', result.provider, selectedStyle]
+        tags: ['ai-generated', (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).provider, selectedStyle]
       };
       onImageGenerated(result);
     }
   }
 
   async function regenerateWithSeed(result: ImageGenerationResult) {
-    prompt = result.prompt;
-    if (result.metadata.seed !== -1) {
-      seed = result.metadata.seed;
+    prompt = (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt;
+    if ((result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).metadata.seed !== -1) {
+      seed = (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).metadata.seed;
     }
-    selectedStyle = (result.parameters.style as any) || 'realistic';
-    width = result.metadata.size.width;
-    height = result.metadata.size.height;
+    selectedStyle = ((result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).parameters.style as any) || 'realistic';
+    width = (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).metadata.size.width;
+    height = (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).metadata.size.height;
     await generateImage();
   }
 
@@ -169,7 +169,7 @@ Production-ready with native Windows support
         {#each legalPromptTemplates as template}
           <button 
             class="template-btn nes-btn is-primary"
-            onclick={() => prompt = template.prompt}
+            on:click={() => prompt = template.prompt}
           >
             {template.name}
           </button>
@@ -255,7 +255,7 @@ Production-ready with native Windows support
     <div class="generate-section">
       <button 
         class="generate-btn nes-btn is-success"
-        onclick={generateImage}
+        on:click={generateImage}
         disabled={$imageGenerationStore.status.isGenerating || !prompt.trim()}
       >
         {#if $imageGenerationStore.status.isGenerating}
@@ -298,20 +298,20 @@ Production-ready with native Windows support
         <div class="image-actions">
           <button 
             class="nes-btn is-primary"
-            onclick={() => copyPrompt($imageGenerationStore.currentGeneration!.prompt)}
+            on:click={() => copyPrompt($imageGenerationStore.currentGeneration!.prompt)}
           >
             📋 Copy Prompt
           </button>
           <button 
             class="nes-btn is-warning"
-            onclick={() => regenerateWithSeed($imageGenerationStore.currentGeneration!)}
+            on:click={() => regenerateWithSeed($imageGenerationStore.currentGeneration!)}
           >
             🔄 Regenerate
           </button>
           {#if caseId}
             <button 
               class="nes-btn is-success"
-              onclick={() => useImageAsEvidence($imageGenerationStore.currentGeneration!)}
+              on:click={() => useImageAsEvidence($imageGenerationStore.currentGeneration!)}
             >
               📁 Use as Evidence
             </button>
@@ -334,14 +334,14 @@ Production-ready with native Windows support
     <div class="history-header">
       <button 
         class="nes-btn is-normal"
-        onclick={() => showHistory = !showHistory}
+        on:click={() => showHistory = !showHistory}
       >
         📚 History ({generationHistory.length})
       </button>
       {#if generationHistory.length > 0}
         <button 
           class="nes-btn is-error"
-          onclick={() => { 
+          on:click={() => { 
             imageGenerationService.clearHistory(); 
             generationHistory = []; 
           }}
@@ -356,14 +356,14 @@ Production-ready with native Windows support
         {#each generationHistory as result}
           <div class="history-item nes-container is-rounded">
             <img 
-              src={result.imageUrl} 
-              alt={result.prompt}
+              src={(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).imageUrl} 
+              alt={(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt}
               class="history-thumbnail"
-              onclick={() => selectedImage = result}
+              on:click={() => selectedImage = result}
             >
             <div class="history-info">
-              <p class="history-prompt">{result.prompt.substring(0, 50)}...</p>
-              <p class="history-meta">{result.provider} • {new Date(result.timestamp).toLocaleTimeString()}</p>
+              <p class="history-prompt">{(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).prompt.substring(0, 50)}...</p>
+              <p class="history-meta">{(result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).provider} • {new Date((result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).timestamp).toLocaleTimeString()}</p>
             </div>
           </div>
         {/each}
@@ -373,11 +373,11 @@ Production-ready with native Windows support
 
   <!-- Selected Image Modal -->
   {#if selectedImage}
-    <div class="modal-overlay" onclick={() => selectedImage = null}>
-      <div class="modal-content nes-container is-rounded" onclick={(e) => e.stopPropagation()}>
+    <div class="modal-overlay" on:click={() => selectedImage = null}>
+      <div class="modal-content nes-container is-rounded" on:click={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h4>Generated Image Details</h4>
-          <button class="nes-btn is-error" onclick={() => selectedImage = null}>×</button>
+          <button class="nes-btn is-error" on:click={() => selectedImage = null}>×</button>
         </div>
         <div class="modal-body">
           <img src={selectedImage.imageUrl} alt={selectedImage.prompt} class="modal-image">
@@ -390,7 +390,7 @@ Production-ready with native Windows support
           <div class="modal-actions">
             <button 
               class="nes-btn is-primary"
-              onclick={() => {
+              on:click={() => {
                 prompt = selectedImage!.prompt;
                 selectedImage = null;
               }}
@@ -399,14 +399,14 @@ Production-ready with native Windows support
             </button>
             <button 
               class="nes-btn is-warning"
-              onclick={() => regenerateWithSeed(selectedImage!)}
+              on:click={() => regenerateWithSeed(selectedImage!)}
             >
               Regenerate
             </button>
             {#if caseId}
               <button 
                 class="nes-btn is-success"
-                onclick={() => {
+                on:click={() => {
                   useImageAsEvidence(selectedImage!);
                   selectedImage = null;
                 }}

@@ -285,7 +285,7 @@ export class ProductionLogger {
       
     } catch (error: any) {
       console.error('[LOGGER] Failed to generate error summary:', error);
-      return { totalErrors: 0, errorsByService: {}, recentErrors: [] };
+      return { totalErrors: 0, errorsByService: Record<string, any>, recentErrors: [] };
     }
   }
 }

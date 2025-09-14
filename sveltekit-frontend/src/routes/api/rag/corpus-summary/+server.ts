@@ -1,6 +1,6 @@
 
 import { db } from "$lib/server/db";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Fallback raw query (table created dynamically by summarization script)

@@ -17,8 +17,8 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getEmbeddingRepository } from '../../../../lib/server/embedding/embedding-repository';
+import type { RequestHandler } from './$types.js';
+import { getEmbeddingRepository } from '../../../../lib/server/embedding/embedding-repository.js';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 // GET: smoke test description

@@ -18,12 +18,12 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response(JSON.stringify({
       ok: true,
       startNodeId,
-      bestPath: result.bestPath.map(n => ({ id: n.id, type: n.type, title: n.properties.title, importance: n.properties.importance })),
-      value: result.pathValue,
-      explored: result.exploredNodes,
-      ms: result.computationTime,
-      legalAnalysis: result.legalAnalysis,
-      visualizations: result.visualizations,
+      bestPath: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).bestPath.map(n => ({ id: n.id, type: n.type, title: n.properties.title, importance: n.properties.importance })),
+      value: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).pathValue,
+      explored: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).exploredNodes,
+      ms: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).computationTime,
+      legalAnalysis: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).legalAnalysis,
+      visualizations: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).visualizations,
       metrics: planner.getMetrics()
     }), { headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {

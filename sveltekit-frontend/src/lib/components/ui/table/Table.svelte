@@ -2,7 +2,7 @@
   import 'nes.css/css/nes.min.css';
   import { cn } from "$lib/utils";
   
-  let { children, class: className = "" } = $props();
+  let { children, class: className = ""  }: { children, class: className = "" : any } = $props();
 </script>
 
 <div class={cn("relative w-full overflow-auto", className)}>

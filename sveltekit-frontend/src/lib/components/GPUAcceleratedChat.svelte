@@ -95,7 +95,7 @@
       const response = await fetch(`http://localhost:${PRIMARY_PORT}/api/health`, {
         signal: AbortSignal.timeout(1000)
       });
-      if (response.ok) {
+      if ((response as { ok?: any; json?: any }).ok) {
         return PRIMARY_PORT;
       }
     } catch {}
@@ -106,7 +106,7 @@
         const response = await fetch(`http://localhost:${port}/api/health`, {
           signal: AbortSignal.timeout(1000)
         });
-        if (response.ok) {
+        if ((response as { ok?: any; json?: any }).ok) {
           console.log(`Using fallback port ${port}`);
           return port;
         }
@@ -126,10 +126,10 @@
 
   // Handle WebSocket messages
   function handleWebSocketMessage(data: any) {
-    switch (data.type) {
+    switch ((data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).type) {
       case 'connected':
-        clientId = data.clientId;
-        gpuStatus = data.gpuConfig;
+        clientId = (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).clientId;
+        gpuStatus = (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).gpuConfig;
         console.log('Connected with ID:', clientId);
         break;
 
@@ -137,26 +137,26 @@
         const message: GPUChatMessage = {
           id: crypto.randomUUID(),
           role: 'assistant',
-          content: data.response || data.content,
+          content: (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).response || (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).content,
           timestamp: new Date(),
-          metadata: data.metadata
+          metadata: (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).metadata
         };
         messages = [...messages, message];
         isTyping = false;
 
         // TTS if enabled
-        if (voiceEnabled && data.response) {
-          speakText(data.response);
+        if (voiceEnabled && (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).response) {
+          speakText((data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).response);
         }
         break;
 
       case 'typing':
-        isTyping = data.isTyping;
+        isTyping = (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).isTyping;
         break;
 
       case 'user_joined':
         connectedUsers++;
-        showNotification(`User joined room: ${data.clientId}`, 'info');
+        showNotification(`User joined room: ${(data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).clientId}`, 'info');
         break;
 
       case 'user_left':
@@ -169,13 +169,13 @@
         break;
 
       case 'batch_complete':
-        handleBatchResults(data.results);
+        handleBatchResults((data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).results);
         batchMode = false;
         break;
 
       case 'error':
-        console.error('Server error:', data.error);
-        showNotification('Error: ' + data.error, 'error');
+        console.error('Server error:', (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).error);
+        showNotification('Error: ' + (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).error, 'error');
         isTyping = false;
         break;
     }
@@ -216,21 +216,21 @@
           })
         });
 
-        if (!response.ok) throw new Error('API request failed');
+        if (!(response as { ok?: any; json?: any }).ok) throw new Error('API request failed');
 
-        const data = await response.json();
+        const data = await (response as { ok?: any; json?: any }).json();
         const aiMessage: GPUChatMessage = {
           id: crypto.randomUUID(),
           role: 'assistant',
-          content: data.response,
+          content: (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).response,
           timestamp: new Date(),
-          metadata: data.metadata
+          metadata: (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).metadata
         };
 
         messages = [...messages, aiMessage];
 
-        if (voiceEnabled && data.response) {
-          speakText(data.response);
+        if (voiceEnabled && (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).response) {
+          speakText((data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).response);
         }
       } catch (error) {
         console.error('Failed to send message:', error);
@@ -259,14 +259,14 @@
         body: formData
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any }).json();
 
         // Add system message about upload
         messages = [...messages, {
           id: crypto.randomUUID(),
           role: 'system',
-          content: `Document "${file.name}" uploaded and processed. ${result.summary || ''}`,
+          content: `Document "${file.name}" uploaded and processed. ${(result as { summary?: any; content?: any; embeddings?: any }).summary || ''}`,
           timestamp: new Date()
         }];
 
@@ -276,8 +276,8 @@
             type: 'document_upload',
             document: {
               name: file.name,
-              content: result.content,
-              embeddings: result.embeddings
+              content: (result as { summary?: any; content?: any; embeddings?: any }).content,
+              embeddings: (result as { summary?: any; content?: any; embeddings?: any }).embeddings
             }
           }));
         }
@@ -364,11 +364,11 @@
     messages = [...messages, {
       id: crypto.randomUUID(),
       role: 'system',
-      content: `Document analysis complete:\n${data.summary || 'Processing complete'}`,
+      content: `Document analysis complete:\n${(data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).summary || 'Processing complete'}`,
       timestamp: new Date(),
       metadata: {
-        documentId: data.documentId,
-        embeddings: data.embeddings?.length || 0
+        documentId: (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).documentId,
+        embeddings: (data as { type?: any; clientId?: any; gpuConfig?: any; response?: any; content?: any; metadata?: any; isTyping?: any; results?: any; error?: any; summary?: any; documentId?: any; embeddings?: any; model?: any; processingTime?: any; gpuUsed?: any; tensorRT?: any; port?: any }).embeddings?.length || 0
       }
     }];
   }
@@ -392,8 +392,8 @@
   async function checkGPUStatus() {
     try {
       const response = await fetch(`http://localhost:${currentPort}/api/gpu-status`);
-      if (response.ok) {
-        gpuStatus = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        gpuStatus = await (response as { ok?: any; json?: any }).json();
       }
     } catch (error) {
       console.error('Failed to check GPU status:', error);
@@ -404,7 +404,7 @@
   async function performHealthCheck() {
     try {
       const response = await fetch(`http://localhost:${currentPort}/api/health`);
-      const health = await response.json();
+      const health = await (response as { ok?: any; json?: any }).json();
 
       if (!health.healthy) {
         showNotification('System health check failed', 'warning');
@@ -538,16 +538,16 @@
       </label>
 
       <label class="file-upload">
-        <input type="file" onchange={handleFileUpload} accept=".pdf,.txt,.doc,.docx" />
+        <input type="file" on:change={handleFileUpload} accept=".pdf,.txt,.doc,.docx" />
         <span>📎 Upload Document</span>
       </label>
 
       {#if !currentRoom}
-  <button onclick={() => joinRoom('legal-team')} class="join-room-btn">
+  <button on:click={() => joinRoom('legal-team')} class="join-room-btn">
           Join Room
         </button>
       {:else}
-  <button onclick={leaveRoom} class="leave-room-btn">
+  <button on:click={leaveRoom} class="leave-room-btn">
           Leave Room
         </button>
       {/if}
@@ -630,7 +630,7 @@
           {i + 1}. {item}
         </div>
       {/each}
-  <button onclick={processBatch} class="process-batch-btn">
+  <button on:click={processBatch} class="process-batch-btn">
         Process Batch
       </button>
     </div>
@@ -652,7 +652,7 @@
   <div class="input-container">
     <textarea
       bind:value={inputMessage}
-      onkeydown={handleKeyPress}
+      on:keydown={handleKeyPress}
       placeholder={batchMode ? "Type message (Shift+Enter to add to batch)..." : "Type your legal question..."}
       class="message-input"
       rows="3"
@@ -660,13 +660,13 @@
 
     <div class="input-actions">
       {#if batchMode}
-  <button onclick={addToBatch} class="add-batch-btn">
+  <button on:click={addToBatch} class="add-batch-btn">
           ➕ Add to Batch
         </button>
       {/if}
 
       <button
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={!inputMessage.trim() || !isConnected}
         class="send-button"
       >

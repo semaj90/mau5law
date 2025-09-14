@@ -121,7 +121,7 @@ class InMemoryQueue extends EventEmitter {
             await callback({
               content: Buffer.from(JSON.stringify(message)),
               fields: { deliveryTag: Date.now() },
-              properties: {},
+              properties: Record<string, any>,
               ack: () => this.ack(queueName, message),
               nack: () => this.nack(queueName, message)
             });

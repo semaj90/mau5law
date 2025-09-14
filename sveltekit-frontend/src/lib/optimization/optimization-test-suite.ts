@@ -10,8 +10,8 @@ import {
   type EnhancedPerformanceMetrics,
   createEnhancedOptimizationSuite, 
   optimizeForLegalAIProduction 
-} from './index';
-import { createContext7MCPIntegration } from './context7-mcp-integration';
+} from './index.js';
+import { createContext7MCPIntegration } from './context7-mcp-integration.js';
 
 // === Test Result Types ===
 export interface TestResult {
@@ -430,7 +430,7 @@ export class OptimizationTestSuite {
     {
       const start = performance.now();
       try {
-        const { data, stats } = await (this.suite.json as any)?.parseJSON?.(this.test_data.large_json) || { data: {}, stats: {} };
+        const { data, stats } = await (this.suite.json as any)?.parseJSON?.(this.test_data.large_json) || { data: Record<string, any>, stats: Record<string, any> };
         const parse_successful = Array.isArray(data.data) && data.data.length === 1000;
         const reasonable_performance = stats.parse_time_ms < 100; // Should parse 1000 items in < 100ms
         
@@ -464,7 +464,7 @@ export class OptimizationTestSuite {
       const start = performance.now();
       try {
         const test_object = JSON.parse(this.test_data.large_json);
-        const { compressed, stats } = await (this.suite.json as any)?.compressJSON?.(test_object) || { compressed: {}, stats: {} };
+        const { compressed, stats } = await (this.suite.json as any)?.compressJSON?.(test_object) || { compressed: Record<string, any>, stats: Record<string, any> };
         
         const compression_effective = stats.compression_ratio > 1.2; // At least 20% compression
         const compressed_is_smaller = stats.compressed_size < stats.original_size;
@@ -634,13 +634,7 @@ export class OptimizationTestSuite {
   }
 
   // === Performance Benchmarking ===
-  async runPerformanceBenchmarks(): Promise<{
-    vs_code_commands: number;
-    cache_operations_per_second: number;
-    json_parse_speed_mb_per_second: number;
-    docker_optimization_time_ms: number;
-    memory_usage_mb: number;
-  }> {
+  async runPerformanceBenchmarks(): Promise<any> {
     if (!this.suite) {
       this.suite = createEnhancedOptimizationSuite();
       await this.suite.vscode?.initialize?.();
@@ -857,11 +851,7 @@ export function createTestSuite(): OptimizationTestSuite {
   return new OptimizationTestSuite();
 }
 
-export async function runQuickValidation(): Promise<{
-  passed: boolean;
-  summary: string;
-  details: ValidationReport;
-}> {
+export async function runQuickValidation(): Promise<any> {
   const testSuite = createTestSuite();
   const report = await testSuite.runAllTests();
   

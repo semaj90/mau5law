@@ -200,7 +200,7 @@
         <button
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === reportType.id}
-          onclick={() => handleItemSelect(reportType.id)}
+          on:click={() => handleItemSelect(reportType.id)}
           disabled={disabled || isGenerating}
           data-value={reportType.id}
         >
@@ -236,7 +236,7 @@
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === tool.id}
           class:ai-menu__item--disabled={tool.requiresContent && !hasContent}
-          onclick={() => handleItemSelect(tool.id, tool.requiresContent)}
+          on:click={() => handleItemSelect(tool.id, tool.requiresContent)}
           disabled={disabled ||
             isGenerating ||
             (tool.requiresContent && !hasContent)}

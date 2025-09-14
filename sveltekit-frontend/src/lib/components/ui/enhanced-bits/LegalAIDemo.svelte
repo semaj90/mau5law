@@ -116,7 +116,7 @@
     showAnalysis = true;
   }
 
-  function handleSearch(event: CustomEvent<{ query: string; results: VectorSearchResult[] }>) {
+  function handleSearch(event: CustomEvent) {
     console.log('Search performed:', event.detail);
     searchResults = event.detail.results;
   }
@@ -125,11 +125,11 @@
     console.log('Search result selected:', event.detail);
   }
 
-  function handleBoardItemMove(event: CustomEvent<{ item: BoardItem; newX: number; newY: number }>) {
+  function handleBoardItemMove(event: CustomEvent) {
     console.log('Board item moved:', event.detail);
   }
 
-  function handleBoardSave(event: CustomEvent<{ items: BoardItem[]; connections: any[] }>) {
+  function handleBoardSave(event: CustomEvent) {
     console.log('Board saved:', event.detail);
   }
 </script>
@@ -163,7 +163,7 @@
       {#each sampleEvidence as evidence}
         <div
           class="cursor-pointer transform hover:scale-105 transition-transform"
-          onclick={() => handleEvidenceSelect(evidence)}
+          on:click={() => handleEvidenceSelect(evidence)}
         >
           <EvidenceThumbnail
             {evidence}
@@ -222,19 +222,19 @@
   <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">⚡ Quick Actions</h2>
     <div class="flex flex-wrap gap-3">
-      <Button variant="primary" onclick={() => showAnalysis = true}>
+      <Button variant="primary" on:click={() => showAnalysis = true}>
         Run AI Analysis
       </Button>
-      <Button variant="secondary" onclick={() => console.log('Export case')}>
+      <Button variant="secondary" on:click={() => console.log('Export case')}>
         Export Case
       </Button>
-      <Button variant="success" onclick={() => console.log('Generate report')}>
+      <Button variant="success" on:click={() => console.log('Generate report')}>
         Generate Report
       </Button>
-      <Button variant="warning" onclick={() => console.log('Flag critical')}>
+      <Button variant="warning" on:click={() => console.log('Flag critical')}>
         Flag Critical
       </Button>
-      <Button variant="error" onclick={() => console.log('Archive case')}>
+      <Button variant="error" on:click={() => console.log('Archive case')}>
         Archive Case
       </Button>
     </div>

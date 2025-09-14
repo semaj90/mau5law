@@ -1,10 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   // Convert to Svelte 5 runes pattern
-  let { name = '', className = '' } = $props<{
-    name?: string;
-    className?: string;
-  }>();
+  let { name = '', className = '' } = $props();
 </script>
 
 <!-- Minimal shim for lucide-svelte Icon used during Svelte 5 migration. This avoids $$props usage. -->

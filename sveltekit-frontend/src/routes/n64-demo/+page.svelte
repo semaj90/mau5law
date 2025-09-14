@@ -308,7 +308,7 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
                   variant="outline" 
                   size="sm"
                   disabled={!isInitialized || isProcessing}
-                  onclick={() => processDocument(document)}
+                  on:click={() => processDocument(document)}
                   class="ml-2"
                 >
                   {isProcessing ? '⚡' : '🚀'} Process
@@ -317,10 +317,7 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
             {/each}
           </div>
 
-          <button class="nes-btn is-primary"
-            disabled={!isInitialized || isProcessing}
-            onclick={processAllDocuments}
-            class="w-full"
+          <button class="nes-btn is-primary w-full"
           >
             {isProcessing ? '⚡ Processing...' : '🎮 Process All Documents'}
           </button>
@@ -387,14 +384,14 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
             {#each processingResults as result}
               <div class="border border-gray-600/30 rounded p-4 bg-gray-800/30">
                 <div class="flex justify-between items-center mb-3">
-                  <h4 class="text-white font-mono">{result.documentId}</h4>
+                  <h4 class="text-white font-mono">{(result as { documentId?: any; totalTime?: any; compressionAchieved?: any; stages?: any }).documentId}</h4>
                   <div class="text-green-400 font-mono text-sm">
-                    {formatDuration(result.totalTime)} • {result.compressionAchieved.toFixed(1)}:1 compression
+                    {formatDuration((result as { documentId?: any; totalTime?: any; compressionAchieved?: any; stages?: any }).totalTime)} • {(result as { documentId?: any; totalTime?: any; compressionAchieved?: any; stages?: any }).compressionAchieved.toFixed(1)}:1 compression
                   </div>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
-                  {#each result.stages as stage}
+                  {#each (result as { documentId?: any; totalTime?: any; compressionAchieved?: any; stages?: any }).stages as stage}
                     <div class="bg-gray-700/50 p-2 rounded border border-gray-600/20">
                       <div class="text-cyan-400 font-mono mb-1">{stage.name}</div>
                       <div class="text-gray-300">

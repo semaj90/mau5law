@@ -460,21 +460,21 @@
         <div class="orchestration-controls">
           <button 
             class="nes-btn is-primary"
-            onclick={processWithGemma}
+            on:click={processWithGemma}
           >
             Process Legal Query
           </button>
           
           <button 
             class="nes-btn is-warning"
-            onclick={clearOrchestrationLog}
+            on:click={clearOrchestrationLog}
           >
             Clear Log
           </button>
           
           <button 
             class="nes-btn is-success"
-            onclick={runSystemValidation}
+            on:click={runSystemValidation}
           >
             Validate Systems
           </button>
@@ -551,16 +551,15 @@
               
               <div class="validation-details">
                 {#each $systemValidation.results as result}
-                  <div class="validation-item" class:success={result.success}>
-                    <span class="test-name">{result.testName}</span>
-                    <span class="test-time">{result.executionTime.toFixed(2)}ms</span>
-                    <span class="test-status">{result.success ? '✅' : '❌'}</span>
+                  <div class="validation-item" class:success={(result as { success?: any; testName?: any; executionTime?: any }).success}>
+                    <span class="test-name">{(result as { success?: any; testName?: any; executionTime?: any }).testName}</span>
+                    <span class="test-time">{(result as { success?: any; testName?: any; executionTime?: any }).executionTime.toFixed(2)}ms</span>
+                    <span class="test-status">{(result as { success?: any; testName?: any; executionTime?: any }).success ? '✅' : '❌'}</span>
                   </div>
                 {/each}
               </div>
             </div>
           {/if}
-        {/if}
       </section>
     </div>
   {/if}
@@ -995,7 +994,7 @@
     border-left: 4px solid;
   }
   
-  .validation-item.success {
+  .validation-(item as { success?: any }).success {
     border-left-color: #32CD32;
   }
   

@@ -4,8 +4,8 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db/drizzle';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/db/unified-client';
 import { sql } from 'drizzle-orm';
 import * as schema from '$lib/server/db/schema-postgres';
 import { redisService } from '$lib/server/redis-service';
@@ -28,9 +28,9 @@ export const GET: RequestHandler = async ({ url }) => {
   } = {
     timestamp: new Date().toISOString(),
     testType,
-    results: {},
+    results: Record<string, any>,
     errors: [],
-    performance: {},
+    performance: Record<string, any>,
   };
 
   try {
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const stats =
           typeof (redisService as any).getStats === 'function'
             ? (redisService as any).getStats()
-            : {};
+            : Record<string, any>;
 
         results.results.redis = {
           status: 'connected',
@@ -227,7 +227,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: 'error',
         timestamp: new Date().toISOString(),
         error: msg,
-        results: {},
+        results: Record<string, any>,
         errors: [msg],
         performance: { total: Date.now() - startTime },
       },

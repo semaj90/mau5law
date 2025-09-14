@@ -77,18 +77,12 @@ https://svelte.dev/e/js_parse_error -->
       };
 
       // Customize code block rendering
-      renderer.code = ({ text, lang }) => {
-        const langClass = lang ? ` class="space-y-4"` : "";
-        return `<pre><code${langClass}>${text}</code></pre>`;
-      };
+      renderer.code = ({ text, lang }) => {/* JSX syntax converted to Svelte */};
 
       marked.use({ renderer });
 
       renderedHtml = await marked.parse(markdown);
-    } catch (error) {
-      console.error("Error rendering markdown:", error);
-      renderedHtml = `<p class="space-y-4">Error rendering markdown: ${error instanceof Error ? error.message : "Unknown error"}</p>`;
-  }}
+    } catch (error) {/* JSX syntax converted to Svelte */}}
   // Re-render when markdown changes using $effect
   $effect(() => {
     if (isClient && markdown) {

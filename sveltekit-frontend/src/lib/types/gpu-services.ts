@@ -108,8 +108,7 @@ export interface BatchGPUResult {
 	successful: number;
 	failed: number;
 	results: GPUResult[];
-	errors: Array<{ error: string }>;
-}
+	errors: Array<any>
 
 // Legal AI Specific Types
 export interface LegalEmbeddingTask extends GPUTask {

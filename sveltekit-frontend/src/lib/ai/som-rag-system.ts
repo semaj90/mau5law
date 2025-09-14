@@ -414,7 +414,7 @@ export class SelfOrganizingMapRAG {
     console.log(`🔍 Performing SOM-enhanced semantic search...`);
 
     // Find best matching SOM nodes
-    const candidateNodes: Array<{ node: SOMNode; distance: number }> = [];
+    const candidateNodes: Array< = [];
 
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
@@ -438,7 +438,7 @@ export class SelfOrganizingMapRAG {
     });
 
     // Score documents using boolean patterns and legal context
-    const scoredDocuments: Array<{ doc: DocumentEmbedding; score: number }> =
+    const scoredDocuments: Array< =
       [];
 
     candidateDocuments.forEach((docId) => {
@@ -474,7 +474,7 @@ export class SelfOrganizingMapRAG {
 
     // Sort by score and return top results
     scoredDocuments.sort((a, b) => b.score - a.score);
-    return scoredDocuments.slice(0, limit).map((item) => item.doc);
+    return scoredDocuments.slice(0, limit).map((item) => (item as { doc?: any }).doc);
   }
 
   /**
@@ -644,22 +644,8 @@ export class SelfOrganizingMapRAG {
   /**
    * Get cluster visualization data for UI
    */
-  getVisualizationData(): Array<{
-    id: string;
-    position: { x: number; y: number };
-    cluster: number;
-    confidence: number;
-    documents: number;
-    evidenceType: string;
-  }> {
-    const vizData: Array<{
-      id: string;
-      position: { x: number; y: number };
-      cluster: number;
-      confidence: number;
-      documents: number;
-      evidenceType: string;
-    }> = [];
+  getVisualizationData(): Array< {
+    const vizData: Array< = [];
 
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
@@ -803,11 +789,11 @@ export class SelfOrganizingMapRAG {
     const caseTypes = new Set<string>();
 
     results.forEach((result: any) => {
-      if (result.document?.metadata?.type) {
-        evidenceTypes.add(result.document.metadata.type);
+      if ((result as { document?: any }).document?.metadata?.type) {
+        evidenceTypes.add((result as { document?: any }).document.metadata.type);
       }
-      if (result.document?.metadata?.practiceArea) {
-        result.document.metadata.practiceArea.forEach((area: string) => {
+      if ((result as { document?: any }).document?.metadata?.practiceArea) {
+        (result as { document?: any }).document.metadata.practiceArea.forEach((area: string) => {
           caseTypes.add(area);
         });
       }

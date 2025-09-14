@@ -130,8 +130,7 @@
     border-radius: 0.375rem;
   }
 
-  .form-field input[aria-invalid="true"],
-  .form-field select[aria-invalid="true"] {
+  .form-field input[aria-invalid="true"] {
     border-color: #dc3545;
   }
 

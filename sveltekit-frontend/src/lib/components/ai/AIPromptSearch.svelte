@@ -35,9 +35,9 @@ https://svelte.dev/e/js_parse_error -->
   <ul class="container mx-auto px-4">
     {#each results as item}
       <li class="container mx-auto px-4">
-        <div class="container mx-auto px-4">{item.prompt}</div>
-        <div class="container mx-auto px-4">{item.response}</div>
-        <div class="container mx-auto px-4">{item.timestamp}</div>
+        <div class="container mx-auto px-4">{(item as { prompt?: any; response?: any; timestamp?: any }).prompt}</div>
+        <div class="container mx-auto px-4">{(item as { prompt?: any; response?: any; timestamp?: any }).response}</div>
+        <div class="container mx-auto px-4">{(item as { prompt?: any; response?: any; timestamp?: any }).timestamp}</div>
       </li>
     {/each}
   </ul>

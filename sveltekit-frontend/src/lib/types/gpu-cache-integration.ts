@@ -313,12 +313,7 @@ export interface ResponseMetadata {
 export interface BatchOperationResult {
   successful: number;
   failed: number;
-  results: Array<{
-    key: string;
-    success: boolean;
-    data?: any;
-    error?: string;
-  }>;
+  results: Array<any>;
   performance: PerformanceMetrics;
 }
 

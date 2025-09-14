@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
       queryTime: searchResponse.queryTime,
       timestamp: new Date().toISOString(),
       searchMetadata: {
-        embeddingModel: searchResponse.model,
+        embeddingModel: searchResponse?.model || "unknown" // @ts-ignore - Model property access,
         vectorStore: "qdrant",
         searchOptions,
       },

@@ -101,7 +101,7 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Input Configuration -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Test Configuration</h3>
       </div>
@@ -130,10 +130,10 @@
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- AI Assistant Component -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">AI Assistant with Embedding Integration</h3>
       </div>
@@ -144,29 +144,27 @@
           {evidenceText}
         />
       </div>
-    </NesCard>
+    </div>
   </div>
 
   <!-- API Test Section -->
-  <NesCard class="mt-6">
+  <div class="mt-6 nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Direct API Testing</h3>
     </div>
     <div class="yorha-panel-content">
       <div class="space-y-4">
         <Button
-          onclick={testEmbeddingAPI}
+          on:click={testEmbeddingAPI}
           class="mr-2 bits-btn bits-btn"
         >
-          Test Embedding API
-        </button>
+Test Embedding API
 
         <Button class="bits-btn"
-          onclick={testEmbeddingService}
+          on:click={testEmbeddingService}
           variant="outline"
         >
-          Test Embedding Service
-        </button>
+Test Embedding Service
 
         {#if apiTestResult}
           <div class="mt-4 p-4 bg-gray-50 rounded">
@@ -176,7 +174,7 @@
         {/if}
       </div>
     </div>
-  </NesCard>
+  </div>
 </div>
 
 <style>

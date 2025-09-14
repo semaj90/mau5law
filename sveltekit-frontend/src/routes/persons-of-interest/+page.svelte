@@ -108,9 +108,9 @@
   async function loadPersonsFromAPI() {
     try {
       const response = await fetch('/api/persons-of-interest');
-      if (response.ok) {
-        const result = await response.json();
-        const apiPersons = result.success ? result.data : [];
+      if ((response as { ok?: any; json?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any }).json();
+        const apiPersons = (result as { success?: any; data?: any }).success ? (result as { success?: any; data?: any }).data : [];
         // Transform API data to FugitiveDex format
         const transformedPersons = apiPersons.map((person: any) => ({
           id: (apiPersons.indexOf(person) + 1).toString().padStart(3, '0'),
@@ -197,7 +197,7 @@
         {#each persons as person (person.id)}
           <button
             class="person-entry {selectedPerson.id === person.id ? 'selected' : ''}"
-            onclick={() => selectedPerson = person}
+            on:click={() => selectedPerson = person}
           >
             <span class="person-number">#{person.id}</span>
             <span class="person-name">{person.alias}</span>

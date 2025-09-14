@@ -25,8 +25,8 @@ export {
 } from 'drizzle-orm/pg-core';
 
 // Load schema pieces (many routes import tables directly from these)
-import * as pgSchema from './db/schema-postgres';
-import * as domainSchema from './schema';
+import * as pgSchema from './db/schema-postgres.js';
+import * as domainSchema from './schema.js';
 
 const CONNECTION = process.env.DATABASE_URL || '';
 
@@ -50,7 +50,7 @@ export { sql, eq, and, or, ilike, like, desc, asc, count };
 export const helpers = { eq, and, or, ilike, like, desc, asc, count } as const;
 
 // Re-export commonly referenced tables to preserve existing import sites
-export { users, cases, evidence, legalDocuments, personsOfInterest } from './db/schema-postgres';
-export { legalDocuments as legal_documents } from './db/schema-postgres';
-export { legalDocuments as legal_documents_v2 } from './schema';
-export * as legacySchema from './schema';
+export { users, cases, evidence, legalDocuments, personsOfInterest } from './db/schema-postgres.js';
+export { legalDocuments as legal_documents } from './db/schema-postgres.js';
+export { legalDocuments as legal_documents_v2 } from './schema.js';
+export * as legacySchema from './schema.js';

@@ -11,7 +11,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
 import { db } from '$lib/server/db/drizzle';
 import { sql } from 'drizzle-orm';
@@ -73,8 +73,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         const result = await processDocument(docData, user.id);
         results.push(result);
 
-        if (result.success) {
-          totalChunks += result.chunksCreated;
+        if ((result as { success?: any; chunksCreated?: any }).success) {
+          totalChunks += (result as { success?: any; chunksCreated?: any }).chunksCreated;
           successCount++;
         } else {
           failureCount++;
@@ -121,12 +121,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 /**
  * Process a single document for indexing
  */
-async function processDocument(docData: any, userId: string): Promise<{
-  success: boolean;
-  documentId: string;
-  chunksCreated: number;
-  error?: string;
-}> {
+async function processDocument(docData: any, userId: string): Promise<any> {
   // Input validation
   const requiredFields = ['title', 'documentType', 'content'];
   for (const field of requiredFields) {

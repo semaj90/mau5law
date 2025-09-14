@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { cache } from '$lib/server/cache/redis';
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager';
@@ -272,7 +272,7 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         totalResults: 0,
         searchTime,
-        query: {},
+        query: Record<string, any>,
         error: error.message || 'Unified search failed'
       }
     }, { status: 500 });

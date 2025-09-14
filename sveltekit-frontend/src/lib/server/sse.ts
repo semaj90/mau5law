@@ -1,4 +1,4 @@
-import { logger } from './logger';
+import { logger } from './logger.js';
 import stream from "stream";
 
 // lib/server/sse.ts

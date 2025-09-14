@@ -16,7 +16,7 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Elemental Awareness API - YOLO-style hover analysis
@@ -54,13 +54,13 @@ Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|proc
       })
     });
 
-    if (!response.ok) {
-      const text = await response.text().catch(() => '');
-      console.error('Remote analyze service returned non-OK:', response.status, text);
+    if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
+      const text = await (response as { ok?: any; text?: any; status?: any; json?: any }).text().catch(() => '');
+      console.error('Remote analyze service returned non-OK:', (response as { ok?: any; text?: any; status?: any; json?: any }).status, text);
       return json({ error: 'Remote analyze service failed' }, { status: 502 });
     }
 
-    const result = await response.json().catch(() => null);
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json().catch(() => null);
 
     // Normalize result into a JS object
     let analysis: any = null;
@@ -76,16 +76,16 @@ Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|proc
       } catch {
         analysis = { raw: result };
       }
-    } else if (result.response) {
-      // result.response might be a JSON string or already an object
-      if (typeof result.response === 'string') {
+    } else if ((result as { response?: any }).response) {
+      // (result as { response?: any }).response might be a JSON string or already an object
+      if (typeof (result as { response?: any }).response === 'string') {
         try {
-          analysis = JSON.parse(result.response);
+          analysis = JSON.parse((result as { response?: any }).response);
         } catch {
-          analysis = { response: result.response };
+          analysis = { response: (result as { response?: any }).response };
         }
       } else {
-        analysis = result.response;
+        analysis = (result as { response?: any }).response;
       }
     } else {
       analysis = result;

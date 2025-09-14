@@ -52,15 +52,9 @@
   let isDragging = $state(false);
   let draggedItem: BoardItem | null = $state(null);
   let dragOffset = $state({ x: 0, y: 0 });
-  let connections = $state<Array<{from: string, to: string, type: string}>>([]);
+  let connections = $state<any[]>([])([]);
 
-  const dispatch = createEventDispatcher<{
-    itemMove: { item: BoardItem; newX: number; newY: number };
-    itemSelect: { item: BoardItem };
-    itemConnect: { from: BoardItem; to: BoardItem };
-    boardSave: { items: BoardItem[]; connections: typeof connections };
-    layoutChange: { mode: string };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Board styling based on background theme
   let boardClasses = $derived(() => {
@@ -107,8 +101,8 @@
 
     const rect = boardElement.getBoundingClientRect();
     dragOffset = {
-      x: event.clientX - rect.left - item.x,
-      y: event.clientY - rect.top - item.y
+      x: event.clientX - rect.left - (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).x,
+      y: event.clientY - rect.top - (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).y
     };
 
     dispatch('itemSelect', { item });
@@ -222,7 +216,7 @@
         <button
           class="nes-btn is-small"
           class:is-primary={layoutMode === 'freeform'}
-          onclick={() => setLayoutMode('freeform')}
+          on:click={() => setLayoutMode('freeform')}
           title="Freeform Layout"
         >
           <Layout class="w-4 h-4" />
@@ -230,7 +224,7 @@
         <button
           class="nes-btn is-small"
           class:is-primary={layoutMode === 'grid'}
-          onclick={() => setLayoutMode('grid')}
+          on:click={() => setLayoutMode('grid')}
           title="Grid Layout"
         >
           <Grid class="w-4 h-4" />
@@ -239,24 +233,24 @@
 
       <!-- Zoom Controls -->
       <div class="flex gap-1">
-        <button class="nes-btn is-small" onclick={zoomOut} title="Zoom Out">-</button>
+        <button class="nes-btn is-small" on:click={zoomOut} title="Zoom Out">-</button>
         <span class="px-2 py-1 text-sm bg-gray-100 rounded">
           {Math.round(zoomLevel * 100)}%
         </span>
-        <button class="nes-btn is-small" onclick={zoomIn} title="Zoom In">+</button>
-        <button class="nes-btn is-small" onclick={resetZoom} title="Reset Zoom">
+        <button class="nes-btn is-small" on:click={zoomIn} title="Zoom In">+</button>
+        <button class="nes-btn is-small" on:click={resetZoom} title="Reset Zoom">
           <RotateCcw class="w-4 h-4" />
         </button>
       </div>
 
       <!-- Board Actions -->
-      <button class="nes-btn is-small" onclick={autoArrange} title="Auto Arrange">
+      <button class="nes-btn is-small" on:click={autoArrange} title="Auto Arrange">
         <Layout class="w-4 h-4" />
       </button>
-      <button class="nes-btn is-small is-success" onclick={saveBoard} title="Save Board">
+      <button class="nes-btn is-small is-success" on:click={saveBoard} title="Save Board">
         <Save class="w-4 h-4" />
       </button>
-      <button class="nes-btn is-small" onclick={toggleFullscreen} title="Fullscreen">
+      <button class="nes-btn is-small" on:click={toggleFullscreen} title="Fullscreen">
         {#if isFullscreen}
           <Minimize2 class="w-4 h-4" />
         {:else}
@@ -300,36 +294,36 @@
     {/if}
 
     <!-- Board Items -->
-    {#each items as item (item.id)}
+    {#each items as item ((item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).id)}
       <div
         class="absolute cursor-move transition-all duration-200 hover:scale-105 hover:z-20"
-        class:opacity-75={isDragging && draggedItem?.id === item.id}
+        class:opacity-75={isDragging && draggedItem?.id === (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).id}
         style="
-          left: {item.x}px;
-          top: {item.y}px;
-          width: {item.width || 'auto'};
-          height: {item.height || 'auto'};
+          left: {(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).x}px;
+          top: {(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).y}px;
+          width: {(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).width || 'auto'};
+          height: {(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).height || 'auto'};
         "
         onmousedown={(e) => handleDragStart(e, item)}
         role="button"
         tabindex="0"
       >
         <!-- Item Content Slot -->
-        {#if item.type === 'evidence'}
+        {#if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).type === 'evidence'}
           <div class="nes-container is-rounded p-3 bg-white shadow-lg min-w-[180px]">
-            <div class="font-bold text-sm mb-2">{item.data.title || 'Evidence'}</div>
-            <div class="text-xs text-gray-600">{item.data.type || 'Document'}</div>
-            {#if item.data.confidence}
+            <div class="font-bold text-sm mb-2">{(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.title || 'Evidence'}</div>
+            <div class="text-xs text-gray-600">{(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.type || 'Document'}</div>
+            {#if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.confidence}
               <div class="mt-2 text-xs">
-                Confidence: {Math.round(item.data.confidence * 100)}%
+                Confidence: {Math.round((item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.confidence * 100)}%
               </div>
             {/if}
           </div>
-        {:else if item.type === 'note'}
+        {:else if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).type === 'note'}
           <div class="nes-container is-rounded p-3 bg-yellow-100 shadow-lg min-w-[160px]">
-            <div class="text-sm">{item.data.text || 'Note'}</div>
+            <div class="text-sm">{(item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).data.text || 'Note'}</div>
           </div>
-        {:else if item.type === 'marker'}
+        {:else if (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).type === 'marker'}
           <div class="w-4 h-4 rounded-full bg-red-500 border-2 border-white shadow-lg">
           </div>
         {:else}
@@ -342,7 +336,7 @@
         {/if}
 
         <!-- Item Selection Indicator -->
-        {#if draggedItem?.id === item.id}
+        {#if draggedItem?.id === (item as { x?: any; y?: any; id?: any; width?: any; height?: any; type?: any; data?: any }).id}
           <div class="absolute -inset-1 border-2 border-blue-500 rounded pointer-events-none"></div>
         {/if}
       </div>

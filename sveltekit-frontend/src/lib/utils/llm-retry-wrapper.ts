@@ -104,12 +104,12 @@ export class OllamaRetryWrapper {
 
           clearTimeout(timeoutId);
 
-          if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Ollama API error (${response.status}): ${errorText}`);
+          if (!(response as { ok?: any; text?: any; status?: any; json?: any; body?: any }).ok) {
+            const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any; body?: any }).text();
+            throw new Error(`Ollama API error (${(response as { ok?: any; text?: any; status?: any; json?: any; body?: any }).status}): ${errorText}`);
           }
 
-          const data = await response.json();
+          const data = await (response as { ok?: any; text?: any; status?: any; json?: any; body?: any }).json();
           const duration = Date.now() - startTime;
 
           // Update success metrics
@@ -122,13 +122,13 @@ export class OllamaRetryWrapper {
               model,
               duration,
               promptLength: prompt.length,
-              tokensUsed: data.eval_count || 0
+              tokensUsed: (data as { eval_count?: any; response?: any; models?: any }).eval_count || 0
             });
           }
 
           return {
-            response: data.response || '',
-            tokensUsed: data.eval_count || 0,
+            response: (data as { eval_count?: any; response?: any; models?: any }).response || '',
+            tokensUsed: (data as { eval_count?: any; response?: any; models?: any }).eval_count || 0,
             model,
             duration,
             success: true
@@ -170,19 +170,19 @@ export class OllamaRetryWrapper {
   /**
    * Health check for Ollama service
    */
-  async healthCheck(): Promise<{ status: 'healthy' | 'degraded' | 'critical', details: any }> {
+  async healthCheck(): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
 
-      if (!response.ok) {
-        throw new Error(`Health check failed: ${response.status}`);
+      if (!(response as { ok?: any; text?: any; status?: any; json?: any; body?: any }).ok) {
+        throw new Error(`Health check failed: ${(response as { ok?: any; text?: any; status?: any; json?: any; body?: any }).status}`);
       }
 
-      const data = await response.json();
-      const models = data.models || [];
+      const data = await (response as { ok?: any; text?: any; status?: any; json?: any; body?: any }).json();
+      const models = (data as { eval_count?: any; response?: any; models?: any }).models || [];
 
       // Check if required models are available
       const requiredModels = Object.values(LOCAL_LLM_CONFIG.OLLAMA_MODELS);
@@ -263,7 +263,7 @@ export async function promptLLM(
     ...options
   });
 
-  return result.response;
+  return (result as { response?: any }).response;
 }
 
 /**
@@ -295,11 +295,11 @@ export async function* streamLLM(
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Streaming failed: ${response.status}`);
+    if (!(response as { ok?: any; text?: any; status?: any; json?: any; body?: any }).ok) {
+      throw new Error(`Streaming failed: ${(response as { ok?: any; text?: any; status?: any; json?: any; body?: any }).status}`);
     }
 
-    const reader = response.body?.getReader();
+    const reader = (response as { ok?: any; text?: any; status?: any; json?: any; body?: any }).body?.getReader();
     if (!reader) throw new Error('No response body');
 
     const decoder = new TextDecoder();
@@ -314,8 +314,8 @@ export async function* streamLLM(
       for (const line of lines) {
         try {
           const data = JSON.parse(line);
-          if (data.response) {
-            yield data.response;
+          if ((data as { eval_count?: any; response?: any; models?: any }).response) {
+            yield (data as { eval_count?: any; response?: any; models?: any }).response;
           }
         } catch (error: any) {
           // Skip malformed JSON

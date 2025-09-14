@@ -56,11 +56,10 @@ https://svelte.dev/e/js_parse_error -->
     height?: number;
     readOnly?: boolean;
   } = $props();
-  let canvasElement = $state<HTMLCanvasElement;
-  let canvas: fabric.Canvas | null >(null);
+  let canvasElement = $state<HTMLCanvasElementlet canvas: fabric.Canvas | null>(null)(null);
   let lokiDb = $state<Loki | null >(null);
-  let canvasCollection = $state<Collection<any> | null >(null);
-  let searchEngine = $state<Fuse<any> | null >(null);
+  let canvasCollection = $state<Collection<any>(null) | null >(null);
+  let searchEngine = $state<Fuse<any>(null) | null >(null);
 
   // Canvas state management
   const canvasState = writable({
@@ -770,8 +769,8 @@ https://svelte.dev/e/js_parse_error -->
 
       // Fallback to server
       const response = await fetch(`/api/canvas/${caseId}`);
-      if (response.ok) {
-        const serverData = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const serverData = await (response as { ok?: any; json?: any }).json();
         canvas?.loadFromJSON(serverData.data, () => {
           canvas?.renderAll();
         });
@@ -905,8 +904,8 @@ https://svelte.dev/e/js_parse_error -->
     // Implement clipboard paste functionality
     navigator.clipboard.read().then((items) => {
       for (const item of items) {
-        if (item.types.includes("image/png")) {
-          item.getType("image/png").then((blob) => {
+        if ((item as { types?: any; getType?: any }).types.includes("image/png")) {
+          (item as { types?: any; getType?: any }).getType("image/png").then((blob) => {
             const reader = new FileReader();
             reader.onload = async (e) => {
               const imgUrl = e.target?.result as string;
@@ -935,11 +934,9 @@ https://svelte.dev/e/js_parse_error -->
   function exportCanvas(format: "png" | "svg" | "json") {
     if (!canvas) return;
   let dataUrl = $state<string;
-  let filename = $state<string;
-
-    switch (format) {
+  let filename = $state<stringswitch (format) {
       case "png":
-        dataUrl >(canvas.toDataURL({
+        dataUrl | null>(null)(canvas.toDataURL({
           format: "png",
           quality: 1,
           multiplier: 1,
@@ -971,7 +968,7 @@ https://svelte.dev/e/js_parse_error -->
     }
 
     const results = searchEngine.search(query);
-    searchResults = results.map((result) => result.item);
+    searchResults = results.map((result) => (result as { item?: any }).item);
   }
 
   // Generate AI summary for canvas
@@ -1072,14 +1069,14 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => saveCanvas()}
+        on:click={() => saveCanvas()}
         title="Save Canvas"
       >
         <Save size="18" />
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => undo()}
+        on:click={() => undo()}
         disabled={!state.canUndo}
         title="Undo"
       >
@@ -1087,7 +1084,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => redo()}
+        on:click={() => redo()}
         disabled={!state.canRedo}
         title="Redo"
       >
@@ -1103,7 +1100,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="mx-auto px-4 max-w-7xl"
           class:active={state.tool === tool.id}
-          onclick={() => setTool(tool.id)}
+          on:click={() => setTool(tool.id)}
           title={tool.label}
         >
           <svelte:component this={tool.icon} size="18" />
@@ -1115,18 +1112,18 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Canvas Controls -->
     <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => zoomOut()} title="Zoom Out">
+      <button class="mx-auto px-4 max-w-7xl" on:click={() => zoomOut()} title="Zoom Out">
         <ZoomOut size="18" />
       </button>
       <span class="mx-auto px-4 max-w-7xl">{state.zoom}%</span>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => zoomIn()} title="Zoom In">
+      <button class="mx-auto px-4 max-w-7xl" on:click={() => zoomIn()} title="Zoom In">
         <ZoomIn size="18" />
       </button>
 
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.showGrid}
-        onclick={() => toggleGrid()}
+        on:click={() => toggleGrid()}
         title="Toggle Grid"
       >
         <Grid size="18" />
@@ -1137,13 +1134,13 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Object Actions -->
     <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => copySelected()} title="Copy">
+      <button class="mx-auto px-4 max-w-7xl" on:click={() => copySelected()} title="Copy">
         <Copy size="18" />
       </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => pasteClipboard()} title="Paste">
+      <button class="mx-auto px-4 max-w-7xl" on:click={() => pasteClipboard()} title="Paste">
         <Copy size="18" />
       </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => deleteSelected()} title="Delete">
+      <button class="mx-auto px-4 max-w-7xl" on:click={() => deleteSelected()} title="Delete">
         <Trash2 size="18" />
       </button>
     </div>
@@ -1154,7 +1151,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => generateAISummary()}
+        on:click={() => generateAISummary()}
         title="Generate AI Summary"
       >
         <FileText size="18" />
@@ -1169,9 +1166,9 @@ https://svelte.dev/e/js_parse_error -->
         <Download size="18" />
       </button>
       <div class="mx-auto px-4 max-w-7xl">
-        <button onclick={() => exportCanvas("png")}>Export as PNG</button>
-        <button onclick={() => exportCanvas("svg")}>Export as SVG</button>
-        <button onclick={() => exportCanvas("json")}>Export as JSON</button>
+        <button on:click={() => exportCanvas("png")}>Export as PNG</button>
+        <button on:click={() => exportCanvas("svg")}>Export as SVG</button>
+        <button on:click={() => exportCanvas("json")}>Export as JSON</button>
       </div>
     </div>
 
@@ -1193,8 +1190,7 @@ https://svelte.dev/e/js_parse_error -->
           <input
             type="text"
             placeholder="Search evidence..."
-            bind:value={state.searchQuery}
-            input={(e) =>
+            bind:value={state.searchQuery} on:input={(e) =>
               searchEvidence((e.target as HTMLInputElement).value)}
             class="mx-auto px-4 max-w-7xl"
           />
@@ -1205,7 +1201,7 @@ https://svelte.dev/e/js_parse_error -->
           {#each state.searchQuery ? searchResults : evidenceItems as evidence}
             <div
               class="mx-auto px-4 max-w-7xl"
-              onclick={() => addEvidenceToCanvas(evidence)}
+              on:click={() => addEvidenceToCanvas(evidence)}
               keydown={(e) =>
                 e.key === "Enter" && addEvidenceToCanvas(evidence)}
               role="button"
@@ -1223,28 +1219,28 @@ https://svelte.dev/e/js_parse_error -->
         <div class="mx-auto px-4 max-w-7xl">
           <button
             class="mx-auto px-4 max-w-7xl"
-            onclick={() => addTimelineToCanvas()}
+            on:click={() => addTimelineToCanvas()}
           >
             <Clock size="16" class="mx-auto px-4 max-w-7xl" />
             Timeline
           </button>
           <button
             class="mx-auto px-4 max-w-7xl"
-            onclick={() => addPersonToCanvas()}
+            on:click={() => addPersonToCanvas()}
           >
             <Users size="16" class="mx-auto px-4 max-w-7xl" />
             Person
           </button>
           <button
             class="mx-auto px-4 max-w-7xl"
-            onclick={() => addLocationToCanvas()}
+            on:click={() => addLocationToCanvas()}
           >
             <MapPin size="16" class="mx-auto px-4 max-w-7xl" />
             Location
           </button>
           <button
             class="mx-auto px-4 max-w-7xl"
-            onclick={() => setTool("note")}
+            on:click={() => setTool("note")}
           >
             <FileText size="16" class="mx-auto px-4 max-w-7xl" />
             Note

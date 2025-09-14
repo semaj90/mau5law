@@ -78,7 +78,7 @@
       createdAt: new Date(),
       updatedAt: new Date(),
     }}
-    onsubmit={handleSubmit}
+    on:submit={handleSubmit}
     on:cancel={handleCancel}
   />
 </div>

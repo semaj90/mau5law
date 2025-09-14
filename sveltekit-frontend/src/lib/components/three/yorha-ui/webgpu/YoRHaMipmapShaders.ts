@@ -6,7 +6,7 @@
 
 /// <reference types="@webgpu/types" />
 
-import { yorhaWebGPU } from './YoRHaWebGPUMath';
+import { yorhaWebGPU } from './YoRHaWebGPUMath.js';
 
 export interface MipmapConfig {
   maxMipLevels: number;

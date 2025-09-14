@@ -49,11 +49,12 @@ https://svelte.dev/e/attribute_duplicate -->
             <Button class="bits-btn"
               variant={currentVariant === variant ? 'primary' : 'outline'}
               size="sm"
-              onclick={() => currentVariant = variant}
+              on:click={() =>
+currentVariant = variant}
               class="capitalize"
             >
               {variant.replace('-', ' ')}
-            </button>
+
           {/each}
         </div>
       </div>
@@ -65,11 +66,12 @@ https://svelte.dev/e/attribute_duplicate -->
             <Button class="bits-btn"
               variant={currentDirection === direction ? 'primary' : 'outline'}
               size="sm"
-              onclick={() => currentDirection = direction}
+              on:click={() =>
+currentDirection = direction}
               class="capitalize"
             >
               {direction}
-            </button>
+
           {/each}
         </div>
       </div>
@@ -78,11 +80,11 @@ https://svelte.dev/e/attribute_duplicate -->
     <div class="flex gap-phi-md mb-phi-lg">
       <Button
         variant="outline"
-  onclick={toggleDebugGrid}
+  on:click={toggleDebugGrid}
         class="text-phi-sm bits-btn bits-btn"
       >
-        {showDebugGrid ? 'Hide' : 'Show'} Debug Grid
-      </button>
+{showDebugGrid ? 'Hide' : 'Show'} Debug Grid
+
     </div>
   </div>
 
@@ -160,7 +162,7 @@ https://svelte.dev/e/attribute_duplicate -->
           </div>
 
           <div class="golden-section mb-phi-lg">
-            <NesCard class="p-phi-lg">
+            <div class="p-phi-lg nes-container">
               <h4 class="text-phi-lg font-semibold mb-phi-md">Evidence Timeline</h4>
               <div class="space-y-phi-sm">
                 <div class="border-l-phi border-nier-golden-accent pl-phi-md">
@@ -172,9 +174,9 @@ https://svelte.dev/e/attribute_duplicate -->
                   <div class="text-phi-md">AI analysis completed</div>
                 </div>
               </div>
-            </NesCard>
+            </div>
 
-            <NesCard class="p-phi-lg">
+            <div class="p-phi-lg nes-container">
               <h4 class="text-phi-lg font-semibold mb-phi-md">Case Statistics</h4>
               <div class="space-y-phi-sm">
                 <div class="flex justify-between">
@@ -190,7 +192,7 @@ https://svelte.dev/e/attribute_duplicate -->
                   <span class="text-phi-sm font-semibold">78%</span>
                 </div>
               </div>
-            </NesCard>
+            </div>
           </div>
 
           <p class="text-phi-sm text-gray-600 leading-phi">
@@ -210,9 +212,15 @@ https://svelte.dev/e/attribute_duplicate -->
             <div class="nier-golden-panel">
               <h4 class="text-phi-md font-semibold mb-phi-sm">Quick Actions</h4>
               <div class="space-y-phi-sm">
-                <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">Export Report</button>
-                <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">Share Case</button>
-                <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">Schedule Review</button>
+                <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">
+Export Report
+
+                <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">
+Share Case
+
+                <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">
+Schedule Review
+
               </div>
             </div>
 
@@ -252,7 +260,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
   <!-- Golden Ratio Explanation -->
   <div class="mt-phi-xl">
-    <NesCard class="p-phi-xl">
+    <div class="p-phi-xl nes-container">
       <h2 class="text-phi-2xl font-bold text-nier-golden-primary mb-phi-lg">
         Golden Ratio in Legal AI Design
       </h2>
@@ -313,7 +321,7 @@ https://svelte.dev/e/attribute_duplicate -->
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   </div>
 </div>
 

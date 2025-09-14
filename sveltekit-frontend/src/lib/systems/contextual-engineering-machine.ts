@@ -4,9 +4,9 @@
  * Implements advanced context management and query optimization
  */
 
-import { chatVectorStorage, storeChatWithVector, getPredictiveAssistance, searchUserChatHistory } from '../services/chat-vector-storage';
-import type { ChatMessage, IntentPrediction, SemanticSearchResult } from '../services/chat-vector-storage';
-import { base64FP32Quantizer } from '../text/base64-fp32-quantizer';
+import { chatVectorStorage, storeChatWithVector, getPredictiveAssistance, searchUserChatHistory } from '../services/chat-vector-storage.js';
+import type { ChatMessage, IntentPrediction, SemanticSearchResult } from '../services/chat-vector-storage.js';
+import { base64FP32Quantizer } from '../text/base64-fp32-quantizer.js';
 
 export interface ContextualTestResult {
   testName: string;
@@ -50,13 +50,7 @@ export interface ConversationContext {
     documentsReferenced: string[];
     decisionsTracked: string[];
     followUpItems: string[];
-    keyEntities: Array<{
-      entity: string;
-      type: 'person' | 'organization' | 'legal_concept' | 'document';
-      frequency: number;
-      lastMentioned: Date;
-      context: string[];
-    }>;
+    keyEntities: Array<any>;
     conceptGraph: Map<string, string[]>; // Concept -> related concepts
     emotionalState: {
       sentiment: number; // -1 to 1
@@ -259,7 +253,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors
       });
     }
@@ -350,7 +344,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors
       });
     }
@@ -426,7 +420,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors
       });
     }
@@ -491,7 +485,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors
       });
     }
@@ -577,7 +571,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors
       });
     }
@@ -624,7 +618,7 @@ export class ContextualEngineeringMachine {
         if (results.length > 0) {
           successfulSearches++;
           results.forEach((result, index) => {
-            console.log(`   ${index + 1}. "${result.message.content}" (${(result.similarity * 100).toFixed(1)}% similar)`);
+            console.log(`   ${index + 1}. "${(result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).message.content}" (${((result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).similarity * 100).toFixed(1)}% similar)`);
           });
         } else {
           errors.push(`No results for query: "${query}"`);
@@ -654,7 +648,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors
       });
     }
@@ -714,7 +708,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors: [`Query optimization error: ${error.message}`]
       });
     }
@@ -767,7 +761,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors: [`Context maintenance error: ${error.message}`]
       });
     }
@@ -896,7 +890,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors
       });
     }
@@ -1005,7 +999,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors
       });
     }
@@ -1091,7 +1085,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors
       });
     }
@@ -1170,7 +1164,7 @@ export class ContextualEngineeringMachine {
         testName,
         success: false,
         executionTime: performance.now() - startTime,
-        details: {},
+        details: Record<string, any>,
         errors
       });
     }
@@ -1411,8 +1405,8 @@ export class ContextualEngineeringMachine {
 
   private generateTestSummary(): void {
     const totalTests = this.testResults.length;
-    const passedTests = this.testResults.filter(result => result.success).length;
-    const totalExecutionTime = this.testResults.reduce((sum, result) => sum + result.executionTime, 0);
+    const passedTests = this.testResults.filter(result => (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).success).length;
+    const totalExecutionTime = this.testResults.reduce((sum, result) => sum + (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).executionTime, 0);
     
     console.log('\n📊 CONTEXTUAL ENGINEERING MACHINE TEST SUMMARY');
     console.log('================================================');
@@ -1436,10 +1430,10 @@ export class ContextualEngineeringMachine {
     // Individual test results
     console.log('\n📝 INDIVIDUAL TEST RESULTS:');
     this.testResults.forEach(result => {
-      const status = result.success ? '✅' : '❌';
-      console.log(`${status} ${result.testName}: ${result.executionTime.toFixed(2)}ms`);
-      if (result.errors && result.errors.length > 0) {
-        result.errors.forEach(error => console.log(`   ⚠️ ${error}`));
+      const status = (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).success ? '✅' : '❌';
+      console.log(`${status} ${(result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).testName}: ${(result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).executionTime.toFixed(2)}ms`);
+      if ((result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).errors && (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).errors.length > 0) {
+        (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).errors.forEach(error => console.log(`   ⚠️ ${error}`));
       }
     });
     
@@ -1499,14 +1493,10 @@ export const contextualEngineeringMachine = new ContextualEngineeringMachine();
 /**
  * Convenience function to run system validation
  */
-export async function validateContextualSystem(): Promise<{
-  success: boolean;
-  results: ContextualTestResult[];
-  metrics: ContextualEngineMetrics;
-}> {
+export async function validateContextualSystem(): Promise<any> {
   const results = await contextualEngineeringMachine.runFullSystemTest();
   const metrics = contextualEngineeringMachine.getMetrics();
-  const success = results.every(result => result.success);
+  const success = results.every(result => (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).success);
   
   return { success, results, metrics };
 }

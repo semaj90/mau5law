@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Unified Vector Processing API Endpoint
 // Integrates Redis Streams + CUDA Worker + WebGPU + WASM LLM + PostgreSQL
@@ -156,17 +156,17 @@ async function processCUDA(
       }),
     });
 
-    if (!response.ok) {
-      throw new Error(`CUDA service error: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`CUDA service error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
 
     return {
-      jobId: result.job_id || jobId,
+      jobId: (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).job_id || jobId,
       status: 'queued',
-      queuePosition: result.queue_position,
-      estimatedWaitTimeMs: result.estimated_wait_time_ms,
+      queuePosition: (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).queue_position,
+      estimatedWaitTimeMs: (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).estimated_wait_time_ms,
     };
   } catch (error: any) {
     console.error('CUDA processing failed:', error);
@@ -319,8 +319,8 @@ async function getSystemMetrics(): Promise<any> {
     ]);
 
     const metrics = {
-      queues: queueMetrics.status === 'fulfilled' ? queueMetrics.value : {},
-      performance: performanceMetrics.status === 'fulfilled' ? performanceMetrics.value : {},
+      queues: queueMetrics.status === 'fulfilled' ? queueMetrics.value : Record<string, any>,
+      performance: performanceMetrics.status === 'fulfilled' ? performanceMetrics.value : Record<string, any>,
       timestamp: new Date().toISOString(),
     };
 
@@ -339,11 +339,11 @@ async function getSystemMetrics(): Promise<any> {
 async function getQueueStatus(): Promise<any> {
   try {
     const response = await fetch(`${VECTOR_SERVICE_URL}/api/queue/status`);
-    if (!response.ok) {
-      throw new Error(`Queue service error: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`Queue service error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    const queueData = await response.json();
+    const queueData = await (response as { ok?: any; statusText?: any; json?: any }).json();
     return json(queueData);
   } catch (error: any) {
     return json(
@@ -383,7 +383,7 @@ async function getPerformanceMetrics(): Promise<any> {
 // Helper functions
 async function checkServiceHealth(serviceUrl: string): Promise<any> {
   const response = await fetch(`${serviceUrl}/health`);
-  return response.ok;
+  return (response as { ok?: any; statusText?: any; json?: any }).ok;
 }
 
 async function checkDatabaseHealth(): Promise<any> {
@@ -406,8 +406,8 @@ async function checkRedisHealth(): Promise<any> {
 async function fetchQueueMetrics(): Promise<any> {
   try {
     const response = await fetch(`${VECTOR_SERVICE_URL}/api/metrics/queues`);
-    if (response.ok) {
-      return await response.json();
+    if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
+      return await (response as { ok?: any; statusText?: any; json?: any }).json();
     }
   } catch (error: any) {
     console.warn('Queue metrics unavailable:', error);
@@ -433,7 +433,7 @@ async function fetchPerformanceMetrics(): Promise<any> {
 }
 
 function resolveServiceStatus(result: PromiseSettledResult<any>) {
-  if (result.status === 'fulfilled' && result.value) {
+  if ((result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).status === 'fulfilled' && (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).value) {
     return 'connected';
   }
   return 'error';

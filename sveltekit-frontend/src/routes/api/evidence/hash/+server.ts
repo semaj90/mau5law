@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit";
 import { cases, evidence, users } from "$lib/server/db/schema-postgres";
 import { eq } from "drizzle-orm";
 import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 
@@ -107,22 +107,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     const item = evidenceItem[0];
     const providedHash = hash.toLowerCase();
-    const storedHash = item.hash?.toLowerCase();
+    const storedHash = (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).hash?.toLowerCase();
 
     // Compare hashes
     const isMatch = storedHash === providedHash;
 
     return json({
       evidenceId,
-      fileName: item.fileName,
+      fileName: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).fileName,
       providedHash,
       storedHash,
       isMatch,
       message: isMatch
         ? "Hash verification successful - file integrity confirmed"
         : "Hash verification failed - file may have been modified or corrupted",
-      uploadedAt: item.uploadedAt,
-      fileSize: item.fileSize,
+      uploadedAt: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).uploadedAt,
+      fileSize: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).fileSize,
     });
   } catch (error: any) {
     console.error("Error verifying evidence hash:", error);

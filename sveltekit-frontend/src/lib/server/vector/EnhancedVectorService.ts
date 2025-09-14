@@ -3,7 +3,7 @@
 // Generated: 2025-07-25T03:29:35.246Z
 // Features detected: hasOllama, hasQdrant, hasRedis, hasPgVector, hasEmbeddings
 
-import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js';
+import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js.js';
 import type { Redis } from 'ioredis';
 import { createRedisInstance } from '$lib/server/redis';
 import {
@@ -12,9 +12,9 @@ import {
   criminals,
   embeddingCache,
   vectorMetadata,
-} from '../db/schema-postgres-enhanced.js';
+} from '../db/schema-postgres-enhanced.js.js';
 import { eq, sql } from 'drizzle-orm';
-import { db } from '../db.js';
+import { db } from '../db.js.js';
 
 export class EnhancedVectorService {
   private qdrant: QdrantApiWrapper;
@@ -69,10 +69,10 @@ export class EnhancedVectorService {
       }),
     });
 
-    if (!response.ok) throw new Error(`Ollama API error: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) throw new Error(`Ollama API error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
 
-    const result = await response.json();
-    const embedding = result.embedding;
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+    const embedding = (result as { embedding?: any }).embedding;
 
     // Cache for 24 hours - using modern Redis syntax
     if (typeof (this.redis as any).setex === 'function') {

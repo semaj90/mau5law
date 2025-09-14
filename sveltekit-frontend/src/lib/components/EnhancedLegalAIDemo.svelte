@@ -279,11 +279,11 @@ https://svelte.dev/e/attribute_duplicate -->
       <div class="space-y-6">
 
         <!-- Evidence Input -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Add Evidence</h3>
           </div>
-          <div class="yorha-panel-content" class="space-y-4">
+          <div class="yorha-panel-content space-y-4">
             <Textarea
               bind:value={evidenceText}
               placeholder="Enter evidence content..."
@@ -292,17 +292,17 @@ https://svelte.dev/e/attribute_duplicate -->
             />
             <button
               class="bits-btn bits-btn w-full"
-              onclick={addCustomEvidence}
+              on:click={addCustomEvidence}
               disabled={!evidenceText.trim() || processingActive}
             >
               Process Evidence
             </button>
           </div>
-        </NesCard>
+        </div>
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Demo Evidence</h3>
           </div>
-          <div class="yorha-panel-content" class="space-y-3">
+          <div class="yorha-panel-content space-y-3">
             {#each demoEvidences as demo}
               <div class="border rounded-lg p-3">
                 <div class="flex items-center justify-between mb-2">
@@ -313,7 +313,7 @@ https://svelte.dev/e/attribute_duplicate -->
                   {demo.content.slice(0, 100)}...
                 </p>
                 <button type="button" class="bits-btn bits-btn w-full"
-                  onclick={() => addDemoEvidence(demo)}
+                  on:click={() => addDemoEvidence(demo)}
                   disabled={processingActive}
                 >
                   Process This Evidence
@@ -321,28 +321,28 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
             {/each}
           </div>
-        </NesCard>
+        </div>
 
         <!-- System Controls -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">System Controls</h3>
           </div>
-          <div class="yorha-panel-content" class="space-y-3">
-            <button type="button" class="bits-btn bits-btn w-full" onclick={() => checkSystemHealth()}>
+          <div class="yorha-panel-content space-y-3">
+            <button type="button" class="bits-btn bits-btn w-full" on:click={() => checkSystemHealth()}>
               Health Check
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" onclick={() => syncCache()}>
+            <button type="button" class="bits-btn bits-btn w-full" on:click={() => syncCache()}>
               Sync Cache
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" onclick={() => clearErrors()}>
+            <button type="button" class="bits-btn bits-btn w-full" on:click={() => clearErrors()}>
               Clear Errors
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" onclick={() => clearCache()}>
+            <button type="button" class="bits-btn bits-btn w-full" on:click={() => clearCache()}>
               Clear Cache
             </button>
           </div>
-        </NesCard>
+        </div>
       </div>
 
       <!-- Middle Column: Processing Results -->
@@ -350,9 +350,9 @@ https://svelte.dev/e/attribute_duplicate -->
 
         <!-- Currently Processing -->
         {#if currentProcessing}
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
-              <h3 class="nes-text is-primary" class="flex items-center space-x-2">
+              <h3 class="nes-text is-primary flex items-center space-x-2">
                 <div class="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
                 <span>Currently Processing</span>
               </h3>
@@ -366,11 +366,11 @@ https://svelte.dev/e/attribute_duplicate -->
                 </p>
               </div>
             </div>
-          </NesCard>
+          </div>
         {/if}
 
         <!-- Processing Results -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Processing Results ({processingResults.length})</h3>
           </div>
@@ -382,26 +382,26 @@ https://svelte.dev/e/attribute_duplicate -->
                 {#each processingResults.slice(-5) as result}
                   <div class="border rounded-lg p-3">
                     <div class="flex items-center justify-between mb-2">
-                      <Badge class="{result.status === 'complete' ? 'bg-green-500' : 'bg-yellow-500'} text-white">
-                        {result.status}
+                      <Badge class="{(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).status === 'complete' ? 'bg-green-500' : 'bg-yellow-500'} text-white">
+                        {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).status}
                       </Badge>
                       <span class="text-xs text-gray-500">
-                        {formatTimestamp(result.timestamp)}
+                        {formatTimestamp((result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).timestamp)}
                       </span>
                     </div>
-                    <p class="text-sm">Evidence: {result.evidenceId}</p>
-                    <p class="text-sm">Type: {result.type}</p>
-                    <p class="text-sm">Confidence: {(result.confidence * 100).toFixed(1)}%</p>
-                    <p class="text-sm">Time: {result.processingTime}ms</p>
+                    <p class="text-sm">Evidence: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).evidenceId}</p>
+                    <p class="text-sm">Type: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).type}</p>
+                    <p class="text-sm">Confidence: {((result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).confidence * 100).toFixed(1)}%</p>
+                    <p class="text-sm">Time: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).processingTime}ms</p>
                   </div>
                 {/each}
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
 
         <!-- AI Recommendations -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">AI Recommendations ({aiRecommendations.length})</h3>
           </div>
@@ -425,14 +425,14 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
       </div>
 
       <!-- Right Column: Vector Search & Graph -->
       <div class="space-y-6">
 
         <!-- Vector Similarity Matches -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Vector Similarity Matches ({vectorMatches.length})</h3>
           </div>
@@ -456,10 +456,10 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
 
         <!-- Graph Relationships -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Graph Relationships ({graphRelationships.length})</h3>
           </div>
@@ -491,10 +491,10 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
 
         <!-- Cache Statistics -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Cache Performance</h3>
           </div>
@@ -532,13 +532,13 @@ https://svelte.dev/e/attribute_duplicate -->
               {/if}
             </div>
           </div>
-        </NesCard>
+        </div>
       </div>
     </div>
 
     <!-- Real-time Updates Footer -->
     {#if realTimeUpdates.length > 0}
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Real-time Updates ({realTimeUpdates.length})</h3>
         </div>
@@ -554,7 +554,7 @@ https://svelte.dev/e/attribute_duplicate -->
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     {/if}
 
   </div>

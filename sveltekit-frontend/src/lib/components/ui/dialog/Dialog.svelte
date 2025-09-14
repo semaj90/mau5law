@@ -7,8 +7,7 @@
 
   const dispatch = createEventDispatcher();
 
-  let {
-    open = $bindable(),
+  let { open = $bindable(),
     title = $bindable(),
     description = $bindable(),
     size = $bindable(),
@@ -18,7 +17,17 @@
     children,
     footer,
     trigger
-  } = $props();
+   }: { open = $bindable(),
+    title = $bindable(),
+    description = $bindable(),
+    size = $bindable(),
+    showClose = $bindable(),
+    closeOnOutsideClick = $bindable(),
+    closeOnEscape = $bindable(),
+    children,
+    footer,
+    trigger
+  : any } = $props();
 
   const sizeClasses = {
     sm: "max-w-sm",
@@ -58,8 +67,8 @@
   <div
     class="fixed inset-0 z-40 flex items-center justify-center bg-black/50"
     transitifade={{ duration: 200, easing: quadOut }}
-    onclick={handleOutsideClick}
-    onkeydown={(e) => e.key === 'Escape' ? handleOutsideClick(e) : null}
+    on:click={handleOutsideClick}
+    on:keydown={(e) => e.key === 'Escape' ? handleOutsideClick(e) : null}
     role="presentation"
     aria-hidden="true"
   >
@@ -69,14 +78,14 @@
         "relative z-50 w-full max-h-[95vh] overflow-auto rounded-lg border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-800 dark:bg-slate-950 sm:mx-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
         sizeClasses[size]
       )}
-      transitifly={{ y: -8, duration: 200, easing: quadOut }}
+      /* transition removed */}
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? "dialog-title" : undefined}
       aria-describedby={description ? "dialog-description" : undefined}
       tabindex={0}
-      onclick={(e) => e.stopPropagation()}
-      onkeydown={(e) => e.key === 'Escape' ? close() : null}
+      on:click={(e) => e.stopPropagation()}
+      on:keydown={(e) => e.key === 'Escape' ? close() : null}
     >
     >
       <!-- header -->
@@ -98,7 +107,7 @@
           <button
             type="button"
             class="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-            onclick={close}
+            on:click={close}
             aria-label="Close dialog"
           >
             <X size="20" />

@@ -1,12 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  let testResults = $state<Array<{
-    test: string;
-    status: 'pending' | 'success' | 'error';
-    message: string;
-    duration?: number;
-  }>>([]);
+  let testResults = $state<any[]>([])([]);
   let isRunning = $state(false);
   async function runSystemTests() {
     isRunning = true;
@@ -14,19 +9,19 @@
     // Test 1: Basic API connectivity 
     await runTest('API Health Check', async () => {
       const response = await fetch('/api/health');
-      if (response.ok) {
-        const data = await response.json();
-        return `API is healthy: ${data.status}`;
+      if ((response as { ok?: any; json?: any; status?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; status?: any }).json();
+        return `API is healthy: ${(data as { status?: any }).status}`;
       } else {
-        throw new Error(`API returned ${response.status}`);
+        throw new Error(`API returned ${(response as { ok?: any; json?: any; status?: any }).status}`);
       }
     });
     // Test 2: Database connectivity
     await runTest('Database Connectivity', async () => {
       const response = await fetch('/api/database/health');
-      if (response.ok) {
-        const data = await response.json();
-        return `Database: ${data.status}`;
+      if ((response as { ok?: any; json?: any; status?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; status?: any }).json();
+        return `Database: ${(data as { status?: any }).status}`;
       } else {
         throw new Error('Database connection failed');
       }
@@ -34,9 +29,9 @@
     // Test 3: Basic AI endpoint
     await runTest('AI Endpoint Test', async () => {
       const response = await fetch('/api/ai/health');
-      if (response.ok) {
-        const data = await response.json();
-        return `AI service: ${data.status || 'Available'}`;
+      if ((response as { ok?: any; json?: any; status?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; status?: any }).json();
+        return `AI service: ${(data as { status?: any }).status || 'Available'}`;
       } else {
         throw new Error('AI endpoint unavailable');
       }
@@ -93,7 +88,7 @@
 
   <div class="mb-6">
     <button 
-      onclick={runSystemTests}
+      on:click={runSystemTests}
       disabled={isRunning}
       class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
     >
@@ -104,29 +99,29 @@
   <div class="space-y-4">
     {#each testResults as result}
       <div class="p-4 border rounded-lg transition-colors {
-        result.status === 'success' ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950' :
-        result.status === 'error' ? 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950' :
+        (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'success' ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950' :
+        (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'error' ? 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950' :
         'border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900'
       }">
         <div class="flex items-center justify-between mb-2">
-          <h3 class="font-semibold">{result.test}</h3>
+          <h3 class="font-semibold">{(result as { status?: any; test?: any; duration?: any; message?: any }).test}</h3>
           <div class="flex items-center gap-2">
-            {#if result.duration}
-              <span class="text-sm text-gray-500">{result.duration}ms</span>
+            {#if (result as { status?: any; test?: any; duration?: any; message?: any }).duration}
+              <span class="text-sm text-gray-500">{(result as { status?: any; test?: any; duration?: any; message?: any }).duration}ms</span>
             {/if}
             <span class="px-2 py-1 text-xs rounded font-medium {
-              result.status === 'success' ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' :
-              result.status === 'error' ? 'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200' :
+              (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'success' ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' :
+              (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'error' ? 'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200' :
               'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
             }">
-              {result.status.toUpperCase()}
+              {(result as { status?: any; test?: any; duration?: any; message?: any }).status.toUpperCase()}
             </span>
           </div>
         </div>
         <p class="text-sm {
-          result.status === 'error' ? 'text-red-700 dark:text-red-300' : 'text-gray-700 dark:text-gray-300'
+          (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'error' ? 'text-red-700 dark:text-red-300' : 'text-gray-700 dark:text-gray-300'
         }">
-          {result.message}
+          {(result as { status?: any; test?: any; duration?: any; message?: any }).message}
         </p>
       </div>
     {/each}

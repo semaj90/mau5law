@@ -92,10 +92,10 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   // Computed properties
   let totalEvidence = $derived(evidenceItems.length);
   let processingCount = $derived(
-    evidenceItems.filter(item => item.status === 'processing').length
+    evidenceItems.filter(item => (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).status === 'processing').length
   );
   let readyCount = $derived(
-    evidenceItems.filter(item => item.status === 'ready').length
+    evidenceItems.filter(item => (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).status === 'ready').length
   );
 
   onMount(async () => {
@@ -155,7 +155,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       const resp = await fetch('/api/v1/storage/buckets');
       if (resp.ok) {
         const data = await resp.json();
-        buckets = (data.buckets || []).map((b: any) => b.name);
+        buckets = ((data as { buckets?: any; data?: any; analysis?: any; files?: any; x?: any; y?: any }).buckets || []).map((b: any) => b.name);
         if ((!currentBucket || currentBucket === '') && buckets.length > 0) {
           currentBucket = buckets[0];
         }
@@ -174,9 +174,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   async function loadExistingEvidence() {
     try {
       const response = await fetch('/api/v1/evidence');
-      if (response.ok) {
-        const data = await response.json();
-        evidenceItems = data.data || [];
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        evidenceItems = (data as { buckets?: any; data?: any; analysis?: any; files?: any; x?: any; y?: any }).data || [];
         filterEvidence();
       }
     } catch (error) {
@@ -190,16 +190,16 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
     if (searchQuery.trim()) {
       filtered = filtered.filter(item =>
-        item.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.aiAnalysis?.summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.aiAnalysis?.relevantLaws?.some(law =>
+        (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).aiAnalysis?.summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).aiAnalysis?.relevantLaws?.some(law =>
           law.toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
     }
 
     if (selectedFilter !== 'all') {
-      filtered = filtered.filter(item => item.type === selectedFilter);
+      filtered = filtered.filter(item => (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).type === selectedFilter);
     }
 
     filteredEvidence = filtered;
@@ -224,9 +224,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         })
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        searchSuggestions = data.data.suggestions;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        searchSuggestions = (data as { buckets?: any; data?: any; analysis?: any; files?: any; x?: any; y?: any }).(data as { buckets?: any; data?: any; analysis?: any; files?: any; x?: any; y?: any }).suggestions;
         showSuggestions = true;
       }
     } catch (error) {
@@ -353,11 +353,11 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               if (putResp.ok) {
                 // Update status to processing and store storage metadata
                 evidenceItems = evidenceItems.map(item =>
-                  item.id === evidenceId ? ({
+                  (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id === evidenceId ? ({
                     ...item,
                     status: 'processing',
                     aiAnalysis: {
-                      ...(item.aiAnalysis || {}),
+                      ...((item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).aiAnalysis || {}),
                       storage: { bucket: signedJson.bucket || currentBucket, key: namespacedKey, url: signedJson.url }
                     }
                   } as EvidenceItem) : item
@@ -372,7 +372,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               } else {
                 console.error('Direct PUT failed:', await putResp.text());
                 evidenceItems = evidenceItems.map(item =>
-                  item.id === evidenceId ? { ...item, status: 'error' } : item
+                  (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id === evidenceId ? { ...item, status: 'error' } : item
                 );
               }
             } else {
@@ -382,30 +382,30 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               if (uploadResp.ok) {
                 const uploadJson = await uploadResp.json();
                 evidenceItems = evidenceItems.map(item =>
-                  item.id === evidenceId ? ({
+                  (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id === evidenceId ? ({
                     ...item,
                     status: 'processing',
-                    aiAnalysis: { ...(item.aiAnalysis || {}), storage: { bucket: uploadJson.bucket, key: uploadJson.key, url: uploadJson.url } }
+                    aiAnalysis: { ...((item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).aiAnalysis || {}), storage: { bucket: uploadJson.bucket, key: uploadJson.key, url: uploadJson.url } }
                   } as EvidenceItem) : item
                 );
                 await analyzeEvidence(evidenceId, file);
               } else {
                 evidenceItems = evidenceItems.map(item =>
-                  item.id === evidenceId ? { ...item, status: 'error' } : item
+                  (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id === evidenceId ? { ...item, status: 'error' } : item
                 );
               }
             }
           } catch (err) {
             console.error('Upload exception:', err);
             evidenceItems = evidenceItems.map(item =>
-              item.id === evidenceId ? { ...item, status: 'error' } : item
+              (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id === evidenceId ? { ...item, status: 'error' } : item
             );
           }
         } else {
           // Fallback/demo mode: simulate upload and trigger AI analysis
           setTimeout(async () => {
             evidenceItems = evidenceItems.map(item =>
-              item.id === evidenceId ? { ...item, status: 'processing' } : item
+              (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id === evidenceId ? { ...item, status: 'processing' } : item
             );
             await analyzeEvidence(evidenceId, file);
           }, 1000);
@@ -443,28 +443,28 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         })
       });
 
-      if (response.ok) {
-        const analysisResult = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const analysisResult = await (response as { ok?: any; json?: any }).json();
 
         // Update evidence with AI analysis
         evidenceItems = evidenceItems.map(item =>
-          item.id === evidenceId ? {
+          (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id === evidenceId ? {
             ...item,
             status: 'ready',
-            aiAnalysis: analysisResult.data.analysis
+            aiAnalysis: analysisResult.(data as { buckets?: any; data?: any; analysis?: any; files?: any; x?: any; y?: any }).analysis
           } : item
         );
       } else {
         // Mark as error if analysis fails
         evidenceItems = evidenceItems.map(item =>
-          item.id === evidenceId ? { ...item, status: 'error' } : item
+          (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id === evidenceId ? { ...item, status: 'error' } : item
         );
       }
 
     } catch (error) {
       console.error('AI analysis failed:', error);
       evidenceItems = evidenceItems.map(item =>
-        item.id === evidenceId ? { ...item, status: 'error' } : item
+        (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id === evidenceId ? { ...item, status: 'error' } : item
       );
     }
 
@@ -522,7 +522,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           method: 'DELETE',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json', 'x-api-key': (window as any).__MINIO_API_KEY__ || '' },
-          body: JSON.stringify({ bucket: item.aiAnalysis.storage.bucket, key: item.aiAnalysis.storage.key })
+          body: JSON.stringify({ bucket: (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).aiAnalysis.storage.bucket, key: (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).aiAnalysis.storage.key })
         });
 
         const txt = await resp.text();
@@ -544,7 +544,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
     // Only remove locally if remote deletion succeeded (or there was nothing remote)
     if (remoteOk) {
-      if (item && item.previewUrl) revokePreview(item.previewUrl);
+      if (item && (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).previewUrl) revokePreview((item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).previewUrl);
       evidenceItems = evidenceItems.filter(it => it.id !== id);
       selectedEvidence = selectedEvidence.filter(sid => sid !== id);
       pendingDeleteId = null;
@@ -561,7 +561,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   // Cleanup object URLs when component unmounts
   onDestroy(() => {
     evidenceItems.forEach(item => {
-      if (item.previewUrl) revokePreview(item.previewUrl);
+      if ((item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).previewUrl) revokePreview((item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).previewUrl);
     });
   });
 
@@ -586,12 +586,12 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     setInterval(() => {
       // Simulate processing completion
       evidenceItems = evidenceItems.map(item => {
-        if (item.status === 'processing' && Math.random() > 0.8) {
+        if ((item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).status === 'processing' && Math.random() > 0.8) {
           return {
             ...item,
             status: 'ready',
             aiAnalysis: {
-              summary: `AI analysis complete for ${item.filename}`,
+              summary: `AI analysis complete for ${(item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).filename}`,
               confidence: Math.random() * 0.4 + 0.6,
               relevantLaws: ['Sample Law 1', 'Sample Law 2'],
               suggestedTags: ['evidence', 'legal'],
@@ -641,30 +641,30 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         })
       });
 
-      if (response.ok) {
-        const analysis = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const analysis = await (response as { ok?: any; json?: any }).json();
         aiAnalysisResults = analysis;
 
         // Update evidence with comprehensive AI insights
         evidenceItems = evidenceItems.map(item => {
-          if (selectedEvidence.includes(item.id)) {
+          if (selectedEvidence.includes((item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id)) {
             // Enhance evidence with unified analysis results
             const correlations = (analysis.correlationAnalysis?.correlations || []).filter((c: any) =>
-              c.evidenceA === item.id || c.evidenceB === item.id
+              c.evidenceA === (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id || c.evidenceB === (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id
             );
 
             const vectorGroup = (analysis.vectorAnalysis?.similarityGroups || []).find((g: any) =>
-              Array.isArray(g.evidenceIds) && g.evidenceIds.includes(item.id)
+              Array.isArray(g.evidenceIds) && g.evidenceIds.includes((item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id)
             );
 
             const recs = (analysis.unifiedInsights?.recommendations || []).filter((r: any) =>
-              String(r.action || '').toLowerCase().includes(item.filename.toLowerCase())
+              String(r.action || '').toLowerCase().includes((item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).filename.toLowerCase())
             );
 
             return {
               ...item,
               aiAnalysis: {
-                ...(item.aiAnalysis || {}),
+                ...((item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).aiAnalysis || {}),
                 unifiedInsights: {
                   correlations,
                   vectorGroup,
@@ -730,7 +730,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   function handleEvidenceMove(evidenceId: string, position: { x: number; y: number }) {
     // Update evidence position in our data
     evidenceItems = evidenceItems.map(item =>
-      item.id === evidenceId ? { ...item, position } : item
+      (item as { status?: any; filename?: any; aiAnalysis?: any; type?: any; id?: any; previewUrl?: any }).id === evidenceId ? { ...item, position } : item
     );
 
     // Optionally save to backend
@@ -747,9 +747,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
 
   function handleCanvasDropZone(data: { x: number; y: number; files?: File[] }) {
-    if (data.files && data.files.length > 0) {
+    if ((data as { buckets?: any; data?: any; analysis?: any; files?: any; x?: any; y?: any }).files && (data as { buckets?: any; data?: any; analysis?: any; files?: any; x?: any; y?: any }).files.length > 0) {
       // Handle file drop with specific position
-      uploadFiles(data.files, { x: data.x, y: data.y });
+      uploadFiles((data as { buckets?: any; data?: any; analysis?: any; files?: any; x?: any; y?: any }).files, { x: (data as { buckets?: any; data?: any; analysis?: any; files?: any; x?: any; y?: any }).x, y: (data as { buckets?: any; data?: any; analysis?: any; files?: any; x?: any; y?: any }).y });
     } else {
       // Handle empty area click - could trigger file picker
       console.log('Canvas drop zone clicked at:', data);
@@ -828,7 +828,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             <button
               type="button"
               class="nes-btn {gamingMode ? 'is-success' : ''}"
-              onclick={() => gamingMode = !gamingMode}
+              on:click={() => gamingMode = !gamingMode}
               title="Toggle Gaming Mode"
             >
               🎮 Gaming
@@ -837,7 +837,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             <button
               type="button"
               class="nes-btn {retroTerminalMode ? 'is-primary' : ''}"
-              onclick={() => retroTerminalMode = !retroTerminalMode}
+              on:click={() => retroTerminalMode = !retroTerminalMode}
               title="Toggle Terminal Mode"
             >
               💻 Terminal
@@ -866,7 +866,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               id="search-input"
               placeholder="Search evidence, laws, cases..."
               bind:value={searchQuery}
-              oninput={handleSearchInput}
+              on:input={handleSearchInput}
             />
           </div>
 
@@ -877,7 +877,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                 <button
                   type="button"
                   class="w-full text-left p-2 hover:bg-nier-accent hover:text-white transition-colors rounded mb-1"
-                  onclick={() => applySuggestion(suggestion)}
+                  on:click={() => applySuggestion(suggestion)}
                 >
                   <div class="flex justify-between items-center">
                     <span class="font-medium">{suggestion.text}</span>
@@ -898,7 +898,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         <div>
           <label for="filter-select" class="nes-text is-primary text-sm mb-2 block">Evidence Type</label>
           <div class="nes-select">
-            <select id="filter-select" bind:value={selectedFilter} onchange={filterEvidence}>
+            <select id="filter-select" bind:value={selectedFilter} on:change={filterEvidence}>
               <option value="all">All Types</option>
               <option value="document">📄 Documents</option>
               <option value="image">🖼️ Images</option>
@@ -913,7 +913,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         <div>
           <label for="bucket-select" class="nes-text is-primary text-sm mb-2 block">Storage Bucket</label>
           <div class="nes-select">
-            <select id="bucket-select" bind:value={currentBucket} onchange={() => { /* selection handled by bind */ }}>
+            <select id="bucket-select" bind:value={currentBucket} on:change={() => { /* selection handled by bind */ }}>
               {#if buckets.length === 0}
                 <option value="legal-documents">📁 Documents</option>
               {:else}
@@ -935,7 +935,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           <button
             type="button"
             class="nes-btn"
-            onclick={() => {
+            on:click={() => {
               if (selectedEvidence.length === filteredEvidence.length) {
                 selectedEvidence = [];
               } else {
@@ -970,7 +970,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           <button
             type="button"
             class="nes-btn {isAnalyzing ? 'is-disabled' : 'is-primary'}"
-            onclick={performAdvancedAnalysis}
+            on:click={performAdvancedAnalysis}
             disabled={selectedEvidence.length === 0 || isAnalyzing}
           >
             {#if isAnalyzing}
@@ -998,8 +998,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         class:yorha-glow={dragActive}
         ondragenter={handleDragEnter}
         ondragleave={handleDragLeave}
-        ondragover={handleDragOver}
-        ondrop={handleDrop}
+        on:dragover={handleDragOver}
+        on:drop={handleDrop}
       >
         {#if dragActive}
           <div class="nes-container is-success p-8 text-center animate-pulse">
@@ -1045,7 +1045,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                 {#if buckets.length > 0}
                   <div class="mt-4 flex flex-wrap justify-center gap-2">
                     {#each buckets as b}
-                      <button type="button" class="nes-btn is-primary text-sm" onclick={() => currentBucket = b} title={`Select bucket ${b}`}>
+                      <button type="button" class="nes-btn is-primary text-sm" on:click={() => currentBucket = b} title={`Select bucket ${b}`}>
                         📦 {b}
                       </button>
                     {/each}
@@ -1103,7 +1103,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                       type="checkbox"
                       class="nes-checkbox"
                       checked={selectedEvidence.includes(evidence.id)}
-                      onchange={(e: Event) => {
+                      on:change={(e: Event) => {
                         const target = e.target as HTMLInputElement | null;
                         if (target && target.checked) {
                           selectedEvidence = [...selectedEvidence, evidence.id];
@@ -1125,7 +1125,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                   <h4 class="font-medium text-gray-900 truncate text-sm" title={evidence.filename}>
                     {evidence.filename}
                   </h4>
-                  <button type="button" class="ml-2 nes-btn is-error is-small" onclick={() => removeEvidence(evidence.id)} title="Remove evidence">
+                  <button type="button" class="ml-2 nes-btn is-error is-small" on:click={() => removeEvidence(evidence.id)} title="Remove evidence">
                     ✖
                   </button>
                   <p class="text-xs text-gray-500">
@@ -1241,8 +1241,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       <h3 class="text-lg font-semibold mb-4">Confirm Delete</h3>
       <p class="text-sm mb-4">Are you sure you want to permanently delete this evidence item? This will also remove the file from storage if present.</p>
       <div class="flex justify-end gap-2">
-        <button class="nes-btn" onclick={cancelDelete}>Cancel</button>
-        <button class="nes-btn is-error" onclick={confirmDelete}>Delete</button>
+        <button class="nes-btn" on:click={cancelDelete}>Cancel</button>
+        <button class="nes-btn is-error" on:click={confirmDelete}>Delete</button>
       </div>
     </div>
   </div>

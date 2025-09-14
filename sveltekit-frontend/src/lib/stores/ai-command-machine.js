@@ -39,5 +39,5 @@ export const aiCommandMachine = {
 // Machine service store
 export const machineStore = writable({
   state: "idle",
-  context: {},
+  context: Record<string, any>,
 });

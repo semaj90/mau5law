@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // TypeScript Batch Processor - High-Performance Batch Processing
 // Optimized for processing large numbers of TypeScript errors
@@ -71,24 +71,24 @@ export const POST: RequestHandler = async ({ request }) => {
 			body: JSON.stringify(optimizedRequest),
 		});
 
-		if (!response.ok) {
-			throw new Error(`Go service error ${response.status}: ${response.statusText}`);
+		if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+			throw new Error(`Go service error ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
 		}
 
-		const result = await response.json() as OptimizedFixResponse;
+		const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json() as OptimizedFixResponse;
 		const processingTime = Date.now() - startTime;
 
 		// Calculate batch processing statistics
 		const stats: BatchProcessingStats = {
 			total_processing_time_ms: processingTime,
-			go_service_time_ms: result.processing_stats?.total_time || 0,
-			overhead_ms: processingTime - (result.processing_stats?.total_time || 0),
+			go_service_time_ms: (result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processing_stats?.total_time || 0,
+			overhead_ms: processingTime - ((result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processing_stats?.total_time || 0),
 			throughput_errors_per_second: (errorCount / processingTime) * 1000,
-			success_rate: (result.successful_count / result.processed_count) * 100,
-			performance_grade: calculatePerformanceGrade(processingTime, errorCount, result.successful_count),
+			success_rate: ((result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count / (result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processed_count) * 100,
+			performance_grade: calculatePerformanceGrade(processingTime, errorCount, (result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count),
 		};
 
-		console.log(`✅ Batch Processor: Completed in ${processingTime}ms, ${result.successful_count}/${result.processed_count} successful (${stats.success_rate.toFixed(1)}%)`);
+		console.log(`✅ Batch Processor: Completed in ${processingTime}ms, ${(result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count}/${(result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processed_count} successful (${stats.success_rate.toFixed(1)}%)`);
 
 		// Enhanced response with batch-specific metadata
 		const enhancedResult = {
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				auto_optimization: true,
 			},
 			metadata: {
-				...result.optimization_meta,
+				...(result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).optimization_meta,
 				batch_size: errorCount,
 				processed_at: new Date().toISOString(),
 				api_version: '2.0.0',

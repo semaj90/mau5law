@@ -127,15 +127,15 @@ export function withRateLimit(
     return async (request: Request): Promise<Response> => {
       const result = rateLimiter.check(request);
 
-      if (!result.allowed) {
-        const retryAfter = Math.ceil((result.resetTime! - Date.now()) / 1000);
+      if (!(result as { allowed?: any; resetTime?: any; remaining?: any }).allowed) {
+        const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000);
 
         return new Response(
           JSON.stringify({
             success: false,
             error: errorMessage,
             retryAfter,
-            resetTime: new Date(result.resetTime!).toISOString()
+            resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()
           }),
           {
             status: 429,
@@ -143,7 +143,7 @@ export function withRateLimit(
               'Content-Type': 'application/json',
               'Retry-After': retryAfter.toString(),
               'X-RateLimit-Remaining': '0',
-              'X-RateLimit-Reset': result.resetTime!.toString()
+              'X-RateLimit-Reset': (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString()
             }
           }
         );
@@ -152,9 +152,9 @@ export function withRateLimit(
       // Add rate limit headers to successful responses
       const response = await handler(request);
 
-      if (response.headers.get('Content-Type')?.includes('application/json')) {
-        response.headers.set('X-RateLimit-Remaining', result.remaining!.toString());
-        response.headers.set('X-RateLimit-Reset', result.resetTime!.toString());
+      if ((response as { headers?: any }).headers.get('Content-Type')?.includes('application/json')) {
+        (response as { headers?: any }).headers.set('X-RateLimit-Remaining', (result as { allowed?: any; resetTime?: any; remaining?: any }).remaining!.toString());
+        (response as { headers?: any }).headers.set('X-RateLimit-Reset', (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString());
       }
 
       return response;

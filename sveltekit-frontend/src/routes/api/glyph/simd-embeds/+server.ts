@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { glyphDiffusionService, type GlyphRequest } from '$lib/services/glyph-diffusion-service.js';
 import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
 import { PNGEmbedExtractor, type LegalAIMetadata } from '$lib/services/png-embed-extractor.js';
@@ -27,12 +27,7 @@ interface SIMDShaderData {
   tiled_data: Float32Array;
   shader_code: string;
   compression_ratio: number;
-  tile_map: Array<{
-    index: number;
-    pattern_id: string;
-    frequency: number;
-    compressed_size: number;
-  }>;
+  tile_map: Array<any>;
   performance_stats: {
     tiling_time_ms: number;
     compression_time_ms: number;
@@ -481,11 +476,7 @@ interface TilingResult {
     achievedRatio: number;
     processingTime: number;
   };
-  tileMap: Array<{
-    patternId: string;
-    frequency: number;
-    compressedSize: number;
-  }>;
+  tileMap: Array<any>;
   processingTime: number;
   tileSize: number;
 }

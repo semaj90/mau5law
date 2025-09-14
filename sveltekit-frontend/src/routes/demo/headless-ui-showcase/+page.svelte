@@ -18,7 +18,7 @@
   let inputValue: string = $state('');
   let isLoading: boolean = $state(false);
   let progress: number = $state(0);
-  let notifications: Array<{ id: number; message: string; type: 'success' | 'warning' | 'error' }> = $state([]);
+  let notifications: Array = $state([]);
 
   function addNotification(type: 'success' | 'warning' | 'error', message: string) {
     const id = Date.now();
@@ -79,23 +79,23 @@
     <div class="space-y-6">
 
       <!-- Melt UI Dialog with NES.css styling -->
-      <NesCard class="nes-container with-title">
+      <div class="nes-container with-title nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="nes-text is-primary">🎭 Melt UI Dialog</h3>
+          <h3 class="nes-text is-primary nes-text is-primary">🎭 Melt UI Dialog</h3>
         </div>
-        <div class="yorha-panel-content" class="space-y-4">
+        <div class="yorha-panel-content space-y-4">
           <p class="text-sm text-nier-text-secondary">
             Bits UI provides the headless behavior; NES.css supplies the retro styling.
           </p>
 
           <button
-            onclick={() => (isDialogOpen = true)}
+            on:click={() => (isDialogOpen = true)}
             class="nes-btn is-primary w-full"
           >
             Open Bits UI Dialog
           </button>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Hybrid Form Example -->
       <div class="nes-container with-title is-rounded">
@@ -131,13 +131,13 @@
           <div class="flex gap-2 mt-4">
             <button
               class="nes-btn is-success flex-1"
-              onclick={() => addNotification('success', `Command executed: ${inputValue || 'default'}`)}
+              on:click={() => addNotification('success', `Command executed: ${inputValue || 'default'}`)}
             >
               Execute
             </button>
             <button
               class="nes-btn is-warning flex-1"
-              onclick={simulateAsyncOperation}
+              on:click={simulateAsyncOperation}
               disabled={isLoading}
             >
               {isLoading ? 'Processing...' : 'Async Process'}
@@ -159,11 +159,11 @@
     <div class="space-y-6">
 
       <!-- Bits UI Components with NES styling -->
-      <NesCard class="nes-container with-title">
+      <div class="nes-container with-title nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="nes-text is-primary">🎯 Bits UI + Styling</h3>
+          <h3 class="nes-text is-primary nes-text is-primary">🎯 Bits UI + Styling</h3>
         </div>
-        <div class="yorha-panel-content" class="space-y-4">
+        <div class="yorha-panel-content space-y-4">
           <p class="text-sm text-nier-text-secondary">
             Using your existing Bits UI components with NES.css and YoRHa styling.
           </p>
@@ -173,18 +173,20 @@
             <Button
               variant="default"
               class="nes-btn is-primary bits-btn bits-btn"
-              onclick={() => addNotification('success', 'Bits UI Button clicked! 🎮')}
+              on:click={() =>
+addNotification('success', 'Bits UI Button clicked! 🎮')}
             >
               Hybrid Button
-            </button>
+</Button>
 
             <Button
               variant="outline"
               class="nes-btn bits-btn bits-btn"
-              onclick={() => addNotification('warning', 'Warning: Retro mode activated!')}
+              on:click={() =>
+addNotification('warning', 'Warning: Retro mode activated!')}
             >
               Outline + NES
-            </button>
+</Button>
           </div>
 
           <!-- Status indicators -->
@@ -199,7 +201,7 @@
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Interactive Gaming Panel -->
       <div class="nes-container is-dark with-title">
@@ -216,7 +218,8 @@
 
           <!-- Game-style controls -->
           <div class="grid grid-cols-2 gap-2">
-            <button class="nes-btn is-success text-xs">▲ UP</button>
+            <button class="nes-btn is-success text-xs">▲ UP
+</Button>
             <button class="nes-btn is-error text-xs">● ACTION</button>
             <button class="nes-btn is-warning text-xs">▼ DOWN</button>
             <button class="nes-btn is-primary text-xs">■ MENU</button>
@@ -242,15 +245,15 @@
         <p class="title">📢 Live Notifications</p>
 
         <div class="space-y-2 max-h-40 overflow-y-auto">
-          {#each notifications as notification (notification.id)}
+          {#each notifications as notification ((notification as { id?: any; type?: any; message?: any }).id)}
             <div
               class="nes-container is-rounded text-xs p-2"
-              class:is-success={notification.type === 'success'}
-              class:is-warning={notification.type === 'warning'}
-              class:is-error={notification.type === 'error'}
-              transitifly={{ y: -20, duration: 300 }}
+              class:is-success={(notification as { id?: any; type?: any; message?: any }).type === 'success'}
+              class:is-warning={(notification as { id?: any; type?: any; message?: any }).type === 'warning'}
+              class:is-error={(notification as { id?: any; type?: any; message?: any }).type === 'error'}
+              /* transition removed */}
             >
-              {notification.message}
+              {(notification as { id?: any; type?: any; message?: any }).message}
             </div>
           {/each}
 
@@ -297,11 +300,11 @@
       </div>
 
       <!-- Advanced Styling Example -->
-      <NesCard class="bg-nier-bg-secondary border-nier-border-primary">
-        <div class="yorha-panel-header" class="border-b border-nier-border-secondary">
-          <h3 class="nes-text is-primary" class="text-nier-accent-warm">🚀 Advanced Integration</h3>
+      <div class="bg-nier-bg-secondary border-nier-border-primary nes-container">
+        <div class="yorha-panel-header border-b border-nier-border-secondary">
+          <h3 class="nes-text is-primary text-nier-accent-warm">🚀 Advanced Integration</h3>
         </div>
-        <div class="yorha-panel-content" class="p-4 space-y-3">
+        <div class="yorha-panel-content p-4 space-y-3">
           <p class="text-xs text-nier-text-secondary">
             This card uses Bits UI structure + YoRHa colors + UnoCSS utilities.
           </p>
@@ -316,7 +319,7 @@
             <span class="text-nier-accent-warm font-bold">100%</span>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 </div>
@@ -359,7 +362,7 @@
           <div class="flex gap-2">
             <button
               class="nes-btn is-success flex-1"
-              onclick={() => {
+              on:click={() => {
                 addNotification('success', 'Dialog action confirmed! 🎯');
                 isDialogOpen = false;
               }}

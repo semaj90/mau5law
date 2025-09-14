@@ -76,10 +76,8 @@ https://svelte.dev/e/js_parse_error -->
 
   // UI state
   let yorhaUI = $state<any | null >(null);
-  let canvasContainer = $state<HTMLElement;
-
-  // Component variants and options
-  const componentTypes >([
+  let canvasContainer = $state<HTMLElement// Component variants and options
+  const componentTypes | null>(null)([
     { id: 'button', label: 'Button 3D', icon: Gamepad2, description: '3D interactive buttons with hover effects' },
     { id: 'panel', label: 'Panel 3D', icon: Monitor, description: 'Floating 3D panels with content areas' },
     { id: 'input', label: 'Input 3D', icon: Code, description: 'Terminal-style 3D input fields' },
@@ -133,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function updatePreview() {
     if (!yorhaUI) {
-      console.log('Preview updated for:', selectedComponent, getCurrentConfig();
+      console.log('Preview updated for:', selectedComponent, getCurrentConfig());
       return;
     }
 
@@ -187,7 +185,7 @@ https://svelte.dev/e/js_parse_error -->
 
   async function saveConfig() {
     try {
-      await yorhaAPI.updateComponentConfig(`demo-${selectedComponent}`, getCurrentConfig();
+      await yorhaAPI.updateComponentConfig(`demo-${selectedComponent}`, getCurrentConfig());
       console.log('Configuration saved');
     } catch (error) {
       console.error('Failed to save configuration:', error);
@@ -288,9 +286,9 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="yorha-component-btn"
               class:yorha-component-active={selectedComponent === component.id}
-              onclick={() => onComponentChange(component.id)}
+              on:click={() => onComponentChange(component.id)}
             >
-              <{component.icon} size={18} />
+              
               <div class="yorha-component-info">
                 <span class="yorha-component-label">{component.label}</span>
                 <span class="yorha-component-desc">{component.description}</span>
@@ -311,9 +309,9 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="yorha-mode-btn"
               class:yorha-mode-active={previewMode === mode.id}
-              onclick={() => previewMode = mode.id}
+              on:click={() => previewMode = mode.id}
             >
-              <{mode.icon} size={16} />
+              
               <span>{mode.label}</span>
             </button>
           {/each}
@@ -331,10 +329,10 @@ https://svelte.dev/e/js_parse_error -->
           <div class="yorha-config-form">
             {#if selectedComponent === 'button'}
               <div class="yorha-config-group">
-                <label for="text">Text</label><input id="text" type="text" bind:value={buttonConfig.text} input={onConfigChange} />
+                <label for="text">Text</label><input id="text" type="text" bind:value={buttonConfig.text} on:input={onConfigChange} />
               </div>
               <div class="yorha-config-group">
-                <label for="variant">Variant</label><select id="variant" bind:value={buttonConfig.variant} change={onConfigChange}>
+                <label for="variant">Variant</label><select id="variant" bind:value={buttonConfig.variant} on:change={onConfigChange}>
                   <option value="primary">Primary</option>
                   <option value="secondary">Secondary</option>
                   <option value="danger">Danger</option>
@@ -342,7 +340,7 @@ https://svelte.dev/e/js_parse_error -->
                 </select>
               </div>
               <div class="yorha-config-group">
-                <label for="size">Size</label><select id="size" bind:value={buttonConfig.size} change={onConfigChange}>
+                <label for="size">Size</label><select id="size" bind:value={buttonConfig.size} on:change={onConfigChange}>
                   <option value="small">Small</option>
                   <option value="medium">Medium</option>
                   <option value="large">Large</option>
@@ -350,19 +348,19 @@ https://svelte.dev/e/js_parse_error -->
               </div>
               <div class="yorha-config-group">
                 <label class="yorha-checkbox">
-                  <input type="checkbox" bind:checked={buttonConfig.loading} change={onConfigChange} />
+                  <input type="checkbox" bind:checked={buttonConfig.loading} on:change={onConfigChange} />
                   <span>Loading</span>
                 </label>
               </div>
               <div class="yorha-config-group">
                 <label class="yorha-checkbox">
-                  <input type="checkbox" bind:checked={buttonConfig.disabled} change={onConfigChange} />
+                  <input type="checkbox" bind:checked={buttonConfig.disabled} on:change={onConfigChange} />
                   <span>Disabled</span>
                 </label>
               </div>
               <div class="yorha-config-group">
                 <label class="yorha-checkbox">
-                  <input type="checkbox" bind:checked={buttonConfig.glowEffect} change={onConfigChange} />
+                  <input type="checkbox" bind:checked={buttonConfig.glowEffect} on:change={onConfigChange} />
                   <span>Glow Effect</span>
                 </label>
               </div>
@@ -370,29 +368,29 @@ https://svelte.dev/e/js_parse_error -->
 
             {#if selectedComponent === 'panel'}
               <div class="yorha-config-group">
-                <label for="title">Title</label><input id="title" type="text" bind:value={panelConfig.title} input={onConfigChange} />
+                <label for="title">Title</label><input id="title" type="text" bind:value={panelConfig.title} on:input={onConfigChange} />
               </div>
               <div class="yorha-config-group">
-                <label for="width">Width</label><input id="width" type="number" bind:value={panelConfig.width} input={onConfigChange} />
+                <label for="width">Width</label><input id="width" type="number" bind:value={panelConfig.width} on:input={onConfigChange} />
               </div>
               <div class="yorha-config-group">
-                <label for="height">Height</label><input id="height" type="number" bind:value={panelConfig.height} input={onConfigChange} />
+                <label for="height">Height</label><input id="height" type="number" bind:value={panelConfig.height} on:input={onConfigChange} />
               </div>
               <div class="yorha-config-group">
                 <label class="yorha-checkbox">
-                  <input type="checkbox" bind:checked={panelConfig.scrollable} change={onConfigChange} />
+                  <input type="checkbox" bind:checked={panelConfig.scrollable} on:change={onConfigChange} />
                   <span>Scrollable</span>
                 </label>
               </div>
               <div class="yorha-config-group">
                 <label class="yorha-checkbox">
-                  <input type="checkbox" bind:checked={panelConfig.collapsible} change={onConfigChange} />
+                  <input type="checkbox" bind:checked={panelConfig.collapsible} on:change={onConfigChange} />
                   <span>Collapsible</span>
                 </label>
               </div>
               <div class="yorha-config-group">
                 <label class="yorha-checkbox">
-                  <input type="checkbox" bind:checked={panelConfig.borderGlow} change={onConfigChange} />
+                  <input type="checkbox" bind:checked={panelConfig.borderGlow} on:change={onConfigChange} />
                   <span>Border Glow</span>
                 </label>
               </div>
@@ -400,10 +398,10 @@ https://svelte.dev/e/js_parse_error -->
 
             {#if selectedComponent === 'input'}
               <div class="yorha-config-group">
-                <label for="placeholder">Placeholder</label><input id="placeholder" type="text" bind:value={inputConfig.placeholder} input={onConfigChange} />
+                <label for="placeholder">Placeholder</label><input id="placeholder" type="text" bind:value={inputConfig.placeholder} on:input={onConfigChange} />
               </div>
               <div class="yorha-config-group">
-                <label for="type">Type</label><select id="type" bind:value={inputConfig.type} change={onConfigChange}>
+                <label for="type">Type</label><select id="type" bind:value={inputConfig.type} on:change={onConfigChange}>
                   <option value="text">Text</option>
                   <option value="password">Password</option>
                   <option value="email">Email</option>
@@ -411,17 +409,17 @@ https://svelte.dev/e/js_parse_error -->
                 </select>
               </div>
               <div class="yorha-config-group">
-                <label for="value">Value</label><input id="value" type="text" bind:value={inputConfig.value} input={onConfigChange} />
+                <label for="value">Value</label><input id="value" type="text" bind:value={inputConfig.value} on:input={onConfigChange} />
               </div>
               <div class="yorha-config-group">
                 <label class="yorha-checkbox">
-                  <input type="checkbox" bind:checked={inputConfig.error} change={onConfigChange} />
+                  <input type="checkbox" bind:checked={inputConfig.error} on:change={onConfigChange} />
                   <span>Error State</span>
                 </label>
               </div>
               <div class="yorha-config-group">
                 <label class="yorha-checkbox">
-                  <input type="checkbox" bind:checked={inputConfig.scanlineEffect} change={onConfigChange} />
+                  <input type="checkbox" bind:checked={inputConfig.scanlineEffect} on:change={onConfigChange} />
                   <span>Scanline Effect</span>
                 </label>
               </div>
@@ -429,10 +427,10 @@ https://svelte.dev/e/js_parse_error -->
 
             {#if selectedComponent === 'modal'}
               <div class="yorha-config-group">
-                <label for="title">Title</label><input id="title" type="text" bind:value={modalConfig.title} input={onConfigChange} />
+                <label for="title">Title</label><input id="title" type="text" bind:value={modalConfig.title} on:input={onConfigChange} />
               </div>
               <div class="yorha-config-group">
-                <label for="size">Size</label><select id="size" bind:value={modalConfig.size} change={onConfigChange}>
+                <label for="size">Size</label><select id="size" bind:value={modalConfig.size} on:change={onConfigChange}>
                   <option value="small">Small</option>
                   <option value="medium">Medium</option>
                   <option value="large">Large</option>
@@ -441,19 +439,19 @@ https://svelte.dev/e/js_parse_error -->
               </div>
               <div class="yorha-config-group">
                 <label class="yorha-checkbox">
-                  <input type="checkbox" bind:checked={modalConfig.open} change={onConfigChange} />
+                  <input type="checkbox" bind:checked={modalConfig.open} on:change={onConfigChange} />
                   <span>Open</span>
                 </label>
               </div>
               <div class="yorha-config-group">
                 <label class="yorha-checkbox">
-                  <input type="checkbox" bind:checked={modalConfig.closable} change={onConfigChange} />
+                  <input type="checkbox" bind:checked={modalConfig.closable} on:change={onConfigChange} />
                   <span>Closable</span>
                 </label>
               </div>
               <div class="yorha-config-group">
                 <label class="yorha-checkbox">
-                  <input type="checkbox" bind:checked={modalConfig.hologramEffect} change={onConfigChange} />
+                  <input type="checkbox" bind:checked={modalConfig.hologramEffect} on:change={onConfigChange} />
                   <span>Hologram Effect</span>
                 </label>
               </div>
@@ -462,13 +460,13 @@ https://svelte.dev/e/js_parse_error -->
 
           <!-- Config Actions -->
           <div class="yorha-config-actions">
-            <button class="yorha-config-btn yorha-btn-save" onclick={saveConfig}>
+            <button class="yorha-config-btn yorha-btn-save" on:click={saveConfig}>
               SAVE
             </button>
-            <button class="yorha-config-btn yorha-btn-reset" onclick={resetConfig}>
+            <button class="yorha-config-btn yorha-btn-reset" on:click={resetConfig}>
               RESET
             </button>
-            <button class="yorha-config-btn yorha-btn-export" onclick={exportConfig}>
+            <button class="yorha-config-btn yorha-btn-export" on:click={exportConfig}>
               EXPORT
             </button>
           </div>
@@ -511,7 +509,7 @@ https://svelte.dev/e/js_parse_error -->
         {#each componentTypes as component}
           {#if component.id === selectedComponent}
             <div class="yorha-info-content">
-              <{component.icon} size={24} />
+              
               <h4>{component.label}</h4>
               <p>{component.description}</p>
             </div>

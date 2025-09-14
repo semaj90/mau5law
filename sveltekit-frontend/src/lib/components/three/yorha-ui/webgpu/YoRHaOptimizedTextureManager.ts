@@ -6,8 +6,8 @@
 
 /// <reference types="@webgpu/types" />
 
-import { yorhaMipmapShaders, type MipmapChainResult, type MipmapConfig } from './YoRHaMipmapShaders';
-import type { LegalDocument, MemoryBank } from '../../../../memory/nes-memory-architecture';
+import { yorhaMipmapShaders, type MipmapChainResult, type MipmapConfig } from './YoRHaMipmapShaders.js';
+import type { LegalDocument, MemoryBank } from '../../../../memory/nes-memory-architecture.js';
 
 export interface TextureBankConfig {
   bankType: 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';

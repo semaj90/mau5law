@@ -222,7 +222,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- System Status -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div
             class="p-2 rounded-lg"
@@ -235,9 +235,9 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{systemInitialized ? 'Ready' : 'Initializing'}</p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div
             class="p-2 rounded-lg"
@@ -250,9 +250,9 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{isMonitoring ? 'Active' : 'Inactive'}</p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-blue-100">
             <Brain class="h-5 w-5 text-blue-600" />
@@ -262,9 +262,9 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{performance.successfulPatches} generated</p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-purple-100">
             <Target class="h-5 w-5 text-purple-600" />
@@ -274,28 +274,28 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{performance.clusterCount} patterns</p>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Controls -->
     <div class="flex gap-4 mb-8 justify-center">
       <Button
-        onclick={startMonitoring}
+        on:click={startMonitoring}
         disabled={!systemInitialized || isMonitoring}
         class="bg-green-600 hover:bg-green-700 bits-btn bits-btn">
-        Start Monitoring
-      </button>
+Start Monitoring
+</Button>
 
-  <Button onclick={stopMonitoring} disabled={!isMonitoring} class="bg-red-600 hover:bg-red-700 bits-btn bits-btn">
-        Stop Monitoring
-      </button>
+  <Button on:click={stopMonitoring} disabled={!isMonitoring} class="bg-red-600 hover:bg-red-700 bits-btn bits-btn">
+Stop Monitoring
+</Button>
 
       <Button
-        onclick={addTestError}
+        on:click={addTestError}
         disabled={!systemInitialized}
         class="bg-orange-600 hover:bg-orange-700 bits-btn bits-btn">
-        Add Test Error
-      </button>
+Add Test Error
+</Button>
     </div>
   </div>
 
@@ -303,7 +303,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Real-time Events -->
     <div class="lg:col-span-1">
-      <NesCard class="p-6 bg-slate-800/30 border-slate-600 h-96">
+      <div class="p-6 bg-slate-800/30 border-slate-600 h-96 nes-container">
         <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
           <Activity class="h-5 w-5" />
           Real-time Events
@@ -315,7 +315,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               type="button"
               class="w-full p-3 rounded-lg bg-slate-700/50 border border-slate-600 cursor-pointer hover:bg-slate-700 transition-colors text-left"
-              onclick={() => (selectedEvent = event)}
+              on:click={() => (selectedEvent = event)}
               keydown={(e) => e.key === 'Enter' && (selectedEvent = event)}
               class:ring-2={selectedEvent?.logs[0]?.id === event.logs[0]?.id}
               class:ring-blue-500={selectedEvent?.logs[0]?.id === event.logs[0]?.id}
@@ -339,7 +339,7 @@ https://svelte.dev/e/js_parse_error -->
                   {/if}
                 </div>
               </div>
-            </button>
+</Button>
           {/each}
 
           {#if events.length === 0}
@@ -349,12 +349,12 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- AI Patches -->
     <div class="lg:col-span-1">
-      <NesCard class="p-6 bg-slate-800/30 border-slate-600 h-96">
+      <div class="p-6 bg-slate-800/30 border-slate-600 h-96 nes-container">
         <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
           <Brain class="h-5 w-5" />
           AI Generated Patches
@@ -366,7 +366,7 @@ https://svelte.dev/e/js_parse_error -->
             <div
               class="p-3 rounded-lg bg-slate-700/50 border border-slate-600 cursor-pointer hover:bg-slate-700 transition-colors"
               role="button" tabindex="0"
-                onclick={() => (selectedPatch = patch)}
+                on:click={() => (selectedPatch = patch)}
               class:ring-2={selectedPatch?.id === patch.id}
               class:ring-green-500={selectedPatch?.id === patch.id}>
               <div class="flex items-start gap-3">
@@ -413,12 +413,12 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Performance & Clusters -->
     <div class="lg:col-span-1">
-      <NesCard class="p-6 bg-slate-800/30 border-slate-600 h-96">
+      <div class="p-6 bg-slate-800/30 border-slate-600 h-96 nes-container">
         <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
           <Target class="h-5 w-5" />
           Performance & Clusters
@@ -470,7 +470,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 
@@ -478,7 +478,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if selectedEvent || selectedPatch}
     <div class="max-w-7xl mx-auto mt-6">
       {#if selectedEvent}
-        <NesCard class="p-6 bg-slate-800/30 border-slate-600 mb-6">
+        <div class="p-6 bg-slate-800/30 border-slate-600 mb-6 nes-container">
           <h3 class="text-lg font-bold mb-4">Event Details</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -519,11 +519,11 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
 
       {#if selectedPatch}
-        <NesCard class="p-6 bg-slate-800/30 border-slate-600">
+        <div class="p-6 bg-slate-800/30 border-slate-600 nes-container">
           <h3 class="text-lg font-bold mb-4">Patch Details</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -582,7 +582,7 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
     </div>
   {/if}

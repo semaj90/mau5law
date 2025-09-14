@@ -12,8 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine';
 
   // Props
-  let { 
-    interactionType = $bindable(),
+  let { interactionType = $bindable(),
     context = $bindable(),
     autoTrigger = $bindable(),
     delay = $bindable(),
@@ -21,16 +20,22 @@ https://svelte.dev/e/js_parse_error -->
     trackOnMount = $bindable(),
     trackOnVisible = $bindable(),
     ratingType = $bindable()
-  } = $props();
+   }: { interactionType = $bindable(),
+    context = $bindable(),
+    autoTrigger = $bindable(),
+    delay = $bindable(),
+    priority = $bindable(),
+    trackOnMount = $bindable(),
+    trackOnVisible = $bindable(),
+    ratingType = $bindable()
+  : any } = $props();
 
   // Get feedback store
   const store = getFeedbackStore();
   let mounted = $state(false);
   let visible = $state(false);
   let interactionId: string | null = $state(null);
-  let element = $state<HTMLElement;
-
-  onMount(() => {
+  let element = $state<HTMLElementonMount(() = | null>(null)() {
     mounted = true);
     if (trackOnMount) {
       triggerFeedback();

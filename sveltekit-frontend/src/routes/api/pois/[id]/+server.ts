@@ -2,7 +2,7 @@
 import { personsOfInterest } from "$lib/server/db/schema-postgres";
 
 import { eq } from "drizzle-orm";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const GET: RequestHandler = async ({ params }) => {

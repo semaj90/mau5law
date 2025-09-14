@@ -3,10 +3,10 @@
 // TensorFlow.js Synthesizer Middleware
 // Advanced NLP pipeline combining Legal-BERT, Language Extraction, and WebAssembly AI
 
-import { legalBERTMiddleware, type LegalBERTAnalysis } from '../services/legal-bert-middleware.js';
-import { langExtractTensorFlow, type AdvancedExtractionResult } from '../services/langextract-tfjs.js';
-import { webAssemblyAIAdapter } from '../adapters/webasm-ai-adapter.js';
-import { webAssemblyLangChainBridge, type HybridRAGResult } from '../services/webasm-langchain-bridge.js';
+import { legalBERTMiddleware, type LegalBERTAnalysis } from '../services/legal-bert-middleware.js.js';
+import { langExtractTensorFlow, type AdvancedExtractionResult } from '../services/langextract-tfjs.js.js';
+import { webAssemblyAIAdapter } from '../adapters/webasm-ai-adapter.js.js';
+import { webAssemblyLangChainBridge, type HybridRAGResult } from '../services/webasm-langchain-bridge.js.js';
 import * as tf from '@tensorflow/tfjs';
 import { browser } from '$app/environment';
 
@@ -385,7 +385,7 @@ export class TensorFlowSynthesizer {
             conceptNodes: [],
             relationshipEdges: [],
             clusters: [],
-            centrality: {}
+            centrality: Record<string, any>
           },
           crossReferences: []
         },
@@ -466,15 +466,15 @@ export class TensorFlowSynthesizer {
 
     if (this.config.enableLegalBERT) {
       const result = results[resultIndex++];
-      if (result.status === 'fulfilled' && result.value) {
-        analysisResults.legalBERT = result.value;
+      if ((result as { status?: any; value?: any }).status === 'fulfilled' && (result as { status?: any; value?: any }).value) {
+        analysisResults.legalBERT = (result as { status?: any; value?: any }).value;
       }
     }
 
     if (this.config.enableLanguageExtraction) {
       const result = results[resultIndex++];
-      if (result.status === 'fulfilled' && result.value) {
-        analysisResults.languageExtraction = result.value;
+      if ((result as { status?: any; value?: any }).status === 'fulfilled' && (result as { status?: any; value?: any }).value) {
+        analysisResults.languageExtraction = (result as { status?: any; value?: any }).value;
       }
     }
 
@@ -666,7 +666,7 @@ export class TensorFlowSynthesizer {
       console.error('[TF Synthesizer] Enhanced response generation failed:', error);
 
       return {
-        primaryResponse: 'I apologize, but I encountered an error generating a comprehensive response. Please try rephrasing your query.',
+        primaryResponse: 'I apologize, but I encountered an error generating a comprehensive (response as { primaryResponse?: any; sources?: any }). Please try rephrasing your query.',
         supportingAnalysis: [],
         legalReasoning: '',
         practicalImplications: [],
@@ -851,7 +851,7 @@ export class TensorFlowSynthesizer {
         conceptNodes: [],
         relationshipEdges: [],
         clusters: [],
-        centrality: {}
+        centrality: Record<string, any>
       };
     }
 
@@ -875,7 +875,7 @@ export class TensorFlowSynthesizer {
       conceptNodes,
       relationshipEdges,
       clusters: [],
-      centrality: {}
+      centrality: Record<string, any>
     };
   }
 
@@ -1032,8 +1032,8 @@ export class TensorFlowSynthesizer {
     }
 
     // Response quality indicators
-    const completeness = response ? Math.min(response.primaryResponse.length / 500, 1.0) : 0;
-    const coherence = response ? (response.sources.length > 0 ? 0.8 : 0.4) : 0;
+    const completeness = response ? Math.min((response as { primaryResponse?: any; sources?: any }).primaryResponse.length / 500, 1.0) : 0;
+    const coherence = response ? ((response as { primaryResponse?: any; sources?: any }).sources.length > 0 ? 0.8 : 0.4) : 0;
     const relevance = insights ? Math.min(insights.keyLegalConcepts.length / 10, 1.0) : 0;
 
     overallQuality = (analysisDepth + completeness + coherence + relevance) / 4;

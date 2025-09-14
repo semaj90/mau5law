@@ -228,14 +228,7 @@ export class WebGPUVertexStreamer {
   /**
    * Stream legal document vertices with CHR-ROM caching
    */
-  async streamLegalDocuments(documents: Array<{
-    id: string;
-    position: [number, number, number];
-    documentType: 'contract' | 'evidence' | 'brief' | 'citation';
-    riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    confidence: number;
-    relatedCases: string[];
-  }>): Promise<void> {
+  async streamLegalDocuments(documents: Array<): Promise<void> {
     const newVertices: LegalVisualizationVertex[] = [];
     
     for (const doc of documents) {
@@ -459,17 +452,7 @@ export class WebGPUVertexStreamer {
  * TypeScript-safe vertex buffer factory for legal documents
  */
 export function createLegalVertexBuffer(
-  documents: Array<{
-    id: string;
-    title: string;
-    content: string;
-    metadata: {
-      caseId: string;
-      documentType: 'contract' | 'evidence' | 'brief' | 'citation';
-      riskLevel: 'low' | 'medium' | 'high' | 'critical';
-      confidence: number;
-    };
-  }>
+  documents: Array<
 ): VertexData[] {
   return documents.map((doc, index) => ({
     position: [

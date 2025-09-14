@@ -27,8 +27,7 @@
   {step}
   value={value?.[0] ?? 0}
   class={klass}
-  {disabled}
-  input={onInput as any} />
+  {disabled} on:input={onInput as any} />
 
 <style>
   input[type='range'] {

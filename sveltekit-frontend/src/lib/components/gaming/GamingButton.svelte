@@ -11,8 +11,7 @@
   		onclick?: () => void;
   		children: any
   	}
-  	let { 
-  		variant = 'primary',
+  	let { variant = 'primary',
   		size = 'md',
   		disabled = false,
   		loading = false,
@@ -20,8 +19,16 @@
   		soundEnabled = true,
   		onclick,
   		children
-  	} = $props();
-  	let buttonElement = $state<HTMLButtonElement>();
+  	 }: { variant = 'primary',
+  		size = 'md',
+  		disabled = false,
+  		loading = false,
+  		glowEffect = false,
+  		soundEnabled = true,
+  		onclick,
+  		children
+  	: any } = $props();
+  	let buttonElement: HTMLButtonElement = $state(undefined as any);
   	let isPressed = $state(false);
   	function handleClick(event: MouseEvent) {
   		if (disabled || loading) return;
@@ -61,7 +68,7 @@
 	class:pressed={isPressed}
 	class:glow={glowEffect}
 	{disabled}
-	onclick={handleClick}
+	on:click={handleClick}
 	
 >
 	{#if loading}

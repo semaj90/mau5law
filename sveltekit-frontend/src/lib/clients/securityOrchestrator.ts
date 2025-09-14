@@ -16,7 +16,7 @@ export interface SecurityValidationResponseClient {
   riskScore: number;
   securityScore: number;
   verification: Record<string, any>;
-  signals: Array<{ name: string; weight: number; value: any; contribution: number }>;
+  signals: Array<any>;
   status: 'allow' | 'review' | 'deny';
   modelVersion: string;
   durationMs: number;

@@ -9,7 +9,7 @@ import { fail, redirect } from "@sveltejs/kit";
 import type { JSONSchema7 } from "json-schema";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import type { Actions, PageServerLoad } from "./$types";
+import type { Actions, PageServerLoad } from './$types.js';
 
 // removed: import { URL } from "url";
 

@@ -106,9 +106,9 @@
 
   <main class="container mx-auto px-4 py-8 space-y-8">
     <!-- System Status Overview -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="text-green-400">✅ System Status: Operational</h3>
+        <h3 class="nes-text is-primary text-green-400">✅ System Status: Operational</h3>
       </div>
       <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
@@ -134,14 +134,14 @@
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- AI Query Interface -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="text-blue-400">AI Legal Analysis Interface</h3>
+        <h3 class="nes-text is-primary text-blue-400">AI Legal Analysis Interface</h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-6">
+      <div class="yorha-panel-content space-y-6">
         <!-- Input Section -->
         <div class="space-y-4">
           <div>
@@ -170,20 +170,20 @@
           <!-- Action Buttons -->
           <div class="flex gap-4">
             <Button
-              onclick={handleAnalyze}
+              on:click={handleAnalyze}
               disabled={!testQuery.trim() ||
                 processingStatus === 'processing' ||
                 !systemInitialized}
               class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn">
-              {processingStatus === 'processing' ? 'Analyzing...' : 'Analyze with AI'}
-            </button>
+{processingStatus === 'processing' ? 'Analyzing...' : 'Analyze with AI'}
+</Button>
 
             <Button class="bits-btn"
               variant="outline"
-              onclick={handleClear}
+              on:click={handleClear}
               disabled={processingStatus === 'processing'}>
-              Clear
-            </button>
+Clear
+</Button>
           </div>
         </div>
 
@@ -245,12 +245,12 @@
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
 
     <!-- Architecture & Features -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="text-purple-400">Enhanced RAG Multi-Agent AI Architecture</h3>
+        <h3 class="nes-text is-primary text-purple-400">Enhanced RAG Multi-Agent AI Architecture</h3>
       </div>
       <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
@@ -319,7 +319,7 @@
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   </main>
 </div>
 

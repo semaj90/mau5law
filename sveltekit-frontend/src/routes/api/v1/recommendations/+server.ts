@@ -183,10 +183,10 @@ class RecommendationsService {
     // In production, store rating in database and use for ML feedback
     const ratingRecord = {
       id: crypto.randomUUID(),
-      recommendationId: data.recommendationId,
-      rating: data.rating,
-      feedback: data.feedback,
-      implemented: data.implemented,
+      recommendationId: (data as { recommendationId?: any; rating?: any; feedback?: any; implemented?: any }).recommendationId,
+      rating: (data as { recommendationId?: any; rating?: any; feedback?: any; implemented?: any }).rating,
+      feedback: (data as { recommendationId?: any; rating?: any; feedback?: any; implemented?: any }).feedback,
+      implemented: (data as { recommendationId?: any; rating?: any; feedback?: any; implemented?: any }).implemented,
       userId: this.userId,
       ratedAt: new Date().toISOString()
     };
@@ -241,9 +241,9 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
     }).passthrough();
 
     const payload = {
-      data: result.data,
-      pagination: result.pagination,
-      analytics: result.analytics,
+      data: (result as { data?: any; pagination?: any; analytics?: any }).data,
+      pagination: (result as { data?: any; pagination?: any; analytics?: any }).pagination,
+      analytics: (result as { data?: any; pagination?: any; analytics?: any }).analytics,
     };
 
     const validated = RecommendationsListResponse.safeParse(payload);

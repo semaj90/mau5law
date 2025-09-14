@@ -93,14 +93,14 @@ https://svelte.dev/e/expected_token -->
       processingResult = result;
       
       addLog(`✅ Document processed in ${processingTime.toFixed(2)}ms`);
-      addLog(`📊 Found ${result.metadata.entities?.length || 0} entities, ${result.metadata.citations?.length || 0} citations`);
-      addLog(`🎯 Confidence: ${(result.metadata.confidence * 100).toFixed(1)}%`);
-      addLog(`⚡ Strategy: ${result.metadata.strategy}`);
+      addLog(`📊 Found ${(result as { metadata?: any; metrics?: any }).metadata.entities?.length || 0} entities, ${(result as { metadata?: any; metrics?: any }).metadata.citations?.length || 0} citations`);
+      addLog(`🎯 Confidence: ${((result as { metadata?: any; metrics?: any }).metadata.confidence * 100).toFixed(1)}%`);
+      addLog(`⚡ Strategy: ${(result as { metadata?: any; metrics?: any }).metadata.strategy}`);
 
       // Update performance chart
       performanceChart = [...performanceChart, {
         time: Date.now(),
-        throughput: result.metrics.megabytesPerSecond || 0
+        throughput: (result as { metadata?: any; metrics?: any }).metrics.megabytesPerSecond || 0
       }].slice(-20); // Keep last 20 measurements
 
     } catch (error) {
@@ -269,7 +269,7 @@ https://svelte.dev/e/expected_token -->
       <h3>📄 Single Document Processing</h3>
       <div class="processing-controls">
         <button 
-          onclick={processSingleDocument}
+          on:click={processSingleDocument}
           disabled={!$pipelineReady || isProcessing}
           class="btn nes-btn is-primary"
         >
@@ -281,7 +281,7 @@ https://svelte.dev/e/expected_token -->
         </button>
 
         <button 
-          onclick={() => lastProcessedDoc = sampleLegalDocument}
+          on:click={() => lastProcessedDoc = sampleLegalDocument}
           class="btn nes-btn"
         >
           📋 Load Sample
@@ -297,7 +297,7 @@ https://svelte.dev/e/expected_token -->
           class="document-input"
         ></textarea>
         <button 
-          onclick={testCustomDocument}
+          on:click={testCustomDocument}
           disabled={!$pipelineReady || isProcessing || !lastProcessedDoc.trim()}
           class="btn nes-btn is-primary"
         >
@@ -362,7 +362,7 @@ https://svelte.dev/e/expected_token -->
       <h3>🔄 Bulk Document Processing</h3>
       <div class="bulk-controls">
         <button 
-          onclick={processBulkDocuments}
+          on:click={processBulkDocuments}
           disabled={!$pipelineReady || isBulkProcessing}
           class="btn nes-btn is-primary"
         >
@@ -404,9 +404,9 @@ https://svelte.dev/e/expected_token -->
             {#each bulkResults as result, i}
               <div class="bulk-result-item">
                 <strong>Document {i + 1}:</strong>
-                {result.metadata.entities?.length || 0} entities, 
-                {result.metadata.citations?.length || 0} citations,
-                {result.metadata.processingTime.toFixed(2)}ms
+                {(result as { metadata?: any; metrics?: any }).metadata.entities?.length || 0} entities, 
+                {(result as { metadata?: any; metrics?: any }).metadata.citations?.length || 0} citations,
+                {(result as { metadata?: any; metrics?: any }).metadata.processingTime.toFixed(2)}ms
               </div>
             {/each}
           </div>
@@ -418,7 +418,7 @@ https://svelte.dev/e/expected_token -->
     <div class="panel log-panel">
       <div class="log-header">
         <h3>📝 Processing Log</h3>
-        <button onclick={clearLogs} class="btn btn-small">🧹 Clear</button>
+        <button on:click={clearLogs} class="btn btn-small">🧹 Clear</button>
       </div>
       <div class="log-container">
         {#each processingLog as logEntry}

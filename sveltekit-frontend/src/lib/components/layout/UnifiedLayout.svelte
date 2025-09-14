@@ -71,10 +71,10 @@
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
         class="sidebar-overlay nes-container is-dark"
-        onclick={() => sidebarOpen = false}
+        on:click={() => sidebarOpen = false}
         role="button"
         tabindex="0"
-        onkeydown={(e) => e.key === 'Enter' && (sidebarOpen = false)}
+        on:keydown={(e) => e.key === 'Enter' && (sidebarOpen = false)}
       ></div>
     {/if}
 

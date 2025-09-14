@@ -70,7 +70,7 @@
       <input
         type="file"
         accept="*/*"
-        onchange={handleUpload}
+        on:change={handleUpload}
         style="display:none"
       />
       📁 Upload Evidence

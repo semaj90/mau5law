@@ -17,7 +17,7 @@
  */
 
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * AI-Powered Find API with Context7 MCP Integration
@@ -136,7 +136,7 @@ const RATE_LIMIT = {
 /*
  * Check rate limiting using Redis
  */
-async function checkRateLimit(key: string): Promise<{ allowed: boolean; remaining: number }> {
+async function checkRateLimit(key: string): Promise<any> {
   try {
     const current = await redis.incr(`rate_limit:${key}`);
     
@@ -277,20 +277,20 @@ async function performDatabaseSearch(
 
     // Filter results based on type
     if (type === 'all' || type === 'cases') {
-      results = results.concat(mockCases.filter((item: any) => item.title.toLowerCase().includes(query.toLowerCase()) ||
-        item.description.toLowerCase().includes(query.toLowerCase())
+      results = results.concat(mockCases.filter((item: any) => (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).title.toLowerCase().includes(query.toLowerCase()) ||
+        (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).description.toLowerCase().includes(query.toLowerCase())
       ));
     }
 
     if (type === 'all' || type === 'evidence') {
-      results = results.concat(mockEvidence.filter((item: any) => item.title.toLowerCase().includes(query.toLowerCase()) ||
-        item.description.toLowerCase().includes(query.toLowerCase())
+      results = results.concat(mockEvidence.filter((item: any) => (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).title.toLowerCase().includes(query.toLowerCase()) ||
+        (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).description.toLowerCase().includes(query.toLowerCase())
       ));
     }
 
     if (type === 'all' || type === 'documents') {
-      results = results.concat(mockDocuments.filter((item: any) => item.title.toLowerCase().includes(query.toLowerCase()) ||
-        item.content.toLowerCase().includes(query.toLowerCase())
+      results = results.concat(mockDocuments.filter((item: any) => (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).title.toLowerCase().includes(query.toLowerCase()) ||
+        (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).content.toLowerCase().includes(query.toLowerCase())
       ));
     }
 
@@ -310,7 +310,7 @@ async function enhanceResultsWithAI(
   query: string, 
   results: any[], 
   confidenceThreshold: number
-): Promise<{ enhanced: any[], aiAnalysis: any }> {
+): Promise<any> {
   try {
     const aiPrompt = `
 You are an AI assistant for a legal case management system. Analyze these search results for the query: "${query}"
@@ -375,13 +375,13 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
       console.warn('AI response parsing failed, using fallback enhancement');
       
       const enhanced = results.map((result, index) => ({
-        id: result.id,
+        id: (result as { id?: any; description?: any; content?: any; type?: any }).id,
         confidence: Math.max(0.6, Math.random() * 0.4 + 0.6),
         relevanceScore: Math.max(0.7, Math.random() * 0.3 + 0.7),
-        excerpt: result.description?.substring(0, 200) + '...' || 
-                result.content?.substring(0, 200) + '...' || '',
+        excerpt: (result as { id?: any; description?: any; content?: any; type?: any }).description?.substring(0, 200) + '...' || 
+                (result as { id?: any; description?: any; content?: any; type?: any }).content?.substring(0, 200) + '...' || '',
         highlights: [query],
-        reasoning: `Matched search term "${query}" in ${result.type}`
+        reasoning: `Matched search term "${query}" in ${(result as { id?: any; description?: any; content?: any; type?: any }).type}`
       }));
 
       return {
@@ -400,11 +400,11 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
     
     // Return basic enhancement
     const enhanced = results.map((result: any) => ({
-      id: result.id,
+      id: (result as { id?: any; description?: any; content?: any; type?: any }).id,
       confidence: 0.7,
       relevanceScore: 0.8,
-      excerpt: result.description?.substring(0, 200) + '...' || 
-              result.content?.substring(0, 200) + '...' || '',
+      excerpt: (result as { id?: any; description?: any; content?: any; type?: any }).description?.substring(0, 200) + '...' || 
+              (result as { id?: any; description?: any; content?: any; type?: any }).content?.substring(0, 200) + '...' || '',
       highlights: [query],
       reasoning: 'Basic relevance match'
     }));
@@ -671,40 +671,40 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     results = dbResults.map((item, index) => {
       // Find AI enhancement for this result
       const aiEnhancement = aiAnalysis?.enhancedResults?.find(
-        (enhancement: any) => enhancement.id === item.id
+        (enhancement: any) => enhancement.id === (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).id
       ) || {};
       
       // Calculate combined confidence score
-      const baseConfidence = item.title?.toLowerCase().includes(query.toLowerCase()) ? 0.9 : 0.7;
+      const baseConfidence = (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).title?.toLowerCase().includes(query.toLowerCase()) ? 0.9 : 0.7;
       const aiConfidence = aiEnhancement.confidence || baseConfidence;
       const finalConfidence = (baseConfidence + aiConfidence) / 2;
 
       return {
-        id: item.id,
-        title: item.title || 'Untitled',
+        id: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).id,
+        title: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).title || 'Untitled',
         excerpt: aiEnhancement.excerpt || 
-                item.description?.substring(0, 200) + '...' || 
-                item.content?.substring(0, 200) + '...' || 
+                (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).description?.substring(0, 200) + '...' || 
+                (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).content?.substring(0, 200) + '...' || 
                 'No description available',
-        type: item.type,
+        type: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).type,
         aiConfidence: finalConfidence,
         relevanceScore: aiEnhancement.relevanceScore || 
                       (Math.random() * 0.3 + 0.7),
-        lastModified: new Date(item.updatedAt).toLocaleDateString(),
+        lastModified: new Date((item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).updatedAt).toLocaleDateString(),
         metadata: {
-          priority: item.priority,
-          status: item.status,
-          evidenceType: item.evidenceType,
-          documentType: item.documentType,
-          isAdmissible: item.isAdmissible,
-          wordCount: item.wordCount,
-          caseNumber: item.caseNumber,
-          location: item.location,
-          dangerScore: item.dangerScore,
-          jurisdiction: item.jurisdiction,
-          collectedBy: item.collectedBy,
-          tags: item.tags,
-          aiSummary: item.aiSummary
+          priority: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).priority,
+          status: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).status,
+          evidenceType: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).evidenceType,
+          documentType: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).documentType,
+          isAdmissible: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).isAdmissible,
+          wordCount: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).wordCount,
+          caseNumber: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).caseNumber,
+          location: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).location,
+          dangerScore: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).dangerScore,
+          jurisdiction: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).jurisdiction,
+          collectedBy: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).collectedBy,
+          tags: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).tags,
+          aiSummary: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).aiSummary
         },
         highlights: aiEnhancement.highlights || [query],
         mcpInsights: mcpContext?.recommendations?.slice(0, 2) || []
@@ -909,12 +909,12 @@ async function generateAISuggestions(query: string): Promise<string[]> {
       })
     });
 
-    if (!response.ok) {
+    if (!(response as { ok?: any; json?: any }).ok) {
       throw new Error('AI suggestion service unavailable');
     }
 
-    const data = await response.json();
-    const suggestions = data.response
+    const data = await (response as { ok?: any; json?: any }).json();
+    const suggestions = (data as { confidence?: any; processingTime?: any; fromCache?: any; response?: any }).response
       .split('\n')
       .filter((line: string) => line.trim().length > 0)
       .map((line: string) => line.trim().replace(/^\d+\.\s*/, ''))
@@ -974,7 +974,7 @@ async function checkAIServiceHealth(): Promise<boolean> {
       method: 'GET',
       signal: AbortSignal.timeout(5000)
     });
-    return response.ok;
+    return (response as { ok?: any; json?: any }).ok;
   } catch {
     return false;
   }

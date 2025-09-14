@@ -368,7 +368,7 @@ export const legalAIStores = {
   // AI analysis results
   analysisResults: barrelStore.createStore({
     id: "legal-ai-analysis-results",
-    initialValue: {},
+    initialValue: Record<string, any>,
     persistent: true,
     cacheable: true,
     ttl: 1000 * 60 * 60, // 1 hour

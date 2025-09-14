@@ -37,12 +37,11 @@
 
       <div class="space-y-4">
     <Button class="bits-btn"
-      onclick={toggleReadOnly}
+      on:click={toggleReadOnly}
           variant={readOnly ? "default" : "outline"}
           size="sm"
         >
-          {readOnly ? 'Enable Editing' : 'Read Only'}
-        </button>
+{readOnly ? 'Enable Editing' : 'Read Only'}
 
         <div class="space-y-4">
           {#if caseId}
@@ -74,7 +73,8 @@
   <Button
     size="sm"
     class="space-y-4 bits-btn bits-btn"
-            onclick={() => {
+            on:click={() =>
+{
       const helpOverlay = document.getElementById('help-overlay');
       if (helpOverlay) {
         helpOverlay.style.display = 'none';
@@ -82,7 +82,7 @@
     }}
   >
     Got it!
-  </button>
+
 </div>
 
 <style>

@@ -70,7 +70,7 @@
   {#if showAdvancedFilters}
     <button 
       class="filter-toggle"
-      onclick={() => showAdvancedFilters = !showAdvancedFilters}
+      on:click={() => showAdvancedFilters = !showAdvancedFilters}
       aria-label="Toggle filters"
     >
       <svg xmlns="http://www.w3.org/2000/svg" class="filter-icon" viewBox="0 0 20 20" fill="currentColor">
@@ -88,7 +88,7 @@
       <select 
         id="document-type"
         bind:value={selectedType} 
-        onchange={handleFilterChange}
+        on:change={handleFilterChange}
         class="filter-select"
       >
         <option value="">All Types</option>
@@ -106,7 +106,7 @@
         <input 
           type="date" 
           bind:value={dateFrom}
-          onchange={handleFilterChange}
+          on:change={handleFilterChange}
           class="date-input"
           aria-label="From date"
         />
@@ -114,7 +114,7 @@
         <input 
           type="date" 
           bind:value={dateTo}
-          onchange={handleFilterChange}
+          on:change={handleFilterChange}
           class="date-input"
           aria-label="To date"
         />
@@ -125,7 +125,7 @@
       <button 
         type="button" 
         class="clear-button"
-        onclick={clearFilters}
+        on:click={clearFilters}
       >
         Clear Filters
       </button>

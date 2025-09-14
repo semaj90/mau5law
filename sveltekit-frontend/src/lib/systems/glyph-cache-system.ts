@@ -4,9 +4,9 @@
  * Integrates with CHR-ROM caching and quantized text processing
  */
 
-import { base64FP32Quantizer } from '../text/base64-fp32-quantizer';
-import { chrRomPatternCache } from '../cache/chr-rom-pattern-cache';
-import { enhancedCachingRevolutionaryBridge } from '../services/enhanced-caching-revolutionary-bridge';
+import { base64FP32Quantizer } from '../text/base64-fp32-quantizer.js';
+import { chrRomPatternCache } from '../cache/chr-rom-pattern-cache.js';
+import { enhancedCachingRevolutionaryBridge } from '../services/enhanced-caching-revolutionary-bridge.js';
 
 export interface GlyphTexture {
   char: string;

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/database';
 import { vectors, document_chunks } from '$lib/server/db/schema-postgres';
 import { json, error } from '@sveltejs/kit';
@@ -16,12 +16,12 @@ async function generateEmbedding(text: string): Promise<number[]> {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Ollama API error: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`Ollama API error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    const result = await response.json();
-    return result.embedding;
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+    return (result as { embedding?: any }).embedding;
   } catch (err) {
     console.error('Embedding generation failed:', err);
     throw new Error('Failed to generate embedding');

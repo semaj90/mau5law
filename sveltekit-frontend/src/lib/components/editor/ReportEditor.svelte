@@ -41,8 +41,7 @@ https://svelte.dev/e/js_parse_error -->
   } from "lucide-svelte";
 
   // State
-  let editorComponent = $state<RichTextEditor;
-  let cleanupAutoSave: (() => {
+  let editorComponent = $state<RichTextEditorlet cleanupAutoSave: (() = | null>(null)() {
         single: "layout-single",
         dual: "layout-dual",
         masonry: "layout-masonry",
@@ -200,7 +199,7 @@ https://svelte.dev/e/js_parse_error -->
       <aside
         class="editor-sidebar"
         style="width: {$reportUI.sidebarWidth}px"
-        transitifly={{ x: -300, duration: 300, easing: quintOut }}
+        /* transition removed */}
       >
         <!-- Evidence Search -->
         <section class="sidebar-section">
@@ -209,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
           <div>
             <h3>Evidence Library</h3>
             <button
-              onclick={() => handleAddNewEvidence()}
+              on:click={() => handleAddNewEvidence()}
               title="Add new evidence"
             >
               <Plus size={16} />
@@ -300,7 +299,7 @@ https://svelte.dev/e/js_parse_error -->
         <div>
           {#if !$reportUI.sidebarOpen}
             <button
-              onclick={() => toggleSidebar()}
+              on:click={() => toggleSidebar()}
               title="Show sidebar"
             >
               <PanelLeftOpen size={20} />
@@ -309,15 +308,14 @@ https://svelte.dev/e/js_parse_error -->
 
           <input
             type="text"
-            value={$report.title}
-            input={(e) => reportActions.updateTitle(e.currentTarget.value)}
+            value={$report.title} on:input={(e) => reportActions.updateTitle(e.currentTarget.value)}
             placeholder="Report title..."
           />
         </div>
 
         <div>
           <button
-            onclick={() => switchLayout()}
+            on:click={() => switchLayout()}
             title="Switch layout ({$report.settings.layout})"
           >
             {#if $report.settings.layout === "single"}
@@ -330,7 +328,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
 
           <button
-            onclick={() => toggleFullscreen()}
+            on:click={() => toggleFullscreen()}
             title="Toggle fullscreen"
           >
             {#if $reportUI.fullscreen}
@@ -341,7 +339,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
 
           <button
-            onclick={() => (showSettingsModal = true)}
+            on:click={() => (showSettingsModal = true)}
             title="Settings"
           >
             <Settings size={18} />
@@ -359,11 +357,11 @@ https://svelte.dev/e/js_parse_error -->
     {#if $report.settings.layout === "dual"}
       <aside
         class="evidence-panel"
-        transitifly={{ x: 300, duration: 300, easing: quintOut }}
+        /* transition removed */}
       >
         <div class="panel-header"></div>
           <h3>Evidence</h3>
-          <button class="add-evidence-btn" onclick={() => handleAddNewEvidence()}>
+          <button class="add-evidence-btn" on:click={() => handleAddNewEvidence()}>
             <Plus size={16} />
           </button>
         </div>

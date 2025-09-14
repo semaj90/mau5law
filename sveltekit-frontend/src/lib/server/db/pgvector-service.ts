@@ -6,7 +6,7 @@
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { cosineDistance, desc, sql, eq } from 'drizzle-orm';
-import { contentEmbeddings, legalDocuments, embeddingCache } from './schema-postgres';
+import { contentEmbeddings, legalDocuments, embeddingCache } from './schema-postgres.js';
 
 // Production PostgreSQL Configuration
 const connectionConfig = {
@@ -48,7 +48,7 @@ export class PgVectorService {
    * Test PostgreSQL + pgvector connection
    * Best Practice: Always verify extensions and permissions
    */
-  async testConnection(): Promise<{ success: boolean; details: any }> {
+  async testConnection(): Promise<any> {
     try {
       const client = await this.pool.connect();
 
@@ -112,7 +112,7 @@ export class PgVectorService {
     content: string,
     embedding: number[],
     metadata: any = {}
-  ): Promise<{ success: boolean; id?: number; error?: string }> {
+  ): Promise<any> {
     try {
       // Validate embedding dimensions (768 for nomic-embed-text, gemma models vary)
       if (embedding.length !== 768 && embedding.length !== 1536) {
@@ -176,7 +176,7 @@ export class PgVectorService {
       documentType?: string;
       includeContent?: boolean;
     } = {}
-  ): Promise<{ success: boolean; results?: any[]; error?: string; metadata?: any }> {
+  ): Promise<any> {
     try {
       if (queryEmbedding.length !== 768 && queryEmbedding.length !== 1536) {
         throw new Error(
@@ -236,10 +236,10 @@ export class PgVectorService {
 
         return {
           success: true,
-          results: result.rows,
+          results: (result as { rows?: any; rowCount?: any }).rows,
           metadata: {
             searchTime: `${searchTime}ms`,
-            totalResults: result.rowCount,
+            totalResults: (result as { rows?: any; rowCount?: any }).rowCount,
             distanceMetric,
             threshold,
             query: query.replace(/\$\d+/g, '?'),
@@ -261,13 +261,8 @@ export class PgVectorService {
    * Best Practice: Use prepared statements and batch processing
    */
   async batchInsertDocuments(
-    documents: Array<{
-      documentId: string;
-      content: string;
-      embedding: number[];
-      metadata?: any;
-    }>
-  ): Promise<{ success: boolean; inserted?: number; errors?: string[] }> {
+    documents: Array<
+  ): Promise<any> {
     try {
       const client = await this.pool.connect();
       const errors: string[] = [];
@@ -348,7 +343,7 @@ export class PgVectorService {
       tableName?: string;
       columnName?: string;
     } = {}
-  ): Promise<{ success: boolean; details?: any; error?: string }> {
+  ): Promise<any> {
     try {
       const {
         lists = 100,
@@ -414,7 +409,7 @@ export class PgVectorService {
    * Get database statistics for monitoring
    * Best Practice: Monitor performance and usage metrics
    */
-  async getDatabaseStats(): Promise<{ success: boolean; stats?: any; error?: string }> {
+  async getDatabaseStats(): Promise<any> {
     try {
       const client = await this.pool.connect();
 

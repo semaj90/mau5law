@@ -34,11 +34,7 @@ export interface ChatSession {
 
 export interface MessageAnalysis {
   intent: string;
-  entities: Array<{
-    type: string;
-    value: string;
-    confidence: number;
-  }>;
+  entities: Array<any>;
   sentiment: 'positive' | 'negative' | 'neutral';
   complexity: number;
   topics: string[];
@@ -49,11 +45,7 @@ export interface MessageAnalysis {
 export interface RAGContext {
   caseId?: string;
   documents: string[];
-  relevantSections: Array<{
-    documentId: string;
-    section: string;
-    relevance: number;
-  }>;
+  relevantSections: Array<any>;
   metadata: Record<string, any>;
   recommendations?: unknown[];
   did_you_mean?: string;
@@ -92,11 +84,7 @@ export interface UserActivity {
 export interface AttentionData {
   messageId: string;
   attentionWeights: number[];
-  focusPoints: Array<{
-    text: string;
-    weight: number;
-    position: [number, number];
-  }>;
+  focusPoints: Array<any>;
   focused?: boolean;
   lastActivity?: number;
   interactionCount?: number;

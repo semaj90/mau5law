@@ -17,12 +17,7 @@
     Cpu, Zap, Brain, FileText, Users
   } from 'lucide-svelte';
 
-  let testResults = $state<Array<{
-    name: string;
-    status: 'pending' | 'running' | 'success' | 'error';
-    message: string;
-    duration?: number;
-  }>>([]);
+  let testResults = $state<any[]>([])([]);
 
   let isRunningTests = $state(false);
   let overallStatus = $state<'idle' | 'testing' | 'complete'>('idle');
@@ -112,7 +107,7 @@
 
       // Update to running
       testResults = testResults.map(result =>
-        result.name === name
+        (result as { name?: any; status?: any; message?: any; duration?: any }).name === name
           ? { ...result, status: 'running', message: 'Running test...' }
           : result
       );
@@ -124,14 +119,14 @@
 
         // Update to success
         testResults = testResults.map(result =>
-          result.name === name
+          (result as { name?: any; status?: any; message?: any; duration?: any }).name === name
             ? { ...result, status: 'success', message, duration }
             : result
         );
       } catch (error) {
         // Update to error
         testResults = testResults.map(result =>
-          result.name === name
+          (result as { name?: any; status?: any; message?: any; duration?: any }).name === name
             ? {
                 ...result,
                 status: 'error',
@@ -208,10 +203,10 @@
           <div class="flex items-center gap-3">
             <Code2 class="h-6 w-6 text-primary" />
             <div>
-              <div.Title>Integration Test Suite</Card.Title>
+              <div.Title>Integration Test Suite</div.Title>
               <div.Description>
                 Verify all components and services are properly integrated
-              </Card.Description>
+              </div.Description>
             </div>
           </div>
           <div class="flex items-center gap-3">
@@ -221,11 +216,11 @@
               </Badge>
             {/if}
             <Button class="bits-btn"
-              onclick={runTests}
+              on:click={runTests}
               disabled={isRunningTests}
               variant={allTestsPassed ? 'outline' : 'default'}
             >
-              {#if isRunningTests}
+{#if isRunningTests}
                 <Cpu class="h-4 w-4 mr-2 animate-spin" />
                 Running Tests...
               {:else if overallStatus === 'complete'}
@@ -235,10 +230,10 @@
                 <Zap class="h-4 w-4 mr-2" />
                 Run Integration Tests
               {/if}
-            </button>
+
           </div>
         </div>
-      </Card.Header>
+      </div.Header>
 
       <div.Content>
         {#if testResults.length === 0}
@@ -251,26 +246,26 @@
             {#each testResults as result}
               <div class="flex items-center justify-between p-3 rounded-lg border">
                 <div class="flex items-center gap-3">
-                  {#if result.status === 'success'}<CheckCircle class="h-5 w-5 {getStatusColor(result.status)} {result.status === 'running' ? 'animate-spin' : ''}" />{:else if result.status === 'error'}<AlertTriangle class="h-5 w-5 {getStatusColor(result.status)} {result.status === 'running' ? 'animate-spin' : ''}" />{:else if result.status === 'running'}<Cpu class="h-5 w-5 {getStatusColor(result.status)} {result.status === 'running' ? 'animate-spin' : ''}" />{:else}<Code2 class="h-5 w-5 {getStatusColor(result.status)} {result.status === 'running' ? 'animate-spin' : ''}" />{/if}
+                  {#if (result as { name?: any; status?: any; message?: any; duration?: any }).status === 'success'}<CheckCircle class="h-5 w-5 {getStatusColor((result as { name?: any; status?: any; message?: any; duration?: any }).status)} {(result as { name?: any; status?: any; message?: any; duration?: any }).status === 'running' ? 'animate-spin' : ''}" />{:else if (result as { name?: any; status?: any; message?: any; duration?: any }).status === 'error'}<AlertTriangle class="h-5 w-5 {getStatusColor((result as { name?: any; status?: any; message?: any; duration?: any }).status)} {(result as { name?: any; status?: any; message?: any; duration?: any }).status === 'running' ? 'animate-spin' : ''}" />{:else if (result as { name?: any; status?: any; message?: any; duration?: any }).status === 'running'}<Cpu class="h-5 w-5 {getStatusColor((result as { name?: any; status?: any; message?: any; duration?: any }).status)} {(result as { name?: any; status?: any; message?: any; duration?: any }).status === 'running' ? 'animate-spin' : ''}" />{:else}<Code2 class="h-5 w-5 {getStatusColor((result as { name?: any; status?: any; message?: any; duration?: any }).status)} {(result as { name?: any; status?: any; message?: any; duration?: any }).status === 'running' ? 'animate-spin' : ''}" />{/if}
                   <div>
-                    <div class="font-medium">{result.name}</div>
-                    <div class="text-sm nes-text is-disabled">{result.message}</div>
+                    <div class="font-medium">{(result as { name?: any; status?: any; message?: any; duration?: any }).name}</div>
+                    <div class="text-sm nes-text is-disabled">{(result as { name?: any; status?: any; message?: any; duration?: any }).message}</div>
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
-                  {#if result.duration}
-                    <span class="text-xs nes-text is-disabled">{result.duration}ms</span>
+                  {#if (result as { name?: any; status?: any; message?: any; duration?: any }).duration}
+                    <span class="text-xs nes-text is-disabled">{(result as { name?: any; status?: any; message?: any; duration?: any }).duration}ms</span>
                   {/if}
-                  <Badge variant={getStatusVariant(result.status)}>
-                    {result.status}
+                  <Badge variant={getStatusVariant((result as { name?: any; status?: any; message?: any; duration?: any }).status)}>
+                    {(result as { name?: any; status?: any; message?: any; duration?: any }).status}
                   </Badge>
                 </div>
               </div>
             {/each}
           </div>
         {/if}
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
 
     <!-- Success Message -->
     {#if allTestsPassed}
@@ -286,8 +281,8 @@
               </p>
             </div>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     {/if}
 
     <!-- Feature Overview -->
@@ -301,8 +296,8 @@
           <p class="text-sm nes-text is-disabled">
             Complete state management with auth, session, and AI machines
           </p>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
 
       <div.Root>
         <div.Content class="pt-6">
@@ -313,8 +308,8 @@
           <p class="text-sm nes-text is-disabled">
             MCP GPU orchestrator for enhanced security analysis
           </p>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
 
       <div.Root>
         <div.Content class="pt-6">
@@ -325,8 +320,8 @@
           <p class="text-sm nes-text is-disabled">
             Ollama cluster with Context7 documentation enhancement
           </p>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
 
       <div.Root>
         <div.Content class="pt-6">
@@ -337,8 +332,8 @@
           <p class="text-sm nes-text is-disabled">
             Role-based authentication with legal domain validation
           </p>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </div>
 
     <!-- Interactive Demo -->
@@ -350,8 +345,8 @@
         <div.Title class="flex items-center gap-2">
           <FileText class="h-5 w-5" />
           Technical Implementation
-        </Card.Title>
-      </Card.Header>
+        </div.Title>
+      </div.Header>
       <div.Content class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -383,8 +378,8 @@
             working together with XState for predictable state management.
           </p>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
 
   </div>
 </div>

@@ -24,12 +24,12 @@
         })
       });
       const result = await res.json();
-      if (result.success) {
-        summary = result.summary;
-        confidence = result.metadata?.confidence || 0.85;
-        ragScore = result.metadata?.ragScore || 0.82;
+      if ((result as { success?: any; summary?: any; metadata?: any; error?: any }).success) {
+        summary = (result as { success?: any; summary?: any; metadata?: any; error?: any }).summary;
+        confidence = (result as { success?: any; summary?: any; metadata?: any; error?: any }).metadata?.confidence || 0.85;
+        ragScore = (result as { success?: any; summary?: any; metadata?: any; error?: any }).metadata?.ragScore || 0.82;
       } else {
-        summary = `API Error: ${result.error}`;
+        summary = `API Error: ${(result as { success?: any; summary?: any; metadata?: any; error?: any }).error}`;
       }
     } catch (error) {
       summary = `Connection Error: ${error.message}`;
@@ -82,7 +82,7 @@
           </div>
           
           <button 
-            onclick={generateSummary}
+            on:click={generateSummary}
             disabled={isGenerating}
             class="w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
           >

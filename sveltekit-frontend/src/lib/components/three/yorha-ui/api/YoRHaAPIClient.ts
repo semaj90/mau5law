@@ -4,10 +4,10 @@
  * and real-time data subscriptions (SSE / WebSocket / polling).
  */
 
-import type { YoRHaButton3DOptions } from '../components/YoRHaButton3D';
-import type { YoRHaPanel3DOptions } from '../components/YoRHaPanel3D';
-import type { YoRHaInput3DOptions } from '../components/YoRHaInput3D';
-import type { YoRHaModal3DOptions } from '../components/YoRHaModal3D';
+import type { YoRHaButton3DOptions } from '../components/YoRHaButton3D.js';
+import type { YoRHaPanel3DOptions } from '../components/YoRHaPanel3D.js';
+import type { YoRHaInput3DOptions } from '../components/YoRHaInput3D.js';
+import type { YoRHaModal3DOptions } from '../components/YoRHaModal3D.js';
 
 export interface YoRHaAPIConfig {
   baseURL: string;
@@ -82,22 +82,8 @@ export interface YoRHaSystemStatus {
 }
 
 export interface YoRHaGraphData {
-  nodes: Array<{
-    id: string;
-    type: 'database' | 'service' | 'component' | 'api';
-    label: string;
-    position: { x: number; y: number; z: number };
-    metrics: any;
-    status: 'healthy' | 'warning' | 'error' | 'offline';
-  }>;
-  edges: Array<{
-    from: string;
-    to: string;
-    type: 'data' | 'api' | 'websocket' | 'grpc';
-    traffic: number;
-    latency: number;
-  }>;
-}
+  nodes: Array<any>;
+  edges: Array<any>
 
 export class YoRHaAPIClient {
   private config: YoRHaAPIConfig;

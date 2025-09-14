@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  let { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha' } = $props();
+  let { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha'  }: { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha' : any } = $props();
 
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { useMachine } from '@xstate/svelte';
@@ -51,13 +51,7 @@ https://svelte.dev/e/js_parse_error -->
   const { state: idleState, send: sendIdleEvent } = useMachine(idleDetectionMachine);
 
   // Event dispatcher
-  const dispatch = createEventDispatcher<{
-    graphLoaded: { graph: RecommendationGraph };
-    nodeClicked: { node: Neo4jNode };
-    streamingStarted: { streamId: string };
-    streamingError: { error: string };
-    renderUpdate: { stats: typeof renderStats };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Camera and animation state
   let camera = {
@@ -79,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
     value: 0,
     target: 0,
     speed: 0.05,
-    segments: [] as Array<{ start: number; end: number; active: boolean; color: string }>
+    segments: [] as Array
   };
 
   /**
@@ -438,7 +432,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- WebGPU Canvas -->
   <canvas
     bind:this={canvasRef}
-    onclick={handleCanvasClick}
+    on:click={handleCanvasClick}
     on:mousemove={handleCanvasClick}
     class="render-canvas"
     aria-label="3D Neo4j Knowledge Graph Visualization"
@@ -492,7 +486,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="error-message">{error}</div>
       <button 
         class="retry-button"
-        onclick={loadRecommendations}
+        on:click={loadRecommendations}
         disabled={isLoading}
       >
         Retry Loading
@@ -528,7 +522,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="camera-controls">
     <button 
       class="control-button"
-      onclick={() => animation.enabled = !animation.enabled}
+      on:click={() => animation.enabled = !animation.enabled}
       title="Toggle Animation"
     >
       {animation.enabled ? '⏸️' : '▶️'}
@@ -536,7 +530,7 @@ https://svelte.dev/e/js_parse_error -->
     
     <button 
       class="control-button"
-      onclick={() => camera = { ...camera, position: { x: 0, y: 0, z: 50 } }}
+      on:click={() => camera = { ...camera, position: { x: 0, y: 0, z: 50 } }}
       title="Reset Camera"
     >
       🎯

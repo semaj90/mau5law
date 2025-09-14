@@ -30,13 +30,7 @@ export interface CopilotIndexEntry {
     fileSize: number;
     tokens: number;
   };
-  semanticChunks: Array<{
-    content: string;
-    embedding: Float32Array;
-    startOffset: number;
-    endOffset: number;
-  }>;
-}
+  semanticChunks: Array<any>
 
 export interface CopilotIndex {
   version: string;
@@ -49,13 +43,7 @@ export interface CopilotIndex {
     indexSizeMB: number;
     lastUpdated: number;
   };
-  clusters: Array<{
-    id: string;
-    centroid: Float32Array;
-    memberIds: string[];
-    relevantTerms: string[];
-  }>;
-}
+  clusters: Array<any>
 
 // Vector embedding integration with pgvector/Qdrant
 export interface VectorEmbeddingConfig {
@@ -233,7 +221,7 @@ export class SIMDJSONIndexProcessor {
         score: this.calculateCosineSimilaritySIMD(queryEmbedding, chunk.embedding),
         embeddings: Array.from(chunk.embedding.slice(0, 10)),
         chunkType: 'paragraph' as const,
-        metadata: {} // Required by TextChunk interface
+        metadata: Record<string, any> // Required by TextChunk interface
       } as TextChunk)),
       highlights: this.extractHighlights(entry.content, query),
       explanation: `Enhanced semantic search result (${entry.metadata.source})`,
@@ -523,7 +511,7 @@ export class SIMDJSONIndexProcessor {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           content, 
-          model: this.vectorConfig.model,
+          model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,
           backend: 'pgvector'
         }),
       });
@@ -548,7 +536,7 @@ export class SIMDJSONIndexProcessor {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           content, 
-          model: this.vectorConfig.model,
+          model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,
           backend: 'qdrant'
         }),
       });

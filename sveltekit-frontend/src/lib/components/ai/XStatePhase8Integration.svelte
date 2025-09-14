@@ -256,7 +256,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       <h2 class="text-2xl font-bold text-yellow-400">Legal Case Form</h2>
       <button 
         class="yorha-button px-3 py-1 text-sm bg-blue-600 text-white"
-        onclick={requestAIHelp}
+        on:click={requestAIHelp}
       >
         AI Assistant
       </button>
@@ -313,12 +313,11 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   bind:this={fileInput}
                   type="file" 
                   multiple 
-                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                  change={handleFileUpload}
+                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" on:change={handleFileUpload}
                   class="hidden"
                 />
                 <button 
-                  onclick={() => fileInput?.click()}
+                  on:click={() => fileInput?.click()}
                   class="yorha-button px-6 py-3 bg-blue-600 text-white"
                 >
                   Select Evidence Files
@@ -332,8 +331,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-evidence-type-">
                   Evidence Type
                 </label><select id="-evidence-type-" 
-                  bind:value={selectedEvidenceType}
-                  change={() => send({ type: 'SET_EVIDENCE_TYPE', evidenceType: selectedEvidenceType })}
+                  bind:value={selectedEvidenceType} on:change={() => send({ type: 'SET_EVIDENCE_TYPE', evidenceType: selectedEvidenceType })}
                   class="yorha-select w-full p-2 bg-gray-800 border border-gray-600 rounded"
                 >
                   <option value="digital">Digital Evidence</option>
@@ -345,7 +343,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               
               {#if $state.matches('evidenceUpload')}
                 <button 
-                  onclick={handleNextStep}
+                  on:click={handleNextStep}
                   disabled={$context.evidenceFiles.length === 0}
                   class="yorha-button px-6 py-2 bg-yellow-400 text-black disabled:opacity-50"
                 >
@@ -380,7 +378,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   Case Title
                 </label><input id="-case-title-" 
                   bind:value={caseTitle}
-                  onblur={handleCaseDetailsUpdate}
+                  on:blur={handleCaseDetailsUpdate}
                   type="text" 
                   placeholder="Enter case title..."
                   class="yorha-input w-full p-3 bg-gray-800 border border-gray-600 rounded"
@@ -395,7 +393,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   Case Description
                 </label><textarea id="-case-description-" 
                   bind:value={caseDescription}
-                  onblur={handleCaseDetailsUpdate}
+                  on:blur={handleCaseDetailsUpdate}
                   rows="4"
                   placeholder="Detailed case description..."
                   class="yorha-input w-full p-3 bg-gray-800 border border-gray-600 rounded"
@@ -409,8 +407,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-priority-level-">
                   Priority Level
                 </label><select id="-priority-level-" 
-                  bind:value={selectedPriority}
-                  change={() => send({ type: 'SET_PRIORITY', priority: selectedPriority })}
+                  bind:value={selectedPriority} on:change={() => send({ type: 'SET_PRIORITY', priority: selectedPriority })}
                   class="yorha-select w-full p-2 bg-gray-800 border border-gray-600 rounded"
                 >
                   <option value="low">Low Priority</option>
@@ -423,13 +420,13 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               {#if $state.matches('caseDetails')}
                 <div class="flex gap-3">
                   <button 
-                    onclick={handleBackStep}
+                    on:click={handleBackStep}
                     class="yorha-button px-4 py-2 bg-gray-600 text-white"
                   >
                     Back
                   </button>
                   <button 
-                    onclick={handleNextStep}
+                    on:click={handleNextStep}
                     disabled={!caseTitle.trim() || !caseDescription.trim()}
                     class="yorha-button px-6 py-2 bg-yellow-400 text-black disabled:opacity-50"
                   >
@@ -486,13 +483,13 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               {#if $state.matches('review')}
                 <div class="flex gap-3">
                   <button 
-                    onclick={handleBackStep}
+                    on:click={handleBackStep}
                     class="yorha-button px-4 py-2 bg-gray-600 text-white"
                   >
                     Back
                   </button>
                   <button 
-                    onclick={handleSubmit}
+                    on:click={handleSubmit}
                     class="yorha-button px-6 py-2 bg-green-600 text-white"
                   >
                     Submit Case
@@ -512,7 +509,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   <div class="text-green-400 text-4xl mb-4">✓</div>
                   <p class="text-green-400 text-lg">Case submitted successfully!</p>
                   <button 
-                    onclick={() => send({ type: 'RESET_FORM' })}
+                    on:click={() => send({ type: 'RESET_FORM' })}
                     class="yorha-button px-6 py-2 bg-blue-600 text-white mt-4"
                   >
                     Create New Case
@@ -526,7 +523,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   <p class="text-red-400 text-lg">Submission failed</p>
                   <p class="text-gray-400 text-sm">{$context.validationErrors.submit}</p>
                   <button 
-                    onclick={handleBackStep}
+                    on:click={handleBackStep}
                     class="yorha-button px-6 py-2 bg-yellow-400 text-black mt-4"
                   >
                     Try Again
@@ -569,7 +566,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   </div>
                   <p class="text-gray-300 text-xs mb-2">{rec.reasoning}</p>
                   <button 
-                    onclick={() => applyAIRecommendation(rec.nextAction)}
+                    on:click={() => applyAIRecommendation(rec.nextAction)}
                     class="yorha-button px-3 py-1 text-xs bg-yellow-400 text-black"
                   >
                     Apply

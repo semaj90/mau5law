@@ -142,7 +142,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     // Update evidence with analysis
     evidence = evidence.map(item => {
-      if (item.title === fileId || item.id === fileId) {
+      if ((item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).title === fileId || (item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).id === fileId) {
         return {
           ...item,
           status: 'analyzed',
@@ -211,9 +211,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         })
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        addChatMessage('assistant', data.response || 'I understand. How can I assist with this investigation?');
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        addChatMessage('assistant', (data as { response?: any }).response || 'I understand. How can I assist with this investigation?');
       } else {
         addChatMessage('assistant', 'I apologize, but I am currently unavailable. Please try again later.');
       }
@@ -297,8 +297,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   async function loadSystemStatus() {
     try {
       const response = await fetch('/api/system/status');
-      if (response.ok) {
-        const status = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const status = await (response as { ok?: any; json?: any }).json();
         systemStatus = { ...systemStatus, ...status };
       }
     } catch (error) {
@@ -327,7 +327,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         body: JSON.stringify(investigationData)
       });
 
-      if (response.ok) {
+      if ((response as { ok?: any; json?: any }).ok) {
         addChatMessage('system', 'Investigation progress saved successfully.');
       }
     } catch (error) {
@@ -360,10 +360,10 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       </div>
 
       <div class="workspace-actions">
-  <Button class="bits-btn" onclick={saveInvestigation} variant="outline" size="sm">
-          <Save class="w-4 h-4 mr-2" />
+  <Button class="bits-btn" on:click={saveInvestigation} variant="outline" size="sm">
+<Save class="w-4 h-4 mr-2" />
           Save Progress
-        </button>
+</Button>
 
         <!-- System Status Indicators -->
         <div class="status-indicators">
@@ -415,11 +415,11 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <div class="evidence-canvas-section">
             <div.Root class="h-full">
               <div.Header>
-                <div.Title>Enhanced Evidence Canvas</Card.Title>
+                <div.Title>Enhanced Evidence Canvas</div.Title>
                 <div.Description>
                   Upload and analyze evidence with AI-powered detection and CUDA acceleration
-                </Card.Description>
-              </Card.Header>
+                </div.Description>
+              </div.Header>
               <div.Content class="h-full p-0">
                 <UnifiedCanvasIntegration
                   caseId={currentCase?.id || 'demo-case'}
@@ -439,39 +439,39 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <div class="evidence-sidebar">
             <div.Root>
               <div.Header>
-                <div.Title>Evidence Items</Card.Title>
-                <div.Description>{evidence.length} items</Card.Description>
-              </Card.Header>
+                <div.Title>Evidence Items</div.Title>
+                <div.Description>{evidence.length} items</div.Description>
+              </div.Header>
               <div.Content>
                 <div class="evidence-list">
                   {#each evidence as item}
                     <div class="evidence-item">
                       <div class="evidence-header">
-                        <span class="evidence-title">{item.title}</span>
-                        <Badge class={`${getStatusColor(item.status)} text-white text-xs`}>
-                          {item.status}
+                        <span class="evidence-title">{(item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).title}</span>
+                        <Badge class={`${getStatusColor((item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).status)} text-white text-xs`}>
+                          {(item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).status}
                         </Badge>
                       </div>
 
-                      {#if item.confidence}
+                      {#if (item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).confidence}
                         <div class="confidence-meter">
-                          <span class="confidence-label">Confidence: {Math.round(item.confidence * 100)}%</span>
+                          <span class="confidence-label">Confidence: {Math.round((item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).confidence * 100)}%</span>
                           <div class="confidence-bar">
                             <div
                               class="confidence-fill"
-                              style="width: {item.confidence * 100}%"
+                              style="width: {(item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).confidence * 100}%"
                             ></div>
                           </div>
                         </div>
                       {/if}
 
-                      {#if item.aiAnalysis}
-                        <p class="evidence-analysis">{item.aiAnalysis}</p>
+                      {#if (item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).aiAnalysis}
+                        <p class="evidence-analysis">{(item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).aiAnalysis}</p>
                       {/if}
 
-                      {#if item.tags.length > 0}
+                      {#if (item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).tags.length > 0}
                         <div class="evidence-tags">
-                          {#each item.tags as tag}
+                          {#each (item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).tags as tag}
                             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                           {/each}
                         </div>
@@ -496,11 +496,11 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       <Tabs.Content value="investigation" class="tab-content">
         <div.Root class="h-full">
           <div.Header>
-            <div.Title>Investigation Notes</Card.Title>
+            <div.Title>Investigation Notes</div.Title>
             <div.Description>
               Document findings, observations, and analysis using the rich text editor
-            </Card.Description>
-          </Card.Header>
+            </div.Description>
+          </div.Header>
           <div.Content class="h-full">
             <NierRichTextEditor
               bind:content={investigationNotes}
@@ -514,11 +514,11 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       <Tabs.Content value="chat" class="tab-content">
         <div.Root class="h-full">
           <div.Header>
-            <div.Title>Unified AI Legal Assistant</Card.Title>
+            <div.Title>Unified AI Legal Assistant</div.Title>
             <div.Description>
               Advanced AI assistant with Ollama, vLLM, WebGPU acceleration, and Go microservices integration
-            </Card.Description>
-          </Card.Header>
+            </div.Description>
+          </div.Header>
           <div.Content class="h-full p-0">
             <EnhancedAIAssistant
               caseId={currentCase?.id || 'demo-case'}
@@ -538,12 +538,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               <Input
                 bind:value={currentChatMessage}
                 placeholder="Ask about evidence, legal precedents, case analysis..."
-                onkeydown={(e) => e.key === 'Enter' && !e.shiftKey && sendChatMessage()}
+                on:keydown={(e) => e.key === 'Enter' && !e.shiftKey && sendChatMessage()}
                 class="flex-1"
               />
-              <Button class="bits-btn" onclick={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
-                <MessageSquare class="w-4 h-4" />
-              </button>
+              <Button class="bits-btn" on:click={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
+<MessageSquare class="w-4 h-4" />
+</Button>
             </div>
           </div>
         </div>
@@ -553,11 +553,11 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       <Tabs.Content value="citations" class="tab-content">
         <div.Root class="h-full">
           <div.Header>
-            <div.Title>Legal Citations & References</Card.Title>
+            <div.Title>Legal Citations & References</div.Title>
             <div.Description>
               Advanced citation management with AI-powered legal research integration
-            </Card.Description>
-          </Card.Header>
+            </div.Description>
+          </div.Header>
           <div.Content class="h-full p-0">
             <CitationsManager
               caseId={currentCase?.id || 'demo-case'}
@@ -644,7 +644,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     transition: all 0.3s ease;
   }
 
-  .status-item.active {
+  .status-(item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).active {
     background: rgba(0, 255, 136, 0.2);
     border-color: #00ff88;
     color: #00ff88;

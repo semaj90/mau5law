@@ -4,10 +4,10 @@
  */
 
 import { createMachine, assign, fromPromise } from "xstate";
-import { bullmqService } from "../services/bullmqService";
-import { langChainService } from "../ai/langchain-ollama-service";
-import { ollamaService } from "../services/ollama-service";
-import { multiLayerCache } from "../services/multiLayerCache";
+import { bullmqService } from '../services/bullmqService.js';
+import { langChainService } from '../ai/langchain-ollama-service.js';
+import { ollamaService } from '../services/ollama-service.js';
+import { multiLayerCache } from '../services/multiLayerCache.js';
 
 export interface DocumentProcessingJob {
   documentId: string;
@@ -38,7 +38,7 @@ export interface EvidenceProcessingContext {
 
   // Processing results
   extractedText?: string;
-  chunks?: Array<{ content: string; embedding: number[]; metadata: any }>;
+  chunks?: Array<any>;
   embeddings?: number[][];
   analysis?: {
     summary: string;
@@ -287,8 +287,8 @@ export const evidenceProcessingMachine = createMachine(
   {
     id: "evidenceProcessing",
     types: {
-      context: {} as EvidenceProcessingContext,
-      events: {} as EvidenceProcessingEvent,
+      context: Record<string, any> as EvidenceProcessingContext,
+      events: Record<string, any> as EvidenceProcessingEvent,
     },
     initial: "idle",
     context: {
@@ -297,14 +297,14 @@ export const evidenceProcessingMachine = createMachine(
       userId: "",
       filename: "",
       content: "",
-      metadata: {},
+      metadata: Record<string, any>,
       progress: 0,
       stage: "idle",
       retryCount: 0,
       maxRetries: 3,
       startTime: 0,
       stageStartTime: 0,
-      processingTimes: {},
+      processingTimes: Record<string, any>,
     },
     states: {
       idle: {
@@ -323,7 +323,7 @@ export const evidenceProcessingMachine = createMachine(
               retryCount: 0,
               startTime: Date.now(),
               stageStartTime: Date.now(),
-              processingTimes: {},
+              processingTimes: Record<string, any>,
             }),
           },
         },

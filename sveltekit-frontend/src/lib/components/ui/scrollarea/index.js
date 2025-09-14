@@ -1,3 +1,3 @@
-import ScrollArea from "./ScrollArea.svelte";
+import ScrollArea from './ScrollArea.svelte.js';
 export { ScrollArea };
 export default ScrollArea;

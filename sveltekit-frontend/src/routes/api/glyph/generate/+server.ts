@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { glyphDiffusionService, type GlyphRequest } from '$lib/services/glyph-diffusion-service.js';
 import { PNGEmbedExtractor, type LegalAIMetadata } from '$lib/services/png-embed-extractor.js';
 import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations.js';
@@ -108,17 +108,17 @@ export const POST: RequestHandler = async ({ request }) => {
       result = await glyphDiffusionService.generateGlyph(glyphRequest);
     }
 
-    console.log(`✅ Glyph generated in ${result.generation_time_ms}ms (${result.cache_hits} cache hits)`);
+    console.log(`✅ Glyph generated in ${(result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms}ms (${(result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).cache_hits} cache hits)`);
 
     // Create enhanced portable artifact with embedded metadata if Neural Sprite was used
-    let enhancedArtifactUrl = result.glyph_url;
+    let enhancedArtifactUrl = (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).glyph_url;
 
-    if (result.neural_sprite_results) {
+    if ((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).neural_sprite_results) {
       try {
         console.log('🧬 Creating portable artifact with Neural Sprite metadata...');
 
         // Fetch the generated glyph image
-        const glyphResponse = await fetch(result.glyph_url);
+        const glyphResponse = await fetch((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).glyph_url);
         const glyphBuffer = await glyphResponse.arrayBuffer();
 
         // Create comprehensive legal AI metadata with GRPMO integration
@@ -155,9 +155,9 @@ export const POST: RequestHandler = async ({ request }) => {
             summary: `${hasExtendedThinking ? 'GRPMO-enhanced ' : ''}AI-generated ${glyphRequest.style} style legal evidence visualization: ${glyphRequest.prompt}`
           },
           neural_sprite_data: {
-            compression_ratio: result.neural_sprite_results.compression_ratio || 0,
-            tensor_urls: result.tensor_ids.map(id => `/api/tensors/${id}`),
-            predictive_frames: result.neural_sprite_results.predictive_frames || []
+            compression_ratio: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).neural_sprite_results.compression_ratio || 0,
+            tensor_urls: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).tensor_ids.map(id => `/api/tensors/${id}`),
+            predictive_frames: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).neural_sprite_results.predictive_frames || []
           },
           processing_chain: [
             ...(hasExtendedThinking ? [{
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async ({ request }) => {
             }] : []),
             {
               step: 'prompt_embedding',
-              duration_ms: Math.floor(result.generation_time_ms * 0.1),
+              duration_ms: Math.floor((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms * 0.1),
               success: true,
               metadata: { 
                 prompt: glyphRequest.prompt,
@@ -181,27 +181,27 @@ export const POST: RequestHandler = async ({ request }) => {
             },
             {
               step: 'style_conditioning',
-              duration_ms: Math.floor(result.generation_time_ms * 0.1),
+              duration_ms: Math.floor((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms * 0.1),
               success: true,
               metadata: { style: glyphRequest.style }
             },
             {
               step: 'diffusion_generation',
-              duration_ms: Math.floor(result.generation_time_ms * (hasExtendedThinking ? 0.5 : 0.6)),
+              duration_ms: Math.floor((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms * (hasExtendedThinking ? 0.5 : 0.6)),
               success: true,
               metadata: {
-                cache_hits: result.cache_hits,
-                tensor_count: result.tensor_ids.length,
+                cache_hits: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).cache_hits,
+                tensor_count: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).tensor_ids.length,
                 grpmo_conditioning: hasExtendedThinking
               }
             },
             {
               step: 'neural_sprite_compression',
-              duration_ms: Math.floor(result.generation_time_ms * 0.2),
+              duration_ms: Math.floor((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms * 0.2),
               success: true,
               metadata: {
-                compression_ratio: result.neural_sprite_results.compression_ratio,
-                predictive_frames_generated: result.neural_sprite_results.predictive_frames?.length || 0
+                compression_ratio: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).neural_sprite_results.compression_ratio,
+                predictive_frames_generated: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).neural_sprite_results.predictive_frames?.length || 0
               }
             }
           ]
@@ -232,12 +232,12 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: {
-        glyph_url: result.glyph_url,
-        tensor_ids: result.tensor_ids,
-        generation_time_ms: result.generation_time_ms,
-        cache_hits: result.cache_hits,
-        preview_with_tensors: result.preview_with_tensors,
-        neural_sprite_results: result.neural_sprite_results,
+        glyph_url: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).glyph_url,
+        tensor_ids: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).tensor_ids,
+        generation_time_ms: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms,
+        cache_hits: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).cache_hits,
+        preview_with_tensors: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).preview_with_tensors,
+        neural_sprite_results: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).neural_sprite_results,
         enhanced_artifact_url: enhancedArtifactUrl,
         grpmo_metadata: grpmoMetadata,
         metadata: {

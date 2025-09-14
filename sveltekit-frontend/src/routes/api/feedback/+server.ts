@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

@@ -370,10 +370,10 @@ export class SoraGraphTraversal {
    */
   private async selectBestAction(
     stateId: string,
-    actions: Array<{target: SoraGraphNode, edge: SoraGraphEdge}>,
+    actions: Array<,
     qTable: Map<string, Map<string, number>>,
     queryEmbedding: Float32Array
-  ): Promise<{target: SoraGraphNode, edge: SoraGraphEdge}> {
+  ): Promise<any> {
     const stateActions = qTable.get(stateId);
     if (!stateActions) {
       // No Q-values yet, use heuristic selection
@@ -398,9 +398,9 @@ export class SoraGraphTraversal {
    * Heuristic action selection for unexplored states
    */
   private async heuristicActionSelection(
-    actions: Array<{target: SoraGraphNode, edge: SoraGraphEdge}>,
+    actions: Array<,
     queryEmbedding: Float32Array
-  ): Promise<{target: SoraGraphNode, edge: SoraGraphEdge}> {
+  ): Promise<any> {
     let bestAction = actions[0];
     let bestScore = -1;
 
@@ -448,7 +448,7 @@ export class SoraGraphTraversal {
     if (!startNode) return paths;
 
     // Priority queue for best-first search
-    const priorityQueue: Array<{node: SoraGraphNode, path: SoraGraphNode[], edges: SoraGraphEdge[], score: number}> = [];
+    const priorityQueue: Array< = [];
     priorityQueue.push({
       node: startNode,
       path: [startNode],
@@ -575,9 +575,9 @@ export class SoraGraphTraversal {
           { nodeId: parseInt(nodeId) }
         );
 
-        if (result.records.length === 0) return null;
+        if ((result as { records?: any; id?: any; rerankScore?: any }).records.length === 0) return null;
 
-        const record = result.records[0];
+        const record = (result as { records?: any; id?: any; rerankScore?: any }).records[0];
         const node = record.get('n');
         const labels = record.get('labels');
 
@@ -604,7 +604,7 @@ export class SoraGraphTraversal {
   /**
    * Get neighbors of a node
    */
-  private async getNeighbors(nodeId: string): Promise<Array<{target: SoraGraphNode, edge: SoraGraphEdge}>> {
+  private async getNeighbors(nodeId: string): Promise<Array<any> {
     try {
       const session = this.neo4jDriver.session();
       try {
@@ -616,9 +616,9 @@ export class SoraGraphTraversal {
           LIMIT 20
         `, { nodeId: parseInt(nodeId) });
 
-        const neighbors: Array<{target: SoraGraphNode, edge: SoraGraphEdge}> = [];
+        const neighbors: Array< = [];
 
-        for (const record of result.records) {
+        for (const record of (result as { records?: any; id?: any; rerankScore?: any }).records) {
           const targetNode = record.get('m');
           const relationship = record.get('r');
           const targetLabels = record.get('target_labels');
@@ -883,8 +883,8 @@ export class SoraGraphTraversal {
       // Reorder paths based on reranking scores
       const pathScoreMap = new Map<number, number>();
       rerankedResults.forEach((result, index) => {
-        const originalIndex = parseInt(result.id.split('_')[1]);
-        pathScoreMap.set(originalIndex, result.rerankScore);
+        const originalIndex = parseInt((result as { records?: any; id?: any; rerankScore?: any }).id.split('_')[1]);
+        pathScoreMap.set(originalIndex, (result as { records?: any; id?: any; rerankScore?: any }).rerankScore);
       });
 
       // Update path scores and resort
@@ -1091,7 +1091,7 @@ export class SoraGraphTraversal {
   /**
    * Get reinforcement learning statistics
    */
-  public getReinforcementStats(): { totalNodes: number; avgVisitCount: number; topNodes: Array<{id: string; visits: number}> } {
+  public getReinforcementStats(): { totalNodes: number; avgVisitCount: number; topNodes: Array< } {
     const entries = Array.from(this.reinforcementModel.entries());
     const totalVisits = entries.reduce((sum, [_, visits]) => sum + visits, 0);
     
@@ -1108,15 +1108,10 @@ export class SoraGraphTraversal {
   /**
    * Get tensor store statistics
    */
-  public async getTensorStats(): Promise<{
-    totalSlices: number;
-    totalSize: number;
-    cacheHitRate: number;
-    dimensions: { documents: number; chunks: number; representations: number };
-  }> {
+  public async getTensorStats(): Promise<any> {
     try {
       // Get basic stats from tensor store
-      const stats = this.tensorStore?.getStats ? await this.tensorStore.getStats() : {};
+      const stats = this.tensorStore?.getStats ? await this.tensorStore.getStats() : Record<string, any>;
       return {
         totalSlices: stats.totalTensorSlices || 0,
         totalSize: stats.totalMemoryUsage || 0,

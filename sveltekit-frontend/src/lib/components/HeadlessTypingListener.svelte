@@ -38,20 +38,14 @@
   }: Props = $props();
 
   // Event dispatcher
-  const dispatch = createEventDispatcher<{
-    stateChange: { state: TypingState; context: TypingContext };
-    contextualPrompt: { prompts: string[]; context: TypingContext };
-    analyticsUpdate: { analytics: TypingContext['analytics'] };
-    userBehaviorUpdate: { behavior: TypingContext['userBehavior'] };
-    mcpWorkerStatus: { status: 'idle' | 'processing' | 'ready' };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // XState actor
   const typingActor = createActor(userTypingStateMachine);
 
   // Reactive state
   let currentState = $state<TypingState>('idle');
-  let currentContext = $state<TypingContext>();
+  let currentContext: TypingContext = $state(undefined as any);
   let isTyping = $state(false);
   let lastTypingTime = $state(0);
   let typingTimeout: number | null = $state(null);

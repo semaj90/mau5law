@@ -10,7 +10,7 @@ Your legal AI evidence management system with fabric.js canvas is fully implemen
 
 ✅ RUNNING SERVICES:
 - legal-ai-minio      | Up 16+ min | 9000-9001 | healthy
-- legal-ai-postgres   | Up 16+ min | 5433→5432 | healthy  
+- legal-ai-postgres   | Up 16+ min | 5433→5432 | healthy
 - legal-ai-redis      | Up 16+ min | 6379      | healthy
 - legal-ai-rabbitmq   | Up 16+ min | 5672,15672| healthy
 - legal-ai-qdrant     | Up 16+ min | 6333-6334 | unhealthy
@@ -42,7 +42,7 @@ embeddingCache (
   id: uuid PRIMARY KEY,
   textHash: varchar(64),
   embedding: vector(768),     -- 768-dimensional vectors
-  model: varchar(100)         -- "nomic-embed-text"
+  model: varchar(100)         -- "nomic-embed-text" gemma embeds
 )
 
 evidenceVectors (
@@ -71,7 +71,7 @@ evidenceVectors (
    ```json
    {
      "id": "evidence-123",
-     "fileName": "complaint.pdf", 
+     "fileName": "complaint.pdf",
      "fileSize": 359846,
      "mimeType": "application/pdf",
      "aiAnalysis": {
@@ -110,7 +110,7 @@ Status: Ready for upload testing
 ### Interactive Evidence Objects:
 - ✅ Drag & drop file positioning
 - ✅ Click to select evidence
-- ✅ Move evidence around canvas  
+- ✅ Move evidence around canvas
 - ✅ Zoom and pan controls
 - ✅ Visual status indicators
 - ✅ AI confidence scores
@@ -118,14 +118,14 @@ Status: Ready for upload testing
 
 ### Canvas Controls:
 - 🔍 Zoom to fit
-- 🎯 Center evidence  
+- 🎯 Center evidence
 - ⊞ Grid toggle
 - 📊 Status display (zoom %, evidence count)
 
 ### Evidence Card Display:
 ```
 ┌─────────────────────────┐
-│ 📄 [Status: ✅]        │  
+│ 📄 [Status: ✅]        │
 │                         │
 │ download_complaint.pdf  │
 │ 351 KB                  │
@@ -146,10 +146,10 @@ EnhancedEvidenceBoard.uploadFiles()
     ↓ /api/v1/storage/upload
 MinIO Docker Container (port 9000)
     ↓ File stored: evidence/case-001/complaint.pdf
-PostgreSQL Docker (port 5433) 
+PostgreSQL Docker (port 5433)
     ↓ Metadata inserted into evidence table
 analyzeEvidence() triggers
-    ↓ /api/v1/evidence/analyze  
+    ↓ /api/v1/evidence/analyze
 Gemma3-legal AI Analysis
     ↓ generateEmbedding()
 pgvector embedding storage
@@ -168,7 +168,7 @@ Interactive Evidence Management Ready
 - File validation and sanitization
 - Hash verification for integrity
 
-### Performance:  
+### Performance:
 - Vector similarity search with pgvector
 - JSONB indexing for fast metadata queries
 - Redis pub/sub for real-time updates
@@ -238,7 +238,7 @@ Tech Stack: SvelteKit + Fabric.js + MinIO + PostgreSQL + pgvector + Docker
 
 ### 🐳 Docker Services (All Healthy):
 - 🐘 **PostgreSQL**: http://localhost:5433 (legal-ai-postgres) ✅
-- 🔴 **Redis**: http://localhost:6379 (legal-ai-redis) ✅ 
+- 🔴 **Redis**: http://localhost:6379 (legal-ai-redis) ✅
 - 🐰 **RabbitMQ**: http://localhost:15672 (legal-ai-rabbitmq) ✅
 - 📦 **MinIO**: http://localhost:9001 (legal-ai-minio) ✅
 - 🔍 **Qdrant**: http://localhost:6333 (legal-ai-qdrant) ✅
@@ -249,7 +249,7 @@ Tech Stack: SvelteKit + Fabric.js + MinIO + PostgreSQL + pgvector + Docker
   "status": "operational",
   "services": {
     "qloraTopology": "ready",
-    "hmmPredictor": "ready", 
+    "hmmPredictor": "ready",
     "webgpuRag": "ready"
   },
   "metrics": {
@@ -260,7 +260,7 @@ Tech Stack: SvelteKit + Fabric.js + MinIO + PostgreSQL + pgvector + Docker
   },
   "webgpu": {
     "adapter": "mock_adapter",
-    "device": "mock_device", 
+    "device": "mock_device",
     "features": ["gpu-accelerated-rag", "vector-ops"]
   }
 }
@@ -268,7 +268,7 @@ Tech Stack: SvelteKit + Fabric.js + MinIO + PostgreSQL + pgvector + Docker
 
 ### 🎯 Legal AI Pipeline Features (Active):
 - 📄 **Legal Document Embeddings** (GPU-accelerated) ✅
-- ⚖️ **Case Similarity Analysis** (pgvector) ✅  
+- ⚖️ **Case Similarity Analysis** (pgvector) ✅
 - 📁 **Evidence Processing** (Gemma3-legal) ✅
 - 💬 **Chat Session Persistence** (Redis cache) ✅
 - 🧠 **HMM QLoRA Topology Prediction** (60% → 90% target) ✅
@@ -287,7 +287,7 @@ Tech Stack: SvelteKit + Fabric.js + MinIO + PostgreSQL + pgvector + Docker
 ```
 11:25:19 AM [System] 🚀 Starting Legal AI Full Development Stack...
 11:25:21 AM [Docker] ✅ All Docker services healthy
-11:25:23 AM [GPU] ✅ GPU initialization complete  
+11:25:23 AM [GPU] ✅ GPU initialization complete
 11:25:28 AM [Ollama] ✅ RTX 3060 Ti GPU mode activated
 11:25:30 AM [Redis-GPU] ✅ Bridge connected to Redis
 11:25:33 AM [GPU-Cluster] ✅ Legal AI pipeline ready (4 workers)
@@ -302,7 +302,7 @@ Tech Stack: SvelteKit + Fabric.js + MinIO + PostgreSQL + pgvector + Docker
 The complete legal AI evidence management system with fabric.js canvas is now fully operational and ready for comprehensive testing:
 
 1. **Canvas Testing**: Navigate to http://localhost:5173/evidenceboard
-2. **File Upload**: Drag complaint.pdf onto fabric.js canvas  
+2. **File Upload**: Drag complaint.pdf onto fabric.js canvas
 3. **Real-time Processing**: Watch AI analysis with RTX 3060 Ti acceleration
 4. **Vector Search**: Test semantic similarity with pgvector
 5. **WebGPU Topology**: Advanced AI routing optimization active

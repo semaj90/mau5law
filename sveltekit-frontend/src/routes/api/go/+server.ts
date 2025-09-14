@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Go Microservices Proxy API
@@ -152,16 +152,16 @@ async function makeServiceRequest(
   try {
     const response = await fetch(url, requestConfig);
     
-    const contentType = response.headers.get('content-type');
+    const contentType = (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).headers.get('content-type');
     const responseData = contentType?.includes('application/json') 
-      ? await response.json()
-      : await response.text();
+      ? await (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).json()
+      : await (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).text();
 
     return {
-      success: response.ok,
-      status: response.status,
+      success: (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).ok,
+      status: (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).status,
       data: responseData,
-      headers: Object.fromEntries(response.headers.entries()),
+      headers: Object.fromEntries((response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).headers.entries()),
     };
   } catch (err: any) {
     console.error(`Go service request failed for ${url}:`, err);
@@ -228,25 +228,25 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 
     // Return the response from Go service
     return json({
-      success: result.success,
-      message: result.success ? 'Request successful' : 'Request failed',
-      data: result.data,
+      success: (result as { success?: any; data?: any; status?: any; headers?: any }).success,
+      message: (result as { success?: any; data?: any; status?: any; headers?: any }).success ? 'Request successful' : 'Request failed',
+      data: (result as { success?: any; data?: any; status?: any; headers?: any }).data,
       meta: {
         service,
         endpoint,
         method,
         protocol,
-        status: result.status,
+        status: (result as { success?: any; data?: any; status?: any; headers?: any }).status,
         timestamp: new Date().toISOString(),
         version: '1.0.0',
       }
     }, {
-      status: result.success ? 200 : result.status || 500,
+      status: (result as { success?: any; data?: any; status?: any; headers?: any }).success ? 200 : (result as { success?: any; data?: any; status?: any; headers?: any }).status || 500,
       headers: {
         'Content-Type': 'application/json',
         ...(dev && { 'Access-Control-Allow-Origin': '*' }),
         // Forward relevant headers from Go service
-        ...(result.headers['content-encoding'] && { 'Content-Encoding': result.headers['content-encoding'] }),
+        ...((result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] && { 'Content-Encoding': (result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] }),
       }
     });
 

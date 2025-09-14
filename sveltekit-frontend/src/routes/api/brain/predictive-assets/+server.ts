@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { hmmSomEngine } from '$lib/services/predictive-hmm-som';
 import { putCHRManifest } from '$lib/server/cache/index-cache';
 
@@ -8,10 +8,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { userId = 'anon', som, context, catalog } = body as {
       userId?: string;
-      som: { width: number; height: number; active: Array<{ x: number; y: number; weight?: number }>; };
+      som: { width: number; height: number; active: Array<any>;
       context: { documentType?: string; interactionType?: string; complexity?: 'low' | 'medium' | 'high' };
-      catalog: Array<{ assetId: string; assetType: string; semanticTags: string[]; legalContext: string; complexity: 'low' | 'medium' | 'high' }>;
-    };
+      catalog: Array<any>;
 
   const predictions = await hmmSomEngine.updateAndPredict(userId, som, context, catalog);
     const chrKeys = predictions.map((p) => `chr_rom_3d_${p.assetId}`);

@@ -336,16 +336,16 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
   </div>
 
   <!-- Demo Examples -->
-  <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-    <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+  <div class="bits-nier-bits-card nes-container">
+    <div class="yorha-panel-header bits-nier-bits-yorha-panel-header">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h8m-4-6v8M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16l-5-3.5L9 21z"></path>
         </svg>
         Quick Demo Examples
       </h3>
     </div>
-    <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content">
+    <div class="yorha-panel-content bits-nier-bits-yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Search Examples -->
         <div class="space-y-3">
@@ -354,7 +354,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             Semantic Search
           </h3>
           {#each demoSearchQueries as example}
-            <div class="demo-example-nier-bits-card" onclick={() => loadDemoQuery(example.query)}>
+            <div class="demo-example-nier-bits-card" on:click={() => loadDemoQuery(example.query)}>
               <h4 class="font-medium text-sm mb-1">{example.category}</h4>
               <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded font-mono">{example.query}</p>
@@ -369,7 +369,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             AI Recommendations
           </h3>
           {#each demoRecommendationContexts as example}
-            <div class="demo-example-nier-bits-card" onclick={() => loadDemoContext(example.context, example.role)}>
+            <div class="demo-example-nier-bits-card" on:click={() => loadDemoContext(example.context, example.role)}>
               <h4 class="font-medium text-sm mb-1">{example.description}</h4>
               <Badge class="bits-badge-outline text-xs mb-2">{example.role}</Badge>
               <p class="text-xs nes-text is-disabled">{example.context.substring(0, 80)}...</p>
@@ -384,7 +384,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             Document Analysis
           </h3>
           {#each demoAnalysisContent as example}
-            <div class="demo-example-nier-bits-card" onclick={() => loadDemoContent(example.content)}>
+            <div class="demo-example-nier-bits-card" on:click={() => loadDemoContent(example.content)}>
               <h4 class="font-medium text-sm mb-1">{example.type}</h4>
               <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded">{example.content.substring(0, 60)}...</p>
@@ -393,72 +393,76 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Tab Navigation -->
   <div class="flex items-center justify-center space-x-1 bg-muted p-1 rounded-lg w-fit mx-auto">
     <Button class="bits-btn"
       variant={activeTab === 'search' ? 'default' : 'ghost'}
       size="sm"
-  onclick={() => activeTab = 'search'}
+  on:click={() =>
+activeTab = 'search'}
       class="flex items-center gap-2"
     >
       <Search class="h-4 w-4" />
       Search
-    </button>
+</Button>
     <Button class="bits-btn"
       variant={activeTab === 'recommendations' ? 'default' : 'ghost'}
       size="sm"
-  onclick={() => activeTab = 'recommendations'}
+  on:click={() =>
+activeTab = 'recommendations'}
       class="flex items-center gap-2"
     >
       <Lightbulb class="h-4 w-4" />
       Recommendations
-    </button>
+</Button>
     <Button class="bits-btn"
       variant={activeTab === 'analysis' ? 'default' : 'ghost'}
       size="sm"
-  onclick={() => activeTab = 'analysis'}
+  on:click={() =>
+activeTab = 'analysis'}
       class="flex items-center gap-2"
     >
       <BarChart3 class="h-4 w-4" />
       Analysis
-    </button>
+</Button>
     <Button class="bits-btn"
       variant={activeTab === 'health' ? 'default' : 'ghost'}
       size="sm"
-  onclick={() => activeTab = 'health'}
+  on:click={() =>
+activeTab = 'health'}
       class="flex items-center gap-2"
     >
       <Activity class="h-4 w-4" />
       Health
-    </button>
+</Button>
   </div>
 
   <!-- Processing Indicator -->
   {#if isProcessing}
-    <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-      <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+    <div class="bits-nier-bits-card nes-container">
+      <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
         <div class="flex items-center justify-center space-x-3 py-8">
           <div class="animate-spin h-6 w-6 border border-primary border-t-transparent rounded-full"></div>
           <span class="nes-text is-disabled">{processingStage}</span>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Tab Content -->
   {#if activeTab === 'search'}
     <!-- Semantic Search Tab -->
     <div class="space-y-6">
-      <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-        <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <div class="bits-nier-bits-card nes-container">
+        <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Search class="h-5 w-5" />
             Semantic Vector Search
           </h3>
         </div>
-        <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content space-y-4" variant="default" legal={true}>
+        <div class="yorha-panel-content bits-nier-bits-yorha-panel-content space-y-4" variant="default" legal={true}>
           <div class="space-y-2">
             <label class="bits-label" for="search-query">Search Query</label>
             <textarea
@@ -485,65 +489,66 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
           <div class="flex items-center gap-2">
             <Button
-              onclick={performSearch}
+              on:click={performSearch}
               disabled={isProcessing || !searchQuery.trim()}
               class="bits-btn-default bits-btn bits-btn"
             >
-              {#if isProcessing}
+{#if isProcessing}
                 <Pause class="h-4 w-4 mr-2" />
                 Searching...
               {:else}
                 <Search class="h-4 w-4 mr-2" />
                 Search
               {/if}
-            </button>
+</Button>
             <Button class="bits-btn"
               variant="outline"
               size="sm"
-              onclick={() => showAdvancedOptions = !showAdvancedOptions}
+              on:click={() =>
+showAdvancedOptions = !showAdvancedOptions}
             >
               <Settings class="h-4 w-4" />
-            </button>
+</Button>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Search Results -->
       {#if searchResults.length > 0}
-        <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-          <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-            <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <div class="bits-nier-bits-card nes-container">
+          <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+            <h3 class="nes-text is-primary flex items-center justify-between">
               <span class="flex items-center gap-2">
                 <Eye class="h-5 w-5" />
                 Search Results ({searchResults.length})
               </span>
               <Button class="bits-btn" variant="outline" size="sm">
-                <Download class="h-4 w-4" />
-              </button>
+<Download class="h-4 w-4" />
+</Button>
             </h3>
           </div>
-          <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+          <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
             <div class="space-y-4">
               {#each searchResults as result}
                 <div class="vector-result-item">
                   <div class="flex items-start justify-between mb-2">
-                    <h3 class="font-semibold text-sm">{result.id}</h3>
+                    <h3 class="font-semibold text-sm">{(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).id}</h3>
                     <div class="flex items-center gap-2">
-                      <Badge class={getConfidenceColor(result.similarity)}>
-                        {Math.round(result.similarity * 100)}%
+                      <Badge class={getConfidenceColor((result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).similarity)}>
+                        {Math.round((result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).similarity * 100)}%
                       </Badge>
-                      <Badge class="bits-badge-outline text-xs">{result.source}</Badge>
+                      <Badge class="bits-badge-outline text-xs">{(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).source}</Badge>
                     </div>
                   </div>
 
                   <p class="text-sm nes-text is-disabled mb-3">
-                    {result.content.substring(0, 200)}...
+                    {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).content.substring(0, 200)}...
                   </p>
 
-                  {#if result.highlights?.length > 0}
+                  {#if (result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).highlights?.length > 0}
                     <div class="space-y-1">
                       <p class="text-xs font-medium">Highlights:</p>
-                      {#each result.highlights as highlight}
+                      {#each (result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).highlights as highlight}
                         <p class="text-xs bg-muted p-2 rounded">
                           <span class="vector-highlight">{highlight}</span>
                         </p>
@@ -552,30 +557,30 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                   {/if}
 
                   <div class="vector-metadata-grid mt-3">
-                    <span>Relevance: {result.relevanceScore.toFixed(2)}</span>
-                    <span>Similarity: {result.similarity.toFixed(3)}</span>
-                    <span>Source: {result.source}</span>
-                    <span>ID: {result.id.substring(0, 8)}...</span>
+                    <span>Relevance: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).relevanceScore.toFixed(2)}</span>
+                    <span>Similarity: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).similarity.toFixed(3)}</span>
+                    <span>Source: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).source}</span>
+                    <span>ID: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).id.substring(0, 8)}...</span>
                   </div>
                 </div>
               {/each}
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
     </div>
 
   {:else if activeTab === 'recommendations'}
     <!-- AI Recommendations Tab -->
     <div class="space-y-6">
-      <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-        <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <div class="bits-nier-bits-card nes-container">
+        <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Lightbulb class="h-5 w-5" />
             AI Recommendations
           </h3>
         </div>
-        <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content space-y-4" variant="default" legal={true}>
+        <div class="yorha-panel-content bits-nier-bits-yorha-panel-content space-y-4" variant="default" legal={true}>
           <div class="space-y-2">
             <label class="bits-label" for="context-description">Context Description</label>
             <textarea
@@ -619,41 +624,41 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
           </div>
 
           <Button
-            onclick={generateRecommendations}
+            on:click={generateRecommendations}
             disabled={isProcessing || !recommendationContext.trim()}
             class="bits-btn-default bits-btn bits-btn"
           >
-            {#if isProcessing}
+{#if isProcessing}
               <Pause class="h-4 w-4 mr-2" />
               Generating...
             {:else}
               <Zap class="h-4 w-4 mr-2" />
               Generate Recommendations
             {/if}
-          </button>
+</Button>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Recommendations Results -->
       {#if recommendations.length > 0}
-        <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-          <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-            <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <div class="bits-nier-bits-card nes-container">
+          <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+            <h3 class="nes-text is-primary flex items-center justify-between">
               <span class="flex items-center gap-2">
                 <Target class="h-5 w-5" />
                 Intelligent Recommendations ({recommendations.length})
               </span>
               <div class="flex items-center gap-2">
                 <Button class="bits-btn" variant="outline" size="sm">
-                  <Share class="h-4 w-4" />
-                </button>
+<Share class="h-4 w-4" />
+</Button>
                 <Button class="bits-btn" variant="outline" size="sm">
-                  <Download class="h-4 w-4" />
-                </button>
+<Download class="h-4 w-4" />
+</Button>
               </div>
             </h3>
           </div>
-          <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+          <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
             <div class="recommendation-container">
               {#each recommendations as rec}
                 {@const SvelteComponent = getRecommendationIcon(rec.type)}
@@ -699,21 +704,21 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
               {/each}
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
     </div>
 
   {:else if activeTab === 'analysis'}
     <!-- Semantic Analysis Tab -->
     <div class="space-y-6">
-      <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-        <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <div class="bits-nier-bits-card nes-container">
+        <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <BarChart3 class="h-5 w-5" />
             Document Semantic Analysis
           </h3>
         </div>
-        <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content space-y-4" variant="default" legal={true}>
+        <div class="yorha-panel-content bits-nier-bits-yorha-panel-content space-y-4" variant="default" legal={true}>
           <div class="space-y-2">
             <label class="bits-label">Document Content</label>
             <Textarea
@@ -724,33 +729,33 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
           </div>
 
           <Button
-            onclick={performSemanticAnalysis}
+            on:click={performSemanticAnalysis}
             disabled={isProcessing || !analysisContent.trim()}
             class="bits-btn-default bits-btn bits-btn"
           >
-            {#if isProcessing}
+{#if isProcessing}
               <Pause class="h-4 w-4 mr-2" />
               Analyzing...
             {:else}
               <BarChart3 class="h-4 w-4 mr-2" />
               Analyze Document
             {/if}
-          </button>
+</Button>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Analysis Results -->
       {#if semanticAnalysis}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Entities -->
-          <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-            <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-              <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <div class="bits-nier-bits-card nes-container">
+            <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+              <h3 class="nes-text is-primary flex items-center gap-2">
                 <Users class="h-5 w-5" />
                 Extracted Entities ({semanticAnalysis.entities?.length || 0})
               </h3>
             </div>
-            <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+            <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
               {#if semanticAnalysis.entities?.length > 0}
                 <div class="semantic-entity-container">
                   {#each semanticAnalysis.entities as entity}
@@ -766,17 +771,17 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                 <p class="text-sm nes-text is-disabled">No entities detected</p>
               {/if}
             </div>
-          </NesCard>
+          </div>
 
           <!-- Themes -->
-          <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-            <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-              <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <div class="bits-nier-bits-card nes-container">
+            <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+              <h3 class="nes-text is-primary flex items-center gap-2">
                 <Tag class="h-5 w-5" />
                 Document Themes ({semanticAnalysis.themes?.length || 0})
               </h3>
             </div>
-            <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+            <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
               {#if semanticAnalysis.themes?.length > 0}
                 <div class="space-y-3">
                   {#each semanticAnalysis.themes as theme}
@@ -798,17 +803,17 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                 <p class="text-sm nes-text is-disabled">No themes identified</p>
               {/if}
             </div>
-          </NesCard>
+          </div>
 
           <!-- Relationships -->
-          <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-            <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-              <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <div class="bits-nier-bits-card nes-container">
+            <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+              <h3 class="nes-text is-primary flex items-center gap-2">
                 <Network class="h-5 w-5" />
                 Entity Relationships ({semanticAnalysis.relationships?.length || 0})
               </h3>
             </div>
-            <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+            <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
               {#if semanticAnalysis.relationships?.length > 0}
                 <div class="relationship-container">
                   {#each semanticAnalysis.relationships as rel}
@@ -824,17 +829,17 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                 <p class="text-sm nes-text is-disabled">No relationships detected</p>
               {/if}
             </div>
-          </NesCard>
+          </div>
 
           <!-- Complexity Metrics -->
-          <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-            <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-              <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <div class="bits-nier-bits-card nes-container">
+            <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+              <h3 class="nes-text is-primary flex items-center gap-2">
                 <BarChart3 class="h-5 w-5" />
                 Complexity Analysis
               </h3>
             </div>
-            <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+            <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
               <div class="space-y-4">
                 <div class="space-y-2">
                   <div class="flex justify-between text-sm">
@@ -887,7 +892,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                 </div>
               </div>
             </div>
-          </NesCard>
+          </div>
         </div>
       {/if}
     </div>
@@ -895,23 +900,23 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
   {:else if activeTab === 'health'}
     <!-- System Health Tab -->
     <div class="space-y-6">
-      <NesCard class="bits-nier-bits-card" variant="default" legal={true}>
-        <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-          <h3 class="nes-text is-primary" class="flex items-center justify-between">
+      <div class="bits-nier-bits-card nes-container">
+        <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+          <h3 class="nes-text is-primary flex items-center justify-between">
             <span class="flex items-center gap-2">
               <Activity class="h-5 w-5" />
               Vector Intelligence System Health
             </span>
-            <Button class="bits-btn" variant="outline" size="sm" onclick={loadSystemHealth}>
-              <RefreshCw class="h-4 w-4" />
-            </button>
+            <Button class="bits-btn" variant="outline" size="sm" on:click={loadSystemHealth}>
+<RefreshCw class="h-4 w-4" />
+</Button>
           </h3>
         </div>
-        <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+        <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
           {#if systemHealth}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <NesCard class="border">
-                <div class="yorha-panel-content" class="p-4">
+              <div class="border nes-container">
+                <div class="yorha-panel-content p-4">
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-sm font-medium">System Status</p>
@@ -922,10 +927,10 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                     <Activity class="h-8 w-8 {getHealthColor(systemHealth.systemHealth)}" />
                   </div>
                 </div>
-              </NesCard>
+              </div>
 
-              <NesCard class="border">
-                <div class="yorha-panel-content" class="p-4">
+              <div class="border nes-container">
+                <div class="yorha-panel-content p-4">
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-sm font-medium">Model Confidence</p>
@@ -936,10 +941,10 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                     <Star class="h-8 w-8 text-yellow-600" />
                   </div>
                 </div>
-              </NesCard>
+              </div>
 
-              <NesCard class="border">
-                <div class="yorha-panel-content" class="p-4">
+              <div class="border nes-container">
+                <div class="yorha-panel-content p-4">
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-sm font-medium">Indexed Documents</p>
@@ -950,10 +955,10 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                     <FileText class="h-8 w-8 text-blue-600" />
                   </div>
                 </div>
-              </NesCard>
+              </div>
 
-              <NesCard class="border">
-                <div class="yorha-panel-content" class="p-4">
+              <div class="border nes-container">
+                <div class="yorha-panel-content p-4">
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-sm font-medium">Vector Dimensions</p>
@@ -964,7 +969,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
                     <Network class="h-8 w-8 text-purple-600" />
                   </div>
                 </div>
-              </NesCard>
+              </div>
             </div>
 
             <Separator class="bits-separator my-6" />
@@ -1006,7 +1011,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             </div>
           {/if}
         </div>
-      </NesCard>
+      </div>
     </div>
   {/if}
 </div>

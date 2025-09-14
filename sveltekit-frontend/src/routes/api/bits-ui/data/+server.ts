@@ -3,7 +3,7 @@
  * Demonstrates proper data extraction and serialization patterns
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { createSSRResponse, withSSRHandler, batchSSRRequests } from '$lib/server/api-ssr-helpers';
 import type { DashboardStats, SystemHealth, RecentActivity } from '$lib/types/api-schemas';
 

@@ -3,7 +3,7 @@ import { json } from "@sveltejs/kit";
 import { db, legalDocuments } from "$lib/server/db";
 import { eq } from "drizzle-orm";
 import { getVectorStore } from "$lib/ai/langchain-rag";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface EnhancedSearchRequest {
   query: string;
@@ -154,12 +154,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             // Add pgvector results
             for (const result of semanticData.results) {
               results.push({
-                chunk: result.content || `Document: ${result.title}`,
-                distance: result.distance,
-                semantic_score: result.semantic_score,
-                relevance_level: result.relevance_level,
+                chunk: (result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).content || `Document: ${(result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).title}`,
+                distance: (result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).distance,
+                semantic_score: (result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).semantic_score,
+                relevance_level: (result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).relevance_level,
                 doc: result,
-                metadata: result.metadata,
+                metadata: (result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).metadata,
                 source: includePgVector && !useGemmaEmbeddings ? 'pgvector' : 'hybrid',
               });
             }

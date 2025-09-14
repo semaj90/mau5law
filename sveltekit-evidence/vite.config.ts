@@ -2,7 +2,11 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-	plugins: [sveltekit()],
+	plugins: [
+		sveltekit({
+			inspector: false // Disable inspector to avoid module resolution issues
+		})
+	],
 
 	// Fabric.js optimization
 	optimizeDeps: {
@@ -24,10 +28,11 @@ export default defineConfig({
 	build: {
 		target: 'es2020',
 		rollupOptions: {
-			external: [],
 			output: {
-				manualChunks: {
-					fabric: ['fabric']
+				manualChunks: (id) => {
+					if (id.includes('fabric')) {
+						return 'fabric';
+					}
 				}
 			}
 		}

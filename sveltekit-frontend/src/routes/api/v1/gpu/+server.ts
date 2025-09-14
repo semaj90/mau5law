@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // GPU Acceleration API Proxy - Legal AI Platform
 // Routes SvelteKit frontend requests to CUDA Integration Service (Port 8231)
@@ -40,13 +40,13 @@ export const POST: RequestHandler = async ({ request }) => {
 			}));
 		}
 
-		if (!body.data || !Array.isArray(body.data) || body.data.length === 0) {
+		if (!body.data || !Array.isArray(body.data) || body.(data as { length?: any }).length === 0) {
 			throw error(400, ensureError({
 				message: 'Invalid GPU request: data array is required and cannot be empty'
 			}));
 		}
 
-		console.log(`🔥 GPU API: Processing ${body.service}/${body.operation} with ${body.data.length} data points`);
+		console.log(`🔥 GPU API: Processing ${body.service}/${body.operation} with ${body.(data as { length?: any }).length} data points`);
 
 		// Route to appropriate GPU service endpoint
 		const serviceEndpoints = {
@@ -75,16 +75,16 @@ export const POST: RequestHandler = async ({ request }) => {
 			})
 		});
 
-		if (!response.ok) {
-			console.error(`GPU service error ${response.status}: ${response.statusText}`);
-			throw error(response.status, {
-				message: `GPU processing failed: ${response.statusText}`
+		if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+			console.error(`GPU service error ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+			throw error((response as { ok?: any; status?: any; statusText?: any; json?: any }).status, {
+				message: `GPU processing failed: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`
 			});
 		}
 
-		const result = await response.json() as GPUResponse;
+		const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json() as GPUResponse;
 
-		console.log(`✅ GPU API: ${body.service} completed in ${result.processing_ms}ms (GPU: ${result.gpu_utilized})`);
+		console.log(`✅ GPU API: ${body.service} completed in ${(result as { processing_ms?: any; gpu_utilized?: any }).processing_ms}ms (GPU: ${(result as { processing_ms?: any; gpu_utilized?: any }).gpu_utilized})`);
 
 		return json({
 			...result,

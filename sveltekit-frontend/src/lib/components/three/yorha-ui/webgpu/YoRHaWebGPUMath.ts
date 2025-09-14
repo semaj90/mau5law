@@ -442,7 +442,7 @@ export class YoRHaWebGPUMath {
 
   // Layout Computation
   async computeLayout(
-    nodes: Array<{ size: Vector3GPU; padding: any; margin: any }>,
+    nodes: Array<,
     containerSize: Vector3GPU,
     layoutType: 'row' | 'column' | 'grid'
   ): Promise<YoRHaComputeResult> {
@@ -478,7 +478,7 @@ export class YoRHaWebGPUMath {
 
   // Physics Simulation
   async simulatePhysics(
-    particles: Array<{ position: Vector3GPU; velocity: Vector3GPU; mass: number }>,
+    particles: Array<,
     deltaTime: number,
     gravity: Vector3GPU
   ): Promise<YoRHaComputeResult> {
@@ -512,13 +512,7 @@ export class YoRHaWebGPUMath {
   }
 
   // Performance Monitoring
-  async getBenchmarkResults(): Promise<{
-    webGPUSupported: boolean;
-    vectorOpsPerSecond: number;
-    matrixOpsPerSecond: number;
-    memoryBandwidth: number;
-    computeUnits: number;
-  }> {
+  async getBenchmarkResults(): Promise<any> {
     const testVectors = Array.from({ length: 1000 }, (_, i) => ({
       x: Math.random(),
       y: Math.random(),
@@ -552,7 +546,7 @@ export class YoRHaWebGPUMath {
     });
 
     const buffer = this.device!.createBuffer({
-      size: data.byteLength,
+      size: (data as { byteLength?: any; set?: any }).byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
 
@@ -564,11 +558,11 @@ export class YoRHaWebGPUMath {
     const data = new Float32Array(matrices.length * 16);
 
     matrices.forEach((matrix, index) => {
-      data.set(matrix.elements, index * 16);
+      (data as { byteLength?: any; set?: any }).set(matrix.elements, index * 16);
     });
 
     const buffer = this.device!.createBuffer({
-      size: data.byteLength,
+      size: (data as { byteLength?: any; set?: any }).byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
 
@@ -680,17 +674,7 @@ export class YoRHaWebGPUMath {
       enableStreaming?: boolean;
       legalDocument?: any;
     } = {}
-  ): Promise<{
-    processedTexture: GPUTexture;
-    mipmaps: GPUTexture[];
-    processingTime: number;
-    memoryUsed: number;
-    optimization: {
-      mipmapGenerated: boolean;
-      rtxAcceleration: boolean;
-      streamingUsed: boolean;
-    };
-  }> {
+  ): Promise<any> {
     const startTime = performance.now();
     const { generateMipmaps = true, filterMode = 'linear', rtxOptimized = true } = options;
 
@@ -773,19 +757,8 @@ export class YoRHaWebGPUMath {
    * 🎮 Enhanced GPU Pipeline with Legal Document Processing
    */
   async processLegalDocumentTextures(
-    legalDocuments: Array<{
-      id: string;
-      texture: GPUTexture;
-      type: 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent';
-      priority: number;
-      riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    }>
-  ): Promise<{
-    processedDocuments: number;
-    totalProcessingTime: number;
-    mipmapsGenerated: number;
-    memoryOptimized: boolean;
-  }> {
+    legalDocuments: Array<
+  ): Promise<any> {
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
     }
@@ -807,7 +780,7 @@ export class YoRHaWebGPUMath {
           legalDocument: doc
         });
 
-        totalMipmaps += result.mipmaps.length;
+        totalMipmaps += (result as { mipmaps?: any }).mipmaps.length;
         return result;
       });
 

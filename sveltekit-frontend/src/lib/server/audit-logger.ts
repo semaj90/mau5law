@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import type { AuthenticatedUser } from './auth-guard.js';
-import { db } from './db';
-import { storage_audits } from './schema';
+import type { AuthenticatedUser } from './auth-guard.js.js';
+import { db } from './db.js';
+import { storage_audits } from './schema.js';
 
 export interface AuditEntry {
   timestamp: string;

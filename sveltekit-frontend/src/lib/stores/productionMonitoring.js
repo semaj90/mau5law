@@ -109,10 +109,10 @@ async function fetchMetrics() {
   ]);
 
   return {
-    system: results[0].status === 'fulfilled' ? results[0].value : {},
-    services: results[1].status === 'fulfilled' ? results[1].value : {},
-    optimization: results[2].status === 'fulfilled' ? results[2].value : {},
-    autoSolve: results[3].status === 'fulfilled' ? results[3].value : {}
+    system: results[0].status === 'fulfilled' ? results[0].value : Record<string, any>,
+    services: results[1].status === 'fulfilled' ? results[1].value : Record<string, any>,
+    optimization: results[2].status === 'fulfilled' ? results[2].value : Record<string, any>,
+    autoSolve: results[3].status === 'fulfilled' ? results[3].value : Record<string, any>
   };
 }
 

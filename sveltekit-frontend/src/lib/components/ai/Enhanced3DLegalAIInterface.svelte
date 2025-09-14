@@ -20,14 +20,7 @@
     theme = 'yorha',
     maxConcurrentStreams = 100,
     progressAnimationSpeed = 1.0
-  } = $props<{
-    enableGPUAcceleration?: boolean;
-    enableAIRecommendations?: boolean;
-    enableIdleProcessing?: boolean;
-    theme?: 'yorha' | 'modern' | 'classic';
-    maxConcurrentStreams?: number;
-    progressAnimationSpeed?: number;
-  }>();
+  } = $props();
 
   // Component state
   let containerRef: HTMLDivElement;
@@ -46,7 +39,7 @@
   let isInitialized = false;
   let isProcessing = false;
   let currentProgress = 0;
-  let progressStages: Array<{ name: string; progress: number; status: 'pending' | 'active' | 'completed' }> = [
+  let progressStages: Array = [
     { name: 'GPU Initialization', progress: 0, status: 'pending' },
     { name: 'SIMD Parser Setup', progress: 0, status: 'pending' },
     { name: 'vLLM CUDA Integration', progress: 0, status: 'pending' },
@@ -56,7 +49,7 @@
   ];
   // User interaction state
   let userInput = '';
-  let chatMessages: Array<{ id: string; type: 'user' | 'ai' | 'system'; content: string; timestamp: number }> = [];
+  let chatMessages: Array = [];
   let recommendations: Recommendation[] = [];
   let parsedDocument: ParsedDocument | null = null;
   // Performance metrics
@@ -69,7 +62,7 @@
     aiResponseTime: 0
   };
   // Bit-encoding streaming state
-  let streamingChunks: Array<{ id: string; data: ArrayBuffer; progress: number; status: string }> = [];
+  let streamingChunks: Array = [];
   let totalBytesTransferred = 0;
   let compressionRatio = 0;
   // Animation frame
@@ -619,10 +612,10 @@
       <input 
         bind:value={userInput}
         placeholder="Enter legal query or document text..."
-        onkeydown={(e) => e.key === 'Enter' && handleUserInput()}
+        on:keydown={(e) => e.key === 'Enter' && handleUserInput()}
         disabled={!isInitialized || isProcessing}
       />
-      <button onclick={handleUserInput} disabled={!isInitialized || isProcessing}>
+      <button on:click={handleUserInput} disabled={!isInitialized || isProcessing}>
         {isProcessing ? 'Processing...' : 'Analyze'}
       </button>
     </div>

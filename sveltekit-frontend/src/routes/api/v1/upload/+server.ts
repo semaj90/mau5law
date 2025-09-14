@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * Enhanced Upload API Endpoint - SvelteKit 2 Production
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       sessionId: formData.get('sessionId') as string,
       caseId: formData.get('caseId') as string,
       tags: formData.getAll('tags') as string[],
-      metadata: {}
+      metadata: Record<string, any>
     };
 
     const context: APIRequestContext = {
@@ -213,7 +213,7 @@ async function processEnhancedUpload(request: EnhancedUploadRequest, context: AP
     contentType: request.contentType,
     uploadTime: new Date().toISOString(),
     processingStatus: 'completed',
-    metadata: {},
+    metadata: Record<string, any>,
     requestId: context.requestId,
     timestamp: new Date().toISOString()
   };

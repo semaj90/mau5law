@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 import type { RequestHandler } from '@sveltejs/kit';
 import type { RAGSearchResult } from "$lib/types/rag";
 
@@ -7,7 +7,7 @@ import type { RAGSearchResult } from "$lib/types/rag";
  * Optimizes the copilot.md context for enhanced GitHub Copilot suggestions
  */
 
-import { simdIndexProcessor, type CopilotIndex, type CopilotIndexEntry } from "./simd-json-index-processor";
+import { simdIndexProcessor, type CopilotIndex, type CopilotIndexEntry } from './simd-json-index-processor.js';
 import { enhancedRAGStore } from "$lib/stores/enhanced-rag-store";
 
 // Context7 MCP integration patterns
@@ -204,7 +204,7 @@ export class CopilotIndexOptimizer {
 
       // Step 4: Filter and limit results
       const finalResults = rankedResults
-        .filter((result: any) => result.score >= this.config.minRelevanceThreshold)
+        .filter((result: any) => (result as { score?: any; document?: any; explanation?: any; type?: any }).score >= this.config.minRelevanceThreshold)
         .slice(0, limit);
 
       // Cache results
@@ -228,13 +228,7 @@ export class CopilotIndexOptimizer {
     currentCode: string,
     cursor: { line: number; character: number },
     language: string
-  ): Promise<Array<{
-    text: string;
-    priority: number;
-    category: string;
-    confidence: number;
-    context7Pattern?: string;
-  }>> {
+  ): Promise<Array<any> {
     try {
       // Analyze current code context
       const codeContext = this.analyzeCodeContext(currentCode, cursor, language);
@@ -389,7 +383,7 @@ export class CopilotIndexOptimizer {
     const queryPatterns = this.findMatchingPatterns(query);
 
     return results.map((result: any) => {
-      const contentPatterns = this.findMatchingPatterns(result.document.content);
+      const contentPatterns = this.findMatchingPatterns((result as { score?: any; document?: any; explanation?: any; type?: any }).document.content);
 
       // Find overlapping patterns between query and content
       const overlappingPatterns = queryPatterns.filter((qp: any) =>
@@ -398,16 +392,16 @@ export class CopilotIndexOptimizer {
 
       if (overlappingPatterns.length > 0) {
         const boost = overlappingPatterns.reduce((sum, pattern) => sum + pattern.boostFactor, 0);
-        result.score = Math.min(1.0, result.score + boost);
-        result.explanation += ` [Context7 boost: +${boost.toFixed(2)}]`;
+        (result as { score?: any; document?: any; explanation?: any; type?: any }).score = Math.min(1.0, (result as { score?: any; document?: any; explanation?: any; type?: any }).score + boost);
+        (result as { score?: any; document?: any; explanation?: any; type?: any }).explanation += ` [Context7 boost: +${boost.toFixed(2)}]`;
       }
 
       // Ensure required properties are present
-      if (!result.type && result.document?.type) {
-        result.type = result.document.type;
+      if (!(result as { score?: any; document?: any; explanation?: any; type?: any }).type && (result as { score?: any; document?: any; explanation?: any; type?: any }).document?.type) {
+        (result as { score?: any; document?: any; explanation?: any; type?: any }).type = (result as { score?: any; document?: any; explanation?: any; type?: any }).document.type;
       }
-      if (!result.type) {
-        result.type = 'document'; // Default fallback
+      if (!(result as { score?: any; document?: any; explanation?: any; type?: any }).type) {
+        (result as { score?: any; document?: any; explanation?: any; type?: any }).type = 'document'; // Default fallback
       }
 
       return result;
@@ -538,29 +532,29 @@ export class CopilotIndexOptimizer {
     const queryEmbedding = await simdIndexProcessor.generateEmbeddings(query);
 
     return results.map((result: any) => {
-      let finalScore = result.score;
+      let finalScore = (result as { score?: any; document?: any; explanation?: any; type?: any }).score;
 
       // Factor 1: Semantic similarity (already calculated)
       // Factor 2: Pattern matching bonus
-      const contentPatterns = this.findMatchingPatterns(result.document.content);
+      const contentPatterns = this.findMatchingPatterns((result as { score?: any; document?: any; explanation?: any; type?: any }).document.content);
       const patternBonus = contentPatterns.length * 0.05;
 
       // Factor 3: Priority bonus
-      const priorityBonus = result.document.metadata.practiceArea?.[0] === 'enhanced_local_index' ? 0.1 : 0;
+      const priorityBonus = (result as { score?: any; document?: any; explanation?: any; type?: any }).document.metadata.practiceArea?.[0] === 'enhanced_local_index' ? 0.1 : 0;
 
       // Factor 4: Recency bonus (for newer content)
-      const age = Date.now() - result.document.metadata.lastModified.getTime();
+      const age = Date.now() - (result as { score?: any; document?: any; explanation?: any; type?: any }).document.metadata.lastModified.getTime();
       const recencyBonus = Math.max(0, 0.05 - (age / (1000 * 60 * 60 * 24 * 30))); // Decay over 30 days
 
       finalScore = Math.min(1.0, finalScore + patternBonus + priorityBonus + recencyBonus);
-      result.score = finalScore;
+      (result as { score?: any; document?: any; explanation?: any; type?: any }).score = finalScore;
 
       // Ensure required properties are present
-      if (!result.type && result.document?.type) {
-        result.type = result.document.type;
+      if (!(result as { score?: any; document?: any; explanation?: any; type?: any }).type && (result as { score?: any; document?: any; explanation?: any; type?: any }).document?.type) {
+        (result as { score?: any; document?: any; explanation?: any; type?: any }).type = (result as { score?: any; document?: any; explanation?: any; type?: any }).document.type;
       }
-      if (!result.type) {
-        result.type = 'document'; // Default fallback
+      if (!(result as { score?: any; document?: any; explanation?: any; type?: any }).type) {
+        (result as { score?: any; document?: any; explanation?: any; type?: any }).type = 'document'; // Default fallback
       }
 
       return result;

@@ -1,7 +1,7 @@
 import { reports } from '$lib/server/db/schema-postgres';
 import { db } from '$lib/server/db/index';
 import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const GET: RequestHandler = async ({ params, locals }) => {

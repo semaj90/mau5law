@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit";
 import { caseActivities } from "$lib/server/db/schema-postgres";
 import { db } from "$lib/server/db/index";
 import { eq, sql, desc, or as orExpr, like } from "drizzle-orm";
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 

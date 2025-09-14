@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface ServiceHealthStatus {
   status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
@@ -45,7 +45,7 @@ interface AggregatedHealthResponse {
   };
 }
 
-async function checkServiceHealth(url: string, timeout: number = 5000): Promise<{ status: ServiceHealthStatus['status'], responseTime: number, details?: any }> {
+async function checkServiceHealth(url: string, timeout: number = 5000): Promise<any> {
   const startTime = Date.now();
 
   try {
@@ -61,11 +61,11 @@ async function checkServiceHealth(url: string, timeout: number = 5000): Promise<
     clearTimeout(timeoutId);
     const responseTime = Date.now() - startTime;
 
-    if (response.ok) {
-      const data = await response.json().catch(() => ({}));
+    if ((response as { ok?: any; json?: any; status?: any; summary?: any }).ok) {
+      const data = await (response as { ok?: any; json?: any; status?: any; summary?: any }).json().catch(() => ({}));
       return { status: 'healthy', responseTime, details: data };
     } else {
-      return { status: 'degraded', responseTime, details: { statusCode: response.status } };
+      return { status: 'degraded', responseTime, details: { statusCode: (response as { ok?: any; json?: any; status?: any; summary?: any }).status } };
     }
   } catch (error: any) {
     const responseTime = Date.now() - startTime;
@@ -88,10 +88,10 @@ async function checkDatabaseHealth(): Promise<ServiceHealthStatus> {
     // Make a request to our database health endpoint
     const result = await checkServiceHealth('/api/database/health');
     return {
-      status: result.status,
-      message: result.status === 'healthy' ? 'PostgreSQL connection successful' : 'Database connection issues',
-      details: result.details,
-      responseTime: result.responseTime,
+      status: (result as { status?: any; details?: any; responseTime?: any }).status,
+      message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'PostgreSQL connection successful' : 'Database connection issues',
+      details: (result as { status?: any; details?: any; responseTime?: any }).details,
+      responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
       lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
@@ -109,10 +109,10 @@ async function checkRedisHealth(): Promise<ServiceHealthStatus> {
   try {
     const result = await checkServiceHealth('/api/health/redis');
     return {
-      status: result.status,
-      message: result.status === 'healthy' ? 'Redis connection active' : 'Redis connection issues',
-      details: result.details,
-      responseTime: result.responseTime,
+      status: (result as { status?: any; details?: any; responseTime?: any }).status,
+      message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'Redis connection active' : 'Redis connection issues',
+      details: (result as { status?: any; details?: any; responseTime?: any }).details,
+      responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
       lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
@@ -130,10 +130,10 @@ async function checkNeo4jHealth(): Promise<ServiceHealthStatus> {
   try {
     const result = await checkServiceHealth('/api/health/neo4j');
     return {
-      status: result.status,
-      message: result.status === 'healthy' ? 'Neo4j graph database active' : 'Neo4j connection issues',
-      details: result.details,
-      responseTime: result.responseTime,
+      status: (result as { status?: any; details?: any; responseTime?: any }).status,
+      message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'Neo4j graph database active' : 'Neo4j connection issues',
+      details: (result as { status?: any; details?: any; responseTime?: any }).details,
+      responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
       lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
@@ -151,10 +151,10 @@ async function checkOllamaHealth(): Promise<ServiceHealthStatus> {
   try {
     const result = await checkServiceHealth('http://localhost:11434/api/tags');
     return {
-      status: result.status,
-      message: result.status === 'healthy' ? 'Ollama AI service running' : 'Ollama service issues',
-      details: result.details,
-      responseTime: result.responseTime,
+      status: (result as { status?: any; details?: any; responseTime?: any }).status,
+      message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'Ollama AI service running' : 'Ollama service issues',
+      details: (result as { status?: any; details?: any; responseTime?: any }).details,
+      responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
       lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
@@ -176,14 +176,14 @@ async function checkOCRHealth(): Promise<ServiceHealthStatus> {
     const result = await checkServiceHealth(`${ocrBaseUrl}/status`);
 
     return {
-      status: result.status,
-      message: result.status === 'healthy' ? 'OCR processing service operational' : 'OCR service issues',
+      status: (result as { status?: any; details?: any; responseTime?: any }).status,
+      message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'OCR processing service operational' : 'OCR service issues',
       details: {
-        ...result.details,
+        ...(result as { status?: any; details?: any; responseTime?: any }).details,
         endpoint: `${ocrBaseUrl}/status`,
-        capabilities: result.details?.features || []
+        capabilities: (result as { status?: any; details?: any; responseTime?: any }).details?.features || []
       },
-      responseTime: result.responseTime,
+      responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
       lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
@@ -205,10 +205,10 @@ async function checkVectorSearchHealth(): Promise<ServiceHealthStatus> {
   try {
     const result = await checkServiceHealth('/api/v1/vector/health');
     return {
-      status: result.status,
-      message: result.status === 'healthy' ? 'Vector search service operational' : 'Vector search issues',
-      details: result.details,
-      responseTime: result.responseTime,
+      status: (result as { status?: any; details?: any; responseTime?: any }).status,
+      message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'Vector search service operational' : 'Vector search issues',
+      details: (result as { status?: any; details?: any; responseTime?: any }).details,
+      responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
       lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
@@ -226,10 +226,10 @@ async function checkMinIOHealth(): Promise<ServiceHealthStatus> {
   try {
     const result = await checkServiceHealth('/api/v1/minio/health');
     return {
-      status: result.status,
-      message: result.status === 'healthy' ? 'MinIO storage service operational' : 'MinIO storage issues',
-      details: result.details,
-      responseTime: result.responseTime,
+      status: (result as { status?: any; details?: any; responseTime?: any }).status,
+      message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'MinIO storage service operational' : 'MinIO storage issues',
+      details: (result as { status?: any; details?: any; responseTime?: any }).details,
+      responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
       lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
@@ -247,10 +247,10 @@ async function checkClusterHealth(): Promise<ServiceHealthStatus> {
   try {
     const result = await checkServiceHealth('/api/v1/cluster/health');
     return {
-      status: result.status,
-      message: result.status === 'healthy' ? 'Cluster orchestration active' : 'Cluster management issues',
-      details: result.details,
-      responseTime: result.responseTime,
+      status: (result as { status?: any; details?: any; responseTime?: any }).status,
+      message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'Cluster orchestration active' : 'Cluster management issues',
+      details: (result as { status?: any; details?: any; responseTime?: any }).details,
+      responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
       lastChecked: new Date().toISOString()
     };
   } catch (error: any) {
@@ -372,10 +372,10 @@ export const GET: RequestHandler = async () => {
       }
     };
 
-  console.log(`Health check complete: ${healthyServices}/${serviceStatuses.length} services healthy (${response.summary.overallHealthScore}% overall health)`);
+  console.log(`Health check complete: ${healthyServices}/${serviceStatuses.length} services healthy (${(response as { ok?: any; json?: any; status?: any; summary?: any }).summary.overallHealthScore}% overall health)`);
 
-    const httpStatus = response.status === 'healthy' ? 200 :
-                      response.status === 'degraded' ? 206 : 503;
+    const httpStatus = (response as { ok?: any; json?: any; status?: any; summary?: any }).status === 'healthy' ? 200 :
+                      (response as { ok?: any; json?: any; status?: any; summary?: any }).status === 'degraded' ? 206 : 503;
 
     return json(response, {
       status: httpStatus,
@@ -385,7 +385,7 @@ export const GET: RequestHandler = async () => {
         'Pragma': 'no-cache',
         'Expires': '0',
         'X-Health-Check': 'comprehensive',
-        'X-Health-Score': response.summary.overallHealthScore.toString(),
+        'X-Health-Score': (response as { ok?: any; json?: any; status?: any; summary?: any }).summary.overallHealthScore.toString(),
         'X-Healthy-Services': `${healthyServices}/${serviceStatuses.length}`
       }
     });
@@ -398,7 +398,7 @@ export const GET: RequestHandler = async () => {
       timestamp,
       error: 'Health check system failure',
       message: error instanceof Error ? error.message : 'Unknown error',
-      services: {},
+      services: Record<string, any>,
       summary: {
         totalServices: 0,
         healthyServices: 0,

@@ -23,9 +23,9 @@
     const notification = {
       type: 'success',
       title: 'Upload Successful',
-      message: `Document "${result.objectName}" has been uploaded and is being processed.`,
-      documentId: result.documentId,
-      url: result.url
+      message: `Document "${(result as { objectName?: any; documentId?: any; url?: any }).objectName}" has been uploaded and is being processed.`,
+      documentId: (result as { objectName?: any; documentId?: any; url?: any }).documentId,
+      url: (result as { objectName?: any; documentId?: any; url?: any }).url
     };
     
     // Store notification in session storage for display
@@ -60,8 +60,8 @@
   async function loadRecentUploads() {
     try {
       const response = await fetch('/api/documents/recent');
-      if (response.ok) {
-        recentUploads = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        recentUploads = await (response as { ok?: any; json?: any }).json();
         showRecentUploads = true;
       }
     } catch (error) {
@@ -134,7 +134,7 @@
           <h3>📋 Recent Uploads</h3>
           <button
             type="button"
-            onclick={loadRecentUploads}
+            on:click={loadRecentUploads}
             class="text-button"
           >
             {showRecentUploads ? 'Refresh' : 'Show'}
@@ -170,7 +170,6 @@
           {:else}
             <p class="no-uploads">No recent uploads found</p>
           {/if}
-        {/if}
       </div>
     </div>
   </div>

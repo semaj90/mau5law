@@ -196,7 +196,7 @@ https://svelte.dev/e/bind_invalid_expression -->
       <div class="lg:col-span-2 space-y-6">
 
         <!-- Demo Scenarios -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Demo Scenarios</h3>
             <p class="nes-text">Try these pre-built legal scenarios</p>
@@ -207,26 +207,27 @@ https://svelte.dev/e/bind_invalid_expression -->
                 <Button class="bits-btn justify-start text-left"
                   variant="outline"
                   size="sm"
-                  onclick={() => loadScenario(scenario)}
+                  on:click={() =>
+loadScenario(scenario)}
                 >
                   {scenario.title}
-                </button>
+
               {/each}
             </div>
           </div>
-        </NesCard>
+        </div>
 
         <!-- Enhanced Editor -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <div class="flex justify-between items-center">
               <div>
                 <h3 class="nes-text is-primary">AI-Enhanced Legal Editor</h3>
                 <p class="nes-text">Start typing to see intelligent suggestions appear</p>
               </div>
-              <Button class="bits-btn" onclick={resetDemo} variant="outline" size="sm">
-                Reset Demo
-              </button>
+              <Button class="bits-btn" on:click={resetDemo} variant="outline" size="sm">
+Reset Demo
+
             </div>
           </div>
           <div class="yorha-panel-content">
@@ -244,10 +245,10 @@ https://svelte.dev/e/bind_invalid_expression -->
               suggestionaccepted={handleSuggestionAccepted}
             />
           </div>
-        </NesCard>
+        </div>
 
         <!-- Live Stats -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Live Statistics</h3>
             <p class="nes-text">Real-time metrics from your editing session</p>
@@ -284,19 +285,19 @@ https://svelte.dev/e/bind_invalid_expression -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       </div>
 
       <!-- Configuration Panel -->
       <div class="space-y-6">
 
         <!-- AI Configuration -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">AI Configuration</h3>
             <p class="nes-text">Customize the suggestion engine</p>
           </div>
-          <div class="yorha-panel-content" class="space-y-6">
+          <div class="yorha-panel-content space-y-6">
 
             <!-- AI Model Selection -->
             <div>
@@ -383,10 +384,10 @@ https://svelte.dev/e/bind_invalid_expression -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
 
         <!-- Features Overview -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Key Features</h3>
           </div>
@@ -433,10 +434,10 @@ https://svelte.dev/e/bind_invalid_expression -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
 
         <!-- Usage Instructions -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">How to Use</h3>
           </div>
@@ -464,7 +465,7 @@ https://svelte.dev/e/bind_invalid_expression -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       </div>
     </div>
   </div>

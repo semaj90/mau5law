@@ -179,8 +179,7 @@ https://svelte.dev/e/js_parse_error -->
     const startTime = performance.now();
     try {
       // Convert texture source to appropriate format
-  let imageData = $state<ImageData | HTMLImageElement | ArrayBuffer;
-      if (typeof textureSource >(== 'string') {
+  let imageData = $state<ImageData | HTMLImageElement | ArrayBufferif (typeof textureSource | null>(null)(== 'string') {
         // Load image from URL
         const image = new Image());
         image.crossOrigin = 'anonymous';
@@ -255,10 +254,9 @@ https://svelte.dev/e/js_parse_error -->
     if (!adaptiveQuality || !performanceMetrics.fps) return;
     const currentFPS = performanceMetrics.fps;
     const fpsRatio = currentFPS / targetFPS;
-  let newPreset = $state<keyof typeof filteringPresets;
-    if (fpsRatio < 0.7) {
+  let newPreset = $state<keyof typeof filteringPresetsif (fpsRatio < 0.7) {
       // Performance is poor, reduce quality
-      newPreset >('performance');
+      newPreset | null>(null)('performance');
     } else if (fpsRatio < 0.85) {
       // Performance is okay, use balanced
       newPreset = 'balanced';
@@ -453,7 +451,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="error-overlay">
       <div class="error-icon">⚠️</div>
       <div class="error-message">{errorMessage}</div>
-      <button class="retry-button" onclick={() => initializeTextureCache()}>
+      <button class="retry-button" on:click={() => initializeTextureCache()}>
         RETRY
       </button>
     </div>

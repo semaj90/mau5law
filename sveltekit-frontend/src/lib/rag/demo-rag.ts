@@ -40,12 +40,7 @@ export interface RAGDemoQuery {
 
 export interface RAGDemoResponse {
   response: string;
-  sources: Array<{
-    id: string;
-    type: 'evidence' | 'report' | 'case';
-    relevance: number;
-    excerpt?: string;
-  }>;
+  sources: Array<any>;
   confidence: number;
   tokensUsed: number;
   reasoning: string[];

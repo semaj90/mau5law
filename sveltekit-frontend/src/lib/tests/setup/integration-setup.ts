@@ -140,7 +140,7 @@ vi.mock('$lib/server/db/index.ts', () => ({
     database: 'connected',
     tablesAccessible: true
   }),
-  fullSchema: {},
+  fullSchema: Record<string, any>,
   isPostgreSQL: true
 }));
 

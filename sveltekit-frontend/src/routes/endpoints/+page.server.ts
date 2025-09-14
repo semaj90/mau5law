@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 
 type EndpointStatus = {
   name: string;

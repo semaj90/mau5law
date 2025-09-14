@@ -136,7 +136,7 @@ https://svelte.dev/e/expected_token -->
       <!-- Control Buttons -->
       <div class="flex space-x-3">
         <button 
-          onclick={runInference}
+          on:click={runInference}
           disabled={!queryText.trim() || status === 'model-loading' || status === 'inference'}
           class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-medium transition-colors"
         >
@@ -151,7 +151,7 @@ https://svelte.dev/e/expected_token -->
 
         {#if status !== 'idle'}
           <button 
-            onclick={reset}
+            on:click={reset}
             class="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors"
           >
             Reset

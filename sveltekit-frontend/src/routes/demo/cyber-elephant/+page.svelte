@@ -344,7 +344,7 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 	</div>
 
-	<canvas bind:this={canvas}></canvas>
+	<canvas bind:this={canvas as any}></canvas>
 </main>
 
 <style>

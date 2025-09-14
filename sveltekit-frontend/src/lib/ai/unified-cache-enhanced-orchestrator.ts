@@ -17,24 +17,24 @@
  * that learns from every interaction and continuously improves prediction accuracy.
  */
 
-import { comprehensiveAISynthesisOrchestrator } from './comprehensive-ai-synthesis-orchestrator';
-import type { SynthesisRequest, SynthesisResponse } from './comprehensive-ai-synthesis-orchestrator';
-import { qloraTopologyPredictor } from './qlora-topology-predictor';
-import type { QLoRATopologyState, TopologyPrediction } from './qlora-topology-predictor';
-import { searchCacheNeuralEngine } from '../gpu/search-cache-neural-engine';
-import type { RenderContext, NeuralOptimizationResult } from '../gpu/search-cache-neural-engine';
+import { comprehensiveAISynthesisOrchestrator } from './comprehensive-ai-synthesis-orchestrator.js';
+import type { SynthesisRequest, SynthesisResponse } from './comprehensive-ai-synthesis-orchestrator.js';
+import { qloraTopologyPredictor } from './qlora-topology-predictor.js';
+import type { QLoRATopologyState, TopologyPrediction } from './qlora-topology-predictor.js';
+import { searchCacheNeuralEngine } from '../gpu/search-cache-neural-engine.js';
+import type { RenderContext, NeuralOptimizationResult } from '../gpu/search-cache-neural-engine.js';
 
 // Import existing cache systems
-import MultiTierCache from './cache/multiTierCache';
-import type { CacheEntry } from './cache/multiTierCache';
-import { optimizedCache } from '../server/webgpu-redis-optimizer';
-import type { GPUMetrics, CacheWorkload } from '../server/webgpu-redis-optimizer';
-import { setCache, getCache, hashPayload } from '../server/summarizeCache';
-import type { SummarizeCacheEntry, CachePerformanceMeta } from '../server/summarizeCache';
+import MultiTierCache from './cache/multiTierCache.js';
+import type { CacheEntry } from './cache/multiTierCache.js';
+import { optimizedCache } from '../server/webgpu-redis-optimizer.js';
+import type { GPUMetrics, CacheWorkload } from '../server/webgpu-redis-optimizer.js';
+import { setCache, getCache, hashPayload } from '../server/summarizeCache.js';
+import type { SummarizeCacheEntry, CachePerformanceMeta } from '../server/summarizeCache.js';
 
 // Orchestration integration (these would be actual imports in production)
-// import { OptimizedRabbitMQOrchestrator } from '../orchestration/optimized-rabbitmq-orchestrator';
-// import { AsyncRabbitMQStateManager } from '../state/async-rabbitmq-state-manager';
+// import { OptimizedRabbitMQOrchestrator } from '../orchestration/optimized-rabbitmq-orchestrator.js';
+// import { AsyncRabbitMQStateManager } from '../state/async-rabbitmq-state-manager.js';
 
 // Enhanced system types
 export interface UnifiedCacheRequest extends SynthesisRequest {
@@ -201,7 +201,7 @@ export class UnifiedCacheEnhancedOrchestrator {
       // Step 8: Cache results for future predictions
       await this.cacheResultsIntelligently(request, response, cacheStrategy);
       
-      console.log(`✅ UNIFIED PROCESSING: ${request.requestId} completed - ${response.accuracyMetrics.actualAccuracy.toFixed(3)} accuracy`);
+      console.log(`✅ UNIFIED PROCESSING: ${request.requestId} completed - ${(response as { accuracyMetrics?: any; results?: any; performance?: any }).accuracyMetrics.actualAccuracy.toFixed(3)} accuracy`);
       return response;
       
     } catch (error: any) {
@@ -243,12 +243,7 @@ export class UnifiedCacheEnhancedOrchestrator {
   /**
    * Real-time accuracy monitoring and adaptive improvement
    */
-  async monitorAndImproveAccuracy(): Promise<{
-    currentAccuracy: number;
-    accuracyTrend: 'improving' | 'stable' | 'declining';
-    recommendedActions: string[];
-    systemHealth: 'excellent' | 'good' | 'concerning' | 'critical';
-  }> {
+  async monitorAndImproveAccuracy(): Promise<any> {
     // Calculate current accuracy from recent predictions
     const recentAccuracies = this.accuracyHistory.slice(-20); // Last 20 predictions
     const currentAccuracy = recentAccuracies.reduce((sum, acc) => sum + acc, 0) / recentAccuracies.length;
@@ -535,7 +530,7 @@ export class UnifiedCacheEnhancedOrchestrator {
   }
 
   private async performAdaptiveLearning(request: UnifiedCacheRequest, response: UnifiedCacheResponse): Promise<void> {
-    const actualAccuracy = response.accuracyMetrics.actualAccuracy;
+    const actualAccuracy = (response as { accuracyMetrics?: any; results?: any; performance?: any }).accuracyMetrics.actualAccuracy;
     
     // Update accuracy history
     this.accuracyHistory.push(actualAccuracy);
@@ -544,17 +539,17 @@ export class UnifiedCacheEnhancedOrchestrator {
     }
     
     // Update QLoRA predictor with actual results
-    if (response.results.qloraConfig) {
+    if ((response as { accuracyMetrics?: any; results?: any; performance?: any }).results.qloraConfig) {
       await this.qloraPredictor.updateWithActualPerformance?.(
         request.documentId,
-        response.results.qloraConfig,
+        (response as { accuracyMetrics?: any; results?: any; performance?: any }).results.qloraConfig,
         {
           timestamp: Date.now(),
-          config: response.results.qloraConfig,
+          config: (response as { accuracyMetrics?: any; results?: any; performance?: any }).results.qloraConfig,
           accuracy: actualAccuracy,
-          throughput: 1000 / response.performance.latency,
-          memoryUsage: response.performance.memoryUsed * 1024 * 1024,
-          userSatisfaction: response.performance.confidenceScore,
+          throughput: 1000 / (response as { accuracyMetrics?: any; results?: any; performance?: any }).performance.latency,
+          memoryUsage: (response as { accuracyMetrics?: any; results?: any; performance?: any }).performance.memoryUsed * 1024 * 1024,
+          userSatisfaction: (response as { accuracyMetrics?: any; results?: any; performance?: any }).performance.confidenceScore,
           convergenceSpeed: 3
         }
       );
@@ -576,37 +571,37 @@ export class UnifiedCacheEnhancedOrchestrator {
     strategy: CacheStrategyDecision
   ): Promise<void> {
     const cacheKey = await this.generateIntelligentCacheKey(request);
-    const ttl = this.calculateOptimalTTL(response.accuracyMetrics.actualAccuracy);
+    const ttl = this.calculateOptimalTTL((response as { accuracyMetrics?: any; results?: any; performance?: any }).accuracyMetrics.actualAccuracy);
     
     // Cache in multiple tiers based on strategy
     switch (strategy.strategy) {
       case 'memory_first':
-        await this.multiTierCache.set(cacheKey, response.results, ttl);
+        await this.multiTierCache.set(cacheKey, (response as { accuracyMetrics?: any; results?: any; performance?: any }).results, ttl);
         break;
         
       case 'gpu_optimized':
-        await optimizedCache.set(cacheKey, response.results, ttl);
+        await optimizedCache.set(cacheKey, (response as { accuracyMetrics?: any; results?: any; performance?: any }).results, ttl);
         break;
         
       case 'hybrid_multi':
         // Cache in multiple layers with different TTLs
-        await this.multiTierCache.set(cacheKey, response.results, ttl);
-        await optimizedCache.set(cacheKey, response.results, ttl * 2);
+        await this.multiTierCache.set(cacheKey, (response as { accuracyMetrics?: any; results?: any; performance?: any }).results, ttl);
+        await optimizedCache.set(cacheKey, (response as { accuracyMetrics?: any; results?: any; performance?: any }).results, ttl * 2);
         
         // Also cache in summarize cache if applicable
         const summarizeKey = await hashPayload(JSON.stringify(request));
         const summarizeEntry = {
-          summary: JSON.stringify(response.results),
-          structured: response.results,
+          summary: JSON.stringify((response as { accuracyMetrics?: any; results?: any; performance?: any }).results),
+          structured: (response as { accuracyMetrics?: any; results?: any; performance?: any }).results,
           model: 'unified-orchestrator',
           type: request.operationType,
           ts: Date.now(),
           ttlMs: ttl,
           perf: {
-            duration: response.performance.latency,
+            duration: (response as { accuracyMetrics?: any; results?: any; performance?: any }).performance.latency,
             tokens: 1000, // Estimated
             promptTokens: 500, // Estimated
-            tokensPerSecond: 1000 / (response.performance.latency / 1000),
+            tokensPerSecond: 1000 / ((response as { accuracyMetrics?: any; results?: any; performance?: any }).performance.latency / 1000),
             modelUsed: 'unified',
             fallbackUsed: false
           }
@@ -651,7 +646,7 @@ export class UnifiedCacheEnhancedOrchestrator {
     // Initialize placeholder orchestrators (would be real connections in production)
     this.rabbitmqOrchestrator = {
       submitJob: async () => ({ jobId: 'mock_job', status: 'completed' }),
-      getJobStatus: async () => ({ status: 'completed', result: {} })
+      getJobStatus: async () => ({ status: 'completed', result: Record<string, any> })
     };
     
     this.stateManager = {
@@ -909,8 +904,8 @@ export class UnifiedCacheEnhancedOrchestrator {
 
   private async updateSystemLearningFromBatch(results: UnifiedCacheResponse[]): Promise<void> {
     // Update system-wide learning parameters based on batch results
-    const avgAccuracy = results.reduce((sum, result) => sum + result.accuracyMetrics.actualAccuracy, 0) / results.length;
-    const successRate = results.filter(result => result.success).length / results.length;
+    const avgAccuracy = results.reduce((sum, result) => sum + (result as { accuracyMetrics?: any; success?: any }).accuracyMetrics.actualAccuracy, 0) / results.length;
+    const successRate = results.filter(result => (result as { accuracyMetrics?: any; success?: any }).success).length / results.length;
     
     console.log(`📊 BATCH LEARNING: Avg accuracy: ${avgAccuracy.toFixed(3)}, Success rate: ${successRate.toFixed(3)}`);
     

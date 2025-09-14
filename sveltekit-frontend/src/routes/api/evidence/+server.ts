@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Enhanced Evidence API with pgvector Integration
 // Production-ready evidence management with AI analysis
@@ -203,7 +203,7 @@ class EvidenceAIService {
 
       return {
         id: randomUUID(),
-        model: options.useGPUAcceleration ? 'enhanced-rag-gpu' : (analysisResult?.model || 'gemma3-legal'),
+        model: options.useGPUAcceleration ? 'enhanced-rag-gpu' : (analysisResult??.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal'),
         confidence: analysisResult?.confidence ?? 0.8,
         entities: analysisResult?.entities ?? [],
         sentiment: analysisResult?.sentiment ?? 0,

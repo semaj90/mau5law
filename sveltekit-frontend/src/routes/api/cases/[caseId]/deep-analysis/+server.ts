@@ -3,7 +3,7 @@ import { db } from "$lib/server/db/index";
 import { caseActivities, cases, evidence } from "$lib/server/db/index";
 import { eq } from "drizzle-orm";
 import { QdrantClient } from "@qdrant/js-client-rest";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Environment variables fallback
@@ -183,12 +183,12 @@ ws ::= ([ \t\n]*)
     // --- SYNTHESIS & RESPONSE ---
     const analysisResults: Record<string, any> = {};
     settledResults.forEach((result) => {
-      if (result.status === "fulfilled" && result.value.ok) {
-        const { source, data } = result.value;
+      if ((result as { status?: any; value?: any; reason?: any }).status === "fulfilled" && (result as { status?: any; value?: any; reason?: any }).value.ok) {
+        const { source, data } = (result as { status?: any; value?: any; reason?: any }).value;
         if (source === "firm_ai") {
           try {
             // The output should be valid JSON because of the grammar
-            const parsedResponse = JSON.parse(data.response);
+            const parsedResponse = JSON.parse((data as { response?: any; choices?: any; detail?: any }).response);
             analysisResults.firm_ai = {
               output: parsedResponse,
               source: "Local LLM (JSON)",
@@ -197,26 +197,26 @@ ws ::= ([ \t\n]*)
             // Fallback if JSON parsing fails despite the grammar (very unlikely)
             console.error(
               "Local LLM output was not valid JSON:",
-              data.response
+              (data as { response?: any; choices?: any; detail?: any }).response
             );
             analysisResults.firm_ai = {
-              output: data.response,
+              output: (data as { response?: any; choices?: any; detail?: any }).response,
               source: "Local LLM (Raw)",
             };
           }
         } else if (source === "openai") {
           analysisResults.openai = {
-            output: data.choices[0].message.content,
+            output: (data as { response?: any; choices?: any; detail?: any }).choices[0].message.content,
             source: "OpenAI API",
           };
         }
-      } else if (result.status === "fulfilled") {
+      } else if ((result as { status?: any; value?: any; reason?: any }).status === "fulfilled") {
         // API returned an error
-        const { source, data } = result.value;
-        analysisResults[source] = { error: data.detail || "API Error" };
+        const { source, data } = (result as { status?: any; value?: any; reason?: any }).value;
+        analysisResults[source] = { error: (data as { response?: any; choices?: any; detail?: any }).detail || "API Error" };
       } else {
         // Fetch itself failed
-        console.error("Fetch failed:", result.reason);
+        console.error("Fetch failed:", (result as { status?: any; value?: any; reason?: any }).reason);
       }
     });
 

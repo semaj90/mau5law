@@ -516,7 +516,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             class:bg-green-100={activeCategory === "all"}
             class:text-green-700={activeCategory === "all"}
             class:hover:bg-gray-100={activeCategory !== "all"}
-            onclick={() => (activeCategory = "all")}
+            on:click={() => (activeCategory = "all")}
           >
             <Book class="h-5 w-5" />
             <div>
@@ -534,7 +534,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               class:bg-green-100={activeCategory === category.id}
               class:text-green-700={activeCategory === category.id}
               class:hover:bg-gray-100={activeCategory !== category.id}
-              onclick={() => (activeCategory = category.id)}
+              on:click={() => (activeCategory = category.id)}
             >
               {@const Icon = category.icon}
               <Icon class="h-5 w-5" />
@@ -552,17 +552,17 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <h3 class="text-lg font-semibold mb-4">Need More Help?</h3>
         <div class="space-y-3">
           <Button variant="outline" class="w-full justify-start bits-btn bits-btn">
-            <MessageSquare class="h-4 w-4 mr-2" />
+<MessageSquare class="h-4 w-4 mr-2" />
             Contact Support
-          </button>
+</Button>
           <Button variant="outline" class="w-full justify-start bits-btn bits-btn">
-            <Video class="h-4 w-4 mr-2" />
+<Video class="h-4 w-4 mr-2" />
             Video Tutorials
-          </button>
+</Button>
           <Button variant="outline" class="w-full justify-start bits-btn bits-btn">
-            <Download class="h-4 w-4 mr-2" />
+<Download class="h-4 w-4 mr-2" />
             User Manual (PDF)
-          </button>
+</Button>
         </div>
       </div>
     </div>
@@ -628,10 +628,10 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                     </div>
 
                     <Button class="bits-btn" variant="outline" size="sm">
-                      <Book class="h-4 w-4 mr-2" />
+<Book class="h-4 w-4 mr-2" />
                       Read Full Article
                       <ArrowRight class="h-4 w-4 ml-2" />
-                    </button>
+</Button>
                   </div>
                 </div>
               </div>
@@ -688,13 +688,13 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             </p>
             <div class="flex gap-3">
               <Button class="bits-btn" variant="outline" size="sm">
-                <MessageSquare class="h-4 w-4 mr-2" />
+<MessageSquare class="h-4 w-4 mr-2" />
                 Start Live Chat
-              </button>
+</Button>
               <Button class="bits-btn" variant="outline" size="sm">
-                <ExternalLink class="h-4 w-4 mr-2" />
+<ExternalLink class="h-4 w-4 mr-2" />
                 Submit Ticket
-              </button>
+</Button>
             </div>
           </div>
         </div>

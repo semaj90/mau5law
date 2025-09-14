@@ -260,14 +260,14 @@ export interface UploadEventDetail<T = any> {
 }
 
 export type UploadEventMap = {
-  'upload:start': UploadEventDetail<{ files: File[] }>;
-  'upload:progress': UploadEventDetail<{ progress: number }>;
-  'upload:complete': UploadEventDetail<{ result: UploadAnalysisResult }>;
-  'processing:start': UploadEventDetail<{ pipeline: ProcessingPipeline }>;
-  'processing:step': UploadEventDetail<{ step: string; progress: number }>;
-  'processing:complete': UploadEventDetail<{ result: UploadAnalysisResult }>;
-  'gpu:accelerated': UploadEventDetail<{ operation: string; speedup: number }>;
-  'error:occurred': UploadEventDetail<{ error: string; recoverable: boolean }>;
-  'cache:hit': UploadEventDetail<{ key: string; size: number }>;
-  'cache:miss': UploadEventDetail<{ key: string }>;
+  'upload:start': UploadEventDetail;
+  'upload:progress': UploadEventDetail;
+  'upload:complete': UploadEventDetail;
+  'processing:start': UploadEventDetail;
+  'processing:step': UploadEventDetail;
+  'processing:complete': UploadEventDetail;
+  'gpu:accelerated': UploadEventDetail;
+  'error:occurred': UploadEventDetail;
+  'cache:hit': UploadEventDetail;
+  'cache:miss': UploadEventDetail;
 };

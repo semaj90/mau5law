@@ -367,13 +367,13 @@
   bind:this={cardElement}
   role={clickable ? 'button' : 'region'}
   tabindex={clickable ? 0 : -1}
-  onclick={handleClick}
-  onmouseenter={handleHover}
-  onmouseleave={handleUnhover}
+  on:click={handleClick}
+  on:mouseenter={handleHover}
+  on:mouseleave={handleUnhover}
   onmousemove={handleMouseMove}
-  onfocus={handleFocus}
-  onblur={handleBlur}
-  onkeydown={handleKeyDown}
+  on:focus={handleFocus}
+  on:blur={handleBlur}
+  on:keydown={handleKeyDown}
   class="n64-nier-bits-card {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
   class:clickable
   class:hoverable

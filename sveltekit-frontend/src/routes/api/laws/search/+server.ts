@@ -1,5 +1,5 @@
 import { URL } from "url";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Mock legal database - in production this would connect to a real legal database
@@ -197,9 +197,9 @@ async function performVectorSearch(query: string, jurisdiction: string, category
       })
     });
 
-    if (response.ok) {
-      const result = await response.json();
-      return result.results || [];
+    if ((response as { ok?: any; json?: any }).ok) {
+      const result = await (response as { ok?: any; json?: any }).json();
+      return (result as { results?: any }).results || [];
     }
   } catch (error: any) {
     console.error('Vector search error:', error);

@@ -50,10 +50,8 @@ https://svelte.dev/e/js_parse_error -->
     totalMessages: 0,
     connectionUptime: 0,
   });
-  let metricsInterval = $state<number;
-
-  // Subscribe to stores
-  $effect(() => {
+  let metricsInterval = $state<number// Subscribe to stores
+  $effect(() = | null>(null)() {
     status = $connectionStatus);
     messageList = $messages.slice(-50); // Keep last 50 messages for display
     streamingList = new Map($streamingResponses);
@@ -309,18 +307,18 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <!-- Connection Status -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center justify-between">
+      <h3 class="nes-text is-primary flex items-center justify-between">
         <span>Connection Status</span>
         {#if !isInitialized}
-          <Button onclick={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
-            {isInitializing ? 'Initializing...' : 'Connect'}
-          </button>
+          <Button on:click={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
+{isInitializing ? 'Initializing...' : 'Connect'}
+
         {:else}
-          <Button onclick={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
-            Disconnect
-          </button>
+          <Button on:click={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
+Disconnect
+
         {/if}
       </h3>
     </div>
@@ -379,13 +377,13 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   {#if isInitialized}
     <!-- Demo Controls -->
     <div class="demo-controls grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Message Testing -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Send Test Message</h3>
         </div>
@@ -426,13 +424,15 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </div>
 
-            <Button onclick={sendTestMessage} class="w-full bits-btn bits-btn">Send Message</button>
+            <Button on:click={sendTestMessage} class="w-full bits-btn bits-btn">
+Send Message
+
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Streaming Testing -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Streaming Requests</h3>
         </div>
@@ -459,18 +459,22 @@ https://svelte.dev/e/js_parse_error -->
               </select>
             </div>
 
-            <Button onclick={startStreamingRequest} class="w-full bits-btn bits-btn">Start Stream</button>
+            <Button on:click={startStreamingRequest} class="w-full bits-btn bits-btn">
+Start Stream
+
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Performance Metrics -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           <span>Performance Metrics</span>
-          <Button onclick={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">Run Performance Test</button>
+          <Button on:click={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">
+Run Performance Test
+
         </h3>
       </div>
       <div class="yorha-panel-content">
@@ -504,10 +508,10 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Message Log -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Recent Messages ({messageList.length})</h3>
       </div>
@@ -550,11 +554,11 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Streaming Responses -->
     {#if streamingList.size > 0}
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Active Streams ({streamingList.size})</h3>
         </div>
@@ -600,9 +604,8 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     {/if}
-  {/if}
 </div>
 
 <style>

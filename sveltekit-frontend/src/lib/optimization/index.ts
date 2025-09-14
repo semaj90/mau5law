@@ -198,12 +198,7 @@ export interface GoServiceOptimizationConfig {
 
 export interface OllamaClusterConfig {
   // TODO: Multi-instance load balancing
-  instances: Array<{
-    port: number;
-    model: string;
-    gpuLayers: number;
-    memoryMB: number;
-  }>;
+  instances: Array<any>;
 
   // TODO: Health check configuration
   healthCheck: {
@@ -683,7 +678,7 @@ ${this.generateEnhancedRecommendations(metrics)}
         ollamaResponseTimeMs: getAverage('ollama_response_time_ms'),
         databaseQueryTimeMs: getAverage('database_query_time_ms'),
         vectorSearchLatencyMs: getAverage('vector_search_latency_ms'),
-        goServiceHealthScores: {} as Record<string, number>
+        goServiceHealthScores: Record<string, any> as Record<string, number>
       },
       cache: {
         hitRatePercent: getAverage('cache_hit_rate'),
@@ -741,11 +736,7 @@ ${this.generateEnhancedRecommendations(metrics)}
 // === DEVELOPMENT AND PRODUCTION OPTIMIZATION PRESETS ===
 
 // TODO: Development preset optimized for native Windows deployment
-export async function optimizeForLegalAIDevelopment(): Promise<{
-  suite: EnhancedOptimizationSuite;
-  monitor: EnhancedPerformanceMonitor;
-  stats: () => Promise<EnhancedPerformanceMetrics>;
-}> {
+export async function optimizeForLegalAIDevelopment(): Promise<any> {
   const suite = createEnhancedOptimizationSuite({
     environment: 'development',
     hardware: {
@@ -821,11 +812,7 @@ export async function optimizeForLegalAIProduction(): Promise<EnhancedOptimizati
 
 export const enhancedQuickOptimization = {
   // TODO: Immediate legal AI system optimization
-  optimizeLegalAISystem: async (): Promise<{
-    memoryFreedMB: number;
-    performanceImprovement: number;
-    optimizationsApplied: string[];
-  }> => {
+  optimizeLegalAISystem: async (): Promise< => {
     const optimizations: string[] = [];
     let memoryFreed = 0;
     let performanceGain = 0;
@@ -856,11 +843,7 @@ export const enhancedQuickOptimization = {
   },
 
   // TODO: GPU memory optimization for RTX 3060 Ti
-  optimizeGPUMemory: async (): Promise<{
-    gpuMemoryFreedMB: number;
-    ollamaOptimized: boolean;
-    tensorOptimized: boolean;
-  }> => {
+  optimizeGPUMemory: async (): Promise< => {
     // TODO: Optimize Ollama GPU memory usage
     const ollamaOptimized = true;
     let gpuMemoryFreed = 1024; // Free 1GB
@@ -877,12 +860,7 @@ export const enhancedQuickOptimization = {
   },
 
   // TODO: Database performance optimization
-  optimizeDatabases: async (): Promise<{
-    postgresOptimized: boolean;
-    neo4jOptimized: boolean;
-    redisOptimized: boolean;
-    queryTimeImprovement: number;
-  }> => {
+  optimizeDatabases: async (): Promise< => {
     // TODO: Optimize PostgreSQL with pgvector
     const postgresOptimized = true;
 
@@ -903,12 +881,7 @@ export const enhancedQuickOptimization = {
   },
 
   // TODO: Full system diagnostic with legal AI focus
-  runLegalAIDiagnostic: async (): Promise<{
-    systemHealth: 'excellent' | 'good' | 'fair' | 'poor';
-    legalAIPerformance: number;
-    recommendedActions: string[];
-    nextOptimizationTarget: string;
-  }> => {
+  runLegalAIDiagnostic: async (): Promise< => {
     // TODO: Comprehensive system analysis
     const systemHealth = 'excellent';
     const legalAIPerformance = 92; // Performance score out of 100

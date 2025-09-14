@@ -191,9 +191,9 @@ export class JobOrchestrator extends EventEmitter {
       if (msg) {
         try {
           const result: WorkerResult = JSON.parse(msg.content.toString());
-          this.results.set(result.jobId, result);
+          this.results.set((result as { jobId?: any; success?: any }).jobId, result);
 
-          if (result.success) {
+          if ((result as { jobId?: any; success?: any }).success) {
             this.stats.completedJobs++;
           } else {
             this.stats.failedJobs++;
@@ -204,7 +204,7 @@ export class JobOrchestrator extends EventEmitter {
             .reduce((sum, r) => sum + r.processingTime, 0);
           this.stats.averageProcessingTime = totalProcessingTime / this.results.size;
 
-          console.log(`📥 Job ${result.jobId} completed: ${result.success ? 'SUCCESS' : 'FAILED'}`);
+          console.log(`📥 Job ${(result as { jobId?: any; success?: any }).jobId} completed: ${(result as { jobId?: any; success?: any }).success ? 'SUCCESS' : 'FAILED'}`);
           this.emit('jobCompleted', result);
 
           this.channel?.ack(msg);
@@ -544,10 +544,7 @@ export class EmbeddingWorker extends SpecializedWorker {
 // Factory function for creating the orchestrator with common workers
 export async function createSpecializedWorkerSystem(
   rabbitmqUrl: string = 'amqp://localhost'
-): Promise<{
-  orchestrator: JobOrchestrator;
-  workers: SpecializedWorker[];
-}> {
+): Promise<any> {
   const orchestrator = new JobOrchestrator(rabbitmqUrl);
   await orchestrator.initialize();
 

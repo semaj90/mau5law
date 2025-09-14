@@ -7,7 +7,7 @@
   		placeholder?: string;
   		value?: string;
   		showFilters?: boolean;
-  		sortOptions?: Array<{ id: string; label: string; }>;
+  		sortOptions?: Array;
   		onsearch?: (event: CustomEvent) => void;
   		onsortChanged?: (event: CustomEvent) => void;
   		onfiltersChanged?: (event: CustomEvent) => void;
@@ -90,7 +90,7 @@
 			<div class="sort-container">
 				<select
 					bind:value={selectedSort}
-					onchange={() => handleSortChange(selectedSort)}
+					on:change={() => handleSortChange(selectedSort)}
 					class="sort-select"
 					aria-label="Sort by"
 				>
@@ -105,7 +105,7 @@
 			<button
 				class="filter-button"
 				class:active={filtersOpen}
-				onclick={() => toggleFilters()}
+				on:click={() => toggleFilters()}
 				aria-label="Toggle filters"
 				title="Filters"
 			>
@@ -126,7 +126,7 @@
 						type="checkbox" 
 						value="image" 
 						checked={selectedFileTypes.includes('image')}
-						onchange={handleFileTypeChange}
+						on:change={handleFileTypeChange}
 					/>
 					Images
 				</label>
@@ -135,7 +135,7 @@
 						type="checkbox" 
 						value="document" 
 						checked={selectedFileTypes.includes('document')}
-						onchange={handleFileTypeChange}
+						on:change={handleFileTypeChange}
 					/>
 					Documents
 				</label>
@@ -144,7 +144,7 @@
 						type="checkbox" 
 						value="video" 
 						checked={selectedFileTypes.includes('video')}
-						onchange={handleFileTypeChange}
+						on:change={handleFileTypeChange}
 					/>
 					Videos
 				</label>
@@ -153,7 +153,7 @@
 						type="checkbox" 
 						value="audio" 
 						checked={selectedFileTypes.includes('audio')}
-						onchange={handleFileTypeChange}
+						on:change={handleFileTypeChange}
 					/>
 					Audio
 				</label>
@@ -168,7 +168,7 @@
 					class="date-input" 
 					aria-label="From date"
 					bind:value={dateRange.from}
-					onchange={handleDateChange}
+					on:change={handleDateChange}
 				/>
 				<span>to</span>
 				<input 
@@ -176,7 +176,7 @@
 					class="date-input" 
 					aria-label="To date"
 					bind:value={dateRange.to}
-					onchange={handleDateChange}
+					on:change={handleDateChange}
 				/>
 			</div>
 		</div>
@@ -185,7 +185,7 @@
 			<button 
 				type="button" 
 				class="clear-filters-btn"
-				onclick={() => {
+				on:click={() => {
 					selectedFileTypes = [];
 					dateRange = { from: '', to: '' };
 					dispatchFilters();

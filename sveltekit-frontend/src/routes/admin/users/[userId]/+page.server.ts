@@ -1,5 +1,5 @@
 import { error, redirect } from '@sveltejs/kit';
-import type { PageServerLoad, Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types.js';
 import { db } from '$lib/db/index.js';
 import { users, cases, evidence, sessions, aiHistory, profileTable } from '$lib/db/schema.js';
 import { eq, desc, count, sql } from 'drizzle-orm';

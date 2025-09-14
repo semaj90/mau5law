@@ -104,18 +104,18 @@
         {#each uploadResults as result}
           <div class="p-4 border rounded-lg bg-white shadow-sm">
             <div class="flex justify-between items-start mb-2">
-              <div class="font-medium">{result.fileName}</div>
+              <div class="font-medium">{(result as { fileName?: any; processingTime?: any; size?: any; minioPath?: any; contentType?: any; cudaOptimized?: any }).fileName}</div>
               <div class="text-sm text-gray-500">
-                {result.processingTime}ms
+                {(result as { fileName?: any; processingTime?: any; size?: any; minioPath?: any; contentType?: any; cudaOptimized?: any }).processingTime}ms
               </div>
             </div>
             
             <div class="text-sm text-gray-600 space-y-1">
-              <div>Size: {(result.size / (1024 * 1024)).toFixed(2)} MB</div>
-              <div>MinIO Path: <code class="text-xs bg-gray-100 px-1 rounded">{result.minioPath}</code></div>
-              <div>Content Type: {result.contentType}</div>
+              <div>Size: {((result as { fileName?: any; processingTime?: any; size?: any; minioPath?: any; contentType?: any; cudaOptimized?: any }).size / (1024 * 1024)).toFixed(2)} MB</div>
+              <div>MinIO Path: <code class="text-xs bg-gray-100 px-1 rounded">{(result as { fileName?: any; processingTime?: any; size?: any; minioPath?: any; contentType?: any; cudaOptimized?: any }).minioPath}</code></div>
+              <div>Content Type: {(result as { fileName?: any; processingTime?: any; size?: any; minioPath?: any; contentType?: any; cudaOptimized?: any }).contentType}</div>
               
-              {#if result.cudaOptimized}
+              {#if (result as { fileName?: any; processingTime?: any; size?: any; minioPath?: any; contentType?: any; cudaOptimized?: any }).cudaOptimized}
                 <div class="flex items-center gap-2 text-blue-600">
                   <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                   CUDA Optimized • Clang/LLVM compiled

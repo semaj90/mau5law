@@ -7,8 +7,8 @@
 // @ts-nocheck
 
 import { EventEmitter } from "events";
-import type { EnhancedOptimizationSuite, EnhancedPerformanceMetrics } from './index';
-import { createEnhancedOptimizationSuite } from './index';
+import type { EnhancedOptimizationSuite, EnhancedPerformanceMetrics } from './index.js';
+import { createEnhancedOptimizationSuite } from './index.js';
 
 // === Context7 MCP Tool Integration Types ===
 export interface Context7MCPRequest {
@@ -245,7 +245,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
         ollamaResponseTimeMs: 0,
         databaseQueryTimeMs: 0,
         vectorSearchLatencyMs: 0,
-        goServiceHealthScores: {}
+        goServiceHealthScores: Record<string, any>
       },
       cache: {
         hitRatePercent: cacheStats.cache.hit_rate,
@@ -656,12 +656,7 @@ const db = drizzle(pool, {
   }
 
   // === Public API Methods ===
-  async runComprehensiveOptimizationAnalysis(): Promise<{
-    current_metrics: EnhancedPerformanceMetrics;
-    recommendations: OptimizationRecommendation[];
-    estimated_improvements: Record<string, number>;
-    implementation_plan: string[];
-  }> {
+  async runComprehensiveOptimizationAnalysis(): Promise<any> {
     const current_metrics = await this.collectCurrentMetrics();
     const optimization_context = await this.getOptimizationContext();
 
@@ -720,11 +715,7 @@ export function createContext7MCPIntegration(
   return new Context7MCPOptimizationIntegrator(suite);
 }
 
-export async function createOptimizedDevelopmentEnvironment(): Promise<{
-  integrator: Context7MCPOptimizationIntegrator;
-  recommendations: OptimizationRecommendation[];
-  quickActions: Record<string, () => Promise<any>>;
-}> {
+export async function createOptimizedDevelopmentEnvironment(): Promise<any> {
   const integrator = createContext7MCPIntegration();
 
   const analysis = await integrator.runComprehensiveOptimizationAnalysis();

@@ -54,14 +54,14 @@ https://svelte.dev/e/expected_token -->
 
     try {
       const response = await fetch('/api/pgvector/test?action=connection');
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      connectionStatus = result.success ? 'connected' : 'failed';
-      connectionDetails = result.details;
-      performanceMetrics.connectionTest = result.responseTime;
+      connectionStatus = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success ? 'connected' : 'failed';
+      connectionDetails = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).details;
+      performanceMetrics.connectionTest = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTime;
 
-      if (!result.success) {
-        lastError = result.details.error || 'Connection test failed';
+      if (!(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).details.error || 'Connection test failed';
       }
     } catch (error) {
       connectionStatus = 'failed';
@@ -80,12 +80,12 @@ https://svelte.dev/e/expected_token -->
 
     try {
       const response = await fetch('/api/pgvector/test?action=stats');
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
-        dbStats = result.stats;
+      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        dbStats = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).stats;
       } else {
-        lastError = result.error || 'Failed to get database statistics';
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Failed to get database statistics';
       }
     } catch (error) {
       lastError = error.message;
@@ -103,10 +103,10 @@ https://svelte.dev/e/expected_token -->
 
     try {
       const response = await fetch(`/api/pgvector/test?action=seed&count=${count}`);
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (!result.success) {
-        lastError = result.error || 'Failed to seed database';
+      if (!(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Failed to seed database';
       }
 
       // Refresh stats after seeding
@@ -127,12 +127,12 @@ https://svelte.dev/e/expected_token -->
 
     try {
       const response = await fetch(`/api/pgvector/test?action=index&lists=${lists}&metric=${metric}`);
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
-        performanceMetrics.indexCreation = result.responseTime;
+      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        performanceMetrics.indexCreation = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTime;
       } else {
-        lastError = result.error || 'Failed to create index';
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Failed to create index';
       }
     } catch (error) {
       lastError = error.message;
@@ -162,13 +162,13 @@ https://svelte.dev/e/expected_token -->
         })
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
-        searchResults = result.results || [];
-        performanceMetrics.vectorSearch = result.responseTime;
+      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        searchResults = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).results || [];
+        performanceMetrics.vectorSearch = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTime;
       } else {
-        lastError = result.error || 'Vector search failed';
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Vector search failed';
       }
     } catch (error) {
       lastError = error.message;
@@ -209,17 +209,17 @@ https://svelte.dev/e/expected_token -->
         body: JSON.stringify(sampleDoc)
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
-        performanceMetrics.documentInsert = result.responseTime;
+      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        performanceMetrics.documentInsert = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTime;
         // Refresh stats and search to see new document
         await getDatabaseStats();
         if (testQuery.includes('test') || testQuery.includes('sample')) {
           await performVectorSearch();
         }
       } else {
-        lastError = result.error || 'Document insertion failed';
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Document insertion failed';
       }
     } catch (error) {
       lastError = error.message;
@@ -292,9 +292,9 @@ https://svelte.dev/e/expected_token -->
     <TabsContent value="overview" class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Connection Status -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               PostgreSQL Connection
               <Badge class={getStatusColor(connectionStatus)}>
                 {connectionStatus}
@@ -304,10 +304,9 @@ https://svelte.dev/e/expected_token -->
               Database connectivity and pgvector extension status
             </p>
           </div>
-          <div class="yorha-panel-content" class="space-y-3">
-            <Button onclick={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
-              {isLoading ? 'Testing...' : 'Test Connection'}
-            </button>
+          <div class="yorha-panel-content space-y-3">
+            <Button on:click={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
+{isLoading ? 'Testing...' : 'Test Connection'}
 
             {#if connectionDetails}
               <div class="text-sm space-y-1">
@@ -321,20 +320,19 @@ https://svelte.dev/e/expected_token -->
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
 
         <!-- Database Statistics -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Database Statistics</h3>
             <p class="nes-text">
               Vector embeddings and document metrics
             </p>
           </div>
-          <div class="yorha-panel-content" class="space-y-3">
-            <Button onclick={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
-              {isLoading ? 'Loading...' : 'Get Statistics'}
-            </button>
+          <div class="yorha-panel-content space-y-3">
+            <Button on:click={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
+{isLoading ? 'Loading...' : 'Get Statistics'}
 
             {#if dbStats}
               <div class="text-sm space-y-1">
@@ -348,11 +346,11 @@ https://svelte.dev/e/expected_token -->
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
       </div>
 
       <!-- Quick Actions -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Quick Actions</h3>
           <p class="nes-text">
@@ -361,30 +359,33 @@ https://svelte.dev/e/expected_token -->
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Button class="bits-btn" onclick={() => seedDatabase(10)} disabled={isLoading}>
+            <Button class="bits-btn" on:click={() =>
+seedDatabase(10)} disabled={isLoading}>
               Seed 10 Documents
-            </button>
-            <Button class="bits-btn" onclick={() => seedDatabase(50)} disabled={isLoading}>
+
+            <Button class="bits-btn" on:click={() =>
+seedDatabase(50)} disabled={isLoading}>
               Seed 50 Documents
-            </button>
-            <Button class="bits-btn" onclick={() => createIndex(100, 'cosine')} disabled={isLoading}>
+
+            <Button class="bits-btn" on:click={() =>
+createIndex(100, 'cosine')} disabled={isLoading}>
               Create IVFFLAT Index
-            </button>
+
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- Vector Search Tab -->
     <TabsContent value="search" class="space-y-4">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Vector Similarity Search</h3>
           <p class="nes-text">
             Test natural language queries with vector embeddings
           </p>
         </div>
-        <div class="yorha-panel-content" class="space-y-4">
+        <div class="yorha-panel-content space-y-4">
           <div class="flex gap-3">
             <div class="flex-1">
               <Label for="query">Search Query</Label>
@@ -396,9 +397,9 @@ https://svelte.dev/e/expected_token -->
               />
             </div>
             <div class="flex items-end">
-              <Button class="bits-btn" onclick={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
-                {isLoading ? 'Searching...' : 'Search'}
-              </button>
+              <Button class="bits-btn" on:click={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
+{isLoading ? 'Searching...' : 'Search'}
+
             </div>
           </div>
 
@@ -407,29 +408,29 @@ https://svelte.dev/e/expected_token -->
             <div class="space-y-3">
               <h3 class="font-medium">Search Results ({searchResults.length})</h3>
               {#each searchResults as result, i}
-                <NesCard class="border-l-4 border-l-blue-500">
-                  <div class="yorha-panel-content" class="pt-4">
+                <div class="border-l-4 border-l-blue-500 nes-container">
+                  <div class="yorha-panel-content pt-4">
                     <div class="flex justify-between items-start gap-4">
                       <div class="flex-1 space-y-2">
                         <div class="flex items-center gap-2">
-                          <h4 class="font-medium">{result.title || result.document_id}</h4>
-                          <Badge>{result.document_type}</Badge>
+                          <h4 class="font-medium">{(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).title || (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).document_id}</h4>
+                          <Badge>{(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).document_type}</Badge>
                           <span class="text-sm nes-text is-disabled">
-                            Distance: {formatDistance(result.distance)}
+                            Distance: {formatDistance((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).distance)}
                           </span>
                         </div>
-                        {#if result.content}
+                        {#if (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).content}
                           <p class="text-sm nes-text is-disabled line-clamp-2">
-                            {result.content.substring(0, 200)}...
+                            {(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).content.substring(0, 200)}...
                           </p>
                         {/if}
                         <div class="text-xs nes-text is-disabled">
-                          Created: {new Date(result.created_at).toLocaleDateString()}
+                          Created: {new Date((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).created_at).toLocaleDateString()}
                         </div>
                       </div>
                     </div>
                   </div>
-                </NesCard>
+                </div>
               {/each}
             </div>
           {:else if searchResults.length === 0 && performanceMetrics.vectorSearch}
@@ -440,67 +441,71 @@ https://svelte.dev/e/expected_token -->
             </Alert>
           {/if}
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- Operations Tab -->
     <TabsContent value="operations" class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Document Insertion -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Document Operations</h3>
             <p class="nes-text">
               Test document insertion with vector embeddings
             </p>
           </div>
-          <div class="yorha-panel-content" class="space-y-3">
-            <Button onclick={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
-              {isLoading ? 'Inserting...' : 'Test Document Insert'}
-            </button>
+          <div class="yorha-panel-content space-y-3">
+            <Button on:click={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
+{isLoading ? 'Inserting...' : 'Test Document Insert'}
+
             <p class="text-sm nes-text is-disabled">
               Inserts a sample legal document with 1536-dimension mock embedding
             </p>
           </div>
-        </NesCard>
+        </div>
 
         <!-- Index Management -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Index Management</h3>
             <p class="nes-text">
               Create and manage vector indexes for performance
             </p>
           </div>
-          <div class="yorha-panel-content" class="space-y-3">
+          <div class="yorha-panel-content space-y-3">
             <div class="grid grid-cols-2 gap-2">
-              <Button class="bits-btn" onclick={() => createIndex(50, 'cosine')} disabled={isLoading} size="sm">
+              <Button class="bits-btn" on:click={() =>
+createIndex(50, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (50 lists)
-              </button>
-              <Button class="bits-btn" onclick={() => createIndex(100, 'cosine')} disabled={isLoading} size="sm">
+
+              <Button class="bits-btn" on:click={() =>
+createIndex(100, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (100 lists)
-              </button>
-              <Button class="bits-btn" onclick={() => createIndex(100, 'euclidean')} disabled={isLoading} size="sm">
+
+              <Button class="bits-btn" on:click={() =>
+createIndex(100, 'euclidean')} disabled={isLoading} size="sm">
                 Euclidean
-              </button>
-              <Button class="bits-btn" onclick={() => createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
+
+              <Button class="bits-btn" on:click={() =>
+createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
                 Inner Product
-              </button>
+
             </div>
             <p class="text-sm nes-text is-disabled">
               IVFFLAT indexes improve query performance for large datasets
             </p>
           </div>
-        </NesCard>
+        </div>
       </div>
     </TabsContent>
 
     <!-- Performance Tab -->
     <TabsContent value="performance" class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-lg">Connection Test</h3>
+            <h3 class="nes-text is-primary text-lg">Connection Test</h3>
           </div>
           <div class="yorha-panel-content">
             <div class="text-2xl font-bold">
@@ -508,11 +513,11 @@ https://svelte.dev/e/expected_token -->
             </div>
             <p class="text-sm nes-text is-disabled">Response time</p>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-lg">Vector Search</h3>
+            <h3 class="nes-text is-primary text-lg">Vector Search</h3>
           </div>
           <div class="yorha-panel-content">
             <div class="text-2xl font-bold">
@@ -520,11 +525,11 @@ https://svelte.dev/e/expected_token -->
             </div>
             <p class="text-sm nes-text is-disabled">Query execution</p>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-lg">Document Insert</h3>
+            <h3 class="nes-text is-primary text-lg">Document Insert</h3>
           </div>
           <div class="yorha-panel-content">
             <div class="text-2xl font-bold">
@@ -532,11 +537,11 @@ https://svelte.dev/e/expected_token -->
             </div>
             <p class="text-sm nes-text is-disabled">Single document</p>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-lg">Index Creation</h3>
+            <h3 class="nes-text is-primary text-lg">Index Creation</h3>
           </div>
           <div class="yorha-panel-content">
             <div class="text-2xl font-bold">
@@ -544,18 +549,18 @@ https://svelte.dev/e/expected_token -->
             </div>
             <p class="text-sm nes-text is-disabled">IVFFLAT index</p>
           </div>
-        </NesCard>
+        </div>
       </div>
 
       <!-- Performance Guidelines -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Performance Guidelines</h3>
           <p class="nes-text">
             Best practices for optimal pgvector performance
           </p>
         </div>
-        <div class="yorha-panel-content" class="space-y-3">
+        <div class="yorha-panel-content space-y-3">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
               <h4 class="font-medium text-green-700">✅ Best Practices</h4>
@@ -579,7 +584,7 @@ https://svelte.dev/e/expected_token -->
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
   </Tabs>
 </div>

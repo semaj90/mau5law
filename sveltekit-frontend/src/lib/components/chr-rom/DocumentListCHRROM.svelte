@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   import '$lib/styles/chr-rom-rendering.css';
 
   interface Props {
-    documents?: Array<{ id: string; title: string; [key: string]: any }>;
+    documents?: Array;
     showPerformanceMetrics?: boolean;
   }
 
@@ -103,18 +103,18 @@ https://svelte.dev/e/js_parse_error -->
       
       // Store results in reactive state
       for (const result of batchResults) {
-        if (!documentPatterns.has(result.docId)) {
-          documentPatterns.set(result.docId, new Map());
+        if (!documentPatterns.has((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).docId)) {
+          documentPatterns.set((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).docId, new Map());
         }
         
-        documentPatterns.get(result.docId)!.set(result.patternType, result.pattern);
+        documentPatterns.get((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).docId)!.set((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).patternType, (result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).pattern);
         
         // Track performance
         totalRequests++;
-        if (result.source === 'cache') {
+        if ((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).source === 'cache') {
           cacheHits++;
         }
-        averageLatency = (averageLatency + result.latency) / totalRequests;
+        averageLatency = (averageLatency + (result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).latency) / totalRequests;
       }
       
       // Trigger reactivity
@@ -180,14 +180,14 @@ https://svelte.dev/e/js_parse_error -->
           documentPatterns.set(docId, new Map());
         }
         
-        documentPatterns.get(docId)!.set(patternType, result.pattern);
+        documentPatterns.get(docId)!.set(patternType, (result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).pattern);
         
         // Trigger reactivity
         documentPatterns = new Map(documentPatterns);
         
         // Log sub-millisecond performance
-        if (result.latency < 1) {
-          console.log(`⚡ Sub-1ms hover pattern load: ${patternType} in ${result.latency.toFixed(2)}ms`);
+        if ((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).latency < 1) {
+          console.log(`⚡ Sub-1ms hover pattern load: ${patternType} in ${(result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).latency.toFixed(2)}ms`);
         }
       }
     }
@@ -253,7 +253,7 @@ https://svelte.dev/e/js_parse_error -->
           </span>
         </div>
       </div>
-      <button onclick={refreshPatterns} class="refresh-btn">
+      <button on:click={refreshPatterns} class="refresh-btn">
         🔄 Refresh Patterns
       </button>
     </div>

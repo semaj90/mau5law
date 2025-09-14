@@ -212,17 +212,17 @@ https://svelte.dev/e/js_parse_error -->
         body: formData,
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (response.ok) {
+      if ((response as { json?: any; ok?: any }).ok) {
         importResults = result;
         notifications.add({
           type: "success",
           title: "Import Successful",
-          message: result.message,
+          message: (result as { message?: any; error?: any }).message,
         });
       } else {
-        throw new Error(result.error || "Import failed");
+        throw new Error((result as { message?: any; error?: any }).error || "Import failed");
   }
     } catch (error) {
       console.error("Import error:", error);
@@ -314,19 +314,20 @@ https://svelte.dev/e/js_parse_error -->
               <div class="space-y-4">
                 <Tooltip content="Preview file contents">
                   <Button class="bits-btn" variant="outline" size="sm" disabled={!filePreview}>
-                    <Eye class="space-y-4" />
+<Eye class="space-y-4" />
                     Preview
-                  </button>
+</Button>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
                   <Button class="bits-btn"
                     variant="outline"
                     size="sm"
-                    onclick={() => clearImport()}
+                    on:click={() =>
+clearImport()}
                   >
                     <X class="space-y-4" />
                     Remove
-                  </button>
+</Button>
                 </Tooltip>
               </div>
             </div>
@@ -339,9 +340,10 @@ https://svelte.dev/e/js_parse_error -->
                 </p>
                 <p class="space-y-4">or click to browse</p>
               </div>
-              <Button class="bits-btn" variant="outline" onclick={() => fileInput?.click()}>
+              <Button class="bits-btn" variant="outline" on:click={() =>
+fileInput?.click()}>
                 Select File
-              </button>
+</Button>
             </div>
           {/if}
         </div>
@@ -352,7 +354,7 @@ https://svelte.dev/e/js_parse_error -->
           bind:this={fileInput}
           type="file"
           accept=".json,.csv,.xml"
-          onchange={handleFileInput}
+          on:change={handleFileInput}
           class="space-y-4"
           aria-label="Select import file"
         />
@@ -436,7 +438,7 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <div class="space-y-4">
               <pre
-                class="space-y-4">{filePreview.raw ?? ''}</pre>
+                class="space-y-4">{(filePreview as any)?.raw ?? ""}</pre>
             </div>
           {/if}
         </div>
@@ -498,7 +500,8 @@ https://svelte.dev/e/js_parse_error -->
         <div class="space-y-4">
           <div class="space-y-4">
             <Button class="bits-btn"
-              onclick={() => performImport()}
+              on:click={() =>
+performImport()}
               disabled={isImporting}
               class="space-y-4"
             >
@@ -511,12 +514,13 @@ https://svelte.dev/e/js_parse_error -->
                 <Upload class="space-y-4" />
                 Import Data
               {/if}
-            </button>
+</Button>
             <Tooltip content="Clear current import and start over">
-              <Button class="bits-btn" variant="outline" onclick={() => clearImport()}>
+              <Button class="bits-btn" variant="outline" on:click={() =>
+clearImport()}>
                 <X class="space-y-4" />
                 Cancel
-              </button>
+</Button>
             </Tooltip>
           </div>
         </div>
@@ -540,19 +544,21 @@ https://svelte.dev/e/js_parse_error -->
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  onclick={() => downloadExampleTemplate("cases", "json")}
+                  on:click={() =>
+downloadExampleTemplate("cases", "json")}
                 >
                   JSON
-                </button>
+</Button>
               </Tooltip>
               <Tooltip content="Download CSV example for cases">
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  onclick={() => downloadExampleTemplate("cases", "csv")}
+                  on:click={() =>
+downloadExampleTemplate("cases", "csv")}
                 >
                   CSV
-                </button>
+</Button>
               </Tooltip>
             </div>
           </div>
@@ -564,19 +570,21 @@ https://svelte.dev/e/js_parse_error -->
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  onclick={() => downloadExampleTemplate("evidence", "json")}
+                  on:click={() =>
+downloadExampleTemplate("evidence", "json")}
                 >
                   JSON
-                </button>
+</Button>
               </Tooltip>
               <Tooltip content="Download CSV example for evidence">
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  onclick={() => downloadExampleTemplate("evidence", "csv")}
+                  on:click={() =>
+downloadExampleTemplate("evidence", "csv")}
                 >
                   CSV
-                </button>
+</Button>
               </Tooltip>
             </div>
           </div>
@@ -604,21 +612,21 @@ https://svelte.dev/e/js_parse_error -->
         <div class="space-y-4">
           <a href="/export" class="space-y-4">
             <Button variant="outline" class="space-y-4 bits-btn bits-btn">
-              <Download class="space-y-4" />
+<Download class="space-y-4" />
               Export Data
-            </button>
+</Button>
           </a>
           <a href="/cases" class="space-y-4">
             <Button variant="outline" class="space-y-4 bits-btn bits-btn">
-              <Database class="space-y-4" />
+<Database class="space-y-4" />
               View Cases
-            </button>
+</Button>
           </a>
           <a href="/evidence" class="space-y-4">
             <Button variant="outline" class="space-y-4 bits-btn bits-btn">
-              <FileText class="space-y-4" />
+<FileText class="space-y-4" />
               View Evidence
-            </button>
+</Button>
           </a>
         </div>
       </div>

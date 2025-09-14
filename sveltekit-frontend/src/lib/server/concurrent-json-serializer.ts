@@ -45,11 +45,7 @@ interface SerializationResult {
 class WorkerPool {
   private workers: Worker[] = [];
   private availableWorkers: Worker[] = [];
-  private taskQueue: Array<{
-    task: SerializationTask;
-    resolve: (result: SerializationResult) => void;
-    reject: (error: Error) => void;
-  }> = [];
+  private taskQueue: Array< = [];
 
   constructor(private poolSize: number = Math.max(2, cpus().length - 2)) {
     this.initializeWorkers();
@@ -161,7 +157,7 @@ class WorkerPool {
   private handleWorkerResult(worker: Worker, result: SerializationResult) {
     // Find the task that matches this result
     const taskIndex = this.taskQueue.findIndex(
-      item => item.task.id === result.id
+      item => (item as { task?: any }).task.id === (result as { id?: any; metadata?: any; error?: any; serialized?: any }).id
     );
 
     if (taskIndex !== -1) {
@@ -326,8 +322,8 @@ export class ConcurrentJSONSerializer {
       // In a real implementation, we would use compute shaders
       const result = await this.serializeSync(task);
       
-      result.metadata.method = 'gpu';
-      result.metadata.processingTime = performance.now() - start;
+      (result as { id?: any; metadata?: any; error?: any; serialized?: any }).metadata.method = 'gpu';
+      (result as { id?: any; metadata?: any; error?: any; serialized?: any }).metadata.processingTime = performance.now() - start;
 
       console.log(`🎯 GPU serialization completed for task ${task.id}`);
       
@@ -492,10 +488,10 @@ export class ConcurrentJSONSerializer {
     if (data === null || data === undefined) return 4;
     if (typeof data === 'boolean') return 4;
     if (typeof data === 'number') return 8;
-    if (typeof data === 'string') return data.length * 2; // UTF-16
+    if (typeof data === 'string') return (data as { length?: any; reduce?: any }).length * 2; // UTF-16
     
     if (Array.isArray(data)) {
-      return data.reduce((sum, item) => sum + this.estimateDataSize(item), 0);
+      return (data as { length?: any; reduce?: any }).reduce((sum, item) => sum + this.estimateDataSize(item), 0);
     }
     
     if (typeof data === 'object') {
@@ -550,11 +546,11 @@ export async function serializeForAPI<T>(
     ...options
   });
   
-  if (result.error) {
-    throw new Error(`API serialization failed: ${result.error}`);
+  if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
+    throw new Error(`API serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`);
   }
   
-  return result.serialized;
+  return (result as { id?: any; metadata?: any; error?: any; serialized?: any }).serialized;
 }
 
 export async function serializeLegalDocument<T>(
@@ -569,11 +565,11 @@ export async function serializeLegalDocument<T>(
     ...options
   });
   
-  if (result.error) {
-    throw new Error(`Legal document serialization failed: ${result.error}`);
+  if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
+    throw new Error(`Legal document serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`);
   }
   
-  return result.serialized;
+  return (result as { id?: any; metadata?: any; error?: any; serialized?: any }).serialized;
 }
 
 export async function serializeBatchForCache<T>(

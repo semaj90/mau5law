@@ -32,7 +32,7 @@ export function extractTimingHeaders(res: Response): ExtractedTimingHeaders {
 /**
  * Convenience wrapper to fetch JSON and capture timing metadata.
  */
-export async function fetchWithTimings<T = any>(input: RequestInfo | URL, init?: RequestInit): Promise<{ data: T | null; timings: ExtractedTimingHeaders; raw: Response; }>{
+export async function fetchWithTimings<T = any>(input: RequestInfo | URL, init?: RequestInit): Promise<any> {
   const res = await fetch(input, init);
   const timings = extractTimingHeaders(res);
   let data: T | null = null;

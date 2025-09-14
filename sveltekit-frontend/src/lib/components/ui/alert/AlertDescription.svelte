@@ -4,10 +4,11 @@
     class?: string;
     children?: import('svelte').Snippet;
   }
-  let { 
-    class: className = '',
+  let { class: className = '',
     children,
-    ...restProps } = $props();
+    ...restProps  }: { class: className = '',
+    children,
+    ...restProps : any } = $props();
 </script>
 
 <div class="text-sm [&_p]:leading-relaxed {className}" {...restProps}>

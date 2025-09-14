@@ -56,9 +56,9 @@
   async function checkHealth() {
     try {
       const response = await fetch('/api/unified-vector?action=health');
-      const data = await response.json();
-      health.set(data.health || {});
-      const healthStatus = data.allSystemsOperational ? 'All systems operational' : 'Some systems offline';
+      const data = await (response as { json?: any }).json();
+      health.set((data as { health?: any; allSystemsOperational?: any; analytics?: any; success?: any; results?: any; metadata?: any; componentsUsed?: any; performance?: any; errors?: any }).health || {});
+      const healthStatus = (data as { health?: any; allSystemsOperational?: any; analytics?: any; success?: any; results?: any; metadata?: any; componentsUsed?: any; performance?: any; errors?: any }).allSystemsOperational ? 'All systems operational' : 'Some systems offline';
       addLog(`Health check: ${healthStatus}`);
     } catch (error: any) {
       addLog(`Health check failed: ${error.message}`);
@@ -68,8 +68,8 @@
   async function loadAnalytics() {
     try {
       const response = await fetch('/api/unified-vector?action=analytics');
-      const data = await response.json();
-      analytics.set(data.analytics || {});
+      const data = await (response as { json?: any }).json();
+      analytics.set((data as { health?: any; allSystemsOperational?: any; analytics?: any; success?: any; results?: any; metadata?: any; componentsUsed?: any; performance?: any; errors?: any }).analytics || {});
       addLog('Analytics updated');
     } catch (error: any) {
       addLog(`Analytics failed: ${error.message}`);
@@ -114,15 +114,15 @@
         body: JSON.stringify(request)
       });
 
-      const data: UnifiedVectorResponse = await response.json();
+      const data: UnifiedVectorResponse = await (response as { json?: any }).json();
       results.set(data);
 
-      if (data.success) {
-        addLog(`✅ ${selectedOperation} completed in ${data.results.processingTime}ms`);
-        addLog(`Components used: ${data.metadata.componentsUsed.join(', ')}`);
-        addLog(`Confidence: ${(data.results.confidence * 100).toFixed(1)}%`);
+      if ((data as { health?: any; allSystemsOperational?: any; analytics?: any; success?: any; results?: any; metadata?: any; componentsUsed?: any; performance?: any; errors?: any }).success) {
+        addLog(`✅ ${selectedOperation} completed in ${(data as { health?: any; allSystemsOperational?: any; analytics?: any; success?: any; results?: any; metadata?: any; componentsUsed?: any; performance?: any; errors?: any }).results.processingTime}ms`);
+        addLog(`Components used: ${(data as { health?: any; allSystemsOperational?: any; analytics?: any; success?: any; results?: any; metadata?: any; componentsUsed?: any; performance?: any; errors?: any }).metadata.componentsUsed.join(', ')}`);
+        addLog(`Confidence: ${((data as { health?: any; allSystemsOperational?: any; analytics?: any; success?: any; results?: any; metadata?: any; componentsUsed?: any; performance?: any; errors?: any }).results.confidence * 100).toFixed(1)}%`);
       } else {
-        addLog(`❌ ${selectedOperation} failed: ${data.metadata.errors?.join(', ') || 'Unknown error'}`);
+        addLog(`❌ ${selectedOperation} failed: ${(data as { health?: any; allSystemsOperational?: any; analytics?: any; success?: any; results?: any; metadata?: any; componentsUsed?: any; performance?: any; errors?: any }).metadata.errors?.join(', ') || 'Unknown error'}`);
       }
 
     } catch (error: any) {
@@ -288,20 +288,20 @@
       <!-- Action Buttons -->
       <div class="grid grid-cols-3 gap-2">
         <button
-          onclick={processRequest}
+          on:click={processRequest}
           disabled={$isProcessing}
           class="bg-green-900 border border-green-400 text-green-400 p-2 text-sm hover:bg-green-800 disabled:opacity-50"
         >
           {$isProcessing ? 'PROCESSING...' : 'EXECUTE'}
         </button>
         <button
-          onclick={checkHealth}
+          on:click={checkHealth}
           class="bg-blue-900 border border-blue-400 text-blue-400 p-2 text-sm hover:bg-blue-800"
         >
           HEALTH CHECK
         </button>
         <button
-          onclick={loadAnalytics}
+          on:click={loadAnalytics}
           class="bg-purple-900 border border-purple-400 text-purple-400 p-2 text-sm hover:bg-purple-800"
         >
           ANALYTICS
@@ -362,8 +362,8 @@
               <div class="space-y-1 text-xs max-h-32 overflow-y-auto">
                 {#each $results.results.vectorResults.slice(0, 5) as result}
                   <div class="border-l-2 border-green-700 pl-2">
-                    <div class="text-green-300">{result.metadata?.title || result.id}</div>
-                    <div class="text-green-500">Score: {(result.score * 100).toFixed(1)}%</div>
+                    <div class="text-green-300">{(result as { metadata?: any; id?: any; score?: any }).metadata?.title || (result as { metadata?: any; id?: any; score?: any }).id}</div>
+                    <div class="text-green-500">Score: {((result as { metadata?: any; id?: any; score?: any }).score * 100).toFixed(1)}%</div>
                   </div>
                 {/each}
               </div>

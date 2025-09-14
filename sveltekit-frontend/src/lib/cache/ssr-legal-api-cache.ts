@@ -4,7 +4,7 @@
  * Integrates with existing parallel cache orchestrator
  */
 
-import { parallelCacheOrchestrator, type ParallelCacheRequest } from './parallel-cache-orchestrator.js';
+import { parallelCacheOrchestrator, type ParallelCacheRequest } from './parallel-cache-orchestrator.js.js';
 import { dev } from '$app/environment';
 import { browser } from '$app/environment';
 
@@ -91,18 +91,18 @@ class SSRLegalAPICache {
       // Execute parallel cache lookup
       const result = await parallelCacheOrchestrator.executeParallel(cacheRequest);
 
-      if (result.success && result.cacheResults.length > 0) {
-        const cacheHit = result.cacheResults[0];
+      if ((result as { success?: any; cacheResults?: any; metrics?: any }).success && (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults.length > 0) {
+        const cacheHit = (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults[0];
         const response = this.deserializeResponse(cacheHit.data);
         
         // Add cache metadata
-        if (response.meta) {
-          response.meta.cached = true;
-          response.meta.cacheLayer = cacheHit.source;
-          response.meta.processingTime = performance.now() - startTime;
+        if ((response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta) {
+          (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.cached = true;
+          (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.cacheLayer = cacheHit.source;
+          (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.processingTime = performance.now() - startTime;
         }
 
-        console.log(`🚀 SSR Cache HIT: ${endpoint} from ${cacheHit.source} (${result.metrics.totalLatency.toFixed(2)}ms)`);
+        console.log(`🚀 SSR Cache HIT: ${endpoint} from ${cacheHit.source} (${(result as { success?: any; cacheResults?: any; metrics?: any }).metrics.totalLatency.toFixed(2)}ms)`);
         return response;
       }
 
@@ -218,7 +218,7 @@ class SSRLegalAPICache {
     });
 
     // Cache successful GET responses
-    if (method === 'GET' && response.success) {
+    if (method === 'GET' && (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).success) {
       const ragContextData = ragContext ? await this.extractRAGContext(response) : undefined;
       await this.cacheSet(endpoint, params, response, {
         ttl,
@@ -247,8 +247,8 @@ class SSRLegalAPICache {
         headers['X-Legal-Cache'] = 'enabled';
         headers['X-Content-Type'] = 'legal-api-response';
         
-        if (response.meta?.aiModel) {
-          headers['X-AI-Model'] = response.meta.aiModel;
+        if ((response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta?.aiModel) {
+          headers['X-AI-Model'] = (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.aiModel;
         }
       }
     } else {
@@ -284,15 +284,7 @@ class SSRLegalAPICache {
   /**
    * Get cache statistics
    */
-  async getCacheStats(): Promise<{
-    hitRate: number;
-    totalRequests: number;
-    totalHits: number;
-    avgResponseTime: number;
-    cacheSize: number;
-    quantizedResponses: number;
-    ragContextEntries: number;
-  }> {
+  async getCacheStats(): Promise<any> {
     const perfStats = await parallelCacheOrchestrator.getPerformanceStats();
     
     return {
@@ -358,7 +350,7 @@ class SSRLegalAPICache {
 
   private isCacheable(endpoint: string, response: LegalAPIResponse): boolean {
     // Don't cache errors
-    if (!response.success) {
+    if (!(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).success) {
       return false;
     }
 
@@ -372,7 +364,7 @@ class SSRLegalAPICache {
   }
 
   private generateETag(response: LegalAPIResponse): string {
-    const content = JSON.stringify(response.data);
+    const content = JSON.stringify((response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).data);
     return `"${this.hashString(content)}"`;
   }
 
@@ -402,20 +394,20 @@ class SSRLegalAPICache {
       body: options.body ? JSON.stringify(options.body) : undefined
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    if (!(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`HTTP ${(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    return await response.json();
+    return await (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).json();
   }
 
   private async extractRAGContext(response: LegalAPIResponse): Promise<any[]> {
     // Extract RAG context from response metadata
-    if (response.meta && response.meta.aiModel) {
+    if ((response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta && (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.aiModel) {
       return [{
-        model: response.meta.aiModel,
-        timestamp: response.meta.timestamp,
-        processingTime: response.meta.processingTime
+        model: (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.aiModel,
+        timestamp: (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.timestamp,
+        processingTime: (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.processingTime
       }];
     }
     return [];
@@ -430,7 +422,7 @@ class SSRLegalAPICache {
       const parsed = JSON.parse(data);
       return parsed.data || parsed;
     }
-    return data.data || data;
+    return (data as { data?: any; map?: any }).data || data;
   }
 }
 
@@ -444,7 +436,7 @@ class ResponseQuantizer {
     
     // Compress data arrays
     if (Array.isArray(quantized.data)) {
-      quantized.data = quantized.data.map(item => this.quantizeObject(item));
+      quantized.data = quantized.(data as { data?: any; map?: any }).map(item => this.quantizeObject(item));
     } else if (typeof quantized.data === 'object') {
       quantized.data = this.quantizeObject(quantized.data);
     }

@@ -20,13 +20,13 @@
  * ✅ MinIO Object Storage
  */
 
-import { ssrChatAssistant } from '../server/chat/ssr-qlora-gpu-chat-assistant';
-import { qloraRLOrchestrator } from '../services/qlora-rl-langextract-integration';
-import { unifiedVectorOrchestrator } from '../services/unified-vector-orchestrator';
-import { NESMemoryArchitecture } from '../memory/nes-memory-architecture';
-import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache';
-import { ssrQloraChatMachine } from '../machines/ssr-qlora-chat-machine';
-import { lokiRedisCache } from '../cache/loki-redis-integration';
+import { ssrChatAssistant } from '../server/chat/ssr-qlora-gpu-chat-assistant.js';
+import { qloraRLOrchestrator } from '../services/qlora-rl-langextract-integration.js';
+import { unifiedVectorOrchestrator } from '../services/unified-vector-orchestrator.js';
+import { NESMemoryArchitecture } from '../memory/nes-memory-architecture.js';
+import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache.js';
+import { ssrQloraChatMachine } from '../machines/ssr-qlora-chat-machine.js';
+import { lokiRedisCache } from '../cache/loki-redis-integration.js';
 import { createActor } from 'xstate';
 
 // Comprehensive system status
@@ -289,15 +289,7 @@ export class CompleteLegalAIOrchestrator {
       cacheResults?: boolean;
       streamResponse?: boolean;
     } = {}
-  ): Promise<{
-    extractedData: any;
-    neuralSprite?: any;
-    vectorEmbedding: Float32Array;
-    qloraJobId?: string;
-    processingTime: number;
-    systemPath: string[];
-    cachingStrategy: string;
-  }> {
+  ): Promise<any> {
     const startTime = Date.now();
     const systemPath: string[] = [];
     let cachingStrategy = 'none';
@@ -734,8 +726,8 @@ export class CompleteLegalAIOrchestrator {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text }),
     });
-    const result = await response.json();
-    return new Float32Array(result.embedding);
+    const result = await (response as { json?: any }).json();
+    return new Float32Array((result as { embedding?: any }).embedding);
   }
 
   private async checkWebGPUSOMCache(embedding: Float32Array): Promise<any> {
@@ -790,7 +782,7 @@ export class CompleteLegalAIOrchestrator {
   }): void {
     // Update performance metrics based on processing data
     this.performanceMetrics.averageQueryResponseTime =
-      (this.performanceMetrics.averageQueryResponseTime + data.processingTime) / 2;
+      (this.performanceMetrics.averageQueryResponseTime + (data as { processingTime?: any }).processingTime) / 2;
   }
 
   private hashString(str: string): string {

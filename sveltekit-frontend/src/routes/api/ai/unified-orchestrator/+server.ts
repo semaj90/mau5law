@@ -22,7 +22,7 @@
  * Supports both local and server-side orchestrators with MCP multi-core integration
  */
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { json } from '@sveltejs/kit';
 import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
 import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js';
@@ -124,7 +124,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
         previousContext: requestData.previousContext || requestData.context?.previousContext,
       },
       options: {
-        model: requestData.model || requestData.options?.model || 'auto',
+        model: requestData?.model || "unknown" // @ts-ignore - Model property access || requestData.options??.model || "unknown" // @ts-ignore - Model property access || 'auto',
         priority: requestData.priority || requestData.options?.priority || 'normal',
         useGPU: requestData.useGPU ?? requestData.options?.useGPU ?? true,
         enableStreaming: requestData.stream ?? requestData.options?.enableStreaming ?? false,
@@ -149,7 +149,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
 
     logger.info(
       `[Unified Orchestrator] Request ${bridgeRequest.id} completed: ` +
-      `${result.orchestratorUsed} orchestrator, ${result.executionMetrics.totalLatency.toFixed(2)}ms`
+      `${(result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).orchestratorUsed} orchestrator, ${(result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).executionMetrics.totalLatency.toFixed(2)}ms`
     );
 
     return json(response);
@@ -279,16 +279,16 @@ function determineRequestType(requestData: any): LLMBridgeRequest['type'] {
 
 function formatResponse(result: any, originalRequest: any, startTime: number) {
   const baseResponse = {
-    success: result.success,
-    response: result.response,
-    orchestratorUsed: result.orchestratorUsed,
-    model: result.modelUsed,
+    success: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).success,
+    response: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response,
+    orchestratorUsed: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).orchestratorUsed,
+    model: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).modelUsed,
     executionMetrics: {
-      ...result.executionMetrics,
+      ...(result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).executionMetrics,
       apiLatency: performance.now() - startTime,
     },
-    confidence: result.confidence,
-    requestId: result.requestId,
+    confidence: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).confidence,
+    requestId: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).requestId,
     timestamp: new Date().toISOString(),
   };
 
@@ -302,16 +302,16 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
         {
           message: {
             role: 'assistant',
-            content: result.response,
+            content: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response,
           },
-          finish_reason: result.success ? 'stop' : 'error',
+          finish_reason: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).success ? 'stop' : 'error',
           index: 0,
         },
       ],
       usage: {
         prompt_tokens: Math.ceil((originalRequest.content || '').length / 4),
-        completion_tokens: Math.ceil(result.response.length / 4),
-        total_tokens: Math.ceil(((originalRequest.content || '') + result.response).length / 4),
+        completion_tokens: Math.ceil((result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response.length / 4),
+        total_tokens: Math.ceil(((originalRequest.content || '') + (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response).length / 4),
       },
     };
   }
@@ -321,10 +321,10 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
     return {
       ...baseResponse,
       analysis: {
-        summary: result.response,
-        citations: result.citations || [],
-        confidence: result.confidence || 0.8,
-        recommendations: result.followupSuggestions || [],
+        summary: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response,
+        citations: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).citations || [],
+        confidence: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).confidence || 0.8,
+        recommendations: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).followupSuggestions || [],
       },
     };
   }
@@ -334,10 +334,10 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
     return {
       ...baseResponse,
       document: {
-        summary: result.response,
-        entities: result.entities || [],
-        keyTerms: result.keyTerms || [],
-        metadata: result.metadata || {},
+        summary: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response,
+        entities: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).entities || [],
+        keyTerms: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).keyTerms || [],
+        metadata: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).metadata || {},
       },
     };
   }
@@ -348,9 +348,9 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
       ...baseResponse,
       search: {
         query: originalRequest.query || originalRequest.content,
-        results: result.searchResults || [],
-        summary: result.response,
-        totalResults: result.totalResults || 0,
+        results: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).searchResults || [],
+        summary: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response,
+        totalResults: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).totalResults || 0,
       },
     };
   }

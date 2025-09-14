@@ -13,7 +13,7 @@
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
-  let messages = $state<{role: string, content: string}[]>([]);
+  let messages = $state([]);
   let input = $state('');
   let isLoading = $state(false);
 
@@ -49,11 +49,11 @@
   }
 </script>
 
-<NesCard class="h-96 flex flex-col">
+<div class="h-96 flex flex-col nes-container">
   <div class="yorha-panel-header">
     <h3 class="nes-text is-primary">Legal AI Assistant (GPU)</h3>
   </div>
-  <div class="yorha-panel-content" class="flex-1 flex flex-col space-y-4">
+  <div class="yorha-panel-content flex-1 flex flex-col space-y-4">
     <div class="flex-1 overflow-y-auto space-y-2 p-2 border rounded">
       {#each messages as message}
         <div class="p-2 rounded {message.role === 'user' ? 'bg-blue-100 ml-8' : message.role === 'error' ? 'bg-red-100' : 'bg-gray-100 mr-8'}">
@@ -66,10 +66,12 @@
     </div>
     <div class="flex space-x-2">
       <Input bind:value={input} placeholder="Legal question..." keydown={(e) => e.key === 'Enter' && sendMessage()} />
-      <Button class="bits-btn" onclick={sendMessage} disabled={isLoading}>Send</button>
+      <Button class="bits-btn" on:click={sendMessage} disabled={isLoading}>
+Send
+
     </div>
   </div>
-</NesCard>
+</div>
 
 
 

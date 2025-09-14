@@ -152,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
     ragState.somClusters.map(cluster => ({
       ...cluster,
       isSelected: selectedClusters.includes(cluster.id),
-      relevantResults: optimizedResults.filter(result => result.clusterId === cluster.id)
+      relevantResults: optimizedResults.filter(result => (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).clusterId === cluster.id)
     }))
   );
 
@@ -167,11 +167,11 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Main Interface -->
 <div class="enhanced-rag-interface">
   <!-- Header with Real-time Status -->
-  <NesCard class="mb-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950">
+  <div class="mb-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 nes-container">
     <div class="yorha-panel-header">
       <div class="flex items-center justify-between">
         <div>
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Brain class="h-6 w-6 text-blue-600" />
             Enhanced RAG System
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{ragState.status.version}</span>
@@ -206,11 +206,11 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Enhanced Search Interface -->
-  <NesCard class="mb-6">
-    <div class="yorha-panel-content" class="p-6">
+  <div class="mb-6 nes-container">
+    <div class="yorha-panel-content p-6">
       <!-- Main Search Bar -->
       <div class="relative mb-4">
         <div class="flex gap-2">
@@ -233,19 +233,20 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <Button
-            onclick={handleSearch}
+            on:click={handleSearch}
             disabled={!searchQuery.trim() || ragState.isLoading}
             class="px-6 bits-btn bits-btn"
           >
-            {ragState.isLoading ? 'Searching...' : 'Search'}
-          </button>
+{ragState.isLoading ? 'Searching...' : 'Search'}
+</Button>
 
           <Button class="bits-btn"
             variant="outline"
-            onclick={() => showAdvancedOptions = !showAdvancedOptions}
+            on:click={() =>
+showAdvancedOptions = !showAdvancedOptions}
           >
             <Settings class="h-4 w-4" />
-          </button>
+</Button>
         </div>
 
         <!-- Real-time Search Performance -->
@@ -271,11 +272,12 @@ https://svelte.dev/e/js_parse_error -->
                 class="h-8 px-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border border-yellow-200"
                 variant="ghost"
                 size="sm"
-                onclick={() => selectSuggestion(suggestion)}
+                on:click={() =>
+selectSuggestion(suggestion)}
               >
                 <Sparkles class="h-3 w-3 mr-1" />
                 {suggestion}
-              </button>
+</Button>
             {/each}
           </div>
         </div>
@@ -288,11 +290,11 @@ https://svelte.dev/e/js_parse_error -->
             Did you mean:
             {#each ragState.didYouMean as suggestion, i}
               <button
-                onclick={() => selectSuggestion(suggestion)}
+                on:click={() => selectSuggestion(suggestion)}
                 class="text-blue-600 hover:text-blue-800 underline ml-1"
               >
                 {suggestion}
-              </button>
+</Button>
               {#if i < ragState.didYouMean.length - 1}, {/if}
             {/each}
           </div>
@@ -333,25 +335,25 @@ https://svelte.dev/e/js_parse_error -->
               <Button
                 variant="outline"
                 size="sm"
-                onclick={handleOptimization}
+                on:click={handleOptimization}
                 class="mt-2 w-full bits-btn bits-btn"
               >
-                <Zap class="h-4 w-4 mr-1" />
+<Zap class="h-4 w-4 mr-1" />
                 Optimize Now
-              </button>
+</Button>
             </div>
           </div>
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Results Section -->
   {#if optimizedResults.length > 0}
     <div id="search-results">
       <!-- Results Header with Filters -->
-      <NesCard class="mb-4">
-        <div class="yorha-panel-content" class="p-4">
+      <div class="mb-4 nes-container">
+        <div class="yorha-panel-content p-4">
           <div class="flex items-center justify-between">
             <div>
               <h3 class="font-semibold">
@@ -369,22 +371,24 @@ https://svelte.dev/e/js_parse_error -->
               <Button class="bits-btn"
                 variant={visualizationMode === 'list' ? 'default' : 'outline'}
                 size="sm"
-                onclick={() => visualizationMode = 'list'}
+                on:click={() =>
+visualizationMode = 'list'}
               >
                 List
-              </button>
+</Button>
               <Button class="bits-btn"
                 variant={visualizationMode === 'clusters' ? 'default' : 'outline'}
                 size="sm"
-                onclick={() => visualizationMode = 'clusters'}
+                on:click={() =>
+visualizationMode = 'clusters'}
               >
                 <Target class="h-4 w-4 mr-1" />
                 Clusters
-              </button>
+</Button>
               <Button class="bits-btn"
                 variant={visualizationMode === 'performance' ? 'default' : 'outline'}
                 size="sm"
-                onclick={() => visualizationMode = 'performance'}
+                on:click={() => visualizationMode = 'performance'}
               >
                 <BarChart3 class="h-4 w-4 mr-1" />
                 Analytics
@@ -392,36 +396,36 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Dynamic Content Based on View Mode -->
       {#if visualizationMode === 'list'}
         <!-- Enhanced Results List -->
         <div class="space-y-4">
           {#each optimizedResults as result, index}
-            <NesCard class="hover:shadow-lg transition-shadow">
-              <div class="yorha-panel-content" class="p-6">
+            <div class="hover:shadow-lg transition-shadow nes-container">
+              <div class="yorha-panel-content p-6">
                 <div class="flex items-start justify-between mb-3">
                   <div class="flex-1">
                     <h4 class="font-semibold text-lg mb-1">
-                      {result.document.title || `Document ${result.id}`}
+                      {(result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).document.title || `Document ${(result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).id}`}
                     </h4>
                     <div class="flex items-center gap-4 text-sm text-gray-600">
-                      <span>Relevance: {Math.round(result.score * 100)}%</span>
-                      {#if result.cacheLayer}
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.cacheLayer}</span>
+                      <span>Relevance: {Math.round((result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).score * 100)}%</span>
+                      {#if (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).cacheLayer}
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).cacheLayer}</span>
                       {/if}
-                      {#if result.clusterId}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Cluster {result.clusterId}</span>
+                      {#if (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).clusterId}
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Cluster {(result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).clusterId}</span>
                       {/if}
                     </div>
                   </div>
 
                   <!-- Neural Prediction Indicator -->
-                  {#if result.legalRelevance}
+                  {#if (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).legalRelevance}
                     <div class="text-right">
                       <div class="text-2xl font-bold text-blue-600">
-                        {Math.round(result.legalRelevance.overall * 100)}
+                        {Math.round((result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).legalRelevance.overall * 100)}
                       </div>
                       <div class="text-xs text-gray-500">Legal Score</div>
                     </div>
@@ -429,10 +433,10 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
 
                 <!-- Document Preview -->
-                {#if result.highlights && result.highlights.length > 0}
+                {#if (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).highlights && (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).highlights.length > 0}
                   <div class="mb-3">
                     <div class="text-sm bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded border-l-4 border-yellow-400">
-                      {#each result.highlights.slice(0, 2) as highlight}
+                      {#each (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).highlights.slice(0, 2) as highlight}
                         <p class="mb-1 last:mb-0">...{@html highlight}...</p>
                       {/each}
                     </div>
@@ -440,15 +444,15 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
 
                 <!-- Metadata Tags -->
-                {#if result.document.metadata.tags}
+                {#if (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).document.metadata.tags}
                   <div class="flex flex-wrap gap-1">
-                    {#each result.document.metadata.tags.slice(0, 5) as tag}
+                    {#each (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).document.metadata.tags.slice(0, 5) as tag}
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                     {/each}
                   </div>
                 {/if}
               </div>
-            </NesCard>
+            </div>
           {/each}
         </div>
 
@@ -456,10 +460,9 @@ https://svelte.dev/e/js_parse_error -->
         <!-- SOM Cluster Visualization -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {#each clusterVisualization as cluster}
-            <NesCard class="cursor-pointer transition-all {cluster.isSelected ? 'ring-2 ring-blue-500' : ''}"
-                  onclick={() => handleClusterSelect(cluster.id)}>
+            <div class="cursor-pointer transition-all {cluster.isSelected ? 'ring-2 ring-blue-500' : ''} nes-container"> handleClusterSelect(cluster.id)}>
               <div class="yorha-panel-header">
-                <h3 class="nes-text is-primary" class="flex items-center justify-between">
+                <h3 class="nes-text is-primary flex items-center justify-between">
                   <span>Cluster {cluster.id}</span>
                   <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{cluster.relevantResults.length} results</span>
                 </h3>
@@ -480,50 +483,50 @@ https://svelte.dev/e/js_parse_error -->
                   <Progress value={cluster.coherence * 100} class="h-2" />
                 </div>
               </div>
-            </NesCard>
+            </div>
           {/each}
         </div>
 
       {:else if visualizationMode === 'performance'}
         <!-- Performance Analytics Dashboard -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <NesCard>
-            <div class="yorha-panel-content" class="p-4 text-center">
+          <div class="nes-container">
+            <div class="yorha-panel-content p-4 text-center">
               <Cpu class="h-8 w-8 mx-auto text-blue-600 mb-2" />
               <div class="text-2xl font-bold">{performanceMetrics.totalQueries}</div>
               <div class="text-sm text-gray-600">Total Queries</div>
             </div>
-          </NesCard>
+          </div>
 
-          <NesCard>
-            <div class="yorha-panel-content" class="p-4 text-center">
+          <div class="nes-container">
+            <div class="yorha-panel-content p-4 text-center">
               <Zap class="h-8 w-8 mx-auto text-green-600 mb-2" />
               <div class="text-2xl font-bold">{Math.round(performanceMetrics.throughputQPS)}</div>
               <div class="text-sm text-gray-600">Queries/sec</div>
             </div>
-          </NesCard>
+          </div>
 
-          <NesCard>
-            <div class="yorha-panel-content" class="p-4 text-center">
+          <div class="nes-container">
+            <div class="yorha-panel-content p-4 text-center">
               <Database class="h-8 w-8 mx-auto text-purple-600 mb-2" />
               <div class="text-2xl font-bold">{performanceMetrics.cacheSize}</div>
               <div class="text-sm text-gray-600">Cache Entries</div>
             </div>
-          </NesCard>
+          </div>
 
-          <NesCard>
-            <div class="yorha-panel-content" class="p-4 text-center">
+          <div class="nes-container">
+            <div class="yorha-panel-content p-4 text-center">
               <TrendingUp class="h-8 w-8 mx-auto text-orange-600 mb-2" />
               <div class="text-2xl font-bold">
                 {formatDuration(performanceMetrics.averageResponseTime)}
               </div>
               <div class="text-sm text-gray-600">Avg Response</div>
             </div>
-          </NesCard>
+          </div>
         </div>
 
         <!-- Real-time Performance Chart -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Real-time Performance Metrics</h3>
           </div>
@@ -532,21 +535,21 @@ https://svelte.dev/e/js_parse_error -->
               <p class="text-gray-500">Performance chart would be rendered here</p>
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
     </div>
   {/if}
 
   <!-- Error Display -->
   {#if ragState.error}
-    <NesCard class="border-red-200 bg-red-50 dark:bg-red-950">
-      <div class="yorha-panel-content" class="p-4">
+    <div class="border-red-200 bg-red-50 dark:bg-red-950 nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="flex items-center gap-2 text-red-800 dark:text-red-200">
           <span class="font-medium">Error:</span>
           <span>{ragState.error}</span>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

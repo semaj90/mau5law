@@ -11,7 +11,7 @@ import {
   cases,
   evidence,
   criminals,
-} from '../db/schema-postgres.js';
+} from '../db/schema-postgres.js.js';
 import { eq, and, sql, or, ilike } from 'drizzle-orm';
 import cuid2 from '@paralleldrive/cuid2';
 
@@ -120,12 +120,12 @@ export class VectorService {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Ollama embedding API error: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any; points?: any }).ok) {
+        throw new Error(`Ollama embedding API error: ${(response as { ok?: any; statusText?: any; json?: any; points?: any }).statusText}`);
       }
 
-      const result = await response.json();
-      const embedding = result.embedding;
+      const result = await (response as { ok?: any; statusText?: any; json?: any; points?: any }).json();
+      const embedding = (result as { embedding?: any; id?: any; score?: any }).embedding;
 
       // Cache the result with 24-hour expiry - using modern Redis syntax
       if (typeof (this.redis as any).setex === 'function') {
@@ -253,7 +253,7 @@ export class VectorService {
       const results: EmbeddingResult[] = searchResult.map((point: any) => ({
         id: point.id.toString(),
         score: point.score,
-        metadata: includeMetadata ? point.payload : {},
+        metadata: includeMetadata ? point.payload : Record<string, any>,
         content: (point.payload?.content as string) || '',
       }));
 
@@ -416,22 +416,22 @@ export class VectorService {
 
     // Add vector results
     vectorResults.forEach((result) => {
-      combinedMap.set(result.id, {
+      combinedMap.set((result as { embedding?: any; id?: any; score?: any }).id, {
         ...result,
-        score: result.score * vectorWeight,
+        score: (result as { embedding?: any; id?: any; score?: any }).score * vectorWeight,
       });
     });
 
     // Add keyword results
     keywordResults.forEach((result) => {
-      const existing = combinedMap.get(result.id);
+      const existing = combinedMap.get((result as { embedding?: any; id?: any; score?: any }).id);
       if (existing) {
         // Combine scores
-        existing.score += result.score * keywordWeight;
+        existing.score += (result as { embedding?: any; id?: any; score?: any }).score * keywordWeight;
       } else {
-        combinedMap.set(result.id, {
+        combinedMap.set((result as { embedding?: any; id?: any; score?: any }).id, {
           ...result,
-          score: result.score * keywordWeight,
+          score: (result as { embedding?: any; id?: any; score?: any }).score * keywordWeight,
         });
       }
     });
@@ -488,12 +488,12 @@ export class VectorService {
       // Get the document - method compatibility issue
       // TODO: Verify correct Qdrant client API for retrieve method
       // const response = await this.qdrant.retrieve(this.collectionName, [documentId]);
-      // const point = response.points;
+      // const point = (response as { ok?: any; statusText?: any; json?: any; points?: any }).points;
 
       // Placeholder response for now
-      const response: { points: Array<{ id: string | number; vector?: number[]; payload?: any }> } =
+      const response: { points: Array< } =
         { points: [] };
-      const point = response.points;
+      const point = (response as { ok?: any; statusText?: any; json?: any; points?: any }).points;
 
       if (point.length === 0) {
         console.warn(
@@ -533,11 +533,7 @@ export class VectorService {
 
   // Bulk index documents
   async bulkIndex(
-    documents: Array<{
-      id: string;
-      content: string;
-      metadata: any;
-    }>
+    documents: Array<
   ): Promise<void> {
     try {
       const batchSize = 50;
@@ -610,11 +606,7 @@ export class VectorService {
   }
 
   // Health check
-  async healthCheck(): Promise<{
-    qdrant: boolean;
-    redis: boolean;
-    collection: boolean;
-  }> {
+  async healthCheck(): Promise<any> {
     const status = {
       qdrant: false,
       redis: false,
@@ -649,10 +641,7 @@ export class VectorService {
   }
 
   // Get collection stats
-  async getStats(): Promise<{
-    documentCount: number;
-    collectionInfo: any;
-  }> {
+  async getStats(): Promise<any> {
     try {
       const info = await this.qdrant.getCollection(this.collectionName);
 

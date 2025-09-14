@@ -60,7 +60,7 @@
   async function fetchServiceStatus() {
     try {
       const response = await fetch('/api/legal-ai/langextract');
-      serviceStatus = await response.json();
+      serviceStatus = await (response as { json?: any }).json();
     } catch (err) {
       console.error('Failed to fetch service status:', err);
       error = 'Failed to connect to LangExtract service';
@@ -94,11 +94,11 @@
         body: JSON.stringify(requestBody)
       });
 
-      const result = await response.json();
-      if (result.success) {
-        extractionResult = result.data;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; data?: any; error?: any }).success) {
+        extractionResult = (result as { success?: any; data?: any; error?: any }).data;
       } else {
-        error = result.error || 'Extraction failed';
+        error = (result as { success?: any; data?: any; error?: any }).error || 'Extraction failed';
       }
     } catch (err) {
       console.error('Extraction error:', err);
@@ -220,10 +220,10 @@
     <div class="mb-4">
       <label class="block text-sm font-medium text-gray-700 mb-2">Load Sample Text:</label>
       <div class="flex flex-wrap gap-2">
-        <button onclick={() => loadSampleText('contract')} class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200">Contract</button>
-        <button onclick={() => loadSampleText('case_law')} class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded hover:bg-green-200">Case Law</button>
-        <button onclick={() => loadSampleText('statute')} class="px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded hover:bg-purple-200">Statute</button>
-        <button onclick={() => loadSampleText('evidence')} class="px-3 py-1 text-sm bg-orange-100 text-orange-700 rounded hover:bg-orange-200">Evidence</button>
+        <button on:click={() => loadSampleText('contract')} class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200">Contract</button>
+        <button on:click={() => loadSampleText('case_law')} class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded hover:bg-green-200">Case Law</button>
+        <button on:click={() => loadSampleText('statute')} class="px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded hover:bg-purple-200">Statute</button>
+        <button on:click={() => loadSampleText('evidence')} class="px-3 py-1 text-sm bg-orange-100 text-orange-700 rounded hover:bg-orange-200">Evidence</button>
       </div>
     </div>
 
@@ -241,7 +241,7 @@
 
     <!-- Extract Button -->
     <button 
-      onclick={performExtraction}
+      on:click={performExtraction}
       disabled={loading || !serviceStatus?.status?.ollama_available}
       class="w-full py-3 px-6 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium"
     >

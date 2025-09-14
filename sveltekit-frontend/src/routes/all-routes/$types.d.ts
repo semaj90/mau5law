@@ -8,12 +8,7 @@ export interface SystemHealthData {
     uptime_hours: number;
     last_updated: string;
   };
-  services: Array<{
-    name: string;
-    status: 'healthy' | 'degraded' | 'down';
-    port?: number;
-    response_time?: number;
-  }>;
+  services: Array<any>;
   performance: {
     cpu_usage: number;
     memory_usage: number;

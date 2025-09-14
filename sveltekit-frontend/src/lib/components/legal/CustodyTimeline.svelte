@@ -8,24 +8,7 @@ Displays the chronological chain of custody events with detailed audit trail
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   interface Props {
-    events: Array<{;
-    currentStage: string
-  }
-  let {
-    events,
-    currentStage
-  } = $props();
-
-
-
-  import { Badge } from '$lib/components/ui/badge';
-  import { CheckCircle, AlertTriangle, Clock, FileCheck, Users, Shield, UserCheck } from 'lucide-svelte';
-
-      id: string
-    eventType: 'intake' | 'transfer' | 'verification' | 'analysis' | 'approval' | 'finalization';
-    timestamp: string
-    userId: string
-    details: Record<string, any>;
+    events: Array;
     signature?: string;
   }>;
   function getEventIcon(eventType: string) {

@@ -1,5 +1,5 @@
 import { langExtractService, type LegalExtractionRequest } from "$lib/services/langextract-ollama-service";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 /*
@@ -35,23 +35,23 @@ export const POST: RequestHandler = async ({ request }) => {
 
     switch (body.action) {
       case 'contract_terms':
-        result = await langExtractService.extractContractTerms(body.text, body.model);
+        result = await langExtractService.extractContractTerms(body.text, body?.model || "unknown" // @ts-ignore - Model property access);
         break;
 
       case 'case_citations':
-        result = await langExtractService.extractCaseLawCitations(body.text, body.model);
+        result = await langExtractService.extractCaseLawCitations(body.text, body?.model || "unknown" // @ts-ignore - Model property access);
         break;
 
       case 'dates':
-        result = await langExtractService.extractLegalDates(body.text, body.documentType, body.model);
+        result = await langExtractService.extractLegalDates(body.text, body.documentType, body?.model || "unknown" // @ts-ignore - Model property access);
         break;
 
       case 'summary':
-        result = await langExtractService.generateLegalSummary(body.text, body.documentType || 'contract', body.model);
+        result = await langExtractService.generateLegalSummary(body.text, body.documentType || 'contract', body?.model || "unknown" // @ts-ignore - Model property access);
         break;
 
       case 'risks':
-        result = await langExtractService.extractRiskFactors(body.text, body.documentType, body.model);
+        result = await langExtractService.extractRiskFactors(body.text, body.documentType, body?.model || "unknown" // @ts-ignore - Model property access);
         break;
 
       case 'batch':

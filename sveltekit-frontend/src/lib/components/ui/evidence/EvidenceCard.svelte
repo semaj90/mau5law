@@ -17,16 +17,15 @@
 
 <Card.Root class="nes-container is-dark with-title">
   <Card.Header>
-    <Card.Title class="title">{caseFile.title}</Card.Title>
-    <Card.Description>{displayStatus}</Card.Description>
-  </Card.Header>
+    <Card.Title class="title">{caseFile.title}</div.Title>
+    <Card.Description>{displayStatus}</div.Description>
+  </div.Header>
 
   <Card.Content class="space-y-4">
     <p>{caseFile.summary}</p>
     <div class="flex justify-end">
-      <Button class="nes-btn is-primary" onclick={handleAnalyzeClick}>
+      <Button class="nes-btn is-primary" on:click={handleAnalyzeClick}>
         Analyze
-      </Button>
     </div>
-  </Card.Content>
-</Card.Root>
+  </div.Content>
+</div.Root>

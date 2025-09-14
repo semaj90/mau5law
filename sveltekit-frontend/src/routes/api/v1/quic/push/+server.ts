@@ -10,7 +10,7 @@ import {
   maybeTriggerAutosolve,
   getSustainedP99Info,
 } from '$lib/services/alert-center';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Simple in-memory rate limit: 60 requests per minute per IP
 const hits: Record<string, number[]> = {};

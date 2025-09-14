@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { minioService, BUCKETS } from '$lib/server/storage/minio-service';
 
 /**
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
       );
 
       bucketDetails = detailedBuckets.map(result =>
-        result.status === 'fulfilled' ? result.value : result.reason
+        (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value : (result as { status?: any; value?: any; reason?: any }).reason
       );
     }
 

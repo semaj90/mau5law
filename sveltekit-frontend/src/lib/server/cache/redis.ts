@@ -327,11 +327,11 @@ class CacheService {
     const item = memoryCache.get(key) as CacheItem<T> | undefined;
     if (!item) return null;
     const now = Date.now();
-    if (now > item.timestamp + item.ttl) {
+    if (now > (item as { timestamp?: any; ttl?: any; data?: any }).timestamp + (item as { timestamp?: any; ttl?: any; data?: any }).ttl) {
       memoryCache.delete(key);
       return null;
     }
-    return item.data;
+    return (item as { timestamp?: any; ttl?: any; data?: any }).data;
   }
 
   private setInMemory<T>(key: string, value: T, ttlMs: number): void {

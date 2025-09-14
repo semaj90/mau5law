@@ -19,13 +19,13 @@ https://svelte.dev/e/js_parse_error -->
   import type { PageData } from './$types';
   import type { CaseForm } from '$lib/schemas/forms';
 
-  let { data = $bindable() } = $props(); // PageData;
+  let { data }: { data: any } = $props(); // PageData;
   let isSubmitting = $state(false);
   let showSuccess = $state(false);
   let errorMessage = $state('');
 
   // Handle form submission success
-  function handleFormSuccess(event: CustomEvent<{ caseItem: any }>) {
+  function handleFormSuccess(event: CustomEvent) {
     const { caseItem: newCase } = event.detail;
 
     showSuccess = true;
@@ -38,18 +38,18 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Handle form submission error
-  function handleFormError(event: CustomEvent<{ message: string }>) {
+  function handleFormError(event: CustomEvent) {
     errorMessage = event.detail.message;
     toast.error(event.detail.message);
   }
 
   // Handle draft save
-  function handleDraftSave(event: CustomEvent<{ data: CaseForm }>) {
+  function handleDraftSave(event: CustomEvent) {
     toast.info('Draft saved successfully');
   }
 
   // Handle form submission
-  function handleFormSubmit(event: CustomEvent<{ data: CaseForm }>) {
+  function handleFormSubmit(event: CustomEvent) {
     isSubmitting = true;
     errorMessage = '';
   }
@@ -112,11 +112,11 @@ https://svelte.dev/e/js_parse_error -->
           class="bits-btn flex items-center space-x-2"
           variant="ghost"
           size="sm"
-          onclick={() => goto('/cases')}
+          on:click={() =>
+goto('/cases')}
         >
           <ArrowLeft class="h-4 w-4" />
           <span>Back to Cases</span>
-        </button>
 
         <div class="h-6 border-l border-muted-foreground/20"></div>
 
@@ -139,11 +139,12 @@ https://svelte.dev/e/js_parse_error -->
           <Button
             class="bits-btn flex items-center space-x-2"
             variant="outline"
-            onclick={() => goto('/cases/templates')}
+            on:click={() =>
+goto('/cases/templates')}
           >
             <Save class="h-4 w-4" />
             <span>Use Template</span>
-          </button>
+
         {/if}
       </div>
     </div>
@@ -178,8 +179,7 @@ https://svelte.dev/e/js_parse_error -->
     submitAction={data.editMode ? `?/updateCase&id=${data.caseId}` : '?/createCase'}
     editMode={data.editMode}
     enableAutoSave={true}
-    enableRealTimeValidation={true}
-    submit={handleFormSubmit}
+    enableRealTimeValidation={true} on:submit={handleFormSubmit}
     success={handleFormSuccess}
     error={handleFormError}
     draft={handleDraftSave}

@@ -45,8 +45,8 @@ export type DocumentEvent =
 export const documentMachine = createMachine({
   id: 'documentProcessor',
   types: {
-    context: {} as DocumentContext,
-    events: {} as DocumentEvent
+    context: Record<string, any> as DocumentContext,
+    events: Record<string, any> as DocumentEvent
   },
   initial: 'idle',
   context: {

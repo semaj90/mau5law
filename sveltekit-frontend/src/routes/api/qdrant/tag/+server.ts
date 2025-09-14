@@ -1,7 +1,7 @@
 
 import { json } from "@sveltejs/kit";
 import { URL } from "url";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Mock Qdrant client for development
@@ -20,7 +20,7 @@ class MockQdrantClient {
     if (!coll) throw new Error("Collection not found");
 
     // Mock upsert
-    data.points.forEach((point: any) => {
+    (data as { points?: any; embedding?: any }).points.forEach((point: any) => {
       const existingIndex = coll.points.findIndex(
         (p: any) => p.id === point.id
       );
@@ -256,8 +256,8 @@ async function tagDocument(data: any, userId: string): Promise<any> {
     }
     return json({
       success: true,
-      operation_id: response.operation_id,
-      status: response.status,
+      operation_id: (response as { operation_id?: any; status?: any; ok?: any; json?: any }).operation_id,
+      status: (response as { operation_id?: any; status?: any; ok?: any; json?: any }).status,
       message: "Document tagged successfully",
     });
   } catch (error: any) {
@@ -386,14 +386,14 @@ async function searchDocuments(data: any, userId: string): Promise<any> {
     return json({
       success: true,
       results: searchResult.map((result: any) => ({
-        id: result.id,
-        score: result.score,
-        payload: result.payload,
+        id: (result as { id?: any; score?: any; payload?: any }).id,
+        score: (result as { id?: any; score?: any; payload?: any }).score,
+        payload: (result as { id?: any; score?: any; payload?: any }).payload,
       })),
       relatedTags: tagSearchResults.map((result: any) => ({
-        tag: result.payload?.tag,
-        score: result.score,
-        documentId: result.payload?.documentId,
+        tag: (result as { id?: any; score?: any; payload?: any }).payload?.tag,
+        score: (result as { id?: any; score?: any; payload?: any }).score,
+        documentId: (result as { id?: any; score?: any; payload?: any }).payload?.documentId,
       })),
       searchStats: {
         totalResults: searchResult.length,
@@ -440,8 +440,8 @@ async function batchTagDocuments(data: any, userId: string): Promise<any> {
         results.push({
           batchIndex: Math.floor(i / batchSize),
           count: batch.length,
-          operation_id: response.operation_id,
-          status: response.status,
+          operation_id: (response as { operation_id?: any; status?: any; ok?: any; json?: any }).operation_id,
+          status: (response as { operation_id?: any; status?: any; ok?: any; json?: any }).status,
         });
       } catch (error: any) {
         errors.push({
@@ -651,11 +651,11 @@ async function generateTextEmbedding(text: string): Promise<number[]> {
       }),
     });
 
-    if (!response.ok) {
+    if (!(response as { operation_id?: any; status?: any; ok?: any; json?: any }).ok) {
       throw new Error("Embedding generation failed");
     }
-    const data = await response.json();
-    return data.embedding;
+    const data = await (response as { operation_id?: any; status?: any; ok?: any; json?: any }).json();
+    return (data as { points?: any; embedding?: any }).embedding;
   } catch (error: any) {
     console.error("Text embedding generation failed:", error);
     throw new Error("Failed to generate text embedding");

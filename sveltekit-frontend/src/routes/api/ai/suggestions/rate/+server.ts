@@ -16,7 +16,7 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // TEMPORARILY COMMENTED OUT DUE TO CORRUPTED CODE STRUCTURE
 // This file contains malformed TypeScript with embedded escape sequences

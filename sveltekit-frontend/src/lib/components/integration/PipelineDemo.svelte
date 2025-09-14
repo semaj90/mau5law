@@ -6,13 +6,13 @@ https://svelte.dev/e/unexpected_reserved_word -->
   import 'nes.css/css/nes.min.css';
   import { pipelineManager, type PipelineType, type PipelineResult } from '$lib/services/pipeline-manager';
   import { PipelineVisualizer } from '$lib/services/pipeline-visualizer';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/button/Button.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   // Reactive state using Svelte 5 runes
   let isProcessing = $state(false);
   let results = $state<PipelineResult[]>([]);
@@ -182,11 +182,11 @@ https://svelte.dev/e/unexpected_reserved_word -->
   </div>
 
   <!-- Pipeline Controls -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Pipeline Execution</h3>
     </div>
-    <div class="yorha-panel-content" class="space-y-4">
+    <div class="yorha-panel-content space-y-4">
       <!-- Pipeline Selection -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
@@ -213,59 +213,55 @@ https://svelte.dev/e/unexpected_reserved_word -->
         
         <div class="flex items-end">
           <Button 
-            onclick={executePipeline}
+            on:click={executePipeline}
             disabled={isProcessing}
             class="w-full bits-btn bits-btn"
           >
-            {isProcessing ? '⏳ Processing...' : '🚀 Execute Pipeline'}
-          </button>
+{isProcessing ? '⏳ Processing...' : '🚀 Execute Pipeline'}
+
         </div>
       </div>
 
       <!-- Advanced Controls -->
       <div class="flex flex-wrap gap-2">
         <Button class="bits-btn" 
-          onclick={autoExecutePipeline}
+          on:click={autoExecutePipeline}
           disabled={isProcessing}
           variant="outline"
         >
-          🧠 Auto-Select Optimal
-        </button>
-        
+🧠 Auto-Select Optimal
+
         <Button class="bits-btn" 
-          onclick={batchProcess}
+          on:click={batchProcess}
           disabled={isProcessing}
           variant="outline"
         >
-          📦 Batch Process
-        </button>
-        
+📦 Batch Process
+
         <Button class="bits-btn" 
-          onclick={checkSystemHealth}
+          on:click={checkSystemHealth}
           variant="outline"
         >
-          🏥 Health Check
-        </button>
-        
+🏥 Health Check
+
         <Button class="bits-btn" 
-          onclick={generateReport}
+          on:click={generateReport}
           variant="outline"
         >
-          📈 Performance Report
-        </button>
-        
+📈 Performance Report
+
         <Button class="bits-btn" 
-          onclick={cleanup}
+          on:click={cleanup}
           variant="destructive"
         >
-          🧹 Cleanup
-        </button>
+🧹 Cleanup
+
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Search Interface -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Cross-Pipeline Search</h3>
     </div>
@@ -278,9 +274,9 @@ https://svelte.dev/e/unexpected_reserved_word -->
           placeholder="Search across all pipelines..."
           onkeypress={(e) => e.key === 'Enter' && searchPipelines()}
         />
-        <Button class="bits-btn" onclick={searchPipelines}>
-          🔍 Search
-        </button>
+        <Button class="bits-btn" on:click={searchPipelines}>
+🔍 Search
+
       </div>
       
       {#if searchResults}
@@ -291,12 +287,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
               <div class="p-2 bg-gray-50 rounded border-l-4 border-blue-500">
                 <div class="flex justify-between items-start">
                   <div class="flex-1">
-                    <p class="font-medium">{result.id}</p>
-                    <p class="text-sm text-gray-600">{result.content?.substring(0, 100)}...</p>
+                    <p class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).id}</p>
+                    <p class="text-sm text-gray-600">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).content?.substring(0, 100)}...</p>
                   </div>
                   <div class="text-right text-sm">
-                    <div class="font-semibold">Score: {result.score?.toFixed(3)}</div>
-                    <div class="text-gray-500">{result.source}</div>
+                    <div class="font-semibold">Score: {(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).score?.toFixed(3)}</div>
+                    <div class="text-gray-500">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).source}</div>
                   </div>
                 </div>
               </div>
@@ -305,50 +301,50 @@ https://svelte.dev/e/unexpected_reserved_word -->
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Metrics Dashboard -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-blue-600">{metrics.totalOperations}</div>
           <div class="text-sm text-gray-500">Total Operations</div>
         </div>
       </div>
-    </NesCard>
+    </div>
     
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-green-600">{formatTime(metrics.averageTime)}</div>
           <div class="text-sm text-gray-500">Average Time</div>
         </div>
       </div>
-    </NesCard>
+    </div>
     
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-purple-600">{metrics.successRate.toFixed(1)}%</div>
           <div class="text-sm text-gray-500">Success Rate</div>
         </div>
       </div>
-    </NesCard>
+    </div>
     
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-orange-600">{results.length}</div>
           <div class="text-sm text-gray-500">Recent Results</div>
         </div>
       </div>
-    </NesCard>
+    </div>
   </div>
 
   <!-- System Health -->
   {#if systemHealth}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">System Health</h3>
       </div>
@@ -376,12 +372,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Recent Results -->
   {#if results.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Recent Pipeline Results</h3>
       </div>
@@ -391,50 +387,50 @@ https://svelte.dev/e/unexpected_reserved_word -->
             <div class="p-3 border rounded-lg">
               <div class="flex justify-between items-start mb-2">
                 <div class="flex items-center gap-2">
-                  <span class="font-semibold">{result.type}</span>
-                  <span class={getStatusColor(result.success)}>
-                    {result.success ? '✅' : '❌'}
+                  <span class="font-semibold">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).type}</span>
+                  <span class={getStatusColor((result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).success)}>
+                    {(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).success ? '✅' : '❌'}
                   </span>
                 </div>
                 <div class="text-sm text-gray-500">
-                  {formatTime(result.metrics.totalProcessingTime)}
+                  {formatTime((result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.totalProcessingTime)}
                 </div>
               </div>
               
               <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
                 <div>
                   <span class="text-gray-500">Cache Hit:</span>
-                  <span class="font-medium">{result.metrics.cacheHitRate.toFixed(1)}%</span>
+                  <span class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.cacheHitRate.toFixed(1)}%</span>
                 </div>
                 <div>
                   <span class="text-gray-500">Memory:</span>
-                  <span class="font-medium">{formatMemory(result.metrics.memoryUsageMB)}</span>
+                  <span class="font-medium">{formatMemory((result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.memoryUsageMB)}</span>
                 </div>
                 <div>
                   <span class="text-gray-500">GPU:</span>
-                  <span class="font-medium">{result.metrics.gpuUtilization.toFixed(0)}%</span>
+                  <span class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.gpuUtilization.toFixed(0)}%</span>
                 </div>
                 <div>
                   <span class="text-gray-500">Throughput:</span>
-                  <span class="font-medium">{result.metrics.throughputPerSecond.toFixed(1)}/s</span>
+                  <span class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.throughputPerSecond.toFixed(1)}/s</span>
                 </div>
               </div>
               
-              {#if result.error}
+              {#if (result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).error}
                 <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-                  Error: {result.error}
+                  Error: {(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).error}
                 </div>
               {/if}
             </div>
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Performance Report -->
   {#if performanceReport}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Performance Report</h3>
       </div>
@@ -472,11 +468,11 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Architecture Diagram -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Pipeline Architecture</h3>
     </div>
@@ -485,7 +481,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
 {PipelineVisualizer.generateArchitectureDiagram()}
       </pre>
     </div>
-  </NesCard>
+  </div>
 </div>
 {/snippet}
 

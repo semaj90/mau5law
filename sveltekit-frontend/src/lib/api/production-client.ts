@@ -82,7 +82,7 @@ class WebSocketClient implements ProtocolClient {
         resolve({
           data,
           status: 200,
-          headers: {},
+          headers: Record<string, any>,
           protocol: 'websocket',
           service: new URL(url).host,
           latency
@@ -225,15 +225,7 @@ export class ProductionAPIClient {
     };
   }
 
-  async getClusterStatus(this: ProductionAPIClient): Promise<{
-    health: Awaited<ReturnType<typeof productionServiceRegistry.getClusterHealth>>;
-    metrics: Record<string, {
-      count: number;
-      avgLatency: number;
-      p95Latency: number;
-      minLatency: number;
-      maxLatency: number;
-    }>;
+  async getClusterStatus(this: ProductionAPIClient): Promise<;
     activeRoutes: string[];
   }> {
     const health = await productionServiceRegistry.getClusterHealth();

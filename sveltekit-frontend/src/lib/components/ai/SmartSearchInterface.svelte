@@ -18,13 +18,7 @@
   	// State management with Svelte 5
   	let query = $state('');
   	let isSearching = $state(false);
-  	let results = $state<{
-  		response: string;
-  		sources: SemanticChunk[];
-  		confidence: number;
-  		generationMethod: string;
-  		stats?: unknown;
-  	} | null>(null);
+  	let results = $state(null);
   	let searchHistory = $state<string[]>([]);
   	let contextMode = $state<'legal' | 'technical' | 'general'>('legal');
   	let useG0llama = $state(true);
@@ -152,7 +146,7 @@
 
 	<!-- System Stats -->
 	{#if systemStats}
-		<NesCard class="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
+		<div class="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 nes-container">
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
 				<div class="text-center">
 					<div class="font-semibold text-blue-600">{systemStats.documentsIndexed}</div>
@@ -177,11 +171,11 @@
 					<div class="text-gray-600">Memory</div>
 				</div>
 			</div>
-		</NesCard>
+		</div>
 	{/if}
 
 	<!-- Search Configuration -->
-	<NesCard class="p-4">
+	<div class="p-4 nes-container">
 		<div class="flex flex-wrap gap-4 items-center">
 			<div class="flex items-center gap-2">
 				<label class="text-sm font-medium" for="context">Context:</label><select id="context" bind:value={contextMode} class="border rounded px-2 py-1 text-sm">
@@ -201,7 +195,7 @@
 				SIMD Optimization
 			</label>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- Search Input -->
 	<div class="flex gap-2">
@@ -213,38 +207,38 @@
 			disabled={isSearching}
 		/>
 		<Button 
-			onclick={performSearch}
+			on:click={performSearch}
 			disabled={isSearching || !query.trim()}
 			class="px-6 bits-btn bits-btn"
 		>
-			{#if isSearching}
+{#if isSearching}
 				<div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
 			{:else}
 				Search
 			{/if}
-		</button>
+
 	</div>
 
 	<!-- Search History -->
 	{#if searchHistory.length > 0}
-		<NesCard class="p-4">
+		<div class="p-4 nes-container">
 			<h3 class="font-medium mb-2">Recent Searches</h3>
 			<div class="flex flex-wrap gap-2">
 				{#each searchHistory as item}
 					<button
-						onclick={() => selectHistoryItem(item)}
+						on:click={() => selectHistoryItem(item)}
 						class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
 					>
 						{item}
-					</button>
+
 				{/each}
 			</div>
-		</NesCard>
+		</div>
 	{/if}
 
 	<!-- Results -->
 	{#if results}
-		<NesCard class="p-6">
+		<div class="p-6 nes-container">
 			<!-- Response Header -->
 			<div class="flex items-center justify-between mb-4">
 				<h2 class="text-xl font-semibold">Response</h2>
@@ -293,7 +287,7 @@
 					</div>
 				</div>
 			{/if}
-		</NesCard>
+		</div>
 	{/if}
 </div>
 

@@ -9,7 +9,7 @@
  */
 
 import { qloraWasmLoader } from '$lib/wasm/qlora-wasm-loader';
-import { qloraOllamaOrchestrator } from './qlora-ollama-orchestrator';
+import { qloraOllamaOrchestrator } from './qlora-ollama-orchestrator.js';
 import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
 
 // FlatBuffer-like serialization structure
@@ -108,12 +108,7 @@ export class AutoencoderContextSwitcher {
     userId: string,
     query: string,
     currentContext: any
-  ): Promise<{
-    modelId: string;
-    switchingLatency: number;
-    compressionRatio: number;
-    memoryState: GPUMemoryState;
-  }> {
+  ): Promise<any> {
     const startTime = performance.now();
     
     // 1. Generate context embedding using autoencoder
@@ -385,7 +380,7 @@ export class AutoencoderContextSwitcher {
     adapterName: string,
     trainingData: {
       domain: string;
-      examples: Array<{input: string; output: string; context: ContextVector}>;
+      examples: Array<any>;
       patterns: Float32Array;
     }
   ): Promise<void> {
@@ -710,7 +705,7 @@ class QUICProtocolServer {
     console.log('⚡ QUIC server started');
   }
   
-  async sendLoadCommand(command: any): Promise<{success: boolean; latency: number}> {
+  async sendLoadCommand(command: any): Promise<any> {
     // Simulate ultra-low latency QUIC communication
     await new Promise(resolve => setTimeout(resolve, 5)); // 5ms latency
     return { success: true, latency: 5 };

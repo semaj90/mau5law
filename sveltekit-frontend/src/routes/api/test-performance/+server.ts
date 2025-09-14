@@ -1,6 +1,6 @@
 
 import { json } from "@sveltejs/kit";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -126,9 +126,9 @@ export const POST: RequestHandler = async ({ request }) => {
       const stressTime = Date.now() - stressStart;
       
       const totals = workerResults.reduce((acc, result) => ({
-        success: acc.success + result.success,
-        errors: acc.errors + result.errors,
-        totalTime: acc.totalTime + result.totalTime
+        success: acc.success + (result as { success?: any; errors?: any; totalTime?: any }).success,
+        errors: acc.errors + (result as { success?: any; errors?: any; totalTime?: any }).errors,
+        totalTime: acc.totalTime + (result as { success?: any; errors?: any; totalTime?: any }).totalTime
       }), { success: 0, errors: 0, totalTime: 0 });
       
       return json({

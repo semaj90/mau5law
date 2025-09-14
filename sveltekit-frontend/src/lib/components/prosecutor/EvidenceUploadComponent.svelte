@@ -157,21 +157,20 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           formData.append('collectedBy', collectedBy);
           formData.append('location', location);
           formData.append('isAdmissible', isAdmissible.toString());
-  let response = $state<Response;
-        try {
-          response >(await fetch('/api/evidence/upload', {
+  let response = $state<Responsetry {
+          response | null>(null)(await fetch('/api/evidence/upload', {
             method: 'POST',
             body: formData
           }));
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+            throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
           }
         } catch (error) {
           console.error('Fetch failed:', error);
           throw error;
         }
 
-          const result = await response.json();
+          const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
           uploadResults.push({ file: file.name, ...result });
           uploadProgress = ((i + 1) / selectedFiles.length) * 100;
         }
@@ -202,9 +201,9 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   };
 </script>
 
-<NesCard class="w-full max-w-4xl mx-auto">
+<div class="w-full max-w-4xl mx-auto nes-container">
   <div class="yorha-panel-header">
-    <h3 class="nes-text is-primary" class="flex items-center gap-2">
+    <h3 class="nes-text is-primary flex items-center gap-2">
       <Upload class="w-5 h-5" />
       Evidence Upload - Prosecutor Workflow
       {#if enableWebGPU}
@@ -216,7 +215,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     </h3>
   </div>
 
-  <div class="yorha-panel-content" class="space-y-6">
+  <div class="yorha-panel-content space-y-6">
     <!-- Evidence Metadata Form -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="space-y-2">
@@ -292,9 +291,9 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     <!-- File Upload Area -->
     <div 
       class="border-2 border-dashed rounded-lg p-8 text-center transition-colors {dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}"
-      ondragover={handleDragOver as any}
+      on:dragover={handleDragOver as any}
       ondragleave={handleDragLeave as any}
-      role="region" aria-label="Drop zone" ondrop={handleDrop as any}
+      role="region" aria-label="Drop zone" on:drop={handleDrop as any}
     >
       {#if selectedFiles.length === 0}
         <Upload class="mx-auto w-12 h-12 text-gray-400 mb-4" />
@@ -307,14 +306,14 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         <input
           type="file"
           multiple
-          accept={allowedTypes.join(',')}
-          change={handleFileSelect as any}
+          accept={allowedTypes.join(',')} on:change={handleFileSelect as any}
           class="hidden"
           id="file-input"
         />
-        <Button class="bits-btn" variant="outline" onclick={() => document.getElementById('file-input')?.click()}>
+        <Button class="bits-btn" variant="outline" on:click={() =>
+document.getElementById('file-input')?.click()}>
           Select Files
-        </button>
+</Button>
       {:else}
         <div class="space-y-3">
           <h3 class="text-lg font-medium">Selected Files ({selectedFiles.length}/{maxFiles})</h3>
@@ -341,10 +340,11 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
                 <Button class="bits-btn" 
                   variant="ghost" 
                   size="sm"
-                  onclick={() => removeFile(index)}
+                  on:click={() =>
+removeFile(index)}
                 >
                   <X class="w-4 h-4" />
-                </button>
+</Button>
               </div>
             </div>
           {/each}
@@ -353,25 +353,25 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
             <input
               type="file"
               multiple
-              accept={allowedTypes.join(',')}
-              change={handleFileSelect as any}
+              accept={allowedTypes.join(',')} on:change={handleFileSelect as any}
               class="hidden"
               id="add-more-files"
             />
             <Button class="bits-btn" 
               variant="outline" 
-              onclick={() => document.getElementById('add-more-files')?.click()}
+              on:click={() =>
+document.getElementById('add-more-files')?.click()}
               disabled={selectedFiles.length >= maxFiles}
             >
               Add More Files
-            </button>
-            <Button class="bits-btn" onclick={uploadEvidence} disabled={uploading || !evidenceTitle.trim()}>
-              {#if uploading}
+</Button>
+            <Button class="bits-btn" on:click={uploadEvidence} disabled={uploading || !evidenceTitle.trim()}>
+{#if uploading}
                 Processing...
               {:else}
                 Upload & Analyze Evidence
               {/if}
-            </button>
+</Button>
           </div>
         </div>
       {/if}
@@ -400,21 +400,21 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
             <div class="flex justify-between items-start">
               <div>
-                <h4 class="font-medium text-green-900">{result.fileName || result.file}</h4>
+                <h4 class="font-medium text-green-900">{(result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).fileName || (result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).file}</h4>
                 <p class="text-sm text-green-700">
                   Stored in MinIO • Embedded in Qdrant • AI Analyzed
                 </p>
-                {#if result.aiAnalysis}
+                {#if (result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).aiAnalysis}
                   <div class="mt-2 space-y-1">
                     <p class="text-xs text-green-600">
-                      <strong>AI Summary:</strong> {result.aiAnalysis.summary?.substring(0, 100)}...
+                      <strong>AI Summary:</strong> {(result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).aiAnalysis.summary?.substring(0, 100)}...
                     </p>
-                    {#if result.aiAnalysis.prosecutionRelevance}
+                    {#if (result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).aiAnalysis.prosecutionRelevance}
                       <Badge 
-                        variant={result.aiAnalysis.prosecutionRelevance === 'high' ? 'destructive' : 'secondary'}
+                        variant={(result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).aiAnalysis.prosecutionRelevance === 'high' ? 'destructive' : 'secondary'}
                         class="text-xs"
                       >
-                        {result.aiAnalysis.prosecutionRelevance} relevance
+                        {(result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).aiAnalysis.prosecutionRelevance} relevance
                       </Badge>
                     {/if}
                   </div>
@@ -422,8 +422,8 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
               </div>
               
               <div class="flex flex-col items-end space-y-1">
-                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{result.embedding || 'Vector stored'}</span>
-                {#if result.qdrantId}
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{(result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).embedding || 'Vector stored'}</span>
+                {#if (result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).qdrantId}
                   <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Searchable</span>
                 {/if}
               </div>
@@ -434,13 +434,14 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         <div class="flex justify-center mt-4">
           <Button class="bits-btn" 
             variant="outline" 
-            onclick={() => {
+            on:click={() =>
+{
               uploadResults = [];
               selectedFiles = [];
             }}
           >
             Upload More Evidence
-          </button>
+</Button>
         </div>
       </div>
     {/if}
@@ -467,7 +468,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
       </div>
     {/if}
   </div>
-</NesCard>
+</div>
 
 <style>
   .drag-active {

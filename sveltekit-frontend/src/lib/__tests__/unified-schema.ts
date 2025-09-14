@@ -4,8 +4,8 @@
 // to avoid identifier collisions. This file is the single Drizzle CLI entry point.
 
 // Export core (snake_case) tables used by auth/session logic (authoritative definitions live in schema-postgres)
-export * from './schema-postgres';
-import { users, sessions, cases, evidence, reports, legalDocuments, notes } from './schema-postgres';
+export * from './schema-postgres.js';
+import { users, sessions, cases, evidence, reports, legalDocuments, notes } from './schema-postgres.js';
 
 // Re-export evidence domain tables (camelCase variants) with aliases where names overlap
 export {
@@ -21,7 +21,7 @@ export {
   queueStatsTable,
   legalDocuments as legal_documents_v2,
   contentEmbeddings as content_embeddings_v2
-} from '../schema';
+} from '../schema.js';
 
 // NOTE:
 //  - The *_v2 aliases represent legacy/alternate modeling that co-exists during migration.

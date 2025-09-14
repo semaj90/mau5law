@@ -6,7 +6,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db, cases, evidence, caseActivities, userDocuments } from '$lib/server/index.js';
 import { sharedWorkerPool } from '$lib/server/ingest/worker-pool-simple.js';
 import { embedText } from '$lib/server/ingest/embed.js';

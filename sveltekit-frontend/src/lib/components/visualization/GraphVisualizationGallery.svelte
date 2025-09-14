@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import { writable } from 'svelte/store';
   import { GraphVisualizationEngine, type GraphVisualizationResult, type GraphNode, type GraphEdge } from '$lib/services/graph-visualization-engine';
   import { MultiLayerCache } from '$lib/services/multi-layer-cache';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/button/Button.svelte';
 
   // Props
   let {
@@ -16,13 +16,7 @@ https://svelte.dev/e/js_parse_error -->
     algorithmFilter = $bindable('all'),
     autoGenerate = $bindable(true),
     cacheResults = $bindable(true)
-  } = $props<{
-    graphData?: { nodes: GraphNode[]; edges: GraphEdge[] };
-    viewMode?: 'grid' | 'list' | 'masonry';
-    algorithmFilter?: 'all' | 'dfs' | 'bfs' | 'som' | 'autoencoder';
-    autoGenerate?: boolean;
-    cacheResults?: boolean;
-  }>();
+  } = $props();
 
   // Stores
   const visualizations = writable<GraphVisualizationResult[]>([]);
@@ -290,7 +284,7 @@ https://svelte.dev/e/js_parse_error -->
       <button class="nes-btn"
         variant="legal"
         disabled={$isGenerating}
-        onclick={() => generateVisualizationsForAllAlgorithms()}
+        on:click={() => generateVisualizationsForAllAlgorithms()}
         class="bits-btn generate-btn"
       >
         {$isGenerating ? 'Generating...' : 'Generate All'}
@@ -322,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="gallery-item nes-container is-rounded" data-algorithm={visualization.metadata.algorithm}>
         <!-- Preview Image -->
         <div class="item-preview" role="button" tabindex="0"
-                onclick={() => openVisualization(visualization)}>
+                on:click={() => openVisualization(visualization)}>
           <img 
             src={getVisualizationPreview(visualization)} 
             alt="Graph visualization using {visualization.metadata.algorithm}"
@@ -346,11 +340,12 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="evidence"
             size="small"
-            onclick={() => regenerateVisualization(visualization.metadata.algorithm)}
+            on:click={() =>
+regenerateVisualization(visualization.metadata.algorithm)}
             disabled={$isGenerating}
           >
             🔄 Regenerate
-          </button>
+</Button>
           
           <div class="item-metrics">
             <span class="nes-text is-disabled">
@@ -373,16 +368,17 @@ https://svelte.dev/e/js_parse_error -->
       <p class="nes-text is-disabled">No visualizations generated yet.</p>
       <Button class="bits-btn"
         variant="legal"
-        onclick={() => generateVisualizationsForAllAlgorithms()}
+        on:click={() =>
+generateVisualizationsForAllAlgorithms()}
       >
         Generate Visualizations
-      </button>
+</Button>
     </div>
   {/if}
 
   <!-- Real-time Canvas (Hidden, used for generation) -->
   <canvas
-    bind:this={canvas}
+    bind:this={canvas as any}
     width="800"
     height="600"
     style="display: none;"
@@ -393,10 +389,11 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Modal for Full-Size Viewing -->
 {#if $showModal && $selectedVisualization}
   <div class="modal-overlay" role="button" tabindex="0"
-                onclick={closeModal}>
+                on:click={closeModal}>
     <div class="modal-content nes-container is-dark" role="button" tabindex="0"
-                onclick={(e) => e.stopPropagation()}>
-      <button class="modal-close nes-btn is-error" onclick={closeModal}>×</button>
+                on:click={(e) => e.stopPropagation()}>
+      <button class="modal-close nes-btn is-error" on:click={closeModal}>×
+</Button>
       
       <div class="modal-header">
         <h3 class="nes-text is-primary">

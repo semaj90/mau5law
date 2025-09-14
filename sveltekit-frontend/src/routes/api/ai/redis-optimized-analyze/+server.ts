@@ -4,7 +4,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import { callOllamaApi } from '$lib/services/ollama-client';
 

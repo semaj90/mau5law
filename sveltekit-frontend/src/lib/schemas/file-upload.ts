@@ -298,7 +298,7 @@ export const defaultFileUploadValues: Partial<FileUpload> = {
   enableEmbeddings: true,
   enableSummarization: true,
   chainOfCustody: [],
-  metadata: {}
+  metadata: Record<string, any>
 };
 
 export const defaultCaseWithFilesValues: Partial<CaseWithFiles> = {

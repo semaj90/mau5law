@@ -412,7 +412,7 @@ class RedisService {
     }
   }
 
-  async hgetall(key: string): Promise<{ [field: string]: string }> {
+  async hgetall(key: string): Promise<any> {
     const client = this.getClient();
     if (!client) return {};
 
@@ -475,7 +475,7 @@ class RedisService {
     return await this.set(key, data);
   }
 
-  async getCachedEmbedding(documentId: string): Promise<{ embedding: number[], metadata?: any } | null> {
+  async getCachedEmbedding(documentId: string): Promise<any> {
     const key = `legal:embedding:${documentId}`;
     return await this.get(key);
   }
@@ -492,7 +492,7 @@ class RedisService {
     return await this.set(key, data, ttl);
   }
 
-  async getCachedSearch(query: string): Promise<{ results: any[], cached_at: string } | null> {
+  async getCachedSearch(query: string): Promise<any> {
     const queryHash = Buffer.from(query).toString('base64url');
     const key = `legal:search:${queryHash}`;
     return await this.get(key);

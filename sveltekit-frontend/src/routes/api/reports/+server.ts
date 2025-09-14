@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Repaired imports (file previously had fragmented 'type { RequestEvent }, { json }')
 import { json, type RequestEvent } from '@sveltejs/kit';

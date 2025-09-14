@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
 /*
@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
     // Validate session
     const result = await UserAuthService.validateSession(sessionId);
     
-    if (!result.success || !result.user) {
+    if (!(result as { success?: any; user?: any; session?: any }).success || !(result as { success?: any; user?: any; session?: any }).user) {
       // Clear invalid session cookie
       cookies.delete('session_id', {
         path: '/',
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
     }
 
     // Remove sensitive information from user object
-    const { passwordHash, ...safeUser } = result.user;
+    const { passwordHash, ...safeUser } = (result as { success?: any; user?: any; session?: any }).user;
     
     return json({
       success: true,
@@ -77,8 +77,8 @@ export const GET: RequestHandler = async ({ cookies }) => {
         user: safeUser,
         session: {
           id: sessionId,
-          expiresAt: result.session?.expiresAt,
-          isActive: result.session?.isActive,
+          expiresAt: (result as { success?: any; user?: any; session?: any }).session?.expiresAt,
+          isActive: (result as { success?: any; user?: any; session?: any }).session?.isActive,
         },
       },
       meta: {

@@ -15,14 +15,19 @@ Displays detailed integrity verification results with AI analysis
     aiAnalysis: {;
     showDetails: boolean
   }
-  let {
-    integrityStatus,
+  let { integrityStatus,
     verificationResults,
     originalHash,
     currentHash,
     aiAnalysis,
     showDetails = false
-  } = $props();
+   }: { integrityStatus,
+    verificationResults,
+    originalHash,
+    currentHash,
+    aiAnalysis,
+    showDetails = false
+  : any } = $props();
 
 
 

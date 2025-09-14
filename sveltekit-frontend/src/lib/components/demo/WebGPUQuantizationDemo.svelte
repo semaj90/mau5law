@@ -502,7 +502,7 @@ https://svelte.dev/e/expected_token -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each demoScenarios as scenario}
           <button
-            onclick={() => runDemo(scenario.id)}
+            on:click={() => runDemo(scenario.id)}
             disabled={demoRunning}
             class="scenario-nier-bits-card p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all duration-200 text-left {demoRunning ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}"
           >
@@ -521,13 +521,13 @@ https://svelte.dev/e/expected_token -->
     <!-- Controls -->
     <div class="controls mb-6 flex gap-4">
       <button
-        onclick={() => clearResults()}
+        on:click={() => clearResults()}
         class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
       >
         Clear Results
       </button>
       <button
-        onclick={() => clearCache()}
+        on:click={() => clearCache()}
         class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors"
       >
         Clear Cache
@@ -547,12 +547,12 @@ https://svelte.dev/e/expected_token -->
         <div class="space-y-4">
           {#each results as result}
             <div class="result-item p-3 bg-gray-50 rounded-md">
-              <h4 class="font-medium text-gray-800 mb-2">{result.step}</h4>
-              {#if typeof result.details === 'string'}
-                <p class="text-sm text-gray-600">{result.details}</p>
-              {:else if Array.isArray(result.details)}
+              <h4 class="font-medium text-gray-800 mb-2">{(result as { step?: any; details?: any }).step}</h4>
+              {#if typeof (result as { step?: any; details?: any }).details === 'string'}
+                <p class="text-sm text-gray-600">{(result as { step?: any; details?: any }).details}</p>
+              {:else if Array.isArray((result as { step?: any; details?: any }).details)}
                 <div class="space-y-2">
-                  {#each result.details as item}
+                  {#each (result as { step?: any; details?: any }).details as item}
                     <div class="text-sm bg-white p-2 rounded border">
                       {#each Object.entries(item) as [key, value]}
                         <div class="flex justify-between">
@@ -565,7 +565,7 @@ https://svelte.dev/e/expected_token -->
                 </div>
               {:else}
                 <div class="text-sm space-y-1">
-                  {#each Object.entries(result.details) as [key, value]}
+                  {#each Object.entries((result as { step?: any; details?: any }).details) as [key, value]}
                     <div class="flex justify-between">
                       <span class="font-medium text-gray-700">{key}:</span>
                       <span class="text-gray-600">
@@ -584,7 +584,6 @@ https://svelte.dev/e/expected_token -->
         </div>
       </div>
     {/if}
-  {/if}
 </div>
 
 <style>

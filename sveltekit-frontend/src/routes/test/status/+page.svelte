@@ -93,19 +93,19 @@ https://svelte.dev/e/js_parse_error -->
 
   <div class="flex justify-center gap-4">
     <Button class="bits-btn"
-      onclick={runAllRouteTests}
+      on:click={runAllRouteTests}
       disabled={isTestingRoutes}
       variant="default"
     >
-      {isTestingRoutes ? '🔄 Testing...' : '🚀 Test All Routes'}
-    </button>
+{isTestingRoutes ? '🔄 Testing...' : '🚀 Test All Routes'}
 
     <Button class="bits-btn"
-      onclick={() => window.location.href = '/test'}
+      on:click={() =>
+window.location.href = '/test'}
       variant="outline"
     >
       ← Back to Test Hub
-    </button>
+
   </div>
 
   <!-- Route Test Results -->

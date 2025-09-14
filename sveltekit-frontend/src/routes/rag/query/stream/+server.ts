@@ -1,5 +1,5 @@
 import stream from "stream";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // SSE streaming endpoint with streamId + interrupt + optional summary
 import { createStream, recordToken, removeStream, generateSummary, getStream, cachedSummary } from '$lib/server/ragStreamRegistry';

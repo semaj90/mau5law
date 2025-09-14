@@ -58,7 +58,7 @@
   }
   
   async function sendMessage() {
-    const input = $chatState.data.currentInput;
+    const input = $chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).currentInput;
     if (!input.trim()) return;
     
     chatAdapter.actions.addMessage({ role: 'user', content: input });
@@ -72,7 +72,7 @@
       if (result?.summary) {
         chatAdapter.actions.addMessage({ 
           role: 'assistant', 
-          content: result.summary 
+          content: (result as { summary?: any; keyTerms?: any; entities?: any }).summary 
         });
       }
     } finally {
@@ -166,25 +166,25 @@
       <div class="result-grid">
         <div class="result-nier-bits-card">
           <h3>Summary</h3>
-          <p>{documentState.result.summary}</p>
+          <p>{documentState.(result as { summary?: any; keyTerms?: any; entities?: any }).summary}</p>
         </div>
         
-        {#if documentState.result.keyTerms?.length}
+        {#if documentState.(result as { summary?: any; keyTerms?: any; entities?: any }).keyTerms?.length}
           <div class="result-nier-bits-card">
             <h3>Key Terms</h3>
             <ul>
-              {#each documentState.result.keyTerms as term}
+              {#each documentState.(result as { summary?: any; keyTerms?: any; entities?: any }).keyTerms as term}
                 <li>{term}</li>
               {/each}
             </ul>
           </div>
         {/if}
         
-        {#if documentState.result.entities?.length}
+        {#if documentState.(result as { summary?: any; keyTerms?: any; entities?: any }).entities?.length}
           <div class="result-nier-bits-card">
             <h3>Legal Entities</h3>
             <ul>
-              {#each documentState.result.entities as entity}
+              {#each documentState.(result as { summary?: any; keyTerms?: any; entities?: any }).entities as entity}
                 <li>{entity.text || entity}</li>
               {/each}
             </ul>
@@ -231,7 +231,7 @@
         </div>
         
         <div class="chat-messages" role="log" aria-label="Chat messages">
-          {#each $chatState.data.messages as message}
+          {#each $chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).messages as message}
             <div 
               class="message {message.role}"
               role="listitem"
@@ -241,7 +241,7 @@
             </div>
           {/each}
           
-          {#if $chatState.data.isTyping}
+          {#if $chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).isTyping}
             <div class="message assistant typing" aria-live="polite">
               <strong>AI:</strong> <span aria-label="AI is typing">⟳ Thinking...</span>
             </div>
@@ -251,19 +251,19 @@
         <div class="chat-input">
           <input
             bind:this={chatInput}
-            bind:value={$chatState.data.currentInput}
+            bind:value={$chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).currentInput}
             on:keydown={(e) => e.key === 'Enter' && sendMessage()}
             placeholder="Ask about legal documents..."
             aria-label="Chat message input"
-            disabled={$chatState.data.isTyping}
+            disabled={$chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).isTyping}
           />
           <button
             use:accessibleClick={{
               handler: sendMessage,
               label: 'Send message',
-              disabled: $chatState.data.isTyping || !$chatState.data.currentInput.trim()
+              disabled: $chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).isTyping || !$chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).currentInput.trim()
             }}
-            disabled={$chatState.data.isTyping || !$chatState.data.currentInput.trim()}
+            disabled={$chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).isTyping || !$chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).currentInput.trim()}
           >
             Send
           </button>

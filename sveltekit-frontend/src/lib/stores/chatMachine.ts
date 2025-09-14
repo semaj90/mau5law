@@ -126,8 +126,8 @@ const checkModelService = fromPromise(async () => {
 
 export const chatMachine = setup({
   types: {
-    context: {} as ChatContext,
-    events: {} as ChatEvent,
+    context: Record<string, any> as ChatContext,
+    events: Record<string, any> as ChatEvent,
   },
   actors: {
     sendMessageService,

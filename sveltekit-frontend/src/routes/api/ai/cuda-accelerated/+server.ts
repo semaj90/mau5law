@@ -21,7 +21,7 @@
 
 import { json } from '@sveltejs/kit';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 const CUDA_SERVER_URL = 'http://localhost:8085';
 const CUDA_TIMEOUT = 30000; // 30 seconds for complex inference
@@ -59,13 +59,7 @@ interface CudaInferenceResponse {
 		structured_reasoning: Record<string, any>;
 		reasoning_steps: string[];
 		temporal_score: number;
-		recommendations: Array<{
-			id: string;
-			score: number;
-			confidence: number;
-			snippet: string;
-		}>;
-	};
+		recommendations: Array<any>;
 	error?: string;
 	job_id?: string;
 }
@@ -90,9 +84,9 @@ async function checkCudaServerHealth(): Promise<boolean> {
 			signal: AbortSignal.timeout(5000)
 		});
 		
-		if (!response.ok) return false;
+		if (!(response as { ok?: any; json?: any; status?: any }).ok) return false;
 		
-		const health = await response.json();
+		const health = await (response as { ok?: any; json?: any; status?: any }).json();
 		return health.status === 'healthy' && health.cuda_ready === true;
 	} catch (error) {
 		console.error('CUDA server health check failed:', error);
@@ -170,14 +164,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		
 		const response = {
 			...result,
-			frontend_processing_ms: totalProcessingTime - (result.processing_time_ms || 0),
+			frontend_processing_ms: totalProcessingTime - ((result as { processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any }).processing_time_ms || 0),
 			total_processing_ms: totalProcessingTime,
 			cuda_acceleration: true,
 			performance_metrics: {
 				gpu_optimized: true,
-				target_achieved: result.tokens_per_second >= 50,
-				memory_efficient: result.gpu_metrics?.memory_utilization < 0.9,
-				temperature_safe: result.gpu_metrics?.temperature < 80
+				target_achieved: (result as { processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any }).tokens_per_second >= 50,
+				memory_efficient: (result as { processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any }).gpu_metrics?.memory_utilization < 0.9,
+				temperature_safe: (result as { processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any }).gpu_metrics?.temperature < 80
 			}
 		};
 
@@ -307,11 +301,11 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 			signal: AbortSignal.timeout(15000) // Vector search timeout
 		});
 
-		if (!response.ok) {
-			throw new Error(`Vector search failed: ${response.status}`);
+		if (!(response as { ok?: any; json?: any; status?: any }).ok) {
+			throw new Error(`Vector search failed: ${(response as { ok?: any; json?: any; status?: any }).status}`);
 		}
 
-		const result = await response.json();
+		const result = await (response as { ok?: any; json?: any; status?: any }).json();
 		
 		return json({
 			...result,
@@ -372,11 +366,11 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 			signal: AbortSignal.timeout(60000) // Extended timeout for batch
 		});
 
-		if (!response.ok) {
-			throw new Error(`Batch inference failed: ${response.status}`);
+		if (!(response as { ok?: any; json?: any; status?: any }).ok) {
+			throw new Error(`Batch inference failed: ${(response as { ok?: any; json?: any; status?: any }).status}`);
 		}
 
-		const result = await response.json();
+		const result = await (response as { ok?: any; json?: any; status?: any }).json();
 		
 		return json({
 			...result,
@@ -403,11 +397,11 @@ const originalDELETEHandler: RequestHandler = async () => {
 			body: JSON.stringify({ force_cleanup: true })
 		});
 
-		if (!response.ok) {
-			throw new Error(`Memory optimization failed: ${response.status}`);
+		if (!(response as { ok?: any; json?: any; status?: any }).ok) {
+			throw new Error(`Memory optimization failed: ${(response as { ok?: any; json?: any; status?: any }).status}`);
 		}
 
-		const result = await response.json();
+		const result = await (response as { ok?: any; json?: any; status?: any }).json();
 		
 		return json({
 			...result,

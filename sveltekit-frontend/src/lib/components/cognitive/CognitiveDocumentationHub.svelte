@@ -374,8 +374,7 @@
     <div class="flex items-center gap-2">
       <input 
         type="text"
-        bind:value={searchQuery}
-        input={() => filterContent(searchQuery)}
+        bind:value={searchQuery} on:input={() => filterContent(searchQuery)}
         placeholder="Search documentation..."
         class="px-3 py-1 border border-[#D1CFC7] bg-white text-sm w-64"
       />
@@ -393,13 +392,13 @@
         {#each filteredContent as result}
           <div class="bg-white p-3 border border-gray-300 rounded">
             <div class="flex justify-between items-start mb-2">
-              <h4 class="font-bold text-sm">{result.title || result.category}</h4>
+              <h4 class="font-bold text-sm">{(result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any }).title || (result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any }).category}</h4>
               <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                {result.sectionTitle}
+                {(result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any }).sectionTitle}
               </span>
             </div>
             <p class="text-xs text-gray-600">
-              {result.description || result.practices?.[0] || 'Advanced documentation content'}
+              {(result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any }).description || (result as { title?: any; category?: any; sectionTitle?: any; description?: any; practices?: any }).practices?.[0] || 'Advanced documentation content'}
             </p>
           </div>
         {/each}
@@ -412,7 +411,7 @@
     {#each Object.entries(documentationSections) as [key, section]}
       <button
         class="px-4 py-2 text-sm font-bold border transition-colors {activeTab === key ? 'bg-[#3D3D3D] text-[#F7F6F2] border-[#3D3D3D]' : 'bg-[#EAE8E1] border-[#D1CFC7] hover:bg-[#F7F6F2]'}"
-        onclick={() => activeTab = key}
+        on:click={() => activeTab = key}
       >
         {section.icon} {section.title}
       </button>
@@ -424,11 +423,11 @@
     {#each documentationSections[activeTab].content as item}
       <div class="bg-[#EAE8E1] border border-[#D1CFC7] p-5 relative">
         <!-- Unlock Status -->
-        {#if item.unlock && !isUnlocked(item.unlock)}
+        {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).unlock && !isUnlocked((item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).unlock)}
           <div class="absolute top-2 right-2 bg-red-100 text-red-800 px-2 py-1 rounded text-xs">
-            🔒 LOCKED: {item.unlock}
+            🔒 LOCKED: {(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).unlock}
           </div>
-        {:else if item.unlock}
+        {:else if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).unlock}
           <div class="absolute top-2 right-2 bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
             ✅ UNLOCKED
           </div>
@@ -437,44 +436,44 @@
         <div class="flex justify-between items-start mb-4">
           <div>
             <h3 class="text-lg font-bold mb-1">
-              {item.title || item.category || item.phase}
+              {(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).title || (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).category || (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).phase}
             </h3>
-            {#if item.description}
-              <p class="text-sm text-gray-600">{item.description}</p>
+            {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).description}
+              <p class="text-sm text-gray-600">{(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).description}</p>
             {/if}
-            {#if item.timeline}
-              <p class="text-sm font-bold text-blue-600">{item.timeline}</p>
+            {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).timeline}
+              <p class="text-sm font-bold text-blue-600">{(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).timeline}</p>
             {/if}
-            {#if item.activation}
+            {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).activation}
               <p class="text-sm font-mono bg-gray-200 px-2 py-1 rounded mt-2">
-                Activation: {item.activation}
+                Activation: {(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).activation}
               </p>
             {/if}
           </div>
           
-          {#if item.level}
+          {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).level}
             <div class="text-right">
               <div class="text-xs font-bold mb-1">
-                Level: {item.level.toUpperCase()}
+                Level: {(item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).level.toUpperCase()}
               </div>
               <div class="w-24 bg-gray-200 rounded-full h-2">
                 <div 
                   class="bg-blue-600 h-2 rounded-full transition-all duration-1000"
-                  style="width: {getProgressPercentage(item.level)}%"
+                  style="width: {getProgressPercentage((item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).level)}%"
                 ></div>
               </div>
-              <div class="text-xs mt-1">{getProgressPercentage(item.level)}%</div>
+              <div class="text-xs mt-1">{getProgressPercentage((item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).level)}%</div>
             </div>
           {/if}
         </div>
         
         <!-- Content Sections -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {#if item.steps}
+          {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).steps}
             <div>
               <h4 class="font-bold text-sm mb-2">📋 Implementation Steps</h4>
               <ol class="space-y-1 text-sm">
-                {#each item.steps as step, index}
+                {#each (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).steps as step, index}
                   <li class="flex items-start gap-2">
                     <span class="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5">
                       {index + 1}
@@ -486,11 +485,11 @@
             </div>
           {/if}
           
-          {#if item.tips}
+          {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).tips}
             <div>
               <h4 class="font-bold text-sm mb-2">💡 Pro Tips</h4>
               <ul class="space-y-1 text-sm">
-                {#each item.tips as tip}
+                {#each (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).tips as tip}
                   <li class="flex items-start gap-2">
                     <span class="text-yellow-600 flex-shrink-0 mt-0.5">💡</span>
                     {tip}
@@ -500,11 +499,11 @@
             </div>
           {/if}
           
-          {#if item.effects}
+          {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).effects}
             <div>
               <h4 class="font-bold text-sm mb-2">✨ Effects</h4>
               <ul class="space-y-1 text-sm">
-                {#each item.effects as effect}
+                {#each (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).effects as effect}
                   <li class="flex items-start gap-2">
                     <span class="text-purple-600 flex-shrink-0 mt-0.5">⚡</span>
                     {effect}
@@ -514,11 +513,11 @@
             </div>
           {/if}
           
-          {#if item.objectives}
+          {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).objectives}
             <div>
               <h4 class="font-bold text-sm mb-2">🎯 Objectives</h4>
               <ul class="space-y-1 text-sm">
-                {#each item.objectives as objective}
+                {#each (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).objectives as objective}
                   <li class="flex items-start gap-2">
                     <span class="text-green-600 flex-shrink-0 mt-0.5">✓</span>
                     {objective}
@@ -528,11 +527,11 @@
             </div>
           {/if}
           
-          {#if item.practices}
+          {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).practices}
             <div>
               <h4 class="font-bold text-sm mb-2">⚡ Best Practices</h4>
               <ul class="space-y-1 text-sm">
-                {#each item.practices as practice}
+                {#each (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).practices as practice}
                   <li class="flex items-start gap-2">
                     <span class="text-blue-600 flex-shrink-0 mt-0.5">⚡</span>
                     {practice}
@@ -542,11 +541,11 @@
             </div>
           {/if}
           
-          {#if item.warnings}
+          {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).warnings}
             <div>
               <h4 class="font-bold text-sm mb-2">⚠️ Warnings</h4>
               <ul class="space-y-1 text-sm">
-                {#each item.warnings as warning}
+                {#each (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).warnings as warning}
                   <li class="flex items-start gap-2">
                     <span class="text-red-600 flex-shrink-0 mt-0.5">⚠️</span>
                     {warning}
@@ -558,33 +557,33 @@
         </div>
         
         <!-- Special Content -->
-        {#if item.secretTechniques}
+        {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).secretTechniques}
           <div class="mt-4 p-3 bg-purple-50 border border-purple-200 rounded">
             <h4 class="font-bold text-sm mb-2 text-purple-800">🔮 Secret Techniques</h4>
             <ul class="space-y-1 text-sm">
-              {#each item.secretTechniques as technique}
+              {#each (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).secretTechniques as technique}
                 <li class="text-purple-700">• {technique}</li>
               {/each}
             </ul>
           </div>
         {/if}
         
-        {#if item.advanced}
+        {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).advanced}
           <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
             <h4 class="font-bold text-sm mb-2 text-blue-800">🚀 Advanced Usage</h4>
             <ul class="space-y-1 text-sm">
-              {#each item.advanced as advanced}
+              {#each (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).advanced as advanced}
                 <li class="text-blue-700">• {advanced}</li>
               {/each}
             </ul>
           </div>
         {/if}
         
-        {#if item.ultimate}
+        {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).ultimate}
           <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
             <h4 class="font-bold text-sm mb-2 text-yellow-800">👑 Ultimate Goals</h4>
             <ul class="space-y-1 text-sm">
-              {#each item.ultimate as ultimate}
+              {#each (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).ultimate as ultimate}
                 <li class="text-yellow-700">• {ultimate}</li>
               {/each}
             </ul>

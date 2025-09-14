@@ -11,15 +11,7 @@ https://svelte.dev/e/attribute_duplicate -->
   interface Props {
     show?: boolean;
     consoleStyle?: 'nes' | 'snes' | 'n64' | 'ps1' | 'ps2' | 'yorha';
-    recommendations?: Array<{
-      id: string;
-      type: 'detective' | 'legal' | 'evidence' | 'ai';
-      title: string;
-      description: string;
-      confidence: number;
-      priority: 'low' | 'medium' | 'high' | 'critical';
-      action?: () => void;
-    }>;
+    recommendations?: Array;
     title?: string;
     onClose?: () => void;
     autoClose?: number;
@@ -244,7 +236,7 @@ https://svelte.dev/e/attribute_duplicate -->
     transition:fade={{ duration: 300 }}
     role="button" 
     tabindex="0"
-    onclick={handleClose}
+    on:click={handleClose}
     aria-label="Close modal"
   ></div>
 
@@ -273,7 +265,7 @@ https://svelte.dev/e/attribute_duplicate -->
       <button 
         class="close-button"
         style:color={currentTheme.colors.accent}
-        onclick={handleClose}
+        on:click={handleClose}
         aria-label="Close modal"
       >
         ×
@@ -296,7 +288,7 @@ https://svelte.dev/e/attribute_duplicate -->
               style:border-color={index === selectedIndex ? currentTheme.colors.selected : 'transparent'}
               style:background-color={index === selectedIndex ? `${currentTheme.colors.selected}20` : 'transparent'}
               role="button" 
-                onclick={() => { selectedIndex = index; rec.action?.(); handleClose(); }}
+                on:click={() => { selectedIndex = index; rec.action?.(); handleClose(); }}
               tabindex={index === selectedIndex ? 0 : -1}
               transition:scale={{ duration: 200, delay: index * 50 }}
             >
@@ -508,7 +500,7 @@ https://svelte.dev/e/attribute_duplicate -->
     transform: translateX(4px);
   }
 
-  .recommendation-item.selected {
+  .recommendation-(item as { selected?: any }).selected {
     transform: translateX(8px);
   }
 

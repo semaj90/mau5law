@@ -93,19 +93,19 @@
           body: formData
         });
 
-        if (response.ok) {
-          const result = await response.json();
+        if ((response as { ok?: any; json?: any }).ok) {
+          const result = await (response as { ok?: any; json?: any }).json();
           uploadProgress = ((i + 1) / files.length) * 100;
 
           // Dispatch success event
           if (onuploaded) {
             onuploaded({
               file,
-              evidence: result.evidence
+              evidence: (result as { evidence?: any }).evidence
             });
           }
         } else {
-          const error = await response.json();
+          const error = await (response as { ok?: any; json?: any }).json();
           uploadStatus = `Upload failed: ${error.error}`;
         }
       }
@@ -158,7 +158,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button 
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" 
-      onclick={() => { componentError = null; }}
+      on:click={() => { componentError = null; }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -170,14 +170,14 @@
     class="upload-zone"
     class:drag-active={dragActive}
     class:uploading
-    ondragover={handleDragOver}
+    on:dragover={handleDragOver}
     ondragleave={handleDragLeave}
-    ondrop={handleDrop}
+    on:drop={handleDrop}
     role="button" 
     aria-label="Upload evidence files - drag and drop or click to browse"
     tabindex="0"
-    onclick={() => document.getElementById('file-input')?.click()}
-    onkeydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
+    on:click={() => document.getElementById('file-input')?.click()}
+    on:keydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
   >
     <input
       id="file-input"
@@ -185,7 +185,7 @@
       multiple
       accept={allAllowedTypes.join(',')}
       style="display: none;"
-      onchange={handleFileSelect}
+      on:change={handleFileSelect}
     />
 
     {#if uploading}

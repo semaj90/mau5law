@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { json } from '@sveltejs/kit';
 import { generateCHRPatterns, type PrecomputeContext } from '$lib/server/chrrom/patterns';
 import { addClient, removeClient, broadcastPatterns } from '$lib/server/chrrom/bus';

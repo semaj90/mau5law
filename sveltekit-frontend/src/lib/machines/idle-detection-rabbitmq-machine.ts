@@ -134,12 +134,12 @@ const idleDetectionServices = {
         })
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
         console.log('✅ Background job queued:', result);
-        return { jobId: job.id, status: 'queued', messageId: result.messageId };
+        return { jobId: job.id, status: 'queued', messageId: (result as { messageId?: any }).messageId };
       } else {
-        throw new Error(`Failed to queue job: ${response.statusText}`);
+        throw new Error(`Failed to queue job: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
       }
 
     } catch (error) {
@@ -281,7 +281,7 @@ const idleDetectionActions = {
       const prompt: SelfPrompt = {
         id: event.promptId,
         prompt: '', // Would be populated from the original prompt
-        context: {},
+        context: Record<string, any>,
         response: event.response,
         confidence: 0.8, // Would be calculated based on response quality
         timestamp: Date.now(),
@@ -363,9 +363,9 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
           target: 'monitoring',
           actions: [
             assign({
-              neo4jConnected: (_, event) => event.data.neo4j,
-              minioConnected: (_, event) => event.data.minio,
-              rabbitmqConnected: (_, event) => event.data.rabbitmq
+              neo4jConnected: (_, event) => event.(data as { neo4j?: any; minio?: any; rabbitmq?: any }).neo4j,
+              minioConnected: (_, event) => event.(data as { neo4j?: any; minio?: any; rabbitmq?: any }).minio,
+              rabbitmqConnected: (_, event) => event.(data as { neo4j?: any; minio?: any; rabbitmq?: any }).rabbitmq
             })
           ]
         },
@@ -613,7 +613,7 @@ async function checkNeo4jConnection(): Promise<boolean> {
   try {
     // Check Neo4j connection
     const response = await fetch('/api/health/neo4j');
-    return response.ok;
+    return (response as { ok?: any; json?: any; statusText?: any }).ok;
   } catch {
     return false;
   }
@@ -623,7 +623,7 @@ async function checkMinioConnection(): Promise<boolean> {
   try {
     // Check MinIO connection
     const response = await fetch('/api/v1/minio/health');
-    return response.ok;
+    return (response as { ok?: any; json?: any; statusText?: any }).ok;
   } catch {
     return false;
   }
@@ -633,7 +633,7 @@ async function checkRabbitMQConnection(): Promise<boolean> {
   try {
     // Check RabbitMQ connection
     const response = await fetch('/api/rabbitmq/health');
-    return response.ok;
+    return (response as { ok?: any; json?: any; statusText?: any }).ok;
   } catch {
     return false;
   }

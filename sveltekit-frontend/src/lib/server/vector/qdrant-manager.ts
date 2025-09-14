@@ -1,6 +1,6 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
 // import type { PointStruct, SearchRequest } from '@qdrant/js-client-rest'; // Commented out due to namespace issues
-import { analytics } from '../database/connection';
+import { analytics } from '../database/connection.js';
 
 // Enhanced Qdrant integration for legal AI platform
 export class QdrantManager {
@@ -114,9 +114,9 @@ export class QdrantManager {
 
       return {
         results: results.map((result) => ({
-          id: result.id,
-          score: result.score,
-          payload: result.payload,
+          id: (result as { id?: any; score?: any; payload?: any }).id,
+          score: (result as { id?: any; score?: any; payload?: any }).score,
+          payload: (result as { id?: any; score?: any; payload?: any }).payload,
         })),
         metadata: {
           query: params.query,

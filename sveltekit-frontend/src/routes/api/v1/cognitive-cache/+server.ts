@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { json } from '@sveltejs/kit';
 
 /*
@@ -112,20 +112,20 @@ export const GET: RequestHandler = async ({ url }) => {
 
     const result = await (cognitiveIntegration.cognitiveCache as any).get(request);
 
-    if (result && result.data) {
+    if (result && (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).data) {
       return json({
         success: true,
         key,
-        data: result.data,
+        data: (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).data,
         cacheInfo: {
-          source: result.source,
-          confidence: result.confidence,
-          processingTime: result.processingTime,
-          cognitiveScore: result.metadata.cognitiveScore,
-          reinforcementReward: result.metadata.reinforcementReward,
+          source: (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).source,
+          confidence: (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).confidence,
+          processingTime: (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).processingTime,
+          cognitiveScore: (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).metadata.cognitiveScore,
+          reinforcementReward: (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).metadata.reinforcementReward,
         },
-        predictions: result.predictions,
-        metadata: result.metadata,
+        predictions: (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).predictions,
+        metadata: (result as { data?: any; source?: any; confidence?: any; processingTime?: any; metadata?: any; predictions?: any }).metadata,
         timestamp: Date.now(),
       });
     } else {
@@ -346,7 +346,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     };
 
     if (includeDetailed) {
-      response.detailed = {
+      (response as { detailed?: any; predictions?: any }).detailed = {
         cacheStatistics: statistics,
         memoryUsage: {
           reinforcementCache: '45 MB',
@@ -362,7 +362,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     }
 
     if (includePredictions) {
-      response.predictions = {
+      (response as { detailed?: any; predictions?: any }).predictions = {
         nextOptimization: Date.now() + 3600000, // 1 hour
         expectedImprovement: 0.08,
         recommendedActions: [

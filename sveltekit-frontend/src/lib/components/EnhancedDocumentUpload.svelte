@@ -19,7 +19,7 @@
     // Load upload configuration
     try {
       const response = await fetch('/api/documents/upload-enhanced');
-      uploadConfig = await response.json();
+      uploadConfig = await (response as { json?: any }).json();
     } catch (error) {
       console.error('Failed to load upload config:', error);
     }
@@ -61,9 +61,9 @@
         body: formData
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
+      if ((result as { success?: any; error?: any }).success) {
         uploadResult = result;
 
         // Reset form
@@ -73,7 +73,7 @@
         documentType = '';
         title = '';
       } else {
-        errorMessage = result.error || 'Upload failed';
+        errorMessage = (result as { success?: any; error?: any }).error || 'Upload failed';
       }
     } catch (error: any) {
       errorMessage = error.message || 'Network error during upload';
@@ -138,7 +138,7 @@
         id="file-input"
         type="file"
         accept=".pdf,.doc,.docx,.txt,.md,.html,.htm,.rtf"
-        onchange={handleFileSelect}
+        on:change={handleFileSelect}
         class="file-input-hidden"
       />
     </div>
@@ -198,7 +198,7 @@
     <!-- Upload Button -->
     <div class="upload-actions">
       <ModernButton
-        onclick={uploadDocument}
+        on:click={uploadDocument}
         disabled={!selectedFile || uploading}
         variant="primary"
       >

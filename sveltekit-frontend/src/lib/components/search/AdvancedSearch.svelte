@@ -3,7 +3,25 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  const { items: Evidence[] = [], onResults: (results: Evidence[]) = > void = () => {}, onSelect: (item: Evidence) = > void = () => {}, placeholder = 'Search evidence...', maxResults = 10, showFilters = true, showTags = true } = $props();
+  interface Props {
+    items?: Evidence[];
+    onResults?: (results: Evidence[]) => void;
+    onSelect?: (item: Evidence) => void;
+    placeholder?: string;
+    maxResults?: number;
+    showFilters?: boolean;
+    showTags?: boolean;
+  }
+
+  let {
+    items = [],
+    onResults = () => {},
+    onSelect = () => {},
+    placeholder = 'Search evidence...',
+    maxResults = 10,
+    showFilters = true,
+    showTags = true
+  }: Props = $props();
 
 
   import { createCombobox, melt } from 'melt';
@@ -20,14 +38,13 @@ https://svelte.dev/e/js_parse_error -->
   
   
   
-  ;
   let searchValue = $state('');
-  let fuse = $state<Fuse<Evidence>;
-  let searchResults: Evidence[] >([]);
-  let allTags = $state<string[] >([]);
-  let selectedTags = $state<string[] >([]);
-  let selectedTypes = $state<string[] >([]);
-  let dateRange = $state<{ start?: Date; end?: Date } >({});
+  let fuse: Fuse<Evidence> = $state(undefined as any);
+  let searchResults = $state<Evidence[]>([]);
+  let allTags = $state<string[]>([]);
+  let selectedTags = $state<string[]>([]);
+  let selectedTypes = $state<string[]>([]);
+  let dateRange = $state({});
 
   // Fuse.js configuration for fuzzy search
   const fuseOptions = {
@@ -55,48 +72,58 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Initialize Fuse when items change
-  // TODO: Convert to $derived: if (items.length > 0) {
-    fuse = new Fuse(items, fuseOptions)
-    allTags = [...new Set(items.flatMap(item => item.tags || []))];
-  }
+  $effect(() => {
+    if (items.length > 0) {
+      fuse = new Fuse(items, fuseOptions);
+      allTags = [...new Set(items.flatMap(item => (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags || []))];
+    }
+  });
 
   // Perform search when input changes
-  // TODO: Convert to $derived: if (fuse && searchValue) {
-    const fuseResults = fuse.search(searchValue)
-    searchResults = fuseResults
-      .map(result => result.item)
-      .slice(0, maxResults);
-  } else {
-    searchResults = items.slice(0, maxResults);
-  }
+  $effect(() => {
+    if (fuse && searchValue) {
+      const fuseResults = fuse.search(searchValue);
+      searchResults = fuseResults
+        .map(result => (result as { item?: any }).item)
+        .slice(0, maxResults);
+    } else {
+      searchResults = items.slice(0, maxResults);
+    }
+  });
 
   // Apply filters (wrap in derived function)
-  let filteredResults = $derived(() => searchResults.filter((item: Evidence) => {
+  let filteredResults = $derived(() => {
+    return searchResults.filter((item: Evidence) => {
     // Type filter
-    if (selectedTypes.length > 0 && !selectedTypes.includes(item.type)) {
+    if (selectedTypes.length > 0 && !selectedTypes.includes((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type)) {
       return false;
     }
     // Tag filter
     if (selectedTags.length > 0) {
-      const itemTags = item.tags || [];
+      const itemTags = (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags || [];
       if (!selectedTags.some(tag => itemTags.includes(tag))) {
         return false;
       }
     }
     // Date range filter
     if (dateRange.start || dateRange.end) {
-      const itemDate = new Date(item.createdAt);
+      const itemDate = new Date((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).createdAt);
       if (dateRange.start && itemDate < dateRange.start) return false;
       if (dateRange.end && itemDate > dateRange.end) return false;
     }
-    return true;
-  }));
+      return true;
+    });
+  });
 
   // Update results when filters change
-  // TODO: Convert to $derived: onResults(filteredResults)
+  $effect(() => {
+    onResults(filteredResults);
+  });
 
-  // Sync input value from combobox state (reactive)
-  // TODO: Convert to $derived: searchValue = $inputValue
+  // Sync input value from combobox state
+  $effect(() => {
+    searchValue = $inputValue;
+  });
 
   // Handle item selection
   const handleSelect = (item: Evidence) => {
@@ -147,7 +174,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="search-input-wrapper">
       <Search size={20} class="search-icon" />
       <input
-        
+        use:melt={$input}
         class="search-input"
         type="text"
         {placeholder}
@@ -156,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if searchValue}
         <button
           class="clear-button"
-          onclick={() => clearSearch()}
+          on:click={() => clearSearch()}
           title="Clear search"
         >
           <X size={16} />
@@ -167,41 +194,41 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Results dropdown -->
     {#if $open && searchResults.length > 0}
       <div
-        
+        use:melt={$menu}
         class="search-results"
-        transitifly={{ y: -5, duration: 150 }}
+        transition:fly={{ duration: 150, y: -10 }}
       >
-        {#each filteredResults as item (item.id)}
+        {#each filteredResults as item ((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id)}
           <button
-            )}
+            use:melt={$option({ value: (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id, label: (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).title })}
             class="search-result-item"
-            class:highlighted={$isSelected(item.id)}
-            onclick={() => handleSelect(item)}
+            class:highlighted={$isSelected((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id)}
+            on:click={() => handleSelect(item)}
           >
             <div class="result-icon">
-              {#if item.type === 'document'}
+              {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type === 'document'}
                 <FileType size={16} />
-              {:else if item.type === 'image'}
-                <img src={item.url} alt="" class="result-thumbnail" />
+              {:else if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type === 'image'}
+                <img src={(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).url} alt="" class="result-thumbnail" />
               {:else}
-                <div class="result-type-badge {item.type}">{item.type[0].toUpperCase()}</div>
+                <div class="result-type-badge {(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type}">{(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type[0].toUpperCase()}</div>
               {/if}
             </div>
 
             <div class="result-content">
               <div class="result-title">
-                {@html highlightMatches(item.title, searchValue)}
+                {@html highlightMatches((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).title, searchValue)}
               </div>
-              {#if item.description}
+              {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description}
                 <div class="result-description">
-                  {@html highlightMatches(item.description.slice(0, 100), searchValue)}
-                  {#if item.description.length > 100}...{/if}
+                  {@html highlightMatches((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description.slice(0, 100), searchValue)}
+                  {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description.length > 100}...{/if}
                 </div>
               {/if}
 
-              {#if item.tags && item.tags.length > 0}
+              {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags && (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags.length > 0}
                 <div class="result-tags">
-                  {#each item.tags.slice(0, 3) as tag}
+                  {#each (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags.slice(0, 3) as tag}
                     <span class="result-tag">{tag}</span>
                   {/each}
                 </div>
@@ -209,9 +236,9 @@ https://svelte.dev/e/js_parse_error -->
             </div>
 
             <div class="result-meta">
-              <span class="result-type">{item.type}</span>
+              <span class="result-type">{(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type}</span>
               <span class="result-date">
-                {new Date(item.createdAt).toLocaleDateString()}
+                {new Date((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).createdAt).toLocaleDateString()}
               </span>
             </div>
           </button>
@@ -242,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="filter-chip"
               class:active={selectedTypes.includes(type)}
-              onclick={() => toggleType(type)}
+              on:click={() => toggleType(type)}
             >
               {type}
             </button>
@@ -262,7 +289,7 @@ https://svelte.dev/e/js_parse_error -->
               <button
                 class="filter-chip"
                 class:active={selectedTags.includes(tag)}
-                onclick={() => toggleTag(tag)}
+                on:click={() => toggleTag(tag)}
               >
                 {tag}
               </button>
@@ -304,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
       {#each selectedTypes as type}
         <span class="active-filter">
           {type}
-          <button onclick={() => toggleType(type)}>
+          <button on:click={() => toggleType(type)}>
             <X size={12} />
           </button>
         </span>
@@ -313,7 +340,7 @@ https://svelte.dev/e/js_parse_error -->
       {#each selectedTags as tag}
         <span class="active-filter">
           #{tag}
-          <button onclick={() => toggleTag(tag)}>
+          <button on:click={() => toggleTag(tag)}>
             <X size={12} />
           </button>
         </span>
@@ -322,13 +349,13 @@ https://svelte.dev/e/js_parse_error -->
       {#if dateRange.start || dateRange.end}
         <span class="active-filter">
           {dateRange.start?.toLocaleDateString() || '...'} - {dateRange.end?.toLocaleDateString() || '...'}
-          <button onclick={() => dateRange = {}}>
+          <button on:click={() => dateRange = {}}>
             <X size={12} />
           </button>
         </span>
       {/if}
 
-      <button class="clear-all-filters" onclick={() => clearSearch()}>
+      <button class="clear-all-filters" on:click={() => clearSearch()}>
         Clear all
       </button>
     </div>
@@ -424,7 +451,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 
 .search-result-item:hover,
-.search-result-item.highlighted {
+.search-result-(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).highlighted {
   background: #f8fafc;
 }
 
@@ -666,5 +693,4 @@ https://svelte.dev/e/js_parse_error -->
 }
 </style>
 
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 

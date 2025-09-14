@@ -256,7 +256,7 @@ export const chatActions = {
       } else {
         const data = await response.json();
         chatActions.addMessage(data.response, "assistant", {
-          model: data.model,
+          model: data?.model || "unknown" // @ts-ignore - Model property access,
           tokensUsed: data.tokensUsed,
           references: data.references,
           confidence: data.confidence,

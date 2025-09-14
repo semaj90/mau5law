@@ -4,11 +4,7 @@
   import Dropdown from '$lib/components/ui/Dropdown.svelte';
   import Checkbox from '$lib/components/ui/Checkbox.svelte';
   import { goTensorService, type TensorRequest, generateTensorRequest } from '$lib/services/go-tensor-service-client';
-  const dispatch = createEventDispatcher<{
-    automationSuccess: { type: string; source: string; config: any };
-    automationError: string;
-    processingStarted: { batchId: string; documentCount: number };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Automation configuration
   let selectedAutomationType: string = $state('');
@@ -229,7 +225,7 @@
               id="processing_{option.value}"
               label={option.label}
               checked={selectedProcessingOptions.has(option.value)}
-              onchange={(e) => {
+              on:change={(e) => {
                 if (e.detail) {
                   selectedProcessingOptions.add(option.value);
                 } else {
@@ -359,7 +355,7 @@
   <div class="mt-8 pt-6 border-t border-gray-200">
     <button 
       class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-      onclick={handleSubmit}
+      on:click={handleSubmit}
       disabled={processing || !selectedAutomationType || !selectedSource}
     >
       {#if processing}

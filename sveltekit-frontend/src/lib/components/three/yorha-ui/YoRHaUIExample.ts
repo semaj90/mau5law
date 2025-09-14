@@ -4,12 +4,12 @@
  */
 
 import * as THREE from 'three';
-import { YoRHaButton3D } from './components/YoRHaButton3D.js';
-import { YoRHaPanel3D } from './components/YoRHaPanel3D.js';
-import { YoRHaInput3D } from './components/YoRHaInput3D.js';
-import { YoRHaModal3D } from './components/YoRHaModal3D.js';
-import { YoRHaLayout3D, YoRHaLayoutPresets } from './YoRHaLayout3D.js';
-import { YORHA_COLORS } from './YoRHaUI3D.js';
+import { YoRHaButton3D } from './components/YoRHaButton3D.js.js';
+import { YoRHaPanel3D } from './components/YoRHaPanel3D.js.js';
+import { YoRHaInput3D } from './components/YoRHaInput3D.js.js';
+import { YoRHaModal3D } from './components/YoRHaModal3D.js.js';
+import { YoRHaLayout3D, YoRHaLayoutPresets } from './YoRHaLayout3D.js.js';
+import { YORHA_COLORS } from './YoRHaUI3D.js.js';
 import { EventEmitter } from "events";
 
 export class YoRHaUIExample {

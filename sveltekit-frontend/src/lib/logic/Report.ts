@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 import { writable, type Writable } from "svelte/store";
-import { HistoryManager } from "./HistoryManager";
+import { HistoryManager } from './HistoryManager.js';
 
 // Simple content type for now - will expand when Slate is properly integrated
 export interface ContentNode {
@@ -19,8 +19,8 @@ export class Report {
   public id: string;
   public title: Writable<string>;
   public content: Writable<ContentNode[]>;
-  public position: Writable<{ x: number; y: number }>;
-  public size: Writable<{ width: number; height: number }>;
+  public position: Writable;
+  public size: Writable;
   public isDirty: Writable<boolean>;
   public version: Writable<number>;
   public historyManager: HistoryManager;

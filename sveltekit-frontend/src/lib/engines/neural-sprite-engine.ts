@@ -11,9 +11,9 @@
 import Loki from "lokijs";
 import { writable, derived, type Readable } from "svelte/store";
 import * as fabric from "fabric";
-import { BrowserCacheManager } from "./browser-cache-manager";
-import { ShaderCache } from "./webgl-shader-cache";
-import { MatrixTransformLib } from "./matrix-transform-lib";
+import { BrowserCacheManager } from './browser-cache-manager.js';
+import { ShaderCache } from './webgl-shader-cache.js';
+import { MatrixTransformLib } from './matrix-transform-lib.js';
 
 // Types for our "sprite sheet" system
 export interface CanvasSprite {
@@ -131,18 +131,10 @@ export class NeuralSpriteEngine {
   public predictedStates = writable<string[]>([]);
 
   // Enhanced stores for self-organizing features
-  public somVisualization = writable<{
-    nodes: Array<{ x: number; y: number; activation: number; sprites: number }>;
-    connections: Array<{ from: string; to: string; strength: number }>;
-  }>({ nodes: [], connections: [] });
+  public somVisualization = writable;
+    connections: Array<any>>({ nodes: [], connections: [] });
 
-  public multiCoreMetrics = writable<{
-    activeWorkers: number;
-    queueDepth: number;
-    tasksPerSecond: number;
-    averageTaskTime: number;
-    cpuUtilization: number;
-  }>({
+  public multiCoreMetrics = writable({
     activeWorkers: 0,
     queueDepth: 0,
     tasksPerSecond: 0,
@@ -150,12 +142,7 @@ export class NeuralSpriteEngine {
     cpuUtilization: 0,
   });
 
-  public selfOrganizationStats = writable<{
-    convergenceRate: number;
-    adaptationSpeed: number;
-    clusterFormation: number;
-    neuralEfficiency: number;
-  }>({
+  public selfOrganizationStats = writable({
     convergenceRate: 0,
     adaptationSpeed: 0,
     clusterFormation: 0,
@@ -409,29 +396,29 @@ export class NeuralSpriteEngine {
           switch (type) {
             case 'sprite_analysis':
               result = {
-                spriteId: data.sprite.id,
-                features: processSprite(data.sprite),
-                complexity: data.sprite.metadata.complexity,
+                spriteId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.id,
+                features: processSprite((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite),
+                complexity: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.metadata.complexity,
                 timestamp: Date.now()
               };
               break;
 
             case 'som_update':
               result = {
-                nodeId: data.node.id,
+                nodeId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).node.id,
                 updatedNode: updateSOMNode(
-                  data.node,
-                  data.inputVector,
-                  data.learningRate,
-                  data.neighborhoodRadius
+                  (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).node,
+                  (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).inputVector,
+                  (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).learningRate,
+                  (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).neighborhoodRadius
                 )
               };
               break;
 
             case 'prediction':
               result = {
-                spriteId: data.sprite.id,
-                predictedStates: predictNextStates(data.sprite, data.recentActivities),
+                spriteId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.id,
+                predictedStates: predictNextStates((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite, (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).recentActivities),
                 confidence: 0.7 + Math.random() * 0.2
               };
               break;
@@ -439,8 +426,8 @@ export class NeuralSpriteEngine {
             case 'optimization':
               // Optimize sprite loading order based on usage patterns
               result = {
-                optimizedOrder: data.sprites.sort((a, b) => b.usageCount - a.usageCount),
-                cacheRecommendations: data.sprites.slice(0, 10).map((s: any) => s.id)
+                optimizedOrder: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprites.sort((a, b) => b.usageCount - a.usageCount),
+                cacheRecommendations: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprites.slice(0, 10).map((s: any) => s.id)
               };
               break;
 
@@ -542,26 +529,26 @@ export class NeuralSpriteEngine {
     }
 
     // Process result based on task type
-    if (result.spriteId && result.features) {
+    if ((result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).spriteId && (result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).features) {
       // Update sprite with extracted features
-      this.updateSpriteFeatures(result.spriteId, result.features);
+      this.updateSpriteFeatures((result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).spriteId, (result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).features);
     }
 
-    if (result.nodeId && result.updatedNode) {
+    if ((result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).nodeId && (result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).updatedNode) {
       // Update SOM node
-      this.somNodes.set(result.nodeId, result.updatedNode);
+      this.somNodes.set((result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).nodeId, (result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).updatedNode);
     }
 
-    if (result.predictedStates) {
+    if ((result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).predictedStates) {
       // Update prediction cache
-      this.updatePredictionCache(result.spriteId, result.predictedStates);
+      this.updatePredictionCache((result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).spriteId, (result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).predictedStates);
     }
 
-    if (result.optimizedOrder) {
+    if ((result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).optimizedOrder) {
       // Update loading optimization
       this.updateLoadingOptimizations(
-        result.optimizedOrder,
-        result.cacheRecommendations
+        (result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).optimizedOrder,
+        (result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).cacheRecommendations
       );
     }
   }
@@ -674,7 +661,7 @@ export class NeuralSpriteEngine {
     const completedTasksInLastSecond = Array.from(
       this.completedTasks.values()
     ).filter(
-      (result: any) => Date.now() - (result.timestamp || 0) < 1000
+      (result: any) => Date.now() - ((result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).timestamp || 0) < 1000
     ).length;
 
     // Calculate average task time
@@ -711,7 +698,7 @@ export class NeuralSpriteEngine {
     }));
 
     // Generate connections between nearby nodes
-    const connections: Array<{ from: string; to: string; strength: number }> =
+    const connections: Array< =
       [];
     for (const nodeA of this.somNodes.values()) {
       for (const nodeB of this.somNodes.values()) {
@@ -1097,7 +1084,7 @@ export class NeuralSpriteEngine {
 
     switch (type) {
       case "EMBEDDING_GENERATED":
-        this.updateSpriteEmbedding(data.spriteId, data.embedding);
+        this.updateSpriteEmbedding((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).spriteId, (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).embedding);
         break;
 
       case "PATTERN_PREDICTION":
@@ -1105,11 +1092,11 @@ export class NeuralSpriteEngine {
         break;
 
       case "CACHE_RECOMMENDATION":
-        this.preCacheRecommendedStates(data.stateIds);
+        this.preCacheRecommendedStates((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).stateIds);
         break;
 
       case "NEW_SEQUENCE_GENERATED":
-        this.registerAIGeneratedSequence(data.sequence);
+        this.registerAIGeneratedSequence((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sequence);
         break;
     }
   }
@@ -1197,7 +1184,7 @@ export class NeuralSpriteEngine {
 
   private handlePatternPrediction(data: any): void {
     // Update predicted next states based on AI analysis
-    this.predictedStates.set(data.predictedStates || []);
+    this.predictedStates.set((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).predictedStates || []);
   }
 
   private createDefaultSprites(): void {

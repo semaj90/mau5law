@@ -31,8 +31,8 @@ export const searchMachine = createMachine({
   id: 'search',
   initial: 'idle',
   types: {
-    context: {} as SearchContext,
-    events: {} as 
+    context: Record<string, any> as SearchContext,
+    events: Record<string, any> as 
       | { type: 'SEARCH'; data: any }
       | { type: 'UPDATE_QUERY'; query: string }
       | { type: 'UPDATE_FILTERS'; filters: any }
@@ -43,7 +43,7 @@ export const searchMachine = createMachine({
   },
   context: {
     query: '',
-    filters: {},
+    filters: Record<string, any>,
     results: [],
     searchHistory: [],
     analytics: {
@@ -51,7 +51,7 @@ export const searchMachine = createMachine({
       searchTime: 0,
       relevanceScore: 0
     },
-    validationErrors: {},
+    validationErrors: Record<string, any>,
     error: null,
     isLoading: false
   },
@@ -137,7 +137,7 @@ export const searchMachine = createMachine({
         onDone: {
           target: 'searching',
           actions: assign({
-            validationErrors: {},
+            validationErrors: Record<string, any>,
             error: null
           })
         },
@@ -257,7 +257,7 @@ export const searchMachine = createMachine({
           actions: assign({
             results: [],
             query: '',
-            filters: {},
+            filters: Record<string, any>,
             analytics: {
               totalResults: 0,
               searchTime: 0,

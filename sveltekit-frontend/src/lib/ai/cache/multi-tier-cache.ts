@@ -48,7 +48,7 @@ export default class MultiTierCache<V = unknown> {
 	return typeof expiresAt === 'number' && expiresAt <= this.now();
   }
 
-  private async loadFromStorage(key: string): Promise<{ value: V; expiresAt?: number | null } | null> {
+  private async loadFromStorage(key: string): Promise<any> {
 	if (!this.persistent || !this.hasLocalStorage) return null;
 	try {
 	  const ls = (globalThis as any).localStorage;

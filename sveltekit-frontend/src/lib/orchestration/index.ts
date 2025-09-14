@@ -10,11 +10,11 @@ export type {
   JobPriority,
   RetryConfig,
   OptimizedRabbitMQOrchestrator
-} from './optimized-rabbitmq-orchestrator.js';
+} from './optimized-rabbitmq-orchestrator.js.js';
 
 export {
   optimizedOrchestrator
-} from './optimized-rabbitmq-orchestrator.js';
+} from './optimized-rabbitmq-orchestrator.js.js';
 
 // Sora Integration Exports
 export interface SoraMoogleIntegration {

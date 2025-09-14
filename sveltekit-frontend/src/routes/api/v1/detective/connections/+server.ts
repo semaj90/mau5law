@@ -236,36 +236,36 @@ async function generateEvidenceNodes(evidence: any[]): Promise<any[]> {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: item.content || item.title || '',
+          text: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).content || (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).title || '',
           analysisType: 'evidence_classification',
           useGemmaEmbeddings: true
         })
       });
       
-      if (response.ok) {
-        semanticData = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        semanticData = await (response as { ok?: any; json?: any }).json();
       }
     } catch (error) {
-      console.warn(`MCP semantic analysis failed for evidence ${item.id}:`, error);
+      console.warn(`MCP semantic analysis failed for evidence ${(item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).id}:`, error);
     }
     
     // Calculate importance based on semantic analysis + content length
-    const contentScore = (item.content?.length || 0) / 1000;
+    const contentScore = ((item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).content?.length || 0) / 1000;
     const semanticScore = semanticData?.importance || 0.5;
     const importance = Math.min((contentScore + semanticScore) / 2, 1) * 20 + 10;
     
     return {
-      id: `evidence_${item.id}`,
-      label: item.title || `Evidence ${index + 1}`,
+      id: `evidence_${(item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).id}`,
+      label: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).title || `Evidence ${index + 1}`,
       type: 'evidence',
-      subtype: semanticData?.classification || item.evidenceType || 'unknown',
+      subtype: semanticData?.classification || (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).evidenceType || 'unknown',
       size: importance,
-      color: getNodeColor('evidence', semanticData?.classification || item.evidenceType),
+      color: getNodeColor('evidence', semanticData?.classification || (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).evidenceType),
       metadata: {
-        originalId: item.id,
-        createdAt: item.createdAt,
-        evidenceType: item.evidenceType,
-        hasAnalysis: !!item.metadata?.aiAnalysis,
+        originalId: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).id,
+        createdAt: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).createdAt,
+        evidenceType: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).evidenceType,
+        hasAnalysis: !!(item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).metadata?.aiAnalysis,
         semanticClassification: semanticData?.classification,
         keyTerms: semanticData?.keyTerms || [],
         confidenceScore: semanticData?.confidence || 0,
@@ -343,8 +343,8 @@ async function generateEventNodes(evidence: any[]): Promise<any[]> {
     size: 15,
     color: getNodeColor('event', 'collection'),
     metadata: {
-      timestamp: item.createdAt,
-      relatedEvidence: [item.id],
+      timestamp: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).createdAt,
+      relatedEvidence: [(item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).id],
       eventType: 'evidence_collection',
     },
     position: generateRandomPosition(),
@@ -435,8 +435,8 @@ async function generateConnections(nodes: any[], connectionStrength: number, opt
             })
           });
           
-          if (response.ok) {
-            const similarityData = await response.json();
+          if ((response as { ok?: any; json?: any }).ok) {
+            const similarityData = await (response as { ok?: any; json?: any }).json();
             const semanticSimilarity = similarityData.similarity || 0;
             
             // Blend traditional connection strength with semantic similarity

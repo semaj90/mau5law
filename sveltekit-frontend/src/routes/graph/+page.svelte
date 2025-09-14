@@ -188,7 +188,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       <div class="space-y-2">
         {#each hotQueries.slice(0, 3) as query}
           <button
-            on:onclick={() => useHotQuery(query.query)}
+            on:click={() => useHotQuery(query.query)}
             class="w-full text-left text-xs font-mono p-2 border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
           >
             <div class="text-nier-text-primary truncate">
@@ -210,14 +210,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       <h3 class="font-bold text-nier-accent-warm mb-3">Actions</h3>
       <div class="space-y-2">
         <ModernButton
-          onclick={hydrateCache}
+          on:click={hydrateCache}
           size="sm"
           class="w-full bg-blue-600 hover:bg-blue-700"
         >
           💧 Hydrate Cache
         </ModernButton>
         <ModernButton
-          onclick={loadEngineData}
+          on:click={loadEngineData}
           size="sm"
           variant="outline"
           class="w-full border-green-500 text-green-400"
@@ -225,7 +225,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           🔄 Refresh Stats
         </ModernButton>
         <ModernButton
-          onclick={() => unifiedServiceRegistry.clearCaches()}
+          on:click={() => unifiedServiceRegistry.clearCaches()}
           size="sm"
           variant="outline"
           class="w-full border-red-500 text-red-400"
@@ -256,7 +256,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       <!-- Action Buttons -->
       <div class="flex gap-4">
         <ModernButton
-          onclick={executeQuery}
+          on:click={executeQuery}
           disabled={isExecuting || !queryInput.trim()}
           class="bg-green-600 hover:bg-green-700"
         >
@@ -265,7 +265,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
         {#if queryResult?.nodes?.length > 0}
           <ModernButton
-            onclick={getRecommendations}
+            on:click={getRecommendations}
             variant="outline"
             class="border-blue-500 text-blue-400"
           >
@@ -282,7 +282,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           {#each commonQueries as query}
             <button
-              onclick={() => { queryInput = query; }}
+              on:click={() => { queryInput = query; }}
               class="text-left text-xs font-mono p-2 border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
             >
               {query}
@@ -386,7 +386,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
             </div>
           </div>
         {/if}
-      {/if}
     </div>
   {/if}
 
@@ -405,8 +404,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
               </div>
             </div>
             <div class="text-xs text-nier-text-secondary">
-              Results: {historyItem.result.metadata.resultCount} •
-              Source: {historyItem.result.metadata.source}
+              Results: {historyItem.(result as { metadata?: any }).metadata.resultCount} •
+              Source: {historyItem.(result as { metadata?: any }).metadata.source}
             </div>
           </div>
         {/each}

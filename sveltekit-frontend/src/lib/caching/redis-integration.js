@@ -5,7 +5,7 @@
  */
 
 import { gzipSync, gunzipSync } from 'zlib';
-import { createClient } from '../shims/redis-shim.ts';
+import { createClient } from '../shims/redis-shim.ts.js';
 
 // Configuration constants
 const DEFAULT_TTL = 3600; // 1 hour in seconds

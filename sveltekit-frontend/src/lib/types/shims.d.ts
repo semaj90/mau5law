@@ -43,7 +43,7 @@ declare module '$lib/types' {
   export const Notification: any;
   export const NotificationType: any;
   export type AITask = any;
-  export type APIResponse = any;
+  export type APIResponse<T = any> = any;
   export type WorkerStatus = any;
   export type WorkerMessage = any;
   export type WorkerMessageType = any;

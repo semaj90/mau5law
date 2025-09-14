@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types.js';
 import { fail } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
@@ -9,7 +9,7 @@ export const load: PageServerLoad = async () => {
         description: '',
         priority: 'medium' as const
       },
-      errors: {},
+      errors: Record<string, any>,
       valid: true,
       posted: false
     }
@@ -48,7 +48,7 @@ export const actions: Actions = {
     return {
       form: {
         data,
-        errors: {},
+        errors: Record<string, any>,
         valid: true,
         posted: true
       },

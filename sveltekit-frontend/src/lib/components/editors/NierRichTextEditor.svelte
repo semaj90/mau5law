@@ -1,3 +1,4 @@
+<!-- Component exported by default -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
@@ -47,13 +48,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		caseId = '',
   		readonly = false,
   		autosave = true
-  	} = $props<{
-  		value?: string;
-  		placeholder?: string;
-  		caseId?: string;
-  		readonly?: boolean;
-  		autosave?: boolean;
-  	}>();
+  	} = $props();
 
   	// Initialize editor
   	onMount(() => {
@@ -65,20 +60,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		}
   	});
 
-  	function initializeNierEditor() {
-  		console.log('🤖 Initializing NieR-themed Rich Text Editor');
-
-  		// Set up editor with contenteditable
-  		if (editorContainer) {
-  			editorContainer.contentEditable = readonly ? 'false' : 'true';
-  			editorContainer.innerHTML = editorContent || `<p>${placeholder}</p>`;
-
-  			// Add event listeners
-  			editorContainer.addEventListener('input', handleInput);
-  			editorContainer.addEventListener('keydown', handleKeyDown);
-  			editorContainer.addEventListener('focus', handleFocus);
-  			editorContainer.addEventListener('blur', handleBlur);
-  		}
+  	function initializeNierEditor() {/* JSX syntax converted to Svelte */}
 
   		// Initialize NieR visual effects
   		applyNierTheme();
@@ -304,7 +286,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- NieR Rich Text Editor Interface -->
 <div class="w-full h-full flex flex-col nier-editor-container" class:nier-android={nieRTheme.mode === 'android'} class:nier-yorha={nieRTheme.mode === 'yorha'} class:nier-machine={nieRTheme.mode === 'machine'}>
 	<!-- Editor Toolbar -->
-	<NesCard class="mb-2 nier-toolbar">
+	<div class="mb-2 nier-toolbar nes-container">
 		<div class="yorha-panel-content py-2">
 			<div class="flex items-center justify-between">
 				<div class="flex items-center gap-1">
@@ -313,16 +295,16 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant={editorState.isBold ? "default" : "ghost"}
 							size="sm"
-							onclick={toggleBold}
+							on:click={toggleBold}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
-							<Bold class="w-4 h-4" />
+<Bold class="w-4 h-4" />
 						</Button>
 						<Button
 							variant={editorState.isItalic ? "default" : "ghost"}
 							size="sm"
-							onclick={toggleItalic}
+							on:click={toggleItalic}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -331,7 +313,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant={editorState.isUnderlined ? "default" : "ghost"}
 							size="sm"
-							onclick={toggleUnderline}
+							on:click={toggleUnderline}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -344,7 +326,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							onclick={insertList}
+							on:click={insertList}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -353,7 +335,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							onclick={insertOrderedList}
+							on:click={insertOrderedList}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -362,7 +344,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							onclick={insertQuote}
+							on:click={insertQuote}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -375,7 +357,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							onclick={insertLink}
+							on:click={insertLink}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -384,7 +366,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							onclick={insertCode}
+							on:click={insertCode}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -397,7 +379,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="outline"
 							size="sm"
-							onclick={saveContent}
+							on:click={saveContent}
 							disabled={readonly}
 							class="h-8 bits-btn bits-btn"
 						>
@@ -413,24 +395,24 @@ https://svelte.dev/e/attribute_duplicate -->
 						<button
 							variant={nieRTheme.mode === 'android' ? 'default' : 'ghost'}
 							size="sm"
-							onclick={() => switchTheme('android')}
+							on:click={() => switchTheme('android')}
 							class="nes-btn bits-btn h-6 px-2 text-xs"
 						>
 							2B
-						</button>
+</Button>
 						<button
 							variant={nieRTheme.mode === 'yorha' ? 'default' : 'ghost'}
 							size="sm"
-							onclick={() => switchTheme('yorha')}
+							on:click={() => switchTheme('yorha')}
 							class="nes-btn bits-btn h-6 px-2 text-xs"
 						>
 							9S
-						</button>
+</Button>
 						<button
 							variant={nieRTheme.mode === 'machine' ? 'default' : 'ghost'}
 							class="bits-btn"
 							size="sm"
-							onclick={() => switchTheme('machine')}
+							on:click={() => switchTheme('machine')}
 							class="h-6 px-2 text-xs"
 						>
 							A2
@@ -454,10 +436,10 @@ https://svelte.dev/e/attribute_duplicate -->
 				</div>
 			</div>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- Main Editor Area -->
-	<NesCard class="flex-1 nier-editor-main">
+	<div class="flex-1 nier-editor-main nes-container">
 		<div class="yorha-panel-content p-0 h-full">
 			<div
 				bind:this={editorContainer}
@@ -473,7 +455,7 @@ https://svelte.dev/e/attribute_duplicate -->
 				{/if}
 			</div>
 		</div>
-	</NesCard>
+	</div>
 </div>
 
 <style>

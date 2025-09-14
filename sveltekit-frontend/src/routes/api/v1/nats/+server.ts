@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Enhanced NATS API Integration
 // Production-ready NATS messaging endpoints with full 17-subject pattern support

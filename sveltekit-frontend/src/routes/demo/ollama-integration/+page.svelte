@@ -66,13 +66,7 @@ https://svelte.dev/e/tag_invalid_name -->
   TERM: This agreement shall remain in effect for two (2) years from the date of execution.
 
   NON-CIRCUMVENTION: Neither party shall directly or indirectly circumvent the other party in business dealings.`);
-  let responses = $state<Array<{
-    type: string;
-    request: any;
-    response: any;
-    timestamp: Date;
-    processingTime: number;
-  }> >([]);
+  let responses = $state<Array() >([]);
   let streamingResponse = $state('');
   let isStreaming = $state(false);
 
@@ -284,7 +278,7 @@ https://svelte.dev/e/tag_invalid_name -->
         })
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; substring?: any; length?: any }).json();
 
       responses = [{
         type: 'Direct API',
@@ -352,17 +346,17 @@ https://svelte.dev/e/tag_invalid_name -->
       <Badge variant={isInitialized ? 'default' : 'secondary'}>
         {isInitialized ? 'Ready' : 'Initializing'}
       </Badge>
-  <Button class="bits-btn" variant="outline" size="sm" onclick={refreshServiceStatus}>
-        <Settings class="w-4 h-4" />
-      </button>
+  <Button class="bits-btn" variant="outline" size="sm" on:click={refreshServiceStatus}>
+<Settings class="w-4 h-4" />
+
     </div>
   </div>
 
   <!-- Service Status Dashboard -->
   {#if serviceStatus}
-    <NesCard class="mb-6">
+    <div class="mb-6 nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Activity class="w-5 h-5" />
           Service Status Dashboard
         </h3>
@@ -374,7 +368,7 @@ https://svelte.dev/e/tag_invalid_name -->
             <div class="text-center">
               <div class="flex items-center justify-center mb-2">
                 <Badge variant={badge.variant} class="flex items-center gap-1">
-                  <{badge.icon} class="w-3 h-3" />
+                  
                   {service.status}
                 </Badge>
               </div>
@@ -412,19 +406,19 @@ https://svelte.dev/e/tag_invalid_name -->
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <div class="grid lg:grid-cols-2 gap-6">
     <!-- Test Configuration Panel -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <FileText class="w-5 h-5" />
           Test Configuration
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <!-- Test Message -->
         <div>
           <label class="text-sm font-medium">Test Message:</label>
@@ -440,65 +434,61 @@ https://svelte.dev/e/tag_invalid_name -->
         <!-- Test Actions -->
         <div class="grid grid-cols-2 gap-2">
           <Button
-            onclick={testBasicChat}
+            on:click={testBasicChat}
             disabled={!isInitialized || isLoading}
             class="flex items-center gap-2 bits-btn bits-btn"
           >
-            {#if isLoading}
+{#if isLoading}
               <Loader2 class="w-4 h-4 animate-spin" />
             {:else}
               <Send class="w-4 h-4" />
             {/if}
             Basic Chat
-          </button>
 
           <Button
-            onclick={testDocumentSummary}
+            on:click={testDocumentSummary}
             disabled={!isInitialized || isLoading}
             variant="secondary"
             class="flex items-center gap-2 bits-btn bits-btn"
           >
-            <FileText class="w-4 h-4" />
+<FileText class="w-4 h-4" />
             Document Summary
-          </button>
 
           <Button
-            onclick={testRAGQuery}
+            on:click={testRAGQuery}
             disabled={!isInitialized || isLoading}
             variant="outline"
             class="flex items-center gap-2 bits-btn bits-btn"
           >
-            <Database class="w-4 h-4" />
+<Database class="w-4 h-4" />
             RAG Query
-          </button>
 
           <Button
-            onclick={testDirectAPI}
+            on:click={testDirectAPI}
             disabled={!isInitialized || isLoading}
             variant="outline"
             class="flex items-center gap-2 bits-btn bits-btn"
           >
-            <Zap class="w-4 h-4" />
+<Zap class="w-4 h-4" />
             Direct API
-          </button>
+
         </div>
 
         <!-- Streaming Test -->
         <div class="border-t pt-4">
           <Button
-            onclick={testStreamingResponse}
+            on:click={testStreamingResponse}
             disabled={!isInitialized || isStreaming}
             variant="secondary"
             class="w-full flex items-center gap-2 bits-btn bits-btn"
           >
-            {#if isStreaming}
+{#if isStreaming}
               <Loader2 class="w-4 h-4 animate-spin" />
               Streaming...
             {:else}
               <Activity class="w-4 h-4" />
               Test Streaming
             {/if}
-          </button>
 
           {#if streamingResponse}
             <div class="mt-4 p-3 bg-muted rounded-lg">
@@ -513,22 +503,22 @@ https://svelte.dev/e/tag_invalid_name -->
         <!-- System Actions -->
         <div class="border-t pt-4 space-y-2">
           <Button
-            onclick={warmupServices}
+            on:click={warmupServices}
             disabled={isLoading}
             variant="outline"
             class="w-full flex items-center gap-2 bits-btn bits-btn"
           >
-            <Zap class="w-4 h-4" />
+<Zap class="w-4 h-4" />
             Warmup All Services
-          </button>
+
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Response Display -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           <span class="flex items-center gap-2">
             <Brain class="w-5 h-5" />
             Test Results ({responses.length})
@@ -537,10 +527,11 @@ https://svelte.dev/e/tag_invalid_name -->
             <Button class="bits-btn"
               variant="outline"
               size="sm"
-              onclick={() => responses = []}
+              on:click={() =>
+responses = []}
             >
               Clear
-            </button>
+
           {/if}
         </h3>
       </div>
@@ -555,38 +546,38 @@ https://svelte.dev/e/tag_invalid_name -->
           {:else}
             <div class="space-y-4">
               {#each responses as result}
-                <NesCard>
-                  <div class="yorha-panel-header" class="pb-2">
+                <div class="nes-container">
+                  <div class="yorha-panel-header pb-2">
                     <div class="flex items-center justify-between">
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.type}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).type}</span>
                       <span class="text-xs nes-text is-disabled">
-                        {result.processingTime}ms • {result.timestamp.toLocaleTimeString()}
+                        {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).processingTime}ms • {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).timestamp.toLocaleTimeString()}
                       </span>
                     </div>
                   </div>
-                  <div class="yorha-panel-content" class="pt-2">
+                  <div class="yorha-panel-content pt-2">
                     <!-- Response Content -->
-                    {#if result.response.response}
+                    {#if (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).response}
                       <div class="mb-3">
                         <p class="text-sm font-medium">Response:</p>
                         <p class="text-sm bg-muted p-2 rounded mt-1 whitespace-pre-wrap">
-                          {result.response.response.substring(0, 300)}{result.response.response.length > 300 ? '...' : ''}
+                          {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).(response as { json?: any; substring?: any; length?: any }).substring(0, 300)}{(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).(response as { json?: any; substring?: any; length?: any }).length > 300 ? '...' : ''}
                         </p>
                       </div>
                     {/if}
 
                     <!-- Summary -->
-                    {#if result.response.summary}
+                    {#if (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).summary}
                       <div class="mb-3">
                         <p class="text-sm font-medium">Summary:</p>
                         <p class="text-sm bg-blue-50 p-2 rounded mt-1">
-                          {result.response.summary.summary?.substring(0, 200)}...
+                          {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).summary.summary?.substring(0, 200)}...
                         </p>
-                        {#if result.response.summary.keyPoints?.length}
+                        {#if (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).summary.keyPoints?.length}
                           <div class="mt-2">
                             <p class="text-xs font-medium">Key Points:</p>
                             <ul class="text-xs list-disc list-inside mt-1">
-                              {#each result.response.summary.keyPoints.slice(0, 3) as point}
+                              {#each (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).summary.keyPoints.slice(0, 3) as point}
                                 <li>{point}</li>
                               {/each}
                             </ul>
@@ -596,29 +587,29 @@ https://svelte.dev/e/tag_invalid_name -->
                     {/if}
 
                     <!-- Performance -->
-                    {#if result.response.performance}
+                    {#if (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).performance}
                       <div class="flex gap-4 text-xs nes-text is-disabled">
-                        <span>Duration: {result.response.performance.duration}ms</span>
-                        <span>Tokens: {result.response.performance.tokens}</span>
-                        <span>Model: {result.response.performance.model}</span>
+                        <span>Duration: {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).performance.duration}ms</span>
+                        <span>Tokens: {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).performance.tokens}</span>
+                        <span>Model: {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).performance.model}</span>
                       </div>
                     {/if}
 
                     <!-- Integration Info -->
-                    {#if result.response.integration}
+                    {#if (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).integration}
                       <div class="mt-2 p-2 bg-green-50 rounded text-xs">
-                        <p><strong>Integration:</strong> {result.response.integration.processingPath}</p>
-                        <p><strong>Services:</strong> {result.response.integration.servicesUsed.join(', ')}</p>
+                        <p><strong>Integration:</strong> {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).integration.processingPath}</p>
+                        <p><strong>Services:</strong> {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).integration.servicesUsed.join(', ')}</p>
                       </div>
                     {/if}
                   </div>
-                </NesCard>
+                </div>
               {/each}
             </div>
           {/if}
         </ScrollArea>
       </div>
-    </NesCard>
+    </div>
   </div>
 </div>
 

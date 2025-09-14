@@ -79,9 +79,9 @@
   </div>
 
   <!-- Service Status -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center justify-between">
+      <h3 class="nes-text is-primary flex items-center justify-between">
         Service Status
   <Badge variant={serviceStatus === 'healthy' ? 'default' : serviceStatus === 'checking...' ? 'secondary' : 'destructive'}>
           {serviceStatus}
@@ -118,10 +118,10 @@
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Architecture Overview -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Architecture Overview</h3>
     </div>
@@ -156,11 +156,11 @@
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Recent Ingests -->
   {#if recentIngests.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Recent Ingests</h3>
       </div>
@@ -179,11 +179,11 @@
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Main Ingest Assistant (temporarily disabled for demo) -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">AI Assistant Integration</h3>
     </div>
@@ -196,16 +196,17 @@
           is available at <code>$lib/components/ai/IngestAIAssistant.svelte</code>
         </p>
         <div class="space-y-2">
-          <Button class="bits-btn" onclick={() => window.open('/api/v1/ingest', '_blank')}>
+          <Button class="bits-btn" on:click={() =>
+window.open('/api/v1/ingest', '_blank')}>
             Test API Directly
-          </button>
+
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Performance Stats -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Performance Highlights</h3>
     </div>
@@ -229,10 +230,10 @@
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Integration Features -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Integration Features</h3>
     </div>
@@ -266,10 +267,10 @@
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- API Endpoints -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">API Endpoints</h3>
     </div>
@@ -295,7 +296,7 @@
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Footer -->
   <div class="text-center text-sm nes-text is-disabled space-y-2">
@@ -304,12 +305,12 @@
       AI-powered processing and vector semantic search
     </p>
     <div class="flex justify-center space-x-4">
-  <Button class="bits-btn" variant="outline" size="sm" onclick={checkServiceHealth}>
-        🔄 Refresh Status
-      </button>
-  <Button class="bits-btn" variant="outline" size="sm" onclick={loadRecentIngests}>
-        📊 Load Recent
-      </button>
+  <Button class="bits-btn" variant="outline" size="sm" on:click={checkServiceHealth}>
+🔄 Refresh Status
+
+  <Button class="bits-btn" variant="outline" size="sm" on:click={loadRecentIngests}>
+📊 Load Recent
+
     </div>
   </div>
 </div>

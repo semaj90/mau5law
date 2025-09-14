@@ -6,7 +6,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // WebAssembly LLM service interface
 interface WasmLLMService {

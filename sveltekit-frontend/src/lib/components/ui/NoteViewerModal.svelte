@@ -211,7 +211,7 @@
               <button
                 type="button"
                 class="space-y-4"
-                onclick={startEdit}
+                on:click={startEdit}
                 title="Edit Note"
               >
                 <Edit3 class="space-y-4" />
@@ -220,17 +220,16 @@
               <button
                 type="button"
                 class="space-y-4"
-                onclick={cancelEdit}
+                on:click={cancelEdit}
               >
                 Cancel
               </button>
             {/if}
-          {/if}
 
           <button
             type="button"
             class="space-y-4"
-            onclick={() => (isSaved ? handleRemoveFromSaved() : handleSaveForLater())}
+            on:click={() => (isSaved ? handleRemoveFromSaved() : handleSaveForLater())}
             title={isSaved ? "Remove from saved" : "Save for later"}
           >
             {#if isSaved}
@@ -243,7 +242,7 @@
           <button
             type="button"
             class="space-y-4"
-            onclick={closeModal}
+            on:click={closeModal}
             title="Close"
           >
             <X class="space-y-4" />
@@ -262,7 +261,7 @@
                 {tag}
                 <button
                   type="button"
-                  onclick={() => removeTag(tag)}
+                  on:click={() => removeTag(tag)}
                   class="space-y-4"
                 >
                   <X class="space-y-4" />
@@ -272,7 +271,7 @@
 
             <input
               bind:value={newTag}
-              onkeydown={(e) => e.key === "Enter" && addTag()}
+              on:keydown={(e) => e.key === "Enter" && addTag()}
               class="space-y-4"
               placeholder="Add tag..."
             />
@@ -290,8 +289,7 @@
           <RichTextEditor
             content={editedContent}
             placeholder="Edit your note..."
-            on:save={handleEditorSave}
-            autoSave={false}
+            onsave={autoSave}
           />
         {:else if displayHtml}
           <div class="space-y-4">

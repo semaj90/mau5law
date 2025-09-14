@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import { ollamaService } from '$lib/server/services/OllamaService';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
 // Configurable via env

@@ -206,11 +206,11 @@
           }
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          cases = data.cases || [];
+        if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+          const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
+          cases = (data as { cases?: any }).cases || [];
         } else {
-          console.error('Failed to load case scores:', response.statusText);
+          console.error('Failed to load case scores:', (response as { ok?: any; json?: any; statusText?: any }).statusText);
           // Fall back to mock data on error
           cases = generateMockCases();
         }
@@ -264,17 +264,17 @@
           body: JSON.stringify(request)
         });
 
-        if (response.ok) {
-          const result = await response.json();
+        if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+          const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
           const caseIndex = cases.findIndex(c => c.id === caseId);
           if (caseIndex !== -1) {
-            cases[caseIndex] = { ...cases[caseIndex], ...result.caseScore };
+            cases[caseIndex] = { ...cases[caseIndex], ...(result as { caseScore?: any }).caseScore };
           } else {
-            cases = [...cases, result.caseScore];
+            cases = [...cases, (result as { caseScore?: any }).caseScore];
           }
           return result;
         } else {
-          throw new Error(`Scoring failed: ${response.statusText}`);
+          throw new Error(`Scoring failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
         }
       }
     } catch (error) {
@@ -360,10 +360,10 @@
     </div>
     <div class="header-actions">
       <label class="demo-toggle">
-        <input type="checkbox" bind:checked={useMockData} onchange={loadCaseScores} />
+        <input type="checkbox" bind:checked={useMockData} on:change={loadCaseScores} />
         <span>Demo Mode</span>
       </label>
-      <button type="button" onclick={loadCaseScores} disabled={isLoading} class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50">
+      <button type="button" on:click={loadCaseScores} disabled={isLoading} class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50">
         {isLoading ? 'Loading...' : 'Refresh'}
       </button>
     </div>
@@ -467,12 +467,12 @@
 
             <div class="nier-bits-yorha-panel-content">
               <div class="nier-bits-card-actions">
-                <button type="button" onclick={() => openScoreDetails(caseItem)} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
+                <button type="button" on:click={() => openScoreDetails(caseItem)} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
                   View Details
                 </button>
                 <button
                   type="button"
-                  onclick={() => scoreCase(caseItem.id)}
+                  on:click={() => scoreCase(caseItem.id)}
                   disabled={scoringInProgress}
                   class="px-2 py-1 text-sm rounded bg-blue-600 text-white disabled:opacity-50"
                 >
@@ -488,12 +488,12 @@
 
 <!-- Score Details Modal -->
 {#if showScoreDetails && selectedCase}
-  <div class="modal-overlay" role="dialog" aria-modal="true" onclick={() => showScoreDetails = false} onkeydown={(e) => e.key === 'Escape' && (showScoreDetails = false)}>
-    <div class="modal-content score-details-dialog" role="document" onclick={(e) => e.stopPropagation()}>
+  <div class="modal-overlay" role="dialog" aria-modal="true" on:click={() => showScoreDetails = false} on:keydown={(e) => e.key === 'Escape' && (showScoreDetails = false)}>
+    <div class="modal-content score-details-dialog" role="document" on:click={(e) => e.stopPropagation()}>
       <div class="modal-header">
         <h2 class="modal-title">Case Score Analysis: {selectedCase.title}</h2>
         <p class="modal-description">Detailed scoring breakdown and recommendations</p>
-        <button type="button" onclick={() => showScoreDetails = false} class="modal-close" aria-label="Close">
+        <button type="button" on:click={() => showScoreDetails = false} class="modal-close" aria-label="Close">
           ×
         </button>
       </div>
@@ -543,10 +543,10 @@
         </section>
       </div>
       <div class="dialog-actions">
-        <button type="button" onclick={() => showScoreDetails = false} class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50">
+        <button type="button" on:click={() => showScoreDetails = false} class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50">
           Close
         </button>
-        <button type="button" onclick={() => selectedCase && scoreCase(selectedCase.id)} class="px-3 py-2 rounded bg-blue-600 text-white">
+        <button type="button" on:click={() => selectedCase && scoreCase(selectedCase.id)} class="px-3 py-2 rounded bg-blue-600 text-white">
           Rescore Case
         </button>
       </div>

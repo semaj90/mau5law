@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { embeddingService } from '$lib/services/embedding';
 import { hybridSemanticSearch } from '$lib/database/connection';
 

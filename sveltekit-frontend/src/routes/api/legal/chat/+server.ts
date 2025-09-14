@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 
 // Legal AI Chat API - Context7 Enhanced with Gemma3 Legal
@@ -34,13 +34,7 @@ export interface LegalChatResponse {
   sessionId: string;
   analysis: string;
   confidence: number;
-  sources: Array<{
-    type: "document" | "precedent" | "statute";
-    id: string;
-    title: string;
-    relevance: number;
-    excerpt: string;
-  }>;
+  sources: Array<any>;
   recommendations: string[];
   processingTime: number;
 }

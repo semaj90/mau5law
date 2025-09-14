@@ -73,8 +73,8 @@ export class AuthService {
         credentials: 'include'
       });
 
-      if (response.ok) {
-        const { user } = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const { user } = await (response as { ok?: any; json?: any }).json();
         authState.user = user;
         authState.isAuthenticated = true;
         
@@ -99,7 +99,7 @@ export class AuthService {
   }
 
   // Login with email and password
-  async login(email: string, password: string): Promise<{ success: boolean; error?: string }> {
+  async login(email: string, password: string): Promise<any> {
     authState.loading = true;
     authState.error = null;
 
@@ -130,22 +130,22 @@ export class AuthService {
         credentials: 'include'
       });
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; json?: any }).json();
 
-      if (response.ok) {
-        authState.user = result.user;
+      if ((response as { ok?: any; json?: any }).ok) {
+        authState.user = (result as { user?: any; error?: any }).user;
         authState.isAuthenticated = true;
         authState.error = null;
 
         // Start session management with XState
         const sessionId = `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        await sessionManager.startSession(result.user, sessionId);
+        await sessionManager.startSession((result as { user?: any; error?: any }).user, sessionId);
 
         // Post-login AI analysis for user behavior patterns
         await mcpGPUOrchestrator.processLegalDocument(
           `Successful login: ${email} at ${new Date().toISOString()}`,
           {
-            userId: result.user.id,
+            userId: (result as { user?: any; error?: any }).user.id,
             includeRAG: false,
             includeGraph: true,
             generateSummary: false
@@ -154,16 +154,16 @@ export class AuthService {
 
         return { success: true };
       } else {
-        authState.error = result.error;
+        authState.error = (result as { user?: any; error?: any }).error;
         
         // Log failed login attempt for security monitoring
         await mcpGPUOrchestrator.routeAPIRequest(
           '/api/security/failed-login',
-          { ...securityContext, error: result.error },
+          { ...securityContext, error: (result as { user?: any; error?: any }).error },
           { securityLevel: 'high' }
         );
 
-        return { success: false, error: result.error };
+        return { success: false, error: (result as { user?: any; error?: any }).error };
       }
     } catch (error: any) {
       const errorMessage = 'Network error during login';
@@ -181,7 +181,7 @@ export class AuthService {
     password: string;
     firstName: string;
     lastName: string;
-  }): Promise<{ success: boolean; error?: string }> {
+  }): Promise<any> {
     authState.loading = true;
     authState.error = null;
 
@@ -209,10 +209,10 @@ export class AuthService {
         credentials: 'include'
       });
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; json?: any }).json();
 
-      if (response.ok) {
-        authState.user = result.user;
+      if ((response as { ok?: any; json?: any }).ok) {
+        authState.user = (result as { user?: any; error?: any }).user;
         authState.isAuthenticated = true;
         authState.error = null;
 
@@ -220,7 +220,7 @@ export class AuthService {
         await mcpGPUOrchestrator.processLegalDocument(
           `New user registration: ${userData.email}`,
           {
-            userId: result.user.id,
+            userId: (result as { user?: any; error?: any }).user.id,
             includeRAG: false,
             includeGraph: true,
             generateSummary: true
@@ -229,8 +229,8 @@ export class AuthService {
 
         return { success: true };
       } else {
-        authState.error = result.error;
-        return { success: false, error: result.error };
+        authState.error = (result as { user?: any; error?: any }).error;
+        return { success: false, error: (result as { user?: any; error?: any }).error };
       }
     } catch (error: any) {
       const errorMessage = 'Network error during registration';
@@ -289,7 +289,7 @@ export class AuthService {
   }
 
   // Update user profile
-  async updateProfile(updates: Partial<User>): Promise<{ success: boolean; error?: string }> {
+  async updateProfile(updates: Partial<User>): Promise<any> {
     if (!authState.user) return { success: false, error: 'Not authenticated' };
 
     authState.loading = true;
@@ -304,10 +304,10 @@ export class AuthService {
         credentials: 'include'
       });
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; json?: any }).json();
 
-      if (response.ok) {
-        authState.user = { ...authState.user, ...result.user };
+      if ((response as { ok?: any; json?: any }).ok) {
+        authState.user = { ...authState.user, ...(result as { user?: any; error?: any }).user };
         
         // Log profile update for audit trail
         await mcpGPUOrchestrator.routeAPIRequest(
@@ -322,8 +322,8 @@ export class AuthService {
 
         return { success: true };
       } else {
-        authState.error = result.error;
-        return { success: false, error: result.error };
+        authState.error = (result as { user?: any; error?: any }).error;
+        return { success: false, error: (result as { user?: any; error?: any }).error };
       }
     } catch (error: any) {
       const errorMessage = 'Failed to update profile';

@@ -23,13 +23,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       role: "user" | "assistant" | "system";
       content: string;
       timestamp: Date;
-      sources?: Array<{
-        id: string;
-        title: string;
-        content: string;
-        score: number;
-        type: string;
-      }>;
+      sources?: Array;
       metadata?: {
         provider: "local" | "cloud" | "hybrid";
         model: string;
@@ -122,7 +116,6 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             {message.metadata.provider}
           </span>
         {/if}
-      {/if}
     </div>
 
     <div class="container mx-auto px-4">
@@ -136,7 +129,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       <button
         type="button"
         class="container mx-auto px-4"
-        onclick={() => copyToClipboard()}
+        on:click={() => copyToClipboard()}
         title="Copy message"
         aria-label="Copy message to clipboard"
       >
@@ -165,7 +158,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         <button
           type="button"
           class="container mx-auto px-4"
-          onclick={() => (isSourcesExpanded = !isSourcesExpanded)}
+          on:click={() => (isSourcesExpanded = !isSourcesExpanded)}
           aria-expanded={isSourcesExpanded}
         >
           <svg
@@ -208,7 +201,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         <button
           type="button"
           class="container mx-auto px-4"
-          onclick={() => (isMetadataExpanded = !isMetadataExpanded)}
+          on:click={() => (isMetadataExpanded = !isMetadataExpanded)}
           aria-expanded={isMetadataExpanded}
         >
           <svg

@@ -43,10 +43,10 @@
       console.log('Form submitted with data:', $form);
     },
     onResult: ({ result }) => {
-      if (result.type === 'success') {
-        onsuccess?.(result.data);
-      } else if (result.type === 'error') {
-        onerror?.(result.error);
+      if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
+        onsuccess?.((result as { type?: any; data?: any; error?: any }).data);
+      } else if ((result as { type?: any; data?: any; error?: any }).type === 'error') {
+        onerror?.((result as { type?: any; data?: any; error?: any }).error);
       }
     }
   });
@@ -105,7 +105,7 @@
       {#if !isEditing}
         <button
           type="button"
-          onclick={() => generateCaseNumber()}
+          on:click={() => generateCaseNumber()}
           class="space-y-4"
         >
           Generate Case #
@@ -262,7 +262,7 @@
               {tag}
               <button
                 type="button"
-                onclick={() => removeTag(tag)}
+                on:click={() => removeTag(tag)}
                 class="space-y-4"
               >
                 ×
@@ -282,7 +282,7 @@
           />
           <button
             type="button"
-            onclick={() => addTag()}
+            on:click={() => addTag()}
             class="space-y-4"
           >
             Add Tag
@@ -318,7 +318,7 @@
       <div class="space-y-4">
         <button
           type="button"
-          onclick={() => dispatch('cancel')}
+          on:click={() => dispatch('cancel')}
           class="space-y-4"
           disabled={$submitting}
         >

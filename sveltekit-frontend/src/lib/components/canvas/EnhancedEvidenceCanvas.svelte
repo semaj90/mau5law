@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
   let zoom = $state(1);
   let readonly = $state(false);
   let caseId = $state<string | undefined >(undefined);
-  let evidenceItems = $state<Array<any> >([]);
+  let evidenceItems = $state<Array<any>([]) >([]);
   function setWorkflowMode(mode: string) {
     if (canvasService) canvasService.send(mode.toUpperCase());
   }
@@ -116,17 +116,15 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const fabricModule = await import("fabric");
       const fabricLib = fabricModule.default;
-  let fabricObject = $state<any;
-
-      if (item.type >(== "image" && item.thumbnailUrl) {
+  let fabricObject = $state<anyif ((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).type | null>(null)(== "image" && (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).thumbnailUrl) {
         // Add image
         try {
-          const img = await fabricLib.FabricImage.fromURL(item.thumbnailUrl));
+          const img = await fabricLib.FabricImage.fromURL((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).thumbnailUrl));
           img.set({
-            left: item.x || 100,
-            top: item.y || 100,
-            scaleX: (item.width || 200) / img.width,
-            scaleY: (item.height || 150) / img.height,
+            left: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).x || 100,
+            top: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).y || 100,
+            scaleX: ((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).width || 200) / img.width,
+            scaleY: ((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).height || 150) / img.height,
             selectable: !readonly,
             evented: !readonly,
           });
@@ -134,10 +132,10 @@ https://svelte.dev/e/js_parse_error -->
         } catch (imgError) {
           console.error("Failed to load image:", imgError);
           // Fallback to text representation
-          fabricObject = new fabricLib.Textbox(`🖼️ ${item.title}`, {
-            left: item.x || 100,
-            top: item.y || 100,
-            width: item.width || 200,
+          fabricObject = new fabricLib.Textbox(`🖼️ ${(item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).title}`, {
+            left: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).x || 100,
+            top: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).y || 100,
+            width: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).width || 200,
             fontSize: 14,
             fontFamily: "Arial",
             fill: "#6b7280",
@@ -147,11 +145,11 @@ https://svelte.dev/e/js_parse_error -->
   }
       } else {
         // Add as text/document representation
-        const text = `${getTypeIcon(item.type)} ${item.title}`;
+        const text = `${getTypeIcon((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).type)} ${(item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).title}`;
         fabricObject = new fabricLib.Textbox(text, {
-          left: item.x || 100,
-          top: item.y || 100,
-          width: item.width || 200,
+          left: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).x || 100,
+          top: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).y || 100,
+          width: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).width || 200,
           fontSize: 14,
           fontFamily: "Arial",
           fill: "#1f2937",
@@ -165,8 +163,8 @@ https://svelte.dev/e/js_parse_error -->
   }
       // Add metadata
       fabricObject.set({
-        evidenceId: item.id,
-        evidenceType: item.type,
+        evidenceId: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).id,
+        evidenceType: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).type,
         customType: "evidence",
       });
 
@@ -213,9 +211,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const fabricModule = await import("fabric");
       const fabricLib = fabricModule.default;
-  let fabricObject = $state<any;
-
-      if (shape >(== "rectangle") {
+  let fabricObject = $state<anyif (shape | null>(null)(== "rectangle") {
         fabricObject = new fabricLib.Rect({
           left: 100,
           top: 100,
@@ -392,7 +388,7 @@ https://svelte.dev/e/js_parse_error -->
           positions,
         }),
       });
-      if (!response.ok) {
+      if (!(response as { ok?: any }).ok) {
         throw new Error("Failed to save canvas");
   }
       notifications.add({
@@ -461,27 +457,30 @@ https://svelte.dev/e/js_parse_error -->
         <Button class="bits-btn"
           variant={selectedTool === "select" ? "primary" : "outline"}
           size="sm"
-          onclick={() => selectTool("select")}
+          on:click={() =>
+selectTool("select")}
           disabled={readonly}
         >
           <Move class="space-y-4" />
-        </button>
+</Button>
         <Button class="bits-btn"
           variant={selectedTool === "draw" ? "primary" : "outline"}
           size="sm"
-          onclick={() => selectTool("draw")}
+          on:click={() =>
+selectTool("draw")}
           disabled={readonly}
         >
           ✏️
-        </button>
+</Button>
         <Button class="bits-btn"
           variant={selectedTool === "text" ? "primary" : "outline"}
           size="sm"
-          onclick={() => selectTool("text")}
+          on:click={() =>
+selectTool("text")}
           disabled={readonly}
         >
           <Type class="space-y-4" />
-        </button>
+</Button>
       </div>
 
       <!-- Shapes -->
@@ -492,17 +491,19 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => addShape("rectangle")}
+            on:click={() =>
+addShape("rectangle")}
           >
             <Square class="space-y-4" />
-          </button>
+</Button>
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => addShape("circle")}
+            on:click={() =>
+addShape("circle")}
           >
             <Circle class="space-y-4" />
-          </button>
+</Button>
         </div>
       {/if}
 
@@ -513,33 +514,38 @@ https://svelte.dev/e/js_parse_error -->
         <Button class="bits-btn"
           variant="outline"
           size="sm"
-          onclick={() => undo()}
+          on:click={() =>
+undo()}
           disabled={readonly || historyIndex <= 0}
         >
           <Undo class="space-y-4" />
-        </button>
+</Button>
         <Button class="bits-btn"
           variant="outline"
           size="sm"
-          onclick={() => redo()}
+          on:click={() =>
+redo()}
           disabled={readonly || historyIndex >= canvasHistory.length - 1}
         >
           <Redo class="space-y-4" />
-        </button>
+</Button>
       </div>
 
       <!-- Zoom -->
       <div class="space-y-4">
-        <Button class="bits-btn" variant="outline" size="sm" onclick={() => zoomOut()}>
+        <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+zoomOut()}>
           <ZoomOut class="space-y-4" />
-        </button>
+</Button>
         <span class="space-y-4"
           >{Math.round(zoom * 100)}%</span
         >
-        <Button class="bits-btn" variant="outline" size="sm" onclick={() => zoomIn()}>
+        <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+zoomIn()}>
           <ZoomIn class="space-y-4" />
-        </button>
-        <Button class="bits-btn" variant="outline" size="sm" onclick={() => resetZoom()}
+</Button>
+        <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+resetZoom()}
           >Reset</Button
         >
       </div>
@@ -548,18 +554,20 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Actions -->
     <div class="space-y-4">
       {#if !readonly}
-        <Button class="bits-btn" variant="outline" size="sm" onclick={() => deleteSelected()}>
+        <Button class="bits-btn" variant="outline" size="sm" on:click={() => deleteSelected()}>
           <Trash2 class="space-y-4" />
-        </button>
-        <Button class="bits-btn" variant="outline" size="sm" onclick={() => saveCanvas()}>
+</Button>
+        <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+saveCanvas()}>
           <Save class="space-y-4" />
           Save
-        </button>
+</Button>
       {/if}
-      <Button class="bits-btn" variant="outline" size="sm" onclick={() => exportCanvas()}>
+      <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+exportCanvas()}>
         <Download class="space-y-4" />
         Export
-      </button>
+</Button>
     </div>
   </div>
 

@@ -2,45 +2,45 @@
  * Case Timeline API Routes
  * GET /api/v1/timeline/[caseId] - Get case timeline
  * POST /api/v1/timeline/[caseId] - Add timeline event
- * 
+ *
  * GPU-Accelerated Evidence Analysis Pipeline:
  * ==========================================
- * 
+ *
  * This timeline system supports auto-populated timelines based on AI-powered evidence analysis:
- * 
+ *
  * 1. OCR Analysis (CUDA Service Workers)
  *    - Document text extraction using GPU-accelerated OCR
  *    - SIMD-optimized text parsing for maximum throughput
  *    - Parallel processing across multiple GPU cores
- * 
+ *
  * 2. Evidence Feature Extraction (RTX 3060 Ti + CUDA)
  *    - Computer vision analysis for image/video evidence
  *    - NLP processing for textual evidence using Gemma embeddings
  *    - Temporal pattern recognition using SIMD operations
- * 
+ *
  * 3. Timeline Auto-Population
  *    - AI extracts dates, times, locations, and events from evidence
  *    - Person of interest identification and crime correlation
  *    - Automatic timeline event generation with confidence scores
- * 
+ *
  * 4. Real-time Processing
  *    - GPU CUDA service workers handle computations in background
  *    - WebSocket streaming for real-time timeline updates
  *    - Context7 multicore system for parallel evidence processing
- * 
+ *
  * Technical Implementation:
  * - Uses RTX_3060_OPTIMIZATION=true for GPU memory management
  * - OLLAMA_GPU_LAYERS=30 for AI model acceleration
  * - CONTEXT7_MULTICORE=true for parallel processing
  * - Binary QLoRA streaming for efficient data transfer
- * 
- * Note: Individual event operations (PUT/DELETE) are handled by 
+ *
+ * Note: Individual event operations (PUT/DELETE) are handled by
  * /api/v1/timeline/events/[eventId] endpoint
  */
 
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { db } from '$lib/server/db/connection';
+import { db } from '$lib/server/db/unified-client';
 import { caseTimeline, cases } from '$lib/server/db/schemas/cases-schema';
 import { eq, desc, asc, and } from 'drizzle-orm';
 import { generateId } from 'lucia';

@@ -43,12 +43,7 @@ https://svelte.dev/e/js_parse_error -->
     interactive = true
   }: Props = $props();
   // Event dispatcher
-  const dispatch = createEventDispatcher<{
-    pathSelected: { path: SoraTraversalPath };
-    nodeClicked: { nodeId: string; nodeType: string };
-    visualizationComplete: { visualization: Moogle2DOutput | Moogle3DMesh };
-    error: { message: string; error: any };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // State stores
   const loading: Writable<boolean> = writable(false);
@@ -63,10 +58,8 @@ https://svelte.dev/e/js_parse_error -->
   let moogleSynthesizer = $state<MoogleGraphSynthesizer | null >(null);
   let canvas2D = $state<HTMLCanvasElement;
   let canvas3D: HTMLCanvasElement;
-  let container: HTMLDivElement;
-
-  // GPU and memory integrations
-  let gpuIntegration: NESGPUIntegration | null >(null);
+  let container: HTMLDivElement// GPU and memory integrations
+  let gpuIntegration: NESGPUIntegration | null>(null)(null);
   let memoryArch = $state<NESMemoryArchitecture | null >(null);
   let semanticPipeline = $state<SemanticAnalysisPipeline | null >(null);
   let tensorStore = $state<DimensionalTensorStore | null >(null);
@@ -473,7 +466,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="error-overlay">
       <h3>⚠️ Visualization Error</h3>
       <p>{$error}</p>
-      <button onclick={() => error.set(null)}>Dismiss</button>
+      <button on:click={() => error.set(null)}>Dismiss</button>
     </div>
   {/if}
 
@@ -485,7 +478,7 @@ https://svelte.dev/e/js_parse_error -->
         width={width}
         height={height}
         class="visualization-canvas canvas-2d"
-        onclick={(e) => handleCanvasClick(e, false)}
+        on:click={(e) => handleCanvasClick(e, false)}
       ></canvas>
       
       <!-- 2D Controls -->
@@ -506,7 +499,7 @@ https://svelte.dev/e/js_parse_error -->
         width={width}
         height={height}
         class="visualization-canvas canvas-3d"
-        onclick={(e) => handleCanvasClick(e, true)}
+        on:click={(e) => handleCanvasClick(e, true)}
       ></canvas>
       
       <!-- 3D Controls -->
@@ -536,7 +529,7 @@ https://svelte.dev/e/js_parse_error -->
           <div 
             class="path-item"
             class:high-score={path.totalScore > 0.8}
-            onclick={() => handlePathSelection(index)}
+            on:click={() => handlePathSelection(index)}
           >
             <div class="path-header">
               <span class="path-score">Score: {path.totalScore.toFixed(3)}</span>
@@ -763,7 +756,7 @@ https://svelte.dev/e/js_parse_error -->
     border-color: rgba(74, 158, 255, 0.3);
   }
 
-  .path-item.high-score {
+  .path-(item as { high?: any }).high-score {
     border-color: rgba(6, 255, 165, 0.4);
     background: rgba(6, 255, 165, 0.1);
   }

@@ -634,25 +634,33 @@ sveltekit-frontend/todos/
 81125_nvme.txt
 sveltekit-frontend/nul
 
-# Go binaries
-go-inference-service/inference-service
-sse-rag-service/sse-rag-service
-document-chunker/document-chunker
-go-chat-service/go-chat-service
+# Go binaries - ignore all executables
 *.exe
+*.exe~
+*-service
+*-worker
+*-server
+*-server-*
+*-prod
+*-updated
+*-som-system
+*microservice*
 
+# Specific Go binaries
+cognitive-microservice
+cognitive-service*
+envutil*
+gpu-*
+health-server*
+legal-ai-*
+enhanced-rag*
+cuda-service*
+
+# Go modules
 go.mod
-cuda-mock-gateway/go.mod
-go-chat-service/go.mod
-go-enhanced-rag-service/go.mod
-legal-gateway/cuda-worker
-legal-gateway/go.mod
-legal-gateway/legal-api
-legal-gateway/legal-worker
+go.sum
+**/go.mod
+**/go.sum
+
+# Large files and build artifacts
 comprehensive-all-routes-phase-file.txt
-cognitive-service-jsonv2
-cognitive-service
-go.mod
-go.mod
-go.mod
-go.mod

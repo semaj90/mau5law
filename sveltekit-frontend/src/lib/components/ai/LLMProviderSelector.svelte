@@ -30,10 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   		'data-testid': testId
   	}: LLMProviderSelectorProps = $props();
 
-  	const dispatch = createEventDispatcher<{
-  		providerSelected: { provider: LLMProvider };
-  		statusChanged: { provider: LLMProvider; status: LLMStatus };
-  	}>();
+  	const dispatch = createEventDispatcher();
 
   	// Mock providers - replace with real API calls
   	const providers: Writable<LLMProvider[]> = writable([
@@ -91,9 +88,7 @@ https://svelte.dev/e/js_parse_error -->
   	]);
 
   	// Real-time status checking
-  let statusCheckInterval = $state<number;
-
-  	const checkProviderStatus >(async (provider: LLMProvider): Promise<LLMStatus> => {
+  let statusCheckInterval = $state<numberconst checkProviderStatus | null>(null)(async (provider: LLMProvider): Promise<LLMStatus> => {
   		try {
   			const response = await fetch(`${provider.endpoint}/health`, {
   				method: 'GET',
@@ -216,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
 	{#if $open}
 		<div
 			class="z-50 min-w-[320px] rounded-md border border-yorha-border bg-yorha-bg-primary p-1 shadow-lg focus:outline-none"
-			transitifly={{ y: -5, duration: 150 }}
+			/* transition removed */}
 		>
 			{#each $providers as provider (provider.id)}
 				<div
@@ -225,8 +220,8 @@ https://svelte.dev/e/js_parse_error -->
 				 class:text-yorha-text-primary={$isSelected(provider)}
 					class:hover:bg-yorha-bg-tertiary={!$isSelected(provider)}
 				>
-					<NesCard class="border-none bg-transparent">
-						<div class="yorha-panel-content" class="p-3">
+					<div class="border-none bg-transparent nes-container">
+						<div class="yorha-panel-content p-3">
 							<!-- Provider Header -->
 							<div class="flex items-center justify-between mb-2">
 								<div class="flex items-center space-x-2">
@@ -274,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
 								</div>
 							{/if}
 						</div>
-					</NesCard>
+					</div>
 				</div>
 			{/each}
 		</div>

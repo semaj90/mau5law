@@ -66,9 +66,9 @@
 </script>
 
 <div class="w-full max-w-6xl mx-auto p-4 space-y-6">
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="text-2xl font-bold">Vector Pipeline Demo</h3>
+      <h3 class="nes-text is-primary text-2xl font-bold">Vector Pipeline Demo</h3>
       <p class="text-gray-600">
         XState machine orchestrating PostgreSQL → Redis Streams → Go microservice → CUDA worker → Qdrant
       </p>
@@ -91,35 +91,35 @@
 
       <!-- Control Buttons -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <Button class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
-          Submit Single Job
-        </button>
-        <Button class="bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
-          Submit Batch
-        </button>
-        <Button class="bits-btn" onclick={runHealthCheck} variant="outline">
-          Health Check
-        </button>
-        <Button class="bits-btn" onclick={resetPipeline} variant="destructive">
-          Reset Pipeline
-        </button>
-        <Button class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>
-          Enable WebGPU
-        </button>
-        <Button class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>
-          Disable WebGPU
-        </button>
-        <Button class="bits-btn" onclick={retryFailedJobs} disabled={!batchInfo?.failedJobs || batchInfo.failedJobs === 0}>
-          Retry Failed
-        </button>
+        <Button class="bits-btn" on:click={submitSingleJob} disabled={currentState === 'processingJob'}>
+Submit Single Job
+</Button>
+        <Button class="bits-btn" on:click={submitBatchJobs} disabled={currentState === 'processingBatch'}>
+Submit Batch
+</Button>
+        <Button class="bits-btn" on:click={runHealthCheck} variant="outline">
+Health Check
+</Button>
+        <Button class="bits-btn" on:click={resetPipeline} variant="destructive">
+Reset Pipeline
+</Button>
+        <Button class="bits-btn" on:click={enableWebGPU} disabled={pipelineStatus?.webgpu}>
+Enable WebGPU
+</Button>
+        <Button class="bits-btn" on:click={disableWebGPU} disabled={!pipelineStatus?.webgpu}>
+Disable WebGPU
+</Button>
+        <Button class="bits-btn" on:click={retryFailedJobs} disabled={!batchInfo?.failedJobs || batchInfo.failedJobs === 0}>
+Retry Failed
+</Button>
       </div>
 
       <!-- Pipeline Status Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Service Status -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-lg">Service Status</h3>
+            <h3 class="nes-text is-primary text-lg">Service Status</h3>
           </div>
           <div class="yorha-panel-content">
             <div class="space-y-2">
@@ -161,12 +161,12 @@
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
 
         <!-- Batch Information -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-lg">Batch Status</h3>
+            <h3 class="nes-text is-primary text-lg">Batch Status</h3>
           </div>
           <div class="yorha-panel-content">
             <div class="space-y-2">
@@ -196,12 +196,12 @@
               {/if}
             </div>
           </div>
-        </NesCard>
+        </div>
 
         <!-- Performance Metrics -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-lg">Performance</h3>
+            <h3 class="nes-text is-primary text-lg">Performance</h3>
           </div>
           <div class="yorha-panel-content">
             <div class="space-y-2">
@@ -228,14 +228,14 @@
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       </div>
 
       <!-- Current Jobs Display -->
       {#if batchInfo && batchInfo.jobs.length > 0}
-        <NesCard class="mt-6">
+        <div class="mt-6 nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-lg">Active Jobs</h3>
+            <h3 class="nes-text is-primary text-lg">Active Jobs</h3>
           </div>
           <div class="yorha-panel-content">
             <div class="overflow-x-auto">
@@ -273,20 +273,21 @@
               </table>
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
 
       <!-- Integration Test Results -->
-      <NesCard class="mt-6">
+      <div class="mt-6 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-lg">Service Integration Test</h3>
+          <h3 class="nes-text is-primary text-lg">Service Integration Test</h3>
         </div>
         <div class="yorha-panel-content">
           <p class="text-sm text-gray-600 mb-4">
             Test connectivity to backend services that the vector pipeline depends on:
           </p>
           <Button class="bits-btn mr-2"
-            onclick={async () => {
+            on:click={async () =>
+{
               try {
                 const response = await fetch('http://localhost:8094/api/health');
                 const data = await response.json();
@@ -298,9 +299,10 @@
             variant="outline"
           >
             Test Enhanced RAG (8094)
-          </button>
+</Button>
           <Button class="bits-btn"
-            onclick={async () => {
+            on:click={async () =>
+{
               try {
                 const response = await fetch('http://localhost:6333/health');
                 if (response.ok) {
@@ -315,9 +317,9 @@
             variant="outline"
           >
             Test Qdrant (6333)
-          </button>
+</Button>
         </div>
-      </NesCard>
+      </div>
     </div>
-  </NesCard>
+  </div>
 </div>

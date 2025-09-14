@@ -19,7 +19,7 @@
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 const SUMMARIZER_BASE =
   import.meta.env.SUMMARIZER_BASE_URL || "http://localhost:8091";

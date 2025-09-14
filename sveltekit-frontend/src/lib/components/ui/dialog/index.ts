@@ -18,4 +18,4 @@ export { CardFooter as Footer } from '$lib/components/ui/enhanced-bits';
 // Legacy exports for backward compatibility
 export { Dialog as BitsDialog } from '$lib/components/ui/enhanced-bits';
 
-export type * from './types';
+export type * from './types.js';

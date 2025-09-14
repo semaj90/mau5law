@@ -69,7 +69,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         .where(eq(sessions.id, sessionId))
         .limit(1);
 
-      if (result.length === 0) {
+      if ((result as { length?: any; map?: any }).length === 0) {
         return [null, null];
       }
 
@@ -111,7 +111,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
   async getUserSessions(userId: string): Promise<DatabaseSession[]> {
     const result = await db.select().from(sessions).where(eq(sessions.user_id, userId));
 
-    return result.map((session) => ({
+    return (result as { length?: any; map?: any }).map((session) => ({
       id: session.id,
       userId: session.user_id,
       expiresAt: session.expires_at,
@@ -131,7 +131,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
       expires_at: session.expiresAt,
       ip_address: null,
       user_agent: null,
-      session_context: {},
+      session_context: Record<string, any>,
       created_at: new Date(),
     });
   }

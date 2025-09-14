@@ -136,30 +136,30 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
     const { promise } = withAbort(async (signal) => {
       const url = `/api/yorha/legal-data?type=documents&page=${pagination.page}&limit=${pagination.limit}&search=${encodeURIComponent(searchQuery)}`;
       const response = await fetch(url, { signal, headers: { 'Accept': 'application/json' } });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response.json();
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) throw new Error(`HTTP ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      return (response as { ok?: any; status?: any; json?: any }).json();
     });
-    try { const result = await promise; if (result.success) { documentsData = result.data; pagination = result.pagination; } } catch (e) { if ((e as any).name !== 'AbortError') console.error('Documents load failed', e); }
+    try { const result = await promise; if ((result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).success) { documentsData = (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).data; pagination = (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).pagination; } } catch (e) { if ((e as any).name !== 'AbortError') console.error('Documents load failed', e); }
   }
 
   async function loadCases() {
     const { promise } = withAbort(async (signal) => {
       const url = `/api/yorha/legal-data?type=cases&page=${pagination.page}&limit=${pagination.limit}&search=${encodeURIComponent(searchQuery)}`;
       const response = await fetch(url, { signal, headers: { 'Accept': 'application/json' } });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response.json();
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) throw new Error(`HTTP ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      return (response as { ok?: any; status?: any; json?: any }).json();
     });
-    try { const result = await promise; if (result.success) { casesData = result.data; } } catch (e) { if ((e as any).name !== 'AbortError') console.error('Cases load failed', e); }
+    try { const result = await promise; if ((result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).success) { casesData = (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).data; } } catch (e) { if ((e as any).name !== 'AbortError') console.error('Cases load failed', e); }
   }
 
   async function loadEvidence() {
     const { promise } = withAbort(async (signal) => {
       const url = `/api/yorha/legal-data?type=evidence&page=${pagination.page}&limit=${pagination.limit}&search=${encodeURIComponent(searchQuery)}`;
       const response = await fetch(url, { signal, headers: { 'Accept': 'application/json' } });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response.json();
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) throw new Error(`HTTP ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      return (response as { ok?: any; status?: any; json?: any }).json();
     });
-    try { const result = await promise; if (result.success) { evidenceData = result.data; } } catch (e) { if ((e as any).name !== 'AbortError') console.error('Evidence load failed', e); }
+    try { const result = await promise; if ((result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).success) { evidenceData = (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).data; } } catch (e) { if ((e as any).name !== 'AbortError') console.error('Evidence load failed', e); }
   }
 
   // Enhanced RAG functions
@@ -180,15 +180,15 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
         })
       });
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; status?: any; json?: any }).json();
 
-      if (result.success) {
-        ragResults = result.results;
-        ragAnalysis = result.analysis;
-        ragRecommendations = result.recommendations;
-        addNotification('success', `Enhanced analysis completed: ${result.results.length} results found`);
+      if ((result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).success) {
+        ragResults = (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).results;
+        ragAnalysis = (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).analysis;
+        ragRecommendations = (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).recommendations;
+        addNotification('success', `Enhanced analysis completed: ${(result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).results.length} results found`);
       } else {
-        addNotification('error', result.error || 'Enhanced analysis failed');
+        addNotification('error', (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).error || 'Enhanced analysis failed');
       }
     } catch (error) {
       console.error('Enhanced RAG error:', error);
@@ -207,14 +207,14 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
         body: JSON.stringify({ dataType, data })
       });
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; status?: any; json?: any }).json();
 
-      if (result.success) {
+      if ((result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).success) {
         await loadData();
         addNotification('success', `${dataType} created successfully`);
         closeModal();
       } else {
-        addNotification('error', result.error || 'Failed to create item');
+        addNotification('error', (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).error || 'Failed to create item');
       }
     } catch (error) {
       console.error('Create error:', error);
@@ -230,14 +230,14 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
         body: JSON.stringify({ dataType, id, data })
       });
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; status?: any; json?: any }).json();
 
-      if (result.success) {
+      if ((result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).success) {
         await loadData();
         addNotification('success', `${dataType} updated successfully`);
         closeModal();
       } else {
-        addNotification('error', result.error || 'Failed to update item');
+        addNotification('error', (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).error || 'Failed to update item');
       }
     } catch (error) {
       console.error('Update error:', error);
@@ -255,13 +255,13 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
         body: JSON.stringify({ dataType, id })
       });
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; status?: any; json?: any }).json();
 
-      if (result.success) {
+      if ((result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).success) {
         await loadData();
         addNotification('success', `${dataType} deleted successfully`);
       } else {
-        addNotification('error', result.error || 'Failed to delete item');
+        addNotification('error', (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).error || 'Failed to delete item');
       }
     } catch (error) {
       console.error('Delete error:', error);
@@ -299,7 +299,7 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
 
     // Auto-remove after 5 seconds
     setTimeout(() => {
-      notifications = notifications.filter(n => n.id !== notification.id);
+      notifications = notifications.filter(n => n.id !== (notification as { id?: any; type?: any; message?: any }).id);
     }, 5000);
   }
 
@@ -372,15 +372,15 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
     <!-- Controls -->
     <div class="header-controls">
       <div class="search-container">
-  <input type="search" class="search-input" placeholder="Search legal data..." aria-label="Search legal data" bind:value={searchQuery} onchange={() => triggerSearch()} on:keydown={(e) => e.key === 'Enter' && loadData()} />
-        <button class="search-btn" onclick={() => loadData()}>SEARCH</button>
+  <input type="search" class="search-input" placeholder="Search legal data..." aria-label="Search legal data" bind:value={searchQuery} on:change={() => triggerSearch()} on:keydown={(e) => e.key === 'Enter' && loadData()} />
+        <button class="search-btn" on:click={() => loadData()}>SEARCH</button>
       </div>
 
-      <button class="analyze-btn" onclick={() => performEnhancedAnalysis(searchQuery)}>
+      <button class="analyze-btn" on:click={() => performEnhancedAnalysis(searchQuery)}>
         ENHANCED ANALYSIS
       </button>
 
-      <button class="terminal-btn" onclick={() => terminalActive = !terminalActive}>
+      <button class="terminal-btn" on:click={() => terminalActive = !terminalActive}>
         TERMINAL
       </button>
     </div>
@@ -390,19 +390,19 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
   <nav class="tab-navigation">
     <button
       class="tab-btn {activeTab === 'documents' ? 'active' : ''}"
-      onclick={() => activeTab = 'documents'}
+      on:click={() => activeTab = 'documents'}
     >
       DOCUMENTS
     </button>
     <button
       class="tab-btn {activeTab === 'cases' ? 'active' : ''}"
-      onclick={() => activeTab = 'cases'}
+      on:click={() => activeTab = 'cases'}
     >
       CASES
     </button>
     <button
       class="tab-btn {activeTab === 'evidence' ? 'active' : ''}"
-      onclick={() => activeTab = 'evidence'}
+      on:click={() => activeTab = 'evidence'}
     >
       EVIDENCE
     </button>
@@ -415,7 +415,7 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
       <section class="data-section">
         <div class="section-header">
           <h2 class="section-title">{activeTab.toUpperCase()} MANAGEMENT</h2>
-          <button class="create-btn" onclick={openCreateModal}>
+          <button class="create-btn" on:click={openCreateModal}>
             CREATE NEW {activeTab.toUpperCase().slice(0, -1)}
           </button>
         </div>
@@ -452,23 +452,23 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
             {#each ragResults as result}
               <div class="rag-result">
                 <div class="result-header">
-                  <h3 class="result-title">{result.title || 'Analysis Result'}</h3>
+                  <h3 class="result-title">{(result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).title || 'Analysis Result'}</h3>
                   <div class="result-meta">
-                    <span class="result-type">{result.yorha_type}</span>
+                    <span class="result-type">{(result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).yorha_type}</span>
                     <span class="result-confidence">
-                      {(result.yorha_confidence * 100).toFixed(1)}%
+                      {((result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).yorha_confidence * 100).toFixed(1)}%
                     </span>
                   </div>
                 </div>
                 <div class="result-content">
-                  {result.content || result.summary || 'No content available'}
+                  {(result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).content || (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).summary || 'No content available'}
                 </div>
-                {#if result.yorha_analysis}
+                {#if (result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).yorha_analysis}
                   <div class="result-analysis">
-                    <span class="analysis-item">Relevance: {(result.yorha_analysis.relevanceScore * 100).toFixed(1)}%</span>
-                    <span class="analysis-item">Legal Weight: {(result.yorha_analysis.legalWeight * 100).toFixed(1)}%</span>
-                    <span class="analysis-item">Risk: {(result.yorha_analysis.riskFactor * 100).toFixed(1)}%</span>
-                    <span class="analysis-item">Action: {result.yorha_analysis.actionRequired}</span>
+                    <span class="analysis-item">Relevance: {((result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).yorha_analysis.relevanceScore * 100).toFixed(1)}%</span>
+                    <span class="analysis-item">Legal Weight: {((result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).yorha_analysis.legalWeight * 100).toFixed(1)}%</span>
+                    <span class="analysis-item">Risk: {((result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).yorha_analysis.riskFactor * 100).toFixed(1)}%</span>
+                    <span class="analysis-item">Action: {(result as { success?: any; data?: any; pagination?: any; results?: any; analysis?: any; recommendations?: any; error?: any; title?: any; yorha_type?: any; yorha_confidence?: any; content?: any; summary?: any; yorha_analysis?: any }).yorha_analysis.actionRequired}</span>
                   </div>
                 {/if}
               </div>
@@ -526,13 +526,13 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
     <YoRHaModal
       open={modalOpen}
       title="{modalType === 'create' ? 'Create' : 'Edit'} {activeTab.toUpperCase().slice(0, -1)}"
-      on:close={closeModal}
+      onClose={closeModal}
     >
       <YoRHaForm
         title="{modalType === 'create' ? 'Create New' : 'Edit'} {activeTab.toUpperCase().slice(0, -1)}"
         fields={currentFormFields}
         submitLabel={modalType === 'create' ? 'Create' : 'Update'}
-        onsubmit={(data) => {
+        on:submit={(data) => {
           if (modalType === 'create') {
             createItem(activeTab, data);
           } else {
@@ -548,9 +548,9 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
   <div class="notifications" role="region" aria-live="polite" aria-label="Notifications">
     {#each notifications as notification}
       <YoRHaNotification
-        type={notification.type}
-        message={notification.message}
-        close={() => notifications = notifications.filter(n => n.id !== notification.id)}
+        type={(notification as { id?: any; type?: any; message?: any }).type}
+        message={(notification as { id?: any; type?: any; message?: any }).message}
+        close={() => notifications = notifications.filter(n => n.id !== (notification as { id?: any; type?: any; message?: any }).id)}
       />
     {/each}
   </div>

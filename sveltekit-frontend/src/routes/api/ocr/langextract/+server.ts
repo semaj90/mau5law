@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis';
 

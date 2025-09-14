@@ -1,6 +1,6 @@
 import { URL } from "url";
 
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 // Mock semantic search function
 const semanticSearch = async (query: string): Promise<any> => {
   return [{ text: `Mock result for: ${query}` }];

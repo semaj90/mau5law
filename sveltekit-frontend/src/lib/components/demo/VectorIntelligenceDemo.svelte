@@ -115,9 +115,9 @@
   </div>
 
   <!-- Search Interface -->
-  <NesCard class="mb-6">
+  <div class="mb-6 nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <Search class="h-5 w-5" />
         Semantic Search
       </h3>
@@ -125,7 +125,7 @@
         Search across legal documents using natural language and AI-powered similarity matching
       </p>
     </div>
-    <div class="yorha-panel-content" class="space-y-4">
+    <div class="yorha-panel-content space-y-4">
       <!-- Search Input -->
       <div class="flex gap-2">
         <Input
@@ -135,18 +135,18 @@
           keydown={(e) => e.key === 'Enter' && performSearch()}
         />
         <Button
-          onclick={performSearch}
+          on:click={performSearch}
           disabled={$isAnalyzing || !searchQuery.trim()}
           class="px-6 bits-btn bits-btn"
         >
-          {#if $isAnalyzing}
+{#if $isAnalyzing}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />
             Searching
           {:else}
             <Search class="h-4 w-4 mr-2" />
             Search
           {/if}
-        </button>
+</Button>
       </div>
 
       <!-- Filters -->
@@ -157,7 +157,7 @@
             <Badge
               variant={selectedFilters.includes(filter) ? 'default' : 'outline'}
               class="cursor-pointer hover:bg-blue-100 transition-colors"
-              onclick={() => toggleFilter(filter)}
+              on:click={() => toggleFilter(filter)}
             >
               {filter}
             </Badge>
@@ -174,22 +174,23 @@
               variant="outline"
               size="sm"
               class="text-xs bits-btn bits-btn"
-              onclick={() => useSampleQuery(query)}
+              on:click={() =>
+useSampleQuery(query)}
             >
               {query}
-            </button>
+</Button>
           {/each}
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Search Results -->
     <div class="lg:col-span-2">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Database class="h-5 w-5" />
             Search Results
             {#if searchResults?.results.length}
@@ -215,16 +216,16 @@
                         Document {index + 1}
                       </h3>
                       <p class="text-sm text-gray-600 line-clamp-3">
-                        {result.content}
+                        {(result as { content?: any; similarity?: any; metadata?: any }).content}
                       </p>
                     </div>
                     <div class="ml-4 text-right">
                       <div class="flex items-center gap-2">
                         <div
-                          class="w-3 h-3 rounded-full {getSimilarityColor(result.similarity)}"
+                          class="w-3 h-3 rounded-full {getSimilarityColor((result as { content?: any; similarity?: any; metadata?: any }).similarity)}"
                         ></div>
                         <span class="text-sm font-medium">
-                          {formatSimilarity(result.similarity)}
+                          {formatSimilarity((result as { content?: any; similarity?: any; metadata?: any }).similarity)}
                         </span>
                       </div>
                     </div>
@@ -232,7 +233,7 @@
 
                   <!-- Metadata -->
                   <div class="flex flex-wrap gap-2 mt-3">
-                    {#each Object.entries(result.metadata) as [key, value]}
+                    {#each Object.entries((result as { content?: any; similarity?: any; metadata?: any }).metadata) as [key, value]}
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{key}: {value}</span>
                     {/each}
                   </div>
@@ -253,16 +254,16 @@
             </div>
           {/if}
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Sidebar -->
     <div class="space-y-6">
       <!-- AI Suggestions -->
       {#if searchResults?.suggestions.length}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <Zap class="h-5 w-5" />
               AI Suggestions
             </h3>
@@ -276,18 +277,18 @@
               {/each}
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
 
       <!-- Search History -->
       {#if searchHistory.length > 0}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <div class="flex items-center justify-between">
-              <h3 class="nes-text is-primary" class="text-lg">Recent Searches</h3>
-              <Button class="bits-btn" variant="ghost" size="sm" onclick={clearHistory}>
-                Clear
-              </button>
+              <h3 class="nes-text is-primary text-lg">Recent Searches</h3>
+              <Button class="bits-btn" variant="ghost" size="sm" on:click={clearHistory}>
+Clear
+</Button>
             </div>
           </div>
           <div class="yorha-panel-content">
@@ -295,20 +296,20 @@
               {#each searchHistory as query}
                 <button
                   class="w-full text-left p-2 text-sm rounded hover:bg-gray-100 transition-colors"
-                  onclick={() => useHistoryQuery(query)}
+                  on:click={() => useHistoryQuery(query)}
                 >
                   {query}
-                </button>
+</Button>
               {/each}
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
 
       <!-- System Stats -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-lg">System Status</h3>
+          <h3 class="nes-text is-primary text-lg">System Status</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="space-y-3 text-sm">
@@ -330,7 +331,7 @@
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 </div>

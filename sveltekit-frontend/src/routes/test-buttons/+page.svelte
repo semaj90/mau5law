@@ -18,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
     isLoading = true;
     message = 'Loading...';
 
-    await new Promise(resolve => setTimeout(resolve, 1000);
+    await new Promise(resolve => setTimeout(resolve, 1000));
     message = 'Async operation complete!';
     isLoading = false;
   }
@@ -50,35 +50,35 @@ https://svelte.dev/e/js_parse_error -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <button
         class="nes-btn"
-  onclick={handleClick}
+  on:click={handleClick}
       >
         Basic Click
       </button>
 
       <button
         class="nes-btn is-primary"
-  onclick={() => handleNESClick('primary')}
+  on:click={() => handleNESClick('primary')}
       >
         Primary
       </button>
 
       <button
         class="nes-btn is-success"
-  onclick={() => handleNESClick('success')}
+  on:click={() => handleNESClick('success')}
       >
         Success
       </button>
 
       <button
         class="nes-btn is-warning"
-  onclick={() => handleNESClick('warning')}
+  on:click={() => handleNESClick('warning')}
       >
         Warning
       </button>
 
       <button
         class="nes-btn is-error"
-  onclick={() => handleNESClick('error')}
+  on:click={() => handleNESClick('error')}
       >
         Error
       </button>
@@ -86,14 +86,14 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="nes-btn is-disabled"
         disabled
-  onclick={() => handleNESClick('disabled')}
+  on:click={() => handleNESClick('disabled')}
       >
         Disabled
       </button>
 
       <button
         class="nes-btn"
-  onclick={handleAsyncClick}
+  on:click={handleAsyncClick}
         disabled={isLoading}
       >
         {isLoading ? 'Loading...' : 'Async Click'}
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <button
         class="nes-btn"
-  onclick={() => {
+  on:click={() => {
           message = 'Inline handler works!';
         }}
       >
@@ -116,21 +116,21 @@ https://svelte.dev/e/js_parse_error -->
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
       <button
         class="yorha-button px-6 py-3 rounded"
-  onclick={() => message = 'YoRHa Command Executed'}
+  on:click={() => message = 'YoRHa Command Executed'}
       >
         <span class="uppercase tracking-widest">Execute</span>
       </button>
 
       <button
         class="yorha-button-secondary px-6 py-3 rounded"
-  onclick={() => message = 'YoRHa Analysis Complete'}
+  on:click={() => message = 'YoRHa Analysis Complete'}
       >
         <span class="uppercase tracking-widest">Analyze</span>
       </button>
 
       <button
         class="yorha-button-danger px-6 py-3 rounded"
-  onclick={() => message = 'YoRHa Emergency Protocol'}
+  on:click={() => message = 'YoRHa Emergency Protocol'}
       >
         <span class="uppercase tracking-widest">Abort</span>
       </button>
@@ -143,8 +143,8 @@ https://svelte.dev/e/js_parse_error -->
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
       <button
         class="nes-btn"
-        onmouseenter={() => message = 'Mouse entered!'}
-        onmouseleave={() => message = 'Mouse left!'}
+        on:mouseenter={() => message = 'Mouse entered!'}
+        on:mouseleave={() => message = 'Mouse left!'}
       >
         Hover Me
       </button>
@@ -172,13 +172,13 @@ https://svelte.dev/e/js_parse_error -->
       type="text"
       class="nes-input"
       placeholder="Type something..."
-      onkeydown={(e: KeyboardEvent) => {
+      on:keydown={(e: KeyboardEvent) => {
         if (e.key === 'Enter') {
           const t = e.target as HTMLInputElement | null;
           message = `Enter pressed: ${t?.value ?? ''}`;
         }
       }}
-      oninput={(e: Event) => {
+      on:input={(e: Event) => {
         const t = e.target as HTMLInputElement | null;
         message = `Typing: ${t?.value ?? ''}`;
       }}
@@ -194,7 +194,7 @@ https://svelte.dev/e/js_parse_error -->
           <input
             type="checkbox"
             class="nes-checkbox"
-            onchange={(e: Event) => {
+            on:change={(e: Event) => {
               const t = e.target as HTMLInputElement | null;
               message = `Checkbox ${t?.checked ? 'checked' : 'unchecked'}`;
             }}
@@ -209,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
             type="radio"
             class="nes-radio"
             name="test"
-            onchange={() => message = 'Radio 1 selected'}
+            on:change={() => message = 'Radio 1 selected'}
           />
           <span>Option 1</span>
         </label>
@@ -218,14 +218,14 @@ https://svelte.dev/e/js_parse_error -->
             type="radio"
             class="nes-radio"
             name="test"
-            onchange={() => message = 'Radio 2 selected'}
+            on:change={() => message = 'Radio 2 selected'}
           />
           <span>Option 2</span>
         </label>
       </div>
 
       <div class="nes-select">
-  <select onchange={(e: Event) => { const t = e.target as HTMLSelectElement | null; message = `Selected: ${t?.value ?? ''}`; }}>
+  <select on:change={(e: Event) => { const t = e.target as HTMLSelectElement | null; message = `Selected: ${t?.value ?? ''}`; }}>
           <option value="">Select an option</option>
           <option value="option1">Option 1</option>
           <option value="option2">Option 2</option>
@@ -241,21 +241,21 @@ https://svelte.dev/e/js_parse_error -->
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
       <button
         class="nes-btn gpu-accelerated glow-effect"
-  onclick={() => message = 'GPU Glow effect!'}
+  on:click={() => message = 'GPU Glow effect!'}
       >
         Glow Effect
       </button>
 
       <button
         class="nes-btn gpu-accelerated pulse-effect"
-  onclick={() => message = 'GPU Pulse effect!'}
+  on:click={() => message = 'GPU Pulse effect!'}
       >
         Pulse Effect
       </button>
 
       <button
         class="nes-btn gpu-accelerated scan-effect"
-  onclick={() => message = 'GPU Scan effect!'}
+  on:click={() => message = 'GPU Scan effect!'}
       >
         Scan Lines
       </button>

@@ -194,7 +194,7 @@ class ConfigManager {
       
       database: {
         postgres: {
-          url: env.DATABASE_URL || env.POSTGRES_URL || 'postgresql://localhost:5432/legal_ai_db',
+          url: env.DATABASE_URL || env.POSTGRES_URL || 'postgresql://localhost:5433/legal_ai_db',
           maxConnections: parseInt(env.POSTGRES_MAX_CONNECTIONS) || (isWindows ? 20 : 25),
           ssl: env.POSTGRES_SSL === 'true' || env.NODE_ENV === 'production',
           timeout: parseInt(env.POSTGRES_TIMEOUT) || (isWindows ? 30000 : 20000),
@@ -500,11 +500,7 @@ class ConfigManager {
   }
 
   // Health check for configuration
-  public async healthCheck(): Promise<{
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    checks: Record<string, boolean>;
-    timestamp: string;
-  }> {
+  public async healthCheck(): Promise<any> {
     const checks: Record<string, boolean> = {};
     
     try {

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Database Orchestrator Conditions API
 // Manages event loop conditions and real-time triggers

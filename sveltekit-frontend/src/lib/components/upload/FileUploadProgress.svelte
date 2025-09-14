@@ -54,7 +54,7 @@
   });
 </script>
 
-<NesCard variant={variant} class="w-full">
+<div variant={variant} class="w-full nes-container">
   <!-- File info header -->
   <div class="flex items-center justify-between mb-4">
     <div class="flex items-center gap-3">
@@ -94,5 +94,5 @@
       Upload paused. Click to resume.
     </p>
   {/if}
-</NesCard>
+</div>
 

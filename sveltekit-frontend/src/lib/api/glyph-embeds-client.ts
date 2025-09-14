@@ -34,24 +34,13 @@ export interface GlyphEmbedRequest {
     enable_vector_store: boolean;
   };
   article_urls?: string[];
-  content_sources?: Array<{
-    type: 'article' | 'document' | 'text';
-    url?: string;
-    content?: string;
-    metadata?: Record<string, unknown>;
-  }>;
-}
+  content_sources?: Array<any>
 
 export interface SIMDShaderData {
   tiled_data: Float32Array;
   shader_code: string;
   compression_ratio: number;
-  tile_map: Array<{
-    index: number;
-    pattern_id: string;
-    frequency: number;
-    compressed_size: number;
-  }>;
+  tile_map: Array<any>;
   performance_stats: {
     tiling_time_ms: number;
     compression_time_ms: number;
@@ -73,20 +62,8 @@ export interface GlyphEmbedResult {
     embeddings_generated: number;
     vector_store_updates: number;
     summary_tokens: number;
-    semantic_matches: Array<{
-      content: string;
-      score: number;
-      chunk_id: string;
-      metadata?: Record<string, unknown>;
-    }>;
-  };
-  synthesized_glyphs?: Array<{
-    base_glyph_id: string;
-    combined_glyph_id: string;
-    synthesis_confidence: number;
-    did_you_mean_suggestions: string[];
-  }>;
-}
+    semantic_matches: Array<any>;
+  synthesized_glyphs?: Array<any>
 
 export interface GlyphEmbedResponse {
   success: boolean;
@@ -169,17 +146,17 @@ export class GlyphEmbedsClient {
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).statusText}`);
       }
 
-      const result: GlyphEmbedResponse = await response.json();
+      const result: GlyphEmbedResponse = await (response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).json();
       
       // Convert tiled_data back to Float32Array if it exists
-      if (result.data?.simd_shader_data?.tiled_data) {
-        const tiledDataArray = result.data.simd_shader_data.tiled_data;
+      if ((result as { data?: any; status?: any; value?: any; reason?: any }).data?.simd_shader_data?.tiled_data) {
+        const tiledDataArray = (result as { data?: any; status?: any; value?: any; reason?: any }).(data as { tiled_data?: any }).simd_shader_data.tiled_data;
         if (Array.isArray(tiledDataArray)) {
-          result.data.simd_shader_data.tiled_data = new Float32Array(tiledDataArray);
+          (result as { data?: any; status?: any; value?: any; reason?: any }).(data as { tiled_data?: any }).simd_shader_data.tiled_data = new Float32Array(tiledDataArray);
         }
       }
 
@@ -197,17 +174,17 @@ export class GlyphEmbedsClient {
   /**
    * Get health status of SIMD glyph service
    */
-  async getHealthStatus(): Promise<{ success: boolean; data?: GlyphHealthStatus; error?: string }> {
+  async getHealthStatus(): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}/api/glyph/simd-embeds`, {
         method: 'GET'
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).statusText}`);
       }
 
-      return await response.json();
+      return await (response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).json();
 
     } catch (error) {
       console.error('Health check failed:', error);
@@ -235,9 +212,9 @@ export class GlyphEmbedsClient {
     );
 
     return results.map(result => 
-      result.status === 'fulfilled' 
-        ? result.value 
-        : { success: false, error: result.reason?.message || 'Generation failed' }
+      (result as { data?: any; status?: any; value?: any; reason?: any }).status === 'fulfilled' 
+        ? (result as { data?: any; status?: any; value?: any; reason?: any }).value 
+        : { success: false, error: (result as { data?: any; status?: any; value?: any; reason?: any }).reason?.message || 'Generation failed' }
     );
   }
 
@@ -245,22 +222,14 @@ export class GlyphEmbedsClient {
    * Fetch articles and process with RAG chunking for glyph synthesis
    */
   async processArticlesWithRAG(
-    articles: Array<{url?: string, content?: string, metadata?: Record<string, unknown>}>,
+    articles: Array<,
     options: {
       chunk_size?: number;
       overlap_size?: number;
       enable_summarization?: boolean;
       enable_vector_store?: boolean;
     } = {}
-  ): Promise<{
-    success: boolean;
-    chunks?: Array<{
-      id: string;
-      content: string;
-      embedding?: number[];
-      summary?: string;
-      metadata?: Record<string, unknown>;
-    }>;
+  ): Promise<;
     error?: string;
   }> {
     try {
@@ -280,7 +249,7 @@ export class GlyphEmbedsClient {
         if (article.url && !content) {
           try {
             const response = await fetch(article.url);
-            content = await response.text();
+            content = await (response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).text();
           } catch (error) {
             console.warn(`Failed to fetch article: ${article.url}`, error);
             continue;
@@ -404,18 +373,7 @@ export class GlyphEmbedsClient {
       max_suggestions?: number;
       cache_synthesized?: boolean;
     } = {}
-  ): Promise<{
-    success: boolean;
-    synthesized_glyph?: {
-      id: string;
-      glyph_url: string;
-      base_glyph_ids: string[];
-      confidence: number;
-      generation_time_ms: number;
-    };
-    did_you_mean_suggestions?: string[];
-    error?: string;
-  }> {
+  ): Promise<any> {
     try {
       const {
         enable_did_you_mean = true,
@@ -515,13 +473,7 @@ export class GlyphEmbedsClient {
       threshold?: number;
       include_synthesized?: boolean;
     } = {}
-  ): Promise<{
-    success: boolean;
-    matches?: Array<{
-      glyph_id: string;
-      score: number;
-      metadata?: Record<string, unknown>;
-    }>;
+  ): Promise<;
     error?: string;
   }> {
     try {
@@ -602,7 +554,7 @@ export class GlyphEmbedsClient {
   async createShaderForCanvas(
     glyphResult: GlyphEmbedResult,
     targetFormat: 'webgl' | 'webgpu' = 'webgpu'
-  ): Promise<{ success: boolean; shaderCode?: string; error?: string }> {
+  ): Promise<any> {
     try {
       if (!glyphResult.simd_shader_data) {
         throw new Error('No SIMD shader data available');
@@ -646,7 +598,7 @@ export class GlyphEmbedsClient {
   async downloadEnhancedArtifact(
     glyphResult: GlyphEmbedResult,
     filename?: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<any> {
     try {
       if (!glyphResult.enhanced_artifact_url) {
         throw new Error('No enhanced artifact available');

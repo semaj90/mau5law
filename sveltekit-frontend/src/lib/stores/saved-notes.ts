@@ -85,7 +85,7 @@ export const filteredNotes = derived(
       });
 
       const results = fuse.search($noteFilters.search);
-      return results.map((result) => result.item);
+      return results.map((result) => (result as { item?: any }).item);
     }
     return notes.sort(
       (a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime()
@@ -203,8 +203,8 @@ class NotesManager {
         },
       });
 
-      if (response.ok) {
-        const serverNotes: SavedNote[] = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const serverNotes: SavedNote[] = await (response as { ok?: any; json?: any }).json();
 
         // Merge with local notes, preferring newer timestamps
         savedNotes.update((localNotes) => {

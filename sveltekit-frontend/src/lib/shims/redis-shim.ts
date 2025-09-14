@@ -4,7 +4,7 @@ export async function createClient(opts?: any) {
   const url = typeof opts === 'string' ? opts : opts?.url || process.env.REDIS_URL || 'redis://127.0.0.1:6379';
   const password = opts?.password || process.env.REDIS_PASSWORD;
   const { default: IORedis } = await import('ioredis');
-  const client = new IORedis(url, password ? { password } : {});
+  const client = new IORedis(url, password ? { password } : Record<string, any>);
 
   // Attach minimal NOAUTH graceful handling to reduce noisy loops
   client.on('error', (err: any) => {

@@ -6,10 +6,10 @@ try {
 } catch {
   // Provide minimal fallback schema structure
   schema = {
-    documents: { title: "", content: "", titleEmbedding: [], contentEmbedding: [], metadata: {} },
-    documentVectors: {},
-    evidence: {},
-    cases: {}
+    documents: { title: "", content: "", titleEmbedding: [], contentEmbedding: [], metadata: Record<string, any> },
+    documentVectors: Record<string, any>,
+    evidence: Record<string, any>,
+    cases: Record<string, any>
   };
 }
 import Redis from "ioredis";
@@ -641,7 +641,7 @@ Analysis:
   private async generateAutoTags(
     content: string,
     documentType: string
-  ): Promise<Array<{ tag: string; confidence: number }>> {
+  ): Promise<Array<any> {
     const tagPrompt = PromptTemplate.fromTemplate(`
 Extract relevant legal tags from this {documentType} document.
 Focus on: legal concepts, parties, jurisdictions, case types, and key topics.

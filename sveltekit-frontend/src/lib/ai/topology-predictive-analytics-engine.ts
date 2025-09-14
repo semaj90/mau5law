@@ -7,9 +7,9 @@
  * learning from user interactions and content relationships.
  */
 
-import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js';
-import { vectorMetadataAutoEncoder, type EncodedVectorMetadata } from './vector-metadata-auto-encoder.js';
-import { enhancedRAGGlyphSystem, type GlyphContext } from './enhanced-rag-glyph-system.js';
+import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js.js';
+import { vectorMetadataAutoEncoder, type EncodedVectorMetadata } from './vector-metadata-auto-encoder.js.js';
+import { enhancedRAGGlyphSystem, type GlyphContext } from './enhanced-rag-glyph-system.js.js';
 
 // Predictive analytics configuration
 interface PredictiveAnalyticsConfig {
@@ -66,22 +66,10 @@ interface UserInteractionPattern {
 // Predictive analytics results
 interface PredictiveAnalyticsResult {
   // Primary predictions
-  predicted_queries: Array<{
-    query: string;
-    confidence: number;
-    predicted_intent: string;
-    semantic_category: string;
-    estimated_complexity: number;
-  }>;
+  predicted_queries: Array<any>;
   
   // Content predictions
-  recommended_content: Array<{
-    content_id: string;
-    relevance_score: number;
-    predicted_usage_context: string;
-    prefetch_priority: number;
-    estimated_value: number;
-  }>;
+  recommended_content: Array<any>;
   
   // Behavioral insights
   user_intent_analysis: {
@@ -96,11 +84,7 @@ interface PredictiveAnalyticsResult {
   semantic_topology: {
     current_position: Float32Array;    // Position in semantic space
     trajectory_vector: Float32Array;   // Direction of movement
-    nearby_clusters: Array<{
-      cluster_id: number;
-      distance: number;
-      predicted_relevance: number;
-    }>;
+    nearby_clusters: Array<any>;
     topology_stability: number;        // How stable is current position
     predicted_next_positions: Float32Array[]; // Likely next positions
   };
@@ -154,12 +138,7 @@ interface TopologyRelationship {
 
 // Neural topology network for pattern recognition
 interface NeuralTopologyNetwork {
-  layers: Array<{
-    neurons: number;
-    activation: 'relu' | 'sigmoid' | 'tanh' | 'leaky_relu';
-    weights: Float32Array[];
-    biases: Float32Array;
-  }>;
+  layers: Array<any>;
   topology_embedding_layer: {
     input_dimensions: number;
     output_dimensions: number;
@@ -404,12 +383,7 @@ class TopologyPredictiveAnalyticsEngine {
       interaction_timestamp: number;
       session_quality: number;
     }
-  ): Promise<{
-    learning_applied: boolean;
-    model_updates: string[];
-    confidence_adjustments: number[];
-    topology_updates: string[];
-  }> {
+  ): Promise<any> {
     console.log(`📖 Learning from user feedback for query: "${originalQuery}"`);
     
     const learningResults = {
@@ -501,13 +475,7 @@ class TopologyPredictiveAnalyticsEngine {
       min_confidence?: number;
       include_contextual?: boolean;
     } = {}
-  ): Promise<Array<{
-    completion: string;
-    confidence: number;
-    predicted_intent: string;
-    contextual_relevance: number;
-    topology_support: number;
-  }>> {
+  ): Promise<Array<any> {
     if (!this.config.enable_query_completion || partialQuery.length < 2) {
       return [];
     }
@@ -1005,7 +973,7 @@ class TopologyPredictiveAnalyticsEngine {
     this.performanceStats.total_predictions++;
     this.performanceStats.average_confidence = 
       (this.performanceStats.average_confidence * (this.performanceStats.total_predictions - 1) +
-       result.prediction_confidence.overall_confidence) / this.performanceStats.total_predictions;
+       (result as { prediction_confidence?: any }).prediction_confidence.overall_confidence) / this.performanceStats.total_predictions;
   }
 
   // Placeholder methods for learning components

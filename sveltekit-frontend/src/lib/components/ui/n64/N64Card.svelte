@@ -76,7 +76,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     renderDistance = 'medium'
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
 
   let cardElement: HTMLElement;
   let container: HTMLDivElement;
@@ -282,7 +283,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   function handleClick(event: MouseEvent) {
     if (!clickable) return;
     playSpatialSound('click', 660, 0.08);
-    dispatch('click', event);
+    onClick?.(event);
   }
 
   function handleKeydown(event: KeyboardEvent) {
@@ -292,7 +293,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         handleClick(event as any);
       } else if (selectable) {
         selected = !selected;
-        dispatch('select', { selected });
+        onSelect?.({ selected });
       }
     }
   }
@@ -333,13 +334,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     {tabindex}
     aria-label={ariaLabel}
     aria-describedby={ariaDescribedby}
-    on:mousemove={handleMouseMove}
+    onMousemove={handleMouseMove}
     on:mouseenter={handleMouseEnter}
     on:mouseleave={handleMouseLeave}
-    on:mousedown={handleMouseDown}
-    on:mouseup={handleMouseUp}
-    onclick={handleClick}
-    onkeydown={handleKeydown}
+    onMousedown={handleMouseDown}
+    onmouseup={onclick}
+    on:keydown={handleKeydown}
   >
     <!-- N64 Visual Enhancement Layers -->
     <div class="n64-nier-bits-card-overlay" aria-hidden="true">

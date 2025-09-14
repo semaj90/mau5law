@@ -97,14 +97,7 @@ class CUDACacheMemoryOptimizer {
   /**
    * Main entry point: Optimize model selection based on user intent
    */
-  async optimizeModelSelection(query: string, userContext: any = {}): Promise<{
-    recommendedModel: string;
-    confidence: number;
-    switchEstimatedTime: number;
-    memoryOptimizations: string[];
-    userIntentPrediction: UserIntent;
-    didYouMeanSuggestions: string[];
-  }> {
+  async optimizeModelSelection(query: string, userContext: any = {}): Promise<any> {
     const startTime = performance.now();
 
     try {
@@ -251,7 +244,7 @@ class CUDACacheMemoryOptimizer {
   /**
    * Find optimal model using SOM-learned patterns
    */
-  private async findOptimalModel(userIntent: UserIntent): Promise<{ modelId: string; confidence: number }> {
+  private async findOptimalModel(userIntent: UserIntent): Promise<any> {
     let bestModel = 'gemma270m';
     let bestScore = 0;
     let confidence = 0.5;
@@ -719,13 +712,7 @@ class CUDACacheMemoryOptimizer {
   /**
    * Get optimizer status and statistics
    */
-  async getOptimizerStats(): Promise<{
-    memoryUsage: number;
-    modelProfiles: number;
-    userIntentHistory: number;
-    somNeuronActivations: number;
-    cacheHitRate: number;
-  }> {
+  async getOptimizerStats(): Promise<any> {
     const totalActivations = this.somNeurons
       .flat()
       .reduce((sum, neuron) => sum + neuron.activationCount, 0);

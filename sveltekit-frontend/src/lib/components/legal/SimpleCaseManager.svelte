@@ -75,8 +75,7 @@ https://svelte.dev/e/js_parse_error -->
   // Search cases with debouncing
   let searchTimeout = $state<NodeJS.Timeout;
   async function handleSearch() {
-    clearTimeout(searchTimeout);
-    searchTimeout >(setTimeout(async () => {
+    clearTimeout(searchTimeout)searchTimeout | null>(null)(setTimeout(async () => {
       const query = $searchQuery.trim());
       if (!query) {
         await loadCases();
@@ -220,7 +219,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <button 
         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-sm transition-colors duration-200"
-        onclick={() => isCreateDialogOpen.set(true)}
+        on:click={() => isCreateDialogOpen.set(true)}
       >
         + Create New Case
       </button>
@@ -240,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <button 
         class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors duration-200"
-        onclick={loadCases}
+        on:click={loadCases}
       >
         Refresh
       </button>
@@ -262,7 +261,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <button 
             class="ml-auto flex-shrink-0"
-            onclick={() => error.set('')}
+            on:click={() => error.set('')}
           >
             <svg class="h-5 w-5 text-red-400 hover:text-red-600" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -342,13 +341,13 @@ https://svelte.dev/e/js_parse_error -->
               <div class="flex space-x-2">
                 <button 
                   class="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded hover:bg-blue-50 transition-colors duration-200"
-                  onclick={() => openEditDialog(caseData)}
+                  on:click={() => openEditDialog(caseData)}
                 >
                   Edit
                 </button>
                 <button 
                   class="text-red-600 hover:text-red-800 text-sm font-medium px-3 py-1 rounded hover:bg-red-50 transition-colors duration-200"
-                  onclick={() => deleteCase(caseData.id!)}
+                  on:click={() => deleteCase(caseData.id!)}
                 >
                   Delete
                 </button>
@@ -376,7 +375,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mt-6">
             <button 
               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-200"
-              onclick={() => isCreateDialogOpen.set(true)}
+              on:click={() => isCreateDialogOpen.set(true)}
             >
               Create First Case
             </button>
@@ -389,7 +388,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <!-- Create Case Modal -->
 {#if $isCreateDialogOpen}
-  <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" onclick={() => isCreateDialogOpen.set(false)}>
+  <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" on:click={() => isCreateDialogOpen.set(false)}>
     <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white" click|stopPropagation>
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Create New Case</h3>
@@ -473,7 +472,7 @@ https://svelte.dev/e/js_parse_error -->
             <button 
               type="button" 
               class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-              onclick={() => isCreateDialogOpen.set(false)}
+              on:click={() => isCreateDialogOpen.set(false)}
             >
               Cancel
             </button>
@@ -493,7 +492,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <!-- Edit Case Modal -->
 {#if $isEditDialogOpen}
-  <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" onclick={() => isEditDialogOpen.set(false)}>
+  <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" on:click={() => isEditDialogOpen.set(false)}>
     <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white" click|stopPropagation>
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Case</h3>
@@ -577,7 +576,7 @@ https://svelte.dev/e/js_parse_error -->
             <button 
               type="button" 
               class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-              onclick={() => isEditDialogOpen.set(false)}
+              on:click={() => isEditDialogOpen.set(false)}
             >
               Cancel
             </button>

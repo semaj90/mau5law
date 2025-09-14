@@ -24,8 +24,7 @@ https://svelte.dev/e/component_invalid_directive -->
   import { Select } from "$lib/components/ui/select";
   import { Separator } from "$lib/components/ui/separator";
   let editor = $state<Editor | null >(null);
-  let editorElement = $state<HTMLElement;
-  onMount(() => {
+  let editorElement = $state<HTMLElementonMount(() = | null>(null)() {
     editor = new Editor({
       element: editorElement,
       extensions: [StarterKit],
@@ -52,18 +51,20 @@ https://svelte.dev/e/component_invalid_directive -->
         variant="ghost" 
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
-        onclick={() => editor?.commands.undo()}
+        on:click={() =>
+editor?.commands.undo()}
       >
         ↶
-      </button>
+
       <Button 
         variant="ghost" 
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
-        onclick={() => editor?.commands.redo()}
+        on:click={() =>
+editor?.commands.redo()}
       >
         ↷
-      </button>
+
     </div>
     
     <Separator orientation="vertical" class="nier-toolbar-separator" />
@@ -94,19 +95,21 @@ https://svelte.dev/e/component_invalid_directive -->
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
         class:active={editor?.isActive('bold')}
-        onclick={() => editor?.chain().focus().toggleBold().run()}
+        on:click={() =>
+editor?.chain().focus().toggleBold().run()}
       >
         <strong>B</strong>
-      </button>
+
       <Button 
         variant="ghost" 
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
         class:active={editor?.isActive('italic')}
-        onclick={() => editor?.chain().focus().toggleItalic().run()}
+        on:click={() =>
+editor?.chain().focus().toggleItalic().run()}
       >
         <em>I</em>
-      </button>
+
     </div>
   </div>
   

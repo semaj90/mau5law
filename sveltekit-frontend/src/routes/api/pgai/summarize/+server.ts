@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Repaired minimal pgAI summarize endpoint. Full DB & pgai integration deferred for compile stability.
 export const POST: RequestHandler = async ({ request }) => {

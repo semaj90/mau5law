@@ -249,28 +249,28 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Flatten and process results
     const allResults: VectorSearchResult[] = searchResults.flat().map((result: any) => {
-      const similarity = Number(result.similarity);
-      const vectorType = result.vector_type as keyof typeof boost_factors;
+      const similarity = Number((result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).similarity);
+      const vectorType = (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).vector_type as keyof typeof boost_factors;
       const boostFactor = boost_factors[vectorType] || 1.0;
       const boostedScore = similarity * boostFactor;
 
       return {
-        id: result.id,
-        entity_type: result.entity_type,
-        vector_type: result.vector_type,
+        id: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).id,
+        entity_type: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).entity_type,
+        vector_type: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).vector_type,
         similarity,
         boosted_score: boostedScore,
-        title: result.title || 'Untitled',
-        content: result.content,
-        summary: result.summary,
+        title: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).title || 'Untitled',
+        content: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).content,
+        summary: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).summary,
         metadata: {
-          document_type: result.document_type,
-          risk_level: result.risk_level,
-          confidence_level: result.confidence_level,
-          case_title: result.case_title,
-          jurisdiction: result.jurisdiction,
-          practice_area: result.practice_area,
-          created_at: result.created_at?.toISOString() || new Date().toISOString(),
+          document_type: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).document_type,
+          risk_level: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).risk_level,
+          confidence_level: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).confidence_level,
+          case_title: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).case_title,
+          jurisdiction: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).jurisdiction,
+          practice_area: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).practice_area,
+          created_at: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).created_at?.toISOString() || new Date().toISOString(),
         },
       };
     });
@@ -296,7 +296,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
 
     // Cache results
-    await cacheSearchResults(query, 'vector-api', response.results, {
+    await cacheSearchResults(query, 'vector-api', (response as { results?: any }).results, {
       threshold,
       limit,
       entity_types,
@@ -334,7 +334,7 @@ export const GET: RequestHandler = async ({ url }) => {
       entity_types: (url.searchParams.get('entity_types')?.split(',') as any) || ['document'],
       vector_types: (url.searchParams.get('vector_types')?.split(',') as any) || ['content'],
       include_content: url.searchParams.get('include_content') === 'true',
-      filters: {},
+      filters: Record<string, any>,
     };
 
     // Add filters from URL params

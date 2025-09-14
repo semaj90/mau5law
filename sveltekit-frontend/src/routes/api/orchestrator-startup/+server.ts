@@ -1,5 +1,5 @@
 import orchestrator from "$lib/services/comprehensive-database-orchestrator";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Orchestrator Startup API - Initialize and manage the comprehensive system
 // Handles startup, monitoring, and coordination of all services
@@ -300,7 +300,7 @@ async function performSystemHealthCheck(): Promise<any> {
   try {
     const healthResults = {
       orchestrator: (orchestrator as any).getStatus?.(),
-      services: {},
+      services: Record<string, any>,
       database: null,
       overall_status: 'unknown',
     };

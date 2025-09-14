@@ -4,8 +4,8 @@
  */
 
 import * as THREE from 'three';
-import { YoRHa3DComponent, YORHA_COLORS, type YoRHaAnimation } from '../YoRHaUI3D';
-import { yorhaWebGPU, type Vector3GPU, type YoRHaComputeResult } from '../webgpu/YoRHaWebGPUMath';
+import { YoRHa3DComponent, YORHA_COLORS, type YoRHaAnimation } from '../YoRHaUI3D.js';
+import { yorhaWebGPU, type Vector3GPU, type YoRHaComputeResult } from '../webgpu/YoRHaWebGPUMath.js';
 
 export interface QuantumFieldOptions {
   particleCount: number;
@@ -44,27 +44,10 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
   private realityMatrix: THREE.Group | null = null;
   
   // Quantum simulation data
-  private quantumParticles: Array<{
-    position: Vector3GPU;
-    waveFunction: Complex;
-    entangled: boolean;
-    entanglementPartner?: number;
-    probability: number;
-    collapsed: boolean;
-    spin: number;
-    phase: number;
-  }> = [];
+  private quantumParticles: Array< = [];
   
   // Consciousness simulation
-  private consciousnessNodes: Array<{
-    position: Vector3GPU;
-    activation: number;
-    connections: number[];
-    thought: string;
-    awareness: number;
-    firing: boolean;
-    lastFired: number;
-  }> = [];
+  private consciousnessNodes: Array< = [];
   
   // Reality distortion effects
   private glitchMaterials: THREE.ShaderMaterial[] = [];
@@ -536,7 +519,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
   // Quantum state update methods
   private updateQuantumStates(result: YoRHaComputeResult): void {
     // Process WebGPU quantum simulation results
-    const data = result.data;
+    const data = (result as { data?: any }).data;
     
     for (let i = 0; i < this.quantumParticles.length; i++) {
       const particle = this.quantumParticles[i];

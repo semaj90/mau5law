@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface PrecedentSearchRequest {
   query?: string;
@@ -62,16 +62,7 @@ interface CitationNetwork {
 }
 
 interface LegalReasoningChain {
-  steps: Array<{
-    stepNumber: number;
-    legalPrinciple: string;
-    supportingCases: string[];
-    factualBasis: string;
-    logicalConnection: string;
-    strengthScore: number;
-    vulnerabilities: string[];
-    counterarguments: string[];
-  }>;
+  steps: Array<any>;
   overallCoherence: number;
   logicalGaps: string[];
   alternativeTheories: string[];

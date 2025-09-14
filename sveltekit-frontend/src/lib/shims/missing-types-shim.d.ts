@@ -25,9 +25,8 @@ declare global {
     similaritySearch: (query: string, options?: { limit?: number }) => Promise<any[]>;
   };
   type ErrorProcessingPipeline = {
-    processErrors: (errors: Error[]) => Promise<{ processed: number; fixed: number }>;
-    analyzeError: (error: Error) => Promise<{ category: string; severity: 'low' | 'medium' | 'high' }>;
-  };
+    processErrors: (errors: Error[]) => Promise<;
+    analyzeError: (error: Error) => Promise<any>;
 }
 
 // API Request/Response Types - Using proper definitions
@@ -55,7 +54,7 @@ declare global {
     limit?: number;
   };
   type CommandSearchResponse = {
-    results: Array<{ id: string; title: string; description: string; score: number }>;
+    results: Array<any>;
     total: number;
   };
   type BulkOperationResponse = ProperBulkOperationResponse;

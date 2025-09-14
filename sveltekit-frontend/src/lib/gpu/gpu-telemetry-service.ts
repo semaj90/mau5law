@@ -1,4 +1,4 @@
-import { telemetryBus } from '../telemetry/telemetry-bus.js';
+import { telemetryBus } from '../telemetry/telemetry-bus.js.js';
 
 export interface OperationSample {
   pipeline: string;

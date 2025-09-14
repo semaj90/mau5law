@@ -185,12 +185,7 @@ export class DimensionalCacheEngine {
     userId: string,
     currentContext: string,
     limit = 5
-  ): Promise<{
-    similar: DimensionalArray[];
-    suggestions: string[];
-    didYouMean: string[];
-    othersSearched: string[];
-  }> {
+  ): Promise<any> {
     const history = this.computationHistory.get(userId) || [];
     const similar: DimensionalArray[] = [];
     const suggestions: string[] = [];

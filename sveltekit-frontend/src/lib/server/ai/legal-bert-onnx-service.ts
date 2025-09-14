@@ -33,22 +33,13 @@ interface ONNXModelConfig {
 }
 
 interface LegalEntityExtractionResult {
-  entities: Array<{
-    text: string;
-    label: string;
-    confidence: number;
-    start: number;
-    end: number;
-  }>;
+  entities: Array<any>;
   processingTime: number;
   modelUsed: string;
 }
 
 interface LegalClassificationResult {
-  predictions: Array<{
-    label: string;
-    confidence: number;
-  }>;
+  predictions: Array<any>;
   topPrediction: {
     label: string;
     confidence: number;
@@ -395,7 +386,7 @@ export class LegalBertONNXService extends EventEmitter {
   /**
    * Process NER outputs to extract entities
    */
-  private processNEROutputs(outputs: any, originalText: string, tokens: any): Array<{ text: string; label: string; confidence: number; start: number; end: number }> {
+  private processNEROutputs(outputs: any, originalText: string, tokens: any): Array< {
     // This is a simplified implementation
     // In production, you would:
     // 1. Apply softmax to get probabilities
@@ -414,7 +405,7 @@ export class LegalBertONNXService extends EventEmitter {
   /**
    * Process classification outputs
    */
-  private processClassificationOutputs(outputs: any): Array<{ label: string; confidence: number }> {
+  private processClassificationOutputs(outputs: any): Array< {
     // Mock classification results - replace with actual processing
     const legalDocTypes = [
       { label: 'contract', confidence: 0.85 },

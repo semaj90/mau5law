@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import type { EmbeddingResponse } from "$lib/types/ollama";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Ollama Embeddings API Endpoint

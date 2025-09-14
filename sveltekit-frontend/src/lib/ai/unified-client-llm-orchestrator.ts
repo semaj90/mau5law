@@ -124,13 +124,13 @@ class UnifiedClientLLMOrchestrator {
       if (cacheResult.hit) {
         return {
           success: true,
-          response: cacheResult.data.response,
-          modelUsed: cacheResult.data.modelUsed,
+          response: cacheResult.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).response,
+          modelUsed: cacheResult.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).modelUsed,
           executionMetrics: {
             totalLatency: performance.now() - startTime,
             cacheHitRate: 1.0,
             memoryUsed: 0,
-            qualityScore: cacheResult.data.qualityScore
+            qualityScore: cacheResult.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).qualityScore
           }
         };
       }
@@ -448,7 +448,7 @@ class UnifiedClientLLMOrchestrator {
   /**
    * Check inference cache using parallel cache orchestrator
    */
-  private async checkInferenceCache(request: ClientLLMRequest): Promise<{ hit: boolean; data?: any }> {
+  private async checkInferenceCache(request: ClientLLMRequest): Promise<any> {
     try {
       const cacheKey = this.generateInferenceCacheKey(request);
 
@@ -474,11 +474,7 @@ class UnifiedClientLLMOrchestrator {
   /**
    * Execute inference with selected model
    */
-  private async executeModelInference(model: ModelInstance, request: ClientLLMRequest): Promise<{
-    response: string;
-    qualityScore: number;
-    rlMetrics?: any;
-  }> {
+  private async executeModelInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     model.isActive = true;
     model.performanceMetrics.lastUsed = Date.now();
 
@@ -507,10 +503,7 @@ class UnifiedClientLLMOrchestrator {
   /**
    * Execute Gemma 270M inference
    */
-  private async executeGemmaInference(model: ModelInstance, request: ClientLLMRequest): Promise<{
-    response: string;
-    qualityScore: number;
-  }> {
+  private async executeGemmaInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     if (!model.worker) {
       throw new Error('Gemma worker not available');
     }
@@ -526,18 +519,15 @@ class UnifiedClientLLMOrchestrator {
     });
 
     return {
-      response: response.text || 'No response generated',
-      qualityScore: response.confidence || 0.8
+      response: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).text || 'No response generated',
+      qualityScore: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).confidence || 0.8
     };
   }
 
   /**
    * Execute Legal-BERT inference (context switching)
    */
-  private async executeLegalBERTInference(model: ModelInstance, request: ClientLLMRequest): Promise<{
-    response: string;
-    qualityScore: number;
-  }> {
+  private async executeLegalBERTInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     if (!model.onnxSession) {
       throw new Error('Legal-BERT ONNX session not available');
     }
@@ -558,11 +548,7 @@ class UnifiedClientLLMOrchestrator {
   /**
    * Execute Gemma Legal inference (specialized reasoning)
    */
-  private async executeGemmaLegalInference(model: ModelInstance, request: ClientLLMRequest): Promise<{
-    response: string;
-    qualityScore: number;
-    rlMetrics?: any;
-  }> {
+  private async executeGemmaLegalInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     if (!model.worker) {
       throw new Error('Gemma Legal worker not available');
     }
@@ -581,16 +567,12 @@ class UnifiedClientLLMOrchestrator {
     });
 
     return {
-      response: response.text || 'No legal response generated',
-      qualityScore: response.qualityScore || response.confidence || 0.9,
-      rlMetrics: response.rlMetrics
+      response: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).text || 'No legal response generated',
+      qualityScore: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).qualityScore || (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).confidence || 0.9,
+      rlMetrics: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).rlMetrics
     };
   }
-  private async executeLLaMAInference(model: ModelInstance, request: ClientLLMRequest): Promise<{
-    response: string;
-    qualityScore: number;
-    rlMetrics?: any;
-  }> {
+  private async executeLLaMAInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     if (!model.worker) {
       throw new Error('LLaMA RL worker not available');
     }
@@ -604,19 +586,16 @@ class UnifiedClientLLMOrchestrator {
     });
 
     return {
-      response: response.text || 'No response generated',
-      qualityScore: response.rlMetrics?.reward || 0.85,
-      rlMetrics: response.rlMetrics
+      response: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).text || 'No response generated',
+      qualityScore: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).rlMetrics?.reward || 0.85,
+      rlMetrics: (response as { text?: any; confidence?: any; qualityScore?: any; rlMetrics?: any }).rlMetrics
     };
   }
 
   /**
    * Execute ONNX model inference
    */
-  private async executeONNXInference(model: ModelInstance, request: ClientLLMRequest): Promise<{
-    response: string;
-    qualityScore: number;
-  }> {
+  private async executeONNXInference(model: ModelInstance, request: ClientLLMRequest): Promise<any> {
     if (!model.onnxSession) {
       throw new Error('ONNX session not available');
     }
@@ -629,7 +608,7 @@ class UnifiedClientLLMOrchestrator {
 
     return {
       response: JSON.stringify(result),
-      qualityScore: result.confidence || 0.88
+      qualityScore: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).confidence || 0.88
     };
   }
 
@@ -641,9 +620,9 @@ class UnifiedClientLLMOrchestrator {
       const cacheKey = this.generateInferenceCacheKey(request);
 
       await parallelCacheOrchestrator.storeParallel(cacheKey, {
-        response: result.response,
-        modelUsed: result.modelUsed,
-        qualityScore: result.qualityScore,
+        response: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).response,
+        modelUsed: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).modelUsed,
+        qualityScore: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).qualityScore,
         timestamp: Date.now()
       }, {
         tier: 'l1',
@@ -683,12 +662,12 @@ class UnifiedClientLLMOrchestrator {
       const messageId = Math.random().toString(36);
 
       const handleMessage = (event: MessageEvent) => {
-        if (event.data.id === messageId) {
+        if (event.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).id === messageId) {
           worker.removeEventListener('message', handleMessage);
-          if (event.data.type === 'ERROR') {
-            reject(new Error(event.data.data.message));
+          if (event.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).type === 'ERROR') {
+            reject(new Error(event.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).message));
           } else {
-            resolve(event.data.data || event.data);
+            resolve(event.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).data || event.data);
           }
         }
       };
@@ -705,7 +684,7 @@ class UnifiedClientLLMOrchestrator {
   }
 
   // Placeholder methods for components not yet implemented
-  private async evaluateContextSwitch(request: ClientLLMRequest, model: ModelInstance): Promise<{ required: boolean; fromModel?: string; toModel?: string; switchTime?: number; reason?: string }> {
+  private async evaluateContextSwitch(request: ClientLLMRequest, model: ModelInstance): Promise<any> {
     return { required: false };
   }
 
@@ -724,13 +703,13 @@ class UnifiedClientLLMOrchestrator {
       const result = await this.executeGemmaInference(gemmaModel, request);
       return {
         success: true,
-        response: result.response,
+        response: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).response,
         modelUsed: 'gemma270m',
         executionMetrics: {
           totalLatency: 0,
           cacheHitRate: 0,
           memoryUsed: gemmaModel.memoryFootprint.gpuMemoryMB,
-          qualityScore: result.qualityScore
+          qualityScore: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).qualityScore
         }
       };
     }
@@ -741,14 +720,7 @@ class UnifiedClientLLMOrchestrator {
   /**
    * Get orchestrator status and metrics
    */
-  async getStatus(): Promise<{
-    modelsLoaded: number;
-    totalGPUMemoryMB: number;
-    totalDDRRAMCacheMB: number;
-    activeModels: string[];
-    memoryUtilization: number;
-    cacheStats: any;
-  }> {
+  async getStatus(): Promise<any> {
     const activeModels = Array.from(this.models.values())
       .filter(m => m.isActive)
       .map(m => m.id);

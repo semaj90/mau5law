@@ -9,10 +9,11 @@ https://svelte.dev/e/js_parse_error -->
     onview?: (event?: any) => void;
     ondownload?: (event?: any) => void;
   }
-  let {
-    evidence,
+  let { evidence,
     disabled = false
-  } = $props();
+   }: { evidence,
+    disabled = false
+  : any } = $props();
 
 
 
@@ -138,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Actions -->
     <div class="flex-shrink-0 flex items-center gap-1">
       <button
-        onclick={() => handleView()}
+        on:click={() => handleView()}
         class="p-1 text-gray-400 hover:text-gray-600 rounded"
         title="View evidence"
         {disabled}
@@ -147,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
 
       <button
-        onclick={() => handleEdit()}
+        on:click={() => handleEdit()}
         class="p-1 text-gray-400 hover:text-gray-600 rounded"
         title="Edit evidence"
         {disabled}
@@ -156,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
 
       <button
-        onclick={() => handleDownload()}
+        on:click={() => handleDownload()}
         class="p-1 text-gray-400 hover:text-gray-600 rounded"
         title="Download evidence"
         {disabled}
@@ -165,7 +166,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
 
       <button
-        onclick={() => handleDelete()}
+        on:click={() => handleDelete()}
         class="p-1 text-red-400 hover:text-red-600 rounded"
         title="Delete evidence"
         {disabled}

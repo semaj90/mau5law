@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import { healthCheck } from "$lib/server/db/index.js";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Environment variables for Ollama configuration
@@ -51,15 +51,15 @@ async function checkOllamaStatus(): Promise<any> {
 
     clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    const data = await response.json();
+    const data = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
     
     return {
       status: 'connected',
-      version: data.version || 'unknown',
+      version: (data as { version?: any }).version || 'unknown',
       url: OLLAMA_URL
     };
   } catch (error: any) {
@@ -88,7 +88,7 @@ async function checkDatabaseStatus(): Promise<any> {
   try {
     const result = await healthCheck();
     
-    if (result.status === 'healthy') {
+    if ((result as { status?: any; error?: any }).status === 'healthy') {
       return {
         status: 'connected',
         type: 'PostgreSQL',
@@ -97,7 +97,7 @@ async function checkDatabaseStatus(): Promise<any> {
     } else {
       return {
         status: 'error',
-        error: result.error,
+        error: (result as { status?: any; error?: any }).error,
         type: 'PostgreSQL'
       };
     }

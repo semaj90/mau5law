@@ -22,10 +22,7 @@
   // Demo state
   let sampleVectors = $state<Float32Array[]>([]);
   let processingResult = $state<any>(null);
-  let performanceComparison = $state<{
-    withCache: { time: number; hitRate: number };
-    withoutCache: { time: number; hitRate: number };
-  } | null>(null);
+  let performanceComparison = $state(null);
   
   let isProcessing = $state(false);
   let statusMessage = $state('Ready to demonstrate GPU vector processing with cached shaders');
@@ -285,8 +282,8 @@
         const result = await tempProcessor.processEmbeddings(params);
         results.push(result);
         
-        statusMessage = `Testing ${quantization} quantization: ${result.processingTime.toFixed(2)}ms, ` +
-          `${result.memoryUsed} bytes`;
+        statusMessage = `Testing ${quantization} quantization: ${(result as { processingTime?: any; memoryUsed?: any }).processingTime.toFixed(2)}ms, ` +
+          `${(result as { processingTime?: any; memoryUsed?: any }).memoryUsed} bytes`;
         
         // Small delay to show progress
         await new Promise(resolve => setTimeout(resolve, 200));
@@ -435,7 +432,7 @@
         </p>
         
         <button
-          onclick={demonstrateSingleVectorProcessing}
+          on:click={demonstrateSingleVectorProcessing}
           disabled={!isInitialized || isProcessing}
           class=\"w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded mb-4\"
@@ -463,7 +460,7 @@
         </p>
         
         <button
-          onclick={demonstrateBatchProcessing}
+          on:click={demonstrateBatchProcessing}
           disabled={!isInitialized || isProcessing}
           class=\"w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded mb-4\"
@@ -491,7 +488,7 @@
         </p>
         
         <button
-          onclick={demonstrateAdaptiveQuantization}
+          on:click={demonstrateAdaptiveQuantization}
           disabled={!isInitialized || isProcessing}
           class=\"w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded mb-4\"
@@ -517,7 +514,7 @@
         </p>
         
         <button
-          onclick={demonstrateCachePerformance}
+          on:click={demonstrateCachePerformance}
           disabled={!isInitialized || isProcessing}
           class=\"w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded mb-4\"

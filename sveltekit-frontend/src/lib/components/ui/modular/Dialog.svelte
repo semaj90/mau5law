@@ -125,7 +125,6 @@ https://svelte.dev/e/js_parse_error -->
                 {description}
               </DialogPrimitive.Description>
             {/if}
-          {/if}
         </div>
       {/if}
 

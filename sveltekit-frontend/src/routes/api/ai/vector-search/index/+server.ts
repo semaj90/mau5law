@@ -21,7 +21,7 @@ import { json } from "@sveltejs/kit";
 import { vectorSearchService } from "$lib/services/vector-search";
 import { legalDocuments as documents } from "$lib/server/db/schema-postgres";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Real-time document indexing endpoint
@@ -230,10 +230,7 @@ async function generateDocumentAnalysis(
   filename: string,
   generateSummary: boolean = true,
   extractKeywords: boolean = true
-): Promise<{
-  summary?: string;
-  keywords?: string[];
-}> {
+): Promise<any> {
   try {
     if (!generateSummary && !extractKeywords) {
       return {};

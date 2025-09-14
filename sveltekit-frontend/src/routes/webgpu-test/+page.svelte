@@ -9,7 +9,7 @@
   let diagnosticsResults: WebGPUDiagnostics | null = $state(null);
   let browserCheck = $state({ compatible: false, message: '' });
   let isRunning = $state(false);
-  let testResults = $state<{ cpu: number; webgpu?: number; webgl?: number; error?: string } | null>(null);
+  let testResults = $state(null);
   let performanceStats = $state<any>(null);
 
   onMount(async () => {
@@ -114,7 +114,7 @@
 
   <section class="diagnostics">
     <h2>WebGPU Diagnostics</h2>
-    <button onclick={runDiagnostics} disabled={isRunning}>
+    <button on:click={runDiagnostics} disabled={isRunning}>
       {isRunning ? 'Running Diagnostics...' : 'Run Diagnostics'}
     </button>
 
@@ -179,7 +179,7 @@
 
   <section class="performance-test">
     <h2>Vector Similarity Performance Test</h2>
-    <button onclick={testVectorSimilarity} disabled={isRunning}>
+    <button on:click={testVectorSimilarity} disabled={isRunning}>
       {isRunning ? 'Running Test...' : 'Test Vector Similarity'}
     </button>
 

@@ -37,12 +37,7 @@ export interface MemoryPrediction {
   confidence: number;
   timeHorizon: number; // minutes
   recommendations: string[];
-  optimizations: Array<{
-    type: "compress" | "evict" | "preload" | "cluster";
-    priority: number;
-    estimatedSavings: number;
-  }>;
-}
+  optimizations: Array<any>
 
 export interface ClusterMetrics {
   centroid: number[];
@@ -57,11 +52,7 @@ export class NeuralMemoryManager extends EventEmitter {
   private memoryPools: Map<string, MemoryPool> = new Map();
   private currentLOD: LODLevel;
   private clusters: Map<string, ClusterMetrics> = new Map();
-  private usageHistory: Array<{
-    timestamp: number;
-    memory: number;
-    operations: number;
-  }> = [];
+  private usageHistory: Array< = [];
   private neuralWeights: number[][][] = [];
   private maxMemoryMB: number;
   private isTraining = false;
@@ -297,7 +288,7 @@ export class NeuralMemoryManager extends EventEmitter {
   private async kMeansCluster(
     points: number[][],
     k: number
-  ): Promise<Array<{ centroid: number[]; points: number[][] }>> {
+  ): Promise<Array<any> {
     const dimensions = points[0].length;
     let centroids = Array.from({ length: k }, () =>
       Array.from({ length: dimensions }, () => Math.random())
@@ -495,14 +486,7 @@ export class NeuralMemoryManager extends EventEmitter {
   /**
    * Generate performance report
    */
-  async generatePerformanceReport(): Promise<{
-    memoryEfficiency: number;
-    lodLevel: LODLevel;
-    poolUtilization: Record<string, number>;
-    clusterCount: number;
-    predictions: MemoryPrediction;
-    recommendations: string[];
-  }> {
+  async generatePerformanceReport(): Promise<any> {
     const totalMemory = Array.from(this.memoryPools.values()).reduce(
       (sum, pool) => sum + pool.size,
       0
@@ -561,7 +545,7 @@ export class NeuralMemoryManager extends EventEmitter {
     );
   }
 
-  private prepareTrainingData(): Array<{ input: number[]; target: number[] }> {
+  private prepareTrainingData(): Array< {
     // Implementation for preparing neural network training data
     return [];
   }

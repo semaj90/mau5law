@@ -4,7 +4,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/database';
 import { evidence, cases } from '$lib/server/db/schema';
 import { eq, and } from 'drizzle-orm';
@@ -99,46 +99,46 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     // Determine item type based on file type
     let itemType: 'evidence' | 'document' | 'image' | 'ai-generated' = 'evidence';
-    if (item.fileType?.startsWith('image/')) {
+    if ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileType?.startsWith('image/')) {
       itemType = 'image';
-    } else if (item.fileType?.includes('document') || item.fileType?.includes('pdf') || item.fileType?.includes('text')) {
+    } else if ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileType?.includes('document') || (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileType?.includes('pdf') || (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileType?.includes('text')) {
       itemType = 'document';
     }
     
     // Check if it's AI-generated based on metadata
-    if (item.metadata && typeof item.metadata === 'object' && 'aiGenerated' in item.metadata) {
+    if ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).metadata && typeof (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).metadata === 'object' && 'aiGenerated' in (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).metadata) {
       itemType = 'ai-generated';
     }
 
     // Build response
     const response: GalleryItemDetail = {
-      id: item.id,
+      id: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).id,
       type: itemType,
-      title: item.title || item.fileName || 'Untitled',
-      description: item.description || undefined,
-      fileName: item.fileName || '',
-      originalFileName: item.originalFileName || item.fileName || '',
-      fileType: item.fileType || 'unknown',
-      fileSize: item.fileSize || 0,
-      filePath: item.filePath || '',
-      url: `/api/files/evidence/${item.id}`,
-      thumbnailUrl: generateThumbnailUrl(item.filePath, item.fileType),
-      uploadedAt: item.uploadedAt?.toISOString() || new Date().toISOString(),
-      processedAt: item.processedAt?.toISOString(),
-      caseId: item.caseId || undefined,
-      caseTitle: item.caseTitle || undefined,
-      tags: Array.isArray(item.tags) ? item.tags : [],
-      metadata: (item.metadata as Record<string, any>) || {},
-      isPublic: item.isPublic || false,
-      ocrText: item.ocrText || undefined,
-      contentText: item.contentText || undefined,
-      embedding: item.embedding ? Array.from(item.embedding) : undefined,
+      title: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).title || (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileName || 'Untitled',
+      description: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).description || undefined,
+      fileName: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileName || '',
+      originalFileName: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).originalFileName || (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileName || '',
+      fileType: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileType || 'unknown',
+      fileSize: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileSize || 0,
+      filePath: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath || '',
+      url: `/api/files/evidence/${(item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).id}`,
+      thumbnailUrl: generateThumbnailUrl((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath, (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileType),
+      uploadedAt: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).uploadedAt?.toISOString() || new Date().toISOString(),
+      processedAt: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).processedAt?.toISOString(),
+      caseId: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).caseId || undefined,
+      caseTitle: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).caseTitle || undefined,
+      tags: Array.isArray((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).tags) ? (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).tags : [],
+      metadata: ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).metadata as Record<string, any>) || {},
+      isPublic: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).isPublic || false,
+      ocrText: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).ocrText || undefined,
+      contentText: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).contentText || undefined,
+      embedding: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).embedding ? Array.from((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).embedding) : undefined,
       processingStatus: {
         uploaded: true,
-        ocrComplete: !!item.ocrText,
-        embeddingComplete: !!item.embedding,
-        thumbnailComplete: !!generateThumbnailUrl(item.filePath, item.fileType),
-        processed: !!item.processedAt
+        ocrComplete: !!(item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).ocrText,
+        embeddingComplete: !!(item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).embedding,
+        thumbnailComplete: !!generateThumbnailUrl((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath, (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileType),
+        processed: !!(item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).processedAt
       },
       downloadUrl: `/api/gallery/${itemId}/download`,
       shareUrl: `/gallery/share/${itemId}`
@@ -147,7 +147,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     return json(response, {
       headers: {
         'X-Item-Type': itemType,
-        'X-File-Size': (item.fileSize || 0).toString(),
+        'X-File-Size': ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileSize || 0).toString(),
         'Cache-Control': 'private, max-age=300' // Cache for 5 minutes
       }
     });
@@ -234,7 +234,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .where(eq(evidence.id, itemId))
       .execute();
 
-    if (result.rowCount === 0) {
+    if ((result as { rowCount?: any }).rowCount === 0) {
       throw error(404, 'Gallery item not found');
     }
 
@@ -301,15 +301,15 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     }
 
     // Delete physical file
-    if (item.filePath) {
+    if ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath) {
       try {
-        const fullPath = path.join(process.cwd(), 'static', item.filePath);
+        const fullPath = path.join(process.cwd(), 'static', (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath);
         if (existsSync(fullPath)) {
           await unlink(fullPath);
         }
 
         // Also try to delete thumbnail if it exists
-        const thumbnailPath = generateThumbnailPath(item.filePath);
+        const thumbnailPath = generateThumbnailPath((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath);
         if (thumbnailPath) {
           const fullThumbnailPath = path.join(process.cwd(), 'static', thumbnailPath);
           if (existsSync(fullThumbnailPath)) {
@@ -326,8 +326,8 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       success: true,
       deleted: {
         id: itemId,
-        fileName: item.fileName,
-        filePath: item.filePath
+        fileName: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).fileName,
+        filePath: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath
       }
     });
 

@@ -206,7 +206,7 @@ class RealTimeEvidenceStore {
   private handleEvidenceCreated(evidenceData: Evidence, userId?: string) {
     this.evidence.update((items) => {
       // Check if evidence already exists (avoid duplicates)
-      if (items.find((item) => item.id === evidenceData.id)) {
+      if (items.find((item) => (item as { id?: any; caseId?: any }).id === evidenceData.id)) {
         return items;
       }
       // Add to local cache
@@ -234,7 +234,7 @@ class RealTimeEvidenceStore {
     userId?: string,
   ) {
     this.evidence.update((items) => {
-      const index = items.findIndex((item) => item.id === evidenceId);
+      const index = items.findIndex((item) => (item as { id?: any; caseId?: any }).id === evidenceId);
       if (index === -1) return items;
 
       const previousState = { ...items[index] };
@@ -263,7 +263,7 @@ class RealTimeEvidenceStore {
   }
   private handleEvidenceDeleted(evidenceId: string, userId?: string) {
     this.evidence.update((items) => {
-      const index = items.findIndex((item) => item.id === evidenceId);
+      const index = items.findIndex((item) => (item as { id?: any; caseId?: any }).id === evidenceId);
       if (index === -1) return items;
 
       const previousState = items[index];
@@ -282,7 +282,7 @@ class RealTimeEvidenceStore {
         newState: null,
       });
 
-      return items.filter((item) => item.id !== evidenceId);
+      return items.filter((item) => (item as { id?: any; caseId?: any }).id !== evidenceId);
     });
 
     this.saveToLocalStorage();
@@ -313,11 +313,11 @@ class RealTimeEvidenceStore {
         body: JSON.stringify(newEvidence),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to create evidence: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Failed to create evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
-      const result = await response.json();
-      return result.id || evidenceId;
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      return (result as { id?: any }).id || evidenceId;
     } catch (error: any) {
       // Revert optimistic update on error
       this.handleEvidenceDeleted(evidenceId);
@@ -329,7 +329,7 @@ class RealTimeEvidenceStore {
     changes: Partial<Evidence>,
   ): Promise<void> {
     const currentEvidence = get(this.evidence).find(
-      (item) => item.id === evidenceId,
+      (item) => (item as { id?: any; caseId?: any }).id === evidenceId,
     );
     if (!currentEvidence) {
       throw new Error(`Evidence ${evidenceId} not found`);
@@ -345,8 +345,8 @@ class RealTimeEvidenceStore {
         body: JSON.stringify(changes),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to update evidence: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Failed to update evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
     } catch (error: any) {
       // Revert optimistic update on error
@@ -360,7 +360,7 @@ class RealTimeEvidenceStore {
   }
   public async deleteEvidence(evidenceId: string): Promise<void> {
     const currentEvidence = get(this.evidence).find(
-      (item) => item.id === evidenceId,
+      (item) => (item as { id?: any; caseId?: any }).id === evidenceId,
     );
     if (!currentEvidence) {
       throw new Error(`Evidence ${evidenceId} not found`);
@@ -374,8 +374,8 @@ class RealTimeEvidenceStore {
         method: "DELETE",
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to delete evidence: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Failed to delete evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
     } catch (error: any) {
       // Revert optimistic update on error
@@ -425,7 +425,7 @@ class RealTimeEvidenceStore {
       case "CREATE":
         if (operation.newState) {
           this.evidence.update((items) =>
-            items.filter((item) => item.id !== operation.evidenceId),
+            items.filter((item) => (item as { id?: any; caseId?: any }).id !== operation.evidenceId),
           );
         }
         break;
@@ -433,7 +433,7 @@ class RealTimeEvidenceStore {
         if (operation.previousState) {
           this.evidence.update((items) => {
             const index = items.findIndex(
-              (item) => item.id === operation.evidenceId,
+              (item) => (item as { id?: any; caseId?: any }).id === operation.evidenceId,
             );
             if (index !== -1) {
               items[index] = operation.previousState!;
@@ -470,7 +470,7 @@ class RealTimeEvidenceStore {
         if (operation.newState) {
           this.evidence.update((items) => {
             const index = items.findIndex(
-              (item) => item.id === operation.evidenceId,
+              (item) => (item as { id?: any; caseId?: any }).id === operation.evidenceId,
             );
             if (index !== -1) {
               items[index] = operation.newState!;
@@ -481,7 +481,7 @@ class RealTimeEvidenceStore {
         break;
       case "DELETE":
         this.evidence.update((items) =>
-          items.filter((item) => item.id !== operation.evidenceId),
+          items.filter((item) => (item as { id?: any; caseId?: any }).id !== operation.evidenceId),
         );
         break;
     }
@@ -515,19 +515,19 @@ class RealTimeEvidenceStore {
         const data = JSON.parse(stored);
 
         // Check if data is not too old (24 hours)
-        const lastUpdated = new Date(data.lastUpdated);
+        const lastUpdated = new Date((data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).lastUpdated);
         const now = new Date();
         const hoursDiff =
           (now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60);
 
         if (hoursDiff < 24) {
-          this.evidence.set(data.evidence || []);
-          this.operationHistory.set(data.operationHistory || []);
-          this.currentHistoryIndex.set(data.currentHistoryIndex || -1);
+          this.evidence.set((data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).evidence || []);
+          this.operationHistory.set((data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).operationHistory || []);
+          this.currentHistoryIndex.set((data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).currentHistoryIndex || -1);
 
           // Rebuild local cache
-          data.evidence?.forEach((item: Evidence) => {
-            this.localCache.set(item.id, item);
+          (data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).evidence?.forEach((item: Evidence) => {
+            this.localCache.set((item as { id?: any; caseId?: any }).id, item);
           });
         }
       }
@@ -554,17 +554,17 @@ class RealTimeEvidenceStore {
   // Derived stores for convenience
   public evidenceById = derived(this.evidence, (items) => {
     const map = new Map<string, Evidence>();
-    items.forEach((item) => map.set(item.id, item));
+    items.forEach((item) => map.set((item as { id?: any; caseId?: any }).id, item));
     return map;
   });
 
   public evidenceByCase = derived(this.evidence, (items) => {
     const map = new Map<string, Evidence[]>();
     items.forEach((item) => {
-      if (!map.has(item.caseId)) {
-        map.set(item.caseId, []);
+      if (!map.has((item as { id?: any; caseId?: any }).caseId)) {
+        map.set((item as { id?: any; caseId?: any }).caseId, []);
       }
-      map.get(item.caseId)!.push(item);
+      map.get((item as { id?: any; caseId?: any }).caseId)!.push(item);
     });
     return map;
   });

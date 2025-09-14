@@ -69,11 +69,11 @@ async function testBasicCaching() {
   return json({
     success: true,
     test: 'basic',
-    cached: result.success && result.cacheResults.length > 0,
-    hitRate: result.metrics.cacheHitRate,
-    totalLatency: result.metrics.totalLatency,
-    cacheSource: result.cacheResults[0]?.source,
-    data: result.cacheResults[0]?.data
+    cached: (result as { success?: any; cacheResults?: any; metrics?: any }).success && (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults.length > 0,
+    hitRate: (result as { success?: any; cacheResults?: any; metrics?: any }).metrics.cacheHitRate,
+    totalLatency: (result as { success?: any; cacheResults?: any; metrics?: any }).metrics.totalLatency,
+    cacheSource: (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults[0]?.source,
+    data: (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults[0]?.data
   });
 }
 
@@ -127,9 +127,9 @@ async function testParallelCaching() {
     results: {
       parallel: {
         time: parallelTime,
-        hitRate: result.metrics.cacheHitRate,
-        hits: result.cacheResults.length,
-        totalLatency: result.metrics.totalLatency
+        hitRate: (result as { success?: any; cacheResults?: any; metrics?: any }).metrics.cacheHitRate,
+        hits: (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults.length,
+        totalLatency: (result as { success?: any; cacheResults?: any; metrics?: any }).metrics.totalLatency
       },
       sequential: {
         time: sequentialTime,

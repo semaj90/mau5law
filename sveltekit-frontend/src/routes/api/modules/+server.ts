@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * Module Management API
@@ -49,7 +49,7 @@ moduleRegistry.set('advanced-contract-analyzer', {
   version: '2.1.0',
   capabilities: ['advanced-clause-detection', 'risk-assessment', 'precedent-analysis'],
   status: 'unloaded',
-  metadata: {}
+  metadata: Record<string, any>
 });
 
 export const POST: RequestHandler = async ({ request, url }) => {

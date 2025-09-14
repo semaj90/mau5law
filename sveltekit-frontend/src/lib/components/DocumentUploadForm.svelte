@@ -53,9 +53,9 @@
     onSaveDraft?: (event: DocumentUploadEvents['saveDraft']) => void;
   } = $props();
 let dragActive = $state(false);
-let fileInput = $state<HTMLInputElement>();
-let uploadProgress = $state<Record<string, number>>({});
-let processingErrors = $state<Record<string, string>>({});
+let fileInput: HTMLInputElement = $state(undefined as any);
+let uploadProgress = $state<Record<string, number>(0)>({});
+let processingErrors = $state<Record<string, string>('')>({});
 
   // Accepted file types (combine user allowedTypes with a canonical set; de-dupe)
   const canonicalTypes = [
@@ -215,7 +215,7 @@ let processingErrors = $state<Record<string, string>>({});
 
     // Remove corresponding OCR result
     formData.ocr_results = formData.ocr_results.filter(result =>
-      result.metadata.title !== removedFile.name
+      (result as { metadata?: any; confidence?: any }).metadata.title !== removedFile.name
     );
 
     // Clear any errors for this file
@@ -272,13 +272,13 @@ let processingErrors = $state<Record<string, string>>({});
     class:bg-blue-50={dragActive}
     class:border-gray-300={!dragActive}
     class:bg-gray-50={!dragActive}
-    ondragover={handleDragOver}
+    on:dragover={handleDragOver}
     ondragleave={handleDragLeave}
-    ondrop={handleDrop}
+    on:drop={handleDrop}
     role="button"
     tabindex="0"
-    onclick={() => fileInput?.click()}
-    onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}
+    on:click={() => fileInput?.click()}
+    on:keydown={(e) => e.key === 'Enter' && fileInput?.click()}
   >
     <div class="space-y-4">
     <div class="text-4xl">📁</div>
@@ -298,7 +298,7 @@ let processingErrors = $state<Record<string, string>>({});
     type="file"
     multiple
     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.tiff,.bmp"
-    onchange={handleFileInputChange}
+    on:change={handleFileInputChange}
     class="hidden"
   />
 
@@ -341,7 +341,7 @@ let processingErrors = $state<Record<string, string>>({});
                 {/if}
 
                 <button class="nes-btn"
-                  onclick={() => removeFile(index)}
+                  on:click={() => removeFile(index)}
                   class="p-1 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
                 >
                   🗑️
@@ -390,7 +390,7 @@ let processingErrors = $state<Record<string, string>>({});
             </p>
             <p class="text-xs text-green-600 mt-1">
               Text extraction completed with an average confidence of {
-                Math.round(formData.ocr_results.reduce((acc, result) => acc + result.confidence, 0) / formData.ocr_results.length)
+                Math.round(formData.ocr_results.reduce((acc, result) => acc + (result as { metadata?: any; confidence?: any }).confidence, 0) / formData.ocr_results.length)
               }%
             </p>
           </div>
@@ -427,27 +427,27 @@ let processingErrors = $state<Record<string, string>>({});
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 mt-8 border-t border-gray-200">
     <Button
-      onclick={handlePrevious}
+      on:click={handlePrevious}
       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
     >
-      ← Previous
-    </button>
+← Previous
+</Button>
 
     <div class="flex space-x-3">
       <Button
-        onclick={handleSaveDraft}
+        on:click={handleSaveDraft}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
       >
-        Save Draft
-      </button>
+Save Draft
+</Button>
 
       <Button
-        onclick={handleNext}
+        on:click={handleNext}
         disabled={formData.uploaded_files.length === 0 || formData.processing_status === 'processing'}
         class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn"
       >
-        Next: Evidence Analysis →
-      </button>
+Next: Evidence Analysis →
+</Button>
     </div>
   </div>
 </div>

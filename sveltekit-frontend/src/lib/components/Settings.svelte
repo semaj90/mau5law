@@ -33,8 +33,8 @@ https://svelte.dev/e/props_duplicate -->
   };
 
   // Bindable props with defaults
-  let { isOpen = $bindable(false) } = $props();
-  let { settings = $bindable<Settings>(defaultSettings) } = $props();
+  let { isOpen = $bindable(false)  }: { isOpen = $bindable(false) : any } = $props();
+  let { settings = $bindable<Settings>(defaultSettings)  }: { settings = $bindable<Settings>(defaultSettings) : any } = $props();
 </script>
 
 {#if isOpen}

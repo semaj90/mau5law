@@ -1,10 +1,10 @@
 // Tooltip component exports for Svelte 5
-export { default as Tooltip } from './Tooltip.svelte';
-export { default as TooltipContent } from './TooltipContent.svelte';
-export { default as TooltipTrigger } from './TooltipTrigger.svelte';
+export { default as Tooltip } from './Tooltip.svelte.js';
+export { default as TooltipContent } from './TooltipContent.svelte.js';
+export { default as TooltipTrigger } from './TooltipTrigger.svelte.js';
 
 // Re-export from tooltip subdirectory if needed
-export { default as TooltipProvider } from './tooltip/TooltipProvider.svelte';
+export { default as TooltipProvider } from './tooltip/TooltipProvider.svelte.js';
 
 // Export types
 export type TooltipProps = {

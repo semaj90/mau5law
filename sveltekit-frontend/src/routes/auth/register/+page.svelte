@@ -42,7 +42,7 @@
           isLoading = true;
           return async ({ result }) => {
             isLoading = false;
-            if (result.type === 'redirect') {
+            if ((result as { type?: any }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }
           };

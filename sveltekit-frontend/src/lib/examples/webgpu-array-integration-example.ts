@@ -70,10 +70,10 @@ export async function processLegalDocumentEmbeddings(
   let totalCompressedSize = 0;
   
   bufferMap.forEach((result, name) => {
-    if (result.conversionResult) {
-      totalOriginalSize += result.conversionResult.originalSize;
-      totalCompressedSize += result.conversionResult.compressedSize;
-      console.log(`💾 ${name}: ${result.conversionResult.originalSize}B → ${result.conversionResult.compressedSize}B (${result.conversionResult.compressionRatio}x compression)`);
+    if ((result as { conversionResult?: any }).conversionResult) {
+      totalOriginalSize += (result as { conversionResult?: any }).conversionResult.originalSize;
+      totalCompressedSize += (result as { conversionResult?: any }).conversionResult.compressedSize;
+      console.log(`💾 ${name}: ${(result as { conversionResult?: any }).conversionResult.originalSize}B → ${(result as { conversionResult?: any }).conversionResult.compressedSize}B (${(result as { conversionResult?: any }).conversionResult.compressionRatio}x compression)`);
     }
   });
   
@@ -149,7 +149,7 @@ export async function performLegalVectorSearch(
   console.log('⚡ Vector similarity compute shader created');
   
   // Step 4: Filter results by threshold
-  const results: Array<{ documentId: string; similarity: number }> = [];
+  const results: Array< = [];
   
   // Simulate results for demo
   documentEmbeddings.forEach((_, documentId) => {
@@ -216,7 +216,7 @@ export async function adaptiveQuantization(
   // Choose quantization based on memory constraints
   let chosenConfig: QuantizationConfig;
   
-  const dataSizeMB = (data.length * 4) / (1024 * 1024);
+  const dataSizeMB = ((data as { documentId?: any; chunkIndex?: any; length?: any }).length * 4) / (1024 * 1024);
   
   if (dataSizeMB <= availableMemoryMB * 0.25) {
     // Plenty of memory - use full precision

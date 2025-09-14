@@ -5,7 +5,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader.js';
 import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js';
 
@@ -33,17 +33,17 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       docId,
       patternType,
-      pattern: result.pattern,
-      source: result.source,
+      pattern: (result as { pattern?: any; source?: any; latency?: any }).pattern,
+      source: (result as { pattern?: any; source?: any; latency?: any }).source,
       latency: {
-        pattern: result.latency,
+        pattern: (result as { pattern?: any; source?: any; latency?: any }).latency,
         total: totalLatency
       },
-      cached: result.source === 'cache'
+      cached: (result as { pattern?: any; source?: any; latency?: any }).source === 'cache'
     }, {
       headers: {
-        'Cache-Control': result.source === 'cache' ? 'public, max-age=300' : 'no-cache',
-        'X-CHR-ROM-Source': result.source,
+        'Cache-Control': (result as { pattern?: any; source?: any; latency?: any }).source === 'cache' ? 'public, max-age=300' : 'no-cache',
+        'X-CHR-ROM-Source': (result as { pattern?: any; source?: any; latency?: any }).source,
         'X-Response-Time': `${totalLatency.toFixed(2)}ms`
       }
     });
@@ -117,15 +117,15 @@ async function handleSinglePattern(data: any, startTime: number) {
     result: {
       docId,
       patternType,
-      pattern: result.pattern,
-      source: result.source,
-      latency: result.latency
+      pattern: (result as { pattern?: any; source?: any; latency?: any }).pattern,
+      source: (result as { pattern?: any; source?: any; latency?: any }).source,
+      latency: (result as { pattern?: any; source?: any; latency?: any }).latency
     },
     total_latency: performance.now() - startTime
   }, {
     headers: {
-      'X-CHR-ROM-Source': result.source,
-      'X-CHR-ROM-Latency': `${result.latency.toFixed(2)}ms`
+      'X-CHR-ROM-Source': (result as { pattern?: any; source?: any; latency?: any }).source,
+      'X-CHR-ROM-Latency': `${(result as { pattern?: any; source?: any; latency?: any }).latency.toFixed(2)}ms`
     }
   });
 }

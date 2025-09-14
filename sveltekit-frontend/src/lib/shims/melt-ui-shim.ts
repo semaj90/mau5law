@@ -6,7 +6,7 @@
 function createPrimitive() {
   return {
     open: false,
-    options: {},
+    options: Record<string, any>,
     openModal: () => {},
     closeModal: () => {},
     toggle: () => {},

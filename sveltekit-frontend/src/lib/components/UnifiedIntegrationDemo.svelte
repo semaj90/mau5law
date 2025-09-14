@@ -3,13 +3,13 @@
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/button/Button.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
 
   // System status and results
   const systemHealth = writable(null);
@@ -77,9 +77,9 @@
   async function updateSystemHealth() {
     try {
       const response = await fetch('/api/v1/orchestrator?endpoint=health');
-      const data = await response.json();
-      if (data.success) {
-        systemHealth.set(data.data);
+      const data = await (response as { json?: any }).json();
+      if ((data as { success?: any; data?: any }).success) {
+        systemHealth.set((data as { success?: any; data?: any }).data);
       }
     } catch (error) {
       console.error('Failed to fetch system health:', error);
@@ -89,9 +89,9 @@
   async function updateMetrics() {
     try {
       const response = await fetch('/api/v1/orchestrator?endpoint=metrics');
-      const data = await response.json();
-      if (data.success) {
-        metrics.set(data.data);
+      const data = await (response as { json?: any }).json();
+      if ((data as { success?: any; data?: any }).success) {
+        metrics.set((data as { success?: any; data?: any }).data);
       }
     } catch (error) {
       console.error('Failed to fetch metrics:', error);
@@ -171,21 +171,21 @@
         },
         body: JSON.stringify(requestData)
       });
-      const result = await response.json();
-      if (result.success) {
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).success) {
         results.update(prev => [
           {
             id: Date.now(),
             operation: selectedOperation,
             timestamp: new Date(),
-            data: result.data,
-            metadata: result.metadata,
-            processingTime: result.totalProcessingTime
+            data: (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).data,
+            metadata: (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata,
+            processingTime: (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).totalProcessingTime
           },
           ...prev.slice(0, 9) // Keep last 10 results
         ]);
       } else {
-        errorMessage = result.error || 'Operation failed';
+        errorMessage = (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).error || 'Operation failed';
       }
     } catch (error) {
       errorMessage = `Error: ${error.message}`;
@@ -233,7 +233,7 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
     <!-- System Health Card -->
-    <NesCard class="lg:col-span-1">
+    <div class="lg:col-span-1 nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">System Health</h3>
       </div>
@@ -277,10 +277,10 @@
           <div class="text-center text-gray-500">Loading system health...</div>
         {/if}
       </div>
-    </NesCard>
+    </div>
 
     <!-- Operation Controls Card -->
-    <NesCard class="lg:col-span-2">
+    <div class="lg:col-span-2 nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Execute Operations</h3>
       </div>
@@ -291,8 +291,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2" for="-operation-type-">
               Operation Type
             </label><select id="-operation-type-" 
-              bind:value={selectedOperation}
-              change={onOperationChange}
+              bind:value={selectedOperation} on:change={onOperationChange}
               class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="processDocument">Legal Document Processing</option>
@@ -311,7 +310,7 @@
               bind:value={testInput}
               rows="8"
               class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
-              placeholder="Enter test data..."
+              placeholder="Enter test (data as { success?: any; data?: any })..."
 ></textarea>
           </div>
 
@@ -324,11 +323,11 @@
 
           <!-- Execute Button -->
           <Button 
-            onclick={executeOperation}
+            on:click={executeOperation}
             disabled={isLoading || !testInput.trim()}
             class="w-full bits-btn bits-btn"
           >
-            {#if isLoading}
+{#if isLoading}
               <span class="inline-flex items-center">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -339,61 +338,61 @@
             {:else}
               Execute {selectedOperation}
             {/if}
-          </button>
+</Button>
         </div>
       </div>
-    </NesCard>
+    </div>
   </div>
 
   <!-- Results and Metrics -->
   <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
     <!-- Results Card -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Operation Results</h3>
       </div>
       <div class="yorha-panel-content">
         <div class="space-y-4 max-h-96 overflow-y-auto">
           {#if $results.length > 0}
-            {#each $results as result (result.id)}
+            {#each $results as result ((result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).id)}
               <div class="border border-gray-200 rounded-lg p-4">
                 <div class="flex justify-between items-start mb-2">
                   <div>
                     <h4 class="font-medium text-gray-900 capitalize">
-                      {result.operation.replace(/([A-Z])/g, ' $1').trim()}
+                      {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).operation.replace(/([A-Z])/g, ' $1').trim()}
                     </h4>
                     <p class="text-xs text-gray-500">
-                      {result.timestamp.toLocaleTimeString()}
+                      {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).timestamp.toLocaleTimeString()}
                     </p>
                   </div>
                   <div class="text-right">
                     <p class="text-xs text-gray-600">
-                      {result.processingTime}ms
+                      {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).processingTime}ms
                     </p>
-                    {#if result.metadata?.servicesUsed}
+                    {#if (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata?.servicesUsed}
                       <p class="text-xs text-blue-600">
-                        {result.metadata.servicesUsed.join(', ')}
+                        {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata.servicesUsed.join(', ')}
                       </p>
                     {/if}
                   </div>
                 </div>
                 
                 <div class="bg-gray-50 rounded p-2 text-xs font-mono">
-                  {#if result.data?.success !== undefined}
-                    <p class="text-{result.data.success ? 'green' : 'red'}-600 mb-1">
-                      Status: {result.data.success ? 'Success' : 'Failed'}
+                  {#if (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).data?.success !== undefined}
+                    <p class="text-{(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).(data as { success?: any; data?: any }).success ? 'green' : 'red'}-600 mb-1">
+                      Status: {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).(data as { success?: any; data?: any }).success ? 'Success' : 'Failed'}
                     </p>
                   {/if}
                   
-                  {#if result.metadata?.performance}
-                    <p>Latency: {result.metadata.performance.latency}ms</p>
-                    <p>Throughput: {result.metadata.performance.throughput.toFixed(2)}/s</p>
-                    <p>Resource Usage: {result.metadata.performance.resourceUsage.toFixed(2)}</p>
+                  {#if (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata?.performance}
+                    <p>Latency: {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata.performance.latency}ms</p>
+                    <p>Throughput: {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata.performance.throughput.toFixed(2)}/s</p>
+                    <p>Resource Usage: {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata.performance.resourceUsage.toFixed(2)}</p>
                   {/if}
                   
-                  {#if result.metadata?.fallbacksTriggered?.length > 0}
+                  {#if (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata?.fallbacksTriggered?.length > 0}
                     <p class="text-yellow-600">
-                      Fallbacks: {result.metadata.fallbacksTriggered.join(' → ')}
+                      Fallbacks: {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata.fallbacksTriggered.join(' → ')}
                     </p>
                   {/if}
                 </div>
@@ -406,10 +405,10 @@
           {/if}
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Performance Metrics Card -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Performance Metrics</h3>
       </div>
@@ -455,11 +454,11 @@
           </div>
         {:else}
           <div class="text-center text-gray-500 py-8">
-            No metrics available yet. Execute some operations to see performance data.
+            No metrics available yet. Execute some operations to see performance (data as { success?: any; data?: any }).
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   </div>
 </div>
 

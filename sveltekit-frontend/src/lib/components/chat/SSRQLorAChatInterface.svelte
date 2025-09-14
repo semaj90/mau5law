@@ -15,7 +15,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null } = $props();
+  let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null  }: { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null : any } = $props();
 
   import { onMount, createEventDispatcher } from 'svelte';
   import { writable, derived } from 'svelte/store';
@@ -332,14 +332,14 @@ https://svelte.dev/e/js_parse_error -->
             <div class="feedback-buttons">
               <button 
                 class="feedback-btn positive"
-                onclick={() => provideFeedback(message.id, 1)}
+                on:click={() => provideFeedback(message.id, 1)}
                 title="Good response"
               >
                 👍
               </button>
               <button 
                 class="feedback-btn negative"
-                onclick={() => provideFeedback(message.id, -1)}
+                on:click={() => provideFeedback(message.id, -1)}
                 title="Poor response"
               >
                 👎
@@ -378,26 +378,25 @@ https://svelte.dev/e/js_parse_error -->
       />
       
       <Button 
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={!$canSend}
         class="send-button bits-btn bits-btn"
         variant="ghost"
       >
-        {#if $isStreaming}
+{#if $isStreaming}
           <div class="loading-spinner"></div>
         {:else}
           Send
         {/if}
-      </button>
-      
+
       <Button 
-        onclick={clearChat}
+        on:click={clearChat}
         variant="outline"
         size="sm"
         class="clear-button bits-btn bits-btn"
       >
-        Clear
-      </button>
+Clear
+
     </div>
     
     {#if $isStreaming}

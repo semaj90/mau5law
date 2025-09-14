@@ -106,7 +106,7 @@ export class RabbitMQService {
     });
   }
 
-  async healthCheck(): Promise<{ status: string; details: any }> {
+  async healthCheck(): Promise<any> {
     try {
       if (!this.isConnected || !this.connection) {
         return { status: 'unhealthy', details: { error: 'Not connected' } };

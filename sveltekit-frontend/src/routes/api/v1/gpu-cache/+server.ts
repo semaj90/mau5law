@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { json } from '@sveltejs/kit';
 
 /*
@@ -109,9 +109,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (options.isYoRHaComponent) {
           await nesCacheOrchestrator.cacheYoRHaComponent({
             name: key,
-            props: data.props || {},
-            styles: data.styles || {},
-            animations: data.animations || [],
+            props: (data as { props?: any; styles?: any; animations?: any; embedding?: any }).props || {},
+            styles: (data as { props?: any; styles?: any; animations?: any; embedding?: any }).styles || {},
+            animations: (data as { props?: any; styles?: any; animations?: any; embedding?: any }).animations || [],
             webgpuShaders: shaderData ? [shaderData.sourceCode] : [],
           });
         }
@@ -163,8 +163,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       success: true,
       entry: {
         ...result,
-        vertexBuffers: result.vertexBuffers?.map((vb) => Array.from(vb)),
-        embedding: result.embedding ? Array.from(result.embedding) : undefined,
+        vertexBuffers: (result as { vertexBuffers?: any; embedding?: any }).vertexBuffers?.map((vb) => Array.from(vb)),
+        embedding: (result as { vertexBuffers?: any; embedding?: any }).embedding ? Array.from((result as { vertexBuffers?: any; embedding?: any }).embedding) : undefined,
       },
       integrations: {
         binaryOptimization,
@@ -241,8 +241,8 @@ export const GET: RequestHandler = async ({ url }) => {
     // Convert Float32Arrays for JSON response
     const response = {
       ...result,
-      vertexBuffers: result.vertexBuffers?.map((vb) => Array.from(vb)),
-      embedding: result.embedding ? Array.from(result.embedding) : undefined,
+      vertexBuffers: (result as { vertexBuffers?: any; embedding?: any }).vertexBuffers?.map((vb) => Array.from(vb)),
+      embedding: (result as { vertexBuffers?: any; embedding?: any }).embedding ? Array.from((result as { vertexBuffers?: any; embedding?: any }).embedding) : undefined,
     };
 
     return json({
@@ -286,8 +286,8 @@ export const PATCH: RequestHandler = async ({ request }) => {
     // Convert typed arrays for JSON response
     const response = {
       ...result,
-      vertexBuffers: result.vertexBuffers?.map((vb) => Array.from(vb)),
-      embedding: result.embedding ? Array.from(result.embedding) : undefined,
+      vertexBuffers: (result as { vertexBuffers?: any; embedding?: any }).vertexBuffers?.map((vb) => Array.from(vb)),
+      embedding: (result as { vertexBuffers?: any; embedding?: any }).embedding ? Array.from((result as { vertexBuffers?: any; embedding?: any }).embedding) : undefined,
     };
 
     return json({
@@ -510,7 +510,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     };
 
     if (includeUserAnalytics) {
-      response.userAnalytics = {
+      (response as { userAnalytics?: any; performance?: any }).userAnalytics = {
         totalUsers: metrics.userHistorySize,
         averageSessionDuration: 45.2,
         topQueries: ['legal documents', 'case analysis', 'evidence review'],
@@ -518,7 +518,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     }
 
     if (includePerformance) {
-      response.performance = {
+      (response as { userAnalytics?: any; performance?: any }).performance = {
         averageRetrievalMs: metrics.averageRetrievalMs,
         cacheEfficiency: metrics.cacheHitRatio * 100,
         gpuUtilization: 0.75,

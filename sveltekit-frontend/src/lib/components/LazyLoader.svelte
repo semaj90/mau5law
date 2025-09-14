@@ -134,7 +134,7 @@ https://svelte.dev/e/bindable_invalid_location -->
       <p class="error-message">{errorText}</p>
       <button
         class="retry-button"
-        onclick={() => {
+        on:click={() => {
           loadError = null;
           lazyStore.reset();
         }}

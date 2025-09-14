@@ -20,7 +20,7 @@
 import { aiService } from "$lib/server/services/ai-service.js";
 import { URL } from "url";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 const searchSchema = z.object({
@@ -53,12 +53,12 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
 
     // Format results for response
     const formattedResults = results.map((result: any) => ({
-      content: result.content,
-      similarity: Math.round(result.similarity * 100) / 100,
-      documentId: result.documentId,
-      documentType: result.metadata.documentType || 'unknown',
-      confidence: result.metadata.analysis?.confidence || null,
-      tags: result.metadata.analysis?.tags || []
+      content: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).content,
+      similarity: Math.round((result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).similarity * 100) / 100,
+      documentId: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).documentId,
+      documentType: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.documentType || 'unknown',
+      confidence: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.analysis?.confidence || null,
+      tags: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.analysis?.tags || []
     }));
 
     return json({

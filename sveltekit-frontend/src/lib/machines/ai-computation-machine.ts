@@ -4,7 +4,7 @@
  */
 
 import { createMachine, assign, fromPromise } from 'xstate';
-import { dimensionalCache, type DimensionalArray } from '../ai/dimensional-cache-engine';
+import { dimensionalCache, type DimensionalArray } from '../ai/dimensional-cache-engine.js';
 
 export interface AIComputationContext {
   userId: string;
@@ -109,7 +109,7 @@ const processRabbitMQQueue = fromPromise(async ({ input }: {
 
 export const aiComputationMachine = createMachine({
   id: 'aiComputation',
-  types: {} as {
+  types: Record<string, any> as {
     context: AIComputationContext;
     events: AIComputationEvent;
   },

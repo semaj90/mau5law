@@ -61,7 +61,7 @@ export const processingMetrics = writable({
 
 // Error handling
 export const lastError = writable<string | null>(null);
-export const errorHistory = writable<Array<{ timestamp: Date; error: string; context?: unknown }>>([]);
+export const errorHistory = writable<Array<any>([]);
 ;
 // User interaction
 export const userAttention = writable<AttentionData>({
@@ -365,12 +365,7 @@ export const chatActions = {
   },
 
   // Configuration
-  updateConfig: (updates: Partial<{
-    maxMessages: number;
-    autoSave: boolean;
-    streamingEnabled: boolean;
-    ragEnabled: boolean;
-  }>): void => {
+  updateConfig: (updates: Partial): void => {
     chatConfig.update(current => ({ ...current, ...updates }));
     
     // Save to localStorage if available

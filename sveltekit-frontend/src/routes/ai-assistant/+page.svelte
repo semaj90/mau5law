@@ -300,7 +300,7 @@
     </div>
 
     <!-- System Status Card -->
-    <NesCard class="mb-6 p-6">
+    <div class="mb-6 p-6 nes-container">
       {#snippet children()}
         <div class="mb-4">
           <h2 class="text-xl font-semibold flex items-center gap-2">
@@ -326,54 +326,58 @@
           {/each}
         </div>
       {/snippet}
-    </NesCard>
+    </div>
 
     <!-- Quick Actions -->
-    <NesCard class="mb-6 p-6">
+    <div class="mb-6 p-6 nes-container">
       {#snippet children()}
         <h2 class="text-xl font-semibold mb-4">Quick Legal Queries</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <Button 
             class="bits-btn justify-start"
             variant="outline"
-            onclick={() => handleQuickQuery('Explain contract formation requirements')}
+            on:click={() =>
+handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
           >
             {#snippet children()}Contract Law{/snippet}
-          </button>
+</Button>
           <Button 
             class="bits-btn justify-start"
             variant="outline"
-            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            on:click={() =>
+handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
           >
             {#snippet children()}Evidence Rules{/snippet}
-          </button>
+</Button>
           <Button 
             class="bits-btn justify-start"
             variant="outline"
-            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
+            on:click={() =>
+handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
           >
             {#snippet children()}Liability{/snippet}
-          </button>
+</Button>
           <Button 
             class="bits-btn justify-start"
             variant="outline"
-            onclick={() => handleQuickQuery('What are the elements of negligence?')}
+            on:click={() =>
+handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
           >
             {#snippet children()}Tort Law{/snippet}
-          </button>
+</Button>
         </div>
       {/snippet}
-    </NesCard>
+    </div>
 
     <!-- Chat Interface -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
       <!-- Chat Messages -->
       <div class="xl:col-span-2">
-        <NesCard class="h-[600px] flex flex-col p-6">
+        <div class="h-[600px] flex flex-col p-6 nes-container">
           {#snippet children()}
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-xl font-semibold">Legal AI Chat</h2>
@@ -381,9 +385,9 @@
                 <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
                   {isStreaming ? 'Streaming...' : 'Ready'}
                 </span>
-                <Button variant="outline" size="sm" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={clearChat} disabled={isStreaming}>
-                  {#snippet children()}Clear{/snippet}
-                </button>
+                <Button variant="outline" size="sm" class="bits-btn bits-nes-btn bits-btn bits-btn" on:click={clearChat} disabled={isStreaming}>
+{#snippet children()}Clear{/snippet}
+</Button>
               </div>
             </div>
 
@@ -434,17 +438,17 @@
               <div class="flex gap-2">
                 <input
                   bind:value={currentMessage}
-                  onkeydown={handleKeydown}
+                  on:keydown={handleKeydown}
                   placeholder="Ask a legal question..."
                   disabled={isStreaming}
                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <Button
-                  onclick={sendMessage}
+                  on:click={sendMessage}
                   disabled={!currentMessage.trim() || isStreaming}
                   class="px-6 bits-btn bits-btn"
                 >
-                  {#snippet children()}
+{#snippet children()}
                     {#if isStreaming}
                       <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -453,15 +457,15 @@
                       Send
                     {/if}
                   {/snippet}
-                </button>
+</Button>
               </div>
             </div>
           {/snippet}
-        </NesCard>
+        </div>
 
         <!-- POI Timeline Visualization -->
         {#if showTimeline && poiTimelineData.length > 0}
-          <NesCard class="mt-6 p-6">
+          <div class="mt-6 p-6 nes-container">
             {#snippet children()}
               <div class="mb-4 flex justify-between items-center">
                 <h2 class="text-xl font-semibold flex items-center gap-2">
@@ -473,7 +477,7 @@
                 <button class="nes-btn"
                   variant="outline"
                   size="sm"
-                  onclick={() => showTimeline = false}
+                  on:click={() => showTimeline = false}
                   class="bits-btn"
                 >
                   {#snippet children()}
@@ -481,7 +485,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                   {/snippet}
-                </button>
+</Button>
               </div>
 
               <div class="space-y-4">
@@ -502,7 +506,7 @@
                       <button class="nes-btn"
                         variant="outline"
                         size="sm"
-                        onclick={() => selectPOI(poi)}
+                        on:click={() => selectPOI(poi)}
                         class="bits-btn"
                       >
                         {#snippet children()}
@@ -556,12 +560,12 @@
                 {/each}
               </div>
             {/snippet}
-          </NesCard>
+          </div>
         {/if}
 
         <!-- User Activity Timeline -->
         {#if userActivityTimeline.length > 0}
-          <NesCard class="mt-6 p-6">
+          <div class="mt-6 p-6 nes-container">
             {#snippet children()}
               <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -587,7 +591,7 @@
                 {/each}
               </div>
             {/snippet}
-          </NesCard>
+          </div>
         {/if}
       </div>
 
@@ -595,7 +599,7 @@
       <div class="xl:col-span-1">
         <div class="space-y-6">
           <!-- Model Information -->
-          <NesCard class="p-6">
+          <div class="p-6 nes-container">
             {#snippet children()}
               <h3 class="font-semibold mb-3">AI Model</h3>
               <div class="space-y-2">
@@ -607,10 +611,10 @@
                 </p>
               </div>
             {/snippet}
-          </NesCard>
+          </div>
 
           <!-- Features -->
-          <NesCard class="p-6">
+          <div class="p-6 nes-container">
             {#snippet children()}
               <h3 class="font-semibold mb-3">Features</h3>
               <div class="space-y-3">
@@ -640,32 +644,33 @@
                 </div>
               </div>
             {/snippet}
-          </NesCard>
+          </div>
 
           <!-- System Actions -->
-          <NesCard class="p-6">
+          <div class="p-6 nes-container">
             {#snippet children()}
               <h3 class="font-semibold mb-3">System Actions</h3>
               <div class="space-y-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onclick={checkSystemStatus}
+                  on:click={checkSystemStatus}
                   class="w-full justify-start bits-btn bits-btn"
                   fullWidth={true}
                 >
-                  {#snippet children()}
+{#snippet children()}
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
                     Refresh Status
                   {/snippet}
-                </button>
+</Button>
                 <Button 
                   class="bits-btn w-full justify-start"
                   variant="outline"
                   size="sm"
-                  onclick={() => window.open('/api/v1/cluster/health', '_blank')}
+                  on:click={() =>
+window.open('/api/v1/cluster/health', '_blank')}
                   fullWidth={true}
                 >
                   {#snippet children()}
@@ -674,13 +679,13 @@
                     </svg>
                     Health Report
                   {/snippet}
-                </button>
+</Button>
               </div>
             {/snippet}
-          </NesCard>
+          </div>
 
           <!-- POI Timeline Analysis -->
-          <NesCard class="p-6">
+          <div class="p-6 nes-container">
             {#snippet children()}
               <h3 class="font-semibold mb-3 flex items-center gap-2">
                 <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -689,11 +694,7 @@
                 POI Timeline
               </h3>
               <div class="space-y-2">
-                <button class="nes-btn is-primary"
-                  size="sm"
-                  onclick={analyzePersonsOfInterest}
-                  disabled={timelineLoading}
-                  class="w-full justify-start bits-btn"
+                <button class="nes-btn is-primary w-full justify-start bits-btn"
                   fullWidth={true}
                 >
                   {#snippet children()}
@@ -708,16 +709,16 @@
                     {/if}
                     Analyze Evidence
                   {/snippet}
-                </button>
+</Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  onclick={generateUserActivityTimeline}
+                  on:click={generateUserActivityTimeline}
                   disabled={activityLoading}
                   class="w-full justify-start bits-btn"
                   fullWidth={true}
                 >
-                  {#snippet children()}
+{#snippet children()}
                     {#if activityLoading}
                       <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -729,14 +730,14 @@
                     {/if}
                     User Activity
                   {/snippet}
-                </button>
+</Button>
               </div>
             {/snippet}
-          </NesCard>
+          </div>
 
           <!-- Focus Metrics -->
           {#if focusMetrics.sessionsToday > 0}
-            <NesCard class="p-6">
+            <div class="p-6 nes-container">
               {#snippet children()}
                 <h3 class="font-semibold mb-3 text-green-600">Focus Tracking</h3>
                 <div class="space-y-3">
@@ -758,7 +759,7 @@
                   </div>
                 </div>
               {/snippet}
-            </NesCard>
+            </div>
           {/if}
         </div>
       </div>
@@ -792,15 +793,15 @@
           <Button
             variant="outline"
             size="sm"
-            onclick={closePOIDetails}
+            on:click={closePOIDetails}
             class="bits-btn"
           >
-            {#snippet children()}
+{#snippet children()}
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             {/snippet}
-          </button>
+</Button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -900,21 +901,21 @@
         <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
           <Button
             variant="outline"
-            onclick={closePOIDetails}
+            on:click={closePOIDetails}
             class="bits-btn"
           >
-            {#snippet children()}
+{#snippet children()}
               Close
             {/snippet}
-          </button>
+</Button>
           <button class="nes-btn is-primary"
-            onclick={() => handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`)}
+            on:click={() => handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`)}
             class="bits-btn"
           >
             {#snippet children()}
               Ask AI About This Person
             {/snippet}
-          </button>
+</Button>
         </div>
       </div>
     {/snippet}

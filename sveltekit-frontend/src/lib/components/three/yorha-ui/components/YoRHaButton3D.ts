@@ -6,8 +6,8 @@
 import * as THREE from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
-import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D';
-import { resolveVariantStyle } from '../theme/yorha-theme-adapter';
+import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D.js';
+import { resolveVariantStyle } from '../theme/yorha-theme-adapter.js';
 
 export interface YoRHaButton3DOptions extends Omit<YoRHaStyle, 'variant'> {
   text?: string;

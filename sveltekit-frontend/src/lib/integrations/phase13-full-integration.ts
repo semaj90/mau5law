@@ -61,12 +61,7 @@ export class Phase13IntegrationManager {
    * Initialize full system integration
    * Following Context7 MCP integration guide patterns
    */
-  async initializeFullIntegration(): Promise<{
-    success: boolean;
-    services: ServiceHealth;
-    recommendations: AutoMCPSuggestion[];
-    performance: any;
-  }> {
+  async initializeFullIntegration(): Promise<any> {
     console.log('🚀 Phase 13: Initializing Full Production Integration...');
 
     // Step 1: Detect and configure services
@@ -134,7 +129,7 @@ export class Phase13IntegrationManager {
         method: 'GET', 
         signal: AbortSignal.timeout(2000) 
       });
-      return response.ok;
+      return (response as { ok?: any }).ok;
     } catch {
       return false;
     }
@@ -146,7 +141,7 @@ export class Phase13IntegrationManager {
         method: 'GET', 
         signal: AbortSignal.timeout(2000) 
       });
-      return response.ok;
+      return (response as { ok?: any }).ok;
     } catch {
       return false;
     }
@@ -158,7 +153,7 @@ export class Phase13IntegrationManager {
         method: 'GET', 
         signal: AbortSignal.timeout(2000) 
       });
-      return response.ok;
+      return (response as { ok?: any }).ok;
     } catch {
       return false;
     }
@@ -170,7 +165,7 @@ export class Phase13IntegrationManager {
         method: 'GET', 
         signal: AbortSignal.timeout(2000) 
       });
-      return response.ok;
+      return (response as { ok?: any }).ok;
     } catch {
       return false;
     }
@@ -269,7 +264,7 @@ export class Phase13IntegrationManager {
         fallbackMode: !this.serviceHealth.database
       },
       endpoints: {
-        primary: this.serviceHealth.database ? 'postgresql://localhost:5432/legal_ai_db' : 'development-mode',
+        primary: this.serviceHealth.database ? 'postgresql://localhost:5433/legal_ai_db' : 'development-mode',
         vector: this.serviceHealth.qdrant ? 'http://localhost:6333' : 'embedded-vector-store'
       }
     };
@@ -309,7 +304,7 @@ export class Phase13IntegrationManager {
       },
       vectorDB: {
         provider: this.serviceHealth.qdrant ? 'qdrant' : (this.serviceHealth.database ? 'pgvector' : 'memory'),
-        endpoint: this.serviceHealth.qdrant ? 'http://localhost:6333' : (this.serviceHealth.database ? 'postgresql://localhost:5432/legal_ai_db' : 'in-memory'),
+        endpoint: this.serviceHealth.qdrant ? 'http://localhost:6333' : (this.serviceHealth.database ? 'postgresql://localhost:5433/legal_ai_db' : 'in-memory'),
         collections: ['legal-documents', 'case-law', 'evidence', 'precedents'],
         capabilities: {
           similarity: this.serviceHealth.qdrant || this.serviceHealth.database,
@@ -494,7 +489,7 @@ export class Phase13IntegrationManager {
         method: 'GET',
         signal: AbortSignal.timeout(3000)
       });
-      return response.ok;
+      return (response as { ok?: any }).ok;
     } catch (error: any) {
       return false;
     }
@@ -520,7 +515,7 @@ export class Phase13IntegrationManager {
     );
 
     // Return true if any Docker service is available
-    return dockerChecks.some((result: any) => result.status === 'fulfilled' && result.value.ok
+    return dockerChecks.some((result: any) => (result as { status?: any; value?: any; success?: any }).status === 'fulfilled' && (result as { status?: any; value?: any; success?: any }).value.ok
     );
   }
 
@@ -543,11 +538,7 @@ export class Phase13IntegrationManager {
   /**
    * Apply Context7 MCP auto-suggestions
    */
-  async applySuggestion(suggestion: AutoMCPSuggestion): Promise<{
-    success: boolean;
-    action: string;
-    result?: unknown;
-  }> {
+  async applySuggestion(suggestion: AutoMCPSuggestion): Promise<any> {
     console.log(`🔧 Applying suggestion: ${suggestion.suggested}`);
 
     try {
@@ -600,7 +591,7 @@ export async function initializePhase13(): Promise<void> {
     console.log('🚀 Initializing Phase 13 Full Integration...');
     const result = await phase13Integration.initializeFullIntegration();
     
-    if (result.success) {
+    if ((result as { status?: any; value?: any; success?: any }).success) {
       console.log('✅ Phase 13 integration initialized successfully');
       console.log('📊 Integration status:', phase13Integration.getIntegrationStatus());
     } else {
@@ -615,12 +606,7 @@ export async function initializePhase13(): Promise<void> {
  * Context7 MCP Integration Health Check
  * Comprehensive system status for monitoring
  */
-export async function getSystemHealth(): Promise<{
-  phase13: any;
-  services: ServiceHealth;
-  performance: any;
-  recommendations: AutoMCPSuggestion[];
-}> {
+export async function getSystemHealth(): Promise<any> {
   const integrationStatus = phase13Integration.getIntegrationStatus();
   const recommendations = await phase13Integration.generateSystemRecommendations();
 

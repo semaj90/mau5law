@@ -152,11 +152,11 @@ https://svelte.dev/e/js_parse_error -->
   async function demoLogin() {
     try {
       const result = await authService.login('admin@prosecutor.com', 'password');
-      if (result.success) {
+      if ((result as { success?: any; error?: any }).success) {
         console.log('Demo login successful');
         demoMode = 'session';
       } else {
-        console.error('Demo login failed:', result.error);
+        console.error('Demo login failed:', (result as { success?: any; error?: any }).error);
       }
     } catch (error) {
       console.error('Demo login error:', error);
@@ -218,11 +218,11 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="w-full max-w-6xl mx-auto p-6 space-y-6">
   <!-- System Overview Header -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <div class="flex items-center justify-between">
         <div>
-          <h3 class="nes-text is-primary" class="text-2xl font-bold">Integrated Legal AI System</h3>
+          <h3 class="nes-text is-primary text-2xl font-bold">Integrated Legal AI System</h3>
           <p class="text-gray-600 mt-1">
             Complete demonstration of XState machines, authentication, AI assistant, and production services
           </p>
@@ -238,13 +238,13 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- System Status Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
     <!-- Authentication Status -->
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">Authentication</p>
@@ -260,11 +260,11 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
 
     <!-- Session Management Status -->
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">Session Management</p>
@@ -280,11 +280,11 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
 
     <!-- AI Assistant Status -->
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">AI Assistant</p>
@@ -300,11 +300,11 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
 
     <!-- Production Services Status -->
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">Production Services</p>
@@ -318,7 +318,7 @@ https://svelte.dev/e/js_parse_error -->
           Total Interactions: {serviceMetrics.totalInteractions}
         </div>
       </div>
-    </NesCard>
+    </div>
   </div>
 
   <!-- Demo Tabs -->
@@ -333,11 +333,11 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Overview Tab -->
     <TabsContent value="overview" class="space-y-4">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">System Integration Demo</h3>
         </div>
-        <div class="yorha-panel-content" class="space-y-4">
+        <div class="yorha-panel-content space-y-4">
           <p class="text-gray-600">
             This demonstration showcases the complete integration of all system components:
           </p>
@@ -359,25 +359,25 @@ https://svelte.dev/e/js_parse_error -->
             <div class="space-y-2">
               <h4 class="font-semibold">🎯 Demo Actions:</h4>
               <div class="space-y-2">
-                <Button class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
-                  Demo Login
-                </button>
-                <Button class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
-                  Test AI Assistant
-                </button>
-                <Button class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="outline">
-                  Demo Logout
-                </button>
+                <Button class="bits-btn" on:click={demoLogin} disabled={authenticatedUser !== null}>
+Demo Login
+
+                <Button class="bits-btn" on:click={demoAIInteraction} disabled={!authenticatedUser}>
+Test AI Assistant
+
+                <Button class="bits-btn" on:click={demoLogout} disabled={!authenticatedUser} variant="outline">
+Demo Logout
+
               </div>
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- Authentication Tab -->
     <TabsContent value="auth" class="space-y-4">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Authentication System</h3>
         </div>
@@ -387,9 +387,10 @@ https://svelte.dev/e/js_parse_error -->
               <p class="text-gray-600">
                 Demonstrate the modern authentication system with Svelte 5 runes and XState integration.
               </p>
-              <Button class="bits-btn" onclick={() => showAuthDialog = true}>
+              <Button class="bits-btn" on:click={() =>
+showAuthDialog = true}>
                 Open Authentication Dialog
-              </button>
+
             </div>
           {:else}
             <div class="space-y-4">
@@ -401,18 +402,18 @@ https://svelte.dev/e/js_parse_error -->
                   <p><strong>Status:</strong> {authenticatedUser.isActive ? 'Active' : 'Inactive'}</p>
                 </div>
               </div>
-              <Button class="bits-btn" onclick={demoLogout} variant="outline">
-                Logout
-              </button>
+              <Button class="bits-btn" on:click={demoLogout} variant="outline">
+Logout
+
             </div>
           {/if}
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- Session Tab -->
     <TabsContent value="session" class="space-y-4">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Session Management</h3>
         </div>
@@ -441,25 +442,27 @@ https://svelte.dev/e/js_parse_error -->
               
               <div class="flex gap-2">
                 <Button class="bits-btn" 
-                  onclick={() => sessionManager.performSecurityCheck()} 
+                  on:click={() =>
+sessionManager.performSecurityCheck()} 
                   size="sm"
                 >
                   Security Check
-                </button>
+
                 <Button class="bits-btn" 
-                  onclick={() => sessionManager.refreshSession()} 
+                  on:click={() =>
+sessionManager.refreshSession()} 
                   size="sm" 
                   variant="outline"
                 >
                   Refresh Session
-                </button>
+
               </div>
             </div>
           {:else}
             <p class="text-gray-600">Please authenticate to view session management features.</p>
           {/if}
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- AI Assistant Tab -->
@@ -474,7 +477,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Services Tab -->
     <TabsContent value="services" class="space-y-4">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Production Services Status</h3>
         </div>
@@ -514,12 +517,12 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </div>
             
-            <Button class="bits-btn" onclick={checkSystemHealth}>
-              Refresh System Health
-            </button>
+            <Button class="bits-btn" on:click={checkSystemHealth}>
+Refresh System Health
+
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
   </Tabs>
 </div>

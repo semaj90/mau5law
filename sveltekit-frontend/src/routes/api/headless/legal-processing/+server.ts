@@ -6,7 +6,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { headlessLegalProcessorFactory, DEFAULT_HEADLESS_CONFIG } from '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
 import type { HeadlessProcessingConfig } from '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
 
@@ -24,11 +24,7 @@ interface ProcessingRequest {
 }
 
 interface BatchProcessingRequest {
-  documents: Array<{
-    text: string;
-    id?: string;
-    type?: 'contract' | 'evidence' | 'brief' | 'citation' | 'general';
-  }>;
+  documents: Array<any>;
   config?: Partial<HeadlessProcessingConfig>;
   metadata?: {
     batchId?: string;
@@ -94,7 +90,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
     // Build API response
     const response = {
-      success: result.success,
+      success: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).success,
       processingTime: Date.now() - startTime,
       requestId: context.requestId,
       
@@ -108,36 +104,36 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
       // WebGPU results
       webgpu: {
-        mipmapGenerated: !!result.mipmapChain,
-        mipmapLevels: result.mipmapChain?.levels || 0,
-        memoryUsed: result.mipmapChain?.totalMemoryUsed || 0,
-        rtxOptimized: result.mipmapChain?.rtxOptimized || false
+        mipmapGenerated: !!(result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).mipmapChain,
+        mipmapLevels: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).mipmapChain?.levels || 0,
+        memoryUsed: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).mipmapChain?.totalMemoryUsed || 0,
+        rtxOptimized: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).mipmapChain?.rtxOptimized || false
       },
 
       // LOD cache results
       lod: {
-        compressionRatio: result.lodEntry?.cache_metadata.compression_stats.compression_ratio,
-        svgSummariesGenerated: !!result.svgVisualizations,
-        lodLevels: result.svgVisualizations ? Object.keys(result.svgVisualizations) : [],
-        cacheEntryId: result.lodEntry?.id
+        compressionRatio: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).lodEntry?.cache_metadata.compression_stats.compression_ratio,
+        svgSummariesGenerated: !!(result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).svgVisualizations,
+        lodLevels: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).svgVisualizations ? Object.keys((result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).svgVisualizations) : [],
+        cacheEntryId: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).lodEntry?.id
       },
 
       // Legal analysis results
-      legal: result.legalAnalysis,
+      legal: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).legalAnalysis,
 
       // SVG visualizations (if requested)
-      visualizations: processingConfig.generateSVGSummaries ? result.svgVisualizations : undefined,
+      visualizations: processingConfig.generateSVGSummaries ? (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).svgVisualizations : undefined,
 
       // Performance metrics
       performance: {
-        totalTime: result.processingTime,
-        webgpuInitTime: result.metrics.webgpuInitTime,
-        memoryUsage: result.metrics.memoryUsage,
-        cacheHitRate: result.metrics.cacheHitRate
+        totalTime: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).processingTime,
+        webgpuInitTime: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).metrics.webgpuInitTime,
+        memoryUsage: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).metrics.memoryUsage,
+        cacheHitRate: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).metrics.cacheHitRate
       },
 
       // File outputs (if saved)
-      outputFiles: result.outputFiles || [],
+      outputFiles: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).outputFiles || [],
 
       // System info
       system: {
@@ -152,7 +148,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
     };
 
-    console.log(`✅ Headless processing completed: ${response.processingTime}ms`);
+    console.log(`✅ Headless processing completed: ${(response as { processingTime?: any }).processingTime}ms`);
     return json(response);
 
   } catch (error: any) {
@@ -230,12 +226,12 @@ export const PUT: RequestHandler = async ({ request }) => {
       results: results.map((result, index) => ({
         documentIndex: index,
         documentId: body.documents[index].id,
-        success: result.success,
-        processingTime: result.processingTime,
-        legalAnalysis: result.legalAnalysis,
-        compressionRatio: result.lodEntry?.cache_metadata.compression_stats.compression_ratio,
-        mipmapLevels: result.mipmapChain?.levels,
-        error: result.success ? undefined : 'Processing failed'
+        success: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).success,
+        processingTime: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).processingTime,
+        legalAnalysis: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).legalAnalysis,
+        compressionRatio: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).lodEntry?.cache_metadata.compression_stats.compression_ratio,
+        mipmapLevels: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).mipmapChain?.levels,
+        error: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).success ? undefined : 'Processing failed'
       })),
 
       // Performance summary
@@ -248,7 +244,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       system: headlessLegalProcessorFactory.getStats()
     };
 
-    console.log(`✅ Batch processing completed: ${body.documents.length} documents in ${response.processingTime}ms`);
+    console.log(`✅ Batch processing completed: ${body.documents.length} documents in ${(response as { processingTime?: any }).processingTime}ms`);
     return json(response);
 
   } catch (error: any) {

@@ -90,7 +90,7 @@
   }: Legal3DVisualizationLODProps = $props();
 
   // Svelte 5 state management
-  let canvasElement = $state<HTMLCanvasElement>();
+  let canvasElement: HTMLCanvasElement = $state(undefined as any);
   let gpuDevice = $state<GPUDevice | null>(null);
   let context = $state<GPUCanvasContext | null>(null);
   let isWebGPUReady = $state(false);
@@ -122,7 +122,7 @@
   let autoRotate = $state(false);
 
   // Rendering state
-  let meshBuffers = $state<Map<string, Map<number, GPUBuffer>>>(new Map());
+  let meshBuffers = $state<Map<string, Map<number, GPUBuffer>(0)>>(new Map());
   let renderPipeline = $state<GPURenderPipeline | null>(null);
   let uniformBuffer = $state<GPUBuffer | null>(null);
   let bindGroup = $state<GPUBindGroup | null>(null);
@@ -880,7 +880,7 @@
   <!-- 3D Controls -->
   <div class="visualization-controls">
     <div class="camera-controls">
-      <LoadingButton onclick={handleZoomIn} variant="outline" size="sm">
+      <LoadingButton on:click={handleZoomIn} variant="outline" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
@@ -888,11 +888,11 @@
         {cameraDistance.toFixed(1)}m
       </span>
       
-      <LoadingButton onclick={handleZoomOut} variant="outline" size="sm">
+      <LoadingButton on:click={handleZoomOut} variant="outline" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={handleResetCamera} variant="outline" size="sm">
+      <LoadingButton on:click={handleResetCamera} variant="outline" size="sm">
         {#snippet children()}<RotateCcw class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
@@ -906,7 +906,7 @@
       <select 
         class="nes-select"
         bind:value={currentLOD}
-        onchange={handleLODChange}
+        on:change={handleLODChange}
       >
         {#each Object.entries(lodConfig) as [level, config]}
           <option value={parseInt(level)}>

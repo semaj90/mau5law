@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { ollamaService } from '$lib/server/ai/ollama-service';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -17,9 +17,9 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       success: true,
-      entities: result.entities,
-      processingTime: result.processingTime,
-      modelUsed: result.modelUsed,
+      entities: (result as { entities?: any; processingTime?: any; modelUsed?: any }).entities,
+      processingTime: (result as { entities?: any; processingTime?: any; modelUsed?: any }).processingTime,
+      modelUsed: (result as { entities?: any; processingTime?: any; modelUsed?: any }).modelUsed,
       totalTime: Date.now() - startTime
     });
     

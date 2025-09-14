@@ -1,8 +1,8 @@
 // Enhanced Case API Client
 // Integrates REST architecture with PostgreSQL-first workers and clustering
 
-import { restClient, type APIResponse } from './enhanced-rest-architecture';
-import type { CaseForm } from '../schemas/forms';
+import { restClient, type APIResponse } from './enhanced-rest-architecture.js';
+import type { CaseForm } from '../schemas/forms.js';
 
 export interface CaseCreationRequest {
   // Core case fields from CaseForm
@@ -177,12 +177,7 @@ export class EnhancedCaseAPI {
     page?: number;
     limit?: number;
     useVectorSearch?: boolean;
-  }): Promise<APIResponse<{
-    cases: CaseResponse[];
-    total: number;
-    page: number;
-    totalPages: number;
-  }>> {
+  }): Promise<APIResponse> {
     const searchParams = new URLSearchParams();
     
     Object.entries(params).forEach(([key, value]) => {
@@ -219,12 +214,7 @@ export class EnhancedCaseAPI {
   /**
    * Get worker processing status for a case
    */
-  async getWorkerStatus(caseId?: string): Promise<APIResponse<{
-    streamInfo: any;
-    recentEvents: any[];
-    workerStatus: string;
-    lastProcessed: string | null;
-  }>> {
+  async getWorkerStatus(caseId?: string): Promise<APIResponse> {
     const url = caseId 
       ? `/worker/autotag/trigger?caseId=${caseId}`
       : '/worker/autotag/trigger';
@@ -240,16 +230,8 @@ export class EnhancedCaseAPI {
     caseType?: string[];
     priority?: string[];
     includeClusterData?: boolean;
-  } = {}): Promise<APIResponse<{
-    totalCases: number;
-    byStatus: Record<string, number>;
-    byPriority: Record<string, number>;
-    byCaseType: Record<string, number>;
-    clusters?: any[];
-    trends: {
-      daily: Array<{ date: string; count: number }>;
-      weekly: Array<{ week: string; count: number }>;
-    };
+  } = {}): Promise<APIResponse;
+      weekly: Array<any>;
   }>> {
     const searchParams = new URLSearchParams();
     
@@ -281,14 +263,7 @@ export class EnhancedCaseAPI {
     algorithm?: 'kmeans' | 'som' | 'hierarchical';
     k?: number;
     includeEmbeddings?: boolean;
-  }): Promise<APIResponse<{
-    clusters: Array<{
-      id: string;
-      centroid: number[];
-      cases: CaseResponse[];
-      similarity: number;
-      metadata: Record<string, any>;
-    }>;
+  }): Promise<APIResponse;
     silhouetteScore: number;
     totalCases: number;
   }>> {

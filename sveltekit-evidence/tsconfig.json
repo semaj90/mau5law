@@ -1,4 +1,5 @@
 {
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,
@@ -8,20 +9,11 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
+    "target": "ES2022",
     "module": "esnext",
     "moduleResolution": "bundler",
-    "paths": {
-      "$lib": ["./src/lib"],
-      "$lib/*": ["./src/lib/*"],
-      "$components": ["./src/lib/components"],
-      "$components/*": ["./src/lib/components/*"],
-      "$stores": ["./src/lib/stores"],
-      "$stores/*": ["./src/lib/stores/*"],
-      "$utils": ["./src/lib/utils"],
-      "$utils/*": ["./src/lib/utils/*"],
-      "$types": ["./src/lib/types"],
-      "$types/*": ["./src/lib/types/*"]
-    }
+    "allowSyntheticDefaultImports": true,
+    "types": ["svelte"]
   },
   "include": [
     "src/**/*.d.ts",

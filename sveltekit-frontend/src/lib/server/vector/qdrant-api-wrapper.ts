@@ -4,7 +4,7 @@
  */
 
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { productionLogger as logger } from '../production-logger.js';
+import { productionLogger as logger } from '../production-logger.js.js';
 
 export class QdrantApiWrapper {
   private client: InstanceType<typeof QdrantClient>;
@@ -129,12 +129,7 @@ export class QdrantApiWrapper {
     collectionName: string,
     options: {
       wait?: boolean;
-      points: Array<{
-        id: string | number;
-        vector: number[];
-        payload?: any;
-      }>;
-    }
+      points: Array<any>
   ) {
     try {
       const response = await this.client.upsert(collectionName, options);

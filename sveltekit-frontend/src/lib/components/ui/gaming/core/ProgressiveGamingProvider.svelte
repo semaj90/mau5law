@@ -92,8 +92,7 @@ https://svelte.dev/e/js_parse_error -->
     bitsUICompatibility: true,
     ...config
   });
-  let evolutionManager = $state<GamingEvolutionManager;
-  let unsubscribe = $state<(() => {
+  let evolutionManager = $state<GamingEvolutionManagerlet unsubscribe = $state<(() = | null>(null)() {
     if (evolutionManager) {
       await evolutionManager.setEra(era);
     }
@@ -246,9 +245,9 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
       <div class="debug-controls">
-        <button onclick={() => setEra('8bit')}>8-Bit</button>
-        <button onclick={() => setEra('16bit')}>16-Bit</button>
-        <button onclick={() => setEra('n64')}>N64</button>
+        <button on:click={() => setEra('8bit')}>8-Bit</button>
+        <button on:click={() => setEra('16bit')}>16-Bit</button>
+        <button on:click={() => setEra('n64')}>N64</button>
       </div>
     </div>
   {/if}

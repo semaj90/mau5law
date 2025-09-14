@@ -42,11 +42,7 @@
   		footer,
   		onClose
   	}: Props = $props();
-  	const dispatch = createEventDispatcher<{
-  		close: void;
-  		open: void;
-  		'open-change': { open: boolean };
-  	}>();
+  	const dispatch = createEventDispatcher();
 
   	function handleOpenChange(newOpen: boolean) {
   		if (onOpenChange) {

@@ -4,11 +4,11 @@
  * Provides unified 400x performance optimization across all systems
  */
 
-import { enhancedCachingRevolutionaryBridge, processUnifiedLegalQuery } from '../services/enhanced-caching-revolutionary-bridge';
-import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from './comprehensive-agent-orchestration';
-import { flashAttention2Service, type AttentionResult, type LegalContextAnalysis } from '../services/flashattention2-rtx3060';
-import { getContext7MulticoreService, type ProcessingTask } from '../services/context7-multicore';
-import type { RevolutionaryAIQuery, RevolutionaryAIResponse } from '../services/revolutionary-ai-integration';
+import { enhancedCachingRevolutionaryBridge, processUnifiedLegalQuery } from '../services/enhanced-caching-revolutionary-bridge.js';
+import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from './comprehensive-agent-orchestration.js';
+import { flashAttention2Service, type AttentionResult, type LegalContextAnalysis } from '../services/flashattention2-rtx3060.js';
+import { getContext7MulticoreService, type ProcessingTask } from '../services/context7-multicore.js';
+import type { RevolutionaryAIQuery, RevolutionaryAIResponse } from '../services/revolutionary-ai-integration.js';
 
 export interface RevolutionaryMulticoreRequest {
   query: string;
@@ -243,8 +243,8 @@ export class RevolutionaryMulticoreBridge {
         },
         performance: {
           totalTime: performance.now() - startTime,
-          cacheMetrics: {} as any,
-          simdMetrics: {} as any,
+          cacheMetrics: Record<string, any> as any,
+          simdMetrics: Record<string, any> as any,
           compressionSavings: 0,
           gpuRenderTime: 0,
           memoryEfficiency: unifiedResult.optimizationLevel / 100
@@ -267,10 +267,7 @@ export class RevolutionaryMulticoreBridge {
     }
   }
 
-  private async processWithFlashAttention(request: RevolutionaryMulticoreRequest): Promise<{
-    attentionResult: AttentionResult;
-    legalAnalysis: LegalContextAnalysis;
-  }> {
+  private async processWithFlashAttention(request: RevolutionaryMulticoreRequest): Promise<any> {
     if (!request.options?.enableFlashAttention || !flashAttention2Service) {
       // Return mock results if FlashAttention not available
       return {
@@ -361,12 +358,7 @@ export class RevolutionaryMulticoreBridge {
     }
   }
 
-  private async processWithMulticore(request: RevolutionaryMulticoreRequest): Promise<{
-    workerResults: any[];
-    processingTime: number;
-    resourceUtilization: number;
-    errorAnalysis?: any;
-  }> {
+  private async processWithMulticore(request: RevolutionaryMulticoreRequest): Promise<any> {
     const context7Service = getContext7MulticoreService();
     if (!context7Service) {
       return {
@@ -398,10 +390,10 @@ export class RevolutionaryMulticoreBridge {
       console.log(`🧠 Multicore processing: ${(performance.now() - startTime).toFixed(2)}ms`);
       
       return {
-        workerResults: result.results || [],
+        workerResults: (result as { results?: any; resourceUtilization?: any; errorAnalysis?: any }).results || [],
         processingTime: performance.now() - startTime,
-        resourceUtilization: result.resourceUtilization || 0,
-        errorAnalysis: result.errorAnalysis
+        resourceUtilization: (result as { results?: any; resourceUtilization?: any; errorAnalysis?: any }).resourceUtilization || 0,
+        errorAnalysis: (result as { results?: any; resourceUtilization?: any; errorAnalysis?: any }).errorAnalysis
       };
       
     } catch (error) {

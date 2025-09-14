@@ -11,9 +11,9 @@
  * - Persistent message durability for critical legal data
  */
 
-import { nesMemory, type LegalDocument } from '../memory/nes-memory-architecture';
-import { textureRankingMatrices, type RankingResult } from '../gpu/texture-ranking-matrices';
-import { FlatBufferNodeSerializer } from '../binary/flatbuffer-node-data';
+import { nesMemory, type LegalDocument } from '../memory/nes-memory-architecture.js';
+import { textureRankingMatrices, type RankingResult } from '../gpu/texture-ranking-matrices.js';
+import { FlatBufferNodeSerializer } from '../binary/flatbuffer-node-data.js';
 
 export interface RabbitMQConnection {
   readonly host: string;

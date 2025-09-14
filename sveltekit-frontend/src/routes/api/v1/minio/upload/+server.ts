@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { minioService } from '$lib/server/storage/minio-service';
 
 // Lightweight MinIO direct upload endpoint
@@ -17,17 +17,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return new Response(JSON.stringify({ error: 'MinIO unavailable' }), { status: 503 });
     }
     const result = await minioService.uploadFile(file, file.name, { bucket });
-    if (!result.success) {
-      return new Response(JSON.stringify({ error: result.error || 'Upload failed' }), { status: 500 });
+    if (!(result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).success) {
+      return new Response(JSON.stringify({ error: (result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).error || 'Upload failed' }), { status: 500 });
     }
     return new Response(JSON.stringify({
       success: true,
-      fileId: result.fileId,
-      fileName: result.fileName,
-      bucket: result.bucket,
-      size: result.size,
-      url: result.url,
-      metadata: result.metadata
+      fileId: (result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).fileId,
+      fileName: (result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).fileName,
+      bucket: (result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).bucket,
+      size: (result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).size,
+      url: (result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).url,
+      metadata: (result as { success?: any; error?: any; fileId?: any; fileName?: any; bucket?: any; size?: any; url?: any; metadata?: any }).metadata
     }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e?.message || 'Unknown error' }), { status: 500 });

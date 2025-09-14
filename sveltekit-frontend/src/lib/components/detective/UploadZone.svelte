@@ -80,7 +80,7 @@
     if (!lastError && !canceled) { onupload?.(summary); statusMessage = 'All files uploaded'; }
   }
 
-  function uploadWithRetry(file: File, index: number, total: number): Promise<{ url?: string; id?: string; embeddingDims?: number }> {
+  function uploadWithRetry(file: File, index: number, total: number): Promise {
     return new Promise(async (resolve, reject) => {
       let attempt = 0;
       while (attempt <= maxRetries) {
@@ -99,7 +99,7 @@
               embeddingDims = embedding.dimensions;
               // store mapping
               try {
-                await vectorService.updateFileMapping(result.id || result.url || file.name, {
+                await vectorService.updateFileMapping((result as { id?: any; url?: any }).id || (result as { id?: any; url?: any }).url || file.name, {
                   textChunks: [text],
                   embeddings: [embedding.vector],
                   analysisResults: { fileType: file.type, size: file.size, embeddingModel: embedding.model, embeddingDims }
@@ -113,7 +113,7 @@
           }
           if (enableTelemetry) telemetry.emit('upload_complete', { file: file.name, attempt });
           statusMessage = `Uploaded ${file.name}`;
-          return resolve({ url: result.url, id: result.id, embeddingDims });
+          return resolve({ url: (result as { id?: any; url?: any }).url, id: (result as { id?: any; url?: any }).id, embeddingDims });
         } catch (err: any) {
           const retryable = isRetryable(err?.message, err?.statusCode);
           if (enableTelemetry) telemetry.emit('upload_error', { file: file.name, attempt, error: err?.message, retryable });
@@ -129,7 +129,7 @@
     });
   }
 
-  function doSingleUpload(file: File, index: number, total: number): Promise<{ url?: string; id?: string }> {
+  function doSingleUpload(file: File, index: number, total: number): Promise {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       currentXhr = xhr;
@@ -165,7 +165,7 @@
 <input
   type="file"
   bind:this={fileInput}
-  onchange={handleFileSelect}
+  on:change={handleFileSelect}
   multiple
   accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
   class="hidden"
@@ -175,7 +175,7 @@
 {/if}
 
 {#if minimal}
-  <button class="upload-zone px-3 py-2 border rounded text-sm" onclick={openFileDialog} title="Upload Evidence" aria-label="Upload Evidence" tabindex={0} disabled={isUploading}>
+  <button class="upload-zone px-3 py-2 border rounded text-sm" on:click={openFileDialog} title="Upload Evidence" aria-label="Upload Evidence" tabindex={0} disabled={isUploading}>
     {#if isUploading}
       ⏳ Uploading...
     {:else}
@@ -185,14 +185,14 @@
 {:else}
   <div
     class="upload-zone border-2 border-dashed rounded p-6 text-center transition-colors select-none {isDragOver ? 'bg-gray-100 border-gray-400' : 'border-gray-300'}"
-    ondragover={handleDragOver}
+    on:dragover={handleDragOver}
     ondragleave={handleDragLeave}
-    ondrop={handleDrop}
+    on:drop={handleDrop}
     role="button" 
     aria-label="Upload Evidence Dropzone" 
     tabindex={0}
-  onclick={openFileDialog}
-  onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
+  on:click={openFileDialog}
+  on:keydown={(e) => e.key === 'Enter' && openFileDialog()}
   >
     {#if isUploading}
       <div class="flex flex-col items-center gap-3">
@@ -201,7 +201,7 @@
           <div class="h-full bg-blue-500 transition-all" style="width: {uploadProgress}%"></div>
         </div>
         <div class="flex gap-2 items-center">
-          <button class="text-xs px-2 py-1 border rounded hover:bg-gray-100" onclick={(e) => { e.stopPropagation(); cancelUpload(); }}>Cancel</button>
+          <button class="text-xs px-2 py-1 border rounded hover:bg-gray-100" on:click={(e) => { e.stopPropagation(); cancelUpload(); }}>Cancel</button>
         </div>
       </div>
     {:else}

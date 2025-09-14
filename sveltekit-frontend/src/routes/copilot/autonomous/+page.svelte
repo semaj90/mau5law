@@ -54,15 +54,15 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   async function checkSystemStatus() {
     try {
       const response = await fetch('/api/copilot/self-prompt?mode=status');
-      if (response.ok) {
-        const data = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
         systemStatus = {
-          copilotIntegration: data.status === 'operational',
-          semanticSearch: data.services?.semanticSearch || false,
-          memoryMCP: data.services?.memoryMCP || false,
-          multiAgent: data.services?.multiAgent || false,
-          autonomousEngineering: data.services?.autonomousEngineering || false,
-          serviceWorkers: data.services?.serviceWorkers || false
+          copilotIntegration: (data as { status?: any; services?: any }).status === 'operational',
+          semanticSearch: (data as { status?: any; services?: any }).services?.semanticSearch || false,
+          memoryMCP: (data as { status?: any; services?: any }).services?.memoryMCP || false,
+          multiAgent: (data as { status?: any; services?: any }).services?.multiAgent || false,
+          autonomousEngineering: (data as { status?: any; services?: any }).services?.autonomousEngineering || false,
+          serviceWorkers: (data as { status?: any; services?: any }).services?.serviceWorkers || false
         };
       }
     } catch (error) {
@@ -243,8 +243,8 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
     <!-- System Status Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
       {#each architectureFeatures as feature}
-        <NesCard>
-          <div class="yorha-panel-content" class="p-4">
+        <div class="nes-container">
+          <div class="yorha-panel-content p-4">
             <div class="flex items-center justify-between mb-2">
               <feature.icon
                 class="h-6 w-6 {getStatusColor(feature.status)}"
@@ -256,7 +256,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
               {feature.status ? 'Operational' : 'Offline'}
             </p>
           </div>
-        </NesCard>
+        </div>
       {/each}
     </div>
 
@@ -267,16 +267,17 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
     />
 
     <!-- Architecture Overview -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           <span class="flex items-center gap-2">
             <Settings class="h-5 w-5" />
             System Architecture
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => showArchitecture = !showArchitecture}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+showArchitecture = !showArchitecture}>
             {showArchitecture ? 'Hide' : 'Show'} Details
-          </button>
+
         </h3>
       </div>
       {#if showArchitecture}
@@ -312,19 +313,20 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
           </div>
         </div>
       {/if}
-    </NesCard>
+    </div>
 
     <!-- Integration Examples -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           <span class="flex items-center gap-2">
             <Code class="h-5 w-5" />
             VS Code Extension Integration
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => showIntegration = !showIntegration}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+showIntegration = !showIntegration}>
             {showIntegration ? 'Hide' : 'Show'} Examples
-          </button>
+
         </h3>
       </div>
       {#if showIntegration}
@@ -356,12 +358,12 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
           </div>
         </div>
       {/if}
-    </NesCard>
+    </div>
 
     <!-- Use Cases -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Activity class="h-5 w-5" />
           Real-World Use Cases
         </h3>
@@ -392,12 +394,12 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Implementation Status -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Workflow class="h-5 w-5" />
           Implementation Progress
         </h3>
@@ -441,7 +443,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
             </p>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 

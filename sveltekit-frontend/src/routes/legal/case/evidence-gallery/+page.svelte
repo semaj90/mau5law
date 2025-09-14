@@ -117,11 +117,11 @@
     if (!isConnecting) {
       isConnecting = true;
       selectedItem = item;
-    } else if (selectedItem && selectedItem.id !== item.id) {
+    } else if (selectedItem && selectedItem.id !== (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id) {
       // Create connection
       const newConnection = {
         from: selectedItem.id,
-        to: item.id,
+        to: (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id,
         type: 'correlation'
       };
       connections = [...connections, newConnection];
@@ -129,9 +129,9 @@
       // Update item connections
       canvasItems = canvasItems.map(i => {
         if (i.id === selectedItem.id) {
-          return { ...i, connections: [...i.connections, item.id] };
+          return { ...i, connections: [...i.connections, (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id] };
         }
-        if (i.id === item.id) {
+        if (i.id === (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id) {
           return { ...i, connections: [...i.connections, selectedItem.id] };
         }
         return i;
@@ -169,7 +169,7 @@
       const newY = event.clientY - rect.top - dragOffset.y;
       
       canvasItems = canvasItems.map(item => 
-        item.id === draggedItem.id 
+        (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id === draggedItem.id 
           ? { ...item, position: { x: Math.max(0, newX), y: Math.max(0, newY) } }
           : item
       );
@@ -231,11 +231,11 @@
           <span class="px-3 py-1 bg-gray-800 text-white text-sm rounded">{caseData.id}</span>
         </div>
         <Button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2">
-          📚 LIBRARY
-        </button>
+📚 LIBRARY
+
         <Button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2">
-          📊 ANALYSIS
-        </button>
+📊 ANALYSIS
+
       </div>
     </div>
 
@@ -249,26 +249,26 @@
             class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
             disabled
           >
-            🔒 100%
-          </button>
+🔒 100%
+
           <Button 
             class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
             disabled
           >
-            📎 CONNECT
-          </button>
+📎 CONNECT
+
           <Button 
-            onclick={addEvidence}
+            on:click={addEvidence}
             class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm"
           >
-            + ADD EVIDENCE
-          </button>
++ ADD EVIDENCE
+
           <Button 
             class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
             disabled
           >
-            📚 LIBRARY (0)
-          </button>
+📚 LIBRARY (0)
+
         </div>
 
         <!-- Connection Status -->
@@ -288,8 +288,8 @@
           <!-- SVG for connection lines -->
           <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 1;">
             {#each connections as connection}
-              {@const fromItem = canvasItems.find(item => item.id === connection.from)}
-              {@const toItem = canvasItems.find(item => item.id === connection.to)}
+              {@const fromItem = canvasItems.find(item => (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id === connection.from)}
+              {@const toItem = canvasItems.find(item => (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id === connection.to)}
               {#if fromItem && toItem}
                 <line
                   x1={fromItem.position.x + 120}
@@ -306,57 +306,57 @@
           </svg>
 
           <!-- Evidence Cards -->
-          {#each canvasItems as item (item.id)}
+          {#each canvasItems as item ((item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id)}
             <div
               class="absolute cursor-pointer select-none"
-              style="left: {item.position.x}px; top: {item.position.y}px; z-index: 2;"
+              style="left: {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).position.x}px; top: {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).position.y}px; z-index: 2;"
               onmousedown={(e) => handleMouseDown(e, item)}
-              onclick={() => startConnection(item)}
+              on:click={() => startConnection(item)}
             >
-              <div.Root class="w-60 bg-white border-2 {selectedItem?.id === item.id ? 'border-blue-500' : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all">
+              <div.Root class="w-60 bg-white border-2 {selectedItem?.id === (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id ? 'border-blue-500' : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all">
                 <div.Header class="pb-2">
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-gray-800">{item.type}</span>
+                    <span class="text-sm font-bold text-gray-800">{(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).type}</span>
                     <span class="text-xs text-gray-500">!</span>
                   </div>
-                </Card.Header>
+                </div.Header>
                 <div.Content class="pt-0">
                   <!-- Main Content Area -->
                   <div class="bg-gray-600 h-16 rounded mb-2 flex items-center justify-center">
-                    <span class="text-white text-2xl">{getTypeIcon(item.type)}</span>
+                    <span class="text-white text-2xl">{getTypeIcon((item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).type)}</span>
                   </div>
                   
                   <!-- Title -->
-                  <div class="text-sm font-bold text-blue-600 mb-1">{item.title}</div>
+                  <div class="text-sm font-bold text-blue-600 mb-1">{(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).title}</div>
                   
                   <!-- Description -->
-                  <div class="text-xs text-gray-700 mb-2">{item.description}</div>
+                  <div class="text-xs text-gray-700 mb-2">{(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).description}</div>
                   
                   <!-- Metadata -->
-                  {#if item.metadata}
+                  {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata}
                     <div class="text-xs text-gray-500 space-y-1">
-                      {#if item.metadata.timestamp}
-                        <div>📅 {item.metadata.timestamp}</div>
+                      {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.timestamp}
+                        <div>📅 {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.timestamp}</div>
                       {/if}
-                      {#if item.metadata.location}
-                        <div>📍 {item.metadata.location}</div>
+                      {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.location}
+                        <div>📍 {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.location}</div>
                       {/if}
-                      {#if item.metadata.source}
-                        <div>🔗 {item.metadata.source}</div>
+                      {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.source}
+                        <div>🔗 {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.source}</div>
                       {/if}
                     </div>
                   {/if}
                   
                   <!-- Connection indicators -->
-                  {#if item.connections.length > 0}
+                  {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).connections.length > 0}
                     <div class="flex items-center mt-2 text-xs text-green-600">
                       <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
-                      {item.connections.length} connections
+                      {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).connections.length} connections
                       <span class="ml-auto">🔗</span>
                     </div>
                   {/if}
-                </Card.Content>
-              </Card.Root>
+                </div.Content>
+              </div.Root>
             </div>
           {/each}
 
@@ -370,9 +370,9 @@
                     Selected: {selectedItem?.title}<br>
                     Click another evidence item to create connection
                   </div>
-                  <Button onclick={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
-                    Cancel Connection
-                  </button>
+                  <Button on:click={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
+Cancel Connection
+
                 </div>
               </div>
             </div>
@@ -431,12 +431,12 @@
             {#each canvasItems as item}
               <div class="p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
                 <div class="flex items-center space-x-2">
-                  <span class="text-lg">{getTypeIcon(item.type)}</span>
+                  <span class="text-lg">{getTypeIcon((item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).type)}</span>
                   <div class="flex-1">
-                    <div class="text-sm font-medium text-gray-800">{item.title}</div>
-                    <div class="text-xs text-gray-600">{item.type}</div>
+                    <div class="text-sm font-medium text-gray-800">{(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).title}</div>
+                    <div class="text-xs text-gray-600">{(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).type}</div>
                   </div>
-                  {#if item.connections.length > 0}
+                  {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).connections.length > 0}
                     <span class="text-xs text-green-600">🔗</span>
                   {/if}
                 </div>
@@ -447,15 +447,15 @@
 
         <!-- Action Buttons -->
         <div class="p-4 border-t space-y-2">
-          <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">
-            + Add Evidence
-          </button>
+          <Button on:click={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">
++ Add Evidence
+
           <Button class="w-full bg-green-600 hover:bg-green-700 text-white">
-            🔍 Analyze All
-          </button>
+🔍 Analyze All
+
           <Button class="w-full bg-purple-600 hover:bg-purple-700 text-white">
-            📊 Generate Report
-          </button>
+📊 Generate Report
+
         </div>
       </div>
     </div>

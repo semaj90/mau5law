@@ -200,35 +200,35 @@ https://svelte.dev/e/expected_token -->
 			<button
 				class="nav-item"
 				class:active={activeView === 'dashboard'}
-				onclick={() => activeView = 'dashboard'}
+				on:click={() => activeView = 'dashboard'}
 			>
 				📊 Dashboard
 			</button>
 			<button
 				class="nav-item"
 				class:active={activeView === 'cases'}
-				onclick={() => activeView = 'cases'}
+				on:click={() => activeView = 'cases'}
 			>
 				📂 Cases ({mockUser.cases})
 			</button>
 			<button
 				class="nav-item"
 				class:active={activeView === 'evidence'}
-				onclick={() => activeView = 'evidence'}
+				on:click={() => activeView = 'evidence'}
 			>
 				🔍 Evidence
 			</button>
 			<button
 				class="nav-item"
 				class:active={activeView === 'detective'}
-				onclick={() => activeView = 'detective'}
+				on:click={() => activeView = 'detective'}
 			>
 				🧠 Detective Mode
 			</button>
 			<button
 				class="nav-item"
 				class:active={activeView === 'timeline'}
-				onclick={() => activeView = 'timeline'}
+				on:click={() => activeView = 'timeline'}
 			>
 				⏱️ Timeline
 			</button>
@@ -369,7 +369,7 @@ https://svelte.dev/e/expected_token -->
 						></textarea>
 						<button
 							class="nes-btn is-primary"
-							onclick={() => {
+							on:click={() => {
 								workflowStep++;
 								if (workflowStep < prosecutionWorkflow.length) {
 									startTypewriter(`Great! Now: ${prosecutionWorkflow[workflowStep].question}`);
@@ -444,7 +444,7 @@ https://svelte.dev/e/expected_token -->
 			<div class="ai-actions">
 				<button
 					class="nes-btn is-primary"
-					onclick={() => {
+					on:click={() => {
 						showQuickInput = true;
 						startTypewriter("What's wrong? Describe the situation and I'll help you build the caseItem:");
 					}}
@@ -453,7 +453,7 @@ https://svelte.dev/e/expected_token -->
 				</button>
 				<button
 					class="nes-btn"
-					onclick={() => startTypewriter("Ready to analyze evidence, detect patterns, and suggest prosecution strategies. What would you like me to focus on?")}
+					on:click={() => startTypewriter("Ready to analyze evidence, detect patterns, and suggest prosecution strategies. What would you like me to focus on?")}
 				>
 					Analyze Evidence
 				</button>
@@ -471,14 +471,14 @@ https://svelte.dev/e/expected_token -->
 				<div class="input-actions">
 					<button
 						class="nes-btn is-primary"
-						onclick={processQuickInput}
+						on:click={processQuickInput}
 						disabled={!quickInput.trim()}
 					>
 						Auto-Fill Case
 					</button>
 					<button
 						class="nes-btn"
-						onclick={() => {
+						on:click={() => {
 							showQuickInput = false;
 							quickInput = '';
 						}}
@@ -541,7 +541,7 @@ https://svelte.dev/e/expected_token -->
 		font-size: 0.875rem;
 	}
 
-	.nav-item:hover, .nav-item.active {
+	.nav-item:hover, .nav-(item as { active?: any }).active {
 		background: rgba(16, 185, 129, 0.1);
 		border-color: #10b981;
 		color: #10b981;

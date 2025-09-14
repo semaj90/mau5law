@@ -277,9 +277,9 @@ https://svelte.dev/e/expected_token -->
             </div>
           </div>
           
-          <Button class="bits-btn" onclick={runSystemBenchmark} variant="outline" size="sm">
-            🧪 Run Benchmark
-          </button>
+          <Button class="bits-btn" on:click={runSystemBenchmark} variant="outline" size="sm">
+🧪 Run Benchmark
+
         </div>
       </div>
     </div>
@@ -291,7 +291,7 @@ https://svelte.dev/e/expected_token -->
       <div class="flex space-x-1">
         {#each demos as demo}
           <button
-            onclick={() => activeDemo = demo.id}
+            on:click={() => activeDemo = demo.id}
             class="px-4 py-3 text-sm font-medium rounded-t-lg transition-colors {
               activeDemo === demo.id
                 ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'
@@ -300,7 +300,7 @@ https://svelte.dev/e/expected_token -->
           >
             <span class="mr-2">{demo.icon}</span>
             {demo.title}
-          </button>
+
         {/each}
       </div>
     </div>
@@ -312,7 +312,7 @@ https://svelte.dev/e/expected_token -->
       <!-- System Overview -->
       <div class="space-y-8">
         <!-- Architecture Overview -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">🏗️ System Architecture</h3>
           </div>
@@ -352,11 +352,11 @@ https://svelte.dev/e/expected_token -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
         
         <!-- System Status Dashboard -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">📊 System Status</h3>
             </div>
@@ -421,9 +421,9 @@ https://svelte.dev/e/expected_token -->
                 </div>
               {/if}
             </div>
-          </NesCard>
+          </div>
           
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">⚡ Performance Metrics</h3>
             </div>
@@ -474,11 +474,11 @@ https://svelte.dev/e/expected_token -->
                 {/if}
               </div>
             </div>
-          </NesCard>
+          </div>
         </div>
         
         <!-- Feature Highlights -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">🌟 Key Features</h3>
           </div>
@@ -545,7 +545,7 @@ https://svelte.dev/e/expected_token -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       </div>
     {/if}
     

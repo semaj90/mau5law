@@ -204,7 +204,7 @@ https://svelte.dev/e/js_parse_error -->
       <h3>Select Gaming Era:</h3>
       <div class="era-buttons">
         <NES8BitButton
-          onclick={() => selectedEra = '8bit'}
+          on:click={() => selectedEra = '8bit'}
           variant={selectedEra === '8bit' ? 'success' : 'primary'}
           enableSound={true}
         >
@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
         </NES8BitButton>
 
         <SNES16BitButton
-          onclick={() => selectedEra = '16bit'}
+          on:click={() => selectedEra = '16bit'}
           variant={selectedEra === '16bit' ? 'success' : 'primary'}
           enableEnhancedSound={true}
         >
@@ -220,7 +220,7 @@ https://svelte.dev/e/js_parse_error -->
         </SNES16BitButton>
 
         <N643DButton
-          onclick={() => selectedEra = 'n64'}
+          on:click={() => selectedEra = 'n64'}
           variant={selectedEra === 'n64' ? 'success' : 'primary'}
           enableParticles={true}
         >
@@ -243,7 +243,7 @@ https://svelte.dev/e/js_parse_error -->
           </ul>
 
           <div class="button-demo">
-            <NES8BitButton nesVariant="is-primary" onclick={() => demoCounter++}>
+            <NES8BitButton nesVariant="is-primary" on:click={() => demoCounter++}>
               Action ({demoCounter})
             </NES8BitButton>
             <NES8BitButton nesVariant="is-success" enableSound={true}>
@@ -267,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
           </ul>
 
           <div class="button-demo">
-            <SNES16BitButton onclick={() => demoCounter++} enableLayerEffects={true}>
+            <SNES16BitButton on:click={() => demoCounter++} enableLayerEffects={true}>
               Layer Effects ({demoCounter})
             </SNES16BitButton>
             <SNES16BitButton enableMode7={true} plasmaEffect={enableEffects}>
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <div class="button-demo-3d">
             <N643DButton
-              onclick={() => demoCounter++}
+              on:click={() => demoCounter++}
               meshComplexity="high"
               enableLighting={true}
               enableReflections={true}
@@ -305,7 +305,7 @@ https://svelte.dev/e/js_parse_error -->
               materialType="pbr"
               enableParticles={true}
               enableFog={true}
-              onclick={testDataOperations}
+              on:click={testDataOperations}
             >
               PBR + Particles + DB Test
             </N643DButton>
@@ -383,11 +383,11 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="action-buttons">
-  <NES8BitButton onclick={checkDatabaseConnection} loading={loading}>
+  <NES8BitButton on:click={checkDatabaseConnection} loading={loading}>
           Refresh Status
         </NES8BitButton>
 
-  <SNES16BitButton onclick={testDataOperations}>
+  <SNES16BitButton on:click={testDataOperations}>
           Test Database Ops
         </SNES16BitButton>
       </div>
@@ -468,11 +468,11 @@ https://svelte.dev/e/js_parse_error -->
     border-left: 3px solid #666;
   }
 
-  .status-item.healthy {
+  .status-(item as { healthy?: any; error?: any }).healthy {
     border-left-color: #00ff41;
   }
 
-  .status-item.error {
+  .status-(item as { healthy?: any; error?: any }).error {
     border-left-color: #ff0041;
   }
 
@@ -747,11 +747,11 @@ https://svelte.dev/e/js_parse_error -->
       border-width: 2px;
     }
 
-    .status-item.healthy {
+    .status-(item as { healthy?: any; error?: any }).healthy {
       background: rgba(0, 255, 65, 0.2);
     }
 
-    .status-item.error {
+    .status-(item as { healthy?: any; error?: any }).error {
       background: rgba(255, 0, 65, 0.2);
     }
   }

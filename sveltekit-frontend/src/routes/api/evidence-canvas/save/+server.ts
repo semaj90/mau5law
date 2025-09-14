@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Mock storage - in production, this would use a database
 const canvasStorage = new Map<string, any>();

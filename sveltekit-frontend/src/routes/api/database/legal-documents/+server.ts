@@ -2,7 +2,7 @@
 // Handles storage with Drizzle ORM and PostgreSQL
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/database';
 import { documents, cases, users, userSessions } from '$lib/server/database/schema';
 import { validateAuthSession } from '$lib/server/auth';
@@ -27,42 +27,42 @@ export const POST: RequestHandler = async ({ request }) => {
     const documentIds = [];
 
     for (const result of uploadResults) {
-      if (!result.success) continue; // Skip failed uploads
+      if (!(result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).success) continue; // Skip failed uploads
 
-      const documentId = result.documentId || nanoid();
+      const documentId = (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).documentId || nanoid();
       documentIds.push(documentId);
 
       // Prepare document data for database insertion
       const documentData = {
         id: documentId,
-        fileName: result.fileName,
-        fileSize: result.metadata?.fileSize || 0,
-        fileType: result.metadata?.fileType || 'unknown',
-        hash: result.metadata?.hash || '',
+        fileName: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).fileName,
+        fileSize: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).metadata?.fileSize || 0,
+        fileType: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).metadata?.fileType || 'unknown',
+        hash: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).metadata?.hash || '',
         caseId: caseId || null,
         userId: session.userId,
-        textContent: result.metadata?.textContent || '',
+        textContent: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).metadata?.textContent || '',
         aiAnalysis: {
-          summary: result.aiInsights?.summary || '',
-          entities: result.aiInsights?.keyEntities || [],
-          suggestedTags: result.aiInsights?.suggestedTags || [],
-          confidenceScore: result.aiInsights?.confidenceScore || 0,
-          privileged: result.aiInsights?.privileged || false,
-          evidenceType: result.aiInsights?.evidenceType || 'unknown',
-          citations: result.aiInsights?.citations || [],
-          riskFactors: result.aiInsights?.riskFactors || []
+          summary: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights?.summary || '',
+          entities: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights?.keyEntities || [],
+          suggestedTags: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights?.suggestedTags || [],
+          confidenceScore: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights?.confidenceScore || 0,
+          privileged: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights?.privileged || false,
+          evidenceType: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights?.evidenceType || 'unknown',
+          citations: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights?.citations || [],
+          riskFactors: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights?.riskFactors || []
         },
         uploadedAt: new Date(),
         metadata: {
           legalContext,
           uploadMetadata: metadata,
-          chainOfCustody: result.metadata?.chain_of_custody || [{
+          chainOfCustody: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).metadata?.chain_of_custody || [{
             timestamp: new Date().toISOString(),
             actor: session.userId,
             action: 'uploaded',
             details: 'Document uploaded via legal AI system'
           }],
-          analysisResults: result.aiInsights || {}
+          analysisResults: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights || {}
         }
       };
 

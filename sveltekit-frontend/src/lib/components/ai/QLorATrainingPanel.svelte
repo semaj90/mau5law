@@ -173,9 +173,9 @@ https://svelte.dev/e/attribute_duplicate -->
   }
 </script>
 
-<NesCard class="w-full max-w-4xl mx-auto bg-gradient-to-br from-gray-900 to-gray-800 border-cyan-500/20">
-  <div class="yorha-panel-header" class="pb-4">
-    <h3 class="nes-text is-primary" class="text-2xl font-bold text-cyan-400 flex items-center gap-3">
+<div class="w-full max-w-4xl mx-auto bg-gradient-to-br from-gray-900 to-gray-800 border-cyan-500/20 nes-container">
+  <div class="yorha-panel-header pb-4">
+    <h3 class="nes-text is-primary text-2xl font-bold text-cyan-400 flex items-center gap-3">
       <span class="text-3xl">🧠</span>
       QLorA Training System
       <Badge class="ml-auto" variant={trainingEnabled ? "default" : "secondary"}>
@@ -184,7 +184,7 @@ https://svelte.dev/e/attribute_duplicate -->
     </h3>
   </div>
 
-  <div class="yorha-panel-content" class="space-y-6">
+  <div class="yorha-panel-content space-y-6">
     <!-- Main Training Toggle -->
     <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg border border-cyan-500/20">
       <div class="space-y-1">
@@ -199,7 +199,7 @@ https://svelte.dev/e/attribute_duplicate -->
           type="checkbox"
           class="sr-only peer"
           bind:checked={trainingEnabled}
-          onclick={handleTrainingToggle}
+          on:click={handleTrainingToggle}
         />
         <div class="w-14 h-8 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-cyan-300/20 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-cyan-600"></div>
       </label>
@@ -208,9 +208,9 @@ https://svelte.dev/e/attribute_duplicate -->
     <!-- File Upload Area -->
     <div 
       class="border-2 border-dashed border-cyan-500/30 rounded-lg p-8 text-center transition-all duration-200 {dragActive ? 'border-cyan-400 bg-cyan-500/10' : 'hover:border-cyan-500/50'}"
-      role="region" aria-label="Drop zone" ondragover={(e) => { e.preventDefault(); dragActive = true; }}
+      role="region" aria-label="Drop zone" on:dragover={(e) => { e.preventDefault(); dragActive = true; }}
       ondragleave={() => dragActive = false}
-      ondrop={handleFileDrop}
+      on:drop={handleFileDrop}
     >
       <div class="space-y-4">
         <div class="text-6xl">📄</div>
@@ -221,8 +221,8 @@ https://svelte.dev/e/attribute_duplicate -->
         
         <label for="file-input" class="inline-block">
           <Button class="bg-cyan-600 hover:bg-cyan-700 bits-btn bits-btn">
-            Select Files
-          </button>
+Select Files
+</Button>
         </label>
         
         <input
@@ -231,7 +231,7 @@ https://svelte.dev/e/attribute_duplicate -->
           multiple
           accept=".case,.json"
           class="hidden"
-          onchange={handleFileInput}
+          on:change={handleFileInput}
         />
       </div>
     </div>
@@ -251,18 +251,18 @@ https://svelte.dev/e/attribute_duplicate -->
                 </div>
               </div>
               <button 
-                onclick={() => removeFile(index)}
+                on:click={() => removeFile(index)}
                 class="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-500/20 transition-colors"
               >
                 ✕
-              </button>
+</Button>
             </div>
           {/each}
         </div>
         
         {#if trainingEnabled}
           <button class="nes-btn" 
-            onclick={() => startTraining(selectedFiles)}
+            on:click={() => startTraining(selectedFiles)}
             class="bits-btn w-full bg-green-600 hover:bg-green-700"
             disabled={currentJob?.status === 'running'}
           >
@@ -357,29 +357,30 @@ https://svelte.dev/e/attribute_duplicate -->
         <!-- Training Controls -->
         <div class="flex gap-3">
           {#if currentJob.status === 'running'}
-            <Button class="bits-btn" onclick={pauseTraining} variant="outline" size="sm">
-              ⏸️ Pause
-            </button>
-            <Button class="bits-btn" onclick={stopTraining} variant="destructive" size="sm">
-              ⏹️ Stop
-            </button>
+            <Button class="bits-btn" on:click={pauseTraining} variant="outline" size="sm">
+⏸️ Pause
+</Button>
+            <Button class="bits-btn" on:click={stopTraining} variant="destructive" size="sm">
+⏹️ Stop
+</Button>
           {:else if currentJob.status === 'paused'}
-            <Button class="bits-btn" onclick={resumeTraining} variant="default" size="sm">
-              ▶️ Resume
-            </button>
-            <Button class="bits-btn" onclick={stopTraining} variant="destructive" size="sm">
-              ⏹️ Stop
-            </button>
+            <Button class="bits-btn" on:click={resumeTraining} variant="default" size="sm">
+▶️ Resume
+</Button>
+            <Button class="bits-btn" on:click={stopTraining} variant="destructive" size="sm">
+⏹️ Stop
+</Button>
           {/if}
           
           <Button class="bits-btn" 
-            onclick={() => showAdvancedConfig = !showAdvancedConfig} 
+            on:click={() =>
+showAdvancedConfig = !showAdvancedConfig} 
             variant="ghost" 
             size="sm"
             class="ml-auto"
           >
             ⚙️ Advanced Config
-          </button>
+</Button>
         </div>
       </div>
     {/if}
@@ -397,7 +398,7 @@ https://svelte.dev/e/attribute_duplicate -->
               min="1"
               max="128"
               class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white focus:border-cyan-500 focus:outline-none"
-              onchange={(e) => qloraTrainingService.updateConfig({ rank: parseInt(e.target.value) })}
+              on:change={(e) => qloraTrainingService.updateConfig({ rank: parseInt(e.target.value) })}
             />
           </div>
           
@@ -409,7 +410,7 @@ https://svelte.dev/e/attribute_duplicate -->
               min="0.0001"
               max="0.01"
               class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white focus:border-cyan-500 focus:outline-none"
-              onchange={(e) => qloraTrainingService.updateConfig({ 
+              on:change={(e) => qloraTrainingService.updateConfig({ 
                 trainingParams: { ...config?.trainingParams!, learningRate: parseFloat(e.target.value) }
               })}
             />
@@ -419,7 +420,7 @@ https://svelte.dev/e/attribute_duplicate -->
             <label class="text-sm font-medium text-gray-300" for="batch-size">Batch Size</label><select id="batch-size" 
               value={config?.trainingParams.batchSize || 4}
               class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white focus:border-cyan-500 focus:outline-none"
-              onchange={(e) => qloraTrainingService.updateConfig({ 
+              on:change={(e) => qloraTrainingService.updateConfig({ 
                 trainingParams: { ...config?.trainingParams!, batchSize: parseInt(e.target.value) }
               })}
             >
@@ -437,7 +438,7 @@ https://svelte.dev/e/attribute_duplicate -->
               min="1"
               max="20"
               class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white focus:border-cyan-500 focus:outline-none"
-              onchange={(e) => qloraTrainingService.updateConfig({ 
+              on:change={(e) => qloraTrainingService.updateConfig({ 
                 trainingParams: { ...config?.trainingParams!, epochs: parseInt(e.target.value) }
               })}
             />
@@ -450,7 +451,7 @@ https://svelte.dev/e/attribute_duplicate -->
             <input
               type="checkbox"
               checked={config?.useReinforcementLearning || false}
-              onchange={(e) => qloraTrainingService.updateConfig({ useReinforcementLearning: e.target.checked })}
+              on:change={(e) => qloraTrainingService.updateConfig({ useReinforcementLearning: e.target.checked })}
               class="w-4 h-4 text-cyan-600 bg-gray-700 border-gray-600 rounded focus:ring-cyan-500 focus:ring-2"
             />
             <span class="text-gray-300">Enable Reinforcement Learning</span>
@@ -460,7 +461,7 @@ https://svelte.dev/e/attribute_duplicate -->
             <input
               type="checkbox"
               checked={config?.enableUserAnalytics || false}
-              onchange={(e) => qloraTrainingService.updateConfig({ enableUserAnalytics: e.target.checked })}
+              on:change={(e) => qloraTrainingService.updateConfig({ enableUserAnalytics: e.target.checked })}
               class="w-4 h-4 text-cyan-600 bg-gray-700 border-gray-600 rounded focus:ring-cyan-500 focus:ring-2"
             />
             <span class="text-gray-300">Enable User Analytics</span>
@@ -494,7 +495,7 @@ https://svelte.dev/e/attribute_duplicate -->
       </div>
     {/if}
   </div>
-</NesCard>
+</div>
 
 <style>
   /* Custom scrollbar for file list */

@@ -86,7 +86,7 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
 
 // Specific service adapters for different machine types
 export interface ChatMachineContext {
-  messages: Array<{ role: string; content: string }>;
+  messages: Array<any>;
   currentMessage: string;
   isTyping: boolean;
   isLoading: boolean;

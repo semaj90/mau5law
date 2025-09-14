@@ -4,7 +4,7 @@
  */
 
 import { sql } from '$lib/database/connection';
-import { advisoryLocks, type LockType, type LockMode, LOCK_MODES } from './advisory-locks';
+import { advisoryLocks, type LockType, type LockMode, LOCK_MODES } from './advisory-locks.js';
 import { randomUUID } from 'crypto';
 
 export interface TransactionOptions {
@@ -20,7 +20,7 @@ export interface TransactionContext {
   startTime: Date;
   userId?: string;
   sessionId?: string;
-  locks: Array<{ entityType: LockType; entityId: string; mode: LockMode }>;
+  locks: Array<any>;
   metadata?: Record<string, any>;
 }
 
@@ -205,7 +205,7 @@ export class TransactionManager {
    * Batch operation with multiple entity locks
    */
   async withMultiEntityTransaction<T>(
-    entities: Array<{ type: LockType; id: string; mode?: LockMode }>,
+    entities: Array<,
     fn: (ctx: TransactionContext) => Promise<T>,
     options: TransactionOptions = {}
   ): Promise<T> {
@@ -313,11 +313,7 @@ export class TransactionManager {
   /**
    * Health check
    */
-  async healthCheck(): Promise<{
-    activeTransactions: number;
-    oldestTransaction?: { id: string; age: number };
-    locksHeld: number;
-  }> {
+  async healthCheck(): Promise<any> {
     const transactions = Array.from(this.activeTransactions.values());
     const now = Date.now();
 

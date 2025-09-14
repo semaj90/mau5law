@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 import { Worker } from "bullmq";
-import { logQueue } from './logQueue';
+import { logQueue } from './logQueue.js';
 
 // Define the type for the log entry data
 export interface LogEntryData {

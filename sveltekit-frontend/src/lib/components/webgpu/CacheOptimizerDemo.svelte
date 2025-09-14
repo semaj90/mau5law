@@ -2,6 +2,9 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
+  // Component props
+  let { ...props }: any = $props();
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
@@ -33,12 +36,12 @@ https://svelte.dev/e/expected_token -->
   async function loadSystemCapabilities() {
     try {
       const response = await fetch('/api/v1/webgpu/cache-demo');
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
       
-      if (data.success) {
-        systemCapabilities = data.capabilities;
+      if ((data as { success?: any; capabilities?: any; error?: any; result?: any }).success) {
+        systemCapabilities = (data as { success?: any; capabilities?: any; error?: any; result?: any }).capabilities;
       } else {
-        errorMessage = data.error || 'Failed to load system capabilities';
+        errorMessage = (data as { success?: any; capabilities?: any; error?: any; result?: any }).error || 'Failed to load system capabilities';
       }
     } catch (error) {
       errorMessage = `System check failed: ${error.message}`;
@@ -77,12 +80,12 @@ https://svelte.dev/e/expected_token -->
         body: JSON.stringify(requestData)
       });
       
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
       
-      if (data.success) {
-        demoResults = data.result;
+      if ((data as { success?: any; capabilities?: any; error?: any; result?: any }).success) {
+        demoResults = (data as { success?: any; capabilities?: any; error?: any; result?: any }).result;
       } else {
-        errorMessage = data.error || 'Demo execution failed';
+        errorMessage = (data as { success?: any; capabilities?: any; error?: any; result?: any }).error || 'Demo execution failed';
       }
     } catch (error) {
       errorMessage = `Demo failed: ${error.message}`;
@@ -197,7 +200,7 @@ https://svelte.dev/e/expected_token -->
     
     <button 
       class="run-demo-btn" 
-      onclick={runDemo} 
+      on:click={runDemo} 
       disabled={loading}
     >
       {loading ? '🔄 Running Demo...' : '🚀 Run Demo'}
@@ -395,7 +398,7 @@ https://svelte.dev/e/expected_token -->
     border: 1px solid #e5e7eb;
   }
   
-  .status-item.enabled .icon {
+  .status-(item as { enabled?: any }).enabled .icon {
     color: #10b981;
   }
   

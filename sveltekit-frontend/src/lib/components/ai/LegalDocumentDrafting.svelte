@@ -111,9 +111,9 @@
         }
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        documentTypes = data.documentTypes || [];
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        documentTypes = (data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any }).documentTypes || [];
       }
     } catch (error) {
       console.error('Error loading document types:', error);
@@ -129,9 +129,9 @@
         }
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        templates = data.templates || [];
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        templates = (data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any }).templates || [];
       }
     } catch (error) {
       console.error('Error loading templates:', error);
@@ -147,9 +147,9 @@
         }
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        draftHistory = data.history || [];
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        draftHistory = (data as { documentTypes?: any; templates?: any; history?: any; version?: any; completionScore?: any; lastModified?: any; wordCount?: any; createdAt?: any }).history || [];
       }
     } catch (error) {
       console.error('Error loading draft history:', error);
@@ -178,12 +178,12 @@
         body: JSON.stringify(request)
       });
       
-      if (response.ok) {
-        const result = await response.json();
-        currentDocument = result.document;
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        currentDocument = (result as { document?: any; content?: any; suggestions?: any }).document;
         documentContent = currentDocument.content;
       } else {
-        throw new Error(`Failed to start document: ${response.statusText}`);
+        throw new Error(`Failed to start document: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
       }
     } catch (error) {
       console.error('Error starting document:', error);
@@ -215,12 +215,12 @@
         body: JSON.stringify(request)
       });
       
-      if (response.ok) {
-        const result = await response.json();
-        documentContent = result.content;
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        documentContent = (result as { document?: any; content?: any; suggestions?: any }).content;
         if (currentDocument) {
-          currentDocument.content = result.content;
-          currentDocument.aiSuggestions = result.suggestions || [];
+          currentDocument.content = (result as { document?: any; content?: any; suggestions?: any }).content;
+          currentDocument.aiSuggestions = (result as { document?: any; content?: any; suggestions?: any }).suggestions || [];
         }
       }
     } catch (error) {
@@ -248,7 +248,7 @@
         body: JSON.stringify(request)
       });
       
-      if (response.ok) {
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         await loadDraftHistory();
       }
     } catch (error) {
@@ -270,9 +270,9 @@
         })
       });
       
-      if (response.ok) {
-        const result = await response.json();
-        documentContent = result.content;
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        documentContent = (result as { document?: any; content?: any; suggestions?: any }).content;
         
         // Mark suggestion as applied
         if (currentDocument) {
@@ -363,7 +363,7 @@
         <button class="nes-btn" on:click={saveDocument}>Save Draft</button>
         <button class="nes-btn" variant="outline" on:click={() => showPreview = true}>Preview</button>
       {:else}
-        <button class="nes-btn" on:click={startNewDocument} disabled={!selectedDocumentType || isDrafting}>
+        <button class="nes-btn" on:click={disabled}>
           {isDrafting ? 'Creating...' : 'Start New Document'}
         </button>
       {/if}
@@ -431,7 +431,6 @@
                   </div>
                 </div>
               {/if}
-            {/if}
           </section>
         {/if}
 
@@ -541,32 +540,28 @@
             <button class="nes-btn" 
               variant="outline" 
               size="sm" 
-              on:click={() => generateContent('Add a professional introduction')}
-              disabled={isGenerating}
+              on:click={disabled}
             >
               Add Introduction
             </button>
             <button class="nes-btn" 
               variant="outline" 
               size="sm" 
-              on:click={() => generateContent('Add a conclusion section')}
-              disabled={isGenerating}
+              on:click={disabled}
             >
               Add Conclusion
             </button>
             <button class="nes-btn" 
               variant="outline" 
               size="sm" 
-              on:click={() => generateContent('Review and improve language')}
-              disabled={isGenerating}
+              on:click={disabled}
             >
               Improve Language
             </button>
             <button class="nes-btn" 
               variant="outline" 
               size="sm" 
-              on:click={() => generateContent('Add relevant legal citations')}
-              disabled={isGenerating}
+              on:click={disabled}
             >
               Add Citations
             </button>
@@ -586,13 +581,13 @@
             
             {#if selectedDocType}
               <div.Root class="selected-type-preview">
-                <div.Header>
+                <Card.Header>
                   <div.Title>
                     {getDocumentTypeIcon(selectedDocType.category)} {selectedDocType.name}
-                  </Card.Title>
-                  <div.Description>{selectedDocType.description}</Card.Description>
+                  </div.Title>
+                  <div.Description>{selectedDocType.description}</div.Description>
                 </Card.Header>
-                <div.Content>
+                <Card.Content>
                   <div class="required-fields">
                     <h4>Required Information:</h4>
                     <ul>
@@ -640,7 +635,7 @@
                 type="text"
                 placeholder="Ask AI to help with specific content..."
                 class="ai-prompt-input"
-                onkeydown={(e) => {
+                on:keydown={(e) => {
                   if (e.key === 'Enter' && e.target.value.trim()) {
                     generateContent(e.target.value);
                     e.target.value = '';
@@ -664,13 +659,13 @@
       <div class="drafts-grid">
         {#each draftHistory.slice(0, 6) as draft}
           <div.Root class="draft-nier-bits-card">
-            <div.Header>
-              <div.Title class="draft-title">{draft.title}</Card.Title>
+            <Card.Header>
+              <div.Title class="draft-title">{draft.title}</div.Title>
               <div.Description>
                 {draft.type} • {draft.metadata.wordCount} words
-              </Card.Description>
+              </div.Description>
             </Card.Header>
-            <div.Content>
+            <Card.Content>
               <div class="draft-stats">
                 <span class="draft-status status-{draft.status}">{draft.status}</span>
                 <span class="draft-date">
@@ -686,7 +681,7 @@
                 <button class="nes-btn" variant="outline" size="sm">Continue</button>
                 <button class="nes-btn" size="sm">Duplicate</button>
               </div>
-            </Card.Footer>
+            </div.Footer>
           </Card.Root>
         {/each}
       </div>

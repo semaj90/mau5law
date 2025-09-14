@@ -22,7 +22,7 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
       });
       if (!res.ok) throw new Error('Failed to fetch audit results');
       const data = await res.json();
-      auditResults = data.results || [];
+      auditResults = (data as { results?: any }).results || [];
     } catch (e: any) {
       error = e.message || 'Unknown error';
     } finally {
@@ -47,14 +47,14 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
     <ul class="space-y-2">
       {#each auditResults as result}
         <li class="border rounded p-3 flex flex-col gap-1">
-          <div class="font-semibold">{result.step}</div>
-          <div class="text-sm">{result.message}</div>
-          {#if result.suggestedFix}
-            <div class="text-amber-700 text-xs">Suggested fix: {result.suggestedFix}</div>
+          <div class="font-semibold">{(result as { step?: any; message?: any; suggestedFix?: any; status?: any; agentTriggered?: any }).step}</div>
+          <div class="text-sm">{(result as { step?: any; message?: any; suggestedFix?: any; status?: any; agentTriggered?: any }).message}</div>
+          {#if (result as { step?: any; message?: any; suggestedFix?: any; status?: any; agentTriggered?: any }).suggestedFix}
+            <div class="text-amber-700 text-xs">Suggested fix: {(result as { step?: any; message?: any; suggestedFix?: any; status?: any; agentTriggered?: any }).suggestedFix}</div>
           {/if}
           <div class="flex gap-2 mt-1">
-            <span class="text-xs px-2 py-1 rounded bg-gray-100">{result.status}</span>
-            {#if result.agentTriggered}
+            <span class="text-xs px-2 py-1 rounded bg-gray-100">{(result as { step?: any; message?: any; suggestedFix?: any; status?: any; agentTriggered?: any }).status}</span>
+            {#if (result as { step?: any; message?: any; suggestedFix?: any; status?: any; agentTriggered?: any }).agentTriggered}
               <span class="text-xs px-2 py-1 rounded bg-blue-100">Agent triggered</span>
             {/if}
             <!-- TODO: Add button to trigger agent action for this TODO -->

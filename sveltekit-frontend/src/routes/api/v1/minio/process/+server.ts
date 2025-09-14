@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { minioService } from '$lib/server/storage/minio-service';
 import { MinIOService as MinIOUtility } from '$lib/server/minio-service';
 

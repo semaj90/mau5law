@@ -30,10 +30,10 @@
           component: selectedComponent
         })
       });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
       }
-      const data = await response.json();
+      const data = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
       console.log('[Context7 Test] Semantic audit completed:', data);
       $testResults = [
         {
@@ -41,7 +41,7 @@
           status: 'success',
           timestamp: new Date().toISOString(),
           data: data,
-          summary: `Analyzed ${selectedComponent} with ${data.results?.length || 0} results, ${data.triggeredAgents?.length || 0} agent triggers`
+          summary: `Analyzed ${selectedComponent} with ${(data as { results?: any; triggeredAgents?: any }).results?.length || 0} results, ${(data as { results?: any; triggeredAgents?: any }).triggeredAgents?.length || 0} agent triggers`
         }
       ];
     } catch (error) {
@@ -206,7 +206,7 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
       <button
         type="button"
-        onclick={runSemanticAuditTest}
+        on:click={runSemanticAuditTest}
         disabled={$isRunning}
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -219,7 +219,7 @@
       
       <button
         type="button"
-        onclick={runSemanticSearchTest}
+        on:click={runSemanticSearchTest}
         disabled={$isRunning}
         class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -232,7 +232,7 @@
       
       <button
         type="button"
-        onclick={runAgentOrchestrationTest}
+        on:click={runAgentOrchestrationTest}
         disabled={$isRunning}
         class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -245,7 +245,7 @@
       
       <button
         type="button"
-        onclick={runAllTests}
+        on:click={runAllTests}
         disabled={$isRunning}
         class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -260,7 +260,7 @@
     <div class="mt-4">
       <button
         type="button"
-        onclick={clearResults}
+        on:click={clearResults}
         class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
       >
         Clear Results
@@ -277,26 +277,26 @@
         {#each $testResults as result}
           <div class="border border-gray-200 rounded-lg p-4">
             <div class="flex items-center justify-between mb-2">
-              <h4 class="font-medium text-gray-900">{result.test}</h4>
+              <h4 class="font-medium text-gray-900">{(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).test}</h4>
               <span class="px-2 py-1 rounded-full text-xs font-medium
-                {result.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                {result.status}
+                {(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                {(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).status}
               </span>
             </div>
             
-            <p class="text-sm text-gray-600 mb-2">{result.summary}</p>
-            <p class="text-xs text-gray-500">{result.timestamp}</p>
+            <p class="text-sm text-gray-600 mb-2">{(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).summary}</p>
+            <p class="text-xs text-gray-500">{(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).timestamp}</p>
             
-            {#if result.error}
+            {#if (result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).error}
               <div class="mt-2 p-2 bg-red-50 rounded text-sm text-red-700">
-                Error: {result.error}
+                Error: {(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).error}
               </div>
             {/if}
             
-            {#if result.data}
+            {#if (result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).data}
               <details class="mt-2">
                 <summary class="text-sm font-medium text-gray-700 cursor-pointer">View Details</summary>
-                <pre class="mt-2 p-2 bg-gray-50 rounded text-xs overflow-x-auto">{JSON.stringify(result.data, null, 2)}</pre>
+                <pre class="mt-2 p-2 bg-gray-50 rounded text-xs overflow-x-auto">{JSON.stringify((result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).data, null, 2)}</pre>
               </details>
             {/if}
           </div>

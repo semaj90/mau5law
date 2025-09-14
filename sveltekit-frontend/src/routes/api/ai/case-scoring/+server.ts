@@ -20,7 +20,7 @@
 import { json } from '@sveltejs/kit';
 import { qdrantService } from '$lib/server/services/qdrant-service';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface ScoreFactor {
   category: string;

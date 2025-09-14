@@ -23,19 +23,18 @@ https://svelte.dev/e/js_parse_error -->
   	import { evidenceStore } from "../stores/evidenceStore";
 
   	// Note: Fabric.js needs to be imported dynamically in browser
-  let fabric = $state<any;
-  	let { canvasState >($bindable() } = $props()); // CanvasState | null = null;
-  	let { reportId = $bindable() } = $props(); // string;
-  	let { evidence = $bindable() } = $props(); // Evidence[] = [];
-  	let { citationPoints = $bindable() } = $props(); // CitationPoint[] = [];
-  	let { onSave = $bindable() } = $props(); // (canvasState: CanvasState) => Promise<void> = async () => {};
-  	let { readOnly = $bindable() } = $props(); // false;
-  	let { width = $bindable() } = $props(); // 800;
-  	let { height = $bindable() } = $props(); // 600;
+  let fabric = $state<anylet { canvasState | null>(null)($bindable() } = $props()); // CanvasState | null = null;
+  	let { reportId = $bindable()  }: { reportId = $bindable() : any } = $props(); // string;
+  	let { evidence = $bindable()  }: { evidence = $bindable() : any } = $props(); // Evidence[] = [];
+  	let { citationPoints = $bindable()  }: { citationPoints = $bindable() : any } = $props(); // CitationPoint[] = [];
+  	let { onSave = $bindable()  }: { onSave = $bindable() : any } = $props(); // (canvasState: CanvasState) => Promise<void> = async () => {};
+  	let { readOnly = $bindable()  }: { readOnly = $bindable() : any } = $props(); // false;
+  	let { width = $bindable()  }: { width = $bindable() : any } = $props(); // 800;
+  	let { height = $bindable()  }: { height = $bindable() : any } = $props(); // 600;
 
   	// Real-time evidence subscription
   let realtimeEvidence = $state<Evidence[] >([]);
-  let unsubscribeEvidence = $state<(() => { id: 'select', name: 'Select', icon: '🔍' },
+  let unsubscribeEvidence = $state<(() =>(null) { id: 'select', name: 'Select', icon: '🔍' },
   		{ id: 'text', name: 'Text', icon: 'T' },
   		{ id: 'rectangle', name: 'Rectangle', icon: '⬜' },
   		{ id: 'circle', name: 'Circle', icon: '⭕' },
@@ -157,8 +156,7 @@ https://svelte.dev/e/js_parse_error -->
 
   		try {
   			// Handle both string and object formats for canvasData
-  let canvasData = $state<CanvasStateData;
-  			if (typeof canvasState.canvasData >(== 'string') {
+  let canvasData = $state<CanvasStateDataif (typeof canvasState.canvasData | null>(null)(== 'string') {
   				canvasData = JSON.parse(canvasState.canvasData));
   			} else {
   				canvasData = canvasState.canvasData as CanvasStateData;
@@ -617,8 +615,8 @@ https://svelte.dev/e/js_parse_error -->
   				body: JSON.stringify(canvasStateData)
   			});
 
-  			if (response.ok) {
-  				const savedCanvasState = await response.json();
+  			if ((response as { ok?: any; json?: any }).ok) {
+  				const savedCanvasState = await (response as { ok?: any; json?: any }).json();
   				canvasState = savedCanvasState;
   				isDirty = false;
   				await onSave(savedCanvasState);
@@ -663,10 +661,9 @@ https://svelte.dev/e/js_parse_error -->
   	}
 
   	function exportCanvas(format: 'png' | 'svg' | 'pdf' = 'png') {
-  let dataUrl = $state<string;
-  		switch (format) {
+  let dataUrl = $state<stringswitch (format) {
   			case 'svg':
-  				dataUrl >('data:image/svg+xml);base64,' + btoa(fabricCanvas.toSVG());
+  				dataUrl | null>(null)('data:image/svg+xml);base64,' + btoa(fabricCanvas.toSVG());
   				break;
   			case 'png':
   			default:
@@ -814,12 +811,12 @@ https://svelte.dev/e/js_parse_error -->
 			{#each evidence as item}
 				<div class="mx-auto px-4 max-w-7xl">
 					<div class="mx-auto px-4 max-w-7xl">
-						<div class="mx-auto px-4 max-w-7xl">{item.title}</div>
-						<div class="mx-auto px-4 max-w-7xl">{item.fileType}</div>
+						<div class="mx-auto px-4 max-w-7xl">{(item as { title?: any; fileType?: any }).title}</div>
+						<div class="mx-auto px-4 max-w-7xl">{(item as { title?: any; fileType?: any }).fileType}</div>
 					</div>
 					<button
 						class="mx-auto px-4 max-w-7xl"
-						onclick={() => addEvidenceMarker(item)}
+						on:click={() => addEvidenceMarker(item)}
 						disabled={readOnly}
 						title="Add evidence marker to canvas"
 					>
@@ -842,7 +839,7 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 					<button
 						class="mx-auto px-4 max-w-7xl"
-						onclick={() => addCitationMarker(citation)}
+						on:click={() => addCitationMarker(citation)}
 						disabled={readOnly}
 						title="Add citation marker to canvas"
 					>

@@ -5,7 +5,7 @@ import type { Redis } from 'ioredis';
 import { createRedisInstance, createRedisClientSet } from '$lib/server/redis';
 import { createPubSubHelper } from '$lib/server/redisPubSub';
 import { registerCleanup } from '$lib/server/shutdown';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // WebSocket server for real-time updates
 let io: Server | null = null;

@@ -68,26 +68,26 @@ https://svelte.dev/e/expected_token -->
         body: JSON.stringify(request)
       });
       
-      if (!response.ok) {
-        throw new Error(`Generation failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Generation failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
       
-      const result = await response.json();
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
       
-      if (result.success) {
+      if ((result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).success) {
         const newResult = {
           id: `simd-${Date.now()}`,
           timestamp: new Date().toISOString(),
           prompt: prompt.text,
           style: prompt.style,
           evidence_id: prompt.evidence_id,
-          glyph_url: result.data.glyph_url,
-          enhanced_artifact_url: result.data.enhanced_artifact_url,
-          simd_data: result.data.simd_shader_data,
-          processing_time: result.data.generation_time_ms,
-          tensor_count: result.data.tensor_ids.length,
-          cache_hits: result.data.cache_hits,
-          metadata: result.metadata
+          glyph_url: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).glyph_url,
+          enhanced_artifact_url: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).enhanced_artifact_url,
+          simd_data: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).simd_shader_data,
+          processing_time: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).generation_time_ms,
+          tensor_count: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).tensor_ids.length,
+          cache_hits: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).cache_hits,
+          metadata: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).metadata
         };
         
         results = [newResult, ...results.slice(0, 9)]; // Keep last 10 results
@@ -100,7 +100,7 @@ https://svelte.dev/e/expected_token -->
         return newResult;
         
       } else {
-        throw new Error(result.error || 'Generation failed');
+        throw new Error((result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).error || 'Generation failed');
       }
       
     } catch (error) {
@@ -155,13 +155,13 @@ https://svelte.dev/e/expected_token -->
   }
   
   function downloadShaderCode(result) {
-    if (!result.simd_data?.shader_code) return;
+    if (!(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data?.shader_code) return;
     
-    const blob = new Blob([result.simd_data.shader_code], { type: 'text/plain' });
+    const blob = new Blob([(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.shader_code], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `simd-shader-${result.id}.${result.simd_data.shader_code.includes('@compute') ? 'wgsl' : result.metadata.shader_format}`;
+    a.download = `simd-shader-${(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).id}.${(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.shader_code.includes('@compute') ? 'wgsl' : (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).metadata.shader_format}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -198,16 +198,16 @@ https://svelte.dev/e/expected_token -->
 </script>
 
 <div class="p-6 max-w-7xl mx-auto space-y-6">
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         🧬 SIMD-Enhanced Legal Glyph Generation
         <span class="text-sm font-normal text-gray-500">
           GPU-Accelerated Evidence Visualization with Neural Sprite Compression
         </span>
       </h3>
     </div>
-    <div class="yorha-panel-content" class="space-y-6">
+    <div class="yorha-panel-content space-y-6">
       <!-- Configuration Panel -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
         <div>
@@ -244,26 +244,28 @@ https://svelte.dev/e/expected_token -->
         
         <div class="flex items-end">
           <Button class="bits-btn" 
-            onclick={() => generateSIMDGlyph(demoPrompts[Math.floor(Math.random() * demoPrompts.length)])}
+            on:click={() =>
+generateSIMDGlyph(demoPrompts[Math.floor(Math.random() * demoPrompts.length)])}
             disabled={isGenerating}
             class="w-full"
           >
             {isGenerating ? '🔄 Generating...' : '🎨 Generate'}
-          </button>
+
         </div>
       </div>
       
       <!-- Batch Actions -->
       <div class="flex gap-2">
-        <Button class="bits-btn" onclick={generateBatchDemo} disabled={isGenerating} variant="outline">
-          🚀 Batch Demo
-        </button>
-        <Button class="bits-btn" onclick={testCompressionLevels} disabled={isGenerating} variant="outline">
-          📊 Test Compression
-        </button>
-        <Button class="bits-btn" onclick={() => results = []} variant="outline">
+        <Button class="bits-btn" on:click={generateBatchDemo} disabled={isGenerating} variant="outline">
+🚀 Batch Demo
+
+        <Button class="bits-btn" on:click={testCompressionLevels} disabled={isGenerating} variant="outline">
+📊 Test Compression
+
+        <Button class="bits-btn" on:click={() =>
+results = []} variant="outline">
           🗑️ Clear Results
-        </button>
+
       </div>
       
       <!-- Processing Statistics -->
@@ -294,43 +296,43 @@ https://svelte.dev/e/expected_token -->
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
   
   <!-- Results Grid -->
   {#if results.length > 0}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {#each results as result (result.id)}
-        <NesCard class="overflow-hidden">
-          <div class="yorha-panel-header" class="pb-2">
-            <h3 class="nes-text is-primary" class="text-lg flex items-center justify-between">
-              <span class="truncate">{result.prompt}</span>
-              <span class={`px-2 py-1 rounded-full text-xs ${getQualityTierColor(result.metadata.performance_tier)}`}>
-                {result.metadata.performance_tier.toUpperCase()}
+      {#each results as result ((result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).id)}
+        <div class="overflow-hidden nes-container">
+          <div class="yorha-panel-header pb-2">
+            <h3 class="nes-text is-primary text-lg flex items-center justify-between">
+              <span class="truncate">{(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).prompt}</span>
+              <span class={`px-2 py-1 rounded-full text-xs ${getQualityTierColor((result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).metadata.performance_tier)}`}>
+                {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).metadata.performance_tier.toUpperCase()}
               </span>
             </h3>
             <div class="text-sm text-gray-500">
-              Style: {result.style} • Evidence #{result.evidence_id}
+              Style: {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).style} • Evidence #{(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).evidence_id}
             </div>
           </div>
           
-          <div class="yorha-panel-content" class="space-y-4">
+          <div class="yorha-panel-content space-y-4">
             <!-- Generated Glyph Display -->
             <div class="flex gap-4">
               <div class="flex-1">
                 <div class="text-sm font-medium text-gray-700 mb-2">Original Glyph</div>
                 <img 
-                  src={result.glyph_url} 
-                  alt={`${result.style} glyph`}
+                  src={(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).glyph_url} 
+                  alt={`${(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).style} glyph`}
                   class="w-full h-32 object-cover rounded-lg border"
                 />
               </div>
               
-              {#if result.enhanced_artifact_url && result.enhanced_artifact_url !== result.glyph_url}
+              {#if (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).enhanced_artifact_url && (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).enhanced_artifact_url !== (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).glyph_url}
                 <div class="flex-1">
                   <div class="text-sm font-medium text-gray-700 mb-2">Enhanced Artifact</div>
                   <img 
-                    src={result.enhanced_artifact_url} 
-                    alt={`Enhanced ${result.style} artifact`}
+                    src={(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).enhanced_artifact_url} 
+                    alt={`Enhanced ${(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).style} artifact`}
                     class="w-full h-32 object-cover rounded-lg border-2 border-blue-200"
                   />
                 </div>
@@ -338,42 +340,43 @@ https://svelte.dev/e/expected_token -->
             </div>
             
             <!-- SIMD Optimization Stats -->
-            {#if result.simd_data}
+            {#if (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data}
               <div class="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span class="font-medium">Compression:</span>
-                  <span class={getCompressionColor(result.simd_data.compression_ratio)}>
-                    {result.simd_data.compression_ratio.toFixed(1)}:1
+                  <span class={getCompressionColor((result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.compression_ratio)}>
+                    {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.compression_ratio.toFixed(1)}:1
                   </span>
                 </div>
                 <div>
                   <span class="font-medium">Tiles:</span>
-                  <span class="text-blue-600">{result.simd_data.tile_map.length}</span>
+                  <span class="text-blue-600">{(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.tile_map.length}</span>
                 </div>
                 <div>
                   <span class="font-medium">SIMD Time:</span>
-                  <span class="text-purple-600">{result.simd_data.performance_stats.total_optimization_time_ms}ms</span>
+                  <span class="text-purple-600">{(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.performance_stats.total_optimization_time_ms}ms</span>
                 </div>
                 <div>
                   <span class="font-medium">Cache Hits:</span>
-                  <span class="text-green-600">{result.cache_hits}</span>
+                  <span class="text-green-600">{(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).cache_hits}</span>
                 </div>
               </div>
               
               <!-- Shader Code Preview -->
               <div class="bg-gray-800 text-gray-100 p-3 rounded-lg text-xs font-mono overflow-x-auto">
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-yellow-400">Generated {result.metadata.shader_format.toUpperCase()} Shader</span>
+                  <span class="text-yellow-400">Generated {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).metadata.shader_format.toUpperCase()} Shader</span>
                   <Button class="bits-btn" 
-                    onclick={() => downloadShaderCode(result)}
+                    on:click={() =>
+downloadShaderCode(result)}
                     size="sm"
                     variant="outline"
                     class="text-xs"
                   >
                     📄 Download
-                  </button>
+
                 </div>
-                <pre class="whitespace-pre-wrap break-all">{result.simd_data.shader_code.slice(0, 300)}...</pre>
+                <pre class="whitespace-pre-wrap break-all">{(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.shader_code.slice(0, 300)}...</pre>
               </div>
               
               <!-- Performance Breakdown -->
@@ -381,40 +384,41 @@ https://svelte.dev/e/expected_token -->
                 <div class="text-sm font-medium text-gray-700">Processing Pipeline:</div>
                 <div class="flex flex-wrap gap-2 text-xs">
                   <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">
-                    Tiling: {result.simd_data.performance_stats.tiling_time_ms}ms
+                    Tiling: {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.performance_stats.tiling_time_ms}ms
                   </span>
                   <span class="px-2 py-1 bg-green-100 text-green-800 rounded">
-                    Compression: {result.simd_data.performance_stats.compression_time_ms}ms
+                    Compression: {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.performance_stats.compression_time_ms}ms
                   </span>
                   <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded">
-                    Shader Gen: {result.simd_data.performance_stats.shader_generation_time_ms}ms
+                    Shader Gen: {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.performance_stats.shader_generation_time_ms}ms
                   </span>
                 </div>
               </div>
             {/if}
             
             <div class="flex justify-between items-center text-xs text-gray-500 border-t pt-2">
-              <span>Generated: {new Date(result.timestamp).toLocaleTimeString()}</span>
-              <span>Total: {result.processing_time}ms</span>
+              <span>Generated: {new Date((result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).timestamp).toLocaleTimeString()}</span>
+              <span>Total: {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).processing_time}ms</span>
             </div>
           </div>
-        </NesCard>
+        </div>
       {/each}
     </div>
   {:else}
-    <NesCard>
-      <div class="yorha-panel-content" class="text-center py-12 text-gray-500">
+    <div class="nes-container">
+      <div class="yorha-panel-content text-center py-12 text-gray-500">
         <div class="text-6xl mb-4">🎨</div>
         <h3 class="text-lg font-medium mb-2">No SIMD Glyphs Generated Yet</h3>
         <p class="mb-4">Generate your first SIMD-optimized legal evidence glyph with GPU acceleration!</p>
         <Button class="bits-btn" 
-          onclick={() => generateSIMDGlyph(demoPrompts[0])}
+          on:click={() =>
+generateSIMDGlyph(demoPrompts[0])}
           disabled={isGenerating}
         >
           🚀 Generate Demo Glyph
-        </button>
+
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

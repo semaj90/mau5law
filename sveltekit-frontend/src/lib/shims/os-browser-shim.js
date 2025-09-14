@@ -32,9 +32,9 @@ export default {
   
   // Constants
   constants: {
-    signals: {},
-    errno: {},
-    priority: {}
+    signals: Record<string, any>,
+    errno: Record<string, any>,
+    priority: Record<string, any>
   },
   
   // Path constants
@@ -59,8 +59,8 @@ export const freemem = () => 4 * 1024 * 1024 * 1024;
 export const uptime = () => performance.now() / 1000;
 export const networkInterfaces = () => ({});
 export const constants = {
-  signals: {},
-  errno: {},
-  priority: {}
+  signals: Record<string, any>,
+  errno: Record<string, any>,
+  priority: Record<string, any>
 };
 export const EOL = '\n';

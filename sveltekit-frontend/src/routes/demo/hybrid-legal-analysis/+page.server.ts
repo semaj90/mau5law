@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types.js';
+import type { PageServerLoad, Actions } from './$types.js.js';
 import { error, fail, json } from '@sveltejs/kit';
 import { legalRAGService } from '$lib/services/enhanced-rag-semantic-analyzer';
 
@@ -266,7 +266,7 @@ async function performHybridAnalysis(documentId: string, analysisTypes: string[]
   const analysisResults = {
     documentId,
     analysisTypes,
-    results: {},
+    results: Record<string, any>,
     confidence: 0.85 + Math.random() * 0.1,
     processingSteps: []
   };
@@ -357,7 +357,7 @@ async function performBatchAnalysis(documentIds: string[], template: string) {
 function getDefaultData() {
   return {
     sampleDocuments: [],
-    analysisCapabilities: {},
+    analysisCapabilities: Record<string, any>,
     recentAnalyses: [],
     supportedFileTypes: ['PDF', 'DOCX', 'TXT'],
     analysisTypes: ['semantic_similarity'],

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Production Vector Search Testing API
 // Tests vector ranking, reranking, and RAG pipeline integration
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
       query,
       testType,
       timestamp: new Date().toISOString(),
-      tests: {}
+      tests: Record<string, any>
     };
 
     // Test 1: Vector Ranking Service

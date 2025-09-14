@@ -26,7 +26,9 @@
 
   // SuperForm setup
   const { form, errors, enhance: formEnhance, submitting } = superForm(data, {
-    validators: zod(testSchema),
+    validators: zod(z.object({
+    form: testSchema
+  })),
     onSubmit: ({ formData }) => {
       console.log('Form submitted:', Object.fromEntries(formData));
     }
@@ -34,9 +36,7 @@
 
   // Enhanced action
   function createEnhancedAction() {
-    return enhance(({ formData }) => {
-      console.log('Enhanced action:', Object.fromEntries(formData));
-      return async ({ result, update }) => {
+    return enhance => {
         console.log('Result:', result);
         await update();
       };
@@ -57,7 +57,7 @@
     <form 
       method="POST" 
       action="?/submit"
-      use:createEnhancedAction()
+      use:createEnhancedAction
       class="space-y-4"
     >
       <!-- Name Field -->

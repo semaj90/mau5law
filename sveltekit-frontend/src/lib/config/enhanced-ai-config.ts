@@ -1,4 +1,4 @@
-import ENV_CONFIG, { CLIENT_ENV } from './env';
+import ENV_CONFIG, { CLIENT_ENV } from './env.js';
 
 // Enhanced AI configuration derived from base environment config
 export const ENHANCED_AI_CONFIG = {

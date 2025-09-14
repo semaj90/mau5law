@@ -7,7 +7,7 @@ import crypto from "crypto";
  * and autonomous engineering for comprehensive problem-solving
  */
 
-import { autonomousEngineeringSystem } from '../services/autonomous-engineering-system';
+import { autonomousEngineeringSystem } from '../services/autonomous-engineering-system.js';
 
 // Mock functions for missing services
 const analyzeLegalCaseWithCrew = async (caseData: any): Promise<any> => ({ analysis: 'completed' });
@@ -197,7 +197,7 @@ export async function copilotSelfPrompt(
     if (useMultiAgent) {
       agentResults = await orchestrateMultiAgentAnalysis(prompt, context);
       console.log(`👥 Completed multi-agent analysis with ${agentResults.length} agent responses`);
-      tokensUsed += agentResults.reduce((sum, result) => sum + (result.tokensUsed || 0), 0);
+      tokensUsed += agentResults.reduce((sum, result) => sum + ((result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).tokensUsed || 0), 0);
     }
 
     // Phase 3: Autonomous Engineering (if enabled)
@@ -295,13 +295,13 @@ async function performSemanticSearch(prompt: string, context: any): Promise<any[
       });
       clearTimeout(timeoutId);
 
-      if (response.ok) {
-        const data = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
         // Sort by relevance_score if available
-        if (Array.isArray(data.results)) {
-          return data.results.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0));
+        if (Array.isArray((data as { results?: any; memories?: any }).results)) {
+          return (data as { results?: any; memories?: any }).results.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0));
         }
-        return data.results || [];
+        return (data as { results?: any; memories?: any }).results || [];
       }
     } catch (error: any) {
       clearTimeout(timeoutId);
@@ -337,13 +337,13 @@ export async function accessMemoryMCP(prompt: string, context: any): Promise<any
       });
       clearTimeout(timeoutId);
 
-      if (response.ok) {
-        const data = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
         // Sort by recency or relevance if available
-        if (Array.isArray(data.memories)) {
-          return data.memories.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0));
+        if (Array.isArray((data as { results?: any; memories?: any }).memories)) {
+          return (data as { results?: any; memories?: any }).memories.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0));
         }
-        return data.memories || [];
+        return (data as { results?: any; memories?: any }).memories || [];
       }
     } catch (error: any) {
       clearTimeout(timeoutId);
@@ -448,7 +448,7 @@ Format your response as a structured analysis with clear sections and actionable
     const result = await aiWorkerManager.waitForTask(taskId);
 
     return (
-      result.response?.content ||
+      (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).response?.content ||
       generateBasicSummary(prompt, contextResults, memoryResults, agentResults)
     );
   } catch (error: any) {
@@ -775,11 +775,11 @@ function extractSources(
   const sources = new Set<string>();
 
   contextResults.forEach((result) => {
-    if (result.source) sources.add(result.source);
+    if ((result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).source) sources.add((result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).source);
   });
 
   agentResults.forEach((result) => {
-    if (result.source) sources.add(result.source);
+    if ((result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).source) sources.add((result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).source);
   });
 
   sources.add('semantic-search');
@@ -830,14 +830,14 @@ export class RLRankingDatastore {
       id: crypto.randomUUID(),
       timestamp: Date.now(),
       prompt,
-      confidence: result.metadata.confidence,
-      tokensUsed: result.metadata.tokensUsed,
-      processingTime: result.metadata.processingTime,
-      successful: result.nextActions.length > 0 && result.recommendations.length > 0,
-      agentsUsed: result.metadata.sources,
+      confidence: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).metadata.confidence,
+      tokensUsed: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).metadata.tokensUsed,
+      processingTime: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).metadata.processingTime,
+      successful: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).nextActions.length > 0 && (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).recommendations.length > 0,
+      agentsUsed: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).metadata.sources,
       effectiveness: this.calculateEffectiveness(result),
-      nextActions: result.nextActions,
-      recommendations: result.recommendations,
+      nextActions: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).nextActions,
+      recommendations: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).recommendations,
     };
 
     try {
@@ -913,18 +913,18 @@ export class RLRankingDatastore {
     let effectiveness = 0.5; // Base score
 
     // Confidence bonus
-    effectiveness += result.metadata.confidence * 0.2;
+    effectiveness += (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).metadata.confidence * 0.2;
 
     // Action count bonus
-    if (result.nextActions.length > 0) effectiveness += 0.1;
-    if (result.nextActions.length > 3) effectiveness += 0.1;
+    if ((result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).nextActions.length > 0) effectiveness += 0.1;
+    if ((result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).nextActions.length > 3) effectiveness += 0.1;
 
     // Recommendation bonus
-    if (result.recommendations.length > 0) effectiveness += 0.1;
-    if (result.recommendations.length > 3) effectiveness += 0.1;
+    if ((result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).recommendations.length > 0) effectiveness += 0.1;
+    if ((result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).recommendations.length > 3) effectiveness += 0.1;
 
     // Processing efficiency bonus (faster is better, up to 30 seconds)
-    const timeBonus = Math.max(0, (30000 - result.metadata.processingTime) / 30000) * 0.1;
+    const timeBonus = Math.max(0, (30000 - (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).metadata.processingTime) / 30000) * 0.1;
     effectiveness += timeBonus;
 
     return Math.min(1.0, effectiveness);

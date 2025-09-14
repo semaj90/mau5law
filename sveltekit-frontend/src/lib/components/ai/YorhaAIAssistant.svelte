@@ -619,9 +619,7 @@ https://svelte.dev/e/js_parse_error -->
   	// Setup activity tracking
   	function setupActivityTracking() {
   		// Track typing in message input
-  let typingTimeout = $state<number;
-
-  		const updateTyping >(() => {
+  let typingTimeout = $state<numberconst updateTyping | null>(null)(() => {
   			clearTimeout(typingTimeout));
   			updateUserActivity({ action: 'typing' });
 
@@ -673,7 +671,7 @@ https://svelte.dev/e/js_parse_error -->
 	<!-- Trigger Button -->
 	<Button.Root
 		{...$trigger}
-		onclick={openDialog}
+		on:click={openDialog}
 		variant="default"
 		size="lg"
 		class={cn(
@@ -687,7 +685,7 @@ https://svelte.dev/e/js_parse_error -->
 			theme === 'yorha' && "bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700"
 		)}
 	>
-		<span class="text-2xl">></span>
+<span class="text-2xl">></span>
 
 		<!-- Status indicator -->
 		<div class={cn(
@@ -747,7 +745,7 @@ https://svelte.dev/e/js_parse_error -->
 							{...$close}
 							variant="ghost"
 							size="sm"
-							onclick={closeDialog}
+							on:click={closeDialog}
 							class="h-6 w-6 p-0 bits-btn bits-btn"
 						>
 							<span class="sr-only">Close</span>
@@ -820,13 +818,13 @@ https://svelte.dev/e/js_parse_error -->
 												{#each message.metadata.suggestions as suggestion}
 													<button
 														class="text-xs text-blue-400 hover:text-blue-300 underline block"
-														onclick={() => {
+														on:click={() => {
 															currentMessage = suggestion;
 															sendMessage();
 														}}
 													>
 														=� {suggestion}
-													</button>
+</Button>
 												{/each}
 											</div>
 										{/if}
@@ -875,7 +873,7 @@ https://svelte.dev/e/js_parse_error -->
 						/>
 
 						<Button.Root
-							onclick={sendMessage}
+							on:click={sendMessage}
 							disabled={!canSendMessage}
 							variant="default"
 							size="sm"
@@ -900,7 +898,7 @@ https://svelte.dev/e/js_parse_error -->
 							<Button.Root
 								variant="ghost"
 								size="sm"
-								onclick={clearChat}
+								on:click={clearChat}
 								disabled={!hasMessages}
 								class="text-xs h-6 px-2 bits-btn bits-btn"
 							>

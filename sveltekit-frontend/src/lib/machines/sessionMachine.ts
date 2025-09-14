@@ -1,7 +1,7 @@
 // XState Machine for Session Management with Production Services Integration
 import { createMachine, assign } from "xstate";
-import { productionServiceClient, services } from '../services/productionServiceClient';
-import type { User } from '../stores/auth.svelte';
+import { productionServiceClient, services } from '../services/productionServiceClient.js';
+import type { User } from '../stores/auth.svelte.js';
 
 // Session context interface
 export interface SessionContext {
@@ -60,7 +60,7 @@ export const sessionMachine = createMachine({
       featuresUsed: []
     }
   } as SessionContext,
-  types: {} as {
+  types: Record<string, any> as {
     context: SessionContext;
     events: SessionEvent;
   },

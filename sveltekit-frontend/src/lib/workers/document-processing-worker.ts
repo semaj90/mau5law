@@ -1,4 +1,4 @@
-import { rabbitMQService } from '../services/rabbitmq-service.js';
+import { rabbitMQService } from '../services/rabbitmq-service.js.js';
 import { db } from '$lib/server/db';
 import * as schema from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
@@ -368,7 +368,7 @@ class DocumentProcessingWorker {
         end_position: chunk.metadata.endPosition,
         word_count: chunk.metadata.wordCount,
         embedding: embedding ? embedding.embedding : null,
-        embedding_model: embedding ? embedding.model : null,
+        embedding_model: embedding ? embedding?.model || "unknown" // @ts-ignore - Model property access : null,
         created_at: new Date(),
         updated_at: new Date()
       };

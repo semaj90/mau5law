@@ -171,7 +171,7 @@ const services = {
 // Legal Document Processing State Machine
 export const legalDocumentProcessingMachine = createMachine({
   id: 'legalDocumentProcessing',
-  types: {} as {
+  types: Record<string, any> as {
     context: LegalDocumentContext;
     events: LegalDocumentEvent;
   },

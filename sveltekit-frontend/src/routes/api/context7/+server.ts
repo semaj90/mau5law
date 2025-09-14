@@ -1,5 +1,5 @@
 import { json } from "@sveltejs/kit";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Context7 MCP Server endpoints
@@ -36,8 +36,8 @@ export const GET: RequestHandler = async () => {
         healthChecks.push({
           service: name,
           endpoint,
-          status: response.ok ? 'healthy' : 'unhealthy',
-          response_code: response.status,
+          status: (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).ok ? 'healthy' : 'unhealthy',
+          response_code: (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).status,
           response_time: responseTime,
           last_check: new Date().toISOString()
         });
@@ -175,12 +175,12 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
 
     clearTimeout(timeout);
 
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => 'Unknown error');
-      throw new Error(`MCP tool call failed: ${response.status} ${response.statusText}. Response: ${errorText}`);
+    if (!(response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).ok) {
+      const errorText = await (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).text().catch(() => 'Unknown error');
+      throw new Error(`MCP tool call failed: ${(response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).status} ${(response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).statusText}. Response: ${errorText}`);
     }
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).json();
 
     // Save the result to database via orchestrator
     await databaseOrchestrator.saveToDatabase(
@@ -270,7 +270,7 @@ async function syncWithOrchestrator(data: any): Promise<any> {
     }
 
     const processedCount = Array.isArray((recommendationResponse as any)?.result?.recommendations)
-      ? (recommendationResponse as any).result.recommendations.length
+      ? (recommendationResponse as any).(result as { recommendations?: any }).recommendations.length
       : 0;
 
     return json({

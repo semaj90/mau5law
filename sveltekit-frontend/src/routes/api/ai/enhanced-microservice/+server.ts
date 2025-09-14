@@ -17,7 +17,7 @@
  */
 
 /// <reference types="vite/client" />
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Enhanced API Route for Go Microservice Integration
 // Connects SvelteKit frontend with enhanced legal AI processing
@@ -92,11 +92,11 @@ class GoMicroserviceClient {
 
         clearTimeout(timeoutId);
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+          throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
         }
 
-        return await response.json();
+        return await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
       } catch (error: any) {
         console.warn(
           `Attempt ${attempt} failed for ${endpoint}:`,
@@ -214,10 +214,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           timestamp: new Date().toISOString(),
           result: result,
           metadata: {
-            processingTime: result.processing_time,
-            chunksCreated: result.chunks?.length || 0,
-            entitiesFound: result.legal_entities?.length || 0,
-            riskScore: result.risk_assessment?.overall_score || 0,
+            processingTime: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).processing_time,
+            chunksCreated: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).chunks?.length || 0,
+            entitiesFound: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).legal_entities?.length || 0,
+            riskScore: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).risk_assessment?.overall_score || 0,
           },
         });
       }
@@ -248,10 +248,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           timestamp: new Date().toISOString(),
           result: result,
           metadata: {
-            queryProcessingTime: result.processing_time,
-            resultsFound: result.total_found,
+            queryProcessingTime: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).processing_time,
+            resultsFound: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).total_found,
             ragEnabled: searchRequest.use_rag,
-            hasRAGContext: !!result.rag_context,
+            hasRAGContext: !!(result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).rag_context,
           },
         });
       }
@@ -436,9 +436,9 @@ function calculateConfidenceScore(results: any[]): number {
   if (!results || results.length === 0) return 0;
 
   const scores = results.map((result) => {
-    if (result.similarity) return result.similarity;
-    if (result.risk_assessment?.confidence)
-      return result.risk_assessment.confidence;
+    if ((result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).similarity) return (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).similarity;
+    if ((result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).risk_assessment?.confidence)
+      return (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).risk_assessment.confidence;
     return 0.5; // Default confidence
   });
 
@@ -451,8 +451,8 @@ function extractCrossReferences(searches: any[]): string[] {
   searches.forEach((search) => {
     if (search.results) {
       search.results.forEach((result: any) => {
-        if (result.document_id) {
-          references.add(result.document_id);
+        if ((result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).document_id) {
+          references.add((result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).document_id);
         }
       });
     }

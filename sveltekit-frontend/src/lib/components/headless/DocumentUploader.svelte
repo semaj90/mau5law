@@ -76,7 +76,7 @@
   let mounted = $state(false);
   
   // File input reference (headless)
-  let fileInput = $state<HTMLInputElement>();
+  let fileInput: HTMLInputElement = $state(undefined as any);
   
   // Mount effect
   $effect(() => {
@@ -282,7 +282,7 @@
   multiple={maxFiles > 1}
   accept={acceptedTypes.join(',')}
   style="display: none;"
-  onchange={handleFileSelection}
+  on:change={handleFileSelection}
 />
 
 <!-- Snippet for custom UI -->

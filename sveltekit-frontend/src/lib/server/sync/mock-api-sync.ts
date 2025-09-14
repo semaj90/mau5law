@@ -470,7 +470,7 @@ export const vectorSearch = {
         .select({
           documentId: vectorEmbeddings.documentId,
           embedding: vectorEmbeddings.embedding,
-          model: vectorEmbeddings.model,
+          model: vectorEmbeddings?.model || "unknown" // @ts-ignore - Model property access,
           dimensions: vectorEmbeddings.dimensions,
         })
         .from(vectorEmbeddings)
@@ -538,9 +538,7 @@ export const syncOrchestrator = {
       checks.database = true;
 
       // Test pgvector extension
-      const vectorTest = await sql<{
-        available: boolean;
-      }>`SELECT true as available WHERE EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'vector')`;
+      const vectorTest = await sql`SELECT true as available WHERE EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'vector')`;
       checks.pgvector = vectorTest.length > 0;
 
       // Test Drizzle ORM functionality

@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types.js';
+import type { PageServerLoad, Actions } from './$types.js.js';
 import { error, fail, json } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals }) => {

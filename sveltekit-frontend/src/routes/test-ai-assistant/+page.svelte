@@ -12,7 +12,7 @@
   import { cn } from '$lib/utils';
 
   // Svelte 5 runes for reactive state
-  let testResults = $state<Record<string, any>>({});
+  let testResults = $state<Record<string, any>('')>({});
   let isRunning = $state(false);
   let currentTest = $state('');
 
@@ -76,11 +76,11 @@
       }
 
       const response = await fetch(test.endpoint, options);
-      const data = await response.json();
+      const data = await (response as { json?: any; ok?: any; status?: any; body?: any }).json();
 
       testResults[test.name] = {
-        success: response.ok,
-        status: response.status,
+        success: (response as { json?: any; ok?: any; status?: any; body?: any }).ok,
+        status: (response as { json?: any; ok?: any; status?: any; body?: any }).status,
         data: data,
         endpoint: test.endpoint,
         timestamp: new Date().toISOString()
@@ -127,12 +127,12 @@
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+      if (!(response as { json?: any; ok?: any; status?: any; body?: any }).ok) {
+        throw new Error(`HTTP ${(response as { json?: any; ok?: any; status?: any; body?: any }).status}`);
       }
 
       let streamData = '';
-      const reader = response.body?.getReader();
+      const reader = (response as { json?: any; ok?: any; status?: any; body?: any }).body?.getReader();
       const decoder = new TextDecoder();
 
       if (reader) {
@@ -148,7 +148,7 @@
 
       testResults['SSE Stream Test'] = {
         success: true,
-        status: response.status,
+        status: (response as { json?: any; ok?: any; status?: any; body?: any }).status,
         streamSample: streamData.substring(0, 500) + '...',
         timestamp: new Date().toISOString()
       };
@@ -181,27 +181,27 @@
     </div>
 
     <!-- Control Panel -->
-    <NesCard class="mb-6 p-6">
+    <div class="mb-6 p-6 nes-container">
       {#snippet children()}
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">Test Controls</h2>
           <div class="flex gap-3">
             <Button class="bits-btn"
               variant="outline"
-              onclick={runAllTests}
+              on:click={runAllTests}
               disabled={isRunning}
             >
               {#snippet children()}
                 {isRunning ? 'Running Tests...' : 'Run All Tests'}
               {/snippet}
-            </button>
+            </Button>
             <Button class="bits-btn"
               variant="default"
-              onclick={testSSEStream}
+              on:click={testSSEStream}
               disabled={isRunning}
             >
               {#snippet children()}Test SSE Stream{/snippet}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -212,13 +212,13 @@
           </div>
         {/if}
       {/snippet}
-    </NesCard>
+    </div>
 
     <!-- Test Results -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {#each tests as test}
         {@const result = testResults[test.name]}
-        <NesCard class="p-6">
+        <div class="p-6 nes-container">
           {#snippet children()}
             <div class="flex items-start justify-between mb-4">
               <div>
@@ -239,39 +239,39 @@
                   <span class="font-medium">Status:</span>
                   <span class={cn(
                     "ml-2",
-                    result.success ? "text-green-600" : "text-red-600"
+                    (result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).success ? "text-green-600" : "text-red-600"
                   )}>
-                    {result.status || 'N/A'} {result.success ? '✓' : '✗'}
+                    {(result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).status || 'N/A'} {(result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).success ? '✓' : '✗'}
                   </span>
                 </div>
 
-                {#if result.error}
+                {#if (result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).error}
                   <div>
                     <span class="font-medium text-red-600">Error:</span>
-                    <span class="ml-2 text-red-600">{result.error}</span>
+                    <span class="ml-2 text-red-600">{(result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).error}</span>
                   </div>
                 {/if}
 
-                {#if result.data && typeof result.data === 'object'}
+                {#if (result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).data && typeof (result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).data === 'object'}
                   <details class="mt-2">
                     <summary class="font-medium cursor-pointer">Response Data</summary>
                     <pre class="mt-2 p-2 bg-gray-100 rounded text-xs overflow-auto max-h-40">
-{JSON.stringify(result.data, null, 2)}
+{JSON.stringify((result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).data, null, 2)}
                     </pre>
                   </details>
                 {/if}
 
-                {#if result.streamSample}
+                {#if (result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).streamSample}
                   <details class="mt-2">
                     <summary class="font-medium cursor-pointer">Stream Sample</summary>
                     <pre class="mt-2 p-2 bg-gray-100 rounded text-xs overflow-auto max-h-40">
-{result.streamSample}
+{(result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).streamSample}
                     </pre>
                   </details>
                 {/if}
 
                 <div class="text-xs text-gray-500">
-                  Tested: {result.timestamp}
+                  Tested: {(result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).timestamp}
                 </div>
               </div>
             {:else}
@@ -280,13 +280,13 @@
               </div>
             {/if}
           {/snippet}
-        </NesCard>
+        </div>
       {/each}
 
       <!-- SSE Stream Test Result -->
       {#if testResults['SSE Stream Test']}
         {@const sseResult = testResults['SSE Stream Test']}
-        <NesCard class="p-6 lg:col-span-2">
+        <div class="p-6 lg:col-span-2 nes-container">
           {#snippet children()}
             <div class="flex items-start justify-between mb-4">
               <div>
@@ -321,17 +321,17 @@
               {/if}
             </div>
           {/snippet}
-        </NesCard>
+        </div>
       {/if}
     </div>
 
     <!-- Summary -->
-    <NesCard class="mt-6 p-6">
+    <div class="mt-6 p-6 nes-container">
       {#snippet children()}
         <h2 class="text-xl font-semibold mb-4">Test Summary</h2>
         {@const totalTests = Object.keys(testResults).length}
         {@const passedTests = Object.values(testResults).filter(r => r.success).length}
-        
+
         <div class="grid grid-cols-3 gap-4 text-center">
           <div class="p-4 bg-blue-50 rounded">
             <div class="text-2xl font-bold text-blue-600">{totalTests}</div>
@@ -350,7 +350,7 @@
         {#if totalTests > 0}
           <div class="mt-4">
             <div class="w-full bg-gray-200 rounded-full h-2">
-              <div 
+              <div
                 class="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-300"
                 style="width: {(passedTests / totalTests) * 100}%"
               ></div>
@@ -361,6 +361,6 @@
           </div>
         {/if}
       {/snippet}
-    </NesCard>
+    </div>
   </div>
 </div>

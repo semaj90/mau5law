@@ -5,13 +5,13 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Worker pool management
 class ONNXWorkerPool {
   private workers: Worker[] = [];
   private workerStats: Map<number, any> = new Map();
-  private taskQueue: Array<{ id: string; resolve: Function; reject: Function; timeout: NodeJS.Timeout }> = [];
+  private taskQueue: Array< = [];
   private isInitialized = false;
   private maxWorkers = Math.min(4, navigator?.hardwareConcurrency || 2);
   private roundRobinIndex = 0;
@@ -162,7 +162,7 @@ class ONNXWorkerPool {
     });
   }
 
-  async executeBatch(tasks: Array<{ type: string; payload: any }>): Promise<any> {
+  async executeBatch(tasks: Array<): Promise<any> {
     const workerId = this.selectBestWorker();
     const batchId = `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
@@ -232,9 +232,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
         
         return json({
           success: true,
-          entities: result.entities,
-          processingTime: result.processingTime,
-          modelUsed: result.modelUsed
+          entities: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).entities,
+          processingTime: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).processingTime,
+          modelUsed: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).modelUsed
         });
       }
       
@@ -249,10 +249,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         
         return json({
           success: true,
-          predictions: result.predictions,
-          topPrediction: result.topPrediction,
-          processingTime: result.processingTime,
-          modelUsed: result.modelUsed
+          predictions: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).predictions,
+          topPrediction: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).topPrediction,
+          processingTime: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).processingTime,
+          modelUsed: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).modelUsed
         });
       }
       
@@ -267,10 +267,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         
         return json({
           success: true,
-          embeddings: result.embeddings,
-          dimensions: result.dimensions,
-          processingTime: result.processingTime,
-          modelUsed: result.modelUsed
+          embeddings: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).embeddings,
+          dimensions: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).dimensions,
+          processingTime: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).processingTime,
+          modelUsed: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).modelUsed
         });
       }
       
@@ -292,11 +292,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
         
         return json({
           success: true,
-          batchId: result.batchId,
-          results: result.results,
-          totalTasks: result.totalTasks,
-          processingTime: result.processingTime,
-          averageTimePerTask: result.averageTimePerTask
+          batchId: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).batchId,
+          results: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).results,
+          totalTasks: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).totalTasks,
+          processingTime: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).processingTime,
+          averageTimePerTask: (result as { entities?: any; processingTime?: any; modelUsed?: any; predictions?: any; topPrediction?: any; embeddings?: any; dimensions?: any; batchId?: any; results?: any; totalTasks?: any; averageTimePerTask?: any }).averageTimePerTask
         });
       }
       

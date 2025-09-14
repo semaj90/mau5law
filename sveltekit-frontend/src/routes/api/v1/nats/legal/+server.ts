@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Legal AI Specific NATS Endpoints
 // High-level API for legal AI event publishing and management

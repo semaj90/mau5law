@@ -5,21 +5,24 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
 
   import { createEventDispatcher } from 'svelte';
-  import { Button } from 'bits-ui';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
 
-  const dispatch = createEventDispatcher();
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
 
-  let { formData = $bindable() } = $props(); // {
+  interface FormData {
     final_review: string;
     quality_score: number;
     completeness_check: boolean;
     reviewed_sections: string[];
     submission_notes: string;
-  };
+  }
 
-  let { allFormData = $bindable() } = $props(); // any;
+  let { formData = $bindable() }: { formData: FormData } = $props();
+
+  let { allFormData = $bindable() }: { allFormData: any } = $props();
   let isSubmitting = $state(false);
   let submissionProgress = writable(0);
   let currentSubmissionStep = writable('');
@@ -61,11 +64,11 @@ https://svelte.dev/e/js_parse_error -->
   let sectionScores = writable<Record<string, number>>({});
 
   function calculateQualityScore() {
-  let totalScore = $state(0);
+    let totalScore = 0;
     const scores: Record<string, number> = {};
 
     qualityCriteria.forEach(criterion => {
-  let score = $state(0);
+      let score = 0;
 
       switch (criterion.id) {
         case 'case_info':
@@ -156,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
       currentSubmissionStep.set('Case submitted successfully!');
 
       // Emit success event
-      dispatch('submit', {
+      onSubmit?.({
         step: 'review',
         data: formData,
         allData: allFormData,
@@ -172,11 +175,11 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function handlePrevious() {
-    dispatch('previous', { step: 'review' });
+    onPrevious?.({ step: 'review' });
   }
 
   function handleSaveDraft() {
-    dispatch('saveDraft', { step: 'review', data: formData });
+    onSaveDraft?.({ step: 'review', data: formData });
   }
 
   function getScoreColor(score: number): string {
@@ -244,7 +247,7 @@ https://svelte.dev/e/js_parse_error -->
               <input
                 type="checkbox"
                 checked={formData.reviewed_sections.includes(criterion.id)}
-                change={() => toggleSectionReview(criterion.id)}
+                on:change={() => toggleSectionReview(criterion.id)}
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
               />
             </div>
@@ -381,27 +384,27 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 border-t border-gray-200">
-    <Button.Root
-      onclick={handlePrevious}
+    <Button
+      on:click={handlePrevious}
       disabled={isSubmitting}
-      class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn bits-btn"
+      class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn"
     >
       ← Previous
-    </Button.Root>
+    </Button>
 
     <div class="flex space-x-3">
-      <Button.Root
-        onclick={handleSaveDraft}
+      <Button
+        on:click={handleSaveDraft}
         disabled={isSubmitting}
-        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn bits-btn"
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn"
       >
         Save Draft
-      </Button.Root>
+      </Button>
 
-      <Button.Root
-        onclick={submitCase}
+      <Button
+        on:click={submitCase}
         disabled={!formData.completeness_check || formData.final_review.length < 50 || isSubmitting}
-        class="px-8 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 bits-btn bits-btn"
+        class="px-8 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 bits-btn"
       >
         {#if isSubmitting}
           <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -409,7 +412,7 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           <span>🚀 Submit Case</span>
         {/if}
-      </Button.Root>
+      </Button>
     </div>
   </div>
 </div>

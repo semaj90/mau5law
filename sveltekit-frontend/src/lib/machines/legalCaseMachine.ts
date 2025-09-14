@@ -4,8 +4,8 @@
  */
 
 import { createMachine, assign, fromPromise } from 'xstate';
-import type { CaseForm, TimelineEvent, LegalContext, CaseMetrics } from '../types/case.js';
-import type { User } from '../types/user.js';
+import type { CaseForm, TimelineEvent, LegalContext, CaseMetrics } from '../types/case.js.js';
+import type { User } from '../types/user.js.js';
 import crypto from "crypto";
 
 // Legal Case Events - Strongly Typed
@@ -391,7 +391,7 @@ export const legalCaseMachine = createMachine({
     auditTrail: [],
     activeTab: 'overview',
     selectedItems: [],
-    filters: {},
+    filters: Record<string, any>,
     sortBy: { field: 'dateCreated', direction: 'desc' },
     error: null,
     retryCount: 0,

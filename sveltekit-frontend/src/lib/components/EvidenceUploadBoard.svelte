@@ -37,8 +37,7 @@
     </div>
     <div class="yorha-panel-content space-y-4">
       <input 
-        type="file" 
-        change={handleFileUpload}
+        type="file" on:change={handleFileUpload}
         accept=".txt,.pdf,.doc,.docx"
         class="block w-full text-sm"
       />

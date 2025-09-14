@@ -1,7 +1,7 @@
 // src/lib/machines/__tests__/evidence-canvas-machine.test.ts
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createActor, createMachine, assign, fromPromise } from 'xstate';
-import { mockServices, perf } from '../../services/__tests__/setup';
+import { mockServices, perf } from '../../services/__tests__/setup.js';
 
 // XState v5 Evidence Canvas Machine for Legal AI Platform
 const evidenceCanvasMachine = createMachine({

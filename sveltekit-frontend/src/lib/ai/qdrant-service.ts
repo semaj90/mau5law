@@ -104,11 +104,7 @@ export class QdrantService {
   }
 
   async upsertPoints(
-    points: Array<{
-      id: string;
-      vector: number[];
-      payload: LegalDocumentMetadata;
-    }>,
+    points: Array<,
   ): Promise<void> {
     await this.ensureCollection();
     await this.client.upsert(this.collectionName, {
@@ -122,8 +118,7 @@ export class QdrantService {
     limit: number = 10,
     filter?: Record<string, any>,
   ): Promise<
-    Array<{ id: string; score: number; payload: LegalDocumentMetadata }>
-  > {
+    Array<any> {
     await this.ensureCollection();
 
     const searchResult = await this.client.search(this.collectionName, {
@@ -135,9 +130,9 @@ export class QdrantService {
     });
 
     return searchResult.map((result: any) => ({
-      id: result.id as string,
-      score: result.score,
-      payload: result.payload as LegalDocumentMetadata,
+      id: (result as { id?: any; score?: any; payload?: any }).id as string,
+      score: (result as { id?: any; score?: any; payload?: any }).score,
+      payload: (result as { id?: any; score?: any; payload?: any }).payload as LegalDocumentMetadata,
     }));
   }
 

@@ -80,7 +80,7 @@
   }: EvidenceTimelineLODProps = $props();
 
   // Svelte 5 state management
-  let canvasElement = $state<HTMLCanvasElement>();
+  let canvasElement: HTMLCanvasElement = $state(undefined as any);
   let gpuDevice = $state<GPUDevice | null>(null);
   let isWebGPUReady = $state(false);
   
@@ -251,9 +251,9 @@
     try {
       // Load timeline events from API
       const response = await fetch(`/api/v1/cases/${caseId}/timeline?start=${timeRange.start.toISOString()}&end=${timeRange.end.toISOString()}`);
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
       
-      allEvents = data.events || timelineData || [];
+      allEvents = (data as { events?: any; clustered?: any }).events || timelineData || [];
       
       // Calculate event importance based on multiple factors
       calculateEventImportance();
@@ -685,7 +685,7 @@
     evidence.slice(0, 5).forEach((item, index) => {
       const indicatorX = x + (index * spacing) - ((evidence.length - 1) * spacing) / 2;
       
-      ctx.fillStyle = getEvidenceColor(item.type);
+      ctx.fillStyle = getEvidenceColor((item as { type?: any }).type);
       ctx.fillRect(indicatorX - indicatorSize/2, y - indicatorSize/2, indicatorSize, indicatorSize);
     });
     
@@ -915,19 +915,19 @@
   <!-- Timeline Controls -->
   <div class="timeline-controls">
     <div class="navigation-controls">
-      <LoadingButton onclick={() => handleTimeNavigation('prev')} variant="outline" size="sm">
+      <LoadingButton on:click={() => handleTimeNavigation('prev')} variant="outline" size="sm">
         {#snippet children()}<SkipBack class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={handleZoomIn} variant="outline" size="sm">
+      <LoadingButton on:click={handleZoomIn} variant="outline" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={handleZoomOut} variant="outline" size="sm">
+      <LoadingButton on:click={handleZoomOut} variant="outline" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={() => handleTimeNavigation('next')} variant="outline" size="sm">
+      <LoadingButton on:click={() => handleTimeNavigation('next')} variant="outline" size="sm">
         {#snippet children()}<SkipForward class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
@@ -947,7 +947,7 @@
       <select 
         class="nes-select"
         bind:value={currentLOD}
-        onchange={handleLODChange}
+        on:change={handleLODChange}
       >
         {#each Object.entries(lodConfig) as [level, config]}
           <option value={parseInt(level)}>
@@ -971,7 +971,7 @@
         class="nes-input"
         placeholder="Search timeline events..."
         bind:value={searchQuery}
-        onchange={handleFilterChange}
+        on:change={handleFilterChange}
       />
     </div>
     
@@ -983,7 +983,7 @@
             <input 
               type="checkbox" 
               bind:checked={eventTypeFilters[eventType as keyof typeof eventTypeFilters]}
-              onchange={handleFilterChange}
+              on:change={handleFilterChange}
             />
             <span>{eventType}</span>
           </label>
@@ -1001,7 +1001,7 @@
         max="1" 
         step="0.1"
         bind:value={importanceThreshold}
-        onchange={handleFilterChange}
+        on:change={handleFilterChange}
       />
     </div>
   </div>
@@ -1013,7 +1013,7 @@
       width="1000"
       height={timelineHeight}
       class="timeline-canvas"
-      onclick={handleCanvasClick}
+      on:click={handleCanvasClick}
       onmousemove={handleCanvasHover}
     ></canvas>
     
@@ -1023,7 +1023,7 @@
         <div class="nes-progress">
           <div class="nes-progress-bar indeterminate"></div>
         </div>
-        <p>Loading timeline data...</p>
+        <p>Loading timeline (data as { events?: any; clustered?: any })...</p>
       </div>
     {/if}
   </div>

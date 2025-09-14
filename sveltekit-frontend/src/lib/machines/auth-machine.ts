@@ -104,7 +104,7 @@ const isAccountLocked = ({ context }: { context: AuthContext }) => {
 };
 
 export const authMachine = setup({
-  types: {} as {
+  types: Record<string, any> as {
     context: AuthContext;
     events: AuthEvent;
   },

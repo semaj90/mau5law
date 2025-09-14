@@ -15,14 +15,19 @@
     multiple?: boolean;
     disabled?: boolean;
   }
-  let { 
-    data, 
+  let { data, 
     caseId = '', 
     onUploadComplete,
     onUploadError,
     multiple = false,
     disabled = false 
-  } = $props();
+   }: { data, 
+    caseId = '', 
+    onUploadComplete,
+    onUploadError,
+    multiple = false,
+    disabled = false 
+  : any } = $props();
 
   interface UploadResult {
     success: boolean
@@ -33,7 +38,7 @@
   }
 
   // Superforms setup
-  const { form, errors, enhance, submitting, message } = superForm(data.form, {
+  const { form, errors, enhance, submitting, message } = superForm((data as { form?: any }).form, {
     dataType: 'form',
     multipleFiles: true,
     validators: {
@@ -57,8 +62,8 @@
       }
     },
     onResult: ({ result }) => {
-      if (result.type === 'success') {
-        const uploadResult = result.data?.uploadResult as UploadResult;
+      if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
+        const uploadResult = (result as { type?: any; data?: any; error?: any }).data?.uploadResult as UploadResult;
         if (uploadResult?.success) {
           onUploadComplete?.(uploadResult);
           // Reset form
@@ -71,8 +76,8 @@
           onUploadError?.(error);
           uploadStatus = 'error';
         }
-      } else if (result.type === 'error') {
-        onUploadError?.('Upload failed: ' + result.error?.message);
+      } else if ((result as { type?: any; data?: any; error?: any }).type === 'error') {
+        onUploadError?.('Upload failed: ' + (result as { type?: any; data?: any; error?: any }).error?.message);
         uploadStatus = 'error';
       }
     }
@@ -154,7 +159,7 @@
 
     return async ({ result }: { result: any }) => {
       clearInterval(progressInterval);
-      if (result.type === 'success') {
+      if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
         uploadProgress = 100;
         uploadStatus = 'processing';
         // Simulate processing time
@@ -232,18 +237,18 @@
         class:has-file={$form.file}
         role="button"
         tabindex="0"
-        ondrop={handleDrop}
-        ondragover={handleDragOver}
+        on:drop={handleDrop}
+        on:dragover={handleDragOver}
         ondragleave={handleDragLeave}
-        onclick={() => fileInput?.click()}
-        onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}
+        on:click={() => fileInput?.click()}
+        on:keydown={(e) => e.key === 'Enter' && fileInput?.click()}
       >
         <input
           bind:this={fileInput}
           type="file"
           name="file"
           accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff"
-          onchange={handleFileSelect}
+          on:change={handleFileSelect}
           style="display: none"
           disabled={disabled || $submitting}
         />
@@ -258,7 +263,7 @@
             <div class="file-info">
               <div class="file-name">{$form.file.name}</div>
               <div class="file-size">{formatFileSize($form.file.size)}</div>
-              <button type="button" class="remove-file" onclick={removeFile}>
+              <button type="button" class="remove-file" on:click={removeFile}>
                 ✕ Remove
               </button>
             </div>

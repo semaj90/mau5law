@@ -37,10 +37,10 @@ Comprehensive showcase of Phase 4 capabilities
     <div class="max-w-7xl mx-auto px-6 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <Button class="bits-btn" variant="ghost" size="sm" onclick="history.back()">
-            <ArrowLeft class="h-4 w-4 mr-2" />
+          <Button class="bits-btn" variant="ghost" size="sm" on:click="history.back()">
+<ArrowLeft class="h-4 w-4 mr-2" />
             Back
-          </button>
+
           <div class="h-6 w-px bg-border"></div>
           <div>
             <h1 class="text-xl font-semibold">Vector Intelligence Demo</h1>
@@ -54,13 +54,13 @@ Comprehensive showcase of Phase 4 capabilities
             Phase 4 Complete
           </Badge>
           <Button class="bits-btn" variant="outline" size="sm">
-            <BookOpen class="h-4 w-4 mr-2" />
+<BookOpen class="h-4 w-4 mr-2" />
             Documentation
-          </button>
+
           <Button class="bits-btn" variant="outline" size="sm">
-            <Github class="h-4 w-4 mr-2" />
+<Github class="h-4 w-4 mr-2" />
             Source Code
-          </button>
+
         </div>
       </div>
     </div>
@@ -89,13 +89,13 @@ Comprehensive showcase of Phase 4 capabilities
 
     <!-- Feature Highlights -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <NesCard class="bits-nier-bits-card border-l-4 border-l-blue-500" variant="default" legal={true}>
-        <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-          <h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
+      <div class="bits-nier-bits-card border-l-4 border-l-blue-500 nes-container">
+        <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+          <h3 class="nes-text is-primary text-lg flex items-center gap-2">
             🔍 Semantic Vector Search
           </h3>
         </div>
-        <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+        <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
           <ul class="text-sm nes-text is-disabled space-y-1">
             <li>• Multi-modal embedding support</li>
             <li>• Contextual filtering by case type</li>
@@ -103,15 +103,15 @@ Comprehensive showcase of Phase 4 capabilities
             <li>• Real-time result highlighting</li>
           </ul>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="bits-nier-bits-card border-l-4 border-l-green-500" variant="default" legal={true}>
-        <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-          <h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
+      <div class="bits-nier-bits-card border-l-4 border-l-green-500 nes-container">
+        <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+          <h3 class="nes-text is-primary text-lg flex items-center gap-2">
             💡 AI Recommendations
           </h3>
         </div>
-        <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+        <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
           <ul class="text-sm nes-text is-disabled space-y-1">
             <li>• Personalized by user role</li>
             <li>• Context-aware suggestions</li>
@@ -119,15 +119,15 @@ Comprehensive showcase of Phase 4 capabilities
             <li>• Confidence scoring</li>
           </ul>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="bits-nier-bits-card border-l-4 border-l-purple-500" variant="default" legal={true}>
-        <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-          <h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
+      <div class="bits-nier-bits-card border-l-4 border-l-purple-500 nes-container">
+        <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+          <h3 class="nes-text is-primary text-lg flex items-center gap-2">
             📊 Document Analysis
           </h3>
         </div>
-        <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+        <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
           <ul class="text-sm nes-text is-disabled space-y-1">
             <li>• Entity extraction & classification</li>
             <li>• Theme identification</li>
@@ -135,18 +135,18 @@ Comprehensive showcase of Phase 4 capabilities
             <li>• Complexity assessment</li>
           </ul>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- API Information -->
-    <NesCard class="bits-nier-bits-card mb-8" variant="default" legal={true}>
-      <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+    <div class="bits-nier-bits-card mb-8 nes-container">
+      <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <ExternalLink class="h-5 w-5" />
           API Endpoints Available
         </h3>
       </div>
-      <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
+      <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div class="space-y-2">
             <h3 class="font-semibold">Vector Search</h3>
@@ -165,7 +165,7 @@ Comprehensive showcase of Phase 4 capabilities
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Demo Component -->
     <VectorIntelligenceDemo />
@@ -180,37 +180,37 @@ Comprehensive showcase of Phase 4 capabilities
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <NesCard class="bits-nier-bits-card text-center" variant="default" legal={true}>
-          <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content p-6" variant="default" legal={true}>
+        <div class="bits-nier-bits-card text-center nes-container">
+          <div class="yorha-panel-content bits-nier-bits-yorha-panel-content p-6" variant="default" legal={true}>
             <div class="text-2xl mb-2">🧠</div>
             <h3 class="font-semibold mb-2">Vector Intelligence</h3>
             <p class="text-sm nes-text is-disabled">Advanced semantic search with 384-dimensional embeddings</p>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard class="bits-nier-bits-card text-center" variant="default" legal={true}>
-          <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content p-6" variant="default" legal={true}>
+        <div class="bits-nier-bits-card text-center nes-container">
+          <div class="yorha-panel-content bits-nier-bits-yorha-panel-content p-6" variant="default" legal={true}>
             <div class="text-2xl mb-2">⚡</div>
             <h3 class="font-semibold mb-2">SvelteKit 2</h3>
             <p class="text-sm nes-text is-disabled">Modern framework with Svelte 5 runes system</p>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard class="bits-nier-bits-card text-center" variant="default" legal={true}>
-          <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content p-6" variant="default" legal={true}>
+        <div class="bits-nier-bits-card text-center nes-container">
+          <div class="yorha-panel-content bits-nier-bits-yorha-panel-content p-6" variant="default" legal={true}>
             <div class="text-2xl mb-2">🎨</div>
             <h3 class="font-semibold mb-2">UnoCSS</h3>
             <p class="text-sm nes-text is-disabled">Atomic CSS with bits-ui and shadcn-svelte</p>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard class="bits-nier-bits-card text-center" variant="default" legal={true}>
-          <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content p-6" variant="default" legal={true}>
+        <div class="bits-nier-bits-card text-center nes-container">
+          <div class="yorha-panel-content bits-nier-bits-yorha-panel-content p-6" variant="default" legal={true}>
             <div class="text-2xl mb-2">🤖</div>
             <h3 class="font-semibold mb-2">Multi-Agent AI</h3>
             <p class="text-sm nes-text is-disabled">AutoGen & CrewAI integration for complex analysis</p>
           </div>
-        </NesCard>
+        </div>
       </div>
     </div>
 

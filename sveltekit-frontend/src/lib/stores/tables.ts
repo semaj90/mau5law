@@ -205,8 +205,8 @@ class TableManager {
     this.notifications.update(notifications => [...notifications, fullNotification]);
 
     // Auto-remove non-persistent notifications
-    if (!notification.persistent) {
-      const duration = notification.duration || 5000;
+    if (!(notification as { persistent?: any; duration?: any }).persistent) {
+      const duration = (notification as { persistent?: any; duration?: any }).duration || 5000;
       setTimeout(() => {
         this.removeNotification(id);
       }, duration);
@@ -330,7 +330,7 @@ export const legalAITableConfigs = {
 
 // Utility functions
 export function formatTableData(data: any[], columns: string[]): unknown[] {
-  return data.map(row => {
+  return (data as { map?: any; length?: any }).map(row => {
     const formatted: any = { id: row.id };
     columns.forEach(col => {
       formatted[col] = row[col] ?? '';
@@ -356,12 +356,12 @@ export function exportTableData(data: any[], filename?: string): void {
 }
 
 function convertToCSV(data: any[]): string {
-  if (data.length === 0) return '';
+  if ((data as { map?: any; length?: any }).length === 0) return '';
   
   const headers = Object.keys(data[0]);
   const csvHeaders = headers.join(',');
   
-  const csvRows = data.map(row => 
+  const csvRows = (data as { map?: any; length?: any }).map(row => 
     headers.map(header => {
       const value = row[header];
       const stringValue = typeof value === 'string' ? value : String(value || '');

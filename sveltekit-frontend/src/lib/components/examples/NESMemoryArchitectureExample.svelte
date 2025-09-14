@@ -238,32 +238,32 @@
         <divContent>
           <div class="priority-grid">
             {#each documentPriorities as item}
-              <div class="priority-nier-bits-card" style:border-color={getPriorityColor(item.priority)}>
+              <div class="priority-nier-bits-card" style:border-color={getPriorityColor((item as { priority?: any; document?: any; memoryBank?: any }).priority)}>
                 <div class="document-header">
-                  <h4>{item.document.type}</h4>
-                  <span class="priority-score" style:background={getPriorityColor(item.priority)}>
-                    {item.priority}
+                  <h4>{(item as { priority?: any; document?: any; memoryBank?: any }).document.type}</h4>
+                  <span class="priority-score" style:background={getPriorityColor((item as { priority?: any; document?: any; memoryBank?: any }).priority)}>
+                    {(item as { priority?: any; document?: any; memoryBank?: any }).priority}
                   </span>
                 </div>
                 
                 <div class="document-details">
-                  <p><strong>Category:</strong> {item.document.category}</p>
-                  <p><strong>Urgency:</strong> {item.document.urgency}</p>
+                  <p><strong>Category:</strong> {(item as { priority?: any; document?: any; memoryBank?: any }).document.category}</p>
+                  <p><strong>Urgency:</strong> {(item as { priority?: any; document?: any; memoryBank?: any }).document.urgency}</p>
                   <p><strong>Memory Bank:</strong> 
-                    <span style:color={getMemoryBankColor(item.memoryBank)}>
-                      {item.memoryBank}
+                    <span style:color={getMemoryBankColor((item as { priority?: any; document?: any; memoryBank?: any }).memoryBank)}>
+                      {(item as { priority?: any; document?: any; memoryBank?: any }).memoryBank}
                     </span>
                   </p>
-                  <p><strong>Active Review:</strong> {item.document.activeReview ? '✅' : '❌'}</p>
+                  <p><strong>Active Review:</strong> {(item as { priority?: any; document?: any; memoryBank?: any }).document.activeReview ? '✅' : '❌'}</p>
                 </div>
                 
                 <!-- Texture preview -->
                 <div class="texture-preview">
                   <SSRWebGPULoader
-                    assetId={item.document.id}
+                    assetId={(item as { priority?: any; document?: any; memoryBank?: any }).document.id}
                     width={48}
                     height={48}
-                    viewportDistance={item.priority > 150 ? 20 : 60}
+                    viewportDistance={(item as { priority?: any; document?: any; memoryBank?: any }).priority > 150 ? 20 : 60}
                     enableGPU={true}
                   />
                 </div>
@@ -357,8 +357,7 @@
                 </div>
                 
                 <button class="nes-btn" 
-                  on:click={() => triggerCacheWarming(strategyKey)}
-                  disabled={isWarming}
+                  on:click={disabled}
                 >
                   {isWarming ? '⚡ Warming...' : 'Start Warming'}
                 </button>

@@ -55,7 +55,7 @@ export const redisStats = writable<RedisStats | null>(null);
 export const isRedisHealthy = writable<boolean>(true);
 export const queuedTasks = writable<Map<string, QueuedTask>>(new Map());
 export const cacheHitRate = writable<number>(0);
-export const processingTimes = writable<Array<{ endpoint: string; time: number; timestamp: string }>>([]);
+export const processingTimes = writable<Array<any>([]);
 
 // Derived stores for computed values
 export const averageProcessingTime = derived(
@@ -156,11 +156,11 @@ export class RedisOrchestratorClient {
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Redis orchestrator request failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Redis orchestrator request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const result: RedisOptimizationResult = await response.json();
+      const result: RedisOptimizationResult = await (response as { ok?: any; statusText?: any; json?: any }).json();
       
       // Update client-side metrics
       this.recordProcessingTime(
@@ -169,9 +169,9 @@ export class RedisOrchestratorClient {
       );
 
       // If task was queued, track it
-      if (result.task_id) {
+      if ((result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).task_id) {
         this.trackQueuedTask({
-          taskId: result.task_id,
+          taskId: (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).task_id,
           taskType: 'complex_legal',
           query,
           status: 'queued',
@@ -195,26 +195,26 @@ export class RedisOrchestratorClient {
     try {
       const response = await fetch(`${this.baseUrl}/tasks?taskId=${taskId}`);
       
-      if (!response.ok) {
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         return null;
       }
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
       
       // Update task status
-      if (result.found) {
+      if ((result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).found) {
         queuedTasks.update(tasks => {
           const task = tasks.get(taskId);
           if (task) {
             task.status = 'completed';
-            task.result = result.result;
+            task.result = (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).result;
             tasks.set(taskId, task);
           }
           return tasks;
         });
       }
 
-      return result.result;
+      return (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).result;
 
     } catch (error) {
       console.error('🎮 Task result retrieval failed:', error);
@@ -245,23 +245,23 @@ export class RedisOrchestratorClient {
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Task queuing failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Task queuing failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
       
       // Track the task
       this.trackQueuedTask({
-        taskId: result.taskId,
+        taskId: (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).taskId,
         taskType,
         query,
         status: 'queued',
-        estimatedTime: result.estimated_processing_time,
+        estimatedTime: (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).estimated_processing_time,
         submittedAt: new Date().toISOString()
       });
 
-      return result.taskId;
+      return (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).taskId;
 
     } catch (error) {
       console.error('🎮 Task queuing failed:', error);
@@ -276,12 +276,12 @@ export class RedisOrchestratorClient {
     try {
       const response = await fetch(`${this.baseUrl}?details=true`);
       
-      if (!response.ok) {
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         isRedisHealthy.set(false);
         return null;
       }
 
-      const health = await response.json();
+      const health = await (response as { ok?: any; statusText?: any; json?: any }).json();
       isRedisHealthy.set(health.status === 'healthy');
       
       return health;
@@ -306,7 +306,7 @@ export class RedisOrchestratorClient {
         method: 'DELETE'
       });
 
-      return response.ok;
+      return (response as { ok?: any; statusText?: any; json?: any }).ok;
 
     } catch (error) {
       console.error('🎮 Cache clear failed:', error);
@@ -321,21 +321,21 @@ export class RedisOrchestratorClient {
     try {
       const response = await fetch(this.baseUrl);
       
-      if (!response.ok) {
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         isRedisHealthy.set(false);
         return;
       }
 
-      const data = await response.json();
+      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       
       const stats: RedisStats = {
-        ...data.redis_stats,
+        ...(data as { redis_stats?: any; status?: any }).redis_stats,
         last_updated: new Date().toISOString()
       };
 
       redisStats.set(stats);
       cacheHitRate.set(stats.llm_cache?.hit_rate_estimate || 0);
-      isRedisHealthy.set(data.status === 'healthy');
+      isRedisHealthy.set((data as { redis_stats?: any; status?: any }).status === 'healthy');
 
     } catch (error) {
       console.error('🎮 Stats update failed:', error);

@@ -20,7 +20,7 @@ import { json } from "@sveltejs/kit";
 import { URL } from "url";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { LegalAnalysisRequest } from '$lib/ai/autogen-legal-agents';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Multi-Agent AI Orchestration API

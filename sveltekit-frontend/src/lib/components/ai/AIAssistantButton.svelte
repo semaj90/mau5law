@@ -128,7 +128,7 @@
   <button
     class={buttonClasses}
   data-status={aiStatus}
-  onclick={handleClick}
+  on:click={handleClick}
     {disabled}
     aria-label="Open AI Assistant"
   >
@@ -157,7 +157,7 @@
   <button
     class={buttonClasses}
   data-status={aiStatus}
-  onclick={handleClick}
+  on:click={handleClick}
     {disabled}
   >
     <div class="flex items-center gap-3 px-4 py-3">
@@ -185,8 +185,8 @@
           class="ml-auto p-1 hover:bg-yorha-bg-hover rounded inline-flex items-center justify-center cursor-pointer"
           role="button"
           tabindex="0"
-          onclick={(e) => { e.stopPropagation(); toggleVoiceInput(); }}
-          onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleVoiceInput(); } }}
+          on:click={(e) => { e.stopPropagation(); toggleVoiceInput(); }}
+          on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleVoiceInput(); } }}
           aria-label={isListening ? 'Stop listening' : 'Start voice input'}
         >
           {#if isListening}
@@ -210,7 +210,7 @@
     <button
       class={buttonClasses}
       data-status={aiStatus}
-      onclick={handleClick}
+      on:click={handleClick}
       {disabled}
       aria-label="AI Assistant"
       title={`AI Assistant — Status: ${aiStatus}${unreadCount > 0 ? ` — ${unreadCount} new` : ''}`}
@@ -231,7 +231,7 @@
   <button
     class={buttonClasses}
   data-status={aiStatus}
-  onclick={handleClick}
+  on:click={handleClick}
     {disabled}
   >
     <div class="flex items-center justify-between w-full">
@@ -272,8 +272,8 @@
             class="p-2 hover:bg-yorha-bg-hover rounded-lg inline-flex items-center justify-center cursor-pointer"
             role="button"
             tabindex="0"
-            onclick={(e) => { e.stopPropagation(); toggleVoiceInput(); }}
-            onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleVoiceInput(); } }}
+            on:click={(e) => { e.stopPropagation(); toggleVoiceInput(); }}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleVoiceInput(); } }}
             aria-label={isListening ? 'Stop listening' : 'Start voice input'}
           >
             {#if isListening}

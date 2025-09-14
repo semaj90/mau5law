@@ -123,22 +123,22 @@
       
       <div class="error-actions">
         {#if showRefreshButton}
-          <button class="nes-btn is-primary" onclick={refreshPage}>
+          <button class="nes-btn is-primary" on:click={refreshPage}>
             Try Again
           </button>
         {/if}
         
-        <button class="nes-btn" variant="outline" onclick={goHome}>
+        <button class="nes-btn" variant="outline" on:click={goHome}>
           Go Home
         </button>
         
         {#if showReportButton}
-          <button class="nes-btn" variant="outline" onclick={reportError}>
+          <button class="nes-btn" variant="outline" on:click={reportError}>
             Report Issue
           </button>
         {/if}
         
-        <button class="nes-btn" variant="outline" size="sm" onclick={reset}>
+        <button class="nes-btn" variant="outline" size="sm" on:click={reset}>
           Reset
         </button>
       </div>

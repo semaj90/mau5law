@@ -138,11 +138,10 @@ https://svelte.dev/e/js_parse_error -->
     {rows}
     {disabled}
     {readonly}
-    class="space-y-4"
-    input={handleInput}
+    class="space-y-4" on:input={handleInput}
     keydown={handleKeydown}
-    onblur={handleBlur}
-    onfocus={handleFocus}
+    on:blur={handleBlur}
+    on:focus={handleFocus}
   ></textarea>
 
   {#if showCommandMenu}

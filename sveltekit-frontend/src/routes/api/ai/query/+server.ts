@@ -20,7 +20,7 @@
 import { aiService } from "$lib/server/services/ai-service.js";
 import { URL } from "url";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 const querySchema = z.object({
@@ -57,10 +57,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     return json({
       success: true,
       data: {
-        response: result.response,
-        confidence: result.confidence,
-        contextUsed: result.contextUsed,
-        queryId: result.queryId
+        response: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).response,
+        confidence: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).confidence,
+        contextUsed: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).contextUsed,
+        queryId: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).queryId
       }
     });
 

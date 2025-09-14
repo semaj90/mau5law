@@ -240,15 +240,15 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <!-- Main Analysis Card -->
-  <NesCard class="w-full">
+  <div class="w-full nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">📄 Evidence Upload & Configuration</h3>
+      <h3 class="nes-text is-primary flex items-center gap-2">📄 Evidence Upload & Configuration</h3>
       <p class="nes-text">
         Configure your evidence analysis parameters and upload documents for processing
       </p>
     </div>
 
-    <div class="yorha-panel-content" class="space-y-6">
+    <div class="yorha-panel-content space-y-6">
       <!-- Form Configuration -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Case ID -->
@@ -299,8 +299,7 @@ https://svelte.dev/e/js_parse_error -->
         <Input
           id="evidenceFile"
           type="file"
-          accept=".txt,.pdf,.doc,.docx"
-          change={handleFileUpload}
+          accept=".txt,.pdf,.doc,.docx" on:change={handleFileUpload}
           disabled={analyzing}
           class="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary hover:file:bg-opacity-80" />
         {#if evidenceFile}
@@ -344,36 +343,38 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
     <div class="flex gap-2">
-  <Button class="bits-btn" variant="outline" onclick={resetForm} disabled={analyzing}>Reset</button>
-  <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
-          {analyzing ? 'Analyzing...' : 'Start Analysis'}
-        </button>
+  <Button class="bits-btn" variant="outline" on:click={resetForm} disabled={analyzing}>
+Reset
+</Button>
+  <Button class="bits-btn" on:click={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+{analyzing ? 'Analyzing...' : 'Start Analysis'}
+</Button>
       </div>
     </CardFooter>
-  </NesCard>
+  </div>
 
   <!-- Error Display -->
   {#if error}
-    <NesCard class="border-destructive">
-      <div class="yorha-panel-content" class="pt-6">
+    <div class="border-destructive nes-container">
+      <div class="yorha-panel-content pt-6">
         <div class="flex items-center gap-2 text-destructive">
           <span>❌</span>
           <span class="font-semibold">Analysis Error:</span>
           <span>{error}</span>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Progress Display -->
   {#if analyzing}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">🔄 Analysis in Progress</h3>
+        <h3 class="nes-text is-primary flex items-center gap-2">🔄 Analysis in Progress</h3>
         <p class="nes-text">Multi-agent pipeline processing your evidence document</p>
       </div>
 
-      <div class="yorha-panel-content" class="space-y-6">
+      <div class="yorha-panel-content space-y-6">
         <!-- Overall Progress -->
         <div class="space-y-2">
           <div class="flex justify-between text-sm">
@@ -390,9 +391,9 @@ https://svelte.dev/e/js_parse_error -->
             {@const isCompleted = step.status === 'completed'}
             {@const isProcessing = step.status === 'processing'}
 
-            <NesCard
-              class="transition-all duration-300 {isActive ? 'ring-2 ring-primary shadow-md' : ''}">
-              <div class="yorha-panel-content" class="p-4">
+            <div
+              class="transition-all duration-300 {isActive ? 'ring-2 ring-primary shadow-md' : ''} nes-container">
+              <div class="yorha-panel-content p-4">
                 <div class="flex items-center gap-4">
                   <!-- Status Icon -->
                   <div class="flex-shrink-0">
@@ -444,11 +445,11 @@ https://svelte.dev/e/js_parse_error -->
                   {/if}
                 </div>
               </div>
-            </NesCard>
+            </div>
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Results Modal/Display -->
@@ -464,9 +465,9 @@ https://svelte.dev/e/js_parse_error -->
 
         <div class="space-y-4">
           {#each Object.entries(results.outputs) as [key, data]}
-            <NesCard>
+            <div class="nes-container">
               <div class="yorha-panel-header">
-                <h3 class="nes-text is-primary" class="text-lg">
+                <h3 class="nes-text is-primary text-lg">
                   {steps.find((s) => s.key === key)?.icon || '📄'}
                   {key.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
                 </h3>
@@ -481,17 +482,22 @@ https://svelte.dev/e/js_parse_error -->
                   variant="outline"
                   size="sm"
                   class="mt-2 bits-btn bits-btn"
-                  onclick={() => viewDetailedResults(data)}>
+                  on:click={() =>
+viewDetailedResults(data)}>
                   View Details →
-                </button>
+</Button>
               </div>
-            </NesCard>
+            </div>
           {/each}
         </div>
 
         <DialogFooter>
-          <Button class="bits-btn" variant="outline" onclick={() => (showResults = false)}>Close</button>
-          <Button class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</button>
+          <Button class="bits-btn" variant="outline" on:click={() =>
+(showResults = false)}>Close
+</Button>
+          <Button class="bits-btn" on:click={() =>
+goto(`/cases/${caseId}`)}>View Case Details
+</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

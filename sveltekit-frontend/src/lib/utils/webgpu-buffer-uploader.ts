@@ -12,7 +12,7 @@ import {
   BufferTypeGuards,
   createAlignedBuffer,
   copyBufferAligned
-} from './buffer-conversion.js';
+} from './buffer-conversion.js.js';
 
 import {
   quantizeForWebGPU,
@@ -23,7 +23,7 @@ import {
   type QuantizedData,
   quantizeWithStats,
   dequantize
-} from './typed-array-quantization.js';
+} from './typed-array-quantization.js.js';
 
 export interface WebGPUBufferUploadOptions {
   usage: GPUBufferUsageFlags;
@@ -132,10 +132,10 @@ export class WebGPUBufferUploader {
 
     const uploadTime = performance.now() - startTime;
     const originalSize = Array.isArray(data) 
-      ? data.length * 4 
+      ? (data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).length * 4 
       : BufferTypeGuards.isBufferLike(data) 
         ? toArrayBuffer(data).byteLength 
-        : data.length * 4;
+        : (data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).length * 4;
 
     const result: WebGPUBufferUploadResult = {
       buffer,
@@ -159,7 +159,7 @@ export class WebGPUBufferUploader {
         label: options.label,
         originalSize: `${(originalSize / 1024).toFixed(2)} KB`,
         uploadedSize: `${(quantized.alignedByteLength / 1024).toFixed(2)} KB`,
-        compressionRatio: `${result.uploadStats.compressionRatio.toFixed(2)}x`,
+        compressionRatio: `${(result as { uploadStats?: any; buffer?: any }).uploadStats.compressionRatio.toFixed(2)}x`,
         uploadTime: `${uploadTime.toFixed(2)}ms`,
         quantization: options.quantization
       });
@@ -327,9 +327,9 @@ export class WebGPUBufferUploader {
   clearCache(): void {
     // Destroy all cached buffers
     for (const result of this.uploadCache.values()) {
-      if (!result.buffer.destroy) continue;
+      if (!(result as { uploadStats?: any; buffer?: any }).buffer.destroy) continue;
       try {
-        result.buffer.destroy();
+        (result as { uploadStats?: any; buffer?: any }).buffer.destroy();
       } catch (e) {
         // Buffer may already be destroyed
       }
@@ -362,7 +362,7 @@ export class WebGPUBufferUploader {
   private hashData(data: BufferLike | number[]): string {
     // Simple hash based on data length and first/last values
     if (Array.isArray(data)) {
-      return `arr_${data.length}_${data[0]}_${data[data.length - 1]}`;
+      return `arr_${(data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).length}_${data[0]}_${data[(data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).length - 1]}`;
     }
     const buffer = toArrayBuffer(data);
     const view = new Uint8Array(buffer);
@@ -394,18 +394,18 @@ export class WebGPUBufferUploader {
 
   private getArrayBufferFromQuantizedData(quantized: QuantizedData): ArrayBuffer {
     if (quantized.data instanceof Float32Array) {
-      return quantized.data.buffer.slice(
-        quantized.data.byteOffset,
-        quantized.data.byteOffset + quantized.data.byteLength
+      return quantized.(data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).buffer.slice(
+        quantized.(data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).byteOffset,
+        quantized.(data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).byteOffset + quantized.(data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).byteLength
       ) as ArrayBuffer;
     }
     if (quantized.data instanceof Uint16Array || quantized.data instanceof Int8Array) {
-      return quantized.data.buffer.slice(
-        quantized.data.byteOffset,
-        quantized.data.byteOffset + quantized.data.byteLength
+      return quantized.(data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).buffer.slice(
+        quantized.(data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).byteOffset,
+        quantized.(data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).byteOffset + quantized.(data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).byteLength
       ) as ArrayBuffer;
     }
-    throw new Error(`Unsupported quantized data type: ${quantized.data.constructor.name}`);
+    throw new Error(`Unsupported quantized data type: ${quantized.(data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).constructor.name}`);
   }
 
   private reconstructTypedArrayFromDownload(
@@ -440,7 +440,7 @@ export namespace WebGPUBufferUtils_Extended {
   ): Promise<GPUBuffer> {
     const uploader = new WebGPUBufferUploader(device, false);
     const result = await uploader.createComputeBuffer(data, options);
-    return result.buffer;
+    return (result as { uploadStats?: any; buffer?: any }).buffer;
   }
 
   /**
@@ -453,7 +453,7 @@ export namespace WebGPUBufferUtils_Extended {
   ): Promise<GPUBuffer> {
     const uploader = new WebGPUBufferUploader(device, false);
     const result = await uploader.createLegalAnalysisBuffer(data, priority);
-    return result.buffer;
+    return (result as { uploadStats?: any; buffer?: any }).buffer;
   }
 
   /**
@@ -465,7 +465,7 @@ export namespace WebGPUBufferUtils_Extended {
     sizeThresholds = { fp16: 1024 * 1024, int8: 10 * 1024 * 1024 } // 1MB, 10MB
   ): Promise<GPUBuffer> {
     const dataSize = Array.isArray(data) 
-      ? data.length * 4 
+      ? (data as { length?: any; buffer?: any; byteOffset?: any; byteLength?: any; constructor?: any }).length * 4 
       : toArrayBuffer(data).byteLength;
     
     let quantization: QuantizationMode = 'fp32';

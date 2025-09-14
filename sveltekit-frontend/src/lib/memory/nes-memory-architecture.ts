@@ -413,7 +413,7 @@ export class NESMemoryArchitecture {
     data: ArrayBuffer,
     document: Omit<LegalDocument, 'lastAccessed'>,
     compressionLevel: number
-  ): Promise<{ data: ArrayBuffer; ratio: number; priority: number }> {
+  ): Promise<any> {
     if (!this.compressionWorker) {
       return { data, ratio: 1.0, priority: 128 };
     }

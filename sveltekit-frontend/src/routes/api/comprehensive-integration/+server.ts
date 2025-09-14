@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface SystemHealthResponse {
   system_overview: {
@@ -8,12 +8,7 @@ interface SystemHealthResponse {
     uptime_hours: number;
     last_updated: string;
   };
-  services: Array<{
-    name: string;
-    status: 'healthy' | 'degraded' | 'down';
-    port?: number;
-    response_time?: number;
-  }>;
+  services: Array<any>;
   performance: {
     cpu_usage: number;
     memory_usage: number;

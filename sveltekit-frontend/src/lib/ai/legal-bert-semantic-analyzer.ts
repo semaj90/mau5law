@@ -11,8 +11,8 @@
  * - GPU acceleration for batch processing
  */
 
-import { lokiRedisCache, type CachedDocument } from '../cache/loki-redis-integration';
-import { nesMemory } from '../memory/nes-memory-architecture';
+import { lokiRedisCache, type CachedDocument } from '../cache/loki-redis-integration.js';
+import { nesMemory } from '../memory/nes-memory-architecture.js';
 import { EventEmitter } from 'events';
 
 // Legal-BERT model configurations
@@ -67,19 +67,12 @@ export interface DocumentClassification {
   category: 'contract' | 'litigation' | 'regulatory' | 'corporate' | 'intellectual_property' | 'employment' | 'real_estate' | 'tax' | 'other';
   subcategory: string;
   confidence: number;
-  topPredictions: Array<{ category: string; confidence: number }>;
-}
+  topPredictions: Array<any>
 
 export interface RiskAssessment {
   overallRisk: 'low' | 'medium' | 'high' | 'critical';
   riskScore: number; // 0-100
-  riskFactors: Array<{
-    factor: string;
-    severity: 'low' | 'medium' | 'high';
-    confidence: number;
-    location: { start: number; end: number };
-    mitigation?: string;
-  }>;
+  riskFactors: Array<any>;
   confidenceInterval: { lower: number; upper: number };
 }
 
@@ -94,23 +87,13 @@ export interface SemanticAnalysis {
   
   // Semantic features
   embeddings: Float32Array;
-  keyphrases: Array<{ phrase: string; relevance: number }>;
+  keyphrases: Array<any>;
   sentiment: { polarity: number; objectivity: number };
   complexity: { readingLevel: number; legalComplexity: number };
   
   // Legal-specific analysis
-  precedentMatches: Array<{
-    caseId: string;
-    similarity: number;
-    relevantSections: string[];
-    jurisdiction: string;
-  }>;
-  contractTerms: Array<{
-    term: string;
-    type: 'obligation' | 'right' | 'condition' | 'warranty' | 'indemnity' | 'termination';
-    enforceability: number;
-    riskLevel: 'low' | 'medium' | 'high';
-  }>;
+  precedentMatches: Array<any>;
+  contractTerms: Array<any>;
   
   // Processing metadata
   processingTime: number;
@@ -143,7 +126,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   };
 
   private batchProcessor: {
-    queue: Array<{ documentId: string; text: string; priority: number }>;
+    queue: Array<any>;
     processing: boolean;
     lastProcessTime: number;
   } = {
@@ -348,8 +331,8 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         this.updateStats({
           cacheHit: false,
           processingTime: Date.now() - startTime,
-          entitiesCount: result.entities.length,
-          risksCount: result.riskAssessment.riskFactors.length
+          entitiesCount: (result as { entities?: any; riskAssessment?: any }).entities.length,
+          risksCount: (result as { entities?: any; riskAssessment?: any }).riskAssessment.riskFactors.length
         });
         
         this.emit('analysisComplete', { documentId, analysis: result });
@@ -543,7 +526,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     return mitigations[factor] || 'Consult legal counsel for specific mitigation strategies';
   }
 
-  private async extractKeyphrases(text: string): Promise<Array<{ phrase: string; relevance: number }>> {
+  private async extractKeyphrases(text: string): Promise<Array<any> {
     // Simple keyphrase extraction (in production, use TF-IDF or similar)
     const words = text.toLowerCase().match(/\b\w{4,}\b/g) || [];
     const wordFreq: Record<string, number> = {};
@@ -561,7 +544,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       }));
   }
 
-  private async analyzeSentiment(text: string): Promise<{ polarity: number; objectivity: number }> {
+  private async analyzeSentiment(text: string): Promise<any> {
     // Mock sentiment analysis
     return {
       polarity: Math.random() * 2 - 1, // -1 (negative) to 1 (positive)
@@ -569,7 +552,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     };
   }
 
-  private async assessComplexity(text: string): Promise<{ readingLevel: number; legalComplexity: number }> {
+  private async assessComplexity(text: string): Promise<any> {
     // Simple complexity metrics
     const sentences = text.split(/[.!?]+/).length;
     const words = text.split(/\s+/).length;
@@ -713,7 +696,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         riskLevel: analysis.riskAssessment.overallRisk,
         lastAccessed: Date.now(),
         compressed: false,
-        metadata: {} as any
+        metadata: Record<string, any> as any
       });
     } catch (error: any) {
       console.warn(`Cache storage failed for ${documentId}:`, error);

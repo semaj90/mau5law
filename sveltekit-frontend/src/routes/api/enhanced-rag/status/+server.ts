@@ -101,9 +101,9 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
       health: {
         overallStatus: 'system_error',
-        services: {},
-        capabilities: {},
-        performance: {}
+        services: Record<string, any>,
+        capabilities: Record<string, any>,
+        performance: Record<string, any>
       }
     }, { status: 500 });
   }

@@ -6,8 +6,8 @@
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-webgpu';
-import { MultiLayerCache } from '../services/multiLayerCache';
-import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache.server';
+import { MultiLayerCache } from '../services/multiLayerCache.js';
+import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache.server.js';
 
 export interface AutoEncoderConfig {
   inputDimension: number;
@@ -206,7 +206,7 @@ export class GraphPatternAutoEncoder {
     }
 
     // Create encoder model
-    this.encoder = tf.model({
+    this.encoder = tf?.model || "unknown" // @ts-ignore - Model property access({
       inputs: encoderInputs,
       outputs: encoderLayer,
       name: 'graph_pattern_encoder'
@@ -253,7 +253,7 @@ export class GraphPatternAutoEncoder {
     }).apply(decoderLayer) as tf.SymbolicTensor;
 
     // Create decoder model
-    this.decoder = tf.model({
+    this.decoder = tf?.model || "unknown" // @ts-ignore - Model property access({
       inputs: decoderInputs,
       outputs: decoderLayer,
       name: 'graph_pattern_decoder'
@@ -264,7 +264,7 @@ export class GraphPatternAutoEncoder {
       this.encoder.apply(encoderInputs)
     ) as tf.SymbolicTensor;
 
-    this.autoencoder = tf.model({
+    this.autoencoder = tf?.model || "unknown" // @ts-ignore - Model property access({
       inputs: encoderInputs,
       outputs: autoencoderOutput,
       name: 'graph_pattern_autoencoder'

@@ -68,22 +68,22 @@ export class AuthService {
     displayName?: string;
   }) {
     // Check if user already exists
-    const existingUser = await db.select().from(users).where(eq(users.email, data.email)).limit(1);
+    const existingUser = await db.select().from(users).where(eq(users.email, (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).email)).limit(1);
 
     if (existingUser.length > 0) {
       throw new Error("User already exists");
     }
 
     // Hash password
-    const passwordHash = await this.argon2id.hash(data.password);
+    const passwordHash = await this.argon2id.hash((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).password);
 
     // Create user
     const [newUser] = await db.insert(users).values({
-      email: data.email,
+      email: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).email,
       hashedPassword: passwordHash,
-      firstName: data.firstName || null,
-      lastName: data.lastName || null,
-      name: data.displayName || `${data.firstName || ''} ${data.lastName || ''}`.trim() || null,
+      firstName: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || null,
+      lastName: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || null,
+      name: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).displayName || `${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || ''} ${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || ''}`.trim() || null,
       isActive: true
     }).returning();
 
@@ -185,26 +185,16 @@ export class AuthService {
   /**
    * Update user profile
    */
-  async updateProfile(userId: string, data: Partial<{
-    firstName: string;
-    lastName: string;
-    displayName: string;
-    bio: string;
-    avatarUrl: string;
-    timezone: string;
-    locale: string;
-    legalSpecialties: string[];
-    preferences: Record<string, any>;
-  }>) {
+  async updateProfile(userId: string, data: Partial) {
     // Map camelCase input to snake_case database columns
     const updateData: any = {};
 
-    if (data.firstName !== undefined) updateData.first_name = data.firstName;
-    if (data.lastName !== undefined) updateData.last_name = data.lastName;
-    if (data.displayName !== undefined) updateData.username = data.displayName;
-    if (data.avatarUrl !== undefined) updateData.avatar_url = data.avatarUrl;
-    if (data.legalSpecialties !== undefined) updateData.practice_areas = data.legalSpecialties;
-    if (data.preferences !== undefined) updateData.metadata = data.preferences;
+    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName !== undefined) updateData.first_name = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName;
+    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName !== undefined) updateData.last_name = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName;
+    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).displayName !== undefined) updateData.username = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).displayName;
+    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).avatarUrl !== undefined) updateData.avatar_url = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).avatarUrl;
+    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).legalSpecialties !== undefined) updateData.practice_areas = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).legalSpecialties;
+    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).preferences !== undefined) updateData.metadata = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).preferences;
 
     // Add timestamp
     updateData.updated_at = new Date();
@@ -360,15 +350,15 @@ export async function getUser(event: RequestEvent): Promise<any> {
 
   const result = await lucia.validateSession(sessionId);
 
-  if (result.session && result.session.fresh) {
-    const sessionCookie = lucia.createSessionCookie(result.session.id);
+  if ((result as { session?: any }).session && (result as { session?: any }).session.fresh) {
+    const sessionCookie = lucia.createSessionCookie((result as { session?: any }).session.id);
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       ...sessionCookie.attributes,
       path: '/'
     });
   }
 
-  if (!result.session) {
+  if (!(result as { session?: any }).session) {
     const sessionCookie = lucia.createBlankSessionCookie();
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       ...sessionCookie.attributes,

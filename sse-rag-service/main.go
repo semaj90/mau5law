@@ -23,7 +23,7 @@ import (
 
 const (
 	ServicePort       = ":9003"
-	PostgreSQLURL     = "postgres://legal_admin:123456@localhost:5432/legal_ai_db"
+	PostgreSQLURL     = "postgres://legal_admin:123456@localhost:5433/legal_ai_db"
 	OllamaBaseURL     = "http://localhost:11434"
 	EmbeddingModel    = "nomic-embed-text"
 	GenerationModel   = "gemma3-legal:latest"

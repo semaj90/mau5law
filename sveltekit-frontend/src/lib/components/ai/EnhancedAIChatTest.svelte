@@ -42,23 +42,15 @@
 
   // State using Svelte 5 runes
   let messages = $state<
-    Array<{
-      id: string;
-      role: 'user' | 'assistant';
-      content: string;
-      timestamp: Date;
-      loading?: boolean;
-      error?: boolean;
-      metadata?: unknown;
-    }>
+    Array()
   >([]);
 
   let currentMessage = $state('');
   let isLoading = $state(false);
   let isConnected = $state(false);
   let connectionStatus = $state<'checking' | 'connected' | 'error'>('checking');
-  let messagesContainer = $state<HTMLElement>();
-  let inputElement = $state<HTMLInputElement>();
+  let messagesContainer: HTMLElement = $state(undefined as any);
+  let inputElement: HTMLInputElement = $state(undefined as any);
 
   // Check system status on mount
   onMount(async () => {
@@ -340,9 +332,9 @@
 <Dialog.Root bind:open>
   <Dialog.Trigger>
     <Button variant="outline" class="gap-2 bits-btn bits-btn">
-      <MessageCircle class="h-4 w-4" />
+<MessageCircle class="h-4 w-4" />
       {title}
-    </button>
+</Button>
   </Dialog.Trigger>
 
   <Dialog.Portal>
@@ -389,15 +381,17 @@
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={downloadConversation}
+            on:click={downloadConversation}
             disabled={messages.length <= 1}>
-            <Download class="h-4 w-4" />
-          </button>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages} disabled={messages.length <= 1}>
-            <Trash2 class="h-4 w-4" />
-          </button>
+<Download class="h-4 w-4" />
+</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={clearMessages} disabled={messages.length <= 1}>
+<Trash2 class="h-4 w-4" />
+</Button>
           <Dialog.Close>
-            <Button class="bits-btn" variant="ghost" size="sm">✕</button>
+            <Button class="bits-btn" variant="ghost" size="sm">
+✕
+</Button>
           </Dialog.Close>
         </div>
       </div>
@@ -414,12 +408,12 @@
                 </div>
               {/if}
 
-              <NesCard
+              <div
                 class="max-w-[80%] p-3 {message.role === 'user'
                   ? 'bg-blue-600 text-white'
                   : message.error
                     ? 'bg-red-50 border-red-200'
-                    : 'bg-gray-50'}">
+                    : 'bg-gray-50'} nes-container">
                 <div class="text-sm whitespace-pre-wrap">
                   {message.content}
                 </div>
@@ -439,7 +433,7 @@
                 <div class="text-xs opacity-70 mt-1">
                   {message.timestamp.toLocaleTimeString()}
                 </div>
-              </NesCard>
+              </div>
 
               {#if message.role === 'user'}
                 <div
@@ -463,15 +457,15 @@
             class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             keydown={handleKeydown} />
           <Button
-            onclick={sendMessage}
+            on:click={sendMessage}
             disabled={!currentMessage.trim() || !isConnected || isLoading}
             class="px-4 bits-btn bits-btn">
-            {#if isLoading}
+{#if isLoading}
               <Loader2 class="h-4 w-4 animate-spin" />
             {:else}
               <Send class="h-4 w-4" />
             {/if}
-          </button>
+</Button>
         </div>
 
         <div class="flex items-center justify-between mt-2">

@@ -5,7 +5,7 @@
  */
 
 import { createMachine, assign, fromPromise } from 'xstate';
-import { enhancedLegalCaseMachine, type EnhancedLegalCaseContext, type EnhancedLegalCaseEvent } from './enhanced-legal-case-machine';
+import { enhancedLegalCaseMachine, type EnhancedLegalCaseContext, type EnhancedLegalCaseEvent } from './enhanced-legal-case-machine.js';
 
 export interface CaseMachineOptions {
   caseId: string;

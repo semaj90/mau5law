@@ -3,7 +3,7 @@
  * Tests the integration between SvelteKit QUIC endpoints and Go microservices
  */
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { ensureError } from '$lib/utils/ensure-error';
 
 // Mock Go service manager since the actual service doesn't exist

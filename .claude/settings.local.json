@@ -211,7 +211,17 @@
       "Bash(../caddy.exe run --config Caddyfile.development --adapter caddyfile)",
       "Bash(../caddy.exe run --config Caddyfile.minimal --adapter caddyfile)",
       "Bash(REDIS_PASSWORD=\"redis\" npm run dev:quic:simple)",
-      "Bash(REDIS_PASSWORD=\"redis\" PORT=5174 npm run dev:quic:simple)"
+      "Bash(REDIS_PASSWORD=\"redis\" PORT=5174 npm run dev:quic:simple)",
+      "Bash(./fix-proto-deps.sh:*)",
+      "Bash(./test-all-components.sh:*)",
+      "Bash(tee:*)",
+      "Bash(on:change=)",
+      "Bash(on:submit=)",
+      "Bash(on:keydown=)",
+      "Bash(on:input=)",
+      "Bash(on:drop=)",
+      "Bash(on:mouseleave=)",
+      "Bash(ondrop=)"
     ],
     "deny": [],
     "ask": []

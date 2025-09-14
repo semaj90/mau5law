@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Test Full Re-embed + Re-rank Loop
 // End-to-end testing of document changes, re-embedding, and re-ranking
@@ -71,8 +71,8 @@ class UpdateLoopTester {
         timestamp: new Date().toISOString(),
         scenario: scenarioName || 'all',
         status: 'running',
-        steps: {},
-        performance: {},
+        steps: Record<string, any>,
+        performance: Record<string, any>,
         errors: [],
       };
 

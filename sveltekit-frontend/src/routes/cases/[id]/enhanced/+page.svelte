@@ -161,7 +161,7 @@
 							<h3 class="text-xl font-semibold text-gray-900">AI Analysis Results</h3>
 							<button 
 								class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-								onclick={startNewAnalysis}
+								on:click={startNewAnalysis}
 								disabled={isAnalyzing}
 							>
 								{isAnalyzing ? 'Analyzing...' : 'Rerun Analysis'}

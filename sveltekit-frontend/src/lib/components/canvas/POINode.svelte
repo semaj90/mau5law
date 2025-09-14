@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     tags?: string[];
     createdBy?: string;
   }
-  let { poi = $bindable() } = $props(); // POIData;
+  let { poi = $bindable()  }: { poi = $bindable() : any } = $props(); // POIData;
 
   let nodeElement: HTMLElement;
   let isEditing = $state(false);
@@ -159,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Handle dragging
-  function handleDrag(event: CustomEvent<{ x: number; y: number }>) {
+  function handleDrag(event: CustomEvent) {
     posX = event.detail.x;
     posY = event.detail.y;
 
@@ -300,11 +300,11 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <div class="nier-footer flex justify-between items-center mt-4 gap-2">
           {#if isEditing}
-            <button class="nier-btn nier-btn-accent" onclick={saveChanges}><Save class="w-4 h-4" /> Save</button>
-            <button class="nier-btn nier-nes-btn" onclick={cancelEditing}><X class="w-4 h-4" /> Cancel</button>
+            <button class="nier-btn nier-btn-accent" on:click={saveChanges}><Save class="w-4 h-4" /> Save</button>
+            <button class="nier-btn nier-nes-btn" on:click={cancelEditing}><X class="w-4 h-4" /> Cancel</button>
           {:else}
-            <button class="nier-btn nier-nes-btn" onclick={startEditing}><Edit class="w-4 h-4" /> Edit</button>
-            <button class="nier-btn nier-nes-btn" onclick={summarizePOI}><Sparkles class="w-4 h-4" /> Summarize</button>
+            <button class="nier-btn nier-nes-btn" on:click={startEditing}><Edit class="w-4 h-4" /> Edit</button>
+            <button class="nier-btn nier-nes-btn" on:click={summarizePOI}><Sparkles class="w-4 h-4" /> Summarize</button>
           {/if}
         </div>
       </div>

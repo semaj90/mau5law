@@ -5,7 +5,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { rtxSystemMonitor, type RTXSystemStatus, type PipelineMetrics } from '$lib/services/rtx-system-monitor';
 
 // Pipeline configuration matching your architecture
@@ -323,12 +323,12 @@ async function handleProcessRequest(request: Request) {
         status: 'completed',
         rtx3060Ti: 'accelerated',
         result: {
-          originalSizeBytes: result.originalSize,
-          compressedSizeBytes: result.compressedSize,
-          compressionRatio: `${Math.round(result.compressionRatio * 10) / 10}:1`,
-          processingTimeMs: result.processingTime,
-          semanticFidelityPercent: Math.round(result.semanticFidelity * 100),
-          tensorCoreUtilization: `${result.tensorCoreUtilization}%`
+          originalSizeBytes: (result as { originalSize?: any; compressedSize?: any; compressionRatio?: any; processingTime?: any; semanticFidelity?: any; tensorCoreUtilization?: any }).originalSize,
+          compressedSizeBytes: (result as { originalSize?: any; compressedSize?: any; compressionRatio?: any; processingTime?: any; semanticFidelity?: any; tensorCoreUtilization?: any }).compressedSize,
+          compressionRatio: `${Math.round((result as { originalSize?: any; compressedSize?: any; compressionRatio?: any; processingTime?: any; semanticFidelity?: any; tensorCoreUtilization?: any }).compressionRatio * 10) / 10}:1`,
+          processingTimeMs: (result as { originalSize?: any; compressedSize?: any; compressionRatio?: any; processingTime?: any; semanticFidelity?: any; tensorCoreUtilization?: any }).processingTime,
+          semanticFidelityPercent: Math.round((result as { originalSize?: any; compressedSize?: any; compressionRatio?: any; processingTime?: any; semanticFidelity?: any; tensorCoreUtilization?: any }).semanticFidelity * 100),
+          tensorCoreUtilization: `${(result as { originalSize?: any; compressedSize?: any; compressionRatio?: any; processingTime?: any; semanticFidelity?: any; tensorCoreUtilization?: any }).tensorCoreUtilization}%`
         }
       },
       pipeline: {
@@ -464,7 +464,7 @@ async function testPipelineComponents(): Promise<Record<string, string>> {
       const response = await fetch(`http://localhost:${PIPELINE_CONFIG.goMicroservicePort}/health`, {
         signal: AbortSignal.timeout(3000)
       });
-      health.goMicroservice = response.ok ? '✅ Operational' : '⚠️ Degraded';
+      health.goMicroservice = (response as { ok?: any }).ok ? '✅ Operational' : '⚠️ Degraded';
     } catch {
       health.goMicroservice = '❌ Unavailable';
     }
@@ -474,7 +474,7 @@ async function testPipelineComponents(): Promise<Record<string, string>> {
       const response = await fetch(`http://localhost:${PIPELINE_CONFIG.cudaWorkerPort}`, {
         signal: AbortSignal.timeout(3000)
       });
-      health.cudaWorker = response.ok ? '✅ Operational' : '⚠️ Degraded';
+      health.cudaWorker = (response as { ok?: any }).ok ? '✅ Operational' : '⚠️ Degraded';
     } catch {
       health.cudaWorker = '❌ Unavailable';
     }

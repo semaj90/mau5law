@@ -25,12 +25,7 @@ class MultidimensionalRoutingMatrix {
   private matrix: Map<string, Route[]> = new Map();
   private isInitialized = false;
   private efficiencyScore = 0.92; // Mock efficiency score
-  private routingHistory: Array<{
-    task: string;
-    route: Route;
-    timestamp: number;
-    success: boolean;
-  }> = [];
+  private routingHistory: Array< = [];
 
   constructor() {
     console.log("MultidimensionalRoutingMatrix (server-only) instance created.");
@@ -330,12 +325,7 @@ class MultidimensionalRoutingMatrix {
   /**
    * Health check - verify all routes are accessible
    */
-  async healthCheck(): Promise<{
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    availableRoutes: number;
-    totalRoutes: number;
-    issues: string[];
-  }> {
+  async healthCheck(): Promise<any> {
     let availableRoutes = 0;
     let totalRoutes = 0;
     const issues: string[] = [];

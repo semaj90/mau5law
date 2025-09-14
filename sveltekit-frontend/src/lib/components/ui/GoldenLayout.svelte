@@ -35,12 +35,10 @@ https://svelte.dev/e/js_parse_error -->
 
   // Calculate flex values based on ratio
   let calculatedMainFlex = $state<number;
-  let calculatedSidebarFlex = $state<number;
-
-  // TODO: Convert to $derived: {
+  let calculatedSidebarFlex = $state<number// TODO: Convert to $derived: {
     switch (ratio) {
       case "golden":
-        calculatedMainFlex >(1.618)
+        calculatedMainFlex | null>(null)(1.618)
         calculatedSidebarFlex >(1);
         break;
       case "thirds":
@@ -92,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if collapsible}
         <button
           class="container mx-auto px-4"
-          onclick={() => toggleSidebar()}
+          on:click={() => toggleSidebar()}
           title={collapsed
             ? "Expand sidebar (Ctrl+\\)"
             : "Collapse sidebar (Ctrl+\\)"}
@@ -125,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if collapsible}
         <button
           class="container mx-auto px-4"
-          onclick={() => toggleSidebar()}
+          on:click={() => toggleSidebar()}
           title={collapsed
             ? "Expand sidebar (Ctrl+\\)"
             : "Collapse sidebar (Ctrl+\\)"}

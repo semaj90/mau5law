@@ -25,14 +25,12 @@ https://svelte.dev/e/expected_token -->
   // Component state
   let webgpuSupported = $state(false);
   let isProcessing = $state(false);
-  let results = $state<{
+  let results: {
     original?: { type: string; size: number; };
     normalized?: { type: string; size: number; };
     fp16?: ArrayConversionResult;
     int8?: ArrayConversionResult;
-    memoryAnalysis?: Array<{ precision: string; sizeBytes: number; compressionRatio: number; }>;
-    webgpuTest?: any;
-  }>({});
+    memoryAnalysis?: Array({});
 
   // Sample data demonstrating the mismatch problem
   const sampleData = {
@@ -156,15 +154,15 @@ https://svelte.dev/e/expected_token -->
   <!-- Data Type Testing Buttons -->
   <div.Root>
     <div.Header>
-      <div.Title>🧪 Test Different Array Types</Card.Title>
+      <div.Title>🧪 Test Different Array Types</div.Title>
       <div.Description>
         Demonstrate how the utility handles various input formats that commonly cause WebGPU mismatches
-      </Card.Description>
-    </Card.Header>
+      </div.Description>
+    </div.Header>
     <div.Content>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <button class="nes-btn" 
-          onclick={() => demonstrateArrayHandling('arrayBuffer')}
+          on:click={() => demonstrateArrayHandling('arrayBuffer')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
         >
@@ -174,7 +172,7 @@ https://svelte.dev/e/expected_token -->
         </button>
         
         <button class="nes-btn" 
-          onclick={() => demonstrateArrayHandling('float32Array')}
+          on:click={() => demonstrateArrayHandling('float32Array')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
         >
@@ -184,7 +182,7 @@ https://svelte.dev/e/expected_token -->
         </button>
         
         <button class="nes-btn" 
-          onclick={() => demonstrateArrayHandling('numberArray')}
+          on:click={() => demonstrateArrayHandling('numberArray')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
         >
@@ -194,7 +192,7 @@ https://svelte.dev/e/expected_token -->
         </button>
         
         <button class="nes-btn" 
-          onclick={() => demonstrateArrayHandling('mixedPrecision')}
+          on:click={() => demonstrateArrayHandling('mixedPrecision')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
         >
@@ -203,28 +201,28 @@ https://svelte.dev/e/expected_token -->
           <span class="text-xs text-gray-500">Double precision</span>
         </button>
       </div>
-    </Card.Content>
-  </Card.Root>
+    </div.Content>
+  </div.Root>
 
   <!-- WebGPU Integration Test -->
   {#if webgpuSupported}
     <div.Root>
       <div.Header>
-        <div.Title>⚡ WebGPU Integration Test</Card.Title>
+        <div.Title>⚡ WebGPU Integration Test</div.Title>
         <div.Description>
           Test the array utilities with the actual WebGPU RAG service
-        </Card.Description>
-      </Card.Header>
+        </div.Description>
+      </div.Header>
       <div.Content>
         <Button 
-          onclick={testWebGPUIntegration}
+          on:click={testWebGPUIntegration}
           disabled={isProcessing}
           class="w-full"
         >
-          {isProcessing ? 'Testing...' : '🚀 Test WebGPU RAG Service'}
-        </button>
-      </Card.Content>
-    </Card.Root>
+{isProcessing ? 'Testing...' : '🚀 Test WebGPU RAG Service'}
+
+      </div.Content>
+    </div.Root>
   {/if}
 
   <!-- Results Display -->
@@ -234,8 +232,8 @@ https://svelte.dev/e/expected_token -->
       {#if results.original && results.normalized}
         <div.Root>
           <div.Header>
-            <div.Title>🔧 Type Normalization</Card.Title>
-          </Card.Header>
+            <div.Title>🔧 Type Normalization</div.Title>
+          </div.Header>
           <div.Content class="space-y-4">
             <div class="flex justify-between items-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
               <div>
@@ -260,16 +258,16 @@ https://svelte.dev/e/expected_token -->
                 <div class="font-mono text-sm">{(results.normalized.size / 1024).toFixed(1)}KB</div>
               </div>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </div.Content>
+        </div.Root>
       {/if}
 
       <!-- Quantization Results -->
       {#if results.fp16 && results.int8}
         <div.Root>
           <div.Header>
-            <div.Title>🗜️ Quantization Results</Card.Title>
-          </Card.Header>
+            <div.Title>🗜️ Quantization Results</div.Title>
+          </div.Header>
           <div.Content class="space-y-4">
             <div class="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <div>
@@ -292,16 +290,16 @@ https://svelte.dev/e/expected_token -->
                 <div class="text-xs text-purple-600">{(results.int8.compressedSize / 1024).toFixed(1)}KB</div>
               </div>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </div.Content>
+        </div.Root>
       {/if}
 
       <!-- Memory Analysis -->
       {#if results.memoryAnalysis}
         <div.Root class="lg:col-span-2">
           <div.Header>
-            <div.Title>📊 Memory Usage Analysis</Card.Title>
-          </Card.Header>
+            <div.Title>📊 Memory Usage Analysis</div.Title>
+          </div.Header>
           <div.Content>
             <div class="grid grid-cols-4 gap-4">
               {#each results.memoryAnalysis as analysis}
@@ -318,16 +316,16 @@ https://svelte.dev/e/expected_token -->
                 </div>
               {/each}
             </div>
-          </Card.Content>
-        </Card.Root>
+          </div.Content>
+        </div.Root>
       {/if}
 
       <!-- WebGPU Test Results -->
       {#if results.webgpuTest}
         <div.Root class="lg:col-span-2">
           <div.Header>
-            <div.Title>🚀 WebGPU Service Results</Card.Title>
-          </Card.Header>
+            <div.Title>🚀 WebGPU Service Results</div.Title>
+          </div.Header>
           <div.Content>
             <div class="grid grid-cols-2 gap-4 text-sm">
               <div>
@@ -358,8 +356,8 @@ https://svelte.dev/e/expected_token -->
                 </div>
               </div>
             {/if}
-          </Card.Content>
-        </Card.Root>
+          </div.Content>
+        </div.Root>
       {/if}
     </div>
   {/if}
@@ -367,8 +365,8 @@ https://svelte.dev/e/expected_token -->
   <!-- Usage Guide -->
   <div.Root class="bg-gray-50 dark:bg-gray-800">
     <div.Header>
-      <div.Title>💡 Integration Guide</Card.Title>
-    </Card.Header>
+      <div.Title>💡 Integration Guide</div.Title>
+    </div.Header>
     <div.Content class="text-sm space-y-3">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -399,8 +397,8 @@ https://svelte.dev/e/expected_token -->
           const {{ buffer }} = createWebGPUBuffer(device, safeArray, usage, {{ precision: 'fp16' }});
         </code>
       </div>
-    </Card.Content>
-  </Card.Root>
+    </div.Content>
+  </div.Root>
 </div>
 
 <style>

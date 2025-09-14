@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { db, sql, pool } from "./drizzle";
+import { db, sql, pool } from './drizzle.js';
 export { db, sql, pool };
 
 // Database type detection
 export const isPostgreSQL = true; // Since we're using PostgreSQL with pgvector
 
 // Re-export all database tables and relations from schema
-export * from "./schema-postgres";
+export * from './schema-postgres.js';
 
 // Explicitly export tables to ensure they're available
 import {
@@ -17,7 +17,7 @@ import {
   legalDocuments,
   caseActivities,
   statutes,
-} from "./schema-postgres";
+} from './schema-postgres.js';
 
 export {
   users,
@@ -68,7 +68,7 @@ export async function healthCheck() {
       db.select().from(cases).limit(1),
     ]);
     
-    const failedTests = tableTests.filter((result: any) => result.status === 'rejected');
+    const failedTests = tableTests.filter((result: any) => (result as { status?: any }).status === 'rejected');
     
     if (failedTests.length > 0) {
       return {

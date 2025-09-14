@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { glyphDiffusionService } from '$lib/services/glyph-diffusion-service.js';
 import { embeddingService } from '$lib/services/embedding-service.js';
 
@@ -52,12 +52,12 @@ export const GET: RequestHandler = async ({ url }) => {
       data: {
         query: query,
         results: filteredResults.map(result => ({
-          id: result.id,
-          manifest: result.manifest,
-          created_at: result.created_at,
-          access_count: result.access_count,
-          style: result.manifest?.metadata?.style,
-          prompt: result.manifest?.metadata?.prompt
+          id: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).id,
+          manifest: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest,
+          created_at: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).created_at,
+          access_count: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).access_count,
+          style: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest?.metadata?.style,
+          prompt: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest?.metadata?.prompt
         })),
         count: filteredResults.length,
         search_stats: {
@@ -102,12 +102,12 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       data: {
         results: filteredResults.map(result => ({
-          id: result.id,
-          manifest: result.manifest,
-          created_at: result.created_at,
-          access_count: result.access_count,
-          style: result.manifest?.metadata?.style,
-          prompt: result.manifest?.metadata?.prompt
+          id: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).id,
+          manifest: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest,
+          created_at: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).created_at,
+          access_count: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).access_count,
+          style: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest?.metadata?.style,
+          prompt: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest?.metadata?.prompt
         })),
         count: filteredResults.length,
         search_stats: {

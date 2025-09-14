@@ -157,15 +157,15 @@ async function routeToWebGPU(message: string) {
       body: JSON.stringify({ prompt: message })
     });
 
-    if (!response.ok) {
-      throw new Error(`WebGPU service error: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`WebGPU service error: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; status?: any; json?: any }).json();
     return {
-      response: result.response || 'WebGPU processing completed',
-      cacheHit: result.cacheHit || false,
-      tokensGenerated: result.tokensGenerated || 50
+      response: (result as { response?: any; cacheHit?: any; tokensGenerated?: any; eval_count?: any; embedding?: any }).response || 'WebGPU processing completed',
+      cacheHit: (result as { response?: any; cacheHit?: any; tokensGenerated?: any; eval_count?: any; embedding?: any }).cacheHit || false,
+      tokensGenerated: (result as { response?: any; cacheHit?: any; tokensGenerated?: any; eval_count?: any; embedding?: any }).tokensGenerated || 50
     };
   } catch (error) {
     return {
@@ -188,14 +188,14 @@ async function routeToOllama(message: string) {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Ollama service error: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Ollama service error: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; status?: any; json?: any }).json();
     return {
-      response: result.response || 'Ollama processing completed',
-      tokensGenerated: result.eval_count || 100,
+      response: (result as { response?: any; cacheHit?: any; tokensGenerated?: any; eval_count?: any; embedding?: any }).response || 'Ollama processing completed',
+      tokensGenerated: (result as { response?: any; cacheHit?: any; tokensGenerated?: any; eval_count?: any; embedding?: any }).eval_count || 100,
       cacheHit: false
     };
   } catch (error) {
@@ -219,16 +219,16 @@ async function routeToVLLM(message: string) {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`vLLM integration error: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`vLLM integration error: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; status?: any; json?: any }).json();
     return {
-      response: result.response || 'vLLM CUDA processing completed',
-      tokensGenerated: result.tokensGenerated || 150,
-      cacheHit: result.cacheHit || false,
-      embedding: result.embedding
+      response: (result as { response?: any; cacheHit?: any; tokensGenerated?: any; eval_count?: any; embedding?: any }).response || 'vLLM CUDA processing completed',
+      tokensGenerated: (result as { response?: any; cacheHit?: any; tokensGenerated?: any; eval_count?: any; embedding?: any }).tokensGenerated || 150,
+      cacheHit: (result as { response?: any; cacheHit?: any; tokensGenerated?: any; eval_count?: any; embedding?: any }).cacheHit || false,
+      embedding: (result as { response?: any; cacheHit?: any; tokensGenerated?: any; eval_count?: any; embedding?: any }).embedding
     };
   } catch (error) {
     return {

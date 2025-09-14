@@ -1,4 +1,4 @@
-import type { User } from './user';
+import type { User } from './user.js';
 
 
 // Evidence AI Analysis Type
@@ -731,26 +731,9 @@ export interface ClusterMetrics {
     port: number;
     timestamp: string;
   };
-  events: Array<{
-    type: string;
-    message: string;
-    timestamp: string;
-    metadata?: Record<string, any>;
-  }>;
-  workers: Array<{
-    type: string;
-    pid?: number;
-    port: number;
-    uptimeSec: number;
-    status: 'running' | 'starting' | 'error' | 'stopped';
-  }>;
-  deferredQueue: Array<{
-    type: string;
-    attempts: number;
-    lastAttempt: string;
-    reason?: string;
-  }>;
-}
+  events: Array<any>;
+  workers: Array<any>;
+  deferredQueue: Array<any>
 
 // Performance Metrics Interface
 export interface PerformanceMetrics {
@@ -787,13 +770,7 @@ export interface EnhancedRAGRequest extends VectorSearchRequest {
 }
 
 export interface EnhancedRAGResponse extends APIResponse {
-  results: Array<{
-    content: string;
-    score: number;
-    metadata: Record<string, any>;
-    source?: string;
-    chunkIndex?: number;
-  }>;
+  results: Array<any>;
   answer?: string;
   totalResults: number;
   processingTime: number;
@@ -904,14 +881,7 @@ export interface ModuleRequest {
 }
 
 export interface ModuleResponse extends APIResponse {
-  modules?: Array<{
-    id: string;
-    name: string;
-    version: string;
-    status: 'loaded' | 'unloaded' | 'loading' | 'error';
-    capabilities: string[];
-    metadata?: Record<string, any>;
-  }>;
+  modules?: Array<any>;
   activeModule?: string;
   switchTime?: number;
   memoryUsage?: string;
@@ -929,12 +899,7 @@ export interface RecommendationRequest {
 }
 
 export interface RecommendationResponse extends APIResponse {
-  recommendations?: Array<{
-    text: string;
-    type: 'suggestion' | 'correction' | 'continuation' | 'related';
-    confidence: number;
-    metadata?: Record<string, any>;
-  }>;
+  recommendations?: Array<any>;
   context?: string;
   lastActivity?: string;
   corrected?: string;
@@ -969,14 +934,7 @@ export interface SystemHealthResponse extends APIResponse {
 
 // Service Discovery with Protocol Information
 export interface ServiceDiscoveryResponse extends APIResponse {
-  services: Array<{
-    name: string;
-    config: ProtocolEndpoint | DatabaseEndpoint | MessagingEndpoint | FrontendEndpoint;
-    protocols: string[];
-    tier: ServiceTier | 'DATABASE' | 'MESSAGING' | 'FRONTEND';
-    port?: number;
-    health?: string;
-  }>;
+  services: Array<any>;
   total: number;
   active: number;
   experimental: number;
@@ -1019,12 +977,7 @@ export interface NATSSubscriptionRequest {
 }
 
 export interface NATSSubscriptionResponse extends APIResponse {
-  subscriptions: Array<{
-    subject: string;
-    queueGroup?: string;
-    active: boolean;
-    messageCount: number;
-  }>;
+  subscriptions: Array<any>;
   connectionStatus: 'connected' | 'disconnected' | 'reconnecting';
 }
 
@@ -1066,12 +1019,7 @@ export interface ProtocolRouter {
 
   getServiceConfig<T extends keyof ServiceEndpoints>(service: T): ServiceEndpoints[T];
 
-  getAllServices(): Array<{
-    name: keyof ServiceEndpoints;
-    config: ServiceEndpoints[keyof ServiceEndpoints];
-    protocols: string[];
-  }>;
-}
+  getAllServices(): Array<any>
 
 // Utility Type for API Route Handlers with Enhanced Context
 export type EnhancedAPIHandler<TRequest = any, TResponse = APIResponse> = (
@@ -1122,4 +1070,4 @@ export interface LegalDocument {
 }
 
 // Export User type for components (type-only for isolatedModules)
-export type { User } from './user';
+export type { User } from './user.js';

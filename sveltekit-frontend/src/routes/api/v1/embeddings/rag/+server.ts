@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service';
 
 interface RAGRequest {
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: context.metadata,
       },
       options: {
-        model: ragRequest.options?.model || 'gemma3-legal:latest',
+        model: ragRequest.options??.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal:latest',
         contextLimit: ragRequest.options?.contextLimit || 5,
         temperature: ragRequest.options?.temperature || 0.7,
         threshold: ragRequest.options?.threshold || 0.4,

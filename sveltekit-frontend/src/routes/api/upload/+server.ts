@@ -3,9 +3,9 @@ import { randomUUID } from "crypto";
 import { existsSync, createReadStream } from "fs";
 import { mkdir, writeFile, readFile } from "fs/promises";
 import * as path from "path";
-import { db } from '../../../lib/server/db/index';
-import { evidence } from '../../../lib/server/db/schema-postgres';
-import type { RequestHandler } from './$types';
+import { db } from '../../../lib/server/db/index.js';
+import { evidence } from '../../../lib/server/db/schema-postgres.js';
+import type { RequestHandler } from './$types.js';
 
 
 // Ensure upload directory exists

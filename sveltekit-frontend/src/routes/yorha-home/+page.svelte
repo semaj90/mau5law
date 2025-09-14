@@ -67,8 +67,8 @@
         body: JSON.stringify({ query, context: 'legal_analysis' })
       });
 
-      if (response.ok) {
-  ragResult = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+  ragResult = await (response as { ok?: any; json?: any }).json();
   systemData.aiQueries += 1;
   activeSection = 'rag-results';
       }
@@ -86,15 +86,15 @@
     try {
       const response = await fetch(`/api/yorha/legal-data?search=${encodeURIComponent(searchTerm)}&limit=10`);
 
-      if (response.ok) {
-        const data = await response.json();
-        const results = Array.isArray(data?.results) ? data.results : [];
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        const results = Array.isArray(data?.results) ? (data as { results?: any }).results : [];
   searchResults = results.map((item: any, index: number) => ({
-          id: (item && (item.id ?? item._id)) || index + 1,
-          title: (item && (item.title ?? item.name)) || `Document ${index + 1}`,
-          type: (item && item.type) || 'Legal Document',
-          relevance: Math.round(((item && (item.relevance ?? item.score)) ?? Math.random()) * 100),
-          status: (item && item.status) || 'active',
+          id: (item && ((item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).id ?? (item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any })._id)) || index + 1,
+          title: (item && ((item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).title ?? (item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).name)) || `Document ${index + 1}`,
+          type: (item && (item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).type) || 'Legal Document',
+          relevance: Math.round(((item && ((item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).relevance ?? (item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).score)) ?? Math.random()) * 100),
+          status: (item && (item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).status) || 'active',
           metadata: item
         }));
   activeSection = 'search-results';
@@ -119,10 +119,10 @@
       <h1>YoRHa Command Interface</h1>
     </div>
     <div class="header-right">
-      <button class="yorha-btn-icon" onclick={() => navigateTo('/settings')}>
+      <button class="yorha-btn-icon" on:click={() => navigateTo('/settings')}>
         <Settings />
       </button>
-      <button class="yorha-btn-icon" onclick={() => navigateTo('/profile')}>
+      <button class="yorha-btn-icon" on:click={() => navigateTo('/profile')}>
         <Gamepad2 />
       </button>
     </div>
@@ -132,31 +132,31 @@
     <nav>
       <ul>
         <li>
-          <button class="yorha-btn-sidebar" class:active={activeSection === 'dashboard'} onclick={() => (activeSection = 'dashboard')}>
+          <button class="yorha-btn-sidebar" class:active={activeSection === 'dashboard'} on:click={() => (activeSection = 'dashboard')}>
             <Monitor />
             <span>Dashboard</span>
           </button>
         </li>
         <li>
-          <button class="yorha-btn-sidebar" class:active={activeSection === 'rag-results'} onclick={() => performRAGQuery()}>
+          <button class="yorha-btn-sidebar" class:active={activeSection === 'rag-results'} on:click={() => performRAGQuery()}>
             <Bot />
             <span>RAG Analysis</span>
           </button>
         </li>
         <li>
-          <button class="yorha-btn-sidebar" class:active={activeSection === 'search-results'} onclick={() => performSemanticSearch()}>
+          <button class="yorha-btn-sidebar" class:active={activeSection === 'search-results'} on:click={() => performSemanticSearch()}>
             <Search />
             <span>Semantic Search</span>
           </button>
         </li>
         <li>
-          <button class="yorha-btn-sidebar" onclick={() => navigateTo('/documents')}>
+          <button class="yorha-btn-sidebar" on:click={() => navigateTo('/documents')}>
             <FileText />
             <span>Documents</span>
           </button>
         </li>
         <li>
-          <button class="yorha-btn-sidebar" onclick={() => navigateTo('/yorha-terminal')}>
+          <button class="yorha-btn-sidebar" on:click={() => navigateTo('/yorha-terminal')}>
             <Terminal />
             <span>Terminal</span>
           </button>

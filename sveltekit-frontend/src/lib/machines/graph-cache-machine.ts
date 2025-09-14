@@ -60,7 +60,7 @@ export const graphCacheMachine = createMachine({
 
   context: {
     query: null,
-    params: {},
+    params: Record<string, any>,
     result: null,
     source: 'indexeddb_cache',
     isStale: false,
@@ -286,7 +286,7 @@ export const graphCacheMachine = createMachine({
 
     setQuery: assign({
       query: ({ event }) => event.type === 'QUERY' ? event.query : null,
-      params: ({ event }) => event.type === 'QUERY' ? (event.params || {}) : {},
+      params: ({ event }) => event.type === 'QUERY' ? (event.params || {}) : Record<string, any>,
       queryHash: ({ event }) => {
         if (event.type === 'QUERY') {
           // Simple hash function

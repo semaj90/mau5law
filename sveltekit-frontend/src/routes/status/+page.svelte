@@ -19,7 +19,7 @@
 
   // System status state
   let systemHealth = $state<any>(null);
-  let integrationTests = $state<Record<string, { status: 'success' | 'warning' | 'error'; message: string; details?: any }>>({});
+  let integrationTests = $state<Record<string, { status: 'success' | 'warning' | 'error'; message: stringdetails?: any } | null>(null)()>({});
   let isLoading = $state(true);
   let lastUpdated = $state<string>('');
 
@@ -129,15 +129,15 @@
   async function testPostgreSQLIntegration() {
     try {
       const response = await fetch('/api/v1/health');
-      if (response.ok) {
-        const data = await response.json();
-        const pgStatus = data.services?.databases?.postgres?.status;
+      if ((response as { ok?: any; json?: any; status?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; status?: any }).json();
+        const pgStatus = (data as { services?: any }).services?.databases?.postgres?.status;
 
         if (pgStatus === 'healthy') {
           integrationTests['postgresql'] = {
             status: 'success',
             message: 'PostgreSQL + pgvector connected and healthy',
-            details: { host: data.services.databases.postgres.host, port: data.services.databases.postgres.port }
+            details: { host: (data as { services?: any }).services.databases.postgres.host, port: (data as { services?: any }).services.databases.postgres.port }
           };
         } else {
           integrationTests['postgresql'] = {
@@ -171,7 +171,7 @@
       for (const endpoint of endpoints) {
         try {
           const response = await fetch(endpoint, { method: 'HEAD' });
-          if (response.status !== 404) successCount++;
+          if ((response as { ok?: any; json?: any; status?: any }).status !== 404) successCount++;
         } catch (e) {
           // Endpoint might not exist yet, that's ok
         }
@@ -233,7 +233,7 @@
       <div class="flex items-center gap-4">
         <span class="text-gray-400">Last updated: {lastUpdated}</span>
         <Button.Root
-          onclick={loadSystemStatus}
+          on:click={loadSystemStatus}
           disabled={isLoading}
           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg bits-btn bits-btn"
         >
@@ -269,27 +269,27 @@
     <h2 class="text-2xl font-bold text-white mb-6">Integration Test Results</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {#each Object.entries(integrationTests) as [testName, result]}
-        <NesCard class="bg-gray-800 border-gray-700">
+        <div class="bg-gray-800 border-gray-700 nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center justify-between text-white">
+            <h3 class="nes-text is-primary flex items-center justify-between text-white">
               <span class="capitalize">{testName.replace('-', ' ')}</span>
-              <span class="text-xl">{getStatusIcon(result.status)}</span>
+              <span class="text-xl">{getStatusIcon((result as { status?: any; message?: any; details?: any }).status)}</span>
             </h3>
           </div>
           <div class="yorha-panel-content">
-            <p class="text-sm {getStatusColor(result.status)} mb-2">
-              {result.message}
+            <p class="text-sm {getStatusColor((result as { status?: any; message?: any; details?: any }).status)} mb-2">
+              {(result as { status?: any; message?: any; details?: any }).message}
             </p>
-            {#if result.details}
+            {#if (result as { status?: any; message?: any; details?: any }).details}
               <details class="text-xs text-gray-400">
                 <summary class="cursor-pointer">Details</summary>
                 <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">
-{JSON.stringify(result.details, null, 2)}
+{JSON.stringify((result as { status?: any; message?: any; details?: any }).details, null, 2)}
                 </pre>
               </details>
             {/if}
           </div>
-        </NesCard>
+        </div>
       {/each}
     </div>
   </section>
@@ -300,9 +300,9 @@
       <h2 class="text-2xl font-bold text-white mb-6">System Services</h2>
 
       <!-- Databases -->
-      <NesCard class="mb-6 bg-gray-800 border-gray-700">
+      <div class="mb-6 bg-gray-800 border-gray-700 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-white">Database Services</h3>
+          <h3 class="nes-text is-primary text-white">Database Services</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -324,12 +324,12 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- AI Services -->
-      <NesCard class="mb-6 bg-gray-800 border-gray-700">
+      <div class="mb-6 bg-gray-800 border-gray-700 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-white">AI/ML Services</h3>
+          <h3 class="nes-text is-primary text-white">AI/ML Services</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -351,12 +351,12 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- GPU Services -->
-      <NesCard class="mb-6 bg-gray-800 border-gray-700">
+      <div class="mb-6 bg-gray-800 border-gray-700 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-white">GPU Acceleration Services</h3>
+          <h3 class="nes-text is-primary text-white">GPU Acceleration Services</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -381,7 +381,7 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </section>
   {/if}
 
@@ -389,8 +389,8 @@
   {#if systemHealth?.performance}
     <section class="mb-12">
       <h2 class="text-2xl font-bold text-white mb-6">Performance Metrics</h2>
-      <NesCard class="bg-gray-800 border-gray-700">
-        <div class="yorha-panel-content" class="p-6">
+      <div class="bg-gray-800 border-gray-700 nes-container">
+        <div class="yorha-panel-content p-6">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="metric-group">
               <h4 class="font-semibold text-white mb-2">System Uptime</h4>
@@ -412,30 +412,30 @@
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </section>
   {/if}
 
   <!-- Live Demo Section -->
   <section class="mb-12">
     <h2 class="text-2xl font-bold text-white mb-6">GPU Cache Integration Demo</h2>
-    <NesCard class="bg-gray-800 border-gray-700">
-      <div class="yorha-panel-content" class="p-6">
+    <div class="bg-gray-800 border-gray-700 nes-container">
+      <div class="yorha-panel-content p-6">
         <GPUCacheIntegrationDemo
           showProgressionDemo={true}
           enableRealTimeMetrics={true}
           debugMode={false}
         />
       </div>
-    </NesCard>
+    </div>
   </section>
 
   <!-- Architecture Summary -->
   {#if systemHealth?.architecture}
     <section>
       <h2 class="text-2xl font-bold text-white mb-6">Platform Architecture</h2>
-      <NesCard class="bg-gray-800 border-gray-700">
-        <div class="yorha-panel-content" class="p-6">
+      <div class="bg-gray-800 border-gray-700 nes-container">
+        <div class="yorha-panel-content p-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h4 class="font-semibold text-white mb-4">Platform Information</h4>
@@ -469,7 +469,7 @@
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </section>
   {/if}
 </div>

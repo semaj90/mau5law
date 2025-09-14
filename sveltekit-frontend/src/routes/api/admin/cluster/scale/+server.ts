@@ -1,5 +1,5 @@
 import cluster from "node:cluster";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 /*

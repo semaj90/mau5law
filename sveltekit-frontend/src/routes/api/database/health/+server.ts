@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit";
 import { testDatabaseConnection, initializeDatabase } from '$lib/database/connection';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const GET: RequestHandler = async () => {
@@ -59,9 +59,9 @@ export const POST: RequestHandler = async ({ request }) => {
       const result = await initializeDatabase();
       
       return json({
-        status: result.success ? 'success' : 'error',
-        message: result.message,
-        details: result.details || null,
+        status: (result as { success?: any; message?: any; details?: any }).success ? 'success' : 'error',
+        message: (result as { success?: any; message?: any; details?: any }).message,
+        details: (result as { success?: any; message?: any; details?: any }).details || null,
         timestamp: new Date().toISOString()
       });
     }

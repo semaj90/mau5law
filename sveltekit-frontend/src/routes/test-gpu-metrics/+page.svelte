@@ -33,11 +33,11 @@
   async function testRedisConnection() {
     try {
       const response = await fetch('/api/health/redis');
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any; status?: any }).json();
       testResults = [...testResults, {
         timestamp: new Date().toLocaleTimeString(),
         test: 'Redis Connection',
-        status: response.ok ? 'Success' : 'Failed',
+        status: (response as { json?: any; ok?: any; status?: any }).ok ? 'Success' : 'Failed',
         details: JSON.stringify(result)
       }];
     } catch (error) {
@@ -82,8 +82,8 @@
         testResults = [...testResults, {
           timestamp: new Date().toLocaleTimeString(),
           test: `Server Health: ${endpoint}`,
-          status: response.ok ? 'Success' : 'Failed',
-          details: `Status: ${response.status}`
+          status: (response as { json?: any; ok?: any; status?: any }).ok ? 'Success' : 'Failed',
+          details: `Status: ${(response as { json?: any; ok?: any; status?: any }).status}`
         }];
       } catch (error) {
         testResults = [...testResults, {
@@ -143,28 +143,28 @@
       <h2 class="text-xl font-bold mb-4">🔧 Connection Tests</h2>
       <div class="flex flex-wrap gap-4">
         <button 
-          onclick={testRedisConnection}
+          on:click={testRedisConnection}
           class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors"
         >
           Test Redis Connection
         </button>
         
         <button 
-          onclick={testGPUMetrics}
+          on:click={testGPUMetrics}
           class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded transition-colors"
         >
           Test GPU Metrics
         </button>
         
         <button 
-          onclick={testServerHealth}
+          on:click={testServerHealth}
           class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded transition-colors"
         >
           Test Server Health
         </button>
         
         <button 
-          onclick={clearResults}
+          on:click={clearResults}
           class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded transition-colors"
         >
           Clear Results
@@ -182,14 +182,14 @@
         <div class="space-y-3">
           {#each testResults as result}
             <div class="flex items-start gap-4 p-3 bg-gray-700 rounded">
-              <span class="text-xs text-gray-400 min-w-20">{result.timestamp}</span>
-              <span class="font-semibold min-w-48">{result.test}</span>
+              <span class="text-xs text-gray-400 min-w-20">{(result as { timestamp?: any; test?: any; status?: any; details?: any }).timestamp}</span>
+              <span class="font-semibold min-w-48">{(result as { timestamp?: any; test?: any; status?: any; details?: any }).test}</span>
               <span class="px-2 py-1 text-xs rounded {
-                result.status === 'Success' ? 'bg-green-600 text-white' : 
-                result.status === 'Failed' ? 'bg-red-600 text-white' : 
+                (result as { timestamp?: any; test?: any; status?: any; details?: any }).status === 'Success' ? 'bg-green-600 text-white' : 
+                (result as { timestamp?: any; test?: any; status?: any; details?: any }).status === 'Failed' ? 'bg-red-600 text-white' : 
                 'bg-orange-600 text-white'
-              }">{result.status}</span>
-              <span class="text-sm text-gray-300 flex-1 font-mono">{result.details}</span>
+              }">{(result as { timestamp?: any; test?: any; status?: any; details?: any }).status}</span>
+              <span class="text-sm text-gray-300 flex-1 font-mono">{(result as { timestamp?: any; test?: any; status?: any; details?: any }).details}</span>
             </div>
           {/each}
         </div>

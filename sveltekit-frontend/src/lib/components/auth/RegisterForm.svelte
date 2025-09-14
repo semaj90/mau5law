@@ -39,7 +39,7 @@
     agreeToTerms: z.boolean().refine(val => val === true, 'You must agree to the terms'),
     agreeToPrivacy: z.boolean().refine(val => val === true, 'You must agree to privacy policy'),
     enableTwoFactor: z.boolean().default(false)
-  }).refine((data) => data.password === data.confirmPassword, {
+  }).refine((data) => (data as { password?: any; confirmPassword?: any }).password === (data as { password?: any; confirmPassword?: any }).confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
@@ -167,8 +167,8 @@
     onResult: ({ result }) => {
       isLoading = false;
 
-      if (result.type === 'success') {
-        const data = result.data as any;
+      if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
+        const data = (result as { type?: any; data?: any; error?: any }).data as any;
 
         if (data?.requiresVerification) {
           successMessage = 'Registration successful! Please check your email to verify your account.';
@@ -178,8 +178,8 @@
             goto('/auth/login');
           }, 2000);
         }
-      } else if (result.type === 'error') {
-        errorMessage = result.error?.message || 'Registration failed. Please try again.';
+      } else if ((result as { type?: any; data?: any; error?: any }).type === 'error') {
+        errorMessage = (result as { type?: any; data?: any; error?: any }).error?.message || 'Registration failed. Please try again.';
       }
     }
   });
@@ -194,7 +194,7 @@
 
   // Enhanced device fingerprinting for registration
   // Updated to return structured raw data plus encoded string for future auditing
-  async function generateRegistrationFingerprint(): Promise<{ raw: Record<string, any>; encoded: string }> {
+  async function generateRegistrationFingerprint(): Promise {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (ctx) {
@@ -455,7 +455,7 @@
           <label for="password" class="label">Password</label>
           <div class="relative">
             <input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Enter secure password" bind:value={$form.password} disabled={isLoading} class="input pr-10" />
-            <button type="button" class="pw-toggle" onclick={togglePasswordVisibility} disabled={isLoading} aria-label="Toggle password visibility">
+            <button type="button" class="pw-toggle" on:click={togglePasswordVisibility} disabled={isLoading} aria-label="Toggle password visibility">
               {#if showPassword}
                 <EyeOff class="h-4 w-4 text-gray-400" />
               {:else}
@@ -477,7 +477,7 @@
           <label for="confirmPassword" class="label">Confirm Password</label>
           <div class="relative">
             <input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} placeholder="Confirm your password" bind:value={$form.confirmPassword} disabled={isLoading} class="input pr-10" />
-            <button type="button" class="pw-toggle" onclick={toggleConfirmPasswordVisibility} disabled={isLoading} aria-label="Toggle confirm password visibility">
+            <button type="button" class="pw-toggle" on:click={toggleConfirmPasswordVisibility} disabled={isLoading} aria-label="Toggle confirm password visibility">
               {#if showConfirmPassword}
                 <EyeOff class="h-4 w-4 text-gray-400" />
               {:else}

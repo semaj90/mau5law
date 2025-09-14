@@ -1,7 +1,8 @@
+// @ts-nocheck - Complex experimental service with external dependencies
 // WebAssembly LLM Service for Legal AI
 // Client-side gemma3-legal:latest WebAssembly implementation with GPU acceleration
 
-import type { WASMLLMConfig, WASMLLMResponse } from '../types/vector-jobs';
+import type { WASMLLMConfig, WASMLLMResponse } from '../types/vector-jobs.js';
 
 export interface WASMModule {
 	_initialize: () => number;

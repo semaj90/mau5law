@@ -80,13 +80,13 @@
     <div class="config-header">
       <button
         class="config-toggle"
-        onclick={() => showConfiguration = !showConfiguration}
+        on:click={() => showConfiguration = !showConfiguration}
       >
         {showConfiguration ? '🔽' : '▶️'} Demo Configuration
       </button>
 
       {#if showConfiguration}
-        <button class="btn-reset" onclick={resetToDefaults}>
+        <button class="btn-reset" on:click={resetToDefaults}>
           Reset to Defaults
         </button>
       {/if}
@@ -168,7 +168,7 @@
                 <input
                   type="checkbox"
                   checked={demoConfig.allowedTypes.includes(type)}
-                  onchange={(e) => {
+                  on:change={(e) => {
                     if (e.target.checked) {
                       demoConfig.allowedTypes = [...demoConfig.allowedTypes, type];
                     } else {
@@ -447,7 +447,7 @@
     gap: 0.5rem;
   }
 
-  .config-item.checkbox-item {
+  .config-(item as { checkbox?: any }).checkbox-item {
     flex-direction: row;
     align-items: center;
   }

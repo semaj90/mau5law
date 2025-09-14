@@ -73,8 +73,8 @@
 
       // Stop polling when leaving page
       addEventListener('beforeunload', () => { pollActive = false; });
-      if (response.ok) {
-        systemStatus = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        systemStatus = await (response as { ok?: any; json?: any }).json();
       }
     } catch (error) {
       console.error('Failed to fetch system status:', error);
@@ -118,28 +118,27 @@
         {#each uploadResults as result}
           <div class="p-4 border rounded-lg bg-white shadow-sm">
             <div class="flex justify-between items-start mb-2">
-              <h3 class="font-medium">{result.filename || 'Unknown file'}</h3>
-              <span class={`px-2 py-1 text-xs rounded ${result.status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                {result.status}
+              <h3 class="font-medium">{(result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).filename || 'Unknown file'}</h3>
+              <span class={`px-2 py-1 text-xs rounded ${(result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                {(result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).status}
               </span>
             </div>
-            {#if result.documentId}
-              <p class="text-sm text-gray-600 mb-1">Document ID: {result.documentId}</p>
+            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).documentId}
+              <p class="text-sm text-gray-600 mb-1">Document ID: {(result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).documentId}</p>
             {/if}
-            {#if result.size}
-              <p class="text-sm text-gray-600 mb-1">Size: {(result.size / 1024).toFixed(1)} KB</p>
+            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size}
+              <p class="text-sm text-gray-600 mb-1">Size: {((result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size / 1024).toFixed(1)} KB</p>
             {/if}
-            {#if result.embeddingGenerated}
+            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).embeddingGenerated}
               <p class="text-sm text-green-600">✓ Embeddings generated</p>
             {/if}
-            {#if result.error}
-              <p class="text-sm text-red-600">Error: {result.error}</p>
+            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).error}
+              <p class="text-sm text-red-600">Error: {(result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).error}</p>
             {/if}
           </div>
         {/each}
       </div>
     </div>
-  {/if}
   {/if}
 
   <!-- Debug Information -->

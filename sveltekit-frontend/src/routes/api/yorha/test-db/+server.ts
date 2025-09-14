@@ -1,6 +1,6 @@
 
 import { json } from "@sveltejs/kit";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 // Use the canonical DB barrel: provides db, sql, and table exports
 import { db, sql, legalDocuments } from "$lib/server/db";
 
@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const results: any = {
       timestamp: new Date(),
       action,
-      results: {},
+      results: Record<string, any>,
       success: true,
       service: "yorha-db-test"
     };

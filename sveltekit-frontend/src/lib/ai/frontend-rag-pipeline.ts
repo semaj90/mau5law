@@ -101,11 +101,11 @@ class FrontendRAGPipeline {
     try {
       const result = await this.embeddingPipeline(text);
 
-      const embedding = new Float32Array(result.data);
+      const embedding = new Float32Array((result as { data?: any; dims?: any }).data);
       
       return {
         data: this.simdProcessor.optimize(embedding),
-        shape: result.dims,
+        shape: (result as { data?: any; dims?: any }).dims,
         simdOps: this.simdProcessor.getOperations()
       };
     } catch (error: any) {
@@ -277,7 +277,7 @@ class G0llamaService {
         method: 'GET',
         signal: AbortSignal.timeout(2000)
       });
-      this.isAvailable = response.ok;
+      this.isAvailable = (response as { ok?: any; json?: any }).ok;
     } catch {
       this.isAvailable = false;
     }
@@ -307,8 +307,8 @@ class G0llamaService {
         signal: AbortSignal.timeout(10000)
       });
 
-      const data = await response.json();
-      return data.text || '';
+      const data = await (response as { ok?: any; json?: any }).json();
+      return (data as { semanticGroup?: any; relevance?: any; text?: any }).text || '';
     } catch (error: any) {
       console.warn('G0llama generation failed:', error);
       throw error;

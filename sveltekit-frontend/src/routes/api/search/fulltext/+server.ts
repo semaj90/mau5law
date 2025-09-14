@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/connection';
 import { legalDocuments, documentChunks } from '$lib/server/db/schema';
 import { sql, desc, and, or, like, gte, lte, ilike } from 'drizzle-orm';

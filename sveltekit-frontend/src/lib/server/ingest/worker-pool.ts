@@ -217,7 +217,7 @@ class WorkerInstance {
 }
 
 class PriorityQueue<T> {
-  private items: Array<{ priority: number; item: T }> = [];
+  private items: Array< = [];
 
   enqueue(item: T, priority = 0) {
     this.items.push({ priority, item });
@@ -239,12 +239,7 @@ class PriorityQueue<T> {
 
 export class AdvancedWorkerPool extends EventEmitter {
   private workers: Map<string, WorkerInstance> = new Map();
-  private jobQueue = new PriorityQueue<{
-    jobData: WorkerJobData;
-    resolve: (result: WorkerJobResult) => void;
-    reject: (error: Error) => void;
-    options: JobOptions;
-  }>();
+  private jobQueue = new PriorityQueue();
   private readonly options: Required<WorkerPoolOptions>;
   private readonly workerScript: string;
   private activeJobs = 0;
@@ -347,8 +342,8 @@ export class AdvancedWorkerPool extends EventEmitter {
         jobId: jobData.id,
         type: jobData.type,
         workerId: availableWorker.id,
-        processingTime: result.processingTime,
-        success: result.success
+        processingTime: (result as { processingTime?: any; success?: any }).processingTime,
+        success: (result as { processingTime?: any; success?: any }).success
       });
 
       resolve(result);

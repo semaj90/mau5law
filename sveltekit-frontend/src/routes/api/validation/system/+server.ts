@@ -3,7 +3,7 @@ import { getConfig } from '$lib/config/unified-config';
 import { redisRateLimit } from '$lib/server/redisRateLimit';
 import { productionLogger } from '$lib/server/production-logger';
 import { dev } from '$app/environment';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 
@@ -412,7 +412,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 
 // Helper benchmark functions
 
-async function runMemoryBenchmark(): Promise<{ score: number; details: any }> {
+async function runMemoryBenchmark(): Promise<any> {
   const before = process.memoryUsage();
 
   // Simulate memory allocation
@@ -431,7 +431,7 @@ async function runMemoryBenchmark(): Promise<{ score: number; details: any }> {
   };
 }
 
-async function runDiskIOBenchmark(): Promise<{ score: number; details: any }> {
+async function runDiskIOBenchmark(): Promise<any> {
   const startTime = Date.now();
 
   // Simulate disk I/O operations
@@ -449,7 +449,7 @@ async function runDiskIOBenchmark(): Promise<{ score: number; details: any }> {
   };
 }
 
-async function runNetworkBenchmark(): Promise<{ score: number; details: any }> {
+async function runNetworkBenchmark(): Promise<any> {
   const startTime = Date.now();
 
   // Simulate network latency

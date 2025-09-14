@@ -3,7 +3,7 @@
  * Connects timing metrics with SvelteKit architecture and server-side observability
  */
 
-import { timingMetrics, createTimedFetch, type TimingMetrics } from './timing-metrics.js';
+import { timingMetrics, createTimedFetch, type TimingMetrics } from './timing-metrics.js.js';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { get } from 'svelte/store';
@@ -162,7 +162,7 @@ class ObservabilityClient {
         
         timingMetrics.mark(`api-call-end-${endpoint}`);
         
-        const serverTiming = response ? timingMetrics.extractServerTiming(response) : {};
+        const serverTiming = response ? timingMetrics.extractServerTiming(response) : Record<string, any>;
         const serverRequestId = response ? timingMetrics.extractRequestId(response) : undefined;
         
         if (this.config.debugMode) {
@@ -276,7 +276,7 @@ class ObservabilityClient {
       pathname,
       loadTime,
       renderTime,
-      serverTiming: {}, // Will be populated by Server-Timing headers during SSR
+      serverTiming: Record<string, any>, // Will be populated by Server-Timing headers during SSR
       webVitals,
       timestamp: Date.now()
     };

@@ -3,14 +3,10 @@
  * Tests the bridge connection between local and server orchestrators
  */
 
-import { llmOrchestratorBridge } from './llm-orchestrator-bridge.js';
-import type { LLMBridgeRequest } from './llm-orchestrator-bridge.js';
+import { llmOrchestratorBridge } from './llm-orchestrator-bridge.js.js';
+import type { LLMBridgeRequest } from './llm-orchestrator-bridge.js.js';
 
-export async function testOrchestratorIntegration(): Promise<{
-  success: boolean;
-  results: any[];
-  summary: string;
-}> {
+export async function testOrchestratorIntegration(): Promise<any> {
   const results: any[] = [];
   let successCount = 0;
 
@@ -46,7 +42,7 @@ export async function testOrchestratorIntegration(): Promise<{
       orchestrator: chatResult.orchestratorUsed,
       model: chatResult.modelUsed,
       latency: chatResult.executionMetrics.totalLatency,
-      response: chatResult.response.substring(0, 100) + '...',
+      response: chatResult.(response as { substring?: any; length?: any }).substring(0, 100) + '...',
     });
 
     if (chatResult.success) {
@@ -98,7 +94,7 @@ export async function testOrchestratorIntegration(): Promise<{
       model: legalResult.modelUsed,
       latency: legalResult.executionMetrics.totalLatency,
       confidence: legalResult.confidence,
-      response: legalResult.response.substring(0, 100) + '...',
+      response: legalResult.(response as { substring?: any; length?: any }).substring(0, 100) + '...',
     });
 
     if (legalResult.success) {
@@ -150,7 +146,7 @@ export async function testOrchestratorIntegration(): Promise<{
       latency: embeddingResult.executionMetrics.totalLatency,
       response:
         typeof embeddingResult.response === 'string'
-          ? `Generated ${embeddingResult.response.length} chars`
+          ? `Generated ${embeddingResult.(response as { substring?: any; length?: any }).length} chars`
           : 'Embedding generated',
     });
 
@@ -205,7 +201,7 @@ export async function testOrchestratorIntegration(): Promise<{
       model: realtimeResult.modelUsed,
       latency: realtimeResult.executionMetrics.totalLatency,
       metLatencyTarget: realtimeResult.executionMetrics.totalLatency < 500,
-      response: realtimeResult.response.substring(0, 100) + '...',
+      response: realtimeResult.(response as { substring?: any; length?: any }).substring(0, 100) + '...',
     });
 
     if (realtimeResult.success) {
@@ -282,11 +278,7 @@ export async function testOrchestratorIntegration(): Promise<{
 }
 
 // Function to run a quick health check
-export async function quickHealthCheck(): Promise<{
-  healthy: boolean;
-  status: any;
-  timestamp: string;
-}> {
+export async function quickHealthCheck(): Promise<any> {
   try {
     const status = await llmOrchestratorBridge.getStatus();
     const healthy = status.bridge.status === 'healthy' || status.bridge.status === 'degraded';
@@ -338,15 +330,15 @@ export async function testSpecificOrchestrator(
   try {
     const result = await llmOrchestratorBridge.processRequest(request);
     return {
-      success: result.success,
-      orchestratorUsed: result.orchestratorUsed,
+      success: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).success,
+      orchestratorUsed: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).orchestratorUsed,
       expectedOrchestrator: orchestratorType,
       matchesExpected:
-        result.orchestratorUsed === orchestratorType ||
-        (orchestratorType === 'mcp' && result.orchestratorUsed === 'hybrid'),
-      response: result.response,
-      metrics: result.executionMetrics,
-      error: result.error,
+        (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).orchestratorUsed === orchestratorType ||
+        (orchestratorType === 'mcp' && (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).orchestratorUsed === 'hybrid'),
+      response: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).response,
+      metrics: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).executionMetrics,
+      error: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).error,
     };
   } catch (error) {
     return {

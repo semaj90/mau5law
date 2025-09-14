@@ -128,16 +128,7 @@
     const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
 
     // Show notification
-    if (typeof window !== 'undefined') {
-      // Create a temporary notification
-      const notification = document.createElement('div');
-      notification.className = 'fixed top-20 right-4 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
-      notification.innerHTML = `
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-            ${randomUser.name.charAt(0)}
-          </div>
-          <span>${randomUser.name} joined the case</span>
+    if (typeof window !== 'undefined') {/* JSX syntax converted to Svelte */} joined the case</span>
         </div>
       `;
 
@@ -145,7 +136,7 @@
 
       // Remove after 3 seconds
       setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
+        (notification as { style?: any }).style.transform = 'translateX(100%)';
         setTimeout(() => {
           document.body.removeChild(notification);
         }, 300);
@@ -177,16 +168,16 @@
     <div class="space-y-2">
       <h1 class="text-xl font-bold">Detective Mode</h1>
       <div class="flex gap-2 flex-wrap">
-        <button onclick={() => currentView = 'board'} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button on:click={() => currentView = 'board'} class="border rounded px-3 py-1 hover:bg-white/5">
           Evidence Board
         </button>
-        <button onclick={() => currentView = 'create-case'} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button on:click={() => currentView = 'create-case'} class="border rounded px-3 py-1 hover:bg-white/5">
           Create Case
         </button>
-        <button onclick={() => currentView = 'auth-demo'} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button on:click={() => currentView = 'auth-demo'} class="border rounded px-3 py-1 hover:bg-white/5">
           Auth Demo
         </button>
-        <button onclick={simulateCollaboration} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button on:click={simulateCollaboration} class="border rounded px-3 py-1 hover:bg-white/5">
           Demo Collab
         </button>
       </div>
@@ -200,7 +191,7 @@
           {#if $auth.isAuthenticated}
             <div class="flex items-center gap-3">
               <span>Welcome, {$auth.user?.name || $auth.user?.email}</span>
-              <button onclick={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5">Logout</button>
+              <button on:click={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5">Logout</button>
             </div>
           {:else}
             <div class="text-sm opacity-80">Not authenticated</div>
@@ -237,13 +228,13 @@
 
               <div>
                 <div class="flex gap-2 flex-wrap">
-                  <button onclick={() => auth.login('test@example.com', 'password123')} class="border rounded px-2 py-1 hover:bg-white/5" disabled={$auth.isLoading}>
+                  <button on:click={() => auth.login('test@example.com', 'password123')} class="border rounded px-2 py-1 hover:bg-white/5" disabled={$auth.isLoading}>
                     Mock Login
                   </button>
-                  <button onclick={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5" disabled={!$auth.isAuthenticated}>
+                  <button on:click={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5" disabled={!$auth.isAuthenticated}>
                     Logout
                   </button>
-                  <button onclick={() => auth.checkAuth()} class="border rounded px-2 py-1 hover:bg-white/5" disabled={$auth.isLoading}>
+                  <button on:click={() => auth.checkAuth()} class="border rounded px-2 py-1 hover:bg-white/5" disabled={$auth.isLoading}>
                     Check Auth
                   </button>
                 </div>

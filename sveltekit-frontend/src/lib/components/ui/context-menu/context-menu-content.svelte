@@ -6,11 +6,9 @@ https://svelte.dev/e/js_parse_error -->
   import { getContext, onDestroy, onMount } from 'svelte';
   import type {     Writable     } from 'svelte/store';
   <slots>
-  let { class = $bindable() } = $props(); // string = '';
+  let { class = $bindable()  }: { class = $bindable() : any } = $props(); // string = '';
 
-  const { isOpen, position, close } = getContext<{
-    isOpen: Writable<boolean>;
-    position: Writable<{ x: number; y: number }>;
+  const { isOpen, position, close } = getContext;
     close: () => void;
   }>('context-menu');
   let menuElement = $state<HTMLDivElement | null >(null);

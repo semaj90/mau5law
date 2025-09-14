@@ -4,7 +4,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   }
 };
 
-async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ width?: number; height?: number } | null> {
+async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<any> {
   try {
     // Simple image dimension detection for common formats
     if (mimeType === 'image/jpeg') {

@@ -105,12 +105,12 @@ https://svelte.dev/e/js_parse_error -->
         <div
           
           class="container mx-auto px-4"
-          transitifly={{ y: -5, duration: 150 }}
+          /* transition removed */}
         >
           <button
             
             class="container mx-auto px-4"
-            onclick={() => handleSave()}
+            on:click={() => handleSave()}
           >
             <Save size={16} />
             Save Report
@@ -129,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             
             class="container mx-auto px-4"
-            onclick={() => handleExport()}
+            on:click={() => handleExport()}
           >
             <Download size={16} />
             Export
@@ -138,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             
             class="container mx-auto px-4"
-            onclick={() => handlePreview()}
+            on:click={() => handlePreview()}
           >
             <Eye size={16} />
             Preview
@@ -161,10 +161,7 @@ https://svelte.dev/e/js_parse_error -->
         <div
           
           class="container mx-auto px-4"
-          transitifly={{ y: -5, duration: 150 "
-        >
-          <button  class="container mx-auto px-4">
-            <Undo size={16} />
+          /* transition removed */ />
             Undo
             <span class="container mx-auto px-4">Ctrl+Z</span>
           </button>
@@ -202,12 +199,7 @@ https://svelte.dev/e/js_parse_error -->
         <div
           
           class="container mx-auto px-4"
-          transitifly={{ y: -5, duration: 150 "
-        >
-          <button
-            
-            class="container mx-auto px-4"
-            onclick={() => toggleSidebar()}
+          /* transition removed */
           >
             <Sidebar size={16} />
             Toggle Sidebar
@@ -216,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             
             class="container mx-auto px-4"
-            onclick={() => toggleLayout()}
+            on:click={() => toggleLayout()}
           >
             <Layout size={16} />
             Switch Layout ({$report.settings.layout})
@@ -224,7 +216,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             
             class="container mx-auto px-4"
-            onclick={() => toggleFullscreen()}
+            on:click={() => toggleFullscreen()}
           >
             {#if $reportUI.fullscreen}
               <Minimize size={16} />
@@ -246,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
       
       class="container mx-auto px-4"
       class:unsaved={$editorState.hasUnsavedChanges}
-      onclick={() => handleSave()}
+      on:click={() => handleSave()}
       title="Save Report"
     >
       <Save size={16} />
@@ -257,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
     <button
       
       class="container mx-auto px-4"
-      onclick={() => toggleSidebar()}
+      on:click={() => toggleSidebar()}
       title="Toggle Sidebar"
     >
       <Sidebar size={16} />
@@ -266,7 +258,7 @@ https://svelte.dev/e/js_parse_error -->
     <button
       
       class="container mx-auto px-4"
-      onclick={() => toggleLayout()}
+      on:click={() => toggleLayout()}
       title="Switch Layout"
     >
       <Layout size={16} />
@@ -277,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
     <button
       
       class="container mx-auto px-4"
-      onclick={() => handlePreview()}
+      on:click={() => handlePreview()}
       title="Preview Report"
     >
       <Eye size={16} />

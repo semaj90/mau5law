@@ -2,8 +2,8 @@
 // Shared types between client and server for complete type safety
 
 import type { z } from 'zod';
-import type { Case, Evidence, User, LegalDocument } from '../server/db/schema-postgres';
-import type { StandardApiResponse } from '../server/api/response';
+import type { Case, Evidence, User, LegalDocument } from '../server/db/schema-postgres.js';
+import type { StandardApiResponse } from '../server/api/response.js';
 
 // Re-export StandardApiResponse for external use
 export type { StandardApiResponse };

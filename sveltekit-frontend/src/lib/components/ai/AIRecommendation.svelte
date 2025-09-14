@@ -36,8 +36,8 @@ https://svelte.dev/e/js_parse_error -->
   <ul class="mx-auto px-4 max-w-7xl">
     {#each recommendations as item}
       <li class="mx-auto px-4 max-w-7xl">
-        <div class="mx-auto px-4 max-w-7xl">{item.prompt}</div>
-        <div class="mx-auto px-4 max-w-7xl">{item.response}</div>
+        <div class="mx-auto px-4 max-w-7xl">{(item as { prompt?: any; response?: any }).prompt}</div>
+        <div class="mx-auto px-4 max-w-7xl">{(item as { prompt?: any; response?: any }).response}</div>
       </li>
     {/each}
   </ul>

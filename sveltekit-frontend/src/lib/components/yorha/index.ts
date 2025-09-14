@@ -1,7 +1,7 @@
 
 // YoRHa Table and Grid Components
-export { default as YoRHaTable } from './YoRHaTable.svelte';
-export { default as YoRHaDataGrid } from './YoRHaDataGrid.svelte';
+export { default as YoRHaTable } from './YoRHaTable.svelte.js';
+export { default as YoRHaDataGrid } from './YoRHaDataGrid.svelte.js';
 
 // Table utilities and stores
 export {
@@ -40,7 +40,7 @@ export interface YoRHaGridColumn {
   filterable?: boolean;
   editable?: boolean;
   type?: 'text' | 'number' | 'date' | 'boolean' | 'select' | 'action';
-    options?: Array<{ label: string; value: any }>;
+    options?: Array<any>;
     formatter?: (value: any, row: any) => string;
     validator?: (value: any) => boolean | string;
   }

@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * Library Sync API Endpoints - Step 6 & 7 Integration

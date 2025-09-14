@@ -10,10 +10,10 @@
  * - FlatBuffer binary data pipeline for 8x faster parsing
  */
 
-import { LegalDocumentBinarySerializer, type LegalDocumentBinaryLayout, LEGAL_DOCUMENT_BINARY_SIZE } from '../binary/flatbuffer-legal-schema';
-import { type MemoryBank } from '../memory/nes-memory-architecture';
-import { nesGPUBridge, type GPUTextureMatrix } from './nes-gpu-memory-bridge';
-import { FlatBufferNodeSerializer, type BinaryGraphData, type FlatBufferNode } from '../binary/flatbuffer-node-data';
+import { LegalDocumentBinarySerializer, type LegalDocumentBinaryLayout, LEGAL_DOCUMENT_BINARY_SIZE } from '../binary/flatbuffer-legal-schema.js';
+import { type MemoryBank } from '../memory/nes-memory-architecture.js';
+import { nesGPUBridge, type GPUTextureMatrix } from './nes-gpu-memory-bridge.js';
+import { FlatBufferNodeSerializer, type BinaryGraphData, type FlatBufferNode } from '../binary/flatbuffer-node-(data as { js?: any }).js';
 
 export interface RankingDimension {
   readonly name: string;
@@ -241,7 +241,7 @@ export class TextureRankingMatrices {
         (this.performanceMetrics.rankingOperations + 1);
       
       console.log(`💾 Cache hit for ranking computation`);
-      return cached.result.slice(0, maxResults);
+      return cached.(result as { slice?: any }).slice(0, maxResults);
     }
 
     if (!this.device || this.computePipelines.size === 0) {

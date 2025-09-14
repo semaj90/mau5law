@@ -64,7 +64,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   let currentResult = $state<CopilotSelfPromptResult | null>(null);
   let processingStage = $state('');
   let processingProgress = $state(0);
-  let executionHistory = $state<Array<{ prompt: string; result: CopilotSelfPromptResult; timestamp: number }>>([]);
+  let executionHistory = $state<any[]>([])([]);
 
   // Demo examples
   const demoExamples = [
@@ -320,9 +320,9 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   </div>
 
   <!-- Demo Examples -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <Play class="h-5 w-5" />
         Quick Demo Examples
       </h3>
@@ -348,27 +348,28 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               <Button class="bits-btn"
                 size="sm"
                 variant="outline"
-                onclick={() => executeExample(example)}
+                on:click={() =>
+executeExample(example)}
                 disabled={isProcessing}
               >
                 Run
-              </button>
+</Button>
             </div>
           </div>
         {/each}
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Input Configuration -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <Settings class="h-5 w-5" />
         Custom Analysis
       </h3>
     </div>
-    <div class="yorha-panel-content" class="space-y-4">
+    <div class="yorha-panel-content space-y-4">
       <div>
         <label class="block text-sm font-medium mb-2">Analysis Prompt</label>
         <Textarea
@@ -443,44 +444,44 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
 
       <div class="flex gap-2">
         <Button
-          onclick={executePrompt}
+          on:click={executePrompt}
           disabled={isProcessing || !userPrompt.trim()}
           class="flex-1 bits-btn bits-btn"
         >
-          {#if isProcessing}
+{#if isProcessing}
             <Pause class="h-4 w-4 mr-2" />
             Processing...
           {:else}
             <Play class="h-4 w-4 mr-2" />
             Analyze with Copilot AI
           {/if}
-        </button>
+</Button>
 
         <Button class="bits-btn"
           variant="outline"
-          onclick={executeViaAPI}
+          on:click={executeViaAPI}
           disabled={isProcessing || !userPrompt.trim()}
         >
-          Via API
-        </button>
+Via API
+</Button>
 
         {#if currentResult}
-          <Button class="bits-btn" variant="outline" onclick={downloadResult}>
-            <Download class="h-4 w-4" />
-          </button>
-          <Button class="bits-btn" variant="outline" onclick={clearResults}>
-            <RefreshCw class="h-4 w-4" />
-          </button>
+          <Button class="bits-btn" variant="outline" on:click={downloadResult}>
+<Download class="h-4 w-4" />
+</Button>
+          <Button class="bits-btn" variant="outline" on:click={clearResults}>
+<RefreshCw class="h-4 w-4" />
+</Button>
         {/if}
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Processing Status -->
   {#if isProcessing}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Zap class="h-5 w-5 animate-pulse" />
           Processing Status
         </h3>
@@ -505,16 +506,16 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Results Display -->
   {#if currentResult}
     <div class="space-y-6">
       <!-- Analysis Summary -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Brain class="h-5 w-5" />
             Comprehensive Analysis
           </h3>
@@ -550,13 +551,13 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Next Actions -->
       {#if currentResult.nextActions?.length > 0}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <CheckCircle class="h-5 w-5" />
               Recommended Actions ({currentResult.nextActions.length})
             </h3>
@@ -598,14 +599,14 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               {/each}
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
 
       <!-- Strategic Recommendations -->
       {#if currentResult.recommendations?.length > 0}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <FileText class="h-5 w-5" />
               Strategic Recommendations ({currentResult.recommendations.length})
             </h3>
@@ -634,14 +635,14 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               {/each}
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
 
       <!-- Execution Plan -->
       {#if currentResult.executionPlan}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <Clock class="h-5 w-5" />
               Execution Plan
             </h3>
@@ -687,13 +688,13 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               {/each}
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
 
       <!-- Self-Prompt Output -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Bot class="h-5 w-5" />
             Generated Self-Prompt for Copilot
           </h3>
@@ -703,7 +704,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
             <pre class="whitespace-pre-wrap text-sm">{currentResult.selfPrompt}</pre>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   {/if}
 </div>

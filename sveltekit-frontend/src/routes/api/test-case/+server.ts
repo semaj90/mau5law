@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { cases } from '$lib/db/schema';
 import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Production API endpoint for case creation - PostgreSQL integration
 export const POST: RequestHandler = async ({ request, locals }) => {

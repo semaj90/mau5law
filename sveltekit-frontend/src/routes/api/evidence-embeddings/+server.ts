@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { embeddingBackfillWorker } from '$lib/server/workers/embedding-backfill-worker.js';
 import { query } from '$lib/server/db/client.js';
 

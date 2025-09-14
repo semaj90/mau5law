@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit";
 import { randomUUID } from "node:crypto";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // A light wrapper that accepts multipart form uploads and stores the file in MinIO under 'evidence' bucket.

@@ -39,7 +39,7 @@ Showcases the service worker-based AI orchestration system
   let selectedModel: LLMModel | undefined = $state();
   let userPrompt = $state('Analyze the following legal document for key terms, potential issues, and recommendations...');
   let isProcessing = $state(false);
-  let demoResults = $state<Array<{ task: AITask; response?: unknown; error?: string }>>([]);
+  let demoResults = $state<any[]>([])([]);
 
   // Demo scenarios
   const demoScenarios = [
@@ -253,9 +253,9 @@ Showcases the service worker-based AI orchestration system
   <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
 
     <!-- Quick Demo Section -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Play class="h-5 w-5" />
           Quick Demo Scenarios
         </h3>
@@ -283,7 +283,8 @@ Showcases the service worker-based AI orchestration system
                 variant="outline"
                 size="sm"
                 class="w-full bits-btn bits-btn"
-                onclick={() => runDemoScenario(scenario)}
+                on:click={() =>
+runDemoScenario(scenario)}
                 disabled={isProcessing}
               >
                 {#if isProcessing}
@@ -293,23 +294,23 @@ Showcases the service worker-based AI orchestration system
                   <Play class="h-4 w-4 mr-2" />
                   Run Demo
                 {/if}
-              </button>
+
             </div>
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Custom Task Section -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Settings class="h-5 w-5" />
             Custom Task
           </h3>
         </div>
-        <div class="yorha-panel-content" class="space-y-4">
+        <div class="yorha-panel-content space-y-4">
           <div>
             <label class="block text-sm font-medium mb-2">Select AI Model</label>
             <LLMSelector
@@ -331,38 +332,37 @@ Showcases the service worker-based AI orchestration system
 
           <div class="flex gap-2">
             <Button
-              onclick={submitCustomTask}
+              on:click={submitCustomTask}
               disabled={isProcessing || !selectedModel}
               class="flex-1 bits-btn bits-btn"
             >
-              {#if isProcessing}
+{#if isProcessing}
                 <Pause class="h-4 w-4 mr-2" />
                 Processing...
               {:else}
                 <Play class="h-4 w-4 mr-2" />
                 Submit Task
               {/if}
-            </button>
 
-            <Button class="bits-btn" variant="outline" onclick={clearResults}>
-              <RotateCcw class="h-4 w-4" />
-            </button>
+            <Button class="bits-btn" variant="outline" on:click={clearResults}>
+<RotateCcw class="h-4 w-4" />
+
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Results Section -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center justify-between">
+          <h3 class="nes-text is-primary flex items-center justify-between">
             <span class="flex items-center gap-2">
               <Activity class="h-5 w-5" />
               Task Results ({demoResults.length})
             </span>
             {#if demoResults.length > 0}
-              <Button class="bits-btn" variant="ghost" size="sm" onclick={clearResults}>
-                Clear
-              </button>
+              <Button class="bits-btn" variant="ghost" size="sm" on:click={clearResults}>
+Clear
+
             {/if}
           </h3>
         </div>
@@ -375,24 +375,24 @@ Showcases the service worker-based AI orchestration system
           {:else}
             <div class="space-y-3 max-h-96 overflow-y-auto">
               {#each demoResults as result}
-                {@const SvelteComponent_1 = getProviderIcon(result.task.providerId)}
-                <div class="border rounded-lg p-3 {result.error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : result.response ? 'border-green-200 bg-green-50 dark:bg-green-900/20' : 'border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20'}">
+                {@const SvelteComponent_1 = getProviderIcon((result as { task?: any; error?: any; response?: any }).task.providerId)}
+                <div class="border rounded-lg p-3 {(result as { task?: any; error?: any; response?: any }).error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : (result as { task?: any; error?: any; response?: any }).response ? 'border-green-200 bg-green-50 dark:bg-green-900/20' : 'border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20'}">
                   <div class="flex items-start justify-between mb-2">
                     <div class="flex items-center gap-2">
                       <SvelteComponent_1
                         class="h-4 w-4 text-blue-500"
                       />
                       <span class="font-medium text-sm">
-                        {result.task.providerId} - {result.task.model}
+                        {(result as { task?: any; error?: any; response?: any }).task.providerId} - {(result as { task?: any; error?: any; response?: any }).task.model}
                       </span>
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.task.type}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { task?: any; error?: any; response?: any }).task.type}</span>
                     </div>
 
-                    {#if result.response}
+                    {#if (result as { task?: any; error?: any; response?: any }).response}
                       <Badge class="bg-green-100 text-green-800 text-xs">
                         Completed
                       </Badge>
-                    {:else if result.error}
+                    {:else if (result as { task?: any; error?: any; response?: any }).error}
                       <Badge class="bg-red-100 text-red-800 text-xs">
                         Failed
                       </Badge>
@@ -404,26 +404,26 @@ Showcases the service worker-based AI orchestration system
                   </div>
 
                   <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                    {result.task.prompt.substring(0, 100)}...
+                    {(result as { task?: any; error?: any; response?: any }).task.prompt.substring(0, 100)}...
                   </p>
 
-                  {#if result.response}
+                  {#if (result as { task?: any; error?: any; response?: any }).response}
                     <div class="mt-2 p-2 bg-white dark:bg-gray-800 rounded text-xs">
                       <p class="font-medium mb-1">Response:</p>
                       <p class="text-gray-700 dark:text-gray-300">
-                        {result.response.response?.content || 'Task completed successfully'}
+                        {(result as { task?: any; error?: any; response?: any }).response.response?.content || 'Task completed successfully'}
                       </p>
-                      {#if result.response.metrics}
+                      {#if (result as { task?: any; error?: any; response?: any }).response.metrics}
                         <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                          <span>Processing: {formatDuration(result.response.metrics.processingTime || 0)}</span>
-                          <span>Tokens: {result.response.metrics.tokensProcessed || 0}</span>
+                          <span>Processing: {formatDuration((result as { task?: any; error?: any; response?: any }).response.metrics.processingTime || 0)}</span>
+                          <span>Tokens: {(result as { task?: any; error?: any; response?: any }).response.metrics.tokensProcessed || 0}</span>
                         </div>
                       {/if}
                     </div>
-                  {:else if result.error}
+                  {:else if (result as { task?: any; error?: any; response?: any }).error}
                     <div class="mt-2 p-2 bg-red-100 dark:bg-red-900/30 rounded text-xs">
                       <p class="font-medium text-red-700 dark:text-red-400 mb-1">Error:</p>
-                      <p class="text-red-600 dark:text-red-400">{result.error}</p>
+                      <p class="text-red-600 dark:text-red-400">{(result as { task?: any; error?: any; response?: any }).error}</p>
                     </div>
                   {:else}
                     <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
@@ -436,7 +436,7 @@ Showcases the service worker-based AI orchestration system
             </div>
           {/if}
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Main Orchestrator Component -->
@@ -448,9 +448,9 @@ Showcases the service worker-based AI orchestration system
     />
 
     <!-- Architecture Information -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Workflow class="h-5 w-5" />
           Architecture Overview
         </h3>
@@ -506,7 +506,7 @@ Showcases the service worker-based AI orchestration system
           </p>
         </div>
       </div>
-    </NesCard>
+    </div>
   </div>
 </div>
 

@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * GPU Setup Validation API - Check AI readiness for Legal PDF processing
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async () => {
 
     const ai_ready = details.ai_summarize_checks.gpu && 
                     details.ai_summarize_checks.ollama && 
-                    details.ai_summarize_checks.model;
+                    details.ai_summarize_checks?.model || "unknown" // @ts-ignore - Model property access;
 
     const message = !model_present ? "Please download local LLM model" : undefined;
 

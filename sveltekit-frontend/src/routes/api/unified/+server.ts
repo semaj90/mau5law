@@ -6,7 +6,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { unifiedSearchService } from '$lib/server/services/unified-search-service.js';
 import { neo4jService } from '$lib/server/services/neo4j-service.js';
 import { ingestionService } from '$lib/server/workflows/ingestion-service.js';
@@ -61,12 +61,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
 
         // Async Neo4j sync if document ingestion succeeded
-        if (result.success && result.documentId) {
+        if ((result as { success?: any; documentId?: any; jobId?: any; error?: any }).success && (result as { success?: any; documentId?: any; jobId?: any; error?: any }).documentId) {
           // Queue for background Neo4j sync
           await cache.rpush(
             'neo4j:sync_queue',
             JSON.stringify({
-              documentId: result.documentId,
+              documentId: (result as { success?: any; documentId?: any; jobId?: any; error?: any }).documentId,
               action: 'sync_document',
               timestamp: new Date().toISOString(),
             })
@@ -74,10 +74,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         }
 
         return json({
-          success: result.success,
-          documentId: result.documentId,
-          jobId: result.jobId,
-          error: result.error,
+          success: (result as { success?: any; documentId?: any; jobId?: any; error?: any }).success,
+          documentId: (result as { success?: any; documentId?: any; jobId?: any; error?: any }).documentId,
+          jobId: (result as { success?: any; documentId?: any; jobId?: any; error?: any }).jobId,
+          error: (result as { success?: any; documentId?: any; jobId?: any; error?: any }).error,
           processingTime: Date.now() - startTime,
         });
       }

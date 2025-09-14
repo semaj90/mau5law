@@ -246,7 +246,7 @@ export function useRedisComponent(
     });
 
     // Cache result locally
-    if (config.autoCache !== false && result.cached) {
+    if (config.autoCache !== false && (result as { cached?: any }).cached) {
       componentCache.set(cacheKey, result);
       
       // Limit cache size
@@ -256,7 +256,7 @@ export function useRedisComponent(
       }
     }
 
-    if (result.cached) {
+    if ((result as { cached?: any }).cached) {
       cacheHits++;
     } else {
       cacheMisses++;

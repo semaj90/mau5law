@@ -57,7 +57,7 @@ https://svelte.dev/e/js_parse_error -->
     let currentStep = $state(0);
     let isProcessing = $state(false);
     let autoSaveEnabled = $state(true);
-    let validationResults = $state<Record<number, ValidationResult>>({});
+    let validationResults = $state<Record<number, ValidationResult>(0)>({});
     let processingQueue = $state<string[]>([]);
 
     // Case data with enhanced tracking using Svelte 5 runes
@@ -142,8 +142,7 @@ https://svelte.dev/e/js_parse_error -->
     );
 
     // Auto-save functionality using Svelte 5 $effect
-  let autoSaveTimeout = $state<NodeJS.Timeout;
-    const AUTOSAVE_DELAY >(3000); // 3 seconds
+  let autoSaveTimeout = $state<NodeJS.Timeoutconst AUTOSAVE_DELAY | null>(null)(3000); // 3 seconds
 
     $effect(() => {
         if (autoSaveEnabled && caseData) {
@@ -184,43 +183,43 @@ https://svelte.dev/e/js_parse_error -->
         switch (stepConfig.id) {
             case 'case-info':
                 if (!caseData.title.trim()) {
-                    result.errors.push('Case title is required');
+                    (result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).errors.push('Case title is required');
                 }
                 if (!caseData.clientInfo.name.trim()) {
-                    result.errors.push('Client name is required');
+                    (result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).errors.push('Client name is required');
                 }
                 if (!caseData.clientInfo.email.trim()) {
-                    result.warnings.push('Client email is recommended');
+                    (result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).warnings.push('Client email is recommended');
                 }
                 break;
 
             case 'document-upload':
                 if (caseData.documents.length === 0) {
-                    result.errors.push('At least one document is required');
+                    (result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).errors.push('At least one document is required');
                 }
                 break;
 
             case 'evidence-analysis':
                 if (caseData.evidence.length === 0) {
-                    result.warnings.push('No evidence items found');
+                    (result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).warnings.push('No evidence items found');
                 }
                 break;
 
             case 'ai-analysis':
                 if (!caseData.aiAnalysis) {
-                    result.warnings.push('AI analysis not completed');
+                    (result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).warnings.push('AI analysis not completed');
                 }
                 break;
 
             case 'review-submit':
                 // Final validation
                 if (!caseData.title || !caseData.clientInfo.name) {
-                    result.errors.push('Required fields missing');
+                    (result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).errors.push('Required fields missing');
                 }
                 break;
         }
 
-        result.isValid = result.errors.length === 0;
+        (result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).isValid = (result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).errors.length === 0;
 
         // Update validation store
         validationResults[currentStep] = result;
@@ -352,16 +351,16 @@ https://svelte.dev/e/js_parse_error -->
                 body: JSON.stringify(caseData)
             });
 
-            if (!response.ok) {
+            if (!(response as { ok?: any; json?: any }).ok) {
                 throw new Error('Failed to submit case');
             }
 
-            const result = await response.json();
+            const result = await (response as { ok?: any; json?: any }).json();
 
             // Track analytics
             analyticsStore.logEvent({
                 type: 'case_submitted',
-                caseId: result.id,
+                caseId: (result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).id,
                 stepCount: steps.length,
                 documentCount: caseData.documents.length,
                 evidenceCount: caseData.evidence.length
@@ -376,7 +375,7 @@ https://svelte.dev/e/js_parse_error -->
             });
 
             // Redirect to case view
-            await goto(`/cases/${result.id}`);
+            await goto(`/cases/${(result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).id}`);
 
         } catch (error) {
             console.error('Case submission failed:', error);
@@ -511,11 +510,11 @@ https://svelte.dev/e/js_parse_error -->
         });
 
         ocrProcessor.on('processing:start', (data) => {
-            processingQueue = [...processingQueue, data.filename];
+            processingQueue = [...processingQueue, (data as { filename?: any }).filename];
         });
 
         ocrProcessor.on('processing:complete', (result) => {
-            processingQueue = processingQueue.filter(filename => filename !== result.metadata.filename);
+            processingQueue = processingQueue.filter(filename => filename !== (result as { errors?: any; warnings?: any; isValid?: any; id?: any; metadata?: any }).metadata.filename);
         });
 
         // Setup voice commands
@@ -525,8 +524,7 @@ https://svelte.dev/e/js_parse_error -->
         analyticsStore.logEvent({ type: 'page_view', page: '/case/new' });
 
         // Check for case ID in URL (edit mode)
-  let pageStore = $state<any;
-        const unsubscribe >(page.subscribe(value => pageStore = value));
+  let pageStore = $state<anyconst unsubscribe | null>(null)(page.subscribe(value => pageStore = value));
         const caseId = pageStore?.url.searchParams.get('id');
         unsubscribe();
         if (caseId) {
@@ -575,7 +573,7 @@ https://svelte.dev/e/js_parse_error -->
                     <!-- Voice control button -->
                     {#if recognition}
                         <button
-                            onclick={toggleVoiceListening}
+                            on:click={toggleVoiceListening}
                             class="p-2 rounded-lg border border-gray-300 dark:border-gray-600
                                    hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors
                                    {isListening ? 'bg-red-50 border-red-300 text-red-600' : ''}"
@@ -614,7 +612,7 @@ https://svelte.dev/e/js_parse_error -->
         {steps}
         currentStep={currentStep}
         validationresults={validationResults}
-        step-onclick={(e) => jumpToStep(e.detail)}
+        step-on:click={(e) => jumpToStep(e.detail)}
     />
 
     <!-- Processing queue indicator -->
@@ -669,7 +667,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="flex items-center justify-between">
                     <div class="flex space-x-3">
                         <button
-                            onclick={previousStep}
+                            on:click={previousStep}
                             disabled={isFirstStep || isProcessing}
                             class="px-4 py-2 border border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
@@ -683,7 +681,7 @@ https://svelte.dev/e/js_parse_error -->
                         </button>
 
                         <button
-                            onclick={resetCase}
+                            on:click={resetCase}
                             disabled={isProcessing}
                             class="px-4 py-2 border border-red-300 dark:border-red-600
                                    rounded-md shadow-sm text-sm font-medium
@@ -699,7 +697,7 @@ https://svelte.dev/e/js_parse_error -->
 
                     <div class="flex space-x-3">
                         <button
-                            onclick={saveProgress}
+                            on:click={saveProgress}
                             disabled={isProcessing}
                             class="px-4 py-2 border border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
@@ -714,7 +712,7 @@ https://svelte.dev/e/js_parse_error -->
 
                         {#if isLastStep}
                             <button
-                                onclick={submitCase}
+                                on:click={submitCase}
                                 disabled={isProcessing}
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
@@ -727,7 +725,7 @@ https://svelte.dev/e/js_parse_error -->
                             </button>
                         {:else}
                             <button
-                                onclick={nextStep}
+                                on:click={nextStep}
                                 disabled={isProcessing}
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium

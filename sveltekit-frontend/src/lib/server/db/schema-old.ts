@@ -14,4 +14,4 @@ export const caseLawLinks = cases; // Placeholder
 export const lawParagraphs = cases; // Placeholder  
 export const crimes = cases; // Placeholder
 export const statutes = cases; // Placeholder
-export const courtDecisions = cases; // Placeholder
+export const courtDecisions = cases; // Placeholder;

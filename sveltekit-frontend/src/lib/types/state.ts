@@ -244,11 +244,11 @@ export interface Breadcrumb {
 // =====================================================
 
 // Fix common type errors
-export type { User } from './global';
+export type { User } from './global.js';
 // Orphaned content: export type { ChatSession, ChatMessage
-export type { UploadedFile } from './global';
-export type { SearchResults } from './global';
-export type { AIResponse } from './global';
+export type { UploadedFile } from './global.js';
+export type { SearchResults } from './global.js';
+export type { AIResponse } from './global.js';
 
 // Fix Svelte component types
 export type SvelteComponent = import('svelte').SvelteComponent;

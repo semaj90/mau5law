@@ -4,7 +4,7 @@
  * Solves the 213-second response time bottleneck with GPU compute shaders
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { webgpuAI } from '$lib/webgpu/webgpu-ai-engine.js';
 import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
@@ -101,7 +101,7 @@ async function tokenizeWithWebGPU(text: string): Promise<Float32Array> {
       8 // Kernel size
     );
     
-    return result.result;
+    return (result as { result?: any }).result;
   } catch (error) {
     console.warn('WebGPU tokenization failed, using CPU fallback:', error);
     // CPU fallback tokenization
@@ -130,7 +130,7 @@ async function processWebGPUChat(
     // CPU fallback for rate-limited requests
     const fallbackResult = await ollamaChatStream({
       message: request.message,
-      model: request.model || 'gemma2:2b', // Use faster model
+      model: request?.model || "unknown" // @ts-ignore - Model property access || 'gemma2:2b', // Use faster model
       temperature: request.temperature || 0.1,
       maxTokens: Math.min(request.maxTokens || 512, 512), // Limit tokens for speed
       systemPrompt: 'Provide concise legal responses.',
@@ -197,7 +197,7 @@ async function processWebGPUChat(
     }
     
     // Fallback: Use Ollama if WebGPU output is unintelligible
-    if (response.length < 10 || !/[a-zA-Z]/.test(response)) {
+    if ((response as { length?: any }).length < 10 || !/[a-zA-Z]/.test(response)) {
       console.log('🔄 WebGPU output unclear, using Ollama hybrid approach');
       
       const ollamaResult = await ollamaChatStream({
@@ -205,7 +205,7 @@ async function processWebGPUChat(
         model: 'gemma2:2b', // Use faster model
         temperature: request.temperature || 0.1,
         maxTokens: Math.min(request.maxTokens || 512, 512),
-        systemPrompt: 'Provide a concise legal response.',
+        systemPrompt: 'Provide a concise legal (response as { length?: any }).',
         conversationId: `webgpu_hybrid_${Date.now()}`,
         context: []
       });
@@ -249,7 +249,7 @@ async function processWebGPUChat(
       model: 'gemma2:2b',
       temperature: request.temperature || 0.1,
       maxTokens: 256,
-      systemPrompt: 'Provide a brief response.',
+      systemPrompt: 'Provide a brief (response as { length?: any }).',
       conversationId: `webgpu_error_${Date.now()}`,
       context: []
     });

@@ -6,23 +6,19 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from 'svelte';
 
-    let { steps = $bindable() } = $props(); // Array<{
-        id: string;
-        title: string;
-        description: string;
-        required: boolean;
-        estimatedTime: number;
-    }>;
-    let { currentStep = $bindable() } = $props(); // number;
-    let { validationResults = $bindable() } = $props(); // Record<number, {
-        isValid: boolean;
-        errors: string[];
-        warnings: string[];
-    }> = {};
+    interface Props {
+        steps?: any[];
+        currentStep?: number;
+        validationResults?: Record<number, {
+            isValid: boolean;
+            errors: string[];
+            warnings: string[];
+        }>;
+    }
 
-    const dispatch = createEventDispatcher<{
-        'step-click': number;
-    }>();
+    let { steps = [], currentStep = 0, validationResults = {} }: Props = $props();
+
+    const dispatch = createEventDispatcher();
 
     function handleStepClick(stepIndex: number): void {
         if (stepIndex <= currentStep || !steps[stepIndex].required) {
@@ -85,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
 
                     <li class="flex-1 min-w-0">
                         <button
-                            onclick={() => handleStepClick(index)}
+                            on:click={() => handleStepClick(index)}
                             disabled={!isClickable}
                             class="group flex items-center w-full text-left
                                    {isClickable ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700' : 'cursor-not-allowed'}
@@ -155,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
                                 <!-- Validation messages -->
                                 {#if validationResults[index]}
                                     {@const validation = validationResults[index]}
-                                    {#if validation.errors.length > 0}
+                                        {#if validation.errors.length > 0}
                                         <div class="mt-1 text-xs text-red-600 dark:text-red-400">
                                             {validation.errors.length} error{validation.errors.length !== 1 ? 's' : ''}
                                         </div>
@@ -194,5 +190,4 @@ https://svelte.dev/e/js_parse_error -->
     }
 </style>
 
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 

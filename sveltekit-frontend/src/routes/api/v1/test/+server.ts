@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * Comprehensive Integration Test API - SvelteKit 2 Production
@@ -299,10 +299,10 @@ async function runSingleTest(
 
     return {
       testName,
-      status: result.success ? 'passed' : 'failed',
+      status: (result as { success?: any; details?: any; error?: any }).success ? 'passed' : 'failed',
       duration: Date.now() - testStartTime,
-      details: result.details,
-      error: result.error
+      details: (result as { success?: any; details?: any; error?: any }).details,
+      error: (result as { success?: any; details?: any; error?: any }).error
     };
   } catch (error: any) {
     return {
@@ -390,14 +390,14 @@ async function testCoreServices(): Promise<any> {
 async function testRAGAPI(): Promise<any> {
   try {
     const response = await fetch('http://localhost:5173/api/v1/rag?action=health');
-    const healthData = await response.json();
+    const healthData = await (response as { json?: any; ok?: any; status?: any }).json();
     
     return {
-      success: response.ok,
+      success: (response as { json?: any; ok?: any; status?: any }).ok,
       details: {
         endpoint: '/api/v1/rag',
-        status: response.status,
-        healthData: response.ok ? healthData : undefined
+        status: (response as { json?: any; ok?: any; status?: any }).status,
+        healthData: (response as { json?: any; ok?: any; status?: any }).ok ? healthData : undefined
       }
     };
   } catch (error: any) {
@@ -411,14 +411,14 @@ async function testRAGAPI(): Promise<any> {
 async function testUploadAPI(): Promise<any> {
   try {
     const response = await fetch('http://localhost:5173/api/v1/upload?action=health');
-    const healthData = await response.json();
+    const healthData = await (response as { json?: any; ok?: any; status?: any }).json();
     
     return {
-      success: response.ok,
+      success: (response as { json?: any; ok?: any; status?: any }).ok,
       details: {
         endpoint: '/api/v1/upload',
-        status: response.status,
-        healthData: response.ok ? healthData : undefined
+        status: (response as { json?: any; ok?: any; status?: any }).status,
+        healthData: (response as { json?: any; ok?: any; status?: any }).ok ? healthData : undefined
       }
     };
   } catch (error: any) {

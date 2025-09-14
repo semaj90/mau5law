@@ -12,13 +12,17 @@
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Search, Loader2, ExternalLink, Bot } from 'lucide-svelte';
 
-  let {
-    data = [],
+  let { data = [],
     placeholder = 'Search laws and regulations...',
     onResultSelect = null,
     showAIActions = true,
     maxResults = 10,
-  } = $props();
+   }: { data = [],
+    placeholder = 'Search laws and regulations...',
+    onResultSelect = null,
+    showAIActions = true,
+    maxResults = 10,
+  : any } = $props();
 
   let searchQuery = $state('');
   let searchResults = $state([]);
@@ -44,7 +48,7 @@
 
   // Initialize Fuse.js when data changes
   $effect(() => {
-    if (data && data.length > 0) {
+    if (data && (data as { length?: any }).length > 0) {
       fuse = new Fuse(data, fuseOptions);
     }
   });
@@ -83,10 +87,10 @@
 
       // Process results with highlighting and scoring
       searchResults = results.map((result) => ({
-        ...result.item,
-        fuseScore: result.score,
-        matches: result.matches || [],
-        highlighted: highlightMatches(result.item, result.matches || []),
+        ...(result as { item?: any; score?: any; matches?: any }).item,
+        fuseScore: (result as { item?: any; score?: any; matches?: any }).score,
+        matches: (result as { item?: any; score?: any; matches?: any }).matches || [],
+        highlighted: highlightMatches((result as { item?: any; score?: any; matches?: any }).item, (result as { item?: any; score?: any; matches?: any }).matches || []),
       }));
     } catch (error) {
       console.error('Fuse search error:', error);
@@ -177,7 +181,7 @@
             <div class="flex items-start justify-between">
               <div.Title class="text-base leading-tight">
                 {@html law.highlighted.title || law.title}
-              </Card.Title>
+              </div.Title>
               <div class="flex items-center gap-2 ml-2">
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{getScoreLabel(law.fuseScore)}</span>
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{law.jurisdiction}</span>
@@ -185,7 +189,7 @@
             </div>
             <div.Description class="text-sm">
               {@html law.highlighted.description || law.description}
-            </Card.Description>
+            </div.Description>
             <div class="flex gap-2 text-xs nes-text is-disabled">
               <span>{law.code}</span>
               {#if law.category}
@@ -197,31 +201,33 @@
                 <span>Updated {new Date(law.lastUpdated).toLocaleDateString()}</span>
               {/if}
             </div>
-          </Card.Header>
+          </div.Header>
 
           {#if showAIActions}
             <div.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
-                <Button class="bits-btn" size="sm" onclick={() => handleAIAction(law, 'summary')}>
+                <Button class="bits-btn" size="sm" on:click={() =>
+handleAIAction(law, 'summary')}>
                   <Bot class="h-3 w-3 mr-1" />
                   AI Summary
-                </button>
-                <Button class="bits-btn" variant="outline" size="sm" onclick={() => handleAIAction(law, 'chat')}>
+
+                <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+handleAIAction(law, 'chat')}>
                   <Bot class="h-3 w-3 mr-1" />
                   Ask AI
-                </button>
+
                 {#if law.fullTextUrl}
                   <Button class="bits-btn" variant="outline" size="sm" asChild>
-                    <a href={law.fullTextUrl} target="_blank" rel="noopener noreferrer">
+<a href={law.fullTextUrl} target="_blank" rel="noopener noreferrer">
                       <ExternalLink class="h-3 w-3 mr-1" />
                       Full Text
                     </a>
-                  </button>
+
                 {/if}
               </div>
-            </Card.Content>
+            </div.Content>
           {/if}
-        </Card.Root>
+        </div.Root>
       {/each}
     </div>
   {:else if searchQuery && !isSearching}
@@ -233,8 +239,8 @@
         <p class="text-sm nes-text is-disabled mt-1">
           Try adjusting your search terms or use more general keywords.
         </p>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   {/if}
 </div>
 

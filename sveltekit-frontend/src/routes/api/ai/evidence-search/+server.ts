@@ -17,7 +17,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db';
 import { eq, sql, and, ne } from 'drizzle-orm';
 import { evidence } from '$lib/server/db/unified-schema';
@@ -74,14 +74,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     const responseData = {
       results: results.map(item => ({
-        id: item.id,
-        fileName: item.file_name,
-        filePath: item.file_path,
-        ocrContent: item.ocr_content?.substring(0, 500) + '...', // Truncate for performance
-        aiSummary: item.ai_summary,
-        caseId: item.case_id,
-        createdAt: item.created_at,
-        similarity: item.similarity
+        id: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).id,
+        fileName: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).file_name,
+        filePath: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).file_path,
+        ocrContent: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).ocr_content?.substring(0, 500) + '...', // Truncate for performance
+        aiSummary: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).ai_summary,
+        caseId: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).case_id,
+        createdAt: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).created_at,
+        similarity: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).similarity
       })),
       count: results.length
     };

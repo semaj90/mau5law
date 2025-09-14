@@ -54,10 +54,10 @@ export async function deleteCollection(name: string): Promise<any> {
 // Qdrant vector search service
 // High-performance vector search with memory optimization
 // Now using optimized service with cache-like logging system
-import { optimizedQdrant, qdrantOptimized } from './qdrant-optimized.js';
-import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js';
-import { generateEmbedding } from '../ai/embeddings-simple.js';
-import { productionLogger as logger } from '../production-logger.js';
+import { optimizedQdrant, qdrantOptimized } from './qdrant-optimized.js.js';
+import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js.js';
+import { generateEmbedding } from '../ai/embeddings-simple.js.js';
+import { productionLogger as logger } from '../production-logger.js.js';
 
 let qdrantWrapper: QdrantApiWrapper | null = null;
 
@@ -417,7 +417,7 @@ export const qdrant = {
   clearCaches: () => qdrantOptimized.clearCaches(),
   
   // Batch operations for memory efficiency
-  upsertBatch: (collection: string, points: Array<{ id: string; vector: number[]; payload: any }>) =>
+  upsertBatch: (collection: string, points: Array<) =>
     qdrantOptimized.upsertBatch(collection, points),
     
   // Search with advanced options

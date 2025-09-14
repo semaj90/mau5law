@@ -68,8 +68,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // GPU Animation State
-  let canvas = $state<HTMLCanvasElement;
-  let gl: WebGLRenderingContext | null >(null);
+  let canvas = $state<HTMLCanvasElementlet gl: WebGLRenderingContext | null>(null)(null);
   let animationFrame: number;
   let isHovered = $state(false);
   let isPressed = $state(false);
@@ -315,7 +314,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- WebGL Canvas for GPU effects -->
   {#if gpuEffects}
     <canvas 
-      bind:this={canvas}
+      bind:this={canvas as any}
       class="absolute inset-0 pointer-events-none rounded-inherit"
       width="100"
       height="40"
@@ -326,9 +325,9 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Main button -->
   <button
     class={baseClasses}
-    onclick={handleClick}
-    onmouseenter={handleMouseEnter}
-    onmouseleave={handleMouseLeave}
+    on:click={handleClick}
+    on:mouseenter={handleMouseEnter}
+    on:mouseleave={handleMouseLeave}
     {...restProps}
   >
     <!-- Loading spinner -->
@@ -360,7 +359,7 @@ https://svelte.dev/e/js_parse_error -->
         <div 
           class="ml-1 h-2 w-2 rounded-full bg-blue-400 animate-pulse"
           title="AI Suggested"
-          transitifly={{ y: -10, duration: 300 }}
+          /* transition removed */}
         />
       {/if}
     </span>

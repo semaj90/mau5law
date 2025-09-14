@@ -17,10 +17,7 @@
     showText = true
   } = $props<Props>();
 
-  const dispatch = createEventDispatcher<{
-    saved: { citation: Citation; success: boolean };
-    error: { citation: Citation; error: string };
-  }>();
+  const dispatch = createEventDispatcher();
 
   let isAuthenticated = $state(citationsManager.isAuthenticated());
   let isSaved = $state(false);
@@ -132,7 +129,7 @@
     disabled={true}
     title="Sign in to save citations"
   >
-    🔒 {showText ? 'Sign in to Save' : ''}
+🔒 {showText ? 'Sign in to Save' : ''}
   </ButtonBits>
 {:else}
   <div class="citation-save-container">
@@ -140,7 +137,7 @@
       {variant}
       {size}
       class="citation-save-btn {isSaved ? 'saved' : ''}"
-      onclick={isSaved ? handleRemove : handleSave}
+      on:click={isSaved ? handleRemove : handleSave}
       disabled={isSaving}
       title={isSaved ? 'Remove from saved citations' : 'Save citation'}
     >
@@ -158,7 +155,7 @@
         variant="ghost"
         {size}
         class="collection-selector-btn"
-        onclick={() => showCollectionSelector = !showCollectionSelector}
+        on:click={() => showCollectionSelector = !showCollectionSelector}
         title="Save to collection"
       >
         📁
@@ -168,24 +165,24 @@
         <div class="collection-selector">
           <div class="collection-header">
             <h4>Save to Collection</h4>
-            <button class="close-btn" onclick={() => showCollectionSelector = false}>✕</button>
+            <button class="close-btn" on:click={() => showCollectionSelector = false}>✕
+
           </div>
           <div class="collection-list">
             {#each collections as collection}
               <button
                 class="collection-item"
-                onclick={() => handleSaveToCollection(collection.id)}
+                on:click={() => handleSaveToCollection(collection.id)}
               >
                 <span class="collection-name">{collection.name}</span>
                 <span class="collection-count">
                   {collection.citations.length} citations
                 </span>
-              </button>
+
             {/each}
           </div>
         </div>
       {/if}
-    {/if}
   </div>
 {/if}
 

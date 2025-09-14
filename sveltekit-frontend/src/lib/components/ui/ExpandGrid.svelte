@@ -28,11 +28,9 @@ https://svelte.dev/e/js_parse_error -->
   let class = $state("");
   ;
   let isExpanded = $state(false);
-  let containerElement = $state<HTMLDivElement;
-
-  function handleMouseEnter() {
+  let containerElement = $state<HTMLDivElementfunction handleMouseEnter() {
     if (expandOnHover) {
-      isExpanded >(true);
+      isExpanded | null>(null)(true);
       onexpand?.();
   }}
   function handleMouseLeave() {
@@ -64,8 +62,7 @@ https://svelte.dev/e/js_parse_error -->
     --easing: {easing};
   "
   on:mouseenter={handleMouseEnter}
-  on:mouseleave={handleMouseLeave}
-  focusin={handleFocusIn}
+  on:mouseleave={focusin}
   focusout={handleFocusOut}
   role="grid"
   tabindex={0}

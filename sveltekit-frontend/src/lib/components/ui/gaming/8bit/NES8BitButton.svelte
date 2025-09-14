@@ -67,7 +67,8 @@
     onFocus
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
 
   let isPressed = $state(false);
   let audioContext = $state<AudioContext | null >(null);
@@ -160,7 +161,7 @@
   {formtarget}
   {name}
   {value}
-  onclick={handleClick}
+  on:click={handleClick}
   on:on:mouseenter={handleHover}
   on:focus={handleFocus}
   class="nes-8bit-button nes-btn {nesVariant} {className}"

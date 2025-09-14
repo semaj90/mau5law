@@ -3,7 +3,7 @@ import { withApiHandler, parseRequestBody, apiSuccess, validationError, createPa
 import { CaseOperations } from '$lib/server/db/enhanced-operations';
 import type { Case } from '$lib/server/db/schema-postgres';
 import { createClient } from 'redis';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 

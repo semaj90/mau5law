@@ -1,7 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { caseActivities, cases } from "$lib/server/db/schema-postgres";
 import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Environment variables fallback

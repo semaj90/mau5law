@@ -316,12 +316,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 			{step}
 			{disabled}
 			bind:value
-			oninput={handleInput}
+			on:input={handleInput}
 			on:mousedown={handleInteractionStart}
 			on:mouseup={handleInteractionEnd}
 			on:touchstart={handleInteractionStart}
-			on:touchend={handleInteractionEnd}
-			onkeydown={handleKeydown}
+			ontouchend={onkeydown}
 			class="n64-slider-input"
 			aria-label={label}
 			aria-valuemin={min}

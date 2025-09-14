@@ -13,14 +13,14 @@
 
   let uploadedFiles: UploadedFile[] = $state([]);
 
-  function handleFilesAdded(event: CustomEvent<{ files: File[] }>) {
+  function handleFilesAdded(event: CustomEvent) {
     console.log("Files added:", event.detail.files);
   }
-  function handleUploadComplete(event: CustomEvent<{ files: UploadedFile[] }>) {
+  function handleUploadComplete(event: CustomEvent) {
     console.log("Upload complete:", event.detail.files);
     uploadedFiles = [...uploadedFiles, ...event.detail.files];
   }
-  function handleFileRemoved(event: CustomEvent<{ fileId: string }>) {
+  function handleFileRemoved(event: CustomEvent) {
     console.log("File removed:", event.detail.fileId);
   }
 </script>

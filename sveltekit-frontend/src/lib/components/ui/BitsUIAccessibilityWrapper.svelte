@@ -45,7 +45,7 @@
   onMount(() => {
     // Update route config when route changes
     const interval = setInterval(() => {
-      const newConfig = enhancedRouteAccessibility.getCurrentConfig();
+      const newConfig = enhancedRouteAccessibility.getCurrentConfig());
       if (newConfig !== currentRouteConfig) {
         currentRouteConfig = newConfig;
       }

@@ -6,10 +6,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   import type { Evidence } from "$lib/data/types";
   import { createEventDispatcher } from "svelte";
 
-  const dispatch = createEventDispatcher<{
-    upload: Evidence;
-    error: string;
-  }>();
+  const dispatch = createEventDispatcher();
 
   let dragActive = false;
   let files: FileList | null = null;
@@ -69,13 +66,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   on:dragenter={handleDragEnter}
   on:dragleave={handleDragLeave}
   on:dragover|preventDefault
-  on:drop={handleDrop}
-  onkeydown={(e) =>
-    (e.key === "Enter" || e.key === " ") &&
-    (e.preventDefault(),
-    (
-      e.currentTarget.querySelector('input[type="file"]') as HTMLInputElement
-    )?.click())}
+  on:drop={onkeydown}
 >
   <div class="upload-content">
     <svg
@@ -94,7 +85,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     <input
       type="file"
       multiple
-      onchange={(e) => {
+      on:change={(e) => {
         files = e.currentTarget.files;
         handleUpload();
       }}

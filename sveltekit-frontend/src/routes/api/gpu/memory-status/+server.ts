@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Base URL for Go GPU status service (fallback to localhost)
 const GO_BASE =

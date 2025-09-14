@@ -4,7 +4,7 @@
  * and Bits UI v2 semantic roles. Allows future theming without touching core geometry logic.
  */
 
-import { YORHA_COLORS } from '../YoRHaUI3D';
+import { YORHA_COLORS } from '../YoRHaUI3D.js';
 
 // NES.css retro fallback palette (selected core colors)
 export const NES_PALETTE = {

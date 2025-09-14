@@ -82,8 +82,8 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
   async function refreshSystemStatus() {
     try {
       const response = await fetch('/api/unified/status');
-      if (response.ok) {
-        const data = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
         systemStatus.set(data);
       }
     } catch (error) {
@@ -101,15 +101,15 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
           options: processingOptions
         })
       });
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        if ((data as { success?: any; result?: any; document_type?: any; court_level?: any; gpuUtilization?: any }).success) {
           // Add to results
           processingResults.update(results => [{
             timestamp: Date.now(),
             document: testDocument,
-            result: data.result,
-            processingTime: data.result.processingTime
+            result: (data as { success?: any; result?: any; document_type?: any; court_level?: any; gpuUtilization?: any }).result,
+            processingTime: (data as { success?: any; result?: any; document_type?: any; court_level?: any; gpuUtilization?: any }).(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).processingTime
           }, ...results.slice(0, 9)]); // Keep last 10 results
           // Update test document ID for next test
           testDocument.id = 'demo_doc_' + Date.now();
@@ -315,7 +315,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
             </div>
           </div>
           
-          <button onclick={processDocument} disabled={$isProcessing}
+          <button on:click={processDocument} disabled={$isProcessing}
                   class="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 
                          disabled:cursor-not-allowed rounded-lg font-medium transition-colors">
             {#if $isProcessing}
@@ -339,39 +339,39 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
             <div class="bg-gray-700 rounded-lg p-4">
               <div class="flex justify-between items-start mb-2">
                 <div class="flex items-center">
-                  <span class="mr-2">{getProcessingPathIcon(result.result.processingPath)}</span>
-                  <span class={`font-medium ${getProcessingPathColor(result.result.processingPath)}`}>
-                    {result.result.processingPath.toUpperCase()} Path
+                  <span class="mr-2">{getProcessingPathIcon((result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).processingPath)}</span>
+                  <span class={`font-medium ${getProcessingPathColor((result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).processingPath)}`}>
+                    {(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).processingPath.toUpperCase()} Path
                   </span>
                 </div>
                 <span class="text-xs text-gray-400">
-                  {new Date(result.timestamp).toLocaleTimeString()}
+                  {new Date((result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).timestamp).toLocaleTimeString()}
                 </span>
               </div>
               
               <div class="text-sm text-gray-300 mb-2">
-                {result.document.title}
+                {(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).document.title}
               </div>
               
               <div class="grid grid-cols-3 gap-2 text-xs">
                 <div>
                   <span class="text-gray-400">Time:</span>
-                  <span class="text-white ml-1">{result.processingTime}ms</span>
+                  <span class="text-white ml-1">{(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).processingTime}ms</span>
                 </div>
                 <div>
                   <span class="text-gray-400">Score:</span>
-                  <span class="text-white ml-1">{result.result.ranking.finalScore.toFixed(3)}</span>
+                  <span class="text-white ml-1">{(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).ranking.finalScore.toFixed(3)}</span>
                 </div>
                 <div>
                   <span class="text-gray-400">Confidence:</span>
-                  <span class="text-white ml-1">{(result.result.analysis.confidence * 100).toFixed(1)}%</span>
+                  <span class="text-white ml-1">{((result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).analysis.confidence * 100).toFixed(1)}%</span>
                 </div>
               </div>
               
-              {#if result.result.metadata.gpuUtilization > 0}
+              {#if (result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).metadata.gpuUtilization > 0}
                 <div class="mt-2 text-xs">
                   <span class="text-purple-400">GPU Utilization:</span>
-                  <span class="text-white ml-1">{(result.result.metadata.gpuUtilization * 100).toFixed(1)}%</span>
+                  <span class="text-white ml-1">{((result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).(result as { result?: any; timestamp?: any; document?: any; processingTime?: any }).metadata.gpuUtilization * 100).toFixed(1)}%</span>
                 </div>
               {/if}
             </div>

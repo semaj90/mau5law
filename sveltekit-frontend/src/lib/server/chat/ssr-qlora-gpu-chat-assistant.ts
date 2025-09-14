@@ -10,8 +10,8 @@
  */
 
 import { qloraRLOrchestrator } from '$lib/services/qlora-rl-langextract-integration';
-import { NESMemoryArchitecture } from '../../memory/nes-memory-architecture';
-import { WebGPUSOMCache } from '../../webgpu/som-webgpu-cache';
+import { NESMemoryArchitecture } from '../../memory/nes-memory-architecture.js';
+import { WebGPUSOMCache } from '../../webgpu/som-webgpu-cache.js';
 import { lokiRedisCache } from '$lib/cache/loki-redis-integration';
 import type { RequestEvent } from '@sveltejs/kit';
 
@@ -92,7 +92,7 @@ export class SSRQLorAGPUChatAssistant {
 
     for (const [index, item] of commonPatterns.entries()) {
       const patternBuffer = new TextEncoder().encode(JSON.stringify(item));
-      const embeddedPattern = await this.generateEmbedding(item.pattern);
+      const embeddedPattern = await this.generateEmbedding((item as { pattern?: any }).pattern);
 
       // Store in NES CHR-ROM for instant pattern matching
       await this.nesMemory.allocateDocument(
@@ -121,11 +121,7 @@ export class SSRQLorAGPUChatAssistant {
     userId: string,
     sessionId: string,
     initialMessage?: string
-  ): Promise<{
-    ssrContext: SSRChatContext;
-    prerenderedHTML: string;
-    preloadedData: any;
-  }> {
+  ): Promise<any> {
     console.log(`📱 Rendering SSR chat context for user ${userId}`);
 
     // Load or create user dictionary
@@ -330,7 +326,7 @@ export class SSRQLorAGPUChatAssistant {
       .slice(0, 10);
 
     for (const [term, data] of topTerms) {
-      responses.set(`define_${term}`, data.definition);
+      responses.set(`define_${term}`, (data as { response?: any; definition?: any; vectorEmbedding?: any }).definition);
     }
 
     return responses;
@@ -388,7 +384,7 @@ export class SSRQLorAGPUChatAssistant {
       { quality: 8, usefulness: 8, accuracy: 8 } // Assume good feedback
     );
 
-    return result.extractedData.response || "I understand your question. Let me help you with that.";
+    return (result as { extractedData?: any; embedding?: any }).extractedData.response || "I understand your question. Let me help you with that.";
   }
 
   /**
@@ -433,7 +429,7 @@ export class SSRQLorAGPUChatAssistant {
       colors: this.responseToColors(response),
       animation: 'legal_pulse',
       metadata: {
-        complexity: response.length / 100,
+        complexity: (response as { length?: any; json?: any; split?: any }).length / 100,
         confidence: 0.8
       }
     };
@@ -452,8 +448,8 @@ export class SSRQLorAGPUChatAssistant {
       body: JSON.stringify({ text })
     });
 
-    const result = await response.json();
-    return new Float32Array(result.embedding);
+    const result = await (response as { length?: any; json?: any; split?: any }).json();
+    return new Float32Array((result as { extractedData?: any; embedding?: any }).embedding);
   }
 
   private cosineSimilarity(a: Float32Array, b: Float32Array): number {
@@ -471,7 +467,7 @@ export class SSRQLorAGPUChatAssistant {
   }
 
   private chunkResponse(response: string): string[] {
-    const words = response.split(' ');
+    const words = (response as { length?: any; json?: any; split?: any }).split(' ');
     const chunks: string[] = [];
     const chunkSize = 5; // 5 words per chunk
 

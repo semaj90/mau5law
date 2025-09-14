@@ -14,7 +14,7 @@ import {
   real,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { users, cases } from "./schema-postgres";
+import { users, cases } from './schema-postgres.js';
 
 // === REPORTS & DOCUMENTS ===
 export const reports = pgTable("reports", {

@@ -4,7 +4,7 @@
  * Extends the main legal-ai page loader with testing-specific data
  */
 
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
 import { desc, eq, count, sql } from 'drizzle-orm';
@@ -18,21 +18,8 @@ export interface DatabaseSyncTestData {
       models: string[];
       error: string | null;
     };
-    recentSessions: Array<{
-      id: string;
-      sessionName: string;
-      messageCount: number;
-      lastActivity: string;
-      documentsProcessed: number;
-    }>;
-    recentDocuments: Array<{
-      id: string;
-      title: string;
-      summary: string;
-      documentType: string;
-      createdAt: string;
-      keyTerms: string[];
-    }>;
+    recentSessions: Array<any>;
+    recentDocuments: Array<any>;
     serviceStatus: {
       postgresql: boolean;
       ollama: boolean;

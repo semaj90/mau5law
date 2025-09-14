@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Clean, self-contained analysis endpoint that avoids referencing missing DB schema symbols.
 // - Validates input

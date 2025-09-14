@@ -121,7 +121,7 @@ import {
   commonMCPQueries,
   type MCPToolRequest,
   type OrchestrationOptions
-} from '../utils/mcp-helpers';
+} from '../utils/mcp-helpers.js';
 
 // Context7 Semantic Search Integration
 export interface Context7SearchOptions {
@@ -152,16 +152,16 @@ export async function performContext7Search(
 
     // Transform to our result format
     return results.map((result: any, index: number) => ({
-      content: result.content || result.text || String(result),
-      relevanceScore: result.score || 1 - index * 0.1, // Fallback scoring
-      sourceType: result.type || "documentation",
-      filePath: result.file || result.path,
-      lineNumber: result.line,
+      content: (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).content || (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).text || String(result),
+      relevanceScore: (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).score || 1 - index * 0.1, // Fallback scoring
+      sourceType: (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).type || "documentation",
+      filePath: (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).file || (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).path,
+      lineNumber: (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).line,
       context: {
         caseId: options.caseId,
         query: options.query,
         timestamp: new Date().toISOString(),
-        ...result.metadata
+        ...(result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).metadata
       }
     }));
   } catch (error: any) {
@@ -312,7 +312,7 @@ ${orchestratorResult.selfPrompt}`;
         `Fix issues identified in ${todoId}`,
         options
       );
-      return `Fix Applied (orchestrator fallback):\n${result.selfPrompt}`;
+      return `Fix Applied (orchestrator fallback):\n${(result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).selfPrompt}`;
     }
   }
 
@@ -355,13 +355,13 @@ ${orchestratorResult.selfPrompt}`;
       }
 
       return `Auto-Fix Completed for ${todoId}:
-Files Processed: ${result.summary.filesProcessed}
-Files Fixed: ${result.summary.filesFixed}
-Total Issues: ${result.summary.totalIssues}
-Area: ${result.summary.area}
+Files Processed: ${(result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).summary.filesProcessed}
+Files Fixed: ${(result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).summary.filesFixed}
+Total Issues: ${(result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).summary.totalIssues}
+Area: ${(result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).summary.area}
 
 Detailed Results:
-${Object.entries(result.fixes)
+${Object.entries((result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).fixes)
   .map(([key, value]) =>
     Array.isArray(value) && value.length > 0
       ? `${key}: ${value.length} fixes`
@@ -371,10 +371,10 @@ ${Object.entries(result.fixes)
   .join("\n")}
 
 Recommendations:
-${result.recommendations.join("\n")}
+${(result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).recommendations.join("\n")}
 
 Config Improvements:
-${result.configImprovements?.join("\n") || "None"}`;
+${(result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).configImprovements?.join("\n") || "None"}`;
     } catch (error: any) {
       return `Auto-Fix Failed for ${todoId}: ${error}`;
     }
@@ -483,16 +483,16 @@ export class Context7SemanticAuditor {
 
       // 4. Trigger agents for any improvement items
       for (const result of results) {
-        if (result.status === "improvement" && result.todoId) {
+        if ((result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).status === "improvement" && (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).todoId) {
           const trigger: AgentTrigger = {
-            todoId: result.todoId,
+            todoId: (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).todoId,
             action: "analyze",
             status: "pending"
           };
 
           // Trigger agent asynchronously
           this.orchestrator.triggerAgent(trigger).then(() => {
-            result.agentTriggered = true;
+            (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).agentTriggered = true;
           });
         }
       }
@@ -521,7 +521,7 @@ export class Context7SemanticAuditor {
 
   private async checkBestPractices(
     component: string
-  ): Promise<{ issues: string[] }> {
+  ): Promise<any> {
     const areas = ["performance", "security", "ui-ux"] as const;
     const issues: string[] = [];
 

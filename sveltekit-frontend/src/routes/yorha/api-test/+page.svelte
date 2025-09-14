@@ -382,7 +382,7 @@ https://svelte.dev/e/js_parse_error -->
     yorhaAPI.subscribe('api:response', (data) => {
       realTimeStats.activeConnections = Math.max(0, realTimeStats.activeConnections - 1);
 
-      if (data.success) {
+      if ((data as { success?: any; latency?: any; responseSize?: any }).success) {
         const newSuccessRate = ((realTimeStats.successRate * realTimeStats.totalRequests) + 100) / (realTimeStats.totalRequests + 1);
         realTimeStats.successRate = Math.round(newSuccessRate * 100) / 100;
       } else {
@@ -390,9 +390,9 @@ https://svelte.dev/e/js_parse_error -->
         realTimeStats.successRate = Math.round(newSuccessRate * 100) / 100;
       }
 
-      realTimeStats.averageLatency = Math.round(((realTimeStats.averageLatency * (realTimeStats.totalRequests - 1)) + data.latency) / realTimeStats.totalRequests);
+      realTimeStats.averageLatency = Math.round(((realTimeStats.averageLatency * (realTimeStats.totalRequests - 1)) + (data as { success?: any; latency?: any; responseSize?: any }).latency) / realTimeStats.totalRequests);
       realTimeStats.lastUpdate = new Date();
-      realTimeStats.dataTransferred += (data.responseSize || 0);
+      realTimeStats.dataTransferred += ((data as { success?: any; latency?: any; responseSize?: any }).responseSize || 0);
 
       updateRealTimeStats();
     });
@@ -424,7 +424,7 @@ https://svelte.dev/e/js_parse_error -->
   function updatePerformanceMetrics() {
     const now = Date.now();
     const recentResults = testResults.filter(result =>
-      new Date(result.startTime).getTime() > (now - 300000) // Last 5 minutes
+      new Date((result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).startTime).getTime() > (now - 300000) // Last 5 minutes
     );
 
     if (recentResults.length > 0) {
@@ -512,7 +512,7 @@ https://svelte.dev/e/js_parse_error -->
       // Parse response
       let responseData;
   let responseSize = $state(0);
-      const responseText = await response.text();
+      const responseText = await (response as { text?: any; ok?: any; status?: any; headers?: any }).text();
       responseSize = responseText.length;
 
       try {
@@ -522,23 +522,23 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       // Update test result
-      testResult.status = response.ok ? 'success' : 'error';
+      testResult.status = (response as { text?: any; ok?: any; status?: any; headers?: any }).ok ? 'success' : 'error';
       testResult.endTime = new Date();
       testResult.latency = latency;
       testResult.response = responseData;
-      testResult.statusCode = response.status;
+      testResult.statusCode = (response as { text?: any; ok?: any; status?: any; headers?: any }).status;
       testResult.responseSize = responseSize;
-      testResult.headers = Object.fromEntries(response.headers.entries();
+      testResult.headers = Object.fromEntries((response as { text?: any; ok?: any; status?: any; headers?: any }).headers.entries());
       // Validation
       if (endpoint.validation) {
-        testResult.validation = validateResponse(responseData, endpoint.validation, response.status);
+        testResult.validation = validateResponse(responseData, endpoint.validation, (response as { text?: any; ok?: any; status?: any; headers?: any }).status);
       } else {
-        testResult.validation.passed = response.ok;
+        testResult.validation.passed = (response as { text?: any; ok?: any; status?: any; headers?: any }).ok;
       }
 
       // Emit event for monitoring
       yorhaAPI.emit('api:response', {
-        success: response.ok,
+        success: (response as { text?: any; ok?: any; status?: any; headers?: any }).ok,
         latency,
         responseSize,
         endpoint: endpoint.id
@@ -574,16 +574,16 @@ https://svelte.dev/e/js_parse_error -->
 
     // Check status codes
     if (validation.statusCodes && !validation.statusCodes.includes(statusCode)) {
-      result.passed = false;
-      result.errors.push(`Expected status codes: ${validation.statusCodes.join(', ')}, got: ${statusCode}`);
+      (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).passed = false;
+      (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).errors.push(`Expected status codes: ${validation.statusCodes.join(', ')}, got: ${statusCode}`);
     }
 
     // Check required fields
     if (validation.required && typeof responseData === 'object' && responseData !== null) {
       for (const field of validation.required) {
         if (!(field in responseData)) {
-          result.passed = false;
-          result.errors.push(`Missing required field: ${field}`);
+          (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).passed = false;
+          (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).errors.push(`Missing required field: ${field}`);
         }
       }
     }
@@ -607,7 +607,7 @@ https://svelte.dev/e/js_parse_error -->
     testSuites = [...testSuites];
 
     try {
-      const endpoints = apiEndpoints.filter(ep => suite.endpoints.includes(ep.id);
+      const endpoints = apiEndpoints.filter(ep => suite.endpoints.includes(ep.id));
       if (suite.parallel) {
         // Run tests in parallel
         const promises = endpoints.map(endpoint => {
@@ -629,20 +629,20 @@ https://svelte.dev/e/js_parse_error -->
             for (let i = 0; i < suite.iterations; i++) {
               await runApiTest(endpoint);
               // Small delay between iterations
-              await new Promise(resolve => setTimeout(resolve, 100);
+              await new Promise(resolve => setTimeout(resolve, 100));
             }
           } else {
             await runApiTest(endpoint);
             // Small delay between tests
-            await new Promise(resolve => setTimeout(resolve, 500);
+            await new Promise(resolve => setTimeout(resolve, 500));
           }
         }
       }
 
       // Calculate suite results
       const suiteTestResults = testResults.filter(result =>
-        result.startTime.getTime() >= suiteStartTime &&
-        suite.endpoints.includes(result.endpointId)
+        (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).startTime.getTime() >= suiteStartTime &&
+        suite.endpoints.includes((result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).endpointId)
       );
 
       const successCount = suiteTestResults.filter(r => r.status === 'success').length;
@@ -672,7 +672,7 @@ https://svelte.dev/e/js_parse_error -->
       for (const endpoint of apiEndpoints) {
         await runApiTest(endpoint);
         // Small delay between tests
-        await new Promise(resolve => setTimeout(resolve, 200);
+        await new Promise(resolve => setTimeout(resolve, 200));
       }
     } finally {
       isRunning = false;
@@ -736,16 +736,16 @@ https://svelte.dev/e/js_parse_error -->
 
     // Filter by status
     if (filterStatus !== 'all') {
-      filtered = filtered.filter(result => result.status === filterStatus);
+      filtered = filtered.filter(result => (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).status === filterStatus);
     }
 
     // Filter by search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(result =>
-        result.endpoint.toLowerCase().includes(term) ||
-        result.category?.toLowerCase().includes(term) ||
-        result.url.toLowerCase().includes(term)
+        (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).endpoint.toLowerCase().includes(term) ||
+        (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).category?.toLowerCase().includes(term) ||
+        (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).url.toLowerCase().includes(term)
       );
     }
 
@@ -845,7 +845,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             class="p-2 rounded-lg bg-amber-900/20 border border-amber-400/30 hover:bg-amber-400/10 text-amber-400"
             class:animate-spin={autoRefresh}
-            onclick={toggleAutoRefresh}
+            on:click={toggleAutoRefresh}
             title={autoRefresh ? 'Disable auto-refresh' : 'Enable auto-refresh'}
           >
             <RefreshCw class="w-4 h-4" />
@@ -853,7 +853,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <button
             class="p-2 rounded-lg bg-blue-900/20 border border-blue-400/30 hover:bg-blue-400/10 text-blue-400"
-            onclick={exportResults}
+            on:click={exportResults}
             title="Export test results"
           >
             <Download class="w-4 h-4" />
@@ -861,7 +861,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <button
             class="p-2 rounded-lg bg-red-900/20 border border-red-400/30 hover:bg-red-400/10 text-red-400"
-            onclick={clearResults}
+            on:click={clearResults}
             title="Clear all results"
           >
             <Trash2 class="w-4 h-4" />
@@ -994,7 +994,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex flex-wrap gap-3 mb-4">
             <button
               class="px-4 py-2 rounded-lg bg-green-900/20 border border-green-400/30 hover:bg-green-400/10 text-green-400 disabled:opacity-50"
-              onclick={runAllTests}
+              on:click={runAllTests}
               disabled={isRunning}
             >
               <Play class="w-4 h-4 inline-block mr-2" />
@@ -1003,10 +1003,10 @@ https://svelte.dev/e/js_parse_error -->
 
             <button
               class="px-4 py-2 rounded-lg bg-gray-700/50 border border-gray-600 hover:bg-gray-600/50 text-gray-300"
-              onclick={() => showAdvanced = !showAdvanced}
+              on:click={() => showAdvanced = !showAdvanced}
             >
               {showAdvanced ? 'Hide Advanced' : 'Show Advanced'}
-              {showAdvanced ? <ChevronDown class="w-4 h-4 inline-block ml-2" /> : <ChevronRight class="w-4 h-4 inline-block ml-2" />}
+              
             </button>
           </div>
 
@@ -1015,7 +1015,7 @@ https://svelte.dev/e/js_parse_error -->
             {#each apiEndpoints as endpoint}
               <div class="flex items-center justify-between p-3 bg-black/30 border border-gray-800 rounded-lg hover:border-gray-700 transition-colors">
                 <div class="flex items-center space-x-3">
-                  <{endpoint.icon} class="w-5 h-5 {getCategoryColor(endpoint.category)}" />
+                  
                   <div>
                     <p class="font-medium text-gray-200">{endpoint.name}</p>
                     <p class="text-sm text-gray-400">{endpoint.method} {endpoint.endpoint}</p>
@@ -1028,13 +1028,10 @@ https://svelte.dev/e/js_parse_error -->
                   </span>
                   <button
                     class="px-3 py-1 rounded-lg bg-blue-900/20 border border-blue-400/30 hover:bg-blue-400/10 text-blue-400 disabled:opacity-50"
-                    onclick={() => runApiTest(endpoint)}
+                    on:click={() => runApiTest(endpoint)}
                     disabled={isRunning && currentTest?.includes(endpoint.id)}
                   >
-                    {isRunning && currentTest?.includes(endpoint.id) ?
-                      <Clock class="w-4 h-4 animate-spin" /> :
-                      <Play class="w-4 h-4" />
-                    }
+                    
                   </button>
                 </div>
               </div>
@@ -1052,7 +1049,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="p-4 bg-black/30 border border-gray-800 rounded-lg">
               <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center space-x-3">
-                  <{suite.icon} class="w-5 h-5 text-purple-400" />
+                  
                   <div>
                     <h3 class="font-medium text-gray-200">{suite.name}</h3>
                     <p class="text-sm text-gray-400">{suite.description}</p>
@@ -1061,17 +1058,14 @@ https://svelte.dev/e/js_parse_error -->
 
                 <div class="flex items-center space-x-2">
                   {#if suite.status !== 'pending'}
-                    <{getStatusIcon(suite.status)} class="w-4 h-4 {getStatusColor(suite.status)}" />
+                    
                   {/if}
                   <button
                     class="px-3 py-1 rounded-lg bg-purple-900/20 border border-purple-400/30 hover:bg-purple-400/10 text-purple-400 disabled:opacity-50"
-                    onclick={() => runTestSuite(suite)}
+                    on:click={() => runTestSuite(suite)}
                     disabled={batchTesting}
                   >
-                    {suite.status === 'running' ?
-                      <Clock class="w-4 h-4 animate-spin" /> :
-                      <PlayCircle class="w-4 h-4" />
-                    }
+                    
                   </button>
                 </div>
               </div>
@@ -1152,30 +1146,30 @@ https://svelte.dev/e/js_parse_error -->
                   <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
                     <td class="py-3 px-4">
                       <div class="flex items-center space-x-2">
-                        <{getStatusIcon(result.status)} class="w-4 h-4 {getStatusColor(result.status)}" />
-                        <span class="text-sm {getStatusColor(result.status)} capitalize">{result.status}</span>
+                        
+                        <span class="text-sm {getStatusColor((result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).status)} capitalize">{(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).status}</span>
                       </div>
                     </td>
                     <td class="py-3 px-4">
                       <div>
-                        <p class="text-gray-200 font-medium">{result.endpoint}</p>
-                        <p class="text-xs text-gray-400">{result.url}</p>
+                        <p class="text-gray-200 font-medium">{(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).endpoint}</p>
+                        <p class="text-xs text-gray-400">{(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).url}</p>
                       </div>
                     </td>
                     <td class="py-3 px-4">
                       <span class="px-2 py-1 rounded text-xs font-mono bg-gray-700 text-gray-300">
-                        {result.method}
+                        {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).method}
                       </span>
                     </td>
                     <td class="py-3 px-4">
                       <span class="text-blue-400 font-mono">
-                        {result.latency ? formatLatency(result.latency) : '-'}
+                        {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).latency ? formatLatency((result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).latency) : '-'}
                       </span>
                     </td>
                     <td class="py-3 px-4">
-                      {#if result.statusCode}
-                        <span class="px-2 py-1 rounded text-xs font-mono {result.statusCode >= 200 && result.statusCode < 300 ? 'bg-green-900/30 text-green-400' : result.statusCode >= 400 ? 'bg-red-900/30 text-red-400' : 'bg-yellow-900/30 text-yellow-400'}">
-                          {result.statusCode}
+                      {#if (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).statusCode}
+                        <span class="px-2 py-1 rounded text-xs font-mono {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).statusCode >= 200 && (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).statusCode < 300 ? 'bg-green-900/30 text-green-400' : (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).statusCode >= 400 ? 'bg-red-900/30 text-red-400' : 'bg-yellow-900/30 text-yellow-400'}">
+                          {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).statusCode}
                         </span>
                       {:else}
                         <span class="text-gray-500">-</span>
@@ -1183,12 +1177,12 @@ https://svelte.dev/e/js_parse_error -->
                     </td>
                     <td class="py-3 px-4">
                       <span class="text-gray-400 text-sm">
-                        {result.startTime.toLocaleTimeString()}
+                        {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).startTime.toLocaleTimeString()}
                       </span>
                     </td>
                     <td class="py-3 px-4">
                       <span class="text-gray-400 text-sm">
-                        {result.responseSize ? formatBytes(result.responseSize) : '-'}
+                        {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).responseSize ? formatBytes((result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).responseSize) : '-'}
                       </span>
                     </td>
                   </tr>

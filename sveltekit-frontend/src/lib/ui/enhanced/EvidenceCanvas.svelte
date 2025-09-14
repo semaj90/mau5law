@@ -148,14 +148,7 @@
       conflicts: any[];
       processingTime: number;
     };
-    anchorPoints?: Array<{
-      id: string;
-      type: 'text' | 'object';
-      coordinates: { x: number; y: number; width: number; height: number };
-      confidence: number;
-      description: string;
-      legal_relevance: 'high' | 'medium' | 'low';
-    }>;
+    anchorPoints?: Array;
   }
   interface UploadResult {
     id: string;
@@ -253,9 +246,9 @@
         );
         if (completedResult) {
           result = {
-            analysis: completedResult.data.response || completedResult.data.analysis || 'Analysis completed',
-            summary: completedResult.data.summary || 'Summary generated',
-            confidence: completedResult.data.confidence || 0.85,
+            analysis: completedResult.(data as { response?: any; analysis?: any; summary?: any; confidence?: any; processingTime?: any }).response || completedResult.(data as { response?: any; analysis?: any; summary?: any; confidence?: any; processingTime?: any }).analysis || 'Analysis completed',
+            summary: completedResult.(data as { response?: any; analysis?: any; summary?: any; confidence?: any; processingTime?: any }).summary || 'Summary generated',
+            confidence: completedResult.(data as { response?: any; analysis?: any; summary?: any; confidence?: any; processingTime?: any }).confidence || 0.85,
             processing_time_ms: completedResult.duration,
             status: 'success'
           };
@@ -384,11 +377,11 @@
 
         // Upload to MinIO via evidence API
         const result = await uploadSingleFile(uploadFile, preprocessedData, cudaProcessed);
-        if (result.success) {
+        if ((result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).success) {
           uploadFile.status = 'ingestion';
           uploadFile.progress = 100;
           uploadFile.cudaProcessed = cudaProcessed;
-          uploadFile.minioPath = result.data.minioPath;
+          uploadFile.minioPath = (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).(data as { response?: any; analysis?: any; summary?: any; confidence?: any; processingTime?: any }).minioPath;
           // Start enhanced ingestion processing
           try {
             const ingestionResult = await processEnhancedIngestion(uploadFile);
@@ -400,7 +393,7 @@
             uploadFile.detectiveAnalysis = detectiveResult;
             uploadFile.status = 'completed';
             // Add file to canvas with anchor points and detective insights
-            await addFileToCanvas(uploadFile, position, result.data);
+            await addFileToCanvas(uploadFile, position, (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).data);
             // Add anchor points visualization
             if (ingestionResult.anchor_points) {
               await addAnchorPointsToCanvas(uploadFile, ingestionResult.anchor_points);
@@ -412,7 +405,7 @@
           } catch (ingestionError) {
             console.warn('Enhanced ingestion failed:', ingestionError);
             uploadFile.status = 'completed'; // Still mark as completed if upload succeeded
-            await addFileToCanvas(uploadFile, position, result.data);
+            await addFileToCanvas(uploadFile, position, (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).data);
           }
           // Adjust position for next file
           position.x += 120;
@@ -422,7 +415,7 @@
           }
         } else {
           uploadFile.status = 'error';
-          uploadFile.errorMessage = result.error;
+          uploadFile.errorMessage = (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).error;
         }
       }
 
@@ -460,15 +453,15 @@
         body: formData
       });
 
-      if (!response.ok) {
-        throw new Error(`CUDA preprocessing failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).ok) {
+        throw new Error(`CUDA preprocessing failed: ${(response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).statusText}`);
       }
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).json();
       return {
         success: true,
-        processedFile: result.processedFile ? new File([result.processedFile], file.name, { type: file.type }) : undefined,
-        metadata: result.metadata
+        processedFile: (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).processedFile ? new File([(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).processedFile], file.name, { type: file.type }) : undefined,
+        metadata: (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).metadata
       };
 
     } catch (error) {
@@ -495,20 +488,20 @@
       body: formData
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
+    if (!(response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).ok) {
+      const errorData = await (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).json();
       return {
         success: false,
         error: errorData.error?.message || 'Upload failed'
       };
     }
 
-    const result = await response.json();
-    if (result.success && result.data?.[0]) {
+    const result = await (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).json();
+    if ((result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).success && (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).data?.[0]) {
       return {
         success: true,
         data: {
-          ...result.data[0],
+          ...(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).data[0],
           cudaOptimized: cudaProcessed
         } as UploadResult
       };
@@ -739,18 +732,18 @@
         })
       });
 
-      if (response.success) {
+      if ((response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).success) {
         console.log(`✅ Evidence processing initiated:`, {
-          jobIds: response.jobIds,
-          evidenceCount: response.evidenceCount
+          jobIds: (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).jobIds,
+          evidenceCount: (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).evidenceCount
         });
 
         // Start monitoring job progress
-        monitorUnifiedProcessingJobs(response.jobIds, response.jobStatuses);
+        monitorUnifiedProcessingJobs((response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).jobIds, (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).jobStatuses);
 
         return response;
       } else {
-        console.error('❌ Evidence processing failed:', response.error);
+        console.error('❌ Evidence processing failed:', (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).error);
         return null;
       }
     } catch (error) {
@@ -916,7 +909,7 @@
   multiple
   accept={acceptedTypes.join(',')}
   bind:this={fileInput}
-  onchange={handleFileSelect}
+  on:change={handleFileSelect}
   style="display: none;"
 />
 
@@ -979,7 +972,7 @@
   <!-- Toolbar -->
   <div class="toolbar" class:n64-toolbar={enableN64Style}>
     <button 
-      onclick={analyzeCanvas} 
+      on:click={analyzeCanvas} 
       disabled={analyzing}
       class="analyze-btn"
       class:n64-btn={enableN64Style}
@@ -994,7 +987,7 @@
     </button>
     
     <button 
-      onclick={openFileDialog} 
+      on:click={openFileDialog} 
       disabled={uploading}
       class="upload-btn"
       class:n64-btn={enableN64Style}
@@ -1004,7 +997,7 @@
     </button>
     
     <button 
-      onclick={triggerUnifiedProcessing} 
+      on:click={triggerUnifiedProcessing} 
       disabled={uploadedFiles.length === 0}
       class="unified-process-btn"
       class:n64-btn={enableN64Style}
@@ -1051,7 +1044,7 @@
     </small>
     
     {#if error}<span class="error">{error}</span>{/if}
-    {#if result && result.status === "success"}<span class="ok">✓</span>{/if}
+    {#if result && (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).status === "success"}<span class="ok">✓</span>{/if}
     {#if analyzing}<span class="spinner">⏳</span>{/if}
   </div>
 
@@ -1149,7 +1142,7 @@
             <button 
               class="remove-btn" 
               class:n64-remove={enableN64Style}
-              onclick={() => removeFile(file.id)}
+              on:click={() => removeFile(file.id)}
               disabled={file.status === 'uploading'}
             >
               <X class="w-3 h-3" />
@@ -1167,16 +1160,16 @@
       <div class="analysis-content">
         <div class="analysis-section">
           <h4>{enableN64Style ? '🔍 ANALYSIS' : 'Analysis'}</h4>
-          <pre>{result.analysis}</pre>
+          <pre>{(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).analysis}</pre>
         </div>
         <div class="analysis-section">
           <h4>{enableN64Style ? '📋 SUMMARY' : 'Summary'}</h4>
-          <pre>{result.summary}</pre>
+          <pre>{(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).summary}</pre>
         </div>
         <div class="meta-info">
-          <span>Confidence: {result.confidence?.toFixed?.(2)}</span>
-          <span>Time: {result.processing_time_ms} ms</span>
-          <span>Status: {result.status}</span>
+          <span>Confidence: {(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).confidence?.toFixed?.(2)}</span>
+          <span>Time: {(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).processing_time_ms} ms</span>
+          <span>Status: {(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).status}</span>
           {#if uploadedFiles.some(f => f.cudaProcessed)}
             <span class="cuda-meta">⚡ CUDA Optimized</span>
           {/if}
@@ -1475,15 +1468,15 @@
     color: #FFD700;
   }
   
-  .file-item.status-completed {
+  .file-(item as { status?: any }).status-completed {
     border-color: #28a745;
   }
   
-  .file-item.status-error {
+  .file-(item as { status?: any }).status-error {
     border-color: #dc3545;
   }
   
-  .file-item.status-uploading {
+  .file-(item as { status?: any }).status-uploading {
     border-color: #007bff;
   }
   
@@ -1721,7 +1714,7 @@
     box-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
   }
   
-  .file-item.status-ingestion {
+  .file-(item as { status?: any }).status-ingestion {
     border-color: #4090FF;
     background: linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 100%);
   }
@@ -1731,7 +1724,7 @@
     background: linear-gradient(135deg, #1a1a3e 0%, #0a0a2a 100%);
   }
 
-  .file-item.status-detective_analysis {
+  .file-(item as { status?: any }).status-detective_analysis {
     border-color: #8B5CF6;
     background: linear-gradient(135deg, #f3e8ff 0%, #faf5ff 100%);
   }

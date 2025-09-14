@@ -22,7 +22,7 @@ const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
 type QdrantVectorStore = any;
 type QdrantClient = any;
 
-import type { LegalDocumentMetadata } from './qdrant-service.js';
+import type { LegalDocumentMetadata } from './qdrant-service.js.js';
 
 export interface LegalRAGConfig {
   qdrantUrl: string;
@@ -270,13 +270,13 @@ Only return the queries, one per line.`),
               // Convert semantic search results to LangChain document format
               const enhancedRetrievedDocs = semanticData.results.map((result: any) => ({
                 pageContent:
-                  result.content ||
-                  `${result.title}\n\n${result.metadata?.summary || 'No content available'}`,
+                  (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).content ||
+                  `${(result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).title}\n\n${(result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).metadata?.summary || 'No content available'}`,
                 metadata: {
-                  ...result.metadata,
-                  title: result.title,
-                  score: result.semantic_score || 1 - result.distance,
-                  document_type: result.document_type,
+                  ...(result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).metadata,
+                  title: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).title,
+                  score: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).semantic_score || 1 - (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).distance,
+                  document_type: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).document_type,
                   source: 'enhanced_semantic_search',
                 },
               }));
@@ -310,7 +310,7 @@ Only return the queries, one per line.`),
               const avgSemanticScore =
                 semanticData.results.reduce(
                   (sum: number, result: any) =>
-                    sum + (result.semantic_score || 1 - result.distance),
+                    sum + ((result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).semantic_score || 1 - (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).distance),
                   0
                 ) / semanticData.results.length;
 
@@ -496,7 +496,7 @@ Only return the queries, one per line.`),
       maxRetrievedDocs: 10, // Get more context for summarization
     });
 
-    return result.answer;
+    return (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).answer;
   }
 
   /**
@@ -563,7 +563,7 @@ Only return the queries, one per line.`),
       });
     }
 
-    return must.length ? { must } : {};
+    return must.length ? { must } : Record<string, any>;
   }
 
   /**
@@ -588,12 +588,7 @@ Only return the queries, one per line.`),
   /**
    * Health check for the RAG service
    */
-  async healthCheck(): Promise<{
-    status: string;
-    vectorStoreConnected: boolean;
-    collectionExists: boolean;
-    documentsCount?: number;
-  }> {
+  async healthCheck(): Promise<any> {
     try {
       const info = await this.qdrantClient.getCollection(this.config.collectionName);
 
@@ -627,18 +622,7 @@ Only return the queries, one per line.`),
       file?: File; // Browser File object for client-side uploads
       content?: string; // Direct content for server-side processing
     }
-  ): Promise<{
-    success: boolean;
-    documentId?: string;
-    chunks?: number;
-    error?: string;
-    processingDetails?: {
-      fileSize: number;
-      extractedLength: number;
-      processingTime: number;
-      chunksCreated: number;
-    };
-  }> {
+  ): Promise<any> {
     const startTime = Date.now();
 
     try {
@@ -847,7 +831,7 @@ Only return the queries, one per line.`),
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
           const textContent = await page.getTextContent();
-          const pageText = textContent.items.map((item: any) => item.str).join(' ');
+          const pageText = textContent.items.map((item: any) => (item as { str?: any }).str).join(' ');
           fullText += pageText + '\n';
         }
 
@@ -871,7 +855,7 @@ Only return the queries, one per line.`),
 
       if (pdfParse) {
         const data = await pdfParse.default(buffer);
-        return data.text;
+        return (data as { documentId?: any; title?: any; text?: any }).text;
       }
 
       throw new Error(
@@ -893,7 +877,7 @@ Only return the queries, one per line.`),
       if (mammoth) {
         const arrayBuffer = await file.arrayBuffer();
         const result = await mammoth.extractRawText({ arrayBuffer });
-        return result.value;
+        return (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).value;
       }
 
       throw new Error(
@@ -914,7 +898,7 @@ Only return the queries, one per line.`),
 
       if (mammoth) {
         const result = await mammoth.extractRawText({ buffer });
-        return result.value;
+        return (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).value;
       }
 
       throw new Error(
@@ -1163,15 +1147,7 @@ Only return the queries, one per line.`),
       console.warn('Failed to notify semantic search API:', error);
     }
   }
-  async getSystemStats(): Promise<{
-    documentCount?: number;
-    queryCount?: number;
-    indexSize?: number;
-    averageQueryTime?: number;
-    averageResponseTime?: number;
-    indexStatus?: string;
-    uptime?: number;
-  }> {
+  async getSystemStats(): Promise<any> {
     try {
       const health = await this.healthCheck();
 

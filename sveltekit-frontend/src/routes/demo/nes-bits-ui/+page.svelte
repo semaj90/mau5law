@@ -59,21 +59,21 @@
       <div class="button-showcase">
         <button
           class="nes-btn is-primary"
-          onclick={incrementCounter}
+          on:click={incrementCounter}
         >
           Primary Button
         </button>
 
         <button
           class="nes-btn is-success"
-          onclick={showToast}
+          on:click={showToast}
         >
           Success Button
         </button>
 
         <button
           class="nes-btn is-warning"
-          onclick={resetCounter}
+          on:click={resetCounter}
         >
           Warning Button
         </button>
@@ -87,7 +87,7 @@
 
         <button
           class="nes-btn"
-          onclick={() => dialogOpen = true}
+          on:click={() => dialogOpen = true}
         >
           Open Dialog
         </button>
@@ -106,16 +106,16 @@
         class="dialog-overlay"
         role="button"
         tabindex="0"
-        onclick={() => dialogOpen = false}
-        onkeydown={(e) => e.key === 'Enter' && (dialogOpen = false)}
+        on:click={() => dialogOpen = false}
+        on:keydown={(e) => e.key === 'Enter' && (dialogOpen = false)}
         use:accessibleClick={{ handler: () => dialogOpen = false, label: 'Close dialog' }}
       >
         <div
           class="nes-dialog dialog-content"
           role="dialog"
           tabindex="0"
-          onclick={(e) => e.stopPropagation()}
-          onkeydown={(e) => e.key === 'Enter' && e.stopPropagation()}
+          on:click={(e) => e.stopPropagation()}
+          on:keydown={(e) => e.key === 'Enter' && e.stopPropagation()}
           use:accessibleClick={{
             handler: (e) => e.stopPropagation(),
             role: 'dialog',
@@ -139,8 +139,8 @@
               </div>
             </div>
             <menu class="dialog-actions">
-              <button class="nes-btn" onclick={() => dialogOpen = false}>Cancel</button>
-              <button class="nes-btn is-primary" onclick={() => dialogOpen = false}>Accept</button>
+              <button class="nes-btn" on:click={() => dialogOpen = false}>Cancel</button>
+              <button class="nes-btn is-primary" on:click={() => dialogOpen = false}>Accept</button>
             </menu>
           </form>
         </div>
@@ -254,19 +254,19 @@
         <div class="tab-list">
           <button
             class={`nes-btn ${activeTab === 'tab1' ? 'is-primary' : ''}`}
-            onclick={() => activeTab = 'tab1'}
+            on:click={() => activeTab = 'tab1'}
           >
             🎮 Games
           </button>
           <button
             class={`nes-btn ${activeTab === 'tab2' ? 'is-primary' : ''}`}
-            onclick={() => activeTab = 'tab2'}
+            on:click={() => activeTab = 'tab2'}
           >
             ⚙️ Settings
           </button>
           <button
             class={`nes-btn ${activeTab === 'tab3' ? 'is-primary' : ''}`}
-            onclick={() => activeTab = 'tab3'}
+            on:click={() => activeTab = 'tab3'}
           >
             👤 Profile
           </button>
@@ -321,7 +321,7 @@
         <p>
           You've successfully triggered a NES.css styled toast notification!
         </p>
-        <button class="nes-btn is-small" onclick={() => toastOpen = false}>×</button>
+        <button class="nes-btn is-small" on:click={() => toastOpen = false}>×</button>
       </div>
     {/if}
 
@@ -334,10 +334,10 @@
         <div class="tooltip-wrapper">
           <button
             class="nes-btn is-warning"
-            onmouseenter={() => tooltipOpen = true}
-            onmouseleave={() => tooltipOpen = false}
-            onfocus={() => tooltipOpen = true}
-            onblur={() => tooltipOpen = false}
+            on:mouseenter={() => tooltipOpen = true}
+            on:mouseleave={() => tooltipOpen = false}
+            on:focus={() => tooltipOpen = true}
+            on:blur={() => tooltipOpen = false}
           >
             Hover for Tooltip
           </button>
@@ -352,7 +352,7 @@
         <div class="popover-wrapper">
           <button
             class="nes-btn is-success"
-            onclick={() => popoverOpen = !popoverOpen}
+            on:click={() => popoverOpen = !popoverOpen}
           >
             Open Popover
           </button>

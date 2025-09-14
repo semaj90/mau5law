@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { users } from "$lib/server/db/schema-postgres";
 import { eq } from "drizzle-orm";
-import { db } from "./index";
+import { db } from './index.js';
 
 export interface User {
   id: string;

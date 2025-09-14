@@ -37,13 +37,7 @@ https://svelte.dev/e/js_parse_error -->
     // Real-time collaboration
     collaboration?: {
       enabled: boolean;
-      users?: Array<{
-        id: string;
-        name: string;
-        avatar?: string;
-        color: string;
-        cursor?: { x: number; y: number };
-      }>;
+      users?: Array;
       sessionId?: string;
     };
     // Legal AI context
@@ -94,8 +88,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // WebGPU animation state
-  let canvas = $state<HTMLCanvasElement;
-  let gpu: GPU | null >(null);
+  let canvas = $state<HTMLCanvasElementlet gpu: GPU | null>(null)(null);
   let device = $state<GPUDevice | null >(null);
   let animationFrame: number;
   // Memory-efficient state (NES constraints: 8KB)
@@ -330,7 +323,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- WebGPU Background Canvas -->
     {#if webgpuEffects}
       <canvas 
-        bind:this={canvas}
+        bind:this={canvas as any}
         class="absolute inset-0 w-full h-full"
         width="800"
         height="600"
@@ -365,7 +358,7 @@ https://svelte.dev/e/js_parse_error -->
                 class="w-6 h-6 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-white"
                 style="background-color: {user.color};"
                 title={user.name}
-                transitifly={{ x: 20, duration: 300 }}
+                /* transition removed */}
               >
                 {user.name.charAt(0).toUpperCase()}
               </div>

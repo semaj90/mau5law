@@ -55,7 +55,7 @@ export class ONNXApiClient {
   /**
    * Process multiple tasks in batch
    */
-  async batchProcess(tasks: Array<{ id: string; type: string; text: string }>, options: ONNXApiOptions = {}): Promise<any> {
+  async batchProcess(tasks: Array<, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/batch-process', {
       tasks,
       options: { ...this.defaultOptions, ...options }
@@ -65,7 +65,7 @@ export class ONNXApiClient {
   /**
    * Process multiple requests in parallel
    */
-  async parallelProcess(requests: Array<{ id: string; type: string; payload: any }>, options: ONNXApiOptions = {}): Promise<any> {
+  async parallelProcess(requests: Array<, options: ONNXApiOptions = {}): Promise<any> {
     const promises = requests.map(async (req) => {
       switch (req.type) {
         case 'extract-entities':
@@ -99,7 +99,7 @@ export class ONNXApiClient {
   /**
    * Test all ONNX endpoints with sample data
    */
-  async runTests(): Promise<{ success: boolean; results: any[]; summary: any }> {
+  async runTests(): Promise<any> {
     const testData = {
       contractText: "This is a legal contract between ABC Corporation and John Doe, executed on January 15, 2024, in the Superior Court of California.",
       courtDecision: "The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50,000.",

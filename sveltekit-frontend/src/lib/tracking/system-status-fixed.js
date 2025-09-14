@@ -73,7 +73,7 @@ export class SystemStatusTracker {
   async checkSystemHealth() {
     const results = {
       docker_available: await this.checkDocker(),
-      services: {},
+      services: Record<string, any>,
       database: await this.checkDatabase(),
       files: await this.checkCriticalFiles(),
     };

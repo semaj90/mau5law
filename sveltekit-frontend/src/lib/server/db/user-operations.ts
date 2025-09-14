@@ -19,7 +19,7 @@ import type {
   UserActivity,
   NewUserActivity,
   FullUserProfile
-} from './schema/user-management.js';
+} from './schema/user-management.js.js';
 import { 
   users, 
   userProfiles, 
@@ -29,14 +29,14 @@ import {
   updateUserSchema,
   insertProfileSchema,
   updateProfileSchema
-} from './schema/user-management.js';
+} from './schema/user-management.js.js';
 
 // ============================================================================
 // DATABASE CONNECTION
 // ============================================================================
 
 const connectionString = import.meta.env.DATABASE_URL || 
-  `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5432'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db'}`;
+  `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5433'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db'}`;
 
 // Create connection with pgvector support
 const queryClient = postgres(connectionString, {
@@ -84,7 +84,7 @@ export class UserAuthService {
     jurisdiction?: string;
     practiceAreas?: string[];
     profileData?: Partial<NewUserProfile>;
-  }): Promise<{ user: User; profile?: UserProfile; success: boolean; error?: string }> {
+  }): Promise<any> {
     try {
       // Validate input
       const validatedUser = insertUserSchema.parse({
@@ -144,7 +144,7 @@ export class UserAuthService {
     } catch (error: any) {
       console.error('User registration error:', error);
       return { 
-        user: {} as User, 
+        user: Record<string, any> as User, 
         success: false, 
         error: error instanceof Error ? error.message : 'Registration failed' 
       };
@@ -154,13 +154,7 @@ export class UserAuthService {
   /**
    * Authenticate user login
    */
-  static async authenticateUser(email: string, password: string, ipAddress?: string, userAgent?: string): Promise<{
-    user?: User;
-    profile?: UserProfile;
-    session?: UserSession;
-    success: boolean;
-    error?: string;
-  }> {
+  static async authenticateUser(email: string, password: string, ipAddress?: string, userAgent?: string): Promise<any> {
     try {
       // Find user with profile
       const userWithProfile = await db
@@ -209,7 +203,7 @@ export class UserAuthService {
         expiresAt,
         ipAddress,
         userAgent,
-        sessionContext: {},
+        sessionContext: Record<string, any>,
       }).returning();
 
       // Update last login time
@@ -247,12 +241,7 @@ export class UserAuthService {
   /**
    * Validate session and get user data
    */
-  static async validateSession(sessionId: string): Promise<{
-    user?: User;
-    profile?: UserProfile;
-    session?: UserSession;
-    valid: boolean;
-  }> {
+  static async validateSession(sessionId: string): Promise<any> {
     try {
       const sessionData = await db
         .select()
@@ -286,7 +275,7 @@ export class UserAuthService {
   /**
    * Logout user by invalidating session
    */
-  static async logoutUser(sessionId: string): Promise<{ success: boolean }> {
+  static async logoutUser(sessionId: string): Promise<any> {
     try {
       await db
         .update(userSessions)
@@ -365,7 +354,7 @@ export class UserProfileService {
   static async updateUserProfile(
     userId: number, 
     updates: Partial<NewUser & NewUserProfile>
-  ): Promise<{ user?: User; profile?: UserProfile; success: boolean; error?: string }> {
+  ): Promise<any> {
     try {
       const result = await userDb.transaction(async (tx) => {
         let updatedUser: User | undefined;
@@ -468,7 +457,7 @@ export class UserProfileService {
   /**
    * Delete user account (soft delete)
    */
-  static async deleteUser(userId: number): Promise<{ success: boolean; error?: string }> {
+  static async deleteUser(userId: number): Promise<any> {
     try {
       await userDb.transaction(async (tx) => {
         // Soft delete user
@@ -590,12 +579,7 @@ export class UserActivityService {
   /**
    * Get activity statistics for user
    */
-  static async getActivityStats(userId: number, days: number = 30): Promise<{
-    totalActions: number;
-    uniqueActions: number;
-    successRate: number;
-    topActions: Array<{ action: string; count: number }>;
-  }> {
+  static async getActivityStats(userId: number, days: number = 30): Promise<any>> {
     try {
       const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 

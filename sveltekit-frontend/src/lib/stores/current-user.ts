@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-export const currentUser = writable<{ id: string; email?: string; role?: string } | null>(null);
+export const currentUser = writable(null);
 
 export async function hydrateCurrentUser() {
   try {

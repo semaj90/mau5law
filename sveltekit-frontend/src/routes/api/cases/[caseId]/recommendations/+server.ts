@@ -3,7 +3,7 @@ import { db } from "$lib/server/db/index";
 import { caseActivities, cases, evidence, statutes } from "$lib/server/db/index";
 import { eq, sql, ilike } from "drizzle-orm";
 import { QdrantClient } from "@qdrant/js-client-rest";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Environment variables fallback

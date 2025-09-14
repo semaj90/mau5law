@@ -96,7 +96,7 @@ const initialContext: AuthContext = {
 };
 
 export const authMachine = setup({
-  types: {} as {
+  types: Record<string, any> as {
     context: AuthContext;
     events: AuthEvent;
   },
@@ -170,15 +170,15 @@ export const authMachine = setup({
 
         return {
           user: {
-            id: result.id,
-            email: result.email,
-            firstName: result.firstName || 'User',
-            lastName: result.lastName || '',
-            role: result.role,
+            id: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id,
+            email: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).email,
+            firstName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).firstName || 'User',
+            lastName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).lastName || '',
+            role: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).role,
             permissions: ['read:cases', 'write:cases', 'ai:query'], // TODO: Get from user role
           },
           session: {
-            id: 'session_' + result.id, // Generate session ID
+            id: 'session_' + (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id, // Generate session ID
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
             fresh: true,
           },
@@ -203,11 +203,11 @@ export const authMachine = setup({
 
         return {
           user: {
-            id: result.id,
-            email: result.email,
-            firstName: result.firstName,
-            lastName: result.lastName,
-            role: result.role,
+            id: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id,
+            email: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).email,
+            firstName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).firstName,
+            lastName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).lastName,
+            role: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).role,
             department: input.department,
             permissions: [],
           },
@@ -356,7 +356,7 @@ export const authMachine = setup({
       entry: 'setLoading',
       invoke: {
         src: 'resetPassword',
-        input: ({ event }) => ({ email: (event as any).data.email }),
+        input: ({ event }) => ({ email: (event as any).(data as { email?: any }).email }),
         onDone: {
           target: 'passwordResetSent',
           actions: 'clearLoading'

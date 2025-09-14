@@ -12,10 +12,8 @@ https://svelte.dev/e/js_parse_error -->
   import { zod } from 'sveltekit-superforms/adapters';
   import { z } from 'zod';
   import { writable } from 'svelte/store';
-  import { Button } from '$lib/components/ui/enhanced-bits';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/button/Button.svelte';
+  import Input from '$lib/components/ui/input/Input.svelte';
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Checkbox } from '$lib/components/ui/checkbox';
@@ -104,17 +102,15 @@ https://svelte.dev/e/js_parse_error -->
   ];
 
   // Enhanced form validation with real-time feedback
-  // TODO: Convert to $derived: {
+  $effect(() => {
     if (enableRealTimeValidation && $form) {
-      validationStatus = 'validating'
-
+      validationStatus = 'validating';
       const validationResult = caseFormSchema.safeParse($form);
-
       setTimeout(() => {
         validationStatus = validationResult.success ? 'valid' : 'invalid';
       }, 300);
     }
-  }
+  });
 
   // Auto-save indicator
   let lastSaved = $state<Date | null>(null);
@@ -159,18 +155,18 @@ https://svelte.dev/e/js_parse_error -->
       }));
 
       return async ({ result, update }) => {
-        if (result.type === 'success') {
+        if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
           // Handle success
-          if (onsuccess) onsuccess({ caseItem: result.data });
+          if (onsuccess) onsuccess({ caseItem: (result as { type?: any; data?: any; error?: any }).data });
 
           // Reset form if not in edit mode
           if (!editMode) {
             uploadedFiles = [];
             lastSaved = null;
           }
-        } else if (result.type === 'error') {
+        } else if ((result as { type?: any; data?: any; error?: any }).type === 'error') {
           // Handle error
-          const errorMsg = result.error?.message || 'Submission failed';
+          const errorMsg = (result as { type?: any; data?: any; error?: any }).error?.message || 'Submission failed';
           if (onerror) onerror({ message: errorMsg });
           componentError = new Error(errorMsg);
         }
@@ -183,16 +179,16 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 
 {#if !componentError}
-<div.Root class="w-full max-w-4xl mx-auto">
-  <div.Header>
+<Card.Root class="w-full max-w-4xl mx-auto">
+  <Card.Header>
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <Scale class="h-6 w-6 text-primary" />
         <div>
-          <div.Title class="text-xl">
+          <Card.Title class="text-xl">
             {editMode ? 'Edit Case' : 'Create New Case'}
           </Card.Title>
-          <div.Description>
+          <Card.Description>
             {editMode ? 'Update case information and evidence' : 'Enter case details and upload evidence'}
           </Card.Description>
         </div>
@@ -213,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </Card.Header>
 
-  <div.Content>
+  <Card.Content>
     <!-- Auto-save status -->
     {#if enableAutoSave && (lastSaved || isAutoSaving)}
       <div class="mb-4 p-3 bg-muted rounded-md flex items-center justify-between">
@@ -248,7 +244,7 @@ https://svelte.dev/e/js_parse_error -->
     <form
       method="POST"
       action={submitAction}
-      use:createEnhancedSubmit()
+      use:createEnhancedSubmit
       enctype="multipart/form-data"
       class="space-y-6"
     >
@@ -338,14 +334,14 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Advanced Options -->
       <div class="border-t pt-6">
-        <button class="nes-btn" 
+        <Button
           type="button"
           variant="ghost"
-          onclick={() => showAdvanced = !showAdvanced}
-          class="bits-btn mb-4"
+          on:click={() => showAdvanced = !showAdvanced}
+          class="mb-4"
         >
           {showAdvanced ? 'Hide' : 'Show'} Advanced Options
-        </button>
+        </Button>
 
         {#if showAdvanced}
           <div class="space-y-6 border-l-2 border-muted pl-6">
@@ -449,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
                     type="file"
                     multiple
                     accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
-                    onchange={handleFileUpload}
+                    on:change={handleFileUpload}
                     class="sr-only"
                   />
                 </Label>
@@ -475,14 +471,14 @@ https://svelte.dev/e/js_parse_error -->
                         <p class="text-xs nes-text is-disabled">{formatFileSize(file.size)}</p>
                       </div>
                     </div>
-                    <Button class="bits-btn"
+                    <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onclick={() => removeFile(index)}
+                      on:click={() => removeFile(index)}
                     >
                       Remove
-                    </button>
+                    </Button>
                   </div>
                 {/each}
               </div>
@@ -495,21 +491,23 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex items-center justify-between pt-6 border-t">
         <div class="flex items-center space-x-4">
           {#if enableAutoSave && !editMode}
-            <Button class="bits-btn" type="button" variant="outline" onclick={() => { if (ondraft) ondraft({ data: $form }); }}>
+            <Button type="button" variant="outline" on:click={() => {
+              if (ondraft) ondraft({ data: $form });
+            }}>
               Save as Draft
-            </button>
+            </Button>
           {/if}
         </div>
 
         <div class="flex items-center space-x-3">
-          <Button class="bits-btn" type="button" variant="outline">
+          <Button type="button" variant="outline">
             Cancel
-          </button>
+          </Button>
 
           <Button
             type="submit"
             disabled={$submitting || !$isValid}
-            class="min-w-[120px] bits-btn bits-btn"
+            class="min-w-[120px]"
           >
             {#if $submitting}
               <Loader2 class="mr-2 h-4 w-4 animate-spin" />
@@ -517,7 +515,7 @@ https://svelte.dev/e/js_parse_error -->
             {:else}
               {editMode ? 'Update Case' : 'Create Case'}
             {/if}
-          </button>
+          </Button>
         </div>
       </div>
     </form>
@@ -530,13 +528,13 @@ https://svelte.dev/e/js_parse_error -->
     <h2 class="text-lg font-semibold text-red-800 mb-2">Form Error</h2>
     <p class="text-red-700 mb-4">The case form encountered an error:</p>
     <p class="text-red-600 font-mono text-sm mb-4 bg-red-100 p-2 rounded">{componentError.message}</p>
-    <Button class="bits-btn"
-  onclick={() => { componentError = null; }}
+    <Button
+      on:click={() => { componentError = null; }}
       variant="outline"
       class="border-red-300 text-red-700 hover:bg-red-50"
     >
       Dismiss Error
-    </button>
+    </Button>
   </div>
 {/if}
 

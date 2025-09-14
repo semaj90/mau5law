@@ -71,7 +71,7 @@ let {
 // Tiled shader embed state
 let isProcessing = $state(false);
 let tiledData = $state<any[]>([]);
-let generatedShaders = $state<Map<string, string>>(new Map());
+let generatedShaders = $state<Map<string, string>('')>(new Map());
 let compressionResults = $state<any>(null);
 let performanceMetrics = $state({
   tilingTime: 0,
@@ -85,7 +85,7 @@ let performanceMetrics = $state({
 
 // Visual state for rendering
 let currentQuality = $state<QualityTier>(targetQuality);
-let visualizationCanvas = $state<HTMLCanvasElement>();
+let visualizationCanvas: HTMLCanvasElement = $state(undefined as any);
 let renderingContext = $state<CanvasRenderingContext2D | null>(null);
 
 // SIMD GPU processing results
@@ -316,8 +316,8 @@ async function generateShadersFromTiles(tiles: any[]): Promise<void> {
     const shaderKey = `tile_${tile.tileX}_${tile.tileY}_${tile.metadata.evidenceType}`;
     
     // Analyze tile data to determine shader complexity
-    const avgValue = tile.data.reduce((sum: number, val: number) => sum + val, 0) / tile.data.length;
-    const variance = tile.data.reduce((sum: number, val: number) => sum + (val - avgValue) ** 2, 0) / tile.data.length;
+    const avgValue = tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).reduce((sum: number, val: number) => sum + val, 0) / tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).length;
+    const variance = tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).reduce((sum: number, val: number) => sum + (val - avgValue) ** 2, 0) / tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).length;
     
     const shader = generateShaderCode({
       tileData: tile.data,
@@ -474,17 +474,11 @@ function generateShaderCode(config: {
 /**
  * Apply CHR-ROM style compression to tiled data
  */
-async function applyCHRROMCompression(tiles: any[]): Promise<{
-  originalSize: number;
-  compressedSize: number;
-  compressionRatio: number;
-  chrPatterns: string[];
-  compressionTime: number;
-}> {
+async function applyCHRROMCompression(tiles: any[]): Promise {
   const startTime = performance.now();
   
   // Calculate original size
-  const originalSize = tiles.reduce((total, tile) => total + tile.data.byteLength, 0);
+  const originalSize = tiles.reduce((total, tile) => total + tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).byteLength, 0);
   
   // Generate CHR-ROM patterns (ultra-compressed representations)
   const chrPatterns = [];
@@ -569,7 +563,7 @@ async function renderTiledVisualization(): Promise<void> {
     // Create ImageData from tile
     const imageData = ctx.createImageData(tile.width, tile.height);
     
-    for (let i = 0; i < tile.data.length; i++) {
+    for (let i = 0; i < tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).length; i++) {
       const pixelIndex = i * 4;
       const value = Math.floor(tile.data[i] * 255);
       
@@ -627,7 +621,7 @@ async function predictiveAssetCaching(): Promise<void> {
     };
     
     const result = await ultimateNeuralTopologyOrchestrator.processWithUnifiedIntelligence(request);
-    console.log('🔮 Predictive caching completed:', result.predictions.recommendedAssets.length, 'assets predicted');
+    console.log('🔮 Predictive caching completed:', (result as { predictions?: any }).predictions.recommendedAssets.length, 'assets predicted');
     
   } catch (error) {
     console.warn('Predictive caching failed:', error);
@@ -638,7 +632,7 @@ async function predictiveAssetCaching(): Promise<void> {
  * Update memory usage metrics
  */
 function updateMemoryUsage(): void {
-  const gpuMemory = tiledData.reduce((total, tile) => total + tile.data.byteLength, 0);
+  const gpuMemory = tiledData.reduce((total, tile) => total + tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).byteLength, 0);
   const systemMemory = generatedShaders.size * 1024; // Estimate 1KB per shader
   const cacheMemory = compressionResults ? compressionResults.compressedSize : 0;
   
@@ -809,7 +803,7 @@ export function getCHRPatterns(): string[] {
             </div>
             <button 
               class="copy-shader" 
-              onclick={() => navigator.clipboard.writeText(shader)}
+              on:click={() => navigator.clipboard.writeText(shader)}
             >
               📋 Copy
             </button>
@@ -843,7 +837,7 @@ export function getCHRPatterns(): string[] {
   <div class="control-panel">
     <button 
       class="process-button" 
-      onclick={processTiledShaderEmbeds}
+      on:click={processTiledShaderEmbeds}
       disabled={isProcessing}
     >
       {#if isProcessing}

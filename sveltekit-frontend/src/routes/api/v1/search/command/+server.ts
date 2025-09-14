@@ -4,7 +4,7 @@ import { cases, evidence, legalDocuments, users } from '$lib/server/db';
 import { helpers } from '$lib/server/db';
 import { vectorOps } from '$lib/server/db/enhanced-vector-operations';
 import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             ...item,
             similarity: calculateSimilarity(
               searchQuery,
-              (item.title || '') + ' ' + (item.description || '')
+              ((item as { title?: any; description?: any; id?: any }).title || '') + ' ' + ((item as { title?: any; description?: any; id?: any }).description || '')
             ),
           })
         );
@@ -189,18 +189,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
         // Merge vector results with existing results
         for (const result of vectorResults) {
-          const type = result.metadata?.type;
+          const type = (result as { metadata?: any; id?: any; content?: any; similarity?: any }).metadata?.type;
           if (type && results[type as keyof typeof results]) {
             const existing = results[type as keyof typeof results] as any[];
-            const existingIds = existing.map((item) => item.id);
+            const existingIds = existing.map((item) => (item as { title?: any; description?: any; id?: any }).id);
 
-            if (!existingIds.includes(result.id)) {
+            if (!existingIds.includes((result as { metadata?: any; id?: any; content?: any; similarity?: any }).id)) {
               // Add vector result with high similarity score
               existing.push({
-                id: result.id,
-                ...result.metadata,
-                content: result.content,
-                similarity: result.similarity,
+                id: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).id,
+                ...(result as { metadata?: any; id?: any; content?: any; similarity?: any }).metadata,
+                content: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).content,
+                similarity: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).similarity,
               });
             }
           }

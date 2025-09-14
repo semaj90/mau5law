@@ -47,11 +47,11 @@
 </script>
 
   // Props
-  let { data = $bindable() } = $props(); // SuperValidated<Infer<typeof DocumentUploadSchema>>;
-  let { onSuccess = $bindable() } = $props(); // ((result: any) => void) | undefined = undefined;
-  let { onError = $bindable() } = $props(); // ((error: string) => void) | undefined = undefined;
-  let { caseId = $bindable() } = $props(); // string | undefined = undefined;
-  let { autoSave = $bindable() } = $props(); // true;
+  let { data }: { data: any } = $props(); // SuperValidated<Infer<typeof DocumentUploadSchema>>;
+  let { onSuccess = $bindable()  }: { onSuccess = $bindable() : any } = $props(); // ((result: any) => void) | undefined = undefined;
+  let { onError = $bindable()  }: { onError = $bindable() : any } = $props(); // ((error: string) => void) | undefined = undefined;
+  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined;
+  let { autoSave = $bindable()  }: { autoSave = $bindable() : any } = $props(); // true;
 
   // Form state management
   const formIntegration = createDocumentUploadForm(data, {
@@ -273,19 +273,19 @@
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              onclick={handleSaveDraft}
+              on:click={handleSaveDraft}
               disabled={$isSubmitting}
             >
-              <Save size={16} />
-            </button>
+<Save size={16} />
+</Button>
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              onclick={handleReset}
+              on:click={handleReset}
               disabled={$isSubmitting}
             >
-              <RotateCcw size={16} />
-            </button>
+<RotateCcw size={16} />
+</Button>
           </div>
         </h3>
       </div>
@@ -307,19 +307,19 @@
         </div>
       </div>
     {/if}
-  </NesCard>
+  </div>
 
   <!-- File Drop Zone -->
-  <NesCard class="file-upload-nier-bits-card">
-    <div class="yorha-panel-content" class="p-6">
+  <div class="file-upload-nier-bits-card nes-container">
+    <div class="yorha-panel-content p-6">
       <div
         class="drop-zone"
         class:drag-active={dragActive}
-        ondrop={handleDrop}
-        role="button" aria-label="Drop zone" ondragover={handleDragOver}
+        on:drop={handleDrop}
+        role="button" aria-label="Drop zone" on:dragover={handleDragOver}
         ondragleave={handleDragLeave}
         tabindex="0"
-        onclick={() => fileInput?.click()}
+        on:click={() => fileInput?.click()}
         keydown={(e) => e.key === "Enter" && fileInput?.click()}
       >
         {#if selectedFile}
@@ -335,11 +335,11 @@
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              onclick={removeFile}
+              on:click={removeFile}
               disabled={$isSubmitting}
             >
-              <X size={16} />
-            </button>
+<X size={16} />
+</Button>
           </div>
         {:else}
           <div class="drop-zone-content">
@@ -351,9 +351,9 @@
               Supports PDF, DOCX, TXT, and image files up to 50MB
             </p>
             <Button class="bits-btn" variant="outline" disabled={$isSubmitting}>
-              <Upload class="mr-2" size={16} />
+<Upload class="mr-2" size={16} />
               Browse Files
-            </button>
+</Button>
           </div>
         {/if}
       </div>
@@ -361,23 +361,22 @@
       <input
         bind:this={fileInput}
         type="file"
-        accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp"
-        change={handleFileSelect}
+        accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp" on:change={handleFileSelect}
         class="sr-only"
         disabled={$isSubmitting}
       />
     </div>
-  </NesCard>
+  </div>
 
   <!-- Form Fields -->
   <form use:enhance method="post" class="space-y-6">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Basic Information -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-lg">Document Information</h3>
+          <h3 class="nes-text is-primary text-lg">Document Information</h3>
         </div>
-        <div class="yorha-panel-content" class="space-y-4">
+        <div class="yorha-panel-content space-y-4">
           <div>
             <label for="title" class="block text-sm font-medium mb-2">
               Title *
@@ -455,8 +454,7 @@
             </label>
             <Input
               id="tags"
-              value={$formData.tags.join(", ")}
-              input={(e) => {
+              value={$formData.tags.join(", ")} on:input={(e) => {
                 const value = e.currentTarget.value;
                 $formData.tags = value
                   .split(",")
@@ -468,17 +466,17 @@
             />
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- AI Processing Options -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
+          <h3 class="nes-text is-primary text-lg flex items-center gap-2">
             <Zap size={20} />
             AI Processing Options
           </h3>
         </div>
-        <div class="yorha-panel-content" class="space-y-4">
+        <div class="yorha-panel-content space-y-4">
           <div class="space-y-3">
             <Checkbox
               bind:checked={$formData.aiProcessing.generateSummary}
@@ -531,7 +529,7 @@
             </Alert>
           {/if}
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Error Display -->
@@ -546,22 +544,24 @@
               <Button class="bits-btn"
                 variant="outline"
                 size="sm"
-                onclick={() => actor.send({ type: "RETRY" })}
+                on:click={() =>
+actor.send({ type: "RETRY" })}
                 disabled={contextValue.retryCount >= contextValue.maxRetries}
               >
                 Retry ({contextValue.maxRetries - contextValue.retryCount} attempts
                 left)
-              </button>
+</Button>
 
               {#if stateValue === "processingError"}
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => actor.send({ type: "SKIP_PROCESSING" })}
+                  on:click={() =>
+actor.send({ type: "SKIP_PROCESSING" })}
                   class="ml-2"
                 >
                   Skip AI Processing
-                </button>
+</Button>
               {/if}
             </div>
           {/if}
@@ -599,18 +599,18 @@
       <div class="flex gap-3">
         <Button class="bits-btn"
           variant="outline"
-          onclick={handleReset}
+          on:click={handleReset}
           disabled={$isSubmitting}
         >
-          Reset Form
-        </button>
+Reset Form
+</Button>
 
         <Button class="bits-btn"
           type="submit"
           onclick|preventDefault={handleSubmit}
           disabled={!canSubmit}
         >
-          {#if $isSubmitting}
+{#if $isSubmitting}
             <Loader2 class="mr-2 animate-spin" size={16} />
             {stateValue === "uploading"
               ? "Uploading..."
@@ -621,7 +621,7 @@
             <Upload class="mr-2" size={16} />
             Upload & Process
           {/if}
-        </button>
+</Button>
       </div>
     </div>
   </form>

@@ -1,6 +1,6 @@
 import * as pdfjsLib from "pdfjs-dist";
 import { createWorker } from "tesseract.js";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // PDF has extractable text
         pageText = textContent.items
           .filter((item): item is any => 'str' in item)
-          .map((item) => item.str)
+          .map((item) => (item as { str?: any }).str)
           .join(' ');
         
         ocrResults.push({
@@ -77,13 +77,13 @@ export const POST: RequestHandler = async ({ request }) => {
         
         ocrResults.push({
           page: pageNum,
-          text: data.text,
-          confidence: data.confidence,
+          text: (data as { text?: any; confidence?: any }).text,
+          confidence: (data as { text?: any; confidence?: any }).confidence,
           method: 'ocr'
         });
         
-        totalCharacters += data.text.length;
-        totalConfidence += data.confidence;
+        totalCharacters += (data as { text?: any; confidence?: any }).text.length;
+        totalConfidence += (data as { text?: any; confidence?: any }).confidence;
       }
     }
 

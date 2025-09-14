@@ -5,7 +5,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 interface ImageGenerationRequest {
@@ -47,7 +47,7 @@ async function checkProviderHealth(provider: keyof typeof PROVIDERS): Promise<bo
       method: 'GET',
       signal: AbortSignal.timeout(3000)
     });
-    return response.ok;
+    return (response as { ok?: any; json?: any; statusText?: any }).ok;
   } catch (error) {
     return false;
   }
@@ -74,9 +74,9 @@ Enhanced prompt:`,
       signal: AbortSignal.timeout(30000)
     });
 
-    if (response.ok) {
-      const result = await response.json();
-      return result.response?.trim() || prompt;
+    if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+      const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+      return (result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).response?.trim() || prompt;
     }
   } catch (error) {
     console.warn('Failed to enhance prompt:', error);
@@ -108,14 +108,14 @@ async function generateWithStableDiffusion(request: ImageGenerationRequest): Pro
     signal: AbortSignal.timeout(60000)
   });
 
-  if (!response.ok) {
-    throw new Error(`Stable Diffusion API error: ${response.statusText}`);
+  if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+    throw new Error(`Stable Diffusion API error: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
   }
 
-  const result = await response.json();
+  const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
   
   return {
-    imageBase64: result.images[0],
+    imageBase64: (result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).images[0],
     metadata: {
       seed: payload.seed,
       model: 'Stable Diffusion',
@@ -156,8 +156,8 @@ async function generateWithComfyUI(request: ImageGenerationRequest): Promise<any
     signal: AbortSignal.timeout(60000)
   });
 
-  if (!response.ok) {
-    throw new Error(`ComfyUI API error: ${response.statusText}`);
+  if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+    throw new Error(`ComfyUI API error: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
   }
 
   // Note: Real ComfyUI would require polling for completion
@@ -189,16 +189,16 @@ Visual Description:`;
     signal: AbortSignal.timeout(30000)
   });
 
-  if (!response.ok) {
-    throw new Error(`Ollama API error: ${response.statusText}`);
+  if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+    throw new Error(`Ollama API error: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
   }
 
-  const result = await response.json();
+  const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
   
   // Generate a text-based placeholder image
   const canvas = createTextPlaceholder(
     request.prompt,
-    result.response,
+    (result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).response,
     request.width || 512,
     request.height || 512
   );
@@ -208,7 +208,7 @@ Visual Description:`;
     metadata: {
       seed: request.seed || -1,
       model: 'Ollama (Text Description)',
-      description: result.response,
+      description: (result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).response,
       parameters: request
     }
   };
@@ -341,7 +341,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const response = {
       id: `img_${Date.now()}`,
-      imageUrl: result.imageBase64 || createFallbackImage(enhancedRequest.prompt, enhancedRequest.width!, enhancedRequest.height!),
+      imageUrl: (result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).imageBase64 || createFallbackImage(enhancedRequest.prompt, enhancedRequest.width!, enhancedRequest.height!),
       prompt: enhancedRequest.prompt,
       originalPrompt: body.prompt,
       parameters: enhancedRequest,
@@ -349,7 +349,7 @@ export const POST: RequestHandler = async ({ request }) => {
       processingTime,
       provider,
       metadata: {
-        ...result.metadata,
+        ...(result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).metadata,
         size: {
           width: enhancedRequest.width,
           height: enhancedRequest.height

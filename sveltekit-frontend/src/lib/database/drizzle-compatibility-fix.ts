@@ -3,7 +3,7 @@
  * Systematic resolution of database type mismatches and missing methods
  */
 
-import { barrelStore } from '../stores/barrel-functions';
+import { barrelStore } from '../stores/barrel-functions.js';
 
 // ===== DRIZZLE ORM TYPE COMPATIBILITY =====
 export interface DrizzleCompatibilityLayer {
@@ -31,7 +31,7 @@ export const handleQueryResult = <T>(result: any): T[] => {
 
   // Array result (most common)
   if (Array.isArray(result)) {
-    return result.map(row => {
+    return (result as { map?: any }).map(row => {
       // Ensure all expected properties exist
       const enhancedRow = barrelStore.database.ensureProperties(row, {
         id: null,
@@ -42,7 +42,7 @@ export const handleQueryResult = <T>(result: any): T[] => {
         user_id: null,
         message: '',
         content: '',
-        metadata: {},
+        metadata: Record<string, any>,
         sources: []
       });
       return enhancedRow;
@@ -60,7 +60,7 @@ export const handleQueryResult = <T>(result: any): T[] => {
       user_id: null,
       message: '',
       content: '',
-      metadata: {},
+      metadata: Record<string, any>,
       sources: []
     });
     return [enhancedResult];
@@ -222,7 +222,7 @@ export const entityEnhancers = {
     content: '',
     document_type: 'document',
     file_path: null,
-    metadata: {},
+    metadata: Record<string, any>,
     user_id: null,
     status: 'pending',
     created_at: new Date().toISOString(),
@@ -238,7 +238,7 @@ export const entityEnhancers = {
     user_id: null,
     timestamp: new Date().toISOString(),
     sources: [],
-    metadata: {},
+    metadata: Record<string, any>,
     created_at: new Date().toISOString()
   }),
 
@@ -260,12 +260,12 @@ export const entityEnhancers = {
     operation_type: 'embedding',
     input_data: null,
     output_data: null,
-    parameters: {},
+    parameters: Record<string, any>,
     status: 'pending',
     started_at: null,
     completed_at: null,
     error_message: null,
-    metadata: {}
+    metadata: Record<string, any>
   })
 };
 

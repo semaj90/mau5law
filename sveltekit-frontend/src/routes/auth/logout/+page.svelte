@@ -66,25 +66,23 @@ TODO: Implement logout functionality, clear session, redirect to login
 					<div class="flex justify-center gap-4">
 						<Button
 							class="nes-btn is-error"
-							onclick={handleLogout}
+							on:click={handleLogout}
 							disabled={isLoggingOut}
 						>
 							Logout Now
-						</Button>
 						<Button
 							variant="outline"
 							class="nes-btn"
-							onclick={() => window.history.back()}
+							on:click={() => window.history.back()}
 						>
 							Cancel
-						</Button>
 					</div>
 				{:else}
 					<div class="animate-pulse">
 						<div class="nes-text is-primary">Redirecting...</div>
 					</div>
 				{/if}
-			</Card.Content>
-		</Card.Root>
+			</div.Content>
+		</div.Root>
 	{/snippet}
 </EssentialRoutePage>

@@ -354,14 +354,16 @@ https://svelte.dev/e/js_parse_error -->
         </p>
       </div>
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="outline" onclick={() => goto('/legal/documents/templates')}>
+        <Button class="bits-btn" variant="outline" on:click={() =>
+goto('/legal/documents/templates')}>
           <FileText class="h-4 w-4 mr-2" />
           Templates
-        </button>
-        <Button class="bits-btn" onclick={() => showUploadDialog = true}>
+
+        <Button class="bits-btn" on:click={() =>
+showUploadDialog = true}>
           <Plus class="h-4 w-4 mr-2" />
           Upload Document
-        </button>
+
       </div>
     </div>
 
@@ -369,9 +371,9 @@ https://svelte.dev/e/js_parse_error -->
     <div class="grid gap-4 md:grid-cols-4">
       <div.Root>
         <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <div.Title class="text-sm font-medium">Total Documents</Card.Title>
+          <div.Title class="text-sm font-medium">Total Documents</div.Title>
           <FileText class="h-4 w-4 nes-text is-disabled" />
-        </Card.Header>
+        </div.Header>
         <div.Content>
           <div class="text-2xl font-bold">{documentStats.total}</div>
         </div>
@@ -379,9 +381,9 @@ https://svelte.dev/e/js_parse_error -->
       
       <div.Root>
         <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <div.Title class="text-sm font-medium">Processing</Card.Title>
+          <div.Title class="text-sm font-medium">Processing</div.Title>
           <Clock class="h-4 w-4 text-blue-500" />
-        </Card.Header>
+        </div.Header>
         <div.Content>
           <div class="text-2xl font-bold text-blue-600">{documentStats.processing}</div>
         </div>
@@ -389,9 +391,9 @@ https://svelte.dev/e/js_parse_error -->
       
       <div.Root>
         <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <div.Title class="text-sm font-medium">Completed</Card.Title>
+          <div.Title class="text-sm font-medium">Completed</div.Title>
           <CheckCircle class="h-4 w-4 text-green-500" />
-        </Card.Header>
+        </div.Header>
         <div.Content>
           <div class="text-2xl font-bold text-green-600">{documentStats.completed}</div>
         </div>
@@ -399,9 +401,9 @@ https://svelte.dev/e/js_parse_error -->
       
       <div.Root>
         <div.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <div.Title class="text-sm font-medium">AI Analyzed</Card.Title>
+          <div.Title class="text-sm font-medium">AI Analyzed</div.Title>
           <Bot class="h-4 w-4 text-purple-500" />
-        </Card.Header>
+        </div.Header>
         <div.Content>
           <div class="text-2xl font-bold text-purple-600">{documentStats.withAI}</div>
         </div>
@@ -475,22 +477,23 @@ https://svelte.dev/e/js_parse_error -->
               : 'Try adjusting your search terms or filters'
             }
           </p>
-          <Button class="bits-btn" onclick={() => showUploadDialog = true}>
+          <Button class="bits-btn" on:click={() =>
+showUploadDialog = true}>
             <Plus class="h-4 w-4 mr-2" />
             Upload Document
-          </button>
+
         </div>
       </div>
     {:else}
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {#each filteredDocuments as document}
-          <div.Root class="cursor-pointer transition-colors hover:bg-muted/50" onclick={() => viewDocument(document)}>
+          <div.Root class="cursor-pointer transition-colors hover:bg-muted/50" on:click={() => viewDocument(document)}>
             <div.Header>
               <div class="flex items-start justify-between">
                 <div class="flex items-center gap-3">
                   <div class="text-2xl">{getTypeIcon(document.type)}</div>
                   <div class="space-y-1">
-                    <div.Title class="text-lg line-clamp-2">{document.title}</Card.Title>
+                    <div.Title class="text-lg line-clamp-2">{document.title}</div.Title>
                     <div class="flex items-center gap-2">
                       <Badge class={cn(getStatusColor(document.status), 'text-xs')}>
                         {document.status}
@@ -505,15 +508,17 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
                 <div class="flex gap-1">
-                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); editDocument(document); }}>
+                  <Button class="bits-btn" variant="ghost" size="sm" on:click={(e) =>
+{ e.stopPropagation(); editDocument(document); }}>
                     <Edit2 class="h-4 w-4" />
-                  </button>
-                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { e.stopPropagation(); deleteDocument(document); }}>
+
+                  <Button class="bits-btn" variant="ghost" size="sm" on:click={(e) =>
+{ e.stopPropagation(); deleteDocument(document); }}>
                     <Trash2 class="h-4 w-4" />
-                  </button>
+
                 </div>
               </div>
-            </Card.Header>
+            </div.Header>
             <div.Content>
               <div class="space-y-3">
                 <div class="text-sm nes-text is-disabled">
@@ -578,18 +583,19 @@ https://svelte.dev/e/js_parse_error -->
           class="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
                  {dragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-muted-foreground/50'}
                  {uploadFile ? 'border-green-500 bg-green-50' : ''}"
-          ondragover={handleDragOver}
+          on:dragover={handleDragOver}
           ondragleave={handleDragLeave}
-          role="region" aria-label="Drop zone" ondrop={handleDrop}
+          role="region" aria-label="Drop zone" on:drop={handleDrop}
         >
           {#if uploadFile}
             <div class="space-y-2">
               <FileText class="h-8 w-8 mx-auto text-green-600" />
               <p class="font-medium">{uploadFile.name}</p>
               <p class="text-sm nes-text is-disabled">{formatFileSize(uploadFile.size)}</p>
-              <Button class="bits-btn" variant="outline" size="sm" onclick={() => uploadFile = null}>
+              <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+uploadFile = null}>
                 Remove
-              </button>
+
             </div>
           {:else}
             <div class="space-y-2">
@@ -603,7 +609,7 @@ https://svelte.dev/e/js_parse_error -->
                     type="file" 
                     class="sr-only" 
                     accept=".pdf,.doc,.docx,.txt,.rtf" 
-                    onchange={handleFileSelect} 
+                    on:change={handleFileSelect} 
                   />
                 </label>
               </div>
@@ -667,17 +673,18 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <Dialog.Footer>
-      <Button class="bits-btn" variant="outline" onclick={() => { showUploadDialog = false; resetUploadForm(); }}>
+      <Button class="bits-btn" variant="outline" on:click={() =>
+{ showUploadDialog = false; resetUploadForm(); }}>
         Cancel
-      </button>
-      <Button class="bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
-        {#if uploading}
+
+      <Button class="bits-btn" on:click={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
+{#if uploading}
           <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2"></div>
         {:else}
           <Upload class="h-4 w-4 mr-2" />
         {/if}
         Upload Document
-      </button>
+
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
@@ -790,13 +797,15 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       
       <Dialog.Footer>
-        <Button class="bits-btn" variant="outline" onclick={() => showAIAnalysisDialog = false}>
+        <Button class="bits-btn" variant="outline" on:click={() =>
+showAIAnalysisDialog = false}>
           Close
-        </button>
-        <Button class="bits-btn" onclick={() => editDocument(selectedDocument)}>
+
+        <Button class="bits-btn" on:click={() =>
+editDocument(selectedDocument)}>
           <Edit2 class="h-4 w-4 mr-2" />
           Edit Document
-        </button>
+
       </Dialog.Footer>
     {/if}
   </Dialog.Content>

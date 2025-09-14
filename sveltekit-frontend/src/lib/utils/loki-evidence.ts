@@ -236,7 +236,7 @@ export class LokiEvidenceService {
   // Advanced analytics queries
   public getEvidenceStats() {
     if (!this.evidenceCollection) {
-      return { total: 0, byType: {}, byCase: {}, recentCount: 0 };
+      return { total: 0, byType: Record<string, any>, byCase: Record<string, any>, recentCount: 0 };
     }
     const all = this.evidenceCollection.find({});
     const byType: Record<string, number> = {};
@@ -429,7 +429,7 @@ class LokiIndexedAdapter {
       const getRequest = store.get(dbname);
 
       getRequest.onsuccess = () => {
-        callback(getRequest.result ? getRequest.result.data : null);
+        callback(getRequest.result ? getRequest.(result as { data?: any }).data : null);
       };
 
       getRequest.onerror = () => callback(null);

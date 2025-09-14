@@ -229,13 +229,13 @@ https://svelte.dev/e/js_parse_error -->
         let rmin = aabbMin - p;
 
         var result = r;
-        if (result.x > rmax.x + 0.000001) { result *= (rmax.x / result.x); }
-        if (result.y > rmax.y + 0.000001) { result *= (rmax.y / result.y); }
-        if (result.z > rmax.z + 0.000001) { result *= (rmax.z / result.z); }
+        if ((result as { x?: any; y?: any; z?: any }).x > rmax.x + 0.000001) { result *= (rmax.x / (result as { x?: any; y?: any; z?: any }).x); }
+        if ((result as { x?: any; y?: any; z?: any }).y > rmax.y + 0.000001) { result *= (rmax.y / (result as { x?: any; y?: any; z?: any }).y); }
+        if ((result as { x?: any; y?: any; z?: any }).z > rmax.z + 0.000001) { result *= (rmax.z / (result as { x?: any; y?: any; z?: any }).z); }
 
-        if (result.x < rmin.x - 0.000001) { result *= (rmin.x / result.x); }
-        if (result.y < rmin.y - 0.000001) { result *= (rmin.y / result.y); }
-        if (result.z < rmin.z - 0.000001) { result *= (rmin.z / result.z); }
+        if ((result as { x?: any; y?: any; z?: any }).x < rmin.x - 0.000001) { result *= (rmin.x / (result as { x?: any; y?: any; z?: any }).x); }
+        if ((result as { x?: any; y?: any; z?: any }).y < rmin.y - 0.000001) { result *= (rmin.y / (result as { x?: any; y?: any; z?: any }).y); }
+        if ((result as { x?: any; y?: any; z?: any }).z < rmin.z - 0.000001) { result *= (rmin.z / (result as { x?: any; y?: any; z?: any }).z); }
 
         return p + result;
       }
@@ -859,11 +859,11 @@ https://svelte.dev/e/js_parse_error -->
       <div class="error-title">SHADER ERROR</div>
       <div class="error-message">{errorMessage}</div>
       <div class="error-actions">
-        <button class="retry-button" onclick={() => initializeShaderCache()}>
+        <button class="retry-button" on:click={() => initializeShaderCache()}>
           RETRY COMPILATION
         </button>
         {#if enableHotReload}
-          <button class="hotreload-button" onclick={hotReloadShader}>
+          <button class="hotreload-button" on:click={hotReloadShader}>
             HOT RELOAD
           </button>
         {/if}
@@ -896,7 +896,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Hot Reload Controls -->
   {#if enableHotReload && enableDebugMode}
     <div class="hotreload-controls">
-      <button class="hotreload-trigger" onclick={hotReloadShader}>
+      <button class="hotreload-trigger" on:click={hotReloadShader}>
         🔥 HOT RELOAD
       </button>
       <div class="hotreload-count">{shaderHotReloadCount}</div>

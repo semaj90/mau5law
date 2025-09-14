@@ -41,7 +41,7 @@ export interface MoogleVisualizationOutput {
   base64?: string;
   svg?: string;
   metadata: {
-    nodePositions: Array<{ id: string; x: number; y: number; z?: number }>;
+    nodePositions: Array<any>;
     bounds: { minX: number; maxX: number; minY: number; maxY: number };
     renderTime: number;
     nodeCount: number;
@@ -386,7 +386,7 @@ export class ProductionMoogleService {
     });
   }
 
-  private calculateBounds(positions: Array<{ id: string; x: number; y: number }>): { minX: number; maxX: number; minY: number; maxY: number } {
+  private calculateBounds(positions: Array<): { minX: number; maxX: number; minY: number; maxY: number } {
     if (positions.length === 0) {
       return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
     }

@@ -67,8 +67,7 @@ https://svelte.dev/e/js_parse_error -->
   import TagList from './TagList.svelte';
 
   let uploadFiles: UploadFile[] = $state([]);
-  let aiSystem = $state<ComprehensiveAISystemIntegration;
-  let docStatus: string >('');
+  let aiSystem = $state<ComprehensiveAISystemIntegrationlet docStatus: string | null>(null)('');
   let docs = $state<any >(null);
   let availableTags = $state<string[] >([]);
   let summaryType = $state<'key_points' | 'narrative' | 'prosecutorial' >('narrative');
@@ -240,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<NesCard variant="evidence" class="space-y-6">
+<div variant="evidence" class="space-y-6 nes-container">
   {#snippet header()}
     <div class="space-y-2">
       <h3 class="text-lg font-semibold flex items-center gap-2">
@@ -307,7 +306,7 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   {/if}
-</NesCard>
+</div>
 
 <!-- Styles are now handled by modular components and UnoCSS -->
 

@@ -2,8 +2,8 @@
 // lib/server/ai/ai-assistant-input-synthesizer.ts
 // Comprehensive AI Assistant Input Synthesizer integrating all enhanced components
 
-import { logger } from "./logger";
-import { enhancedRAGPipeline } from "./rag-pipeline-enhanced";
+import { logger } from './logger.js';
+import { enhancedRAGPipeline } from './rag-pipeline-enhanced.js';
 
 // Simple metrics stub for missing metrics dependency
 const metrics = {
@@ -62,14 +62,8 @@ export interface SynthesizerAnalysisResult {
     extractive: string;
     keyPoints: string[];
   };
-  entities?: Array<{
-    text: string;
-    type: string;
-  }>;
-  concepts?: Array<{
-    concept: string;
-    confidence: number;
-  }>;
+  entities?: Array<any>;
+  concepts?: Array<any>;
   complexity?: {
     legalComplexity: number;
   };
@@ -88,22 +82,13 @@ export interface RetrievalOptions {
  * Internal retrieval result structure used before further processing/ranking.
  */
 interface RetrievalResult {
-  sources: Array<{
-    id: string;
-    title: string;
-    content: string;
-    relevanceScore: number;
-    diversityScore: number;
-    rerankedScore: number;
-    type: 'document' | 'case' | 'statute' | 'precedent';
-    metadata: Record<string, any>;
-  }>;
+  sources: Array<any>;
   summary: { abstractive: string; extractive: string[]; keyPoints: string[] };
   totalSources: number;
   searchStrategies: string[];
 }
 
-import { generateEmbedding } from "./embeddings-simple";
+import { generateEmbedding } from './embeddings-simple.js';
 
 // Input types for the synthesizer
 export interface SynthesizerInput {
@@ -112,17 +97,8 @@ export interface SynthesizerInput {
     caseId?: string;
     userId: string;
     legalBertAnalysis?: unknown; // Add missing property
-    conversationHistory?: Array<{
-      role: 'user' | 'assistant';
-      content: string;
-      timestamp: Date;
-    }>;
-    documents?: Array<{
-      id: string;
-      title: string;
-      content: string;
-      type: string;
-    }>;
+    conversationHistory?: Array<any>;
+    documents?: Array<any>;
     preferences?: {
       responseStyle: 'formal' | 'casual' | 'technical';
       maxLength: number;
@@ -147,25 +123,12 @@ export interface SynthesizedOutput {
     original: string;
     enhanced: string;
     intent: string;
-    entities: Array<{
-      text: string;
-      type: string;
-      confidence: number;
-    }>;
+    entities: Array<any>;
     legalConcepts: string[];
     complexity: number;
   };
   retrievedContext: {
-    sources: Array<{
-      id: string;
-      title: string;
-      content: string;
-      relevanceScore: number;
-      diversityScore: number;
-      rerankedScore: number;
-      type: 'document' | 'case' | 'statute' | 'precedent';
-      metadata: Record<string, any>;
-    }>;
+    sources: Array<any>;
     summary: {
       abstractive: string;
       extractive: string[];
@@ -417,20 +380,20 @@ export class AIAssistantInputSynthesizer {
         });
 
         for (const result of legalSearchResults) {
-          if (!retrievalResults.sources.find((s) => s.id === result.id)) {
+          if (!retrievalResults.sources.find((s) => s.id === (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).id)) {
             retrievalResults.sources.push({
-              id: result.id,
-              title: result.title,
-              content: result.content,
-              relevanceScore: result.score,
+              id: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).id,
+              title: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).title,
+              content: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).content,
+              relevanceScore: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).score,
               diversityScore: 0.5,
               rerankedScore: 0.5,
-              type: result.category === 'case_law' ? 'case' : 'document',
+              type: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).category === 'case_law' ? 'case' : 'document',
               metadata: {
-                jurisdiction: result.jurisdiction,
-                category: result.category,
-                searchType: result.searchType,
-                confidence: result.confidence,
+                jurisdiction: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).jurisdiction,
+                category: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).category,
+                searchType: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).searchType,
+                confidence: (result as { id?: any; title?: any; content?: any; score?: any; category?: any; jurisdiction?: any; searchType?: any; confidence?: any }).confidence,
               },
             });
           }
@@ -626,7 +589,7 @@ export class AIAssistantInputSynthesizer {
   // === HELPER METHODS ===
 
   private async verifyComponents(): Promise<void> {
-    const checks: Array<{ name: string; check: () => Promise<{ status: string }> }> = [
+    const checks: Array< }> = [
       { name: 'LegalBERT', check: () => Promise.resolve({ status: 'healthy' }) },
       { name: 'RAG Pipeline', check: () => Promise.resolve({ status: 'healthy' }) },
       { name: 'Legal Search', check: () => Promise.resolve({ status: 'healthy' }) },
@@ -1140,7 +1103,7 @@ export class AIAssistantInputSynthesizer {
   /**
    * Health check
    */
-  async healthCheck(): Promise<{ status: string; components: Record<string, any> }> {
+  async healthCheck(): Promise<any> {
     const components: Record<string, any> = {};
 
     try {
@@ -1158,7 +1121,7 @@ export class AIAssistantInputSynthesizer {
     const healthyComponents = Object.values(components).filter(
       (c: any) =>
         c.status === 'healthy' ||
-        (Array.isArray(c) && c.every((item: any) => item.status === 'healthy'))
+        (Array.isArray(c) && c.every((item: any) => (item as { diversityScore?: any; status?: any }).status === 'healthy'))
     ).length;
 
     return {

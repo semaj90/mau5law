@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Enhanced Document Storage API with MinIO + PostgreSQL + Cognitive Cache
 import { db, getDatabaseHealth } from '$lib/server/db';

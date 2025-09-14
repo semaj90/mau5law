@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * SvelteKit API Route: GPU Tensor Processing
@@ -67,9 +67,9 @@ class GPUServiceManager {
       const response = await fetch(`${url}/health`, {
         method: 'GET',
         timeout: 5000 // 5 second timeout
-      } as RequestInit);
+      } as CustomRequestInit);
 
-      if (response.ok) {
+      if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
         health.healthy = true;
         health.responseTime = Date.now() - startTime;
         health.errorCount = Math.max(0, health.errorCount - 1); // Reduce error count on success
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
 
     // Validate tensor data
     const expectedSize = tensorData.shape.reduce((a: number, b: number) => a * b, 1);
-    if (!Array.isArray(tensorData.data) || tensorData.data.length !== expectedSize) {
+    if (!Array.isArray(tensorData.data) || tensorData.(data as { length?: any }).length !== expectedSize) {
       stats.failedRequests++;
       throw error(400, ensureError({
         message: 'Tensor data size mismatch'
@@ -235,21 +235,21 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
 
     // Update statistics
     const processingTime = Date.now() - startTime;
-    updateProcessingStats(processingTime, result.cache_hit || false);
+    updateProcessingStats(processingTime, (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).cache_hit || false);
     stats.successfulRequests++;
 
     return json({
       success: true,
-      data: result.data,
+      data: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).data,
       metadata: {
         processingTime,
-        cacheHit: result.cache_hit || false,
+        cacheHit: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).cache_hit || false,
         service: targetService,
-        route: result.route || generateRouteHash(cacheKey),
+        route: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).route || generateRouteHash(cacheKey),
         requestId: enhancedTensorData.requestId,
-        tensorStats: result.metadata?.tensorStats,
-        optimizationLevel: result.metadata?.optimizationLevel || 'standard',
-        gpuMemoryUsed: result.metadata?.gpuMemoryUsed || 0
+        tensorStats: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).metadata?.tensorStats,
+        optimizationLevel: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).metadata?.optimizationLevel || 'standard',
+        gpuMemoryUsed: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).metadata?.gpuMemoryUsed || 0
       },
       stats: {
         totalRequests: stats.totalRequests,
@@ -310,8 +310,8 @@ export const GET: RequestHandler = async ({ url }) => {
 
         try {
           const response = await fetch(`${primaryService}/stats`);
-          if (response.ok) {
-            serviceStats = await response.json();
+          if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
+            serviceStats = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
           }
         } catch (error: any) {
           console.warn('Failed to fetch service stats:', error);
@@ -365,7 +365,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
           const response = await fetch(`${serviceUrl}/stats`, {
             method: 'DELETE'
           });
-          return { service: serviceUrl, success: response.ok };
+          return { service: serviceUrl, success: (response as { ok?: any; json?: any; status?: any; statusText?: any }).ok };
         } catch (error: any) {
           return { service: serviceUrl, success: false, error: error.message };
         }
@@ -419,14 +419,14 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
         signal: AbortSignal.timeout(30000) // 30 second timeout
       });
 
-      if (!response.ok) {
-        throw new Error(`GPU service error: ${response.status} ${response.statusText}`);
+      if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
+        throw new Error(`GPU service error: ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status} ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).statusText}`);
       }
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
 
-      if (!result.success) {
-        throw new Error(`GPU processing failed: ${result.error || 'Unknown error'}`);
+      if (!(result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).success) {
+        throw new Error(`GPU processing failed: ${(result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).error || 'Unknown error'}`);
       }
 
       return result;
@@ -462,9 +462,9 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
         signal: AbortSignal.timeout(15000) // Shorter timeout for fallback
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
+      if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
+        if ((result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).success) {
           return result;
         }
       }

@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   // Badge replaced with span - not available in enhanced-bits
   import Input from '$lib/components/ui/Input.svelte';
 
-  let { citations = $bindable() } = $props(); // Citation[] = [];
+  let { citations = $bindable()  }: { citations = $bindable() : any } = $props(); // Citation[] = [];
 
   const dispatch = createEventDispatcher();
   let searchQuery = $state("");
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Citations List -->
   <div class="container mx-auto px-4">
     {#each filteredCitations as citation (citation.id)}
-      <NesCard class="container mx-auto px-4">
+      <div class="container mx-auto px-4 nes-container">
         <div class="container mx-auto px-4">
           <div class="container mx-auto px-4">
             <h3 class="container mx-auto px-4">{citation.title}</h3>
@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
               <button class="nes-btn"
                 variant="ghost"
                 size="sm"
-                onclick={() => toggleFavorite(citation)}
+                on:click={() => toggleFavorite(citation)}
                 class="bits-btn container mx-auto px-4"
               >
                 <Star class="container mx-auto px-4" />
@@ -118,21 +118,22 @@ https://svelte.dev/e/js_parse_error -->
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
-                onclick={() => copyCitation(citation)}
+                on:click={() =>
+copyCitation(citation)}
                 title="Copy citation"
               >
                 <Copy class="container mx-auto px-4" />
-              </button>
+</Button>
 
               <button class="nes-btn"
                 variant="ghost"
                 size="sm"
-                onclick={() => deleteCitation(citation)}
+                on:click={() => deleteCitation(citation)}
                 title="Delete citation"
                 class="bits-btn container mx-auto px-4"
               >
                 <Trash2 class="container mx-auto px-4" />
-              </button>
+</Button>
             </div>
           </div>
 
@@ -187,7 +188,7 @@ https://svelte.dev/e/js_parse_error -->
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{citation.category}</span>
           </div>
         </div>
-      </NesCard>
+      </div>
     {/each}
 
     {#if filteredCitations.length === 0}
@@ -196,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
           <p class="container mx-auto px-4">No citations match your search criteria.</p>
           <button class="nes-btn"
             size="sm"
-            onclick={() => {
+            on:click={() => {
               searchQuery = "";
               selectedCategory = "all";
             }}

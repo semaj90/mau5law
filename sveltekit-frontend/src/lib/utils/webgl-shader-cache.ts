@@ -297,7 +297,7 @@ export interface ShaderCacheMetrics {
  */
 export class WebGLShaderCache {
   private shaderPrograms = new Map<string, ShaderProgram>();
-  private compilationQueue: Array<{ id: string; resolve: Function; reject: Function }> = [];
+  private compilationQueue: Array< = [];
   private isCompiling = false;
 
   // Performance tracking

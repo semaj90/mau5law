@@ -258,13 +258,7 @@ export interface SearchResult {
  */
 export interface AnswerResult {
   answer: string;
-  sources: Array<{
-    id: string;
-    title: string;
-    score: number;
-    excerpt: string;
-    confidentialityLevel?: string;
-  }>;
+  sources: Array<any>;
   confidence: number;
   keyPoints: string[];
   processingTime: number;
@@ -283,11 +277,7 @@ export interface ContractAnalysisResult {
   contractType: string;
   parties: string[];
   keyTerms: string[];
-  risks: Array<{
-    description: string;
-    severity: 'low' | 'medium' | 'high';
-    category: string;
-  }>;
+  risks: Array<any>;
   legalIssues: string[];
   recommendations: string[];
   confidence: number;
@@ -976,7 +966,7 @@ export class EnhancedLegalRAGPipeline {
       }
 
       // Auto-generate tags if enabled
-      let tags: Array<{ tag: string; confidence: number }> = [];
+      let tags: Array< = [];
       if (this.config.rag.enableAutoTagging) {
         try {
           tags = await this.generateAutoTags(content, documentType);
@@ -1169,7 +1159,7 @@ export class EnhancedLegalRAGPipeline {
         score: r.score,
         similarity: r.similarity || 0,
         textRank: r.text_rank || 0,
-        metadata: includeMetadata ? r.metadata : {},
+        metadata: includeMetadata ? r.metadata : Record<string, any>,
         confidentialityLevel: r.confidentiality_level,
         highlights: r.highlights
       }));
@@ -1349,7 +1339,7 @@ Answer:
       };
 
       this.metrics.incrementCounter('questions_answered');
-      this.metrics.recordTiming('qa_time', result.processingTime, {
+      this.metrics.recordTiming('qa_time', (result as { processingTime?: any; status?: any; reason?: any }).processingTime, {
         confidentiality_level: confidentialityLevel || 'general',
         sources_count: relevantDocs.length.toString()
       });
@@ -1531,7 +1521,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
   /**
    * Generate auto-tags for documents
    */
-  private async generateAutoTags(content: string, documentType: string): Promise<Array<{ tag: string; confidence: number }>> {
+  private async generateAutoTags(content: string, documentType: string): Promise<Array<any> {
     if (!this.config.rag.enableAutoTagging) return [];
 
     const tagPrompt = PromptTemplate.fromTemplate(`
@@ -1570,7 +1560,7 @@ Limit to 10 most relevant tags.
         : (llmResponse as any).parse || (llmResponse as any).content || String(llmResponse);
 
       // Extract JSON from response
-      const jsonMatch = response.match(/\[[\s\S]*\]/);
+      const jsonMatch = (response as { match?: any }).match(/\[[\s\S]*\]/);
       if (jsonMatch) {
         const tags = JSON.parse(jsonMatch[0]);
         return Array.isArray(tags) ? tags.filter(t => t.tag && typeof t.confidence === 'number') : [];
@@ -1724,7 +1714,7 @@ Limit to 10 most relevant tags.
       contractType: '',
       parties: [] as string[],
       keyTerms: [] as string[],
-      risks: [] as Array<{ description: string; severity: 'low' | 'medium' | 'high'; category: string }>,
+      risks: [] as Array<,
       legalIssues: [] as string[],
       recommendations: [] as string[],
     };
@@ -1829,8 +1819,8 @@ Limit to 10 most relevant tags.
     const services = ['Database', 'Redis', 'Ollama'];
     return checks.map((result, index) => ({
       service: services[index],
-      status: result.status === 'fulfilled' ? 'healthy' : 'unhealthy',
-      error: result.status === 'rejected' ? result.reason?.message : undefined,
+      status: (result as { processingTime?: any; status?: any; reason?: any }).status === 'fulfilled' ? 'healthy' : 'unhealthy',
+      error: (result as { processingTime?: any; status?: any; reason?: any }).status === 'rejected' ? (result as { processingTime?: any; status?: any; reason?: any }).reason?.message : undefined,
       timestamp: new Date().toISOString()
     }));
   }

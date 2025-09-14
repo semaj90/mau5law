@@ -8,11 +8,11 @@
  * - llamacpp-ollama-integration.ts (RTX + Ollama native)
  */
 
-import { webLlamaService } from './webasm-llamacpp';
-import { nesCacheOrchestrator } from '../services/nes-cache-orchestrator';
-import { WebGPUAIEngine } from '../webgpu/webgpu-ai-engine';
-import type { WebLlamaResponse } from './webasm-llamacpp';
-import type { OllamaConfig, LlamaCppConfig } from '../services/llamacpp-ollama-integration';
+import { webLlamaService } from './webasm-llamacpp.js';
+import { nesCacheOrchestrator } from '../services/nes-cache-orchestrator.js';
+import { WebGPUAIEngine } from '../webgpu/webgpu-ai-engine.js';
+import type { WebLlamaResponse } from './webasm-llamacpp.js';
+import type { OllamaConfig, LlamaCppConfig } from '../services/llamacpp-ollama-integration.js';
 
 // Route decision interfaces
 export interface RouteRequest {
@@ -132,11 +132,11 @@ class CognitiveSmartRouter {
   constructor() {
     this.metrics = {
       totalRequests: 0,
-      routingDecisions: {},
-      averageLatency: {},
+      routingDecisions: Record<string, any>,
+      averageLatency: Record<string, any>,
       cacheHitRatio: 0,
-      engineUtilization: {},
-      successRate: {},
+      engineUtilization: Record<string, any>,
+      successRate: Record<string, any>,
     };
     this.engineHealthCache = new Map();
     this.initializeHealthChecks();
@@ -334,11 +334,11 @@ class CognitiveSmartRouter {
         }),
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
       return {
-        text: result.response || 'No response from Ollama',
-        tokensGenerated: result.eval_count || 0,
+        text: (result as { response?: any; eval_count?: any; eval_duration?: any }).response || 'No response from Ollama',
+        tokensGenerated: (result as { response?: any; eval_count?: any; eval_duration?: any }).eval_count || 0,
         processingTime: performance.now() - startTime,
         confidence: 0.8,
         fromCache: false,
@@ -347,7 +347,7 @@ class CognitiveSmartRouter {
         processingPath: 'ollama',
         metrics: {
           embeddingTime: 0,
-          inferenceTime: result.eval_duration / 1000000 || 0, // ns to ms
+          inferenceTime: (result as { response?: any; eval_count?: any; eval_duration?: any }).eval_duration / 1000000 || 0, // ns to ms
           cacheTime: 0,
           totalTime: performance.now() - startTime,
         },
@@ -375,7 +375,7 @@ class CognitiveSmartRouter {
     // Check Ollama availability
     try {
       const response = await fetch('http://localhost:11434/api/version');
-      this.isOllamaAvailable = response.ok;
+      this.isOllamaAvailable = (response as { json?: any; ok?: any }).ok;
     } catch (e) {
       this.isOllamaAvailable = false;
     }
@@ -391,7 +391,7 @@ class CognitiveSmartRouter {
    */
   private async checkEngineHealth(
     engine: string
-  ): Promise<{ healthy: boolean; lastCheck: number }> {
+  ): Promise<any> {
     const cached = this.engineHealthCache.get(engine);
     const now = Date.now();
 
@@ -471,11 +471,11 @@ class CognitiveSmartRouter {
   resetMetrics(): void {
     this.metrics = {
       totalRequests: 0,
-      routingDecisions: {},
-      averageLatency: {},
+      routingDecisions: Record<string, any>,
+      averageLatency: Record<string, any>,
       cacheHitRatio: 0,
-      engineUtilization: {},
-      successRate: {},
+      engineUtilization: Record<string, any>,
+      successRate: Record<string, any>,
     };
   }
 

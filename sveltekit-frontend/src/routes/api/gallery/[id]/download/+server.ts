@@ -4,7 +4,7 @@
  */
 
 import { error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { readFile, stat } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
@@ -62,20 +62,20 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     // Check access permissions
     // TODO: Implement proper user authentication and authorization
     // For now, only check if file is public or user has access to the case
-    if (!item.isPublic) {
+    if (!(item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).isPublic) {
       // TODO: Check user permissions for the case
-      // const userHasAccess = await checkUserCaseAccess(locals.user?.id, item.caseId);
+      // const userHasAccess = await checkUserCaseAccess(locals.user?.id, (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).caseId);
       // if (!userHasAccess) {
       //   throw error(403, 'Access denied');
       // }
     }
 
-    if (!item.filePath) {
+    if (!(item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath) {
       throw error(404, 'File path not found');
     }
 
     // Construct full file path
-    const fullPath = path.join(process.cwd(), 'static', item.filePath);
+    const fullPath = path.join(process.cwd(), 'static', (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath);
 
     if (!existsSync(fullPath)) {
       console.error(`File not found on disk: ${fullPath}`);
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
 
     // Log download
     await logDownload({
-      itemId: item.id,
+      itemId: (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).id,
       userId: locals.user?.id,
       userAgent: request.headers.get('user-agent') || 'Unknown',
       ip: getClientIP(request),
@@ -99,16 +99,16 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
 
     // Determine content disposition
     const disposition = inline || downloadType === 'view' ? 'inline' : 'attachment';
-    const filename = item.originalFileName || item.fileName || 'download';
+    const filename = (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).originalFileName || (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileName || 'download';
 
     // Set appropriate headers
     const headers = new Headers({
-      'Content-Type': item.fileType || 'application/octet-stream',
+      'Content-Type': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || 'application/octet-stream',
       'Content-Length': stats.size.toString(),
       'Content-Disposition': `${disposition}; filename="${encodeURIComponent(filename)}"`,
       'Cache-Control': 'private, max-age=3600', // Cache for 1 hour
       'Last-Modified': stats.mtime.toUTCString(),
-      'X-File-ID': item.id,
+      'X-File-ID': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).id,
       'X-File-Size': stats.size.toString(),
       'X-Download-Type': downloadType
     });
@@ -118,14 +118,14 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     headers.set('X-Frame-Options', 'DENY');
 
     // For images, add additional headers
-    if (item.fileType?.startsWith('image/')) {
+    if ((item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType?.startsWith('image/')) {
       headers.set('Accept-Ranges', 'bytes');
     }
 
     // Handle range requests for large files (useful for video streaming)
     const range = request.headers.get('range');
     if (range && stats.size > 1024 * 1024) { // Only for files > 1MB
-      return handleRangeRequest(fileBuffer, range, item.fileType || 'application/octet-stream', stats.size);
+      return handleRangeRequest(fileBuffer, range, (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || 'application/octet-stream', stats.size);
     }
 
     return new Response(fileBuffer, {
@@ -193,14 +193,14 @@ function handleRangeRequest(buffer: Buffer, rangeHeader: string, contentType: st
   }
 }
 
-function parseRangeHeader(range: string, fileSize: number): Array<{ start: number; end: number }> | null {
+function parseRangeHeader(range: string, fileSize: number): Array< | null {
   try {
     if (!range.startsWith('bytes=')) {
       return null;
     }
 
     const ranges = range.slice(6).split(',').map(r => r.trim());
-    const parsedRanges: Array<{ start: number; end: number }> = [];
+    const parsedRanges: Array< = [];
 
     for (const rangeStr of ranges) {
       const [startStr, endStr] = rangeStr.split('-');
@@ -312,8 +312,8 @@ export const HEAD: RequestHandler = async ({ params, locals }) => {
     const item = itemQuery[0];
 
     // Check if file exists on disk
-    if (item.filePath) {
-      const fullPath = path.join(process.cwd(), 'static', item.filePath);
+    if ((item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath) {
+      const fullPath = path.join(process.cwd(), 'static', (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath);
       if (!existsSync(fullPath)) {
         throw error(404, 'File not found on disk');
       }
@@ -322,12 +322,12 @@ export const HEAD: RequestHandler = async ({ params, locals }) => {
     return new Response(null, {
       status: 200,
       headers: {
-        'Content-Type': item.fileType || 'application/octet-stream',
-        'Content-Length': (item.fileSize || 0).toString(),
-        'Last-Modified': item.uploadedAt?.toUTCString() || new Date().toUTCString(),
+        'Content-Type': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || 'application/octet-stream',
+        'Content-Length': ((item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileSize || 0).toString(),
+        'Last-Modified': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).uploadedAt?.toUTCString() || new Date().toUTCString(),
         'Accept-Ranges': 'bytes',
-        'X-File-ID': item.id,
-        'X-File-Name': item.originalFileName || item.fileName || 'unknown'
+        'X-File-ID': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).id,
+        'X-File-Name': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).originalFileName || (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileName || 'unknown'
       }
     });
 
