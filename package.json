@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "node start-development.js",
     "dev:full": "cd sveltekit-frontend && npm run dev:full",
+    "dev:local": "node scripts/start-local-dev.mjs",
+    "dev:quic": "node scripts/start-quic-stack.mjs",
+    "stop:quic": "node scripts/stop-quic-stack.mjs",
     "start": "node start-production.js",
     "start:development": "node start-development.js",
     "start:production": "node start-production.js",

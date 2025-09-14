@@ -9,10 +9,8 @@ https://svelte.dev/e/js_parse_error -->
   import { aiService } from '$lib/services/aiService';
   // UI Components
   // Badge replaced with span - not available in enhanced-bits
-  import { Card } from '$lib/components/ui/enhanced-bits';
-  import CardContent from "$lib/components/ui/CardContent.svelte";
-  import CardFooter from "$lib/components/ui/CardFooter.svelte";
-  import CardHeader from "$lib/components/ui/CardHeader.svelte";
+  // The enhanced-bits module does not export a named `Card`; use the specific parts or native markup instead.
+  // Remove broken CardContent/CardHeader/CardFooter imports - using native markup instead
   import Input from "$lib/components/ui/Input.svelte";
   // Remove broken Textarea import, use native <textarea> for now
   // Remove Button import, use native <button> for now
@@ -52,29 +50,16 @@ https://svelte.dev/e/js_parse_error -->
   let contextX = $state(0);
   let contextY = $state(0);
 
-  // Component state - using poi props directly
-  let name = poi.name || "";
-  let aliases = $state<string[] >(poi.aliases || []);
-  let profileData = poi.profileData || { who: "", what: "", why: "", how: "" };
-  let posX = poi.posX || 100;
-  let posY = poi.posY || 100;
-  let relationship = poi.relationship || "";
-  let threatLevel = poi.threatLevel || "low";
-  let status = poi.status || "active";
-  let tags = $state<string[] >(poi.tags || []);
-
-  // Update component state when poi changes
-  // TODO: Convert to $derived: {
-    name = poi.name || ""
-    aliases = poi.aliases || [];
-    profileData = poi.profileData || { who: "", what: "", why: "", how: "" };
-    posX = poi.posX || 100;
-    posY = poi.posY || 100;
-    relationship = poi.relationship || "";
-    threatLevel = poi.threatLevel || "low";
-    status = poi.status || "active";
-    tags = poi.tags || [];
-  }
+  // Component state - using Svelte 5 reactive variables
+  let name = $derived(poi.name || "");
+  let aliases = $derived(poi.aliases || []);
+  let profileData = $derived(poi.profileData || { who: "", what: "", why: "", how: "" });
+  let posX = $state(poi.posX || 100);
+  let posY = $state(poi.posY || 100);
+  let relationship = $derived(poi.relationship || "");
+  let threatLevel = $derived(poi.threatLevel || "low");
+  let status = $derived(poi.status || "active");
+  let tags = $derived(poi.tags || []);
   // Form data for editing
   let formData = $state({
     name: "",
@@ -117,14 +102,8 @@ https://svelte.dev/e/js_parse_error -->
       profileData: formData.profileData,
     };
 
-    // Update local state
-    name = updatedPoi.name;
-    aliases = updatedPoi.aliases;
-    relationship = updatedPoi.relationship;
-    threatLevel = updatedPoi.threatLevel;
-    status = updatedPoi.status;
-    tags = updatedPoi.tags;
-    profileData = updatedPoi.profileData;
+    // Update the poi bindable prop
+    poi = updatedPoi;
 
     // Dispatch update event
     dispatch("update", updatedPoi);
@@ -150,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
     if (summary) {
       // You could show this in a modal or add it to the POI data
       console.log("POI Summary:", summary);
-  }
+    }
   }
   function getThreatLevelColor(level: string): string {
     switch (level) {
@@ -162,8 +141,9 @@ https://svelte.dev/e/js_parse_error -->
         return "bg-green-500";
       default:
         return "bg-gray-500";
+    }
   }
-  }
+
   function getStatusColor(status: string): string {
     switch (status) {
       case "active":
@@ -176,7 +156,7 @@ https://svelte.dev/e/js_parse_error -->
         return "bg-green-500";
       default:
         return "bg-gray-500";
-  }
+    }
   }
   // Handle dragging
   function handleDrag(event: CustomEvent<{ x: number; y: number }>) {
@@ -201,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
           dispatch("updatePosition", { id: poi.id, x: posX, y: posY });
         }
       }}
-      contextmenu={handleContextMenu}
+      oncontextmenu={handleContextMenu}
       role="menu"
       tabindex={0}
       aria-label="POI context menu"
@@ -320,23 +300,23 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <div class="nier-footer flex justify-between items-center mt-4 gap-2">
           {#if isEditing}
-            <button class="nier-btn nier-btn-accent" onclick={() => saveChanges()}><Save class="w-4 h-4" /> Save</button>
-            <button class="nier-btn nier-nes-btn" onclick={() => cancelEditing()}><X class="w-4 h-4" /> Cancel</button>
+            <button class="nier-btn nier-btn-accent" onclick={saveChanges}><Save class="w-4 h-4" /> Save</button>
+            <button class="nier-btn nier-nes-btn" onclick={cancelEditing}><X class="w-4 h-4" /> Cancel</button>
           {:else}
-            <button class="nier-btn nier-nes-btn" onclick={() => startEditing()}><Edit class="w-4 h-4" /> Edit</button>
-            <button class="nier-btn nier-nes-btn" onclick={() => summarizePOI()}><Sparkles class="w-4 h-4" /> Summarize</button>
+            <button class="nier-btn nier-nes-btn" onclick={startEditing}><Edit class="w-4 h-4" /> Edit</button>
+            <button class="nier-btn nier-nes-btn" onclick={summarizePOI}><Sparkles class="w-4 h-4" /> Summarize</button>
           {/if}
         </div>
       </div>
     </div>
   </ContextMenu.Trigger>
-  <ContextMenu.Content menu={showContextMenu} class="container mx-auto px-4">
-    <ContextMenu.Item select={startEditing}>
+  <ContextMenu.Content class="container mx-auto px-4">
+    <ContextMenu.Item onselect={startEditing}>
       <Edit class="container mx-auto px-4" />
       Edit Profile
     </ContextMenu.Item>
 
-    <ContextMenu.Item select={summarizePOI}>
+    <ContextMenu.Item onselect={summarizePOI}>
       <Sparkles class="container mx-auto px-4" />
       AI Summary
     </ContextMenu.Item>
@@ -344,27 +324,27 @@ https://svelte.dev/e/js_parse_error -->
     <ContextMenu.Separator />
 
     <ContextMenu.Item
-      select={() => {
-        threatLevel = "low";
-        dispatch("update", { ...poi, threatLevel: "low" });
+      onselect={() => {
+        poi = { ...poi, threatLevel: "low" };
+        dispatch("update", poi);
       }}
     >
       <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Low</span>
       Low
     </ContextMenu.Item>
     <ContextMenu.Item
-      select={() => {
-        threatLevel = "medium";
-        dispatch("update", { ...poi, threatLevel: "medium" });
+      onselect={() => {
+        poi = { ...poi, threatLevel: "medium" };
+        dispatch("update", poi);
       }}
     >
       <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Medium</span>
       Medium
     </ContextMenu.Item>
     <ContextMenu.Item
-      select={() => {
-        threatLevel = "high";
-        dispatch("update", { ...poi, threatLevel: "high" });
+      onselect={() => {
+        poi = { ...poi, threatLevel: "high" };
+        dispatch("update", poi);
       }}
     >
       <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">High</span>
@@ -373,7 +353,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <ContextMenu.Separator />
 
-    <ContextMenu.Item select={() => dispatch("delete", poi.id)}>
+    <ContextMenu.Item onselect={() => dispatch("delete", poi.id)}>
       <X class="container mx-auto px-4" />
       Delete POI
     </ContextMenu.Item>

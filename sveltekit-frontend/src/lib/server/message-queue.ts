@@ -116,7 +116,7 @@ class InMemoryQueue extends EventEmitter {
         if (result) {
           const [, messageData] = result;
           const message = JSON.parse(messageData);
-          
+
           try {
             await callback({
               content: Buffer.from(JSON.stringify(message)),
@@ -153,7 +153,7 @@ class InMemoryQueue extends EventEmitter {
     // Requeue or move to dead letter
     const stats = this.stats.get(queueName)!;
     stats.failed++;
-    
+
     if (message.attempts < message.maxAttempts) {
       message.attempts++;
       // Requeue with delay
@@ -219,14 +219,14 @@ export const cache = {
     return null; // Simulate cache miss for now
   },
 
-  async lpush: messageQueue.lpush.bind(messageQueue),
-  async rpush: messageQueue.rpush.bind(messageQueue),
-  async blpop: messageQueue.blpop.bind(messageQueue),
-  async llen: messageQueue.llen.bind(messageQueue),
+  lpush: messageQueue.lpush.bind(messageQueue),
+  rpush: messageQueue.rpush.bind(messageQueue),
+  blpop: messageQueue.blpop.bind(messageQueue),
+  llen: messageQueue.llen.bind(messageQueue),
 
   async close(): Promise<void> {
     await messageQueue.close();
-  }
+  },
 };
 
 // RabbitMQ-compatible interface
@@ -238,10 +238,10 @@ export const rabbit = {
 
   publish: messageQueue.publish.bind(messageQueue),
   consume: messageQueue.consume.bind(messageQueue),
-  
+
   async close(): Promise<void> {
     await messageQueue.close();
-  }
+  },
 };
 
 // Enhanced message queue with workflow support
@@ -253,14 +253,17 @@ export class WorkflowQueue extends InMemoryQueue {
       id: workflowId,
       state: initialState,
       history: [{ state: initialState, timestamp: Date.now() }],
-      status: 'active'
+      status: 'active',
     });
 
-    await this.rpush('workflow_queue', JSON.stringify({
-      type: 'workflow_start',
-      workflowId,
-      state: initialState
-    }));
+    await this.rpush(
+      'workflow_queue',
+      JSON.stringify({
+        type: 'workflow_start',
+        workflowId,
+        state: initialState,
+      })
+    );
   }
 
   async updateWorkflow(workflowId: string, newState: any): Promise<void> {
@@ -268,12 +271,15 @@ export class WorkflowQueue extends InMemoryQueue {
     if (workflow) {
       workflow.state = newState;
       workflow.history.push({ state: newState, timestamp: Date.now() });
-      
-      await this.rpush('workflow_queue', JSON.stringify({
-        type: 'workflow_update',
-        workflowId,
-        state: newState
-      }));
+
+      await this.rpush(
+        'workflow_queue',
+        JSON.stringify({
+          type: 'workflow_update',
+          workflowId,
+          state: newState,
+        })
+      );
     }
   }
 

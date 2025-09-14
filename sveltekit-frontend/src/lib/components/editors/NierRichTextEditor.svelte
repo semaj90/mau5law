@@ -305,7 +305,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <div class="w-full h-full flex flex-col nier-editor-container" class:nier-android={nieRTheme.mode === 'android'} class:nier-yorha={nieRTheme.mode === 'yorha'} class:nier-machine={nieRTheme.mode === 'machine'}>
 	<!-- Editor Toolbar -->
 	<NesCard class="mb-2 nier-toolbar">
-		<div class="yorha-panel-content" class="py-2">
+		<div class="yorha-panel-content py-2">
 			<div class="flex items-center justify-between">
 				<div class="flex items-center gap-1">
 					<!-- Text Formatting -->
@@ -318,7 +318,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Bold class="w-4 h-4" />
-						</button>
+						</Button>
 						<Button
 							variant={editorState.isItalic ? "default" : "ghost"}
 							size="sm"
@@ -327,7 +327,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Italic class="w-4 h-4" />
-						</button>
+						</Button>
 						<Button
 							variant={editorState.isUnderlined ? "default" : "ghost"}
 							size="sm"
@@ -336,7 +336,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Underline class="w-4 h-4" />
-						</button>
+						</Button>
 					</div>
 
 					<!-- Lists and Structure -->
@@ -349,7 +349,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<List class="w-4 h-4" />
-						</button>
+						</Button>
 						<Button
 							variant="ghost"
 							size="sm"
@@ -358,7 +358,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<ListOrdered class="w-4 h-4" />
-						</button>
+						</Button>
 						<Button
 							variant="ghost"
 							size="sm"
@@ -367,7 +367,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Quote class="w-4 h-4" />
-						</button>
+						</Button>
 					</div>
 
 					<!-- Media and Links -->
@@ -380,7 +380,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Link2 class="w-4 h-4" />
-						</button>
+						</Button>
 						<Button
 							variant="ghost"
 							size="sm"
@@ -389,7 +389,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Code class="w-4 h-4" />
-						</button>
+						</Button>
 					</div>
 
 					<!-- Actions -->
@@ -403,37 +403,38 @@ https://svelte.dev/e/attribute_duplicate -->
 						>
 							<Save class="w-4 h-4 mr-1" />
 							Save
-						</button>
+						</Button>
 					</div>
 				</div>
 
 				<div class="flex items-center gap-2">
 					<!-- Theme Switcher -->
 					<div class="flex gap-1 bg-muted rounded-md p-1">
-						<button class="nes-btn"
+						<button
 							variant={nieRTheme.mode === 'android' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchTheme('android')}
-							class="bits-btn h-6 px-2 text-xs"
+							class="nes-btn bits-btn h-6 px-2 text-xs"
 						>
 							2B
 						</button>
-						<button class="nes-btn"
+						<button
 							variant={nieRTheme.mode === 'yorha' ? 'default' : 'ghost'}
 							size="sm"
 							onclick={() => switchTheme('yorha')}
-							class="bits-btn h-6 px-2 text-xs"
+							class="nes-btn bits-btn h-6 px-2 text-xs"
 						>
 							9S
 						</button>
-						<Button class="bits-btn"
+						<button
 							variant={nieRTheme.mode === 'machine' ? 'default' : 'ghost'}
+							class="bits-btn"
 							size="sm"
 							onclick={() => switchTheme('machine')}
 							class="h-6 px-2 text-xs"
 						>
 							A2
-						</button>
+						</Button>
 					</div>
 
 					<!-- Stats -->
@@ -457,7 +458,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
 	<!-- Main Editor Area -->
 	<NesCard class="flex-1 nier-editor-main">
-		<div class="yorha-panel-content" class="p-0 h-full">
+		<div class="yorha-panel-content p-0 h-full">
 			<div
 				bind:this={editorContainer}
 				class="w-full h-full p-4 prose prose-sm max-w-none focus:outline-none nier-editor-content"

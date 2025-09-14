@@ -216,8 +216,8 @@ export const rabbitmqService = {
   getConnection,
   getChannel,
   setupQueues,
-  publishMessage,
-  closeConnections,
+  publishToQueue,
+  consumeFromQueue,
   healthCheck,
   QUEUES,
 };

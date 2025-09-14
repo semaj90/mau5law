@@ -374,7 +374,7 @@
                 <TrendingUp class="h-4 w-4 mr-2" />
                 Scale
               {/if}
-            </button>
+            </Button>
 
             <Button class="bits-btn px-3"
               onclick={() => scaleCluster(clusterHealth.totalWorkers + 1)}

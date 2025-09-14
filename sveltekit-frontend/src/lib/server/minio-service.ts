@@ -1,7 +1,22 @@
 /**
- * MinIO S3-Compatible Object Storage Configuration and Utilities
- *
- * Features:
+ * MinIO S3-Compatible Object Storage Configuration and Utilitiasync function streamToString(stream: Readable): Promise<string> {
+  const chunks: Buffer[] = [];
+
+  // Handle Node.js Readable stream
+  return new Promise((resolve, reject) => {
+    stream.on('data', (chunk) => {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    });
+
+    stream.on('end', () => {
+      resolve(Buffer.concat(chunks).toString('utf-8'));
+    });
+
+    stream.on('error', (error) => {
+      reject(error);
+    });
+  });
+}
  * - S3-compatible client setup for MinIO
  * - Text extraction from various file formats
  * - Stream handling for large files
@@ -42,7 +57,7 @@ interface TextExtractionResult {
 }
 
 // MinIO client configuration
-const createMinIOClient = (): S3Client => {
+const createMinIOClient = (): InstanceType<typeof S3Client> => {
   const config: MinIOConfig = {
     endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000',
     region: process.env.MINIO_REGION || 'us-east-1',
@@ -68,23 +83,21 @@ const minioClient = createMinIOClient();
 // Helper function to stream S3 object to string
 async function streamToString(stream: Readable): Promise<string> {
   const chunks: Buffer[] = [];
-  const reader = stream.getReader ? stream.getReader() : stream;
 
-  if (typeof reader.read === 'function') {
-    // Handle ReadableStream (browser)
-    let result = await reader.read();
-    while (!result.done) {
-      chunks.push(Buffer.from(result.value));
-      result = await reader.read();
-    }
-  } else {
-    // Handle Node.js Readable stream
-    for await (const chunk of stream) {
-      chunks.push(Buffer.from(chunk));
-    }
-  }
+  // Handle Node.js Readable stream
+  return new Promise((resolve, reject) => {
+    stream.on('data', (chunk) => {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    });
 
-  return Buffer.concat(chunks).toString('utf-8');
+    stream.on('end', () => {
+      resolve(Buffer.concat(chunks).toString('utf-8'));
+    });
+
+    stream.on('error', (error) => {
+      reject(error);
+    });
+  });
 }
 
 // Helper function to detect file type from key/content

@@ -4,7 +4,7 @@
  * Supports image analysis, similarity operations, and embedding transforms
  */
 
-import { webgpuTextureStreamer } from '../gpu/texture-streaming-service.js';
+import { textureStreamer } from '../gpu/texture-streaming-service.js';
 
 interface GPUTensorConfig {
   tileSize: number;
@@ -41,7 +41,7 @@ export class TensorAccelerator {
       tileSize: 16, // 16x16 tiles optimal for RTX 3060 Ti
       workgroupSize: [16, 16, 1],
       precision: 'fp16',
-      memoryOptimized: true
+      memoryOptimized: true,
     };
   }
 
@@ -50,7 +50,7 @@ export class TensorAccelerator {
    */
   async initialize(): Promise<boolean> {
     if (this.initialized) return true;
-    
+
     try {
       if (!navigator.gpu) {
         console.warn('WebGPU not available for tensor acceleration');
@@ -72,16 +72,15 @@ export class TensorAccelerator {
           maxComputeWorkgroupSizeX: 256,
           maxComputeWorkgroupSizeY: 256,
           maxComputeInvocationsPerWorkgroup: 256,
-          maxBufferSize: 2 * 1024 * 1024 * 1024 // 2GB
-        }
+          maxBufferSize: 2 * 1024 * 1024 * 1024, // 2GB
+        },
       });
 
       await this.createComputePipelines();
       this.initialized = true;
-      
+
       console.log('🚀 WebGPU Tensor Accelerator initialized');
       return true;
-      
     } catch (error) {
       console.error('Failed to initialize WebGPU Tensor Accelerator:', error);
       return false;
@@ -100,24 +99,24 @@ export class TensorAccelerator {
       @group(0) @binding(1) var<storage, read> vectorB: array<f32>;
       @group(0) @binding(2) var<storage, read_write> result: array<f32>;
       @group(0) @binding(3) var<uniform> params: vec4<u32>; // [length, tile_size, 0, 0]
-      
+
       @compute @workgroup_size(16, 16, 1)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         let length = params.x;
         let tile_size = params.y;
-        
+
         if (index >= length) { return; }
-        
+
         // Tiled dot product computation
         var sum = 0.0;
         let tile_start = (index / tile_size) * tile_size;
         let tile_end = min(tile_start + tile_size, length);
-        
+
         for (var i = tile_start; i < tile_end; i++) {
           sum += vectorA[i] * vectorB[i];
         }
-        
+
         // Atomic add for partial results
         result[index / tile_size] += sum;
       }
@@ -128,18 +127,18 @@ export class TensorAccelerator {
       @group(0) @binding(0) var<storage, read> input: array<f32>;
       @group(0) @binding(1) var<storage, read_write> output: array<f32>;
       @group(0) @binding(2) var<uniform> params: vec4<u32>; // [length, transform_type, scale, offset]
-      
+
       @compute @workgroup_size(64, 1, 1)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         let length = params.x;
         let transform_type = params.y;
-        
+
         if (index >= length) { return; }
-        
+
         let value = input[index];
         var result_value = value;
-        
+
         // L2 normalization
         if (transform_type == 0u) {
           result_value = value * f32(params.z) / 1000.0; // Scale factor
@@ -152,7 +151,7 @@ export class TensorAccelerator {
         else if (transform_type == 2u) {
           result_value = max(0.0, value);
         }
-        
+
         output[index] = result_value;
       }
     `;
@@ -162,7 +161,7 @@ export class TensorAccelerator {
       @group(0) @binding(0) var<storage, read> image_data: array<u32>;
       @group(0) @binding(1) var<storage, read_write> features: array<f32>;
       @group(0) @binding(2) var<uniform> params: vec4<u32>; // [width, height, channels, tile_size]
-      
+
       @compute @workgroup_size(16, 16, 1)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let x = global_id.x;
@@ -170,25 +169,25 @@ export class TensorAccelerator {
         let width = params.x;
         let height = params.y;
         let tile_size = params.w;
-        
+
         if (x >= width || y >= height) { return; }
-        
+
         // Tiled feature extraction
         let tile_x = x / tile_size;
         let tile_y = y / tile_size;
         let tile_index = tile_y * (width / tile_size) + tile_x;
-        
+
         let pixel_index = y * width + x;
         let pixel_value = image_data[pixel_index];
-        
+
         // Extract RGB components
         let r = f32((pixel_value >> 16u) & 0xFFu) / 255.0;
         let g = f32((pixel_value >> 8u) & 0xFFu) / 255.0;
         let b = f32(pixel_value & 0xFFu) / 255.0;
-        
+
         // Compute luminance for this pixel
         let luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-        
+
         // Accumulate features for this tile
         atomicAdd(&features[tile_index * 4u], r);     // Avg R
         atomicAdd(&features[tile_index * 4u + 1u], g); // Avg G
@@ -202,49 +201,58 @@ export class TensorAccelerator {
     const transformModule = this.device.createShaderModule({ code: transformShader });
     const imageModule = this.device.createShaderModule({ code: imageAnalysisShader });
 
-    this.computePipelines.set('similarity', this.device.createComputePipeline({
-      layout: 'auto',
-      compute: { module: similarityModule, entryPoint: 'main' }
-    }));
+    this.computePipelines.set(
+      'similarity',
+      this.device.createComputePipeline({
+        layout: 'auto',
+        compute: { module: similarityModule, entryPoint: 'main' },
+      })
+    );
 
-    this.computePipelines.set('transform', this.device.createComputePipeline({
-      layout: 'auto',
-      compute: { module: transformModule, entryPoint: 'main' }
-    }));
+    this.computePipelines.set(
+      'transform',
+      this.device.createComputePipeline({
+        layout: 'auto',
+        compute: { module: transformModule, entryPoint: 'main' },
+      })
+    );
 
-    this.computePipelines.set('image', this.device.createComputePipeline({
-      layout: 'auto',
-      compute: { module: imageModule, entryPoint: 'main' }
-    }));
+    this.computePipelines.set(
+      'image',
+      this.device.createComputePipeline({
+        layout: 'auto',
+        compute: { module: imageModule, entryPoint: 'main' },
+      })
+    );
   }
 
   /**
    * GPU-accelerated similarity computation between embeddings
    */
   async computeSimilarity(
-    vectorA: Float32Array, 
+    vectorA: Float32Array,
     vectorB: Float32Array,
     options: TensorAccelerationOptions = {}
   ): Promise<{ similarity: number; gpuMeta: GPUTensorMeta }> {
     const startTime = performance.now();
-    
+
     if (!this.initialized && !(await this.initialize())) {
       throw new Error('WebGPU tensor acceleration not available');
     }
-    
+
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
     }
 
     const tileSize = options.tileSize || this.config.tileSize;
     const numTiles = Math.ceil(vectorA.length / tileSize);
-    
+
     try {
       // Create buffers
       const bufferA = this.device.createBuffer({
         size: vectorA.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true
+        mappedAtCreation: true,
       });
       new Float32Array(bufferA.getMappedRange()).set(vectorA);
       bufferA.unmap();
@@ -252,24 +260,25 @@ export class TensorAccelerator {
       const bufferB = this.device.createBuffer({
         size: vectorB.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true
+        mappedAtCreation: true,
       });
       new Float32Array(bufferB.getMappedRange()).set(vectorB);
       bufferB.unmap();
 
       const resultBuffer = this.device.createBuffer({
         size: numTiles * 4, // f32 per tile
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
       });
 
       const uniformBuffer = this.device.createBuffer({
         size: 16, // vec4<u32>
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       });
 
       // Set uniforms
       this.device.queue.writeBuffer(
-        uniformBuffer, 0,
+        uniformBuffer,
+        0,
         new Uint32Array([vectorA.length, tileSize, 0, 0])
       );
 
@@ -281,14 +290,14 @@ export class TensorAccelerator {
           { binding: 0, resource: { buffer: bufferA } },
           { binding: 1, resource: { buffer: bufferB } },
           { binding: 2, resource: { buffer: resultBuffer } },
-          { binding: 3, resource: { buffer: uniformBuffer } }
-        ]
+          { binding: 3, resource: { buffer: uniformBuffer } },
+        ],
       });
 
       // Execute compute shader
       const commandEncoder = this.device.createCommandEncoder();
       const computePass = commandEncoder.beginComputePass();
-      
+
       computePass.setPipeline(pipeline);
       computePass.setBindGroup(0, bindGroup);
       computePass.dispatchWorkgroups(Math.ceil(vectorA.length / 16));
@@ -297,7 +306,7 @@ export class TensorAccelerator {
       // Read results
       const stagingBuffer = this.device.createBuffer({
         size: numTiles * 4,
-        usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
+        usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
       });
 
       commandEncoder.copyBufferToBuffer(resultBuffer, 0, stagingBuffer, 0, numTiles * 4);
@@ -305,13 +314,13 @@ export class TensorAccelerator {
 
       await stagingBuffer.mapAsync(GPUMapMode.READ);
       const results = new Float32Array(stagingBuffer.getMappedRange());
-      
+
       // Sum partial results
       let similarity = 0;
       for (let i = 0; i < results.length; i++) {
         similarity += results[i];
       }
-      
+
       // Normalize by vector magnitudes
       const magnitudeA = Math.sqrt(vectorA.reduce((sum, val) => sum + val * val, 0));
       const magnitudeB = Math.sqrt(vectorB.reduce((sum, val) => sum + val * val, 0));
@@ -319,7 +328,7 @@ export class TensorAccelerator {
 
       // Cleanup
       stagingBuffer.unmap();
-      [bufferA, bufferB, resultBuffer, uniformBuffer, stagingBuffer].forEach(b => b.destroy());
+      [bufferA, bufferB, resultBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy());
 
       const computeTime = performance.now() - startTime;
 
@@ -331,10 +340,9 @@ export class TensorAccelerator {
           computeTime,
           memoryUsage: vectorA.byteLength + vectorB.byteLength + numTiles * 4,
           kernelType: 'tiled-similarity',
-          precision: options.precision || 'fp32'
-        }
+          precision: options.precision || 'fp32',
+        },
       };
-
     } catch (error) {
       console.error('GPU similarity computation failed:', error);
       throw error;
@@ -350,11 +358,11 @@ export class TensorAccelerator {
     options: TensorAccelerationOptions = {}
   ): Promise<{ transformed: Float32Array; gpuMeta: GPUTensorMeta }> {
     const startTime = performance.now();
-    
+
     if (!this.initialized && !(await this.initialize())) {
       throw new Error('WebGPU tensor acceleration not available');
     }
-    
+
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
     }
@@ -364,27 +372,28 @@ export class TensorAccelerator {
       const inputBuffer = this.device.createBuffer({
         size: embedding.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true
+        mappedAtCreation: true,
       });
       new Float32Array(inputBuffer.getMappedRange()).set(embedding);
       inputBuffer.unmap();
 
       const outputBuffer = this.device.createBuffer({
         size: embedding.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
       });
 
       const uniformBuffer = this.device.createBuffer({
         size: 16,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       });
 
       // Set operation parameters
       const transformType = operation === 'normalize' ? 0 : operation === 'quantize' ? 1 : 2;
       const scale = operation === 'quantize' ? 127 : 1000; // Quantization or normalization scale
-      
+
       this.device.queue.writeBuffer(
-        uniformBuffer, 0,
+        uniformBuffer,
+        0,
         new Uint32Array([embedding.length, transformType, scale, 0])
       );
 
@@ -395,13 +404,13 @@ export class TensorAccelerator {
         entries: [
           { binding: 0, resource: { buffer: inputBuffer } },
           { binding: 1, resource: { buffer: outputBuffer } },
-          { binding: 2, resource: { buffer: uniformBuffer } }
-        ]
+          { binding: 2, resource: { buffer: uniformBuffer } },
+        ],
       });
 
       const commandEncoder = this.device.createCommandEncoder();
       const computePass = commandEncoder.beginComputePass();
-      
+
       computePass.setPipeline(pipeline);
       computePass.setBindGroup(0, bindGroup);
       computePass.dispatchWorkgroups(Math.ceil(embedding.length / 64));
@@ -410,7 +419,7 @@ export class TensorAccelerator {
       // Read results
       const stagingBuffer = this.device.createBuffer({
         size: embedding.byteLength,
-        usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
+        usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
       });
 
       commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, embedding.byteLength);
@@ -420,7 +429,7 @@ export class TensorAccelerator {
       const transformed = new Float32Array(stagingBuffer.getMappedRange().slice(0));
 
       stagingBuffer.unmap();
-      [inputBuffer, outputBuffer, uniformBuffer, stagingBuffer].forEach(b => b.destroy());
+      [inputBuffer, outputBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy());
 
       const computeTime = performance.now() - startTime;
 
@@ -432,10 +441,9 @@ export class TensorAccelerator {
           computeTime,
           memoryUsage: embedding.byteLength * 2,
           kernelType: `transform-${operation}`,
-          precision: options.precision || 'fp32'
-        }
+          precision: options.precision || 'fp32',
+        },
       };
-
     } catch (error) {
       console.error('GPU embedding transformation failed:', error);
       throw error;
@@ -452,11 +460,11 @@ export class TensorAccelerator {
     options: TensorAccelerationOptions = {}
   ): Promise<{ features: Float32Array; gpuMeta: GPUTensorMeta }> {
     const startTime = performance.now();
-    
+
     if (!this.initialized && !(await this.initialize())) {
       throw new Error('WebGPU tensor acceleration not available');
     }
-    
+
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
     }
@@ -471,23 +479,24 @@ export class TensorAccelerator {
       const imageBuffer = this.device.createBuffer({
         size: imageData.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true
+        mappedAtCreation: true,
       });
       new Uint32Array(imageBuffer.getMappedRange()).set(imageData);
       imageBuffer.unmap();
 
       const featureBuffer = this.device.createBuffer({
         size: numFeatures * 4, // f32 per feature
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
       });
 
       const uniformBuffer = this.device.createBuffer({
         size: 16,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       });
 
       this.device.queue.writeBuffer(
-        uniformBuffer, 0,
+        uniformBuffer,
+        0,
         new Uint32Array([width, height, 4, tileSize])
       );
 
@@ -498,13 +507,13 @@ export class TensorAccelerator {
         entries: [
           { binding: 0, resource: { buffer: imageBuffer } },
           { binding: 1, resource: { buffer: featureBuffer } },
-          { binding: 2, resource: { buffer: uniformBuffer } }
-        ]
+          { binding: 2, resource: { buffer: uniformBuffer } },
+        ],
       });
 
       const commandEncoder = this.device.createCommandEncoder();
       const computePass = commandEncoder.beginComputePass();
-      
+
       computePass.setPipeline(pipeline);
       computePass.setBindGroup(0, bindGroup);
       computePass.dispatchWorkgroups(tilesX, tilesY);
@@ -513,7 +522,7 @@ export class TensorAccelerator {
       // Read results
       const stagingBuffer = this.device.createBuffer({
         size: numFeatures * 4,
-        usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
+        usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
       });
 
       commandEncoder.copyBufferToBuffer(featureBuffer, 0, stagingBuffer, 0, numFeatures * 4);
@@ -529,7 +538,7 @@ export class TensorAccelerator {
       }
 
       stagingBuffer.unmap();
-      [imageBuffer, featureBuffer, uniformBuffer, stagingBuffer].forEach(b => b.destroy());
+      [imageBuffer, featureBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy());
 
       const computeTime = performance.now() - startTime;
 
@@ -541,10 +550,9 @@ export class TensorAccelerator {
           computeTime,
           memoryUsage: imageData.byteLength + numFeatures * 4,
           kernelType: 'tiled-image-analysis',
-          precision: options.precision || 'fp32'
-        }
+          precision: options.precision || 'fp32',
+        },
       };
-
     } catch (error) {
       console.error('GPU image analysis failed:', error);
       throw error;
@@ -566,12 +574,14 @@ export class TensorAccelerator {
       return null;
     }
 
-    return this.device ? {
-      maxBufferSize: this.device.limits.maxBufferSize,
-      maxComputeWorkgroupSizeX: this.device.limits.maxComputeWorkgroupSizeX,
-      maxComputeInvocationsPerWorkgroup: this.device.limits.maxComputeInvocationsPerWorkgroup,
-      features: Array.from(this.device.features)
-    } : null;
+    return this.device
+      ? {
+          maxBufferSize: this.device.limits.maxBufferSize,
+          maxComputeWorkgroupSizeX: this.device.limits.maxComputeWorkgroupSizeX,
+          maxComputeInvocationsPerWorkgroup: this.device.limits.maxComputeInvocationsPerWorkgroup,
+          features: Array.from(this.device.features),
+        }
+      : null;
   }
 
   /**
@@ -599,20 +609,20 @@ export async function acceleratedSimilarity(
   if (options.gpuTile && TensorAccelerator.isAvailable()) {
     return await tensorAccelerator.computeSimilarity(vectorA, vectorB, options);
   }
-  
+
   // CPU fallback
   let dotProduct = 0;
   let normA = 0;
   let normB = 0;
-  
+
   for (let i = 0; i < vectorA.length; i++) {
     dotProduct += vectorA[i] * vectorB[i];
     normA += vectorA[i] * vectorA[i];
     normB += vectorB[i] * vectorB[i];
   }
-  
+
   const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-  
+
   return {
     similarity,
     gpuMeta: {
@@ -621,8 +631,8 @@ export async function acceleratedSimilarity(
       computeTime: 0,
       memoryUsage: 0,
       kernelType: 'cpu-similarity',
-      precision: 'fp64'
-    }
+      precision: 'fp64',
+    },
   };
 }
 
@@ -634,10 +644,10 @@ export async function acceleratedTransform(
   if (options.gpuTile && TensorAccelerator.isAvailable()) {
     return await tensorAccelerator.transformEmbedding(embedding, operation, options);
   }
-  
+
   // CPU fallback
   const transformed = new Float32Array(embedding.length);
-  
+
   if (operation === 'normalize') {
     const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
     for (let i = 0; i < embedding.length; i++) {
@@ -653,7 +663,7 @@ export async function acceleratedTransform(
       transformed[i] = Math.max(0, embedding[i]);
     }
   }
-  
+
   return {
     transformed,
     gpuMeta: {
@@ -662,9 +672,7 @@ export async function acceleratedTransform(
       computeTime: 0,
       memoryUsage: 0,
       kernelType: `cpu-${operation}`,
-      precision: 'fp64'
-    }
+      precision: 'fp64',
+    },
   };
 }
-
-export { TensorAccelerator, type TensorAccelerationOptions, type GPUTensorMeta };

@@ -17,15 +17,34 @@
  */
 
 
+import { json } from '@sveltejs/kit';
 import { SpeechService } from "$lib/services/speech-service";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types';
 
-
 export async function POST({ request }): Promise<any> {
-  const { audio } = await request.json();
-  const transcript = await SpeechService.transcribe(audio);
-  return json({ transcript });
+  try {
+    const { audio } = await request.json();
+
+    if (!audio) {
+      return json({ error: 'Audio data is required' }, { status: 400 });
+    }
+
+    const transcript = await SpeechService.transcribe(audio);
+
+    return json({
+      success: true,
+      transcript,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    console.error('Voice API error:', error);
+    return json({
+      success: false,
+      error: 'Failed to transcribe audio',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
+  }
 }
 
 

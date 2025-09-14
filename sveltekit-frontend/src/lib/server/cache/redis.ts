@@ -34,8 +34,8 @@ class CacheService {
     const password = process.env.REDIS_PASSWORD;
     const host = process.env.REDIS_HOST || '127.0.0.1';
     const port = process.env.REDIS_PORT || '6379';
-    
-    const url = process.env.REDIS_URL || 
+
+    const url = process.env.REDIS_URL ||
       (password ? `redis://:${password}@${host}:${port}` : `redis://${host}:${port}`);
 
     try {
@@ -150,6 +150,34 @@ class CacheService {
       }
     } catch (e) {
       console.warn('Cache delete error:', (e as Error).message || e);
+    }
+  }
+
+  async incr(key: string): Promise<number> {
+    try {
+      if (this.useRedis && this.redisClient) {
+        return await this.redisClient.incr(key);
+      } else {
+        // Memory-based increment
+        const current = this.getFromMemory<number>(key) || 0;
+        const newValue = current + 1;
+        this.setInMemory(key, newValue, CACHE_TTL);
+        return newValue;
+      }
+    } catch (e) {
+      console.warn('Cache incr error:', (e as Error).message || e);
+      return 1; // Default fallback
+    }
+  }
+
+  async expire(key: string, seconds: number): Promise<void> {
+    try {
+      if (this.useRedis && this.redisClient) {
+        await this.redisClient.expire(key, seconds);
+      }
+      // Memory cache doesn't support separate expiration, handled by TTL in set
+    } catch (e) {
+      console.warn('Cache expire error:', (e as Error).message || e);
     }
   }
 

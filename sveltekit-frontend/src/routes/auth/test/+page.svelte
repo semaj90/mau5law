@@ -230,11 +230,11 @@
       <div.Title class="flex items-center gap-2">
         <Activity class="h-5 w-5" />
         System Test Status
-      </Card.Title>
+      </div.Title>
       <div.Description>
         Real-time testing of core authentication and AI services
-      </Card.Description>
-    </Card.Header>
+      </div.Description>
+    </div.Header>
     <div.Content>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <!-- GPU Cluster Status -->

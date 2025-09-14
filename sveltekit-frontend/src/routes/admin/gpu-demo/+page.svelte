@@ -650,7 +650,7 @@
             disabled={!isInitialized}
             variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}>
             Attention Heatmap
-          </button>
+          </Button>
 
           <Button class="bits-btn text-sm"
             onclick={() => startVisualization('documentNetwork')}

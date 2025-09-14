@@ -3,12 +3,7 @@
   import 'nes.css/css/nes.min.css';
   // Badge replaced with span - not available in enhanced-bits
   import Button from "$lib/components/ui/button/Button.svelte";
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  import { Card, CardContent, CardHeader } from '$lib/components/ui/enhanced-bits';
   import type { Evidence } from "$lib/types/index";
 
   // --- SVELTE 5 PROPS ---
@@ -73,8 +68,8 @@
   }
 </script>
 
-<NesCard
-  class="group hover:shadow-md transition-shadow duration-200 cursor-pointer"
+<Card
+  class="nes-container is-rounded group hover:shadow-md transition-shadow duration-200 cursor-pointer"
   role="article"
   aria-label={item.title}
 >
@@ -203,7 +198,7 @@
       {/if}
     </div>
   </div>
-</NesCard>
+</Card>
 
 <style>
   /* @unocss-include */

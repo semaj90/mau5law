@@ -4,11 +4,28 @@ import type { PageLoad } from './$types.js';
 // Production-optimized server-side rendering with caching
 
 import type { ServerLoad } from '@sveltejs/kit';
-import { CaseOperations, EvidenceOperations, checkDatabaseHealth } from '../db/enhanced-operations.js';
+import { checkDatabaseHealth } from '../db/health-check.js';
+// import { CaseOperations, EvidenceOperations } from '../db/enhanced-operations.js'; // These don't exist yet
+
+// Temporary stub classes until the actual operations are implemented
+class CaseOperations {
+  static async search(params: any) {
+    return { cases: [], total: 0 };
+  }
+  static async getWithRelations(id: string) {
+    return null;
+  }
+}
+
+class EvidenceOperations {
+  static async search(params: any) {
+    return { evidence: [], total: 0 };
+  }
+}
 import { CommonErrors } from '../api/response.js';
 import type { User } from '../db/schema-postgres.js';
 import { cases, evidence } from '../db/schema-postgres.js';
-import { URL } from "url";
+import { URL } from 'url';
 
 type Case = typeof cases.$inferSelect;
 type Evidence = typeof evidence.$inferSelect;
@@ -23,25 +40,25 @@ export interface SSRMetrics {
 
 // Enhanced cache with TTL
 class SSRCache {
-  private static cache = new Map<string, { data: any; expires: number; }>() ;
+  private static cache = new Map<string, { data: any; expires: number }>();
   private static readonly DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes
 
   static set(key: string, data: any, ttl = SSRCache.DEFAULT_TTL): void {
     this.cache.set(key, {
       data,
-      expires: Date.now() + ttl
+      expires: Date.now() + ttl,
     });
   }
 
   static get(key: string): any | null {
     const entry = this.cache.get(key);
     if (!entry) return null;
-    
+
     if (Date.now() > entry.expires) {
       this.cache.delete(key);
       return null;
     }
-    
+
     return entry.data;
   }
 
@@ -49,10 +66,11 @@ class SSRCache {
     this.cache.clear();
   }
 
-  static getStats(): { size: number; entries: number; } {
+  static getStats(): { size: number; entries: number } {
     return {
       size: this.cache.size,
-      entries: Array.from(this.cache.values()).filter(entry => Date.now() <= entry.expires).length
+      entries: Array.from(this.cache.values()).filter((entry) => Date.now() <= entry.expires)
+        .length,
     };
   }
 
@@ -66,15 +84,15 @@ export const createEnhancedLayoutLoad = () => {
   return async ({ locals, url, request }) => {
     const startTime = Date.now();
     const metrics: SSRMetrics = { loadTime: 0, dbQueries: 0, cacheHits: 0, errors: [] };
-    
+
     try {
       // Check user session
       const user = locals.user as User | null;
       const session = locals.session;
-      
+
       // Create cache key for user-specific data
       const userCacheKey = user ? `user_layout_${user.id}` : 'anonymous_layout';
-      
+
       // Try to get cached layout data
       let cachedData = SSRCache.get(userCacheKey);
       if (cachedData) {
@@ -84,7 +102,7 @@ export const createEnhancedLayoutLoad = () => {
           session,
           user,
           hydrationContext: createHydrationContext(url, request, user),
-          _metrics: { ...metrics, loadTime: Date.now() - startTime }
+          _metrics: { ...metrics, loadTime: Date.now() - startTime },
         };
       }
 
@@ -106,13 +124,13 @@ export const createEnhancedLayoutLoad = () => {
           total: 0,
           open: 0,
           investigating: 0,
-          closed: 0
+          closed: 0,
         },
         systemStatus: {
           apiHealthy: true,
           pgvectorEnabled: dbHealth.pgvectorEnabled,
-          aiServicesOnline: false
-        }
+          aiServicesOnline: false,
+        },
       };
 
       // Load user-specific data if authenticated
@@ -122,7 +140,7 @@ export const createEnhancedLayoutLoad = () => {
           const { cases: userCases } = await CaseOperations.search({
             assignedTo: user.id,
             limit: 10,
-            offset: 0
+            offset: 0,
           });
           metrics.dbQueries++;
 
@@ -136,11 +154,10 @@ export const createEnhancedLayoutLoad = () => {
           // Get recent evidence
           const { evidence: recentEvidence } = await EvidenceOperations.search({
             limit: 5,
-            offset: 0
+            offset: 0,
           });
           metrics.dbQueries++;
           layoutData.recentEvidence = recentEvidence;
-
         } catch (error: any) {
           console.error('Error loading user layout data:', error);
           metrics.errors.push(error instanceof Error ? error.message : 'Unknown error');
@@ -149,8 +166,8 @@ export const createEnhancedLayoutLoad = () => {
 
       // Check AI services status
       try {
-        const aiHealthResponse = await fetch('http://localhost:11434/api/tags', { 
-          signal: AbortSignal.timeout(2000) // 2 second timeout
+        const aiHealthResponse = await fetch('http://localhost:11434/api/tags', {
+          signal: AbortSignal.timeout(2000), // 2 second timeout
         });
         layoutData.systemStatus.aiServicesOnline = aiHealthResponse.ok;
       } catch {
@@ -161,32 +178,36 @@ export const createEnhancedLayoutLoad = () => {
       SSRCache.set(userCacheKey, layoutData, 300000); // 5 minute cache
 
       metrics.loadTime = Date.now() - startTime;
-      
+
       return {
         ...layoutData,
         session,
         user,
         hydrationContext: createHydrationContext(url, request, user),
-        _metrics: metrics
+        _metrics: metrics,
       };
-
     } catch (error: any) {
       console.error('Layout load error:', error);
       metrics.errors.push(error instanceof Error ? error.message : 'Layout load failed');
       metrics.loadTime = Date.now() - startTime;
-      
+
       // Return minimal safe data on error
       return {
         session: locals.session,
         user: locals.user || null,
-        dbHealth: { connected: false, pgvectorEnabled: false, queryTime: 0, errors: ['Database unavailable'] },
+        dbHealth: {
+          connected: false,
+          pgvectorEnabled: false,
+          queryTime: 0,
+          errors: ['Database unavailable'],
+        },
         userCases: [],
         recentEvidence: [],
         caseStats: { total: 0, open: 0, investigating: 0, closed: 0 },
         systemStatus: { apiHealthy: false, pgvectorEnabled: false, aiServicesOnline: false },
         hydrationContext: createHydrationContext(url, request, locals.user),
         _metrics: metrics,
-        _error: error instanceof Error ? error.message : 'Unknown error'
+        _error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   };
@@ -197,7 +218,7 @@ export const createEnhancedCasePageLoad = () => {
   return async ({ params, locals, url, parent }) => {
     const startTime = Date.now();
     const metrics: SSRMetrics = { loadTime: 0, dbQueries: 0, cacheHits: 0, errors: [] };
-    
+
     try {
       // Ensure user is authenticated
       const user = locals.user as User;
@@ -207,7 +228,7 @@ export const createEnhancedCasePageLoad = () => {
 
       // Get layout data
       const parentData = await parent();
-      
+
       const caseId = params.id;
       if (!caseId) {
         throw CommonErrors.BadRequest('Case ID is required');
@@ -222,14 +243,14 @@ export const createEnhancedCasePageLoad = () => {
         return {
           ...parentData,
           ...cachedData,
-          _metrics: metrics
+          _metrics: metrics,
         };
       }
 
       // Load case with relations
       const caseWithRelations = await CaseOperations.getWithRelations(caseId);
       metrics.dbQueries++;
-      
+
       if (!caseWithRelations) {
         throw CommonErrors.NotFound('Case');
       }
@@ -238,32 +259,32 @@ export const createEnhancedCasePageLoad = () => {
       const { evidence: caseEvidence } = await EvidenceOperations.search({
         caseId,
         limit: 50,
-        offset: 0
+        offset: 0,
       });
       metrics.dbQueries++;
 
       const caseData = {
         case: caseWithRelations,
         evidence: caseEvidence,
-        canEdit: caseWithRelations.createdBy === user.id || caseWithRelations.leadProsecutor === user.id
+        canEdit:
+          caseWithRelations.createdBy === user.id || caseWithRelations.leadProsecutor === user.id,
       };
 
       // Cache the case data
       SSRCache.set(cacheKey, caseData, 180000); // 3 minute cache
-      
+
       metrics.loadTime = Date.now() - startTime;
-      
+
       return {
         ...parentData,
         ...caseData,
-        _metrics: metrics
+        _metrics: metrics,
       };
-
     } catch (error: any) {
       console.error('Case page load error:', error);
       metrics.errors.push(error instanceof Error ? error.message : 'Case load failed');
       metrics.loadTime = Date.now() - startTime;
-      
+
       throw error; // Re-throw to trigger SvelteKit error handling
     }
   };

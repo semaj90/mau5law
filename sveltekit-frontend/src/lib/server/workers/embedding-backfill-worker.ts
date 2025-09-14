@@ -1,6 +1,6 @@
 /**
  * Embedding Backfill Worker
- * 
+ *
  * Automatically generates embeddings for evidence files that don't have them yet.
  * Integrates with the existing evidence upload pipeline and embedding API.
  */
@@ -54,13 +54,16 @@ export class EmbeddingBackfillWorker {
 
     try {
       // Get all evidence files without embeddings
-      const { rows: evidenceFiles } = await query<EvidenceFile>(`
+      const { rows: evidenceFiles } = await query<EvidenceFile>(
+        `
         SELECT id, title, description, storage_bucket, object_name, mime_type, file_type, case_id
-        FROM evidence_files 
-        WHERE embeddings IS NULL 
+        FROM evidence_files
+        WHERE embeddings IS NULL
         ORDER BY uploaded_at DESC
         LIMIT $1
-      `, [this.batchSize]);
+      `,
+        [this.batchSize]
+      );
 
       console.log(`📋 Found ${evidenceFiles.length} files to process`);
 
@@ -75,7 +78,7 @@ export class EmbeddingBackfillWorker {
       for (let i = 0; i < evidenceFiles.length; i += this.batchSize) {
         const batch = evidenceFiles.slice(i, i + this.batchSize);
         console.log(`📦 Processing batch ${Math.floor(i / this.batchSize) + 1}/${Math.ceil(evidenceFiles.length / this.batchSize)}`);
-        
+
         await Promise.allSettled(
           batch.map(async (file) => {
             result.processed++;
@@ -110,7 +113,7 @@ export class EmbeddingBackfillWorker {
   private async processEvidenceFile(file: EvidenceFile): Promise<void> {
     // Extract text content from the file
     const textContent = await this.extractTextContent(file);
-    
+
     if (!textContent || textContent.trim().length === 0) {
       console.warn(`⚠️  No extractable text content for ${file.title}`);
       return;
@@ -148,7 +151,7 @@ export class EmbeddingBackfillWorker {
     // For now, use title and description as text content
     // In production, you would extract text from PDFs, DOCs, etc.
     let textContent = file.title;
-    
+
     if (file.description) {
       textContent += '\n\n' + file.description;
     }
@@ -158,7 +161,7 @@ export class EmbeddingBackfillWorker {
     // - DOCX text extraction using mammoth
     // - TXT file reading
     // - OCR for images using tesseract.js
-    
+
     switch (file.mime_type) {
       case 'text/plain':
         try {
@@ -171,7 +174,7 @@ export class EmbeddingBackfillWorker {
           console.warn(`Failed to extract text from ${file.object_name}:`, error);
         }
         break;
-        
+
       case 'application/json':
         try {
           const fileUrl = await minioService.getFileUrl(file.storage_bucket, file.object_name, 60);
@@ -182,7 +185,7 @@ export class EmbeddingBackfillWorker {
           console.warn(`Failed to extract JSON from ${file.object_name}:`, error);
         }
         break;
-        
+
       default:
         // For unsupported file types, use just title and description
         console.log(`📄 Using metadata for ${file.mime_type}: ${file.object_name}`);
@@ -211,7 +214,7 @@ export class EmbeddingBackfillWorker {
     }
 
     const result = await response.json();
-    
+
     if (!result.embedding) {
       throw new Error('No embedding returned from API');
     }
@@ -225,12 +228,15 @@ export class EmbeddingBackfillWorker {
   private async storeEmbedding(fileId: number, embedding: number[]): Promise<void> {
     // Convert embedding array to PostgreSQL vector format
     const embeddingVector = `[${embedding.join(',')}]`;
-    
-    await query(`
-      UPDATE evidence_files 
-      SET embeddings = $1 
+
+    await query(
+      `
+      UPDATE evidence_files
+      SET embeddings = $1
       WHERE id = $2
-    `, [embeddingVector, fileId]);
+    `,
+      [embeddingVector, fileId]
+    );
   }
 
   /**
@@ -247,8 +253,8 @@ export class EmbeddingBackfillWorker {
       query('SELECT COUNT(*) as count FROM evidence_files WHERE embeddings IS NOT NULL')
     ]);
 
-    const total = parseInt(totalResult.rows[0].count);
-    const withEmbeddings = parseInt(withEmbeddingsResult.rows[0].count);
+    const total = parseInt((totalResult.rows[0] as any).count);
+    const withEmbeddings = parseInt((withEmbeddingsResult.rows[0] as any).count);
     const withoutEmbeddings = total - withEmbeddings;
     const percentage = total > 0 ? (withEmbeddings / total) * 100 : 0;
 

@@ -78,6 +78,8 @@ interface VectorSearchOptions {
   threshold?: number;
   useCache?: boolean;
   fallbackToQdrant?: boolean;
+  useLocalDb?: boolean;
+  useFuzzySearch?: boolean;
   filters?: {
     documentType?: string;
     category?: string;

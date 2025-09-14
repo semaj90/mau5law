@@ -8,11 +8,12 @@ import { dbPool } from './database-pool-service';
 
 interface EmbeddingCacheEntry {
   text: string;
-  embedding: number[];
+  embedding: number[] | string;
   model: string;
   timestamp: number;
   accessCount: number;
   lastAccessed: number;
+  compressed?: boolean;
 }
 
 interface QueryCacheEntry {
@@ -76,7 +77,7 @@ class EmbeddingCacheService {
         model,
         timestamp: Date.now(),
         accessCount: 0,
-        lastAccessed: Date.now()
+        lastAccessed: Date.now(),
       };
 
       // Store with compression for large embeddings
@@ -84,7 +85,7 @@ class EmbeddingCacheService {
       const cacheData = {
         ...entry,
         embedding: compressed,
-        compressed: true
+        compressed: true,
       };
 
       await redisService.set(
@@ -138,11 +139,11 @@ class EmbeddingCacheService {
         }
 
         await this.updateStats('embeddings', 'hit');
-        const embedding = (entry as any).compressed ?
-          this.decompressEmbedding((entry as any).embedding) :
-          entry.embedding;
+        const embedding = (entry as any).compressed
+          ? this.decompressEmbedding((entry as any).embedding)
+          : entry.embedding;
 
-        return embedding;
+        return Array.isArray(embedding) ? embedding : this.decompressEmbedding(embedding);
       }
 
       await this.updateStats('embeddings', 'miss');
@@ -157,7 +158,12 @@ class EmbeddingCacheService {
   /**
    * Cache query results with intelligent TTL
    */
-  async cacheQuery(query: string, results: any[], metadata: any = {}, customTTL?: number): Promise<void> {
+  async cacheQuery(
+    query: string,
+    results: any[],
+    metadata: any = {},
+    customTTL?: number
+  ): Promise<void> {
     if (!redisService.isHealthy()) return;
 
     try {
@@ -170,17 +176,13 @@ class EmbeddingCacheService {
         metadata: {
           ...metadata,
           resultCount: results.length,
-          queryComplexity: this.calculateQueryComplexity(query)
+          queryComplexity: this.calculateQueryComplexity(query),
         },
         timestamp: Date.now(),
-        ttl
+        ttl,
       };
 
-      await redisService.set(
-        `${this.QUERY_PREFIX}${key}`,
-        JSON.stringify(entry),
-        ttl
-      );
+      await redisService.set(`${this.QUERY_PREFIX}${key}`, JSON.stringify(entry), ttl);
 
       await this.updateStats('queries', 'store');
       console.log(`📊 Cached query results (${results.length} items, TTL: ${ttl}s)`);
@@ -226,7 +228,7 @@ class EmbeddingCacheService {
         `${this.SESSION_PREFIX}${sessionId}`,
         JSON.stringify({
           ...data,
-          lastUpdated: Date.now()
+          lastUpdated: Date.now(),
         }),
         this.SESSION_TTL
       );
@@ -240,11 +242,13 @@ class EmbeddingCacheService {
   /**
    * Batch cache multiple embeddings efficiently
    */
-  async batchCacheEmbeddings(items: Array<{ text: string; embedding: number[]; model?: string }>): Promise<void> {
+  async batchCacheEmbeddings(
+    items: Array<{ text: string; embedding: number[]; model?: string }>
+  ): Promise<void> {
     if (!redisService.isHealthy() || !items.length) return;
 
     try {
-      const pipeline = redisService.pipeline();
+      // Use individual Redis operations instead of pipeline for better compatibility
       let cached = 0;
 
       for (const item of items) {
@@ -255,19 +259,18 @@ class EmbeddingCacheService {
           model: item.model || 'nomic-embed-text',
           timestamp: Date.now(),
           accessCount: 0,
-          lastAccessed: Date.now()
+          lastAccessed: Date.now(),
+          compressed: true,
         };
 
-        pipeline.set(
+        await redisService.set(
           `${this.EMBEDDING_PREFIX}${key}`,
-          JSON.stringify({ ...entry, compressed: true }),
-          'EX',
+          JSON.stringify(entry),
           this.EMBEDDING_TTL
         );
         cached++;
       }
 
-      await pipeline.exec();
       console.log(`📦 Batch cached ${cached} embeddings`);
       await this.updateStats('embeddings', 'batch_store', cached);
     } catch (error) {
@@ -278,21 +281,29 @@ class EmbeddingCacheService {
   /**
    * Invalidate cache patterns
    */
-  async invalidate(pattern: string, type: 'embeddings' | 'queries' | 'sessions' | 'all' = 'all'): Promise<void> {
+  async invalidate(
+    pattern: string,
+    type: 'embeddings' | 'queries' | 'sessions' | 'all' = 'all'
+  ): Promise<void> {
     if (!redisService.isHealthy()) return;
 
     try {
-      const prefixes = type === 'all' ?
-        [this.EMBEDDING_PREFIX, this.QUERY_PREFIX, this.SESSION_PREFIX, this.HOT_CACHE_PREFIX] :
-        type === 'embeddings' ? [this.EMBEDDING_PREFIX, this.HOT_CACHE_PREFIX] :
-        type === 'queries' ? [this.QUERY_PREFIX] :
-        [this.SESSION_PREFIX];
+      const prefixes =
+        type === 'all'
+          ? [this.EMBEDDING_PREFIX, this.QUERY_PREFIX, this.SESSION_PREFIX, this.HOT_CACHE_PREFIX]
+          : type === 'embeddings'
+            ? [this.EMBEDDING_PREFIX, this.HOT_CACHE_PREFIX]
+            : type === 'queries'
+              ? [this.QUERY_PREFIX]
+              : [this.SESSION_PREFIX];
 
       let totalDeleted = 0;
       for (const prefix of prefixes) {
         const keys = await redisService.keys(`${prefix}${pattern}*`);
         if (keys.length > 0) {
-          await redisService.del(...keys);
+          for (const key of keys) {
+            await redisService.del(key);
+          }
           totalDeleted += keys.length;
         }
       }
@@ -310,7 +321,7 @@ class EmbeddingCacheService {
     const defaultStats: CacheStats = {
       embeddings: { hits: 0, misses: 0, size: 0 },
       queries: { hits: 0, misses: 0, size: 0 },
-      sessions: { active: 0, total: 0 }
+      sessions: { active: 0, total: 0 },
     };
 
     if (!redisService.isHealthy()) return defaultStats;
@@ -321,17 +332,17 @@ class EmbeddingCacheService {
         embeddings: {
           hits: parseInt(stats['emb_hits'] || '0'),
           misses: parseInt(stats['emb_misses'] || '0'),
-          size: await this.getCacheSize('embeddings')
+          size: await this.getCacheSize('embeddings'),
         },
         queries: {
           hits: parseInt(stats['query_hits'] || '0'),
           misses: parseInt(stats['query_misses'] || '0'),
-          size: await this.getCacheSize('queries')
+          size: await this.getCacheSize('queries'),
         },
         sessions: {
           active: parseInt(stats['session_active'] || '0'),
-          total: parseInt(stats['session_total'] || '0')
-        }
+          total: parseInt(stats['session_total'] || '0'),
+        },
       };
     } catch (error) {
       console.warn('Stats retrieval error:', error);
@@ -360,7 +371,7 @@ class EmbeddingCacheService {
    */
   private compressEmbedding(embedding: number[]): string {
     // Simple compression by rounding to 4 decimal places and packing
-    const rounded = embedding.map(n => Math.round(n * 10000) / 10000);
+    const rounded = embedding.map((n) => Math.round(n * 10000) / 10000);
     return Buffer.from(JSON.stringify(rounded)).toString('base64');
   }
 
@@ -431,9 +442,12 @@ class EmbeddingCacheService {
    */
   private async getCacheSize(type: 'embeddings' | 'queries' | 'sessions'): Promise<number> {
     try {
-      const prefix = type === 'embeddings' ? this.EMBEDDING_PREFIX :
-                    type === 'queries' ? this.QUERY_PREFIX :
-                    this.SESSION_PREFIX;
+      const prefix =
+        type === 'embeddings'
+          ? this.EMBEDDING_PREFIX
+          : type === 'queries'
+            ? this.QUERY_PREFIX
+            : this.SESSION_PREFIX;
       const keys = await redisService.keys(`${prefix}*`);
       return keys.length;
     } catch {

@@ -28,8 +28,8 @@ export interface ProcessingResult {
 export type MessageHandler = (message: any, originalMessage?: any) => Promise<any> | any;
 
 class RabbitMQService extends EventEmitter {
-  private connection: amqp.Connection | null = null;
-  private channel: amqp.Channel | null = null;
+  private connection: any = null;
+  private channel: any = null;
   private readonly url: string;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
@@ -64,21 +64,20 @@ class RabbitMQService extends EventEmitter {
   async initialize(): Promise<void> {
     try {
       logger.info('[RabbitMQ] Connecting to RabbitMQ server...');
-      
+
       this.connection = await amqp.connect(this.url);
       this.channel = await this.connection.createChannel();
-      
+
       await this.channel.prefetch(10);
       await this.setupExchanges();
       await this.setupQueues();
       await this.setupBindings();
-      
+
       this.isConnected = true;
       this.reconnectAttempts = 0;
-      
+
       logger.info('[RabbitMQ] ✅ Connected and configured successfully');
       this.emit('connected');
-      
     } catch (error) {
       logger.error('[RabbitMQ] Failed to initialize:', error);
     }
@@ -86,17 +85,17 @@ class RabbitMQService extends EventEmitter {
 
   private async setupExchanges(): Promise<void> {
     if (!this.channel) throw new Error('Channel not available');
-    
+
     await this.channel.assertExchange(this.exchanges.legal, 'direct', { durable: true });
     await this.channel.assertExchange(this.exchanges.legalTopic, 'topic', { durable: true });
     await this.channel.assertExchange(this.exchanges.dlx, 'direct', { durable: true });
-    
+
     logger.info('[RabbitMQ] Exchanges created successfully');
   }
 
   private async setupQueues(): Promise<void> {
     if (!this.channel) throw new Error('Channel not available');
-    
+
     const queueConfig = {
       durable: true,
       arguments: {
@@ -104,17 +103,17 @@ class RabbitMQService extends EventEmitter {
         'x-message-ttl': 24 * 60 * 60 * 1000, // 24 hours
       },
     };
-    
+
     for (const [key, queueName] of Object.entries(this.queues)) {
       await this.channel.assertQueue(queueName, queueConfig);
     }
-    
+
     logger.info('[RabbitMQ] Queues created successfully');
   }
 
   private async setupBindings(): Promise<void> {
     if (!this.channel) throw new Error('Channel not available');
-    
+
     const bindings = [
       { queue: this.queues.documentIngestion, routingKey: 'document.ingest' },
       { queue: this.queues.documentAnalysis, routingKey: 'document.analyze' },
@@ -124,33 +123,33 @@ class RabbitMQService extends EventEmitter {
       { queue: this.queues.citationExtraction, routingKey: 'citation.extract' },
       { queue: this.queues.urgentProcessing, routingKey: 'urgent.*' },
     ];
-    
+
     for (const binding of bindings) {
       await this.channel.bindQueue(binding.queue, this.exchanges.legal, binding.routingKey);
     }
-    
+
     logger.info('[RabbitMQ] Queue bindings configured successfully');
   }
 
   async publishDocumentForAnalysis(document: LegalDocumentMessage): Promise<boolean> {
     if (!this.isConnected || !this.channel) return false;
-    
+
     try {
       const routingKey = this.getRoutingKey(document);
       const messageBuffer = Buffer.from(JSON.stringify(document));
-      
+
       const published = await this.channel.publish(
         this.exchanges.legal,
         routingKey,
         messageBuffer,
         { persistent: true, timestamp: Date.now() }
       );
-      
+
       if (published) {
         logger.info(`[RabbitMQ] Published document ${document.id}`);
         this.emit('messagePublished', { documentId: document.id, routingKey });
       }
-      
+
       return published;
     } catch (error) {
       logger.error('[RabbitMQ] Failed to publish message:', error);
@@ -160,12 +159,16 @@ class RabbitMQService extends EventEmitter {
 
   private getRoutingKey(document: LegalDocumentMessage): string {
     if (document.priority === 'urgent') return 'urgent.processing';
-    
+
     switch (document.documentType) {
-      case 'contract': return 'contract.analyze';
-      case 'evidence': return 'evidence.process';  
-      case 'citation': return 'citation.extract';
-      default: return 'document.analyze';
+      case 'contract':
+        return 'contract.analyze';
+      case 'evidence':
+        return 'evidence.process';
+      case 'citation':
+        return 'citation.extract';
+      default:
+        return 'document.analyze';
     }
   }
 
@@ -173,9 +176,9 @@ class RabbitMQService extends EventEmitter {
     if (!this.isConnected || !this.channel) {
       throw new Error('RabbitMQ not connected');
     }
-    
+
     const stats: Record<string, any> = {};
-    
+
     for (const [key, queueName] of Object.entries(this.queues)) {
       try {
         const queueInfo = await this.channel.checkQueue(queueName);
@@ -188,7 +191,7 @@ class RabbitMQService extends EventEmitter {
         stats[key] = { error: 'Queue not found' };
       }
     }
-    
+
     return stats;
   }
 
@@ -203,10 +206,10 @@ class RabbitMQService extends EventEmitter {
   /**
    * Health check method for compatibility
    */
-  async healthCheck(): Promise<{ healthy: boolean; queues?: any }> {
+  async healthCheck(): Promise<{ healthy: boolean; queues?: any; error?: string }> {
     try {
       if (!this.isConnected) {
-        await this.connect();
+        await this.initialize();
       }
       const queueStats = await this.getQueueStats();
       return { healthy: this.isConnected, queues: queueStats };
@@ -218,18 +221,25 @@ class RabbitMQService extends EventEmitter {
   /**
    * Generic publish method for compatibility
    */
-  async publish(exchange: string, routingKey: string, message: any, options: any = {}): Promise<boolean> {
+  async publish(
+    exchange: string,
+    routingKey: string,
+    message: any,
+    options: any = {}
+  ): Promise<boolean> {
     if (!this.isConnected || !this.channel) {
-      await this.connect();
+      await this.initialize();
     }
 
     try {
       if (!this.channel) return false;
 
-      const messageBuffer = Buffer.from(typeof message === 'string' ? message : JSON.stringify(message));
+      const messageBuffer = Buffer.from(
+        typeof message === 'string' ? message : JSON.stringify(message)
+      );
       const published = this.channel.publish(exchange, routingKey, messageBuffer, {
         persistent: true,
-        ...options
+        ...options,
       });
 
       return published;

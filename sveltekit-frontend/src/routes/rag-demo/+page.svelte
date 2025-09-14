@@ -2,6 +2,8 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import AskAI from "$lib/components/ai/AskAI.svelte";
+  import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
+  import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
   import {
     AlertTriangle,
     Brain,
@@ -137,284 +139,234 @@
   <title>RAG System Demo - AI Legal Assistant</title>
 </svelte:head>
 
-<div class="space-y-4">
-  <div class="space-y-4">
-    <!-- Header -->
-    <div class="space-y-4">
-      <h1 class="space-y-4">RAG System Demo</h1>
-      <p class="space-y-4">
-        Production-ready Retrieval-Augmented Generation system with PostgreSQL +
-        pgvector, Qdrant vector database, and intelligent legal assistant
-        capabilities.
+<EvidenceBoardLayout
+  title="RAG SYSTEM DEMO"
+  caseInfo="AI LEGAL ASSISTANT"
+  demoMode={true}
+  {rightPanel}
+>
+  {#snippet rightPanel()}
+    <!-- System Status Panel -->
+    <div class="nes-container is-rounded evidence-panel mb-4">
+      <h3 class="nes-text is-primary mb-3">🔧 System Status</h3>
+      <div class="space-y-2">
+        <EvidenceCard
+          title="Database"
+          description={systemStatus.database ? "Connected" : "Offline"}
+          status={systemStatus.database ? "active" : "pending"}
+          type="database"
+          connections={1}
+        />
+        <EvidenceCard
+          title="Qdrant Vector DB"
+          description={systemStatus.qdrant ? "Ready" : "Unavailable"}
+          status={systemStatus.qdrant ? "active" : "pending"}
+          type="vector"
+          connections={1}
+        />
+        <EvidenceCard
+          title="Embeddings"
+          description={systemStatus.embeddings ? "Active" : "Disabled"}
+          status={systemStatus.embeddings ? "active" : "pending"}
+          type="ai"
+          connections={1}
+        />
+        <EvidenceCard
+          title="Vector Search"
+          description={systemStatus.vectorSearch ? "Operational" : "Error"}
+          status={systemStatus.vectorSearch ? "active" : "pending"}
+          type="search"
+          connections={3}
+        />
+      </div>
+
+      <button
+        class="nes-btn is-primary w-full mt-3 text-xs"
+        onclick={() => checkSystemStatus()}
+        disabled={isLoadingStatus}
+      >
+        {isLoadingStatus ? "Checking..." : "🔄 Refresh Status"}
+      </button>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="nes-container is-rounded evidence-panel">
+      <h3 class="nes-text is-warning mb-3">⚡ Quick Actions</h3>
+      <div class="space-y-2">
+        <button
+          class="nes-btn is-success w-full text-xs"
+          onclick={() => window.open("/api/embeddings", "_blank")}
+        >
+          📊 Embeddings API
+        </button>
+        <button
+          class="nes-btn is-success w-full text-xs"
+          onclick={() => window.open("/api/qdrant", "_blank")}
+        >
+          🔍 Qdrant Status
+        </button>
+        <button
+          class="nes-btn is-success w-full text-xs"
+          onclick={() => window.open("/cases", "_blank")}
+        >
+          📁 Case Database
+        </button>
+      </div>
+    </div>
+  {/snippet}
+
+  <!-- Main Demo Content -->
+  <main class="space-y-6">
+    <!-- AI Assistant Section -->
+    <div class="nes-container is-rounded evidence-panel">
+      <h3 class="nes-text is-success mb-4">🤖 AI Legal Assistant</h3>
+      <p class="text-gray-600 mb-4">
+        Ask questions about legal procedures, cases, and evidence. The AI uses vector search to find relevant information.
       </p>
+
+      <div class="mb-4">
+        <AskAI
+          caseId=""
+          evidenceIds={[]}
+          placeholder="Ask about legal procedures, cases, or evidence..."
+          showReferences={true}
+          enableVoiceInput={true}
+          maxHeight="500px"
+          response={handleAIResponse}
+          referenceclicked={handleReferenceClick}
+        />
+      </div>
     </div>
 
-    <!-- System Status -->
-    <div class="space-y-4">
-      <div class="space-y-4">
-        <div class="space-y-4">
-          <h2 class="space-y-4">System Status</h2>
+    <!-- Sample Questions Grid -->
+    <div class="nes-container is-rounded evidence-panel">
+      <h4 class="nes-text is-warning mb-4">📝 Try These Sample Questions:</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {#each demoQueries as query}
           <button
-            onclick={() => checkSystemStatus()}
-            class="space-y-4"
-            disabled={isLoadingStatus}
+            class="nes-btn is-normal text-xs p-2 text-left"
+            onclick={() => (testQuery = query)}
           >
-            {isLoadingStatus ? "Checking..." : "Refresh"}
+            "{query}"
           </button>
-        </div>
-
-        <div class="space-y-4">
-          <div class="space-y-4">
-            <Database class="space-y-4" />
-            <div>
-              <p class="space-y-4">Database</p>
-              <p class="space-y-4">
-                {systemStatus.database ? "Connected" : "Offline"}
-              </p>
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            <Zap class="space-y-4" />
-            <div>
-              <p class="space-y-4">Qdrant</p>
-              <p class="space-y-4">
-                {systemStatus.qdrant ? "Ready" : "Unavailable"}
-              </p>
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            <Brain class="space-y-4" />
-            <div>
-              <p class="space-y-4">Embeddings</p>
-              <p class="space-y-4">
-                {systemStatus.embeddings ? "Active" : "Disabled"}
-              </p>
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            <Search
-              class="space-y-4"
-            />
-            <div>
-              <p class="space-y-4">Vector Search</p>
-              <p class="space-y-4">
-                {systemStatus.vectorSearch ? "Operational" : "Error"}
-              </p>
-            </div>
-          </div>
-        </div>
+        {/each}
       </div>
     </div>
 
-    <!-- Main Demo Area -->
-    <div class="space-y-4">
-      <!-- AI Assistant -->
-      <div class="space-y-4">
-        <div class="space-y-4">
-          <div class="space-y-4">
-            <h3 class="space-y-4">
-              AI Legal Assistant
-            </h3>
-            <p class="space-y-4">
-              Ask questions about legal procedures, cases, and evidence. The AI
-              uses vector search to find relevant information.
-            </p>
-          </div>
+    <!-- Vector Search Test -->
+    <div class="nes-container is-rounded evidence-panel">
+      <h3 class="nes-text is-primary mb-4">🔍 Vector Search Test</h3>
+      <p class="text-gray-600 mb-4">
+        Test the vector similarity search directly to see raw results.
+      </p>
 
-          <div class="space-y-4">
-            <AskAI
-              caseId=""
-              evidenceIds={[]}
-              placeholder="Ask about legal procedures, cases, or evidence..."
-              showReferences={true}
-              enableVoiceInput={true}
-              maxHeight="500px"
-              response={handleAIResponse}
-              referenceclicked={handleReferenceClick}
-            />
-          </div>
-        </div>
-
-        <!-- Demo Queries -->
-        <div class="space-y-4">
-          <h4 class="space-y-4">
-            Try these sample questions:
-          </h4>
-          <div class="space-y-4">
-            {#each demoQueries as query}
-              <button
-                class="space-y-4"
-                onclick={() => (testQuery = query)}
-              >
-                "{query}"
-              </button>
-            {/each}
-          </div>
-        </div>
+      <div class="flex gap-2 mb-4">
+        <input
+          bind:value={testQuery}
+          placeholder="Enter search query..."
+          class="nes-input flex-1"
+        />
+        <button
+          onclick={() => testVectorSearch()}
+          disabled={!testQuery.trim() || isTestingSearch}
+          class="nes-btn is-primary"
+        >
+          {isTestingSearch ? "Searching..." : "🔍 Search"}
+        </button>
       </div>
 
-      <!-- Vector Search Test -->
-      <div class="space-y-4">
-        <div class="space-y-4">
-          <div class="space-y-4">
-            <h3 class="space-y-4">
-              Vector Search Test
-            </h3>
-            <p class="space-y-4">
-              Test the vector similarity search directly to see raw results.
-            </p>
-          </div>
-
-          <div class="space-y-4">
-            <div class="space-y-4">
-              <input
-                bind:value={testQuery}
-                placeholder="Enter search query..."
-                class="space-y-4"
-              />
-              <button
-                onclick={() => testVectorSearch()}
-                disabled={!testQuery.trim() || isTestingSearch}
-                class="space-y-4"
-              >
-                {isTestingSearch ? "Searching..." : "Search"}
-              </button>
+      {#if testResults}
+        <div class="nes-container is-rounded bg-white p-4">
+          {#if testResults.error}
+            <div class="nes-text is-error">
+              <strong>Error:</strong>
+              {testResults.error}
+            </div>
+          {:else}
+            <div class="mb-3">
+              <span class="nes-text is-success">
+                Found {testResults.results?.length || 0} results in {testResults.executionTime || 0}ms
+                (Source: {testResults.source || "unknown"})
+              </span>
             </div>
 
-            {#if testResults}
-              <div class="space-y-4">
-                {#if testResults.error}
-                  <div class="space-y-4">
-                    <strong>Error:</strong>
-                    {testResults.error}
-                  </div>
-                {:else}
-                  <div class="space-y-4">
-                    <div class="space-y-4">
-                      Found {testResults.results?.length || 0} results in {testResults.executionTime ||
-                        0}ms (Source: {testResults.source || "unknown"})
-                    </div>
-
-                    {#if testResults.results && testResults.results.length > 0}
-                      {#each testResults.results as result}
-                        <div
-                          class="space-y-4"
-                        >
-                          <div class="space-y-4">
-                            <h5 class="space-y-4">
-                              {result.title}
-                            </h5>
-                            <span class="space-y-4">
-                              {Math.round(result.score * 100)}% match
-                            </span>
-                          </div>
-                          <p class="space-y-4">
-                            {result.content.substring(0, 200)}...
-                          </p>
-                          <div class="space-y-4">
-                            <span>Type: {result.type}</span>
-                            <span>Source: {result.source}</span>
-                          </div>
-                        </div>
-                      {/each}
-                    {:else}
-                      <p class="space-y-4">No results found.</p>
-                    {/if}
-                  </div>
-                {/if}
+            {#if testResults.results && testResults.results.length > 0}
+              <div class="space-y-3">
+                {#each testResults.results as result}
+                  <EvidenceCard
+                    title={result.title}
+                    description={result.content.substring(0, 200) + "..."}
+                    status="active"
+                    type={result.type}
+                    connections={Math.round(result.score * 100)}
+                  >
+                    {#snippet children()}
+                      <div class="flex justify-between text-xs">
+                        <span>Match: {Math.round(result.score * 100)}%</span>
+                        <span>Source: {result.source}</span>
+                      </div>
+                    {/snippet}
+                  </EvidenceCard>
+                {/each}
               </div>
+            {:else}
+              <p class="nes-text">No results found.</p>
             {/if}
-          </div>
+          {/if}
         </div>
+      {/if}
+    </div>
 
-        <!-- System Information -->
-        <div class="space-y-4">
-          <h4 class="space-y-4">System Information</h4>
-          <div class="space-y-4">
-            <div class="space-y-4">
-              <span>Vector Database:</span>
-              <span>PostgreSQL + pgvector / Qdrant</span>
-            </div>
-            <div class="space-y-4">
-              <span>Embedding Model:</span>
-              <span>OpenAI text-embedding-ada-002</span>
-            </div>
-            <div class="space-y-4">
-              <span>LLM:</span>
-              <span>GPT-3.5-turbo / Ollama (Local)</span>
-            </div>
-            <div class="space-y-4">
-              <span>Search Types:</span>
-              <span>Similarity, Hybrid, Semantic</span>
-            </div>
-            <div class="space-y-4">
-              <span>Caching:</span>
-              <span>Redis + IndexedDB</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="space-y-4">
-          <h4 class="space-y-4">Quick Actions</h4>
-          <div class="space-y-4">
-            <a
-              href="/api/embeddings"
-              target="_blank"
-              class="space-y-4"
-            >
-              → View Embeddings API Status
-            </a>
-            <a
-              href="/api/qdrant"
-              target="_blank"
-              class="space-y-4"
-            >
-              → View Qdrant Collection Status
-            </a>
-            <button
-              class="space-y-4"
-              onclick={() => window.open("/cases", "_blank")}
-            >
-              → Browse Case Database
-            </button>
-            <button
-              class="space-y-4"
-              onclick={() => window.open("/evidence", "_blank")}
-            >
-              → Browse Evidence Collection
-            </button>
-          </div>
-        </div>
-      </div>
+    <!-- System Information -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <EvidenceCard
+        title="🗄️ Vector Database"
+        description="PostgreSQL + pgvector / Qdrant"
+        status="active"
+        type="database"
+        connections={2}
+      />
+      <EvidenceCard
+        title="🧠 Embedding Model"
+        description="OpenAI text-embedding-ada-002"
+        status="active"
+        type="ai"
+        connections={1}
+      />
+      <EvidenceCard
+        title="🤖 Large Language Model"
+        description="GPT-3.5-turbo / Ollama (Local)"
+        status="active"
+        type="llm"
+        connections={3}
+      />
+      <EvidenceCard
+        title="🔍 Search Types"
+        description="Similarity, Hybrid, Semantic"
+        status="active"
+        type="search"
+        connections={3}
+      />
     </div>
 
     <!-- Setup Instructions -->
-    <div class="space-y-4">
-      <h3 class="space-y-4">
-        Setup Instructions
-      </h3>
-      <div class="space-y-4">
-        <p>
-          <strong>1. Start the services:</strong> <code>npm run db:start</code>
-        </p>
-        <p>
-          <strong>2. Initialize vector search:</strong>
-          <code>npm run vector:init</code>
-        </p>
-        <p>
-          <strong>3. Sync existing data:</strong>
-          <code>npm run vector:sync</code>
-        </p>
-        <p>
-          <strong>4. Configure environment:</strong> Set OpenAI API key in
-          <code>.env</code>
-        </p>
+    <div class="nes-container is-rounded evidence-panel">
+      <h3 class="nes-text is-warning mb-4">⚙️ Setup Instructions</h3>
+      <div class="space-y-3">
+        <div class="nes-container is-rounded bg-gray-50 p-3">
+          <p><strong>1. Start the services:</strong> <code class="nes-text is-primary">npm run db:start</code></p>
+        </div>
+        <div class="nes-container is-rounded bg-gray-50 p-3">
+          <p><strong>2. Initialize vector search:</strong> <code class="nes-text is-primary">npm run vector:init</code></p>
+        </div>
+        <div class="nes-container is-rounded bg-gray-50 p-3">
+          <p><strong>3. Sync existing data:</strong> <code class="nes-text is-primary">npm run vector:sync</code></p>
+        </div>
+        <div class="nes-container is-rounded bg-gray-50 p-3">
+          <p><strong>4. Configure environment:</strong> Set OpenAI API key in <code class="nes-text is-primary">.env</code></p>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  </main>
+</EvidenceBoardLayout>
 

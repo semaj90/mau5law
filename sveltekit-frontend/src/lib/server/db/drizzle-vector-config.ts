@@ -361,7 +361,10 @@ export class VectorSearchService {
       cases: caseResults,
       documents: documentResults,
       evidence: evidenceResults,
-      total: caseResults.length + documentResults.length + evidenceResults.length,
+      total:
+        (caseResults as unknown as any[]).length +
+        (documentResults as unknown as any[]).length +
+        (evidenceResults as unknown as any[]).length,
     };
   }
 
