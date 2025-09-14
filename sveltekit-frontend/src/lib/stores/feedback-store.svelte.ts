@@ -9,7 +9,7 @@ import type {
   FeedbackTrigger,
   FeedbackAnalytics,
   UserFeedbackContext 
-} from '../types/feedback';
+} from '../types/feedback.js';
 
 export interface FeedbackState {
   activeSession: FeedbackSession | null;

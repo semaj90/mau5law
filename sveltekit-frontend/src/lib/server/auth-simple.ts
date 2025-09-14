@@ -6,7 +6,7 @@
 import { Argon2id } from "oslo/password";
 import pkg from 'pg';
 const { Client } = pkg;
-import { lucia } from './auth';
+import { lucia } from './auth.js';
 
 // Simple user type for authentication
 export interface SimpleUser {
@@ -50,11 +50,11 @@ export class SimpleAuthService {
         WHERE email = $1 AND is_active = true
       `, [email]);
 
-      if (result.rows.length === 0) {
+      if ((result as { rows?: any }).rows.length === 0) {
         throw new Error("Invalid email or password");
       }
 
-      const user = result.rows[0];
+      const user = (result as { rows?: any }).rows[0];
 
       if (!user.hashed_password) {
         throw new Error("Invalid email or password");

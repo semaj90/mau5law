@@ -89,8 +89,7 @@
   });
 </script>
 
-<form
-  submit={handleSubmit}
+<form on:submit={handleSubmit}
   reset={handleReset}
   class="space-y-6 {restProps.class || ''}"
   novalidate={restProps.novalidate}
@@ -110,8 +109,8 @@
           disabled={!$form.isDirty || $form.isSubmitting || loading}
           class={submitFullWidth ? "w-full" : ""}
         >
-          {resetText}
-        </button>
+{resetText}
+
       {/if}
 
       {#if showSubmitButton}
@@ -122,8 +121,8 @@
           loading={$form.isSubmitting}
           class={submitFullWidth ? "w-full" : ""}
         >
-          {submitText}
-        </button>
+{submitText}
+
       {/if}
     </div>
   {/if}

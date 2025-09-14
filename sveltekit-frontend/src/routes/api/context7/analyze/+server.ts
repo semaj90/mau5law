@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { evidence } from '$lib/server/db/schema-postgres-enhanced';
 import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const POST: RequestHandler = async ({ request }) => {

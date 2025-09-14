@@ -85,10 +85,10 @@
       
       // Fallback check via API
       const response = await fetch('/api/v1/gpu/status');
-      if (response.ok) {
-        const data = await response.json();
-        isGpuAvailable = data.available;
-        gpuInfo = data.info;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        isGpuAvailable = (data as { available?: any; info?: any }).available;
+        gpuInfo = (data as { available?: any; info?: any }).info;
       }
     } catch (error) {
       console.error('GPU check failed:', error);
@@ -273,7 +273,7 @@
         { id: 'settings', label: 'Configuration', icon: Settings }
       ] as tab}
         <button
-          onclick={() => currentTab = tab.id}
+          on:click={() => currentTab = tab.id}
           class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {currentTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
@@ -324,26 +324,25 @@
           
           <div class="flex gap-2">
             <Button 
-              onclick={processLegalQuery}
+              on:click={processLegalQuery}
               disabled={!legalQuery.trim() || gpuStatus === 'processing'}
               class="flex-1 gap-2"
             >
-              {#if gpuStatus === 'processing'}
+{#if gpuStatus === 'processing'}
                 <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
                 Processing...
               {:else}
                 <Play class="w-4 h-4" />
                 Analyze with GPU
               {/if}
-            </button>
-            
+
             <button class="nes-btn" 
               variant="outline" 
-              onclick={resetProcessor}
+              on:click={resetProcessor}
               disabled={gpuStatus === 'processing'}
             >
               <RefreshCw class="w-4 h-4" />
-            </button>
+
           </div>
           
           <!-- Processing Status -->
@@ -504,7 +503,6 @@
         </div>
       </div>
     {/if}
-  {/if}
 
   <!-- Benchmarks Tab -->
   {#if currentTab === 'benchmarks'}
@@ -521,18 +519,18 @@
       <divContent class="space-y-6">
         <div class="flex gap-3">
           <Button 
-            onclick={runBenchmark}
+            on:click={runBenchmark}
             disabled={gpuStatus === 'processing' || !isGpuAvailable}
             class="gap-2"
           >
-            {#if gpuStatus === 'processing'}
+{#if gpuStatus === 'processing'}
               <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
               Running...
             {:else}
               <Play class="w-4 h-4" />
               Run Benchmarks
             {/if}
-          </button>
+
         </div>
 
         {#if gpuStatus === 'processing'}
@@ -559,7 +557,7 @@
                     <span class="font-medium text-sm">{test.name}</span>
                     <Badge variant="secondary">{test.unit}</Badge>
                   </div>
-                  <p class="text-2xl font-bold text-primary">{test.result.toLocaleString()}</p>
+                  <p class="text-2xl font-bold text-primary">{test.(result as { toLocaleString?: any }).toLocaleString()}</p>
                 </div>
               {/each}
             </div>
@@ -682,9 +680,9 @@
         
         <div class="pt-4 border-t">
           <Button class="w-full gap-2">
-            <CheckCircle class="w-4 h-4" />
+<CheckCircle class="w-4 h-4" />
             Apply Configuration
-          </button>
+
         </div>
       </div>
     </div>

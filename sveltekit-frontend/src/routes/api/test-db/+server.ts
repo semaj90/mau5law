@@ -4,14 +4,14 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db, testDatabaseConnection } from '$lib/database/connection';
 import { sql } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
   const results: any = {
     timestamp: new Date().toISOString(),
-    tests: {}
+    tests: Record<string, any>
   };
 
   try {

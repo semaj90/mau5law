@@ -17,7 +17,7 @@ class MarkovPredictor {
     this.lastByUser.set(userId, action);
   }
 
-  predictNext(prev: Action, topK = 3): Array<{ action: Action; p: number }> {
+  predictNext(prev: Action, topK = 3): Array< {
     const m = this.transitions.get(prev);
     if (!m) return [];
     const total = Array.from(m.values()).reduce((a, b) => a + b, 0) || 1;

@@ -312,12 +312,12 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
                   writeBuffer: () => {}
                 },
                 features: new Set(),
-                limits: {},
+                limits: Record<string, any>,
                 destroy: () => {}
               };
             },
             features: new Set(),
-            limits: {},
+            limits: Record<string, any>,
             info: { vendor: 'polyfill', architecture: 'fallback' }
           };
         }
@@ -468,11 +468,11 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       let successCount = 0;
       results.forEach((result, index) => {
         const services = ['WebGPU', 'LLVM-WASM', 'Loki-Redis'];
-        if (result.status === 'fulfilled') {
+        if ((result as { status?: any; reason?: any }).status === 'fulfilled') {
           successCount++;
           console.log(`✅ ${services[index]} service initialized`);
         } else {
-          console.warn(`⚠️ ${services[index]} service failed to initialize:`, result.reason);
+          console.warn(`⚠️ ${services[index]} service failed to initialize:`, (result as { status?: any; reason?: any }).reason);
         }
       });
 

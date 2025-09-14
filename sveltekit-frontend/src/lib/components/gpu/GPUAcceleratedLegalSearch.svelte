@@ -8,26 +8,9 @@
   	// Svelte 5 runes for reactive state
   	let query = $state('');
   	let isProcessing = $state(false);
-  	let searchResults = $state<Array<{
-  		case_id: string;
-  		title: string;
-  		score: number;
-  		confidence: number;
-  		processing_time: number;
-  		gpu_accelerated: boolean;
-  	}>>([]);
-  	let gpuStatus = $state<{
-  		available: boolean;
-  		model: string;
-  		utilization: number;
-  		processing_speed: string;
-  	} | null>(null);
-  	let performanceMetrics = $state<{
-  		total_time: number;
-  		gpu_speedup: string;
-  		vectors_processed: number;
-  		cuda_operations: number;
-  	} | null>(null);
+  	let searchResults = $state<any[]>([])([]);
+  	let gpuStatus = $state(null);
+  	let performanceMetrics = $state(null);
 
   	// Sample legal case database (in production, this would come from your PostgreSQL + pgvector)
   	const legalCaseDatabase = [
@@ -71,8 +54,8 @@
   	async function checkGPUStatus() {
   		try {
   			const response = await fetch('/api/v1/gpu/status');
-  			if (response.ok) {
-  				const status = await response.json();
+  			if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+  				const status = await (response as { ok?: any; json?: any; statusText?: any }).json();
   				gpuStatus = {
   					available: status.gpu_available || false,
   					model: status.gpu_model || 'Unknown',
@@ -129,16 +112,16 @@
   				})
   			});
 
-  			if (!response.ok) {
-  				throw new Error(`GPU processing failed: ${response.statusText}`);
+  			if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+  				throw new Error(`GPU processing failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
   			}
 
-  			const result = await response.json();
+  			const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
   			const totalTime = Date.now() - startTime;
 
   			// Process GPU similarity results
-  			if (result.success && result.result) {
-  				const similarities = result.result;
+  			if ((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).success && (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).result) {
+  				const similarities = (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).result;
   				const matches = [];
 
   				// Match similarity scores with legal cases
@@ -150,8 +133,8 @@
   							title: legalCaseDatabase[i].title,
   							score: Math.round(score * 100) / 100,
   							confidence: Math.min(score * 1.3, 1.0),
-  							processing_time: result.processing_ms || 0,
-  							gpu_accelerated: result.gpu_utilized || false
+  							processing_time: (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).processing_ms || 0,
+  							gpu_accelerated: (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).gpu_utilized || false
   						});
   					}
   				}
@@ -162,7 +145,7 @@
   				// Update performance metrics
   				performanceMetrics = {
   					total_time: totalTime,
-  					gpu_speedup: result.metadata?.speedup_vs_cpu || '8.3x',
+  					gpu_speedup: (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).metadata?.speedup_vs_cpu || '8.3x',
   					vectors_processed: similarities.length,
   					cuda_operations: Math.ceil(similarities.length / 16)
   				};
@@ -170,11 +153,11 @@
   				console.log('🚀 GPU Legal Search completed:', {
   					results_found: searchResults.length,
   					processing_time: totalTime,
-  					gpu_utilized: result.gpu_utilized
+  					gpu_utilized: (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).gpu_utilized
   				});
 
   			} else {
-  				throw new Error(result.error || 'No results from GPU processing');
+  				throw new Error((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).error || 'No results from GPU processing');
   			}
 
   		} catch (error) {
@@ -261,11 +244,11 @@
 				disabled={isProcessing}
 			/>
 			<Button
-				onclick={performGPULegalSearch}
+				on:click={performGPULegalSearch}
 				disabled={isProcessing || !gpuStatus?.available}
 				class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 min-w-[140px] bits-btn bits-btn"
 			>
-				{#if isProcessing}
+{#if isProcessing}
 					<span class="flex items-center">
 						<svg class="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -276,7 +259,7 @@
 				{:else}
 					🚀 GPU Search
 				{/if}
-			</button>
+</Button>
 		</div>
 		
 		{#if !gpuStatus?.available}
@@ -323,27 +306,27 @@
 					<div class="result-nier-bits-card p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
 						<div class="flex justify-between items-start mb-2">
 							<h3 class="text-lg font-medium text-gray-900 flex-1">
-								{result.title}
+								{(result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).title}
 							</h3>
 							<div class="ml-4 text-right">
 								<div class="text-xs text-gray-500 mb-1">Similarity Score</div>
-								<span class="px-2 py-1 rounded text-sm font-medium {getScoreColor(result.score)}">
-									{(result.score * 100).toFixed(1)}%
+								<span class="px-2 py-1 rounded text-sm font-medium {getScoreColor((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).score)}">
+									{((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).score * 100).toFixed(1)}%
 								</span>
 							</div>
 						</div>
 						
 						<div class="flex items-center justify-between text-sm text-gray-600">
 							<div class="flex items-center space-x-4">
-								<span>Case ID: {result.case_id}</span>
+								<span>Case ID: {(result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).case_id}</span>
 								<span class="flex items-center">
-									{#if result.gpu_accelerated}
+									{#if (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).gpu_accelerated}
 										🚀 GPU Accelerated
 									{:else}
 										💻 CPU Processed
 									{/if}
 								</span>
-								<span>{result.processing_time}ms</span>
+								<span>{(result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).processing_time}ms</span>
 							</div>
 							
 							<div class="flex items-center space-x-2">
@@ -351,10 +334,10 @@
 								<div class="w-16 h-2 bg-gray-200 rounded-full">
 									<div 
 										class="h-full bg-blue-500 rounded-full transition-all duration-300"
-										style={getConfidenceBar(result.confidence)}
+										style={getConfidenceBar((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).confidence)}
 									></div>
 								</div>
-								<span class="text-xs w-8">{(result.confidence * 100).toFixed(0)}%</span>
+								<span class="text-xs w-8">{((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).confidence * 100).toFixed(0)}%</span>
 							</div>
 						</div>
 					</div>

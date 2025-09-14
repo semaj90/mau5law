@@ -2,7 +2,7 @@
 import { cases, evidence } from "$lib/server/db/schema-postgres";
 import { json } from "@sveltejs/kit";
 import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         .where(inArray(evidence.hash, hashes));
 
       results = hashes.map((hash) => {
-        const found = hashResults.filter((item) => item.hash === hash);
+        const found = hashResults.filter((item) => (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).hash === hash);
         return {
           hash,
           found: found.length > 0,
@@ -55,11 +55,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         .where(inArray(evidence.id, evidenceIds));
 
       const verificationResults = evidenceItems.map((item) => ({
-        evidenceId: item.id,
-        fileName: item.fileName,
-        storedHash: item.hash,
-        hasHash: !!item.hash,
-        uploadedAt: item.uploadedAt,
+        evidenceId: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).id,
+        fileName: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).fileName,
+        storedHash: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).hash,
+        hasHash: !!(item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).hash,
+        uploadedAt: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).uploadedAt,
       }));
 
       results = verificationResults;

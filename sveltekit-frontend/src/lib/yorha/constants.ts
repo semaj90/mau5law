@@ -1,7 +1,7 @@
 // Shared YoRHa constants, types, and utility helpers for production-ready pages
 export type YoRHaColumn = { key: string; title: string; sortable?: boolean; filterable?: boolean; width?: number; type?: 'text' | 'number' | 'date' | 'action'; };
 export interface YoRHaFormFieldBase { id: string; label: string; required?: boolean; }
-export type YoRHaFormField = (YoRHaFormFieldBase & { type: 'text' | 'textarea' | 'date' }) | (YoRHaFormFieldBase & { type: 'select'; options: Array<{ value: string; label: string }> });
+export type YoRHaFormField = (YoRHaFormFieldBase & { type: 'text' | 'textarea' | 'date' }) | (YoRHaFormFieldBase & { type: 'select'; options: Array< });
 
 export const documentsColumns: YoRHaColumn[] = [
   { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 },

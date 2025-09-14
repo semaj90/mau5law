@@ -44,7 +44,7 @@ const REDIS_EMBEDDING_PREFIX = 'embedding:';
 const vectorCache: Map<string, VectorCacheEntry> = new Map();
 const embeddingCache: Map<string, EmbeddingCacheEntry> = new Map();
 
-import { redisService } from './redis-service.js';
+import { redisService } from './redis-service.js.js';
 
 function getRedisClient(): any | null {
   return redisService.getClient() || (globalThis as any).__REDIS || null;
@@ -116,10 +116,7 @@ function evictEmbeddingCache() {
 /**
  * Get cached vector search results
  */
-export async function getVectorCache(query: string, options: any = {}): Promise<{
-  entry: VectorCacheEntry | null;
-  source: 'memory' | 'redis' | null;
-}> {
+export async function getVectorCache(query: string, options: any = {}): Promise<any> {
   const key = generateVectorKey(query, options);
   const now = Date.now();
   
@@ -198,10 +195,7 @@ export async function setVectorCache(
 /**
  * Get cached embedding
  */
-export async function getEmbeddingCache(text: string, model: string = 'default'): Promise<{
-  entry: EmbeddingCacheEntry | null;
-  source: 'memory' | 'redis' | null;
-}> {
+export async function getEmbeddingCache(text: string, model: string = 'default'): Promise<any> {
   const key = generateEmbeddingKey(text, model);
   const now = Date.now();
   

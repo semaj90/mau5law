@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Test endpoint for Gemma3 local LLM integration
 import { json } from "@sveltejs/kit";

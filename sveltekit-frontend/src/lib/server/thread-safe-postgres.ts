@@ -8,8 +8,8 @@ import { Pool, type PoolClient } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { eq, sql, and, or, desc, asc } from 'drizzle-orm';
 import { dev } from '$app/environment';
-import * as schema from './db/schema-postgres.js';
-import { cognitiveCache } from '../services/cognitive-cache-integration.js';
+import * as schema from './db/schema-postgres.js.js';
+import { cognitiveCache } from '../services/cognitive-cache-integration.js.js';
 
 // Inline JsonbDocument type to avoid import issues
 interface JsonbDocument {
@@ -280,7 +280,7 @@ export class ThreadSafePostgres {
         }
 
         const result = await client.query(query, params);
-        const results = result.rows as T[];
+        const results = (result as { rows?: any }).rows as T[];
 
         // Cache results for future queries
         if (options.cacheResults) {
@@ -345,7 +345,7 @@ export class ThreadSafePostgres {
       includeMetadata?: boolean;
       filterBy?: Record<string, any>;
     } = {}
-  ): Promise<Array<{ id: string; similarity: number; content?: any; metadata?: any }>> {
+  ): Promise<Array<any> {
     const {
       table = 'document_chunks',
       limit = 10,
@@ -388,7 +388,7 @@ export class ThreadSafePostgres {
         query += ` ORDER BY embedding <=> $1::vector LIMIT $3`;
 
         const result = await client.query(query, params);
-        return result.rows;
+        return (result as { rows?: any }).rows;
       } finally {
         client.release();
         activeTxs.delete(queryId);
@@ -405,13 +405,7 @@ export class ThreadSafePostgres {
    * Batch JSONB operations with thread safety
    */
   async batchJsonbOperations<T>(
-    operations: Array<{
-      type: 'insert' | 'update' | 'delete';
-      table: string;
-      id: string;
-      data?: T;
-      conditions?: Record<string, any>;
-    }>,
+    operations: Array<,
     options: {
       atomic?: boolean;
       gpuAccelerated?: boolean;
@@ -490,16 +484,7 @@ export class ThreadSafePostgres {
   /**
    * Health check for thread-safe operations
    */
-  async healthCheck(): Promise<{
-    connected: boolean;
-    activeConnections: number;
-    activeLocks: number;
-    activeTransactions: number;
-    performance: {
-      avgQueryTime: number;
-      totalQueries: number;
-    };
-  }> {
+  async healthCheck(): Promise<any> {
     try {
       const client = await pool.connect();
       
@@ -605,7 +590,7 @@ export async function safeVectorSearch(
     includeMetadata?: boolean;
     filterBy?: Record<string, any>;
   }
-): Promise<Array<{ id: string; similarity: number; content?: any; metadata?: any }>> {
+): Promise<Array<any> {
   return await threadSafePostgres.vectorSimilaritySearch(embedding, options || {});
 }
 

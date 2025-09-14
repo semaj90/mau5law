@@ -18,11 +18,39 @@ import {
   index
 } from 'drizzle-orm/pg-core';
 
-// Temporary pgvector support (custom implementation)
-// import { vector } from 'drizzle-orm/pg-vector';
-const vector = (name: string, config: { dimensions: number }) => 
-  text(name); // Fallback to text for now, will be converted to vector in SQL
+// Custom pgvector support (production-ready)
+import { customType } from 'drizzle-orm/pg-core';
+
+const vector = customType({
+  dataType(config) {
+    return `vector(${config?.dimensions})`;
+  },
+  fromDriver(value: string): number[] {
+    if (typeof value === 'string' && value.startsWith('[') && value.endsWith(']')) {
+      return value.slice(1, -1).split(',').map(Number);
+    }
+    return [];
+  },
+  toDriver(value: number[]): string {
+    return `[${value.join(',')}]`;
+  },
+});
 import { relations } from 'drizzle-orm/relations';
+
+// Export types for TypeScript
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+export type Case = typeof cases.$inferSelect;
+export type NewCase = typeof cases.$inferInsert;
+export type Evidence = typeof evidence.$inferSelect;
+export type NewEvidence = typeof evidence.$inferInsert;
+export type DocumentMetadata = typeof documentMetadata.$inferSelect;
+export type NewDocumentMetadata = typeof documentMetadata.$inferInsert;
+export type DocumentEmbedding = typeof documentEmbeddings.$inferSelect;
+export type NewDocumentEmbedding = typeof documentEmbeddings.$inferInsert;
+
+// Alias for backward compatibility
+export type LegalDocument = DocumentMetadata;
 
 // === FOUNDATIONAL TABLES ===
 
@@ -108,64 +136,74 @@ export const cases = pgTable("cases", {
 
 // === EVIDENCE TABLE WITH COMPLETE SCHEMA ===
 
-export const evidence = pgTable("evidence", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  // Foreign Keys
-  caseId: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }), // Fixed: Added user_id column
-  
-  // Core Fields
-  title: varchar("title", { length: 255 }).notNull(),
-  description: text("description"),
-  evidenceType: varchar("evidence_type", { length: 50 }).notNull(),
-  subType: varchar("sub_type", { length: 50 }),
-  
-  // File Information
-  fileName: varchar("file_name", { length: 255 }),
-  fileSize: integer("file_size"),
-  mimeType: varchar("mime_type", { length: 100 }),
-  hash: varchar("hash", { length: 128 }),
-  
-  // Collection Details
-  collectedAt: timestamp("collected_at", { mode: "date" }),
-  collectedBy: varchar("collected_by", { length: 255 }),
-  location: varchar("location", { length: 255 }),
-  chainOfCustody: jsonb("chain_of_custody").default([]).notNull(),
-  
-  // Classification
-  tags: jsonb("tags").default([]).notNull(),
-  isAdmissible: boolean("is_admissible").default(true),
-  confidentialityLevel: varchar("confidentiality_level", { length: 50 }).default("internal"),
-  
-  // AI Analysis
-  aiAnalysis: jsonb("ai_analysis").default({}),
-  aiTags: jsonb("ai_tags").default([]),
-  aiSummary: text("ai_summary"),
-  summary: text("summary"),
-  summaryType: varchar("summary_type", { length: 50 }),
-  
-  // Vector Embeddings (pgvector)
-  titleEmbedding: vector("title_embedding", { dimensions: 384 }),
-  contentEmbedding: vector("content_embedding", { dimensions: 384 }),
-  
-  // Board Position (for visual layout)
-  boardPosition: jsonb("board_position").default({}),
-  
-  // Timestamps
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
-}, (table) => ({
-  // Indexes for performance
-  caseIdIdx: index("evidence_case_id_idx").on(table.caseId),
-  userIdIdx: index("evidence_user_id_idx").on(table.userId),
-  evidenceTypeIdx: index("evidence_type_idx").on(table.evidenceType),
-  createdAtIdx: index("evidence_created_at_idx").on(table.createdAt),
-  // Vector similarity indexes
-  titleEmbeddingIdx: index("evidence_title_embedding_idx").using('hnsw', table.titleEmbedding.op('vector_cosine_ops')),
-  contentEmbeddingIdx: index("evidence_content_embedding_idx").using('hnsw', table.contentEmbedding.op('vector_cosine_ops'))
-}));
+export const evidence = pgTable(
+  'evidence',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    // Foreign Keys
+    caseId: uuid('case_id').references(() => cases.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }), // Fixed: Added user_id column
+
+    // Core Fields
+    title: varchar('title', { length: 255 }).notNull(),
+    description: text('description'),
+    evidenceType: varchar('evidence_type', { length: 50 }).notNull(),
+    subType: varchar('sub_type', { length: 50 }),
+
+    // File Information
+    fileName: varchar('file_name', { length: 255 }),
+    fileSize: integer('file_size'),
+    mimeType: varchar('mime_type', { length: 100 }),
+    hash: varchar('hash', { length: 128 }),
+
+    // Collection Details
+    collectedAt: timestamp('collected_at', { mode: 'date' }),
+    collectedBy: varchar('collected_by', { length: 255 }),
+    location: varchar('location', { length: 255 }),
+    chainOfCustody: jsonb('chain_of_custody').default([]).notNull(),
+
+    // Classification
+    tags: jsonb('tags').default([]).notNull(),
+    isAdmissible: boolean('is_admissible').default(true),
+    confidentialityLevel: varchar('confidentiality_level', { length: 50 }).default('internal'),
+
+    // AI Analysis
+    aiAnalysis: jsonb('ai_analysis').default({}),
+    aiTags: jsonb('ai_tags').default([]),
+    aiSummary: text('ai_summary'),
+    summary: text('summary'),
+    summaryType: varchar('summary_type', { length: 50 }),
+
+    // Vector Embeddings (pgvector)
+    titleEmbedding: vector('title_embedding', { dimensions: 384 }),
+    contentEmbedding: vector('content_embedding', { dimensions: 384 }),
+
+    // Board Position (for visual layout)
+    boardPosition: jsonb('board_position').default({}),
+
+    // Timestamps
+    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+  },
+  (table) => ({
+    // Indexes for performance
+    caseIdIdx: index('evidence_case_id_idx').on(table.caseId),
+    userIdIdx: index('evidence_user_id_idx').on(table.userId),
+    evidenceTypeIdx: index('evidence_type_idx').on(table.evidenceType),
+    createdAtIdx: index('evidence_created_at_idx').on(table.createdAt),
+    // Vector similarity indexes
+    titleEmbeddingIdx: index('evidence_title_embedding_idx').using(
+      'hnsw',
+      table.titleEmbedding.op('vector_cosine_ops')
+    ),
+    contentEmbeddingIdx: index('evidence_content_embedding_idx').using(
+      'hnsw',
+      table.contentEmbedding.op('vector_cosine_ops')
+    ),
+  })
+);
 
 // === DOCUMENT METADATA TABLE (for Enhanced RAG Go service) ===
 
@@ -367,7 +405,7 @@ export const schema = {
   chatSessions,
   chatMessages,
   chatRecommendations,
-  
+
   // Relations
   usersRelations,
   casesRelations,

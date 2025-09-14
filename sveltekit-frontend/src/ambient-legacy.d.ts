@@ -22,14 +22,17 @@ interface EnhancedOllamaServiceLegacy {
   classifyLegalDocument?: (text: string) => Promise<string>;
   generateEmbeddings?: (text: string | string[]) => Promise<number[] | number[][]>;
   generateLegalEmbeddings?: (text: string | string[]) => Promise<number[] | number[][]>;
-  healthCheck?: () => Promise<{ ok: boolean }>;
-}
+  healthCheck?: () => Promise<any>
 
 declare const enhancedOllamaService: EnhancedOllamaServiceLegacy;
 
 // Misc legacy symbols
-interface CrewAIOrchestratorLegacy {}
-interface LegalAgentsLegacy {}
+interface CrewAIOrchestratorLegacy {
+  [key: string]: any;
+}
+interface LegalAgentsLegacy {
+  [key: string]: any;
+}
 
 declare const crewAIOrchestrator: CrewAIOrchestratorLegacy;
 declare const LEGAL_AGENTS: LegalAgentsLegacy;

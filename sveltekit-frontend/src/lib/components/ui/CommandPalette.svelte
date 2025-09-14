@@ -7,7 +7,11 @@ https://svelte.dev/e/js_parse_error -->
   import { onMount, createEventDispatcher } from 'svelte';
   import { Search, File, Briefcase, User as UserIcon, Settings, Command } from "lucide-svelte";
   import { cn } from '$lib/utils';
-  let { open = $bindable() } = $props(); // false;
+  interface Props {
+    open?: boolean;
+  }
+
+  let { open = $bindable(false) }: Props = $props();
   // Define the command item type
   interface CommandItem {
     id: string;
@@ -19,17 +23,15 @@ https://svelte.dev/e/js_parse_error -->
     shortcut?: string[];
     action?: () => void;
   }
-  const dispatch = createEventDispatcher<{
-    close: void;
-    select: { item: CommandItem };
-  }>();
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
   let searchInput: HTMLInputElement;
   let searchQuery = $state('');
   let selectedIndex = $state(0);
   let filteredItems = $derived(searchQuery 
     ? allItems.filter(item => 
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase())
+        (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).description.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : allItems);
   const allItems: CommandItem[] = [
@@ -130,11 +132,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   }
   function selectItem(item: any) {
-    dispatch('select', { item });
-    if (item.href) {
-      window.location.href = item.href;
-    } else if (item.action) {
-      item.action();
+    onSelect?.({ item });
+    if ((item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).href) {
+      window.location.href = (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).href;
+    } else if ((item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).action) {
+      (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).action();
   }
     close();
   }
@@ -153,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Backdrop -->
   <div 
     class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-    onclick={close}
+    on:click={close}
     role="button"
     tabindex="0"
     keydown={(e) => e.key === 'Enter' && close()}
@@ -175,8 +177,7 @@ https://svelte.dev/e/js_parse_error -->
             bind:value={searchQuery}
             type="text"
             placeholder="Search commands, cases, evidence..."
-            class="flex-1 bg-transparent border-none outline-none py-4 text-foreground placeholder:nes-text is-disabled"
-            input={() => selectedIndex = 0}
+            class="flex-1 bg-transparent border-none outline-none py-4 text-foreground placeholder:nes-text is-disabled" on:input={() => selectedIndex = 0}
           />
           <div class="flex items-center gap-1 text-xs nes-text is-disabled">
             <kbd class="px-1.5 py-0.5 bg-nier-surface-light rounded border border-nier-gray">
@@ -191,8 +192,8 @@ https://svelte.dev/e/js_parse_error -->
           {#if filteredItems.length > 0}
             {#each Object.entries(
               filteredItems.reduce((acc: Record<string, CommandItem[]>, item) => {
-                if (!acc[item.category]) acc[item.category] = [];
-                acc[item.category].push(item);
+                if (!acc[(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).category]) acc[(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).category] = [];
+                acc[(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).category].push(item);
                 return acc;
               }, {})
             ) as entry, categoryIndex}
@@ -212,12 +213,12 @@ https://svelte.dev/e/js_parse_error -->
                         ? "bg-harvard-crimson text-white shadow-nier-glow"
                         : "hover:bg-nier-surface-light text-foreground"
                     )}
-                    onclick={() => selectItem(item)}
+                    on:click={() => selectItem(item)}
                     on:mouseenter={() => selectedIndex = globalIndex}
                   >
                     <div class="flex items-center">
                       <svelte:component 
-                        this={item.icon} 
+                        this={(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).icon} 
                         class={cn(
                           "h-4 w-4 mr-3",
                           globalIndex === selectedIndex ? "text-white" : "text-muted-foreground"
@@ -228,20 +229,20 @@ https://svelte.dev/e/js_parse_error -->
                           "text-sm font-medium",
                           globalIndex === selectedIndex ? "text-white" : "text-foreground"
                         )}>
-                          {item.title}
+                          {(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).title}
                         </div>
                         <div class={cn(
                           "text-xs",
                           globalIndex === selectedIndex ? "text-white/70" : "text-muted-foreground"
                         )}>
-                          {item.description}
+                          {(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).description}
                         </div>
                       </div>
                     </div>
                     
-                    {#if item.shortcut}
+                    {#if (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).shortcut}
                       <div class="flex items-center gap-1">
-                        {#each item.shortcut as key}
+                        {#each (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).shortcut as key}
                           <kbd class={cn(
                             "px-1.5 py-0.5 text-xs rounded border",
                             globalIndex === selectedIndex

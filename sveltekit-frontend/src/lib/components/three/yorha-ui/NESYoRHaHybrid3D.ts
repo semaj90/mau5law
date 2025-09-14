@@ -10,15 +10,15 @@
  */
 
 import * as THREE from 'three';
-import { YoRHa3DComponent, YORHA_COLORS, type YoRHaStyle } from './YoRHaUI3D';
+import { YoRHa3DComponent, YORHA_COLORS, type YoRHaStyle } from './YoRHaUI3D.js';
 import { nesCacheOrchestrator } from '$lib/services/nes-cache-orchestrator';
 import type { InteractiveCanvasState } from '$lib/types/canvas';
 
 // Import hybrid GPU context for acceleration
-import type { HybridGPUContext } from '../../gpu/hybrid-gpu-context.js';
+import type { HybridGPUContext } from '../../gpu/hybrid-gpu-context.js.js';
 
 // Import advanced GPU context provider with type narrowing
-import { gpuContextProvider, type GPUBackendType, type ShaderResources } from '../../gpu/gpu-context-provider.js';
+import { gpuContextProvider, type GPUBackendType, type ShaderResources } from '../../gpu/gpu-context-provider.js.js';
 
 // NES + YoRHa Color Palette Fusion
 export const NES_YORHA_PALETTE = {
@@ -487,8 +487,8 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         var result = pixel * vignette;
         
         // Add phosphor color shift
-        result.g *= 1.1;
-        result.b *= 0.9;
+        (result as { g?: any; b?: any }).g *= 1.1;
+        (result as { g?: any; b?: any }).b *= 0.9;
         
         outputPixels[index] = result;
       }`;

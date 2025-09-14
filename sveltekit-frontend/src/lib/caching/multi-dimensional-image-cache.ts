@@ -4,11 +4,11 @@
  * for optimal graph traversal visualization image generation and caching
  */
 
-import { SOMNeuralNetwork, type SOMDecomposition } from '../ai/som-neural-network';
-import { GraphPatternAutoEncoder, type EncodedGraphPattern } from '../ai/graph-pattern-autoencoder';
-import { nesGPUBridge, type GPUTextureMatrix } from '../gpu/nes-gpu-memory-bridge';
-import { MultiLayerCache } from '../services/multi-layer-cache';
-import { reinforcementLearningCache } from './reinforcement-learning-cache.server';
+import { SOMNeuralNetwork, type SOMDecomposition } from '../ai/som-neural-network.js';
+import { GraphPatternAutoEncoder, type EncodedGraphPattern } from '../ai/graph-pattern-autoencoder.js';
+import { nesGPUBridge, type GPUTextureMatrix } from '../gpu/nes-gpu-memory-bridge.js';
+import { MultiLayerCache } from '../services/multi-layer-cache.js';
+import { reinforcementLearningCache } from './reinforcement-learning-cache.server.js';
 
 export interface ImageCacheEntry {
   id: string;
@@ -364,12 +364,7 @@ export class MultiDimensionalImageCache {
   private async compressImageData(
     imageData: string,
     graphData: any
-  ): Promise<{
-    original: EncodedGraphPattern;
-    som: SOMDecomposition;
-    compressed: ArrayBuffer;
-    compressionRatio: number;
-  }> {
+  ): Promise<any> {
     try {
       // Convert graph data to format suitable for neural networks
       const graphForProcessing = {
@@ -422,8 +417,8 @@ export class MultiDimensionalImageCache {
       console.error('Failed to compress image data:', error);
       // Return fallback compression
       return {
-        original: {} as EncodedGraphPattern,
-        som: {} as SOMDecomposition,
+        original: Record<string, any> as EncodedGraphPattern,
+        som: Record<string, any> as SOMDecomposition,
         compressed: new ArrayBuffer(imageData.length),
         compressionRatio: 1.0,
       };

@@ -28,9 +28,9 @@
   let matrixSize = $state(256);
 
   // Generated test data
-  let testVectors = $state<{ vectorA: Float32Array; vectorB: Float32Array } | null>(null);
+  let testVectors = $state(null);
   let testDataPoints = $state<Float32Array | null>(null);
-  let testMatrices = $state<{ matrixA: Float32Array; matrixB: Float32Array } | null>(null);
+  let testMatrices = $state(null);
 
   /**
    * Initialize WebGPU and generate test data
@@ -350,9 +350,9 @@
   </div>
 
   <!-- WebGPU Status -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center justify-between">
+      <h3 class="nes-text is-primary flex items-center justify-between">
         <span>WebGPU Capabilities</span>
         {#if isInitializing}
           <span class="text-sm text-blue-600">Initializing...</span>
@@ -404,15 +404,15 @@
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   {#if capabilities?.available}
     <!-- Demo Controls -->
     <div class="demo-controls grid grid-cols-1 md:grid-cols-3 gap-4">
       <!-- Vector Similarity -->
-      <NesCard class="demo-nier-bits-card">
+      <div class="demo-nier-bits-card nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
+          <h3 class="nes-text is-primary flex items-center space-x-2">
             <span class="text-2xl">🔍</span>
             <span>Vector Similarity</span>
           </h3>
@@ -429,26 +429,25 @@
                 min="128"
                 max="1024"
                 step="128"
-                bind:value={vectorDimensions}
-                input={generateTestData}
+                bind:value={vectorDimensions} on:input={generateTestData}
                 class="w-full"
                 disabled={isProcessing} />
             </div>
 
             <Button
-              onclick={runSimilarityDemo}
+              on:click={runSimilarityDemo}
               disabled={isProcessing || activeDemo === 'similarity'}
               class="w-full bits-btn bits-btn">
-              {isProcessing && activeDemo === 'similarity' ? 'Computing...' : 'Run Similarity Test'}
-            </button>
+{isProcessing && activeDemo === 'similarity' ? 'Computing...' : 'Run Similarity Test'}
+
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- K-Means Clustering -->
-      <NesCard class="demo-nier-bits-card">
+      <div class="demo-nier-bits-card nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
+          <h3 class="nes-text is-primary flex items-center space-x-2">
             <span class="text-2xl">🎯</span>
             <span>K-Means Clustering</span>
           </h3>
@@ -465,8 +464,7 @@
                 min="100"
                 max="5000"
                 step="100"
-                bind:value={numDataPoints}
-                input={generateTestData}
+                bind:value={numDataPoints} on:input={generateTestData}
                 class="w-full"
                 disabled={isProcessing} />
             </div>
@@ -480,26 +478,25 @@
                 type="range"
                 min="2"
                 max="20"
-                bind:value={numClusters}
-                input={generateTestData}
+                bind:value={numClusters} on:input={generateTestData}
                 class="w-full"
                 disabled={isProcessing} />
             </div>
 
             <Button
-              onclick={runClusteringDemo}
+              on:click={runClusteringDemo}
               disabled={isProcessing || activeDemo === 'clustering'}
               class="w-full bits-btn bits-btn">
-              {isProcessing && activeDemo === 'clustering' ? 'Clustering...' : 'Run Clustering'}
-            </button>
+{isProcessing && activeDemo === 'clustering' ? 'Clustering...' : 'Run Clustering'}
+
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Matrix Multiplication -->
-      <NesCard class="demo-nier-bits-card">
+      <div class="demo-nier-bits-card nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
+          <h3 class="nes-text is-primary flex items-center space-x-2">
             <span class="text-2xl">🧮</span>
             <span>Matrix Multiply</span>
           </h3>
@@ -516,26 +513,25 @@
                 min="64"
                 max="512"
                 step="64"
-                bind:value={matrixSize}
-                input={generateTestData}
+                bind:value={matrixSize} on:input={generateTestData}
                 class="w-full"
                 disabled={isProcessing} />
             </div>
 
             <Button
-              onclick={runMatrixDemo}
+              on:click={runMatrixDemo}
               disabled={isProcessing || activeDemo === 'matrix'}
               class="w-full bits-btn bits-btn">
-              {isProcessing && activeDemo === 'matrix' ? 'Computing...' : 'Run Matrix Multiply'}
-            </button>
+{isProcessing && activeDemo === 'matrix' ? 'Computing...' : 'Run Matrix Multiply'}
+
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Results Display -->
     {#if results}
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Performance Results</h3>
         </div>
@@ -597,11 +593,11 @@
             </div>
           {/if}
         </div>
-      </NesCard>
+      </div>
     {/if}
 
     <!-- Legal AI Use Cases -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Legal AI Applications</h3>
       </div>
@@ -629,7 +625,7 @@
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

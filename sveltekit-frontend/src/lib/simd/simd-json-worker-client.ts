@@ -160,7 +160,7 @@ export class SIMDJSONWorkerClient {
       
       try {
         const result = await this.sendMessage('INIT');
-        return result.success;
+        return (result as { success?: any; data?: any }).success;
       } catch (error) {
         console.error('❌ Worker initialization failed:', error);
         return false;
@@ -185,7 +185,7 @@ export class SIMDJSONWorkerClient {
     
     try {
       const result = await this.sendMessage('PARSE_JSON', { jsonString, options }, options);
-      return result.data;
+      return (result as { success?: any; data?: any }).data;
     } catch (error) {
       // Fallback to native JSON.parse on error
       console.warn('SIMD JSON parsing failed, falling back to native:', error);
@@ -208,7 +208,7 @@ export class SIMDJSONWorkerClient {
     
     try {
       const result = await this.sendMessage('PARSE_BATCH', { jsonStrings }, options);
-      return result.data;
+      return (result as { success?: any; data?: any }).data;
     } catch (error) {
       // Fallback to native JSON.parse
       console.warn('SIMD batch parsing failed, falling back to native:', error);
@@ -219,12 +219,7 @@ export class SIMDJSONWorkerClient {
   /**
    * Parse vector/tensor data with validation
    */
-  async parseVectorData(vectorJson: string, options: ParseOptions = {}): Promise<{
-    vectors?: number[][];
-    embeddings?: number[][];
-    similarities?: number[];
-    metadata?: any;
-  }> {
+  async parseVectorData(vectorJson: string, options: ParseOptions = {}): Promise<any> {
     if (!this.isReady) {
       await this.initialize();
     }
@@ -236,7 +231,7 @@ export class SIMDJSONWorkerClient {
     
     try {
       const result = await this.sendMessage('PARSE_VECTOR_DATA', { vectorJson }, options);
-      return result.data;
+      return (result as { success?: any; data?: any }).data;
     } catch (error) {
       // Fallback to native JSON.parse
       console.warn('SIMD vector parsing failed, falling back to native:', error);
@@ -247,13 +242,7 @@ export class SIMDJSONWorkerClient {
   /**
    * Get worker performance statistics
    */
-  async getStats(): Promise<{
-    totalParsed: number;
-    totalTime: number;
-    avgTime: number;
-    errors: number;
-    simdReady: boolean;
-  }> {
+  async getStats(): Promise<any> {
     if (!this.worker) {
       return {
         totalParsed: 0,
@@ -266,7 +255,7 @@ export class SIMDJSONWorkerClient {
     
     try {
       const result = await this.sendMessage('GET_STATS');
-      return result.data;
+      return (result as { success?: any; data?: any }).data;
     } catch (error) {
       console.error('Failed to get worker stats:', error);
       throw error;
@@ -276,19 +265,13 @@ export class SIMDJSONWorkerClient {
   /**
    * Run performance benchmark
    */
-  async benchmark(iterations: number = 1000, testSize: 'small' | 'medium' | 'large' = 'medium'): Promise<{
-    iterations: number;
-    totalTime: number;
-    avgTime: number;
-    parsesPerSecond: number;
-    testDataSize: number;
-  }> {
+  async benchmark(iterations: number = 1000, testSize: 'small' | 'medium' | 'large' = 'medium'): Promise<any> {
     if (!this.worker) {
       throw new Error('Worker not available for benchmarking');
     }
     
     const result = await this.sendMessage('BENCHMARK', { iterations, testSize });
-    return result.data;
+    return (result as { success?: any; data?: any }).data;
   }
   
   /**

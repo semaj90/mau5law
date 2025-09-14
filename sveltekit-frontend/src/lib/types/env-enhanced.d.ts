@@ -165,7 +165,7 @@ export const envHelper = {
   getDatabaseUrl: (): string => {
     return envHelper.get('DATABASE_URL') ||
       envHelper.get('POSTGRES_URL') ||
-           `postgresql://postgres:postgres@localhost:5432/legal_ai_db`;
+           `postgresql://postgres:postgres@localhost:5433/legal_ai_db`;
   },
 
   // Get Redis URL with validation

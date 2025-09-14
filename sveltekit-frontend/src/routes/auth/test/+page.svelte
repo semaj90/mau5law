@@ -24,7 +24,7 @@
   } from 'lucide-svelte';
 
   // Test state
-  let testResults = $state<Record<string, any>>({});
+  let testResults = $state<Record<string, any>('')>({});
   let testRunning = $state(false);
   let currentTab = $state('auth');
 
@@ -82,8 +82,8 @@
       ]);
 
       testResults.context7 = {
-        success: docsTest.every(result => result.status === 'fulfilled'),
-        data: docsTest.map(result => result.status === 'fulfilled' ? result.value : null),
+        success: docsTest.every(result => (result as { status?: any; value?: any }).status === 'fulfilled'),
+        data: docsTest.map(result => (result as { status?: any; value?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any }).value : null),
         timestamp: new Date().toISOString()
       };
       context7Docs = testResults.context7.data;
@@ -230,11 +230,11 @@
       <Card.Title class="flex items-center gap-2">
         <Activity class="h-5 w-5" />
         System Test Status
-      </Card.Title>
+      </div.Title>
       <Card.Description>
         Real-time testing of core authentication and AI services
-      </Card.Description>
-    </Card.Header>
+      </div.Description>
+    </div.Header>
     <Card.Content>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <!-- GPU Cluster Status -->
@@ -284,7 +284,7 @@
 
       <div class="flex gap-2">
         <Button class="bits-btn"
-          onclick={runInitialTests}
+          on:click={runInitialTests}
           disabled={testRunning}
           variant="outline"
         >
@@ -295,10 +295,10 @@
             <Activity class="mr-2 h-4 w-4" />
             Refresh Tests
           {/if}
-        </Button>
+
       </div>
-    </Card.Content>
-  </Card.Root>
+    </div.Content>
+  </div.Root>
 
   <!-- Main Testing Interface -->
   <Tabs.Root bind:value={currentTab}>
@@ -318,27 +318,26 @@
             <Card.Title class="flex items-center gap-2">
               <Shield class="h-5 w-5" />
               Login Form Test
-            </Card.Title>
+            </div.Title>
             <Card.Description>
               Test login with GPU-enhanced security analysis
-            </Card.Description>
-          </Card.Header>
+            </div.Description>
+          </div.Header>
           <Card.Content class="space-y-4">
             <Button class="bits-btn"
-              onclick={() => populateTestData('login')}
+              on:click={() => populateTestData('login')}
               variant="outline"
               size="sm"
             >
               Fill Test Data
-            </Button>
 
             <LoginForm
               data={mockFormData.login}
               enableGPUAuth={true}
               showRegistration={false}
             />
-          </Card.Content>
-        </Card.Root>
+          </div.Content>
+        </div.Root>
 
         <!-- Registration Testing -->
         <Card.Root>
@@ -346,27 +345,26 @@
             <Card.Title class="flex items-center gap-2">
               <Users class="h-5 w-5" />
               Registration Form Test
-            </Card.Title>
+            </div.Title>
             <Card.Description>
               Test registration with legal professional validation
-            </Card.Description>
-          </Card.Header>
+            </div.Description>
+          </div.Header>
           <Card.Content class="space-y-4">
             <Button class="bits-btn"
-              onclick={() => populateTestData('register')}
+              on:click={() => populateTestData('register')}
               variant="outline"
               size="sm"
             >
               Fill Test Data
-            </Button>
 
             <RegisterForm
               data={mockFormData.register}
               enableGPUValidation={true}
               showLogin={false}
             />
-          </Card.Content>
-        </Card.Root>
+          </div.Content>
+        </div.Root>
       </div>
 
       <!-- Auth Store Status -->
@@ -375,8 +373,8 @@
           <Card.Title class="flex items-center gap-2">
             <Database class="h-5 w-5" />
             XState Auth Store Status
-          </Card.Title>
-        </Card.Header>
+          </div.Title>
+        </div.Header>
         <Card.Content>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="space-y-2">
@@ -396,8 +394,8 @@
               </Badge>
             </div>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </Tabs.Content>
 
     <!-- GPU Testing -->
@@ -407,8 +405,8 @@
           <Card.Title class="flex items-center gap-2">
             <Cpu class="h-5 w-5" />
             MCP GPU Orchestrator Status
-          </Card.Title>
-        </Card.Header>
+          </div.Title>
+        </div.Header>
         <Card.Content>
           {#if clusterStatus}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -458,8 +456,8 @@
               <p>Loading cluster status...</p>
             </div>
           {/if}
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </Tabs.Content>
 
     <!-- Context7 Documentation -->
@@ -469,8 +467,8 @@
           <Card.Title class="flex items-center gap-2">
             <Code class="h-5 w-5" />
             Context7 Documentation Status
-          </Card.Title>
-        </Card.Header>
+          </div.Title>
+        </div.Header>
         <Card.Content>
           {#if context7Docs}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -501,8 +499,8 @@
               <p>Loading Context7 documentation...</p>
             </div>
           {/if}
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </Tabs.Content>
 
     <!-- Test Results -->
@@ -512,8 +510,8 @@
           <Card.Title class="flex items-center gap-2">
             <Eye class="h-5 w-5" />
             Detailed Test Results
-          </Card.Title>
-        </Card.Header>
+          </div.Title>
+        </div.Header>
         <Card.Content>
           <div class="space-y-4">
             {#each Object.entries(testResults) as [testKey, testData]}
@@ -533,8 +531,8 @@
               </div>
             {/each}
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </Tabs.Content>
   </Tabs.Root>
 </div>

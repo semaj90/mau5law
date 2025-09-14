@@ -5,7 +5,7 @@
  */
 
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
-import { cacheActor, getCacheStats } from './xstate-cache-integration.js';
+import { cacheActor, getCacheStats } from './xstate-cache-integration.js.js';
 import MultiTierCache from '$lib/ai/cache/multiTierCache.js';
 import { getCache, setCache } from '$lib/server/utils/server-cache.js';
 import { browser } from '$app/environment';
@@ -91,12 +91,7 @@ class ParallelCacheOrchestrator {
    * Group 0: Memory/GPU operations (fast) - target 300ms
    * Group 1: Network/disk operations (slower) - target 200ms additional
    */
-  async executeParallel(request: ParallelCacheRequest): Promise<{
-    success: boolean;
-    data?: any[];
-    metrics: CacheExecutionMetrics;
-    cacheResults: Array<{ key: string; hit: boolean; source: string; data?: any }>;
-  }> {
+  async executeParallel(request: ParallelCacheRequest): Promise<any>> {
     const startTime = performance.now();
     this.resetMetrics();
 
@@ -144,7 +139,7 @@ class ParallelCacheOrchestrator {
   private async executeGroup0Operations(
     request: ParallelCacheRequest,
     resources: CacheResourceAllocation
-  ): Promise<Array<{ key: string; hit: boolean; source: string; data?: any }>> {
+  ): Promise<Array<any> {
     const operations = [
       // L1 Memory cache lookups (immediate)
       this.batchMemoryLookup(request.keys, 'l1'),
@@ -168,8 +163,8 @@ class ParallelCacheOrchestrator {
     
     // Flatten successful results
     return results
-      .filter((result): result is PromiseFulfilledResult<any> => result.status === 'fulfilled')
-      .flatMap(result => Array.isArray(result.value) ? result.value : [result.value])
+      .filter((result): result is PromiseFulfilledResult<any> => (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).status === 'fulfilled')
+      .flatMap(result => Array.isArray((result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value) ? (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value : [(result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value])
       .filter(Boolean);
   }
 
@@ -180,10 +175,10 @@ class ParallelCacheOrchestrator {
     request: ParallelCacheRequest,
     resources: CacheResourceAllocation,
     group0Results: any[]
-  ): Promise<Array<{ key: string; hit: boolean; source: string; data?: any }>> {
+  ): Promise<Array<any> {
     // Only execute if we didn't get enough hits from Group 0
     const missingKeys = request.keys.filter(key => 
-      !group0Results.some(result => result.key === key && result.hit)
+      !group0Results.some(result => (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).key === key && (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).hit)
     );
 
     if (missingKeys.length === 0) {
@@ -207,8 +202,8 @@ class ParallelCacheOrchestrator {
     const results = await Promise.allSettled(operations);
     
     return results
-      .filter((result): result is PromiseFulfilledResult<any> => result.status === 'fulfilled')
-      .flatMap(result => Array.isArray(result.value) ? result.value : [result.value])
+      .filter((result): result is PromiseFulfilledResult<any> => (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).status === 'fulfilled')
+      .flatMap(result => Array.isArray((result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value) ? (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value : [(result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value])
       .filter(Boolean);
   }
 
@@ -240,7 +235,7 @@ class ParallelCacheOrchestrator {
   private async batchMemoryLookup(
     keys: string[],
     tier: 'l1' | 'l2'
-  ): Promise<Array<{ key: string; hit: boolean; source: string; data?: any }>> {
+  ): Promise<Array<any> {
     const cache = tier === 'l1' ? this.l1Memory : this.l2Memory;
     const source = tier === 'l1' ? 'l1_memory' : 'l2_memory';
     
@@ -272,13 +267,13 @@ class ParallelCacheOrchestrator {
    */
   private async executeGPUCacheOperations(
     request: ParallelCacheRequest
-  ): Promise<Array<{ key: string; hit: boolean; source: string; data?: any }>> {
+  ): Promise<Array<any> {
     if (!browser || typeof window === 'undefined') {
       return [];
     }
 
     try {
-      const results: Array<{ key: string; hit: boolean; source: string; data?: any }> = [];
+      const results: Array< = [];
       
       // Search for cached shaders
       for (const key of request.keys) {
@@ -312,9 +307,9 @@ class ParallelCacheOrchestrator {
    */
   private async executeXStateCacheOperations(
     request: ParallelCacheRequest
-  ): Promise<Array<{ key: string; hit: boolean; source: string; data?: any }>> {
+  ): Promise<Array<any> {
     try {
-      const results: Array<{ key: string; hit: boolean; source: string; data?: any }> = [];
+      const results: Array< = [];
       
       for (const key of request.keys) {
         const cacheResult = await (cacheActor as any).send({ 
@@ -345,19 +340,19 @@ class ParallelCacheOrchestrator {
   private async executeRAGCacheOperations(
     request: ParallelCacheRequest,
     group0Results: any[]
-  ): Promise<Array<{ key: string; hit: boolean; source: string; data?: any }>> {
+  ): Promise<Array<any> {
     try {
       // Use cached embeddings from Group 0 to accelerate RAG lookup
       const cachedEmbeddings = group0Results
-        .filter(result => result.source.includes('embedding'))
-        .map(result => result.data);
+        .filter(result => (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).source.includes('embedding'))
+        .map(result => (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).data);
 
       if (cachedEmbeddings.length === 0) {
         return [];
       }
 
       // Execute RAG queries using cached embeddings
-      const results: Array<{ key: string; hit: boolean; source: string; data?: any }> = [];
+      const results: Array< = [];
       
       for (const key of request.keys) {
         // Simulate RAG lookup using cached embeddings
@@ -382,7 +377,7 @@ class ParallelCacheOrchestrator {
    */
   private async batchStorageLookup(
     keys: string[]
-  ): Promise<Array<{ key: string; hit: boolean; source: string; data?: any }>> {
+  ): Promise<Array<any> {
     const results = await Promise.all(
       keys.map(async (key) => {
         const data = await this.l3Storage.get(key);
@@ -406,7 +401,7 @@ class ParallelCacheOrchestrator {
    */
   private async batchServerCacheLookup(
     keys: string[]
-  ): Promise<Array<{ key: string; hit: boolean; source: string; data?: any }>> {
+  ): Promise<Array<any> {
     const results = await Promise.all(
       keys.map(async (key) => {
         try {
@@ -529,7 +524,7 @@ class ParallelCacheOrchestrator {
         gpuTextureHits: 0,
         misses: 0
       },
-      circuitBreakerStatus: {}
+      circuitBreakerStatus: Record<string, any>
     };
   }
 
@@ -561,17 +556,7 @@ class ParallelCacheOrchestrator {
   /**
    * Get performance statistics
    */
-  async getPerformanceStats(): Promise<{
-    currentMetrics: CacheExecutionMetrics;
-    cacheStats: {
-      l1Size: number;
-      l2Size: number;
-      l3Size: number;
-      xstateStats: any;
-      shaderStats: any;
-    };
-    systemResources: CacheResourceAllocation;
-  }> {
+  async getPerformanceStats(): Promise<any> {
     return {
       currentMetrics: this.executionMetrics,
       cacheStats: {

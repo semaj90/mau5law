@@ -212,7 +212,7 @@ class AIServiceWorker {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: task.model,
+        model: task?.model || "unknown" // @ts-ignore - Model property access,
         prompt: task.prompt,
         system: task.systemPrompt,
         stream: false,
@@ -236,7 +236,7 @@ class AIServiceWorker {
       id: getUUID(),
       content: data.response,
       providerId: provider.id,
-      model: task.model,
+      model: task?.model || "unknown" // @ts-ignore - Model property access,
       tokensUsed: data.eval_count || 0,
       responseTime: data.total_duration ? Math.round(data.total_duration / 1000000) : 0,
       metadata: {

@@ -44,7 +44,7 @@ class GPUWorker {
 
         // Load WebAssembly module
         const response = await fetch('/wasm/gpu-compute.wasm');
-        const wasmBuffer = await response.arrayBuffer();
+        const wasmBuffer = await (response as { arrayBuffer?: any }).arrayBuffer();
         const wasmModule = await WebAssembly.instantiate(wasmBuffer, {
             env: {
                 memory: new WebAssembly.Memory({ initial: 256, maximum: 4096 }),
@@ -88,7 +88,7 @@ class GPUWorker {
                         sum = sum + a.data[row * a.cols + i] * b.data[i * b.cols + col];
                     }
 
-                    result.data[row * b.cols + col] = sum;
+                    (result as { data?: any }).data[row * b.cols + col] = sum;
                 }
             `
         });
@@ -389,7 +389,7 @@ self.addEventListener('message', async (event: any) => {
         case 'cache-stats':
             if (gpuWorker) {
                 // Return cache statistics
-                self.postMessage({ type: 'stats', data: {} });
+                self.postMessage({ type: 'stats', data: Record<string, any> });
             }
             break;
     }

@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Hybrid Vector Embedding API - PGVector + Qdrant + Local LLM Integration
@@ -192,7 +192,7 @@ export const GET: RequestHandler = async ({ url }) => {
 async function generatePGVectorEmbedding(
   content: string,
   model: string
-): Promise<{ embedding: number[]; backend: string }> {
+): Promise<any> {
   try {
     // First try to use Ollama for embedding generation
     const embedding = await generateOllamaEmbedding(content, model);
@@ -217,7 +217,7 @@ async function generatePGVectorEmbedding(
 async function generateQdrantEmbedding(
   content: string,
   model: string
-): Promise<{ embedding: number[]; backend: string }> {
+): Promise<any> {
   try {
     const qdrantEndpoint = VECTOR_BACKENDS.qdrant.endpoint;
 
@@ -263,7 +263,7 @@ async function generateQdrantEmbedding(
 async function generateHybridEmbedding(
   content: string,
   model: string
-): Promise<{ embedding: number[]; backend: string }> {
+): Promise<any> {
   // Try PGVector first
   try {
     return await generatePGVectorEmbedding(content, model);

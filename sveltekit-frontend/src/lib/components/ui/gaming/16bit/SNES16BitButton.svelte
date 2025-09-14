@@ -62,7 +62,8 @@
     onFocus
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
 
   let isPressed = $state(false);
   let isHovered = $state(false);
@@ -181,7 +182,7 @@
   {form}
   {name}
   {value}
-  onclick={handleClick}
+  on:click={handleClick}
   on:on:mouseenter={handleHover}
   on:on:mouseleave={handleUnhover}
   on:focus={handleFocus}

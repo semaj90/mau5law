@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // AI Synthesizer API Route - Full Stack Integration
 // Uses Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama with gemma3-legal:latest
@@ -73,11 +73,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
       success: true,
       requestId,
       result: {
-        synthesis: result.synthesis,
-        sources: result.sources,
-        confidence: result.confidence,
+        synthesis: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).synthesis,
+        sources: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).sources,
+        confidence: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).confidence,
         metadata: {
-          ...result.metadata,
+          ...(result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).metadata,
           requestId,
           processingTime,
         },
@@ -228,8 +228,8 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
             query: test.query,
             success: true,
             processingTime: Date.now() - startTime,
-            confidence: result.confidence,
-            sourcesUsed: (result.metadata as any)?.sourcesUsed || [],
+            confidence: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).confidence,
+            sourcesUsed: ((result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).metadata as any)?.sourcesUsed || [],
             expectedSources: test.expectedSources,
           });
         } catch (err: any) {
@@ -272,7 +272,7 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
 
   // Default GET returns health
   // Construct a minimal fake event for GET handler
-  return GET({ url, request: new Request(url), params: {} } as any);
+  return GET({ url, request: new Request(url), params: Record<string, any> } as any);
 };
 
 // Helper function for streaming requests

@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // routes/api/ai-synthesizer/stream/[streamId]/+server.ts
 // Server-Sent Events endpoint for streaming AI synthesis updates

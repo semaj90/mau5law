@@ -455,15 +455,7 @@ export class ShaderResourceManager {
    * Get resource usage statistics
    */
   getResourceStats(backend?: GPUBackend): {
-    pools: Array<{
-      backend: GPUBackend;
-      memoryUsage: MemoryUsageTracker;
-      shaderCount: number;
-      bufferCount: number;
-      textureCount: number;
-      bindGroupCount: number;
-      utilizationPercent: number;
-    }>;
+    pools: Array<any>;
     totalMemoryUsed: number;
     totalMemoryBudget: number;
   } {

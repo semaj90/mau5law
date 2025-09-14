@@ -174,18 +174,17 @@
       <Button 
         variant="outline" 
         size="sm"
-        onclick={toggleAutoRefresh}
+        on:click={toggleAutoRefresh}
         class="gap-2"
       >
         <Activity class="w-4 h-4 {isAutoRefresh ? 'text-green-600' : ''}" />
         {isAutoRefresh ? 'Auto Refresh On' : 'Auto Refresh Off'}
-      </Button>
-      
+
       <!-- Manual Refresh -->
       <OrchestratedButton.Enhanced
         variant="outline"
         size="sm"
-        onclick={refreshData}
+        on:click={refreshData}
         disabled={isLoading}
         class="gap-2"
       >
@@ -217,13 +216,13 @@
       { id: 'tools', label: 'Tools', icon: Settings }
     ] as tab}
       <Button
-        onclick={() => selectedTab = tab.id}
+        on:click={() => selectedTab = tab.id}
         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
                {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
       >
         {@render tab.icon({ class: "w-4 h-4" })}
         {tab.label}
-      </Button>
+
     {/each}
   </div>
 
@@ -232,7 +231,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Redis Server Info -->
       <OrchestratedCard.Analysis>
-        <NesCard.Content class="p-6">
+        <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Server class="w-8 h-8 text-primary/60" />
             <Badge variant="outline">{data.redisInfo.version}</Badge>
@@ -245,7 +244,7 @@
 
       <!-- Memory Usage -->
       <OrchestratedCard.Analysis>
-        <NesCard.Content class="p-6">
+        <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Memory class="w-8 h-8 text-primary/60" />
             <Badge variant="outline">{data.redisInfo.used_memory}</Badge>
@@ -258,7 +257,7 @@
 
       <!-- Operations -->
       <OrchestratedCard.Analysis>
-        <NesCard.Content class="p-6">
+        <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Zap class="w-8 h-8 text-primary/60" />
             <Badge variant="outline">{data.redisInfo.instantaneous_ops_per_sec}/s</Badge>
@@ -271,7 +270,7 @@
 
       <!-- Uptime -->
       <OrchestratedCard.Analysis>
-        <NesCard.Content class="p-6">
+        <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Clock class="w-8 h-8 text-primary/60" />
             <Badge variant="outline">Active</Badge>
@@ -285,13 +284,13 @@
 
     <!-- Hit/Miss Statistics -->
     <OrchestratedCard.Analysis>
-      <NesCard.Header>
-        <NesCard.Title class="flex items-center gap-2">
+      <div.Header class="nes-container">
+        <div.Title class="flex items-center gap-2 nes-container">
           <BarChart3 class="w-5 h-5" />
           Cache Performance
         </NesCard.Title>
       </NesCard.Header>
-      <NesCard.Content>
+      <div.Content class="nes-container">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div class="text-center">
             <p class="text-2xl font-bold text-green-600">{data.redisInfo.keyspace_hits.toLocaleString()}</p>
@@ -321,16 +320,16 @@
     <div class="space-y-6">
       <!-- Key Management Tools -->
       <OrchestratedCard.Analysis>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <Key class="w-5 h-5" />
             Key Management
           </NesCard.Title>
-          <NesCard.Description>
+          <div.Description class="nes-container">
             Browse and manage Redis keys ({data.keyStats.total_keys} total)
           </NesCard.Description>
         </NesCard.Header>
-        <NesCard.Content class="space-y-4">
+        <div.Content class="space-y-4 nes-container">
           <!-- Search Filter -->
           <Input
             bind:value={keyFilter}
@@ -354,10 +353,10 @@
                   <Button class="nes-btn"
                     variant="outline"
                     size="sm"
-                    onclick={() => viewKeyDetails(key.key)}
+                    on:click={() => viewKeyDetails(key.key)}
                   >
                     <Eye class="w-3 h-3" />
-                  </Button>
+
                   <form method="POST" action="?/deleteKey" use:enhance>
                     <input type="hidden" name="key" value={key.key} />
                     <Button
@@ -367,7 +366,7 @@
                       class="text-red-600 hover:bg-red-50"
                     >
                       <Trash2 class="w-3 h-3" />
-                    </Button>
+
                   </form>
                 </div>
               </div>
@@ -378,13 +377,13 @@
 
       <!-- Add New Key -->
       <OrchestratedCard.Analysis>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <Plus class="w-5 h-5" />
             Add New Key
           </NesCard.Title>
         </NesCard.Header>
-        <NesCard.Content>
+        <div.Content class="nes-container">
           <form method="POST" action="?/setKey" use:enhance class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Input
@@ -410,7 +409,7 @@
             <Button type="submit" class="gap-2">
               <Plus class="w-4 h-4" />
               Add Key
-            </Button>
+
           </form>
         </NesCard.Content>
       </OrchestratedCard.Analysis>
@@ -421,10 +420,10 @@
   {#if selectedTab === 'performance'}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <OrchestratedCard.Analysis>
-        <NesCard.Header>
-          <NesCard.Title>Performance Metrics</NesCard.Title>
+        <div.Header class="nes-container">
+          <div.Title class="nes-container">Performance Metrics</NesCard.Title>
         </NesCard.Header>
-        <NesCard.Content class="space-y-4">
+        <div.Content class="space-y-4 nes-container">
           <div class="grid grid-cols-2 gap-4">
             <div class="text-center p-4 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold {getMetricColor(data.performanceMetrics.hit_rate, 80)}">{data.performanceMetrics.hit_rate.toFixed(1)}%</p>
@@ -447,10 +446,10 @@
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
-        <NesCard.Header>
-          <NesCard.Title>Key Statistics</NesCard.Title>
+        <div.Header class="nes-container">
+          <div.Title class="nes-container">Key Statistics</NesCard.Title>
         </NesCard.Header>
-        <NesCard.Content class="space-y-4">
+        <div.Content class="space-y-4 nes-container">
           <div class="space-y-3">
             <div class="flex justify-between">
               <span>Total Keys</span>
@@ -477,22 +476,22 @@
   <!-- Tools Tab -->
   {#if selectedTab === 'tools'}
     <OrchestratedCard.Analysis>
-      <NesCard.Header>
-        <NesCard.Title class="flex items-center gap-2">
+      <div.Header class="nes-container">
+        <div.Title class="flex items-center gap-2 nes-container">
           <Settings class="w-5 h-5" />
           Administrative Tools
         </NesCard.Title>
-        <NesCard.Description class="text-yellow-600">
+        <div.Description class="text-yellow-600 nes-container">
           ⚠️ Use these tools carefully - they affect the entire cache
         </NesCard.Description>
       </NesCard.Header>
-      <NesCard.Content class="space-y-4">
+      <div.Content class="space-y-4 nes-container">
         <form method="POST" action="?/flushCache" use:enhance>
           <Button
             type="submit"
             variant="destructive"
             class="gap-2"
-            onclick={(e) => {
+            on:click={(e) => {
               if (!confirm('Are you sure you want to flush all cache data? This cannot be undone.')) {
                 e.preventDefault();
               }
@@ -500,7 +499,7 @@
           >
             <Trash2 class="w-4 h-4" />
             Flush All Cache
-          </Button>
+
         </form>
         
         <div class="text-sm nes-text is-disabled">

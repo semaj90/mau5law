@@ -17,8 +17,8 @@ import {
   appSelectors,
   type AppContext,
   type AppEvents
-} from './app-machine';
-import { legalCaseMachine, legalCaseSelectors } from './legal-case-machine';
+} from './app-machine.js';
+import { legalCaseMachine, legalCaseSelectors } from './legal-case-machine.js';
 
 // Store persistence interface
 export interface StoreState {

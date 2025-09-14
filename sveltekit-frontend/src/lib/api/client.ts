@@ -4,7 +4,7 @@
 import type { 
   CaseAPI, EvidenceAPI, ChatAPI, VectorSearchAPI, HealthAPI,
   StandardApiResponse, ApiClient, RequestOf, ResponseOf
-} from '../types/api-contracts';
+} from '../types/api-contracts.js';
 import { browser } from '$app/environment';
 
 // API Client Configuration
@@ -127,30 +127,30 @@ class EnhancedApiClient {
         clearTimeout(timeoutId);
         this.abortControllers.delete(requestId);
         
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({
-            message: `HTTP ${response.status}: ${response.statusText}`,
+        if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
+          const errorData = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json().catch(() => ({
+            message: `HTTP ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}: ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).statusText}`,
             code: 'HTTP_ERROR'
           }));
           
           throw new ApiClientError(
-            errorData.message || `HTTP ${response.status}`,
-            response.status,
+            errorData.message || `HTTP ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}`,
+            (response as { ok?: any; json?: any; status?: any; statusText?: any }).status,
             errorData.code || 'HTTP_ERROR',
             errorData.details,
             errorData.requestId || requestId
           );
         }
         
-        const result = await response.json();
+        const result = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
         
-        if (!result.success) {
+        if (!(result as { success?: any; error?: any; meta?: any }).success) {
           throw new ApiClientError(
-            result.error?.message || 'API request failed',
-            response.status,
-            result.error?.code || 'API_ERROR',
-            result.error?.details,
-            result.meta?.requestId || requestId
+            (result as { success?: any; error?: any; meta?: any }).error?.message || 'API request failed',
+            (response as { ok?: any; json?: any; status?: any; statusText?: any }).status,
+            (result as { success?: any; error?: any; meta?: any }).error?.code || 'API_ERROR',
+            (result as { success?: any; error?: any; meta?: any }).error?.details,
+            (result as { success?: any; error?: any; meta?: any }).meta?.requestId || requestId
           );
         }
         

@@ -74,12 +74,12 @@
   }
 </script>
 
-<NesCard.Root
+<div.Root
   class={cardClasses}
   role={clickable ? 'button' : undefined}
   tabindex={clickable ? 0 : undefined}
-  onclick={handleClick}
-  keydown={(e) => {
+  on:click={handleClick}
+  keydown={(e) = class="nes-container"> {
     if (clickable && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
       onclick?.();
@@ -93,17 +93,17 @@
   {/if}
 
   {#if header || title || subtitle || actions}
-    <NesCard.Header class="nier-bits-yorha-panel-header">
+    <div.Header class="nier-bits-yorha-panel-header nes-container">
       {#if header}
         {@render header()}
       {:else if title || subtitle}
         <div class="golden-flex-between">
           <div class="space-y-golden">
             {#if title}
-              <NesCard.Title class="nier-bits-nes-text is-primary text-yorha-text-primary">{title}</Card.Title>
+              <div.Title class="nier-bits-nes-text is-primary text-yorha-text-primary nes-container">{title}</div.Title>
             {/if}
             {#if subtitle}
-              <NesCard.Description class="nier-bits-card-subtitle text-yorha-text-secondary">{subtitle}</Card.Description>
+              <div.Description class="nier-bits-card-subtitle text-yorha-text-secondary nes-container">{subtitle}</div.Description>
             {/if}
           </div>
           {#if actions}
@@ -111,17 +111,17 @@
           {/if}
         </div>
       {/if}
-    </Card.Header>
+    </div.Header>
   {/if}
 
   {#if children}
-    <NesCard.Content class="nier-bits-yorha-panel-content">{@render children()}</Card.Content>
+    <div.Content class="nier-bits-yorha-panel-content nes-container">{@render children()}</div.Content>
   {/if}
 
   {#if footer}
-    <NesCard.Footer class="nier-bits-yorha-panel-content">{@render footer()}</Card.Footer>
+    <div.Footer class="nier-bits-yorha-panel-content nes-container">{@render footer()}</div.Footer>
   {/if}
-</Card.Root>
+</div.Root>
 
 {#if tooltip && $open}
   <div class="tooltip">{tooltip}</div>

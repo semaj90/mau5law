@@ -101,7 +101,7 @@ https://svelte.dev/e/expected_token -->
     loading = true;
     try {
       // In production: const response = await fetch(`/api/state/machines/${machineId}/transitions`);
-      await new Promise(resolve => setTimeout(resolve, 800);
+      await new Promise(resolve => setTimeout(resolve, 800));
       const machineData = mockTransitions[machineId] || { currentState: 'unknown', transitions: [] };
       currentState = machineData.currentState;
       transitions = machineData.transitions;
@@ -177,7 +177,7 @@ https://svelte.dev/e/expected_token -->
         <option value="gpu-allocation-machine">GPU Allocation Machine</option>
       </select>
       
-      <button class="nes-btn" variant="outline" onclick={loadTransitions}>
+      <button class="nes-btn" variant="outline" on:click={loadTransitions}>
         Refresh
       </button>
     </div>
@@ -207,7 +207,7 @@ https://svelte.dev/e/expected_token -->
           {#each transitions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as transition, index}
             <div class="transition-nier-bits-card {getTransitionColor(transition)} {selectedTransition?.id === transition.id ? 'selected' : ''}"
                  role="button" tabindex="0"
-                onclick={() => selectedTransition = selectedTransition?.id === transition.id ? null : transition}>
+                on:click={() => selectedTransition = selectedTransition?.id === transition.id ? null : transition}>
               <div class="transition-header">
                 <div class="transition-flow">
                   <span class="state-from">{transition.from}</span>
@@ -268,13 +268,13 @@ https://svelte.dev/e/expected_token -->
         </div>
         <divContent>
           <div class="control-buttons">
-            <button class="nes-btn" onclick={() => triggerTransition('LOGOUT')}>
+            <button class="nes-btn" on:click={() => triggerTransition('LOGOUT')}>
               Trigger Logout
             </button>
-            <button class="nes-btn" variant="outline" onclick={() => triggerTransition('REFRESH_TOKEN')}>
+            <button class="nes-btn" variant="outline" on:click={() => triggerTransition('REFRESH_TOKEN')}>
               Refresh Token
             </button>
-            <button class="nes-btn" variant="outline" onclick={() => triggerTransition('VIEW_PROFILE')}>
+            <button class="nes-btn" variant="outline" on:click={() => triggerTransition('VIEW_PROFILE')}>
               View Profile
             </button>
           </div>

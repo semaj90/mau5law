@@ -51,7 +51,7 @@ https://svelte.dev/e/attribute_duplicate -->
     showHeader = true,
     columns = 3
   }: Props = $props();
-  let searchInput = $state<HTMLInputElement>();
+  let searchInput: HTMLInputElement = $state(undefined as any);
   let selectedItem: Evidence | null = $state(null);
 
   // In Svelte 5, access store values directly
@@ -101,12 +101,12 @@ https://svelte.dev/e/attribute_duplicate -->
       evidenceActions.setSorting(field, "desc");
   }}
   function toggleSelection(item: Evidence) {
-    evidenceActions.toggleSelection(item.id);
+    evidenceActions.toggleSelection((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id);
   }
   function selectAll() {
     filteredData.forEach((item) => {
-      if (!selectedItems.has(item.id)) {
-        evidenceActions.toggleSelection(item.id);
+      if (!selectedItems.has((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)) {
+        evidenceActions.toggleSelection((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id);
   }
     });
   }
@@ -144,18 +144,18 @@ https://svelte.dev/e/attribute_duplicate -->
     }).format(dateObj);
   }
   async function downloadEvidence(item: Evidence) {
-    if (!item.fileUrl) return;
+    if (!(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileUrl) return;
 
     try {
-      const response = await fetch(item.fileUrl);
-      const blob = await response.blob();
+      const response = await fetch((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileUrl);
+      const blob = await (response as { blob?: any }).blob();
 
       // Native browser download without file-saver library
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
-      a.download = item.fileName || item.title || 'evidence-file';
+      a.download = (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileName || (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).title || 'evidence-file';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -165,9 +165,9 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   }
   async function deleteEvidence(item: Evidence) {
-    if (confirm(`Are you sure you want to delete "${item.title}"?`)) {
+    if (confirm(`Are you sure you want to delete "${(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).title}"?`)) {
       try {
-        await evidenceActions.deleteEvidence(item.id);
+        await evidenceActions.deleteEvidence((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id);
       } catch (error) {
         console.error("Delete failed:", error);
         alert("Failed to delete evidence. Please try again.");
@@ -181,7 +181,7 @@ https://svelte.dev/e/attribute_duplicate -->
     event.preventDefault();
     selectedItem = item;
     // For now, just select the item - can be enhanced later with actual context menu
-    if (!selectedItems.has(item.id)) {
+    if (!selectedItems.has((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)) {
       toggleSelection(item);
   }}
   // Context menu actions
@@ -227,7 +227,7 @@ https://svelte.dev/e/attribute_duplicate -->
             type="text"
             placeholder="Search evidence..."
             value={searchQuery}
-            oninput={handleSearch}
+            on:input={handleSearch}
             class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
@@ -237,7 +237,7 @@ https://svelte.dev/e/attribute_duplicate -->
         <!-- Sort dropdown -->
         <select
           value={sortBy}
-          onchange={(e) => {
+          on:change={(e) => {
             const value = (e.target as HTMLSelectElement)?.value;
             if (value === 'title' || value === 'evidenceType' || value === 'fileSize' || value === 'uploadedAt') {
               toggleSort(value);
@@ -256,20 +256,22 @@ https://svelte.dev/e/attribute_duplicate -->
           class="bits-btn flex items-center gap-2"
           variant="secondary"
           size="sm"
-          onclick={() => toggleSort(sortBy)}
+          on:click={() =>
+toggleSort(sortBy)}
         >
           {#if sortOrder === "asc"}
             <SortAsc class="w-4 h-4" />
           {:else}
             <SortDesc class="w-4 h-4" />
           {/if}
-        </button>
+</Button>
 
         <!-- View mode toggle -->
         <Button class="bits-btn"
           variant="secondary"
           size="sm"
-          onclick={() => toggleViewMode()}
+          on:click={() =>
+toggleViewMode()}
           class="flex items-center gap-2"
         >
           {#if viewMode === "grid"}
@@ -277,7 +279,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {:else}
             <Grid class="w-4 h-4" />
           {/if}
-        </button>
+</Button>
       </div>
     </div>
 
@@ -291,22 +293,22 @@ https://svelte.dev/e/attribute_duplicate -->
           <Button class="bits-btn"
             variant="secondary"
             size="sm"
-            onclick={() => clearSelection()}
+            on:click={() =>
+clearSelection()}
           >
             Clear
-          </button>
-          <button class="nes-btn" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
+</Button>
+          <button class="nes-btn flex items-center gap-2 bits-btn bits-btn">
             <Download class="w-4 h-4" />
             Download
-          </button>
-          <button class="nes-btn" size="sm" class="flex items-center gap-2 bits-btn bits-btn">
+</Button>
+          <button class="nes-btn flex items-center gap-2 bits-btn bits-btn">
             <Archive class="w-4 h-4" />
             Archive
           </button>
         </div>
       </div>
     {/if}
-  {/if}
 
   <!-- Loading state -->
   {#if isLoading}
@@ -322,10 +324,11 @@ https://svelte.dev/e/attribute_duplicate -->
       <Button class="bits-btn"
         variant="secondary"
         size="sm"
-        onclick={() => evidenceActions.loadEvidence(caseId)}
+        on:click={() =>
+evidenceActions.loadEvidence(caseId)}
       >
         Try Again
-      </button>
+</Button>
     </div>
   {:else if filteredData.length === 0}
     <!-- Empty state -->
@@ -347,26 +350,26 @@ https://svelte.dev/e/attribute_duplicate -->
           class="grid gap-4"
           style="grid-template-columns: repeat({columns}, minmax(0, 1fr))"
         >
-          {#each filteredData as item (item.id)}
+          {#each filteredData as item ((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)}
             <div
-              class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer {selectedItems.has(item.id) ? 'ring-2 ring-blue-500' : ''}"
+              class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer {selectedItems.has((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id) ? 'ring-2 ring-blue-500' : ''}"
               role="button" tabindex="0"
-                onclick={() => toggleSelection(item)}
+                on:click={() => toggleSelection(item)}
               oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
             >
               <!-- Preview/Thumbnail -->
               <div
                 class="space-y-4"
               >
-                {#if item.fileUrl && isImageFile(item.mimeType || "")}
+                {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileUrl && isImageFile((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).mimeType || "")}
                   <img
-                    src={item.fileUrl}
-                    alt={item.title}
+                    src={(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileUrl}
+                    alt={(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).title}
                     class="space-y-4"
                     loading="lazy"
                   />
                 {:else}
-                  {@const SvelteComponent = getFileIcon(item.evidenceType, item.mimeType)}
+                  {@const SvelteComponent = getFileIcon((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).evidenceType, (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).mimeType)}
                   <SvelteComponent
                     class="space-y-4"
                   />
@@ -376,8 +379,8 @@ https://svelte.dev/e/attribute_duplicate -->
                 <div class="space-y-4">
                   <input
                     type="checkbox"
-                    checked={selectedItems.has(item.id)}
-                    onchange={() => toggleSelection(item)}
+                    checked={selectedItems.has((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)}
+                    on:change={() => toggleSelection(item)}
                     class="space-y-4"
                   />
                 </div>
@@ -387,7 +390,7 @@ https://svelte.dev/e/attribute_duplicate -->
                   <span
                     class="space-y-4"
                   >
-                    {getFileCategory(item.mimeType || item.evidenceType)}
+                    {getFileCategory((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).mimeType || (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).evidenceType)}
                   </span>
                 </div>
               </div>
@@ -395,38 +398,38 @@ https://svelte.dev/e/attribute_duplicate -->
               <!-- Content -->
               <div class="space-y-4">
                 <h3 class="space-y-4">
-                  {item.title}
+                  {(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).title}
                 </h3>
 
-                {#if item.description}
+                {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).description}
                   <p class="space-y-4">
-                    {item.description}
+                    {(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).description}
                   </p>
                 {/if}
 
                 <!-- Metadata -->
                 <div class="space-y-4">
                   <div class="space-y-4">
-                    <span>{formatDate(item.uploadedAt)}</span>
-                    {#if item.fileSize}
-                      <span>{formatFileSize(item.fileSize)}</span>
+                    <span>{formatDate((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).uploadedAt)}</span>
+                    {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileSize}
+                      <span>{formatFileSize((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileSize)}</span>
                     {/if}
                   </div>
 
-                  {#if item.tags && item.tags.length > 0}
+                  {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags && (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length > 0}
                     <div class="space-y-4">
-                      {#each item.tags.slice(0, 3) as tag}
+                      {#each (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.slice(0, 3) as tag}
                         <span
                           class="space-y-4"
                         >
                           {tag}
                         </span>
                       {/each}
-                      {#if item.tags.length > 3}
+                      {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length > 3}
                         <span
                           class="space-y-4"
                         >
-                          +{item.tags.length - 3}
+                          +{(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length - 3}
                         </span>
                       {/if}
                     </div>
@@ -439,19 +442,18 @@ https://svelte.dev/e/attribute_duplicate -->
       {:else}
         <!-- List view -->
         <div class="space-y-4">
-          {#each filteredData as item (item.id)}
-            {@const SvelteComponent_1 = getFileIcon(item.evidenceType, item.mimeType)}
+          {#each filteredData as item ((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)}
+            {@const SvelteComponent_1 = getFileIcon((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).evidenceType, (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).mimeType)}
             <div
               class="space-y-4"
               role="button" tabindex="0"
-                onclick={() => toggleSelection(item)}
+                on:click={() => toggleSelection(item)}
               oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
             >
               <!-- Selection checkbox -->
               <input
                 type="checkbox"
-                checked={selectedItems.has(item.id)}
-                change={() => toggleSelection(item)}
+                checked={selectedItems.has((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)} on:change={() => toggleSelection(item)}
                 class="space-y-4"
               />
 
@@ -467,42 +469,42 @@ https://svelte.dev/e/attribute_duplicate -->
                 <div class="space-y-4">
                   <div class="space-y-4">
                     <h3 class="space-y-4">
-                      {item.title}
+                      {(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).title}
                     </h3>
-                    {#if item.description}
+                    {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).description}
                       <p class="space-y-4">
-                        {item.description}
+                        {(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).description}
                       </p>
                     {/if}
                   </div>
 
                   <div class="space-y-4">
                     <p class="space-y-4">
-                      {formatDate(item.uploadedAt)}
+                      {formatDate((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).uploadedAt)}
                     </p>
-                    {#if item.fileSize}
+                    {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileSize}
                       <p class="space-y-4">
-                        {formatFileSize(item.fileSize)}
+                        {formatFileSize((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileSize)}
                       </p>
                     {/if}
                   </div>
                 </div>
 
                 <!-- Tags -->
-                {#if item.tags && item.tags.length > 0}
+                {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags && (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length > 0}
                   <div class="space-y-4">
-                    {#each item.tags.slice(0, 5) as tag}
+                    {#each (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.slice(0, 5) as tag}
                       <span
                         class="space-y-4"
                       >
                         {tag}
                       </span>
                     {/each}
-                    {#if item.tags.length > 5}
+                    {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length > 5}
                       <span
                         class="space-y-4"
                       >
-                        +{item.tags.length - 5}
+                        +{(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length - 5}
                       </span>
                     {/if}
                   </div>
@@ -512,8 +514,8 @@ https://svelte.dev/e/attribute_duplicate -->
               <!-- Actions -->
               <div class="space-y-4">
                 <Button variant="ghost" size="sm" class="space-y-4 bits-btn bits-btn">
-                  <MoreHorizontal class="space-y-4" />
-                </button>
+<MoreHorizontal class="space-y-4" />
+</Button>
               </div>
             </div>
           {/each}

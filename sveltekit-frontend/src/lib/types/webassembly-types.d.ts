@@ -5,10 +5,7 @@
 
 // Global WebAssembly module declarations
 declare module '*.wasm' {
-  const wasmModule: (imports?: WebAssembly.Imports) => Promise<{
-    instance: WebAssembly.Instance;
-    module: WebAssembly.Module;
-  }>;
+  const wasmModule: (imports?: WebAssembly.Imports) => Promise<;
   export default wasmModule;
 }
 
@@ -58,8 +55,7 @@ export interface LegalWASMBridge {
   memory: WASMMemoryManager;
   
   // High-level document processing methods
-  processLegalDocument(content: string): Promise<{
-    entities: Array<{ text: string; type: string; confidence: number }>;
+  processLegalDocument(content: string): Promise<;
     classification: string;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     confidence: number;

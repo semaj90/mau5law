@@ -73,14 +73,7 @@ export interface VectorSearchCache {
   id?: number;
   queryHash: string; // MD5 of query + filters for deduplication
   query: string;
-  results: Array<{
-    id: string;
-    content: string;
-    similarity: number;
-    metadata: any;
-    sourceType: 'case' | 'evidence' | 'document';
-    rankingMatrix: number[][];
-  }>;
+  results: Array<any>;
   timestamp: Date;
   expiresAt: Date;
   lodLevel: number;
@@ -131,24 +124,8 @@ export interface GraphVisualizationData {
   id?: number;
   graphId: string;
   graphType: 'document-similarity' | 'legal-entities' | 'case-relationships' | 'citation-network';
-  nodes: Array<{
-    id: string;
-    label: string;
-    type: string;
-    position: { x: number; y: number; z?: number };
-    size: number;
-    color: string;
-    metadata: any;
-  }>;
-  edges: Array<{
-    id: string;
-    source: string;
-    target: string;
-    weight: number;
-    type: string;
-    color: string;
-    metadata: any;
-  }>;
+  nodes: Array<any>;
+  edges: Array<any>;
   layout: {
     algorithm: string;
     parameters: any;
@@ -301,15 +278,11 @@ export class LegalDBUtils {
   /**
    * Get database statistics
    */
-  static async getStorageStats(): Promise<{
-    totalRecords: number;
-    storageUsed: string;
-    tables: Array<{ name: string; count: number }>;
-  }> {
+  static async getStorageStats(): Promise<any>> {
     const stats = {
       totalRecords: 0,
       storageUsed: 'Unknown',
-      tables: [] as Array<{ name: string; count: number }>
+      tables: [] as Array<
     };
 
     // Count records in each table
@@ -372,7 +345,7 @@ export class LegalDBUtils {
       .where('hitCount')
       .below(2) // Remove rarely used cached searches
       .and(item => {
-        const daysSinceCreated = (Date.now() - item.timestamp.getTime()) / (1000 * 60 * 60 * 24);
+        const daysSinceCreated = (Date.now() - (item as { timestamp?: any }).timestamp.getTime()) / (1000 * 60 * 60 * 24);
         return daysSinceCreated > 7; // Older than a week
       })
       .delete();

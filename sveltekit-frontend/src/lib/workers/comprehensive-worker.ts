@@ -42,9 +42,9 @@ async function processChunkJob(job: ChunkJob) {
     const result = await getEmbeddingViaGate(fetch, text, { 
       model: job.metadata.priority === 'high' ? 'nomic-embed-text' : undefined 
     });
-    const embedding = result.embedding;
+    const embedding = (result as { embedding?: any; backend?: any }).embedding;
     
-    console.log(`📍 Embedding created via ${result.backend} using model ${result.model}`);
+    console.log(`📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || "unknown" // @ts-ignore - Model property access}`);
 
     // Store in database
     await db.insert(document_chunks).values({

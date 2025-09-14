@@ -4,7 +4,7 @@
  * once authentication is fully built out
  */
 
-import { citationsManager, type AuthUser } from './citations-manager';
+import { citationsManager, type AuthUser } from './citations-manager.js';
 
 export class AuthDemo {
   private static instance: AuthDemo;

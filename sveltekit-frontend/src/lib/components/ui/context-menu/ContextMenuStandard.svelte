@@ -6,15 +6,7 @@
 
   interface Props extends ContextMenu.RootProps {
     trigger: Snippet;
-    items: Array<{
-      type: 'item' | 'checkbox' | 'radio' | 'separator' | 'sub';
-      label?: string;
-      value?: string;
-      checked?: boolean;
-      disabled?: boolean;
-      onSelect?: () => void;
-      items?: Props['items']; // For sub-menus
-    }>;
+    items: Array;
     contentProps?: WithoutChild<ContextMenu.ContentProps>;
   }
 
@@ -36,36 +28,36 @@
   <ContextMenu.Portal>
     <ContextMenu.Content {...contentProps}>
       {#each items as item}
-        {#if item.type === 'separator'}
+        {#if (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).type === 'separator'}
           <ContextMenu.Separator />
-        {:else if item.type === 'checkbox'}
+        {:else if (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).type === 'checkbox'}
           <ContextMenu.CheckboxItem 
-            value={item.value} 
-            disabled={item.disabled}
-            select={item.onSelect}
+            value={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).value} 
+            disabled={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).disabled}
+            select={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).onSelect}
           >
             {#snippet children({ checked })}
               {#if checked}✓{/if}
-              {item.label}
+              {(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).label}
             {/snippet}
           </ContextMenu.CheckboxItem>
-        {:else if item.type === 'radio'}
+        {:else if (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).type === 'radio'}
           <ContextMenu.RadioItem 
-            value={item.value} 
-            disabled={item.disabled}
-            select={item.onSelect}
+            value={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).value} 
+            disabled={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).disabled}
+            select={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).onSelect}
           >
             {#snippet children({ checked })}
               {#if checked}●{/if}
-              {item.label}
+              {(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).label}
             {/snippet}
           </ContextMenu.RadioItem>
-        {:else if item.type === 'sub' && item.items}
+        {:else if (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).type === 'sub' && (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).items}
           <ContextMenu.Sub>
-            <ContextMenu.SubTrigger>{item.label}</ContextMenu.SubTrigger>
+            <ContextMenu.SubTrigger>{(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).label}</ContextMenu.SubTrigger>
             <ContextMenu.Portal>
               <ContextMenu.SubContent>
-                {#each item.items as subItem}
+                {#each (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).items as subItem}
                   <ContextMenu.Item 
                     textValue={subItem.label}
                     disabled={subItem.disabled}
@@ -79,11 +71,11 @@
           </ContextMenu.Sub>
         {:else}
           <ContextMenu.Item 
-            textValue={item.label}
-            disabled={item.disabled}
-            select={item.onSelect}
+            textValue={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).label}
+            disabled={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).disabled}
+            select={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).onSelect}
           >
-            {item.label}
+            {(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).label}
           </ContextMenu.Item>
         {/if}
       {/each}

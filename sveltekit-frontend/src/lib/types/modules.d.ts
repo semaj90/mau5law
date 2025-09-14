@@ -21,12 +21,7 @@ declare module "fuse.js" {
   interface FuseResult<T> {
     item: T;
     score?: number;
-    matches?: Array<{
-      indices: Array<[number, number]>;
-      value: string;
-      key: string;
-    }>;
-  }
+    matches?: Array<any>
 
   class Fuse<T> {
     constructor(list: T[], options?: FuseOptions<T>);
@@ -100,8 +95,7 @@ declare module "lokijs" {
     saveDatabase(callback?: (err: any) => void): void;
     loadDatabase(options?: unknown, callback?: (err: any) => void): void;
     close(): void;
-    listCollections(): Array<{ name: string; data: any[]; options: any }>;
-  }
+    listCollections(): Array<any>
 }
 
 // Tauri API module declarations (optional dependencies)

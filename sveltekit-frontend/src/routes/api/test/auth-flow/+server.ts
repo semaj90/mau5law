@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Comprehensive Authentication Flow Test with GPU Acceleration
 // Tests complete integration: Auth → Session → AI → Services
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     // Calculate overall results
     testSuite.totalDuration = Date.now() - startTime;
-    testSuite.overallSuccess = testSuite.results.every(result => result.success);
+    testSuite.overallSuccess = testSuite.results.every(result => (result as { success?: any; status?: any; value?: any }).success);
 
     console.log(`✅ Authentication flow test completed: ${testSuite.overallSuccess ? 'PASSED' : 'FAILED'}`);
     console.log(`⏱️ Total duration: ${testSuite.totalDuration}ms`);
@@ -284,7 +284,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
     ]);
 
     const healthyOllama = ollamaHealthChecks.filter(result => 
-      result.status === 'fulfilled' && (result.value as Response).ok
+      (result as { success?: any; status?: any; value?: any }).status === 'fulfilled' && ((result as { success?: any; status?: any; value?: any }).value as Response).ok
     ).length;
 
     if (healthyOllama === 0) {

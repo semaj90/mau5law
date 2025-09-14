@@ -45,7 +45,7 @@
 
   let {
     caseId = '',
-    userId = page.data.user?.id || '',
+    userId = page.(data as { user?: any }).user?.id || '',
     maxFiles = 10,
     allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'text/plain', 'application/msword'],
     enableAnalytics = true,
@@ -179,7 +179,7 @@
   async function checkOllamaConnection() {
     try {
       const response = await fetch('/api/ai/ollama/health');
-      ollamaConnected = response.ok;
+      ollamaConnected = (response as { ok?: any; json?: any }).ok;
 
       if (ollamaConnected) {
         const modelsResponse = await fetch('/api/ai/ollama/models');
@@ -323,7 +323,7 @@
           body: formData
         });
 
-        return response.ok ? await response.json() : null;
+        return (response as { ok?: any; json?: any }).ok ? await (response as { ok?: any; json?: any }).json() : null;
       });
 
       const results = await Promise.all(analysisPromises);
@@ -361,8 +361,8 @@
           body: formData
         });
 
-        if (response.ok) {
-          return await response.json();
+        if ((response as { ok?: any; json?: any }).ok) {
+          return await (response as { ok?: any; json?: any }).json();
         }
         throw new Error(`Analysis failed for ${file.name}`);
       });
@@ -488,17 +488,17 @@
 
 <div class="legal-upload-analytics yorha-container">
   <!-- Enhanced Header with Legal Context -->
-  <NesCard.Root class="mb-6 yorha-nier-bits-card">
-    <NesCard.Header>
+  <div.Root class="mb-6 yorha-nier-bits-card nes-container">
+    <div.Header class="nes-container">
       <div class="flex justify-between items-start">
         <div>
-          <NesCard.Title class="yorha-title">
+          <div.Title class="yorha-title nes-container">
             🏛️ Legal Document Upload & Analysis
             {#if mode === 'detective'}
               <span class="yorha-badge detective">Detective Mode</span>
             {/if}
-          </Card.Title>
-          <NesCard.Description>
+          </div.Title>
+          <div.Description class="nes-container">
             {#if caseId}
               Case: <span class="font-mono text-blue-400">{caseId}</span>
             {/if}
@@ -510,7 +510,7 @@
                 {legalContext.urgency.toUpperCase()} Priority
               </span>
             {/if}
-          </Card.Description>
+          </div.Description>
         </div>
 
         <div class="flex gap-2">
@@ -533,19 +533,19 @@
           {/if}
         </div>
       </div>
-    </Card.Header>
-  </Card.Root>
+    </div.Header>
+  </div.Root>
 
   <!-- Enhanced AI Prompts with Legal Context -->
   {#if enableAIPrompts && beforeUploadPrompts.length > 0}
-    <NesCard.Root class="mb-6 yorha-nier-bits-card ai-prompts before-upload">
-      <NesCard.Header>
-        <NesCard.Title class="flex items-center gap-2">
+    <div.Root class="mb-6 yorha-nier-bits-card ai-prompts before-upload nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="flex items-center gap-2 nes-container">
           🤖 AI Legal Insights
           <span class="yorha-badge confidence-high">High Confidence</span>
-        </Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+        </div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         {#each beforeUploadPrompts as prompt}
           <div class="ai-prompt yorha-prompt {prompt.category}" data-legal-action="ai-prompt">
             <div class="prompt-header">
@@ -561,27 +561,27 @@
                 size="sm"
                 legal
                 confidence="high"
-                onclick={() => handlePromptReaction(prompt.id, 'accepted')}
+                on:click={() => handlePromptReaction(prompt.id, 'accepted')}
               >
                 ✓ Accept
               </button>
               <button class="nes-btn"
                 variant="ghost"
                 size="sm"
-                onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
+                on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
               >
                 ✕ Dismiss
               </button>
             </div>
           </div>
         {/each}
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   {/if}
 
   <!-- Enhanced File Upload Zone -->
-  <NesCard.Root class="mb-6 yorha-nier-bits-card">
-    <NesCard.Content class="p-0">
+  <div.Root class="mb-6 yorha-nier-bits-card nes-container">
+    <div.Content class="p-0 nes-container">
       <div
         class="file-drop-zone yorha-drop-zone"
         class:drag-over={dragOver}
@@ -590,8 +590,8 @@
         role="button"
         tabindex="0"
         aria-label="File drop zone for legal document upload"
-        ondrop={handleDrop}
-        ondragover={handleDragOver}
+        on:drop={handleDrop}
+        on:dragover={handleDragOver}
         ondragleave={handleDragLeave}
         data-legal-action="file-upload"
       >
@@ -611,7 +611,7 @@
               type="file"
               multiple
               accept={allowedTypes.join(',')}
-              onchange={handleFileSelect}
+              on:change={handleFileSelect}
               class="hidden"
             />
 
@@ -620,7 +620,7 @@
               size="lg"
               legal
               priority={legalContext.urgency}
-              onclick={() => fileInput?.click()}
+              on:click={() => fileInput?.click()}
             >
               Select Legal Documents
             </button>
@@ -691,7 +691,7 @@
                   legal
                   priority={legalContext.urgency}
                   loading={isUploading}
-                  onclick={startEnhancedUpload}
+                  on:click={startEnhancedUpload}
                   data-legal-action="start-upload"
                 >
                   {#if ollamaConnected}
@@ -703,7 +703,7 @@
 
                 <button class="nes-btn"
                   variant="outline"
-                  onclick={() => { selectedFiles = []; aiAnalysisResults = []; }}
+                  on:click={() => { selectedFiles = []; aiAnalysisResults = []; }}
                 >
                   Clear Files
                 </button>
@@ -711,7 +711,7 @@
                 <button class="nes-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => showAdvancedSettings = !showAdvancedSettings}
+                  on:click={() => showAdvancedSettings = !showAdvancedSettings}
                 >
                   Advanced Settings
                 </button>
@@ -720,11 +720,11 @@
 
             <!-- Advanced Settings Panel -->
             {#if showAdvancedSettings}
-              <NesCard.Root class="mt-4 yorha-settings">
-                <NesCard.Header>
-                  <NesCard.Title>Advanced Settings</Card.Title>
-                </Card.Header>
-                <NesCard.Content>
+              <div.Root class="mt-4 yorha-settings nes-container">
+                <div.Header class="nes-container">
+                  <div.Title class="nes-container">Advanced Settings</div.Title>
+                </div.Header>
+                <div.Content class="nes-container">
                   <div class="settings-grid">
                     <div class="setting-item">
                       <label for="analysis-depth-select">Analysis Depth</label>
@@ -746,25 +746,25 @@
                       />
                     </div>
                   </div>
-                </Card.Content>
-              </Card.Root>
+                </div.Content>
+              </div.Root>
             {/if}
           </div>
         {/if}
       </div>
-    </Card.Content>
-  </Card.Root>
+    </div.Content>
+  </div.Root>
 
   <!-- Enhanced Upload Progress with Legal Context -->
   {#if isUploading}
-    <NesCard.Root class="mb-6 yorha-nier-bits-card upload-progress">
-      <NesCard.Header>
-        <NesCard.Title class="flex items-center gap-2">
+    <div.Root class="mb-6 yorha-nier-bits-card upload-progress nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="flex items-center gap-2 nes-container">
           ⚡ Processing Legal Documents
           <span class="progress-percentage">{uploadProgress}%</span>
-        </Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+        </div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="progress-bar yorha-progress">
           <div
             class="progress-fill"
@@ -810,29 +810,29 @@
 
         <div class="upload-actions">
           <button class="nes-btn is-error"
-            onclick={() => uploadActor?.send({ type: 'CANCEL_UPLOAD' })}
+            on:click={() => uploadActor?.send({ type: 'CANCEL_UPLOAD' })}
           >
             Cancel Upload
           </button>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   {/if}
 
   <!-- Enhanced Results with Legal Analysis -->
   {#if isComplete && uploadResults.length > 0}
-    <NesCard.Root class="mb-6 yorha-nier-bits-card upload-results">
-      <NesCard.Header>
-        <NesCard.Title class="flex items-center gap-2">
+    <div.Root class="mb-6 yorha-nier-bits-card upload-results nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="flex items-center gap-2 nes-container">
           ✅ Legal Analysis Complete
           {#if uploadStartTime > 0}
             <span class="processing-time">
               {formatDuration(Date.now() - uploadStartTime)}
             </span>
           {/if}
-        </Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+        </div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <!-- Legal Insights Summary -->
         {#if legalInsights}
           <div class="legal-summary yorha-summary">
@@ -869,17 +869,17 @@
         <!-- Detailed Results -->
         <div class="results-list">
           {#each uploadResults as result, index}
-            <NesCard.Root class={`result-item ${result.success ? 'success' : ''}`}>
-              <NesCard.Content>
+            <div.Root class={`result-item ${(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success ? 'success' : ''}`} class="nes-container">
+              <div.Content class="nes-container">
                 <div class="result-header">
                   <div class="result-info">
-                    <span class="result-filename">{result.fileName}</span>
-                    {#if result.success && result.documentId}
-                      <span class="result-document-id">ID: {result.documentId}</span>
+                    <span class="result-filename">{(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).fileName}</span>
+                    {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success && (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).documentId}
+                      <span class="result-document-id">ID: {(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).documentId}</span>
                     {/if}
                   </div>
                   <div class="result-status">
-                    {#if result.success}
+                    {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success}
                       <span class="status-success">✓ Success</span>
                     {:else}
                       <span class="status-error">✗ Failed</span>
@@ -887,16 +887,16 @@
                   </div>
                 </div>
 
-                {#if result.success && result.aiInsights}
+                {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success && (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights}
                   <div class="ai-insights yorha-insights">
                     <h4>🤖 AI Analysis Results</h4>
-                    <p class="insights-summary">{result.aiInsights.summary}</p>
+                    <p class="insights-summary">{(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.summary}</p>
 
-                    {#if result.aiInsights.keyEntities}
+                    {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.keyEntities}
                       <div class="entities">
                         <strong>Key Entities:</strong>
                         <div class="entity-tags">
-                          {#each result.aiInsights.keyEntities as entity}
+                          {#each (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.keyEntities as entity}
                             <span class="entity-tag yorha-tag" class:person={entity.type === 'person'} class:organization={entity.type === 'organization'}>
                               {entity.value} ({entity.type})
                             </span>
@@ -905,54 +905,54 @@
                       </div>
                     {/if}
 
-                    {#if result.aiInsights.suggestedTags}
+                    {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.suggestedTags}
                       <div class="suggested-tags">
                         <strong>Evidence Categories:</strong>
                         <div class="tag-list">
-                          {#each result.aiInsights.suggestedTags as tag}
+                          {#each (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.suggestedTags as tag}
                             <span class="tag yorha-tag">{tag}</span>
                           {/each}
                         </div>
                       </div>
                     {/if}
 
-                    {#if result.aiInsights.confidenceScore}
+                    {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.confidenceScore}
                       <div class="confidence-indicator">
                         <span class="confidence-label">AI Confidence:</span>
                         <div class="confidence-bar">
                           <div
                             class="confidence-fill"
-                            style="width: {result.aiInsights.confidenceScore * 100}%"
+                            style="width: {(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.confidenceScore * 100}%"
                           ></div>
                         </div>
                         <span class="confidence-value">
-                          {Math.round(result.aiInsights.confidenceScore * 100)}%
+                          {Math.round((result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.confidenceScore * 100)}%
                         </span>
                       </div>
                     {/if}
                   </div>
                 {/if}
 
-                {#if !result.success && result.errorMessage}
+                {#if !(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success && (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).errorMessage}
                   <div class="error-message yorha-error">
-                    <strong>Error:</strong> {result.errorMessage}
+                    <strong>Error:</strong> {(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).errorMessage}
                   </div>
                 {/if}
-              </Card.Content>
-            </Card.Root>
+              </div.Content>
+            </div.Root>
           {/each}
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   {/if}
 
   <!-- Post-Upload AI Recommendations -->
   {#if enableAIPrompts && afterUploadPrompts.length > 0 && isComplete}
-    <NesCard.Root class="mb-6 yorha-nier-bits-card ai-prompts after-upload">
-      <NesCard.Header>
-        <NesCard.Title>🎯 Recommended Next Steps</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="mb-6 yorha-nier-bits-card ai-prompts after-upload nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">🎯 Recommended Next Steps</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         {#each afterUploadPrompts as prompt}
           <div class="ai-prompt yorha-prompt next-step">
             <p class="prompt-content">{prompt.content}</p>
@@ -961,30 +961,30 @@
                 variant="yorha"
                 legal
                 priority="high"
-                onclick={() => handlePromptReaction(prompt.id, 'accepted')}
+                on:click={() => handlePromptReaction(prompt.id, 'accepted')}
               >
                 Let's Do It
               </button>
               <button class="nes-btn"
                 variant="outline"
-                onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
+                on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
               >
                 Maybe Later
               </button>
             </div>
           </div>
         {/each}
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   {/if}
 
   <!-- Enhanced Analytics Dashboard -->
   {#if enableAnalytics && currentUserInsights}
-    <NesCard.Root class="analytics-dashboard yorha-nier-bits-card">
-      <NesCard.Header>
-        <NesCard.Title>📊 Legal Workflow Analytics</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="analytics-dashboard yorha-nier-bits-card nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">📊 Legal Workflow Analytics</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="analytics-grid">
           <div class="insight-nier-bits-card">
             <h4>User Behavior Pattern</h4>
@@ -1008,17 +1008,17 @@
             </ul>
           </div>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   {/if}
 
   <!-- Error Handling -->
   {#if hasErrors}
-    <NesCard.Root class="error-section yorha-nier-bits-card error">
-      <NesCard.Header>
-        <NesCard.Title>⚠️ Issues Detected</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="error-section yorha-nier-bits-card error nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">⚠️ Issues Detected</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         {#each machineState.context.errors as error}
           <div class="error-item">
             <p>{error}</p>
@@ -1027,19 +1027,19 @@
 
         <div class="error-actions">
           <button class="nes-btn is-error"
-            onclick={() => uploadActor?.send({ type: 'RETRY_UPLOAD' })}
+            on:click={() => uploadActor?.send({ type: 'RETRY_UPLOAD' })}
           >
             Retry Upload
           </button>
           <button class="nes-btn"
             variant="outline"
-            onclick={resetUpload}
+            on:click={resetUpload}
           >
             Start Over
           </button>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   {/if}
 
   <!-- Final Actions -->
@@ -1049,7 +1049,7 @@
         variant="yorha"
         size="lg"
         legal
-        onclick={resetUpload}
+        on:click={resetUpload}
       >
         Upload More Documents
       </button>
@@ -1057,7 +1057,7 @@
       {#if enableAIPrompts}
         <button class="nes-btn"
           variant="outline"
-          onclick={() => uploadActor?.send({ type: 'REQUEST_AI_SUGGESTIONS', context: 'user_requested' })}
+          on:click={() => uploadActor?.send({ type: 'REQUEST_AI_SUGGESTIONS', context: 'user_requested' })}
         >
           Get More AI Insights
         </button>
@@ -1066,7 +1066,7 @@
       {#if caseId}
         <button class="nes-btn"
           variant="ghost"
-          onclick={() => goto(`/cases/${caseId}/evidence`)}
+          on:click={() => goto(`/cases/${caseId}/evidence`)}
         >
           View in Evidence Board
         </button>
@@ -1214,7 +1214,7 @@
     border-radius: 0.25rem;
   }
 
-  .insight-item.warning {
+  .insight-(item as { warning?: any; success?: any }).warning {
     background: rgba(255, 107, 107, 0.3);
     color: #ff6b6b;
   }
@@ -1435,7 +1435,7 @@
     margin-bottom: 1rem;
   }
 
-  .result-item.success {
+  .result-(item as { warning?: any; success?: any }).success {
     border-left: 4px solid #51cf66;
   }
 

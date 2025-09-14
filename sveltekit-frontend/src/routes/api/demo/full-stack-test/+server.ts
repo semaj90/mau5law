@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector';
 
 /*
@@ -207,8 +207,8 @@ export const GET: RequestHandler = async ({ url }) => {
         stressResults.push({
           document_index: i + 1,
           processing_time: endTime - startTime,
-          entities_extracted: result.parsedDocument.entities.length,
-          suggestions_generated: result.parsedDocument.suggestions.length
+          entities_extracted: (result as { parsedDocument?: any; documentId?: any; processingStats?: any }).parsedDocument.entities.length,
+          suggestions_generated: (result as { parsedDocument?: any; documentId?: any; processingStats?: any }).parsedDocument.suggestions.length
         });
       }
       
@@ -262,10 +262,10 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         action: 'custom_document_processing',
         result: {
-          documentId: result.documentId,
-          entities: result.parsedDocument.entities,
-          suggestions: result.parsedDocument.suggestions,
-          processingStats: result.processingStats
+          documentId: (result as { parsedDocument?: any; documentId?: any; processingStats?: any }).documentId,
+          entities: (result as { parsedDocument?: any; documentId?: any; processingStats?: any }).parsedDocument.entities,
+          suggestions: (result as { parsedDocument?: any; documentId?: any; processingStats?: any }).parsedDocument.suggestions,
+          processingStats: (result as { parsedDocument?: any; documentId?: any; processingStats?: any }).processingStats
         }
       });
     }

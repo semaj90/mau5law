@@ -356,21 +356,22 @@
 				</span>
 				<span class="status-item role-status">
 					Role: {currentRole.toUpperCase()}
-				</span>
-			</div>
-		</div>
-
+				</span>                </div>
+        </div>
 		<div class="header-right">
 			<div class="role-switcher">
-				<Button class={"role-btn " + (currentRole === 'detective' ? 'active' : '')} onclick={() => switchRole("detective")}>
+				<Button class={"role-btn " + (currentRole === 'detective' ? 'active' : '')} on:click={() =>
+switchRole("detective")}>
 					Detective
-				</button>
-				<Button class={"role-btn " + (currentRole === 'prosecutor' ? 'active' : '')} onclick={() => switchRole("prosecutor")}>
+
+				<Button class={"role-btn " + (currentRole === 'prosecutor' ? 'active' : '')} on:click={() =>
+switchRole("prosecutor")}>
 					Prosecutor
-				</button>
-				<Button class={"role-btn " + (currentRole === 'admin' ? 'active' : '')} onclick={() => switchRole("admin")}>
+
+				<Button class={"role-btn " + (currentRole === 'admin' ? 'active' : '')} on:click={() =>
+switchRole("admin")}>
 					Admin
-				</button>
+
 			</div>
 		</div>
 	</div>
@@ -393,7 +394,7 @@
 					bind:value={terminalInput}
 					class="terminal-input"
 					disabled={isProcessing}
-					onkeydown={handleKeyDown}
+					on:keydown={handleKeyDown}
 					placeholder=""
 					spellcheck="false"
 					autocomplete="off"
@@ -409,11 +410,11 @@
 
 	<!-- Quick Commands -->
 	<div class="quick-commands">
-		<Button class="bits-btn" onclick={() => { terminalInput = "help"; void executeCommand(); }}>Help</Button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "status"; void executeCommand(); }}>Status</Button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "context7"; void executeCommand(); }}>Test Context7</Button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "analyze contract dispute"; void executeCommand(); }}>Sample Analysis</Button>
-		<Button class="bits-btn" onclick={() => { terminalInput = "clear"; void executeCommand(); }}>Clear</Button>
+		<Button class="bits-btn" on:click={() => { terminalInput = "help"; void executeCommand(); }}>Help</Button>
+		<Button class="bits-btn" on:click={() => { terminalInput = "status"; void executeCommand(); }}>Status</Button>
+		<Button class="bits-btn" on:click={() => { terminalInput = "context7"; void executeCommand(); }}>Test Context7</Button>
+		<Button class="bits-btn" on:click={() => { terminalInput = "analyze contract dispute"; void executeCommand(); }}>Sample Analysis</Button>
+		<Button class="bits-btn" on:click={() => { terminalInput = "clear"; void executeCommand(); }}>Clear</Button>
 	</div>
 </div>
 

@@ -20,7 +20,7 @@
 // Integrates with existing infrastructure and new GRPO database tables
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/db/connection';
 import { sql } from 'drizzle-orm';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
@@ -37,9 +37,9 @@ async function generateEmbedding(text: string): Promise<number[]> {
       })
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      return data.embedding || [];
+    if ((response as { ok?: any; json?: any }).ok) {
+      const data = await (response as { ok?: any; json?: any }).json();
+      return (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).embedding || [];
     }
   } catch (error) {
     console.warn('Failed to generate embedding:', error);
@@ -49,11 +49,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 // Get AI response using Gemma3-Legal with thinking
-async function getAIResponse(query: string): Promise<{
-  thinking: string;
-  response: string;
-  confidence: number;
-}> {
+async function getAIResponse(query: string): Promise<any> {
   try {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
@@ -75,9 +71,9 @@ Please provide a comprehensive legal analysis with structured reasoning.`,
       })
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      const content = data.response || '';
+    if ((response as { ok?: any; json?: any }).ok) {
+      const data = await (response as { ok?: any; json?: any }).json();
+      const content = (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).response || '';
       
       // Extract thinking content
       const thinkingMatch = content.match(/<\|thinking\|>([\s\S]*?)<\/\|thinking\|>/);
@@ -217,23 +213,23 @@ async function saveEnhancedResponse(data: {
         created_at,
         last_accessed
       ) VALUES (
-        ${data.query},
-        ${data.response},
-        ${data.thinking},
-        ${JSON.stringify(data.structuredReasoning)},
-        ${JSON.stringify(data.structuredReasoning.premises.concat(data.structuredReasoning.inferences, data.structuredReasoning.conclusions))},
-        ${`[${data.queryEmbedding.join(',')}]`}::vector,
-        ${`[${data.responseEmbedding.join(',')}]`}::vector,
-        ${data.confidence},
-        ${data.legalDomain || 'general'},
-        ${data.userId || null},
+        ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).query},
+        ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).response},
+        ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).thinking},
+        ${JSON.stringify((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning)},
+        ${JSON.stringify((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.premises.concat((data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.inferences, (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).structuredReasoning.conclusions))},
+        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).queryEmbedding.join(',')}]`}::vector,
+        ${`[${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).responseEmbedding.join(',')}]`}::vector,
+        ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).confidence},
+        ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).legalDomain || 'general'},
+        ${(data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).userId || null},
         'gemma3-legal:latest',
         NOW(),
         NOW()
       ) RETURNING id
     `);
     
-    return result.rows[0]?.id as string;
+    return (result as { rows?: any }).rows[0]?.id as string;
   } catch (error) {
     console.error('Failed to save enhanced response:', error);
     return null;

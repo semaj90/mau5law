@@ -17,8 +17,8 @@
     showSuggestions = true,
     maxResults = 20,
     theme = 'light' as 'light' | 'dark' | 'yorha',
-    onsearch = undefined as ((event: CustomEvent<{ query: string; results: SearchResult[] }>) => void) | undefined,
-    onselect = undefined as ((event: CustomEvent<{ result: SearchResult }>) => void) | undefined,
+    onsearch = undefined as ((event: CustomEvent) => void) | undefined,
+    onselect = undefined as ((event: CustomEvent) => void) | undefined,
     onclear = undefined as ((event: CustomEvent<void>) => void) | undefined
   } = $props();
 
@@ -122,23 +122,23 @@
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Search failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const searchData = await response.json();
+      const searchData = await (response as { ok?: any; statusText?: any; json?: any }).json();
 
       if (searchData.success) {
         // Transform API results to component format
         results = searchData.results.map(result => ({
-          id: result.id,
-          title: result.title,
-          type: result.type,
-          content: result.content,
-          score: result.score || result.similarity || 0,
+          id: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).id,
+          title: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).title,
+          type: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type,
+          content: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).content,
+          score: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).score || (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).similarity || 0,
           metadata: {
-            ...result.metadata,
-            date: result.createdAt ? new Date(result.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
+            ...(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).metadata,
+            date: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).createdAt ? new Date((result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
           }
         }));
 
@@ -215,7 +215,7 @@
       ];
 
       return mockResults.filter(result =>
-        selectedCategories.includes(result.type) ||
+        selectedCategories.includes((result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type) ||
         selectedCategories.includes('criminals' as any)
       );
     } catch (error) {
@@ -226,15 +226,15 @@
 
   function transformServiceResults(serviceResults: ServiceSearchResult[]): SearchResult[] {
     return serviceResults.map(result => ({
-      id: result.id,
-      title: result.title,
-      type: mapCategoryToType(result.category),
-      content: result.description,
-      score: 1 - result.score, // Convert score to similarity
+      id: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).id,
+      title: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).title,
+      type: mapCategoryToType((result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).category),
+      content: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).description,
+      score: 1 - (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).score, // Convert score to similarity
       metadata: {
         date: new Date().toISOString().split('T')[0],
-        tags: result.tags,
-        ...result.metadata
+        tags: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).tags,
+        ...(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).metadata
       }
     }));
   }
@@ -342,8 +342,8 @@
         bind:value={searchInput}
         {placeholder}
         class="flex-1 bg-transparent outline-none text-lg {inputClasses.includes('text-') ? '' : 'text-current'}"
-        onfocus={() => showResults = true}
-        onkeydown={(e) => {
+        on:focus={() => showResults = true}
+        on:keydown={(e) => {
           if (e.key === 'Escape') {
             showResults = false;
             searchInput = '';
@@ -354,7 +354,7 @@
       <!-- Clear Button -->
       {#if searchInput}
         <button
-          onclick={clearSearch}
+          on:click={clearSearch}
           class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
           aria-label="Clear search"
         >
@@ -368,7 +368,7 @@
       {#if showFilters}
             <button
               class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-              onclick={() => {/* Toggle filters panel */}}
+              on:click={() => {/* Toggle filters panel */}}
               aria-label="Toggle search filters"
             >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -396,7 +396,7 @@
               class:bg-gray-700={!selectedCategories.includes(category.id) && theme === 'dark'}
               class:bg-black={!selectedCategories.includes(category.id) && theme === 'yorha'}
               class:bg-opacity-50={!selectedCategories.includes(category.id) && theme === 'yorha'}
-              onclick={() => toggleCategory(category.id)}
+              on:click={() => toggleCategory(category.id)}
             >
               <span>{category.icon}</span>
               <span>{category.label}</span>
@@ -424,7 +424,7 @@
             {#each recentSearches.slice(0, 5) as recent}
               <button
                 class="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded flex items-center gap-2"
-                onclick={() => { searchInput = recent; performSearch(); }}
+                on:click={() => { searchInput = recent; performSearch(); }}
               >
                 <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -444,7 +444,7 @@
             {#each trendingSearches as trending}
               <button
                 class="px-3 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-sm"
-                onclick={() => selectTrendingSearch(trending)}
+                on:click={() => selectTrendingSearch(trending)}
               >
                 {trending}
               </button>
@@ -462,36 +462,36 @@
           {#each results as result}
             <button
               class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg border-b border-current/10 last:border-b-0 transition-colors"
-              data-result-type={result.type}
-              onclick={() => selectResult(result)}
+              data-result-type={(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type}
+              on:click={() => selectResult(result)}
             >
               <div class="flex items-start gap-3">
                 <!-- Result Type Icon -->
-                <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold mt-1" data-result-type={result.type}>
-                  {#if result.type === 'case'}📁
-                  {:else if result.type === 'criminal'}👤
-                  {:else if result.type === 'evidence'}🔍
-                  {:else if result.type === 'precedent'}⚖️
-                  {:else if result.type === 'statute'}📖
+                <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold mt-1" data-result-type={(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type}>
+                  {#if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type === 'case'}📁
+                  {:else if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type === 'criminal'}👤
+                  {:else if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type === 'evidence'}🔍
+                  {:else if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type === 'precedent'}⚖️
+                  {:else if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type === 'statute'}📖
                   {:else}📄
                   {/if}
                 </div>
 
                 <!-- Result Content -->
                 <div class="flex-1 min-w-0">
-                  <h4 class="font-medium truncate">{result.title}</h4>
-                  <p class="text-sm opacity-70 line-clamp-2 mt-1">{result.content}</p>
+                  <h4 class="font-medium truncate">{(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).title}</h4>
+                  <p class="text-sm opacity-70 line-clamp-2 mt-1">{(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).content}</p>
 
                   <!-- Result Metadata -->
                   <div class="flex items-center gap-2 mt-2 text-xs opacity-50">
-                    <span class="bg-current/20 px-2 py-1 rounded">{result.type}</span>
-                    {#if result.metadata.date}
-                      <span>{result.metadata.date}</span>
+                    <span class="bg-current/20 px-2 py-1 rounded">{(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type}</span>
+                    {#if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).metadata.date}
+                      <span>{(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).metadata.date}</span>
                     {/if}
-                    {#if result.metadata.jurisdiction}
-                      <span>{result.metadata.jurisdiction}</span>
+                    {#if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).metadata.jurisdiction}
+                      <span>{(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).metadata.jurisdiction}</span>
                     {/if}
-                    <span class="ml-auto">{Math.round(result.score * 100)}% match</span>
+                    <span class="ml-auto">{Math.round((result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).score * 100)}% match</span>
                   </div>
                 </div>
               </div>
@@ -508,7 +508,7 @@
             {#each suggestions as suggestion}
               <button
                 class="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded flex items-center gap-2"
-                onclick={() => selectSuggestion(suggestion)}
+                on:click={() => selectSuggestion(suggestion)}
               >
                 <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>

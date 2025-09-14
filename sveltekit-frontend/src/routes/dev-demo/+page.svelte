@@ -18,7 +18,7 @@
   // Svelte 5 runes for state management
   let authStatus = $state<any>(null);
   let cases = $state<any[]>([]);
-  let apiStatus = $state<Record<string, any>>({});
+  let apiStatus = $state<Record<string, any>('')>({});
   let chatMessages = $state<any[]>([]);
   let currentMessage = $state('');
   let isStreaming = $state(false);
@@ -69,11 +69,11 @@
       for (const endpoint of endpoints) {
         try {
           const response = await fetch(endpoint.url);
-          const data = await response.json();
+          const data = await (response as { json?: any; ok?: any }).json();
           apiStatus[endpoint.name] = {
-            status: response.ok ? 'healthy' : 'error',
-            data: response.ok ? data : null,
-            error: response.ok ? null : data
+            status: (response as { json?: any; ok?: any }).ok ? 'healthy' : 'error',
+            data: (response as { json?: any; ok?: any }).ok ? data : null,
+            error: (response as { json?: any; ok?: any }).ok ? null : data
           };
         } catch (error) {
           apiStatus[endpoint.name] = {
@@ -96,11 +96,11 @@
   async function loadCases() {
     try {
       const response = await fetch('/api/cases');
-      const result = await response.json();
-      if (result.success) {
-        cases = result.data.cases || [];
+      const result = await (response as { json?: any; ok?: any }).json();
+      if ((result as { success?: any; data?: any; error?: any; response?: any }).success) {
+        cases = (result as { success?: any; data?: any; error?: any; response?: any }).data.cases || [];
       } else {
-        console.error('Failed to load cases:', result.error);
+        console.error('Failed to load cases:', (result as { success?: any; data?: any; error?: any; response?: any }).error);
       }
     } catch (error) {
       console.error('Error loading cases:', error);
@@ -117,10 +117,10 @@
         body: JSON.stringify(caseData)
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (result.success) {
-        console.log('Case created successfully:', result.data);
+      if ((result as { success?: any; data?: any; error?: any; response?: any }).success) {
+        console.log('Case created successfully:', (result as { success?: any; data?: any; error?: any; response?: any }).data);
         await loadCases(); // Refresh case list
         // Reset form
         $form = {
@@ -132,7 +132,7 @@
           jurisdiction: ''
         };
       } else {
-        console.error('Failed to create caseItem:', result.error);
+        console.error('Failed to create caseItem:', (result as { success?: any; data?: any; error?: any; response?: any }).error);
       }
     } catch (error) {
       console.error('Error creating caseItem:', error);
@@ -166,11 +166,11 @@
         })
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { json?: any; ok?: any }).ok) {
+        const result = await (response as { json?: any; ok?: any }).json();
         const aiMessage = {
           role: 'assistant',
-          content: result.response || 'No response received',
+          content: (result as { success?: any; data?: any; error?: any; response?: any }).response || 'No response received',
           timestamp: new Date()
         };
         chatMessages = [...chatMessages, aiMessage];
@@ -217,7 +217,7 @@
     </div>
 
     <!-- System Status Overview -->
-    <NesCard class="mb-6 p-6">
+    <div class="mb-6 p-6 nes-container">
       {#snippet children()}
         <div class="yorha-panel-header">
           {#snippet children()}
@@ -262,13 +262,13 @@
           {/snippet}
         </div>
       {/snippet}
-    </NesCard>
+    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Case Management with Superforms -->
-      <NesCard class="p-6">
+      <div class="p-6 nes-container">
         {#snippet children()}
-          <div class="yorha-panel-header" class="mb-4">
+          <div class="yorha-panel-header mb-4">
             {#snippet children()}
               <h3 class="nes-text is-primary">Create New Case (Superforms + Zod)</h3>
             {/snippet}
@@ -363,18 +363,18 @@
                 </div>
 
                 <Button type="submit" class="w-full bits-btn bits-btn">
-                  {#snippet children()}Create Case{/snippet}
-                </button>
+{#snippet children()}Create Case{/snippet}
+</Button>
               </form>
             {/snippet}
           </div>
         {/snippet}
-      </NesCard>
+      </div>
 
       <!-- AI Chat Interface -->
-      <NesCard class="p-6">
+      <div class="p-6 nes-container">
         {#snippet children()}
-          <div class="yorha-panel-header" class="mb-4">
+          <div class="yorha-panel-header mb-4">
             {#snippet children()}
               <h3 class="nes-text is-primary">Legal AI Assistant</h3>
             {/snippet}
@@ -416,28 +416,28 @@
                   <Input
                     type="text"
                     bind:value={currentMessage}
-                    onkeydown={handleKeydown}
+                    on:keydown={handleKeydown}
                     placeholder="Ask a legal question..."
                     disabled={isStreaming}
                     class="flex-1"
                   />
-                  <Button class="bits-btn" onclick={sendChatMessage} disabled={isStreaming || !currentMessage.trim()}>
-                    {#snippet children()}
+                  <Button class="bits-btn" on:click={sendChatMessage} disabled={isStreaming || !currentMessage.trim()}>
+{#snippet children()}
                       {isStreaming ? 'Sending...' : 'Send'}
                     {/snippet}
-                  </button>
+</Button>
                 </div>
               </div>
             {/snippet}
           </div>
         {/snippet}
-      </NesCard>
+      </div>
     </div>
 
     <!-- Cases List -->
-    <NesCard class="mt-6 p-6">
+    <div class="mt-6 p-6 nes-container">
       {#snippet children()}
-        <div class="yorha-panel-header" class="mb-4">
+        <div class="yorha-panel-header mb-4">
           {#snippet children()}
             <h3 class="nes-text is-primary">Recent Cases</h3>
           {/snippet}
@@ -472,6 +472,6 @@
           {/snippet}
         </div>
       {/snippet}
-    </NesCard>
+    </div>
   </div>
 </div>

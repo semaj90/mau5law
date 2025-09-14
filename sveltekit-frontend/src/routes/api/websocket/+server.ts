@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 // ======================================================================
@@ -157,7 +157,7 @@ class EnhancedWebSocketManager {
           evidenceId,
           stage,
           result,
-          status: result.status || "processing",
+          status: (result as { status?: any; confidence?: any }).status || "processing",
         },
         timestamp: new Date(),
       },
@@ -174,7 +174,7 @@ class EnhancedWebSocketManager {
           evidenceId,
           resultType, // 'embedding', 'tagging', 'analysis'
           result,
-          confidence: result.confidence || 0,
+          confidence: (result as { status?: any; confidence?: any }).confidence || 0,
         },
         timestamp: new Date(),
       },

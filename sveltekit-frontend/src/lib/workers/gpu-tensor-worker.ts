@@ -129,8 +129,8 @@ class GPUTensorWorker {
   private async testGoServiceConnection(): Promise<void> {
     try {
       const response = await fetch(`${this.goServiceUrl}/health`);
-      if (!response.ok) {
-        throw new Error(`Go service health check failed: ${response.status}`);
+      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Go service health check failed: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}`);
       }
       console.log('✅ Go GPU tensor service connection established');
     } catch (error: any) {
@@ -258,7 +258,7 @@ class GPUTensorWorker {
 
     // Create GPU buffers
     const inputBuffer = this.gpuDevice.createBuffer({
-      size: tensorData.data.byteLength,
+      size: tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
@@ -267,7 +267,7 @@ class GPUTensorWorker {
     inputBuffer.unmap();
 
     const outputBuffer = this.gpuDevice.createBuffer({
-      size: tensorData.data.byteLength,
+      size: tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
@@ -293,7 +293,7 @@ class GPUTensorWorker {
     const metadataArray = new Int32Array(metadataBuffer.getMappedRange());
     metadataArray[0] = tensorData.dimensions;
     metadataArray[1] = tensorData.lodLevel;
-    metadataArray[2] = tensorData.data.length;
+    metadataArray[2] = tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).length;
     metadataArray[3] = 0; // padding
     metadataBuffer.unmap();
 
@@ -317,7 +317,7 @@ class GPUTensorWorker {
     passEncoder.setBindGroup(0, bindGroup);
 
     // Dispatch compute shader
-    const workgroupsX = Math.ceil(tensorData.data.length / 256);
+    const workgroupsX = Math.ceil(tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).length / 256);
     passEncoder.dispatchWorkgroups(workgroupsX, 1, 1);
     passEncoder.end();
 
@@ -325,12 +325,12 @@ class GPUTensorWorker {
 
     // Read results back
     const resultBuffer = this.gpuDevice.createBuffer({
-      size: tensorData.data.byteLength,
+      size: tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).byteLength,
       usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
     });
 
     const copyEncoder = this.gpuDevice.createCommandEncoder();
-    copyEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, tensorData.data.byteLength);
+    copyEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).byteLength);
     this.gpuDevice.queue.submit([copyEncoder.finish()]);
 
     await resultBuffer.mapAsync(GPUMapMode.READ);
@@ -365,18 +365,18 @@ class GPUTensorWorker {
         body: JSON.stringify(tensorData)
       });
 
-      if (!response.ok) {
-        throw new Error(`Go service request failed: ${response.status} ${response.statusText}`);
+      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Go service request failed: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status} ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
 
-      if (!result.success) {
-        throw new Error(`Go service processing failed: ${result.error || 'Unknown error'}`);
+      if (!(result as { success?: any; error?: any; data?: any }).success) {
+        throw new Error(`Go service processing failed: ${(result as { success?: any; error?: any; data?: any }).error || 'Unknown error'}`);
       }
 
       return {
-        ...result.data,
+        ...(result as { success?: any; error?: any; data?: any }).data,
         timestamp: Date.now()
       };
     } catch (error: any) {

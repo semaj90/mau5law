@@ -356,9 +356,9 @@ https://svelte.dev/e/expected_token -->
     if (!scene || index >= analysisComponents.length - 2) return;
 
     const docComponent = analysisComponents[index + 2]; // Skip container and status panel
-    if (docComponent && result.position3D) {
+    if (docComponent && (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).position3D) {
       // Update position based on semantic clustering
-      docComponent.position.copy(result.position3D);
+      docComponent.position.copy((result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).position3D);
       
       // Update color based on confidence and risk level
       const material = docComponent.mesh?.material;
@@ -369,11 +369,11 @@ https://svelte.dev/e/expected_token -->
           high: NES_YORHA_PALETTE.nesError,
           critical: NES_YORHA_PALETTE.nesError
         };
-        material.color.setHex(riskColors[result.riskLevel]);
+        material.color.setHex(riskColors[(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).riskLevel]);
       }
 
       // Add confidence scaling
-      const confidenceScale = 0.5 + (result.confidenceScore * 0.5);
+      const confidenceScale = 0.5 + ((result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).confidenceScore * 0.5);
       docComponent.scale.setScalar(confidenceScale);
     }
   }
@@ -614,11 +614,11 @@ https://svelte.dev/e/expected_token -->
     <div class="action-buttons">
       <Button
         variant="outline"
-        onclick={startHybridAnalysis}
+        on:click={startHybridAnalysis}
         disabled={isAnalyzing || documents.length === 0}
         class="nes-btn is-primary bits-btn bits-btn"
       >
-        {#snippet children()}
+{#snippet children()}
           {#if isAnalyzing}
             <Cpu class="w-4 h-4 mr-2 animate-spin" />
             Analyzing...
@@ -627,30 +627,29 @@ https://svelte.dev/e/expected_token -->
             Start Hybrid Analysis
           {/if}
         {/snippet}
-      </button>
 
       <Button
         variant="outline"
-        onclick={checkSystemHealth}
+        on:click={checkSystemHealth}
         disabled={isAnalyzing}
         class="nes-btn is-warning bits-btn bits-btn"
       >
-        {#snippet children()}
+{#snippet children()}
           <Activity class="w-4 h-4 mr-2" />
           Health Check
         {/snippet}
-      </button>
 
       <Button class="bits-btn"
         variant="outline"
-        onclick={() => enable3DVisualization = !enable3DVisualization}
+        on:click={() =>
+enable3DVisualization = !enable3DVisualization}
         class="nes-btn {enable3DVisualization ? 'is-success' : 'is-normal'}"
       >
         {#snippet children()}
           <Eye class="w-4 h-4 mr-2" />
           3D Mode
         {/snippet}
-      </button>
+
     </div>
   </div>
 
@@ -678,40 +677,40 @@ https://svelte.dev/e/expected_token -->
       {#if analysisData.length > 0}
         <div class="results-grid">
           {#each analysisData as result, index}
-            <div class="nes-container is-rounded document-result risk-{result.riskLevel}">
+            <div class="nes-container is-rounded document-result risk-{(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).riskLevel}">
               <div class="document-header">
                 <FileText class="w-5 h-5" />
                 <span class="doc-title">Document {index + 1}</span>
                 <span class="confidence-badge nes-badge">
-                  {Math.round(result.confidenceScore * 100)}%
+                  {Math.round((result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).confidenceScore * 100)}%
                 </span>
               </div>
               
               <div class="document-details">
-                <p><strong>Practice Area:</strong> {result.practiceArea}</p>
+                <p><strong>Practice Area:</strong> {(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).practiceArea}</p>
                 <p><strong>Risk Level:</strong> 
-                  <span class="risk-{result.riskLevel}">{result.riskLevel.toUpperCase()}</span>
+                  <span class="risk-{(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).riskLevel}">{(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).riskLevel.toUpperCase()}</span>
                 </p>
-                <p><strong>Legal Entities:</strong> {result.legalEntities.join(', ') || 'None identified'}</p>
-                <p><strong>Topics:</strong> {result.semanticTopics.join(', ') || 'General'}</p>
+                <p><strong>Legal Entities:</strong> {(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).legalEntities.join(', ') || 'None identified'}</p>
+                <p><strong>Topics:</strong> {(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).semanticTopics.join(', ') || 'General'}</p>
               </div>
 
-              {#if result.keyFindings.length > 0}
+              {#if (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).keyFindings.length > 0}
                 <div class="key-findings">
                   <strong>Key Findings:</strong>
                   <ul class="nes-list is-disc">
-                    {#each result.keyFindings as finding}
+                    {#each (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).keyFindings as finding}
                       <li>{finding}</li>
                     {/each}
                   </ul>
                 </div>
               {/if}
 
-              {#if result.recommendations.length > 0}
+              {#if (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).recommendations.length > 0}
                 <div class="recommendations">
                   <strong>Recommendations:</strong>
                   <ul class="nes-list is-circle">
-                    {#each result.recommendations as rec}
+                    {#each (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).recommendations as rec}
                       <li>{rec}</li>
                     {/each}
                   </ul>
@@ -829,21 +828,21 @@ https://svelte.dev/e/expected_token -->
     transform: scale(1.02);
   }
 
-  .document-result.risk-critical {
+  .document-(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).risk-critical {
     border-color: #f83800;
     box-shadow: 0 0 10px rgba(248, 56, 0, 0.3);
   }
 
-  .document-result.risk-high {
+  .document-(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).risk-high {
     border-color: #fc9838;
     box-shadow: 0 0 10px rgba(252, 152, 56, 0.3);
   }
 
-  .document-result.risk-medium {
+  .document-(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).risk-medium {
     border-color: #d4af00;
   }
 
-  .document-result.risk-low {
+  .document-(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).risk-low {
     border-color: #00d800;
   }
 

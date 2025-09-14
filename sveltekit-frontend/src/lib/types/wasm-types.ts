@@ -5,13 +5,27 @@
 
 // WebGPU type declarations for environments without native WebGPU support
 declare global {
-  interface GPUDevice {}
-  interface GPUCommandQueue {}
-  interface GPUAdapter {}
-  interface GPUShaderModule {}
-  interface GPUComputePipeline {}
-  interface GPUBindGroupLayout {}
-  interface GPUBuffer {}
+  interface GPUDevice {
+  [key: string]: any;
+}
+  interface GPUCommandQueue {
+  [key: string]: any;
+}
+  interface GPUAdapter {
+  [key: string]: any;
+}
+  interface GPUShaderModule {
+  [key: string]: any;
+}
+  interface GPUComputePipeline {
+  [key: string]: any;
+}
+  interface GPUBindGroupLayout {
+  [key: string]: any;
+}
+  interface GPUBuffer {
+  [key: string]: any;
+}
 }
 
 // LLVM Compilation Options

@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface TimelineEvent {
   id: string;
@@ -41,13 +41,7 @@ interface TimelineEvent {
     admissibilityIssues: string[];
   };
   analysisNotes?: string;
-  updates: Array<{
-    timestamp: string;
-    updatedBy: string;
-    changes: string;
-    reason: string;
-  }>;
-}
+  updates: Array<any>
 
 interface TimelineAnalysis {
   totalEvents: number;
@@ -58,24 +52,9 @@ interface TimelineAnalysis {
   };
   eventsByType: Record<string, number>;
   eventsBySignificance: Record<string, number>;
-  correlationClusters: Array<{
-    id: string;
-    events: string[];
-    theme: string;
-    significance: string;
-  }>;
-  gaps: Array<{
-    start: string;
-    end: string;
-    duration: string;
-    potentialMissingEvents: string[];
-  }>;
-  inconsistencies: Array<{
-    events: string[];
-    issue: string;
-    severity: 'LOW' | 'MEDIUM' | 'HIGH';
-  }>;
-}
+  correlationClusters: Array<any>;
+  gaps: Array<any>;
+  inconsistencies: Array<any>
 
 interface TimelineRequest {
   startDate?: string;
@@ -233,7 +212,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
   }
 };
 
-async function getTimelineEvents(caseId: string, request: TimelineRequest): Promise<{ events: TimelineEvent[] }> {
+async function getTimelineEvents(caseId: string, request: TimelineRequest): Promise<any> {
   // In production, this would query the database
   // For now, generate comprehensive mock timeline events
 
@@ -287,8 +266,8 @@ async function generateTimelineAnalysis(events: TimelineEvent[]): Promise<Timeli
     return {
       totalEvents: 0,
       timeRange: { start: '', end: '', duration: '' },
-      eventsByType: {},
-      eventsBySignificance: {},
+      eventsByType: Record<string, any>,
+      eventsBySignificance: Record<string, any>,
       correlationClusters: [],
       gaps: [],
       inconsistencies: []

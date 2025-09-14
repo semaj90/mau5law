@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Copilot Self-Prompt API Endpoint
@@ -247,12 +247,12 @@ function formatResponse(result: SelfPromptResult, outputFormat: string) {
     case "structured":
     default:
       return {
-        analysis: result.synthesizedOutput,
-        nextActions: result.nextActions,
-        recommendations: result.recommendations,
-        executionPlan: result.executionPlan,
-        selfPrompt: result.selfPrompt,
-        metadata: result.metadata,
+        analysis: (result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).synthesizedOutput,
+        nextActions: (result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).nextActions,
+        recommendations: (result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).recommendations,
+        executionPlan: (result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).executionPlan,
+        selfPrompt: (result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).selfPrompt,
+        metadata: (result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).metadata,
         format: "structured",
       };
   }
@@ -266,10 +266,10 @@ function formatAsMarkdown(result: SelfPromptResult): string {
 # Comprehensive AI Analysis
 
 ## Synthesized Analysis
-${result.synthesizedOutput}
+${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).synthesizedOutput}
 
 ## Next Actions
-${result.nextActions
+${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).nextActions
   .map(
     (action: NextAction, index: number) =>
       `${index + 1}. **${action.description}** (${action.priority} priority, ~${action.estimatedTime}min)`,
@@ -277,7 +277,7 @@ ${result.nextActions
   .join("\n")}
 
 ## Strategic Recommendations
-${result.recommendations
+${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).recommendations
   .map(
     (rec: Recommendation, index: number) =>
       `${index + 1}. **${rec.title}**: ${rec.description} (Impact: ${rec.impact}, Effort: ${rec.effort})`,
@@ -286,17 +286,17 @@ ${result.recommendations
 
 ## Execution Plan
 ${
-  result.executionPlan || "No execution plan generated"
+  (result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).executionPlan || "No execution plan generated"
 }
 
 ## Metadata
-- **Processing Time**: ${result.metadata.processingTime}ms
-- **Confidence**: ${Math.round(result.metadata.confidence * 100)}%
-- **Sources**: ${result.metadata.sources.join(", ")}
-- **Tokens Used**: ${result.metadata.tokensUsed}
+- **Processing Time**: ${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).metadata.processingTime}ms
+- **Confidence**: ${Math.round((result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).metadata.confidence * 100)}%
+- **Sources**: ${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).metadata.sources.join(", ")}
+- **Tokens Used**: ${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).metadata.tokensUsed}
 
 ## Self-Prompt for Copilot
-${result.selfPrompt}
+${(result as { synthesizedOutput?: any; nextActions?: any; recommendations?: any; executionPlan?: any; selfPrompt?: any; metadata?: any }).selfPrompt}
   `;
 }
 

@@ -18,7 +18,7 @@
 
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Enhanced AI Assistant API Route
@@ -39,16 +39,8 @@ export interface LawPdfRequest {
 
 export interface LawPdfResponse {
   summary: string;
-  entities: Array<{
-    text: string;
-    type: 'PERSON' | 'ORGANIZATION' | 'LOCATION' | 'LEGAL_CONCEPT' | 'DATE';
-    confidence: number;
-  }>;
-  legalConcepts: Array<{
-    concept: string;
-    relevance: number;
-    definition?: string;
-  }>;
+  entities: Array<any>;
+  legalConcepts: Array<any>;
   keyTerms: string[];
   riskAssessment: {
     riskLevel: 'low' | 'medium' | 'high';

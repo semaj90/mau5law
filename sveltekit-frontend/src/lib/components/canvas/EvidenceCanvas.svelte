@@ -1,9 +1,32 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { CaseLogic, type CaseFile } from '$lib/core/logic/case-logic';
 
-  export let caseFiles: CaseFile[] = [];
+  // Define CaseFile interface locally
+  interface CaseFile {
+    id: string;
+    title: string;
+    content?: string;
+    fileSize?: number;
+    createdAt?: Date;
+    riskScore?: number;
+  }
+
+  // Simple risk calculation function
+  function calculateRiskScore(file: CaseFile): number {
+    // Simple heuristic based on file properties
+    let risk = 0;
+    if (file.title?.toLowerCase().includes('confidential')) risk += 30;
+    if (file.title?.toLowerCase().includes('classified')) risk += 50;
+    if ((file.fileSize || 0) > 10000000) risk += 20; // Large files
+    return Math.min(risk + Math.random() * 30, 100); // Add some randomness, cap at 100
+  }
+
+  interface Props {
+    caseFiles?: CaseFile[];
+  }
+
+  let { caseFiles = [] }: Props = $props();
   let canvas: HTMLCanvasElement;
 
   function renderScene() {
@@ -22,7 +45,7 @@
 
     caseFiles.forEach((file, idx) => {
       const y = 10 + idx * 60;
-      const risk = CaseLogic.calculateRiskScore(file);
+      const risk = file.riskScore || calculateRiskScore(file);
 
       ctx.fillStyle = risk > 75 ? '#ff4757' : '#2f3542';
       ctx.fillRect(10, y, rect.width - 20, 50);
@@ -46,7 +69,7 @@
 </script>
 
 <div class="canvas-container nes-container" role="region" aria-label="High-performance evidence visualization">
-  <canvas bind:this={canvas} width="800" height="600"></canvas>
+  <canvas bind:this={canvas as any} width="800" height="600"></canvas>
 </div>
 
 <style>

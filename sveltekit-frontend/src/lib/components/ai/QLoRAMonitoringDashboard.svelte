@@ -178,14 +178,14 @@
 
 	<!-- Accuracy Overview -->
 	<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-		<NesCard.Root class="bg-gray-800 border-gray-700">
-			<NesCard.Header class="pb-3">
-				<NesCard.Title class="text-sm font-medium flex items-center gap-2 text-white">
+		<div.Root class="bg-gray-800 border-gray-700 nes-container">
+			<div.Header class="pb-3 nes-container">
+				<div.Title class="text-sm font-medium flex items-center gap-2 text-white nes-container">
 					<Target class="h-4 w-4 text-yellow-400" />
 					Current Accuracy
-				</Card.Title>
-			</Card.Header>
-			<NesCard.Content>
+				</div.Title>
+			</div.Header>
+			<div.Content class="nes-container">
 				<div class="space-y-2">
 					<div class="text-3xl font-bold {getAccuracyColor(metrics.accuracy)}">
 						{metrics.accuracy.toFixed(1)}%
@@ -195,17 +195,17 @@
 						Target: 90%+ • Average: {metrics.averageAccuracy.toFixed(1)}%
 					</div>
 				</div>
-			</Card.Content>
-		</Card.Root>
+			</div.Content>
+		</div.Root>
 
-		<NesCard.Root class="bg-gray-800 border-gray-700">
-			<NesCard.Header class="pb-3">
-				<NesCard.Title class="text-sm font-medium flex items-center gap-2 text-white">
+		<div.Root class="bg-gray-800 border-gray-700 nes-container">
+			<div.Header class="pb-3 nes-container">
+				<div.Title class="text-sm font-medium flex items-center gap-2 text-white nes-container">
 					<Zap class="h-4 w-4 text-blue-400" />
 					WebGPU Acceleration
-				</Card.Title>
-			</Card.Header>
-			<NesCard.Content>
+				</div.Title>
+			</div.Header>
+			<div.Content class="nes-container">
 				<div class="space-y-2">
 					<div class="text-2xl font-bold text-blue-400">
 						{metrics.webgpuOptimizationGain.toFixed(1)}x
@@ -217,17 +217,17 @@
 						Processing speedup factor
 					</div>
 				</div>
-			</Card.Content>
-		</Card.Root>
+			</div.Content>
+		</div.Root>
 
-		<NesCard.Root class="bg-gray-800 border-gray-700">
-			<NesCard.Header class="pb-3">
-				<NesCard.Title class="text-sm font-medium flex items-center gap-2 text-white">
+		<div.Root class="bg-gray-800 border-gray-700 nes-container">
+			<div.Header class="pb-3 nes-container">
+				<div.Title class="text-sm font-medium flex items-center gap-2 text-white nes-container">
 					<Clock class="h-4 w-4 text-green-400" />
 					Processing Speed
-				</Card.Title>
-			</Card.Header>
-			<NesCard.Content>
+				</div.Title>
+			</div.Header>
+			<div.Content class="nes-container">
 			<div>
 				<div class="space-y-2">
 					<div class="text-2xl font-bold text-green-400">
@@ -238,21 +238,21 @@
 						Average response time
 					</div>
 				</div>
-			</Card.Content>
-		</Card.Root>
+			</div.Content>
+		</div.Root>
 	</div>
 
 	<!-- Detailed Metrics -->
 	<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 		<!-- Prediction Models -->
-		<NesCard.Root class="bg-gray-800 border-gray-700">
-			<NesCard.Header>
-				<NesCard.Title class="text-sm font-semibold flex items-center gap-2 text-white">
+		<div.Root class="bg-gray-800 border-gray-700 nes-container">
+			<div.Header class="nes-container">
+				<div.Title class="text-sm font-semibold flex items-center gap-2 text-white nes-container">
 					<Brain class="h-4 w-4 text-purple-400" />
 					Prediction Models
-				</Card.Title>
-			</Card.Header>
-			<NesCard.Content>
+				</div.Title>
+			</div.Header>
+			<div.Content class="nes-container">
 				<div class="space-y-3">
 					<div class="flex justify-between items-center">
 						<span class="text-sm text-gray-300">HMM Prediction Score</span>
@@ -273,18 +273,18 @@
 						<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{metrics.predictorStatus}</span>
 					</div>
 				</div>
-			</Card.Content>
-		</Card.Root>
+			</div.Content>
+		</div.Root>
 
 		<!-- Cache Performance -->
-		<NesCard.Root class="bg-gray-800 border-gray-700">
-			<NesCard.Header>
-				<NesCard.Title class="text-sm font-semibold flex items-center gap-2 text-white">
+		<div.Root class="bg-gray-800 border-gray-700 nes-container">
+			<div.Header class="nes-container">
+				<div.Title class="text-sm font-semibold flex items-center gap-2 text-white nes-container">
 					<Database class="h-4 w-4 text-cyan-400" />
 					Cache Performance
-				</Card.Title>
-			</Card.Header>
-			<NesCard.Content>
+				</div.Title>
+			</div.Header>
+			<div.Content class="nes-container">
 				<div class="space-y-3">
 					<div class="flex justify-between items-center">
 						<span class="text-sm text-gray-300">Cache Hit Rate</span>
@@ -307,19 +307,19 @@
 						</Badge>
 					</div>
 				</div>
-			</Card.Content>
-		</Card.Root>
+			</div.Content>
+		</div.Root>
 	</div>
 
 	<!-- System Status -->
-	<NesCard.Root class="bg-gray-800 border-gray-700">
-		<NesCard.Header>
-			<NesCard.Title class="text-sm font-semibold flex items-center gap-2 text-white">
+	<div.Root class="bg-gray-800 border-gray-700 nes-container">
+		<div.Header class="nes-container">
+			<div.Title class="text-sm font-semibold flex items-center gap-2 text-white nes-container">
 				<Cpu class="h-4 w-4 text-red-400" />
 				System Performance
-			</Card.Title>
-		</Card.Header>
-		<NesCard.Content>
+			</div.Title>
+		</div.Header>
+		<div.Content class="nes-container">
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 				<div class="text-center">
 					<div class="text-lg font-bold text-red-400">{metrics.systemLoad}%</div>
@@ -342,6 +342,6 @@
 					<div class="text-xs text-gray-400">Accuracy Gain</div>
 				</div>
 			</div>
-		</Card.Content>
-	</Card.Root>
+		</div.Content>
+	</div.Root>
 </div>

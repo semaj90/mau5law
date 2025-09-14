@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // RAG Process API - Cleaned imports (previously corrupted)
 import pdf from 'pdf-parse';
@@ -56,7 +56,7 @@ async function ocrWithTesseract(filePath: string): Promise<string> {
     const result: any = await worker.recognize ? await worker.recognize(filePath) : await worker;
     if (typeof worker.terminate === 'function') await worker.terminate();
 
-    return (result && result.data && result.data.text) ? result.data.text : (result && result.text) ? result.text : '';
+    return (result && (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).data && (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).(data as { text?: any }).text) ? (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).(data as { text?: any }).text : (result && (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).text) ? (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).text : '';
   } catch (err: any) {
     console.warn('Tesseract OCR failed or not installed:', err?.message || err);
     return `
@@ -74,8 +74,8 @@ async function processWithOCR(filePath: string, mimeType: string): Promise<strin
       const data = await pdf(buffer);
 
       // If pdf-parse returns little or no text, fallback to running OCR on the first page image (not implemented here)
-      if (data && typeof data.text === 'string' && data.text.trim().length > 50) {
-        return data.text;
+      if (data && typeof (data as { text?: any }).text === 'string' && (data as { text?: any }).text.trim().length > 50) {
+        return (data as { text?: any }).text;
       }
 
       // Fallback message when PDF appears scanned and pdf-parse didn't extract text
@@ -135,12 +135,12 @@ async function generateEmbeddings(content: string, documentId: string): Promise<
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Ollama embedding error: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`Ollama embedding error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    const result = await response.json();
-    let embeddingArray: number[] = result.embedding || result.embeddings;
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+    let embeddingArray: number[] = (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).embedding || (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).embeddings;
     if (!Array.isArray(embeddingArray)) throw new Error('Embedding response malformed');
     const TARGET_DB_DIM = parseInt(import.meta.env.EMBEDDING_DIM || '768', 10);
     const TARGET_QDRANT_DIM = parseInt(import.meta.env.VECTOR_DIM || import.meta.env.EMBEDDING_DIM || '768', 10);
@@ -210,7 +210,7 @@ ${content.substring(0, 4000)}`,
       })
     });
 
-    if (!response.ok) {
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       console.warn('Legal analysis unavailable, using basic analysis');
       return {
         documentType: 'Unknown',
@@ -219,9 +219,9 @@ ${content.substring(0, 4000)}`,
       };
     }
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
     return {
-      analysis: result.response,
+      analysis: (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).response,
       confidence: 0.8,
       model: 'gemma3-legal',
       analyzedAt: new Date().toISOString()

@@ -23,11 +23,7 @@ export interface ComponentEvidence {
 export interface CanvasState {
   id: string;
   nodes: EditableNode[];
-  connections: Array<{
-    from: string;
-    to: string;
-    type: string;
-  }>;
+  connections: Array<any>;
   metadata?: Record<string, any>;
 }
 

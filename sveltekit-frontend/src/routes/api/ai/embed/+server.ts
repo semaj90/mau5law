@@ -17,7 +17,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { OPENAI_API_KEY, NOMIC_API_KEY } from '$env/static/private';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
@@ -35,7 +35,7 @@ interface EmbedResponse {
 }
 
 // OpenAI embedding function
-async function getOpenAIEmbedding(text: string): Promise<{ embedding: number[]; tokens: number }> {
+async function getOpenAIEmbedding(text: string): Promise<any> {
   if (!OPENAI_API_KEY) {
     throw new Error('OpenAI API key not configured');
   }
@@ -53,20 +53,20 @@ async function getOpenAIEmbedding(text: string): Promise<{ embedding: number[]; 
     })
   });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(`OpenAI API error: ${error.error?.message || response.statusText}`);
+  if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+    const error = await (response as { ok?: any; json?: any; statusText?: any }).json();
+    throw new Error(`OpenAI API error: ${error.error?.message || (response as { ok?: any; json?: any; statusText?: any }).statusText}`);
   }
 
-  const data = await response.json();
+  const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
   return {
-    embedding: data.data[0].embedding,
-    tokens: data.usage.total_tokens
+    embedding: (data as { data?: any; usage?: any; embeddings?: any }).data[0].embedding,
+    tokens: (data as { data?: any; usage?: any; embeddings?: any }).usage.total_tokens
   };
 }
 
 // Nomic embedding function
-async function getNomicEmbedding(text: string): Promise<{ embedding: number[] }> {
+async function getNomicEmbedding(text: string): Promise<any> {
   if (!NOMIC_API_KEY) {
     throw new Error('Nomic API key not configured');
   }
@@ -85,14 +85,14 @@ async function getNomicEmbedding(text: string): Promise<{ embedding: number[] }>
     })
   });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(`Nomic API error: ${error.error?.message || response.statusText}`);
+  if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+    const error = await (response as { ok?: any; json?: any; statusText?: any }).json();
+    throw new Error(`Nomic API error: ${error.error?.message || (response as { ok?: any; json?: any; statusText?: any }).statusText}`);
   }
 
-  const data = await response.json();
+  const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
   return {
-    embedding: data.embeddings[0]
+    embedding: (data as { data?: any; usage?: any; embeddings?: any }).embeddings[0]
   };
 }
 
@@ -161,9 +161,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
 
     // Optional: Apply dimensionality reduction if requested
-    if (dimensions && dimensions < result.embedding.length) {
-      result.embedding = result.embedding.slice(0, dimensions);
-      result.dimensions = dimensions;
+    if (dimensions && dimensions < (result as { embedding?: any; dimensions?: any }).embedding.length) {
+      (result as { embedding?: any; dimensions?: any }).embedding = (result as { embedding?: any; dimensions?: any }).embedding.slice(0, dimensions);
+      (result as { embedding?: any; dimensions?: any }).dimensions = dimensions;
     }
 
     return json(result);

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Unified Service Orchestrator API Endpoint
 // Provides HTTP interface to the complete GPU/WASM integration system
@@ -101,121 +101,121 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
     switch (operation) {
       case 'processDocument':
-        if (typeof data.document !== 'string') {
+        if (typeof (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).document !== 'string') {
           throw error(400, 'Document must be a string');
         }
 
-        result = await orchestrator.processLegalDocument(data.document, {
+        result = await orchestrator.processLegalDocument((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).document, {
           ...options,
           priority,
-          analysisType: data.analysisType || 'comprehensive',
-          maxTokens: data.maxTokens || 2048,
-          temperature: data.temperature || 0.7,
+          analysisType: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).analysisType || 'comprehensive',
+          maxTokens: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).maxTokens || 2048,
+          temperature: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).temperature || 0.7,
         });
         break;
 
       case 'performInference':
-        if (!Array.isArray(data.input)) {
+        if (!Array.isArray((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).input)) {
           throw error(400, 'Input must be an array');
         }
 
-        const inputArray = new Float32Array(data.input);
+        const inputArray = new Float32Array((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).input);
         result = await orchestrator.performNeuralInference(inputArray, {
           ...options,
           priority,
-          modelType: data.modelType || 'transformer',
-          precision: data.precision || 'fp32',
+          modelType: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).modelType || 'transformer',
+          precision: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).precision || 'fp32',
         });
         break;
 
       case 'processCanvas':
-        if (!data.canvasState || !data.canvasState.width || !data.canvasState.height) {
+        if (!(data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState || !(data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.width || !(data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.height) {
           throw error(400, 'Invalid canvas state');
         }
 
         // Convert array back to Uint8ClampedArray if needed
-        const canvasData = Array.isArray(data.canvasState.data)
-          ? new Uint8ClampedArray(data.canvasState.data)
-          : data.canvasState.data;
+        const canvasData = Array.isArray((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.data)
+          ? new Uint8ClampedArray((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.data)
+          : (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.data;
 
         result = await orchestrator.processCanvasState(
           {
-            width: data.canvasState.width,
-            height: data.canvasState.height,
+            width: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.width,
+            height: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.height,
             data: canvasData,
-            format: data.canvasState.format || 'RGBA',
+            format: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.format || 'RGBA',
           },
           {
             ...options,
             priority,
-            targetBitDepth: data.targetBitDepth || 24,
-            optimization: data.optimization || 'balanced',
+            targetBitDepth: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).targetBitDepth || 24,
+            optimization: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).optimization || 'balanced',
           }
         );
         break;
 
       case 'executeGPU':
-        if (!data.operation) {
+        if (!(data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).operation) {
           throw error(400, 'GPU operation not specified');
         }
 
-        result = await orchestrator.executeGPUComputation(data.operation, data.params || {}, {
+        result = await orchestrator.executeGPUComputation((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).operation, (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).params || {}, {
           ...options,
           priority,
-          precision: data.precision || 'fp32',
-          timeout: data.timeout || 15000,
+          precision: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).precision || 'fp32',
+          timeout: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).timeout || 15000,
         });
         break;
 
       case 'matmul':
-        if (!Array.isArray(data.a) || !Array.isArray(data.b)) {
+        if (!Array.isArray((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).a) || !Array.isArray((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).b)) {
           throw error(400, 'Matrix multiplication requires arrays a and b');
         }
 
         result = await orchestrator.executeGPUComputation(
           'matmul',
           {
-            a: data.a,
-            b: data.b,
-            m: data.m || Math.sqrt(data.a.length),
-            n: data.n || Math.sqrt(data.b.length),
-            k: data.k || Math.sqrt(data.a.length),
+            a: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).a,
+            b: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).b,
+            m: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).m || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).a.length),
+            n: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).n || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).b.length),
+            k: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).k || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).a.length),
           },
           { ...options, priority }
         );
         break;
 
       case 'attention':
-        if (!Array.isArray(data.query) || !Array.isArray(data.key) || !Array.isArray(data.value)) {
+        if (!Array.isArray((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).query) || !Array.isArray((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).key) || !Array.isArray((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).value)) {
           throw error(400, 'Attention requires query, key, and value arrays');
         }
 
         result = await orchestrator.executeGPUComputation(
           'attention',
           {
-            query: data.query,
-            key: data.key,
-            value: data.value,
-            seq_len: data.seq_len || Math.sqrt(data.query.length),
-            dim: data.dim || Math.sqrt(data.query.length),
+            query: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).query,
+            key: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).key,
+            value: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).value,
+            seq_len: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).seq_len || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).query.length),
+            dim: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).dim || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).query.length),
           },
           { ...options, priority }
         );
         break;
 
       case 'conv2d':
-        if (!Array.isArray(data.input) || !Array.isArray(data.kernel)) {
+        if (!Array.isArray((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).input) || !Array.isArray((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).kernel)) {
           throw error(400, 'Convolution requires input and kernel arrays');
         }
 
         result = await orchestrator.executeGPUComputation(
           'conv2d',
           {
-            input: data.input,
-            kernel: data.kernel,
-            width: data.width || Math.sqrt(data.input.length),
-            height: data.height || Math.sqrt(data.input.length),
-            kernel_size: data.kernel_size || Math.sqrt(data.kernel.length),
+            input: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).input,
+            kernel: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).kernel,
+            width: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).width || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).input.length),
+            height: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).height || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).input.length),
+            kernel_size: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).kernel_size || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).kernel.length),
           },
           { ...options, priority }
         );
@@ -236,9 +236,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
       metadata: {
         operation,
         priority: TaskPriority[priority],
-        servicesUsed: result.servicesUsed,
-        fallbacksTriggered: result.fallbacksTriggered,
-        performance: result.performance,
+        servicesUsed: (result as { servicesUsed?: any; fallbacksTriggered?: any; performance?: any }).servicesUsed,
+        fallbacksTriggered: (result as { servicesUsed?: any; fallbacksTriggered?: any; performance?: any }).fallbacksTriggered,
+        performance: (result as { servicesUsed?: any; fallbacksTriggered?: any; performance?: any }).performance,
       },
     });
   } catch (err: any) {

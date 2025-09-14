@@ -5,9 +5,9 @@
  */
 
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { generateEmbedding } from '../ai/embeddings-simple.js';
-import logger from '../production-logger.js';
-import type { LogContext } from '../production-logger.js';
+import { generateEmbedding } from '../ai/embeddings-simple.js.js';
+import logger from '../production-logger.js.js';
+import type { LogContext } from '../production-logger.js.js';
 
 // Simple caching fallback if service not available
 const cachingService = {
@@ -354,7 +354,7 @@ class OptimizedQdrantService {
   // Memory-optimized batch upsert
   public async upsertBatch(
     collection: string,
-    points: Array<{ id: string; vector: number[]; payload: any }>
+    points: Array<
   ): Promise<void> {
     const startTime = Date.now();
     const context: LogContext = {
@@ -636,7 +636,7 @@ class OptimizedQdrantService {
     return JSON.stringify(results).length;
   }
 
-  private estimateVectorMemory(points: Array<{ vector: number[]; payload: any }>): number {
+  private estimateVectorMemory(points: Array<): number {
     return points.reduce((acc, point) => {
       return acc + point.vector.length * 4 + JSON.stringify(point.payload).length;
     }, 0);
@@ -754,7 +754,7 @@ export const qdrantOptimized = {
 
   upsertBatch: (
     collection: string,
-    points: Array<{ id: string; vector: number[]; payload: any }>
+    points: Array<
   ) => optimizedQdrant.upsertBatch(collection, points),
 
   isHealthy: () => optimizedQdrant.isHealthy(),

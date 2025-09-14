@@ -59,17 +59,17 @@
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Search failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const data = await response.json();
+      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
 
-      if (data.success) {
-        searchResults = data.results;
+      if ((data as { success?: any; results?: any; processingTime?: any; error?: any }).success) {
+        searchResults = (data as { success?: any; results?: any; processingTime?: any; error?: any }).results;
 
         // If includeRAGResponse is enabled, generate a response using the retrieved documents
-        if (searchConfig.includeRAGResponse && data.results.length > 0) {
+        if (searchConfig.includeRAGResponse && (data as { success?: any; results?: any; processingTime?: any; error?: any }).results.length > 0) {
           try {
             const ragResponseFetch = await fetch('/api/rag/enhanced', {
               method: 'POST',
@@ -95,10 +95,10 @@
         // Add to search history
         searchHistory.unshift({
           query: searchQuery,
-          resultCount: data.results.length,
+          resultCount: (data as { success?: any; results?: any; processingTime?: any; error?: any }).results.length,
           timestamp: new Date(),
           hasRAGResponse: !!ragResponse,
-          processingTime: data.processingTime || 0
+          processingTime: (data as { success?: any; results?: any; processingTime?: any; error?: any }).processingTime || 0
         });
 
         // Keep only last 5 searches
@@ -107,11 +107,11 @@
         }
 
         // Cache the query using unified service registry
-        if (data.results.length > 0) {
+        if ((data as { success?: any; results?: any; processingTime?: any; error?: any }).results.length > 0) {
           await unifiedServiceRegistry.cacheGraphQuery(searchQuery, data, 300);
         }
       } else {
-        throw new Error(data.error || 'Search request failed');
+        throw new Error((data as { success?: any; results?: any; processingTime?: any; error?: any }).error || 'Search request failed');
       }
     } catch (error) {
       errorMessage = error.message;
@@ -125,7 +125,7 @@
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.txt,.pdf,.doc,.docx';
-    fileInput.onchange= async (event) => {
+    fileInput.on:change= async (event) => {
       const target = event.target as HTMLInputElement;
       const file = target.files?.[0];
       if (!file) return;
@@ -146,13 +146,13 @@
           })
         });
 
-        if (!response.ok) {
-          throw new Error(`Ingestion failed: ${response.statusText}`);
+        if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+          throw new Error(`Ingestion failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
         }
 
-        const result = await response.json();
+        const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
         // Show success notification
-        console.log(`✅ Document ingested: ${result.chunks.length} chunks created`);
+        console.log(`✅ Document ingested: ${(result as { chunks?: any; similarity?: any; entityInfo?: any; chunk_sequence?: any; chunk_text?: any }).chunks.length} chunks created`);
       } catch (error) {
         errorMessage = `Document ingestion failed: ${error.message}`;
       }
@@ -212,20 +212,20 @@
       <div class="flex gap-4">
         <input
           bind:value={searchQuery}
-          onkeydown={(e) => e.key === 'Enter' && performSearch()}
+          on:keydown={(e) => e.key === 'Enter' && performSearch()}
           placeholder="Search legal documents and cases..."
           class="flex-1 bg-nier-bg-primary border border-nier-border-muted rounded px-4 py-3 text-nier-text-primary focus:outline-none focus:border-nier-accent-warm"
           disabled={isSearching}
         />
         <ModernButton
-          onclick={performSearch}
+          on:click={performSearch}
           disabled={isSearching || !searchQuery.trim()}
           class="bg-green-600 hover:bg-green-700"
         >
           {isSearching ? '🔍 Searching...' : '🔍 Search'}
         </ModernButton>
         <ModernButton
-          onclick={ingestDocument}
+          on:click={ingestDocument}
           variant="outline"
           class="border-blue-500 text-blue-400"
         >
@@ -262,7 +262,7 @@
         <span class="text-sm text-nier-text-muted">Try:</span>
         {#each searchSuggestions as suggestion}
           <button
-            onclick={() => { searchQuery = suggestion; }}
+            on:click={() => { searchQuery = suggestion; }}
             class="text-xs px-2 py-1 bg-nier-bg-tertiary border border-nier-border-muted rounded hover:bg-nier-bg-primary transition-colors"
           >
             {suggestion}
@@ -311,21 +311,21 @@
             <div class="flex justify-between items-start mb-3">
               <div class="flex items-center gap-3">
                 <span class="font-mono text-sm bg-blue-500/20 text-blue-400 px-2 py-1 rounded">
-                  Similarity: {(result.similarity * 100).toFixed(1)}%
+                  Similarity: {((result as { chunks?: any; similarity?: any; entityInfo?: any; chunk_sequence?: any; chunk_text?: any }).similarity * 100).toFixed(1)}%
                 </span>
-                {#if result.entityInfo}
+                {#if (result as { chunks?: any; similarity?: any; entityInfo?: any; chunk_sequence?: any; chunk_text?: any }).entityInfo}
                   <span class="font-mono text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded">
-                    {result.entityInfo.type}: {result.entityInfo.name || result.entityInfo.id}
+                    {(result as { chunks?: any; similarity?: any; entityInfo?: any; chunk_sequence?: any; chunk_text?: any }).entityInfo.type}: {(result as { chunks?: any; similarity?: any; entityInfo?: any; chunk_sequence?: any; chunk_text?: any }).entityInfo.name || (result as { chunks?: any; similarity?: any; entityInfo?: any; chunk_sequence?: any; chunk_text?: any }).entityInfo.id}
                   </span>
                 {/if}
                 <span class="font-mono text-xs text-nier-text-muted">
-                  Chunk #{result.chunk_sequence + 1}
+                  Chunk #{(result as { chunks?: any; similarity?: any; entityInfo?: any; chunk_sequence?: any; chunk_text?: any }).chunk_sequence + 1}
                 </span>
               </div>
             </div>
 
             <div class="text-nier-text-primary text-sm leading-relaxed">
-              {@html highlightMatch(result.chunk_text, searchQuery)}
+              {@html highlightMatch((result as { chunks?: any; similarity?: any; entityInfo?: any; chunk_sequence?: any; chunk_text?: any }).chunk_text, searchQuery)}
             </div>
           </div>
         {/each}
@@ -350,7 +350,7 @@
       <div class="space-y-2">
         {#each searchHistory as historyItem}
           <button
-            onclick={() => { searchQuery = historyItem.query; }}
+            on:click={() => { searchQuery = historyItem.query; }}
             class="w-full text-left p-3 bg-nier-bg-primary border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
           >
             <div class="flex justify-between items-center">

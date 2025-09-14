@@ -10,7 +10,7 @@ import {
   personsOfInterest,
   legalDocuments,
   notes
-} from './unified-schema';
+} from './unified-schema.js';
 
 // Inferred types from schema
 export type Case = InferSelectModel<typeof cases>;
@@ -69,4 +69,4 @@ export {
   personsOfInterest,
   legalDocuments,
   notes
-} from './unified-schema';
+} from './unified-schema.js';

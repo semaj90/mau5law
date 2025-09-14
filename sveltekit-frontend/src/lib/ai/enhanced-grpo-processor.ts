@@ -1,7 +1,7 @@
 // Enhanced GRPO-thinking processor with structured reasoning feedback
 // Extends existing thinking-processor.ts with advanced reasoning pipeline
 
-import { ThinkingProcessor, type ThinkingAnalysis, type AnalysisOptions } from './thinking-processor';
+import { ThinkingProcessor, type ThinkingAnalysis, type AnalysisOptions } from './thinking-processor.js';
 import { db } from '$lib/db/connection';
 import { aiResponses, grpoFeedback, recommendationScores } from '$lib/db/enhanced-ai-schema';
 import { eq, desc, and, gte, sql } from 'drizzle-orm';
@@ -158,10 +158,10 @@ Extract and format as JSON:
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
         const parsed = ThinkingProcessor.extractJSON(
-          data.response
+          (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).response
         ) as GRPOAnalysis['structuredReasoning'];
 
         // Validate structure
@@ -196,9 +196,9 @@ Extract and format as JSON:
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        return data.embedding || [];
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        return (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).embedding || [];
       }
     } catch (error) {
       console.warn('Failed to generate embedding:', error);
@@ -338,29 +338,29 @@ Extract and format as JSON:
       const [result] = await db
         .insert(aiResponses)
         .values({
-          query: data.query,
-          response: data.response,
-          thinkingContent: data.thinkingContent,
-          thinkingStructured: data.structuredReasoning,
-          reasoningSteps: data.structuredReasoning.premises
-            .concat(data.structuredReasoning.inferences)
-            .concat(data.structuredReasoning.conclusions),
-          queryEmbedding: `[${data.queryEmbedding.join(',')}]`,
-          responseEmbedding: `[${data.responseEmbedding.join(',')}]`,
-          confidence: data.confidence.toString(),
-          processingTime: data.processingTime,
-          legalDomain: data.options.analysisType || 'general',
-          caseType: data.options.documentType || 'unknown',
-          sessionId: data.options.evidenceId,
-          caseId: data.options.caseId,
+          query: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).query,
+          response: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).response,
+          thinkingContent: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).thinkingContent,
+          thinkingStructured: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).structuredReasoning,
+          reasoningSteps: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).structuredReasoning.premises
+            .concat((data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).structuredReasoning.inferences)
+            .concat((data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).structuredReasoning.conclusions),
+          queryEmbedding: `[${(data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).queryEmbedding.join(',')}]`,
+          responseEmbedding: `[${(data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).responseEmbedding.join(',')}]`,
+          confidence: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).confidence.toString(),
+          processingTime: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).processingTime,
+          legalDomain: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).options.analysisType || 'general',
+          caseType: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).options.documentType || 'unknown',
+          sessionId: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).options.evidenceId,
+          caseId: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).options.caseId,
           metadata: {
-            useThinkingStyle: data.options.useThinkingStyle,
-            contextDocuments: data.options.contextDocuments || [],
+            useThinkingStyle: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).options.useThinkingStyle,
+            contextDocuments: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).options.contextDocuments || [],
           },
         })
         .returning({ id: aiResponses.id });
 
-      return result.id;
+      return (result as { id?: any; map?: any }).id;
     } catch (error) {
       console.error('Failed to save GRPO analysis:', error);
       throw new Error('Database save failed');
@@ -529,7 +529,7 @@ export const GRPOUtils = {
    */
   async getTrendingTopics(
     days: number = 7
-  ): Promise<Array<{ topic: string; count: number; avgRating: number }>> {
+  ): Promise<Array<any> {
     const result = await db.execute(sql`
       SELECT
         legal_domain as topic,
@@ -543,7 +543,7 @@ export const GRPOUtils = {
       LIMIT 10
     `);
 
-    return result.map((row: any) => ({
+    return (result as { id?: any; map?: any }).map((row: any) => ({
       topic: row.topic as string,
       count: parseInt(row.count as string),
       avgRating: parseFloat(row.avg_rating as string),

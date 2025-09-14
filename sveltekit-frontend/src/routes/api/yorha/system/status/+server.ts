@@ -1,5 +1,5 @@
 import { getContext7MulticoreService } from '$lib/services/context7-multicore.js';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 let startTime = Date.now();
@@ -76,7 +76,7 @@ function collectStatus(): YoRHaSystemStatus {
       activeComponents: Math.floor(Math.random() * 50) + 150,
       webGPUEnabled: true,
     },
-    ...(multicoreStatus ? { multicore: multicoreStatus } : {}),
+    ...(multicoreStatus ? { multicore: multicoreStatus } : Record<string, any>),
     timestamp: new Date().toISOString(),
     systemLoad: Math.floor(Math.random() * 30) + 45,
     gpuUtilization: Math.floor(Math.random() * 20) + 78,

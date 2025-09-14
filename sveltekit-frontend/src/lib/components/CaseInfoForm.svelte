@@ -10,16 +10,22 @@ https://svelte.dev/e/js_parse_error -->
 
   const dispatch = createEventDispatcher();
 
-  let { formData = $bindable() } = $props(); // {
+  interface FormData {
     title: string;
     client_name: string;
     case_type: string;
     jurisdiction: string;
     priority: 'low' | 'medium' | 'high' | 'urgent';
     description: string;
-    key_dates: Array<{ date: string; description: string }>;
-  };
-  let validationErrors = $state<Record<string, string> >({});
+    key_dates: Array<any>;
+  }
+
+  interface Props {
+    formData: FormData;
+  }
+
+  let { formData }: Props = $props();
+  let validationErrors = $state<Record<string, string>>({});
 
   // Case type options
   const caseTypes = [
@@ -238,7 +244,7 @@ https://svelte.dev/e/js_parse_error -->
         </label>
         <Button.Root
           type="button"
-          onclick={addKeyDate}
+          on:click={addKeyDate}
           class="px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
         >
           + Add Date
@@ -260,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
           />
           <button class="nes-btn".Root
             type="button"
-            onclick={() => removeKeyDate(index)}
+            on:click={() => removeKeyDate(index)}
             class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none"
           >
             Remove
@@ -277,7 +283,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex justify-between pt-6 border-t border-gray-200">
       <Button.Root
         type="button"
-        onclick={handleSaveDraft}
+        on:click={handleSaveDraft}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
       >
         Save Draft

@@ -172,10 +172,10 @@
 			<p class="space-y-4">AI-powered case analysis and report generation</p>
 			
 			<div class="space-y-4">
-				<button class="space-y-4" onclick={() => createNewReport()}>
+				<button class="space-y-4" on:click={() => createNewReport()}>
 					📄 New Report
 				</button>
-				<button class="space-y-4" onclick={() => createNewCanvas()}>
+				<button class="space-y-4" on:click={() => createNewCanvas()}>
 					🎨 New Canvas
 				</button>
 			</div>
@@ -186,7 +186,7 @@
 	{#if error}
 		<div class="space-y-4">
 			❌ {error}
-			<button onclick={() => error = ''} class="space-y-4">×</button>
+			<button on:click={() => error = ''} class="space-y-4">×</button>
 		</div>
 	{/if}
 
@@ -202,14 +202,14 @@
 			<button 
 				class="space-y-4"
 			 class:active={activeTab === 'editor'}
-				onclick={() => activeTab = 'editor'}
+				on:click={() => activeTab = 'editor'}
 			>
 				📝 Report Editor
 			</button>
 			<button 
 				class="space-y-4"
 			 class:active={activeTab === 'canvas'}
-				onclick={() => activeTab = 'canvas'}
+				on:click={() => activeTab = 'canvas'}
 			>
 				🎨 Interactive Canvas
 			</button>
@@ -282,8 +282,8 @@
 				<div class="space-y-4">
 					{#each evidence as item}
 						<div class="space-y-4">
-							<div class="space-y-4">{item.title}</div>
-							<div class="space-y-4">{item.evidenceType || item.type || 'unknown'}</div>
+							<div class="space-y-4">{(item as { title?: any; evidenceType?: any; type?: any }).title}</div>
+							<div class="space-y-4">{(item as { title?: any; evidenceType?: any; type?: any }).evidenceType || (item as { title?: any; evidenceType?: any; type?: any }).type || 'unknown'}</div>
 						</div>
 					{/each}
 				</div>

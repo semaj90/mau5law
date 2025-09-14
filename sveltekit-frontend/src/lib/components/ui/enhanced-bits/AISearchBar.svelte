@@ -63,9 +63,9 @@
     legal
     aiAssisted
   />
-  <Button class="bits-btn" variant="yorha" onclick={handleSearch} loading={loading} legal aria-label="Search with AI">
-    <Search class="w-4 h-4 mr-1" />
+  <Button class="bits-btn" variant="yorha" on:click={handleSearch} loading={loading} legal aria-label="Search with AI">
+<Search class="w-4 h-4 mr-1" />
     Search
-  </button>
+
 </div>
 

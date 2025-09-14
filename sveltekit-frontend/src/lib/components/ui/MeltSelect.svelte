@@ -56,10 +56,7 @@
   		'aria-labelledby': ariaLabelledBy,
   		'data-testid': testId
   	}: Props = $props();
-  	const dispatch = createEventDispatcher<{
-  		'value-change': { value: string | undefined };
-  		'open-change': { open: boolean };
-  	}>();
+  	const dispatch = createEventDispatcher();
 
   	function handleValueChange(newValue: string | undefined) {
   		if (onValueChange) {

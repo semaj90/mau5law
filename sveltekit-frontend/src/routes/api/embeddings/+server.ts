@@ -1,5 +1,5 @@
 import { json } from "@sveltejs/kit";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Embeddings API Endpoint
@@ -26,7 +26,7 @@ async function syncDocumentEmbeddings(
   type: string,
   limit: number,
   forceRegenerate: boolean,
-): Promise<{ total: number; updated: number; errors: number }> {
+): Promise<any> {
   console.warn(`syncDocumentEmbeddings not implemented for type: ${type}`);
   return { total: 0, updated: 0, errors: 0 };
 }

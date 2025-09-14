@@ -236,7 +236,7 @@ declare module 'lokijs' {
     loadDatabase(options?: any, callback?: (err?: any) => void): void;
     serialize(): string;
     deserialize(serializedDb: string): void;
-    listCollections(): Array<{ name: string; type: string; count: number }>;
+    listCollections(): Array<any>;
     getName(): string;
     close(callback?: () => void): void;
     filename: string;
@@ -286,7 +286,7 @@ declare module 'lokijs' {
     loadDatabase(options?: any, callback?: (err?: any) => void): void;
     serialize(): string;
     deserialize(serializedDb: string): void;
-    listCollections(): Array<{ name: string; type: string; count: number }>;
+    listCollections(): Array<any>;
     getName(): string;
     close(callback?: () => void): void;
     filename: string;

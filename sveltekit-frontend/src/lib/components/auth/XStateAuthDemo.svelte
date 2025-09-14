@@ -51,13 +51,13 @@
   let global = $state($globalState);
 
   // Subscribe to state changes
-  let unsubscribeAuth = $state<(() => void) | null>(null);
-  let unsubscribeSession = $state<(() => void) | null>(null);
-  let unsubscribeAI = $state<(() => void) | null>(null);
-  let unsubscribeGlobal = $state<(() => void) | null>(null);
-  let unsubscribeAuth2 = $state<(() => void) | null>(null);
-  let unsubscribeUser = $state<(() => void) | null>(null);
-  let unsubscribeHealth = $state<(() => void) | null>(null);
+  let unsubscribeAuth = $state<(() =>(null) void) | null>(null);
+  let unsubscribeSession = $state<(() =>(null) void) | null>(null);
+  let unsubscribeAI = $state<(() =>(null) void) | null>(null);
+  let unsubscribeGlobal = $state<(() =>(null) void) | null>(null);
+  let unsubscribeAuth2 = $state<(() =>(null) void) | null>(null);
+  let unsubscribeUser = $state<(() =>(null) void) | null>(null);
+  let unsubscribeHealth = $state<(() =>(null) void) | null>(null);
 
   onMount(() => {
     // Subscribe to all relevant stores
@@ -160,14 +160,14 @@
       <div class="flex items-center gap-3">
         <Shield class="h-8 w-8 text-primary" />
         <div>
-          <div.Title class="text-2xl">XState Integration Demo</Card.Title>
+          <div.Title class="text-2xl">XState Integration Demo</div.Title>
           <div.Description>
             Complete demonstration of XState machines with Svelte components,
             GPU orchestration, and Context7 documentation
-          </Card.Description>
+          </div.Description>
         </div>
       </div>
-    </Card.Header>
+    </div.Header>
 
     <div.Content class="space-y-6">
 
@@ -258,11 +258,11 @@
             </div>
 
             <Button
-              onclick={demonstrateLogin}
+              on:click={demonstrateLogin}
               disabled={isLoading || authenticated}
               class="w-full bits-btn bits-btn"
             >
-              {#if isLoading}
+{#if isLoading}
                 <Loader2 class="h-4 w-4 mr-2 animate-spin" />
                 Authenticating...
                 {:else if authenticated}
@@ -282,7 +282,7 @@
                 <Shield class="h-4 w-4 mr-2" />
                 Demonstrate XState Login
               {/if}
-            </button>
+
           </div>
         </div>
       {/if}
@@ -300,26 +300,24 @@
           </Alert>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button class="bits-btn" onclick={demonstrateAI} variant="outline">
-              <Brain class="h-4 w-4 mr-2" />
+            <Button class="bits-btn" on:click={demonstrateAI} variant="outline">
+<Brain class="h-4 w-4 mr-2" />
               Test AI Assistant
-            </button>
 
-            <Button class="bits-btn" onclick={demonstrateUpload} variant="outline">
-              <Zap class="h-4 w-4 mr-2" />
+            <Button class="bits-btn" on:click={demonstrateUpload} variant="outline">
+<Zap class="h-4 w-4 mr-2" />
               Demo File Upload
-            </button>
 
-            <Button class="bits-btn" onclick={demonstrateSessionActivity} variant="outline">
-              <Settings class="h-4 w-4 mr-2" />
+            <Button class="bits-btn" on:click={demonstrateSessionActivity} variant="outline">
+<Settings class="h-4 w-4 mr-2" />
               Record Activity
-            </button>
+
           </div>
 
-          <Button onclick={demonstrateLogout} variant="destructive" class="w-full bits-btn bits-btn">
-            <LogOut class="h-4 w-4 mr-2" />
+          <Button on:click={demonstrateLogout} variant="destructive" class="w-full bits-btn bits-btn">
+<LogOut class="h-4 w-4 mr-2" />
             Demonstrate Logout
-          </button>
+
         </div>
       {/if}
 
@@ -365,13 +363,14 @@
             {/if}
 
             <div class="flex gap-2">
-              <Button class="bits-btn" onclick={() => demoStep = 'dashboard'} variant="outline">
+              <Button class="bits-btn" on:click={() =>
+demoStep = 'dashboard'} variant="outline">
                 Back to Dashboard
-              </button>
-              <Button class="bits-btn" onclick={demonstrateLogout} variant="destructive">
-                <LogOut class="h-4 w-4 mr-2" />
+
+              <Button class="bits-btn" on:click={demonstrateLogout} variant="destructive">
+<LogOut class="h-4 w-4 mr-2" />
                 Complete Demo
-              </button>
+
             </div>
           </div>
         </div>
@@ -409,18 +408,18 @@
         <div class="space-y-2">
           <h4 class="font-medium">Recent Notifications</h4>
           {#each global.ui.notifications.slice(-3) as notification}
-            <Alert variant={notification.type === 'error' ? 'destructive' : 'default'}>
-              {#if notification.type === 'success'}
+            <Alert variant={(notification as { type?: any; title?: any; message?: any; timestamp?: any }).type === 'error' ? 'destructive' : 'default'}>
+              {#if (notification as { type?: any; title?: any; message?: any; timestamp?: any }).type === 'success'}
                 <CheckCircle class="h-4 w-4" />
-              {:else if notification.type === 'error'}
+              {:else if (notification as { type?: any; title?: any; message?: any; timestamp?: any }).type === 'error'}
                 <AlertCircle class="h-4 w-4" />
               {:else}
                 <Shield class="h-4 w-4" />
               {/if}
               <AlertDescription>
-                <strong>{notification.title}:</strong> {notification.message}
+                <strong>{(notification as { type?: any; title?: any; message?: any; timestamp?: any }).title}:</strong> {(notification as { type?: any; title?: any; message?: any; timestamp?: any }).message}
                 <div class="text-xs nes-text is-disabled mt-1">
-                  {notification.timestamp.toLocaleTimeString()}
+                  {(notification as { type?: any; title?: any; message?: any; timestamp?: any }).timestamp.toLocaleTimeString()}
                 </div>
               </AlertDescription>
             </Alert>
@@ -428,6 +427,6 @@
         </div>
       {/if}
 
-    </Card.Content>
-  </Card.Root>
+    </div.Content>
+  </div.Root>
 </div>

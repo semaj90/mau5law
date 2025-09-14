@@ -11,7 +11,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { redisService } from '$lib/server/redis-service.js';
 import { lokiRedisCache } from '$lib/cache/loki-redis-integration.js';
 import { instantSearchEngine } from '$lib/services/instant-search-engine.js';
@@ -21,9 +21,9 @@ export const GET: RequestHandler = async ({ url }) => {
   const results: any = {
     timestamp: new Date().toISOString(),
     testType,
-    results: {},
+    results: Record<string, any>,
     errors: [],
-    performance: {}
+    performance: Record<string, any>
   };
 
   try {
@@ -260,7 +260,7 @@ export const GET: RequestHandler = async ({ url }) => {
       status: 'error',
       timestamp: new Date().toISOString(),
       error: error.message,
-      results: {},
+      results: Record<string, any>,
       errors: [error.message]
     }, { status: 500 });
   }

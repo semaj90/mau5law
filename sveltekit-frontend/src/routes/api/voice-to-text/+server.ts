@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Lazy require (keeps optional deps from breaking build)
 const nodeCrypto = () => {

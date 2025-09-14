@@ -6,9 +6,9 @@ import postgres from "postgres";
 // Environment variables with fallbacks
 const config = {
   host: import.meta.env.POSTGRES_HOST || 'localhost',
-  port: parseInt(import.meta.env.POSTGRES_PORT || '5432'),
-  database: import.meta.env.POSTGRES_DB || 'legal_ai',
-  user: import.meta.env.POSTGRES_USER || 'postgres',
+  port: parseInt(import.meta.env.POSTGRES_PORT || '5433'),
+  database: import.meta.env.POSTGRES_DB || 'legal_ai_db',
+  user: import.meta.env.POSTGRES_USER || 'legal_admin',
   password: import.meta.env.POSTGRES_PASSWORD || '123456'
 };
 

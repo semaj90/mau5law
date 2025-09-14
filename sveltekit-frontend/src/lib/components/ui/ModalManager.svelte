@@ -40,18 +40,7 @@
   			]
   		};
   }
-  	function PromptModal({ props, onConfirm, onClose }: unknown) {
-  		let inputValue = props.defaultValue || '';
-
-  		return {
-  			title: 'Input Required',
-  			content: `
-  				<div class="space-y-4">
-  					<p class="space-y-4">${props.message}</p>
-  					<input
-  						type="text"
-  						class="space-y-4"
-  						placeholder="${props.placeholder || ''}"
+  	function PromptModal({ props, onConfirm, onClose }: unknown) {/* JSX syntax converted to Svelte */}"
   						value="${inputValue}"
   						autofocus
   					/>
@@ -101,7 +90,7 @@
 {#each $modals.modals as modal (modal.id)}
 	<div
 		class="space-y-4"
-		onclick={(e) => handleBackdropClick(e, modal)}
+		on:click={(e) => handleBackdropClick(e, modal)}
 		keydown={(e) => handleKeydown(e, modal)}
 		role="dialog"
 		aria-modal="true"
@@ -150,7 +139,7 @@
 					{#if modal.closable !== false}
 						<button
 							class="space-y-4"
-							onclick={() => modals.close(modal.id)}
+							on:click={() => modals.close(modal.id)}
 							aria-label="Close modal"
 						>
 							<iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
@@ -181,10 +170,11 @@
 							{#each builtInModal.actions as action}
 								<Button class="bits-btn"
 									variant={action.variant}
-									onclick={() => action.action()}
+									on:click={() =>
+action.action()}
 								>
 									{action.label}
-								</button>
+</Button>
 							{/each}
 						</div>
 					{/if}

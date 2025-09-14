@@ -56,7 +56,7 @@
           isLoading = true;
           return async ({ result }) => {
             isLoading = false;
-            if (result.type === 'redirect') {
+            if ((result as { type?: any }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }
           };
@@ -127,7 +127,7 @@
         <!-- Demo Button -->
         <button
           type="button"
-          onclick={fillDemoCredentials}
+          on:click={fillDemoCredentials}
           disabled={isLoading}
           class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors disabled:opacity-50"
         >

@@ -72,7 +72,7 @@
 <button
   type="button"
   class={buttonClasses}
-  onclick={openModal}
+  on:click={openModal}
 >
   {#if icon}{icon} {/if}{text}
 </button>

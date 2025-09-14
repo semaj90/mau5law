@@ -2,37 +2,37 @@
 // Enhanced Bits UI v2 + Svelte 5 + UnoCSS Integration
 // Optimized for Legal AI with NieR theming + SSR-friendly compound components
 
-import ButtonComponent from "./Button.svelte";
-import DialogComponent from "./Dialog.svelte";
-import SelectComponent from "./Select.svelte";
-import InputComponent from "./Input.svelte";
-import LabelComponent from "./Label.svelte";
-import AlertComponent from "./Alert.svelte";
-import AlertDescriptionComponent from "./AlertDescription.svelte";
-import CardComponent from "./Card.svelte";
-import CardHeaderComponent from "./CardHeader.svelte";
-import CardTitleComponent from "./CardTitle.svelte";
-import CardDescriptionComponent from "./CardDescription.svelte";
-import CardContentComponent from "./CardContent.svelte";
-import CardFooterComponent from "./CardFooter.svelte";
+import ButtonComponent from './Button.svelte.js';
+import DialogComponent from './Dialog.svelte.js';
+import SelectComponent from './Select.svelte.js';
+import InputComponent from './Input.svelte.js';
+import LabelComponent from './Label.svelte.js';
+import AlertComponent from './Alert.svelte.js';
+import AlertDescriptionComponent from './AlertDescription.svelte.js';
+import CardComponent from './Card.svelte.js';
+import CardHeaderComponent from './CardHeader.svelte.js';
+import CardTitleComponent from './CardTitle.svelte.js';
+import CardDescriptionComponent from './CardDescription.svelte.js';
+import CardContentComponent from './CardContent.svelte.js';
+import CardFooterComponent from './CardFooter.svelte.js';
 
 // Standard exports for direct usage
-export { default as Button } from "./Button.svelte";
-export { default as Input } from "./Input.svelte";
-export { default as Label } from "./Label.svelte";
-export { default as Alert } from "./Alert.svelte";
-export { default as AlertDescription } from "./AlertDescription.svelte";
-export { default as CardHeader } from "./CardHeader.svelte";
-export { default as CardTitle } from "./CardTitle.svelte";
-export { default as CardDescription } from "./CardDescription.svelte";
-export { default as CardContent } from "./CardContent.svelte";
-export { default as CardFooter } from "./CardFooter.svelte";
+export { default as Button } from './Button.svelte.js';
+export { default as Input } from './Input.svelte.js';
+export { default as Label } from './Label.svelte.js';
+export { default as Alert } from './Alert.svelte.js';
+export { default as AlertDescription } from './AlertDescription.svelte.js';
+export { default as CardHeader } from './CardHeader.svelte.js';
+export { default as CardTitle } from './CardTitle.svelte.js';
+export { default as CardDescription } from './CardDescription.svelte.js';
+export { default as CardContent } from './CardContent.svelte.js';
+export { default as CardFooter } from './CardFooter.svelte.js';
 
 // Specialized Legal AI Components
-export { default as EvidenceThumbnail } from "./EvidenceThumbnail.svelte";
-export { default as EvidenceAIAnalysis } from "./EvidenceAIAnalysis.svelte";
-export { default as SearchInput } from "./SearchInput.svelte";
-export { default as Board } from "./Board.svelte";
+export { default as EvidenceThumbnail } from './EvidenceThumbnail.svelte.js';
+export { default as EvidenceAIAnalysis } from './EvidenceAIAnalysis.svelte.js';
+export { default as SearchInput } from './SearchInput.svelte.js';
+export { default as Board } from './Board.svelte.js';
 
 // =============================================================================
 // ENHANCED-BITS DUAL IMPORT APPROACH FOR SSR COMPATIBILITY
@@ -56,12 +56,12 @@ export { default as Board } from "./Board.svelte";
 // =============================================================================
 
 // Direct component exports for enhanced-bits (SSR-compatible)
-export { default as Card } from './Card.svelte';
-export { default as CardHeader } from './CardHeader.svelte';
-export { default as CardTitle } from './CardTitle.svelte';
-export { default as CardDescription } from './CardDescription.svelte';
-export { default as CardContent } from './CardContent.svelte';
-export { default as CardFooter } from './CardFooter.svelte';
+export { default as Card } from './Card.svelte.js';
+export { default as CardHeader } from './CardHeader.svelte.js';
+export { default as CardTitle } from './CardTitle.svelte.js';
+export { default as CardDescription } from './CardDescription.svelte.js';
+export { default as CardContent } from './CardContent.svelte.js';
+export { default as CardFooter } from './CardFooter.svelte.js';
 
 // Compound component exports for non-SSR or CSR-only scenarios
 export const CardCompound = {
@@ -91,17 +91,17 @@ export const SelectCompound = {
 } as const;
 
 // Demo components
-export { default as EnhancedBitsDemo } from "./EnhancedBitsDemo.svelte";
-export { default as VectorIntelligenceDemo } from "./VectorIntelligenceDemo.svelte";
-export { default as LegalAIDemo } from "./LegalAIDemo.svelte";
+export { default as EnhancedBitsDemo } from './EnhancedBitsDemo.svelte.js';
+export { default as VectorIntelligenceDemo } from './VectorIntelligenceDemo.svelte.js';
+export { default as LegalAIDemo } from './LegalAIDemo.svelte.js';
 
 // Keyboard Management components
-export { default as KeyboardMapping } from "./KeyboardMapping.svelte";
-export { default as KeyboardHelp } from "./KeyboardHelp.svelte";
+export { default as KeyboardMapping } from './KeyboardMapping.svelte.js';
+export { default as KeyboardHelp } from './KeyboardHelp.svelte.js';
 
 // Types and utilities
-export type * from "./types";
-export * from "../enhanced/button-variants";
+export type * from './types.js';
+export * from '../enhanced/button-variants.js';
 export { cn, legalCn, confidenceClass, priorityClass } from "$lib/utils/cn";
 
 // Legal domain constants

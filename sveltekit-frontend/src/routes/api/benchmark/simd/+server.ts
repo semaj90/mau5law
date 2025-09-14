@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { simdBodyParser } from '$lib/server/simd-body-parser.js';
 import { nodeSIMDJSON } from '$lib/services/node-simd-json.js';
 

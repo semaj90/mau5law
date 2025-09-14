@@ -2,7 +2,7 @@
 // Demonstrates enterprise-grade message queuing with state machines
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { rabbitmqService, type LegalDocumentMessage } from '$lib/server/messaging/rabbitmq-service';
 import { logger } from '$lib/server/ai/logger';
 

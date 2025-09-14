@@ -51,9 +51,9 @@
   async function loadCaseData() {
     try {
       const response = await fetch(`/api/v1/cases/${caseId}`);
-      if (response.ok) {
-        const data = await response.json();
-        caseData = data.data;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        caseData = (data as { data?: any }).data;
       } else {
         throw new Error('Failed to load case data');
       }
@@ -69,9 +69,9 @@
   async function loadCaseEvidence() {
     try {
       const response = await fetch(`/api/v1/evidence/by-case/${caseId}?includeAnalysis=true&limit=100`);
-      if (response.ok) {
-        const data = await response.json();
-        evidenceList = data.data.evidence || [];
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        evidenceList = (data as { data?: any }).(data as { data?: any }).evidence || [];
       } else {
         throw new Error('Failed to load evidence');
       }
@@ -84,7 +84,7 @@
   /**
    * Handle connection map generation
    */
-  function handleConnectionMapGenerated(event: CustomEvent<{ map: any; metadata: any }>) {
+  function handleConnectionMapGenerated(event: CustomEvent) {
     connectionMap = event.detail.map;
     connectionMapGenerated = true;
     
@@ -105,7 +105,7 @@
   /**
    * Handle contextual prompts
    */
-  function handleContextualPromptTriggered(event: CustomEvent<{ prompts: string[]; context: TypingContext }>) {
+  function handleContextualPromptTriggered(event: CustomEvent) {
     lastContextualPrompts = event.detail.prompts;
     
     // Update analytics with user behavior
@@ -126,13 +126,13 @@
   /**
    * Handle evidence analysis
    */
-  function handleEvidenceAnalyzed(event: CustomEvent<{ evidence: any; analysis: any }>) {
+  function handleEvidenceAnalyzed(event: CustomEvent) {
     const { evidence, analysis } = event.detail;
     
     // Update evidence in the list with new analysis
     evidenceList = evidenceList.map(item => 
-      item.id === evidence.id 
-        ? { ...item, metadata: { ...item.metadata, aiAnalysis: analysis } }
+      (item as { id?: any; metadata?: any }).id === evidence.id 
+        ? { ...item, metadata: { ...(item as { id?: any; metadata?: any }).metadata, aiAnalysis: analysis } }
         : item
     );
     
@@ -158,14 +158,14 @@
 {#if isLoading}
   <div class="loading-container">
     <div class="loading-spinner"></div>
-    <p>Loading case data...</p>
+    <p>Loading case (data as { data?: any })...</p>
   </div>
 {:else if error}
   <div class="error-container">
     <div class="error-icon">⚠️</div>
     <h1>Error</h1>
     <p>{error}</p>
-    <button type="button" onclick={refreshCase}>Try Again</button>
+    <button type="button" on:click={refreshCase}>Try Again</button>
   </div>
 {:else if caseData}
   <div class="detective-page">
@@ -184,7 +184,7 @@
       </div>
       
       <div class="case-actions">
-        <button type="button" onclick={refreshCase}>Refresh</button>
+        <button type="button" on:click={refreshCase}>Refresh</button>
         <a href="/cases/{caseId}" class="view-case-btn">View Case Details</a>
       </div>
     </header>

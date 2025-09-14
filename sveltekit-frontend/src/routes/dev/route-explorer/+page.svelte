@@ -158,7 +158,7 @@
           🗺️ Route Explorer
         </h1>
         <button
-          onclick={refreshData}
+          on:click={refreshData}
           disabled={loading}
           class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
         >
@@ -181,7 +181,7 @@
         <h2 class="text-red-800 font-semibold mb-2">Error Loading Routes</h2>
         <p class="text-red-600">{error}</p>
         <button
-          onclick={refreshData}
+          on:click={refreshData}
           class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
         >
           Try Again
@@ -246,7 +246,7 @@
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold text-gray-900">Filters</h2>
           <button
-            onclick={clearFilters}
+            on:click={clearFilters}
             class="text-sm text-gray-600 hover:text-gray-800"
           >
             Clear All
@@ -326,7 +326,7 @@
           </p>
 
           <button
-            onclick={() => showAnalytics = !showAnalytics}
+            on:click={() => showAnalytics = !showAnalytics}
             class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
           >
             {showAnalytics ? 'Hide' : 'Show'} Analytics

@@ -3,7 +3,7 @@ import { URL } from "url";
 import { reports } from "$lib/server/db/schema";
 
 import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // import { citationPoints
 import { and, eq } from "drizzle-orm";

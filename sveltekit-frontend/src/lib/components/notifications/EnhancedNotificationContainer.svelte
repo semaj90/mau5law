@@ -11,9 +11,9 @@ mcp<script lang="ts">
   import { AlertCircle, AlertTriangle, Check, Info, X } from "lucide-svelte";
   import { createEventDispatcher, onMount } from "svelte";
 
-  const dispatch = createEventDispatcher();
-  let container = $state<HTMLElement;
-  let notificationElements >(new Map<string, HTMLElement>());
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
+  let container = $state<HTMLElementlet notificationElements | null>(null)(new Map<string, HTMLElement>());
   let isVisible = $state(false);
   let maxVisible = $state(5);
   let position = $state<| "top-right"
@@ -48,10 +48,10 @@ mcp<script lang="ts">
   });
 
   function announceNotification(notification: Notification) {
-    const message = `${notification.type} notification: ${notification.title}. ${notification.message}`;
+    const message = `${(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).type} notification: ${(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).title}. ${(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).message}`;
     FocusManager.announceToScreenReader(
       message,
-      notification.type === "error" ? "assertive" : "polite"
+      (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).type === "error" ? "assertive" : "polite"
     );
   }
   function playNotificationSound(type: Notification["type"]) {
@@ -142,7 +142,7 @@ mcp<script lang="ts">
       action.callback();
   }
     if (action.dismissOnClick !== false) {
-      dismissNotification(notification.id);
+      dismissNotification((notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id);
   }}
   function pauseTimer(notification: Notification) {
     // Timer functionality could be implemented here if needed
@@ -197,26 +197,26 @@ mcp<script lang="ts">
         class="bits-btn container mx-auto px-4"
         variant="ghost"
         size="sm"
-        onclick={() => (maxVisible += 5)}
+        on:click={() =>
+(maxVisible += 5)}
       >
         +{hiddenCount} more notifications
-      </button>
+</Button>
     </div>
   {/if}
 
   <div
     class="container mx-auto px-4"
   >
-    {#each visibleNotifications as notification (notification.id)}
+    {#each visibleNotifications as notification ((notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id)}
       <div
         class="container mx-auto px-4"
-        use:setNotificationelement={notification.id}
+        use:setNotificationelement={(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id}
         role="alert"
-        aria-labelledby="notification-title-{notification.id}"
-        aria-describedby="notification-message-{notification.id}"
+        aria-labelledby="notification-title-{(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id}"
+        aria-describedby="notification-message-{(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id}"
         on:mouseenter={() => pauseTimer(notification)}
-        on:mouseleave={() => resumeTimer(notification)}
-        focusin={() => pauseTimer(notification)}
+        on:mouseleave={focusin}
         focusout={() => resumeTimer(notification)}
       >
         <div
@@ -226,7 +226,7 @@ mcp<script lang="ts">
             <!-- Icon -->
             <div class="container mx-auto px-4">
               <svelte:component
-                this={getNotificationIcon(notification.type)}
+                this={getNotificationIcon((notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).type)}
                 class="container mx-auto px-4"
                 aria-hidden="true"
               />
@@ -237,23 +237,23 @@ mcp<script lang="ts">
               <div class="container mx-auto px-4">
                 <div class="container mx-auto px-4">
                   <p
-                    id="notification-title-{notification.id}"
+                    id="notification-title-{(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id}"
                     class="container mx-auto px-4"
                   >
-                    {notification.title}
+                    {(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).title}
                   </p>
 
-                  {#if notification.message}
+                  {#if (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).message}
                     <p
-                      id="notification-message-{notification.id}"
+                      id="notification-message-{(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id}"
                       class="container mx-auto px-4"
                     >
-                      {notification.message}
+                      {(notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).message}
                     </p>
                   {/if}
 
                   <!-- Progress bar for timed notifications -->
-                  {#if notification.duration && notification.duration > 0}
+                  {#if (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).duration && (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).duration > 0}
                     <div
                       class="container mx-auto px-4"
                     >
@@ -265,20 +265,20 @@ mcp<script lang="ts">
                   {/if}
 
                   <!-- Actions -->
-                  {#if notification.actions && notification.actions.length > 0}
+                  {#if (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).actions && (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).actions.length > 0}
                     <div class="container mx-auto px-4">
-                      {#each notification.actions as action}
+                      {#each (notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).actions as action}
                         <Button class="bits-btn"
                           size="sm"
                           variant={action.variant === "primary"
                             ? "default"
                             : "ghost"}
-                          onclick={() =>
-                            handleNotificationAction(notification, action)}
+                          on:click={() =>
+handleNotificationAction(notification, action)}
                           class="container mx-auto px-4"
                         >
                           {action.label}
-                        </button>
+</Button>
                       {/each}
                     </div>
                   {/if}
@@ -289,12 +289,13 @@ mcp<script lang="ts">
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    onclick={() => dismissNotification(notification.id)}
+                    on:click={() =>
+dismissNotification((notification as { type?: any; title?: any; message?: any; id?: any; duration?: any; actions?: any }).id)}
                     class="container mx-auto px-4"
                     aria-label="Dismiss notification"
                   >
                     <X class="container mx-auto px-4" />
-                  </button>
+</Button>
                 </div>
               </div>
             </div>
@@ -310,11 +311,12 @@ mcp<script lang="ts">
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        onclick={() => dismissAll()}
+        on:click={() =>
+dismissAll()}
         class="container mx-auto px-4"
       >
         Clear all ({$notifications.notifications.length})
-      </button>
+</Button>
     </div>
   {/if}
 </div>

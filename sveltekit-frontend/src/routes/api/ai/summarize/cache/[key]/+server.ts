@@ -18,7 +18,7 @@
 
 import { json } from '@sveltejs/kit';
 import { getCache, deleteCache, redisTTL, memoryStats } from '$lib/server/summarizeCache';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
@@ -46,7 +46,7 @@ const originalGETHandler: RequestHandler = async ({ params, url }) => {
     source: cached.source,
     remainingMs: remainingMs < 0 ? 0 : remainingMs,
     structured: !!cached.entry.structured,
-    model: cached.entry.model,
+    model: cached.entry?.model || "unknown" // @ts-ignore - Model property access,
     mode: cached.entry.mode,
     type: cached.entry.type,
     createdAt: new Date(cached.entry.ts).toISOString(),

@@ -372,9 +372,9 @@ export class MinIOService {
   static async batchExtractText(
     minioUrls: string[],
     options: { concurrency?: number; maxSize?: number } = {}
-  ): Promise<Array<{ url: string; result?: TextExtractionResult; error?: string }>> {
+  ): Promise<Array<any> {
     const { concurrency = 5, maxSize = 10 * 1024 * 1024 } = options;
-    const results: Array<{ url: string; result?: TextExtractionResult; error?: string }> = [];
+    const results: Array< = [];
 
     // Process in batches to avoid overwhelming the system
     for (let i = 0; i < minioUrls.length; i += concurrency) {

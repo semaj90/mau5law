@@ -8,7 +8,7 @@ import {
   generateMCPPrompt, 
   commonMCPQueries, 
   validateMCPRequest 
-} from '../../utils/mcp-helpers.js';
+} from '../../utils/mcp-helpers.js.js';
 
 async function testSelfPromptingDemo() {
   console.log('🚀 Testing Self-Prompting Demo Components...\n');

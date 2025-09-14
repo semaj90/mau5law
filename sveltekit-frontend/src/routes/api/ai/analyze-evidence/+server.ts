@@ -21,7 +21,7 @@ import { aiService } from "$lib/server/services/ai-service.js";
 import { evidence } from "$lib/server/db/schema.js";
 import { z } from "zod";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 const analysisSchema = z.object({

@@ -4,7 +4,7 @@ import { db } from '$lib/server/db';
 // TODO: Replace with precise imports once schema-postgres module path confirmed
 // Temporary raw table names used below.
 import { count, eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const GET: RequestHandler = async ({ url }) => {

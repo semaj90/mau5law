@@ -332,7 +332,6 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   }
 
   // Reactive stats exposed to template
-  let stats = getTestStats();
   let stats = $derived(getTestStats());
 
   // Auto-run tests on mount
@@ -362,15 +361,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <Monitor size={16} />
           {isRunning ? 'TESTS RUNNING...' : 'READY FOR TESTING'}
         </div>
-      </div>
-    </div>
-  </section>
-
+      </div>    </div>
+</section>
   <!-- Test Controls -->
   <section class="yorha-test-controls">
       <button
         class="yorha-test-run-btn {isRunning ? 'running' : ''}"
-        onclick={runAllTests}
+        on:click={runAllTests}
         disabled={isRunning}
       >
         {#if isRunning}
@@ -450,7 +447,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               <div class="yorha-test-item">
                 <div class="yorha-test-item-header">
                   <div class="yorha-test-item-icon {getStatusColor(test.status)}">
-                    <{getStatusIcon(test.status)} size={16} />
+                    
                   </div>
                   <span class="yorha-test-item-name">{test.name}</span>
                   {#if test.duration}

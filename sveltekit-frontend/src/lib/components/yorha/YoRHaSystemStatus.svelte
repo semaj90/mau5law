@@ -13,12 +13,7 @@ https://svelte.dev/e/js_parse_error -->
     gpuUtilization, 
     memoryUsage, 
     networkLatency 
-  } = $props<{
-    systemLoad: number;
-    gpuUtilization: number;
-    memoryUsage: number;
-    networkLatency: number;
-  }>();
+  } = $props();
 
   // Additional system metrics
   let cpuTemp = $state(72);
@@ -41,9 +36,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Real-time updates
-  let updateInterval = $state<number;
-
-  onMount(() => {
+  let updateInterval = $state<numberonMount(() = | null>(null)() {
     updateInterval = setInterval(() => {
       currentTime = new Date());
       uptime += 1;

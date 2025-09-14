@@ -133,7 +133,7 @@ export class QueryBuilder {
     baseQuery: any,
     filters: QueryFilters,
     table: any
-  ): Promise<{ data: T[]; total: number; pagination: PaginationParams }> {
+  ): Promise<any> {
     // Build filter conditions
     const conditions = this.buildFilters(table, filters);
     const whereClause = this.applyFilters(conditions);

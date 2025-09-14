@@ -16,8 +16,7 @@
     showProgress?: boolean;
   }
 
-  let {
-    type = 'info',
+  let { type = 'info',
     title = '',
     message,
     duration = 5000,
@@ -26,7 +25,16 @@
     icon = '',
     position = 'top-right',
     showProgress = true
-  } = $props();
+   }: { type = 'info',
+    title = '',
+    message,
+    duration = 5000,
+    persistent = false,
+    closable = true,
+    icon = '',
+    position = 'top-right',
+    showProgress = true
+  : any } = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -105,8 +113,8 @@
     bind:this={notificationElement}
   class="yorha-notification {type}"
   transitionfly="{{ x: position.includes('right') ? 150 : -150, duration: 250 }}"
-  onmouseenter={pauseAutoClose}
-  onmouseleave={resumeAutoClose}
+  on:mouseenter={pauseAutoClose}
+  on:mouseleave={resumeAutoClose}
     role="alert"
     aria-live="polite"
   >
@@ -140,7 +148,7 @@
       {#if closable}
         <button
           class="notification-close"
-          onclick={closeNotification}
+          on:click={closeNotification}
           aria-label="Close notification"
         >
           ✕
@@ -254,41 +262,41 @@
   }
 
   /* Type-specific styling */
-  .yorha-notification.info {
+  .yorha-(notification as { info?: any; success?: any; warning?: any; error?: any; system?: any }).info {
     border-left: 4px solid var(--yorha-accent, #00ff41);
   }
 
-  .yorha-notification.info .notification-icon {
+  .yorha-(notification as { info?: any; success?: any; warning?: any; error?: any; system?: any }).info .notification-icon {
     color: var(--yorha-accent, #00ff41);
   }
 
-  .yorha-notification.success {
+  .yorha-(notification as { info?: any; success?: any; warning?: any; error?: any; system?: any }).success {
     border-left: 4px solid var(--yorha-accent, #00ff41);
     background: var(--yorha-bg-secondary, #1a1a1a);
   }
 
-  .yorha-notification.success .notification-icon {
+  .yorha-(notification as { info?: any; success?: any; warning?: any; error?: any; system?: any }).success .notification-icon {
     color: var(--yorha-accent, #00ff41);
     background: rgba(0, 255, 65, 0.1);
   }
 
-  .yorha-notification.warning {
+  .yorha-(notification as { info?: any; success?: any; warning?: any; error?: any; system?: any }).warning {
     border-left: 4px solid var(--yorha-warning, #ffaa00);
   }
 
-  .yorha-notification.warning .notification-icon {
+  .yorha-(notification as { info?: any; success?: any; warning?: any; error?: any; system?: any }).warning .notification-icon {
     color: var(--yorha-warning, #ffaa00);
   }
 
-  .yorha-notification.error {
+  .yorha-(notification as { info?: any; success?: any; warning?: any; error?: any; system?: any }).error {
     border-left: 4px solid var(--yorha-danger, #ff0041);
   }
 
-  .yorha-notification.error .notification-icon {
+  .yorha-(notification as { info?: any; success?: any; warning?: any; error?: any; system?: any }).error .notification-icon {
     color: var(--yorha-danger, #ff0041);
   }
 
-  .yorha-notification.system {
+  .yorha-(notification as { info?: any; success?: any; warning?: any; error?: any; system?: any }).system {
     border: 2px solid var(--yorha-secondary, #ffd700);
     background: var(--yorha-bg-primary, #0a0a0a);
     box-shadow:
@@ -297,7 +305,7 @@
       inset 0 0 20px rgba(255, 215, 0, 0.1);
   }
 
-  .yorha-notification.system .notification-icon {
+  .yorha-(notification as { info?: any; success?: any; warning?: any; error?: any; system?: any }).system .notification-icon {
     color: var(--yorha-secondary, #ffd700);
     animation: pulse 2s infinite;
   }

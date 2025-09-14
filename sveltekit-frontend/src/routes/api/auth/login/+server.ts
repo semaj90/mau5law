@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { db } from '$lib/server/db/drizzle';
 import { users } from '$lib/server/db/schema-postgres';
 import { authService, lucia } from '$lib/server/auth';

@@ -9,10 +9,7 @@ https://svelte.dev/e/props_duplicate -->
   import { createEventDispatcher } from "svelte";
   import type { Case } from "$lib/types/index";
 
-  let { case_ = $bindable(), user = $bindable() } = $props<{
-    case_?: Case | null;
-    user?: User;
-  }>();
+  let { case_ = $bindable(), user = $bindable() } = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -38,7 +35,7 @@ https://svelte.dev/e/props_duplicate -->
     metadata: case_?.metadata || {},
   });
   let loading = $state(false);
-  let errors = $state<Record<string, string> >({});
+  let errors = $state<Record<string, string>('') >({});
 
   // Form validation
   function validateForm() {
@@ -173,7 +170,7 @@ https://svelte.dev/e/props_duplicate -->
   }
 </script>
 
-<form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="container mx-auto px-4">
+<form on:submit={(e) => { e.preventDefault(); handleSubmit(); }} class="container mx-auto px-4">
   <div class="container mx-auto px-4">
     <!-- Basic Information -->
     <section class="container mx-auto px-4">
@@ -349,7 +346,7 @@ https://svelte.dev/e/props_duplicate -->
             keydown={(e) =>
               e.key === "Enter" && (e.preventDefault(), addTeamMember())}
           />
-          <button type="button" onclick={() => addTeamMember()}>Add</button>
+          <button type="button" on:click={() => addTeamMember()}>Add</button>
         </div>
 
         {#if formData.assignedTeam.length > 0}
@@ -357,7 +354,7 @@ https://svelte.dev/e/props_duplicate -->
             {#each formData.assignedTeam as member}
               <span class="container mx-auto px-4">
                 {member}
-                <button type="button" onclick={() => removeTeamMember(member)}
+                <button type="button" on:click={() => removeTeamMember(member)}
                   >×</button
                 >
               </span>
@@ -377,7 +374,7 @@ https://svelte.dev/e/props_duplicate -->
             keydown={(e) =>
               e.key === "Enter" && (e.preventDefault(), addTag())}
           />
-          <button type="button" onclick={() => addTag()}>Add</button>
+          <button type="button" on:click={() => addTag()}>Add</button>
         </div>
 
         {#if formData.tags.length > 0}
@@ -385,7 +382,7 @@ https://svelte.dev/e/props_duplicate -->
             {#each formData.tags as tag}
               <span class="container mx-auto px-4">
                 {tag}
-                <button type="button" onclick={() => removeTag(tag)}>×</button>
+                <button type="button" on:click={() => removeTag(tag)}>×</button>
               </span>
             {/each}
           </div>
@@ -396,7 +393,7 @@ https://svelte.dev/e/props_duplicate -->
 
   <!-- Form Actions -->
   <div class="container mx-auto px-4">
-    <button type="button" onclick={() => dispatch("cancel")}> Cancel </button>
+    <button type="button" on:click={() => dispatch("cancel")}> Cancel </button>
     <button type="submit" disabled={loading} class="container mx-auto px-4">
       {#if loading}
         Saving...

@@ -27,9 +27,9 @@ https://svelte.dev/e/js_parse_error -->
     Users,
   } from "lucide-svelte";
 
-  let { open = $bindable() } = $props(); // boolean = false;
+  let { open = $bindable()  }: { open = $bindable() : any } = $props(); // boolean = false;
   // SSR-compatible: all dates as strings
-  let { caseData = $bindable() } = $props(); // {
+  let { caseData = $bindable()  }: { caseData = $bindable() : any } = $props(); // {
     id: string;
     title: string;
     description: string;
@@ -48,11 +48,7 @@ https://svelte.dev/e/js_parse_error -->
         level: "low" | "medium" | "high";
         factors: string[];
       };
-      timeline: Array<{
-        date: string; // ISO string
-        event: string;
-        importance: "low" | "medium" | "high";
-      }>;
+      timeline: Array;
       evidence: {
         total: number;
         admissible: number;
@@ -70,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
     };
   } | null = null;
 
-  let { useDrawer = $bindable() } = $props(); // boolean = false;
+  let { useDrawer = $bindable()  }: { useDrawer = $bindable() : any } = $props(); // boolean = false;
 
   const dispatch = createEventDispatcher();
   let isGeneratingSummary = $state(false);
@@ -92,9 +88,9 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      const result = await response.json();
-      if (result.success) {
-        caseData = { ...caseData, summary: result.summary };
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; summary?: any }).success) {
+        caseData = { ...caseData, summary: (result as { success?: any; summary?: any }).summary };
         dispatch("summaryGenerated", caseData);
   }
     } catch (error) {
@@ -184,9 +180,9 @@ https://svelte.dev/e/js_parse_error -->
           <div class="space-y-4">
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-semibold">Overview</h3>
-              <Button class="bits-btn" onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="outline">
-                <Sparkles class="w-4 h-4 mr-2" /> Regenerate
-              </button>
+              <Button class="bits-btn" on:click={generateSummary} disabled={isGeneratingSummary} size="sm" variant="outline">
+<Sparkles class="w-4 h-4 mr-2" /> Regenerate
+
             </div>
             <p class="nes-text is-disabled">{caseData.summary.overview}</p>
 
@@ -242,9 +238,9 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex flex-col items-center justify-center h-48 nes-text is-disabled">
             <Brain class="w-16 h-16 mb-4 opacity-50" />
             <p>No AI summary available for this case.</p>
-            <Button onclick={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn bits-btn">
-              <Sparkles class="w-4 h-4 mr-2" /> Generate Summary
-            </button>
+            <Button on:click={generateSummary} disabled={isGeneratingSummary} class="mt-4 bits-btn bits-btn">
+<Sparkles class="w-4 h-4 mr-2" /> Generate Summary
+
           </div>
         {/if}
       </div>

@@ -3,10 +3,10 @@
  * Comprehensive XState v5 machine for managing legal case workflows
  */
 import { setup, assign, createActor, fromPromise } from 'xstate';
-import type { Case, Evidence, NewCase, NewEvidence } from '../server/db/schema-types';
-import { aiSummarizationService } from '../services/ai-summarization-service';
-import { vectorSearchService } from '../services/vector-search-service';
-import { embedText } from '../server/ai/embedder';
+import type { Case, Evidence, NewCase, NewEvidence } from '../server/db/schema-types.js';
+import { aiSummarizationService } from '../services/ai-summarization-service.js';
+import { vectorSearchService } from '../services/vector-search-service.js';
+import { embedText } from '../server/ai/embedder.js';
 
 // Context types
 export interface LegalCaseContext {
@@ -22,7 +22,7 @@ export interface LegalCaseContext {
   // AI processing
   aiAnalysisProgress: number;
   aiSummary: string | null;
-  similarCases: Array<{ id: string; title: string; similarity: number }>;
+  similarCases: Array<any>;
 
   // Search and filtering
   searchQuery: string;
@@ -52,8 +52,8 @@ export interface LegalCaseContext {
   nextActions: string[];
 
   // Collaboration
-  collaborators: Array<{ id: string; name: string; role: string }>;
-  notifications: Array<{ id: string; message: string; type: 'info' | 'warning' | 'error' }>;
+  collaborators: Array<any>;
+  notifications: Array<any>;
 
   // Performance tracking
   stats: {
@@ -330,13 +330,13 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
     searchResults: [],
     relatedEvidence: [],
     lastEmbedding: null,
-    filters: {},
+    filters: Record<string, any>,
     activeTab: 'overview',
     isLoading: false,
     error: null,
     formData: {
-      caseForm: {},
-      evidenceForm: {}
+      caseForm: Record<string, any>,
+      evidenceForm: Record<string, any>
     },
     workflowStage: 'investigation',
     nextActions: ['Collect evidence', 'Interview witnesses', 'Review documents'],
@@ -396,7 +396,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
           target: 'caseLoaded',
           actions: [
             'assignCaseData',
-            assign({ formData: () => ({ caseForm: {}, evidenceForm: {} }) })
+            assign({ formData: () => ({ caseForm: Record<string, any>, evidenceForm: Record<string, any> }) })
           ]
         },
         onError: {
@@ -777,13 +777,13 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
         similarCases: [],
         searchQuery: '',
         searchResults: [],
-        filters: {},
+        filters: Record<string, any>,
         activeTab: 'overview',
         isLoading: false,
         error: null,
         formData: {
-          caseForm: {},
-          evidenceForm: {}
+          caseForm: Record<string, any>,
+          evidenceForm: Record<string, any>
         },
         workflowStage: 'investigation',
         nextActions: ['Collect evidence', 'Interview witnesses', 'Review documents'],

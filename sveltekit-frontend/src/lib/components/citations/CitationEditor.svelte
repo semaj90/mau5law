@@ -25,11 +25,7 @@ https://svelte.dev/e/js_parse_error -->
   
 
   // Event dispatcher
-  const dispatch = createEventDispatcher<{
-    save: Citation;
-    cancel: void;
-    delete: string;
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Form state
   let formData = $state({
@@ -190,12 +186,12 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify(payload)
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
-        dispatch('save', result.citation);
+      if ((result as { success?: any; citation?: any; error?: any }).success) {
+        dispatch('save', (result as { success?: any; citation?: any; error?: any }).citation);
       } else {
-        console.error('Save failed:', result.error);
+        console.error('Save failed:', (result as { success?: any; citation?: any; error?: any }).error);
       }
     } catch (error) {
       console.error('Save error:', error);
@@ -218,12 +214,12 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify({ id: citation.id })
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
+      if ((result as { success?: any; citation?: any; error?: any }).success) {
         dispatch('delete', citation.id);
       } else {
-        console.error('Delete failed:', result.error);
+        console.error('Delete failed:', (result as { success?: any; citation?: any; error?: any }).error);
       }
     } catch (error) {
       console.error('Delete error:', error);
@@ -266,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
     </h3>
     {#if mode === 'edit'}
       <button 
-        onclick={handleDelete}
+        on:click={handleDelete}
         disabled={isLoading}
         class="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
       >
@@ -492,7 +488,7 @@ https://svelte.dev/e/js_parse_error -->
         Tags
       </label><input id="-tags-"
         type="text"
-        onkeydown={addTag}
+        on:keydown={addTag}
         disabled={disabled || isLoading}
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
         placeholder="Type tag and press Enter..."
@@ -504,7 +500,7 @@ https://svelte.dev/e/js_parse_error -->
               {tag}
               <button
                 type="button"
-                onclick={() => removeTag(tag)}
+                on:click={() => removeTag(tag)}
                 class="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-500 focus:outline-none"
               >
                 <svg class="w-2 h-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
@@ -535,7 +531,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex justify-end space-x-3 pt-4 border-t">
       <button
         type="button"
-        onclick={() => dispatch('cancel')}
+        on:click={() => dispatch('cancel')}
         disabled={isLoading}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
       >

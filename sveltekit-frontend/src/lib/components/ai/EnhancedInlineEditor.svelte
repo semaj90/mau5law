@@ -14,8 +14,7 @@ https://svelte.dev/e/js_parse_error -->
   import { debounce } from 'lodash-es';
 
   // Props
-  let { 
-    value = $bindable(''),
+  let { value = $bindable(''),
     placeholder = 'Start typing to get AI suggestions...',
     aiModel = 'gemma3-legal',
     enableAutoComplete = true,
@@ -25,7 +24,17 @@ https://svelte.dev/e/js_parse_error -->
     suggestionDelay = 800,
     maxSuggestions = 3,
     class = ''
-  } = $props();
+   }: { value = $bindable(''),
+    placeholder = 'Start typing to get AI suggestions...',
+    aiModel = 'gemma3-legal',
+    enableAutoComplete = true,
+    enableGrammarCheck = true,
+    enableSemanticSuggestions = true,
+    minCharactersForSuggestion = 10,
+    suggestionDelay = 800,
+    maxSuggestions = 3,
+    class = ''
+  : any } = $props();
 
   // State management
   let editorElement: HTMLDivElement;
@@ -111,8 +120,8 @@ https://svelte.dev/e/js_parse_error -->
 
       aiActor.send({ type: 'START_PROCESSING', task: completionTask });
       const result = await waitForAIResult(completionTask.id);
-      if (result?.success && result.result?.completions) {
-        suggestions.push(...result.result.completions.map((completion: string, index: number) => ({
+      if (result?.success && (result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).result?.completions) {
+        suggestions.push(...(result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).(result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).completions.map((completion: string, index: number) => ({
           id: `completion_${index}`,
           type: 'completion' as const,
           text: completion,
@@ -138,8 +147,8 @@ https://svelte.dev/e/js_parse_error -->
 
       aiActor.send({ type: 'START_PROCESSING', task: grammarTask });
       const result = await waitForAIResult(grammarTask.id);
-      if (result?.success && result.result?.suggestions) {
-        suggestions.push(...result.result.suggestions.map((suggestion: any, index: number) => ({
+      if (result?.success && (result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).result?.suggestions) {
+        suggestions.push(...(result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).(result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).suggestions.map((suggestion: any, index: number) => ({
           id: `grammar_${index}`,
           type: 'grammar' as const,
           text: suggestion.text,
@@ -179,9 +188,9 @@ https://svelte.dev/e/js_parse_error -->
           suggestions.push(...ragResults.results.slice(0, 2).map((result, index) => ({
             id: `semantic_${index}`,
             type: 'legal_term' as const,
-            text: result.summary || result.content.slice(0, 100),
-            confidence: result.confidence,
-            reasoning: `Related legal concept: ${result.metadata?.type || 'case law'}`
+            text: (result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).summary || (result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).content.slice(0, 100),
+            confidence: (result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).confidence,
+            reasoning: `Related legal concept: ${(result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).metadata?.type || 'case law'}`
           })));
         }
       }
@@ -328,10 +337,9 @@ https://svelte.dev/e/js_parse_error -->
     aria-label="AI-enhanced text editor"
     aria-multiline="true"
     class="editor-content"
-    {placeholder}
-    input={handleInput}
+    {placeholder} on:input={handleInput}
     keydown={handleKeyDown}
-    onfocus={() => generateSuggestions(value, 0)}
+    on:focus={() => generateSuggestions(value, 0)}
   >
     {value}
   </div>
@@ -353,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
     >
       <div class="suggestion-header">
         <span class="suggestion-title">AI Suggestions</span>
-        <button class="close-btn" onclick={hideSuggestions}>×</button>
+        <button class="close-btn" on:click={hideSuggestions}>×</button>
       </div>
       
       <div class="suggestions-list">
@@ -361,7 +369,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             class="suggestion-item"
             class:selected={index === selectedSuggestionIndex}
-            onclick={() => applySuggestion(suggestion)}
+            on:click={() => applySuggestion(suggestion)}
           >
             <div class="suggestion-content">
               <div class="suggestion-text">{suggestion.text}</div>
@@ -501,11 +509,11 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .suggestion-item:hover,
-  .suggestion-item.selected {
+  .suggestion-(item as { selected?: any }).selected {
     background: #f3f4f6;
   }
 
-  .suggestion-item.selected {
+  .suggestion-(item as { selected?: any }).selected {
     background: #eff6ff;
     border-left: 3px solid #3b82f6;
   }

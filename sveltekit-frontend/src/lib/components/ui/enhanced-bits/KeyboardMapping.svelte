@@ -37,15 +37,12 @@
     className = ''
   }: KeyboardMappingProps = $props();
 
-  const dispatch = createEventDispatcher<{
-    shortcutExecuted: { shortcut: KeyboardShortcut; event: KeyboardEvent };
-    shortcutBlocked: { shortcut: KeyboardShortcut; reason: string };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // State
-  let pressedKeys = $state<Set<string>>(new Set());
+  let pressedKeys = $state<Set<string>('')>(new Set());
   let activeShortcuts = $state<KeyboardShortcut[]>([]);
-  let debugLog = $state<Array<{ timestamp: number; message: string; type: 'info' | 'warn' | 'error' }>>([]);
+  let debugLog = $state<any[]>([])([]);
 
   // Legal domain default shortcuts
   const defaultLegalShortcuts: KeyboardShortcut[] = [

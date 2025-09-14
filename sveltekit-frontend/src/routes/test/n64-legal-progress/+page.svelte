@@ -90,29 +90,29 @@
 
 <div class="container mx-auto p-6 space-y-6">
   <!-- Header -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center justify-between">
+      <h3 class="nes-text is-primary flex items-center justify-between">
         <div class="flex items-center gap-2">
           <Brain class="h-6 w-6" />
           N64 Progress Components - Legal AI Integration Test
         </div>
         <div class="flex gap-2">
-          <Button class="bits-btn" onclick={startAnimation} disabled={mockData.isProcessing}>
-            Start AI Processing
-          </button>
-          <Button class="bits-btn" variant="outline" onclick={resetData}>
-            Reset
-          </button>
+          <Button class="bits-btn" on:click={startAnimation} disabled={mockData.isProcessing}>
+Start AI Processing
+
+          <Button class="bits-btn" variant="outline" on:click={resetData}>
+Reset
+
         </div>
       </h3>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Processing Status -->
   {#if mockData.isProcessing}
-    <NesCard>
-      <div class="yorha-panel-content" class="p-6">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-6">
         <div class="flex items-center gap-4">
           <N64LoadingRing 
             size="lg" 
@@ -126,13 +126,13 @@
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Evolution Loader -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <Zap class="h-5 w-5" />
         N64 Evolution Loader
       </h3>
@@ -145,19 +145,19 @@
         animateTransitions={true}
       />
     </div>
-  </NesCard>
+  </div>
 
   <!-- AI Performance Metrics -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- AI Confidence -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
+        <h3 class="nes-text is-primary text-sm flex items-center gap-2">
           <Brain class="h-4 w-4" />
           AI Analysis Confidence
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <div>
           <div class="flex justify-between text-sm mb-2">
             <span>Current Confidence</span>
@@ -175,17 +175,17 @@
           />
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Performance Metrics -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
+        <h3 class="nes-text is-primary text-sm flex items-center gap-2">
           <Cpu class="h-4 w-4" />
           Performance Metrics
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <div>
           <div class="flex justify-between text-sm mb-2">
             <span>Tokens/sec</span>
@@ -217,17 +217,17 @@
           />
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- GPU Status -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
+        <h3 class="nes-text is-primary text-sm flex items-center gap-2">
           <Zap class="h-4 w-4" />
           RTX 3060 Ti Status
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <div>
           <div class="flex justify-between text-sm mb-2">
             <span>GPU Layers</span>
@@ -275,17 +275,17 @@
           />
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Response Time -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
+        <h3 class="nes-text is-primary text-sm flex items-center gap-2">
           <Database class="h-4 w-4" />
           System Response
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <div>
           <div class="flex justify-between text-sm mb-2">
             <span>Response Time</span>
@@ -304,11 +304,11 @@
           />
         </div>
       </div>
-    </NesCard>
+    </div>
   </div>
 
   <!-- Color Theme Showcase -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">N64 Controller Color Themes</h3>
     </div>
@@ -330,7 +330,7 @@
         {/each}
       </div>
     </div>
-  </NesCard>
+  </div>
 </div>
 
 <style>

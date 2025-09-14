@@ -30,7 +30,7 @@ export class ChatHistoryService {
       id,
       userId,
       title: 'Chat Session',
-      context: {},
+      context: Record<string, any>,
       metadata: {
         model,
         messageCount: 0
@@ -49,7 +49,7 @@ export class ChatHistoryService {
       content: params.content,
       embedding: null,
       metadata: {
-        model: params.model,
+        model: params?.model || "unknown" // @ts-ignore - Model property access,
         ...params.metadata,
       },
     };

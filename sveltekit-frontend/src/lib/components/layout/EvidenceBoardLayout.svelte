@@ -3,14 +3,19 @@
   import { onMount } from 'svelte';
 
   // Props for customization
-  let {
-    title = 'LEGAL AI COMMAND CENTER',
+  let { title = 'LEGAL AI COMMAND CENTER',
     caseInfo = '',
     demoMode = true,
     showGrid = true,
     children,
     rightPanel = undefined
-  } = $props();
+   }: { title = 'LEGAL AI COMMAND CENTER',
+    caseInfo = '',
+    demoMode = true,
+    showGrid = true,
+    children,
+    rightPanel = undefined
+  : any } = $props();
 
   // Connection status (matching Evidence Board)
   let isConnected = $state(false);
@@ -125,12 +130,12 @@
     transform: translateY(-2px);
   }
 
-  .evidence-item.active {
+  .evidence-(item as { active?: any; pending?: any }).active {
     border-color: #28a745;
     background: #f8fff9;
   }
 
-  .evidence-item.pending {
+  .evidence-(item as { active?: any; pending?: any }).pending {
     border-color: #ffc107;
     background: #fffbf0;
   }

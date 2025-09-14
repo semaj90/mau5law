@@ -59,20 +59,19 @@ Use this template for all essential routes
 							<Button
 								variant="outline"
 								size="sm"
-								onclick={goBack}
+								on:click={goBack}
 								class="nes-btn is-primary"
 							>
 								← Back
-							</Button>
 						{/if}
 						<div>
 							<Card.Title class="nes-text is-primary text-2xl">
 								{pageTitle}
-							</Card.Title>
+							</div.Title>
 							{#if description}
 								<Card.Description class="nes-text is-disabled mt-1">
 									{description}
-								</Card.Description>
+								</div.Description>
 							{/if}
 						</div>
 					</div>
@@ -83,8 +82,8 @@ Use this template for all essential routes
 						</div>
 					</div>
 				</div>
-			</Card.Header>
-		</Card.Root>
+			</div.Header>
+		</div.Root>
 
 		<!-- Main Content -->
 		<main class="essential-route-main">
@@ -106,19 +105,17 @@ Use this template for all essential routes
 								</p>
 							</div>
 							<div class="flex justify-center gap-4 mt-6">
-								<Button class="nes-btn is-primary" onclick={goBack}>
+								<Button class="nes-btn is-primary" on:click={goBack}>
 									Go Back
-								</Button>
 								<Button
 									variant="outline"
 									class="nes-btn"
-									onclick={() => window.location.href = '/'}
+									on:click={() => window.location.href = '/'}
 								>
 									Home
-								</Button>
 							</div>
-						</Card.Content>
-					</Card.Root>
+						</div.Content>
+					</div.Root>
 				{/if}
 			{:else}
 				<!-- Loading state -->
@@ -127,8 +124,8 @@ Use this template for all essential routes
 						<div class="nes-text is-disabled">
 							<div class="animate-pulse">Loading...</div>
 						</div>
-					</Card.Content>
-				</Card.Root>
+					</div.Content>
+				</div.Root>
 			{/if}
 		</main>
 	</div>

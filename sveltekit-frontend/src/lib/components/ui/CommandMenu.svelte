@@ -33,13 +33,11 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // Command menu state using Svelte 5 syntax
   let searchQuery = $state("");
   let selectedIndex = $state(0);
-  let inputElement = $state<HTMLInputElement;
-
-  // Create popover
+  let inputElement = $state<HTMLInputElement// Create popover
   // const {
   //   elements: { trigger, content, arrow, close },
   //   states: { open },
-  // } >(createPopover({
+  // } | null>(null)(createPopover({
   //   positioning: { placement: "bottom-start" },
   //   forceVisible: true,
   //   preventScroll: true,
@@ -233,7 +231,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
 {#if isOpen}
   <div
     class="command-menu-overlay"
-    transitifly={{ y: -10, duration: 150 }}
+    /* transition removed */}
   >
     <div class="command-menu-search">
       <Search size={16} />
@@ -258,8 +256,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
             <button
               class="command-menu-item"
               class:selected={globalIndex === selectedIndex}
-              onclick={() => executeCommand(command)}
-              onmouseenter={() => (selectedIndex = globalIndex)}
+              on:click={() => executeCommand(command)}
+              on:mouseenter={() => (selectedIndex = globalIndex)}
             >
               <svelte:component this={command.icon} size={16} />
               <span class="command-menu-item-label">{command.label}</span>
@@ -355,7 +353,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     text-align: left;
 }
   .command-item:hover,
-  .command-item.selected {
+  .command-(item as { selected?: any }).selected {
     background: #f3f4f6;
     color: #3b82f6;
 }

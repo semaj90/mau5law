@@ -349,7 +349,7 @@ export class RabbitMQXStateIntegration {
   /**
    * Initialize RabbitMQ connection (free tier compatible)
    */
-  static async initialize(): Promise<{ connection: any; isConnected: boolean }> {
+  static async initialize(): Promise<any> {
     try {
       if (browser) {
         // Browser environment - use WebSocket STOMP client
@@ -572,7 +572,7 @@ export class RabbitMQXStateIntegration {
   static async performSelfPromptingAnalysis(
     context: SelfPromptingContext,
     userHistory: any[]
-  ): Promise<{ recommendedActions: LegalAIMessage[]; analysis: any }> {
+  ): Promise<any> {
 
     // Analyze user behavior patterns
     const patterns = this.analyzeUserPatterns(userHistory);
@@ -804,11 +804,11 @@ export class RabbitMQXStateIntegration {
 
       return {
         status: 'completed',
-        inferenceId: result.id,
-        text: result.text,
-        tokens: result.tokens,
-        processingTime: result.processingTime,
-        ragContext: result.ragContext
+        inferenceId: (result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).id,
+        text: (result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).text,
+        tokens: (result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).tokens,
+        processingTime: (result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).processingTime,
+        ragContext: (result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).ragContext
       };
 
     } catch (error: any) {
@@ -873,8 +873,8 @@ export class RabbitMQXStateIntegration {
       return {
         status: 'loaded',
         modelPath: payload.modelPath,
-        moduleSize: result.module ? 'loaded' : 'mock',
-        instanceCreated: !!result.instance,
+        moduleSize: (result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).module ? 'loaded' : 'mock',
+        instanceCreated: !!(result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).instance,
         config
       };
 
@@ -969,7 +969,7 @@ export class RabbitMQXStateIntegration {
 
       // In a real streaming implementation, we would send multiple messages
       // with partial results. For now, we simulate streaming behavior.
-      const chunks = this.chunkText(result.text, 50); // Split into ~50 char chunks
+      const chunks = this.chunkText((result as { id?: any; text?: any; tokens?: any; processingTime?: any; ragContext?: any; module?: any; instance?: any }).text, 50); // Split into ~50 char chunks
 
       for (let i = 0; i < chunks.length; i++) {
         await this.publishMessage({

@@ -12,10 +12,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Props (Svelte 5 runes)
-  let { selectedDocument = $bindable(), searchQuery = $bindable() } = $props<{
-  selectedDocument: Document | null;
-  searchQuery: string;
-  }>();
+  let { selectedDocument = $bindable(), searchQuery = $bindable() } = $props();
   // State
   let similarDocuments = $state<SimilarityResult[] >([]);
   let isLoading = $state<boolean >(false);
@@ -85,7 +82,7 @@ https://svelte.dev/e/js_parse_error -->
       class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
     />
     <button
-      onclick={() => performSemanticSearch(searchQuery)}
+      on:click={() => performSemanticSearch(searchQuery)}
       disabled={isLoading || !searchQuery.trim()}
       class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
     >
@@ -178,7 +175,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <div class="mt-3 flex justify-end">
             <button
-              onclick={() => selectedDocument = doc}
+              on:click={() => selectedDocument = doc}
               class="text-blue-600 hover:text-blue-800 text-sm font-medium"
             >
               View Details →

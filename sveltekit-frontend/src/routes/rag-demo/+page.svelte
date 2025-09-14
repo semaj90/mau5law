@@ -32,13 +32,7 @@
   interface TestResults {
     error?: string;
     data?: unknown;
-    results?: Array<{
-      title: string;
-      content: string;
-      score: number;
-      source: string;
-      type: string;
-    }>;
+    results?: Array;
     executionTime?: number;
     source?: string;
   }
@@ -109,11 +103,11 @@
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        testResults = data.data;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        testResults = (data as { data?: any }).data;
       } else {
-        const error = await response.json();
+        const error = await (response as { ok?: any; json?: any }).json();
         testResults = { error: error.error };
   }
     } catch (error) {
@@ -182,7 +176,7 @@
 
       <button
         class="nes-btn is-primary w-full mt-3 text-xs"
-        onclick={() => checkSystemStatus()}
+        on:click={() => checkSystemStatus()}
         disabled={isLoadingStatus}
       >
         {isLoadingStatus ? "Checking..." : "🔄 Refresh Status"}
@@ -195,19 +189,19 @@
       <div class="space-y-2">
         <button
           class="nes-btn is-success w-full text-xs"
-          onclick={() => window.open("/api/embeddings", "_blank")}
+          on:click={() => window.open("/api/embeddings", "_blank")}
         >
           📊 Embeddings API
         </button>
         <button
           class="nes-btn is-success w-full text-xs"
-          onclick={() => window.open("/api/qdrant", "_blank")}
+          on:click={() => window.open("/api/qdrant", "_blank")}
         >
           🔍 Qdrant Status
         </button>
         <button
           class="nes-btn is-success w-full text-xs"
-          onclick={() => window.open("/cases", "_blank")}
+          on:click={() => window.open("/cases", "_blank")}
         >
           📁 Case Database
         </button>
@@ -245,7 +239,7 @@
         {#each demoQueries as query}
           <button
             class="nes-btn is-normal text-xs p-2 text-left"
-            onclick={() => (testQuery = query)}
+            on:click={() => (testQuery = query)}
           >
             "{query}"
           </button>
@@ -267,7 +261,7 @@
           class="nes-input flex-1"
         />
         <button
-          onclick={() => testVectorSearch()}
+          on:click={() => testVectorSearch()}
           disabled={!testQuery.trim() || isTestingSearch}
           class="nes-btn is-primary"
         >
@@ -294,16 +288,16 @@
               <div class="space-y-3">
                 {#each testResults.results as result}
                   <EvidenceCard
-                    title={result.title}
-                    description={result.content.substring(0, 200) + "..."}
+                    title={(result as { title?: any; content?: any; type?: any; score?: any; source?: any }).title}
+                    description={(result as { title?: any; content?: any; type?: any; score?: any; source?: any }).content.substring(0, 200) + "..."}
                     status="active"
-                    type={result.type}
-                    connections={Math.round(result.score * 100)}
+                    type={(result as { title?: any; content?: any; type?: any; score?: any; source?: any }).type}
+                    connections={Math.round((result as { title?: any; content?: any; type?: any; score?: any; source?: any }).score * 100)}
                   >
                     {#snippet children()}
                       <div class="flex justify-between text-xs">
-                        <span>Match: {Math.round(result.score * 100)}%</span>
-                        <span>Source: {result.source}</span>
+                        <span>Match: {Math.round((result as { title?: any; content?: any; type?: any; score?: any; source?: any }).score * 100)}%</span>
+                        <span>Source: {(result as { title?: any; content?: any; type?: any; score?: any; source?: any }).source}</span>
                       </div>
                     {/snippet}
                   </EvidenceCard>
@@ -312,7 +306,6 @@
             {:else}
               <p class="nes-text">No results found.</p>
             {/if}
-          {/if}
         </div>
       {/if}
     </div>

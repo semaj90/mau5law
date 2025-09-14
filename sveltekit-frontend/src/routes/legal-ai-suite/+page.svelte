@@ -21,12 +21,7 @@ https://svelte.dev/e/js_parse_error -->
   let processedDocuments = $state<any[]>([]);
   let ragQuery = $state('');
   let ragResults = $state<any[]>([]);
-  let systemMetrics = $state<{
-    gpuAcceleration: boolean;
-    ollamaStatus: string;
-    processingSpeed: number;
-    caseAIScore: number;
-  }>({
+  let systemMetrics = $state({
     gpuAcceleration: false,
     ollamaStatus: 'unknown',
     processingSpeed: 0,
@@ -94,23 +89,23 @@ https://svelte.dev/e/js_parse_error -->
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
 
-      if (result.success) {
-        processedDocuments = result.documents || [];
-        processingSummary = result.summary;
-        systemMetrics.caseAIScore = result.caseAISummaryScore;
+      if ((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).success) {
+        processedDocuments = (result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).documents || [];
+        processingSummary = (result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).summary;
+        systemMetrics.caseAIScore = (result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).caseAISummaryScore;
 
-        addLog(`✅ Processing complete: ${result.documentsProcessed} documents`);
-        addLog(`📊 Total entities extracted: ${result.summary?.totalEntities || 0}`);
+        addLog(`✅ Processing complete: ${(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).documentsProcessed} documents`);
+        addLog(`📊 Total entities extracted: ${(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).summary?.totalEntities || 0}`);
         addLog(`🎯 Average prosecution score: ${(averageProsecutionScore * 100).toFixed(1)}%`);
-        addLog(`📈 Case AI summary score: ${result.caseAISummaryScore}/100`);
+        addLog(`📈 Case AI summary score: ${(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).caseAISummaryScore}/100`);
       } else {
-        throw new Error(result.error || 'Processing failed');
+        throw new Error((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).error || 'Processing failed');
       }
     } catch (err) {
       const error = err as Error;
@@ -142,23 +137,23 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
 
-      if (result.success) {
-        ragResults = result.results || [];
+      if ((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).success) {
+        ragResults = (result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).results || [];
         addLog(
-          `✅ RAG query complete: ${ragResults.length} results, score: ${(result.ragScore * 100).toFixed(1)}%`
+          `✅ RAG query complete: ${ragResults.length} results, score: ${((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).ragScore * 100).toFixed(1)}%`
         );
 
-        if (result.aggregatedAnalysis?.recommendedNextQuery) {
-          addLog(`💡 Recommended follow-up: "${result.aggregatedAnalysis.recommendedNextQuery}"`);
+        if ((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).aggregatedAnalysis?.recommendedNextQuery) {
+          addLog(`💡 Recommended follow-up: "${(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).aggregatedAnalysis.recommendedNextQuery}"`);
         }
       } else {
-        throw new Error(result.error || 'RAG query failed');
+        throw new Error((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).error || 'RAG query failed');
       }
     } catch (err) {
       const error = err as Error;
@@ -277,9 +272,9 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- System Status Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <NesCard>
-        <div class="yorha-panel-header" class="pb-2">
-          <h3 class="nes-text is-primary" class="text-sm font-medium">GPU Acceleration</h3>
+      <div class="nes-container">
+        <div class="yorha-panel-header pb-2">
+          <h3 class="nes-text is-primary text-sm font-medium">GPU Acceleration</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="flex items-center space-x-2">
@@ -292,11 +287,11 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard>
-        <div class="yorha-panel-header" class="pb-2">
-          <h3 class="nes-text is-primary" class="text-sm font-medium">Ollama Status</h3>
+      <div class="nes-container">
+        <div class="yorha-panel-header pb-2">
+          <h3 class="nes-text is-primary text-sm font-medium">Ollama Status</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="flex items-center space-x-2">
@@ -309,11 +304,11 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard>
-        <div class="yorha-panel-header" class="pb-2">
-          <h3 class="nes-text is-primary" class="text-sm font-medium">Processing Speed</h3>
+      <div class="nes-container">
+        <div class="yorha-panel-header pb-2">
+          <h3 class="nes-text is-primary text-sm font-medium">Processing Speed</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="text-sm">
@@ -324,11 +319,11 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard>
-        <div class="yorha-panel-header" class="pb-2">
-          <h3 class="nes-text is-primary" class="text-sm font-medium">Case AI Score</h3>
+      <div class="nes-container">
+        <div class="yorha-panel-header pb-2">
+          <h3 class="nes-text is-primary text-sm font-medium">Case AI Score</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="text-sm font-semibold">
@@ -336,14 +331,14 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           <Progress value={systemMetrics.caseAIScore} class="h-2 mt-1" />
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Document Processing Panel -->
-      <NesCard>
+      <div class="nes-container">
           <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
+          <h3 class="nes-text is-primary flex items-center space-x-2">
             <UploadCloud class="h-5 w-5" />
             <span>Document Processing</span>
           </h3>
@@ -355,7 +350,7 @@ https://svelte.dev/e/js_parse_error -->
               type="file"
               multiple
               accept=".pdf"
-              onchange={handleFileSelect}
+              on:change={handleFileSelect}
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             {#if hasFiles}
               <p class="text-sm text-gray-600 mt-1">
@@ -385,7 +380,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex space-x-2">
             <button
               type="button"
-              onclick={processLegalDocuments}
+              on:click={processLegalDocuments}
               disabled={!canProcess}
               class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
               {#if isProcessing}
@@ -424,12 +419,12 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
-      </NesCard>
+      </div>
 
       <!-- Enhanced RAG Query Panel -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
+          <h3 class="nes-text is-primary flex items-center space-x-2">
             <Search class="h-5 w-5" />
             <span>Enhanced RAG Query</span>
           </h3>
@@ -447,7 +442,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex space-x-2 mt-3">
               <button
                 type="button"
-                onclick={executeRAGQuery}
+                on:click={executeRAGQuery}
                 disabled={!canQuery}
                 class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50">
                 <Brain class="h-4 w-4 mr-2" />
@@ -465,24 +460,24 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="p-3 bg-gray-50 rounded-md">
                     <div class="flex justify-between items-start mb-2">
                       <span class="text-sm font-medium text-gray-800">
-                        {result.sourceDocument ?? 'Unknown Source'}
+                        {(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).sourceDocument ?? 'Unknown Source'}
                       </span>
                       <div class="flex space-x-1">
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Similarity: {((result.similarity ?? 0) * 100).toFixed(0)}%</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Similarity: {(((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).similarity ?? 0) * 100).toFixed(0)}%</span>
                         <Badge
-                          variant={getFactCheckBadgeVariant(result.factCheckStatus ?? 'UNVERIFIED')}
+                          variant={getFactCheckBadgeVariant((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).factCheckStatus ?? 'UNVERIFIED')}
                           class="text-xs">
-                          {result.factCheckStatus ?? 'N/A'}
+                          {(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).factCheckStatus ?? 'N/A'}
                         </Badge>
                       </div>
                     </div>
                     <p class="text-sm text-gray-700 mb-2">
-                      {(result.content ?? '').substring(0, 200)}...
+                      {((result as any)?.content ?? "").substring(0, 200)}...
                     </p>
                     <div class="flex justify-between items-center text-xs text-gray-500">
-                      <span>Jurisdiction: {result.jurisdiction ?? 'Unknown'}</span>
-                      <span class={getProsecutionScoreColor(result.prosecutionScore ?? 0)}>
-                        Prosecution Score: {((result.prosecutionScore ?? 0) * 100).toFixed(0)}%
+                      <span>Jurisdiction: {(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).jurisdiction ?? 'Unknown'}</span>
+                      <span class={getProsecutionScoreColor((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).prosecutionScore ?? 0)}>
+                        Prosecution Score: {(((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).prosecutionScore ?? 0) * 100).toFixed(0)}%
                       </span>
                     </div>
                   </div>
@@ -491,12 +486,12 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
-      </NesCard>
+      </div>
 
       <!-- GPU-Accelerated Legal Search -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center space-x-2">
+          <h3 class="nes-text is-primary flex items-center space-x-2">
             <span>🔥</span>
             <span>GPU-Accelerated Legal Search</span>
             {#if systemMetrics.gpuAcceleration}
@@ -509,12 +504,12 @@ https://svelte.dev/e/js_parse_error -->
         <div class="yorha-panel-content">
           <GPUAcceleratedLegalSearch />
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Processed Documents Display -->
     {#if processedDocuments.length > 0}
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Processed Documents</h3>
         </div>
@@ -560,19 +555,19 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     {/if}
 
     <!-- Real-time System Logs -->
-    <NesCard>
-      <div class="yorha-panel-header" class="flex flex-row items-center justify-between">
-        <h3 class="nes-text is-primary" class="flex items-center space-x-2">
+    <div class="nes-container">
+      <div class="yorha-panel-header flex flex-row items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center space-x-2">
           <AlertCircle class="h-5 w-5" />
           <span>Real-time System Logs</span>
         </h3>
         <button
           type="button"
-          onclick={clearLogs}
+          on:click={clearLogs}
           class="px-3 py-1 border border-gray-300 text-sm rounded-md hover:bg-gray-50">
           Clear Logs
         </button>
@@ -588,11 +583,11 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- System Statistics -->
     {#if processedDocuments.length > 0 || ragResults.length > 0}
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">System Performance Statistics</h3>
         </div>
@@ -618,7 +613,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     {/if}
   </div>
 </div>

@@ -73,13 +73,13 @@ https://svelte.dev/e/effect_invalid_placement -->
         isListening = false;
       };
     }
+  });
 
-    // Auto-scroll to bottom when new messages arrive
-    return $effect(() => {
-      if (messagesContainer && messages.length > 0) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }
-    });
+  // Auto-scroll to bottom when new messages arrive
+  $effect(() => {
+    if (messagesContainer && messages.length > 0) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
   });
 
   // Send message function
@@ -154,7 +154,7 @@ https://svelte.dev/e/effect_invalid_placement -->
 
   // Insert search result
   function insertSearchResult(result: any) {
-    messageInput = result.content;
+    messageInput = (result as { content?: any; similarity?: any; timestamp?: any }).content;
     showSearchResults = false;
   }
 
@@ -231,7 +231,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="ai-actions">
       <button
         class="action-btn"
-        onclick={() => showSettings = !showSettings}
+        on:click={() => showSettings = !showSettings}
         title="Settings"
       >
         <Settings size={16} />
@@ -239,7 +239,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       
       <button
         class="action-btn"
-        onclick={() => exportConversation('markdown')}
+        on:click={() => exportConversation('markdown')}
         title="Export Conversation"
         disabled={messages.length === 0}
       >
@@ -248,7 +248,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       
       <button
         class="action-btn"
-        onclick={clearConversation}
+        on:click={clearConversation}
         title="Clear Conversation"
         disabled={messages.length === 0}
       >
@@ -269,7 +269,7 @@ https://svelte.dev/e/effect_invalid_placement -->
             <button
               class="backend-btn {currentBackend === backend ? 'active' : ''}"
               class:unavailable={backendLatency[backend] === 0}
-              onclick={() => selectBackend(backend)}
+              on:click={() => selectBackend(backend)}
             >
               {backend}
               <span class="latency {getBackendStatusColor(backend)}">
@@ -374,7 +374,7 @@ https://svelte.dev/e/effect_invalid_placement -->
                 <li>
                   <button
                     class="reference-link"
-                    onclick={() => showCitation(ref.citation)}
+                    on:click={() => showCitation(ref.citation)}
                   >
                     {ref.title}
                   </button>
@@ -410,7 +410,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="search-results-panel">
       <div class="search-header">
         <h4>🔍 Related Conversations</h4>
-        <button onclick={() => showSearchResults = false}>✕</button>
+        <button on:click={() => showSearchResults = false}>✕</button>
       </div>
       
       <div class="search-results">
@@ -418,12 +418,12 @@ https://svelte.dev/e/effect_invalid_placement -->
           <div 
             class="search-result"
             role="button" tabindex="0"
-                onclick={() => insertSearchResult(result)}
+                on:click={() => insertSearchResult(result)}
           >
-            <div class="result-content">{result.content}</div>
+            <div class="result-content">{(result as { content?: any; similarity?: any; timestamp?: any }).content}</div>
             <div class="result-meta">
-              Similarity: {Math.round(result.similarity * 100)}% | 
-              {formatTime(result.timestamp)}
+              Similarity: {Math.round((result as { content?: any; similarity?: any; timestamp?: any }).similarity * 100)}% | 
+              {formatTime((result as { content?: any; similarity?: any; timestamp?: any }).timestamp)}
             </div>
           </div>
         {/each}
@@ -440,7 +440,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="input-controls">
       <button
         class="voice-btn {isListening ? 'listening' : ''}"
-        onclick={toggleVoiceInput}
+        on:click={toggleVoiceInput}
         disabled={!recognition}
         title={recognition ? 'Voice input' : 'Voice input not supported'}
       >
@@ -453,7 +453,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       
       <button
         class="search-btn"
-        onclick={searchHistory}
+        on:click={searchHistory}
         disabled={!messageInput.trim()}
         title="Search conversation history"
       >
@@ -464,14 +464,14 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="input-wrapper">
       <textarea
         bind:value={messageInput}
-        onkeydown={handleKeyDown}
+        on:keydown={handleKeyDown}
         {placeholder}
         rows="3"
         disabled={isProcessing}
       ></textarea>
       <button
         class="submit-btn"
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={!messageInput.trim() || isProcessing}
         title="Send message (Enter)"
       >
@@ -486,7 +486,7 @@ https://svelte.dev/e/effect_invalid_placement -->
 
   <!-- Citation Dialog -->
   {#if showCitationDialog}
-    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = false; }}>
+    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" on:keydown={(e) => { if (e.key === 'Escape') showCitationDialog = false; }}>
       <div class="modal" role="document">
         <div class="modal-header">
           <Quote size={20} />
@@ -497,16 +497,16 @@ https://svelte.dev/e/effect_invalid_placement -->
             <p>{selectedCitation}</p>
           </div>
           <div class="modal-actions">
-            <button class="nes-btn is-primary" onclick={() => insertCitation()}>
+            <button class="nes-btn is-primary" on:click={() => insertCitation()}>
               Insert Citation
             </button>
-            <button class="nes-btn" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
+            <button class="nes-btn" on:click={() => navigator.clipboard.writeText(selectedCitation)}>
               Copy
             </button>
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn-close" onclick={() => (showCitationDialog = false)}>
+          <button class="btn-close" on:click={() => (showCitationDialog = false)}>
             Close
           </button>
         </div>

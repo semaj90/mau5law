@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Simple in-memory cache for development
 const memoryCache = new Map<string, { value: any; expires: number }>();

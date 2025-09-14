@@ -23,12 +23,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Component props with validation
   // Event dispatcher for parent communication
-  const dispatch = createEventDispatcher<{
-    nodeCreated: EditableNode;
-    nodeUpdated: EditableNode;
-    evidenceUploaded: Evidence;
-    error: string;
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Reactive stores
   const canvas = writable<CanvasState | null>(null);
@@ -43,9 +38,8 @@ https://svelte.dev/e/js_parse_error -->
   // Component state
   let mounted = $state(false);
   let canvasElement = $state<HTMLCanvasElement;
-  let ctx: CanvasRenderingContext2D;
-  let ws: WebSocket | null >(null);
-  let reconnectTimeout = $state<ReturnType<typeof setTimeout>;
+  let ctx: CanvasRenderingContext2Dlet ws: WebSocket | null>(null)(null);
+  let reconnectTimeout: ReturnType<typeof setTimeout = $state(undefined as any);
 
   // Lifecycle management
   onMount(async () => {
@@ -226,11 +220,11 @@ https://svelte.dev/e/js_parse_error -->
         body: formData
       });
 
-      if (!response.ok) {
-        throw new Error(`Upload failed: ${response.status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Upload failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
 
-      const newEvidence: Evidence = await response.json();
+      const newEvidence: Evidence = await (response as { ok?: any; status?: any; json?: any }).json();
       evidence.update(list => [...list, newEvidence]);
       dispatch('evidenceUploaded', newEvidence);
     } catch (error) {
@@ -280,7 +274,7 @@ https://svelte.dev/e/js_parse_error -->
       <button 
         type="button"
         disabled={readonly}
-        onclick={resetCanvas}
+        on:click={resetCanvas}
         aria-label="Create new canvas"
       >
         New Canvas
@@ -310,18 +304,18 @@ https://svelte.dev/e/js_parse_error -->
       role="img"
       aria-label="Interactive canvas for creating and editing nodes"
       tabindex={readonly ? -1 : 0}
-      onclick={handleCanvasClick}
-      ondrop={handleFileDrop}
-      ondragover={handleDragOver}
+      on:click={handleCanvasClick}
+      on:drop={handleFileDrop}
+      on:dragover={handleDragOver}
     ></canvas>
 
     <aside class="evidence-panel" aria-label="Evidence files">
       <h3>Evidence <span class="count">({$evidence.length})</span></h3>
       
-      {#each $evidence as item (item.id)}
+      {#each $evidence as item ((item as { id?: any; fileName?: any; uploadedAt?: any }).id)}
         <div class="evidence-item">
-          <span class="filename">{item.fileName}</span>
-          <time class="upload-date">{new Date(item.uploadedAt).toLocaleDateString()}</time>
+          <span class="filename">{(item as { id?: any; fileName?: any; uploadedAt?: any }).fileName}</span>
+          <time class="upload-date">{new Date((item as { id?: any; fileName?: any; uploadedAt?: any }).uploadedAt).toLocaleDateString()}</time>
         </div>
       {:else}
         <div class="empty-state">

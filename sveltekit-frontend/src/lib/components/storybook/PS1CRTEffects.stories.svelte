@@ -134,126 +134,7 @@ https://svelte.dev/e/expected_token -->
   });
 &lt;/script&gt;
 
-&lt;div class="story-container ps1-root" bind:this={containerRef}&gt;
-  &lt;h1&gt;🖥️ PS1 CRT Effects Demo&lt;/h1&gt;
-  
-  &lt;div class="controls-panel ps1-surface"&gt;
-    &lt;h3 class="ps1-panel__title"&gt;🎛️ CRT Controls&lt;/h3&gt;
-    
-    &lt;div class="control-grid"&gt;
-      &lt;label&gt;
-        Effect Variant:
-        &lt;select bind:value={currentVariant} class="ps1-textfield"&gt;
-          {#each crtVariants as variant}
-            &lt;option value={variant.id}&gt;{variant.name}&lt;/option&gt;
-          {/each}
-        &lt;/select&gt;
-      &lt;/label&gt;
-
-      &lt;label&gt;
-        Curvature: {curvatureIntensity.toFixed(2)}
-        &lt;input type="range" min="0" max="1" step="0.05" 
-               bind:value={curvatureIntensity} class="ps1-slider"&gt;
-      &lt;/label&gt;
-
-      &lt;label&gt;
-        Vignette: {vignette.toFixed(2)}
-        &lt;input type="range" min="0" max="1" step="0.05" 
-               bind:value={vignette} class="ps1-slider"&gt;
-      &lt;/label&gt;
-
-      &lt;label&gt;
-        Phosphor Decay: {phosphorDecay.toFixed(2)}
-        &lt;input type="range" min="0" max="1" step="0.05" 
-               bind:value={phosphorDecay} class="ps1-slider"&gt;
-      &lt;/label&gt;
-
-      &lt;label&gt;
-        Scanline Opacity: {scanlineOpacity.toFixed(3)}
-        &lt;input type="range" min="0" max="0.2" step="0.005" 
-               bind:value={scanlineOpacity} class="ps1-slider"&gt;
-      &lt;/label&gt;
-
-      &lt;label&gt;
-        Chromatic Aberration: {chromaticAberration.toFixed(2)}
-        &lt;input type="range" min="0" max="1" step="0.05" 
-               bind:value={chromaticAberration} class="ps1-slider"&gt;
-      &lt;/label&gt;
-
-      &lt;label&gt;
-        Glow Intensity: {glowIntensity.toFixed(2)}
-        &lt;input type="range" min="0" max="1" step="0.05" 
-               bind:value={glowIntensity} class="ps1-slider"&gt;
-      &lt;/label&gt;
-    &lt;/div&gt;
-
-    &lt;div class="button-row"&gt;
-      &lt;button class="ps1-btn" onclick={togglePerformanceMode}&gt;
-        {isPerformanceMode ? '🚀 Performance Mode ON' : '🎨 Quality Mode'}
-      &lt;/button&gt;
-      
-      &lt;button class="ps1-btn" onclick={resetToDefaults}&gt;
-        🔄 Reset Defaults
-      &lt;/button&gt;
-      
-      &lt;label class="ps1-toggle-wrapper"&gt;
-        &lt;div class="ps1-toggle" data-checked={effectsEnabled}&gt;
-          &lt;div class="ps1-toggle__thumb"&gt;&lt;/div&gt;
-        &lt;/div&gt;
-        Effects {effectsEnabled ? 'ON' : 'OFF'}
-      &lt;/label&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-
-  &lt;div class="demo-grid"&gt;
-    {#each crtVariants as variant}
-      &lt;div class="demo-item {variant.className} {currentVariant === variant.id ? 'active' : ''}"&gt;
-        &lt;div class="demo-content"&gt;
-          &lt;h4&gt;{variant.name}&lt;/h4&gt;
-          &lt;div class="text-content"&gt;
-            &lt;p&gt;PLAYSTATION™&lt;/p&gt;
-            &lt;p&gt;SYSTEM DATA&lt;/p&gt;
-            &lt;div class="scanlines"&gt;&lt;/div&gt;
-            &lt;div class="phosphor-trail"&gt;
-              ████████████████
-              ░░░░▓▓▓▓████████
-              ████▓▓▓▓░░░░████
-            &lt;/div&gt;
-          &lt;/div&gt;
-          
-          {#if variant.id === 'ps1-crt-glitch'}
-            &lt;div class="glitch-overlay"&gt;
-              &lt;span&gt;E▓▓OR 404&lt;/span&gt;
-              &lt;span&gt;SY▓TEM ▓▓LURE&lt;/span&gt;
-            &lt;/div&gt;
-          {/if}
-        &lt;/div&gt;
-      &lt;/div&gt;
-    {/each}
-  &lt;/div&gt;
-
-  &lt;div class="performance-panel ps1-surface"&gt;
-    &lt;h3 class="ps1-panel__title"&gt;📊 Performance Metrics&lt;/h3&gt;
-    &lt;div class="metrics-grid"&gt;
-      &lt;div class="metric"&gt;
-        &lt;span&gt;Frame Rate:&lt;/span&gt;
-        &lt;span class="{performanceMetrics.frameRate &lt; 30 ? 'warning' : 'good'}"&gt;
-          {performanceMetrics.frameRate}fps
-        &lt;/span&gt;
-      &lt;/div&gt;
-      &lt;div class="metric"&gt;
-        &lt;span&gt;Render Time:&lt;/span&gt;
-        &lt;span&gt;{performanceMetrics.renderTime}ms&lt;/span&gt;
-      &lt;/div&gt;
-      &lt;div class="metric"&gt;
-        &lt;span&gt;Frame Drops:&lt;/span&gt;
-        &lt;span class="{performanceMetrics.frameDrops &gt; 10 ? 'warning' : 'good'}"&gt;
-          {performanceMetrics.frameDrops}
-        &lt;/span&gt;
-      &lt;/div&gt;
-      &lt;div class="metric"&gt;
-        &lt;span&gt;Performance Mode:&lt;/span&gt;
-        &lt;span class="{isPerformanceMode ? 'active' : ''}"&gt;
+&lt;div class="story-container ps1-root {isPerformanceMode ? 'active' : ''}"&gt;
           {isPerformanceMode ? 'ENABLED' : 'DISABLED'}
         &lt;/span&gt;
       &lt;/div&gt;
@@ -319,7 +200,7 @@ https://svelte.dev/e/expected_token -->
     transition: all 0.3s ease;
   }
 
-  .demo-item.active {
+  .demo-(item as { active?: any }).active {
     border-color: var(--ps1-accent);
     box-shadow: 0 0 20px var(--ps1-glow);
   }

@@ -3,7 +3,7 @@
  * Handles chunked responses and VRAM management
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { GPULLMStreamingPipeline } from '$lib/services/gpu-llm-streaming-pipeline';
 import { error } from '@sveltejs/kit';
 

@@ -1,12 +1,12 @@
-import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from "./comprehensive-agent-orchestration";
+import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from './comprehensive-agent-orchestration.js';
 /*
  * FlashAttention2 + Context7 Multicore Bridge Integration
  * Connects high-performance GPU attention with multicore error analysis
  * Optimized for RTX 3060 Ti with legal AI processing
  */
 
-import { getContext7MulticoreService, type ProcessingTask } from "../services/context7-multicore";
-import { flashAttention2Service, type AttentionResult, type LegalContextAnalysis } from "../services/flashattention2-rtx3060";
+import { getContext7MulticoreService, type ProcessingTask } from '../services/context7-multicore.js';
+import { flashAttention2Service, type AttentionResult, type LegalContextAnalysis } from '../services/flashattention2-rtx3060.js';
 
 export interface FlashAttentionMulticoreRequest {
   text: string;
@@ -46,13 +46,7 @@ export interface ErrorAnalysisWithAttention {
   attentionWeights: Float32Array;
   relevantCodeSections: string[];
   fixProbability: number;
-  prioritizedErrors: Array<{
-    error: string;
-    attention_score: number;
-    fix_complexity: 'low' | 'medium' | 'high';
-    suggested_fix: string;
-  }>;
-}
+  prioritizedErrors: Array<any>
 
 /*
  * Bridge service connecting FlashAttention2 GPU processing with Context7 multicore analysis
@@ -212,10 +206,7 @@ export class FlashAttentionMulticoreBridge {
 
   private async processWithFlashAttention(
     request: FlashAttentionMulticoreRequest
-  ): Promise<{
-    result: AttentionResult;
-    legalAnalysis: LegalContextAnalysis;
-  }> {
+  ): Promise<any> {
     const analysisType = request.options?.errorData ? 'semantic' : 
                         (request.options?.analysisType || 'legal');
 
@@ -227,15 +218,15 @@ export class FlashAttentionMulticoreBridge {
 
     return {
       result: {
-        embeddings: result.embeddings,
-        attentionWeights: result.attentionWeights,
-        contextualEmbeddings: result.contextualEmbeddings || new Float32Array([]),
-        processingTime: result.processingTime,
-        memoryUsage: result.memoryUsage,
-        confidence: result.confidence,
-        sequenceLength: result.sequenceLength || 0
+        embeddings: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).embeddings,
+        attentionWeights: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).attentionWeights,
+        contextualEmbeddings: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).contextualEmbeddings || new Float32Array([]),
+        processingTime: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).processingTime,
+        memoryUsage: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).memoryUsage,
+        confidence: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).confidence,
+        sequenceLength: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).sequenceLength || 0
       },
-      legalAnalysis: result.legalAnalysis
+      legalAnalysis: (result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).legalAnalysis
     };
   }
 
@@ -282,7 +273,7 @@ export class FlashAttentionMulticoreBridge {
     const orchestrationRequest: ComprehensiveAgentRequest = {
       prompt: `Analyze the following with FlashAttention2 context: ${request.text.substring(0, 500)}...`,
       context: {
-        attentionWeights: Array.from(attentionResult.result.attentionWeights),
+        attentionWeights: Array.from(attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).attentionWeights),
         legalAnalysis: attentionResult.legalAnalysis,
         multicoreTaskCount: multicoreTasks.length
       },
@@ -330,7 +321,7 @@ export class FlashAttentionMulticoreBridge {
     }
 
     // Performance recommendations
-    if (attentionResult.result.processingTime > 5000) {
+    if (attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).processingTime > 5000) {
       recommendations.push('Consider GPU optimization for better performance');
     }
 
@@ -352,12 +343,12 @@ export class FlashAttentionMulticoreBridge {
     return {
       totalProcessingTime,
       gpuUtilization: status.gpuEnabled ? 0.75 + Math.random() * 0.2 : 0,
-      memoryEfficiency: attentionResult.result.memoryUsage > 0 ? 
-        Math.max(0.6, 1 - (attentionResult.result.memoryUsage / (1024 * 1024 * 100))) : 0.8,
+      memoryEfficiency: attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).memoryUsage > 0 ? 
+        Math.max(0.6, 1 - (attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).memoryUsage / (1024 * 1024 * 100))) : 0.8,
       confidence: {
-        attention: attentionResult.result.confidence,
+        attention: attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).confidence,
         multicore: completedTasks / Math.max(1, totalTasks),
-        overall: (attentionResult.result.confidence + (completedTasks / Math.max(1, totalTasks))) / 2
+        overall: (attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).confidence + (completedTasks / Math.max(1, totalTasks))) / 2
       }
     };
   }

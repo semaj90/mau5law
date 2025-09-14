@@ -198,16 +198,16 @@ export const QUEUES = {
   evidence: {
     process: 'evidence.process.queue',
     analyze: 'evidence.analyze.queue',
-    response: 'evidence.response.queue',
+    response: 'evidence.(response as { queue?: any }).queue',
   },
   ai: {
     analysis: 'ai.analysis.queue',
     embedding: 'ai.embedding.queue',
-    response: 'ai.response.queue',
+    response: 'ai.(response as { queue?: any }).queue',
   },
   notification: {
-    email: 'notification.email.queue',
-    webhook: 'notification.webhook.queue',
+    email: '(notification as { email?: any; webhook?: any }).email.queue',
+    webhook: '(notification as { email?: any; webhook?: any }).webhook.queue',
   },
 };
 

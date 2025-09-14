@@ -103,9 +103,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       isLoading = true;
       error = null;
       const response = await fetch('/api/persons-of-interest');
-      if (response.ok) {
-        const data = await response.json();
-        persons = data.persons || persons; // Fallback to mock data
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        persons = (data as { persons?: any }).persons || persons; // Fallback to mock data
       }
     } catch (err) {
       error = 'Failed to load persons of interest';
@@ -123,8 +123,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(personData)
       });
-      if (response.ok) {
-        const newPerson = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const newPerson = await (response as { ok?: any; json?: any }).json();
         persons = [...persons, newPerson];
         showNewPersonModal = false;
       }
@@ -217,10 +217,11 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       </div>
 
       <div class="header-right">
-        <Button class="header-btn bits-btn bits-btn" onclick={() => showNewPersonModal = true}>
+        <Button class="header-btn bits-btn bits-btn" on:click={() =>
+showNewPersonModal = true}>
           <Plus class="w-4 h-4" />
           ADD PERSON
-        </button>
+</Button>
       </div>
     </header>
 
@@ -279,8 +280,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         </div>
       {:else}
         {#each filteredPersons as person (person.id)}
-          <NesCard.Root class="person-nier-bits-card">
-          <NesCard.Header class="person-header">
+          <div.Root class="person-nier-bits-card nes-container">
+          <div.Header class="person-header nes-container">
             <div class="person-photo">
               {#if person.photo}
                 <img src={person.photo} alt={person.name} />
@@ -305,9 +306,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                 {person.status.toUpperCase()}
               </Badge>
             </div>
-          </Card.Header>
+          </div.Header>
 
-          <NesCard.Content class="person-content">
+          <div.Content class="person-content nes-container">
             <div class="person-details">
               <div class="detail-row">
                 <span class="detail-label">Last Seen:</span>
@@ -334,21 +335,21 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </div>
           </div>
 
-          <NesCard.Footer class="person-actions">
+          <div.Footer class="person-actions nes-container">
             <Button class="bits-btn" size="sm" variant="outline">
-              <Eye class="w-4 h-4" />
+<Eye class="w-4 h-4" />
               View
-            </button>
+</Button>
             <Button class="bits-btn" size="sm" variant="outline">
-              <Edit class="w-4 h-4" />
+<Edit class="w-4 h-4" />
               Edit
-            </button>
+</Button>
             <Button class="bits-btn" size="sm" variant="destructive">
-              <Trash2 class="w-4 h-4" />
+<Trash2 class="w-4 h-4" />
               Remove
-            </button>
-          </Card.Footer>
-        </NesCard>
+</Button>
+          </div.Footer>
+        </div>
         {/each}
       {/if}
     </div>
@@ -412,12 +413,14 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     </div>
 
     <Dialog.Footer>
-      <Button class="bits-btn" variant="outline" onclick={() => showNewPersonModal = false}>
+      <Button class="bits-btn" variant="outline" on:click={() =>
+showNewPersonModal = false}>
         CANCEL
-      </button>
-      <Button class="bits-btn" onclick={() => showNewPersonModal = false}>
+</Button>
+      <Button class="bits-btn" on:click={() =>
+showNewPersonModal = false}>
         ADD PERSON
-      </button>
+</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
@@ -495,7 +498,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     color: #d4af37;
   }
 
-  .nav-item.persons-active {
+  .nav-(item as { persons?: any; critical?: any; high?: any }).persons-active {
     background: #1a2a1a;
     color: #d4af37;
     border-left: 3px solid #d4af37;
@@ -634,17 +637,17 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     color: #888;
   }
 
-  .stat-item.critical .stat-number {
+  .stat-(item as { persons?: any; critical?: any; high?: any }).critical .stat-number {
     color: #ef4444;
   }
 
-  .stat-item.high .stat-number {
+  .stat-(item as { persons?: any; critical?: any; high?: any }).high .stat-number {
     color: #f97316;
   }
 
   .persons-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 20px;
     padding: 20px;
     overflow-y: auto;

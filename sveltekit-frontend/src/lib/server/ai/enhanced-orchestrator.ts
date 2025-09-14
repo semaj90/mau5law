@@ -2,7 +2,7 @@
 // Enhanced AI Synthesis Orchestrator with Full Stack Integration
 // Connects Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama, and Go services
 
-import { logger } from './logger';
+import { logger } from './logger.js';
 import { createHash } from 'node:crypto';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import {
@@ -26,14 +26,14 @@ import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
 import type { Document as LangChainDocumentType } from '@langchain/core/documents';
 import type { Document as LangChainDocument } from '@langchain/core/documents';
 // Import existing components
-import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer';
-import { legalBERT } from './legalbert-middleware';
-import { cachingLayer } from './caching-layer';
-import { feedbackLoop } from './feedback-loop';
-import { monitoringService } from './monitoring-service';
+import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
+import { legalBERT } from './legalbert-middleware.js';
+import { cachingLayer } from './caching-layer.js';
+import { feedbackLoop } from './feedback-loop.js';
+import { monitoringService } from './monitoring-service.js';
 import { EventEmitter } from 'events';
 // Import dynamic port management
-import { portManager, getServicePort } from '../config/dynamic-ports';
+import { portManager, getServicePort } from '../config/dynamic-ports.js';
 
 // ===== DATABASE SCHEMA (Drizzle ORM TypeScript Safe) =====
 
@@ -329,7 +329,7 @@ const orchestrationMachine = createMachine({
     performance: {
       startTime: null,
       endTime: null,
-      stageTimings: {},
+      stageTimings: Record<string, any>,
     },
   },
   states: {
@@ -723,9 +723,9 @@ export class EnhancedAISynthesisOrchestrator {
               }),
             });
 
-            if (!response.ok) throw new Error('Enhanced RAG failed');
+            if (!(response as { ok?: any; json?: any }).ok) throw new Error('Enhanced RAG failed');
 
-            const result = await response.json();
+            const result = await (response as { ok?: any; json?: any }).json();
             logger.info(`[Enhanced RAG] Processed with GPU acceleration`);
             return result;
           } catch (error: any) {
@@ -749,10 +749,10 @@ export class EnhancedAISynthesisOrchestrator {
               }),
             });
 
-            if (response.ok) {
-              const result = await response.json();
+            if ((response as { ok?: any; json?: any }).ok) {
+              const result = await (response as { ok?: any; json?: any }).json();
               logger.info('[Go-Llama] Generated response');
-              return result.response;
+              return (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).response;
             }
           } catch (error: any) {
             logger.warn('[Go-Llama] Service unavailable:', error);
@@ -776,7 +776,7 @@ export class EnhancedAISynthesisOrchestrator {
           for (const result of allResults) {
             const similarity = await legalBERT.calculateLegalSimilarity(
               context.query,
-              result.pageContent || result.content || result.text
+              (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).pageContent || (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).content || (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).text
             );
 
             rankedResults.push({
@@ -810,8 +810,8 @@ export class EnhancedAISynthesisOrchestrator {
               }),
             });
 
-            if (response.ok) {
-              const docs = await response.json();
+            if ((response as { ok?: any; json?: any }).ok) {
+              const docs = await (response as { ok?: any; json?: any }).json();
               logger.info('[Context7] Enhanced with documentation');
               return docs;
             }
@@ -845,7 +845,7 @@ export class EnhancedAISynthesisOrchestrator {
             if (gpuResponse.ok) {
               const result = await gpuResponse.json();
               logger.info('[GPU Orchestrator] Generated with RTX 3060 Ti');
-              return result.response;
+              return (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).response;
             }
           } catch (error: any) {
             logger.warn('[GPU Orchestrator] Falling back to Ollama');
@@ -865,7 +865,7 @@ export class EnhancedAISynthesisOrchestrator {
           if (ollamaResponse.ok) {
             const result = await ollamaResponse.json();
             logger.info('[Ollama] Generated response with gemma3-legal:latest');
-            return result.response;
+            return (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).response;
           }
 
           throw new Error('Ollama fallback failed');
@@ -892,9 +892,9 @@ export class EnhancedAISynthesisOrchestrator {
 
           // Track in monitoring service
           // monitoringService.recordSynthesis({
-          //   requestId: result.metadata?.requestId,
+          //   requestId: (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).metadata?.requestId,
           //   processingTime: Date.now() - (input.performance?.startTime || Date.now()),
-          //   confidence: result.metadata?.confidence,
+          //   confidence: (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).metadata?.confidence,
           // });
 
           return result;
@@ -914,7 +914,7 @@ export class EnhancedAISynthesisOrchestrator {
             metadata: {
               processingTime: Date.now() - (input.performance?.startTime || Date.now()),
               servicesUsed: ['neo4j', 'pgvector', 'enhanced-rag', 'ollama'],
-              confidence: result.metadata?.confidence,
+              confidence: (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).metadata?.confidence,
             },
           });
 
@@ -1044,7 +1044,7 @@ export class EnhancedAISynthesisOrchestrator {
   private async ensureGemma3LegalModel() {
     try {
       const response = await fetch(`${services.ollama.baseUrl}/api/tags`);
-      const { models } = await response.json();
+      const { models } = await (response as { ok?: any; json?: any }).json();
 
       const hasGemma3Legal =
         Array.isArray(models) &&
@@ -1117,7 +1117,7 @@ TEMPLATE """{{ if .System }}<|system|>
   private async ensureNomicEmbedModel() {
     try {
       const response = await fetch(`${services.ollama.baseUrl}/api/tags`);
-      const { models } = await response.json();
+      const { models } = await (response as { ok?: any; json?: any }).json();
 
       const hasNomicEmbed =
         Array.isArray(models) &&
@@ -1253,7 +1253,7 @@ TEMPLATE """{{ if .System }}<|system|>
           performance: {
             startTime: Date.now(),
             endTime: null,
-            stageTimings: {},
+            stageTimings: Record<string, any>,
           },
         },
       });
@@ -1270,7 +1270,7 @@ TEMPLATE """{{ if .System }}<|system|>
                 query,
                 solution: result,
                 confidence: result?.confidence_score
-                  ? Math.round(result.confidence_score * 100)
+                  ? Math.round((result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).confidence_score * 100)
                   : null,
                 processingTime: Date.now() - startTime,
                 serviceUsed: 'enhanced-orchestrator',
@@ -1396,7 +1396,7 @@ TEMPLATE """{{ if .System }}<|system|>
   private async checkOllama(): Promise<boolean> {
     try {
       const response = await fetch(`${services.ollama.baseUrl}/api/tags`);
-      return response.ok;
+      return (response as { ok?: any; json?: any }).ok;
     } catch {
       return false;
     }
@@ -1405,7 +1405,7 @@ TEMPLATE """{{ if .System }}<|system|>
   private async checkService(url: string): Promise<boolean> {
     try {
       const response = await fetch(`${url}/health`);
-      return response.ok;
+      return (response as { ok?: any; json?: any }).ok;
     } catch {
       return false;
     }

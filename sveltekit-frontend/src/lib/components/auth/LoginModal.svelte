@@ -86,13 +86,14 @@
             <Button class="bits-btn"
               type="button"
               variant="ghost"
-              onclick={() => handleOpenChange(false)}
+              on:click={() =>
+handleOpenChange(false)}
             >
               Cancel
-            </button>
+
             <Button class="bits-btn" type="submit" disabled={$submitting}>
-              {#if $submitting}Logging in...{:else}Login{/if}
-            </button>
+{#if $submitting}Logging in...{:else}Login{/if}
+
           </div>
         </div>
       </form>

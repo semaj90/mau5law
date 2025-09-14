@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Lightweight in-memory topology extractor (would be replaced by real scanners / registries)
 const backendServices = [

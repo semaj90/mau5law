@@ -191,13 +191,13 @@ https://svelte.dev/e/component_invalid_directive -->
 
       <div class="header-actions">
         <div class="filters">
-          <select bind:value={selectedTimeframe} change={loadDashboardData} class="filter-select">
+          <select bind:value={selectedTimeframe} on:change={loadDashboardData} class="filter-select">
             {#each timeframeOptions as option}
               <option value={option.value}>{option.label}</option>
             {/each}
           </select>
 
-          <select bind:value={selectedRatingType} change={loadDashboardData} class="filter-select">
+          <select bind:value={selectedRatingType} on:change={loadDashboardData} class="filter-select">
             {#each ratingTypeOptions as option}
               <option value={option.value}>{option.label}</option>
             {/each}
@@ -205,7 +205,7 @@ https://svelte.dev/e/component_invalid_directive -->
         </div>
 
         <button 
-          onclick={() => loadDashboardData(true)} 
+          on:click={() => loadDashboardData(true)} 
           disabled={refreshing}
           class="action-button refresh-button"
         >
@@ -213,7 +213,7 @@ https://svelte.dev/e/component_invalid_directive -->
           {refreshing ? 'Refreshing...' : 'Refresh'}
         </button>
 
-        <button onclick={exportData} class="action-button export-button">
+        <button on:click={exportData} class="action-button export-button">
           <Download class="w-4 h-4" />
           Export Data
         </button>
@@ -228,7 +228,7 @@ https://svelte.dev/e/component_invalid_directive -->
         <h3 class="font-semibold">Error Loading Analytics</h3>
         <p>{error}</p>
       </div>
-      <button onclick={() => loadDashboardData()} class="retry-button">
+      <button on:click={() => loadDashboardData()} class="retry-button">
         <RefreshCw class="w-4 h-4" />
         Retry
       </button>
@@ -243,7 +243,7 @@ https://svelte.dev/e/component_invalid_directive -->
   {:else}
     <main class="dashboard-main">
       <!-- Overview Cards -->
-      <section class="overview-section" transitifly={{ y: 20, duration: 300 }}>
+      <section class="overview-section" /* transition removed */}>
         <div class="overview-cards">
           <!-- Total Ratings -->
           <div class="metric-nier-bits-card">
@@ -316,7 +316,7 @@ https://svelte.dev/e/component_invalid_directive -->
       </section>
 
       <!-- Rating Breakdown -->
-      <section class="breakdown-section" transitifly={{ y: 20, duration: 300, delay: 100 }}>
+      <section class="breakdown-section" /* transition removed */}>
         <h2 class="section-title">Rating Breakdown by Category</h2>
         <div class="breakdown-grid">
           {#each dashboardData.breakdown || [] as category}
@@ -365,7 +365,7 @@ https://svelte.dev/e/component_invalid_directive -->
       </section>
 
       <!-- Insights and Recommendations -->
-      <section class="insights-section" transitifly={{ y: 20, duration: 300, delay: 200 }}>
+      <section class="insights-section" /* transition removed */}>
         <div class="insights-grid">
           <!-- AI Insights -->
           <div class="insights-nier-bits-card">
@@ -428,7 +428,7 @@ https://svelte.dev/e/component_invalid_directive -->
 
       <!-- Top Issues -->
       {#if dashboardData.topIssues?.length}
-        <section class="issues-section" transitifly={{ y: 20, duration: 300, delay: 300 }}>
+        <section class="issues-section" /* transition removed */}>
           <h2 class="section-title">
             <AlertCircle class="w-5 h-5 text-red-600" />
             Top Issues Reported

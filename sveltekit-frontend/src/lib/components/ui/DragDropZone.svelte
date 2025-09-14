@@ -121,14 +121,14 @@
 
 <div
   class="space-y-4"
-  ondragover={handleDragOver}
+  on:dragover={handleDragOver}
   ondragleave={handleDragLeave}
-  ondrop={handleDrop}
+  on:drop={handleDrop}
   role="button" 
   tabindex="0"
   aria-label="Drop zone or click to upload files"
-  onclick={openFileDialog}
-  onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && openFileDialog()}
+  on:click={openFileDialog}
+  on:keydown={(e: KeyboardEvent) => e.key === 'Enter' && openFileDialog()}
 >
   <input
     bind:this={fileInput}
@@ -136,7 +136,7 @@
     {accept}
     {multiple}
     {disabled}
-    onchange={handleFileSelect}
+    on:change={handleFileSelect}
     class="space-y-4"
   />
 

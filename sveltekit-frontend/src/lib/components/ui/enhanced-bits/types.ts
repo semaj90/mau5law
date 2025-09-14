@@ -58,15 +58,8 @@ export interface CaseData {
 
 export interface AIAnalysis {
   confidence: number;
-  entities: Array<{
-    text: string;
-    type: string;
-    confidence: number;
-  }>;
-  themes: Array<{
-    topic: string;
-    weight: number;
-  }>;
+  entities: Array<any>;
+  themes: Array<any>;
   summary: string;
 }
 
@@ -84,12 +77,7 @@ export interface SemanticEntity {
   type: string;
   text?: string;
   properties: Record<string, any>;
-  relationships?: Array<{
-    target: string;
-    type: string;
-    properties?: Record<string, any>;
-  }>;
-}
+  relationships?: Array<any>
 
 export interface SelectOption {
   value: string;

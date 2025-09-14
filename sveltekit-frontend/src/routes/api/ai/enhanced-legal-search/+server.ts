@@ -16,12 +16,12 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Enhanced Legal AI Search API with LangChain.js, Nomic Embed, and Vector Search
 // Provides advanced semantic search with multiple strategies and intelligent ranking
 
-import { enhancedLegalSearch, type LegalSearchResult } from '../../../../lib/server/ai/enhanced-legal-search.js';
+import { enhancedLegalSearch, type LegalSearchResult } from '../../../../lib/server/ai/enhanced-legal-search.js.js';
 import { URL } from "url";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
@@ -199,9 +199,9 @@ function calculateSearchAnalytics(results: LegalSearchResult[], query: string, s
     return {
       avgScore: 0,
       avgConfidence: 0,
-      searchTypes: {},
-      jurisdictions: {},
-      categories: {},
+      searchTypes: Record<string, any>,
+      jurisdictions: Record<string, any>,
+      categories: Record<string, any>,
       searchTime,
       resultCount: 0
     };

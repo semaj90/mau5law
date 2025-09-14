@@ -73,14 +73,7 @@ export class QLoRAOllamaOrchestrator {
   
   // CrewAI-style agent coordination
   private agentCrew: Map<string, LegalAgent[]> = new Map();
-  private workflowHistory: Array<{
-    queryId: string;
-    intent: QueryIntent;
-    agents: string[];
-    success: boolean;
-    duration: number;
-    userFeedback?: number;
-  }> = [];
+  private workflowHistory: Array< = [];
 
   constructor(ollamaEndpoint = 'http://localhost:11434') {
     this.ollamaEndpoint = ollamaEndpoint;
@@ -253,13 +246,7 @@ Classify the query and respond with JSON:
   /**
    * Execute orchestration plan with multi-agent coordination
    */
-  async executeOrchestration(plan: OrchestrationPlan, onProgress?: (step: ExecutionStep, result: string) => void): Promise<{
-    success: boolean;
-    results: Map<string, string>;
-    finalSynthesis: string;
-    duration: number;
-    metadata: any;
-  }> {
+  async executeOrchestration(plan: OrchestrationPlan, onProgress?: (step: ExecutionStep, result: string) => void): Promise<any> {
     const startTime = performance.now();
     const results = new Map<string, string>();
     

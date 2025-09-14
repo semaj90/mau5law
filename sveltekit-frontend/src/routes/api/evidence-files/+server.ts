@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db, evidence } from '$lib/server/db/client.js';
 import { minioService } from '$lib/server/storage/minio-service.js';
 import crypto from 'node:crypto';
@@ -128,12 +128,12 @@ export const POST: RequestHandler = async ({ request }) => {
         hash: checksum,
         tags: [],
         chainOfCustody: [],
-        labAnalysis: {},
-        aiAnalysis: {},
+        labAnalysis: Record<string, any>,
+        aiAnalysis: Record<string, any>,
         aiTags: [],
         isAdmissible: true,
         confidentialityLevel: 'standard',
-        canvasPosition: {},
+        canvasPosition: Record<string, any>,
         uploadedBy: null, // TODO: Get from session
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

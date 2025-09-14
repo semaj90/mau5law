@@ -27,10 +27,7 @@ https://svelte.dev/e/js_parse_error -->
       error?: string;
       summary?: string;
       stream?: string;
-      sources?: Array<{
-        id?: string;
-        title?: string;
-      }>;
+      sources?: Array;
     }
 
     interface AIStore {
@@ -84,12 +81,12 @@ https://svelte.dev/e/js_parse_error -->
             headers: { 'Content-Type': 'application/json' }
           });
 
-          const result = await response.json();
-          if (result.success) {
+          const result = await (response as { json?: any }).json();
+          if ((result as { success?: any; error?: any }).success) {
             // Optionally show a success notification here
             console.log('Summary saved successfully');
           } else {
-            console.error('Failed to save summary:', result.error);
+            console.error('Failed to save summary:', (result as { success?: any; error?: any }).error);
           }
         } catch (error) {
           console.error('Error saving summary:', error);
@@ -97,26 +94,26 @@ https://svelte.dev/e/js_parse_error -->
       }
     </script>
 
-    <NesCard class="nier-nier-bits-card p-6">
+    <div class="nier-nier-bits-card p-6 nes-container">
       <div class="nier-header mb-4">
         <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
       <div class="flex gap-2">
         <Button
-          onclick={handleSummarize}
+          on:click={handleSummarize}
           disabled={!user || $aiGlobalStore.context.loading}
           variant="primary"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
-          {!user ? 'Sign in to Summarize' : ($aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence')}
-        </button>
+{!user ? 'Sign in to Summarize' : ($aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence')}
+
         <Button
-          onclick={saveSummary}
+          on:click={saveSummary}
           disabled={!$aiGlobalStore.context.summary || $aiGlobalStore.context.loading}
           variant="primary"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
-          Save Summary
-        </button>
+Save Summary
+
       </div>
     </div>
 
@@ -144,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
                 {#each $aiGlobalStore.context.sources.slice(0, 3) as item, i}
                   <li class="nier-list-item">
                     <span class="nier-badge">{i + 1}</span>
-                    {item.title || item.id || `Evidence #${i+1}`}
+                    {(item as { title?: any; id?: any }).title || (item as { title?: any; id?: any }).id || `Evidence #${i+1}`}
                   </li>
                 {/each}
               </ol>
@@ -157,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <style>
     /* Nier.css inspired styles */

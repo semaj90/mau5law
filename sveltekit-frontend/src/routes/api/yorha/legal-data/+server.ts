@@ -1,7 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { db, helpers, sql, legalDocuments, cases as casesTable, evidence as evidenceTable } from "$lib/server/db";
 import crypto from "crypto";
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 
@@ -206,15 +206,15 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }
 
     // Format data for YoRHa interface
-    const formattedData = data.map((item, index) => ({
+    const formattedData = (data as { map?: any }).map((item, index) => ({
       ...item,
       yorha_id: `${dataType.toUpperCase()}-${String(offset + index + 1).padStart(6, '0')}`,
-      yorha_status: item.status || 'ACTIVE',
+      yorha_status: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).status || 'ACTIVE',
       yorha_type: dataType.toUpperCase(),
-      yorha_priority: item.priority || 'MEDIUM',
-      yorha_processed: !!item.processedAt || !!item.analyzedAt,
-      yorha_confidence: item.confidenceScore || 0.75,
-      yorha_timestamp: item.createdAt || item.uploadDate || new Date(),
+      yorha_priority: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).priority || 'MEDIUM',
+      yorha_processed: !!(item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).processedAt || !!(item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).analyzedAt,
+      yorha_confidence: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).confidenceScore || 0.75,
+      yorha_timestamp: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).createdAt || (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).uploadDate || new Date(),
     }));
 
     return json({
@@ -397,7 +397,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         throw new Error(`Unknown data type: ${dataType}`);
     }
 
-    if (!result.length) {
+    if (!(result as { length?: any }).length) {
       return json(
         { success: false, error: `${dataType} not found` },
         { status: 404 }
@@ -463,7 +463,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
         throw new Error(`Unknown data type: ${dataType}`);
     }
 
-    if (!result.length) {
+    if (!(result as { length?: any }).length) {
       return json(
         { success: false, error: `${dataType} not found` },
         { status: 404 }

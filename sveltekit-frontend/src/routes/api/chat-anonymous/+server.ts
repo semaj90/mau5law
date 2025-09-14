@@ -1,9 +1,9 @@
 // Anonymous Chat API - No authentication required
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface ChatRequest {
-  messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>;
+  messages: Array<any>;
   model?: string;
   stream?: boolean;
 }

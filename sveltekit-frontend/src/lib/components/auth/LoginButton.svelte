@@ -52,24 +52,24 @@
     <Button class="bits-btn" 
       {variant} 
       {size}
-      onclick={handleLogout}
+      on:click={handleLogout}
       disabled={authStore.isLoading}
       aria-label="Sign out"
     >
-      {logoutText}
-    </button>
+{logoutText}
+
   </div>
 {:else}
   <Button 
     {variant} 
     {size}
     class={className}
-    onclick={handleLogin}
+    on:click={handleLogin}
     disabled={authStore.isLoading}
     aria-label="Sign in"
   >
-    {loginText}
-  </button>
+{loginText}
+
 {/if}
 
 <style>

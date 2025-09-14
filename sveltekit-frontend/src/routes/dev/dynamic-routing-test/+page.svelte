@@ -172,30 +172,29 @@ https://svelte.dev/e/attribute_duplicate -->
     </div>
 
     <!-- Test Controls -->
-    <NesCard class="p-6">
+    <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Controls</h2>
 
       <div class="flex gap-4 mb-6">
         <Button
-          onclick={runAllTests}
+          on:click={runAllTests}
           disabled={isLoading}
           class="bg-yorha-secondary text-yorha-bg-primary hover:bg-yorha-secondary-dark bits-btn bits-btn"
         >
-          {isLoading ? 'Running Tests...' : 'Run All Tests'}
-        </button>
+{isLoading ? 'Running Tests...' : 'Run All Tests'}
 
         <Button
-          onclick={calculateRouteStats}
+          on:click={calculateRouteStats}
           variant="outline"
           class="border-yorha-accent text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary bits-btn bits-btn"
         >
-          Refresh Stats
-        </button>
+Refresh Stats
+
       </div>
-    </NesCard>
+    </div>
 
     <!-- Test Results -->
-    <NesCard class="p-6">
+    <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Results</h2>
 
       {#if $testResults.length > 0}
@@ -207,11 +206,11 @@ https://svelte.dev/e/attribute_duplicate -->
       {:else}
         <p class="text-yorha-text-secondary">No test results yet. Run tests to see output.</p>
       {/if}
-    </NesCard>
+    </div>
 
     <!-- Route Statistics -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <NesCard class="p-6">
+      <div class="p-6 nes-container">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Route Statistics</h3>
 
         {#if $routeStats.total}
@@ -239,9 +238,9 @@ https://svelte.dev/e/attribute_duplicate -->
         {:else}
           <p class="text-yorha-text-secondary">Loading statistics...</p>
         {/if}
-      </NesCard>
+      </div>
 
-      <NesCard class="p-6">
+      <div class="p-6 nes-container">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Categories</h3>
 
         {#if $routeStats.categories}
@@ -254,53 +253,54 @@ https://svelte.dev/e/attribute_duplicate -->
             {/each}
           </div>
         {/if}
-      </NesCard>
+      </div>
 
-      <NesCard class="p-6">
+      <div class="p-6 nes-container">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Quick Navigation</h3>
 
         <div class="space-y-2">
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            onclick={() => navigateToRoute('/')}
+            on:click={() =>
+navigateToRoute('/')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🏠 Home
-          </button>
 
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            onclick={() => navigateToRoute('/demo')}
+            on:click={() =>
+navigateToRoute('/demo')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🎯 Demo Overview
-          </button>
 
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            onclick={() => navigateToRoute('/dev/mcp-tools')}
+            on:click={() =>
+navigateToRoute('/dev/mcp-tools')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🔧 MCP Tools
-          </button>
 
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            onclick={() => navigateToRoute('/cases')}
+            on:click={() =>
+navigateToRoute('/cases')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             📁 Case Management
-          </button>
+
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Route Categories List -->
-    <NesCard class="p-6">
+    <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Route Categories</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -316,10 +316,10 @@ https://svelte.dev/e/attribute_duplicate -->
                 {#each categoryRoutes.slice(0, 5) as route}
                   <button
                     class="block w-full text-left text-sm text-yorha-text-secondary hover:text-yorha-accent hover:bg-yorha-bg-secondary p-1 rounded transition-colors"
-                    onclick={() => navigateToRoute(route.route)}
+                    on:click={() => navigateToRoute(route.route)}
                   >
                     {route.icon} {route.label}
-                  </button>
+
                 {/each}
                 {#if categoryRoutes.length > 5}
                   <p class="text-xs text-yorha-text-muted">
@@ -331,10 +331,10 @@ https://svelte.dev/e/attribute_duplicate -->
           {/if}
         {/each}
       </div>
-    </NesCard>
+    </div>
 
     <!-- Debug Information -->
-    <NesCard class="p-6">
+    <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Debug Information</h2>
 
       <details class="cursor-pointer">
@@ -355,7 +355,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {/each}
         </div>
       </details>
-    </NesCard>
+    </div>
   </div>
 </div>
 

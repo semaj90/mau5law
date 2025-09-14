@@ -6,7 +6,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import {
   cudaVectorService,
   type CUDAVectorRequest,

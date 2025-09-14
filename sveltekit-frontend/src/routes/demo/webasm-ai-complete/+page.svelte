@@ -24,7 +24,7 @@
 
   // Reactive state using Svelte 5 runes
   let currentPrompt = $state('');
-  let chatHistory = $state<Array<{role: 'user' | 'assistant', content: string, timestamp: number}>>([]);
+  let chatHistory = $state<any[]>([])([]);
   let conversationId = $state('');
   let isStreamingActive = $state(false);
   // Service status
@@ -320,11 +320,11 @@
       <div.Title class="flex items-center gap-2">
         <Settings class="h-5 w-5" />
         Service Status
-      </Card.Title>
+      </div.Title>
       <div.Description>
         Real-time status of all AI stack components
-      </Card.Description>
-    </Card.Header>
+      </div.Description>
+    </div.Header>
     <div.Content>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- WebAssembly Status -->
@@ -390,8 +390,8 @@
           </Alert.Description>
         </Alert.Root>
       {/if}
-    </Card.Content>
-  </Card.Root>
+    </div.Content>
+  </div.Root>
 
   <!-- Configuration Panel -->
   <div.Root>
@@ -399,8 +399,8 @@
       <div.Title class="flex items-center gap-2">
         <Settings class="h-5 w-5" />
         Configuration
-      </Card.Title>
-    </Card.Header>
+      </div.Title>
+    </div.Header>
     <div.Content>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Method Selection -->
@@ -410,19 +410,21 @@
             <Button class="bits-btn" 
               variant={useWebAssembly ? "default" : "outline"} 
               size="sm"
-              onclick={() => useWebAssembly = true}
+              on:click={() =>
+useWebAssembly = true}
             >
               <Cpu class="h-3 w-3 mr-1" />
               WASM
-            </button>
+
             <Button class="bits-btn" 
               variant={!useWebAssembly ? "default" : "outline"} 
               size="sm"
-              onclick={() => useWebAssembly = false}
+              on:click={() =>
+useWebAssembly = false}
             >
               <Code class="h-3 w-3 mr-1" />
               Go
-            </button>
+
           </div>
         </div>
 
@@ -465,8 +467,8 @@
           </div>
         </div>
       </div>
-    </Card.Content>
-  </Card.Root>
+    </div.Content>
+  </div.Root>
 
   <!-- Chat Interface -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -477,15 +479,15 @@
           <div.Title class="flex items-center gap-2">
             <MessageSquare class="h-5 w-5" />
             AI Chat Demo ({currentMethod})
-          </Card.Title>
+          </div.Title>
           <div class="flex gap-2">
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{chatHistory.length} messages</span>
-            <Button class="bits-btn" variant="outline" size="sm" onclick={clearChat}>
-              Clear Chat
-            </button>
+            <Button class="bits-btn" variant="outline" size="sm" on:click={clearChat}>
+Clear Chat
+
           </div>
         </div>
-      </Card.Header>
+      </div.Header>
       <div.Content>
         <!-- Chat Messages -->
         <div class="space-y-4 h-96 overflow-y-auto border rounded-lg p-4 mb-4">
@@ -530,7 +532,7 @@
             placeholder="Ask a legal question or test the AI..."
             class="resize-none"
             rows="2"
-            onkeydown={(e) => {
+            on:keydown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
@@ -538,19 +540,19 @@
             }}
           />
           <Button 
-            onclick={sendMessage}
+            on:click={sendMessage}
             disabled={!currentPrompt.trim() || isStreamingActive}
             class="shrink-0 bits-btn bits-btn"
           >
-            {#if isStreamingActive}
+{#if isStreamingActive}
               <Loader2 class="h-4 w-4 animate-spin" />
             {:else}
               <Zap class="h-4 w-4" />
             {/if}
-          </button>
+
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
 
     <!-- Information Panel -->
     <div.Root>
@@ -558,8 +560,8 @@
         <div.Title class="flex items-center gap-2">
           <Brain class="h-5 w-5" />
           Architecture Info
-        </Card.Title>
-      </Card.Header>
+        </div.Title>
+      </div.Header>
       <div.Content class="space-y-4">
         <div>
           <h4 class="font-medium mb-2">WebAssembly Mode</h4>
@@ -608,7 +610,7 @@
             significantly faster than Python-based solutions.
           </Alert.Description>
         </Alert.Root>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   </div>
 </div>

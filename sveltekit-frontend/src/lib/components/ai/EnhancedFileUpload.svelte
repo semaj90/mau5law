@@ -35,7 +35,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // State variables
   let files = $state<File[]>([]);
-  let fileStates = $state<Map<string, any>>(new Map());
+  let fileStates = $state<Map<string, any>('')>(new Map());
   let searchQuery = $state('');
   let searchResults = $state<unknown[]>([]);
   let isSearching = $state(false);
@@ -187,12 +187,12 @@ https://svelte.dev/e/js_parse_error -->
         body: formData
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        toast.success(`Successfully processed ${result.successfulUploads} of ${result.totalFiles} files`);
+      if ((response as { ok?: any; json?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any }).json();
+        toast.success(`Successfully processed ${(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).successfulUploads} of ${(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).totalFiles} files`);
 
         // Update file states with results
-        result.results.forEach((fileResult: any) => {
+        (result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).results.forEach((fileResult: any) => {
           const fileId = Array.from(fileStates.keys()).find(
             id => fileStates.get(id)?.name === fileResult.filename
           );
@@ -211,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
         // Call completion callback
         onUploadComplete(result);
       } else {
-        const error = await response.json();
+        const error = await (response as { ok?: any; json?: any }).json();
         toast.error(`Upload failed: ${error.error}`);
 
         // Mark all files as failed
@@ -267,11 +267,11 @@ https://svelte.dev/e/js_parse_error -->
 
       if (searchResponse.ok) {
         const result = await searchResponse.json();
-        if (result.success) {
-          searchResults = result.results || [];
+        if ((result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).success) {
+          searchResults = (result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).results || [];
           toast.success(`Found ${searchResults.length} results`);
         } else {
-          throw new Error(result.error || 'Search failed');
+          throw new Error((result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).error || 'Search failed');
         }
       } else {
         throw new Error('Search service unavailable');
@@ -372,8 +372,7 @@ https://svelte.dev/e/js_parse_error -->
     <input
       type="file"
       {accept}
-      multiple
-      change={handleFileUpload}
+      multiple on:change={handleFileUpload}
       class="hidden"
       id="file-input" />
     <label for="file-input" class="upload-label">
@@ -437,7 +436,7 @@ https://svelte.dev/e/js_parse_error -->
           placeholder="Search uploaded documents with AI..."
           class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
         <button
-          onclick={handleSearch}
+          on:click={handleSearch}
           disabled={isSearching || !searchQuery.trim()}
           class="px-6 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50 hover:bg-blue-600 flex items-center gap-2">
           {#if isSearching}
@@ -458,15 +457,15 @@ https://svelte.dev/e/js_parse_error -->
               <div class="result-item p-4 border rounded-lg hover:bg-gray-50">
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
-                    <p class="font-medium">{result.filename}</p>
+                    <p class="font-medium">{(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).filename}</p>
                     <p class="text-sm text-gray-600 mt-1">
-                      {result.excerpt}
+                      {(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).excerpt}
                     </p>
                     <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                      <span>Similarity: {(result.similarity * 100).toFixed(1)}%</span>
-                      <span>Type: {result.searchType}</span>
-                      {#if result.matchedBy}
-                        <span>Matched by: {result.matchedBy.join(', ')}</span>
+                      <span>Similarity: {((result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).similarity * 100).toFixed(1)}%</span>
+                      <span>Type: {(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).searchType}</span>
+                      {#if (result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).matchedBy}
+                        <span>Matched by: {(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).matchedBy.join(', ')}</span>
                       {/if}
                     </div>
                   </div>

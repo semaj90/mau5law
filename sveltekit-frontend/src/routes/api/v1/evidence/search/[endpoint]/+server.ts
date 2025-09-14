@@ -57,12 +57,12 @@ async function generateEmbedding(text: string): Promise<number[]> {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Embedding generation failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Embedding generation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    const data = await response.json();
-    return data.embedding;
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
+    return (data as { embedding?: any; response?: any }).embedding;
   } catch (error) {
     console.error('Embedding generation failed:', error);
     throw error;
@@ -86,12 +86,12 @@ async function queryOllama(prompt: string): Promise<string> {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Ollama query failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Ollama query failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    const data = await response.json();
-    return data.response;
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
+    return (data as { embedding?: any; response?: any }).response;
   } catch (error) {
     console.error('Ollama query failed:', error);
     throw error;
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           relevantLaws: ['Bank Secrecy Act', '31 USC 5311'],
           type: 'document'
         }
-      ].filter(item => item.similarity >= threshold)
+      ].filter(item => (item as { similarity?: any }).similarity >= threshold)
        .slice(0, limit);
 
       return json({

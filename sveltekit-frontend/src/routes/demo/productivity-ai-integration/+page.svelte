@@ -168,7 +168,7 @@
         { id: 'effects', name: '🎮 3D Effects', desc: 'NES.css processing' }
       ] as demo}
         <button
-          onclick={() => switchDemo(demo.id)}
+          on:click={() => switchDemo(demo.id)}
           class="px-6 py-3 rounded-lg border border-cyan-500/30 transition-all duration-300 {
             activeDemo === demo.id 
               ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/25' 
@@ -398,7 +398,7 @@
                 </div>
 
                 <button
-                  onclick={startProcessingDemo}
+                  on:click={startProcessingDemo}
                   disabled={processing}
                   class="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-semibold transition-all duration-200"
                 >
@@ -439,7 +439,7 @@
             
             <div class="flex flex-wrap gap-4 mb-6">
               <button
-                onclick={startProcessingDemo}
+                on:click={startProcessingDemo}
                 disabled={processing}
                 class="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed rounded font-semibold transition-colors"
               >
@@ -448,7 +448,7 @@
               
               <select 
                 class="px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white"
-                onchange={(e) => {
+                on:change={(e) => {
                   // In a real implementation, this would change the effect style
                   console.log('Style changed to:', e.target.value);
                 }}
@@ -462,7 +462,7 @@
               
               <select 
                 class="px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white"
-                onchange={(e) => {
+                on:change={(e) => {
                   console.log('LOD changed to:', e.target.value);
                 }}
               >

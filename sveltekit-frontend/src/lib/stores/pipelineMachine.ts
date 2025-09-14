@@ -31,7 +31,7 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
       on: {
         START: {
           target: 'chunking',
-          actions: assign((_, e) => ({ docId: (e as any).req.docId, model: (e as any).req.model || 'nomic-embed-text' }))
+          actions: assign((_, e) => ({ docId: (e as any).req.docId, model: (e as any).req?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text' }))
         }
       }
     },
@@ -42,13 +42,13 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
           const chunks = chunkTextByBytes(req.text, req.maxChunkBytes || 4096);
           const total = chunks.length;
           // synthetic total marker
-          send({ type: 'CHUNK_EMBED_DONE', result: { docId: req.docId, chunkId: 'meta:total', embedding: [], model: req.model || 'nomic-embed-text', backend: 'unknown', cached: true } as any });
+          send({ type: 'CHUNK_EMBED_DONE', result: { docId: req.docId, chunkId: 'meta:total', embedding: [], model: req?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text', backend: 'unknown', cached: true } as any });
           for (let i = 0; i < chunks.length; i++) {
             const chunkId = `${req.docId}#${i+1}/${total}`;
             const resp = await fetch('/api/vector/pipeline', {
               method: 'POST',
               headers: { 'content-type': 'application/json' },
-              body: JSON.stringify({ docId: req.docId, chunkId, text: chunks[i], model: req.model, tags: req.tags || [] })
+              body: JSON.stringify({ docId: req.docId, chunkId, text: chunks[i], model: req?.model || "unknown" // @ts-ignore - Model property access, tags: req.tags || [] })
             });
             if (resp.ok) {
               const data = await resp.json();
@@ -64,7 +64,7 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
       on: {
         CHUNK_EMBED_DONE: {
           actions: assign({
-            results: (ctx, e) => (e as any).result.chunkId.startsWith('meta:') ? ctx.results : [...ctx.results, (e as any).result],
+            results: (ctx, e) => (e as any).(result as { chunkId?: any }).chunkId.startsWith('meta:') ? ctx.results : [...ctx.results, (e as any).result],
             completed: (ctx) => ctx.completed + 1
           })
         },

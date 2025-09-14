@@ -1,7 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { criminals } from "$lib/server/db/schema-postgres";
 import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 

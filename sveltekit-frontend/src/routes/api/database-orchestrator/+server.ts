@@ -1,5 +1,5 @@
 import { eq, sql, desc  } from "drizzle-orm";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Database Orchestrator API - Complete Integration with Event Loops and Context7
 // Provides REST API for database orchestrator management and real-time operations

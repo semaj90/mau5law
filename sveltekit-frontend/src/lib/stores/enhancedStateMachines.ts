@@ -133,8 +133,8 @@ type EvidenceEvent =
 
 export const evidenceProcessingMachine = setup({
   types: {
-    context: {} as EnhancedAIContext,
-    events: {} as EvidenceEvent,
+    context: Record<string, any> as EnhancedAIContext,
+    events: Record<string, any> as EvidenceEvent,
   },
 
   actors: {
@@ -190,7 +190,7 @@ export const evidenceProcessingMachine = setup({
         const analysis =
           analysisResponse.status === 'fulfilled'
             ? analysisResponse.value
-            : { analysis: {}, confidence: 0 };
+            : { analysis: Record<string, any>, confidence: 0 };
 
         const processingTime = Date.now() - startTime;
 
@@ -226,8 +226,8 @@ export const evidenceProcessingMachine = setup({
             }),
           });
 
-          if (!response.ok) throw new Error('Vector search failed');
-          return await response.json();
+          if (!(response as { ok?: any; json?: any }).ok) throw new Error('Vector search failed');
+          return await (response as { ok?: any; json?: any }).json();
         } catch (error: any) {
           // Return empty results on failure
           return { matches: [] };
@@ -247,8 +247,8 @@ export const evidenceProcessingMachine = setup({
           }),
         });
 
-        if (!response.ok) throw new Error('Relationship discovery failed');
-        return await response.json();
+        if (!(response as { ok?: any; json?: any }).ok) throw new Error('Relationship discovery failed');
+        return await (response as { ok?: any; json?: any }).json();
       } catch (error: any) {
         // Return empty relationships on failure
         return { nodes: [], connections: [] };
@@ -290,9 +290,9 @@ export const evidenceProcessingMachine = setup({
     syncCache: fromPromise(async () => {
       try {
         const response = await fetch('/api/cache/sync', { method: 'POST' });
-        if (!response.ok) throw new Error('Cache sync failed');
-        const result = await response.json();
-        return { cacheOperations: result.operations || 0 };
+        if (!(response as { ok?: any; json?: any }).ok) throw new Error('Cache sync failed');
+        const result = await (response as { ok?: any; json?: any }).json();
+        return { cacheOperations: (result as { operations?: any }).operations || 0 };
       } catch (error: any) {
         return { cacheOperations: 0, error: (error as Error).message };
       }

@@ -51,9 +51,9 @@ export async function integrateLegalChatWithWebGPU() {
 
         return {
           ...doc,
-          webgpuBuffer: result.buffer,
-          compressionStats: result.compressionStats,
-          processingTime: result.processingTime
+          webgpuBuffer: (result as { buffer?: any; compressionStats?: any; processingTime?: any }).buffer,
+          compressionStats: (result as { buffer?: any; compressionStats?: any; processingTime?: any }).compressionStats,
+          processingTime: (result as { buffer?: any; compressionStats?: any; processingTime?: any }).processingTime
         };
       })
     );
@@ -357,8 +357,8 @@ function generateLegalEmbeddings(dimensions: number, baseValue = 0.1): Float32Ar
 
 function calculateOptimizationScore(result: any): number {
   // Calculate optimization score based on compression ratio and processing time
-  const compressionScore = Math.min(result.compressionStats.compressionRatio / 4, 1) * 50;
-  const speedScore = Math.max(0, 50 - result.processingTime / 10);
+  const compressionScore = Math.min((result as { buffer?: any; compressionStats?: any; processingTime?: any }).compressionStats.compressionRatio / 4, 1) * 50;
+  const speedScore = Math.max(0, 50 - (result as { buffer?: any; compressionStats?: any; processingTime?: any }).processingTime / 10);
   return Math.round(compressionScore + speedScore);
 }
 

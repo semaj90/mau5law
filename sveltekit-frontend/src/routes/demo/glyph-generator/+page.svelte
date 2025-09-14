@@ -85,9 +85,9 @@ https://svelte.dev/e/attribute_duplicate -->
     <!-- Sidebar -->
     <div class="space-y-6">
       <!-- Evidence Selection -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-lg">📁 Evidence Selection</h3>
+          <h3 class="nes-text is-primary text-lg">📁 Evidence Selection</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="space-y-3">
@@ -105,20 +105,21 @@ https://svelte.dev/e/attribute_duplicate -->
             </p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Tensor Search -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-lg flex items-center justify-between">
+          <h3 class="nes-text is-primary text-lg flex items-center justify-between">
             🔍 Tensor Search
             <Button
               class="bits-btn text-xs px-2 py-1"
               variant="outline"
-              onclick={() => showAdvanced = !showAdvanced}
+              on:click={() =>
+showAdvanced = !showAdvanced}
             >
               {showAdvanced ? 'Hide' : 'Advanced'}
-            </button>
+
           </h3>
         </div>
         <div class="yorha-panel-content">
@@ -129,15 +130,15 @@ https://svelte.dev/e/attribute_duplicate -->
                 bind:value={tensorSearchQuery}
                 class="flex-1 px-3 py-2 border rounded-lg text-sm"
                 placeholder="Search cached tensors..."
-                onkeydown={(e) => e.key === 'Enter' && searchTensors()}
+                on:keydown={(e) => e.key === 'Enter' && searchTensors()}
               />
               <Button
-                onclick={searchTensors}
+                on:click={searchTensors}
                 disabled={searching || !tensorSearchQuery.trim()}
                 class="px-3 py-2 text-sm bits-btn bits-btn"
               >
-                {searching ? '...' : 'Search'}
-              </button>
+{searching ? '...' : 'Search'}
+
             </div>
 
             {#if tensorSearchResults.length > 0}
@@ -159,13 +160,13 @@ https://svelte.dev/e/attribute_duplicate -->
             {/if}
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- System Performance -->
       {#if showAdvanced}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-lg">⚡ Performance Stats</h3>
+            <h3 class="nes-text is-primary text-lg">⚡ Performance Stats</h3>
           </div>
           <div class="yorha-panel-content">
             <div class="space-y-2 text-sm">
@@ -187,24 +188,24 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       {/if}
     </div>
   </div>
 
   <!-- Recent Glyphs Gallery -->
   {#if recentGlyphs.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           🖼️ Recent Glyphs ({recentGlyphs.length})
           <Button
             variant="outline"
-            onclick={clearRecentGlyphs}
+            on:click={clearRecentGlyphs}
             class="text-sm px-3 py-1 bits-btn bits-btn"
           >
-            Clear All
-          </button>
+Clear All
+
         </h3>
       </div>
       <div class="yorha-panel-content">
@@ -232,13 +233,13 @@ https://svelte.dev/e/attribute_duplicate -->
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Features Overview -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="text-lg">🚀 Glyph Diffusion Features</h3>
+      <h3 class="nes-text is-primary text-lg">🚀 Glyph Diffusion Features</h3>
     </div>
     <div class="yorha-panel-content">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -277,7 +278,7 @@ https://svelte.dev/e/attribute_duplicate -->
         </ul>
       </div>
     </div>
-  </NesCard>
+  </div>
 </div>
 
 <style>

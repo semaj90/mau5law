@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  let { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024 } = $props();
+  let { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024  }: { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024 : any } = $props();
 
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
@@ -181,17 +181,18 @@ https://svelte.dev/e/js_parse_error -->
         bind:this={fileInput}
         type="file"
         accept={allowedTypes.join(',')}
-        onchange={handleFileSelect}
+        on:change={handleFileSelect}
         class="hidden"
       />
 
       <Button 
         class="bits-btn mt-2"
         variant="outline"
-        onclick={() => fileInput?.click()}
+        on:click={() =>
+fileInput?.click()}
       >
         Select File
-      </button>
+</Button>
     </div>
   {/if}
 
@@ -207,12 +208,12 @@ https://svelte.dev/e/js_parse_error -->
           <p class="text-sm text-blue-600 mt-1">Evidence ID: {evidenceId}</p>
         </div>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
-            Change File
-          </button>
-          <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">
-            Process Evidence
-          </button>
+          <Button class="bits-btn" variant="outline" size="sm" on:click={handleReset}>
+Change File
+</Button>
+          <Button on:click={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">
+Process Evidence
+</Button>
         </div>
       </div>
     </div>
@@ -277,13 +278,14 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => window.open(artifactUrl, '_blank')}
+            on:click={() =>
+window.open(artifactUrl, '_blank')}
           >
             Download Artifact
-          </button>
-          <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
-            Process Another
-          </button>
+</Button>
+          <Button class="bits-btn" variant="outline" size="sm" on:click={handleReset}>
+Process Another
+</Button>
         </div>
       {/if}
     </div>
@@ -296,12 +298,12 @@ https://svelte.dev/e/js_parse_error -->
       <AlertDescription>
         <div class="mb-2">{error}</div>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="outline" size="sm" onclick={handleRetry}>
-            Retry
-          </button>
-          <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
-            Reset
-          </button>
+          <Button class="bits-btn" variant="outline" size="sm" on:click={handleRetry}>
+Retry
+</Button>
+          <Button class="bits-btn" variant="outline" size="sm" on:click={handleReset}>
+Reset
+</Button>
         </div>
       </AlertDescription>
     </Alert>

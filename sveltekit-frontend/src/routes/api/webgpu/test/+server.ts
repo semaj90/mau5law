@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // src/routes/api/webgpu/test/+server.ts
 // WebGPU test endpoint for browser-side testing

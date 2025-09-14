@@ -65,7 +65,7 @@ https://svelte.dev/e/expected_token -->
     try {
       // In production: const response = await fetch('/api/state/machines');
       // For now, use mock data
-      await new Promise(resolve => setTimeout(resolve, 1000);
+      await new Promise(resolve => setTimeout(resolve, 1000));
       machines = mockMachines;
     } catch (error) {
       console.error('Failed to load state machines:', error);
@@ -180,7 +180,7 @@ https://svelte.dev/e/expected_token -->
                   <button class="nes-btn" 
                     variant="outline" 
                     size="sm"
-                    onclick={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
+                    on:click={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
                   >
                     View Transitions
                   </button>
@@ -188,7 +188,7 @@ https://svelte.dev/e/expected_token -->
                   <button class="nes-btn" 
                     variant="outline" 
                     size="sm"
-                    onclick={() => restartMachine(machine.id)}
+                    on:click={() => restartMachine(machine.id)}
                   >
                     Restart
                   </button>
@@ -196,7 +196,7 @@ https://svelte.dev/e/expected_token -->
                   {#if machine.status === 'running'}
                     <button class="nes-btn is-error" 
                       size="sm"
-                      onclick={() => stopMachine(machine.id)}
+                      on:click={() => stopMachine(machine.id)}
                     >
                       Stop
                     </button>
@@ -286,7 +286,7 @@ https://svelte.dev/e/expected_token -->
 
   .machines-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1.5rem;
   }
 

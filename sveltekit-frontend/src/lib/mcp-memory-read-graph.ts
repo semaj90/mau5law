@@ -67,12 +67,7 @@ export async function findDuplicateProps(): Promise<GraphNode[]> {
   );
 }
 
-export async function analyzeComponentStructure(componentName: string): Promise<{
-  component: GraphNode;
-  variables: GraphNode[];
-  props: GraphNode[];
-  duplicates: GraphNode[];
-}> {
+export async function analyzeComponentStructure(componentName: string): Promise<any> {
   const graph = await mcpMemory2ReadGraph(componentName, undefined);
   const componentNode = graph.nodes.find(n => n.name === componentName);
   
@@ -93,14 +88,7 @@ export async function analyzeComponentStructure(componentName: string): Promise<
 }
 
 // Helper for prop destructuring consolidation analysis
-export async function analyzePropDestructuring(filePath: string): Promise<{
-  duplicateProps: string[];
-  consolidationSuggestions: Array<{
-    duplicateVariables: string[];
-    suggestedInterface: string;
-    suggestedDestructuring: string;
-  }>;
-}> {
+export async function analyzePropDestructuring(filePath: string): Promise<any>> {
   const graph = await mcpMemory2ReadGraph(filePath, 'prop');
   const propNodes = graph.nodes.filter(n => n.file.includes(filePath));
   

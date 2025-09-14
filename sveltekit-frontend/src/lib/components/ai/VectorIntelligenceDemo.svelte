@@ -65,16 +65,16 @@
         })
       });
 
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || `Search failed: ${response.statusText}`);
+      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const err = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        throw new Error(err.error || `Search failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
       }
 
-      const data = await response.json();
+      const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
       const searchTime = performance.now() - startTime;
 
       // Align with the simpler API response
-      results = data.results.map((r: any) => ({
+      results = (data as { results?: any }).results.map((r: any) => ({
         id: r.id,
         title: `Document ${r.id}`, // API doesn't provide title, create one
         content: r.content,
@@ -83,7 +83,7 @@
       }));
 
       metrics = {
-        totalDocuments: data.results.length,
+        totalDocuments: (data as { results?: any }).results.length,
         searchTime: Math.round(searchTime),
         vectorDimensions: 384, // Assuming this value, as API doesn't provide it
         similarityThreshold: 0.0 // API doesn't use a threshold input
@@ -175,18 +175,18 @@
   </div>
 
   <!-- Search Interface -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <Search class="h-5 w-5" />
         Semantic Document Search
       </h3>
     </div>
-    <div class="yorha-panel-content" class="space-y-4">
-      <form onsubmit={handleSubmit} class="flex gap-2">
+    <div class="yorha-panel-content space-y-4">
+      <form on:submit={handleSubmit} class="flex gap-2">
         <Input
           bind:value={query}
-          onkeydown={handleKeydown}
+          on:keydown={handleKeydown}
           placeholder="Search legal documents using natural language..."
           class="flex-1"
           disabled={isSearching}
@@ -196,14 +196,14 @@
           disabled={searchButtonDisabled}
           class="min-w-[100px] bits-btn bits-btn"
         >
-          {#if isSearching}
+{#if isSearching}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />
             Searching
           {:else}
             <Search class="h-4 w-4 mr-2" />
             Search
           {/if}
-        </button>
+</Button>
       </form>
 
       <!-- Example queries -->
@@ -213,15 +213,16 @@
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => { query = example; }}
+            on:click={() =>
+{ query = example; }}
             disabled={isSearching}
           >
             {example}
-          </button>
+</Button>
         {/each}
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Error Display -->
   {#if error}
@@ -233,8 +234,8 @@
 
   <!-- Search Metrics -->
   {#if showMetrics}
-    <NesCard>
-      <div class="yorha-panel-content" class="pt-6">
+    <div class="nes-container">
+      <div class="yorha-panel-content pt-6">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
             <div class="text-2xl font-bold">{metrics.totalDocuments}</div>
@@ -254,7 +255,7 @@
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Search Results -->
@@ -266,80 +267,78 @@
       </div>
 
       <div class="grid gap-4">
-        {#each results as result (result.id)}
-          {@const typeStyle = getDocumentTypeStyle(result.documentType)}
-          <NesCard
-            class="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500"
-            onclick={() => selectedResult = result}
+        {#each results as result ((result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).id)}
+          {@const typeStyle = getDocumentTypeStyle((result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).documentType)}
+          <div
+            class="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500 nes-container"> selectedResult = result}
           >
-            <div class="yorha-panel-content" class="pt-6">
+            <div class="yorha-panel-content pt-6">
               <div class="space-y-3">
                 <!-- Document header -->
                 <div class="flex items-start justify-between gap-4">
                   <div class="flex-1">
                     <div class="flex items-center gap-2 mb-1">
                       <typeStyle.icon class="h-4 w-4" />
-                      <h4 class="font-semibold line-clamp-1">{result.title}</h4>
+                      <h4 class="font-semibold line-clamp-1">{(result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).title}</h4>
                     </div>
                     <p class="text-sm nes-text is-disabled line-clamp-2">
-                      {result.content}
+                      {(result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).content}
                     </p>
                   </div>
                   <div class="flex flex-col items-end gap-2">
                     <div class="flex items-center gap-1">
                       <Star class="h-3 w-3 text-yellow-500" />
-                      <span class="text-sm font-mono">{formatSimilarity(result.similarity)}</span>
+                      <span class="text-sm font-mono">{formatSimilarity((result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).similarity)}</span>
                     </div>
                     <Badge class={typeStyle.color}>
-                      {result.documentType.replace('_', ' ')}
+                      {(result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).documentType.replace('_', ' ')}
                     </Badge>
                   </div>
                 </div>
 
                 <!-- Metadata -->
-                {#if result.metadata}
+                {#if (result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata}
                   <div class="flex items-center gap-4 text-xs nes-text is-disabled">
-                    {#if result.metadata.caseId}
-                      <span>Case: {result.metadata.caseId}</span>
+                    {#if (result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.caseId}
+                      <span>Case: {(result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.caseId}</span>
                     {/if}
-                    {#if result.metadata.uploadDate}
+                    {#if (result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.uploadDate}
                       <span class="flex items-center gap-1">
                         <Clock class="h-3 w-3" />
-                        {result.metadata.uploadDate}
+                        {(result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.uploadDate}
                       </span>
                     {/if}
                   </div>
-                  {#if result.metadata.tags}
+                  {#if (result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.tags}
                     <div class="flex flex-wrap gap-1">
-                      {#each result.metadata.tags as tag}
+                      {#each (result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata.tags as tag}
                         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                       {/each}
                     </div>
                   {/if}
-                {/if}
               </div>
             </div>
-          </NesCard>
+          </div>
         {/each}
       </div>
     </div>
   {:else if !isSearching && query.trim().length > 0}
     <!-- No results state -->
-    <NesCard>
-      <div class="yorha-panel-content" class="pt-6 text-center space-y-2">
+    <div class="nes-container">
+      <div class="yorha-panel-content pt-6 text-center space-y-2">
         <Search class="h-12 w-12 nes-text is-disabled mx-auto" />
         <h3 class="font-semibold">No results found</h3>
         <p class="text-sm nes-text is-disabled">
           Try adjusting your search terms or using different keywords
         </p>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Demo Notice -->
   {#if !hasResults && !isSearching && query.trim().length === 0}
-    <NesCard class="border-dashed">
-      <div class="yorha-panel-content" class="pt-6 text-center space-y-4">
+    <div class="border-dashed nes-container">
+      <div class="yorha-panel-content pt-6 text-center space-y-4">
         <div class="flex justify-center">
           <Database class="h-16 w-16 nes-text is-disabled" />
         </div>
@@ -352,35 +351,37 @@
         <div class="flex justify-center">
           <Button class="bits-btn"
             variant="outline"
-            onclick={() => { results = demoResults; metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 }; }}
+            on:click={() =>
+{ results = demoResults; metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 }; }}
           >
             Load Demo Results
-          </button>
+</Button>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 
 <!-- Selected Result Modal (future enhancement) -->
 {#if selectedResult}
   <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-    <NesCard class="max-w-2xl w-full max-h-[80vh] overflow-auto">
+    <div class="max-w-2xl w-full max-h-[80vh] overflow-auto nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           {selectedResult.title}
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => selectedResult = null}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+selectedResult = null}>
             ×
-          </button>
+</Button>
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <p class="text-sm">{selectedResult.content}</p>
         <div class="flex items-center gap-2">
           <Badge>Similarity: {formatSimilarity(selectedResult.similarity)}</Badge>
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{selectedResult.documentType}</span>
         </div>
       </div>
-    </NesCard>
+    </div>
   </div>
 {/if}

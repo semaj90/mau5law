@@ -115,24 +115,27 @@
       <Button class="bits-btn"
         variant={selectedDemo === 'single' ? 'default' : 'ghost'}
         size="sm"
-        onclick={() => selectedDemo = 'single'}
+        on:click={() =>
+selectedDemo = 'single'}
       >
         Single Workflow
-      </button>
+</Button>
       <Button class="bits-btn"
         variant={selectedDemo === 'multiple' ? 'default' : 'ghost'}
         size="sm"
-        onclick={() => selectedDemo = 'multiple'}
+        on:click={() =>
+selectedDemo = 'multiple'}
       >
         Multiple Sessions
-      </button>
+</Button>
       <Button class="bits-btn"
         variant={selectedDemo === 'dashboard' ? 'default' : 'ghost'}
         size="sm"
-        onclick={() => selectedDemo = 'dashboard'}
+        on:click={() =>
+selectedDemo = 'dashboard'}
       >
         Live Dashboard
-      </button>
+</Button>
     </div>
   </div>
 
@@ -169,9 +172,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Active Sessions Monitor -->
       <div class="lg:col-span-2">
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center justify-between">
+            <h3 class="nes-text is-primary flex items-center justify-between">
               📊 Active Processing Sessions
               <div class="flex items-center gap-2">
                 <input
@@ -183,9 +186,9 @@
                 <label for="auto-refresh" class="text-sm font-normal">
                   Auto-refresh
                 </label>
-                <Button class="bits-btn" onclick={loadActiveSessions} variant="outline" size="sm">
-                  Refresh
-                </button>
+                <Button class="bits-btn" on:click={loadActiveSessions} variant="outline" size="sm">
+Refresh
+</Button>
               </div>
             </h3>
           </div>
@@ -223,47 +226,50 @@
                         ></div>
                       </div>
                       <Button class="bits-btn"
-                        onclick={() => cancelSession(session.evidenceId)}
+                        on:click={() =>
+cancelSession(session.evidenceId)}
                         variant="outline"
                         size="sm"
                       >
                         Cancel
-                      </button>
+</Button>
                     </div>
                   </div>
                 {/each}
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
       </div>
 
       <!-- Quick Start Panel -->
       <div>
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">🚀 Quick Start</h3>
           </div>
 
-          <div class="yorha-panel-content" class="space-y-4">
+          <div class="yorha-panel-content space-y-4">
             <p class="text-sm text-gray-600">
               Launch new evidence processing workflows with different configurations
             </p>
 
             <div class="space-y-2">
               <Button class="bits-btn w-full justify-start"
-                onclick={() => selectedDemo = 'single'}
+                on:click={() =>
+selectedDemo = 'single'}
                 variant="outline"
               >
                 🧬 Neural Sprite Workflow
-              </button>
+</Button>
 
               <Button class="bits-btn w-full justify-start"
-                onclick={() => selectedDemo = 'multiple'}
+                on:click={() =>
+selectedDemo = 'multiple'}
                 variant="outline"
               >
                 ⚡ Parallel Processing
-              </button>
+</Button>
             </div>
 
             <div class="border-t pt-4">
@@ -288,10 +294,10 @@
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
 
         <!-- Feature Showcase -->
-        <NesCard class="mt-4">
+        <div class="mt-4 nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">🌟 D-Phase Features</h3>
           </div>
@@ -339,13 +345,13 @@
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       </div>
     </div>
   {/if}
 
   <!-- Technical Details -->
-  <NesCard class="max-w-4xl mx-auto">
+  <div class="max-w-4xl mx-auto nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">🔧 Technical Architecture</h3>
     </div>
@@ -393,5 +399,5 @@
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 </div>

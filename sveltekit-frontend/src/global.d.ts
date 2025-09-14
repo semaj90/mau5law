@@ -16,12 +16,24 @@ declare global {
 
 // Stub out problematic drizzle-orm gel module types
 declare module 'gel' {
-  export interface Duration {}
-  export interface LocalDate {}
-  export interface LocalTime {}
-  export interface Timestamp {}
-  export interface DateDuration {}
-  export interface RelativeDuration {}
+  export interface Duration {
+  [key: string]: any;
+}
+  export interface LocalDate {
+  [key: string]: any;
+}
+  export interface LocalTime {
+  [key: string]: any;
+}
+  export interface Timestamp {
+  [key: string]: any;
+}
+  export interface DateDuration {
+  [key: string]: any;
+}
+  export interface RelativeDuration {
+  [key: string]: any;
+}
 }
 
 export {};

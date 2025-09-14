@@ -134,7 +134,7 @@ export const filteredEvidence = derived(evidenceGrid, ($evidenceGrid) => {
       lastItemsLength = items.length;
     }
     const searchResults = fuseInstance.search(searchQuery);
-    filtered = searchResults.map((result) => result.item);
+    filtered = searchResults.map((result) => (result as { item?: any; aiAnalysis?: any; extractedText?: any }).item);
   }
 
   // Apply sorting
@@ -194,10 +194,10 @@ export const evidenceActions = {
       const url = caseId ? `/api/evidence?caseId=${caseId}` : "/api/evidence";
       const response = await fetch(url);
 
-      if (!response.ok) {
-        throw new Error(`Failed to load evidence: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Failed to load evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
-      const items: Evidence[] = await response.json();
+      const items: Evidence[] = await (response as { ok?: any; statusText?: any; json?: any }).json();
 
       evidenceGrid.update((state) => ({
         ...state,
@@ -258,12 +258,12 @@ export const evidenceActions = {
         method: "DELETE",
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to delete evidence: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Failed to delete evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
       evidenceGrid.update((state) => ({
         ...state,
-        items: state.items.filter((item) => item.id !== evidenceId),
+        items: state.items.filter((item) => (item as { id?: any }).id !== evidenceId),
         selectedItems: new Set(
           [...state.selectedItems].filter((id) => id !== evidenceId)
         ),
@@ -405,8 +405,8 @@ export const uploadActions = {
                         ...f,
                         status: "completed" as const,
                         progress: 100,
-                        aiAnalysis: result.aiAnalysis,
-                        extractedText: result.extractedText,
+                        aiAnalysis: (result as { item?: any; aiAnalysis?: any; extractedText?: any }).aiAnalysis,
+                        extractedText: (result as { item?: any; aiAnalysis?: any; extractedText?: any }).extractedText,
                       }
                     : f
                 ),

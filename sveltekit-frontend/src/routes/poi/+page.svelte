@@ -66,28 +66,28 @@
     <Button class="bits-btn {showFilters ? 'bg-blue-50 border-blue-300' : ''}"
         variant="outline"
         size="sm"
-  onclick={() => (showFilters = !showFilters)}
+  on:click={() =>
+(showFilters = !showFilters)}
       >
         <Filter class="w-4 h-4 mr-2" />
         Filters
-      </button>
 
     <Button class="bits-btn"
         variant="outline"
         size="sm"
-  onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
+  on:click={() =>
+(viewMode = viewMode === 'grid' ? 'list' : 'grid')}
       >
         {#if viewMode === 'grid'}
           <List class="w-4 h-4" />
         {:else}
           <Grid class="w-4 h-4" />
         {/if}
-      </button>
 
       <Button class="bits-btn">
-        <Plus class="w-4 h-4 mr-2" />
+<Plus class="w-4 h-4 mr-2" />
         Add Person
-      </button>
+
     </div>
   </div>
 
@@ -131,8 +131,8 @@
 
         <div class="flex items-end">
           <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">
-            Clear Filters
-          </button>
+Clear Filters
+
         </div>
       </div>
     </div>
@@ -157,9 +157,9 @@
       </p>
       {#if !searchQuery}
         <Button class="bits-btn">
-          <Plus class="w-4 h-4 mr-2" />
+<Plus class="w-4 h-4 mr-2" />
           Add First Person
-        </button>
+
       {/if}
     </div>
   {:else if viewMode === 'grid'}
@@ -195,13 +195,13 @@
 
           <div class="flex gap-2">
             <Button size="sm" class="flex-1 bits-btn bits-btn">
-              <Eye class="w-3 h-3 mr-1" />
+<Eye class="w-3 h-3 mr-1" />
               View
-            </button>
+
             <Button variant="outline" size="sm" class="flex-1 bits-btn bits-btn">
-              <Edit class="w-3 h-3 mr-1" />
+<Edit class="w-3 h-3 mr-1" />
               Edit
-            </button>
+
           </div>
         </div>
       {/each}
@@ -228,13 +228,13 @@
 
             <div class="flex gap-2">
               <Button class="bits-btn" size="sm">
-                <Eye class="w-3 h-3 mr-1" />
+<Eye class="w-3 h-3 mr-1" />
                 View
-              </button>
+
               <Button class="bits-btn" variant="outline" size="sm">
-                <Edit class="w-3 h-3 mr-1" />
+<Edit class="w-3 h-3 mr-1" />
                 Edit
-              </button>
+
             </div>
           </div>
         </div>

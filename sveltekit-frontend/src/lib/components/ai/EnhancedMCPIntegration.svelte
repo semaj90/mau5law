@@ -6,12 +6,15 @@
     showMetrics: boolean
     enableClusterMode: boolean
   }
-  let {
-    caseId = undefined,
+  let { caseId = undefined,
     enableRealtimeUpdates = true,
     showMetrics = true,
     enableClusterMode = true
-  } = $props();
+   }: { caseId = undefined,
+    enableRealtimeUpdates = true,
+    showMetrics = true,
+    enableClusterMode = true
+  : any } = $props();
 
 
 
@@ -25,44 +28,16 @@
   	// Props using Svelte 5 syntax compatibility
   	// Reactive state using writable stores for Svelte 4/5 compatibility
   	const mcpStatus = writable<'disconnected' | 'connecting' | 'connected' | 'error'>('disconnected');
-  	const clusterMetrics = writable<{
-  		activeWorkers: number
-  		totalRequests: number
-  		successRate: number
-  		averageResponseTime: number
-  		cacheHitRate: number
-  	}>({
+  	const clusterMetrics = writable({
   		activeWorkers: 0,
   		totalRequests: 0,
   		successRate: 0,
   		averageResponseTime: 0,
   		cacheHitRate: 0
   	});
-  	const mcpTools = writable<Array<{
-  		id: string
-  		name: string
-  		description: string
-  		status: 'available' | 'busy' | 'error';
-  		lastUsed?: Date;
-  		successCount: number
-  		errorCount: number
-  	}>>([]);
-  	const queryResults = writable<Array<{
-  		id: string
-  		query: string
-  		result: any
-  		source: 'enhanced_rag' | 'memory_graph' | 'context7' | 'agent_orchestration';
-  		timestamp: Date
-  		responseTime: number
-  		success: boolean
-  	}>>([]);
-  	const contextualSuggestions = writable<Array<{
-  		type: 'mcp_tool' | 'context7_doc' | 'memory_relation' | 'agent_action';
-  		title: string
-  		description: string
-  		action: () => Promise<void>;
-  		priority: 'high' | 'medium' | 'low';
-  	}>>([]);
+  	const mcpTools = writable<Array>([]);
+  	const queryResults = writable<Array>([]);
+  	const contextualSuggestions = writable<Array>([]);
   	// WebSocket connection for real-time updates
   	let wsConnection: WebSocket | null = null;
   	let queryInput = '';
@@ -93,7 +68,7 @@
   		try {
   			// Test connection to Context7 MCP server
   			const response = await fetch('http://localhost:40000/health');
-  			if (response.ok) {
+  			if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
   				mcpStatus.set('connected');
   				console.log('🚀 Enhanced MCP Integration connected');
   				// Initialize available tools
@@ -131,21 +106,21 @@
   		}
   	}
   	function handleRealtimeUpdate(data: any) {
-  		switch (data.type) {
+  		switch ((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).type) {
   			case 'cluster-metrics-update':
-  				clusterMetrics.set(data.metrics);
+  				clusterMetrics.set((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics);
   				break;
   			case 'mcp-tool-status':
   				mcpTools.update(tools => 
   					tools.map(tool => 
-  						tool.id === data.toolId 
-  							? { ...tool, status: data.status, lastUsed: new Date() }
+  						tool.id === (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).toolId 
+  							? { ...tool, status: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).status, lastUsed: new Date() }
   							: tool
   					)
   				);
   				break;
   			case 'query-result':
-  				queryResults.update(results => [data.result, ...results.slice(0, 9)]);
+  				queryResults.update(results => [(data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).result, ...results.slice(0, 9)]);
   				break;
   		}
   	}
@@ -218,15 +193,15 @@
   	async function updateClusterMetrics() {
   		try {
   			const response = await fetch('http://localhost:40000/mcp/metrics');
-  			if (response.ok) {
-  				const data = await response.json();
-  				if (data.success) {
+  			if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
+  				const data = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
+  				if ((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).success) {
   					clusterMetrics.set({
-  						activeWorkers: data.metrics.connections || 0,
-  						totalRequests: data.metrics.totalRequests || 0,
-  						successRate: 1 - (data.metrics.errorRate || 0),
-  						averageResponseTime: data.metrics.averageResponseTime || 0,
-  						cacheHitRate: data.metrics.cache?.hitRate || 0
+  						activeWorkers: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.connections || 0,
+  						totalRequests: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.totalRequests || 0,
+  						successRate: 1 - ((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.errorRate || 0),
+  						averageResponseTime: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.averageResponseTime || 0,
+  						cacheHitRate: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.cache?.hitRate || 0
   					});
   				}
   			}
@@ -280,10 +255,10 @@
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify(args)
   			});
-  			if (!response.ok) {
-  				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  			if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
+  				throw new Error(`HTTP ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}: ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).statusText}`);
   			}
-  			const result = await response.json();
+  			const result = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
   			const responseTime = Date.now() - startTime;
   			// Update query results
   			queryResults.update(results => [{
@@ -402,10 +377,10 @@
 					bind:value={queryInput}
 					placeholder="Enter your query..."
 					class="query-input"
-					onkeydown={(e) => e.key === 'Enter' && executeQuery()}
+					on:keydown={(e) => e.key === 'Enter' && executeQuery()}
 				/>
 				<button 
-					onclick={executeQuery}
+					on:click={executeQuery}
 					disabled={!queryInput.trim() || !selectedTool || isProcessing}
 					class="execute-button"
 				>
@@ -420,7 +395,7 @@
 				{#each $contextualSuggestions as suggestion}
 					<button 
 						class="suggestion-item suggestion-{suggestion.priority}"
-						onclick={suggestion.action}
+						on:click={suggestion.action}
 						disabled={isProcessing}
 					>
 						<div class="suggestion-title">{suggestion.title}</div>
@@ -456,18 +431,18 @@
 			<h3>📋 Recent Query Results</h3>
 			<div class="results-list">
 				{#each $queryResults as result}
-					<div class="result-item result-{result.success ? 'success' : 'error'}">
+					<div class="result-item result-{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).success ? 'success' : 'error'}">
 						<div class="result-header">
-							<span class="result-source">{result.source}</span>
-							<span class="result-time">{result.responseTime}ms</span>
-							<span class="result-timestamp">{result.timestamp.toLocaleTimeString()}</span>
+							<span class="result-source">{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).source}</span>
+							<span class="result-time">{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).responseTime}ms</span>
+							<span class="result-timestamp">{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).timestamp.toLocaleTimeString()}</span>
 						</div>
-						<div class="result-query">{result.query}</div>
+						<div class="result-query">{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).query}</div>
 						<div class="result-content">
-							{#if result.success}
-								<pre>{JSON.stringify(result.result, null, 2)}</pre>
+							{#if (result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).success}
+								<pre>{JSON.stringify((result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).result, null, 2)}</pre>
 							{:else}
-								<div class="error-message">Error: {result.result.error}</div>
+								<div class="error-message">Error: {(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).error}</div>
 							{/if}
 						</div>
 					</div>

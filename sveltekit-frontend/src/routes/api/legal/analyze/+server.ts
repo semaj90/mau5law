@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { gemma3Client } from '$lib/gemma3Client';
 import { ai_interactions as aiInteractions } from '$lib/server/db/schema-postgres';
 import { db } from '$lib/server/db/drizzle';

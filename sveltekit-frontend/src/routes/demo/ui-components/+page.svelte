@@ -39,13 +39,13 @@
   <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
     {#each demoItems as item}
       <button
-        class="p-4 rounded-lg border-2 transition-all hover:shadow-md {selectedDemo === item.id 
+        class="p-4 rounded-lg border-2 transition-all hover:shadow-md {selectedDemo === (item as { id?: any; label?: any; description?: any }).id 
           ? 'border-primary bg-primary/5 shadow-md' 
           : 'border-border hover:border-primary/50'}"
-        onclick={() => selectedDemo = item.id}
+        on:click={() => selectedDemo = (item as { id?: any; label?: any; description?: any }).id}
       >
-        <h3 class="font-semibold">{item.label}</h3>
-        <p class="text-sm nes-text is-disabled mt-1">{item.description}</p>
+        <h3 class="font-semibold">{(item as { id?: any; label?: any; description?: any }).label}</h3>
+        <p class="text-sm nes-text is-disabled mt-1">{(item as { id?: any; label?: any; description?: any }).description}</p>
       </button>
     {/each}
   </div>
@@ -99,20 +99,42 @@
         <h2 class="text-2xl font-bold">Button Components</h2>
         
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Button class="bits-btn" variant="default">Default</button>
-          <Button class="bits-btn" variant="secondary">Secondary</button>
-          <Button class="bits-btn" variant="outline">Outline</button>
-          <Button class="bits-btn" variant="ghost">Ghost</button>
-          <Button class="bits-btn" variant="legal">Legal</button>
-          <Button class="bits-btn" variant="evidence">Evidence</button>
-          <Button class="bits-btn" variant="case">Case</button>
-          <Button class="bits-btn" variant="destructive">Destructive</button>
+          <Button class="bits-btn" variant="default">
+Default
+</Button>
+          <Button class="bits-btn" variant="secondary">
+Secondary
+</Button>
+          <Button class="bits-btn" variant="outline">
+Outline
+</Button>
+          <Button class="bits-btn" variant="ghost">
+Ghost
+</Button>
+          <Button class="bits-btn" variant="legal">
+Legal
+</Button>
+          <Button class="bits-btn" variant="evidence">
+Evidence
+</Button>
+          <Button class="bits-btn" variant="case">
+Case
+</Button>
+          <Button class="bits-btn" variant="destructive">
+Destructive
+</Button>
         </div>
         
         <div class="grid grid-cols-3 gap-4">
-          <Button class="bits-btn" size="sm">Small</button>
-          <Button class="bits-btn" size="default">Default</button>
-          <Button class="bits-btn" size="lg">Large</button>
+          <Button class="bits-btn" size="sm">
+Small
+</Button>
+          <Button class="bits-btn" size="default">
+Default
+</Button>
+          <Button class="bits-btn" size="lg">
+Large
+</Button>
         </div>
         
         <div class="bg-muted p-4 rounded-lg">
@@ -131,7 +153,7 @@
             class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
           >
             Open Dialog
-          </button>
+</Button>
         </div>
         
         <div class="bg-muted p-4 rounded-lg">
@@ -232,7 +254,9 @@
             ></textarea>
           </div>
           
-          <Button type="submit" class="w-full bits-btn bits-btn">Submit Form</button>
+          <Button type="submit" class="w-full bits-btn bits-btn">
+Submit Form
+</Button>
         </form>
         
         <div class="bg-muted p-4 rounded-lg">
@@ -282,7 +306,7 @@
           class="px-4 py-2 border border-input rounded-md hover:bg-muted"
         >
           Cancel
-        </button>
+</Button>
         <button 
           
           class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"

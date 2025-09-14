@@ -9,7 +9,8 @@
   import { WebGPUTextureStreaming } from '$lib/services/webgpu-texture-streaming';
   import { LegalAILogic, type LegalDocument, type EvidenceItem } from '$lib/core/logic/legal-ai-logic';
 
-  const dispatch = createEventDispatcher();
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
 
   // SPA Canvas state
   export let fullscreen = true;
@@ -155,7 +156,7 @@
 
     navigationItems.forEach((item, index) => {
       const x = index * itemWidth;
-      const isActive = item.id === currentView;
+      const isActive = (item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).id === currentView;
 
       // Item background
       if (isActive) {
@@ -167,11 +168,11 @@
       ctx.font = '24px "Courier New", monospace';
       ctx.fillStyle = isActive ? colors.text : colors.textSecondary;
       ctx.textAlign = 'center';
-      ctx.fillText(item.icon, x + itemWidth / 2, 25);
+      ctx.fillText((item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).icon, x + itemWidth / 2, 25);
 
       // Item label
       ctx.font = '12px "Courier New", monospace';
-      ctx.fillText(item.label, x + itemWidth / 2, 45);
+      ctx.fillText((item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).label, x + itemWidth / 2, 45);
     });
   }
 
@@ -278,19 +279,19 @@
         low: colors.accent
       };
 
-      ctx.fillStyle = priorityColors[item.priority];
+      ctx.fillStyle = priorityColors[(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).priority];
       ctx.fillRect(20, itemY, 5, itemHeight - 10);
 
       // Item title
       ctx.font = 'bold 16px "Courier New", monospace';
       ctx.fillStyle = colors.text;
       ctx.textAlign = 'left';
-      ctx.fillText(item.title, 35, itemY + 25);
+      ctx.fillText((item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).title, 35, itemY + 25);
 
       // Item type and confidence
       ctx.font = '12px "Courier New", monospace';
       ctx.fillStyle = colors.textSecondary;
-      ctx.fillText(`Type: ${item.type.toUpperCase()} | Confidence: ${item.confidence}%`, 35, itemY + 45);
+      ctx.fillText(`Type: ${(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).type.toUpperCase()} | Confidence: ${(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).confidence}%`, 35, itemY + 45);
     });
   }
 
@@ -472,7 +473,7 @@
       if (clickedIndex >= 0 && clickedIndex < navigationItems.length) {
         currentView = navigationItems[clickedIndex].id as any;
 
-        dispatch('navigate', {
+        onNavigate?.({
           view: currentView,
           data: legalData
         });
@@ -480,7 +481,7 @@
     }
 
     // Content area interactions
-    dispatch('interact', {
+    onInteract?.({
       type: 'click',
       position: { x, y },
       view: currentView,
@@ -498,7 +499,7 @@
   tabindex="0"
 >
   <canvas
-    bind:this={canvas}
+    bind:this={canvas as any}
     width={canvasWidth}
     height={canvasHeight}
     class="spa-canvas"
@@ -514,7 +515,7 @@
     {#if legalData.evidence}
       <h2>Evidence ({legalData.evidence.length} items)</h2>
       {#each legalData.evidence.slice(0, 5) as item}
-        <p>{item.title} - {item.type} - {item.priority} priority</p>
+        <p>{(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).title} - {(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).type} - {(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).priority} priority</p>
       {/each}
     {/if}
 

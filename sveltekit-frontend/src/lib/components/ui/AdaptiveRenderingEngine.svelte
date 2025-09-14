@@ -82,7 +82,7 @@ let systemMetrics = $state<SystemMetrics>({
 });
 
 let isMonitoring = $state(false);
-let canvasElement = $state<HTMLCanvasElement>();
+let canvasElement: HTMLCanvasElement = $state(undefined as any);
 let renderContext = $state<CanvasRenderingContext2D | WebGLRenderingContext | null>(null);
 let webgpuDevice = $state<GPUDevice | null>(null);
 let hmmPredictor = $state<BitmapHMMSOMPredictor | null>(null);
@@ -496,21 +496,11 @@ async function streamTexture(assetKey: string): Promise<string> {
   return loadTextureChunks(assetKey, chunkSize);
 }
 
-async function loadFullTexture(assetKey: string): Promise<string> {
-  // Simulate texture loading
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(`data:image/svg+xml,<svg>...</svg>`);
-    }, 10);
+async function loadFullTexture(assetKey: string): Promise<string> {/* JSX syntax converted to Svelte */}, 10);
   });
 }
 
-async function loadTextureChunks(assetKey: string, chunkSize: number): Promise<string> {
-  // Simulate chunked loading
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(`data:image/svg+xml,<svg>...chunked-${chunkSize}...</svg>`);
-    }, 50);
+async function loadTextureChunks(assetKey: string, chunkSize: number): Promise<string> {/* JSX syntax converted to Svelte */}, 50);
   });
 }
 

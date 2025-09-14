@@ -8,7 +8,7 @@ import type {
   PageLoad, LayoutLoad, RequestHandler, Handle, HandleError, HandleFetch,
   SQL, QueryResult, DatabaseConnection,
   VectorSearchResult, EmbeddingVector
-} from './comprehensive-types';
+} from './comprehensive-types.js';
 
 /* ================= SVELTE 5 RUNES + UTILITIES ================= */
 
@@ -116,11 +116,11 @@ export const svelteKitStore = {
   stores: {
     page: {
       url: typeof URL !== 'undefined' ? new URL('http://localhost:5173') : ({} as URL),
-      params: {},
+      params: Record<string, any>,
       route: { id: null as string | null },
-      data: {},
+      data: Record<string, any>,
       error: null as any,
-      state: {},
+      state: Record<string, any>,
       form: null as any
     },
     navigating: null as any,
@@ -233,7 +233,7 @@ export const aiStore = {
   ollama: {
     client: (baseURL = 'http://localhost:11434') => ({
       generate: async (o: { model: string; prompt: string }) => ({
-        model: o.model,
+        model: o?.model || "unknown" // @ts-ignore - Model property access,
         response: `Mock response for: ${o.prompt}`,
         done: true
       }),
@@ -241,7 +241,7 @@ export const aiStore = {
         embedding: Array.from({ length: 384 }, () => Math.random())
       }),
       list: async () => ({ models: [{ name: 'mock-model:latest', size: 123456 }] }),
-      show: async (n: string) => ({ name: n, parameters: {}, details: {} }),
+      show: async (n: string) => ({ name: n, parameters: Record<string, any>, details: Record<string, any> }),
       pull: async () => { },
       push: async () => { },
       delete: async () => { }

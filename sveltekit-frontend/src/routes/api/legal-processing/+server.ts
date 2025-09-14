@@ -5,7 +5,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
 import { eq, desc } from 'drizzle-orm';
@@ -32,12 +32,7 @@ interface ProcessDocumentResponse {
 
 interface DocumentSessionResponse {
   id: string;
-  documents: Array<{
-    id: string;
-    summary: string;
-    keyTerms: string[];
-    createdAt: string;
-  }>;
+  documents: Array<any>;
   totalProcessed: number;
 }
 

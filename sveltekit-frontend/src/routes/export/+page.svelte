@@ -161,7 +161,7 @@
                   <TooltipTrigger asChild>
                     <button
                       class="space-y-4"
-                      onclick={() =>
+                      on:click={() =>
                         (format = formatOption.value as "json" | "csv" | "xml")}
                     >
                       <div class="space-y-4">{formatOption.label}</div>
@@ -258,17 +258,19 @@
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  onclick={() => selectAllCases()}
+                  on:click={() =>
+selectAllCases()}
                 >
                   Select All
-                </button>
+</Button>
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  onclick={() => clearCaseSelection()}
+                  on:click={() =>
+clearCaseSelection()}
                 >
                   Clear
-                </button>
+</Button>
               </div>
             </div>
 
@@ -282,8 +284,7 @@
                   >
                     <input
                       type="checkbox"
-                      checked={selectedCaseIds.includes(caseItem.id)}
-                      change={() => toggleCaseSelection(caseItem.id)}
+                      checked={selectedCaseIds.includes(caseItem.id)} on:change={() => toggleCaseSelection(caseItem.id)}
                       class="space-y-4"
                     />
                     <span class="space-y-4">
@@ -338,7 +339,8 @@
           <Tooltip>
             <TooltipTrigger asChild>
               <Button class="bits-btn space-y-4"
-                onclick={() => exportData()}
+                on:click={() =>
+exportData()}
                 disabled={exportLoading || (!includeCases && !includeEvidence)}
               >
                 {#if exportLoading}
@@ -350,7 +352,7 @@
                   <Download class="space-y-4" />
                   Export Data
                 {/if}
-              </button>
+</Button>
             </TooltipTrigger>
             <TooltipContent>
               <p>Download the configured data export</p>

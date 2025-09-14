@@ -3,16 +3,12 @@
  * Ensures all required tables, indexes, and extensions are properly configured
  */
 
-import { db } from './drizzle';
+import { db } from './drizzle.js';
 import { sql } from 'drizzle-orm';
 
 export interface DatabaseSetupResult {
   success: boolean;
-  steps: Array<{
-    step: string;
-    success: boolean;
-    error?: string;
-  }>;
+  steps: Array<any>;
   timestamp: string;
 }
 
@@ -306,13 +302,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
   }
 }
 
-export async function checkDatabaseHealth(): Promise<{
-  connected: boolean;
-  tablesExist: boolean;
-  extensionsEnabled: boolean;
-  indexesReady: boolean;
-  sampleDataPresent: boolean;
-}> {
+export async function checkDatabaseHealth(): Promise<any> {
   try {
     // Check connection
     await db.execute(sql`SELECT 1`);
@@ -363,13 +353,7 @@ export async function checkDatabaseHealth(): Promise<{
   }
 }
 
-export async function getDatabaseStats(): Promise<{
-  documentCount: number;
-  embeddingCacheSize: number;
-  glyphCount: number;
-  sessionCount: number;
-  performanceRecords: number;
-}> {
+export async function getDatabaseStats(): Promise<any> {
   try {
     const results = await Promise.all([
       db.execute(sql`SELECT COUNT(*) as count FROM legal_documents`),

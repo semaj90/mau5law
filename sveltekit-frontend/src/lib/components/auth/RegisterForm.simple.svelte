@@ -158,14 +158,14 @@
         return async ({ result }) => {
           isLoading = false;
           
-          if (result.type === 'success') {
+          if ((result as { type?: any; data?: any }).type === 'success') {
             successMessage = 'Registration successful! Redirecting to dashboard...';
             setTimeout(() => {
               goto('/dashboard');
             }, 2000);
-          } else if (result.type === 'failure') {
-            errorMessage = result.data?.form?.errors?.email?.[0] || 'Registration failed. Please try again.';
-          } else if (result.type === 'error') {
+          } else if ((result as { type?: any; data?: any }).type === 'failure') {
+            errorMessage = (result as { type?: any; data?: any }).data?.form?.errors?.email?.[0] || 'Registration failed. Please try again.';
+          } else if ((result as { type?: any; data?: any }).type === 'error') {
             errorMessage = 'An error occurred during registration. Please try again.';
           }
         };
@@ -306,7 +306,7 @@
             <button
               type="button"
               class="absolute inset-y-0 right-0 pr-3 flex items-center"
-              onclick={togglePasswordVisibility}
+              on:click={togglePasswordVisibility}
               disabled={isLoading}
             >
               {#if showPassword}
@@ -350,7 +350,7 @@
             <button
               type="button"
               class="absolute inset-y-0 right-0 pr-3 flex items-center"
-              onclick={toggleConfirmPasswordVisibility}
+              on:click={toggleConfirmPasswordVisibility}
               disabled={isLoading}
             >
               {#if showConfirmPassword}
@@ -419,14 +419,14 @@
         class="w-full bits-btn bits-btn" 
         disabled={isLoading}
       >
-        {#if isLoading}
+{#if isLoading}
           <Loader2 class="mr-2 h-4 w-4 animate-spin" />
           Creating Account...
         {:else}
           <UserPlus class="mr-2 h-4 w-4" />
           Create Legal Professional Account
         {/if}
-      </button>
+</Button>
     </form>
 
     <!-- Login Link -->

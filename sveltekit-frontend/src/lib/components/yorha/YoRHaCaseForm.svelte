@@ -9,12 +9,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   import { enhancedCaseAPI } from '$lib/api/enhanced-case-api';
   import { goto } from '$app/navigation';
   import { z } from 'zod';
-  const dispatch = createEventDispatcher<{
-    success: { caseItem: any };
-    error: { message: string };
-    close: void;
-    stateChange: { state: string; context: any };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Enhanced Zod schema for case creation with legal AI context
   const CaseCreationSchema = z.object({
@@ -37,7 +32,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   let formIntegration: any = $state(null);
   let currentStep = $state(0);
   let totalSteps = $state(3); // Basic Info, Legal Details, Review
-  let unsubscribe = $state<(() => {});
+  let unsubscribe = $state<(() =>(null) {});
   let formState = $derived(formIntegration?.state?.get() || 'idle');
   let formContext = $derived(formIntegration?.context?.get() || {});
 
@@ -127,8 +122,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
     // Clear saved draft
     formStatePersistence.clear();
     // Navigate to the new case
-    if (result.id) {
-      goto(`/cases/${result.id}`);
+    if ((result as { id?: any }).id) {
+      goto(`/cases/${(result as { id?: any }).id}`);
     }
   }
 
@@ -226,8 +221,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
             id="case-title"
             name="title"
             type="text"
-            value={formIntegration.form.get().title || ''}
-            input={(e) => formIntegration.form.update(data => ({ ...data, title: e.target.value }))}
+            value={formIntegration.form.get().title || ''} on:input={(e) => formIntegration.form.update(data => ({ ...data, title: e.target.value }))}
             placeholder="e.g., Corporate Fraud Investigation - TechCorp"
             required
             class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
@@ -246,8 +240,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
           <textarea
             id="case-description"
             name="description"
-            value={formIntegration.form.get().description || ''}
-            input={(e) => formIntegration.form.update(data => ({ ...data, description: e.target.value }))}
+            value={formIntegration.form.get().description || ''} on:input={(e) => formIntegration.form.update(data => ({ ...data, description: e.target.value }))}
             rows="4"
             placeholder="Initial details and background of the investigation..."
             class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors resize-none"
@@ -268,8 +261,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
             <select
               id="case-priority"
               name="priority"
-              value={formIntegration.form.get().priority || 'medium'}
-              change={(e) => formIntegration.form.update(data => ({ ...data, priority: e.target.value }))}
+              value={formIntegration.form.get().priority || 'medium'} on:change={(e) => formIntegration.form.update(data => ({ ...data, priority: e.target.value }))}
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light focus:border-yorha-accent-warm focus:outline-none transition-colors"
             >
               <option value="low">🟢 Low Priority</option>
@@ -287,8 +279,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
             <select
               id="case-type"
               name="caseType"
-              value={formIntegration.form.get().caseType || 'civil'}
-              change={(e) => formIntegration.form.update(data => ({ ...data, caseType: e.target.value }))}
+              value={formIntegration.form.get().caseType || 'civil'} on:change={(e) => formIntegration.form.update(data => ({ ...data, caseType: e.target.value }))}
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light focus:border-yorha-accent-warm focus:outline-none transition-colors"
             >
               <option value="civil">⚖️ Civil</option>
@@ -305,7 +296,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
       <div class="step-navigation flex justify-end pt-4">
         <button
           type="button"
-          onclick={nextStep}
+          on:click={nextStep}
           disabled={!formIntegration.form.get().title || !formIntegration.form.get().description}
           class="next-btn px-6 py-3 bg-yorha-accent-warm text-yorha-dark rounded font-bold hover:bg-yorha-accent-warm/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -328,8 +319,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
               id="case-location"
               name="location"
               type="text"
-              value={formIntegration.form.get().location || ''}
-              input={(e) => formIntegration.form.update(data => ({ ...data, location: e.target.value }))}
+              value={formIntegration.form.get().location || ''} on:input={(e) => formIntegration.form.update(data => ({ ...data, location: e.target.value }))}
               placeholder="e.g., Downtown Financial District"
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
             />
@@ -344,8 +334,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
               id="case-jurisdiction"
               name="jurisdiction"
               type="text"
-              value={formIntegration.form.get().jurisdiction || ''}
-              input={(e) => formIntegration.form.update(data => ({ ...data, jurisdiction: e.target.value }))}
+              value={formIntegration.form.get().jurisdiction || ''} on:input={(e) => formIntegration.form.update(data => ({ ...data, jurisdiction: e.target.value }))}
               placeholder="e.g., Federal, State, Local"
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
             />
@@ -363,8 +352,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
               id="assigned-to"
               name="assignedTo"
               type="text"
-              value={formIntegration.form.get().assignedTo || ''}
-              input={(e) => formIntegration.form.update(data => ({ ...data, assignedTo: e.target.value }))}
+              value={formIntegration.form.get().assignedTo || ''} on:input={(e) => formIntegration.form.update(data => ({ ...data, assignedTo: e.target.value }))}
               placeholder="e.g., Agent Smith, Detective Jones"
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
             />
@@ -379,8 +367,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
               id="client-name"
               name="clientName"
               type="text"
-              value={formIntegration.form.get().clientName || ''}
-              input={(e) => formIntegration.form.update(data => ({ ...data, clientName: e.target.value }))}
+              value={formIntegration.form.get().clientName || ''} on:input={(e) => formIntegration.form.update(data => ({ ...data, clientName: e.target.value }))}
               placeholder="e.g., TechCorp Industries"
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
             />
@@ -395,8 +382,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
           <textarea
             id="case-notes"
             name="notes"
-            value={formIntegration.form.get().notes || ''}
-            input={(e) => formIntegration.form.update(data => ({ ...data, notes: e.target.value }))}
+            value={formIntegration.form.get().notes || ''} on:input={(e) => formIntegration.form.update(data => ({ ...data, notes: e.target.value }))}
             rows="3"
             placeholder="Additional case notes, preliminary observations, or special instructions..."
             class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors resize-none"
@@ -408,14 +394,14 @@ https://svelte.dev/e/rune_missing_parentheses -->
       <div class="step-navigation flex justify-between pt-4">
         <button
           type="button"
-          onclick={previousStep}
+          on:click={previousStep}
           class="prev-btn px-6 py-3 border border-yorha-accent-warm/50 text-yorha-light rounded hover:bg-yorha-accent-warm/10 transition-colors"
         >
           ← Back: Basic Info
         </button>
         <button
           type="button"
-          onclick={nextStep}
+          on:click={nextStep}
           class="next-btn px-6 py-3 bg-yorha-accent-warm text-yorha-dark rounded font-bold hover:bg-yorha-accent-warm/90 transition-colors"
         >
           Next: Review →
@@ -484,7 +470,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
       <div class="step-navigation flex justify-between pt-4">
         <button
           type="button"
-          onclick={previousStep}
+          on:click={previousStep}
           disabled={isSubmitting}
           class="prev-btn px-6 py-3 border border-yorha-accent-warm/50 text-yorha-light rounded hover:bg-yorha-accent-warm/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -493,7 +479,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
         <div class="final-actions flex space-x-4">
           <button
             type="button"
-            onclick={() => dispatch('close')}
+            on:click={() => dispatch('close')}
             disabled={isSubmitting}
             class="cancel-btn px-6 py-3 border border-yorha-accent-warm/50 text-yorha-light rounded hover:bg-yorha-accent-warm/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >

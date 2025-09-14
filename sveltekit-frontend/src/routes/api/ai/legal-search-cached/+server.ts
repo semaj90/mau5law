@@ -23,7 +23,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { getVectorCache, setVectorCache, getEmbeddingCache, setEmbeddingCache } from '$lib/server/vector-cache';
 import { cachedJson, CACHE_STRATEGIES } from '$lib/server/http-cache-headers';
 import { redisService } from '$lib/server/redis-service';

@@ -2,10 +2,10 @@
 // Bridges XState-managed AI assistant with WebAssembly llama.cpp service
 // Integrates WebGPU tensor acceleration and ONNX.js fallbacks
 
-import { webLlamaService, type WebLlamaResponse, type WebLlamaConfig } from '../ai/webasm-llamacpp';
-import { tensorAccelerator, acceleratedSimilarity } from '../webgpu/tensor-acceleration';
+import { webLlamaService, type WebLlamaResponse, type WebLlamaConfig } from '../ai/webasm-llamacpp.js';
+import { tensorAccelerator, acceleratedSimilarity } from '../webgpu/tensor-acceleration.js';
 import { browser } from '$app/environment';
-import type { ConversationEntry } from '../stores/aiAssistant.svelte';
+import type { ConversationEntry } from '../stores/aiAssistant.svelte.js';
 
 export interface WebAssemblyAIConfig {
   // Primary server-side endpoints
@@ -217,7 +217,7 @@ export class WebAssemblyAIAdapter {
     const statusCheck = await fetch(`${this.config.pythonMiddlewareEndpoint}/status`);
     const status = await statusCheck.json();
 
-    this.currentModel = status.model || 'gemma3:270m';
+    this.currentModel = status?.model || "unknown" // @ts-ignore - Model property access || 'gemma3:270m';
     console.log(`[WebAssembly AI] Python middleware initialized with model: ${this.currentModel}`);
   }
 
@@ -567,11 +567,8 @@ export class WebAssemblyAIAdapter {
     title: string,
     content: string,
     analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
-  ): Promise<{
-    summary: string;
-    keyTerms: string[];
-    entities: Array<{ type: string; value: string; confidence: number }>;
-    risks: Array<{ type: string; severity: string; description: string }>;
+  ): Promise<;
+    risks: Array<any>;
     recommendations: string[];
     confidence: number;
     processingTime: number;

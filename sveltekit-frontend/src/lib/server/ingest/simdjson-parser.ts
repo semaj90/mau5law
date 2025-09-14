@@ -5,18 +5,7 @@
  * Falls back to native JSON.parse for smaller files or when simdjson fails.
  */
 
-export async function parseLargeJsonWithSimd(jsonString: string): Promise<{
-  success: boolean;
-  data?: any;
-  extractedText?: string;
-  metadata?: {
-    parser: 'simdjson' | 'native';
-    originalSize: number;
-    textFields: number;
-    processingTime: number;
-  };
-  error?: string;
-}> {
+export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
   const startTime = Date.now();
   const originalSize = jsonString.length;
 
@@ -101,12 +90,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<{
 export async function parseJsonStream(
   jsonString: string,
   chunkSize = 1024 * 1024 // 1MB chunks
-): Promise<{
-  success: boolean;
-  extractedTexts: string[];
-  totalChunks: number;
-  error?: string;
-}> {
+): Promise<any> {
   try {
     const chunks: string[] = [];
     const extractedTexts: string[] = [];

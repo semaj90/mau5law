@@ -1,7 +1,7 @@
 // XState v5 Workflow Orchestrator - Manages multiple workflows and coordinates between them
 import { createActor, interpret, type StateFrom, type EventFrom } from 'xstate';
-import { documentProcessingMachine, type DocumentProcessingContext } from './document-processing';
-import { legalCaseManagementMachine, type LegalCaseContext } from './legal-case-management';
+import { documentProcessingMachine, type DocumentProcessingContext } from './document-processing.js';
+import { legalCaseManagementMachine, type LegalCaseContext } from './legal-case-management.js';
 import { cache } from '$lib/server/cache/redis';
 import { workflowQueue } from '$lib/server/message-queue';
 
@@ -260,7 +260,7 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_PAUSED',
       workflowId,
-      payload: {},
+      payload: Record<string, any>,
       timestamp: Date.now(),
     });
 
@@ -280,7 +280,7 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_RESUMED',
       workflowId,
-      payload: {},
+      payload: Record<string, any>,
       timestamp: Date.now(),
     });
 
@@ -304,7 +304,7 @@ class WorkflowOrchestrator {
     this.emitEvent({
       type: 'WORKFLOW_CANCELLED',
       workflowId,
-      payload: {},
+      payload: Record<string, any>,
       timestamp: Date.now(),
     });
 

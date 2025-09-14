@@ -87,12 +87,12 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
     signal: AbortSignal.timeout(300000),
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Go server error (${response.status}): ${errorText}`);
+  if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
+    const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text();
+    throw new Error(`Go server error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`);
   }
 
-  return await response.json();
+  return await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 }
 
 /**
@@ -150,7 +150,7 @@ export function createLegalAIWorker(): Worker {
       const { data } = job;
       const startTime = Date.now();
 
-      console.log(`🚀 Processing legal AI job: ${job.id} for document: ${data.documentId}`);
+      console.log(`🚀 Processing legal AI job: ${job.id} for document: ${(data as { documentId?: any }).documentId}`);
 
       try {
         // Update job progress
@@ -165,7 +165,7 @@ export function createLegalAIWorker(): Worker {
         }
 
         // Update database with results
-        await updateEvidenceWithResults(data.documentId, results);
+        await updateEvidenceWithResults((data as { documentId?: any }).documentId, results);
         await job.updateProgress(90);
 
         const processingTime = Date.now() - startTime;
@@ -174,7 +174,7 @@ export function createLegalAIWorker(): Worker {
         // Return comprehensive results
         const jobResult = {
           success: true,
-          documentId: data.documentId,
+          documentId: (data as { documentId?: any }).documentId,
           processingTime: `${processingTime}ms`,
           goServerResults: results,
           summary: {
@@ -206,7 +206,7 @@ export function createLegalAIWorker(): Worker {
               },
               updatedAt: new Date(),
             })
-            .where(eq(evidence.id, data.documentId));
+            .where(eq(evidence.id, (data as { documentId?: any }).documentId));
         } catch (dbError) {
           console.error(`❌ Failed to update evidence with error status:`, dbError);
         }
@@ -241,7 +241,7 @@ export function createLegalAIWorker(): Worker {
 
   worker.on('completed', (job, result) => {
     console.log(`✅ Legal AI Worker completed job: ${job.id}`);
-    console.log(`📊 Results: ${JSON.stringify(result.summary, null, 2)}`);
+    console.log(`📊 Results: ${JSON.stringify((result as { summary?: any }).summary, null, 2)}`);
   });
 
   worker.on('failed', (job, error) => {
@@ -298,12 +298,7 @@ export async function addLegalAIJob(
 /**
  * Get job status
  */
-export async function getLegalAIJobStatus(jobId: string): Promise<{
-  status: string;
-  progress: number;
-  result?: unknown;
-  error?: string;
-}> {
+export async function getLegalAIJobStatus(jobId: string): Promise<any> {
   const { Queue } = await import('bullmq');
 
   const queue = new Queue('legal-ai-processing', {

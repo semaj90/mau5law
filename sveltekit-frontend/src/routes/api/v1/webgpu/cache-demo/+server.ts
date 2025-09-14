@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { webgpuRedisOptimizer, optimizedCache } from '$lib/server/webgpu-redis-optimizer.js';
 import { embeddingCache } from '$lib/server/embedding-cache-middleware.js';
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       metadata: {
         timestamp: Date.now(),
         clientAddress: getClientAddress(),
-        processingTime: result.processingTime || 0
+        processingTime: (result as { processingTime?: any }).processingTime || 0
       }
     });
     
@@ -142,10 +142,10 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 async function runPerformanceBenchmark(
   data: any, 
   options: any
-): Promise<{ benchmarks: BenchmarkResult[]; summary: any }> {
+): Promise<any> {
   const results: BenchmarkResult[] = [];
-  const iterations = data.iterations || 100;
-  const tensorSize = data.batchSize || 1024;
+  const iterations = (data as { iterations?: any; batchSize?: any; textSamples?: any; concurrency?: any; duration?: any; tensorSize?: any }).iterations || 100;
+  const tensorSize = (data as { iterations?: any; batchSize?: any; textSamples?: any; concurrency?: any; duration?: any; tensorSize?: any }).batchSize || 1024;
   
   // Generate test data
   const testTensors = Array.from({ length: iterations }, () => 
@@ -323,7 +323,7 @@ async function benchmarkCacheThroughput(testTensors: Float32Array[]): Promise<Be
  * Demonstrate tensor operations with embeddings
  */
 async function demonstrateTensorOperations(data: any, options: any) {
-  const textSamples = data.textSamples || [
+  const textSamples = (data as { iterations?: any; batchSize?: any; textSamples?: any; concurrency?: any; duration?: any; tensorSize?: any }).textSamples || [
     'Legal contract analysis requires careful consideration of terms and conditions.',
     'Evidence processing in legal cases demands accuracy and attention to detail.',
     'Case management systems enhance lawyer productivity and client satisfaction.',
@@ -364,12 +364,8 @@ async function demonstrateTensorOperations(data: any, options: any) {
 /**
  * Calculate cosine similarities between embeddings
  */
-function calculateCosineSimilarities(embeddings: Float32Array[]): Array<{
-  text1: number;
-  text2: number; 
-  similarity: number;
-}> {
-  const similarities: Array<{ text1: number; text2: number; similarity: number }> = [];
+function calculateCosineSimilarities(embeddings: Float32Array[]): Array< {
+  const similarities: Array< = [];
   
   for (let i = 0; i < embeddings.length; i++) {
     for (let j = i + 1; j < embeddings.length; j++) {
@@ -402,8 +398,8 @@ function cosineSimilarity(a: Float32Array, b: Float32Array): number {
  * Demonstrate batch processing capabilities
  */
 async function demonstrateBatchProcessing(data: any, options: any) {
-  const batchSize = data.batchSize || 64;
-  const iterations = data.iterations || 10;
+  const batchSize = (data as { iterations?: any; batchSize?: any; textSamples?: any; concurrency?: any; duration?: any; tensorSize?: any }).batchSize || 64;
+  const iterations = (data as { iterations?: any; batchSize?: any; textSamples?: any; concurrency?: any; duration?: any; tensorSize?: any }).iterations || 10;
   
   const testData = Array.from({ length: batchSize }, (_, i) => ({
     id: `batch_item_${i}`,
@@ -419,8 +415,8 @@ async function demonstrateBatchProcessing(data: any, options: any) {
     // Batch set operations
     const setOps = testData.map(item => ({
       type: 'set' as const,
-      key: `${item.id}_${i}`,
-      value: item.data,
+      key: `${(item as { id?: any; data?: any }).id}_${i}`,
+      value: (item as { id?: any; data?: any }).data,
       options: { ttl: 300, compress: true, parallel: true, priority: 'high' as const }
     }));
     
@@ -429,7 +425,7 @@ async function demonstrateBatchProcessing(data: any, options: any) {
     // Batch get operations  
     const getOps = testData.map(item => ({
       type: 'get' as const,
-      key: `${item.id}_${i}`,
+      key: `${(item as { id?: any; data?: any }).id}_${i}`,
       options: { decompress: true, parallel: true }
     }));
     
@@ -489,9 +485,9 @@ async function getDetailedStatistics() {
  * Run stress test with high concurrency
  */
 async function runStressTest(data: any, options: any) {
-  const concurrency = data.concurrency || 50;
-  const duration = data.duration || 30000; // 30 seconds
-  const tensorSize = data.tensorSize || 512;
+  const concurrency = (data as { iterations?: any; batchSize?: any; textSamples?: any; concurrency?: any; duration?: any; tensorSize?: any }).concurrency || 50;
+  const duration = (data as { iterations?: any; batchSize?: any; textSamples?: any; concurrency?: any; duration?: any; tensorSize?: any }).duration || 30000; // 30 seconds
+  const tensorSize = (data as { iterations?: any; batchSize?: any; textSamples?: any; concurrency?: any; duration?: any; tensorSize?: any }).tensorSize || 512;
   
   console.log(`🚀 Starting stress test: ${concurrency} concurrent operations for ${duration}ms`);
   

@@ -108,7 +108,8 @@
   </div>
 
   <div class="space-y-4">
-    <Button class="bits-btn" type="button" variant="ghost" onclick={() => dispatch("cancel")}
+    <Button class="bits-btn" type="button" variant="ghost" on:click={() =>
+dispatch("cancel")}
       >Cancel</Button
     >
     <Button class="bits-btn" type="submit" disabled={$submitting}>
@@ -117,7 +118,7 @@
       {:else}
         {evidence ? "Save Changes" : "Create Evidence"}
       {/if}
-    </button>
+
   </div>
 </form>
 

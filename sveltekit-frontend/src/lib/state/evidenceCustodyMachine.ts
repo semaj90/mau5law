@@ -57,15 +57,9 @@ export interface EvidenceCustodyContext {
   activeCollaborators: string[];
   collaborationSession?: {
     sessionId: string;
-    participants: Array<{ userId: string; role: string; joinedAt: string }>;
-    chatHistory: Array<{ userId: string; message: string; timestamp: string }>;
-    annotations: Array<{
-      userId: string;
-      content: string;
-      position: any;
-      timestamp: string;
-    }>;
-  };
+    participants: Array<any>;
+    chatHistory: Array<any>;
+    annotations: Array<any>;
 
   // Workflow progress
   workflowStage: string;
@@ -74,20 +68,7 @@ export interface EvidenceCustodyContext {
   approvalStatus?: "pending" | "approved" | "rejected";
 
   // Documentation and audit trail
-  custodyEvents: Array<{
-    id: string;
-    eventType:
-      | "intake"
-      | "transfer"
-      | "verification"
-      | "analysis"
-      | "approval"
-      | "finalization";
-    timestamp: string;
-    userId: string;
-    details: Record<string, any>;
-    signature?: string;
-  }>;
+  custodyEvents: Array<any>;
 
   // Performance and timing
   startTime: number;
@@ -473,8 +454,8 @@ export const evidenceCustodyMachine = createMachine(
   {
     id: "evidenceCustody",
     types: {
-      context: {} as EvidenceCustodyContext,
-      events: {} as EvidenceCustodyEvent,
+      context: Record<string, any> as EvidenceCustodyContext,
+      events: Record<string, any> as EvidenceCustodyEvent,
     },
     initial: "idle",
     context: {
@@ -491,7 +472,7 @@ export const evidenceCustodyMachine = createMachine(
       custodyEvents: [],
       startTime: 0,
       stageStartTime: 0,
-      stageTimes: {},
+      stageTimes: Record<string, any>,
       warnings: [],
       retryCount: 0,
       maxRetries: 3,

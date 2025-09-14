@@ -32,7 +32,6 @@
     {/if}
   {:else}
     {#if placeholder}{@render placeholder()}{:else}Select an option...{/if}
-  {/if}
 </span>
 
 <style>/* @unocss-include */ {}</style>

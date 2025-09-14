@@ -117,12 +117,12 @@
           })
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+          throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
         }
 
-        const data = await response.json();
-        return { response: data.response };
+        const data = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+        return { response: (data as { response?: any }).response };
       }
     }
   });
@@ -177,22 +177,22 @@
 </script>
 
 <!-- Simple Notifications -->
-{#each notifications as notification (notification.id)}
+{#each notifications as notification ((notification as { id?: any; title?: any; description?: any }).id)}
   <div class="fixed top-4 right-4 bg-blue-500 text-white p-4 rounded shadow-lg z-50">
-    <div class="font-semibold">{notification.title}</div>
-    <div class="text-sm">{notification.description}</div>
+    <div class="font-semibold">{(notification as { id?: any; title?: any; description?: any }).title}</div>
+    <div class="text-sm">{(notification as { id?: any; title?: any; description?: any }).description}</div>
     <button
       class="absolute top-2 right-2 text-white hover:text-gray-200"
-      onclick={() => notifications = notifications.filter(n => n.id !== notification.id)}
+      on:click={() => notifications = notifications.filter(n => n.id !== (notification as { id?: any; title?: any; description?: any }).id)}
     >
       &times;
     </button>
   </div>
 {/each}
 
-<NesCard class="w-full max-w-4xl yorha-nier-bits-card">
-  <div class="yorha-panel-header" class="yorha-header">
-    <h3 class="nes-text is-primary" class="flex items-center gap-2">
+<div class="w-full max-w-4xl yorha-nier-bits-card nes-container">
+  <div class="yorha-panel-header yorha-header">
+    <h3 class="nes-text is-primary flex items-center gap-2">
       <div class="w-3 h-3 rounded-full" class:bg-green-500={snapshot.matches('idle')}
            class:bg-yellow-500={isLoading} class:bg-red-500={snapshot.matches('error')}></div>
       YoRHa Legal AI Assistant - Gemma3 Legal Latest
@@ -208,14 +208,14 @@
     </div>
   </div>
 
-  <div class="yorha-panel-content" class="space-y-6">
+  <div class="yorha-panel-content space-y-6">
     <!-- Input Section -->
     <div class="space-y-2">
       <label for="legal-prompt" class="text-sm font-medium">Legal Question</label>
       <Textarea
         id="legal-prompt"
         bind:value={promptInput}
-        onkeydown={handleKeydown}
+        on:keydown={handleKeydown}
         placeholder="Ask a legal question (e.g., 'What are the key elements of a valid contract?', 'Explain force majeure clauses', etc.)"
         rows={4}
         class="yorha-textarea"
@@ -231,7 +231,7 @@
     <div class="flex gap-2">
       <EnhancedButton
         variant="legal"
-        onclick={handleQuery}
+        on:click={handleQuery}
         disabled={!canSubmit}
         loading={isLoading}
         loadingText="Analyzing..."
@@ -244,7 +244,7 @@
       {#if snapshot.matches('error')}
         <EnhancedButton
           variant="outline"
-          onclick={handleRetry}
+          on:click={handleRetry}
           useMelt={true}
         >
           Retry
@@ -254,7 +254,7 @@
       {#if currentResponse}
         <EnhancedButton
           variant="ghost"
-          onclick={handleClear}
+          on:click={handleClear}
           useMelt={true}
         >
           Clear
@@ -317,17 +317,17 @@
           {#each snapshot.context.conversationHistory.slice(-3) as item}
             <div class="p-3 bg-gray-50 rounded border-l-4 border-blue-500">
               <div class="text-xs text-gray-500 mb-1">
-                {new Date(item.timestamp).toLocaleTimeString()}
+                {new Date((item as { timestamp?: any; prompt?: any; response?: any }).timestamp).toLocaleTimeString()}
               </div>
-              <div class="text-sm font-medium mb-1">Q: {item.prompt.slice(0, 100)}...</div>
-              <div class="text-xs text-gray-600">A: {item.response.slice(0, 150)}...</div>
+              <div class="text-sm font-medium mb-1">Q: {(item as { timestamp?: any; prompt?: any; response?: any }).prompt.slice(0, 100)}...</div>
+              <div class="text-xs text-gray-600">A: {(item as { timestamp?: any; prompt?: any; response?: any }).(response as { ok?: any; status?: any; statusText?: any; json?: any }).slice(0, 150)}...</div>
             </div>
           {/each}
         </div>
       </details>
     {/if}
   </div>
-</NesCard>
+</div>
 
 <style>
   /* YoRHa Legal AI Assistant Styling */

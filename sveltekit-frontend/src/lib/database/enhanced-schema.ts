@@ -22,7 +22,7 @@ import { sql } from "drizzle-orm";
 import { relations } from "drizzle-orm/relations";
 
 // Custom vector type for pgvector
-const vector = customType<{ data: number[]; driverData: string }>({
+const vector = customType({
   dataType(config) {
     return `vector(${(config as any)?.dimensions ?? 1536})`;
   },

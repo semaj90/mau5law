@@ -43,10 +43,10 @@
 
   // Derived states
   let canQuery = $derived(!isQuerying && currentQuery.trim().length > 0);
-  let totalDocuments = $derived(data.vectorStats?.totalDocuments || 0);
+  let totalDocuments = $derived((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats?.totalDocuments || 0);
   let knowledgeBaseHealth = $derived(
-    (data.knowledgeBase?.qualityScore || 0) > 0.85 ? 'excellent' :
-    (data.knowledgeBase?.qualityScore || 0) > 0.7 ? 'good' : 'needs-improvement'
+    ((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).knowledgeBase?.qualityScore || 0) > 0.85 ? 'excellent' :
+    ((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).knowledgeBase?.qualityScore || 0) > 0.7 ? 'good' : 'needs-improvement'
   );
 
   // RAG query functions
@@ -68,9 +68,9 @@
         body: formData
       });
       
-      const result = await response.json();
-      if (result.success) {
-        ragResult = result.result;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; result?: any }).success) {
+        ragResult = (result as { success?: any; result?: any }).result;
       }
     } catch (error) {
       console.error('RAG query failed:', error);
@@ -132,18 +132,18 @@
       </Badge>
       <Badge variant="secondary" class="gap-1">
         <Layers class="w-3 h-3" />
-        {data.vectorStats?.totalVectors?.toLocaleString() || '0'} Vectors
+        {(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats?.totalVectors?.toLocaleString() || '0'} Vectors
       </Badge>
       <Badge variant="secondary" class="gap-1">
         <Sparkles class="w-3 h-3" />
-        {data.modelInfo?.embedding?.model || 'nomic-embed-text'}
+        {(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).modelInfo?.embedding?.model || 'nomic-embed-text'}
       </Badge>
       <Badge 
         variant={knowledgeBaseHealth === 'excellent' ? 'default' : 'secondary'}
         class="gap-1"
       >
         <TrendingUp class="w-3 h-3" />
-        {Math.round((data.knowledgeBase?.qualityScore || 0) * 100)}% Quality
+        {Math.round(((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).knowledgeBase?.qualityScore || 0) * 100)}% Quality
       </Badge>
     </div>
   </div>
@@ -158,7 +158,7 @@
         { id: 'admin', label: 'Administration', icon: Settings }
       ] as tab}
         <button
-          onclick={() => selectedTab = tab.id}
+          on:click={() => selectedTab = tab.id}
           class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
@@ -174,16 +174,16 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Query Interface -->
       <OrchestratedCard.Analysis>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <Search class="w-5 h-5" />
             RAG Query Interface
-          </Card.Title>
-          <NesCard.Description>
+          </div.Title>
+          <div.Description class="nes-container">
             Perform advanced retrieval-augmented generation queries against the legal knowledge base
-          </Card.Description>
-        </Card.Header>
-        <NesCard.Content class="space-y-6">
+          </div.Description>
+        </div.Header>
+        <div.Content class="space-y-6 nes-container">
           <!-- Query Input -->
           <div class="space-y-3">
             <label class="text-sm font-medium" for="legal-query">Legal Query</label><textarea id="legal-query"
@@ -221,7 +221,7 @@
 
           <!-- Query Button -->
           <OrchestratedButton.AnalyzeEvidence
-            onclick={performRAGQuery}
+            on:click={performRAGQuery}
             disabled={!canQuery}
             class="w-full gap-2"
           >
@@ -238,9 +238,9 @@
           <div class="space-y-2">
             <h4 class="text-sm font-medium">Demo Queries</h4>
             <div class="space-y-2">
-              {#each (data.demoQueries || []) as demoQuery}
+              {#each ((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).demoQueries || []) as demoQuery}
                 <button
-                  onclick={() => useDemoQuery(demoQuery)}
+                  on:click={() => useDemoQuery(demoQuery)}
                   class="w-full text-left p-2 text-sm bg-muted hover:bg-muted/80 rounded border nes-text is-disabled hover:text-foreground transition-colors"
                   disabled={isQuerying}
                 >
@@ -249,21 +249,21 @@
               {/each}
             </div>
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Query Results -->
       <OrchestratedCard.AIInsight>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <FileText class="w-5 h-5" />
             Query Results
-          </Card.Title>
-          <NesCard.Description>
+          </div.Title>
+          <div.Description class="nes-container">
             Generated response and retrieved source documents
-          </Card.Description>
-        </Card.Header>
-        <NesCard.Content>
+          </div.Description>
+        </div.Header>
+        <div.Content class="nes-container">
           {#if ragResult}
             <div class="space-y-6">
               <!-- Performance Metrics -->
@@ -325,7 +325,7 @@
               <p class="text-sm mt-2">Try one of the demo queries to get started.</p>
             </div>
           {/if}
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.AIInsight>
     </div>
   {/if}
@@ -335,32 +335,32 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <!-- Knowledge Base Overview -->
       <OrchestratedCard.Evidence>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <BookOpen class="w-5 h-5" />
             Knowledge Base Overview
-          </Card.Title>
-          <NesCard.Description>
+          </div.Title>
+          <div.Description class="nes-container">
             Current state and statistics of the legal document repository
-          </Card.Description>
-        </Card.Header>
-        <NesCard.Content class="space-y-4">
+          </div.Description>
+        </div.Header>
+        <div.Content class="space-y-4 nes-container">
           <div class="grid grid-cols-2 gap-4">
             <div class="text-center p-4 bg-muted/50 rounded-lg">
               <p class="text-2xl font-bold text-primary">{totalDocuments.toLocaleString()}</p>
               <p class="text-sm nes-text is-disabled">Total Documents</p>
             </div>
             <div class="text-center p-4 bg-muted/50 rounded-lg">
-              <p class="text-2xl font-bold text-primary">{data.vectorStats?.totalChunks?.toLocaleString() || '0'}</p>
+              <p class="text-2xl font-bold text-primary">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats?.totalChunks?.toLocaleString() || '0'}</p>
               <p class="text-sm nes-text is-disabled">Text Chunks</p>
             </div>
           </div>
 
           <!-- Category Breakdown -->
-          {#if data.knowledgeBase?.categories}
+          {#if (data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).knowledgeBase?.categories}
             <div class="space-y-3">
               <h4 class="font-medium">Document Categories</h4>
-              {#each Object.entries(data.knowledgeBase.categories) as [category, stats]}
+              {#each Object.entries((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).knowledgeBase.categories) as [category, stats]}
                 <div class="flex items-center justify-between p-2 bg-muted/30 rounded">
                   <div class="flex items-center gap-2">
                     <span class="font-medium capitalize">{category}</span>
@@ -373,44 +373,44 @@
               {/each}
             </div>
           {/if}
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.Evidence>
 
       <!-- System Information -->
       <OrchestratedCard.Analysis>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <Settings class="w-5 h-5" />
             System Information
-          </Card.Title>
-          <NesCard.Description>
+          </div.Title>
+          <div.Description class="nes-container">
             RAG system architecture and configuration
-          </Card.Description>
-        </Card.Header>
-        <NesCard.Content class="space-y-4">
+          </div.Description>
+        </div.Header>
+        <div.Content class="space-y-4 nes-container">
           <div class="space-y-3">
             <div class="flex justify-between">
               <span class="text-sm nes-text is-disabled">Vector Database:</span>
-              <span class="text-sm font-medium">{data.ragCapabilities?.vectorDatabase?.provider || 'pgvector'}</span>
+              <span class="text-sm font-medium">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).ragCapabilities?.vectorDatabase?.provider || 'pgvector'}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-sm nes-text is-disabled">Dimensions:</span>
-              <span class="text-sm font-medium">{data.ragCapabilities?.vectorDatabase?.dimensions || 768}</span>
+              <span class="text-sm font-medium">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).ragCapabilities?.vectorDatabase?.dimensions || 768}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-sm nes-text is-disabled">Embedding Model:</span>
-              <span class="text-sm font-medium">{data.ragCapabilities?.embeddingModel?.name || 'nomic-embed-text'}</span>
+              <span class="text-sm font-medium">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).ragCapabilities?.embeddingModel?.name || 'nomic-embed-text'}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-sm nes-text is-disabled">LLM Model:</span>
-              <span class="text-sm font-medium">{data.ragCapabilities?.llmModel?.name || 'gemma2:27b'}</span>
+              <span class="text-sm font-medium">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).ragCapabilities?.llmModel?.name || 'gemma2:27b'}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-sm nes-text is-disabled">Context Length:</span>
-              <span class="text-sm font-medium">{data.ragCapabilities?.llmModel?.contextLength || 8192} tokens</span>
+              <span class="text-sm font-medium">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).ragCapabilities?.llmModel?.contextLength || 8192} tokens</span>
             </div>
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.Analysis>
     </div>
   {/if}
@@ -420,68 +420,68 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <!-- Vector Database Performance -->
       <OrchestratedCard.Analysis>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <Database class="w-5 h-5" />
             Vector Database Performance
-          </Card.Title>
-        </Card.Header>
-        <NesCard.Content class="space-y-4">
-          {#if data.vectorStats?.queryLatency}
+          </div.Title>
+        </div.Header>
+        <div.Content class="space-y-4 nes-container">
+          {#if (data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats?.queryLatency}
             <div class="grid grid-cols-2 gap-4">
               <div class="text-center p-3 bg-muted/50 rounded-lg">
-                <p class="text-lg font-bold {getPerformanceColor(data.vectorStats.queryLatency.p50, 50)}">
-                  {data.vectorStats.queryLatency.p50}ms
+                <p class="text-lg font-bold {getPerformanceColor((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats.queryLatency.p50, 50)}">
+                  {(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats.queryLatency.p50}ms
                 </p>
                 <p class="text-xs nes-text is-disabled">P50 Latency</p>
               </div>
               <div class="text-center p-3 bg-muted/50 rounded-lg">
-                <p class="text-lg font-bold {getPerformanceColor(data.vectorStats.queryLatency.p95, 100)}">
-                  {data.vectorStats.queryLatency.p95}ms
+                <p class="text-lg font-bold {getPerformanceColor((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats.queryLatency.p95, 100)}">
+                  {(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats.queryLatency.p95}ms
                 </p>
                 <p class="text-xs nes-text is-disabled">P95 Latency</p>
               </div>
             </div>
           {/if}
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.Analysis>
 
       <!-- Model Performance -->
       <OrchestratedCard.Analysis>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <Cpu class="w-5 h-5" />
             Model Performance
-          </Card.Title>
-        </Card.Header>
-        <NesCard.Content class="space-y-4">
+          </div.Title>
+        </div.Header>
+        <div.Content class="space-y-4 nes-container">
           <div class="text-center p-4 bg-muted/50 rounded-lg">
-            <p class="text-2xl font-bold text-primary">{formatLatency(data.modelInfo?.embedding?.avgLatency || 0)}</p>
+            <p class="text-2xl font-bold text-primary">{formatLatency((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).modelInfo?.embedding?.avgLatency || 0)}</p>
             <p class="text-sm nes-text is-disabled">Embedding Latency</p>
           </div>
           <div class="text-center p-4 bg-muted/50 rounded-lg">
-            <p class="text-2xl font-bold text-primary">{formatLatency(data.modelInfo?.llm?.avgLatency || 0)}</p>
+            <p class="text-2xl font-bold text-primary">{formatLatency((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).modelInfo?.llm?.avgLatency || 0)}</p>
             <p class="text-sm nes-text is-disabled">LLM Latency</p>
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.Analysis>
     </div>
   {/if}
 
   <!-- Recent Queries -->
   <OrchestratedCard.Analysis>
-    <NesCard.Header>
-      <NesCard.Title class="flex items-center gap-2">
+    <div.Header class="nes-container">
+      <div.Title class="flex items-center gap-2 nes-container">
         <Clock class="w-5 h-5" />
         Recent RAG Queries
-      </Card.Title>
-      <NesCard.Description>
+      </div.Title>
+      <div.Description class="nes-container">
         Latest queries processed by the RAG system with performance metrics
-      </Card.Description>
-    </Card.Header>
-    <NesCard.Content>
+      </div.Description>
+    </div.Header>
+    <div.Content class="nes-container">
       <div class="space-y-3">
-        {#each (data.recentQueries || []) as query}
+        {#each ((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).recentQueries || []) as query}
           <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
             <div class="flex-1">
               <p class="font-medium text-sm mb-1">{query.query}</p>
@@ -494,12 +494,12 @@
                 {formatAnalysisDate(new Date(query.timestamp))}
               </div>
             </div>
-            <button class="nes-btn" variant="ghost" size="sm" onclick={() => useDemoQuery(query.query)}>
+            <button class="nes-btn" variant="ghost" size="sm" on:click={() => useDemoQuery(query.query)}>
               <Eye class="w-3 h-3" />
             </button>
           </div>
         {/each}
       </div>
-    </Card.Content>
+    </div.Content>
   </OrchestratedCard.Analysis>
 </div>

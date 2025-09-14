@@ -6,7 +6,7 @@
 import { redirect, error } from '@sveltejs/kit';
 import type { Load, ServerLoad, ServerLoadEvent } from '@sveltejs/kit';
 import type { RouteDefinition } from '$lib/data/routes-config';
-import type { GeneratedRoute } from './dynamic-route-generator.js';
+import type { GeneratedRoute } from './dynamic-route-generator.js.js';
 import { URL } from "url";
 
 export interface RouteGuardContext {
@@ -80,13 +80,13 @@ export class RouteGuards {
       }
 
       const result = await guard(context);
-      if (!result.allowed) {
+      if (!(result as { allowed?: any; data?: any }).allowed) {
         return result;
       }
 
       // Merge guard data into context
-      if (result.data) {
-        context = { ...context, ...result.data };
+      if ((result as { allowed?: any; data?: any }).data) {
+        context = { ...context, ...(result as { allowed?: any; data?: any }).data };
       }
     }
 
@@ -432,7 +432,7 @@ export async function checkRoutePermission(
   };
 
   const result = await routeGuards.executeGuards(config.guards, context);
-  return result.allowed;
+  return (result as { allowed?: any; data?: any }).allowed;
 }
 
 /**

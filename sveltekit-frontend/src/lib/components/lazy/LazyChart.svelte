@@ -114,7 +114,6 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
         <!-- This shouldn't render as the placeholder is handled by LazyLoader -->
         <div class="chart-loading">Loading chart component...</div>
       {/if}
-    {/if}
   </div>
 
   <!-- Custom placeholder content in the slot -->

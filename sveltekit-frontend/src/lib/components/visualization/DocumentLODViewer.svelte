@@ -64,7 +64,7 @@
   }: DocumentLODViewerProps = $props();
 
   // Svelte 5 state management
-  let canvasElement = $state<HTMLCanvasElement>();
+  let canvasElement: HTMLCanvasElement = $state(undefined as any);
   let gpuDevice = $state<GPUDevice | null>(null);
   let context = $state<GPUCanvasContext | null>(null);
   let isWebGPUReady = $state(false);
@@ -76,7 +76,7 @@
   let currentLOD = $state(1);
   let isLoading = $state(false);
   
-  let documentPages = $state<Map<number, DocumentPage>>(new Map());
+  let documentPages = $state<Map<number, DocumentPage>(0)>(new Map());
   let viewportBounds = $state({ x: 0, y: 0, width: 800, height: 600 });
   let dragState = $state({ isDragging: false, startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
 
@@ -459,7 +459,7 @@
     <div class="navigation-controls">
       <LoadingButton
         loading={isLoading}
-        onclick={() => changePage(currentPage - 1)}
+        on:click={() => changePage(currentPage - 1)}
         disabled={currentPage <= 1 || isLoading}
         variant="outline"
         size="sm"
@@ -473,7 +473,7 @@
       
       <LoadingButton
         loading={isLoading}
-        onclick={() => changePage(currentPage + 1)}
+        on:click={() => changePage(currentPage + 1)}
         disabled={currentPage >= totalPages || isLoading}
         variant="outline"
         size="sm"
@@ -483,7 +483,7 @@
     </div>
     
     <div class="view-controls">
-      <LoadingButton onclick={handleZoomIn} variant="outline" size="sm">
+      <LoadingButton on:click={handleZoomIn} variant="outline" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
@@ -491,11 +491,11 @@
         {Math.round(zoomLevel * 100)}%
       </span>
       
-      <LoadingButton onclick={handleZoomOut} variant="outline" size="sm">
+      <LoadingButton on:click={handleZoomOut} variant="outline" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={handleRotate} variant="outline" size="sm">
+      <LoadingButton on:click={handleRotate} variant="outline" size="sm">
         {#snippet children()}<RotateCw class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
@@ -504,7 +504,7 @@
       <select 
         class="nes-select"
         bind:value={currentLOD}
-        onchange={() => {
+        on:change={() => {
           onLODChange?.(currentLOD);
           renderCurrentPage();
         }}

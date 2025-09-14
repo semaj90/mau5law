@@ -36,7 +36,7 @@ try {
           
           return { item, refIndex: index, score };
         })
-        .filter((result: any) => result.score <= threshold)
+        .filter((result: any) => (result as { score?: any }).score <= threshold)
         .sort((a, b) => a.score - b.score);
     }
     

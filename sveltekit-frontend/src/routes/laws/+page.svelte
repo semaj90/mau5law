@@ -39,13 +39,13 @@ let isSearching = $state<boolean >(false);
       });
 
       const response = await fetch(`/api/laws/search?${params}`);
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
-        searchResults = result.laws || [];
+      if ((result as { success?: any; laws?: any; error?: any }).success) {
+        searchResults = (result as { success?: any; laws?: any; error?: any }).laws || [];
       } else {
         searchResults = [];
-        console.error('Search failed:', result.error);
+        console.error('Search failed:', (result as { success?: any; laws?: any; error?: any }).error);
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -65,7 +65,7 @@ let isSearching = $state<boolean >(false);
   function handleAISearchResult(result: any) {
     console.log('AI Search Result:', result);
     if (result?.laws) {
-      searchResults = result.laws;
+      searchResults = (result as { success?: any; laws?: any; error?: any }).laws;
     }
   }
 
@@ -111,21 +111,21 @@ let isSearching = $state<boolean >(false);
     />
   {/if}
   <!-- Simple Search -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <Search class="h-5 w-5" />
         Search Laws & Regulations
       </h3>
     </div>
-    <div class="yorha-panel-content" class="space-y-4">
+    <div class="yorha-panel-content space-y-4">
       <div class="flex gap-2">
           <Input
           placeholder="Search laws, codes, regulations..."
           bind:value={searchQuery}
-          onkeydown={handleKeydown}
+          on:keydown={handleKeydown}
           class="flex-1" />
-        <button onclick={performSearch} disabled={isSearching || !searchQuery.trim()} class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition disabled:opacity-50">
+        <button on:click={performSearch} disabled={isSearching || !searchQuery.trim()} class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition disabled:opacity-50">
           {#if isSearching}
             Loading...
           {:else}
@@ -135,7 +135,7 @@ let isSearching = $state<boolean >(false);
         </button>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Quick Links -->
   <div class="space-y-4">
@@ -145,10 +145,10 @@ let isSearching = $state<boolean >(false);
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {#each data.quickLinks as link}
-        <NesCard class="hover:shadow-lg transition-all duration-200">
+      {#each (data as { quickLinks?: any }).quickLinks as link}
+        <div class="hover:shadow-lg transition-all duration-200 nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-lg">{link.title}</h3>
+            <h3 class="nes-text is-primary text-lg">{link.title}</h3>
             <p class="nes-text">{link.description}</p>
             <div class="flex gap-2">
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{link.jurisdiction}</span>
@@ -165,7 +165,7 @@ let isSearching = $state<boolean >(false);
               Browse {link.title}
             </a>
           </div>
-        </NesCard>
+        </div>
       {/each}
     </div>
   </div>
@@ -179,7 +179,7 @@ let isSearching = $state<boolean >(false);
 
       <div class="space-y-4">
         {#each searchResults as law}
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">{law.title}</h3>
               <p class="nes-text">
@@ -189,11 +189,11 @@ let isSearching = $state<boolean >(false);
             <div class="yorha-panel-content">
               <p class="mb-4 text-sm">{law.description}</p>
               <div class="flex gap-2">
-                <button onclick={() => handleAISummarizeResult(law)} class="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm">
+                <button on:click={() => handleAISummarizeResult(law)} class="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm">
                   <Bot class="h-4 w-4 mr-2" />
                   <span>AI Summary</span>
                 </button>
-                <button onclick={() => handleAIChatResult(law)} class="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm">
+                <button on:click={() => handleAIChatResult(law)} class="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm">
                   <MessageSquare class="h-4 w-4 mr-2" />
                   <span>AI Chat</span>
                 </button>
@@ -204,16 +204,16 @@ let isSearching = $state<boolean >(false);
                 {/if}
               </div>
             </div>
-          </NesCard>
+          </div>
         {/each}
       </div>
     </div>
   {:else if searchQuery && !isSearching}
-    <NesCard>
-      <div class="yorha-panel-content" class="py-8 text-center">
+    <div class="nes-container">
+      <div class="yorha-panel-content py-8 text-center">
         <p class="nes-text is-disabled">No results found for "{searchQuery}"</p>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

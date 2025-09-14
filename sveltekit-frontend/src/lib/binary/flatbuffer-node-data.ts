@@ -10,7 +10,7 @@
  * - WebGPU texture upload optimization
  */
 
-import { nesGPUBridge, type GPUNodeDataFB } from '../gpu/nes-gpu-memory-bridge';
+import { nesGPUBridge, type GPUNodeDataFB } from '../gpu/nes-gpu-memory-bridge.js';
 
 // Binary field offsets and sizes (bytes)
 const FLATBUFFER_SCHEMA = {
@@ -87,16 +87,7 @@ export class FlatBufferNodeSerializer {
    * Serialize legal document graph nodes to binary FlatBuffer format
    * Optimized for GPU texture upload and NES memory allocation
    */
-  static async serializeNodes(nodes: Array<{
-    id: number;
-    type: string;
-    priority: number;
-    bankId?: number;
-    confidence: number;
-    riskLevel: string;
-    position: { x: number; y: number; z?: number };
-    embedding?: Float32Array;
-    metadata?: Record<string, any>;
+  static async serializeNodes(nodes: Array<any>;
     compressed?: boolean;
     cached?: boolean;
   }>): Promise<ArrayBuffer> {

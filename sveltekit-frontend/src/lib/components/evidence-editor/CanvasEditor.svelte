@@ -14,37 +14,16 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   // Access state from snapshot
   let state = $derived($snapshot);
 
-  let { caseId = $bindable(), readOnly = false } = $props<{
-    caseId?: string | null;
-    readOnly?: boolean;
-  }>();
-  let canvas = $state<HTMLCanvasElement>();
+  let { caseId = $bindable(), readOnly = false } = $props();
+  let canvas: HTMLCanvasElement = $state(undefined as any);
   let ctx: CanvasRenderingContext2D;
   let canvasContainer: HTMLDivElement;
 
   // Enhanced file nodes with connections
-  let fileNodes = $state<Array<{
-    id: string;
-    name: string;
-    type: string;
-    content: string;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    aiTags?: unknown;
-    metadata?: unknown;
-    connections?: string[]; // Connected node IDs
-  }>>([]);
+  let fileNodes = $state<any[]>([])([]);
 
   // Node connections for relationship visualization
-  let nodeConnections = $state<Array<{
-    fromId: string;
-    toId: string;
-    type: 'person' | 'location' | 'organization' | 'temporal' | 'custom';
-    strength: number;
-    label?: string;
-  }>>([]);
+  let nodeConnections = $state<any[]>([])([]);
   let selectedNodeId = $state<string | null>(null);
   let hoveredNodeId = $state<string | null>(null);
   let isDragging = $state(false);
@@ -757,16 +736,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
 <div class="container mx-auto px-4 enhanced-canvas-editor" bind:this={canvasContainer}>
   <canvas
-    bind:this={canvas}
+    bind:this={canvas as any}
     class="container mx-auto px-4"
-    ondrop={handleDrop}
-    ondragover={handleDragOver}
-    onclick={handleCanvasClick}
+    on:drop={handleDrop}
+    on:dragover={handleDragOver}
+    on:click={handleCanvasClick}
     onmousedown={handleMouseDown}
-    on:mousemove={handleMouseMove}
-    mouseup={handleMouseUp}
-    on:mouseleave={handleMouseUp}
-    wheel={handleWheel}
+    onmousemove={mouseup}
+    on:mouseleave={wheel}
     on:contextmenu|preventDefault
   ></canvas>
 

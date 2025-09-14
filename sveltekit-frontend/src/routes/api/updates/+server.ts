@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Server-Sent Events API route for SSR-safe real-time updates
 import { createClient } from "redis";

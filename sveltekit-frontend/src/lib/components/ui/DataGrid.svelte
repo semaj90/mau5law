@@ -24,10 +24,10 @@ https://svelte.dev/e/js_parse_error -->
     children,
     onSelectionChange
   }: DataGridProps = $props();
-  let selectedRows = $state<Set<string | number>>(new Set());
-  let sortConfig = $state<{column: string, direction: 'asc' | 'desc'} | null>(null);
+  let selectedRows = $state<Set<string | number>(0)>(new Set());
+  let sortConfig = $state(null);
   let searchQuery = $state('');
-  let columnFilters = $state<Map<string, string>>(new Map());
+  let columnFilters = $state<Map<string, string>('')>(new Map());
 
   let filteredData = $derived(() => {
     let filtered = data;
@@ -142,8 +142,7 @@ https://svelte.dev/e/js_parse_error -->
             <th class="select-header">
               <input
                 type="checkbox"
-                checked={selectedRows.size === sortedData.length && sortedData.length > 0}
-                change={handleSelectAll}
+                checked={selectedRows.size === sortedData.length && sortedData.length > 0} on:change={handleSelectAll}
                 class="checkbox-input"
               />
             </th>
@@ -153,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
             <th class="header-cell">
               <button
                 class="header-button"
-                onclick={() => handleSort(column.key)}
+                on:click={() => handleSort(column.key)}
                 disabled={!sortable || !column.sortable}
               >
                 <span class="header-text">{column.title}</span>
@@ -207,14 +206,13 @@ https://svelte.dev/e/js_parse_error -->
                 'row-even': index % 2 === 0,
                 'row-clickable': selectable
               })}
-              onclick={() => handleRowSelect(row.id)}
+              on:click={() => handleRowSelect(row.id)}
             >
               {#if selectable && multiSelect}
                 <td class="select-cell">
                   <input
                     type="checkbox"
-                    checked={selectedRows.has(row.id)}
-                    change={() => handleRowSelect(row.id)}
+                    checked={selectedRows.has(row.id)} on:change={() => handleRowSelect(row.id)}
                     class="checkbox-input"
                   />
                 </td>

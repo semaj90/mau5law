@@ -2,7 +2,7 @@
 // Nintendo-Style Service Health Monitoring
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface ServiceHealth {
   service: string;
@@ -22,7 +22,7 @@ interface HealthResponse {
   timestamp: string;
 }
 
-async function checkServiceHealth(url: string, timeout = 5000): Promise<{ healthy: boolean; responseTime: number }> {
+async function checkServiceHealth(url: string, timeout = 5000): Promise<any> {
   const startTime = Date.now();
   
   try {
@@ -180,7 +180,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       overall_status: 'critical',
       services: [],
-      nintendo_memory_banks: {},
+      nintendo_memory_banks: Record<string, any>,
       timestamp: new Date().toISOString(),
       error: 'Health check system failure'
     }, { status: 500 });

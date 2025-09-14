@@ -79,14 +79,14 @@ const originalPOSTHandler: RequestHandler = async (event) => {
     try {
       const result = await llmOrchestratorBridge.processRequest(bridgeRequest);
       
-      if (!result.success) {
-        throw new Error(result.error || 'Orchestrator processing failed');
+      if (!(result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).success) {
+        throw new Error((result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).error || 'Orchestrator processing failed');
       }
 
       const totalTime = performance.now() - startTime;
       
       if (dev) {
-        console.log(`🚀 Chat API completed via ${result.orchestratorUsed} orchestrator in ${totalTime.toFixed(2)}ms`);
+        console.log(`🚀 Chat API completed via ${(result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).orchestratorUsed} orchestrator in ${totalTime.toFixed(2)}ms`);
       }
 
       // Return OpenAI-compatible format
@@ -94,25 +94,25 @@ const originalPOSTHandler: RequestHandler = async (event) => {
         choices: [{
           message: {
             role: "assistant",
-            content: result.response
+            content: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).response
           },
           finish_reason: "stop",
           index: 0
         }],
         usage: {
-          total_tokens: Math.ceil((lastMessage.content + result.response).length / 4), // Rough estimate
+          total_tokens: Math.ceil((lastMessage.content + (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).response).length / 4), // Rough estimate
           prompt_tokens: Math.ceil(lastMessage.content.length / 4),
-          completion_tokens: Math.ceil(result.response.length / 4)
+          completion_tokens: Math.ceil((result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).response.length / 4)
         },
-        model: result.modelUsed,
+        model: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).modelUsed,
         object: "chat.completion",
         created: Math.floor(Date.now() / 1000),
-        id: result.requestId,
+        id: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).requestId,
         orchestrator: {
-          used: result.orchestratorUsed,
-          confidence: result.confidence,
-          executionMetrics: result.executionMetrics,
-          gpuAccelerated: result.executionMetrics.gpuAccelerated,
+          used: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).orchestratorUsed,
+          confidence: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).confidence,
+          executionMetrics: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).executionMetrics,
+          gpuAccelerated: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).executionMetrics.gpuAccelerated,
         },
         response_time_ms: totalTime
       });
@@ -171,14 +171,14 @@ async function fallbackToDirectOllama(
       choices: [{
         message: {
           role: "assistant",
-          content: data.response || "No response generated"
+          content: (data as { response?: any; eval_count?: any; prompt_eval_count?: any }).response || "No response generated"
         },
         finish_reason: "stop"
       }],
       usage: {
-        total_tokens: data.eval_count || 0,
-        prompt_tokens: data.prompt_eval_count || 0,
-        completion_tokens: (data.eval_count || 0) - (data.prompt_eval_count || 0)
+        total_tokens: (data as { response?: any; eval_count?: any; prompt_eval_count?: any }).eval_count || 0,
+        prompt_tokens: (data as { response?: any; eval_count?: any; prompt_eval_count?: any }).prompt_eval_count || 0,
+        completion_tokens: ((data as { response?: any; eval_count?: any; prompt_eval_count?: any }).eval_count || 0) - ((data as { response?: any; eval_count?: any; prompt_eval_count?: any }).prompt_eval_count || 0)
       },
       model: model,
       orchestrator: {

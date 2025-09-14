@@ -93,9 +93,9 @@
       };
 
       const response = await reactiveApiClient.commandSearch(searchParams);
-      if (response.success && response.data) {
-        searchResults = response.data.results || { cases: [], evidence: [], documents: [], people: [] };
-        totalResults = response.data.totalResults || 0;
+      if ((response as { success?: any; data?: any }).success && (response as { success?: any; data?: any }).data) {
+        searchResults = (response as { success?: any; data?: any }).data.results || { cases: [], evidence: [], documents: [], people: [] };
+        totalResults = (response as { success?: any; data?: any }).data.totalResults || 0;
       }
     } catch (error) {
       console.error('Command search failed:', error);
@@ -146,28 +146,28 @@
   function formatResultText(item: any, type: string): string {
     switch (type) {
       case 'cases':
-        return `${item.title} #${item.caseNumber || item.id?.slice(-6)} - ${item.status}`;
+        return `${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).title} #${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).caseNumber || (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).id?.slice(-6)} - ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).status}`;
       case 'evidence':
-        return `${item.title} (${item.evidenceType}) - Case: ${item.caseId?.slice(-6)}`;
+        return `${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).title} (${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).evidenceType}) - Case: ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).caseId?.slice(-6)}`;
       case 'documents':
-        return `${item.title} - ${item.documentType}`;
+        return `${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).title} - ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).documentType}`;
       case 'people':
-        return `${item.name} (${item.role}) - ${item.email}`;
+        return `${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).name} (${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).role}) - ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).email}`;
       default:
-        return item.title || item.name || 'Unknown';
+        return (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).title || (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).name || 'Unknown';
     }
   }
 
   function formatResultDescription(item: any, type: string): string {
     switch (type) {
       case 'cases':
-        return item.description || `Priority: ${item.priority} | Created: ${new Date(item.createdAt).toLocaleDateString()}`;
+        return (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).description || `Priority: ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).priority} | Created: ${new Date((item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).createdAt).toLocaleDateString()}`;
       case 'evidence':
-        return item.description || `Collected: ${item.collectedAt ? new Date(item.collectedAt).toLocaleDateString() : 'Unknown'}`;
+        return (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).description || `Collected: ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).collectedAt ? new Date((item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).collectedAt).toLocaleDateString() : 'Unknown'}`;
       case 'documents':
-        return item.metadata?.summary || `Created: ${new Date(item.createdAt).toLocaleDateString()}`;
+        return (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).metadata?.summary || `Created: ${new Date((item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).createdAt).toLocaleDateString()}`;
       case 'people':
-        return `Department: ${item.department || 'Unknown'} | Role: ${item.role}`;
+        return `Department: ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).department || 'Unknown'} | Role: ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).role}`;
       default:
         return '';
     }
@@ -195,8 +195,7 @@
   <div class="flex items-center border-b px-3 modular-command-header">
     <Search class="mr-2 h-4 w-4 shrink-0 opacity-50" />
     <Command.Input
-      bind:value={query}
-      input={(e) => handleQueryChange(e.currentTarget.value)}
+      bind:value={query} on:input={(e) => handleQueryChange(e.currentTarget.value)}
       {placeholder}
       class="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:nes-text is-disabled disabled:cursor-not-allowed disabled:opacity-50 font-mono"
     />
@@ -241,9 +240,9 @@
                   <div class="flex flex-col gap-1 min-w-0 flex-1">
                     <div class="font-medium text-sm truncate">
                       {formatResultText(item, type)}
-                      {#if item.similarity !== undefined}
+                      {#if (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).similarity !== undefined}
                         <span class="text-xs nes-text is-disabled ml-2">
-                          ({Math.round(item.similarity * 100)}% match)
+                          ({Math.round((item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).similarity * 100)}% match)
                         </span>
                       {/if}
                     </div>
@@ -263,7 +262,6 @@
           Showing {searchLimit} of {totalResults} results
         </div>
       {/if}
-    {/if}
   </Command.List>
 </Command.Root>
 

@@ -1,10 +1,10 @@
-import Root from "./Table.svelte";
-import Body from "./TableBody.svelte";
-import Caption from "./TableCaption.svelte";
-import Cell from "./TableCell.svelte";
-import Head from "./TableHead.svelte";
-import Header from "./TableHeader.svelte";
-import Row from "./TableRow.svelte";
+import Root from './Table.svelte.js';
+import Body from './TableBody.svelte.js';
+import Caption from './TableCaption.svelte.js';
+import Cell from './TableCell.svelte.js';
+import Head from './TableHead.svelte.js';
+import Header from './TableHeader.svelte.js';
+import Row from './TableRow.svelte.js';
 
 export {
 	Root,

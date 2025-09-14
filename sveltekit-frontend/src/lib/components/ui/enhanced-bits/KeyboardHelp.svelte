@@ -179,13 +179,13 @@
 {#if open}
   <div 
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-    onclick={handleBackdropClick}
-    onkeydown={handleKeydown}
+    on:click={handleBackdropClick}
+    on:keydown={handleKeydown}
     role="dialog"
     aria-modal="true"
     aria-labelledby="keyboard-help-title"
   >
-    <NesCard class={cn("w-full max-w-4xl max-h-[90vh] flex flex-col", className)}>
+    <div class={cn("w-full max-w-4xl max-h-[90vh] flex flex-col", className)} class="nes-container">
       <!-- Header -->
       <div class="flex items-center justify-between p-6 border-b border-nier-border-muted">
         <div>
@@ -200,7 +200,7 @@
         <button class="nes-btn"
           variant="ghost"
           size="sm"
-          onclick={() => open = false}
+          on:click={() => open = false}
           class="text-nier-text-secondary hover:text-nier-text-primary"
           aria-label="Close keyboard shortcuts help"
         >
@@ -330,7 +330,7 @@
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   </div>
 {/if}
 

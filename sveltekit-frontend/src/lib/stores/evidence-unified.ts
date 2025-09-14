@@ -165,14 +165,14 @@ class UnifiedEvidenceStore {
           this.store.update((s) => ({
             ...s,
             evidence: s.evidence.map((e: any) =>
-              e.id === data.id ? { ...e, ...data } : e,
+              e.id === (data as { id?: any; lastUpdated?: any; evidence?: any }).id ? { ...e, ...data } : e,
             ),
           }));
           break;
         case "EVIDENCE_DELETED":
           this.store.update((s) => ({
             ...s,
-            evidence: s.evidence.filter((e: any) => e.id !== data.id),
+            evidence: s.evidence.filter((e: any) => e.id !== (data as { id?: any; lastUpdated?: any; evidence?: any }).id),
           }));
           break;
       }
@@ -190,11 +190,11 @@ class UnifiedEvidenceStore {
 
     try {
       const response = await fetch(`/api/evidence/${caseId}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch evidence: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Failed to fetch evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const evidenceList: Evidence[] = await response.json();
+      const evidenceList: Evidence[] = await (response as { ok?: any; statusText?: any; json?: any }).json();
       this.store.update((s) => ({
         ...s,
         evidence: evidenceList,
@@ -228,11 +228,11 @@ class UnifiedEvidenceStore {
         body: JSON.stringify({ ...newEvidenceData, caseId: currentCaseId }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to add evidence: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Failed to add evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const createdEvidence: Evidence = await response.json();
+      const createdEvidence: Evidence = await (response as { ok?: any; statusText?: any; json?: any }).json();
       this.store.update((s) => ({
         ...s,
         evidence: [...s.evidence, createdEvidence],
@@ -268,8 +268,8 @@ class UnifiedEvidenceStore {
         body: JSON.stringify(updates),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to update evidence: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Failed to update evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
       this.saveToLocalStorage();
     } catch (error: any) {
@@ -301,8 +301,8 @@ class UnifiedEvidenceStore {
         method: "DELETE",
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to delete evidence: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Failed to delete evidence: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
       this.saveToLocalStorage();
     } catch (error: any) {
@@ -339,13 +339,13 @@ class UnifiedEvidenceStore {
       const stored = localStorage.getItem("evidenceStore");
       if (stored) {
         const data = JSON.parse(stored);
-        const lastUpdated = new Date(data.lastUpdated);
+        const lastUpdated = new Date((data as { id?: any; lastUpdated?: any; evidence?: any }).lastUpdated);
         const hoursDiff =
           (Date.now() - lastUpdated.getTime()) / (1000 * 60 * 60);
 
         if (hoursDiff < 24) {
           this.store.set({
-            evidence: data.evidence || [],
+            evidence: (data as { id?: any; lastUpdated?: any; evidence?: any }).evidence || [],
             isLoading: false,
             error: null,
             isConnected: false,
@@ -380,17 +380,17 @@ export const evidenceStore = new UnifiedEvidenceStore();
 ;
 export const evidenceById = derived(evidenceStore, ($store) => {
   const map = new Map<string, Evidence>();
-  $store.evidence.forEach((item) => map.set(item.id, item));
+  $store.evidence.forEach((item) => map.set((item as { id?: any; caseId?: any }).id, item));
   return map;
 });
 
 export const evidenceByCase = derived(evidenceStore, ($store) => {
   const map = new Map<string, Evidence[]>();
   $store.evidence.forEach((item) => {
-    if (!map.has(item.caseId)) {
-      map.set(item.caseId, []);
+    if (!map.has((item as { id?: any; caseId?: any }).caseId)) {
+      map.set((item as { id?: any; caseId?: any }).caseId, []);
     }
-    map.get(item.caseId)!.push(item);
+    map.get((item as { id?: any; caseId?: any }).caseId)!.push(item);
   });
   return map;
 });

@@ -8,7 +8,7 @@ import type { DistanceStrategy } from "@langchain/community/vectorstores/pgvecto
 import type { Document as LangChainDocumentType } from "@langchain/core/documents";
 import { Embeddings } from "@langchain/core/embeddings";
 import { OllamaEmbeddings } from "@langchain/ollama";
-import { db } from '../db/index.js';
+import { db } from '../db/index.js.js';
 import { sql, eq, and, or, desc, asc } from 'drizzle-orm';
 
 // Define legal document type
@@ -244,29 +244,29 @@ export class EnhancedLegalSearchService {
               // Convert semantic search results to our LegalSearchResult format
               const enhancedResults: LegalSearchResult[] = semanticData.results.map(
                 (result: any) => ({
-                  id: result.id,
-                  title: result.title,
-                  content: result.content || `Document: ${result.title}`,
-                  description: result.metadata?.description || result.metadata?.summary,
-                  jurisdiction: result.metadata?.jurisdiction || options.jurisdiction || 'unknown',
+                  id: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).id,
+                  title: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).title,
+                  content: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).content || `Document: ${(result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).title}`,
+                  description: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.description || (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.summary,
+                  jurisdiction: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.jurisdiction || options.jurisdiction || 'unknown',
                   category:
-                    result.document_type ||
-                    result.metadata?.category ||
+                    (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).document_type ||
+                    (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.category ||
                     options.category ||
                     'general',
-                  url: result.metadata?.url,
-                  code: result.metadata?.code,
-                  sections: result.metadata?.sections
-                    ? [result.metadata.sections].flat()
+                  url: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.url,
+                  code: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.code,
+                  sections: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata?.sections
+                    ? [(result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata.sections].flat()
                     : undefined,
-                  score: result.semantic_score || 1 - result.distance,
-                  confidence: result.semantic_score || 1 - result.distance,
-                  relevance: result.relevance_level || 'medium',
+                  score: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).semantic_score || 1 - (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).distance,
+                  confidence: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).semantic_score || 1 - (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).distance,
+                  relevance: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).relevance_level || 'medium',
                   searchType: 'vector' as const,
                   metadata: {
-                    ...result.metadata,
-                    semantic_score: result.semantic_score,
-                    distance: result.distance,
+                    ...(result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata,
+                    semantic_score: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).semantic_score,
+                    distance: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).distance,
                     source: 'enhanced_semantic_search',
                   },
                 })
@@ -563,30 +563,30 @@ export class EnhancedLegalSearchService {
     const uniqueResults = new Map<string, LegalSearchResult>();
 
     for (const result of results) {
-      const existing = uniqueResults.get(result.id);
-      if (!existing || result.score > existing.score) {
-        uniqueResults.set(result.id, result);
+      const existing = uniqueResults.get((result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).id);
+      if (!existing || (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).score > existing.score) {
+        uniqueResults.set((result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).id, result);
       }
     }
 
     // Apply boosting factors and re-rank
     const boostedResults = Array.from(uniqueResults.values()).map((result) => {
-      let boostedScore = result.score;
+      let boostedScore = (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).score;
 
       // Apply boosts
-      if (result.relevanceFactors.exact_match > 0.8) {
+      if ((result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).relevanceFactors.exact_match > 0.8) {
         boostedScore *= this.config.boostFactors.exact_match;
       }
 
-      if (result.title.toLowerCase().includes(query.toLowerCase())) {
+      if ((result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).title.toLowerCase().includes(query.toLowerCase())) {
         boostedScore *= this.config.boostFactors.title;
       }
 
-      if (options.jurisdiction === result.jurisdiction) {
+      if (options.jurisdiction === (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).jurisdiction) {
         boostedScore *= this.config.boostFactors.jurisdiction;
       }
 
-      if (options.category === result.category) {
+      if (options.category === (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).category) {
         boostedScore *= this.config.boostFactors.category;
       }
 

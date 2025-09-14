@@ -7,9 +7,7 @@ https://svelte.dev/e/tag_invalid_name -->
   </script> in dist build
   // Provide a no-op component during migration to avoid build-time parse errors.
   // Convert to Svelte 5 runes pattern
-  let { debug = false } = $props<{
-    debug?: boolean;
-  }>();
+  let { debug = false } = $props();
 </script>
 
 <!-- Minimal visual placeholder -->

@@ -28,7 +28,7 @@ const (
 	CUDAWorkerScript    = "/cuda-worker.js"
 
 	// Database
-	PostgreSQLURL       = "postgres://legal_admin:123456@localhost:5432/legal_ai_db"
+	PostgreSQLURL       = "postgres://legal_admin:123456@localhost:5433/legal_ai_db"
 
 	// Cache
 	RedisURL           = "redis://:redis@localhost:6379"
@@ -796,10 +796,10 @@ func (s *ChatService) updateSession(ctx context.Context, sessionID, userID strin
 }
 
 func (s *ChatService) generateEmbedding(ctx context.Context, text string) ([]float32, error) {
-	// Use nomic-embed-text via existing service
+	// Use embeddinggemma via existing service
 	embedReq := map[string]interface{}{
 		"input": text,
-		"model": "nomic-embed-text",
+		"model": "embeddinggemma:latest",
 	}
 
 	reqBody, _ := json.Marshal(embedReq)

@@ -40,14 +40,14 @@ https://svelte.dev/e/js_parse_error -->
     const startTime = performance.now();
     try {
       const response = await observableFetch('/api/v1/observability/client?action=health');
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
       serverHealth = data;
       const duration = performance.now() - startTime;
-      addDemoResult('Health Check', `${data.status} (${Math.round(duration)}ms)`, 'success');
+      addDemoResult('Health Check', `${(data as { status?: any; score?: any; totalStoredMetrics?: any; message?: any }).status} (${Math.round(duration)}ms)`, 'success');
       // Track custom event
       trackCustomEvent('health-check-completed', {
-        status: data.status,
-        score: data.score,
+        status: (data as { status?: any; score?: any; totalStoredMetrics?: any; message?: any }).status,
+        score: (data as { status?: any; score?: any; totalStoredMetrics?: any; message?: any }).score,
         duration
       });
     } catch (error) {
@@ -65,10 +65,10 @@ https://svelte.dev/e/js_parse_error -->
     const startTime = performance.now();
     try {
       const response = await observableFetch('/api/v1/observability/client?action=stats');
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
       clientMetrics = data;
       const duration = performance.now() - startTime;
-      addDemoResult('Load Metrics', `${data.totalStoredMetrics} metrics (${Math.round(duration)}ms)`, 'info');
+      addDemoResult('Load Metrics', `${(data as { status?: any; score?: any; totalStoredMetrics?: any; message?: any }).totalStoredMetrics} metrics (${Math.round(duration)}ms)`, 'info');
     } catch (error) {
       console.error('Failed to load metrics:', error);
       addDemoResult('Load Metrics', `Failed: ${error.message}`, 'error');
@@ -87,7 +87,7 @@ https://svelte.dev/e/js_parse_error -->
   await new Promise(resolve => setTimeout(resolve, 2000));
       // Make an API call to test Server-Timing headers
       const response = await observableFetch('/api/v1/observability/client?action=performance');
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
       const duration = performance.now() - startTime;
       addDemoResult('Slow Operation', `Completed in ${Math.round(duration)}ms`, 'success');
       // Track completion
@@ -109,8 +109,8 @@ https://svelte.dev/e/js_parse_error -->
       const response = await observableFetch('/api/v1/observability/client?action=clear', {
         method: 'GET'
       });
-      const data = await response.json();
-      addDemoResult('Clear Metrics', data.message || 'Success', 'info');
+      const data = await (response as { json?: any }).json();
+      addDemoResult('Clear Metrics', (data as { status?: any; score?: any; totalStoredMetrics?: any; message?: any }).message || 'Success', 'info');
       // Reload metrics
       await loadClientMetrics();
     } catch (error) {
@@ -269,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="text-xl font-semibold text-yellow-400 mb-4">Demo Actions</h3>
       <div class="flex flex-wrap gap-4">
         <button
-          onclick={checkServerHealth}
+          on:click={checkServerHealth}
           disabled={isLoading}
           class="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >
@@ -277,7 +277,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
 
         <button
-          onclick={loadClientMetrics}
+          on:click={loadClientMetrics}
           disabled={isLoading}
           class="bg-green-600 hover:bg-green-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >
@@ -285,7 +285,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
 
         <button
-          onclick={simulateSlowOperation}
+          on:click={simulateSlowOperation}
           disabled={isLoading}
           class="bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
 
         <button
-          onclick={clearMetrics}
+          on:click={clearMetrics}
           disabled={isLoading}
           class="bg-red-600 hover:bg-red-500 disabled:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors"
         >
@@ -314,14 +314,14 @@ https://svelte.dev/e/js_parse_error -->
       <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
         <h3 class="text-xl font-semibold text-yellow-400 mb-4">Recent Operations</h3>
         <div class="space-y-2 max-h-64 overflow-y-auto">
-          {#each demoResults.slice().reverse() as result (result.id)}
+          {#each demoResults.slice().reverse() as result ((result as { id?: any; timestamp?: any; action?: any; type?: any; result?: any }).id)}
             <div class="flex justify-between items-center py-2 border-b border-gray-700 last:border-b-0">
               <div class="flex items-center space-x-3">
-                <span class="text-gray-400 text-sm">{result.timestamp}</span>
-                <span class="text-white font-medium">{result.action}</span>
+                <span class="text-gray-400 text-sm">{(result as { id?: any; timestamp?: any; action?: any; type?: any; result?: any }).timestamp}</span>
+                <span class="text-white font-medium">{(result as { id?: any; timestamp?: any; action?: any; type?: any; result?: any }).action}</span>
               </div>
-              <span class="{getResultColor(result.type)} text-sm">
-                {result.result}
+              <span class="{getResultColor((result as { id?: any; timestamp?: any; action?: any; type?: any; result?: any }).type)} text-sm">
+                {(result as { id?: any; timestamp?: any; action?: any; type?: any; result?: any }).result}
               </span>
             </div>
           {/each}

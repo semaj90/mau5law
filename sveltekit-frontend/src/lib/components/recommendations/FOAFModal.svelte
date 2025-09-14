@@ -23,7 +23,7 @@
   let { open = $bindable(false), personId, onClose }: Props = $props();
   // Svelte 5 runes for reactive state
   let loading = $state(false);
-  let foafData = $state<{ people: Person[]; summary: string; totalFound: number } | null>(null);
+  let foafData = $state(null);
   let error = $state<string | null>(null);
 
   // Melt-UI dialog builder
@@ -87,7 +87,7 @@
     <div
       
       class="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-white p-6 shadow-lg"
-      transitifly={{ y: -8, duration: 150 }}
+      /* transition removed */}
     >
       <!-- Header -->
       <div class="flex items-center justify-between mb-4">
@@ -98,7 +98,7 @@
         <button
           
           class="rounded-sm opacity-70 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-          onclick={handleClose}
+          on:click={handleClose}
         >
           <X class="w-4 h-4" />
         </button>
@@ -163,14 +163,13 @@
               <p>No recommendations found in your network</p>
             </div>
           {/if}
-        {/if}
       </div>
 
       <!-- Footer -->
       <div class="flex justify-end mt-6 pt-4 border-t border-gray-200">
         <button
           class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
-          onclick={handleClose}
+          on:click={handleClose}
         >
           Close
         </button>

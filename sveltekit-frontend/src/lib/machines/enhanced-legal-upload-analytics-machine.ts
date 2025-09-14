@@ -202,11 +202,7 @@ const LegalContextSchema = z.object({
 
 // Enhanced Production Services
 export const analyzeUserBehaviorService = fromPromise(
-  async ({ input }: { input: { userAnalytics: UserAnalytics; context: UploadContext } }): Promise<{
-    updatedAnalytics: UserAnalytics;
-    insights: any;
-    behaviorScore: number;
-  }> => {
+  async ({ input }: { input: { userAnalytics: UserAnalytics; context: UploadContext } }): Promise< => {
     try {
       // Production API call to user behavior analysis service
       const response = await fetch('/api/ai/ollama/analyze-behavior', {
@@ -219,15 +215,15 @@ export const analyzeUserBehaviorService = fromPromise(
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Behavior analysis failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Behavior analysis failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
       return {
-        updatedAnalytics: result.analytics,
-        insights: result.insights,
-        behaviorScore: result.score
+        updatedAnalytics: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).analytics,
+        insights: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).insights,
+        behaviorScore: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).score
       };
     } catch (error) {
       console.warn('Production behavior analysis unavailable, using fallback');
@@ -266,17 +262,17 @@ export const generateContextualPromptsService = fromPromise(
         body: JSON.stringify({
           context: input.context,
           timing: input.timing,
-          model: input.context.ollamaConfig?.model || 'gemma3:270m',
+          model: input.context.ollamaConfig??.model || "unknown" // @ts-ignore - Model property access || 'gemma3:270m',
           legalContext: input.context.legalContext
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Prompt generation failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Prompt generation failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const result = await response.json();
-      return result.prompts;
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      return (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).prompts;
     } catch (error) {
       console.warn('Production prompt generation unavailable, using fallback');
 
@@ -338,7 +334,7 @@ export const performAIAnalysisService = fromPromise(
         formData.append('file', file);
         formData.append('caseId', input.context.caseId || '');
         formData.append('legalContext', JSON.stringify(input.context.legalContext));
-        formData.append('model', input.context.ollamaConfig?.model || 'gemma3:270m');
+        formData.append('model', input.context.ollamaConfig??.model || "unknown" // @ts-ignore - Model property access || 'gemma3:270m');
         formData.append('analysisType', 'comprehensive_legal');
 
         const response = await fetch('/api/ai/ollama/analyze-legal-document', {
@@ -346,27 +342,27 @@ export const performAIAnalysisService = fromPromise(
           body: formData
         });
 
-        if (!response.ok) {
-          throw new Error(`Analysis failed for ${file.name}: ${response.statusText}`);
+        if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+          throw new Error(`Analysis failed for ${file.name}: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
         }
 
-        const result = await response.json();
+        const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
 
         return {
           fileName: file.name,
           success: true,
-          documentId: result.documentId,
+          documentId: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).documentId,
           aiInsights: {
-            summary: result.summary,
-            keyEntities: result.entities,
-            suggestedTags: result.tags,
-            confidenceScore: result.confidence,
-            privileged: result.privileged,
-            evidenceType: result.evidenceType
+            summary: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).summary,
+            keyEntities: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).entities,
+            suggestedTags: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).tags,
+            confidenceScore: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).confidence,
+            privileged: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).privileged,
+            evidenceType: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).evidenceType
           },
           metadata: {
-            fileId: result.documentId,
-            hash: result.hash,
+            fileId: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).documentId,
+            hash: (result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).hash,
             source: 'legal_upload',
             acquisition_date: new Date().toISOString(),
             authenticity_verified: true,
@@ -374,7 +370,7 @@ export const performAIAnalysisService = fromPromise(
               timestamp: new Date().toISOString(),
               actor: input.context.authSession?.userId || 'system',
               action: 'uploaded',
-              details: `Uploaded via legal AI system with ${result.confidence}% confidence`
+              details: `Uploaded via legal AI system with ${(result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).confidence}% confidence`
             }]
           }
         };
@@ -439,8 +435,8 @@ export const saveToDatabaseService = fromPromise(
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Database save failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Database save failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
       console.log('Documents saved to production database');
@@ -510,8 +506,8 @@ export function generateUserInsights(context: UploadContext): any {
 // Enhanced XState Machine with Production Integration
 export const comprehensiveUploadAnalyticsMachine = setup({
   types: {
-    context: {} as UploadContext,
-    events: {} as
+    context: Record<string, any> as UploadContext,
+    events: Record<string, any> as
       | { type: 'SELECT_FILES'; files: File[]; caseId?: string }
       | { type: 'START_UPLOAD' }
       | { type: 'CANCEL_UPLOAD' }
@@ -640,8 +636,8 @@ export const comprehensiveUploadAnalyticsMachine = setup({
               // Enhanced tracking for legal workflows
               caseContext: {
                 ...context.userAnalytics.caseContext,
-                activeCases: event.data.caseId && !context.userAnalytics.caseContext.activeCases.includes(event.data.caseId)
-                  ? [...context.userAnalytics.caseContext.activeCases, event.data.caseId]
+                activeCases: event.(data as { caseId?: any }).caseId && !context.userAnalytics.caseContext.activeCases.includes(event.(data as { caseId?: any }).caseId)
+                  ? [...context.userAnalytics.caseContext.activeCases, event.(data as { caseId?: any }).caseId]
                   : context.userAnalytics.caseContext.activeCases
               }
             })

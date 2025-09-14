@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { apiRegistry } from '$lib/server/api/service-registry';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         system: { timestamp: new Date().toISOString() },
         summary: { overall: { status: 'error', error: msg } },
-        services: {},
+        services: Record<string, any>,
       },
       { status: 500 }
     );

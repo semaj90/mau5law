@@ -1,7 +1,7 @@
 import { createMachine, assign, fromPromise } from 'xstate';
-import { caseMemoryEngine } from '../services/case-memory-engine';
-import { orchestrator } from '../services/unified-legal-orchestrator';
-// import { rabbitmq } from '../server/queue/rabbitmq-manager';
+import { caseMemoryEngine } from '../services/case-memory-engine.js';
+import { orchestrator } from '../services/unified-legal-orchestrator.js';
+// import { rabbitmq } from '../server/queue/rabbitmq-manager.js';
 
 // XState machine for case workflow management with contextual memory
 // Handles: case creation → document upload → analysis → recommendations → action
@@ -31,8 +31,8 @@ export interface CaseWorkflowContext {
 export const caseWorkflowMachine = createMachine({
   id: 'caseWorkflow',
   types: {
-    context: {} as CaseWorkflowContext,
-    events: {} as 
+    context: Record<string, any> as CaseWorkflowContext,
+    events: Record<string, any> as 
       | { type: 'CREATE_CASE'; case_data: any }
       | { type: 'UPLOAD_DOCUMENT'; file: File; metadata?: any }
       | { type: 'START_ANALYSIS' }
@@ -103,7 +103,7 @@ export const caseWorkflowMachine = createMachine({
 
           // Initialize memory context
           const memoryContext = await caseMemoryEngine.getCaseMemoryContext(
-            result.case_id, 
+            (result as { case_id?: any }).case_id, 
             user_id
           );
 

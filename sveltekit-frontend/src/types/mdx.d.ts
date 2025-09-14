@@ -14,10 +14,10 @@ declare global {
     interface Element extends React.ReactElement {}
     interface ElementClass extends React.Component {}
     interface ElementAttributesProperty {
-      props: {};
+      props: Record<string, any>;
     }
     interface ElementChildrenAttribute {
-      children: {};
+      children: Record<string, any>;
     }
   }
 }

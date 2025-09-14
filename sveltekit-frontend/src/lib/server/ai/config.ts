@@ -3,8 +3,8 @@
 
 import { z } from "zod";
 import crypto from "crypto";
-import type { RAGConfiguration } from './types.js';
-import { logger } from './logger.js';
+import type { RAGConfiguration } from './types.js.js';
+import { logger } from './logger.js.js';
 import { URL } from "url";
 
 // === ENVIRONMENT VALIDATION ===
@@ -397,8 +397,8 @@ export function validateDocumentSize(content: string): void {
  */
 export function extractLegalEntities(
   text: string
-): Array<{ type: string; value: string; confidence: number }> {
-  const entities: Array<{ type: string; value: string; confidence: number }> = [];
+): Array< {
+  const entities: Array< = [];
 
   // Case law citations
   const casePattern = /\b\d{1,4}\s+[A-Z][a-z]+\s+\d{1,4}\b/g;

@@ -163,7 +163,7 @@ declare global {
     analyzeDocument?: (text: string, mode?: string) => Promise<any>;
     embeddings?: (text: string) => Promise<number[]>;
     chat?: (input: any) => Promise<any>;
-    tags?: () => Promise<Array<{ name: string; value?: any }>>;
+    tags?: () => Promise<Array<any>;
     health?: () => Promise<any>;
     [k: string]: any;
   };

@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { librarySyncService } from "$lib/services/library-sync-service";
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import crypto from "crypto";
 import { URL } from "url";
 

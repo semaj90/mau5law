@@ -3,7 +3,7 @@
  * Provides endpoints to test and verify the orchestrator bridge functionality
  */
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { json } from '@sveltejs/kit';
 import { 
   testOrchestratorIntegration, 
@@ -127,20 +127,20 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: undefined,
       },
       result: {
-        success: result.success,
-        response: result.response,
-        orchestratorUsed: result.orchestratorUsed,
-        modelUsed: result.modelUsed,
-        confidence: result.confidence,
+        success: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).success,
+        response: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).response,
+        orchestratorUsed: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).orchestratorUsed,
+        modelUsed: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).modelUsed,
+        confidence: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).confidence,
         executionMetrics: {
-          ...result.executionMetrics,
+          ...(result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics,
           apiLatency,
         },
-        error: result.error,
+        error: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).error,
       },
       analysis: {
-        routingReason: getRoutingReason(result.orchestratorUsed, type, orchestrator),
-        performanceGrade: getPerformanceGrade(result.executionMetrics.totalLatency),
+        routingReason: getRoutingReason((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).orchestratorUsed, type, orchestrator),
+        performanceGrade: getPerformanceGrade((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics.totalLatency),
         recommendedOptimizations: getOptimizationRecommendations(result),
       },
       timestamp: new Date().toISOString(),
@@ -191,23 +191,23 @@ function getPerformanceGrade(latency: number): string {
 function getOptimizationRecommendations(result: any): string[] {
   const recommendations: string[] = [];
   
-  if (result.executionMetrics.totalLatency > 1000) {
+  if ((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics.totalLatency > 1000) {
     recommendations.push('Consider using client-side orchestrator for faster responses');
   }
   
-  if (result.executionMetrics.cacheHitRate === 0) {
+  if ((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics.cacheHitRate === 0) {
     recommendations.push('Enable caching to improve repeat query performance');
   }
   
-  if (!result.executionMetrics.gpuAccelerated && result.orchestratorUsed === 'server') {
+  if (!(result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics.gpuAccelerated && (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).orchestratorUsed === 'server') {
     recommendations.push('Enable GPU acceleration for better performance');
   }
   
-  if (result.confidence && result.confidence < 0.7) {
+  if ((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).confidence && (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).confidence < 0.7) {
     recommendations.push('Consider using server orchestrator for higher quality responses');
   }
   
-  if (result.executionMetrics.totalLatency < 50) {
+  if ((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics.totalLatency < 50) {
     recommendations.push('Excellent performance! Current configuration is optimal');
   }
   

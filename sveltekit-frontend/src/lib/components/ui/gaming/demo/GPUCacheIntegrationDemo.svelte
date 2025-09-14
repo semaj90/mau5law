@@ -122,25 +122,25 @@
       <div class="era-selector mb-4">
         <button 
           class="era-button era-8bit {currentEra === '8bit' ? 'active' : ''}"
-          onclick={progressEra}
+          on:click={progressEra}
         >
           8-Bit Era
         </button>
         <button 
           class="era-button era-16bit {currentEra === '16bit' ? 'active' : ''}"
-          onclick={progressEra}
+          on:click={progressEra}
         >
           16-Bit Era
         </button>
         <button 
           class="era-button era-n64 {currentEra === 'n64' ? 'active' : ''}"
-          onclick={progressEra}
+          on:click={progressEra}
         >
           N64 3D Era
         </button>
         <button 
           class="era-button era-yorha {currentEra === 'yorha' ? 'active' : ''}"
-          onclick={progressEra}
+          on:click={progressEra}
         >
           YoRHa Era
         </button>

@@ -12,8 +12,8 @@
   let formLoading = $state(false);
   // Profile form
   let profileForm = $state({
-    firstName: data.user.firstName || '',
-    lastName: data.user.lastName || ''
+    firstName: (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.firstName || '',
+    lastName: (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.lastName || ''
   });
   // Password form
   let passwordForm = $state({
@@ -76,7 +76,7 @@
 </script>
 
 <svelte:head>
-  <title>User Details - {data.user.firstName} {data.user.lastName} - YoRHa Legal AI</title>
+  <title>User Details - {(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.firstName} {(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.lastName} - YoRHa Legal AI</title>
 </svelte:head>
 
 <div class="min-h-screen bg-black text-amber-300 font-mono">
@@ -86,7 +86,7 @@
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-4">
           <button 
-            onclick={() => goto('/admin/users')}
+            on:click={() => goto('/admin/users')}
             class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           >
             [← BACK TO USERS]
@@ -106,21 +106,21 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
         <div class="bg-gray-800 p-3 rounded border border-amber-300">
           <div class="font-semibold mb-1">USER ID</div>
-          <div class="font-mono text-amber-400">#{data.user.id.toString().padStart(6, '0')}</div>
+          <div class="font-mono text-amber-400">#{(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.id.toString().padStart(6, '0')}</div>
         </div>
         <div class="bg-gray-800 p-3 rounded border border-amber-300">
           <div class="font-semibold mb-1">EMAIL</div>
-          <div class="text-amber-100">{data.user.email}</div>
+          <div class="text-amber-100">{(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.email}</div>
         </div>
         <div class="bg-gray-800 p-3 rounded border border-amber-300">
           <div class="font-semibold mb-1">FULL NAME</div>
           <div class="text-amber-100">
-            {data.user.firstName} {data.user.lastName}
+            {(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.firstName} {(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.lastName}
           </div>
         </div>
         <div class="bg-gray-800 p-3 rounded border border-amber-300">
           <div class="font-semibold mb-1">MEMBER SINCE</div>
-          <div class="text-amber-100">{formatDate(data.user.created_at)}</div>
+          <div class="text-amber-100">{formatDate((data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.created_at)}</div>
         </div>
       </div>
     </div>
@@ -130,22 +130,22 @@
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <div class="bg-gray-900 border-2 border-amber-300 p-6 text-center">
-        <div class="text-3xl font-bold text-amber-300 mb-2">{data.stats.casesCount}</div>
+        <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).stats.casesCount}</div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">TOTAL CASES</div>
       </div>
       
       <div class="bg-gray-900 border-2 border-amber-300 p-6 text-center">
-        <div class="text-3xl font-bold text-amber-300 mb-2">{data.stats.evidenceCount}</div>
+        <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).stats.evidenceCount}</div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">EVIDENCE ITEMS</div>
       </div>
       
       <div class="bg-gray-900 border-2 border-amber-300 p-6 text-center">
-        <div class="text-3xl font-bold text-amber-300 mb-2">{data.stats.aiHistoryCount}</div>
+        <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).stats.aiHistoryCount}</div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">AI INTERACTIONS</div>
       </div>
       
       <div class="bg-gray-900 border-2 border-amber-300 p-6 text-center">
-        <div class="text-3xl font-bold text-amber-300 mb-2">{data.stats.sessionsCount}</div>
+        <div class="text-3xl font-bold text-amber-300 mb-2">{(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).stats.sessionsCount}</div>
         <div class="text-sm text-gray-300 font-semibold tracking-wider">ACTIVE SESSIONS</div>
       </div>
     </div>
@@ -158,14 +158,14 @@
         </div>
         <div class="p-4 space-y-4">
           <button
-            onclick={() => showProfileModal = true}
+            on:click={() => showProfileModal = true}
             class="w-full px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors text-left"
           >
             [EDIT PROFILE] Update name and details
           </button>
           
           <button
-            onclick={() => showPasswordModal = true}
+            on:click={() => showPasswordModal = true}
             class="w-full px-4 py-2 bg-orange-900 text-amber-300 border-2 border-orange-500 hover:bg-orange-800 transition-colors text-left"
           >
             [RESET PASSWORD] Force password change
@@ -173,13 +173,13 @@
           
           <div class="grid grid-cols-2 gap-2">
             <button
-              onclick={() => goto(`/admin/users/${data.user.id}/cases`)}
+              on:click={() => goto(`/admin/users/${(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.id}/cases`)}
               class="px-4 py-2 bg-blue-900 text-amber-300 border-2 border-blue-500 hover:bg-blue-800 transition-colors text-center"
             >
               [VIEW CASES]
             </button>
             <button
-              onclick={() => goto(`/admin/users/${data.user.id}/ai-history`)}
+              on:click={() => goto(`/admin/users/${(data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.id}/ai-history`)}
               class="px-4 py-2 bg-purple-900 text-amber-300 border-2 border-purple-500 hover:bg-purple-800 transition-colors text-center"
             >
               [AI HISTORY]
@@ -194,7 +194,7 @@
           <h2 class="font-bold text-lg">RECENT CASES</h2>
         </div>
         <div class="p-4 space-y-3 max-h-64 overflow-y-auto">
-          {#each data.recentCases as case_}
+          {#each (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).recentCases as case_}
             <div class="border border-gray-700 p-3 hover:bg-gray-800 transition-colors">
               <div class="flex items-center justify-between mb-2">
                 <div class="font-semibold text-sm truncate">{case_.title}</div>
@@ -236,7 +236,7 @@
             </tr>
           </thead>
           <tbody>
-            {#each data.recentAIInteractions as interaction}
+            {#each (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).recentAIInteractions as interaction}
               <tr class="border-b border-gray-700 hover:bg-gray-800">
                 <td class="px-4 py-3 text-xs text-gray-300">
                   {formatDate(interaction.created_at)}
@@ -281,7 +281,7 @@
         <h2 class="font-bold text-lg">ACTIVE SESSIONS</h2>
       </div>
       <div class="p-4">
-        {#each data.activeSessions as session}
+        {#each (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).activeSessions as session}
           <div class="flex items-center justify-between p-3 border border-gray-700 mb-2">
             <div>
               <div class="text-sm font-mono text-amber-400">Session: {session.id.substring(0, 8)}...</div>
@@ -291,7 +291,7 @@
               </div>
             </div>
             <button
-              onclick={() => openSessionModal(session)}
+              on:click={() => openSessionModal(session)}
               class="px-3 py-1 bg-red-800 text-amber-300 text-xs border border-red-500 hover:bg-red-700 transition-colors"
             >
               [REVOKE]
@@ -317,7 +317,7 @@
         formLoading = true;
         return ({ result }) => {
           formLoading = false;
-          if (result.type === 'success' || result.status === 200) {
+          if ((result as { type?: any; status?: any }).type === 'success' || (result as { type?: any; status?: any }).status === 200) {
             showProfileModal = false;
           }
         };
@@ -351,7 +351,7 @@
         <div class="flex justify-end gap-3 mt-6">
           <button 
             type="button" 
-            onclick={() => showProfileModal = false}
+            on:click={() => showProfileModal = false}
             class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           >
             [CANCEL]
@@ -389,7 +389,7 @@
         formLoading = true;
         return ({ result }) => {
           formLoading = false;
-          if (result.type === 'success' || result.status === 200) {
+          if ((result as { type?: any; status?: any }).type === 'success' || (result as { type?: any; status?: any }).status === 200) {
             showPasswordModal = false;
             passwordForm.newPassword = '';
             passwordForm.confirmPassword = '';
@@ -427,7 +427,7 @@
         <div class="flex justify-end gap-3 mt-6">
           <button 
             type="button" 
-            onclick={() => showPasswordModal = false}
+            on:click={() => showPasswordModal = false}
             class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           >
             [CANCEL]
@@ -465,7 +465,7 @@
           formLoading = true;
           return ({ result }) => {
             formLoading = false;
-            if (result.type === 'success' || result.status === 200) {
+            if ((result as { type?: any; status?: any }).type === 'success' || (result as { type?: any; status?: any }).status === 200) {
               closeSessionModal();
             }
           };
@@ -475,7 +475,7 @@
           <div class="flex justify-end gap-3 mt-6">
             <button 
               type="button" 
-              onclick={closeSessionModal}
+              on:click={closeSessionModal}
               class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
             >
               [CANCEL]

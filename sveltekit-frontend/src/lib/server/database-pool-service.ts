@@ -6,7 +6,7 @@
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { redisService } from './redis-service';
+import { redisService } from './redis-service.js';
 
 interface DatabasePoolConfig {
   host: string;
@@ -275,7 +275,7 @@ class DatabasePoolService {
   /**
    * Health check for all pools
    */
-  async healthCheck(): Promise<{ [key: string]: boolean }> {
+  async healthCheck(): Promise<any> {
     const results: { [key: string]: boolean } = {};
 
     for (const [key, pool] of this.pools) {
@@ -299,7 +299,7 @@ class DatabasePoolService {
       totalPools: this.pools.size,
       totalDrizzleInstances: this.drizzleInstances.size,
       cacheSize: this.queryCache.size,
-      pools: {},
+      pools: Record<string, any>,
     };
 
     for (const [key, pool] of this.pools) {

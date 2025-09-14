@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { healthResponseSchema } from '$lib/schemas/vector';
 import { safeFetchJson } from '$lib/server/fetch-wrapper';

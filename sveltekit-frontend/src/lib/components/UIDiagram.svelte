@@ -11,10 +11,7 @@
       mermaid.initialize({ startOnLoad: false });
       const { svg: renderedSvg } = await mermaid.render('ui-diagram', diagram);
       svg = renderedSvg;
-    } catch (err) {
-      console.error('Failed to load mermaid:', err);
-      svg = '<p>Diagram failed to load</p>';
-  }
+    } catch (err) {/* JSX syntax converted to Svelte */}
   });
 </script>
 

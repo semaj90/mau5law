@@ -436,22 +436,22 @@ Manages AutoGen and CrewAI multi-agent workflows
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-  onclick={checkServiceStatus}
+  on:click={checkServiceStatus}
       >
-        <RefreshCw class="h-4 w-4" />
-      </button>
+<RefreshCw class="h-4 w-4" />
+</Button>
     </div>
   </div>
 
   <!-- Workflow Configuration -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <Settings class="h-5 w-5" />
         Workflow Configuration
       </h3>
     </div>
-    <div class="yorha-panel-content" class="space-y-4">
+    <div class="yorha-panel-content space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <span id="label-workflow" class="block text-sm font-medium mb-2">Workflow Type</span>
@@ -527,42 +527,42 @@ Manages AutoGen and CrewAI multi-agent workflows
 
       <div class="flex gap-2">
         <Button
-          onclick={executeWorkflow}
+          on:click={executeWorkflow}
           disabled={isProcessing || !inputText.trim() || (!serviceStatus.autogen && selectedProvider === 'autogen') || (!serviceStatus.crewai && selectedProvider === 'crewai')}
           class="flex-1 bits-btn bits-btn"
         >
-          {#if isProcessing}
+{#if isProcessing}
             <Pause class="h-4 w-4 mr-2" />
             Processing...
           {:else}
             <Play class="h-4 w-4 mr-2" />
             Execute Workflow
           {/if}
-        </button>
+</Button>
 
         {#if isProcessing}
-          <Button class="bits-btn" variant="outline" onclick={cancelExecution}>
-            <Square class="h-4 w-4" />
-          </button>
+          <Button class="bits-btn" variant="outline" on:click={cancelExecution}>
+<Square class="h-4 w-4" />
+</Button>
         {/if}
 
         {#if conversationMessages.length > 0 || executionResults.length > 0}
-          <Button class="bits-btn" variant="outline" onclick={clearResults}>
-            Clear
-          </button>
-          <Button class="bits-btn" variant="outline" onclick={downloadResults}>
-            <Download class="h-4 w-4" />
-          </button>
+          <Button class="bits-btn" variant="outline" on:click={clearResults}>
+Clear
+</Button>
+          <Button class="bits-btn" variant="outline" on:click={downloadResults}>
+<Download class="h-4 w-4" />
+</Button>
         {/if}
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Execution Status -->
   {#if isProcessing || lastUpdate}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Activity class="h-5 w-5" />
           Execution Status
         </h3>
@@ -591,14 +591,14 @@ Manages AutoGen and CrewAI multi-agent workflows
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Results Display -->
   {#if selectedProvider === 'autogen' && conversationMessages.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <MessageSquare class="h-5 w-5" />
           AutoGen Conversation ({conversationMessages.length} messages)
         </h3>
@@ -631,13 +631,13 @@ Manages AutoGen and CrewAI multi-agent workflows
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   {#if selectedProvider === 'crewai' && executionResults.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Users class="h-5 w-5" />
           CrewAI Execution Results ({executionResults.length} tasks)
         </h3>
@@ -648,37 +648,37 @@ Manages AutoGen and CrewAI multi-agent workflows
             <div class="border rounded-lg p-4">
               <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center gap-2">
-                  <span class="font-medium text-sm">{result.taskId}</span>
-                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.agentId}</span>
+                  <span class="font-medium text-sm">{(result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).taskId}</span>
+                  <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).agentId}</span>
                 </div>
 
                 <div class="flex items-center gap-2">
-                  {#if result.status === 'completed'}
+                  {#if (result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).status === 'completed'}
                     <CheckCircle class="h-4 w-4 text-green-500" />
-                  {:else if result.status === 'failed'}
+                  {:else if (result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).status === 'failed'}
                     <AlertCircle class="h-4 w-4 text-red-500" />
                   {:else}
                     <Clock class="h-4 w-4 text-yellow-500" />
                   {/if}
                   <span class="text-xs text-gray-500">
-                    {formatDuration(result.executionTime)}
+                    {formatDuration((result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).executionTime)}
                   </span>
                 </div>
               </div>
 
-              <p class="text-sm text-gray-700 dark:text-gray-300">{result.output}</p>
+              <p class="text-sm text-gray-700 dark:text-gray-300">{(result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).output}</p>
             </div>
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Workflow Templates -->
   {#if showAdvancedControls}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <FileText class="h-5 w-5" />
           Quick Start Templates
         </h3>
@@ -688,7 +688,8 @@ Manages AutoGen and CrewAI multi-agent workflows
           <Button
             variant="outline"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            onclick={() => {
+            on:click={() =>
+{
               selectedWorkflow = 'case_analysis';
               selectedProvider = 'autogen';
               inputText = 'John Smith was accused of embezzling $50,000 from his employer over a 6-month period. Evidence includes suspicious bank transfers, altered financial records, and witness testimony from colleagues who noticed unusual behavior.';
@@ -698,12 +699,13 @@ Manages AutoGen and CrewAI multi-agent workflows
               <p class="font-medium">Criminal Case Analysis</p>
               <p class="text-xs text-gray-500">AutoGen multi-agent analysis</p>
             </div>
-          </button>
+</Button>
 
           <Button
             variant="outline"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            onclick={() => {
+            on:click={() =>
+{
               selectedWorkflow = 'contract_analysis';
               selectedProvider = 'crewai';
               inputText = 'Software licensing agreement between TechCorp and ClientCorp for enterprise SaaS platform. Contract includes liability limitations, data processing clauses, and termination provisions. Review for compliance and negotiation opportunities.';
@@ -713,12 +715,13 @@ Manages AutoGen and CrewAI multi-agent workflows
               <p class="font-medium">Contract Review</p>
               <p class="text-xs text-gray-500">CrewAI specialized team</p>
             </div>
-          </button>
+</Button>
 
           <Button
             variant="outline"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            onclick={() => {
+            on:click={() =>
+{
               selectedWorkflow = 'evidence_review';
               selectedProvider = 'autogen';
               inputText = 'Digital evidence package includes: smartphone data extraction, email communications, cloud storage files, and network logs. Chain of custody maintained by certified technician. Need admissibility assessment for federal court.';
@@ -728,12 +731,13 @@ Manages AutoGen and CrewAI multi-agent workflows
               <p class="font-medium">Digital Evidence Review</p>
               <p class="text-xs text-gray-500">Forensic analysis workflow</p>
             </div>
-          </button>
+</Button>
 
           <Button
             variant="outline"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            onclick={() => {
+            on:click={() =>
+{
               selectedWorkflow = 'legal_research';
               selectedProvider = 'autogen';
               inputText = 'Research precedents for cryptocurrency fraud cases involving privacy coins. Focus on 4th Amendment protections, blockchain analysis admissibility, and international cooperation in digital asset recovery.';
@@ -743,10 +747,10 @@ Manages AutoGen and CrewAI multi-agent workflows
               <p class="font-medium">Legal Research</p>
               <p class="text-xs text-gray-500">Precedent and statute analysis</p>
             </div>
-          </button>
+</Button>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

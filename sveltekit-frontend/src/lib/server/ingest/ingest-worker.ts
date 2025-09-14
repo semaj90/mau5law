@@ -9,21 +9,21 @@
  */
 
 import { parentPort } from "worker_threads";
-import { fetchMinioObject } from "./minio.js";
+import { fetchMinioObject } from './minio.js.js';
 import {
   extractTextFromImage,
   extractTextFromPDF,
   extractAudioFromBuffer,
   sampleFramesFromVideo,
   parseJsonWithSimd
-} from "./extractors.js";
+} from './extractors.js.js';
 import {
   embedText,
   embedImageBuffer,
   embedAudioFilePath
-} from "./embed.js";
-import { db } from "../db/client.js";
-import { userDocuments } from "../db/unified-schema.js";
+} from './embed.js.js';
+import { db } from '../db/client.js.js';
+import { userDocuments } from '../db/unified-schema.js.js';
 import fs from "fs/promises";
 
 interface Job {
@@ -231,7 +231,7 @@ parentPort.on("message", async (job: Job) => {
       parentPort!.postMessage({
         jobId: job.id,
         ok: true,
-        documentId: result.id,
+        documentId: (result as { id?: any }).id,
         modality,
         textLength: textContent.length,
         embeddingDimensions: embedding.length

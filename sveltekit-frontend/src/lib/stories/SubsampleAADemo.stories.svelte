@@ -248,7 +248,7 @@ function applyTensorCoreAA(ctx: CanvasRenderingContext2D, width: number, height:
 
   // Apply 4-bit quantization simulation
   if (demoConfig.quantization === '4bit') {
-    for (let i = 0; i < data.length; i += 4) {
+    for (let i = 0; i < (data as { length?: any }).length; i += 4) {
       // Quantize RGB channels to 4-bit (0-15)
       data[i] = Math.round(data[i] / 17) * 17;     // Red
       data[i + 1] = Math.round(data[i + 1] / 17) * 17; // Green
@@ -297,8 +297,8 @@ async function processTestDocument() {
     quantization: demoConfig.quantization
   });
 
-  demoState.compressionRatio = result.compressionRatio;
-  demoState.processingTime = result.processingTime;
+  demoState.compressionRatio = (result as { compressionRatio?: any; processingTime?: any }).compressionRatio;
+  demoState.processingTime = (result as { compressionRatio?: any; processingTime?: any }).processingTime;
 
   console.log('✅ Test document processed:', result);
 }
@@ -312,144 +312,12 @@ function resetBenchmarks() {
 }
 &lt;/script&gt;
 
-&lt;div class="rtx-demo-container"&gt;
-  &lt;div class="demo-header"&gt;
-    &lt;h2&gt;🎮 RTX 3060 Ti SubsampleAA Demo&lt;/h2&gt;
-    &lt;p&gt;Advanced Anti-Aliasing with Tensor Core Acceleration&lt;/p&gt;
-  &lt;/div&gt;
-
-  &lt;div class="demo-canvas-wrapper"&gt;
-    &lt;canvas
-      bind:this={canvasRef}
-      class="demo-canvas"
-      width="800"
-      height="600"
-    &gt;&lt;/canvas&gt;
-
-    &lt;div class="canvas-overlay"&gt;
-      {#if demoState.tensorCoreActive}
-        &lt;div class="tensor-indicator"&gt;🔥 Tensor Cores Active&lt;/div&gt;
-      {/if}
-      {#if demoState.flashAttention2Active}
-        &lt;div class="flash-attention-indicator"&gt;⚡ FlashAttention2&lt;/div&gt;
-      {/if}
-    &lt;/div&gt;
-  &lt;/div&gt;
-
-  &lt;div class="demo-controls"&gt;
-    &lt;div class="control-row"&gt;
-      &lt;button onclick={startDemo} disabled={demoState.isRunning} class="nes-btn is-primary"&gt;
-        Start RTX Demo
-      &lt;/button&gt;
-      &lt;button onclick={stopDemo} disabled={!demoState.isRunning} class="nes-btn"&gt;
-        Stop Demo
-      &lt;/button&gt;
-      &lt;button onclick={resetBenchmarks} class="btn-tertiary"&gt;
-        Reset Metrics
-      &lt;/button&gt;
-    &lt;/div&gt;
-
-    &lt;div class="config-panel"&gt;
-      &lt;h3&gt;Configuration&lt;/h3&gt;
-      &lt;div class="config-grid"&gt;
-        &lt;label&gt;
-          Anti-Aliasing:
-          &lt;select bind:value={demoConfig.antiAliasing}&gt;
-            &lt;option value="tensor-core"&gt;Tensor Core AA&lt;/option&gt;
-            &lt;option value="msaa"&gt;Traditional MSAA&lt;/option&gt;
-            &lt;option value="fxaa"&gt;FXAA&lt;/option&gt;
-          &lt;/select&gt;
-        &lt;/label&gt;
-
-        &lt;label&gt;
-          Quantization:
-          &lt;select bind:value={demoConfig.quantization}&gt;
-            &lt;option value="4bit"&gt;4-bit (50:1 ratio)&lt;/option&gt;
-            &lt;option value="8bit"&gt;8-bit (25:1 ratio)&lt;/option&gt;
-            &lt;option value="16bit"&gt;16-bit (12:1 ratio)&lt;/option&gt;
-          &lt;/select&gt;
-        &lt;/label&gt;
-
-        &lt;label&gt;
-          Compression Level:
-          &lt;input type="range" min="10" max="100" bind:value={demoConfig.compressionLevel}&gt;
-          &lt;span&gt;{demoConfig.compressionLevel}:1&lt;/span&gt;
-        &lt;/label&gt;
-
-        &lt;label&gt;
-          &lt;input type="checkbox" bind:checked={demoConfig.neuralSprites}&gt;
-          Neural Sprites
-        &lt;/label&gt;
-
-        &lt;label&gt;
-          &lt;input type="checkbox" bind:checked={demoConfig.flashAttention2}&gt;
-          FlashAttention2
-        &lt;/label&gt;
-
-        &lt;label&gt;
-          &lt;input type="checkbox" bind:checked={demoConfig.realTimeUpscaling}&gt;
-          Real-time Upscaling
-        &lt;/label&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-
-  &lt;div class="benchmark-results"&gt;
-    &lt;h3&gt;🔥 RTX 3060 Ti Benchmark Results&lt;/h3&gt;
-
-    {#if demoState.benchmarkResults}
-      &lt;div class="benchmark-grid"&gt;
-        &lt;div class="benchmark-item"&gt;
-          &lt;span class="label"&gt;Tensor Core Performance:&lt;/span&gt;
-          &lt;span class="value highlight"&gt;~{demoState.benchmarkResults.tensorCorePerformance} GFLOPS&lt;/span&gt;
-        &lt;/div&gt;
-
-        &lt;div class="benchmark-item"&gt;
-          &lt;span class="label"&gt;Average Operation Time:&lt;/span&gt;
-          &lt;span class="value"&gt;~{demoState.benchmarkResults.averageOperationTime} μs&lt;/span&gt;
-        &lt;/div&gt;
-
-        &lt;div class="benchmark-item"&gt;
-          &lt;span class="label"&gt;4-bit Quantization Ratio:&lt;/span&gt;
-          &lt;span class="value highlight"&gt;{demoState.benchmarkResults.compressionRatio}:1&lt;/span&gt;
-        &lt;/div&gt;
-
-        &lt;div class="benchmark-item"&gt;
-          &lt;span class="label"&gt;4D Search Throughput:&lt;/span&gt;
-          &lt;span class="value"&gt;~{Math.round(demoState.benchmarkResults.searchThroughput / 1000000)}M nodes/sec&lt;/span&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    {/if}
-
-    &lt;h4&gt;Real-time Performance&lt;/h4&gt;
-    &lt;div class="performance-grid"&gt;
-      &lt;div class="perf-item"&gt;
-        &lt;span class="label"&gt;FPS:&lt;/span&gt;
-        &lt;span class="value {demoState.currentFPS > 60 ? 'good' : demoState.currentFPS > 30 ? 'okay' : 'poor'}"&gt;
+&lt;div class="rtx-demo-container value {demoState.currentFPS > 60 ? 'good' : demoState.currentFPS > 30 ? 'okay' : 'poor'}"&gt;
           {demoState.currentFPS}
         &lt;/span&gt;
       &lt;/div&gt;
 
-      &lt;div class="perf-item"&gt;
-        &lt;span class="label"&gt;GPU Utilization:&lt;/span&gt;
-        &lt;span class="value"&gt;{Math.round(demoState.gpuUtilization)}%&lt;/span&gt;
-      &lt;/div&gt;
-
-      &lt;div class="perf-item"&gt;
-        &lt;span class="label"&gt;Frame Time:&lt;/span&gt;
-        &lt;span class="value"&gt;{Math.round(performanceMetrics.avgFrameTime * 100) / 100}ms&lt;/span&gt;
-      &lt;/div&gt;
-
-      &lt;div class="perf-item"&gt;
-        &lt;span class="label"&gt;Processing Time:&lt;/span&gt;
-        &lt;span class="value"&gt;{demoState.processingTime} μs&lt;/span&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-
-  &lt;div class="test-section"&gt;
-    &lt;h4&gt;🧪 Document Processing Test&lt;/h4&gt;
-    &lt;button onclick={processTestDocument} class="nes-btn is-primary"&gt;
+      &lt;div class="perf-item nes-btn is-primary"&gt;
       Test RTX Document Compression
     &lt;/button&gt;
     &lt;p&gt;Processes a 1MB test document with RTX acceleration and neural sprite compression&lt;/p&gt;

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 async function generateSummary(content: string): Promise<string> {
   const response = await fetch('http://localhost:11434/api/generate', {

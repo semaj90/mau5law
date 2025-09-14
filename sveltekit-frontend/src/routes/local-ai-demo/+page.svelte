@@ -39,13 +39,7 @@
   interface TestResults {
     error?: string;
     data?: unknown;
-    results?: Array<{
-      title: string;
-      content: string;
-      score: number;
-      source: string;
-      type: string;
-    }>;
+    results?: Array;
     executionTime?: number;
     source?: string;
   }
@@ -62,11 +56,7 @@
       category: string;
       confidence: number;
     };
-    keyEntities: Array<{
-      text: string;
-      type: string;
-      confidence: number;
-    }>;
+    keyEntities: Array;
   }
   let analysisResults: AnalysisResults | null = $state(null);
   let isAnalyzing = $state(false);
@@ -142,11 +132,11 @@
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        testResults = data.data;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        testResults = (data as { data?: any }).data;
       } else {
-        const error = await response.json();
+        const error = await (response as { ok?: any; json?: any }).json();
         testResults = { error: error.error };
   }
     } catch (error) {
@@ -169,9 +159,9 @@
         const result = await aiService.analyzeLegalDocument(legalAnalysisText);
         analysisResults = {
           ...result,
-          keyEntities: Array.isArray(result.keyEntities) && typeof result.keyEntities[0] === 'string'
-            ? result.keyEntities.map((entity: string) => ({ text: entity, type: 'entity', confidence: 1.0 }))
-            : result.keyEntities || []
+          keyEntities: Array.isArray((result as { keyEntities?: any; source?: any; title?: any; score?: any; content?: any; type?: any }).keyEntities) && typeof (result as { keyEntities?: any; source?: any; title?: any; score?: any; content?: any; type?: any }).keyEntities[0] === 'string'
+            ? (result as { keyEntities?: any; source?: any; title?: any; score?: any; content?: any; type?: any }).keyEntities.map((entity: string) => ({ text: entity, type: 'entity', confidence: 1.0 }))
+            : (result as { keyEntities?: any; source?: any; title?: any; score?: any; content?: any; type?: any }).keyEntities || []
         };
       } else {
         // Fallback to cloud analysis
@@ -188,11 +178,11 @@
           }),
         });
 
-        if (response.ok) {
-          const data = await response.json();
+        if ((response as { ok?: any; json?: any }).ok) {
+          const data = await (response as { ok?: any; json?: any }).json();
           analysisResults = {
             classification: { category: "document", confidence: 0.8 },
-            summary: data.data.answer,
+            summary: (data as { data?: any }).(data as { data?: any }).answer,
             keyEntities: ["Legal Document"].map(entity => ({ text: entity, type: "document", confidence: 1.0 })),
             riskAssessment: "Analysis completed using cloud AI",
           };
@@ -286,7 +276,7 @@
             Enhanced System Status
           </h2>
           <button
-            onclick={() => checkSystemStatus()}
+            on:click={() => checkSystemStatus()}
             class="space-y-4"
             disabled={isLoadingStatus}
           >
@@ -386,7 +376,7 @@
                   </div>
                   {#if !model.isLoaded}
                     <button
-                      onclick={() => loadLocalModel(model.id)}
+                      on:click={() => loadLocalModel(model.id)}
                       class="space-y-4"
                     >
                       Load Model
@@ -426,14 +416,14 @@
               <div class="space-y-4">
                 <button
                   class="space-y-4"
-                  onclick={() => (selectedProvider = "auto")}
+                  on:click={() => (selectedProvider = "auto")}
                 >
                   <Brain class="space-y-4" />
                   Auto
                 </button>
                 <button
                   class="space-y-4"
-                  onclick={() => (selectedProvider = "local")}
+                  on:click={() => (selectedProvider = "local")}
                   disabled={!systemStatus.tauriLLM}
                 >
                   <Cpu class="space-y-4" />
@@ -441,7 +431,7 @@
                 </button>
                 <button
                   class="space-y-4"
-                  onclick={() => (selectedProvider = "cloud")}
+                  on:click={() => (selectedProvider = "cloud")}
                 >
                   <Cloud class="space-y-4" />
                   Cloud Only
@@ -471,7 +461,7 @@
             {#each legalDemoQueries as query}
               <button
                 class="space-y-4"
-                onclick={() => (testQuery = query)}
+                on:click={() => (testQuery = query)}
               >
                 "{query}"
               </button>
@@ -502,7 +492,7 @@
             ></textarea>
 
             <button
-              onclick={() => analyzeLegalDocument()}
+              on:click={() => analyzeLegalDocument()}
               disabled={!legalAnalysisText.trim() || isAnalyzing}
               class="space-y-4"
             >
@@ -593,7 +583,7 @@
                 class="space-y-4"
               />
               <button
-                onclick={() => testVectorSearch()}
+                on:click={() => testVectorSearch()}
                 disabled={!testQuery.trim() || isTestingSearch}
                 class="space-y-4"
               >
@@ -617,17 +607,17 @@
 
                     {#if testResults.results && testResults.results.length > 0}
                       {#each testResults.results as result}
-                        {@const SvelteComponent = getProviderIcon(result.source)}
+                        {@const SvelteComponent = getProviderIcon((result as { keyEntities?: any; source?: any; title?: any; score?: any; content?: any; type?: any }).source)}
                         <div
                           class="space-y-4"
                         >
                           <div class="space-y-4">
                             <h5 class="space-y-4">
-                              {result.title}
+                              {(result as { keyEntities?: any; source?: any; title?: any; score?: any; content?: any; type?: any }).title}
                             </h5>
                             <div class="space-y-4">
                               <span class="space-y-4">
-                                {Math.round(result.score * 100)}% match
+                                {Math.round((result as { keyEntities?: any; source?: any; title?: any; score?: any; content?: any; type?: any }).score * 100)}% match
                               </span>
                               <SvelteComponent
                                 class="space-y-4"
@@ -635,11 +625,11 @@
                             </div>
                           </div>
                           <p class="space-y-4">
-                            {result.content.substring(0, 200)}...
+                            {(result as { keyEntities?: any; source?: any; title?: any; score?: any; content?: any; type?: any }).content.substring(0, 200)}...
                           </p>
                           <div class="space-y-4">
-                            <span>Type: {result.type}</span>
-                            <span>Source: {result.source}</span>
+                            <span>Type: {(result as { keyEntities?: any; source?: any; title?: any; score?: any; content?: any; type?: any }).type}</span>
+                            <span>Source: {(result as { keyEntities?: any; source?: any; title?: any; score?: any; content?: any; type?: any }).source}</span>
                           </div>
                         </div>
                       {/each}

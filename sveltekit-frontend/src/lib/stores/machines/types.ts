@@ -166,8 +166,8 @@ export interface AIProcessingEvents {
   PROCESSING_PROGRESS: { progress: number };
   PROCESSING_COMPLETE: { result: AITaskResult };
   PROCESSING_ERROR: { error: string };
-  RETRY_PROCESSING: {};
-  CANCEL_PROCESSING: {};
+  RETRY_PROCESSING: Record<string, any>;
+  CANCEL_PROCESSING: Record<string, any>;
 }
 
 export interface DocumentEvents {
@@ -184,15 +184,15 @@ export interface DocumentEvents {
 
 export interface GoMicroserviceEvents {
   CONNECT: { endpoint: string };
-  CONNECTION_SUCCESS: {};
+  CONNECTION_SUCCESS: Record<string, any>;
   CONNECTION_ERROR: { error: string };
-  HEALTH_CHECK: {};
+  HEALTH_CHECK: Record<string, any>;
   HEALTH_CHECK_SUCCESS: { status: any };
   HEALTH_CHECK_ERROR: { error: string };
   MAKE_REQUEST: { request: GoServiceRequest };
   REQUEST_SUCCESS: { response: GoServiceResponse };
   REQUEST_ERROR: { error: string };
-  DISCONNECT: {};
+  DISCONNECT: Record<string, any>;
 }
 
 export interface RAGEvents {
@@ -206,18 +206,18 @@ export interface RAGEvents {
   SYNTHESIZE_ANSWER: { results: RAGResult[]; query: RAGQuery };
   ANSWER_SYNTHESIZED: { answer: string; sources: RAGResult[] };
   QUERY_ERROR: { error: string };
-  RESET_QUERY: {};
+  RESET_QUERY: Record<string, any>;
 }
 
 export interface UserWorkflowEvents {
   START_WORKFLOW: { workflowId: string };
-  NEXT_STEP: {};
-  PREVIOUS_STEP: {};
+  NEXT_STEP: Record<string, any>;
+  PREVIOUS_STEP: Record<string, any>;
   SUBMIT_INPUT: { stepId: string; input: any };
   REQUEST_AI_SUGGESTION: { stepId: string; context: any };
   AI_SUGGESTION_RECEIVED: { suggestions: AISuggestion[] };
-  COMPLETE_WORKFLOW: {};
-  CANCEL_WORKFLOW: {};
+  COMPLETE_WORKFLOW: Record<string, any>;
+  CANCEL_WORKFLOW: Record<string, any>;
   WORKFLOW_ERROR: { error: string };
 }
 

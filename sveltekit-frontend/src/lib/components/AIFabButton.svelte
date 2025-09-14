@@ -32,7 +32,7 @@
 <button
 	 class="mx-auto px-4 max-w-7xl"
  class:generating={isGenerating}
-	 onclick={() => toggleDialog()}
+	 on:click={() => toggleDialog()}
 	aria-label="Open AI Assistant"
 	title="AI Assistant"
 >
@@ -49,7 +49,7 @@
 
 <!-- AI Dialog -->
 {#if dialogOpen}
-	<Dialog
+	<Dialog.Root
 		title="AI Assistant"
 		open={dialogOpen}
 		close={toggleDialog}

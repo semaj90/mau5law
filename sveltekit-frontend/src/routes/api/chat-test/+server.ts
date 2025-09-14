@@ -1,12 +1,11 @@
 // Simple chat test without database dependencies
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 const CUDA_SERVER_URL = 'http://localhost:8096';
 
 interface ChatRequest {
-  messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>;
-}
+  messages: Array<any>
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -71,9 +70,9 @@ export const POST: RequestHandler = async ({ request }) => {
       // Task completed successfully
       const result = resultData.result;
       return json({
-        message: result.text || 'Generated response',
+        message: (result as { text?: any; tokens_per_second?: any }).text || 'Generated response',
         confidence: 0.8,
-        tokensPerSecond: result.tokens_per_second || 0,
+        tokensPerSecond: (result as { text?: any; tokens_per_second?: any }).tokens_per_second || 0,
         taskId,
         cudaResult: resultData,
       });

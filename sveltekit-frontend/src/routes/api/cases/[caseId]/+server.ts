@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/db/index.js';
 import { cases, evidence } from '$lib/db/schema.js';
 import { eq } from 'drizzle-orm';

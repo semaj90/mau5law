@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { cases, citations, users, sessions } from "./schema";
+import { cases, citations, users, sessions } from './schema.js';
 
 export const citationsRelations = relations(citations, ({one}) => ({
 	case: one(cases, {

@@ -37,12 +37,7 @@ export interface TypingContext {
   analytics: {
     sessionDuration: number;
     totalInteractions: number;
-    typingPatterns: Array<{
-      start: number;
-      end: number;
-      text: string;
-      speed: number;
-    }>;
+    typingPatterns: Array<any>;
     contextSwitches: number;
     userEngagement: 'low' | 'medium' | 'high';
   };
@@ -66,16 +61,16 @@ const processContextualContent = fromPromise(async ({ input }: { input: { text: 
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`MCP Server error: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`MCP Server error: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; status?: any; json?: any }).json();
     return {
-      contextualHints: result.hints || [],
-      suggestions: result.suggestions || [],
-      userIntent: result.intent || 'unknown',
-      confidence: result.confidence || 0
+      contextualHints: (result as { hints?: any; suggestions?: any; intent?: any; confidence?: any }).hints || [],
+      suggestions: (result as { hints?: any; suggestions?: any; intent?: any; confidence?: any }).suggestions || [],
+      userIntent: (result as { hints?: any; suggestions?: any; intent?: any; confidence?: any }).intent || 'unknown',
+      confidence: (result as { hints?: any; suggestions?: any; intent?: any; confidence?: any }).confidence || 0
     };
   } catch (error) {
     console.error('Contextual processing error:', error);
@@ -91,8 +86,8 @@ const processContextualContent = fromPromise(async ({ input }: { input: { text: 
 export const userTypingStateMachine = createMachine({
   id: 'userTyping',
   types: {
-    context: {} as TypingContext,
-    events: {} as TypingEvent
+    context: Record<string, any> as TypingContext,
+    events: Record<string, any> as TypingEvent
   },
   context: {
     currentText: '',

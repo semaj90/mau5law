@@ -8,7 +8,7 @@ import { analytics } from '$lib/server/database/connection';
 import { dev } from '$app/environment';
 import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
 import { fastStringify } from '$lib/utils/fast-json';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Advanced Chat API with Quantized LLM, GRPMO Thinking, and Contextual Memory
 export const POST: RequestHandler = async ({ request, url, getClientAddress }) => {

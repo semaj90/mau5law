@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
 /*
@@ -242,23 +242,23 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
     const uniqueResults = results
       .filter((r, i, arr) => i === arr.findIndex((x) => x.id === r.id))
       .map((result) => {
-        const baseScore = result.similarity || result.score || 0;
-        const confidenceBoost = result.confidence ? result.confidence * 0.2 : 0;
+        const baseScore = (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).similarity || (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).score || 0;
+        const confidenceBoost = (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).confidence ? (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).confidence * 0.2 : 0;
         const combinedScore = Math.min(baseScore + confidenceBoost, 1.0);
 
         return {
-          id: result.id,
-          documentId: result.documentId,
-          filename: result.filename,
-          content: includeContent ? result.content : undefined,
-          fullContent: includeContent ? result.fullContent : undefined,
-          similarity: result.similarity,
+          id: (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).id,
+          documentId: (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).documentId,
+          filename: (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).filename,
+          content: includeContent ? (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).content : undefined,
+          fullContent: includeContent ? (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).fullContent : undefined,
+          similarity: (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).similarity,
           score: combinedScore,
-          searchType: result.searchType,
-          confidence: result.confidence,
-          metadata: includeMetadata ? result.metadata : undefined,
-          legalAnalysis: includeMetadata ? result.legalAnalysis : undefined,
-          createdAt: result.createdAt,
+          searchType: (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).searchType,
+          confidence: (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).confidence,
+          metadata: includeMetadata ? (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).metadata : undefined,
+          legalAnalysis: includeMetadata ? (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).legalAnalysis : undefined,
+          createdAt: (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).createdAt,
           rank: results.indexOf(result) + 1,
         };
       })

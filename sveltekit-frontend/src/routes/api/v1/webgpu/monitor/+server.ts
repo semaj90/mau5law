@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
 import { embeddingCache } from '$lib/server/embedding-cache-middleware.js';
@@ -48,13 +48,7 @@ interface HealthStatus {
     cache: 'healthy' | 'warning' | 'critical';
     workers: 'healthy' | 'overloaded' | 'offline';
   };
-  alerts: Array<{
-    severity: 'info' | 'warning' | 'critical';
-    component: string;
-    message: string;
-    timestamp: number;
-  }>;
-}
+  alerts: Array<any>
 
 // In-memory metrics storage for demo (in production, use proper time-series DB)
 let metricsHistory: SystemMetrics[] = [];

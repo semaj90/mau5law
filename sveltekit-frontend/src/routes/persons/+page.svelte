@@ -262,7 +262,7 @@
         <div class="flex flex-wrap gap-3">
           <button
             class="nes-legal-priority-medium yorha-3d-button"
-            onclick={() => showFilters = !showFilters}
+            on:click={() => showFilters = !showFilters}
           >
             <Filter class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">FILTERS</span>
@@ -279,7 +279,7 @@
 
           <button
             class="nes-legal-priority-medium yorha-3d-button"
-            onclick={exportData}
+            on:click={exportData}
           >
             <Download class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">EXPORT</span>
@@ -287,7 +287,7 @@
 
           <button
             class="nes-legal-priority-high yorha-3d-button"
-            onclick={() => showAddModal = true}
+            on:click={() => showAddModal = true}
           >
             <Plus class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">ADD PERSON</span>
@@ -373,7 +373,7 @@
               </select>
               <button
                 class="px-3 py-1 bg-gray-700 border border-yellow-600 rounded text-yellow-400 hover:bg-gray-600"
-                onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
+                on:click={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
               >
                 {sortOrder === 'asc' ? '↑' : '↓'}
               </button>
@@ -388,7 +388,7 @@
           </span>
           <button
             class="nes-legal-priority-medium yorha-3d-button text-sm"
-            onclick={clearFilters}
+            on:click={clearFilters}
           >
             Clear All Filters
           </button>
@@ -410,7 +410,7 @@
       {#if !searchQuery}
         <button
           class="nes-legal-priority-high yorha-3d-button"
-          onclick={() => showAddModal = true}
+          on:click={() => showAddModal = true}
         >
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
@@ -578,7 +578,6 @@
         </div>
       </div>
     {/if}
-  {/if}
 </div>
 
 <style>

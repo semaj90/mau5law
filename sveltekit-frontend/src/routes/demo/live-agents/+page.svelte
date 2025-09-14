@@ -234,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex flex-wrap gap-2">
               {#each availableAgents as agent}
                 <button
-                  onclick={() => toggleAgent(agent.value)}
+                  on:click={() => toggleAgent(agent.value)}
                   class={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     selectedAgents.includes(agent.value)
                       ? `${agent.color} text-white`
@@ -254,7 +254,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Action Button -->
       <button
-        onclick={testAgentOrchestration}
+        on:click={testAgentOrchestration}
         disabled={isLoading || !testInput.trim() || selectedAgents.length === 0}
         class="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:from-gray-600 disabled:to-gray-600 text-white py-3 px-6 rounded-lg font-medium transition-colors"
       >
@@ -279,7 +279,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-lg font-medium">Result #{results.length - index}</h3>
               <div class="text-sm text-gray-400">
-                ID: {result.requestId.slice(-8)}
+                ID: {(result as { requestId?: any; totalTime?: any; successRate?: any; bestAgent?: any; responses?: any; synthesized?: any }).requestId.slice(-8)}
               </div>
             </div>
 
@@ -287,57 +287,57 @@ https://svelte.dev/e/js_parse_error -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               <div class="bg-gray-700 p-3 rounded">
                 <div class="text-sm text-gray-400">Total Time</div>
-                <div class="font-semibold">{formatProcessingTime(result.totalTime)}</div>
+                <div class="font-semibold">{formatProcessingTime((result as { requestId?: any; totalTime?: any; successRate?: any; bestAgent?: any; responses?: any; synthesized?: any }).totalTime)}</div>
               </div>
               <div class="bg-gray-700 p-3 rounded">
                 <div class="text-sm text-gray-400">Success Rate</div>
-                <div class="font-semibold">{(result.successRate * 100).toFixed(0)}%</div>
+                <div class="font-semibold">{((result as { requestId?: any; totalTime?: any; successRate?: any; bestAgent?: any; responses?: any; synthesized?: any }).successRate * 100).toFixed(0)}%</div>
               </div>
               <div class="bg-gray-700 p-3 rounded">
                 <div class="text-sm text-gray-400">Best Agent</div>
-                <div class="font-semibold">{result.bestAgent || 'N/A'}</div>
+                <div class="font-semibold">{(result as { requestId?: any; totalTime?: any; successRate?: any; bestAgent?: any; responses?: any; synthesized?: any }).bestAgent || 'N/A'}</div>
               </div>
               <div class="bg-gray-700 p-3 rounded">
                 <div class="text-sm text-gray-400">Agents Used</div>
-                <div class="font-semibold">{result.responses.length}</div>
+                <div class="font-semibold">{(result as { requestId?: any; totalTime?: any; successRate?: any; bestAgent?: any; responses?: any; synthesized?: any }).responses.length}</div>
               </div>
             </div>
 
             <!-- Agent Responses -->
             <div class="space-y-3">
               <h4 class="font-medium text-gray-300">Agent Responses</h4>
-              {#each result.responses as response}
+              {#each (result as { requestId?: any; totalTime?: any; successRate?: any; bestAgent?: any; responses?: any; synthesized?: any }).responses as response}
                 <div class={`p-3 rounded border-l-4 ${
-                  response.status === 'completed' ? 'border-green-400 bg-green-900/20' :
-                  response.status === 'error' ? 'border-red-400 bg-red-900/20' :
+                  (response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).status === 'completed' ? 'border-green-400 bg-green-900/20' :
+                  (response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).status === 'error' ? 'border-red-400 bg-red-900/20' :
                   'border-yellow-400 bg-yellow-900/20'
                 }`}>
                   <div class="flex items-center justify-between mb-2">
-                    <span class="font-medium">{response.agent}</span>
+                    <span class="font-medium">{(response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).agent}</span>
                     <div class="flex items-center space-x-2">
-                      {#if response.confidence}
+                      {#if (response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).confidence}
                         <span class="text-sm text-gray-400">
-                          Confidence: {(response.confidence * 100).toFixed(0)}%
+                          Confidence: {((response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).confidence * 100).toFixed(0)}%
                         </span>
                       {/if}
                       <span class="text-sm text-gray-400">
-                        {formatProcessingTime(response.processingTime)}
+                        {formatProcessingTime((response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).processingTime)}
                       </span>
                       <span class={`text-sm ${
-                        response.status === 'completed' ? 'text-green-400' :
-                        response.status === 'error' ? 'text-red-400' :
+                        (response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).status === 'completed' ? 'text-green-400' :
+                        (response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).status === 'error' ? 'text-red-400' :
                         'text-yellow-400'
                       }`}>
-                        {response.status}
+                        {(response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).status}
                       </span>
                     </div>
                   </div>
 
-                  {#if response.error}
-                    <div class="text-red-300 text-sm">Error: {response.error}</div>
-                  {:else if response.result}
+                  {#if (response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).error}
+                    <div class="text-red-300 text-sm">Error: {(response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).error}</div>
+                  {:else if (response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).result}
                     <div class="bg-gray-900 p-2 rounded text-sm font-mono overflow-x-auto">
-                      {JSON.stringify(response.result, null, 2)}
+                      {JSON.stringify((response as { status?: any; agent?: any; confidence?: any; processingTime?: any; error?: any; result?: any }).result, null, 2)}
                     </div>
                   {/if}
                 </div>
@@ -345,11 +345,11 @@ https://svelte.dev/e/js_parse_error -->
             </div>
 
             <!-- Synthesized Result -->
-            {#if result.synthesized}
+            {#if (result as { requestId?: any; totalTime?: any; successRate?: any; bestAgent?: any; responses?: any; synthesized?: any }).synthesized}
               <div class="mt-4">
                 <h4 class="font-medium text-gray-300 mb-2">Synthesized Result</h4>
                 <div class="bg-gray-900 p-3 rounded">
-                  <pre class="text-sm overflow-x-auto">{JSON.stringify(result.synthesized, null, 2)}</pre>
+                  <pre class="text-sm overflow-x-auto">{JSON.stringify((result as { requestId?: any; totalTime?: any; successRate?: any; bestAgent?: any; responses?: any; synthesized?: any }).synthesized, null, 2)}</pre>
                 </div>
               </div>
             {/if}

@@ -1,7 +1,7 @@
 
 import { canvasStates, cases, evidence } from '$lib/server/db/schema-postgres';
 import { helpers } from '$lib/server/db';
-import type { PageServerLoad } from './$types.js';
+import type { PageServerLoad } from './$types.js.js';
 import { redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db/index';
 import { URL } from "url";

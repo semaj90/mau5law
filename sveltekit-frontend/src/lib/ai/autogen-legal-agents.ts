@@ -37,12 +37,7 @@ export interface LegalAnalysisResult {
   finalAnalysis: string;
   confidence: number;
   recommendations: string[];
-  sources: Array<{
-    type: "case" | "evidence" | "precedent" | "statute";
-    id: string;
-    relevance: number;
-    excerpt: string;
-  }>;
+  sources: Array<any>;
   processingTime: number;
 }
 
@@ -350,7 +345,7 @@ Identify any compliance issues and provide mitigation strategies.`,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: agent.model,
+        model: agent?.model || "unknown" // @ts-ignore - Model property access,
         prompt: `${agent.systemMessage}\n\nUser: ${prompt}\n\nAssistant:`,
         stream: false,
         options: {

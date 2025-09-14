@@ -108,9 +108,10 @@
     <div class="auth-controls">
       {#if currentUser}
         <span class="user-info">👤 {currentUser.name}</span>
-        <ButtonBits variant="ghost" size="sm" onclick={handleSignOut}>Sign Out</ButtonBits>
+        <ButtonBits variant="ghost" size="sm" on:click={handleSignOut}>
+Sign Out</ButtonBits>
       {:else}
-        <ButtonBits variant="secondary" size="sm" onclick={() => showAuthDemo = true}>
+        <ButtonBits variant="secondary" size="sm" on:click={() => showAuthDemo = true}>
           🔐 Demo Sign In
         </ButtonBits>
       {/if}
@@ -181,11 +182,12 @@
 
 <!-- Demo Authentication Modal -->
 {#if showAuthDemo}
-  <div class="auth-modal-overlay" onclick={() => showAuthDemo = false}>
-    <div class="auth-modal" onclick={(e) => e.stopPropagation()}>
+  <div class="auth-modal-overlay" on:click={() => showAuthDemo = false}>
+    <div class="auth-modal" on:click={(e) => e.stopPropagation()}>
       <div class="auth-header">
         <h3>🔐 Demo Authentication</h3>
-        <button class="close-btn" onclick={() => showAuthDemo = false}>✕</button>
+        <button class="close-btn" on:click={() => showAuthDemo = false}>✕
+
       </div>
       <div class="auth-content">
         <p>Choose a demo user to test citation saving:</p>
@@ -193,14 +195,14 @@
           {#each authDemo.getDemoUsers() as user}
             <button
               class="demo-user-btn"
-              onclick={() => handleDemoSignIn(user.email)}
+              on:click={() => handleDemoSignIn(user.email)}
             >
               <div class="user-details">
                 <strong>{user.name}</strong>
                 <span class="user-role">{user.role}</span>
                 <span class="user-email">{user.email}</span>
               </div>
-            </button>
+
           {/each}
         </div>
         <p class="demo-note">

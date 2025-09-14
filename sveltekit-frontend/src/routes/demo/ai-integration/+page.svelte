@@ -22,15 +22,15 @@ https://svelte.dev/e/js_parse_error -->
   export let data: PageData;
 
   // Component State - Initialize from server data
-  let systemHealth = data.systemHealth;
-  let embeddings = data.initialEmbeddings;
-  let labels = data.initialLabels;
+  let systemHealth = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).systemHealth;
+  let embeddings = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).initialEmbeddings;
+  let labels = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).initialLabels;
   let agentShellOpen = false;
   let isMonitoring = false;
-  let performanceMetrics = data.performanceMetrics;
+  let performanceMetrics = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).performanceMetrics;
 
   // Use server-loaded demo data
-  const demoDocuments = data.demoDocuments;
+  const demoDocuments = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).demoDocuments;
 
   onMount(() => {
     // Disabled auto health checks to prevent CORS errors
@@ -65,8 +65,8 @@ https://svelte.dev/e/js_parse_error -->
         });
 
         systemHealth[check.name] = {
-          status: response.ok ? 'healthy' : 'error',
-          details: response.ok ? 'Connected' : `HTTP ${response.status}`
+          status: (response as { ok?: any; status?: any; json?: any; statusText?: any }).ok ? 'healthy' : 'error',
+          details: (response as { ok?: any; status?: any; json?: any; statusText?: any }).ok ? 'Connected' : `HTTP ${(response as { ok?: any; status?: any; json?: any; statusText?: any }).status}`
         };
       } catch (error) {
         systemHealth[check.name] = {
@@ -93,9 +93,9 @@ https://svelte.dev/e/js_parse_error -->
           })
         });
         
-        if (response.ok) {
-          const result = await response.json();
-          return result.success ? result.data.embedding.slice(0, 3) : null; // Take first 3 dimensions for 3D viz
+        if ((response as { ok?: any; status?: any; json?: any; statusText?: any }).ok) {
+          const result = await (response as { ok?: any; status?: any; json?: any; statusText?: any }).json();
+          return (result as { success?: any; data?: any; error?: any }).success ? (result as { success?: any; data?: any; error?: any }).(data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).embedding.slice(0, 3) : null; // Take first 3 dimensions for 3D viz
         }
         return null;
       });
@@ -131,8 +131,8 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('Failed to generate embeddings:', error);
       // Use fallback demo data
-      embeddings = data.initialEmbeddings;
-      labels = data.initialLabels;
+      embeddings = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).initialEmbeddings;
+      labels = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).initialLabels;
     }
   }
 
@@ -156,9 +156,9 @@ https://svelte.dev/e/js_parse_error -->
         (performanceMetrics.avgResponseTime + (endTime - startTime)) / 2
       );
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Ollama Analysis Response:', data.response);
+      if ((response as { ok?: any; status?: any; json?: any; statusText?: any }).ok) {
+        const data = await (response as { ok?: any; status?: any; json?: any; statusText?: any }).json();
+        console.log('Ollama Analysis Response:', (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).response);
 
         // Trigger prefetch based on analysis success
         prefetchSend({
@@ -167,9 +167,9 @@ https://svelte.dev/e/js_parse_error -->
           context: { success: true, model: 'gemma3-legal' }
         });
 
-        return data.response;
+        return (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).response;
       } else {
-        throw new Error(`Ollama request failed: ${response.statusText}`);
+        throw new Error(`Ollama request failed: ${(response as { ok?: any; status?: any; json?: any; statusText?: any }).statusText}`);
       }
     } catch (error) {
       console.error('Ollama integration test failed:', error);
@@ -197,11 +197,11 @@ https://svelte.dev/e/js_parse_error -->
         (performanceMetrics.avgResponseTime + (endTime - startTime)) / 2
       );
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { ok?: any; status?: any; json?: any; statusText?: any }).ok) {
+        const result = await (response as { ok?: any; status?: any; json?: any; statusText?: any }).json();
         
-        if (result.success) {
-          console.log('Generated embedding:', result.data.embedding?.slice(0, 5));
+        if ((result as { success?: any; data?: any; error?: any }).success) {
+          console.log('Generated embedding:', (result as { success?: any; data?: any; error?: any }).(data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).embedding?.slice(0, 5));
           performanceMetrics.embeddingsGenerated++;
 
           // Cache hit simulation
@@ -210,12 +210,12 @@ https://svelte.dev/e/js_parse_error -->
             performanceMetrics.cacheHitRate + Math.random() * 10
           );
 
-          return result.data.embedding;
+          return (result as { success?: any; data?: any; error?: any }).(data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).embedding;
         } else {
-          throw new Error(result.error || 'Embedding generation failed');
+          throw new Error((result as { success?: any; data?: any; error?: any }).error || 'Embedding generation failed');
         }
       } else {
-        throw new Error(`API request failed: ${response.statusText}`);
+        throw new Error(`API request failed: ${(response as { ok?: any; status?: any; json?: any; statusText?: any }).statusText}`);
       }
     } catch (error) {
       console.error('Embedding generation test failed:', error);
@@ -239,21 +239,21 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { ok?: any; status?: any; json?: any; statusText?: any }).ok) {
+        const result = await (response as { ok?: any; status?: any; json?: any; statusText?: any }).json();
         
-        if (result.success) {
-          console.log('Similarity search results:', result.data);
+        if ((result as { success?: any; data?: any; error?: any }).success) {
+          console.log('Similarity search results:', (result as { success?: any; data?: any; error?: any }).data);
 
           // Update cache statistics
           prefetchSend({ type: 'CACHE_HIT', resource: 'similarity_search' });
 
-          return result.data;
+          return (result as { success?: any; data?: any; error?: any }).data;
         } else {
-          throw new Error(result.error || 'Similarity search failed');
+          throw new Error((result as { success?: any; data?: any; error?: any }).error || 'Similarity search failed');
         }
       } else {
-        throw new Error(`API request failed: ${response.statusText}`);
+        throw new Error(`API request failed: ${(response as { ok?: any; status?: any; json?: any; statusText?: any }).statusText}`);
       }
     } catch (error) {
       console.error('Vector similarity test failed:', error);
@@ -358,13 +358,13 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <!-- System Health Status -->
-  <NesCard class="mb-8 bg-slate-800/50 border-slate-700">
+  <div class="mb-8 bg-slate-800/50 border-slate-700 nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2 text-slate-100">
+      <h3 class="nes-text is-primary flex items-center gap-2 text-slate-100">
         <Activity class="h-5 w-5" />
         System Health Status
       </h3>
-      <p class="nes-text" class="text-slate-400">
+      <p class="nes-text text-slate-400">
         Real-time monitoring of all system components
       </p>
     </div>
@@ -385,7 +385,7 @@ https://svelte.dev/e/js_parse_error -->
         {/each}
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Main Demo Tabs -->
   <Tabs defaultValue="webgpu" class="space-y-6">
@@ -410,10 +410,10 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- WebGPU Visualization Tab -->
     <TabsContent value="webgpu" class="space-y-6">
-      <NesCard class="bg-slate-800/50 border-slate-700">
+      <div class="bg-slate-800/50 border-slate-700 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-slate-100">GPU-Accelerated Vector Visualization</h3>
-          <p class="nes-text" class="text-slate-400">
+          <h3 class="nes-text is-primary text-slate-100">GPU-Accelerated Vector Visualization</h3>
+          <p class="nes-text text-slate-400">
             Real-time 3D rendering of document embeddings using WebGPU shaders
           </p>
         </div>
@@ -422,9 +422,9 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex items-center gap-4 mb-4">
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{embeddings.length} Vectors Loaded</span>
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">WebGPU Enabled</span>
-              <Button class="bits-btn" onclick={generateDemoEmbeddings} size="sm">
-                Regenerate Embeddings
-              </button>
+              <Button class="bits-btn" on:click={generateDemoEmbeddings} size="sm">
+Regenerate Embeddings
+
             </div>
 
             <!-- WebGPU Canvas -->
@@ -438,15 +438,15 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- Ollama Agent Shell Tab -->
     <TabsContent value="ollama" class="space-y-6">
-      <NesCard class="bg-slate-800/50 border-slate-700">
+      <div class="bg-slate-800/50 border-slate-700 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-slate-100">AI Agent Terminal Interface</h3>
-          <p class="nes-text" class="text-slate-400">
+          <h3 class="nes-text is-primary text-slate-100">AI Agent Terminal Interface</h3>
+          <p class="nes-text text-slate-400">
             Interactive shell for real-time AI analysis with Ollama and gemma3-legal model
           </p>
         </div>
@@ -455,23 +455,23 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex items-center gap-4 mb-4">
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Model: gemma3-legal</span>
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Streaming: Enabled</span>
-              <Button class="bits-btn" onclick={openAgentShell} size="sm">
-                <Terminal class="h-4 w-4 mr-2" />
+              <Button class="bits-btn" on:click={openAgentShell} size="sm">
+<Terminal class="h-4 w-4 mr-2" />
                 Open Agent Shell
-              </button>
+
             </div>
 
             <!-- Integration Test Buttons -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <Button onclick={testOllamaIntegration} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
-                Test AI Analysis
-              </button>
-              <Button onclick={testEmbeddingGeneration} class="bg-green-600 hover:bg-green-700 bits-btn bits-btn">
-                Generate Embeddings
-              </button>
-              <Button onclick={testVectorSimilarity} class="bg-purple-600 hover:bg-purple-700 bits-btn bits-btn">
-                Vector Similarity
-              </button>
+              <Button on:click={testOllamaIntegration} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
+Test AI Analysis
+
+              <Button on:click={testEmbeddingGeneration} class="bg-green-600 hover:bg-green-700 bits-btn bits-btn">
+Generate Embeddings
+
+              <Button on:click={testVectorSimilarity} class="bg-purple-600 hover:bg-purple-700 bits-btn bits-btn">
+Vector Similarity
+
             </div>
 
             <!-- Agent Shell Modal -->
@@ -484,15 +484,15 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- XState Prefetch Tab -->
     <TabsContent value="prefetch" class="space-y-6">
-      <NesCard class="bg-slate-800/50 border-slate-700">
+      <div class="bg-slate-800/50 border-slate-700 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-slate-100">AI-Powered Intent Prediction & Prefetching</h3>
-          <p class="nes-text" class="text-slate-400">
+          <h3 class="nes-text is-primary text-slate-100">AI-Powered Intent Prediction & Prefetching</h3>
+          <p class="nes-text text-slate-400">
             XState machine with Loki.js caching and Fuse.js fuzzy search
           </p>
         </div>
@@ -508,9 +508,10 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 {/if}
               </div>
-              <Button class="bits-btn" onclick={() => prefetchSend({ type: 'PREDICT_INTENT' })} size="sm">
+              <Button class="bits-btn" on:click={() =>
+prefetchSend({ type: 'PREDICT_INTENT' })} size="sm">
                 Trigger Prediction
-              </button>
+
             </div>
 
             <!-- Metrics Grid -->
@@ -535,44 +536,47 @@ https://svelte.dev/e/js_parse_error -->
 
             <!-- Control Buttons -->
             <div class="flex gap-4">
-              <Button class="bits-btn bg-green-600 hover:bg-green-700" onclick={() => prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm">
+              <Button class="bits-btn bg-green-600 hover:bg-green-700" on:click={() =>
+prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm">
                 Simulate Cache Hit
-              </button>
-              <Button class="bits-btn bg-red-600 hover:bg-red-700" onclick={() => prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm">
+
+              <Button class="bits-btn bg-red-600 hover:bg-red-700" on:click={() =>
+prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm">
                 Simulate Cache Miss
-              </button>
-              <Button class="bits-btn" onclick={() => prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">
+
+              <Button class="bits-btn" on:click={() =>
+prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">
                 Reset Metrics
-              </button>
+
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- Performance Tab -->
     <TabsContent value="performance" class="space-y-6">
-      <NesCard class="bg-slate-800/50 border-slate-700">
+      <div class="bg-slate-800/50 border-slate-700 nes-container">
         <div class="yorha-panel-header">
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="nes-text is-primary" class="text-slate-100">Performance Metrics</h3>
-              <p class="nes-text" class="text-slate-400">
+              <h3 class="nes-text is-primary text-slate-100">Performance Metrics</h3>
+              <p class="nes-text text-slate-400">
                 Real-time system performance monitoring and statistics
               </p>
             </div>
             <Button
-             onclick={isMonitoring ? stopPerformanceMonitoring : startPerformanceMonitoring}
+             on:click={isMonitoring ? stopPerformanceMonitoring : startPerformanceMonitoring}
               class={isMonitoring ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}
             >
-              {#if isMonitoring}
+{#if isMonitoring}
                 <Pause class="h-4 w-4 mr-2" />
                 Stop Monitoring
               {:else}
                 <Play class="h-4 w-4 mr-2" />
                 Start Monitoring
               {/if}
-            </button>
+
           </div>
         </div>
         <div class="yorha-panel-content">
@@ -609,7 +613,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
   </Tabs>
 

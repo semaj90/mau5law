@@ -25,11 +25,7 @@ https://svelte.dev/e/js_parse_error -->
     evidence?: Evidence;
     onevidenceUpdated?: (event?: unknown) => void;
     onsaveAnalysis?: (event?: unknown) => void;
-    similarEvidence?: Array<{
-      id: string;
-      content: string;
-      similarity: number;
-    }>;
+    similarEvidence?: Array;
   }
   let {
     open = false,
@@ -66,9 +62,9 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      const result = await response.json();
-      if (result.success) {
-        evidence = { ...evidence, ...result.evidence };
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; evidence?: any }).success) {
+        evidence = { ...evidence, ...(result as { success?: any; evidence?: any }).evidence };
         onevidenceUpdated?.();
   }
     } catch (error) {
@@ -90,9 +86,9 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      const result = await response.json();
-      if (result.success) {
-        evidence = { ...evidence, tags: result.evidence.tags };
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; evidence?: any }).success) {
+        evidence = { ...evidence, tags: (result as { success?: any; evidence?: any }).evidence.tags };
         newTags = '';
         onevidenceUpdated?.();
   }
@@ -113,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<Dialog 
+<Dialog.Root 
   bind:open 
   title="Evidence Analysis" 
   description="AI-powered legal evidence analysis and tagging"
@@ -143,13 +139,14 @@ https://svelte.dev/e/js_parse_error -->
         
         <div class="space-y-4">
           <Button class="bits-btn" variant="secondary" size="sm">
-            <Download class="space-y-4" />
+<Download class="space-y-4" />
             Export
-          </button>
+
           <Button class="bits-btn" 
             variant="primary" 
             size="sm" 
-            onclick={() => analyzeEvidence()}
+            on:click={() =>
+analyzeEvidence()}
             disabled={isAnalyzing}
           >
             {#if isAnalyzing}
@@ -159,7 +156,7 @@ https://svelte.dev/e/js_parse_error -->
               <Brain class="space-y-4" />
               Re-analyze
             {/if}
-          </button>
+
         </div>
       </div>
 
@@ -283,9 +280,10 @@ https://svelte.dev/e/js_parse_error -->
                 placeholder="Add tags (comma-separated)"
                 class="space-y-4"
               />
-              <Button class="bits-btn" size="sm" onclick={() => updateTags()} disabled={!newTags.trim()}>
+              <Button class="bits-btn" size="sm" on:click={() =>
+updateTags()} disabled={!newTags.trim()}>
                 Add
-              </button>
+
             </div>
           </div>
         </GridItem>
@@ -312,13 +310,14 @@ https://svelte.dev/e/js_parse_error -->
 
   {#snippet footer({ close })}
   
-      <Button class="bits-btn" variant="secondary" onclick={() => close()}>
+      <Button class="bits-btn" variant="secondary" on:click={() =>
+close()}>
         Close
-      </button>
-      <Button class="bits-btn" variant="primary" onclick={() => onsaveAnalysis?.()}>
+
+      <Button class="bits-btn" variant="primary" on:click={() =>
+onsaveAnalysis?.()}>
         Save Analysis
-      </button>
-    
+
   {/snippet}
-</Dialog>
+</Dialog.Root>
 

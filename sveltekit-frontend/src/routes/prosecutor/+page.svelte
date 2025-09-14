@@ -65,18 +65,17 @@ Features: Case management, evidence upload, AI chat, vector search
 
   const loadCases = async () => {
     try {
-  let response = $state<Response;
-        try {
-          response >(await fetch('/api/cases?role=prosecutor');
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  let response = $state<Responsetry {
+          response | null>(null)(await fetch('/api/cases?role=prosecutor');
+          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+            throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
           }
         } catch (error) {
           console.error('Fetch failed:', error);
           throw error;
         }
-      const result = await response.json();
-      cases = result.data || [];
+      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+      cases = (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).data || [];
 
       if (cases.length > 0 && !selectedCaseId) {
         selectedCaseId = cases[0].id;
@@ -88,18 +87,17 @@ Features: Case management, evidence upload, AI chat, vector search
 
   const loadPersonsOfInterest = async () => {
     try {
-  let response = $state<Response;
-        try {
-          response >(await fetch(`/api/persons-of-interest?caseId=${selectedCaseId}`);
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  let response = $state<Responsetry {
+          response | null>(null)(await fetch(`/api/persons-of-interest?caseId=${selectedCaseId}`);
+          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+            throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
           }
         } catch (error) {
           console.error('Fetch failed:', error);
           throw error;
         }
-      const result = await response.json();
-      personsOfInterest = result.data || [];
+      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+      personsOfInterest = (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).data || [];
     } catch (error) {
       console.error('Failed to load POIs:', error);
     }
@@ -107,18 +105,17 @@ Features: Case management, evidence upload, AI chat, vector search
 
   const loadRecentEvidence = async () => {
     try {
-  let response = $state<Response;
-        try {
-          response >(await fetch(`/api/evidence?caseId=${selectedCaseId}&limit=10`);
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  let response = $state<Responsetry {
+          response | null>(null)(await fetch(`/api/evidence?caseId=${selectedCaseId}&limit=10`);
+          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+            throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
           }
         } catch (error) {
           console.error('Fetch failed:', error);
           throw error;
         }
-      const result = await response.json();
-      recentEvidence = result.data || [];
+      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+      recentEvidence = (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).data || [];
     } catch (error) {
       console.error('Failed to load evidence:', error);
     }
@@ -148,8 +145,8 @@ Features: Case management, evidence upload, AI chat, vector search
             type: 'evidence'
           })
         });
-        const result = await response.json();
-        searchResults = result.results || [];
+        const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+        searchResults = (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).results || [];
       }
     } catch (error) {
       console.error('Vector search failed:', error);
@@ -207,7 +204,7 @@ Features: Case management, evidence upload, AI chat, vector search
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Case Selector -->
-    <NesCard class="mb-6">
+    <div class="mb-6 nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Active Cases</h3>
       </div>
@@ -217,29 +214,30 @@ Features: Case management, evidence upload, AI chat, vector search
             <Button class="bits-btn"
               variant={selectedCaseId === caseItem.id ? 'default' : 'outline'}
               size="sm"
-              onclick={() => selectCase(caseItem.id)}
+              on:click={() =>
+selectCase(caseItem.id)}
             >
               {caseItem.caseNumber} - {caseItem.title}
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{caseItem.status}</span>
-            </button>
+
           {/each}
 
           <Button class="bits-btn" variant="outline" size="sm">
-            <Plus class="w-4 h-4 mr-1" />
+<Plus class="w-4 h-4 mr-1" />
             New Case
-          </button>
+
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Main Dashboard Layout -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
       <!-- Left Column: Evidence & Search -->
       <div class="xl:col-span-2 space-y-6">
         <!-- Vector Search -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <Search class="w-5 h-5" />
               Enhanced Vector Search
               {#if webGPUEnabled}
@@ -247,16 +245,16 @@ Features: Case management, evidence upload, AI chat, vector search
               {/if}
             </h3>
           </div>
-          <div class="yorha-panel-content" class="space-y-4">
+          <div class="yorha-panel-content space-y-4">
             <div class="flex gap-2">
               <Input
                 bind:value={searchQuery}
                 placeholder="Search evidence, cases, precedents..."
                 class="flex-1"
               />
-              <Button class="bits-btn" onclick={performVectorSearch} disabled={!searchQuery.trim()}>
-                <Search class="w-4 h-4" />
-              </button>
+              <Button class="bits-btn" on:click={performVectorSearch} disabled={!searchQuery.trim()}>
+<Search class="w-4 h-4" />
+
             </div>
 
             {#if searchResults.length > 0}
@@ -266,26 +264,26 @@ Features: Case management, evidence upload, AI chat, vector search
                   <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                     <div class="flex justify-between items-start">
                       <div>
-                        <p class="font-medium text-sm">{result.payload?.fileName || result.id}</p>
+                        <p class="font-medium text-sm">{(result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).payload?.fileName || (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).id}</p>
                         <p class="text-xs text-gray-600 mt-1">
-                          {result.payload?.title || 'No title'}
+                          {(result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).payload?.title || 'No title'}
                         </p>
-                        {#if result.payload?.tags}
+                        {#if (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).payload?.tags}
                           <div class="flex gap-1 mt-2">
-                            {#each result.payload.tags as tag}
+                            {#each (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).payload.tags as tag}
                               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                             {/each}
                           </div>
                         {/if}
                       </div>
-                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(result.score * 100)}% match</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round((result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).score * 100)}% match</span>
                     </div>
                   </div>
                 {/each}
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
 
         <!-- Evidence Upload -->
         <EvidenceUploadComponent
@@ -295,9 +293,9 @@ Features: Case management, evidence upload, AI chat, vector search
         />
 
         <!-- Recent Evidence -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <FileText class="w-5 h-5" />
               Recent Evidence ({recentEvidence.length})
             </h3>
@@ -334,23 +332,23 @@ Features: Case management, evidence upload, AI chat, vector search
                         </Badge>
                       {/if}
                       <Button class="bits-btn" variant="ghost" size="sm">
-                        <Eye class="w-4 h-4" />
-                      </button>
+<Eye class="w-4 h-4" />
+
                     </div>
                   </div>
                 {/each}
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
       </div>
 
       <!-- Right Column: AI Chat & POIs -->
       <div class="space-y-6">
         <!-- Persons of Interest -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <Users class="w-5 h-5" />
               Persons of Interest ({personsOfInterest.length})
             </h3>
@@ -387,11 +385,11 @@ Features: Case management, evidence upload, AI chat, vector search
             {/if}
 
             <Button variant="outline" size="sm" class="w-full mt-3 bits-btn bits-btn">
-              <Plus class="w-4 h-4 mr-1" />
+<Plus class="w-4 h-4 mr-1" />
               Add Person of Interest
-            </button>
+
           </div>
-        </NesCard>
+        </div>
 
         <!-- AI Chat Assistant -->
         <div class="h-96">
@@ -407,8 +405,8 @@ Features: Case management, evidence upload, AI chat, vector search
 
     <!-- System Status Bar -->
     <div class="fixed bottom-4 right-4 z-50">
-      <NesCard class="bg-black text-white">
-        <div class="yorha-panel-content" class="p-3">
+      <div class="bg-black text-white nes-container">
+        <div class="yorha-panel-content p-3">
           <div class="flex items-center space-x-4 text-xs">
             <div class="flex items-center gap-1">
               <div class="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -432,7 +430,7 @@ Features: Case management, evidence upload, AI chat, vector search
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 </div>

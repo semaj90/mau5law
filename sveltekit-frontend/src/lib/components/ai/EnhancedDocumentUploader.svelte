@@ -43,8 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   import { derived, writable } from "svelte/store";
 
   // Props with Svelte 5 syntax
-  let {
-    acceptedTypes = ".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp",
+  let { acceptedTypes = ".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp",
     maxFileSize = 50 * 1024 * 1024, // 50MB
     maxFiles = 10,
     caseId = "",
@@ -52,15 +51,18 @@ https://svelte.dev/e/js_parse_error -->
     autoProcess = true,
     showMetadataForm = true,
     class: className = "",
-  } = $props();
+   }: { acceptedTypes = ".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp",
+    maxFileSize = 50 * 1024 * 1024, // 50MB
+    maxFiles = 10,
+    caseId = "",
+    userId = "",
+    autoProcess = true,
+    showMetadataForm = true,
+    class: className = "",
+  : any } = $props();
 
   // Event dispatcher
-  const dispatch = createEventDispatcher<{
-    upload: { files: ProcessedFile[] };
-    processing: { fileId: string; progress: number };
-    complete: { fileId: string; result: ProcessingResult };
-    error: { fileId: string; error: string };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Types
   interface UploadFile {
@@ -93,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
 
   interface ProcessingResult {
     summary?: string;
-    entities?: Array<{ text: string; type: string; confidence: number }>;
+    entities?: Array;
     chunks?: number;
     embeddings?: boolean;
   }
@@ -121,10 +123,8 @@ https://svelte.dev/e/js_parse_error -->
 
   // File input reference
   let fileInput = $state<HTMLInputElement;
-  let dropZone = $state<HTMLDivElement;
-
-  // Document types for legal AI
-  const documentTypes >([
+  let dropZone = $state<HTMLDivElement// Document types for legal AI
+  const documentTypes | null>(null)([
     { value: "contract", label: "Contract" },
     { value: "motion", label: "Motion" },
     { value: "brief", label: "Brief" },
@@ -447,14 +447,14 @@ https://svelte.dev/e/js_parse_error -->
     bind:this={dropZone}
     class="drop-zone"
     class:dragging={$isDragging}
-    ondragover={handleDragOver}
+    on:dragover={handleDragOver}
     ondragleave={handleDragLeave}
-    ondrop={handleDrop}
+    on:drop={handleDrop}
     role="button" 
     aria-label="Drop zone" 
     tabindex="0"
-    onclick={() => fileInput?.click()}
-    onkeydown={(e) => e.key === "Enter" && fileInput?.click()}
+    on:click={() => fileInput?.click()}
+    on:keydown={(e) => e.key === "Enter" && fileInput?.click()}
   >
     <div class="drop-zone-content">
       <Upload class="drop-zone-icon" size={48} />
@@ -470,9 +470,9 @@ https://svelte.dev/e/js_parse_error -->
       </p>
 
       <Button variant="outline" class="mt-4 bits-btn bits-btn" disabled={$isProcessing}>
-        <Upload class="mr-2" size={16} />
+<Upload class="mr-2" size={16} />
         Choose Files
-      </button>
+</Button>
     </div>
   </div>
 
@@ -481,16 +481,15 @@ https://svelte.dev/e/js_parse_error -->
     bind:this={fileInput}
     type="file"
     multiple
-    accept={acceptedTypes}
-    change={handleFileSelect}
+    accept={acceptedTypes} on:change={handleFileSelect}
     class="sr-only"
   />
 
   <!-- Progress Overview -->
   {#if $files.length > 0}
-    <NesCard class="mt-6">
+    <div class="mt-6 nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           <span>Upload Progress</span>
           <Badge variant={$hasErrors ? "destructive" : "default"}>
             {$completedFiles.length} / {$files.length} completed
@@ -505,15 +504,15 @@ https://svelte.dev/e/js_parse_error -->
           </p>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- File List -->
   {#if $files.length > 0}
     <div class="file-list mt-6">
       {#each $files as file (file.id)}
-        <NesCard class="file-item">
-          <div class="yorha-panel-content" class="p-4">
+        <div class="file-item nes-container">
+          <div class="yorha-panel-content p-4">
             <div class="file-info">
               <!-- File Icon/Preview -->
               <div class="file-preview">
@@ -571,34 +570,37 @@ https://svelte.dev/e/js_parse_error -->
                     <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
-                      onclick={() => openMetadataDialog(file)}
+                      on:click={() =>
+openMetadataDialog(file)}
                     >
                       Edit
-                    </button>
+</Button>
                   {/if}
 
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    onclick={() => removeFile(file.id)}
+                    on:click={() =>
+removeFile(file.id)}
                     disabled={file.status === "uploading" ||
                       file.status === "processing"}
                   >
                     <X size={16} />
-                  </button>
+</Button>
                 </div>
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       {/each}
     </div>
 
     <!-- Upload Actions -->
     <div class="upload-actions mt-6">
       <Button class="bits-btn"
-        onclick={uploadFiles}
-        disabled={$isProcessing || $files.every((f) => f.status !== "pending")}
+        on:click={uploadFiles}
+        disabled={$isProcessing || $files.every((f) =>
+f.status !== "pending")}
         class="mr-4"
       >
         {#if $isProcessing}
@@ -609,24 +611,25 @@ https://svelte.dev/e/js_parse_error -->
           Upload & Process ({$files.filter((f) => f.status === "pending")
             .length} files)
         {/if}
-      </button>
+</Button>
 
       <Button class="bits-btn"
         variant="outline"
-        onclick={() => files.set([])}
+        on:click={() =>
+files.set([])}
         disabled={$isProcessing}
       >
         Clear All
-      </button>
+</Button>
     </div>
   {/if}
 
   <!-- Metadata Dialog -->
-  <Dialog bind:open={$showMetadata}>
-    <DialogContent class="max-w-md">
-      <DialogHeader>
-        <DialogTitle>Document Metadata</DialogTitle>
-      </DialogHeader>
+  <Dialog.Root bind:open={$showMetadata}>
+    <Dialog.RootContent class="max-w-md">
+      <Dialog.Header>
+        <Dialog.Title>Document Metadata</Dialog.Title>
+      </Dialog.Header>
 
       {#if $selectedFile}
         <div class="metadata-form space-y-4">
@@ -692,11 +695,13 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <div class="dialog-actions">
-            <Button class="bits-btn" variant="outline" onclick={() => showMetadata.set(false)}>
+            <Button class="bits-btn" variant="outline" on:click={() =>
+showMetadata.set(false)}>
               Cancel
-            </button>
+</Button>
             <Button class="bits-btn"
-              onclick={() => {
+              on:click={() =>
+{
                 if ($selectedFile) {
                   updateFileMetadata($selectedFile.id, $selectedFile.metadata);
                 }
@@ -704,12 +709,12 @@ https://svelte.dev/e/js_parse_error -->
               }}
             >
               Save
-            </button>
+</Button>
           </div>
         </div>
       {/if}
-    </DialogContent>
-  </Dialog>
+    </Dialog.Content>
+  </Dialog.Root>
 </div>
 
 <style>

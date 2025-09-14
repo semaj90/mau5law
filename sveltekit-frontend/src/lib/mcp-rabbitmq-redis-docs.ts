@@ -1,7 +1,7 @@
 // MCP Context7.2 - RabbitMQ and Redis Library Documentation
 // Get proper library documentation to fix integration issues
 
-import { mcpContext72GetLibraryDocs, type LibraryDocsResponse } from './mcp-context72-get-library-docs.js';
+import { mcpContext72GetLibraryDocs, type LibraryDocsResponse } from './mcp-context72-get-library-docs.js.js';
 
 // Get RabbitMQ (amqplib) documentation
 export async function getRabbitMQDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
@@ -69,11 +69,7 @@ export async function getNodeRedisTransactions(fetchFn?: typeof fetch): Promise<
 }
 
 // Quick access to get all Redis documentation
-export async function getAllRedisDocs(fetchFn?: typeof fetch): Promise<{
-  ioredis: LibraryDocsResponse;
-  nodeRedis: LibraryDocsResponse;
-  patterns: LibraryDocsResponse;
-}> {
+export async function getAllRedisDocs(fetchFn?: typeof fetch): Promise<any> {
   const [ioredis, nodeRedis, patterns] = await Promise.all([
     getRedisDocs(undefined, fetchFn),
     getNodeRedisDocs(undefined, fetchFn),

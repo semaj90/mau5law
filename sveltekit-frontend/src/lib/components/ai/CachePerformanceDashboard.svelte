@@ -240,7 +240,7 @@
         
         <div class="control-buttons">
           <button 
-            onclick={refreshMetrics} 
+            on:click={refreshMetrics} 
             disabled={isRefreshing}
             class="refresh-btn"
           >
@@ -249,14 +249,14 @@
           </button>
           
           <button 
-            onclick={toggleAutoRefresh} 
+            on:click={toggleAutoRefresh} 
             class="auto-refresh-btn {autoRefresh ? 'active' : ''}"
           >
             <Target size={16} />
             Auto: {autoRefresh ? 'ON' : 'OFF'}
           </button>
           
-          <button onclick={clearCache} class="clear-cache-btn">
+          <button on:click={clearCache} class="clear-cache-btn">
             <Database size={16} />
             Clear Cache
           </button>
@@ -896,12 +896,12 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
-  .query-item.cached {
+  .query-(item as { cached?: any; uncached?: any }).cached {
     background: rgba(34, 197, 94, 0.1);
     border-color: rgba(34, 197, 94, 0.3);
   }
   
-  .query-item.uncached {
+  .query-(item as { cached?: any; uncached?: any }).uncached {
     background: rgba(239, 68, 68, 0.1);
     border-color: rgba(239, 68, 68, 0.3);
   }

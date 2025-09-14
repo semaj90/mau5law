@@ -1,5 +1,5 @@
 // Server-Sent Events endpoint for real-time workflow updates
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { workflowOrchestrator } from '$lib/server/workflows/orchestrator';
 
 export const GET: RequestHandler = async ({ url, request }) => {

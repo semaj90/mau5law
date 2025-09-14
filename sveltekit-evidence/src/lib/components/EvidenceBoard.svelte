@@ -12,7 +12,7 @@ Provides drag-drop positioning, zoom, selection, and object management
     zoomLevel,
     boardActions
   } from '$lib/stores/boardStore';
-  import type { BoardObject } from '$lib/types';
+  import type { BoardObject, Evidence } from '$lib/types';
 
   // Props using Svelte 5 $props()
   let {
@@ -106,7 +106,7 @@ Provides drag-drop positioning, zoom, selection, and object management
   }
 
   // Handle selection changes
-  function handleSelectionChange(e: fabric.IEvent) {
+  function handleSelectionChange() {
     const activeObjects = canvas.getActiveObjects();
     const selectedIds = activeObjects
       .map(obj => (obj.data as BoardObject)?.id)
@@ -245,7 +245,7 @@ Provides drag-drop positioning, zoom, selection, and object management
   }
 
   // Add evidence from drag-drop
-  export function addEvidenceFromDrop(evidence: any, x: number, y: number) {
+  export function addEvidenceFromDrop(evidence: Evidence, x: number, y: number) {
     const boardObjectId = boardActions.addEvidenceToBoard(
       evidence.id,
       evidence.minioUrl,
@@ -282,13 +282,13 @@ Provides drag-drop positioning, zoom, selection, and object management
   }
 
   function deleteSelectedObjects() {
-    $selectedObjects.forEach(id => {
+    $selectedObjects.forEach((id: string) => {
       boardActions.removeObject(id);
     });
   }
 
   function selectAllObjects() {
-    const allIds = $boardObjects.map(obj => obj.id);
+    const allIds = $boardObjects.map((obj: BoardObject) => obj.id);
     selectedObjects.set(allIds);
   }
 

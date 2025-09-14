@@ -3,9 +3,9 @@
  * Background processing for legal AI with distributed caching
  */
 
-import { somWebGPUCache } from './lib/webgpu/som-webgpu-cache.js';
-import { redisWebGPUIntegration } from './lib/integrations/redis-webgpu-simd-integration.js';
-import { simdJSONClient } from './lib/simd/simd-json-worker-client.js';
+import { somWebGPUCache } from './lib/webgpu/som-webgpu-cache.js.js';
+import { redisWebGPUIntegration } from './lib/integrations/redis-webgpu-simd-integration.js.js';
+import { simdJSONClient } from './lib/simd/simd-json-worker-client.js.js';
 
 // Service Worker Global State
 let isRedisConnected = false;

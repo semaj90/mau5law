@@ -37,7 +37,7 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 		canvasComponents.error = null;
 
 		try {
-			console.log('<¨ Loading canvas components...');
+			console.log('<ï¿½ Loading canvas components...');
 
 			// Load all heavy components in parallel
 			const [fabricModule, nodeModule, dragModule, boardModule] = await Promise.all([
@@ -74,7 +74,7 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 		try {
 			// TODO: Replace with actual API call
 			// const response = await fetch(`/api/cases/${caseId}/evidence`);
-			// const evidence = await response.json();
+			// const evidence = await (response as { json?: any }).json();
 
 			// Mock evidence data for now
 			canvasData.evidence = [
@@ -134,7 +134,7 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 			<Card.Root class="nes-container is-rounded">
 				<Card.Content class="p-8 text-center">
 					<div class="loading-animation mb-6">
-						<div class="text-6xl mb-4 animate-pulse"><¨</div>
+						<div class="text-6xl mb-4 animate-pulse"><ï¿½</div>
 						<h2 class="nes-text is-primary text-lg mb-2">
 							Loading Evidence Canvas
 						</h2>
@@ -145,13 +145,13 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 						<!-- Progress Steps -->
 						<div class="space-y-2">
 							<div class="nes-text text-xs">
-								=æ Loading canvas library...
+								=ï¿½ Loading canvas library...
 							</div>
 							<div class="nes-text text-xs">
 								=' Setting up evidence nodes...
 							</div>
 							<div class="nes-text text-xs">
-								¡ Preparing GPU acceleration...
+								ï¿½ Preparing GPU acceleration...
 							</div>
 						</div>
 					</div>
@@ -160,14 +160,14 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 					<div class="nes-container is-rounded p-2 bg-gray-800">
 						<div class="h-2 bg-primary animate-pulse rounded"></div>
 					</div>
-				</Card.Content>
-			</Card.Root>
+				</div.Content>
+			</div.Root>
 
 		{:else if canvasComponents.error}
 			<!-- Error State -->
 			<Card.Root class="nes-container is-rounded">
 				<Card.Content class="p-8 text-center">
-					<div class="text-4xl mb-4"> </div>
+					<div class="text-4xl mb-4">ï¿½</div>
 					<h2 class="nes-text is-error text-lg mb-2">
 						Failed to Load Canvas
 					</h2>
@@ -175,19 +175,19 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 						{canvasComponents.error}
 					</p>
 					<div class="flex justify-center gap-4">
-						<Button class="nes-btn is-error" onclick={reloadCanvas}>
+						<Button class="nes-btn is-error" on:click={reloadCanvas}>
 							Retry Loading
-						</Button>
+
 						<Button
 							variant="outline"
 							class="nes-btn"
-							onclick={() => window.history.back()}
+							on:click={() => window.history.back()}
 						>
 							Go Back
-						</Button>
+
 					</div>
-				</Card.Content>
-			</Card.Root>
+				</div.Content>
+			</div.Root>
 
 		{:else if canvasComponents.loaded}
 			<!-- Canvas Interface - Loaded Successfully -->
@@ -199,25 +199,25 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 						<Card.Header>
 							<Card.Title class="nes-text is-primary text-sm">
 								Canvas Tools
-							</Card.Title>
-						</Card.Header>
+							</div.Title>
+						</div.Header>
 						<Card.Content>
 							<div class="space-y-2">
 								<Button class="nes-btn w-full text-xs" size="sm">
-									<¯ Select Mode
-								</Button>
+									<ï¿½ Select Mode
+
 								<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
 									 Draw Connections
-								</Button>
+
 								<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
-									=÷ Take Screenshot
-								</Button>
+									=ï¿½ Take Screenshot
+
 								<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
-									=¾ Save Layout
-								</Button>
+									=ï¿½ Save Layout
+
 							</div>
-						</Card.Content>
-					</Card.Root>
+						</div.Content>
+					</div.Root>
 
 					<!-- Upload Zone -->
 					<Card.Root class="nes-container is-rounded">
@@ -231,8 +231,8 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 									}}
 								/>
 							{/if}
-						</Card.Content>
-					</Card.Root>
+						</div.Content>
+					</div.Root>
 				</div>
 
 				<!-- Main Canvas Area -->
@@ -242,7 +242,7 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 							<div class="flex justify-between items-center">
 								<Card.Title class="nes-text is-primary">
 									Evidence Canvas - Case #{caseId}
-								</Card.Title>
+								</div.Title>
 								<div class="flex items-center gap-2">
 									<span class="nes-badge is-success">
 										{canvasData.evidence.length} items
@@ -252,7 +252,7 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 									</span>
 								</div>
 							</div>
-						</Card.Header>
+						</div.Header>
 						<Card.Content class="p-0 h-full">
 							{#if canvasComponents.FabricCanvas && canvasData.canvasReady}
 								<svelte:component
@@ -268,25 +268,25 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 									</div>
 								</div>
 							{/if}
-						</Card.Content>
-					</Card.Root>
+						</div.Content>
+					</div.Root>
 				</div>
 			</div>
 
 			<!-- Evidence List -->
 			<Card.Root class="nes-container is-rounded mt-6">
 				<Card.Header>
-					<Card.Title class="nes-text is-primary">Evidence Items</Card.Title>
-				</Card.Header>
+					<Card.Title class="nes-text is-primary">Evidence Items</div.Title>
+				</div.Header>
 				<Card.Content>
 					{#if canvasData.evidence.length > 0}
 						<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 							{#each canvasData.evidence as item}
 								<div class="nes-container with-title is-centered">
-									<p class="title">{item.title}</p>
+									<p class="title">{(item as { title?: any; type?: any; x?: any; y?: any }).title}</p>
 									<div class="text-xs">
-										<div>Type: {item.type}</div>
-										<div>Position: ({item.x}, {item.y})</div>
+										<div>Type: {(item as { title?: any; type?: any; x?: any; y?: any }).type}</div>
+										<div>Position: ({(item as { title?: any; type?: any; x?: any; y?: any }).x}, {(item as { title?: any; type?: any; x?: any; y?: any }).y})</div>
 									</div>
 								</div>
 							{/each}
@@ -298,25 +298,25 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 							</div>
 						</div>
 					{/if}
-				</Card.Content>
-			</Card.Root>
+				</div.Content>
+			</div.Root>
 
 		{:else}
 			<!-- Initial State -->
 			<Card.Root class="nes-container is-rounded">
 				<Card.Content class="p-8 text-center">
-					<div class="text-4xl mb-4"><¨</div>
+					<div class="text-4xl mb-4"><ï¿½</div>
 					<h2 class="nes-text is-primary text-lg mb-2">
 						Evidence Canvas Ready
 					</h2>
 					<p class="nes-text is-disabled text-sm mb-6">
 						Click to load the interactive evidence canvas
 					</p>
-					<Button class="nes-btn is-primary" onclick={loadCanvasComponents}>
+					<Button class="nes-btn is-primary" on:click={loadCanvasComponents}>
 						Load Canvas Interface
-					</Button>
-				</Card.Content>
-			</Card.Root>
+
+				</div.Content>
+			</div.Root>
 		{/if}
 	{/snippet}
 </EssentialRoutePage>

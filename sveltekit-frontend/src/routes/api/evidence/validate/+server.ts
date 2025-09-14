@@ -2,7 +2,7 @@
 import { evidence } from "$lib/server/db/schema-postgres";
 import { json } from "@sveltejs/kit";
 import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 

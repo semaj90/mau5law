@@ -8,7 +8,7 @@ import {
   analyticsEvents,
   vectorSimilarityView,
   queryCache as queryCacheTable,
-} from './schema';
+} from './schema.js';
 
 // Enhanced PostgreSQL connection with pgvector support
 const connectionString =
@@ -112,7 +112,7 @@ export class QueryCacheManager {
       .where(sql`cache_key = ${cacheKey} AND expires_at > NOW()`)
       .limit(1);
 
-    if (result.length > 0) {
+    if ((result as { length?: any }).length > 0) {
       // Update access metrics
       await db
         .update(queryCacheTable)

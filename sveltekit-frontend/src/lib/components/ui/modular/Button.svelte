@@ -67,7 +67,8 @@
 </script>
 
 <!-- Wrap in Bits-UI if desired:
-<Button class="bits-btn"Primitive.Root asChild> -->
+<Button class="bits-btn"Primitive.Root asChild>
+-->
 <button
   class={buttonClass}
   disabled={isDisabled}
@@ -90,7 +91,7 @@
   {#if children}
     {@render children()}
   {/if}
-</button>
+
 <!-- </ButtonPrimitive.Root> -->
 
 <style>

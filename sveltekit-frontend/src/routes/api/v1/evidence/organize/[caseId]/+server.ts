@@ -163,7 +163,7 @@ async function organizeByCategory(evidence: any[]) {
   const categories = {};
 
   evidence.forEach(item => {
-    const category = item.evidenceType || 'uncategorized';
+    const category = (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).evidenceType || 'uncategorized';
     if (!categories[category]) {
       categories[category] = {
         name: category,
@@ -192,7 +192,7 @@ async function organizeByCategory(evidence: any[]) {
  */
 async function organizeByTimeline(evidence: any[]) {
   const timelineEvidence = evidence
-    .filter((item) => item.collected_at || item.uploaded_at || item.incident_date)
+    .filter((item) => (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).collected_at || (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).uploaded_at || (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).incident_date)
     .sort((a, b) => {
       const dateA = new Date(a.collected_at || a.uploaded_at || a.incident_date);
       const dateB = new Date(b.collected_at || b.uploaded_at || b.incident_date);
@@ -212,7 +212,7 @@ async function organizeByTimeline(evidence: any[]) {
     }
   > = {};
   timelineEvidence.forEach((item) => {
-    const date = new Date(item.collected_at || item.uploaded_at || item.incident_date);
+    const date = new Date((item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).collected_at || (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).uploaded_at || (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).incident_date);
     const periodKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     const periodLabel = date.toLocaleString('default', { month: 'long', year: 'numeric' });
 
@@ -235,7 +235,7 @@ async function organizeByTimeline(evidence: any[]) {
   });
 
   const uncategorized = evidence.filter(
-    (item) => !item.collected_at && !item.uploaded_at && !item.incident_date
+    (item) => !(item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).collected_at && !(item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).uploaded_at && !(item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).incident_date
   );
 
   return {
@@ -263,7 +263,7 @@ async function organizeByPriority(evidence: any[]) {
   };
 
   evidence.forEach((item) => {
-    const priority = item.metadata?.priority || calculateEvidencePriority(item) || 'unknown';
+    const priority = (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).metadata?.priority || calculateEvidencePriority(item) || 'unknown';
 
     if (priorities[priority]) {
       priorities[priority].evidence.push(item);
@@ -333,7 +333,7 @@ async function organizeByChainOfCustody(evidence: any[]) {
   const custodyChains = {};
 
   evidence.forEach((item) => {
-    const custody = item.chain_of_custody || [];
+    const custody = (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).chain_of_custody || [];
     const chainId = custody.length > 0 ? custody[0].officer_id || 'unknown' : 'no_chain';
     const chainStatus = validateChainOfCustody(custody);
 
@@ -386,10 +386,10 @@ async function getEvidenceEmbeddings(evidence: any[]) {
   for (const item of evidence) {
     try {
       // Check if embeddings already exist
-      if (item.metadata?.aiAnalysis?.embeddingVector) {
+      if ((item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).metadata?.aiAnalysis?.embeddingVector) {
         evidenceWithEmbeddings.push({
           ...item,
-          embedding: item.metadata.aiAnalysis.embeddingVector,
+          embedding: (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).metadata.aiAnalysis.embeddingVector,
         });
         continue;
       }
@@ -399,15 +399,15 @@ async function getEvidenceEmbeddings(evidence: any[]) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          evidenceId: item.id,
-          content: item.title + ' ' + (item.description || ''),
+          evidenceId: (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).id,
+          content: (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).title + ' ' + ((item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).description || ''),
           useGemmaEmbeddings: true,
           analysisType: 'embedding_generation',
         }),
       });
 
-      if (response.ok) {
-        const analysis = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const analysis = await (response as { ok?: any; json?: any }).json();
         evidenceWithEmbeddings.push({
           ...item,
           embedding: analysis.embedding || null,
@@ -416,7 +416,7 @@ async function getEvidenceEmbeddings(evidence: any[]) {
         evidenceWithEmbeddings.push({ ...item, embedding: null });
       }
     } catch (error) {
-      console.warn(`Failed to get embedding for evidence ${item.id}:`, error);
+      console.warn(`Failed to get embedding for evidence ${(item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).id}:`, error);
       evidenceWithEmbeddings.push({ ...item, embedding: null });
     }
   }
@@ -451,8 +451,8 @@ async function generateAIClusters(evidenceWithEmbeddings: any[], params: any) {
       }),
     });
 
-    if (response.ok) {
-      const clusterData = await response.json();
+    if ((response as { ok?: any; json?: any }).ok) {
+      const clusterData = await (response as { ok?: any; json?: any }).json();
       return clusterData.clusters || [];
     }
   } catch (error) {
@@ -602,7 +602,7 @@ function calculateCustodyStatistics(evidence: any[]): any {
   const statuses = { complete: 0, incomplete: 0, missing: 0, invalid: 0 };
 
   evidence.forEach((item) => {
-    const status = validateChainOfCustody(item.chain_of_custody);
+    const status = validateChainOfCustody((item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).chain_of_custody);
     statuses[status]++;
   });
 
@@ -619,7 +619,7 @@ function performSimpleClustering(evidenceWithEmbeddings: any[]) {
   const clusters = {};
 
   evidenceWithEmbeddings.forEach(item => {
-    const type = item.evidenceType || 'other';
+    const type = (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).evidenceType || 'other';
     if (!clusters[type]) {
       clusters[type] = {
         evidence: [],

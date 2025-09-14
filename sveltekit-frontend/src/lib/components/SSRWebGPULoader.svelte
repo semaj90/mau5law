@@ -141,7 +141,7 @@
         <div class="error-icon">⚠️</div>
         <h3>GPU Initialization Failed</h3>
         <p>{loadError}</p>
-        <button onclick={handleRetry} class="retry-button">
+        <button on:click={handleRetry} class="retry-button">
           Try Again
         </button>
       </div>
@@ -168,7 +168,6 @@
       </div>
     </div>
   {/if}
-{/if}
 
 <style>
   .ssr-placeholder,

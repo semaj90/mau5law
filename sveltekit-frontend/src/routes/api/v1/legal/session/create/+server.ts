@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Legal AI Session Creation API
 // Creates and manages legal AI sessions with YoRHa interface integration

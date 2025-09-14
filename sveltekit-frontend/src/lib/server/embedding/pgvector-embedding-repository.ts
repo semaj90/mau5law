@@ -1,19 +1,19 @@
 
 // PgVector-backed implementation of EmbeddingRepository with Gemma embeddings priority.
-import { db } from '../db/index';
-import { legalDocuments, documentChunks } from '../db/schema-postgres';
+import { db } from '../db/index.js';
+import { legalDocuments, documentChunks } from '../db/schema-postgres.js';
 import { sql } from 'drizzle-orm';
-import { splitText } from './text-splitter';
+import { splitText } from './text-splitter.js';
 // Use the higher-level embedder which includes Redis/L1 caching and provider fallbacks
-import { embedText } from '../ai/embedder';
+import { embedText } from '../ai/embedder.js';
 import type {
   EmbeddingRepository,
   IngestionJobRequest,
   SimilarityQueryOptions,
   SimilarityResult,
   IngestionJobStatus,
-} from './embedding-repository';
-import { enqueue, processNext as queueProcessNext, getStatus } from './ingestion-queue';
+} from './embedding-repository.js';
+import { enqueue, processNext as queueProcessNext, getStatus } from './ingestion-queue.js';
 
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 
@@ -78,7 +78,7 @@ function getJobStatus(jobId: string) {
 }
 
 async function querySimilar(query: string, options: SimilarityQueryOptions = {}): Promise<SimilarityResult[]> {
-  const model = options.model || DEFAULT_MODEL;
+  const model = options?.model || "unknown" // @ts-ignore - Model property access || DEFAULT_MODEL;
   const queryEmbedding = await embedContent(query, model);
   const limit = options.limit || 8;
   const rows = await db.execute(sql`SELECT id, document_id, document_type, chunk_index, content, embedding <=> ${queryEmbedding} AS distance

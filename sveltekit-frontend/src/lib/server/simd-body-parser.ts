@@ -258,10 +258,8 @@ class SIMDBodyParser {
   /**
    * Legal document-specific body parser with entity extraction
    */
-  async readLegalDocumentFast(event: RequestEvent): Promise<{
-    document: any;
-    entities: Array<{ type: string; text: string; confidence: number }>;
-    citations: Array<{ citation: string; court: string }>;
+  async readLegalDocumentFast(event: RequestEvent): Promise<;
+    citations: Array<any>;
     parseTime: number;
   } | null> {
     const startTime = performance.now();
@@ -292,8 +290,8 @@ class SIMDBodyParser {
   /**
    * Extract legal entities with optimized regex
    */
-  private extractLegalEntities(content: string): Array<{ type: string; text: string; confidence: number }> {
-    const entities: Array<{ type: string; text: string; confidence: number }> = [];
+  private extractLegalEntities(content: string): Array< {
+    const entities: Array< = [];
     
     const patterns = [
       { pattern: /\b\d+\s+U\.S\.C\.\s+§?\s*\d+/g, type: 'statute', confidence: 0.95 },
@@ -322,8 +320,8 @@ class SIMDBodyParser {
   /**
    * Extract legal citations with court identification
    */
-  private extractCitations(content: string): Array<{ citation: string; court: string }> {
-    const citations: Array<{ citation: string; court: string }> = [];
+  private extractCitations(content: string): Array< {
+    const citations: Array< = [];
     const citationPattern = /(\d+)\s+(U\.S\.|F\.\d+d|S\.Ct\.)\s+(\d+)/g;
     
     let match;

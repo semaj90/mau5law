@@ -9,12 +9,7 @@
     value = $bindable(''),
     debounceTime = 300,
     onsearch = undefined
-  } = $props<{
-    placeholder?: string;
-    value?: string;
-    debounceTime?: number;
-    onsearch?: ((payload?: unknown) => void) | undefined;
-  }>();
+  } = $props();
 
   const dispatch = createEventDispatcher();
   let debounceTimer = $state<number | undefined>(undefined);
@@ -66,18 +61,17 @@
 	bind:value
 	{placeholder}
 	class="search-input"
-	type="text"
-	input={handleInput}
+	type="text" on:input={handleInput}
 	keydown={handleKeydown}
-	onfocus={handleFocus}
-	onblur={handleBlur}
+	on:focus={handleFocus}
+	on:blur={handleBlur}
 	aria-label="Search"
   />
 
   {#if value}
 	<button
 	  class="clear-button"
-	  onclick={clearValue}
+	  on:click={clearValue}
 	  aria-label="Clear search"
 	  type="button"
 	>

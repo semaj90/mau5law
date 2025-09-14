@@ -86,11 +86,11 @@ export class SecureStorageClient {
         body: formData
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (!response.ok) {
-        console.error('Upload failed:', result.error);
-        return { ok: false, error: result.error || 'Upload failed' };
+      if (!(response as { json?: any; ok?: any }).ok) {
+        console.error('Upload failed:', (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error);
+        return { ok: false, error: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Upload failed' };
       }
 
       return result;
@@ -115,11 +115,11 @@ export class SecureStorageClient {
         headers: this.getAuthHeaders()
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (!response.ok) {
-        console.error('Delete failed:', result.error);
-        return { ok: false, error: result.error || 'Delete failed' };
+      if (!(response as { json?: any; ok?: any }).ok) {
+        console.error('Delete failed:', (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error);
+        return { ok: false, error: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Delete failed' };
       }
 
       return result;
@@ -132,13 +132,7 @@ export class SecureStorageClient {
   /**
    * Check file deletion status
    */
-  async getFileStatus(bucket: string, key: string): Promise<{ 
-    ok: boolean; 
-    deleted?: boolean; 
-    deletedAt?: string; 
-    deletedBy?: string; 
-    error?: string; 
-  }> {
+  async getFileStatus(bucket: string, key: string): Promise<any> {
     try {
       const url = new URL(`${this.baseUrl}/delete`, window.location.origin);
       url.searchParams.set('bucket', bucket);
@@ -149,10 +143,10 @@ export class SecureStorageClient {
         headers: this.getAuthHeaders()
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (!response.ok) {
-        return { ok: false, error: result.error || 'Status check failed' };
+      if (!(response as { json?: any; ok?: any }).ok) {
+        return { ok: false, error: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Status check failed' };
       }
 
       return result;
@@ -169,21 +163,18 @@ export class SecureStorageClient {
     files: File[], 
     bucket: string = 'legal-documents',
     onProgress?: (completed: number, total: number) => void
-  ): Promise<{ 
-    successful: UploadResponse[]; 
-    failed: Array<{ file: File; error: string }>; 
-  }> {
+  ): Promise<any>> {
     const successful: UploadResponse[] = [];
-    const failed: Array<{ file: File; error: string }> = [];
+    const failed: Array< = [];
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const result = await this.uploadFile(file, bucket);
 
-      if (result.ok) {
+      if ((result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).ok) {
         successful.push(result);
       } else {
-        failed.push({ file, error: result.error || 'Unknown error' });
+        failed.push({ file, error: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Unknown error' });
       }
 
       if (onProgress) {
@@ -236,19 +227,19 @@ export class ReactiveStorageManager {
     try {
       const result = await this.client.uploadFile(file, bucket);
 
-      if (result.ok && result.key) {
+      if ((result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).ok && (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).key) {
         // Add to client state only after successful upload
         this.files.push({
-          bucket: result.bucket!,
-          key: result.key,
-          url: result.url,
-          size: result.size,
-          type: result.type,
+          bucket: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).bucket!,
+          key: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).key,
+          url: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).url,
+          size: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).size,
+          type: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).type,
           uploadedAt: new Date()
         });
         return true;
       } else {
-        this.error = result.error || 'Upload failed';
+        this.error = (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Upload failed';
         return false;
       }
     } catch (error) {
@@ -269,12 +260,12 @@ export class ReactiveStorageManager {
     try {
       const result = await this.client.deleteFile(bucket, key);
 
-      if (result.ok) {
+      if ((result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).ok) {
         // Remove from client state only after successful server deletion
         this.files = this.files.filter(f => !(f.bucket === bucket && f.key === key));
         return true;
       } else {
-        this.error = result.error || 'Delete failed';
+        this.error = (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).error || 'Delete failed';
         return false;
       }
     } catch (error) {

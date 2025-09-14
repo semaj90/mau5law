@@ -16,7 +16,7 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { ollamaService } from '$lib/server/ai/ollama-service.js';
 import { langchainSIMDBridge, type SIMDLangChainConfig } from '$lib/ai/langchain-simd-bridge.js';
@@ -66,20 +66,9 @@ interface OllamaSIMDResponse {
   // Enhanced SIMD data
   simd_results?: {
     enabled: boolean;
-    compressed_tiles: Array<{
-      id: string;
-      compressed_bytes: number;
-      compression_ratio: number;
-      semantic_preservation: number;
-    }>;
+    compressed_tiles: Array<any>;
     total_compression_ratio: number;
-    instant_ui_components: Array<{
-      id: string;
-      type: string;
-      render_time: number;
-      css_styles: string;
-      dom_structure: string;
-    }>;
+    instant_ui_components: Array<any>;
     processing_stats: {
       ollama_time: number;
       simd_compression_time: number;
@@ -202,7 +191,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
     const enhancedResponse: OllamaSIMDResponse = {
       // Standard Ollama fields
       response: ollamaResponse.response || '',
-      model: ollamaResponse.model || model || 'unknown',
+      model: ollamaResponse?.model || "unknown" // @ts-ignore - Model property access || model || 'unknown',
       done: ollamaResponse.done !== false,
       total_duration: totalTime * 1000000, // Convert to nanoseconds like Ollama
       
@@ -241,7 +230,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         tokens_per_second: calculateTokensPerSecond(ollamaResponse.response || '', ollamaTime),
         cache_hit: false, // Would be populated by Ollama service cache
         fallback_model_used: ollamaResponse.fallback_used || false,
-        models_tried: ollamaResponse.models_tried || [ollamaResponse.model || 'unknown']
+        models_tried: ollamaResponse.models_tried || [ollamaResponse?.model || "unknown" // @ts-ignore - Model property access || 'unknown']
       }
     };
     

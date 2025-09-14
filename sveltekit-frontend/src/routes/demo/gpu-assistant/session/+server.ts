@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { randomUUID } from 'node:crypto';
 import { dbPool } from '$lib/server/database-pool-service';
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async () => {
     // Cache session data
     await embeddingCache.cacheSession(id, {
       title: 'GPU Assistant Session',
-      context: {},
+      context: Record<string, any>,
       metadata: { source: 'gpu-assistant' },
       created: Date.now()
     });
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async () => {
     // Cache session data
     await embeddingCache.cacheSession(id, {
       title: 'GPU Assistant Session',
-      context: {},
+      context: Record<string, any>,
       metadata: { source: 'gpu-assistant' },
       created: Date.now()
     });

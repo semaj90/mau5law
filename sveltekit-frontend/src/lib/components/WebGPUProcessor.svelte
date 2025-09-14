@@ -189,12 +189,10 @@ https://svelte.dev/e/js_parse_error -->
   	`;
 
   	// Component variables
-  let canvas = $state<HTMLCanvasElement;
-  	let computePipelines: Map<string, GPUComputePipeline> >(new Map());
-  let bufferPool = $state<Map<string, GPUBuffer> >(new Map());
+  let canvas = $state<HTMLCanvasElementlet computePipelines: Map<string, GPUComputePipeline | null>(null)() >(new Map());
+  let bufferPool = $state<Map<string, GPUBuffer>('') >(new Map());
   let operationId = $state(0);
-  let animationFrame = $state<number;
-  let attentionTracker = $state<AttentionTracker | null >(null);
+  let animationFrame = $state<numberlet attentionTracker = $state<AttentionTracker | null>(null)(null);
 
   	// Attention tracking class
   	class AttentionTracker {
@@ -762,7 +760,7 @@ https://svelte.dev/e/js_parse_error -->
 <div className={`webgpu-processor ${className}`}>
 	<!-- WebGPU Canvas -->
 	<canvas 
-		bind:this={canvas}
+		bind:this={canvas as any}
 		class="webgpu-canvas"
 		width="800"
 		height="600"

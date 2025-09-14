@@ -49,7 +49,7 @@
 
   // Enhanced state variables
   let files = $state<File[]>([]);
-  let uploadStates = $state<Map<string, any>>(new Map());
+  let uploadStates = $state<Map<string, any>('')>(new Map());
   let isDragOver = $state(false);
   let fileInput: HTMLInputElement | undefined = $state();
   let systemStatus = $state<any>({
@@ -58,7 +58,7 @@
     queues: {},
     storage: {}
   });
-  let uploadMachine = $state<ActorRefFrom<typeof fileUploadMachine> | null >(null);
+  let uploadMachine = $state<ActorRefFrom<typeof fileUploadMachine>(null) | null >(null);
 
   // XState Machine for Upload Management
   const fileUploadMachine = createMachine({
@@ -433,8 +433,8 @@
           }
         });
 
-        if (response.ok) {
-          return await response.json();
+        if ((response as { ok?: any; json?: any }).ok) {
+          return await (response as { ok?: any; json?: any }).json();
         }
       } catch (error) {
         console.warn(`${protocol.toUpperCase()} upload failed, trying next protocol:`, error);
@@ -475,11 +475,11 @@
       body: JSON.stringify(documentData)
     });
 
-    if (!response.ok) {
+    if (!(response as { ok?: any; json?: any }).ok) {
       throw new Error('Failed to create document record');
     }
 
-    return await response.json();
+    return await (response as { ok?: any; json?: any }).json();
   }
 
   async function performOCR(file: File, fileId: string): Promise<string> {
@@ -492,12 +492,12 @@
       body: formData
     });
 
-    if (!response.ok) {
+    if (!(response as { ok?: any; json?: any }).ok) {
       throw new Error('OCR processing failed');
     }
 
-    const result = await response.json();
-    return result.extractedText || '';
+    const result = await (response as { ok?: any; json?: any }).json();
+    return (result as { extractedText?: any; tags?: any }).extractedText || '';
   }
 
   async function generateEmbeddings(file: File, extractedText: string, fileId: string): Promise<any> {
@@ -521,11 +521,11 @@
       })
     });
 
-    if (!response.ok) {
+    if (!(response as { ok?: any; json?: any }).ok) {
       throw new Error('Embedding generation failed');
     }
 
-    return await response.json();
+    return await (response as { ok?: any; json?: any }).json();
   }
 
   async function generateWebGPUEmbeddings(content: string, fileId: string): Promise<any> {
@@ -542,11 +542,11 @@
       })
     });
 
-    if (!response.ok) {
+    if (!(response as { ok?: any; json?: any }).ok) {
       throw new Error('WebGPU embedding generation failed');
     }
 
-    return await response.json();
+    return await (response as { ok?: any; json?: any }).json();
   }
 
   async function storeInQdrant(embeddingResult: any, documentRecord: any, fileId: string): Promise<any> {
@@ -573,11 +573,11 @@
       })
     });
 
-    if (!response.ok) {
+    if (!(response as { ok?: any; json?: any }).ok) {
       throw new Error('Vector storage failed');
     }
 
-    return await response.json();
+    return await (response as { ok?: any; json?: any }).json();
   }
 
   async function generateAutoTags(file: File, extractedText: string, fileId: string): Promise<string[]> {
@@ -596,12 +596,12 @@
       })
     });
 
-    if (!response.ok) {
+    if (!(response as { ok?: any; json?: any }).ok) {
       throw new Error('Auto-tagging failed');
     }
 
-    const result = await response.json();
-    return result.tags || [];
+    const result = await (response as { ok?: any; json?: any }).json();
+    return (result as { extractedText?: any; tags?: any }).tags || [];
   }
 
   async function cacheProcessedDocument(documentRecord: any, fileId: string): Promise<void> {
@@ -682,7 +682,7 @@
         </h3>
         <button
           class="text-sm bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-full border border-blue-200 transition-colors"
-          onclick={() => uploadMachine?.send({ type: 'CHECK_SERVICES' })}
+          on:click={() => uploadMachine?.send({ type: 'CHECK_SERVICES' })}
         >
           Refresh Status
         </button>
@@ -739,14 +739,14 @@
   <!-- Enhanced Upload Zone -->
   <div
     class="relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 {isDragOver ? 'border-blue-400 bg-blue-50 scale-102' : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'}"
-    ondragover={handleDragOver}
+    on:dragover={handleDragOver}
     ondragleave={handleDragLeave}
-    ondrop={handleDrop}
+    on:drop={handleDrop}
     role="button" 
     aria-label="Drop zone" 
     tabindex="0"
-    onclick={() => fileInput?.click()}
-    onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}
+    on:click={() => fileInput?.click()}
+    on:keydown={(e) => e.key === 'Enter' && fileInput?.click()}
   >
     <div class="flex flex-col items-center">
       <div class="mb-4 p-3 bg-gray-100 rounded-full">
@@ -773,8 +773,7 @@
       type="file"
       multiple
       {accept}
-      class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-      change={handleFileInput}
+      class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" on:change={handleFileInput}
     />
   </div>
 
@@ -887,7 +886,7 @@
             <div class="border-t pt-3">
               <button
                 class="text-sm text-blue-600 hover:text-blue-700 font-medium"
-                onclick={() => {
+                on:click={() => {
                   const detailsEl = document.getElementById(`details-${fileId}`);
                   if (detailsEl) {
                     detailsEl.classList.toggle('hidden');

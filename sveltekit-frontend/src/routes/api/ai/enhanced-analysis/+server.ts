@@ -18,7 +18,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 import { enhancedAIAnalysis } from '$lib/services/enhanced-ai-analysis';
 import { grpcAIOrchestrator } from '$lib/services/grpc-ai-orchestrator';
@@ -122,18 +122,18 @@ export const POST: RequestHandler = async ({ request }) => {
             documents[0],
             includeReasoning
           );
-          analysisResults = result.data;
-          serviceChain = result.serviceChain;
-          performanceGain = result.metrics.performanceGain || 0;
+          analysisResults = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).data;
+          serviceChain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).serviceChain;
+          performanceGain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).metrics.performanceGain || 0;
         } else {
           // Multiple documents - use batch processing
           const result = await grpcAIOrchestrator.orchestrateBatchProcessing(documents, batchSize);
-          analysisResults = result.data.map((semantic, index) => ({
+          analysisResults = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).data.map((semantic, index) => ({
             documentId: documents[index].id,
             semantic
           }));
-          serviceChain = result.serviceChain;
-          performanceGain = result.metrics.performanceGain || 0;
+          serviceChain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).serviceChain;
+          performanceGain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).metrics.performanceGain || 0;
         }
         break;
 
@@ -168,8 +168,8 @@ export const POST: RequestHandler = async ({ request }) => {
           const reasoningResults = await Promise.allSettled(reasoningPromises);
           analysisResults = reasoningResults.map((result, index) => ({
             documentId: documents[index].id,
-            reasoning: result.status === 'fulfilled' ? result.value : null,
-            error: result.status === 'rejected' ? String(result.reason) : null
+            reasoning: (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).status === 'fulfilled' ? (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).value : null,
+            error: (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).status === 'rejected' ? String((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).reason) : null
           }));
         }
         break;
@@ -197,17 +197,17 @@ export const POST: RequestHandler = async ({ request }) => {
     if (Array.isArray(analysisResults)) {
       // Handle array of results
       analysisResults.forEach((result: any) => {
-        if (result.legalEntities) {
-          totalEntities += result.legalEntities.length;
-        } else if (result.semantic?.legalEntities) {
-          totalEntities += result.semantic.legalEntities.length;
+        if ((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).legalEntities) {
+          totalEntities += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).legalEntities.length;
+        } else if ((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).semantic?.legalEntities) {
+          totalEntities += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).semantic.legalEntities.length;
         }
 
-        if (result.complexity?.score !== undefined) {
-          totalComplexity += result.complexity.score;
+        if ((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).complexity?.score !== undefined) {
+          totalComplexity += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).complexity.score;
           documentCount++;
-        } else if (result.semantic?.complexity?.score !== undefined) {
-          totalComplexity += result.semantic.complexity.score;
+        } else if ((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).semantic?.complexity?.score !== undefined) {
+          totalComplexity += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).semantic.complexity.score;
           documentCount++;
         }
       });
@@ -331,8 +331,8 @@ export const GET: RequestHandler = async () => {
     return json({
       healthy: false,
       error: String(error),
-      capabilities: {},
-      metrics: {}
+      capabilities: Record<string, any>,
+      metrics: Record<string, any>
     }, { status: 503 });
   }
 };

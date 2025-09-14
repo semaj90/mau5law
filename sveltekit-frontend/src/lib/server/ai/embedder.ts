@@ -1,4 +1,4 @@
-import { cache } from '../cache/redis';
+import { cache } from '../cache/redis.js';
 
 // Configuration for embedding service
 const EMBEDDING_CONFIG = {
@@ -31,12 +31,12 @@ async function embedWithLocal(text: string): Promise<number[]> {
       }),
     });
 
-    if (!response.ok) {
-      throw new Error(`Local embedder failed: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`Local embedder failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    const result = await response.json();
-    return result.embedding || result.vector || result.data;
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+    return (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).embedding || (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).vector || (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).data;
   } catch (error) {
     console.warn('Local embedder unavailable, falling back to Nomic:', error);
     throw error;
@@ -64,9 +64,9 @@ async function embedWithNomic(text: string): Promise<number[]> {
           model: EMBEDDING_CONFIG.defaultModel,
         }),
       });
-      if (response.ok) {
-        const data = await response.json();
-        const vector = data.embedding || data.vector || data.embeddings || data.data;
+      if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
+        const vector = (data as { embedding?: any; vector?: any; embeddings?: any; data?: any }).embedding || (data as { embedding?: any; vector?: any; embeddings?: any; data?: any }).vector || (data as { embedding?: any; vector?: any; embeddings?: any; data?: any }).embeddings || (data as { embedding?: any; vector?: any; embeddings?: any; data?: any }).data;
         if (Array.isArray(vector)) return vector;
       }
     }
@@ -163,9 +163,9 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
         }),
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        return result.embeddings || result.vectors || result.data;
+      if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
+        const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+        return (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).embeddings || (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).vectors || (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).data;
       }
     } catch (error) {
       console.warn('Local batch embedding failed, falling back to individual calls');
@@ -191,11 +191,7 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
 /**
  * Get embedding service status
  */
-export async function getEmbeddingServiceStatus(): Promise<{
-  local: boolean;
-  nomic: boolean;
-  activeService: 'local' | 'nomic' | 'none';
-}> {
+export async function getEmbeddingServiceStatus(): Promise<any> {
   let localAvailable = false;
   let nomicAvailable = false;
 
@@ -211,7 +207,7 @@ export async function getEmbeddingServiceStatus(): Promise<{
       });
 
       clearTimeout(timeoutId);
-      localAvailable = response.ok;
+      localAvailable = (response as { ok?: any; statusText?: any; json?: any }).ok;
     } catch (error) {
       // Local service not available
     }

@@ -49,7 +49,7 @@ type UploadEvent =
 // Upload and processing state machine
 export const uploadMachine = createMachine({
   id: 'upload',
-  types: {} as {
+  types: Record<string, any> as {
     context: UploadContext;
     events: UploadEvent;
   },
@@ -61,8 +61,8 @@ export const uploadMachine = createMachine({
     uploadedChunks: 0,
     totalChunks: 0,
     progress: 0,
-    jobIds: {},
-    results: {},
+    jobIds: Record<string, any>,
+    results: Record<string, any>,
   },
   states: {
     idle: {
@@ -319,8 +319,8 @@ export const uploadMachine = createMachine({
             error: undefined,
             progress: 0,
             uploadedChunks: 0,
-            jobIds: {},
-            results: {},
+            jobIds: Record<string, any>,
+            results: Record<string, any>,
           }),
         },
         RESET: {
@@ -334,8 +334,8 @@ export const uploadMachine = createMachine({
             progress: 0,
             error: undefined,
             metadata: undefined,
-            jobIds: {},
-            results: {},
+            jobIds: Record<string, any>,
+            results: Record<string, any>,
           }),
         },
       },

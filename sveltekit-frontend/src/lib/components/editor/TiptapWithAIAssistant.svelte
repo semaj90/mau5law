@@ -3,7 +3,11 @@ https://svelte.dev/e/script_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script>` element and/or a single top-level `<script module>` element -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
   ` element and/or a single top-level `<script module>
-  </script>` element
+  
+
+// Auto-generated default export
+export default {};
+</script>` element
   https://svelte.dev/e/script_duplicate -->
   <!-- Tiptap Editor with AI Assistant Integration -->
   <!-- Real-time suggestions, auto-save, and CrewAI inline recommendations -->
@@ -19,15 +23,21 @@ https://svelte.dev/e/script_duplicate -->
   import { slide, fade } from 'svelte/transition';
 
   // Props
-  let {
-    documentId,
+  let { documentId,
     initialContent = '',
     placeholder = 'Start typing your legal document...',
     autoSave = true,
     showAIAssistant = true,
     enableInlineSuggestions = true,
     readOnly = false
-  } = $props();
+   }: { documentId,
+    initialContent = '',
+    placeholder = 'Start typing your legal document...',
+    autoSave = true,
+    showAIAssistant = true,
+    enableInlineSuggestions = true,
+    readOnly = false
+  : any } = $props();
 
   // State management
   const { state, send } = useMachine(crewAIOrchestrationMachine);
@@ -303,19 +313,19 @@ https://svelte.dev/e/script_duplicate -->
         })
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
+      if ((result as { success?: any; data?: any; suggestions?: any }).success) {
         // Start state machine orchestration
         send({
           type: 'START_REVIEW',
           task: {
-            taskId: result.data.taskId,
+            taskId: (result as { success?: any; data?: any; suggestions?: any }).data.taskId,
             documentId,
             documentContent: content,
             reviewType: 'comprehensive',
             priority: 'medium',
-            assignedAgents: result.data.assignedAgents.map((a: any) => a.id)
+            assignedAgents: (result as { success?: any; data?: any; suggestions?: any }).data.assignedAgents.map((a: any) => a.id)
           }
         });
 
@@ -388,8 +398,8 @@ https://svelte.dev/e/script_duplicate -->
       body: JSON.stringify({ content, type: 'inline' })
     });
 
-    const result = await response.json();
-    return result.suggestions || [];
+    const result = await (response as { json?: any }).json();
+    return (result as { success?: any; data?: any; suggestions?: any }).suggestions || [];
   }
 
   async function generateContextualSuggestion(selectedText: string): Promise<void> {
@@ -483,7 +493,7 @@ https://svelte.dev/e/script_duplicate -->
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-semibold text-gray-800">AI Assistant</h3>
         <button
-          onclick={() => aiAssistantVisible = false}
+          on:click={() => aiAssistantVisible = false}
           class="text-gray-500 hover:text-gray-700"
         >
           ✕
@@ -493,7 +503,7 @@ https://svelte.dev/e/script_duplicate -->
       <!-- Quick Actions -->
       <div class="space-y-2 mb-4">
         <button
-          onclick={startCrewAIReview}
+          on:click={startCrewAIReview}
           class="w-full bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition-colors"
           disabled={isProcessing}
         >
@@ -501,7 +511,7 @@ https://svelte.dev/e/script_duplicate -->
         </button>
 
         <button
-          onclick={() => generateInlineSuggestions(editor?.getHTML() || '')}
+          on:click={() => generateInlineSuggestions(editor?.getHTML() || '')}
           class="w-full bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 transition-colors"
         >
           Generate Suggestions
@@ -528,14 +538,14 @@ https://svelte.dev/e/script_duplicate -->
 
                 <div class="flex space-x-1 ml-2">
                   <button
-                    onclick={() => applySuggestion(rec)}
+                    on:click={() => applySuggestion(rec)}
                     class="text-green-600 hover:text-green-800 text-xs px-2 py-1 rounded"
                     title="Accept"
                   >
                     ✓
                   </button>
                   <button
-                    onclick={() => rejectSuggestion(rec)}
+                    on:click={() => rejectSuggestion(rec)}
                     class="text-red-600 hover:text-red-800 text-xs px-2 py-1 rounded"
                     title="Reject"
                   >
@@ -568,13 +578,13 @@ https://svelte.dev/e/script_duplicate -->
 
       <div class="flex justify-end space-x-2">
         <button
-          onclick={() => showSuggestions = false}
+          on:click={() => showSuggestions = false}
           class="text-xs text-gray-500 hover:text-gray-700 px-2 py-1"
         >
           Dismiss
         </button>
         <button
-          onclick={() => applySuggestion({ text: currentRecommendation })}
+          on:click={() => applySuggestion({ text: currentRecommendation })}
           class="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
         >
           Apply

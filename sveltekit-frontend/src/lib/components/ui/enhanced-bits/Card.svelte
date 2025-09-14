@@ -115,8 +115,8 @@
   class={cardClasses}
   role={clickable ? 'button' : undefined}
   tabindex={clickable ? 0 : undefined}
-  onclick={clickable ? handleClick : undefined}
-  onkeydown={clickable ? handleKeydown : undefined}
+  on:click={clickable ? handleClick : undefined}
+  on:keydown={clickable ? handleKeydown : undefined}
   data-evidence-card={evidenceCard}
   data-case-card={caseCard}
   data-ai-analysis={aiAnalysis}

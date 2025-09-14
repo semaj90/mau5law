@@ -324,8 +324,8 @@ test.describe('Enhanced-Bits UX Layout Tests', () => {
         new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
             if (entry.entryType === 'layout-shift') {
-              // @ts-expect-error - LayoutShift type
-              cumulativeLayoutShift += entry.value;
+              // LayoutShift type handling
+              cumulativeLayoutShift += (entry as any).value;
             }
           }
         }).observe({ entryTypes: ['layout-shift'] });

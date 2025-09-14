@@ -190,7 +190,7 @@
           <p class="text-gray-600 mb-4">Waiting for services to start...</p>
           <button
             class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-            onclick={() => window.location.reload()}
+            on:click={() => window.location.reload()}
           >
             🔄 Check Again
           </button>

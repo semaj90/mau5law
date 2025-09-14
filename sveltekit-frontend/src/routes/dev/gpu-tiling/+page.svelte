@@ -63,7 +63,7 @@ https://svelte.dev/e/js_parse_error -->
 
   <div class="inputs">
     <div>
-      <label for="pick-image-for-ocr">Pick image for OCR:</label><input id="pick-image-for-ocr" type="file" accept="image/*" onchange={onImageSelected} disabled={ocrBusy}>
+      <label for="pick-image-for-ocr">Pick image for OCR:</label><input id="pick-image-for-ocr" type="file" accept="image/*" on:change={onImageSelected} disabled={ocrBusy}>
       {#if ocrBusy}<span>OCR…</span>{/if}
     </div>
     <div class="text">
@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <div class="actions">
-    <button onclick={run} disabled={runBusy}>Process</button>
+    <button on:click={run} disabled={runBusy}>Process</button>
     {#if runBusy}<span>Running…</span>{/if}
   </div>
 

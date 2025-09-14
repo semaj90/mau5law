@@ -220,11 +220,7 @@ export interface BulkOperationResponse {
   processed: number;
   successful: number;
   failed: number;
-  errors?: Array<{
-    id: string;
-    error: string;
-  }>;
-}
+  errors?: Array<any>
 
 // === DATABASE TYPES ===
 
@@ -287,13 +283,7 @@ export interface StoreState {
     theme: 'light' | 'dark' | 'system';
     sidebarOpen: boolean;
     loading: boolean;
-    notifications: Array<{
-      id: string;
-      type: 'info' | 'success' | 'warning' | 'error';
-      message: string;
-      timestamp: Date;
-    }>;
-  };
+    notifications: Array<any>;
   cases: {
     current?: CaseState;
     list: CaseState[];

@@ -7,12 +7,7 @@ export interface Notification {
   title: string;
   message?: string;
   duration?: number;
-  actions?: Array<{
-    label: string;
-    action: () => void;
-    variant?: "primary" | "secondary";
-  }>;
-}
+  actions?: Array<any>
 
 export interface NotificationState {
   notifications: Notification[];
@@ -34,7 +29,7 @@ function createNotificationStore() {
       const newNotification: Notification = {
         ...notification,
         id,
-        duration: notification.duration ?? 5000,
+        duration: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).duration ?? 5000,
       };
 
       update((state) => ({
@@ -109,12 +104,12 @@ function createNotificationStore() {
       duration?: number;
     }) => {
       const title =
-        notification.type.charAt(0).toUpperCase() + notification.type.slice(1);
+        (notification as { duration?: any; type?: any; message?: any; timeout?: any }).type.charAt(0).toUpperCase() + (notification as { duration?: any; type?: any; message?: any; timeout?: any }).type.slice(1);
       return store.add({
-        type: notification.type,
+        type: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).type,
         title,
-        message: notification.message,
-        duration: notification.timeout || notification.duration,
+        message: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).message,
+        duration: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).timeout || (notification as { duration?: any; type?: any; message?: any; timeout?: any }).duration,
       });
     },
   };

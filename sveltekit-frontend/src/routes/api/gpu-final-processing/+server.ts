@@ -1,5 +1,5 @@
 import { completeErrorPipeline } from '$lib/services/complete-gpu-error-pipeline';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const GET: RequestHandler = async () => {

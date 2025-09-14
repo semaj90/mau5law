@@ -3,7 +3,7 @@ import { qdrantOptimized } from "$lib/server/vector/qdrant-optimized";
 import { redisRateLimit, createRateLimitConfig } from "$lib/server/redisRateLimit";
 import logger from '$lib/server/production-logger';
 import { dev } from '$app/environment';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 
@@ -31,12 +31,7 @@ export interface OptimizedSearchRequest {
 
 export interface BatchUpsertRequest {
   collection: string;
-  points: Array<{
-    id: string;
-    vector: number[];
-    payload: any;
-  }>;
-}
+  points: Array<any>
 
 export interface CacheManagementRequest {
   action: 'clear_cache' | 'get_stats' | 'optimize_memory';

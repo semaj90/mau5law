@@ -89,9 +89,9 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
+      if ((result as { success?: any; error?: any }).success) {
         onvalidated?.();
 
         // Reset form
@@ -100,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
         showCorrections = false;
         open = false;
       } else {
-        console.error("Validation failed:", result.error);
+        console.error("Validation failed:", (result as { success?: any; error?: any }).error);
         alert("Failed to submit validation. Please try again.");
       }
     } catch (error) {
@@ -120,30 +120,31 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<DialogPrimitive.Root bind:open>
-  <DialogPrimitive.Content
+<Dialog.RootPrimitive.Root bind:open>
+  <Dialog.RootPrimitive.Content
     class="space-y-4"
   >
     <div class="space-y-4">
       <!-- Header -->
       <div class="space-y-4">
         <div>
-          <DialogPrimitive.Title class="space-y-4">
+          <Dialog.RootPrimitive.Title class="space-y-4">
             Validate AI Analysis
           </DialogPrimitive.Title>
-          <DialogPrimitive.Description class="space-y-4">
+          <Dialog.RootPrimitive.Description class="space-y-4">
             Review and validate the AI-generated analysis for this evidence
           </DialogPrimitive.Description>
         </div>
-        <DialogPrimitive.Close let:builder>
+        <Dialog.RootPrimitive.Close let:builder>
           <Button class="bits-btn"
             {...builder}
             variant="ghost"
             size="sm"
-            onclick={() => closeModal()}
+            on:click={() =>
+closeModal()}
           >
             ×
-          </button>
+</Button>
         </DialogPrimitive.Close>
       </div>
 
@@ -214,20 +215,22 @@ https://svelte.dev/e/js_parse_error -->
               <Button
                 variant={validationChoice === "approve" ? "default" : "outline"}
                 class="space-y-4 bits-btn bits-btn"
-                onclick={() => handleValidationChoice("approve")}
+                on:click={() =>
+handleValidationChoice("approve")}
               >
                 <CheckCircle class="space-y-4" />
                 Yes, it's accurate
-              </button>
+</Button>
 
               <Button
                 variant={validationChoice === "reject" ? "danger" : "outline"}
                 class="space-y-4 bits-btn bits-btn"
-                onclick={() => handleValidationChoice("reject")}
+                on:click={() =>
+handleValidationChoice("reject")}
               >
                 <XCircle class="space-y-4" />
                 No, needs correction
-              </button>
+</Button>
             </div>
           </div>
 
@@ -314,11 +317,11 @@ https://svelte.dev/e/js_parse_error -->
                         {tag}
                         <button
                           type="button"
-                          onclick={() => removeTag(tag)}
+                          on:click={() => removeTag(tag)}
                           class="space-y-4"
                         >
                           ×
-                        </button>
+</Button>
                       </span>
                     {/each}
                   </div>
@@ -338,10 +341,11 @@ https://svelte.dev/e/js_parse_error -->
                     type="button"
                     variant="secondary"
                     size="sm"
-                    onclick={() => addTag()}
+                    on:click={() =>
+addTag()}
                   >
                     <Tag class="space-y-4" />
-                  </button>
+</Button>
                 </div>
               </div>
             </div>
@@ -352,15 +356,17 @@ https://svelte.dev/e/js_parse_error -->
         <div class="space-y-4">
           <Button class="bits-btn"
             variant="ghost"
-            onclick={() => closeModal()}
+            on:click={() =>
+closeModal()}
             disabled={isSubmitting}
           >
             Cancel
-          </button>
+</Button>
 
           <Button 
             class="bits-btn"
-            onclick={() => submitValidation()}
+            on:click={() =>
+submitValidation()}
             disabled={!validationChoice || isSubmitting}
           >
             {#if isSubmitting}
@@ -372,7 +378,7 @@ https://svelte.dev/e/js_parse_error -->
               <Save class="space-y-4" />
               Submit Validation
             {/if}
-          </button>
+</Button>
         </div>
       {/if}
     </div>

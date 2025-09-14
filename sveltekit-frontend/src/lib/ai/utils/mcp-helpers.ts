@@ -56,7 +56,7 @@ export async function mcpMemoryReadGraph(): Promise<any> {
 
 export async function mcpCodebaseAnalyze(path: string): Promise<any> {
   // Implementation placeholder
-  return { files: [], analysis: {} };
+  return { files: [], analysis: Record<string, any> };
 }
 
 export function generateMCPPrompt(context: any): string {

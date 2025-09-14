@@ -128,7 +128,7 @@ export class QLoRAIntegrationAnalyzer {
   private mockAnalyzeBehaviorPatterns(data: any): Promise<any> {
     return Promise.resolve({
       patterns: [],
-      insights: {},
+      insights: Record<string, any>,
       behavioral_clusters: [],
     });
   }
@@ -148,14 +148,7 @@ export class QLoRAIntegrationAnalyzer {
    * Comprehensive analysis of feedback data for enhanced distillation
    */
   async analyzeFeedbackForDistillation(
-    feedbackBatch: Array<{
-      userId: string;
-      query: string;
-      response: string;
-      feedback: 'thumbs_up' | 'thumbs_down';
-      context: any;
-      corrections?: string[];
-    }>
+    feedbackBatch: Array<
   ): Promise<FeedbackAnalysis> {
     console.log(
       `🔍 Analyzing ${feedbackBatch.length} feedback entries for distillation optimization...`

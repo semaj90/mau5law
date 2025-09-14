@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // TypeScript Optimizer Benchmark Suite
 // Performance testing and comparison across different processing strategies
@@ -160,7 +160,7 @@ async function runSpeedBenchmark(errorCount: number, iterations: number): Promis
 					}),
 				});
 
-				if (response.ok) {
+				if ((response as { ok?: any; json?: any }).ok) {
 					const duration = Date.now() - startTime;
 					endpointResults.push(duration);
 					successfulRuns++;
@@ -218,10 +218,10 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
 					}),
 				});
 
-				if (response.ok) {
-					const result = await response.json();
-					const confidence = result.metadata?.avg_confidence || 0.7;
-					const successRate = (result.fixes_applied / result.processed_count) * 100;
+				if ((response as { ok?: any; json?: any }).ok) {
+					const result = await (response as { ok?: any; json?: any }).json();
+					const confidence = (result as { metadata?: any; fixes_applied?: any; processed_count?: any }).metadata?.avg_confidence || 0.7;
+					const successRate = ((result as { metadata?: any; fixes_applied?: any; processed_count?: any }).fixes_applied / (result as { metadata?: any; fixes_applied?: any; processed_count?: any }).processed_count) * 100;
 					
 					totalConfidence += confidence;
 					totalSuccess += successRate;

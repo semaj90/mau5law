@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 import { db } from '$lib/server/db';
 import { cases, evidence, users } from '$lib/server/db';
 import { helpers } from '$lib/server/db';

@@ -136,11 +136,11 @@ const agentRegistry: Record<
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if ((response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).json();
         return {
           agent: "copilot",
-          result: data.response || `Copilot analysis for: ${prompt}`,
+          result: (data as { response?: any; result?: any; results?: any }).response || `Copilot analysis for: ${prompt}`,
         };
       } else {
         throw new Error("Ollama request failed");
@@ -170,11 +170,11 @@ const agentRegistry: Record<
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if ((response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).json();
         return {
           agent: "claude",
-          result: data.response || `Claude legal analysis for: ${prompt}`,
+          result: (data as { response?: any; result?: any; results?: any }).response || `Claude legal analysis for: ${prompt}`,
         };
       } else {
         throw new Error("Legal model request failed");
@@ -204,11 +204,11 @@ const agentRegistry: Record<
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if ((response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).json();
         return {
           agent: "rag",
-          result: data.result || `RAG analysis for: ${prompt}`,
+          result: (data as { response?: any; result?: any; results?: any }).result || `RAG analysis for: ${prompt}`,
         };
       } else {
         throw new Error("RAG request failed");
@@ -688,12 +688,12 @@ export function formatMCPResponse(response: any): string {
   }
 
   if (response?.content) {
-    if (Array.isArray(response.content)) {
-      return response.content
-        .map((item: any) => item.text || item.content || String(item))
+    if (Array.isArray((response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).content)) {
+      return (response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).content
+        .map((item: any) => (item as { text?: any; content?: any }).text || (item as { text?: any; content?: any }).content || String(item))
         .join("\n");
     }
-    return String(response.content);
+    return String((response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).content);
   }
 
   return JSON.stringify(response, null, 2);
@@ -737,12 +737,12 @@ export async function semanticSearch(query: string): Promise<any> {
       body: JSON.stringify({ query }),
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    if (!(response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).ok) {
+      throw new Error(`HTTP ${(response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).status}: ${(response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).statusText}`);
     }
 
-    const data = await response.json();
-    return data.results || [];
+    const data = await (response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).json();
+    return (data as { response?: any; result?: any; results?: any }).results || [];
   } catch (error: any) {
     console.error("semanticSearch error:", error);
     return [{ error: String(error) }];

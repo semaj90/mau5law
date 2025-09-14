@@ -154,7 +154,7 @@
       { id: 'cases', label: 'Case Management', icon: Scale }
     ] as tab}
       <button
-        onclick={() => selectedDemo = tab.id}
+        on:click={() => selectedDemo = tab.id}
         class="p-4 border rounded-lg text-left transition-all hover:shadow-md {selectedDemo === tab.id ? 'bg-primary/5 border-primary' : 'hover:border-primary/50'}"
       >
         <div class="flex items-center gap-3">
@@ -170,7 +170,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <!-- Statistics Cards -->
       <OrchestratedCard.Analysis>
-        <NesCard.Content class="p-6">
+        <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-2xl font-bold text-primary">{realTimeStats.totalCases}</p>
@@ -178,11 +178,11 @@
             </div>
             <Scale class="w-8 h-8 text-primary/60" />
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
-        <NesCard.Content class="p-6">
+        <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-2xl font-bold text-primary">{realTimeStats.totalDocuments}</p>
@@ -190,11 +190,11 @@
             </div>
             <FileText class="w-8 h-8 text-primary/60" />
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
-        <NesCard.Content class="p-6">
+        <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-2xl font-bold text-primary">{realTimeStats.totalAnalyses}</p>
@@ -202,11 +202,11 @@
             </div>
             <Brain class="w-8 h-8 text-primary/60" />
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.Analysis>
 
       <OrchestratedCard.Analysis>
-        <NesCard.Content class="p-6">
+        <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-2xl font-bold text-primary">{realTimeStats.avgProcessingTime}ms</p>
@@ -214,20 +214,20 @@
             </div>
             <Clock class="w-8 h-8 text-primary/60" />
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.Analysis>
     </div>
 
     <!-- System Health -->
     <OrchestratedCard.Analysis>
-      <NesCard.Header>
-        <NesCard.Title class="flex items-center gap-2">
+      <div.Header class="nes-container">
+        <div.Title class="flex items-center gap-2 nes-container">
           <Activity class="w-5 h-5" />
           System Health
-        </Card.Title>
-        <NesCard.Description>Real-time status of all platform components</Card.Description>
-      </Card.Header>
-      <NesCard.Content>
+        </div.Title>
+        <div.Description class="nes-container">Real-time status of all platform components</div.Description>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
           {#each [
             { key: 'database', label: 'PostgreSQL', icon: Database },
@@ -247,26 +247,26 @@
             </div>
           {/each}
         </div>
-      </Card.Content>
+      </div.Content>
     </OrchestratedCard.Analysis>
   {/if}
 
   <!-- RAG Demo -->
   {#if selectedDemo === 'rag'}
     <OrchestratedCard.AIInsight>
-      <NesCard.Header>
-        <NesCard.Title class="flex items-center gap-2">
+      <div.Header class="nes-container">
+        <div.Title class="flex items-center gap-2 nes-container">
           <Brain class="w-5 h-5" />
           RAG Analysis Demo
-        </Card.Title>
-        <NesCard.Description>
+        </div.Title>
+        <div.Description class="nes-container">
           Retrieval-Augmented Generation for legal document analysis
-        </Card.Description>
-      </Card.Header>
-      <NesCard.Content class="space-y-4">
+        </div.Description>
+      </div.Header>
+      <div.Content class="space-y-4 nes-container">
         <div class="flex gap-3">
           <OrchestratedButton.AnalyzeEvidence
-            onclick={runRAGDemo}
+            on:click={runRAGDemo}
             disabled={isRunningDemo}
             class="gap-2"
           >
@@ -279,7 +279,7 @@
             {/if}
           </OrchestratedButton.AnalyzeEvidence>
           
-          <button class="nes-btn" variant="outline" onclick={() => goto('/dashboard/search')}>
+          <button class="nes-btn" variant="outline" on:click={() => goto('/dashboard/search')}>
             <Search class="w-4 h-4 mr-2" />
             Open Vector Search
           </button>
@@ -291,26 +291,26 @@
             <pre class="text-sm overflow-auto">{JSON.stringify(demoResults, null, 2)}</pre>
           </div>
         {/if}
-      </Card.Content>
+      </div.Content>
     </OrchestratedCard.AIInsight>
   {/if}
 
   <!-- Vector Search Demo -->
   {#if selectedDemo === 'search'}
     <OrchestratedCard.Analysis>
-      <NesCard.Header>
-        <NesCard.Title class="flex items-center gap-2">
+      <div.Header class="nes-container">
+        <div.Title class="flex items-center gap-2 nes-container">
           <Search class="w-5 h-5" />
           Vector Search Demo
-        </Card.Title>
-        <NesCard.Description>
+        </div.Title>
+        <div.Description class="nes-container">
           Semantic search across legal documents using pgvector
-        </Card.Description>
-      </Card.Header>
-      <NesCard.Content class="space-y-4">
+        </div.Description>
+      </div.Header>
+      <div.Content class="space-y-4 nes-container">
         <div class="flex gap-3">
           <OrchestratedButton.SearchSimilar
-            onclick={runVectorSearchDemo}
+            on:click={runVectorSearchDemo}
             disabled={isRunningDemo}
             class="gap-2"
           >
@@ -323,7 +323,7 @@
             {/if}
           </OrchestratedButton.SearchSimilar>
           
-          <button class="nes-btn" variant="outline" onclick={() => goto('/dashboard/search')}>
+          <button class="nes-btn" variant="outline" on:click={() => goto('/dashboard/search')}>
             <Eye class="w-4 h-4 mr-2" />
             Open Search Dashboard
           </button>
@@ -351,7 +351,7 @@
             <p class="text-sm nes-text is-disabled">Avg Response Time</p>
           </div>
         </div>
-      </Card.Content>
+      </div.Content>
     </OrchestratedCard.Analysis>
   {/if}
 
@@ -359,16 +359,16 @@
   {#if selectedDemo === 'cases'}
     <div class="space-y-6">
       <OrchestratedCard.CaseFile>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <Scale class="w-5 h-5" />
             Sample Cases
-          </Card.Title>
-          <NesCard.Description>
+          </div.Title>
+          <div.Description class="nes-container">
             Live case management with integrated RAG analysis
-          </Card.Description>
-        </Card.Header>
-        <NesCard.Content>
+          </div.Description>
+        </div.Header>
+        <div.Content class="nes-container">
           <div class="grid gap-4">
             {#each data.sampleCases as caseItem}
               <div class="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow">
@@ -386,14 +386,14 @@
                   <button class="nes-btn" 
                     variant="outline" 
                     size="sm"
-                    onclick={() => navigateToCase(caseItem.id)}
+                    on:click={() => navigateToCase(caseItem.id)}
                   >
                     <Eye class="w-4 h-4 mr-1" />
                     View
                   </button>
                   <OrchestratedButton.AnalyzeEvidence
                     size="sm"
-                    onclick={() => navigateToRAG(caseItem.id)}
+                    on:click={() => navigateToRAG(caseItem.id)}
                   >
                     <Brain class="w-4 h-4 mr-1" />
                     RAG
@@ -402,19 +402,19 @@
               </div>
             {/each}
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.CaseFile>
 
       <!-- Recent Analyses -->
       <OrchestratedCard.Analysis>
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <BarChart3 class="w-5 h-5" />
             Recent AI Analyses
-          </Card.Title>
-          <NesCard.Description>Latest RAG queries and their performance metrics</Card.Description>
-        </Card.Header>
-        <NesCard.Content>
+          </div.Title>
+          <div.Description class="nes-container">Latest RAG queries and their performance metrics</div.Description>
+        </div.Header>
+        <div.Content class="nes-container">
           <div class="space-y-3">
             {#each data.recentAnalyses as analysis}
               <div class="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
@@ -433,22 +433,22 @@
               </div>
             {/each}
           </div>
-        </Card.Content>
+        </div.Content>
       </OrchestratedCard.Analysis>
     </div>
   {/if}
 
   <!-- Platform Actions -->
   <div class="flex justify-center gap-4 pt-8">
-    <button class="nes-btn" onclick={() => goto('/dashboard/search')} class="gap-2">
+    <button class="nes-btn" on:click={() => goto('/dashboard/search')} class="gap-2">
       <Search class="w-4 h-4" />
       Open Search Dashboard
     </button>
-    <button class="nes-btn" onclick={() => goto('/cases')} variant="outline" class="gap-2">
+    <button class="nes-btn" on:click={() => goto('/cases')} variant="outline" class="gap-2">
       <Scale class="w-4 h-4" />
       Manage Cases
     </button>
-    <button class="nes-btn" onclick={() => goto('/auth/login')} variant="outline" class="gap-2">
+    <button class="nes-btn" on:click={() => goto('/auth/login')} variant="outline" class="gap-2">
       <Shield class="w-4 h-4" />
       User Authentication
     </button>

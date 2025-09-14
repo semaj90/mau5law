@@ -35,6 +35,6 @@ export default defineConfig({
 	},
 	define: {
 		'process.env.NODE_ENV': '"production"',
-		'process.env.DATABASE_URL': '"postgresql://postgres:123456@localhost:5432/legal_ai_db"'
+		'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5433/legal_ai_db"'
 	}
 });

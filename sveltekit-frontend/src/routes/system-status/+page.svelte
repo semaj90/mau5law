@@ -5,9 +5,9 @@
   import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
 
   // Svelte 5 runes
-  let systemStatus = $state<Record<string, any>>({});
+  let systemStatus = $state<Record<string, any>('')>({});
   let authStatus = $state<any>(null);
-  let testResults = $state<Record<string, any>>({});
+  let testResults = $state<Record<string, any>('')>({});
   let isRunning = $state(false);
 
   const tests = [
@@ -60,14 +60,14 @@
       let data;
 
       try {
-        data = await response.json();
+        data = await (response as { json?: any; text?: any; ok?: any; status?: any }).json();
       } catch {
-        data = await response.text();
+        data = await (response as { json?: any; text?: any; ok?: any; status?: any }).text();
       }
 
       testResults[test.name] = {
-        success: response.ok,
-        status: response.status,
+        success: (response as { json?: any; text?: any; ok?: any; status?: any }).ok,
+        status: (response as { json?: any; text?: any; ok?: any; status?: any }).status,
         data: data,
         endpoint: test.endpoint,
         timestamp: new Date().toISOString()
@@ -100,7 +100,7 @@
   async function checkAuthStatus() {
     try {
       const response = await fetch('/api/auth/debug');
-      authStatus = await response.json();
+      authStatus = await (response as { json?: any; text?: any; ok?: any; status?: any }).json();
     } catch (error) {
       console.error('Auth status check failed:', error);
     }
@@ -109,9 +109,9 @@
   async function createDevSession() {
     try {
       const response = await fetch('/api/dev-auth?seed=true');
-      const result = await response.json();
+      const result = await (response as { json?: any; text?: any; ok?: any; status?: any }).json();
 
-      if (result.success) {
+      if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) {
         await checkAuthStatus();
       }
 
@@ -124,9 +124,9 @@
   async function clearSession() {
     try {
       const response = await fetch('/api/dev-auth', { method: 'POST' });
-      const result = await response.json();
+      const result = await (response as { json?: any; text?: any; ok?: any; status?: any }).json();
 
-      if (result.success) {
+      if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) {
         await checkAuthStatus();
       }
 
@@ -178,26 +178,26 @@
       <div class="space-y-2">
         <button
           class="nes-btn is-primary w-full text-xs"
-          onclick={runAllTests}
+          on:click={runAllTests}
           disabled={isRunning}
         >
           {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
         </button>
         <button
           class="nes-btn is-success w-full text-xs"
-          onclick={createDevSession}
+          on:click={createDevSession}
         >
           🔑 Create Dev Session
         </button>
         <button
           class="nes-btn is-normal w-full text-xs"
-          onclick={checkAuthStatus}
+          on:click={checkAuthStatus}
         >
           👤 Check Auth Status
         </button>
         <button
           class="nes-btn is-error w-full text-xs"
-          onclick={clearSession}
+          on:click={clearSession}
         >
           🚪 Clear Session
         </button>
@@ -228,25 +228,25 @@
                 <div class="space-y-2">
                   <div class="flex justify-between items-center">
                     <span class="nes-text">Status:</span>
-                    <span class="nes-text {result.success ? 'is-success' : 'is-error'}">
+                    <span class="nes-text {(result as { success?: any; error?: any; data?: any; timestamp?: any }).success ? 'is-success' : 'is-error'}">
                       {result?.success ? '✅ PASS' : '❌ FAIL'}
                     </span>
                   </div>
 
-                  {#if result.error}
+                  {#if (result as { success?: any; error?: any; data?: any; timestamp?: any }).error}
                     <div class="nes-container is-rounded bg-red-50 p-2">
-                      <p class="text-xs text-red-700">Error: {result.error}</p>
+                      <p class="text-xs text-red-700">Error: {(result as { success?: any; error?: any; data?: any; timestamp?: any }).error}</p>
                     </div>
                   {/if}
 
-                  {#if result.data && result.success && typeof result.data === 'object'}
+                  {#if (result as { success?: any; error?: any; data?: any; timestamp?: any }).data && (result as { success?: any; error?: any; data?: any; timestamp?: any }).success && typeof (result as { success?: any; error?: any; data?: any; timestamp?: any }).data === 'object'}
                     <div class="nes-container is-rounded bg-green-50 p-2">
                       <p class="text-xs text-green-700">✅ Response received</p>
                     </div>
                   {/if}
 
                   <p class="text-xs text-gray-500">
-                    {new Date(result.timestamp).toLocaleString()}
+                    {new Date((result as { success?: any; error?: any; data?: any; timestamp?: any }).timestamp).toLocaleString()}
                   </p>
                 </div>
               {:else}

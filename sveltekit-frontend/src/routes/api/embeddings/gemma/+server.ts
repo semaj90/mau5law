@@ -6,7 +6,7 @@
 import { json } from '@sveltejs/kit';
 import { gemmaEmbeddingService } from '$lib/services/gemma-embedding.js';
 import { pgVectorService } from '$lib/server/db/pgvector-service.js';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action') || 'generate';
@@ -34,10 +34,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
         return json({
           action: 'gemma_generate_embedding',
-          success: result.success,
-          embedding: result.embedding,
-          metadata: result.metadata,
-          error: result.error,
+          success: (result as { success?: any; embedding?: any; metadata?: any; error?: any }).success,
+          embedding: (result as { success?: any; embedding?: any; metadata?: any; error?: any }).embedding,
+          metadata: (result as { success?: any; embedding?: any; metadata?: any; error?: any }).metadata,
+          error: (result as { success?: any; embedding?: any; metadata?: any; error?: any }).error,
           responseTime: `${Date.now() - startTime}ms`,
           timestamp: new Date().toISOString(),
         });
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           action: 'gemma_health_check',
           success: healthResult.success,
-          model: healthResult.model,
+          model: healthResult?.model || "unknown" // @ts-ignore - Model property access,
           available: healthResult.available,
           version: healthResult.version,
           error: healthResult.error,

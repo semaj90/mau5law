@@ -113,7 +113,7 @@ export const recommendationCache = pgTable("recommendation_cache", {
 }));
 
 // Import required types from main schema
-import { documents, cases, evidence, users } from "../schema";
+import { documents, cases, evidence, users } from '../schema.js';
 
 // Helper functions for vector operations
 export const vectorOperations = {

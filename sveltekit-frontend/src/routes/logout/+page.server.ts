@@ -1,4 +1,4 @@
-import type { Actions, PageServerLoad } from "./$types";
+import type { Actions, PageServerLoad } from './$types.js';
 
 import { redirect } from "@sveltejs/kit";
 import { invalidateSession, deleteSessionTokenCookie } from "$lib/server/session";

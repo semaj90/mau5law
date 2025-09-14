@@ -6,7 +6,7 @@
 import { cacheEmbedding, getCachedEmbedding } from "$lib/server/cache/redis";
 
 export interface EnhancedEmbeddingOptions {
-  provider?: "auto" | "nomic-embed" | "tauri-legal-bert" | "tauri-bert";
+  provider?: "auto" | "embeddinggemma" | "nomic-embed" | "tauri-legal-bert" | "tauri-bert";
   cache?: boolean;
   maxTokens?: number;
   legalDomain?: boolean;
@@ -26,30 +26,42 @@ export interface EmbeddingResult {
 }
 
 /**
- * Generate embeddings using Ollama nomic-embed-text model
+ * Generate embeddings using Ollama Gemma embeddings model (primary) with nomic-embed-text fallback
  */
 async function generateNomicEmbedding(text: string): Promise<number[]> {
   const ollamaEndpoint = import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434';
-  
-  try {
-    const response = await fetch(`${ollamaEndpoint}/api/embeddings`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'nomic-embed-text',
-        prompt: text
-      })
-    });
 
-    if (!response.ok) {
-      throw new Error(`Ollama embedding failed: ${response.statusText}`);
+  // Try Gemma embeddings first, fallback to nomic-embed-text
+  const models = ['embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text'];
+
+  for (const model of models) {
+    try {
+      const response = await fetch(`${ollamaEndpoint}/api/embeddings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: model,
+          prompt: text
+        })
+      });
+
+      if (!response.ok) {
+        console.warn(`Model ${model} failed with: ${response.statusText}`);
+        continue; // Try next model
+      }
+
+      const data = await response.json();
+      console.log(`Successfully generated embedding with model: ${model}`);
+      return data.embedding;
+    } catch (error: any) {
+      console.warn(`Model ${model} failed:`, error.message);
+      continue; // Try next model
     }
+  }
 
-    const data = await response.json();
-    return data.embedding;
-  } catch (error: any) {
-    console.error('Nomic embedding generation failed:', error);
-    throw error;
+  // All models failed
+  console.error('All embedding models failed');
+  throw new Error('Failed to generate embeddings with all available models');
   }
 }
 
@@ -240,12 +252,7 @@ export async function generateLegalEmbedding(
     jurisdiction?: string;
     subject?: string[];
   } = {},
-): Promise<{
-  embedding: number[];
-  metadata: any;
-  confidence: number;
-  extracted?: unknown;
-}> {
+): Promise<any> {
   // Extract document structure
   const extracted = await extractDocumentStructure(documentText);
   
@@ -345,10 +352,7 @@ export async function processDocumentWithChunking(
   document: string,
   chunkSize: number = 1000,
   chunkOverlap: number = 200,
-): Promise<{
-  chunks: { text: string; embedding: number[]; metadata: any }[];
-  documentMetadata: any;
-}> {
+): Promise<any> {
   const extracted = await extractDocumentStructure(document);
   const chunks: { text: string; embedding: number[]; metadata: any }[] = [];
   

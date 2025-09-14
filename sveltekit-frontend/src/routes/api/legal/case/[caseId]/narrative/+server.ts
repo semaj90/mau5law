@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface NarrativeSection {
   id: string;
@@ -21,20 +21,8 @@ interface NarrativeSection {
     complexity: 'SIMPLE' | 'MODERATE' | 'COMPLEX' | 'EXPERT';
     style: 'NARRATIVE' | 'ANALYTICAL' | 'CHRONOLOGICAL' | 'THEMATIC';
   };
-  suggestions: Array<{
-    type: 'IMPROVEMENT' | 'ADDITION' | 'REVISION' | 'CITATION';
-    text: string;
-    rationale: string;
-    priority: 'LOW' | 'MEDIUM' | 'HIGH';
-  }>;
-  revisionHistory: Array<{
-    timestamp: string;
-    author: string;
-    changes: string;
-    reason: string;
-    version: number;
-  }>;
-}
+  suggestions: Array<any>;
+  revisionHistory: Array<any>
 
 interface CaseNarrative {
   id: string;
@@ -76,30 +64,10 @@ interface NarrativeRequest {
 }
 
 interface AIWritingAssistance {
-  suggestions: Array<{
-    section: string;
-    type: 'CONTENT' | 'STRUCTURE' | 'STYLE' | 'LEGAL' | 'FACTUAL';
-    suggestion: string;
-    explanation: string;
-    confidence: number;
-    impact: 'LOW' | 'MEDIUM' | 'HIGH';
-  }>;
-  alternativePhrasings: Array<{
-    original: string;
-    alternatives: string[];
-    context: string;
-  }>;
-  factChecking: Array<{
-    claim: string;
-    verification: 'VERIFIED' | 'DISPUTED' | 'UNVERIFIED';
-    sources: string[];
-    notes: string;
-  }>;
-  legalReferences: Array<{
-    concept: string;
-    suggestedCitations: string[];
-    relevance: number;
-  }>;
+  suggestions: Array<any>;
+  alternativePhrasings: Array<any>;
+  factChecking: Array<any>;
+  legalReferences: Array<any>;
   strengthWeaknessAnalysis: {
     strengths: string[];
     weaknesses: string[];

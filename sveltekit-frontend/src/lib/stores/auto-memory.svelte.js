@@ -9,7 +9,7 @@ const autoMemoryMachine = createMachine({
   initial: "idle",
   context: {
     memories: [],
-    patterns: {},
+    patterns: Record<string, any>,
     predictions: [],
     loading: false,
     error: null,

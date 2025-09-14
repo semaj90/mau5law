@@ -29,7 +29,7 @@ export interface EnvironmentConfig {
 /**
  * Detect and configure Ollama environment
  */
-async function detectOllamaConfig(): Promise<{ baseUrl: string; port: number; isDetected: boolean }> {
+async function detectOllamaConfig(): Promise<any> {
   // Check environment variable first
   const envUrl = process.env.OLLAMA_URL || process.env.OLLAMA_HOST;
   if (envUrl) {
@@ -87,9 +87,9 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
       port: parseInt(process.env.REDIS_PORT || '6379')
     },
     postgres: {
-      url: process.env.DATABASE_URL || 'postgresql://postgres:123456@localhost:5432/legal_ai_db',
-      host: process.env.POSTGRES_HOST || 'localhost', 
-      port: parseInt(process.env.POSTGRES_PORT || '5432')
+      url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
+      host: process.env.POSTGRES_HOST || 'localhost',
+      port: parseInt(process.env.POSTGRES_PORT || '5433')
     },
     development: {
       isDev: process.env.NODE_ENV === 'development',
@@ -157,7 +157,7 @@ export const ENV_CONFIG = {
   },
 
   get DATABASE_URL() {
-    return process.env.DATABASE_URL || 'postgresql://postgres:123456@localhost:5432/legal_ai_db';
+    return process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
   },
 
   get IS_DEVELOPMENT() {

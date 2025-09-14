@@ -57,7 +57,7 @@
   aria-busy={loading ? 'true' : 'false'}
   aria-label={ariaLabel || (loading && loadingText ? loadingText : undefined)}
   disabled={isDisabled}
-  onclick={handleClick}
+  on:click={handleClick}
   {...rest}
 >
   <div class="loading-button__content">

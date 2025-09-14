@@ -70,7 +70,7 @@
         {/each}
       </select>
     </div>
-    <button class="btn nes-btn is-primary" onclick={handleSubmit}>Save Notes</button>
+    <button class="btn nes-btn is-primary" on:click={handleSubmit}>Save Notes</button>
   </div>
 </div>
 

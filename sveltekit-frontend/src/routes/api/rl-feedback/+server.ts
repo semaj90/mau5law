@@ -5,7 +5,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { qloraTrainer } from '$lib/services/qlora-reinforcement-learning-trainer';
 import { autoencoderContextSwitcher } from '$lib/orchestration/autoencoder-context-switcher';
 import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';

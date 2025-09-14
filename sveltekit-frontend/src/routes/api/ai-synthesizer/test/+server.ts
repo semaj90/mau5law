@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // routes/api/ai-synthesizer/test/+server.ts
 // Integration test and demo endpoint for AI synthesis system
@@ -15,8 +15,8 @@ export const GET: RequestHandler = async () => {
   const results = {
     timestamp: new Date(),
     tests: [],
-    health: {},
-    performance: {},
+    health: Record<string, any>,
+    performance: Record<string, any>,
     recommendations: []
   };
 
@@ -119,20 +119,20 @@ async function testBasicSynthesis(): Promise<any> {
     });
     
     const passed = result && 
-                   result.processedQuery && 
-                   result.retrievedContext &&
-                   result.enhancedPrompt &&
-                   result.metadata;
+                   (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).processedQuery && 
+                   (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).retrievedContext &&
+                   (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).enhancedPrompt &&
+                   (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).metadata;
     
     return {
       name: 'Basic Synthesis',
       status: passed ? 'passed' : 'failed',
       duration: Date.now() - startTime,
       result: {
-        queryProcessed: !!result.processedQuery,
-        sourcesFound: result.retrievedContext?.sources?.length || 0,
-        confidence: result.metadata?.confidence || 0,
-        qualityScore: result.metadata?.qualityScore || 0
+        queryProcessed: !!(result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).processedQuery,
+        sourcesFound: (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).retrievedContext?.sources?.length || 0,
+        confidence: (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).metadata?.confidence || 0,
+        qualityScore: (result as { processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any; metadata?: any }).metadata?.qualityScore || 0
       }
     };
   } catch (error: any) {
@@ -197,7 +197,7 @@ async function testStreaming(): Promise<any> {
       input: {
         query: 'Test streaming query',
         context: { userId: 'test' },
-        options: {}
+        options: Record<string, any>
       },
       onProgress: (stage, progress) => {
         progressUpdates++;

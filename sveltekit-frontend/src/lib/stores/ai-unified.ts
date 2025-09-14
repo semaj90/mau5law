@@ -9,11 +9,7 @@ import { writable, derived } from "svelte/store";
 // Core AI state interface
 export interface AIState {
   current: string;
-  history: Array<{
-    command: string;
-    result: any;
-    timestamp: string;
-  }>;
+  history: Array<any>;
   isProcessing: boolean;
   lastResult: any;
   error: string | null;

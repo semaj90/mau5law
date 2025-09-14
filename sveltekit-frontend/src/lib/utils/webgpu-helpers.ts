@@ -47,12 +47,7 @@ export function createFloat32Array(buffer: ArrayBufferLike, offset = 0, length?:
 }
 
 // WebGPU feature detection
-export async function checkWebGPUSupport(): Promise<{
-  supported: boolean;
-  adapter?: GPUAdapter;
-  device?: GPUDevice;
-  features: string[];
-}> {
+export async function checkWebGPUSupport(): Promise<any> {
   if (!navigator.gpu) {
     return { supported: false, features: [] };
   }

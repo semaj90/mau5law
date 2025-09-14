@@ -66,8 +66,8 @@ https://svelte.dev/e/expected_token -->
   }: CanvasProps = $props();
 
   // Canvas state using Svelte 5 runes
-  let canvas = $state<HTMLCanvasElement>();
-  let ctx = $state<CanvasRenderingContext2D>();
+  let canvas: HTMLCanvasElement = $state(undefined as any);
+  let ctx: CanvasRenderingContext2D = $state(undefined as any);
   let canvasNodes = $state<EvidenceNode[]>(nodes);
   let selectedNode = $state<EvidenceNode | null>(null);
   let isDragging = $state(false);
@@ -554,7 +554,7 @@ https://svelte.dev/e/expected_token -->
 
 
 <canvas
-  bind:this={canvas}
+  bind:this={canvas as any}
   width={width}
   height={height}
   style="border: 1px solid #333; cursor: {isDragging ? 'grabbing' : 'grab'}; background: {backgroundColor};"
@@ -563,7 +563,7 @@ https://svelte.dev/e/expected_token -->
   onmouseup={handleMouseUp}
   onwheel={handleWheel}
   ondblclick={handleDoubleClick}
-  onkeydown={handleKeyDown}
+  on:keydown={handleKeyDown}
   tabindex="0"
 />
 
@@ -578,8 +578,8 @@ https://svelte.dev/e/expected_token -->
 {/if}
 
 <div class="canvas-controls">
-  <button onclick={resetView}>Reset View</button>
-  <button onclick={fitToNodes}>Fit to Nodes</button>
+  <button on:click={resetView}>Reset View</button>
+  <button on:click={fitToNodes}>Fit to Nodes</button>
   <span>Zoom: {Math.round(zoom * 100)}%</span>
   <span>Nodes: {canvasNodes.length}</span>
 </div>

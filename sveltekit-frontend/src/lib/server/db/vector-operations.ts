@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Enhanced Vector Operations with GRPMO (GPU-Reinforced Predictive Memory Orchestration)
-import { db } from './index.js';
-import { legalDocuments, userAiQueries, embeddingCache } from './schema-postgres.js';
+import { db } from './index.js.js';
+import { legalDocuments, userAiQueries, embeddingCache } from './schema-postgres.js.js';
 import { sql } from 'drizzle-orm';
 
 // GRPMO imports
@@ -193,7 +193,7 @@ export async function getCachedEmbedding(textHash: string): Promise<number[] | n
       .where(sql`text_hash = ${textHash}`)
       .limit(1);
 
-    if (result.length > 0) {
+    if ((result as { length?: any }).length > 0) {
       // Parse pgvector format back to array
       const vectorString = result[0].embedding;
       if (typeof vectorString === 'string') {
@@ -247,7 +247,7 @@ export async function hybridSearch(
     // Combine and deduplicate results
     const combinedResults = [...vectorResults, ...textSearchResults];
     const uniqueResults = Array.from(
-      new Map(combinedResults.map(item => [item.id, item])).values()
+      new Map(combinedResults.map(item => [(item as { id?: any; similarity?: any; metadata?: any }).id, item])).values()
     );
 
     // Sort by similarity and return top results
@@ -273,11 +273,7 @@ export async function checkPgVectorAvailable(): Promise<boolean> {
 }
 
 // Vector operations test function
-export async function testVectorOperations(): Promise<{
-  pgvectorAvailable: boolean;
-  similaritySearchWorking: boolean;
-  embeddingCacheWorking: boolean;
-}> {
+export async function testVectorOperations(): Promise<any> {
   const pgvectorAvailable = await checkPgVectorAvailable();
   
   let similaritySearchWorking = false;
@@ -326,11 +322,7 @@ export class GRPMOOrchestrator {
     queryEmbedding: number[],
     userId: string,
     caseId?: string
-  ): Promise<{
-    result: SimilarityResult[];
-    thinkingStages: ExtendedThinkingStage[];
-    cachePerformance: { hot: number; warm: number; cold: number };
-  }> {
+  ): Promise<any> {
     const startTime = Date.now();
     const stages: ExtendedThinkingStage[] = [];
     const cachePerformance = { hot: 0, warm: 0, cold: 0 };
@@ -410,7 +402,7 @@ export class GRPMOOrchestrator {
     return `${layer}:${this.hashString(query)}:${embeddingHash}`;
   }
 
-  private async retrieveFromCache(key: string, layer: string): Promise<{ data: SimilarityResult[]; timestamp: number } | null> {
+  private async retrieveFromCache(key: string, layer: string): Promise<any> {
     const cached = this.memoryCache.get(key);
     if (!cached) return null;
 
@@ -432,10 +424,10 @@ export class GRPMOOrchestrator {
 
   private compressToGlyph(data: SimilarityResult[]): string {
     // 7-bit compression algorithm for visual glyph generation
-    const compressed = data.map(item => ({
-      id: item.id.slice(0, 8),
-      sim: Math.round(item.similarity * 127),
-      key: item.metadata?.keywords?.[0] || ''
+    const compressed = (data as { map?: any }).map(item => ({
+      id: (item as { id?: any; similarity?: any; metadata?: any }).id.slice(0, 8),
+      sim: Math.round((item as { id?: any; similarity?: any; metadata?: any }).similarity * 127),
+      key: (item as { id?: any; similarity?: any; metadata?: any }).metadata?.keywords?.[0] || ''
     }));
     return JSON.stringify(compressed);
   }
@@ -456,7 +448,7 @@ export class GRPMOOrchestrator {
   }
 
   private async enhanceWithPredictiveAnalysis(data: SimilarityResult[], queryEmbedding: number[]): Promise<SimilarityResult[]> {
-    return data.map(item => ({
+    return (data as { map?: any }).map(item => ({
       ...item,
       predictiveScore: this.calculatePredictiveScore(item, queryEmbedding),
       cacheLayer: 'warm'
@@ -465,7 +457,7 @@ export class GRPMOOrchestrator {
 
   private calculatePredictiveScore(item: SimilarityResult, queryEmbedding: number[]): number {
     // Simple cosine similarity enhancement
-    return item.similarity * 0.8 + Math.random() * 0.2;
+    return (item as { id?: any; similarity?: any; metadata?: any }).similarity * 0.8 + Math.random() * 0.2;
   }
 
   private async performDeepVectorSearch(query: string, embedding: number[], userId: string, caseId?: string): Promise<SimilarityResult[]> {
@@ -496,11 +488,11 @@ class PPOAgent {
     // Apply policy weights to results
     return results.map((item, index) => ({
       ...item,
-      similarity: item.similarity * currentPolicy[index],
+      similarity: (item as { id?: any; similarity?: any; metadata?: any }).similarity * currentPolicy[index],
       reinforcementContext: {
         stateVector: currentPolicy,
         actionHistory: [stateKey],
-        rewardSignal: item.similarity,
+        rewardSignal: (item as { id?: any; similarity?: any; metadata?: any }).similarity,
         policyGradient: currentPolicy,
         valueFunction: this.valueNetwork.get(stateKey) || 0.5
       }

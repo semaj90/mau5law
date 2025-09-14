@@ -18,7 +18,7 @@
 
 import { randomUUID } from 'node:crypto';
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { apiSuccess, apiError, validateRequest, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 

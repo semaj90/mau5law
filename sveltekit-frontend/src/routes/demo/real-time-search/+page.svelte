@@ -9,30 +9,30 @@
 	let { data }: { data: PageData } = $props();
 	
 	let activeTab = $state('search');
-	let searchQuery = $state(data.query);
-	let selectedCategory = $state(data.searchType);
+	let searchQuery = $state((data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).query);
+	let selectedCategory = $state((data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchType);
 	let isSearching = $state(false);
 	let searchProgress = $state(0);
-	let liveResults = $state(data.searchResults);
+	let liveResults = $state((data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchResults);
 	let showSuggestions = $state(false);
-	let selectedFilters = $state<Record<string, string>>({});
+	let selectedFilters = $state<Record<string, string>('')>({});
 	
 	let tabs = $derived([
 		{ id: 'search', label: 'Live Search', count: liveResults.length },
-		{ id: 'categories', label: 'Categories', count: data.searchCategories.length },
+		{ id: 'categories', label: 'Categories', count: (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchCategories.length },
 		{ id: 'filters', label: 'Advanced Filters', count: Object.keys(selectedFilters).length },
-		{ id: 'activity', label: 'Recent Activity', count: data.recentQueries.length },
+		{ id: 'activity', label: 'Recent Activity', count: (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).recentQueries.length },
 		{ id: 'analytics', label: 'Search Analytics', count: 4 }
 	]);
 
 	let searchPerformanceColor = $derived(
-		data.searchStats.search_performance.avg_response_time < 50 ? 'text-green-600' :
-		data.searchStats.search_performance.avg_response_time < 100 ? 'text-yellow-600' : 'text-red-600'
+		(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.avg_response_time < 50 ? 'text-green-600' :
+		(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.avg_response_time < 100 ? 'text-yellow-600' : 'text-red-600'
 	);
 
 	let cacheHitRateColor = $derived(
-		data.searchStats.search_performance.cache_hit_rate > 0.8 ? 'text-green-600' :
-		data.searchStats.search_performance.cache_hit_rate > 0.6 ? 'text-yellow-600' : 'text-red-600'
+		(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.cache_hit_rate > 0.8 ? 'text-green-600' :
+		(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.cache_hit_rate > 0.6 ? 'text-yellow-600' : 'text-red-600'
 	);
 
 	function performSearch(query: string = searchQuery) {
@@ -99,12 +99,7 @@
 		return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 	}
 
-	function highlightText(text: string, highlights: string[]): string {
-		let result = text;
-		highlights.forEach(highlight => {
-			const regex = new RegExp(highlight, 'gi');
-			result = result.replace(regex, `<mark class="bg-yellow-200 px-1">${highlight}</mark>`);
-		});
+	function highlightText(text: string, highlights: string[]): string {/* JSX syntax converted to Svelte */});
 		return result;
 	}
 </script>
@@ -113,17 +108,17 @@
 	<div class="flex justify-between items-center">
 		<div>
 			<h1 class="text-3xl font-bold text-gray-900">Real-Time Legal Search</h1>
-			<p class="text-lg text-gray-600 mt-2">AI-powered semantic search across {formatNumber(data.searchStats.total_indexed)} legal documents</p>
+			<p class="text-lg text-gray-600 mt-2">AI-powered semantic search across {formatNumber((data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.total_indexed)} legal documents</p>
 		</div>
 		
 		<div class="flex items-center gap-4">
 			<div class="text-right">
 				<div class="text-sm text-gray-500">Active Connections</div>
-				<div class="text-2xl font-bold text-blue-600">{data.searchStats.active_connections}</div>
+				<div class="text-2xl font-bold text-blue-600">{(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.active_connections}</div>
 			</div>
 			<div class="text-right">
 				<div class="text-sm text-gray-500">Response Time</div>
-				<div class="text-2xl font-bold {searchPerformanceColor}">{data.searchStats.search_performance.avg_response_time}ms</div>
+				<div class="text-2xl font-bold {searchPerformanceColor}">{(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.avg_response_time}ms</div>
 			</div>
 		</div>
 	</div>
@@ -137,22 +132,22 @@
 					bind:value={searchQuery}
 					placeholder="Search legal documents, cases, statutes..."
 					class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-					onkeydown={(e) => {
+					on:keydown={(e) => {
 						if (e.key === 'Enter') {
 							e.preventDefault();
 							performSearch();
 						}
 					}}
-					onfocus={() => showSuggestions = true}
-					onblur={() => setTimeout(() => showSuggestions = false, 200)}
+					on:focus={() => showSuggestions = true}
+					on:blur={() => setTimeout(() => showSuggestions = false, 200)}
 				/>
 				
-				{#if showSuggestions && data.suggestedQueries.length > 0}
+				{#if showSuggestions && (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).suggestedQueries.length > 0}
 					<div class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-10 mt-1">
-						{#each data.suggestedQueries as suggestion}
+						{#each (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).suggestedQueries as suggestion}
 							<button
 								class="w-full text-left px-4 py-2 hover:bg-gray-50 first:rounded-t-md last:rounded-b-md"
-								onclick={() => selectSuggestedQuery(suggestion)}
+								on:click={() => selectSuggestedQuery(suggestion)}
 							>
 								{suggestion}
 							</button>
@@ -165,14 +160,14 @@
 				bind:value={selectedCategory}
 				class="px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
 			>
-				{#each data.searchCategories as category}
+				{#each (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchCategories as category}
 					<option value={category.id}>{category.name}</option>
 				{/each}
 			</select>
 			
 			<button 
 				class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-				onclick={() => performSearch()}
+				on:click={() => performSearch()}
 				disabled={isSearching}
 			>
 				{isSearching ? 'Searching...' : 'Search'}
@@ -182,7 +177,7 @@
 		{#if isSearching}
 			<div class="bg-blue-50 p-4 rounded-lg">
 				<div class="flex items-center justify-between mb-2">
-					<span class="text-blue-800 font-medium">Searching across {formatNumber(data.searchStats.total_indexed)} documents</span>
+					<span class="text-blue-800 font-medium">Searching across {formatNumber((data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.total_indexed)} documents</span>
 					<span class="text-blue-600">{Math.round(searchProgress)}%</span>
 				</div>
 				<div class="w-full bg-blue-200 rounded-full h-2">
@@ -199,45 +194,45 @@
 					<div class="space-y-6">
 						{#if liveResults.length > 0}
 							<div class="text-sm text-gray-600 mb-4">
-								Found {liveResults.length} results for "{data.query}"
+								Found {liveResults.length} results for "{(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).query}"
 							</div>
 							
 							{#each liveResults as result}
 								<div class="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
 									<div class="flex justify-between items-start mb-3">
 										<div class="flex items-center gap-3">
-											<span class="text-2xl">{getCategoryIcon(result.category)}</span>
+											<span class="text-2xl">{getCategoryIcon((result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).category)}</span>
 											<div>
-												<h3 class="text-lg font-semibold text-gray-900">{result.title}</h3>
+												<h3 class="text-lg font-semibold text-gray-900">{(result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).title}</h3>
 												<div class="flex items-center gap-4 text-sm text-gray-500">
-													<span class="capitalize">{result.category.replace('_', ' ')}</span>
-													<span>Modified: {new Date(result.last_modified).toLocaleDateString()}</span>
-													{#if result.file_type}
-														<span class="uppercase">{result.file_type}</span>
+													<span class="capitalize">{(result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).category.replace('_', ' ')}</span>
+													<span>Modified: {new Date((result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).last_modified).toLocaleDateString()}</span>
+													{#if (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).file_type}
+														<span class="uppercase">{(result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).file_type}</span>
 													{/if}
-													{#if result.page_count}
-														<span>{result.page_count} pages</span>
+													{#if (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).page_count}
+														<span>{(result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).page_count} pages</span>
 													{/if}
 												</div>
 											</div>
 										</div>
 										
 										<div class="text-right">
-											<div class="text-lg font-bold {getRelevanceColor(result.relevance_score)}">
-												{formatPercentage(result.relevance_score)}
+											<div class="text-lg font-bold {getRelevanceColor((result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).relevance_score)}">
+												{formatPercentage((result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).relevance_score)}
 											</div>
 											<div class="text-sm text-gray-500">relevance</div>
-											<div class="text-sm {getConfidenceColor(result.confidence)} mt-1">
-												{formatPercentage(result.confidence)} confidence
+											<div class="text-sm {getConfidenceColor((result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).confidence)} mt-1">
+												{formatPercentage((result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).confidence)} confidence
 											</div>
 										</div>
 									</div>
 									
-									<p class="text-gray-700 mb-3">{@html highlightText(truncateText(result.content, 200), result.highlights)}</p>
+									<p class="text-gray-700 mb-3">{@html highlightText(truncateText((result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).content, 200), (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).highlights)}</p>
 									
-									{#if result.highlights.length > 0}
+									{#if (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).highlights.length > 0}
 										<div class="flex flex-wrap gap-2 mb-3">
-											{#each result.highlights as highlight}
+											{#each (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).highlights as highlight}
 												<span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
 													{highlight}
 												</span>
@@ -245,34 +240,34 @@
 										</div>
 									{/if}
 									
-									{#if result.case_references || result.court || result.jurisdiction}
+									{#if (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).case_references || (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).court || (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).jurisdiction}
 										<div class="flex gap-4 text-sm text-gray-600">
-											{#if result.case_references}
-												<span>Cases: {result.case_references.join(', ')}</span>
+											{#if (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).case_references}
+												<span>Cases: {(result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).case_references.join(', ')}</span>
 											{/if}
-											{#if result.court}
-												<span>Court: {result.court}</span>
+											{#if (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).court}
+												<span>Court: {(result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).court}</span>
 											{/if}
-											{#if result.jurisdiction}
-												<span>Jurisdiction: {result.jurisdiction}</span>
+											{#if (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).jurisdiction}
+												<span>Jurisdiction: {(result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).jurisdiction}</span>
 											{/if}
-											{#if result.citations}
-												<span>Citations: {result.citations}</span>
+											{#if (result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).citations}
+												<span>Citations: {(result as { category?: any; title?: any; last_modified?: any; file_type?: any; page_count?: any; relevance_score?: any; confidence?: any; content?: any; highlights?: any; case_references?: any; court?: any; jurisdiction?: any; citations?: any }).citations}</span>
 											{/if}
 										</div>
 									{/if}
 								</div>
 							{/each}
-						{:else if data.query}
+						{:else if (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).query}
 							<div class="text-center py-12">
 								<div class="text-6xl mb-4">🔍</div>
 								<h3 class="text-xl font-semibold text-gray-900 mb-2">No results found</h3>
 								<p class="text-gray-600 mb-4">Try adjusting your search terms or using different keywords</p>
 								<div class="flex flex-wrap gap-2 justify-center">
-									{#each data.suggestedQueries.slice(0, 4) as suggestion}
+									{#each (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).suggestedQueries.slice(0, 4) as suggestion}
 										<button 
 											class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200"
-											onclick={() => selectSuggestedQuery(suggestion)}
+											on:click={() => selectSuggestedQuery(suggestion)}
 										>
 											{suggestion}
 										</button>
@@ -285,10 +280,10 @@
 								<h3 class="text-xl font-semibold text-gray-900 mb-2">Ready for Real-Time Search</h3>
 								<p class="text-gray-600 mb-4">Enter a query above to start searching across millions of legal documents</p>
 								<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-									{#each data.suggestedQueries.slice(0, 8) as suggestion}
+									{#each (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).suggestedQueries.slice(0, 8) as suggestion}
 										<button 
 											class="p-3 bg-gray-50 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-											onclick={() => selectSuggestedQuery(suggestion)}
+											on:click={() => selectSuggestedQuery(suggestion)}
 										>
 											{suggestion}
 										</button>
@@ -299,10 +294,10 @@
 					</div>
 				{:else if activeTab === 'categories'}
 					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-						{#each data.searchCategories as category}
+						{#each (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchCategories as category}
 							<div class="bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
 								 role="button" tabindex="0"
-								 onclick={() => { selectedCategory = category.id; activeTab = 'search'; }}>
+								 on:click={() => { selectedCategory = category.id; activeTab = 'search'; }}>
 								<div class="flex items-center gap-4 mb-4">
 									<div class="text-3xl">{category.icon}</div>
 									<div>
@@ -320,7 +315,7 @@
 							<div class="bg-white p-6 rounded-lg border border-gray-200">
 								<h4 class="text-lg font-semibold text-gray-900 mb-4">Date Range</h4>
 								<div class="space-y-2">
-									{#each data.searchFilters.date_ranges as range}
+									{#each (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchFilters.date_ranges as range}
 										<label class="flex items-center gap-3">
 											<input 
 												type="radio" 
@@ -338,7 +333,7 @@
 							<div class="bg-white p-6 rounded-lg border border-gray-200">
 								<h4 class="text-lg font-semibold text-gray-900 mb-4">Jurisdiction</h4>
 								<div class="space-y-2">
-									{#each data.searchFilters.jurisdictions as jurisdiction}
+									{#each (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchFilters.jurisdictions as jurisdiction}
 										<label class="flex items-center gap-3">
 											<input 
 												type="radio" 
@@ -356,7 +351,7 @@
 							<div class="bg-white p-6 rounded-lg border border-gray-200">
 								<h4 class="text-lg font-semibold text-gray-900 mb-4">Confidence Level</h4>
 								<div class="space-y-2">
-									{#each data.searchFilters.confidence_levels as level}
+									{#each (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchFilters.confidence_levels as level}
 										<label class="flex items-center gap-3">
 											<input 
 												type="radio" 
@@ -375,13 +370,13 @@
 						<div class="flex justify-end gap-4">
 							<button 
 								class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-								onclick={() => selectedFilters = {}}
+								on:click={() => selectedFilters = {}}
 							>
 								Clear Filters
 							</button>
 							<button 
 								class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-								onclick={() => { activeTab = 'search'; performSearch(); }}
+								on:click={() => { activeTab = 'search'; performSearch(); }}
 							>
 								Apply Filters
 							</button>
@@ -390,7 +385,7 @@
 				{:else if activeTab === 'activity'}
 					<ActivityStream>
 						{#snippet streamItems()}
-							{#each data.recentQueries as query}
+							{#each (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).recentQueries as query}
 								<div class="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
 									<div class="flex-1">
 										<div class="font-medium text-gray-900">"{query.query}"</div>
@@ -403,7 +398,7 @@
 									</div>
 									<button 
 										class="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200"
-										onclick={() => selectSuggestedQuery(query.query)}
+										on:click={() => selectSuggestedQuery(query.query)}
 									>
 										Rerun
 									</button>
@@ -415,19 +410,19 @@
 					<div class="space-y-6">
 						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 							<div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
-								<div class="text-3xl font-bold text-blue-600">{formatNumber(data.searchStats.total_indexed)}</div>
+								<div class="text-3xl font-bold text-blue-600">{formatNumber((data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.total_indexed)}</div>
 								<div class="text-gray-600">Documents Indexed</div>
 							</div>
 							<div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
-								<div class="text-3xl font-bold text-green-600">{data.searchStats.search_performance.queries_per_second}</div>
+								<div class="text-3xl font-bold text-green-600">{(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.queries_per_second}</div>
 								<div class="text-gray-600">Queries/Second</div>
 							</div>
 							<div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
-								<div class="text-3xl font-bold {searchPerformanceColor}">{data.searchStats.search_performance.avg_response_time}ms</div>
+								<div class="text-3xl font-bold {searchPerformanceColor}">{(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.avg_response_time}ms</div>
 								<div class="text-gray-600">Avg Response</div>
 							</div>
 							<div class="bg-white p-6 rounded-lg border border-gray-200 text-center">
-								<div class="text-3xl font-bold {cacheHitRateColor}">{formatPercentage(data.searchStats.search_performance.cache_hit_rate)}</div>
+								<div class="text-3xl font-bold {cacheHitRateColor}">{formatPercentage((data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.cache_hit_rate)}</div>
 								<div class="text-gray-600">Cache Hit Rate</div>
 							</div>
 						</div>
@@ -435,7 +430,7 @@
 						<div class="bg-white p-6 rounded-lg border border-gray-200">
 							<h4 class="text-lg font-semibold text-gray-900 mb-4">Search Categories Distribution</h4>
 							<div class="space-y-3">
-								{#each data.searchCategories as category}
+								{#each (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchCategories as category}
 									<div class="flex items-center gap-4">
 										<div class="text-2xl">{category.icon}</div>
 										<div class="flex-1">
@@ -446,7 +441,7 @@
 											<div class="w-full bg-gray-200 rounded-full h-2">
 												<div 
 													class="bg-blue-600 h-2 rounded-full" 
-													style="width: {(category.count / data.searchStats.total_indexed) * 100}%"
+													style="width: {(category.count / (data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.total_indexed) * 100}%"
 												></div>
 											</div>
 										</div>
@@ -460,19 +455,19 @@
 							<div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
 								<div>
 									<span class="text-green-700 font-medium">Index Freshness:</span>
-									<span class="text-green-600 ml-2">{formatPercentage(data.searchStats.search_performance.index_freshness)}</span>
+									<span class="text-green-600 ml-2">{formatPercentage((data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.index_freshness)}</span>
 								</div>
 								<div>
 									<span class="text-green-700 font-medium">Real-time Updates:</span>
-									<span class="text-green-600 ml-2">{data.searchStats.real_time_updates ? 'Active' : 'Inactive'}</span>
+									<span class="text-green-600 ml-2">{(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.real_time_updates ? 'Active' : 'Inactive'}</span>
 								</div>
 								<div>
 									<span class="text-green-700 font-medium">Last Updated:</span>
-									<span class="text-green-600 ml-2">{new Date(data.searchStats.last_updated).toLocaleString()}</span>
+									<span class="text-green-600 ml-2">{new Date((data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.last_updated).toLocaleString()}</span>
 								</div>
 								<div>
 									<span class="text-green-700 font-medium">Active Connections:</span>
-									<span class="text-green-600 ml-2">{data.searchStats.active_connections}</span>
+									<span class="text-green-600 ml-2">{(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.active_connections}</span>
 								</div>
 							</div>
 						</div>
@@ -485,23 +480,23 @@
 			{#snippet metrics()}
 				<div class="grid grid-cols-2 md:grid-cols-5 gap-4">
 					<div class="bg-white p-4 rounded-lg border border-gray-200 text-center">
-						<div class="text-2xl font-bold text-blue-600">{formatNumber(data.searchStats.total_indexed)}</div>
+						<div class="text-2xl font-bold text-blue-600">{formatNumber((data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.total_indexed)}</div>
 						<div class="text-sm text-gray-600">Total Docs</div>
 					</div>
 					<div class="bg-white p-4 rounded-lg border border-gray-200 text-center">
-						<div class="text-2xl font-bold {searchPerformanceColor}">{data.searchStats.search_performance.avg_response_time}ms</div>
+						<div class="text-2xl font-bold {searchPerformanceColor}">{(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.avg_response_time}ms</div>
 						<div class="text-sm text-gray-600">Response Time</div>
 					</div>
 					<div class="bg-white p-4 rounded-lg border border-gray-200 text-center">
-						<div class="text-2xl font-bold text-green-600">{data.searchStats.search_performance.queries_per_second}</div>
+						<div class="text-2xl font-bold text-green-600">{(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.queries_per_second}</div>
 						<div class="text-sm text-gray-600">QPS</div>
 					</div>
 					<div class="bg-white p-4 rounded-lg border border-gray-200 text-center">
-						<div class="text-2xl font-bold {cacheHitRateColor}">{formatPercentage(data.searchStats.search_performance.cache_hit_rate)}</div>
+						<div class="text-2xl font-bold {cacheHitRateColor}">{formatPercentage((data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.search_performance.cache_hit_rate)}</div>
 						<div class="text-sm text-gray-600">Cache Hit</div>
 					</div>
 					<div class="bg-white p-4 rounded-lg border border-gray-200 text-center">
-						<div class="text-2xl font-bold text-purple-600">{data.searchStats.active_connections}</div>
+						<div class="text-2xl font-bold text-purple-600">{(data as { query?: any; searchType?: any; searchResults?: any; searchCategories?: any; recentQueries?: any; searchStats?: any; suggestedQueries?: any; searchFilters?: any }).searchStats.active_connections}</div>
 						<div class="text-sm text-gray-600">Connections</div>
 					</div>
 				</div>

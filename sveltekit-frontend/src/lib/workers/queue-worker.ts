@@ -79,9 +79,9 @@ async function processJob(job: { id: string; text: string; model?: string }) {
   } catch (e) {
     console.warn('⚠️ NX dedupe lock failed (continuing):', (e as Error).message || e);
   }
-  await jobMachine.createJob(job.id, { model: job.model });
+  await jobMachine.createJob(job.id, { model: job?.model || "unknown" // @ts-ignore - Model property access });
   try {
-    await globalLoki.startJob({ id: job.id, model: job.model, text: job.text });
+    await globalLoki.startJob({ id: job.id, model: job?.model || "unknown" // @ts-ignore - Model property access, text: job.text });
   } catch {}
   const started = await jobMachine.startJob(job.id);
   if (!started) {
@@ -89,9 +89,9 @@ async function processJob(job: { id: string; text: string; model?: string }) {
   }
 
   try {
-    const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job.model });
-    const emb = result.embedding;
-    console.log(`📍 Embedding created via ${result.backend} using model ${result.model}`);
+    const result = await getEmbeddingViaGate(fetch as any, job.text, { model: job?.model || "unknown" // @ts-ignore - Model property access });
+    const emb = (result as { embedding?: any; backend?: any }).embedding;
+    console.log(`📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || "unknown" // @ts-ignore - Model property access}`);
 
     // Prefer DB-level idempotency via unique index on (metadata->>'jobId').
     // Use onConflictDoNothing to treat duplicates as success.
@@ -105,8 +105,8 @@ async function processJob(job: { id: string; text: string; model?: string }) {
         metadata: {
           source: 'pipeline',
           jobId: job.id,
-          model: result.model,
-          backend: result.backend,
+          model: result?.model || "unknown" // @ts-ignore - Model property access,
+          backend: (result as { embedding?: any; backend?: any }).backend,
         } as any,
       } as any)
       .onConflictDoNothing({ target: sql`(metadata->>'jobId')` as any });
@@ -126,8 +126,8 @@ async function processJob(job: { id: string; text: string; model?: string }) {
       emitCacheEvent({
         type: 'embedding_created',
         jobId: job.id,
-        model: result.model,
-        backend: result.backend,
+        model: result?.model || "unknown" // @ts-ignore - Model property access,
+        backend: (result as { embedding?: any; backend?: any }).backend,
         ts: Date.now(),
         inserted,
       });

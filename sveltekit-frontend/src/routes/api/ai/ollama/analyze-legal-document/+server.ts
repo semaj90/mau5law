@@ -20,7 +20,7 @@
 // Integrates with Ollama, Drizzle ORM, Lucia Auth, and pgvector
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/database';
 import { documents, cases, users, embeddings } from '$lib/server/database/schema';
 import { validateAuthSession } from '$lib/server/auth';

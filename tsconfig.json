@@ -1,6 +1,13 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./sveltekit-frontend" }
-  ]
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "target": "ESNext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "types": ["node"]
+  },
+  "include": ["uno.config.ts"]
 }

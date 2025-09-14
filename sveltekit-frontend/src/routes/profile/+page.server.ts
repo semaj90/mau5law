@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types.js';
 
 // Use DB barrel for tables/helpers; keep zod schema from schema module
 import { db, helpers, cases, evidence } from '$lib/server/db';

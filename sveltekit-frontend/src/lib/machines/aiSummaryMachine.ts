@@ -176,7 +176,7 @@ const initialContext: AISummaryContext = {
 };
 
 export const aiSummaryMachine = createMachine({
-  types: {} as {
+  types: Record<string, any> as {
     context: AISummaryContext;
     events: AISummaryEvent;
   },

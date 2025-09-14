@@ -364,7 +364,7 @@
       
       <div class="flex gap-4">
         <button
-          onclick={runLegalScenario}
+          on:click={runLegalScenario}
           disabled={!$isReady || benchmarkRunning}
           class="px-6 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg transition-colors"
         >
@@ -376,7 +376,7 @@
         </button>
         
         <button
-          onclick={runBenchmark}
+          on:click={runBenchmark}
           disabled={!$isReady || benchmarkRunning}
           class="px-6 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg transition-colors"
         >
@@ -406,12 +406,12 @@
             <tbody>
               {#each benchmarkResults as result}
                 <tr class="border-b border-gray-700/50">
-                  <td class="py-2 px-4 font-medium">{result.operation}</td>
-                  <td class="py-2 px-4 text-right font-mono">{Math.round(result.time)}</td>
-                  <td class="py-2 px-4 text-right font-mono">{formatThroughput(result.throughput)}</td>
+                  <td class="py-2 px-4 font-medium">{(result as { operation?: any; time?: any; throughput?: any }).operation}</td>
+                  <td class="py-2 px-4 text-right font-mono">{Math.round((result as { operation?: any; time?: any; throughput?: any }).time)}</td>
+                  <td class="py-2 px-4 text-right font-mono">{formatThroughput((result as { operation?: any; time?: any; throughput?: any }).throughput)}</td>
                   <td class="py-2 px-4 text-right">
-                    <span class="{result.throughput > 2000 ? 'text-green-400' : result.throughput > 1000 ? 'text-yellow-400' : 'text-red-400'}">
-                      {result.throughput > 2000 ? 'Excellent' : result.throughput > 1000 ? 'Good' : 'Poor'}
+                    <span class="{(result as { operation?: any; time?: any; throughput?: any }).throughput > 2000 ? 'text-green-400' : (result as { operation?: any; time?: any; throughput?: any }).throughput > 1000 ? 'text-yellow-400' : 'text-red-400'}">
+                      {(result as { operation?: any; time?: any; throughput?: any }).throughput > 2000 ? 'Excellent' : (result as { operation?: any; time?: any; throughput?: any }).throughput > 1000 ? 'Good' : 'Poor'}
                     </span>
                   </td>
                 </tr>

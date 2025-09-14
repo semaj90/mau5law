@@ -1,6 +1,6 @@
 /**
  * Semantic Search API - pgvector + Gemma Embeddings Integration
- * 
+ *
  * @module SemanticSearchAPI - pgvector cosine similarity search on PostgreSQL with Gemma embeddings for legal context
  * @module GemmaEmbeddingService - Generate 768-dimensional vectors using embeddinggemma:latest via Ollama
  * @module LegalRelevanceReranker - Legal-specific result reranking with keyword boosting and recency scoring
@@ -9,8 +9,15 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db, evidence, cases, legalDocuments, evidenceVectors, caseEmbeddings, embeddingCache } from '$lib/server/db/client.js';
+import type { RequestHandler } from './$types.js';
+import {
+  db,
+  evidence,
+  cases,
+  documentMetadata,
+  documentEmbeddings,
+  caseEmbeddings,
+} from '$lib/server/db/unified-client';
 import { sql, eq } from 'drizzle-orm';
 import { fastStringify, fastParse } from '$lib/utils/fast-json';
 
@@ -27,10 +34,10 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
         prompt: text
       })
     });
-    
-    if (!response.ok) throw new Error(`Ollama embedding failed: ${response.statusText}`);
-    const result = await fastParse(await response.text());
-    return result.embedding;
+
+    if (!(response as { ok?: any; statusText?: any; text?: any }).ok) throw new Error(`Ollama embedding failed: ${(response as { ok?: any; statusText?: any; text?: any }).statusText}`);
+    const result = await fastParse(await (response as { ok?: any; statusText?: any; text?: any }).text());
+    return (result as { embedding?: any; content?: any; title?: any; table?: any; similarity?: any }).embedding;
   } catch (error) {
     console.error('GemmaEmbeddingService error:', error);
     return new Array(768).fill(0);
@@ -38,28 +45,34 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
 }
 
 function rerankLegalResults(results: any[], query: string): any[] {
-  return results.map(result => {
-    let boost = 0;
-    const content = (result.content || result.title || '').toLowerCase();
-    const queryLower = query.toLowerCase();
-    
-    ['evidence', 'case', 'court', 'legal', 'law', 'precedent'].forEach(keyword => {
-      if (content.includes(keyword) && queryLower.includes(keyword)) boost += 0.1;
-    });
-    
-    if (result.table === 'evidence') boost += 0.15;
-    if (result.table === 'cases') boost += 0.1;
-    
-    return {
-      ...result,
-      legal_relevance_score: Math.min(result.similarity + boost, 1.0)
-    };
-  }).sort((a, b) => b.legal_relevance_score - a.legal_relevance_score);
+  return results
+    .map((result) => {
+      let boost = 0;
+      const content = ((result as { embedding?: any; content?: any; title?: any; table?: any; similarity?: any }).content || (result as { embedding?: any; content?: any; title?: any; table?: any; similarity?: any }).title || '').toLowerCase();
+      const queryLower = query.toLowerCase();
+
+      ['evidence', 'case', 'court', 'legal', 'law', 'precedent'].forEach((keyword) => {
+        if (content.includes(keyword) && queryLower.includes(keyword)) boost += 0.1;
+      });
+
+      if ((result as { embedding?: any; content?: any; title?: any; table?: any; similarity?: any }).table === 'evidence') boost += 0.15;
+      if ((result as { embedding?: any; content?: any; title?: any; table?: any; similarity?: any }).table === 'cases') boost += 0.1;
+
+      return {
+        ...result,
+        legal_relevance_score: Math.min((result as { embedding?: any; content?: any; title?: any; table?: any; similarity?: any }).similarity + boost, 1.0),
+      };
+    })
+    .sort((a, b) => b.legal_relevance_score - a.legal_relevance_score);
 }
 
-async function performVectorSearch(embedding: number[], limit: number = 20, threshold: number = 0.7): Promise<any[]> {
+async function performVectorSearch(
+  embedding: number[],
+  limit: number = 20,
+  threshold: number = 0.7
+): Promise<any[]> {
   const embeddingStr = `[${embedding.join(',')}]`;
-  
+
   try {
     const evidenceResults = await db.execute(sql`
       SELECT ev.id, ev.content, e.title, e.evidence_type, e.created_at, 'evidence' as table_type,
@@ -78,13 +91,13 @@ async function performVectorSearch(embedding: number[], limit: number = 20, thre
     `);
 
     return [...evidenceResults.rows, ...caseResults.rows]
-      .map(row => ({
+      .map((row) => ({
         id: row.id,
         content: row.content,
         title: row.title,
         table: row.table_type,
         similarity: Number(row.similarity),
-        created_at: row.created_at
+        created_at: row.created_at,
       }))
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, limit);

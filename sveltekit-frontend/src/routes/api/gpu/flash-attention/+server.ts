@@ -1,5 +1,5 @@
 import { FlashAttention2RTX3060Service } from '$lib/services/flashattention2-rtx3060.js';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Initialize FlashAttention2 service with RTX 3060 Ti configuration
@@ -33,13 +33,13 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       processingTime,
-      memoryUsage: result.memoryUsage,
-      confidence: result.confidence,
+      memoryUsage: (result as { memoryUsage?: any; confidence?: any; embeddings?: any; attentionWeights?: any; legalAnalysis?: any; processingTime?: any }).memoryUsage,
+      confidence: (result as { memoryUsage?: any; confidence?: any; embeddings?: any; attentionWeights?: any; legalAnalysis?: any; processingTime?: any }).confidence,
       result: {
-        embeddings: Array.from(result.embeddings.slice(0, 10)), // First 10 values for demo
-        attentionWeights: Array.from(result.attentionWeights.slice(0, 16)), // First 4x4 matrix
-        legalAnalysis: result.legalAnalysis,
-        processingTime: result.processingTime
+        embeddings: Array.from((result as { memoryUsage?: any; confidence?: any; embeddings?: any; attentionWeights?: any; legalAnalysis?: any; processingTime?: any }).embeddings.slice(0, 10)), // First 10 values for demo
+        attentionWeights: Array.from((result as { memoryUsage?: any; confidence?: any; embeddings?: any; attentionWeights?: any; legalAnalysis?: any; processingTime?: any }).attentionWeights.slice(0, 16)), // First 4x4 matrix
+        legalAnalysis: (result as { memoryUsage?: any; confidence?: any; embeddings?: any; attentionWeights?: any; legalAnalysis?: any; processingTime?: any }).legalAnalysis,
+        processingTime: (result as { memoryUsage?: any; confidence?: any; embeddings?: any; attentionWeights?: any; legalAnalysis?: any; processingTime?: any }).processingTime
       },
       metadata: {
         rtx_3060_ti: true,

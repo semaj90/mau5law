@@ -118,7 +118,7 @@ func main() {
 		RabbitMQURL:    getEnv("RABBITMQ_URL", "amqp://localhost"),
 		OllamaURL:      getEnv("OLLAMA_URL", "http://localhost:11434"),
 		CudaEnabled:    getEnv("CUDA_ENABLED", "true") == "true",
-		EmbeddingModel: getEnv("EMBEDDING_MODEL", "nomic-embed-text"),
+		EmbeddingModel: getEnv("EMBEDDING_MODEL", "embeddinggemma:latest"),
 		ChatModel:      getEnv("CHAT_MODEL", "gemma3-legal:latest"),
 	}
 

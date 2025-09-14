@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * MCP Health Check API - Test Database Integration
@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types';
  */
 
 import { json } from '@sveltejs/kit';
-import * as casesMCP from '../../../../../lib/mcp/cases.mcp';
+import * as casesMCP from '../../../../../lib/mcp/cases.mcp.js';
 
 export const GET: RequestHandler = async ({ getClientAddress }) => {
   try {

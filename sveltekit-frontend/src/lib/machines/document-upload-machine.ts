@@ -18,8 +18,8 @@ export const documentUploadMachine = createMachine({
   id: 'documentUpload',
   initial: 'idle',
   types: {
-    context: {} as DocumentUploadContext,
-    events: {} as 
+    context: Record<string, any> as DocumentUploadContext,
+    events: Record<string, any> as 
       | { type: 'SELECT_FILES'; files: File[] }
       | { type: 'UPDATE_FORM'; data: any }
       | { type: 'VALIDATE_FORM'; data: any }
@@ -31,7 +31,7 @@ export const documentUploadMachine = createMachine({
     files: [],
     uploadProgress: 0,
     processingProgress: 0,
-    validationErrors: {},
+    validationErrors: Record<string, any>,
     uploadedFiles: [],
     aiResults: null,
     error: null,
@@ -85,7 +85,7 @@ export const documentUploadMachine = createMachine({
         onDone: {
           target: 'validated',
           actions: assign({
-            validationErrors: {},
+            validationErrors: Record<string, any>,
             error: null
           })
         },
@@ -250,7 +250,7 @@ export const documentUploadMachine = createMachine({
             files: [],
             uploadProgress: 0,
             processingProgress: 0,
-            validationErrors: {},
+            validationErrors: Record<string, any>,
             uploadedFiles: [],
             aiResults: null,
             error: null,

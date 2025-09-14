@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface SemanticSearchRequest {
 	query: string;
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 		if (body.filters) {
 			results = results.filter((result: VectorSearchResult) => {
-				const metadata = result.metadata || {};
+				const metadata = (result as { metadata?: any; distance?: any }).metadata || {};
 
 				// Filter by category
 				if (body.filters?.category && metadata.category !== body.filters.category) {
@@ -161,11 +161,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		// Step 5: Enhanced result formatting
 		const enhancedResults = results.map((result: VectorSearchResult) => ({
 			...result,
-			semantic_score: (1 - result.distance), // Convert distance to similarity score
-			relevance_level: result.distance < 0.3 ? 'high' :
-							result.distance < 0.7 ? 'medium' : 'low',
+			semantic_score: (1 - (result as { metadata?: any; distance?: any }).distance), // Convert distance to similarity score
+			relevance_level: (result as { metadata?: any; distance?: any }).distance < 0.3 ? 'high' :
+							(result as { metadata?: any; distance?: any }).distance < 0.7 ? 'medium' : 'low',
 			embedding_metadata: {
-				model: embeddingData.model,
+				model: embeddingData?.model || "unknown" // @ts-ignore - Model property access,
 				dimensions: embeddingData.dimensions,
 				query: body.query
 			}

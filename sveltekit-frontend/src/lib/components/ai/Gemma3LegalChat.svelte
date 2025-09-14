@@ -197,7 +197,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               limit: 10,
               threshold: 0.7
             });
-            return response.results;
+            return (response as { results?: any; json?: any; body?: any }).results;
           },
           generateResponse: async (context, event) => {
             const sources = event.data || [];
@@ -210,12 +210,12 @@ https://svelte.dev/e/attribute_invalid_name -->
                 stream: context.streamResponse
               });
               return {
-                content: result.text,
+                content: (result as { text?: any; processingTime?: any; analysis?: any }).text,
                 metadata: {
                   model: 'gemma3-legal-wasm',
-                  processingTime: result.processingTime,
+                  processingTime: (result as { text?: any; processingTime?: any; analysis?: any }).processingTime,
                   sources,
-                  ...result.analysis
+                  ...(result as { text?: any; processingTime?: any; analysis?: any }).analysis
                 }
               };
             } else {
@@ -233,7 +233,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               if (context.streamResponse) {
                 return handleStreamingResponse(response);
               } else {
-                return await response.json();
+                return await (response as { results?: any; json?: any; body?: any }).json();
               }
             }
           }
@@ -324,7 +324,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     return prompt;
   }
   async function handleStreamingResponse(response: Response) {
-    const reader = response.body?.getReader();
+    const reader = (response as { results?: any; json?: any; body?: any }).body?.getReader();
     const decoder = new TextDecoder();
   let fullContent = $state('');
     if (!reader) throw new Error('No response body');
@@ -385,9 +385,9 @@ https://svelte.dev/e/attribute_invalid_name -->
 
 <div class="gemma3-legal-chat h-full flex flex-col">
   <!-- Header -->
-  <NesCard class="mb-4">
+  <div class="mb-4 nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center justify-between">
+      <h3 class="nes-text is-primary flex items-center justify-between">
         <div class="flex items-center gap-2">
           <Brain class="h-5 w-5" />
           Gemma3 Legal AI Assistant
@@ -405,7 +405,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         </div>
       </h3>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Main Content -->
   <Tabs bind:value={activeTab} class="flex-1 flex flex-col">
@@ -421,8 +421,8 @@ https://svelte.dev/e/attribute_invalid_name -->
         <div class="space-y-4">
           {#each $messages as message}
             <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
-              <NesCard class="max-w-[80%] {message.role === 'user' ? 'bg-primary/10' : ''}">
-                <div class="yorha-panel-content" class="p-4">
+              <div class="max-w-[80%] {message.role === 'user' ? 'bg-primary/10' : ''} nes-container">
+                <div class="yorha-panel-content p-4">
                   <div class="text-sm nes-text is-disabled mb-1">
                     {message.role === 'user' ? 'You' : 'Gemma3 Legal AI'}
                     · {message.timestamp.toLocaleTimeString()}
@@ -460,14 +460,14 @@ https://svelte.dev/e/attribute_invalid_name -->
                     </div>
                   {/if}
                 </div>
-              </NesCard>
+              </div>
             </div>
           {/each}
           
           {#if $isProcessing}
             <div class="flex justify-start">
-              <NesCard>
-                <div class="yorha-panel-content" class="p-4">
+              <div class="nes-container">
+                <div class="yorha-panel-content p-4">
                   <div class="flex items-center gap-4">
                     <N64LoadingRing 
                       size="md" 
@@ -481,7 +481,7 @@ https://svelte.dev/e/attribute_invalid_name -->
                     </div>
                   </div>
                 </div>
-              </NesCard>
+              </div>
             </div>
           {/if}
         </div>
@@ -508,21 +508,21 @@ https://svelte.dev/e/attribute_invalid_name -->
             disabled={$isProcessing || !userInput.trim()}
             class="self-end bits-btn bits-btn"
           >
-            {#if $isProcessing}
+{#if $isProcessing}
               <Loader2 class="h-4 w-4 animate-spin" />
             {:else}
               <Send class="h-4 w-4" />
             {/if}
-          </button>
+
         </form>
       </div>
     </TabsContent>
 
     <!-- Documents Tab -->
     <TabsContent value="documents" class="flex-1 p-4">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <FileText class="h-5 w-5" />
             Document Analysis
           </h3>
@@ -537,25 +537,25 @@ https://svelte.dev/e/attribute_invalid_name -->
             
             <div class="grid grid-cols-2 gap-4">
               <Button variant="outline" class="justify-start bits-btn bits-btn">
-                <FileText class="h-4 w-4 mr-2" />
+<FileText class="h-4 w-4 mr-2" />
                 Upload Document
-              </button>
+
               <Button variant="outline" class="justify-start bits-btn bits-btn">
-                <Search class="h-4 w-4 mr-2" />
+<Search class="h-4 w-4 mr-2" />
                 Search Documents
-              </button>
+
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- Metrics Tab -->
     <TabsContent value="metrics" class="flex-1 p-4">
       <div class="grid grid-cols-2 gap-4">
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
+            <h3 class="nes-text is-primary text-sm flex items-center gap-2">
               <Cpu class="h-4 w-4" />
               Performance Metrics
             </h3>
@@ -616,11 +616,11 @@ https://svelte.dev/e/attribute_invalid_name -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
+            <h3 class="nes-text is-primary text-sm flex items-center gap-2">
               <Zap class="h-4 w-4" />
               GPU Status - RTX 3060 Ti
             </h3>
@@ -680,7 +680,7 @@ https://svelte.dev/e/attribute_invalid_name -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       </div>
     </TabsContent>
   </Tabs>

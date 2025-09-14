@@ -96,8 +96,8 @@ const checkAuthService = fromPromise(async () => {
 const authMachine = createMachine({
   id: 'auth',
   types: {
-    context: {} as AuthContext,
-    events: {} as AuthEvents,
+    context: Record<string, any> as AuthContext,
+    events: Record<string, any> as AuthEvents,
   },
   context: {
     user: null,

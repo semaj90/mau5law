@@ -19,12 +19,15 @@
     submitClass?: string;
   }
 
-  let { 
-    fields = $bindable(),
-    onsubmit= $bindable(), 
+  let { fields = $bindable(),
+    on:submit= $bindable(), 
     submitText = $bindable(),
     submitClass = $bindable()
-  } = $props();
+   }: { fields = $bindable(),
+    on:submit= $bindable(), 
+    submitText = $bindable(),
+    submitClass = $bindable()
+  : any } = $props();
 
   let formData = $state({});
   let isSubmitting = $state(false);
@@ -61,7 +64,7 @@
   }
 </script>
 
-<form class="yorha-form" submit={handleSubmit}>
+<form class="yorha-form" on:submit={handleSubmit}>
   <div class="form-fields">
     {#each fields as field}
       <div class="form-field">

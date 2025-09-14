@@ -14,8 +14,8 @@ https://svelte.dev/e/js_parse_error -->
   // $state and $derived are declared globally in src/types/svelte-helpers.d.ts
   import type { AIResponse } from '$lib/types/ai';
   import { onMount, onDestroy } from 'svelte';
-  import { createGGUFRuntime, GGUFHelpers } from '$lib/services/gguf-runtime';
-  import { createNodeJSOrchestrator } from '$lib/services/nodejs-orchestrator';
+  import { createGGUFRuntime } from '$lib/services/gguf-runtime';
+  import { NodeJSOrchestrator } from '$lib/services/nodejs-orchestrator';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
 
@@ -28,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
     threads: navigator.hardwareConcurrency || 8
   });
 
-  const orchestrator = createNodeJSOrchestrator();
+  const orchestrator = new NodeJSOrchestrator();
 
   // Reactive state
   let demoInput = $state('Analyze the liability provisions in this employment contract and identify potential legal risks.');
@@ -39,8 +39,7 @@ https://svelte.dev/e/js_parse_error -->
   let performanceMetrics = $state({ fps: 0, latency: 0, throughput: 0 });
 
   // WebGPU visualization
-  let canvas = $state<HTMLCanvasElement;
-  let ctx: GPUCanvasContext | null >(null);
+  let canvas = $state<HTMLCanvasElementlet ctx: GPUCanvasContext | null>(null)(null);
   let device = $state<GPUDevice | null >(null);
   let animationFrame: number;
 
@@ -165,8 +164,8 @@ https://svelte.dev/e/js_parse_error -->
         // Test WebGPU status in service worker
         const channel = new MessageChannel();
         channel.port1.onmessage = (event) => {
-          if (event.data.type === 'WEBGPU_STATUS') {
-            console.log('Service Worker WebGPU Status:', event.data.data);
+          if (event.(data as { type?: any; data?: any; error?: any }).type === 'WEBGPU_STATUS') {
+            console.log('Service Worker WebGPU Status:', event.(data as { type?: any; data?: any; error?: any }).data);
           }
         };
 
@@ -187,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
     const startTime = Date.now();
 
     try {
-      const request = GGUFHelpers.analyzeLegalDocument(demoInput);
+      const request = // GGUFHelpers.analyzeLegalDocument(demoInput);
       const response = await ggufRuntime.generateCompletion(request);
 
       results = [
@@ -195,11 +194,11 @@ https://svelte.dev/e/js_parse_error -->
           id: Date.now(),
           type: 'GGUF Inference',
           input: demoInput.substring(0, 100) + '...',
-          output: response.text,
+          output: (response as { text?: any; processingTime?: any; tokensPerSecond?: any; memoryUsed?: any }).text,
           metrics: {
-            processingTime: response.processingTime,
-            tokensPerSecond: response.tokensPerSecond,
-            memoryUsed: response.memoryUsed,
+            processingTime: (response as { text?: any; processingTime?: any; tokensPerSecond?: any; memoryUsed?: any }).processingTime,
+            tokensPerSecond: (response as { text?: any; processingTime?: any; tokensPerSecond?: any; memoryUsed?: any }).tokensPerSecond,
+            memoryUsed: (response as { text?: any; processingTime?: any; tokensPerSecond?: any; memoryUsed?: any }).memoryUsed,
             windowsOptimized: true,
             rtx3060Accelerated: true
           },
@@ -230,10 +229,10 @@ https://svelte.dev/e/js_parse_error -->
 
       const result = await new Promise((resolve, reject) => {
         channel.port1.onmessage = (event) => {
-          if (event.data.type === 'WEBGPU_RESULT') {
-            resolve(event.data.data);
-          } else if (event.data.type === 'WEBGPU_ERROR') {
-            reject(new Error(event.data.error);
+          if (event.(data as { type?: any; data?: any; error?: any }).type === 'WEBGPU_RESULT') {
+            resolve(event.(data as { type?: any; data?: any; error?: any }).data);
+          } else if (event.(data as { type?: any; data?: any; error?: any }).type === 'WEBGPU_ERROR') {
+            reject(new Error(event.(data as { type?: any; data?: any; error?: any }).error));
           }
         };
 
@@ -310,7 +309,7 @@ https://svelte.dev/e/js_parse_error -->
       ]);
 
       // Wait for completion (simplified - real implementation would use callbacks)
-      await new Promise(resolve => setTimeout(resolve, 2000);
+      await new Promise(resolve => setTimeout(resolve, 2000));
       results = [
         {
           id: Date.now(),
@@ -409,39 +408,39 @@ https://svelte.dev/e/js_parse_error -->
   <div class="container mx-auto px-4 py-8">
     <!-- System Overview -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <NesCard class="bg-slate-800/50 border-blue-800/30">
+      <div class="bg-slate-800/50 border-blue-800/30 nes-container">
         <div class="p-4">
           <div class="text-2xl font-bold text-blue-400">{$runtimeStats.totalRequests}</div>
           <div class="text-sm text-slate-400">Total Requests</div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="bg-slate-800/50 border-blue-800/30">
+      <div class="bg-slate-800/50 border-blue-800/30 nes-container">
         <div class="p-4">
           <div class="text-2xl font-bold text-green-400">{performanceMetrics.fps}</div>
           <div class="text-sm text-slate-400">WebGPU FPS</div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="bg-slate-800/50 border-blue-800/30">
+      <div class="bg-slate-800/50 border-blue-800/30 nes-container">
         <div class="p-4">
           <div class="text-2xl font-bold text-cyan-400">{$metrics.activeWorkers}/{$metrics.totalWorkers}</div>
           <div class="text-sm text-slate-400">Active Workers</div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="bg-slate-800/50 border-blue-800/30">
+      <div class="bg-slate-800/50 border-blue-800/30 nes-container">
         <div class="p-4">
           <div class="text-2xl font-bold text-purple-400">{Math.round($systemHealth.efficiency)}%</div>
           <div class="text-sm text-slate-400">System Efficiency</div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Demo Controls -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Input Section -->
-      <NesCard class="bg-slate-800/50 border-blue-800/30">
+      <div class="bg-slate-800/50 border-blue-800/30 nes-container">
         <div class="p-6">
           <h2 class="text-xl font-semibold mb-4">Demo Input</h2>
 
@@ -460,58 +459,55 @@ https://svelte.dev/e/js_parse_error -->
 
           <div class="flex flex-wrap gap-3">
             <Button
-              onclick={runGGUFInference}
+              on:click={runGGUFInference}
               disabled={isProcessing || !$modelStatus.loaded}
               class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
             >
-              {isProcessing ? 'Processing...' : 'GGUF Inference'}
-            </button>
+{isProcessing ? 'Processing...' : 'GGUF Inference'}
 
             <Button
-              onclick={runWebGPUProcessing}
+              on:click={runWebGPUProcessing}
               disabled={isProcessing || !webgpuStatus.available}
               class="bg-green-600 hover:bg-green-700 text-white bits-btn bits-btn"
             >
-              WebGPU Processing
-            </button>
+WebGPU Processing
 
             <Button
-              onclick={runNodeJSOrchestration}
+              on:click={runNodeJSOrchestration}
               disabled={isProcessing}
               class="bg-purple-600 hover:bg-purple-700 text-white bits-btn bits-btn"
             >
-              Node.js Orchestration
-            </button>
+Node.js Orchestration
+
           </div>
 
           <div class="mt-4 flex gap-2">
             <Button
-              onclick={clearResults}
+              on:click={clearResults}
               variant="outline"
               class="border-slate-600 text-slate-300 hover:bg-slate-700 bits-btn bits-btn"
             >
-              Clear Results
-            </button>
+Clear Results
 
             <Button
-              onclick={exportResults}
+              on:click={exportResults}
               variant="outline"
               class="border-slate-600 text-slate-300 hover:bg-slate-700 bits-btn bits-btn"
             >
-              Export Data
-            </button>
+Export Data
+
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- WebGPU Visualization -->
-      <NesCard class="bg-slate-800/50 border-blue-800/30">
+      <div class="bg-slate-800/50 border-blue-800/30 nes-container">
         <div class="p-6">
           <h2 class="text-xl font-semibold mb-4">WebGPU Visualization</h2>
 
           <div class="relative">
             <canvas
-              bind:this={canvas}
+              bind:this={canvas as any}
               width="400"
               height="200"
               class="w-full border border-slate-600 rounded-md bg-slate-900"
@@ -539,7 +535,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Results Section -->
@@ -548,14 +544,14 @@ https://svelte.dev/e/js_parse_error -->
         <h2 class="text-2xl font-semibold mb-6">Processing Results</h2>
 
         <div class="space-y-4">
-          {#each results as result (result.id)}
-            <NesCard class="bg-slate-800/50 border-blue-800/30">
+          {#each results as result ((result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).id)}
+            <div class="bg-slate-800/50 border-blue-800/30 nes-container">
               <div class="p-6">
                 <div class="flex items-center justify-between mb-4">
                   <div class="flex items-center gap-3">
                     <div class="w-3 h-3 rounded-full bg-green-400"></div>
-                    <h3 class="text-lg font-semibold">{result.type}</h3>
-                    <span class="text-sm text-slate-400">{result.timestamp}</span>
+                    <h3 class="text-lg font-semibold">{(result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).type}</h3>
+                    <span class="text-sm text-slate-400">{(result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).timestamp}</span>
                   </div>
                 </div>
 
@@ -563,14 +559,14 @@ https://svelte.dev/e/js_parse_error -->
                   <div>
                     <h4 class="text-sm font-medium text-slate-300 mb-2">Input</h4>
                     <div class="bg-slate-700 rounded p-3 text-sm text-slate-300">
-                      {result.input}
+                      {(result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).input}
                     </div>
                   </div>
 
                   <div>
                     <h4 class="text-sm font-medium text-slate-300 mb-2">Output</h4>
                     <div class="bg-slate-700 rounded p-3 text-sm text-slate-300">
-                      {result.output}
+                      {(result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).output}
                     </div>
                   </div>
                 </div>
@@ -578,7 +574,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="mt-4">
                   <h4 class="text-sm font-medium text-slate-300 mb-2">Performance Metrics</h4>
                   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-                    {#each Object.entries(result.metrics) as [key, value]}
+                    {#each Object.entries((result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).metrics) as [key, value]}
                       <div class="bg-slate-700 rounded p-2">
                         <div class="text-slate-400 capitalize">{key.replace(/([A-Z])/g, ' $1')}</div>
                         <div class="font-mono text-white">
@@ -589,7 +585,7 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
               </div>
-            </NesCard>
+            </div>
           {/each}
         </div>
       </div>
@@ -600,7 +596,7 @@ https://svelte.dev/e/js_parse_error -->
       <h2 class="text-2xl font-semibold mb-6">Technical Specifications</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <NesCard class="bg-slate-800/50 border-blue-800/30">
+        <div class="bg-slate-800/50 border-blue-800/30 nes-container">
           <div class="p-6">
             <h3 class="text-lg font-semibold mb-4 text-blue-400">GGUF Runtime</h3>
             <ul class="space-y-2 text-sm text-slate-300">
@@ -612,9 +608,9 @@ https://svelte.dev/e/js_parse_error -->
               <li>✓ Memory-efficient GGUF loading</li>
             </ul>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard class="bg-slate-800/50 border-blue-800/30">
+        <div class="bg-slate-800/50 border-blue-800/30 nes-container">
           <div class="p-6">
             <h3 class="text-lg font-semibold mb-4 text-green-400">WebGPU Integration</h3>
             <ul class="space-y-2 text-sm text-slate-300">
@@ -626,9 +622,9 @@ https://svelte.dev/e/js_parse_error -->
               <li>✓ Memory-efficient buffers</li>
             </ul>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard class="bg-slate-800/50 border-blue-800/30">
+        <div class="bg-slate-800/50 border-blue-800/30 nes-container">
           <div class="p-6">
             <h3 class="text-lg font-semibold mb-4 text-purple-400">Node.js Orchestration</h3>
             <ul class="space-y-2 text-sm text-slate-300">
@@ -640,7 +636,7 @@ https://svelte.dev/e/js_parse_error -->
               <li>✓ Performance monitoring</li>
             </ul>
           </div>
-        </NesCard>
+        </div>
       </div>
     </div>
   </div>

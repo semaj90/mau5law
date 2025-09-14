@@ -69,7 +69,7 @@ export function createDocumentUploadForm(
     invalidateAll: false,
     onUpdated: ({ form }) => {
       // When the form becomes valid, ask the actor to validate the form data;
-      // otherwise inform the machine of the updated form data.
+      // otherwise inform the machine of the updated form (data as { query?: any }).
       if ((form as any).valid) {
         actor.send({
           type: 'VALIDATE_FORM',
@@ -304,7 +304,7 @@ export function createSearchForm(
     invalidateAll: false,
     onUpdated: ({ form }) => {
       // Don't auto-submit on every change for search
-      if ((form as any).data?.query && (form as any).data.query.length > 2) {
+      if ((form as any).data?.query && (form as any).(data as { query?: any }).query.length > 2) {
         // Optional: Trigger search suggestions
       }
     },
@@ -504,8 +504,8 @@ export function createFormValidator<T extends z.ZodType>(schema: T) {
     },
     getErrors: (data: any): Record<string, string[]> => {
       const result = schema.safeParse(data);
-      if (result.success) return {};
-      return result.error.flatten().fieldErrors;
+      if ((result as { success?: any; error?: any }).success) return {};
+      return (result as { success?: any; error?: any }).error.flatten().fieldErrors;
     },
     validateAsync: async (data: any): Promise<z.infer<T>> => {
       return schema.parseAsync(data);

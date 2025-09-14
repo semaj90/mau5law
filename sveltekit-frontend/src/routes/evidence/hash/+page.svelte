@@ -27,11 +27,11 @@
 
     try {
       const response = await fetch(`/api/evidence/hash?hash=${hashInput}`);
-      const result = await response.json();
-      if (response.ok) {
+      const result = await (response as { json?: any; ok?: any }).json();
+      if ((response as { json?: any; ok?: any }).ok) {
         searchResult = result;
       } else {
-        error = result.error || 'Search failed';
+        error = (result as { error?: any; message?: any }).error || 'Search failed';
   }
     } catch (e) {
       error = 'Network error occurred';
@@ -50,11 +50,11 @@
         body: JSON.stringify({ hash: hashInput, evidenceId })
       });
 
-      const result = await response.json();
-      if (response.ok) {
-        alert(`Integrity Check: ${result.message}`);
+      const result = await (response as { json?: any; ok?: any }).json();
+      if ((response as { json?: any; ok?: any }).ok) {
+        alert(`Integrity Check: ${(result as { error?: any; message?: any }).message}`);
       } else {
-        error = result.error || 'Verification failed';
+        error = (result as { error?: any; message?: any }).error || 'Verification failed';
   }
     } catch (e) {
       error = 'Network error occurred';
@@ -98,7 +98,7 @@
             maxlength="64"
           />
           <button 
-            onclick={() => searchByHash()} 
+            on:click={() => searchByHash()} 
             disabled={loading || !hashInput}
             class="space-y-4"
           >
@@ -130,29 +130,29 @@
                 <div class="space-y-4">
                   <div class="space-y-4">
                     <div class="space-y-4">
-                      <h4 class="space-y-4">{item.title}</h4>
+                      <h4 class="space-y-4">{(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).title}</h4>
                       <span class="space-y-4">
-                        ID: {item.id}
+                        ID: {(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).id}
                       </span>
                     </div>
                     
                     <div class="space-y-4">
                       <div>
-                        <p><strong>File:</strong> {item.fileName || 'N/A'}</p>
-                        <p><strong>Size:</strong> {item.fileSize ? (item.fileSize / 1024).toFixed(1) + ' KB' : 'N/A'}</p>
-                        <p><strong>Type:</strong> {item.fileType || 'N/A'}</p>
+                        <p><strong>File:</strong> {(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).fileName || 'N/A'}</p>
+                        <p><strong>Size:</strong> {(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).fileSize ? ((item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).fileSize / 1024).toFixed(1) + ' KB' : 'N/A'}</p>
+                        <p><strong>Type:</strong> {(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).fileType || 'N/A'}</p>
                       </div>
                       <div>
-                        <p><strong>Case:</strong> {item.caseName || 'N/A'} ({item.caseNumber || 'N/A'})</p>
-                        <p><strong>Uploaded by:</strong> {item.uploaderName || 'N/A'}</p>
-                        <p><strong>Uploaded:</strong> {item.uploadedAt ? new Date(item.uploadedAt).toLocaleString() : 'N/A'}</p>
+                        <p><strong>Case:</strong> {(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).caseName || 'N/A'} ({(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).caseNumber || 'N/A'})</p>
+                        <p><strong>Uploaded by:</strong> {(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).uploaderName || 'N/A'}</p>
+                        <p><strong>Uploaded:</strong> {(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).uploadedAt ? new Date((item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).uploadedAt).toLocaleString() : 'N/A'}</p>
                       </div>
                     </div>
                     
                     <div class="space-y-4">
-                      <strong>Hash:</strong> {item.hash}
+                      <strong>Hash:</strong> {(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).hash}
                       <button 
-                        onclick={() => copyToClipboard(item.hash)}
+                        on:click={() => copyToClipboard((item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).hash)}
                         class="space-y-4"
                         title="Copy hash"
                       >
@@ -160,22 +160,22 @@
                       </button>
                     </div>
                     
-                    {#if item.description}
-                      <p class="space-y-4">{item.description}</p>
+                    {#if (item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).description}
+                      <p class="space-y-4">{(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).description}</p>
                     {/if}
                     
                     <div class="space-y-4">
                       <button 
-                        onclick={() => verifyIntegrity(item.id)}
+                        on:click={() => verifyIntegrity((item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).id)}
                         disabled={loading}
                         class="space-y-4"
                       >
                         Verify Integrity
                       </button>
                       
-                      {#if item.fileUrl}
+                      {#if (item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).fileUrl}
                         <a 
-                          href={item.fileUrl}
+                          href={(item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).fileUrl}
                           target="_blank"
                           class="space-y-4"
                         >

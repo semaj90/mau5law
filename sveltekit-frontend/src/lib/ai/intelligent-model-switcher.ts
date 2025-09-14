@@ -4,8 +4,8 @@
  * Integrates CUDA cache optimizer, parallel cache, and user learning for optimal UX
  */
 
-import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js';
-import { unifiedClientLLMOrchestrator } from './unified-client-llm-orchestrator.js';
+import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js.js';
+import { unifiedClientLLMOrchestrator } from './unified-client-llm-orchestrator.js.js';
 import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
 import { browser } from '$app/environment';
 
@@ -40,23 +40,14 @@ export interface UserLearningProfile {
     peakUsageHours: number[];
     taskComplexityPreference: number; // 0-1
   };
-  satisfactionHistory: Array<{
-    modelUsed: string;
-    query: string;
-    satisfactionScore: number; // 1-5
-    timestamp: number;
-  }>;
+  satisfactionHistory: Array<any>;
   adaptationRate: number; // How quickly to adapt to new patterns
 }
 
 export interface FastUXOptimization {
   prefetchedModels: string[];
   precomputedSwitches: Map<string, string>; // query_pattern -> optimal_model
-  contextualPredictions: Array<{
-    nextLikelyIntent: string;
-    probability: number;
-    suggestedModel: string;
-  }>;
+  contextualPredictions: Array<any>;
   didYouMeanCache: Map<string, string[]>; // query -> suggestions
   userIntentShortcuts: Map<string, string>; // shortcut -> full_query
 }
@@ -64,15 +55,7 @@ export interface FastUXOptimization {
 class IntelligentModelSwitcher {
   private userProfiles = new Map<string, UserLearningProfile>();
   private fastUXOptimizations = new Map<string, FastUXOptimization>();
-  private switchHistory: Array<{
-    userId: string;
-    fromModel: string;
-    toModel: string;
-    reason: string;
-    performance: number;
-    userSatisfaction: number;
-    timestamp: number;
-  }> = [];
+  private switchHistory: Array< = [];
   
   // Learning and adaptation
   private adaptationThreshold = 0.7; // Switch if confidence > 70%
@@ -103,15 +86,7 @@ class IntelligentModelSwitcher {
       previousQueries?: string[];
       userFeedback?: number; // 1-5 rating of last response
     }
-  ): Promise<{
-    switchExecuted: boolean;
-    finalModel: string;
-    decision: ModelSwitchDecision;
-    fastUXOptimizations: string[];
-    userLearningUpdates: string[];
-    didYouMeanSuggestions: string[];
-    processingTime: number;
-  }> {
+  ): Promise<any> {
     const startTime = performance.now();
 
     try {
@@ -272,7 +247,7 @@ class IntelligentModelSwitcher {
     fromModel: string,
     toModel: string,
     userContext: any
-  ): Promise<{ success: boolean; switchTime: number; error?: string }> {
+  ): Promise<any> {
     const startTime = performance.now();
     
     try {
@@ -539,11 +514,7 @@ class IntelligentModelSwitcher {
     return { speedGain, qualityGain, userSatisfactionGain };
   }
 
-  private async calculateSwitchCost(fromModel: string, toModel: string): Promise<{
-    timeMs: number;
-    memoryMB: number;
-    cpuUsage: number;
-  }> {
+  private async calculateSwitchCost(fromModel: string, toModel: string): Promise<any> {
     // Estimated switch costs - would measure actual performance
     const switchCosts: Record<string, { timeMs: number; memoryMB: number; cpuUsage: number }> = {
       'gemma270m->llama-rl': { timeMs: 200, memoryMB: 1024, cpuUsage: 60 },
@@ -599,11 +570,7 @@ class IntelligentModelSwitcher {
     return [...new Set(predictions)].slice(0, 3);
   }
 
-  private generateContextualPredictions(profile: UserLearningProfile, currentQuery: string): Array<{
-    nextLikelyIntent: string;
-    probability: number;
-    suggestedModel: string;
-  }> {
+  private generateContextualPredictions(profile: UserLearningProfile, currentQuery: string): Array< {
     // Simplified prediction based on patterns
     return [
       { nextLikelyIntent: 'legal_analysis', probability: 0.6, suggestedModel: 'llama-rl' },
@@ -659,14 +626,7 @@ class IntelligentModelSwitcher {
   /**
    * Get switcher performance statistics
    */
-  async getPerformanceStats(): Promise<{
-    totalSwitches: number;
-    successRate: number;
-    avgSwitchTime: number;
-    userSatisfactionImprovement: number;
-    activeUserProfiles: number;
-    learningPhaseDistribution: Record<string, number>;
-  }> {
+  async getPerformanceStats(): Promise<any> {
     const learningPhases = Array.from(this.userProfiles.values())
       .map(profile => profile.learningPhase);
     

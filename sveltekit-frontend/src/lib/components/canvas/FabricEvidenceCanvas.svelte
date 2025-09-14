@@ -51,8 +51,8 @@
   }: CanvasProps = $props();
 
   // Canvas state using Svelte 5 runes
-  let canvasElement = $state<HTMLCanvasElement>();
-  let fabricCanvas = $state<fabric.Canvas>();
+  let canvasElement: HTMLCanvasElement = $state(undefined as any);
+  let fabricCanvas: fabric.Canvas = $state(undefined as any);
   let selectedEvidence = $state<string | null>(null);
   let isDragMode = $state(true);
   let showGrid = $state(true);
@@ -61,12 +61,12 @@
   let dragCounter = $state(0);
 
   // Evidence object cache
-  let evidenceObjects = $state<Map<string, fabric.Object>>(new Map());
+  let evidenceObjects = $state<Map<string, fabric.Object>('')>(new Map());
   
   // MinIO-WebGPU Evidence Service
   let evidenceService = $state<any>(null);
-  let processingJobs = $state<Map<string, any>>(new Map());
-  let processingProgress = $state<Map<string, { progress: number; status: string }>>(new Map());
+  let processingJobs = $state<Map<string, any>('')>(new Map());
+  let processingProgress = $state<Map<string, { progress: numberstatus: string } | null>(null)()>(new Map());
 
   // Derived state
   let canvasReady = $derived(!!fabricCanvas);
@@ -163,7 +163,7 @@
     fabricCanvas.on('selection:created', (e) => {
       const activeObject = e.selected?.[0];
       if (activeObject && activeObject.data?.evidenceId) {
-        selectedEvidence = activeObject.data.evidenceId;
+        selectedEvidence = activeObject.(data as { evidenceId?: any; originalEvidence?: any }).evidenceId;
         onEvidenceSelect?.(selectedEvidence);
       }
     });
@@ -178,10 +178,10 @@
       const obj = e.target;
       if (obj?.data?.evidenceId) {
         const position = { x: obj.left || 0, y: obj.top || 0 };
-        onEvidenceMove?.(obj.data.evidenceId, position);
+        onEvidenceMove?.(obj.(data as { evidenceId?: any; originalEvidence?: any }).evidenceId, position);
         
         // Update evidence position in our cache
-        const evidence = evidenceItems.find(item => item.id === obj.data.evidenceId);
+        const evidence = evidenceItems.find(item => (item as { id?: any; selected?: any }).id === obj.(data as { evidenceId?: any; originalEvidence?: any }).evidenceId);
         if (evidence) {
           evidence.position = position;
         }
@@ -427,17 +427,17 @@
             // Create enhanced file object
             const enhancedFile = Object.assign(file, {
               wasmProcessed: true,
-              parsedDocument: result.document,
-              chunks: result.chunks,
-              entities: result.metadata.entities,
+              parsedDocument: (result as { document?: any; chunks?: any; metadata?: any }).document,
+              chunks: (result as { document?: any; chunks?: any; metadata?: any }).chunks,
+              entities: (result as { document?: any; chunks?: any; metadata?: any }).metadata.entities,
               processingMetadata: {
                 parser: 'wasm_simd',
-                totalChunks: result.metadata.totalChunks,
+                totalChunks: (result as { document?: any; chunks?: any; metadata?: any }).metadata.totalChunks,
                 processedAt: new Date().toISOString()
               }
             });
 
-            console.log(`✅ WASM processed: ${file.name} (${result.metadata.totalChunks} chunks)`);
+            console.log(`✅ WASM processed: ${file.name} (${(result as { document?: any; chunks?: any; metadata?: any }).metadata.totalChunks} chunks)`);
             return enhancedFile;
 
           } catch (error) {
@@ -459,13 +459,13 @@
     if (!fabricCanvas) return;
 
     // Remove objects that no longer exist
-    const currentEvidenceIds = new Set(evidenceItems.map(item => item.id));
+    const currentEvidenceIds = new Set(evidenceItems.map(item => (item as { id?: any; selected?: any }).id));
     const objectsToRemove: fabric.Object[] = [];
     
     fabricCanvas.getObjects().forEach(obj => {
-      if (obj.data?.evidenceId && !currentEvidenceIds.has(obj.data.evidenceId)) {
+      if (obj.data?.evidenceId && !currentEvidenceIds.has(obj.(data as { evidenceId?: any; originalEvidence?: any }).evidenceId)) {
         objectsToRemove.push(obj);
-        evidenceObjects.delete(obj.data.evidenceId);
+        evidenceObjects.delete(obj.(data as { evidenceId?: any; originalEvidence?: any }).evidenceId);
       }
     });
     
@@ -927,7 +927,7 @@
     fabricCanvas.remove(obj);
 
     // Create final evidence card based on processing results
-    const finalCard = createFinalEvidenceCard(data.originalEvidence, result, {
+    const finalCard = createFinalEvidenceCard((data as { evidenceId?: any; originalEvidence?: any }).originalEvidence, result, {
       left: obj.left,
       top: obj.top
     });
@@ -1089,13 +1089,13 @@
   <!-- Canvas Controls -->
   <div class="canvas-controls">
     <div class="control-group">
-      <button onclick={zoomToFit} class="control-btn" title="Reset Zoom">
+      <button on:click={zoomToFit} class="control-btn" title="Reset Zoom">
         🔍 Fit
       </button>
-      <button onclick={centerEvidence} class="control-btn" title="Center Evidence">
+      <button on:click={centerEvidence} class="control-btn" title="Center Evidence">
         🎯 Center
       </button>
-      <button onclick={() => showGrid = !showGrid} class="control-btn" title="Toggle Grid">
+      <button on:click={() => showGrid = !showGrid} class="control-btn" title="Toggle Grid">
         {showGrid ? '⊞' : '⊡'} Grid
       </button>
     </div>
@@ -1175,7 +1175,7 @@
     display: block;
   }
 
-  .status-item.selected {
+  .status-(item as { id?: any; selected?: any }).selected {
     color: #10b981;
     font-weight: bold;
   }

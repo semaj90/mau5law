@@ -4,7 +4,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { 
   RedisLegalOrchestrator, 
   RedisLLMCache, 
@@ -86,8 +86,8 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         result,
         orchestrated: true,
-        processing_pipeline: result.source === 'cache' ? 'L1_CACHE' : 
-                           result.source === 'fresh' ? 'L3_PROCESSING' : 
+        processing_pipeline: (result as { source?: any }).source === 'cache' ? 'L1_CACHE' : 
+                           (result as { source?: any }).source === 'fresh' ? 'L3_PROCESSING' : 
                            'ASYNC_QUEUE'
       });
     } else {

@@ -121,11 +121,7 @@ export class RedisWebGPUSIMDIntegration {
       pipeline?: JobType[];
       priority?: number;
     } = {}
-  ): Promise<{
-    analysis: any;
-    processingPath: string[];
-    performance: any;
-  }> {
+  ): Promise<any> {
     const startTime = performance.now();
     const processingPath: string[] = [];
 
@@ -223,11 +219,7 @@ export class RedisWebGPUSIMDIntegration {
       threshold?: number;
       useCache?: boolean;
     } = {}
-  ): Promise<{
-    similarities: number[];
-    processingPath: string[];
-    performance: any;
-  }> {
+  ): Promise<any> {
     const startTime = performance.now();
     const processingPath: string[] = [];
 
@@ -309,11 +301,7 @@ export class RedisWebGPUSIMDIntegration {
       useCache?: boolean;
       webgpuRanking?: boolean;
     } = {}
-  ): Promise<{
-    todos: IntelligentTodo[];
-    processingPath: string[];
-    performance: any;
-  }> {
+  ): Promise<any> {
     const startTime = performance.now();
     const processingPath: string[] = [];
 
@@ -375,16 +363,8 @@ export class RedisWebGPUSIMDIntegration {
    * Batch process multiple operations with intelligent caching
    */
   async batchProcess(
-    operations: Array<{
-      type: 'legal_document' | 'vector_similarity' | 'intelligent_todos';
-      data: any;
-      options?: any;
-    }>
-  ): Promise<{
-    results: any[];
-    performance: any;
-    cacheStats: any;
-  }> {
+    operations: Array<
+  ): Promise<any> {
     const startTime = performance.now();
     const initialMetrics = { ...this.metrics };
 

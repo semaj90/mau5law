@@ -87,14 +87,14 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 
     const payload = {
       success: true,
-      data: result.items,
+      data: (result as { items?: any; pagination?: any }).items,
       pagination: {
-        page: result.pagination.page,
-        limit: result.pagination.limit,
-        total: result.pagination.totalCount,
-        totalPages: result.pagination.totalPages,
-        hasNext: result.pagination.hasNext,
-        hasPrev: result.pagination.hasPrev,
+        page: (result as { items?: any; pagination?: any }).pagination.page,
+        limit: (result as { items?: any; pagination?: any }).pagination.limit,
+        total: (result as { items?: any; pagination?: any }).pagination.totalCount,
+        totalPages: (result as { items?: any; pagination?: any }).pagination.totalPages,
+        hasNext: (result as { items?: any; pagination?: any }).pagination.hasNext,
+        hasPrev: (result as { items?: any; pagination?: any }).pagination.hasPrev,
       },
       meta: {
         userId: locals.user.id,

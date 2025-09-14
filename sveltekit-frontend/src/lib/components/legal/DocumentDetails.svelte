@@ -7,9 +7,9 @@ https://svelte.dev/e/js_parse_error -->
   import { writable } from 'svelte/store';
   import { legalDB } from '$lib/db/client-db.js';
   import type { DocumentCache, VectorSearchCache } from '$lib/db/client-db.js';
-  let { documentId = $bindable() } = $props(); // string;
-  let { isVisible = $bindable() } = $props(); // false;
-  let { onClose = $bindable() } = $props(); // () => void = () => {};
+  let { documentId = $bindable()  }: { documentId = $bindable() : any } = $props(); // string;
+  let { isVisible = $bindable()  }: { isVisible = $bindable() : any } = $props(); // false;
+  let { onClose = $bindable()  }: { onClose = $bindable() : any } = $props(); // () => void = () => {};
   // Reactive state management
   const documentData = writable<any>(null);
   const isLoading = writable<boolean>(false);
@@ -178,7 +178,7 @@ https://svelte.dev/e/js_parse_error -->
           </p>
         </div>
         <button 
-          onclick={onClose}
+          on:click={onClose}
           class="text-white hover:text-blue-200 text-2xl font-bold"
           aria-label="Close"
         >
@@ -208,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="text-red-600 text-xl mb-4">❌ Error</div>
           <p class="text-red-700 mb-4">{$errorMessage}</p>
           <button 
-            onclick={() => loadDocumentDetails(documentId, true)}
+            on:click={() => loadDocumentDetails(documentId, true)}
             class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
           >
             Retry
@@ -250,13 +250,13 @@ https://svelte.dev/e/js_parse_error -->
                   <h3 class="text-xl font-semibold text-gray-800">Document Content</h3>
                   <div class="flex gap-2">
                     <button 
-                      onclick={() => loadDocumentDetails(documentId, true)}
+                      on:click={() => loadDocumentDetails(documentId, true)}
                       class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded"
                     >
                       🔄 Refresh
                     </button>
                     <button 
-                      onclick={toggleGPUAnalysis}
+                      on:click={toggleGPUAnalysis}
                       class="text-sm {showGPUAnalysis ? 'bg-purple-100 text-purple-700' : 'bg-gray-100'} hover:bg-purple-200 px-3 py-1 rounded"
                     >
                       {showGPUAnalysis ? '🧠 GPU Active' : '⚡ GPU Analysis'}

@@ -304,20 +304,20 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
 
         const assistantMessage: ChatMessage = {
           id: `msg_${Date.now()}_ai`,
           type: 'assistant',
-          content: data.response,
+          content: (data as { response?: any; suggestions?: any; metadata?: any }).response,
           timestamp: new Date(),
-          suggestions: data.suggestions || [],
-          metadata: data.metadata,
+          suggestions: (data as { response?: any; suggestions?: any; metadata?: any }).suggestions || [],
+          metadata: (data as { response?: any; suggestions?: any; metadata?: any }).metadata,
         };
 
         chatMessages = [...chatMessages, assistantMessage];
-        aiSuggestions = data.suggestions || [];
+        aiSuggestions = (data as { response?: any; suggestions?: any; metadata?: any }).suggestions || [];
 
         aiService.send('RESPONSE_COMPLETE');
       } else {
@@ -410,8 +410,8 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch(`/api/context/${contextId}`);
-      if (response.ok) {
-        const contextData = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const contextData = await (response as { ok?: any; json?: any }).json();
 
         // Update relevant panels with new context
         // This would load specific reports, summaries, etc.
@@ -477,13 +477,13 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="flex items-center space-x-2">
-  <Button class="bits-btn" variant="outline" size="sm" onclick={exportChatHistory}>
-          <Download class="h-4 w-4 mr-1" />
+  <Button class="bits-btn" variant="outline" size="sm" on:click={exportChatHistory}>
+<Download class="h-4 w-4 mr-1" />
           Export
-        </button>
+</Button>
         <Button class="bits-btn" variant="outline" size="sm">
-          <Settings class="h-4 w-4" />
-        </button>
+<Settings class="h-4 w-4" />
+</Button>
       </div>
     </div>
   </header>
@@ -500,12 +500,14 @@ https://svelte.dev/e/js_parse_error -->
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Reports</h3>
             <div class="flex items-center space-x-1">
-              <Button class="bits-btn" size="sm" variant="ghost" onclick={() => adjustPanelWidth('reports', -5)}>
+              <Button class="bits-btn" size="sm" variant="ghost" on:click={() =>
+adjustPanelWidth('reports', -5)}>
                 <Minimize class="h-3 w-3" />
-              </button>
-              <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('reports')}>
+</Button>
+              <Button class="bits-btn" size="sm" variant="ghost" on:click={() =>
+togglePanel('reports')}>
                 <Minimize class="h-3 w-3" />
-              </button>
+</Button>
             </div>
           </div>
 
@@ -548,9 +550,10 @@ https://svelte.dev/e/js_parse_error -->
         <div class="h-full flex flex-col">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Summaries</h3>
-            <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('summaries')}>
+            <Button class="bits-btn" size="sm" variant="ghost" on:click={() =>
+togglePanel('summaries')}>
               <Minimize class="h-3 w-3" />
-            </button>
+</Button>
           </div>
 
           <div class="flex-1 overflow-y-auto p-4">
@@ -576,9 +579,10 @@ https://svelte.dev/e/js_parse_error -->
         <div class="h-full flex flex-col">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Citations</h3>
-            <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('citations')}>
+            <Button class="bits-btn" size="sm" variant="ghost" on:click={() =>
+togglePanel('citations')}>
               <Minimize class="h-3 w-3" />
-            </button>
+</Button>
           </div>
 
           <div class="flex-1 overflow-y-auto p-4">
@@ -621,9 +625,10 @@ https://svelte.dev/e/js_parse_error -->
               </span>
             </div>
           </div>
-          <Button class="bits-btn" size="sm" variant="ghost" onclick={() => togglePanel('chat')}>
+          <Button class="bits-btn" size="sm" variant="ghost" on:click={() =>
+togglePanel('chat')}>
             <Expand class="h-3 w-3" />
-          </button>
+</Button>
         </div>
 
         <!-- AI Suggestions Bar -->
@@ -634,9 +639,9 @@ https://svelte.dev/e/js_parse_error -->
               {#each contextualSuggestions as suggestion}
                 <button
                   class="text-xs px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded transition-colors"
-                  onclick={() => useSuggestion(suggestion)}>
+                  on:click={() => useSuggestion(suggestion)}>
                   {suggestion}
-                </button>
+</Button>
               {/each}
             </div>
           </div>
@@ -671,7 +676,7 @@ https://svelte.dev/e/js_parse_error -->
                       {#each message.suggestions as suggestion}
                         <button
                           class="block w-full text-left text-xs p-2 bg-white/20 hover:bg-white/30 rounded transition-colors"
-                          onclick={() => useSuggestion(suggestion)}>
+                          on:click={() => useSuggestion(suggestion)}>
                           {suggestion}
                         </button>
                       {/each}
@@ -711,7 +716,7 @@ https://svelte.dev/e/js_parse_error -->
               enableVectorSearch={true}
               aiSuggestions={true}
               select={(result) => {
-                currentMessage = `Tell me about: ${result.title}`;
+                currentMessage = `Tell me about: ${(result as { title?: any }).title}`;
                 sendMessage();
               }}
             />
@@ -731,20 +736,20 @@ https://svelte.dev/e/js_parse_error -->
               <Button
                 variant="outline"
                 size="sm"
-                onclick={startVoiceInput}
+                on:click={startVoiceInput}
                 disabled={isListening || isProcessing}
                 class={isListening ? 'bg-red-100 border-red-300' : ''}>
-                {#if isListening}
+{#if isListening}
                   <MicOff class="h-4 w-4" />
                 {:else}
                   <Mic class="h-4 w-4" />
                 {/if}
-              </button>
+</Button>
             {/if}
 
-            <Button class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing}>
-              <Send class="h-4 w-4" />
-            </button>
+            <Button class="bits-btn" on:click={sendMessage} disabled={!currentMessage.trim() || isProcessing}>
+<Send class="h-4 w-4" />
+</Button>
           </div>
         </div>
       {/if}

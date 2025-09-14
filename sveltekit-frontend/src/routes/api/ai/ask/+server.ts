@@ -18,7 +18,7 @@
 
 import { json } from "@sveltejs/kit";
 import { ollamaService } from "$lib/services/ollama-service";
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
@@ -79,13 +79,7 @@ try {
 // Enhanced AI response interface with Gemma3 support
 export interface AIResponse {
   answer: string;
-  sources: Array<{
-    id: string;
-    title: string;
-    content: string;
-    score: number;
-    type: "case" | "evidence" | "document";
-  }>;
+  sources: Array<any>;
   query: string;
   executionTime: number;
   fromCache: boolean;
@@ -368,11 +362,11 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     });
 
     const suggestions = searchResults.results.map((result: any) => ({
-      id: result.id,
-      title: result.title,
-      type: result.type,
-      score: result.score,
-      preview: result.content.substring(0, 100) + "..."
+      id: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).id,
+      title: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).title,
+      type: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).type,
+      score: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).score,
+      preview: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).content.substring(0, 100) + "..."
     }));
 
     return json({ suggestions });

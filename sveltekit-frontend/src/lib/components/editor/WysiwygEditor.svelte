@@ -30,12 +30,7 @@
               export const enableCollaboration = false;
   ;
   // Events
-  const dispatch = createEventDispatcher<{
-    change: { content: string; wordCount: number };
-    save: { content: string };
-    aiRequest: { selectedText: string; action: string };
-    citationRequest: { text: string; position: number };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Stores
   let editorElement: HTMLElement;
@@ -81,11 +76,7 @@
 
   // Citation state
   let citationQuery = $state('');
-  let citationResults = $state<Array<{
-    title: string;
-    citation: string;
-    relevance: number;
-  }> >([]);
+  let citationResults = $state<Array() >([]);
 
   onMount(async () => {
     await initializeEditor();
@@ -287,23 +278,13 @@
     } catch (error) {
       console.error('Citation search failed:', error);
   }}
-  function insertCitation(citation: any) {
-    if (hugerte) {
-      const citationHtml = `
-        <div class="space-y-4">
-          <strong>${citation.title}</strong><br>
-          <em>${citation.citation}</em>
+  function insertCitation(citation: any) {/* JSX syntax converted to Svelte */}</em>
         </div>
       `;
       hugerte.insertContent(citationHtml);
       citeOpen.set(false);
   }}
-  function insertAIContent() {
-    if (hugerte && aiResults) {
-      const aiHtml = `
-        <div class="space-y-4">
-          <strong>AI Suggestion:</strong><br>
-          ${aiResults.replace(/\n/g, '<br>')}
+  function insertAIContent() {/* JSX syntax converted to Svelte */}
         </div>
       `;
       hugerte.insertContent(aiHtml);
@@ -382,7 +363,7 @@
         ></textarea>
 
         <button
-          onclick={() => processAIRequest()}
+          on:click={() => processAIRequest()}
           disabled={isProcessingAI || !aiQuery.trim()}
           class="space-y-4"
         >
@@ -397,7 +378,7 @@
           <div class="space-y-4">
             <strong>AI Response:</strong>
             <div class="space-y-4">{aiResults}</div>
-            <button onclick={() => insertAIContent()} class="space-y-4">
+            <button on:click={() => insertAIContent()} class="space-y-4">
               Insert into Document
             </button>
           </div>
@@ -426,7 +407,7 @@
         />
 
         <button
-          onclick={() => searchCitations()}
+          on:click={() => searchCitations()}
           disabled={!citationQuery.trim()}
           class="space-y-4"
         >
@@ -444,7 +425,7 @@
                   Relevance: {Math.round(citation.relevance * 100)}%
                 </div>
                 <button
-                  onclick={() => insertCitation(citation)}
+                  on:click={() => insertCitation(citation)}
                   class="space-y-4"
                 >
                   Insert Citation

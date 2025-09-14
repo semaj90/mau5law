@@ -29,7 +29,7 @@ https://svelte.dev/e/tag_invalid_name -->
   let aiResponse = $state<string | null>(null);
   let aiProcessing = $state(false);
   let aiError = $state<string | null>(null);
-  let conversationHistory = $state<Array<{role: 'user' | 'assistant', content: string}>>([]);
+  let conversationHistory = $state<any[]>([])([]);
 
   // Document Processing State
   let currentDocument = $state<any>({
@@ -234,9 +234,9 @@ https://svelte.dev/e/tag_invalid_name -->
 
     <!-- WebGPU + WebAssembly Bridge -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <NesCard class="bg-black bg-opacity-30 border-yellow-500">
+      <div class="bg-black bg-opacity-30 border-yellow-500 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-yellow-400 font-mono">🔗 WebGPU + WebAssembly Bridge</h3>
+          <h3 class="nes-text is-primary text-yellow-400 font-mono">🔗 WebGPU + WebAssembly Bridge</h3>
         </div>
         <div class="yorha-panel-content">
           <WebGPUWebAssemblyBridge
@@ -247,14 +247,14 @@ https://svelte.dev/e/tag_invalid_name -->
             enableDemo={true}
           />
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- AI Assistant Interface -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <NesCard class="bg-black bg-opacity-30 border-green-500">
+      <div class="bg-black bg-opacity-30 border-green-500 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-green-400 font-mono">🤖 WebAssembly AI Assistant (Gemma 270MB)</h3>
+          <h3 class="nes-text is-primary text-green-400 font-mono">🤖 WebAssembly AI Assistant (Gemma 270MB)</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="space-y-6">
@@ -262,7 +262,7 @@ https://svelte.dev/e/tag_invalid_name -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               {#each testPrompts as example}
                 <button
-                  onclick={() => setTestPrompt(example.prompt)}
+                  on:click={() => setTestPrompt(example.prompt)}
                   class="p-3 bg-gray-800 border border-gray-600 rounded-lg hover:border-green-500 transition-colors text-left"
                 >
                   <div class="flex items-center gap-2 mb-2">
@@ -290,7 +290,7 @@ https://svelte.dev/e/tag_invalid_name -->
 
               <div class="flex items-center gap-4">
                 <button
-                  onclick={() => sendToAI()}
+                  on:click={() => sendToAI()}
                   disabled={!aiInput.trim() || aiProcessing}
                   class="px-6 py-2 bg-green-600 text-white font-mono rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
@@ -303,7 +303,7 @@ https://svelte.dev/e/tag_invalid_name -->
                 </button>
 
                 <button
-                  onclick={clearConversation}
+                  on:click={clearConversation}
                   class="px-4 py-2 bg-gray-600 text-white font-mono rounded-md hover:bg-gray-700"
                 >
                   Clear
@@ -347,14 +347,14 @@ https://svelte.dev/e/tag_invalid_name -->
             {/if}
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- NES 3D LOD Processor -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <NesCard class="bg-black bg-opacity-30 border-purple-500">
+      <div class="bg-black bg-opacity-30 border-purple-500 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-purple-400 font-mono">🎮 NES 3D LOD Processor</h3>
+          <h3 class="nes-text is-primary text-purple-400 font-mono">🎮 NES 3D LOD Processor</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="space-y-4 mb-6">
@@ -363,7 +363,7 @@ https://svelte.dev/e/tag_invalid_name -->
               <div>
                 <label class="block text-sm text-purple-400 font-mono mb-2">Processing:</label>
                 <button
-                  onclick={toggleProcessing}
+                  on:click={toggleProcessing}
                   class="w-full px-4 py-2 {processingActive ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'} text-white font-mono rounded-md"
                 >
                   {processingActive ? 'Stop' : 'Start'}
@@ -410,14 +410,14 @@ https://svelte.dev/e/tag_invalid_name -->
             userId="demo_user"
           />
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- System Architecture Diagram -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <NesCard class="bg-black bg-opacity-30 border-yellow-500">
+      <div class="bg-black bg-opacity-30 border-yellow-500 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="text-yellow-400 font-mono">🏗️ Complete Integration Architecture</h3>
+          <h3 class="nes-text is-primary text-yellow-400 font-mono">🏗️ Complete Integration Architecture</h3>
         </div>
         <div class="yorha-panel-content">
           <div class="overflow-x-auto">
@@ -488,7 +488,7 @@ https://svelte.dev/e/tag_invalid_name -->
             </ul>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </main>
 

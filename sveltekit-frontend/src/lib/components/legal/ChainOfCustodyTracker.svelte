@@ -199,7 +199,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     {#if interactive && onTransferEvidence}
       <div class="mt-3 flex justify-end">
         <button
-          onclick={() => onTransferEvidence?.(evidence)}
+          on:click={() => onTransferEvidence?.(evidence)}
           class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
         >
           Transfer Custody
@@ -237,7 +237,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                 'relative flex items-start gap-4',
                 interactive && 'cursor-pointer group'
               )}
-              onclick={() => interactive && onViewDetails?.(transfer)}
+              on:click={() => interactive && onViewDetails?.(transfer)}
             >
               <!-- Timeline Node -->
               <div class={cn(
@@ -336,7 +336,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {#if !showFullHistory && sortedTransfers.length > 3}
           <div class="text-center mt-4">
             <button 
-              onclick={() => showFullHistory = true}
+              on:click={() => showFullHistory = true}
               class="text-sm font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
             >
               Show {sortedTransfers.length - 3} more transfer{sortedTransfers.length - 3 !== 1 ? 's' : ''}

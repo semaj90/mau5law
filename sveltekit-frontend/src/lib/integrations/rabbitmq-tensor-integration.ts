@@ -182,9 +182,9 @@ export class RabbitMQTensorIntegration {
       if (result) {
         await rabbitmqServiceWorker.publishMessage(WASM_QUEUE_ROUTING.similarity_results, {
           jobId: job.id,
-          similarities: result.similarities,
-          processingTime: result.processingTime,
-          acceleration: result.acceleration || 'wasm'
+          similarities: (result as { similarities?: any; processingTime?: any; acceleration?: any; vectors?: any }).similarities,
+          processingTime: (result as { similarities?: any; processingTime?: any; acceleration?: any; vectors?: any }).processingTime,
+          acceleration: (result as { similarities?: any; processingTime?: any; acceleration?: any; vectors?: any }).acceleration || 'wasm'
         });
       }
     });
@@ -208,10 +208,10 @@ export class RabbitMQTensorIntegration {
       const result = await this.processTensorJob(job);
       
       // Forward to storage queue
-      if (result && result.vectors) {
+      if (result && (result as { similarities?: any; processingTime?: any; acceleration?: any; vectors?: any }).vectors) {
         await rabbitmqServiceWorker.publishMessage(WASM_QUEUE_ROUTING.wasm_to_storage, {
           jobId: job.id,
-          normalizedVectors: result.vectors,
+          normalizedVectors: (result as { similarities?: any; processingTime?: any; acceleration?: any; vectors?: any }).vectors,
           wasmProcessed: true,
           ready_for_storage: true
         });
@@ -254,13 +254,13 @@ export class RabbitMQTensorIntegration {
       
       // Setup message listener
       const messageHandler = (event: MessageEvent<TensorWorkerMessage>) => {
-        if (event.data.id === job.id) {
+        if (event.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).id === job.id) {
           clearTimeout(timeout);
           
-          if (event.data.type === 'TENSOR_PROCESSED') {
-            resolve(event.data.result);
-          } else if (event.data.type === 'TENSOR_ERROR') {
-            reject(new Error(event.data.error || 'Tensor processing error'));
+          if (event.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).type === 'TENSOR_PROCESSED') {
+            resolve(event.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).result);
+          } else if (event.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).type === 'TENSOR_ERROR') {
+            reject(new Error(event.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).error || 'Tensor processing error'));
           }
         }
       };
@@ -273,10 +273,10 @@ export class RabbitMQTensorIntegration {
           type: 'PROCESS_TENSOR',
           id: job.id,
           data: {
-            operation: job.data.operation,
-            vectors: job.data.vectors,
-            query: job.data.query,
-            algorithm: job.data.algorithm
+            operation: job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).operation,
+            vectors: job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).vectors,
+            query: job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).query,
+            algorithm: job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).algorithm
           }
         });
       } else {
@@ -295,13 +295,13 @@ export class RabbitMQTensorIntegration {
     // Import WASM bridge functions for direct processing
     const { computeVectorSimilarityWASM } = await import('$lib/adapters/wasm-rabbitmq-bridge.js');
     
-    switch (job.data.operation) {
+    switch (job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).operation) {
       case 'similarity':
-        if (job.data.query && job.data.vectors) {
+        if (job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).query && job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).vectors) {
           const similarities = await computeVectorSimilarityWASM(
-            job.data.query,
-            job.data.vectors,
-            job.data.algorithm || 'cosine'
+            job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).query,
+            job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).vectors,
+            job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).algorithm || 'cosine'
           );
           return { similarities, acceleration: 'direct_wasm' };
         }
@@ -311,10 +311,10 @@ export class RabbitMQTensorIntegration {
       case 'batch_process':
         // Direct WASM normalization would be implemented here
         console.log('🔧 Direct WASM normalization not yet implemented, using JS fallback');
-        return { vectors: job.data.vectors, acceleration: 'javascript' };
+        return { vectors: job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).vectors, acceleration: 'javascript' };
         
       default:
-        throw new Error(`Unknown operation: ${job.data.operation}`);
+        throw new Error(`Unknown operation: ${job.(data as { id?: any; type?: any; result?: any; error?: any; operation?: any; vectors?: any; query?: any; algorithm?: any }).operation}`);
     }
   }
   

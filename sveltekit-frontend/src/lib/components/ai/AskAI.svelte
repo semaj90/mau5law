@@ -37,13 +37,7 @@
 
   interface AIResponse {
     answer: string;
-    references: Array<{
-      id: string;
-      type: string;
-      title: string;
-      relevanceScore: number;
-      citation: string;
-    }>;
+    references: Array;
     confidence: number;
     searchResults: number;
     model: string;
@@ -86,11 +80,7 @@
   // Reusable AudioContext for TTS playback
   let audioContext = $state<AudioContext | null >(null);
 
-  const dispatch = createEventDispatcher<{
-    response: AIResponse;
-    error: string;
-    referenceClicked: { id: string; type: string };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Simple localStorage wrapper for conversation storage
   const getLocalStorageService = () => ({
@@ -249,7 +239,7 @@
   let done = $state(false);
   let buffer = $state("");
         // In the streaming loop:
-  let meta = $state<Record<string, any> >({});
+  let meta = $state<Record<string, any>('') >({});
         while (!done) {
           const { value, done: doneReading } = await reader.read();
           done = doneReading;
@@ -451,7 +441,7 @@
       <div>
         <button
           type="button"
-          onclick={() => (showAdvancedOptions = !showAdvancedOptions)}
+          on:click={() => (showAdvancedOptions = !showAdvancedOptions)}
         >
           Advanced
         </button>
@@ -459,7 +449,7 @@
         {#if conversation.length > 0}
           <button
             type="button"
-            onclick={() => clearConversation()}
+            on:click={() => clearConversation()}
           >
             Clear
           </button>
@@ -585,7 +575,7 @@
               <button
                 type="button"
                 aria-label="Listen to AI response"
-                onclick={() => speak(message.content)}
+                on:click={() => speak(message.content)}
                 disabled={ttsLoading}
               >
                 {#if ttsLoading}
@@ -606,7 +596,7 @@
                 {#each message.references as reference}
                   <button
                     type="button"
-                    onclick={() => handleReferenceClick(reference)}
+                    on:click={() => handleReferenceClick(reference)}
                   >
                     <span>{reference.type.toUpperCase()}:</span>
                     {reference.title}
@@ -652,8 +642,7 @@
         <textarea
           bind:this={textareaRef}
           bind:value={query}
-          onkeypress={handleKeyPress}
-          input={autoResize}
+          onkeypress={handleKeyPress} on:input={autoResize}
           {placeholder}
           disabled={isLoading}
           rows={1}
@@ -664,7 +653,7 @@
             type="button"
             class:text-red-500={isListening}
             aria-label={isListening ? "Stop voice input" : "Start voice input"}
-            onclick={() => (isListening ? stopVoiceInput() : startVoiceInput())}
+            on:click={() => (isListening ? stopVoiceInput() : startVoiceInput())}
             disabled={isLoading}
           >
             🎤
@@ -674,7 +663,7 @@
 
       <button
         type="button"
-        onclick={() => askAI()}
+        on:click={() => askAI()}
         disabled={!query.trim() || isLoading}
         aria-label="Send question to AI"
       >
@@ -693,7 +682,7 @@
             type="button"
             class="container mx-auto px-4 {isListening ? 'text-red-500' : ''}"
             aria-label={isListening ? "Stop voice input" : "Start voice input"}
-            onclick={() => (isListening ? stopVoiceInput() : startVoiceInput())}
+            on:click={() => (isListening ? stopVoiceInput() : startVoiceInput())}
             disabled={isLoading}
           >
             🎤

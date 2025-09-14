@@ -61,19 +61,19 @@
       const time = Date.now() - startTime;
       responseTime = time;
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { ok?: any; json?: any; status?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any; status?: any }).json();
         systemStatus = 'operational';
         logAPI('Gemma3 Legal', 200, time);
         onresponse?.(new CustomEvent('response', {
           detail: {
             source: 'gemma3',
-            content: result.response,
+            content: (result as { response?: any; documents?: any }).response,
             metadata: { time, confidence: 0.92 }
           }
         }));
       } else {
-        throw new Error(`HTTP ${response.status}`);
+        throw new Error(`HTTP ${(response as { ok?: any; json?: any; status?: any }).status}`);
       }
     } catch (error) {
       systemStatus = 'offline';
@@ -111,19 +111,19 @@
       responseTime = time;
 
       // 401 is expected without auth
-      if (response.status === 401 || response.ok) {
+      if ((response as { ok?: any; json?: any; status?: any }).status === 401 || (response as { ok?: any; json?: any; status?: any }).ok) {
         systemStatus = 'operational';
-        logAPI('Synthesis API', response.status, time);
-        const result = await response.json();
+        logAPI('Synthesis API', (response as { ok?: any; json?: any; status?: any }).status, time);
+        const result = await (response as { ok?: any; json?: any; status?: any }).json();
         onresponse?.(new CustomEvent('response', {
           detail: {
             source: 'synthesis',
             content: JSON.stringify(result, null, 2),
-            metadata: { time, status: response.status }
+            metadata: { time, status: (response as { ok?: any; json?: any; status?: any }).status }
           }
         }));
       } else {
-        throw new Error(`HTTP ${response.status}`);
+        throw new Error(`HTTP ${(response as { ok?: any; json?: any; status?: any }).status}`);
       }
     } catch (error) {
       logAPI('Synthesis API', 0, Date.now() - startTime, error.message);
@@ -157,18 +157,18 @@
       const time = Date.now() - startTime;
       responseTime = time;
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { ok?: any; json?: any; status?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any; status?: any }).json();
         logAPI('RAG Studio', 200, time);
         onresponse?.(new CustomEvent('response', {
           detail: {
             source: 'rag',
             content: JSON.stringify(result, null, 2),
-            metadata: { time, documents: result.documents?.length }
+            metadata: { time, documents: (result as { response?: any; documents?: any }).documents?.length }
           }
         }));
       } else {
-        throw new Error(`HTTP ${response.status}`);
+        throw new Error(`HTTP ${(response as { ok?: any; json?: any; status?: any }).status}`);
       }
     } catch (error) {
       logAPI('RAG Studio', 0, Date.now() - startTime, error.message);
@@ -194,7 +194,7 @@
   <!-- Action Buttons -->
   <div class="grid grid-cols-3 gap-3">
     <Button.Root
-      onclick={testGemma3}
+      on:click={testGemma3}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
     >
@@ -207,7 +207,7 @@
     </Button.Root>
 
     <Button.Root
-      onclick={testSynthesis}
+      on:click={testSynthesis}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white bits-btn bits-btn"
     >
@@ -220,7 +220,7 @@
     </Button.Root>
 
     <Button.Root
-      onclick={testRAG}
+      on:click={testRAG}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white bits-btn bits-btn"
     >

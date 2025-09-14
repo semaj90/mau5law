@@ -1,11 +1,19 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Button } from '$lib/components/ui/bits/button';
+  import Button from '$lib/components/ui/button/Button.svelte';
   import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-svelte';
 
-  export let fallback: string = '';
-  export let showDetails: boolean = false;
-  export let onError: ((error: Error) => void) | null = null;
+  interface Props {
+    fallback?: string;
+    showDetails?: boolean;
+    onError?: ((error: Error) => void) | null;
+  }
+
+  let {
+    fallback = '',
+    showDetails = false,
+    onError = null
+  }: Props = $props();
 
   let error: Error | null = null;
   let errorInfo: string = '';
@@ -132,23 +140,17 @@
           <!-- Actions -->
           <div class="flex flex-wrap gap-3 mb-6">
             <Button
-              on:click={retry}
-              disabled={isRetrying}
+              on:click={disabled}
               class="flex items-center gap-2"
             >
               <RefreshCw class="w-4 h-4 {isRetrying ? 'animate-spin' : ''}" />
               {isRetrying ? 'Retrying...' : 'Try Again'}
-            </Button>
-
             <Button variant="outline" on:click={goHome} class="flex items-center gap-2">
               <Home class="w-4 h-4" />
               Go Home
-            </Button>
-
             <Button variant="outline" on:click={reportError} class="flex items-center gap-2">
               <Bug class="w-4 h-4" />
               Report Issue
-            </Button>
           </div>
 
           <!-- Technical Details (Collapsible) -->

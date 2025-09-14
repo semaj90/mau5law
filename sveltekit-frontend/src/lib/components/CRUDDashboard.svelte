@@ -81,7 +81,7 @@
       notifications.add({
         type: "error",
         title: "Refresh Failed",
-        message: "Failed to refresh some data. Please try again.",
+        message: "Failed to refresh some (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }). Please try again.",
       });
     } finally {
       refreshing = false;
@@ -94,9 +94,9 @@
       const response = await fetch(
         `/api/cases?limit=10&search=${searchTerms.cases}`
       );
-      if (response.ok) {
-        const data = await response.json();
-        cases = data.cases || data;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        cases = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).cases || data;
   }
     } catch (error) {
       console.error("Error fetching cases:", error);
@@ -110,9 +110,9 @@
       const response = await fetch(
         `/api/evidence?limit=10&search=${searchTerms.evidence}`
       );
-      if (response.ok) {
-        const data = await response.json();
-        evidence = data.evidence || data;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        evidence = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).evidence || data;
   }
     } catch (error) {
       console.error("Error fetching evidence:", error);
@@ -126,9 +126,9 @@
       const response = await fetch(
         `/api/reports?limit=10&search=${searchTerms.reports}`
       );
-      if (response.ok) {
-        const data = await response.json();
-        reports = data.reports || data;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        reports = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).reports || data;
   }
     } catch (error) {
       console.error("Error fetching reports:", error);
@@ -142,9 +142,9 @@
       const response = await fetch(
         `/api/criminals?limit=10&search=${searchTerms.criminals}`
       );
-      if (response.ok) {
-        const data = await response.json();
-        criminals = data.criminals || data;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        criminals = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).criminals || data;
   }
     } catch (error) {
       console.error("Error fetching criminals:", error);
@@ -158,9 +158,9 @@
       const response = await fetch(
         `/api/activities?limit=10&search=${searchTerms.activities}`
       );
-      if (response.ok) {
-        const data = await response.json();
-        activities = data.activities || data;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        activities = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).activities || data;
   }
     } catch (error) {
       console.error("Error fetching activities:", error);
@@ -172,9 +172,9 @@
     loading.users = true;
     try {
       const response = await fetch("/api/users?limit=10");
-      if (response.ok) {
-        const data = await response.json();
-        users_list = data.users || data;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        users_list = (data as { cases?: any; evidence?: any; reports?: any; criminals?: any; activities?: any; users?: any }).users || data;
   }
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -251,7 +251,7 @@
       <div class="space-y-4">
         <button
           class="space-y-4"
-          onclick={() => fetchAllData()}
+          on:click={() => fetchAllData()}
           disabled={refreshing}
           title="Refresh all data"
         >
@@ -324,11 +324,10 @@
             <input
               type="text"
               placeholder="Search cases..."
-              bind:value={searchTerms.cases}
-              input={() => handleSearch("cases")}
+              bind:value={searchTerms.cases} on:input={() => handleSearch("cases")}
             />
           </div>
-          <button class="space-y-4" onclick={() => createNew("cases")}>
+          <button class="space-y-4" on:click={() => createNew("cases")}>
             <Plus size={16} />
           </button>
         </div>
@@ -361,7 +360,7 @@
       </div>
 
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll("cases")}>
+        <button class="space-y-4" on:click={() => viewAll("cases")}>
           View All Cases
         </button>
       </div>
@@ -380,11 +379,10 @@
             <input
               type="text"
               placeholder="Search evidence..."
-              bind:value={searchTerms.evidence}
-              input={() => handleSearch("evidence")}
+              bind:value={searchTerms.evidence} on:input={() => handleSearch("evidence")}
             />
           </div>
-          <button class="space-y-4" onclick={() => createNew("evidence")}>
+          <button class="space-y-4" on:click={() => createNew("evidence")}>
             <Plus size={16} />
           </button>
         </div>
@@ -399,20 +397,20 @@
           {#each evidence as item}
             <div class="space-y-4">
               <div class="space-y-4">
-                <span class="space-y-4">{item.title}</span>
+                <span class="space-y-4">{(item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).title}</span>
                 <span class="space-y-4"
-                  >{item.evidenceType}</span
+                  >{(item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).evidenceType}</span
                 >
               </div>
               <div class="space-y-4">
-                <span class="space-y-4">Type: {item.fileType || "N/A"}</span>
+                <span class="space-y-4">Type: {(item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || "N/A"}</span>
                 <span class="space-y-4"
-                  >Size: {item.fileSize
-                    ? `${Math.round(item.fileSize / 1024)}KB`
+                  >Size: {(item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileSize
+                    ? `${Math.round((item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileSize / 1024)}KB`
                     : "N/A"}</span
                 >
                 <span class="space-y-4"
-                  >Uploaded: {formatDate(item.uploadedAt)}</span
+                  >Uploaded: {formatDate((item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).uploadedAt)}</span
                 >
               </div>
             </div>
@@ -421,7 +419,7 @@
       </div>
 
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll("evidence")}>
+        <button class="space-y-4" on:click={() => viewAll("evidence")}>
           View All Evidence
         </button>
       </div>
@@ -440,11 +438,10 @@
             <input
               type="text"
               placeholder="Search reports..."
-              bind:value={searchTerms.reports}
-              input={() => handleSearch("reports")}
+              bind:value={searchTerms.reports} on:input={() => handleSearch("reports")}
             />
           </div>
-          <button class="space-y-4" onclick={() => createNew("reports")}>
+          <button class="space-y-4" on:click={() => createNew("reports")}>
             <Plus size={16} />
           </button>
         </div>
@@ -479,7 +476,7 @@
       </div>
 
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll("reports")}>
+        <button class="space-y-4" on:click={() => viewAll("reports")}>
           View All Reports
         </button>
       </div>
@@ -498,11 +495,10 @@
             <input
               type="text"
               placeholder="Search activities..."
-              bind:value={searchTerms.activities}
-              input={() => handleSearch("activities")}
+              bind:value={searchTerms.activities} on:input={() => handleSearch("activities")}
             />
           </div>
-          <button class="space-y-4" onclick={() => createNew("activities")}>
+          <button class="space-y-4" on:click={() => createNew("activities")}>
             <Plus size={16} />
           </button>
         </div>
@@ -535,7 +531,7 @@
       </div>
 
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll("activities")}>
+        <button class="space-y-4" on:click={() => viewAll("activities")}>
           View All Activities
         </button>
       </div>
@@ -551,22 +547,22 @@
       </div>
 
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => createNew("cases")}>
+        <button class="space-y-4" on:click={() => createNew("cases")}>
           <FileText size={24} />
           <span>New Case</span>
         </button>
 
-        <button class="space-y-4" onclick={() => createNew("evidence")}>
+        <button class="space-y-4" on:click={() => createNew("evidence")}>
           <Camera size={24} />
           <span>Add Evidence</span>
         </button>
 
-        <button class="space-y-4" onclick={() => createNew("reports")}>
+        <button class="space-y-4" on:click={() => createNew("reports")}>
           <FileText size={24} />
           <span>Create Report</span>
         </button>
 
-        <button class="space-y-4" onclick={() => viewAll("activities")}>
+        <button class="space-y-4" on:click={() => viewAll("activities")}>
           <Clock size={24} />
           <span>View Tasks</span>
         </button>

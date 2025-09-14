@@ -28,7 +28,7 @@
 
   // Transform case documents to legal evidence format
   let evidenceItems = $derived<LegalEvidenceItem[]>(
-    data.documents.map(doc => ({
+    (data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).documents.map(doc => ({
       id: doc.id,
       title: doc.title,
       type: doc.type as LegalEvidenceItem['type'],
@@ -46,8 +46,8 @@
     ragResponse = null;
     return ({ result }) => {
       isLoading = false;
-      if (result.type === 'success' && result.data?.response) {
-        ragResponse = result.data.response;
+      if ((result as { type?: any; data?: any }).type === 'success' && (result as { type?: any; data?: any }).data?.response) {
+        ragResponse = (result as { type?: any; data?: any }).(data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).response;
         queryText = ''; // Clear input after successful query
       }
     };
@@ -65,31 +65,31 @@
 </script>
 
 <svelte:head>
-  <title>RAG Analysis - {data.caseData.title}</title>
+  <title>RAG Analysis - {(data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).caseData.title}</title>
 </svelte:head>
 
 <div class="container mx-auto p-6 space-y-6">
   <!-- Case Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-primary mb-2">
-      RAG Analysis: {data.caseData.title}
+      RAG Analysis: {(data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).caseData.title}
     </h1>
     <p class="nes-text is-disabled">
-      Status: <span class="font-medium">{data.caseData.status}</span>
+      Status: <span class="font-medium">{(data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).caseData.status}</span>
     </p>
   </div>
 
   <!-- RAG Query Interface -->
   <OrchestratedCard.Analysis>
-    <NesCard.Header>
-      <NesCard.Title>Legal Document Analysis</Card.Title>
-      <NesCard.Description>
+    <div.Header class="nes-container">
+      <div.Title class="nes-container">Legal Document Analysis</div.Title>
+      <div.Description class="nes-container">
         Query case documents using advanced RAG (Retrieval-Augmented Generation)
         powered by legal AI models
-      </Card.Description>
-    </Card.Header>
+      </div.Description>
+    </div.Header>
 
-  <NesCard.Content class="space-y-4">
+  <div.Content class="space-y-4 nes-container">
       <!-- Query Form -->
       <form method="POST" action="?/query" use:enhance={handleRAGSubmit}>
         <div class="flex gap-3">
@@ -159,28 +159,28 @@
           {/if}
         </div>
       {/if}
-    </Card.Content>
+    </div.Content>
   </OrchestratedCard.Analysis>
 
   <!-- Case Documents -->
   <OrchestratedCard.Evidence>
-    <NesCard.Header>
+    <div.Header class="nes-container">
       <div class="flex items-center justify-between">
         <div>
-          <NesCard.Title>Case Documents ({evidenceItems.length})</Card.Title>
-          <NesCard.Description>Documents available for RAG analysis</Card.Description>
+          <div.Title class="nes-container">Case Documents ({evidenceItems.length})</div.Title>
+          <div.Description class="nes-container">Documents available for RAG analysis</div.Description>
         </div>
         <button class="nes-btn"
           variant="outline"
-          onclick={() => showDocuments = !showDocuments}
+          on:click={() => showDocuments = !showDocuments}
         >
           {showDocuments ? 'Hide' : 'Show'} Documents
         </button>
       </div>
-    </Card.Header>
+    </div.Header>
 
     {#if showDocuments}
-      <NesCard.Content>
+      <div.Content class="nes-container">
         <div class="grid gap-3">
           {#each evidenceItems as evidence}
             <div class="flex items-center justify-between p-3 border rounded-lg">
@@ -202,20 +202,20 @@
             </div>
           {/each}
         </div>
-      </Card.Content>
+      </div.Content>
     {/if}
   </OrchestratedCard.Evidence>
 
   <!-- RAG History -->
-  {#if data.ragHistory?.length > 0}
-    <NesCard>
-      <NesCard.Header>
-        <NesCard.Title>Recent Analysis History</Card.Title>
-        <NesCard.Description>Previous RAG queries for this case</Card.Description>
-      </Card.Header>
-      <NesCard.Content>
+  {#if (data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).ragHistory?.length > 0}
+    <div class="nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">Recent Analysis History</div.Title>
+        <div.Description class="nes-container">Previous RAG queries for this case</div.Description>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="space-y-3">
-          {#each data.ragHistory.slice(0, 5) as history}
+          {#each (data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).ragHistory.slice(0, 5) as history}
             <div class="p-3 border rounded-lg">
               <div class="font-medium text-sm mb-1">{history.query}</div>
               <div class="text-xs nes-text is-disabled">
@@ -225,8 +225,8 @@
             </div>
           {/each}
         </div>
-      </Card.Content>
-    </NesCard>
+      </div.Content>
+    </div>
   {/if}
 </div>
 

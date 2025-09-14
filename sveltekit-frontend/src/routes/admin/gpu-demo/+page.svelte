@@ -84,8 +84,8 @@
   const shaderPrograms: Record<string, any> = {};
 
   // Subscriptions (track to unsubscribe on destroy)
-  let gpuMetricsSub = $state<{ unsubscribe?: () => void } | null>(null);
-  let shaderMetricsSub = $state<{ unsubscribe?: () => void } | null>(null);
+  let gpuMetricsSub = $state(null);
+  let shaderMetricsSub = $state(null);
 
   // Demo data
   let attentionData = $state<Float32Array>(new Float32Array(0));
@@ -469,7 +469,7 @@
     </div>
 
     <!-- GPU Capabilities -->
-    <NesCard class="p-6 mb-8 bg-slate-800/30 border-slate-600">
+    <div class="p-6 mb-8 bg-slate-800/30 border-slate-600 nes-container">
       <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
         <Cpu class="h-5 w-5" />
         GPU Capabilities
@@ -551,12 +551,12 @@
           </div>
         </div>
       {/if}
-    </NesCard>
+    </div>
 
     <!-- Performance Metrics -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <!-- GPU Metrics -->
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-green-100">
             <Cpu class="h-5 w-5 text-green-600" />
@@ -568,10 +568,10 @@
             </p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Shader Cache -->
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-blue-100">
             <Zap class="h-5 w-5 text-blue-600" />
@@ -584,10 +584,10 @@
             <BarChart class="h-5 w-5 text-purple-600" />
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Cache Hit Rate -->
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-purple-100">
             <BarChart3 class="h-5 w-5 text-purple-600" />
@@ -597,10 +597,10 @@
             <p class="text-sm text-gray-400">{formatPercentage(gpuMetrics.cacheHitRate)}</p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Frame Rate -->
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-orange-100">
             <Activity class="h-5 w-5 text-orange-600" />
@@ -610,14 +610,14 @@
             <p class="text-sm text-gray-400">{gpuMetrics.frameRate.toFixed(0)} FPS</p>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 
   <!-- Main Content -->
   <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Visualization Canvas -->
-    <NesCard class="p-6 bg-slate-800/30 border-slate-600">
+    <div class="p-6 bg-slate-800/30 border-slate-600 nes-container">
       <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
         <Eye class="h-5 w-5" />
         Legal AI Visualizations
@@ -627,7 +627,7 @@
         <!-- Canvas -->
         <div class="relative">
           <canvas
-            bind:this={canvas}
+            bind:this={canvas as any}
             width="500"
             height="400"
             class="w-full border border-slate-600 rounded bg-black"
@@ -646,56 +646,59 @@
         <!-- Visualization Controls -->
         <div class="grid grid-cols-2 gap-2">
           <Button class="bits-btn text-sm"
-            onclick={() => startVisualization('attentionHeatmap')}
+            on:click={() =>
+startVisualization('attentionHeatmap')}
             disabled={!isInitialized}
             variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}>
             Attention Heatmap
           </Button>
 
           <Button class="bits-btn text-sm"
-            onclick={() => startVisualization('documentNetwork')}
+            on:click={() => startVisualization('documentNetwork')}
             disabled={!isInitialized}
             variant={activeVisualization === 'documentNetwork' ? 'default' : 'outline'}>
             Document Network
-          </button>
+</Button>
 
             <Button class="bits-btn text-sm"
-              onclick={() => startVisualization('evidenceTimeline')}
+              on:click={() =>
+startVisualization('evidenceTimeline')}
               disabled={!isInitialized}
               variant={activeVisualization === 'evidenceTimeline' ? 'default' : 'outline'}>
               Evidence Timeline
-            </button>
+</Button>
 
           <Button class="bits-btn text-sm"
-            onclick={() => startVisualization('textFlow')}
+            on:click={() =>
+startVisualization('textFlow')}
             disabled={!isInitialized}
             variant={activeVisualization === 'textFlow' ? 'default' : 'outline'}>
             Text Flow
-          </button>
+</Button>
         </div>
 
         <!-- Render Controls -->
         <div class="flex gap-2">
           {#if isRendering}
-            <Button onclick={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
-              Stop Rendering
-            </button>
+            <Button on:click={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
+Stop Rendering
+</Button>
           {/if}
 
           <Button
-            onclick={executeGPUWorkload}
+            on:click={executeGPUWorkload}
             disabled={!isInitialized}
             variant="outline"
             class="text-white border-slate-600 hover:bg-slate-700 bits-btn">
-            Execute GPU Workload
-          </button>
+Execute GPU Workload
+</Button>
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Performance Dashboard -->
       <!-- GPU Cluster Metrics -->
-      <NesCard class="p-6 bg-slate-800/30 border-slate-600">
+      <div class="p-6 bg-slate-800/30 border-slate-600 nes-container">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
           <Network class="h-5 w-5" />
           GPU Cluster Metrics
@@ -727,8 +730,8 @@
             </div>
           </div>
         </div>
-      </NesCard>
-      <NesCard class="p-6 bg-slate-800/30 border-slate-600">
+      </div>
+      <div class="p-6 bg-slate-800/30 border-slate-600 nes-container">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
           <BarChart3 class="h-5 w-5" />
           Shader Cache Stats
@@ -760,10 +763,10 @@
             <span class="font-bold">{formatBytes(shaderMetrics.memoryUsage)}</span>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Available Shaders -->
-      <NesCard class="p-6 bg-slate-800/30 border-slate-600">
+      <div class="p-6 bg-slate-800/30 border-slate-600 nes-container">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
           <Clock class="h-5 w-5" />
           Available Shaders
@@ -777,7 +780,7 @@
             </div>
           {/each}
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 

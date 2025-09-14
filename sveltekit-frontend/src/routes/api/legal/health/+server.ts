@@ -5,7 +5,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js';
 
 export const GET: RequestHandler = async () => {

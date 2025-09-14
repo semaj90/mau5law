@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // import { INGEST_SERVICE_URL, MAX_BATCH_SIZE } from '$env/static/private';
 
@@ -14,23 +14,10 @@ const TIMEOUT = 120000; // 2 minutes for batch processing
 const BATCH_SIZE_LIMIT = parseInt('10'); // MAX_BATCH_SIZE ||
 
 export interface BatchIngestRequest {
-  documents: Array<{
-    title: string;
-    content: string;
-    case_id?: string;
-    metadata?: Record<string, any>;
-  }>;
-}
+  documents: Array<any>
 
 export interface BatchIngestResponse {
-  results: Array<{
-    id: string;
-    status: string;
-    document_id: string;
-    embedding_id: string;
-    process_time_ms: number;
-    timestamp: string;
-  }>;
+  results: Array<any>;
   processed: number;
   total: number;
   timestamp: string;
@@ -119,20 +106,20 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
       clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        const errorText = await response.text();
+      if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
+        const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text();
         return json(
           {
-            error: `Batch ingest service error: ${response.status} - ${errorText}`,
+            error: `Batch ingest service error: ${(response as { ok?: any; text?: any; status?: any; json?: any }).status} - ${errorText}`,
             service: 'ingest-service',
             port: '8227',
             batch_size: requestData.documents.length
           },
-          { status: response.status }
+          { status: (response as { ok?: any; text?: any; status?: any; json?: any }).status }
         );
       }
 
-      const result: BatchIngestResponse = await response.json();
+      const result: BatchIngestResponse = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
       const processingTime = Date.now() - startTime;
 
       // Enhanced response with comprehensive metadata
@@ -141,11 +128,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         // Performance metrics following your patterns
         performance: {
           total_processing_time_ms: processingTime,
-          average_document_time_ms: result.results.length > 0
-            ? result.results.reduce((sum, r) => sum + r.process_time_ms, 0) / result.results.length
+          average_document_time_ms: (result as { results?: any; processed?: any; errors?: any }).results.length > 0
+            ? (result as { results?: any; processed?: any; errors?: any }).results.reduce((sum, r) => sum + r.process_time_ms, 0) / (result as { results?: any; processed?: any; errors?: any }).results.length
             : 0,
-          documents_per_second: result.processed > 0
-            ? (result.processed / (processingTime / 1000)).toFixed(2)
+          documents_per_second: (result as { results?: any; processed?: any; errors?: any }).processed > 0
+            ? ((result as { results?: any; processed?: any; errors?: any }).processed / (processingTime / 1000)).toFixed(2)
             : 0
         },
         service_info: {
@@ -160,10 +147,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         api_version: 'v1',
         batch_summary: {
           requested: requestData.documents.length,
-          processed: result.processed,
-          failed: (result.errors?.length || 0),
-          success_rate: result.processed > 0
-            ? ((result.processed / requestData.documents.length) * 100).toFixed(1) + '%'
+          processed: (result as { results?: any; processed?: any; errors?: any }).processed,
+          failed: ((result as { results?: any; processed?: any; errors?: any }).errors?.length || 0),
+          success_rate: (result as { results?: any; processed?: any; errors?: any }).processed > 0
+            ? (((result as { results?: any; processed?: any; errors?: any }).processed / requestData.documents.length) * 100).toFixed(1) + '%'
             : '0%'
         }
       });

@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db';
 import { evidence } from '$lib/server/db/schema';
 import { sql } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Assumes pgvector extension is enabled and evidence table has a 'embedding' vector column

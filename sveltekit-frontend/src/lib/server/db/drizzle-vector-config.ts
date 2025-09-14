@@ -21,11 +21,7 @@ import { customType } from 'drizzle-orm/pg-core';
 import postgres from 'postgres';
 
 // Custom vector type for pgvector
-const vector = customType<{
-  data: number[];
-  notNull: boolean;
-  default: boolean;
-}>({
+const vector = customType({
   dataType(config: { dimensions?: number } = {}) {
     return `vector(${config?.dimensions || 768})`;
   },
@@ -42,7 +38,7 @@ const vector = customType<{
 // Database connection
 const connectionString =
   import.meta.env.DATABASE_URL ||
-  `postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${import.meta.env.DB_PORT || 5432}/${import.meta.env.DB_NAME || 'legal_ai_db'}`;
+  `postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${import.meta.env.DB_PORT || 5433}/${import.meta.env.DB_NAME || 'legal_ai_db'}`;
 
 const sql_client = postgres(connectionString, {
   max: 20,

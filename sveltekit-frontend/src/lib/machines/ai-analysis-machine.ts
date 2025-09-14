@@ -36,8 +36,8 @@ export const aiAnalysisMachine = createMachine({
   id: 'aiAnalysis',
   initial: 'idle',
   types: {
-    context: {} as AIAnalysisContext,
-    events: {} as
+    context: Record<string, any> as AIAnalysisContext,
+    events: Record<string, any> as
       | { type: 'START_ANALYSIS'; data: any }
       | { type: 'UPDATE_PROMPT'; prompt: string }
       | { type: 'UPDATE_OPTIONS'; options: any }
@@ -56,12 +56,12 @@ export const aiAnalysisMachine = createMachine({
       maxTokens: 1000,
       temperature: 0.7
     },
-    analysisResults: {},
+    analysisResults: Record<string, any>,
     processingTime: 0,
     tokensUsed: 0,
     confidence: 0,
     isStreaming: false,
-    validationErrors: {},
+    validationErrors: Record<string, any>,
     error: null
   },
   states: {
@@ -121,7 +121,7 @@ export const aiAnalysisMachine = createMachine({
         onDone: {
           target: 'analyzing',
           actions: assign({
-            validationErrors: {},
+            validationErrors: Record<string, any>,
             error: null
           })
         },
@@ -140,7 +140,7 @@ export const aiAnalysisMachine = createMachine({
     analyzing: {
       entry: assign({
         isStreaming: true,
-        analysisResults: {},
+        analysisResults: Record<string, any>,
         processingTime: 0
       }),
       invoke: {
@@ -257,12 +257,12 @@ export const aiAnalysisMachine = createMachine({
           target: 'idle',
           actions: assign({
             prompt: '',
-            analysisResults: {},
+            analysisResults: Record<string, any>,
             processingTime: 0,
             tokensUsed: 0,
             confidence: 0,
             error: null,
-            validationErrors: {}
+            validationErrors: Record<string, any>
           })
         },
         START_ANALYSIS: 'validating'

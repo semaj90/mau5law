@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // TypeScript Error Optimizer API - Production Integration
 // Integrates with enhanced Go service for GPU-accelerated TypeScript error processing
@@ -41,17 +41,17 @@ export const POST: RequestHandler = async ({ request }) => {
 			body: JSON.stringify(body),
 		});
 
-		if (!response.ok) {
-			throw new Error(`Go service responded with ${response.status}: ${response.statusText}`);
+		if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+			throw new Error(`Go service responded with ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
 		}
 
-		const result = await response.json() as AutoSolveResponse;
+		const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json() as AutoSolveResponse;
 
 		// Enhance response with metadata
 		const enhancedResult = {
 			...result,
 			metadata: {
-				...result.metadata,
+				...(result as { metadata?: any; fixes_applied?: any; remaining_errors?: any }).metadata,
 				processed_at: new Date().toISOString(),
 				api_version: '2.0.0',
 				go_service_url: apiUrl,
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 		};
 
-		console.log(`✅ TypeScript Optimizer: ${result.fixes_applied} fixes applied, ${result.remaining_errors} remaining`);
+		console.log(`✅ TypeScript Optimizer: ${(result as { metadata?: any; fixes_applied?: any; remaining_errors?: any }).fixes_applied} fixes applied, ${(result as { metadata?: any; fixes_applied?: any; remaining_errors?: any }).remaining_errors} remaining`);
 
 		return json(enhancedResult);
 

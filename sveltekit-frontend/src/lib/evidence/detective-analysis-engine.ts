@@ -9,7 +9,7 @@ import { intelligentWebAnalyzer } from '$lib/ai/intelligent-web-analyzer.js';
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
 import { cache, cacheEmbedding, getCachedEmbedding } from '$lib/server/cache/redis.js';
 import { extractTextFromImage } from '$lib/ocr/ocr-client.js';
-import { simdGPUTilingEngine, calculateOptimalTileSize, estimateProcessingTime } from './simd-gpu-tiling-engine.js';
+import { simdGPUTilingEngine, calculateOptimalTileSize, estimateProcessingTime } from './simd-gpu-tiling-engine.js.js';
 import { browser } from '$app/environment';
 
 // Types for evidence analysis
@@ -27,11 +27,7 @@ export interface EvidenceItem {
   ocrResults: {
     text: string;
     confidence: number;
-    boundingBoxes: Array<{
-      text: string;
-      bbox: { x: number; y: number; width: number; height: number };
-      confidence: number;
-    }>;
+    boundingBoxes: Array<any>;
     handwritingDetected: boolean;
   };
   embeddings: {
@@ -532,11 +528,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   /**
    * Detect handwriting in evidence
    */
-  private async detectHandwriting(data: Blob | File | string): Promise<{
-    detected: boolean;
-    confidence: number;
-    regions: Array<{ x: number; y: number; width: number; height: number }>;
-  }> {
+  private async detectHandwriting(data: Blob | File | string): Promise<any>> {
     // Simplified handwriting detection - would use ML model in production
     try {
       // Check cache first
@@ -570,15 +562,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   /**
    * Process handwritten text with specialized algorithms
    */
-  private async processHandwriting(data: Blob | File | string): Promise<{
-    text: string;
-    confidence: number;
-    boundingBoxes: Array<{
-      text: string;
-      bbox: { x: number; y: number; width: number; height: number };
-      confidence: number;
-    }>;
-  }> {
+  private async processHandwriting(data: Blob | File | string): Promise<any>> {
     // Mock handwriting processing - would integrate with specialized ML models
     return {
       text: "Handwritten note detected: Meeting at 3pm tomorrow",

@@ -99,27 +99,27 @@ https://svelte.dev/e/js_parse_error -->
       const endTime = Date.now();
       const responseTime = endTime - startTime;
   let responseData = $state(null);
-      const contentType = response.headers.get('content-type');
+      const contentType = (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).headers.get('content-type');
 
       if (contentType && contentType.includes('application/json')) {
         try {
-          responseData = await response.json();
+          responseData = await (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).json();
         } catch (e) {
           responseData = { error: 'Invalid JSON response' };
         }
       } else {
-        responseData = { text: await response.text() };
+        responseData = { text: await (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).text() };
       }
 
       return {
         success: true,
-        status: response.status,
-        statusText: response.statusText,
+        status: (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).status,
+        statusText: (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).statusText,
         responseTime,
         data: responseData,
-        headers: Object.fromEntries(response.headers.entries()),
+        headers: Object.fromEntries((response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).headers.entries()),
         expectedStatus: test.expectedStatus,
-        statusMatch: test.expectedStatus ? response.status === test.expectedStatus : true
+        statusMatch: test.expectedStatus ? (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).status === test.expectedStatus : true
       };
 
     } catch (error) {
@@ -156,7 +156,7 @@ https://svelte.dev/e/js_parse_error -->
         testResults = { ...testResults };
 
         // Brief delay between tests
-        await new Promise(resolve => setTimeout(resolve, 100);
+        await new Promise(resolve => setTimeout(resolve, 100));
       } catch (error) {
         testResults[test.name] = {
           success: false,
@@ -172,9 +172,9 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function getStatusColor(result: any): string {
-    if (!result.success) return 'error';
-    if (result.statusMatch) return 'success';
-    if (result.status >= 200 && result.status < 300) return 'warning';
+    if (!(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).success) return 'error';
+    if ((result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).statusMatch) return 'success';
+    if ((result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).status >= 200 && (result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).status < 300) return 'warning';
     return 'error';
   }
 
@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="test-actions">
       <button
         class="test-button primary"
-  onclick={runAllTests}
+  on:click={runAllTests}
         disabled={isTestingInProgress}
       >
         {isTestingInProgress ? '🔄 Testing...' : '🚀 Run All Tests'}
@@ -250,7 +250,7 @@ https://svelte.dev/e/js_parse_error -->
                 <h3>{test.name}</h3>
                 {#if result}
                   <span class="status-badge {getStatusColor(result)}">
-                    {result.success ? (result.statusMatch ? '✅' : '⚠️') : '❌'}
+                    {(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).success ? ((result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).statusMatch ? '✅' : '⚠️') : '❌'}
                   </span>
                 {:else if isTestingInProgress}
                   <span class="status-badge testing">🔄</span>
@@ -271,34 +271,33 @@ https://svelte.dev/e/js_parse_error -->
                     <div class="metric">
                       <span class="metric-label">Status:</span>
                       <span class="metric-value {getStatusColor(result)}">
-                        {result.status || 'Error'} {result.statusText || ''}
+                        {(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).status || 'Error'} {(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).statusText || ''}
                       </span>
                     </div>
                     <div class="metric">
                       <span class="metric-label">Response Time:</span>
-                      <span class="metric-value">{result.responseTime}ms</span>
+                      <span class="metric-value">{(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).responseTime}ms</span>
                     </div>
-                    {#if result.expectedStatus}
+                    {#if (result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).expectedStatus}
                       <div class="metric">
                         <span class="metric-label">Expected:</span>
-                        <span class="metric-value">{result.expectedStatus}</span>
+                        <span class="metric-value">{(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).expectedStatus}</span>
                       </div>
                     {/if}
                   </div>
 
-                  {#if result.error}
+                  {#if (result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).error}
                     <div class="error-details">
-                      <strong>Error:</strong> {result.error}
+                      <strong>Error:</strong> {(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).error}
                     </div>
                   {/if}
 
-                  {#if result.data}
+                  {#if (result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).data}
                     <details class="response-details">
                       <summary>Response Data</summary>
-                      <pre class="response-json">{formatJson(result.data)}</pre>
+                      <pre class="response-json">{formatJson((result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).data)}</pre>
                     </details>
                   {/if}
-                {/if}
               </div>
             </div>
           {/each}
@@ -318,7 +317,7 @@ https://svelte.dev/e/js_parse_error -->
         </a>
         <button
           class="test-button warning"
-          onclick={() => window.open('/gallery?debug=true', '_blank')}
+          on:click={() => window.open('/gallery?debug=true', '_blank')}
         >
           🐛 Open Gallery with Debug
         </button>

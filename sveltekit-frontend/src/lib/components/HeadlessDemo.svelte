@@ -38,7 +38,7 @@
   <!-- Simple Select -->
   <div class="space-y-4 relative">
     <button 
-      onclick={toggleSelect}
+      on:click={toggleSelect}
       class="border border-gray-300 rounded px-4 py-2 w-full text-left"
       aria-label="Case Type Filter"
     >
@@ -54,7 +54,7 @@
           <div 
             class="p-2 hover:bg-gray-100 cursor-pointer"
             role="button" tabindex="0"
-                onclick={() => selectItem(item)}
+                on:click={() => selectItem(item)}
           >
             {item}
           </div>
@@ -65,7 +65,7 @@
   
   <!-- Dialog Trigger -->
   <button 
-    onclick={toggleDialog}
+    on:click={toggleDialog}
     class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
   >
     Open Case Details Dialog
@@ -88,7 +88,7 @@
         </p>
         
         <div class="flex gap-2 justify-end">
-          <button onclick={toggleDialog} class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+          <button on:click={toggleDialog} class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
             Cancel
           </button>
           <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">

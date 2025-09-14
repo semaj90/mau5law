@@ -52,13 +52,9 @@ export type Notification = NotificationData & {
 
 // UI State stores
 export const notifications = writable<Notification[]>([]);
-export const modals = writable<{
-  [key: string]: boolean;
-}>({});
+export const modals = writable({});
 
-export const loading = writable<{
-  [key: string]: boolean;
-}>({});
+export const loading = writable({});
 
 export const sidebar = writable({
   isOpen: false,
@@ -74,14 +70,7 @@ export const motion = writable({
 });
 
 // Component state
-export const forms = writable<{
-  [formId: string]: {
-    isDirty: boolean;
-    isValid: boolean;
-    errors: Record<string, string>;
-    touched: Record<string, boolean>;
-  };
-}>({});
+export const forms = writable({});
 
 // Derived stores
 export const isDarkMode = derived(theme, ($theme) => {
@@ -126,10 +115,10 @@ export const uiStore = {
     const fullNotification: Notification = { ...notification, id };
     notifications.update((list) => [...list, fullNotification]);
 
-    if (notification.duration !== 0) {
+    if ((notification as { duration?: any }).duration !== 0) {
       setTimeout(() => {
         notifications.update((list) => list.filter((n) => n.id !== id));
-      }, notification.duration || 5000);
+      }, (notification as { duration?: any }).duration || 5000);
     }
     return id;
   },

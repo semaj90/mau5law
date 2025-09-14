@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async ({ locals }) => {
   // Dev-only endpoint to inspect SSR locals (user/session). Safe to leave in repo

@@ -8,10 +8,10 @@
 
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { threadSafePostgres } from './thread-safe-postgres.js';
-import { concurrentSerializer, serializeForAPI } from './concurrent-json-serializer.js';
-import { gpuCoordinator, gpuProcessJsonb } from './gpu-thread-coordinator.js';
-import { cognitiveCache } from '../services/cognitive-cache-integration.js';
+import { threadSafePostgres } from './thread-safe-postgres.js.js';
+import { concurrentSerializer, serializeForAPI } from './concurrent-json-serializer.js.js';
+import { gpuCoordinator, gpuProcessJsonb } from './gpu-thread-coordinator.js.js';
+import { cognitiveCache } from '../services/cognitive-cache-integration.js.js';
 
 export interface SSRResponse<T = any> {
   success: boolean;
@@ -66,7 +66,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
       });
 
       if (gpuResult.result?.serialized) {
-        sanitizedData = gpuResult.result.serialized[0].serialized;
+        sanitizedData = gpuResult.(result as { serialized?: any }).serialized[0].serialized;
       } else {
         sanitizedData = sanitizeForSSR(data);
       }
@@ -148,7 +148,7 @@ export function sanitizeForSSR<T>(data: T): T {
   }
 
   if (data instanceof Date) {
-    return data.toISOString() as unknown as T;
+    return (data as { toISOString?: any; map?: any }).toISOString() as unknown as T;
   }
 
   if (typeof data === 'function') {
@@ -156,7 +156,7 @@ export function sanitizeForSSR<T>(data: T): T {
   }
 
   if (Array.isArray(data)) {
-    return data.map(sanitizeForSSR) as unknown as T;
+    return (data as { toISOString?: any; map?: any }).map(sanitizeForSSR) as unknown as T;
   }
 
   if (typeof data === 'object') {
@@ -243,7 +243,7 @@ export function validateSSRResponse<T>(
     'success' in response &&
     'data' in response &&
     'meta' in response &&
-    (response.success === false || validator(response.data))
+    ((response as { success?: any; data?: any }).success === false || validator((response as { success?: any; data?: any }).data))
   );
 }
 
@@ -441,13 +441,7 @@ export async function batchSSRRequestsGPU<T extends Record<string, any>>(
 /**
  * System health check for thread synchronization components
  */
-export async function getThreadSyncHealth(): Promise<{
-  postgres: any;
-  cognitive_cache: any;
-  serializer: any;
-  gpu_coordinator: any;
-  overall_status: 'healthy' | 'degraded' | 'unhealthy';
-}> {
+export async function getThreadSyncHealth(): Promise<any> {
   try {
     const [postgresHealth, cacheStats, serializerStats, gpuHealth] = await Promise.all([
       threadSafePostgres.healthCheck(),

@@ -1,5 +1,5 @@
 // Client-side CHR-ROM cache and SSE subscriber
-import { nesGPUBridge } from './nes-gpu-memory-bridge';
+import { nesGPUBridge } from './nes-gpu-memory-bridge.js';
 
 export type CHRPatternType = 'text' | 'svg' | 'state';
 export interface CHRPatternBase { key: string; type: CHRPatternType; ttlMs?: number; createdAt: string; meta?: Record<string, any>; }

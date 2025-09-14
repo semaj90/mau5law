@@ -5,7 +5,7 @@
   import { dialogStore, type Dialog } from '$lib/stores/dialogs';
 
   // Subscribe to dialog store
-  let dialogs = $state<Dialog[]>([]);
+  let dialogs = $state<Dialog.Root[]>([]);
   $effect(() => {
     const unsubscribe = dialogStore.subscribe((value) => {
       dialogs = value;

@@ -2,9 +2,9 @@
   import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/Button.svelte';
   // Badge replaced with span - not available in enhanced-bits
-  import { Card } from '$lib/components/ui/enhanced-bits';
+  import * as Card from '$lib/components/ui/card';
   import {
     Upload, Move, RotateCcw, Trash2, ZoomIn, ZoomOut,
     Save, Download, Image as ImageIcon, FileText
@@ -55,7 +55,7 @@ let zoomLevel = $state(1);
   }
 let evidenceItems = $state<EvidenceItem[] >([]);
 let minioStatus = $state<'checking' | 'connected' | 'disconnected'>('checking');
-let uploadProgress = $state<Map<string, number>>(new Map());
+let uploadProgress = $state(new Map<string, number>());
 
   // Derived state for better performance
   let evidenceCount = $derived(evidenceItems.length);
@@ -161,7 +161,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
   async function checkMinIOStatus() {
     try {
       const response = await fetch('/api/v1/minio/upload', { method: 'HEAD' });
-      minioStatus = response.ok ? 'connected' : 'disconnected';
+      minioStatus = (response as { ok?: any; json?: any }).ok ? 'connected' : 'disconnected';
     } catch {
       minioStatus = 'disconnected';
     }
@@ -174,7 +174,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
       isLoading = true;
       // Load evidence items for this case
       const response = await fetch(`/api/cases/${caseId}/evidence`);
-      const evidence = await response.json();
+      const evidence = await (response as { ok?: any; json?: any }).json();
       evidenceItems = evidence;
 
       // Add evidence to canvas
@@ -204,9 +204,9 @@ let uploadProgress = $state<Map<string, number>>(new Map());
         })
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        return result.url;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any }).json();
+        return (result as { url?: any }).url;
       }
     } catch (error) {
       console.warn('Failed to refresh URL for:', evidence.id);
@@ -405,7 +405,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
     fabricCanvas.renderAll();
 
     if (evidenceId) {
-      evidenceItems = evidenceItems.filter(item => item.id !== evidenceId);
+      evidenceItems = evidenceItems.filter(item => (item as { id?: any }).id !== evidenceId);
       onDelete?.({ objectId: evidenceId });
     }
 
@@ -475,14 +475,14 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
 <div class="fabric-canvas-container">
   <!-- Toolbar -->
-  <NesCard class="mb-4">
+  <div class="mb-4 nes-container">
     <div class="p-4 pb-3">
       <div class="flex items-center justify-between font-semibold text-lg">
         <div class="flex items-center gap-2">
           <ImageIcon class="h-5 w-5" />
           Evidence Canvas
           {#if evidenceCount > 0}
-            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{#snippet children()}{evidenceCount} items{/snippet}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{evidenceCount} items</span>
           {/if}
         </div>
         <div class="flex items-center gap-3 text-sm text-gray-600">
@@ -505,7 +505,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
               multiple
               accept="image/*,.pdf,.doc,.docx,.txt"
               class="hidden"
-              onchange={handleFileUpload}
+              on:change={handleFileUpload}
               disabled={isLoading}
             />
             <Button class="bits-btn" variant="outline" disabled={isLoading}>
@@ -517,26 +517,26 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
         <!-- Add Annotation -->
         {#if !readOnly}
-          <Button class="bits-btn" variant="outline" onclick={addAnnotation}>
+          <Button class="bits-btn" variant="outline" on:click={addAnnotation}>
             <FileText class="h-4 w-4 mr-2" />
             Add Note
           </Button>
         {/if}
 
         <!-- Zoom Controls -->
-        <Button class="bits-btn" variant="outline" onclick={zoomIn}>
+        <Button class="bits-btn" variant="outline" on:click={zoomIn}>
           <ZoomIn class="h-4 w-4" />
         </Button>
-        <Button class="bits-btn" variant="outline" onclick={zoomOut}>
+        <Button class="bits-btn" variant="outline" on:click={zoomOut}>
           <ZoomOut class="h-4 w-4" />
         </Button>
-        <Button class="bits-btn" variant="outline" onclick={resetZoom}>
+        <Button class="bits-btn" variant="outline" on:click={resetZoom}>
           <RotateCcw class="h-4 w-4" />
         </Button>
 
         <!-- Object Controls -->
         {#if hasSelectedObject && !readOnly}
-          <Button class="bits-btn" variant="destructive" onclick={deleteSelected}>
+          <Button class="bits-btn" variant="destructive" on:click={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
           </Button>
@@ -544,19 +544,19 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
         <!-- Save & Export -->
         {#if !readOnly}
-          <Button class="bits-btn" variant="default" onclick={saveCanvas}>
+          <Button class="bits-btn" variant="default" on:click={saveCanvas}>
             <Save class="h-4 w-4 mr-2" />
             Save
           </Button>
         {/if}
 
-        <Button class="bits-btn" variant="outline" onclick={exportCanvas}>
+        <Button class="bits-btn" variant="outline" on:click={exportCanvas}>
           <Download class="h-4 w-4 mr-2" />
           Export
         </Button>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Canvas -->
   <div class="canvas-wrapper relative border border-gray-200 rounded-lg overflow-hidden">
@@ -595,7 +595,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
 
   <!-- Object Properties Panel -->
   {#if selectedObject}
-    <NesCard class="mt-4">
+    <div class="mt-4 nes-container">
       <div class="p-4">
         <h3 class="text-lg font-semibold mb-4">Selected Object</h3>
         <div class="grid grid-cols-2 gap-4 text-sm">
@@ -628,7 +628,7 @@ let uploadProgress = $state<Map<string, number>>(new Map());
           {/if}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

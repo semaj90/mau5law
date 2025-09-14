@@ -9,7 +9,8 @@
   import { WebGPUTextureStreaming } from '$lib/services/webgpu-texture-streaming';
   import type { LegalDocument, EvidenceItem } from '$lib/core/logic/legal-ai-logic';
 
-  const dispatch = createEventDispatcher();
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
 
   // Props - same as IntelligentRenderer for consistency
   export let data: {
@@ -109,7 +110,7 @@
   }
 
   function renderEvidenceCard() {
-    if (!data.evidence || !ctx) return;
+    if (!(data as { evidence?: any; documents?: any; textContent?: any }).evidence || !ctx) return;
 
     // NES-style border
     ctx.strokeStyle = colorPalette.priorityColors[priority];
@@ -123,7 +124,7 @@
 
     // Evidence items with glyph optimization
     let y = 50;
-    data.evidence.forEach((item, index) => {
+    (data as { evidence?: any; documents?: any; textContent?: any }).evidence.forEach((item, index) => {
       if (y > canvas.height - 30) return; // Viewport culling
 
       // Evidence item background
@@ -131,17 +132,17 @@
       ctx.fillRect(10, y - 15, canvas.width - 20, 25);
 
       // Evidence text (cached glyphs for performance)
-      const cacheKey = `evidence-${item.id}`;
+      const cacheKey = `evidence-${(item as { id?: any; title?: any; confidence?: any }).id}`;
       if (!glyphCache.has(cacheKey)) {
         // Cache this glyph for future frames
-        cacheGlyph(cacheKey, item.title, 10, y);
+        cacheGlyph(cacheKey, (item as { id?: any; title?: any; confidence?: any }).title, 10, y);
       }
 
       ctx.fillStyle = colorPalette.yorhaWhite;
-      ctx.fillText(item.title, 15, y);
+      ctx.fillText((item as { id?: any; title?: any; confidence?: any }).title, 15, y);
 
       // Confidence indicator
-      const confWidth = (item.confidence / 100) * 50;
+      const confWidth = ((item as { id?: any; title?: any; confidence?: any }).confidence / 100) * 50;
       ctx.fillStyle = colorPalette.n64Green;
       ctx.fillRect(canvas.width - 70, y - 10, confWidth, 8);
 
@@ -150,10 +151,10 @@
   }
 
   function renderDocumentViewer() {
-    if (!data.documents || !ctx) return;
+    if (!(data as { evidence?: any; documents?: any; textContent?: any }).documents || !ctx) return;
 
     // Large document rendering with LOD
-    const doc = data.documents[0];
+    const doc = (data as { evidence?: any; documents?: any; textContent?: any }).documents[0];
     if (!doc) return;
 
     // Title
@@ -194,12 +195,12 @@
     ctx.font = '12px "Courier New", monospace';
     ctx.fillText('🤖 LEGAL AI ASSISTANT', 10, 25);
 
-    if (data.textContent) {
+    if ((data as { evidence?: any; documents?: any; textContent?: any }).textContent) {
       ctx.fillStyle = colorPalette.yorhaWhite;
       ctx.font = '10px "Courier New", monospace';
 
       // Word wrap with glyph optimization
-      const words = data.textContent.split(' ');
+      const words = (data as { evidence?: any; documents?: any; textContent?: any }).textContent.split(' ');
       let line = '';
       let y = 50;
       const maxWidth = canvas.width - 20;
@@ -274,7 +275,7 @@
 
     // Hit testing for interactive elements
     // Dispatch events back to parent
-    dispatch('interact', {
+    onInteract?.({
       type: 'click',
       position: { x, y },
       data: data
@@ -297,7 +298,7 @@
   tabindex="0"
 >
   <canvas
-    bind:this={canvas}
+    bind:this={canvas as any}
     width="400"
     height="300"
     class="glyph-engine-canvas"
@@ -307,11 +308,11 @@
 
   <!-- Accessibility text for screen readers -->
   <div class="sr-only">
-    {#if data.evidence}
-      Evidence items: {data.evidence.map(e => e.title).join(', ')}
+    {#if (data as { evidence?: any; documents?: any; textContent?: any }).evidence}
+      Evidence items: {(data as { evidence?: any; documents?: any; textContent?: any }).evidence.map(e => e.title).join(', ')}
     {/if}
-    {#if data.documents}
-      Documents: {data.documents.map(d => d.title).join(', ')}
+    {#if (data as { evidence?: any; documents?: any; textContent?: any }).documents}
+      Documents: {(data as { evidence?: any; documents?: any; textContent?: any }).documents.map(d => d.title).join(', ')}
     {/if}
   </div>
 </div>

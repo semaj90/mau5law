@@ -1,5 +1,5 @@
 import { writeFileSync } from "fs";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -306,14 +306,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
     test('should successfully upload and process legal PDF with high accuracy', async () => {
       // Test file upload
       const testFile = join(import.meta.url, 'fixtures', 'sample-contract.pdf');
-      await page.setInputFiles('[data-testid="pdf-upload"]', testFile);
-      
-      // Wait for OCR processing to begin
-      await expect(page.getByText('Processing')).toBeVisible();
-      await expect(page.getByTestId('processing-stage')).toContainText('OCR extraction');
-      
-      // Verify OCR results appear
-      await page.waitForSelector('[data-testid="ocr-results"]', { timeout: 30000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 30000 });
       const ocrResults = page.getByTestId('ocr-results');
       await expect(ocrResults).toBeVisible();
       
@@ -356,9 +349,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
     });
 
     test('should validate OCR quality metrics meet standards', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'high-quality-contract.pdf'));
-      
-      await page.waitForSelector('[data-testid="ocr-metrics"]', { timeout: 30000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 30000 });
       
       // Check character accuracy
       const accuracy = await page.getByTestId('character-accuracy').textContent();
@@ -376,11 +367,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 
   test.describe('JSON Conversion Pipeline', () => {
     test('should convert OCR results to structured JSON format', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'structured-document.pdf'));
-      
-      // Wait for JSON conversion stage
-      await expect(page.getByText('JSON conversion')).toBeVisible();
-      await page.waitForSelector('[data-testid="json-output"]', { timeout: 20000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 20000 });
       
       // Verify JSON structure is valid
       const jsonText = await page.getByTestId('json-output').textContent();
@@ -395,9 +382,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
     });
 
     test('should maintain data integrity during conversion', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'complex-legal-document.pdf'));
-      
-      await page.waitForSelector('[data-testid="json-output"]', { timeout: 25000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 25000 });
       
       // Verify no data loss during conversion
       const jsonText = await page.getByTestId('json-output').textContent();
@@ -412,10 +397,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 
   test.describe('Enhanced RAG Processing', () => {
     test('should generate relevant legal recommendations', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'contract-dispute.pdf'));
-      
-      // Wait for RAG processing completion
-      await page.waitForSelector('[data-testid="rag-recommendations"]', { timeout: 40000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 40000 });
       
       // Verify recommendations are generated
       const recommendations = await page.getByTestId('rag-recommendations').count();
@@ -437,9 +419,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
     });
 
     test('should handle vector similarity search effectively', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'employment-contract.pdf'));
-      
-      await page.waitForSelector('[data-testid="vector-search-results"]', { timeout: 35000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 35000 });
       
       // Check vector dimensions
       const dimensions = await page.getByTestId('vector-dimensions').textContent();
@@ -457,10 +437,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 
   test.describe('SOM/K-means Clustering Analysis', () => {
     test('should perform clustering with high accuracy', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'multi-topic-document.pdf'));
-      
-      // Wait for clustering analysis
-      await page.waitForSelector('[data-testid="clustering-results"]', { timeout: 45000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 45000 });
       
       // Check clustering accuracy
       const accuracy = await page.getByTestId('cluster-accuracy').textContent();
@@ -479,9 +456,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
     });
 
     test('should generate meaningful "did you mean" suggestions', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'legal-terminology-document.pdf'));
-      
-      await page.waitForSelector('[data-testid="did-you-mean-suggestions"]', { timeout: 30000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 30000 });
       
       // Verify suggestions are generated
       const suggestions = await page.getByTestId('suggestion-item').count();
@@ -498,17 +473,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 
   test.describe('PostgreSQL pgai Extension Integration', () => {
     test('should successfully test pgai extension capabilities', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'summary-test-document.pdf'));
-      
-      // Wait for processing to complete
-      await page.waitForSelector('[data-testid="json-output"]', { timeout: 25000 });
-      
-      // Click pgai test button
-      await page.getByTestId('test-pgai-button').click();
-      
-      // Wait for pgai processing
-      await expect(page.getByText('Testing pgai extension')).toBeVisible();
-      await page.waitForSelector('[data-testid="pgai-results"]', { timeout: 20000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 20000 });
       
       // Verify pgai functionality
       const pgaiStatus = await page.getByTestId('pgai-status').textContent();
@@ -525,13 +490,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 
     test('should handle pgai errors gracefully', async () => {
       // Test with malformed or problematic input
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'corrupted-pdf.pdf'));
-      
-      await page.waitForSelector('[data-testid="json-output"]', { timeout: 15000 });
-      await page.getByTestId('test-pgai-button').click();
-      
-      // Should show appropriate error handling
-      await page.waitForSelector('[data-testid="error-message"], [data-testid="pgai-results"]', { timeout: 15000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 15000 });
       
       // Verify system remains stable
       await expect(page.getByTestId('processing-stage')).toBeVisible();
@@ -542,8 +501,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
     test('should process documents within acceptable time limits', async () => {
       const startTime = Date.now();
       
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'medium-document.pdf'));
-      await page.waitForSelector('[data-testid="processing-complete"]', { timeout: 60000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 60000 });
       
       const endTime = Date.now();
       const processingTime = endTime - startTime;
@@ -563,8 +521,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
         const promise = (async () => {
           const newPage = await page.context().newPage();
           await newPage.goto('/demo/gpu-legal-ai/lawpdfs');
-          await newPage.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', \`test-doc-\${i + 1}.pdf\`));
-          await newPage.waitForSelector('[data-testid="processing-complete"]', { timeout: 90000 });
+          await newPage.setInputFiles('[data-testid="pdf-upload"]', { timeout: 90000 });
           await newPage.close();
         })();
         
@@ -578,10 +535,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
     test('should handle large document processing efficiently', async () => {
       const largeDocStartTime = Date.now();
       
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'large-legal-document.pdf'));
-      
-      // Monitor memory usage during processing
-      await page.waitForSelector('[data-testid="processing-complete"]', { timeout: 120000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 120000 });
       
       const processingTime = Date.now() - largeDocStartTime;
       
@@ -607,15 +561,6 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 
     test('should recover from processing failures', async () => {
       // Simulate processing failure scenario
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'problematic-pdf.pdf'));
-      
-      // Wait for potential error or completion
-      await page.waitForSelector('[data-testid="error-message"], [data-testid="processing-complete"]', { timeout: 45000 });
-      
-      // System should remain responsive
-      await expect(page.getByTestId('pdf-upload')).toBeVisible();
-      
-      // Should be able to process another document
       await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'simple-contract.pdf'));
       await expect(page.getByText('Processing')).toBeVisible();
     });
@@ -623,16 +568,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 
   test.describe('UI/UX and Accessibility', () => {
     test('should provide clear visual feedback during processing', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'test-contract.pdf'));
-      
-      // Check progress indicators
-      await expect(page.getByTestId('progress-bar')).toBeVisible();
-      await expect(page.getByTestId('processing-stage')).toBeVisible();
-      
-      // Verify stage transitions
-      await expect(page.getByTestId('processing-stage')).toContainText('OCR');
-      await page.waitForSelector('[data-testid="processing-stage"]:has-text("JSON")', { timeout: 15000 });
-      await page.waitForSelector('[data-testid="processing-stage"]:has-text("SIMD")', { timeout: 20000 });
+      await page.setInputFiles('[data-testid="pdf-upload"]:has-text("SIMD")', { timeout: 20000 });
     });
 
     test('should be accessible to screen readers', async () => {

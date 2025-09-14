@@ -39,7 +39,7 @@
     merged.map((item, index) => ({
       item,
       index,
-      isOptimistic: !!item.__optimistic || optimistic.includes(item)
+      isOptimistic: !!(item as { __optimistic?: any }).__optimistic || optimistic.includes(item)
     }))
   );
 </script>

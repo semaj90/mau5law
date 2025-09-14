@@ -34,17 +34,7 @@
   let autoOptimize = $state(true);
 
   // Token usage history
-  let usageHistory = $state<Array<{
-    id: string;
-    timestamp: Date;
-    prompt: string;
-    response: string;
-    promptTokens: number;
-    responseTokens: number;
-    totalTokens: number;
-    model: string;
-    processingTime: number;
-  }>>([]);
+  let usageHistory = $state<any[]>([])([]);
 
   // Token usage breakdown
   let currentSession = $state({
@@ -252,9 +242,9 @@
   });
 </script>
 
-<NesCard class="bits-nier-bits-card token-usage-manager {className}" variant="default" legal={true}>
-  <div class="yorha-panel-header" class="bits-nier-bits-yorha-panel-header">
-    <h3 class="nes-text is-primary" class="bits-nier-bits-nes-text is-primary flex items-center justify-between">
+<div class="bits-nier-bits-card token-usage-manager {className} nes-container">
+  <div class="yorha-panel-header bits-nier-bits-yorha-panel-header">
+    <h3 class="nes-text is-primary bits-nier-bits-nes-text is-primary flex items-center justify-between">
       <div class="flex items-center gap-2">
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -268,7 +258,7 @@
     </h3>
   </div>
 
-  <div class="yorha-panel-content" class="bits-nier-bits-yorha-panel-content space-y-4">
+  <div class="yorha-panel-content bits-nier-bits-yorha-panel-content space-y-4">
     <!-- Token Limit Slider -->
     <div class="space-y-2" data-testid="token-limit-section">
       <label for="token-limit-slider" class="text-sm font-medium">
@@ -281,7 +271,7 @@
         max="32000"
         step="100"
         bind:value={tokenLimit}
-        onchange={(e: Event) => updateTokenLimit(parseInt((e.target as HTMLInputElement).value))}
+        on:change={(e: Event) => updateTokenLimit(parseInt((e.target as HTMLInputElement).value))}
         data-testid="token-limit-slider"
         class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
       />
@@ -374,45 +364,46 @@
         size="sm"
         variant="outline"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        onclick={() => showHistory = !showHistory}
+        on:click={() =>
+showHistory = !showHistory}
         data-testid="token-history-button"
       >
         <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
         History
-      </button>
+</Button>
 
       <Button
         size="sm"
         variant="outline"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        onclick={optimizeTokenUsage}
+        on:click={optimizeTokenUsage}
         disabled={!autoOptimize}
       >
-        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
         </svg>
         Optimize
-      </button>
+</Button>
 
       <Button
         size="sm"
         variant="outline"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        onclick={resetSession}
+        on:click={resetSession}
       >
-        Reset
-      </button>
+Reset
+</Button>
 
       <Button
         size="sm"
         variant="outline"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        onclick={exportUsageData}
+        on:click={exportUsageData}
       >
-        Export
-      </button>
+Export
+</Button>
     </div>
 
     <!-- Optimization Toggle -->
@@ -420,9 +411,6 @@
       <label for="auto-optimize" class="text-sm">Auto-optimize conversation</label>
       <input
         id="auto-optimize"
-        type="checkbox"
-        bind:checked={autoOptimize}
-        data-testid="optimize-conversation-toggle"
         class="toggle"
       />
     </div>
@@ -482,7 +470,7 @@
       </div>
     {/if}
   </div>
-</NesCard>
+</div>
 
 <style>
   .slider::-webkit-slider-thumb {

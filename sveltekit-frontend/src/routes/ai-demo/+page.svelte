@@ -31,11 +31,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   let ollamaStatus = $state<"checking" | "healthy" | "unhealthy">("checking");
   let availableModels = $state<string[]>([]);
   let selectedModel = $state("gemma3-legal");
-  let systemStats = $state<{
-    memory: string;
-    containers: number;
-    models: number;
-  }>({ memory: "0MB", containers: 0, models: 0 });
+  let systemStats = $state({ memory: "0MB", containers: 0, models: 0 });
 
   // Check Ollama health and available models
   async function checkOllamaHealth() {
@@ -126,9 +122,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   </div>
 
   <!-- System Status -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <Cpu class="h-5 w-5" />
         System Status
       </h3>
@@ -189,13 +185,13 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </Alert>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Model Selection -->
   {#if ollamaStatus === "healthy" && availableModels.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Settings class="h-5 w-5" />
           Model Configuration
         </h3>
@@ -206,7 +202,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             <Badge
               variant={selectedModel === model ? "default" : "outline"}
               class="cursor-pointer"
-              onclick={() => (selectedModel = model)}
+              on:click={() => (selectedModel = model)}
             >
               {model}
             </Badge>
@@ -214,22 +210,22 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </div>
 
         <div class="mt-4 flex gap-2">
-          <Button class="bits-btn" onclick={testGeneration} variant="outline">
-            Test Generation
-          </button>
-          <Button class="bits-btn" onclick={checkOllamaHealth} variant="outline">
-            Refresh Status
-          </button>
+          <Button class="bits-btn" on:click={testGeneration} variant="outline">
+Test Generation
+
+          <Button class="bits-btn" on:click={checkOllamaHealth} variant="outline">
+Refresh Status
+
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Chat Interface -->
   {#if ollamaStatus === "healthy"}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <MessageSquare class="h-5 w-5" />
           Legal AI Chat Interface
         </h3>
@@ -242,11 +238,11 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           data-testid="ollama-chat"
         />
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Quick Start Guide -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">🚀 Quick Start Guide</h3>
     </div>
@@ -281,7 +277,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 </div>
 
 <style>

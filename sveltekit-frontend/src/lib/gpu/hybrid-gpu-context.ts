@@ -9,8 +9,8 @@
  * Integrates with your existing LOD and NES caching systems
  */
 
-import type { MatrixLODSystem } from '../ui/matrix-lod';
-import type { lodCacheEngine } from '../ai/lod-cache-engine';
+import type { MatrixLODSystem } from '../ui/matrix-lod.js';
+import type { lodCacheEngine } from '../ai/lod-cache-engine.js';
 
 export type GPUContextType = 'webgpu' | 'webgl2' | 'webgl' | 'cpu-fallback';
 
@@ -111,7 +111,7 @@ export class HybridGPUContext {
 
       this.gpuDevice = await adapter.requestDevice({
         requiredFeatures: [],
-        requiredLimits: {}
+        requiredLimits: Record<string, any>
       });
 
       // Configure canvas for WebGPU
@@ -519,8 +519,8 @@ export class HybridGPUContext {
       `,
       // CPU fallback
       (data: Float32Array) => {
-        const result = new Float32Array(data.length / 3);
-        for (let i = 0; i < result.length; i++) {
+        const result = new Float32Array((data as { length?: any }).length / 3);
+        for (let i = 0; i < (result as { length?: any }).length; i++) {
           const distance = data[i * 3];
           const importance = data[i * 3 + 1];
           const performance = data[i * 3 + 2];

@@ -80,8 +80,8 @@ https://svelte.dev/e/attribute_duplicate -->
       const result = await enhancedIngestService.ingestDocument(request);
       currentProgress.set(70);
       // Generate AI summary using your existing chat system
-      if (result.success) {
-        await generateAISummary(result.documentId, documentContent);
+      if ((result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).success) {
+        await generateAISummary((result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).documentId, documentContent);
       }
       currentProgress.set(100);
       // Update results
@@ -214,17 +214,18 @@ https://svelte.dev/e/attribute_duplicate -->
     <Alert variant="destructive" class="mb-4">
       <AlertDescription class="flex items-center justify-between">
         <span>{error.message}</span>
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => dismissError(error.id)}>
+        <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+dismissError(error.id)}>
           ✕
-        </button>
+
       </AlertDescription>
     </Alert>
   {/each}
   
   <!-- Progress Indicator -->
   {#if $processingStatus !== 'idle'}
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm font-medium">
             {$processingStatus === 'processing' ? 'Processing Document...' : 
@@ -236,16 +237,16 @@ https://svelte.dev/e/attribute_duplicate -->
         </div>
         <Progress value={$currentProgress} class="w-full" />
       </div>
-    </NesCard>
+    </div>
   {/if}
   
   <!-- Main Input Form -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Document Details</h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <div class="space-y-2">
           <Label for="title">Document Title</Label>
           <Input
@@ -273,13 +274,13 @@ https://svelte.dev/e/attribute_duplicate -->
               <button class="nes-btn" 
                 variant={selectedDocumentType === type.value ? 'default' : 'outline'}
                 size="sm"
-                onclick={() => selectedDocumentType = type.value}
+                on:click={() => selectedDocumentType = type.value}
                 disabled={$isProcessing}
                 class="bits-btn justify-start"
               >
                 <span class="mr-2">{type.icon}</span>
                 {type.label}
-              </button>
+
             {/each}
           </div>
         </div>
@@ -297,28 +298,27 @@ https://svelte.dev/e/attribute_duplicate -->
         
         <div class="flex space-x-2">
           <Button
-            onclick={ingestDocument}
+            on:click={ingestDocument}
             disabled={!$canIngest || $isProcessing}
             class="flex-1 bits-btn bits-btn"
           >
-            {$isProcessing ? 'Processing...' : '🚀 Ingest Document'}
-          </button>
-          
+{$isProcessing ? 'Processing...' : '🚀 Ingest Document'}
+
           <Button class="bits-btn"
             variant="outline"
-            onclick={addToBatch}
+            on:click={addToBatch}
             disabled={!documentTitle.trim() || !documentContent.trim() || $isProcessing}
           >
-            ➕ Add to Batch
-          </button>
+➕ Add to Batch
+
         </div>
       </div>
-    </NesCard>
+    </div>
     
     <!-- Batch Processing Panel -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           Batch Processing
           {#if $batchDocuments.length > 0}
             <Badge>{$batchDocuments.length} documents</Badge>
@@ -344,54 +344,56 @@ https://svelte.dev/e/attribute_duplicate -->
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => removeFromBatch(doc.id)}
+                  on:click={() =>
+removeFromBatch(doc.id)}
                 >
                   ✕
-                </button>
+
               </div>
             {/each}
           </div>
           
           <div class="space-y-2">
             <Button
-              onclick={processBatch}
+              on:click={processBatch}
               disabled={$isProcessing}
               class="w-full bits-btn bits-btn"
             >
-              {$processingStatus === 'batch_processing' ? 'Processing Batch...' : `🔥 Process ${$batchDocuments.length} Documents`}
-            </button>
+{$processingStatus === 'batch_processing' ? 'Processing Batch...' : `🔥 Process ${$batchDocuments.length} Documents`}
+
             <Button class="bits-btn"
               variant="outline"
-              onclick={() => batchDocuments.set([])}
+              on:click={() =>
+batchDocuments.set([])}
               disabled={$isProcessing}
               size="sm"
               class="w-full"
             >
               Clear Batch
-            </button>
+
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   </div>
   
   <!-- Results Display -->
   {#if $hasResults}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Processing Results</h3>
       </div>
       <div class="yorha-panel-content">
         <div class="space-y-4">
-          {#each $ingestResults as result (result.documentId || result.batchId)}
+          {#each $ingestResults as result ((result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).documentId || (result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).batchId)}
             <div class="border rounded-lg p-4">
               <div class="flex items-start justify-between mb-2">
                 <div>
                   <div class="font-medium">
-                    {result.is_batch ? `Batch: ${result.processed} documents` : result.title}
+                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).is_batch ? `Batch: ${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).processed} documents` : (result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).title}
                   </div>
                   <div class="text-sm nes-text is-disabled">
-                    {result.is_batch ? `Success Rate: ${result.successRate}` : `Type: ${result.type}`}
+                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).is_batch ? `Success Rate: ${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).successRate}` : `Type: ${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).type}`}
                   </div>
                 </div>
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">✓ Completed</span>
@@ -401,25 +403,25 @@ https://svelte.dev/e/attribute_duplicate -->
                 <div>
                   <div class="nes-text is-disabled">Processing Time</div>
                   <div class="font-medium">
-                    {result.processingTime ? `${result.processingTime.toFixed(1)}ms` : 'N/A'}
+                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).processingTime ? `${(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).processingTime.toFixed(1)}ms` : 'N/A'}
                   </div>
                 </div>
                 <div>
                   <div class="nes-text is-disabled">Document ID</div>
                   <div class="font-mono text-xs">
-                    {result.documentId?.substring(0, 8) || result.batchId?.substring(0, 8)}...
+                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).documentId?.substring(0, 8) || (result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).batchId?.substring(0, 8)}...
                   </div>
                 </div>
                 <div>
                   <div class="nes-text is-disabled">Embedding ID</div>
                   <div class="font-mono text-xs">
-                    {result.embeddingId?.substring(0, 8)}...
+                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).embeddingId?.substring(0, 8)}...
                   </div>
                 </div>
                 <div>
                   <div class="nes-text is-disabled">Timestamp</div>
                   <div class="text-xs">
-                    {result.timestamp.toLocaleTimeString()}
+                    {(result as { success?: any; documentId?: any; batchId?: any; is_batch?: any; processed?: any; title?: any; successRate?: any; type?: any; processingTime?: any; embeddingId?: any; timestamp?: any }).timestamp.toLocaleTimeString()}
                   </div>
                 </div>
               </div>
@@ -427,12 +429,12 @@ https://svelte.dev/e/attribute_duplicate -->
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
   
   <!-- AI Chat Integration (if active conversation exists) -->
   {#if $currentConversation.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">AI Analysis</h3>
       </div>
@@ -454,7 +456,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

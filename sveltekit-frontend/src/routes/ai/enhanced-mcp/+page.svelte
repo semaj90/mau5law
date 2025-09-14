@@ -14,13 +14,7 @@ https://svelte.dev/e/js_parse_error -->
 	import { writable } from 'svelte/store';
 
 	// Page state
-	const integrationStatus = writable<{
-		mcpServerRunning: boolean;
-		vsCodeExtensionActive: boolean;
-		clusterSystemOnline: boolean;
-		ollamaModelsLoaded: boolean;
-		contextualAnalysisReady: boolean;
-	}>({
+	const integrationStatus = writable({
 		mcpServerRunning: false,
 		vsCodeExtensionActive: false,
 		clusterSystemOnline: false,
@@ -28,12 +22,7 @@ https://svelte.dev/e/js_parse_error -->
 		contextualAnalysisReady: false
 	});
 
-	const systemLogs = writable<Array<{
-		timestamp: Date;
-		level: 'info' | 'success' | 'warning' | 'error';
-		message: string;
-		source: string;
-	}>>([]);
+	const systemLogs = writable<Array>([]);
 
 	let selectedCaseId = $state('demo-case-001');
 	let enableRealtimeUpdates = $state(true);
@@ -308,10 +297,10 @@ let passedTests = $state(0);
 		</div>
 
 		<div class="action-buttons">
-			<button onclick={runSystemDiagnostics} class="diagnostic-button">
+			<button on:click={runSystemDiagnostics} class="diagnostic-button">
 				🔬 Run System Diagnostics
 			</button>
-			<button onclick={clearLogs} class="clear-logs-button">
+			<button on:click={clearLogs} class="clear-logs-button">
 				🧹 Clear Logs
 			</button>
 		</div>

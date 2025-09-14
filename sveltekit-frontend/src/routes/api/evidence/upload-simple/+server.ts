@@ -3,7 +3,7 @@ import path from "path";
 import { json } from "@sveltejs/kit";
 import { randomUUID } from "crypto";
 import { promises as fs } from "fs";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const POST: RequestHandler = async ({ request, locals, url }) => {

@@ -41,10 +41,7 @@ https://svelte.dev/e/attribute_duplicate -->
   	let { 
   		caseId = 'unified-case-001',
   		evidence = [] as any[]
-  	} = $props<{
-  		caseId?: string;
-  		evidence?: any[];
-  	}>();
+  	} = $props();
 
   	// Initialize unified integration
   	onMount(async () => {
@@ -101,20 +98,20 @@ https://svelte.dev/e/attribute_duplicate -->
   					forceReanalyze: false
   				})
   			});
-  			const analysisResult = await response.json();
+  			const analysisResult = await (response as { json?: any }).json();
   			if (analysisResult.success) {
   				activeAnalysis = [...activeAnalysis, {
   					evidenceId: evidenceItem.id,
-  					...analysisResult.data.analysis,
+  					...analysisResult.(data as { analysis?: any }).analysis,
   					timestamp: new Date().toISOString()
   				}];
-  				console.log('✅ Evidence analysis completed:', analysisResult.data.analysis.summary);
+  				console.log('✅ Evidence analysis completed:', analysisResult.(data as { analysis?: any }).analysis.summary);
   			}
   		} catch (error) {
   			console.error('❌ Evidence analysis failed:', error);
   		} finally {
   			// Remove from processing queue
-  			processingQueue = processingQueue.filter(item => item.id !== evidenceItem.id);
+  			processingQueue = processingQueue.filter(item => (item as { id?: any }).id !== evidenceItem.id);
   		}
   	}
 
@@ -144,7 +141,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		// Combine evidence from both canvas and board
   		const allEvidence = [...canvasEvidence, ...evidence];
   		for (const item of allEvidence) {
-  			if (!activeAnalysis.find(analysis => analysis.evidenceId === item.id)) {
+  			if (!activeAnalysis.find(analysis => analysis.evidenceId === (item as { id?: any }).id)) {
   				await handleEvidenceAnalysis(item);
   			}
   		}
@@ -154,15 +151,15 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- Unified Canvas Integration Interface -->
 <div class="w-full h-full flex flex-col bg-background">
 	<!-- Integration Header -->
-	<NesCard class="mb-4">
-		<div class="yorha-panel-header" class="pb-3">
+	<div class="mb-4 nes-container">
+		<div class="yorha-panel-header pb-3">
 			<div class="flex justify-between items-center">
 				<div class="flex items-center gap-4">
 					<div class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
 						<Canvas class="w-5 h-5 text-primary" />
 					</div>
 					<div>
-						<h3 class="nes-text is-primary" class="text-xl">Unified Evidence Analysis</h3>
+						<h3 class="nes-text is-primary text-xl">Unified Evidence Analysis</h3>
 						<p class="text-sm nes-text is-disabled">Enhanced Canvas + Detective Board Integration</p>
 					</div>
 				</div>
@@ -173,30 +170,33 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button class="bits-btn"
 							variant={viewMode === 'canvas' ? 'default' : 'ghost'}
 							size="sm"
-							onclick={() => switchViewMode('canvas')}
+							on:click={() =>
+switchViewMode('canvas')}
 							class="h-8 px-3"
 						>
 							<Canvas class="w-4 h-4 mr-1" />
 							Canvas
-						</button>
+
 						<Button class="bits-btn"
 							variant={viewMode === 'board' ? 'default' : 'ghost'}
 							size="sm"
-							onclick={() => switchViewMode('board')}
+							on:click={() =>
+switchViewMode('board')}
 							class="h-8 px-3"
 						>
 							<Grid3X3 class="w-4 h-4 mr-1" />
 							Board
-						</button>
+
 						<Button class="bits-btn"
 							variant={viewMode === 'hybrid' ? 'default' : 'ghost'}
 							size="sm"
-							onclick={() => switchViewMode('hybrid')}
+							on:click={() =>
+switchViewMode('hybrid')}
 							class="h-8 px-3"
 						>
 							<Eye class="w-4 h-4 mr-1" />
 							Hybrid
-						</button>
+
 					</div>
 					
 					<!-- System Status Indicators -->
@@ -213,11 +213,11 @@ https://svelte.dev/e/attribute_duplicate -->
 				</div>
 			</div>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- Performance Metrics Bar -->
-	<NesCard class="mb-4">
-		<div class="yorha-panel-content" class="py-3">
+	<div class="mb-4 nes-container">
+		<div class="yorha-panel-content py-3">
 			<div class="flex justify-between items-center">
 				<div class="flex gap-6">
 					<div class="flex items-center gap-2">
@@ -239,19 +239,19 @@ https://svelte.dev/e/attribute_duplicate -->
 				</div>
 				
 				<div class="flex gap-2">
-					<Button class="bits-btn" variant="outline" size="sm" onclick={syncCanvasToBoard}>
-						Sync Canvas → Board
-					</button>
-					<Button class="bits-btn" variant="outline" size="sm" onclick={syncBoardToCanvas}>
-						Sync Board → Canvas
-					</button>
-					<Button class="bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>
-						Analyze All Evidence
-					</button>
+					<Button class="bits-btn" variant="outline" size="sm" on:click={syncCanvasToBoard}>
+Sync Canvas → Board
+
+					<Button class="bits-btn" variant="outline" size="sm" on:click={syncBoardToCanvas}>
+Sync Board → Canvas
+
+					<Button class="bits-btn" variant="default" size="sm" on:click={processUnifiedAnalysis}>
+Analyze All Evidence
+
 				</div>
 			</div>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- Main Integration View -->
 	<div class="flex-1 relative">
@@ -276,37 +276,37 @@ https://svelte.dev/e/attribute_duplicate -->
 			<!-- Hybrid View - Split Screen -->
 			<div class="h-full grid grid-cols-2 gap-4">
 				<!-- Left Panel - Enhanced Evidence Canvas -->
-				<NesCard class="h-full">
-					<div class="yorha-panel-header" class="pb-2">
-						<h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
+				<div class="h-full nes-container">
+					<div class="yorha-panel-header pb-2">
+						<h3 class="nes-text is-primary text-lg flex items-center gap-2">
 							<Canvas class="w-5 h-5" />
 							Evidence Canvas
 						</h3>
 					</div>
-					<div class="yorha-panel-content" class="p-2 h-[calc(100%-4rem)]">
+					<div class="yorha-panel-content p-2 h-[calc(100%-4rem)]">
 						<EvidenceCanvas
 							bind:evidence={canvasEvidence}
 							{caseId}
 							onEvidenceUpdate={handleCanvasEvidenceUpdate}
 						/>
 					</div>
-				</NesCard>
+				</div>
 				
 				<!-- Right Panel - Detective Board -->
-				<NesCard class="h-full">
-					<div class="yorha-panel-header" class="pb-2">
-						<h3 class="nes-text is-primary" class="text-lg flex items-center gap-2">
+				<div class="h-full nes-container">
+					<div class="yorha-panel-header pb-2">
+						<h3 class="nes-text is-primary text-lg flex items-center gap-2">
 							<Grid3X3 class="w-5 h-5" />
 							Detective Board
 						</h3>
 					</div>
-					<div class="yorha-panel-content" class="p-2 h-[calc(100%-4rem)]">
+					<div class="yorha-panel-content p-2 h-[calc(100%-4rem)]">
 						<DetectiveBoard
 							{caseId}
 							evidence={evidence}
 						/>
 					</div>
-				</NesCard>
+				</div>
 			</div>
 		{/if}
 	</div>
@@ -314,14 +314,14 @@ https://svelte.dev/e/attribute_duplicate -->
 	<!-- Analysis Results Overlay -->
 	{#if activeAnalysis.length > 0}
 		<div class="absolute bottom-4 right-4 w-80">
-			<NesCard class="bg-background/95 backdrop-blur-sm">
-				<div class="yorha-panel-header" class="pb-2">
-					<h3 class="nes-text is-primary" class="text-sm flex items-center gap-2">
+			<div class="bg-background/95 backdrop-blur-sm nes-container">
+				<div class="yorha-panel-header pb-2">
+					<h3 class="nes-text is-primary text-sm flex items-center gap-2">
 						<Activity class="w-4 h-4" />
 						Live Analysis Results
 					</h3>
 				</div>
-				<div class="yorha-panel-content" class="space-y-2 max-h-48 overflow-y-auto">
+				<div class="yorha-panel-content space-y-2 max-h-48 overflow-y-auto">
 					{#each activeAnalysis.slice(-3) as analysis}
 						<div class="p-2 bg-muted rounded text-xs">
 							<div class="font-medium mb-1">
@@ -338,7 +338,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						</div>
 					{/each}
 				</div>
-			</NesCard>
+			</div>
 		</div>
 	{/if}
 </div>

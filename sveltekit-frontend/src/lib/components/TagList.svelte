@@ -25,12 +25,7 @@ https://svelte.dev/e/js_parse_error -->
     readonly?: boolean;
   } = $props();
 
-  const dispatch = createEventDispatcher<{
-    change: string[];
-    add: string;
-    remove: string;
-    search: string;
-  }>();
+  const dispatch = createEventDispatcher();
 
   // State using Svelte 5 syntax
   let inputValue = $state("");
@@ -162,19 +157,17 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<svelte:window onclick={handleClickOutside} />
+<svelte:window on:click={handleClickOutside} />
 
 <div class="mx-auto px-4 max-w-7xl" class:readonly>
   <div class="mx-auto px-4 max-w-7xl">
     {#each tags as tag (tag)}
-      <div class="mx-auto px-4 max-w-7xl" transitiscale={{ duration: 200 ">
-        <Tag class="mx-auto px-4 max-w-7xl" size={14} />
-        <span class="mx-auto px-4 max-w-7xl">{tag}</span>
+      <div class="mx-auto px-4 max-w-7xl" transition:scale>
         {#if !readonly}
           <button
             type="button"
             class="mx-auto px-4 max-w-7xl"
-            onclick={() => removeTag(tag)}
+            on:click={() => removeTag(tag)}
             aria-label="Remove {tag} tag"
           >
             <X size={12} />
@@ -187,10 +180,9 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mx-auto px-4 max-w-7xl" bind:this={suggestionsContainer}>
         <input
           bind:this={inputElement}
-          bind:value={inputValue}
-          input={handleInput}
+          bind:value={inputValue} on:input={handleInput}
           keydown={handleKeyDown}
-          onfocus={handleFocus}
+          on:focus={handleFocus}
           class="mx-auto px-4 max-w-7xl"
           type="text"
           {placeholder}
@@ -204,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
                 type="button"
                 class="mx-auto px-4 max-w-7xl"
                 class:active={index === activeIndex}
-                onclick={() => handleSuggestionClick(suggestion)}
+                on:click={() => handleSuggestionClick(suggestion)}
                 role="option"
                 aria-selected={index === activeIndex}
               >
@@ -221,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         type="button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={() => addTag(inputValue)}
+        on:click={() => addTag(inputValue)}
         aria-label="Add custom tag: {inputValue}"
       >
         <Plus size={14} />

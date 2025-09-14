@@ -17,13 +17,13 @@ import {
   sampleFramesFromVideo,
   parseJsonWithSimd,
   extractContent
-} from './extractors.js';
+} from './extractors.js.js';
 import {
   embedText,
   embedImageBuffer,
   embedAudioFilePath,
   embedContent
-} from './embed.js';
+} from './embed.js.js';
 
 if (!parentPort) {
   throw new Error('This script must be run as a worker thread');
@@ -157,11 +157,7 @@ async function handleEmbedding(payload: {
 
 async function handleImageProcessing(payload: {
   buffer: number[];
-  operations: Array<{
-    type: 'resize' | 'crop' | 'blur' | 'sharpen' | 'grayscale' | 'normalize';
-    params?: any;
-  }>;
-}) {
+  operations: Array<any>) {
   const buffer = Buffer.from(payload.buffer);
 
   // Dynamic import Sharp

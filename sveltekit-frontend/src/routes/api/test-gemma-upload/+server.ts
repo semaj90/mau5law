@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { PDFDocument } from 'pdf-lib';
 import { ollamaConfig } from '$lib/services/ollama-config-service.js';
 import { ENV_CONFIG } from '$lib/config/environment.js';
@@ -111,11 +111,11 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
 			})
 		});
 
-		if (!response.ok) {
-			throw new Error(`MCP Server responded with ${response.status}`);
+		if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+			throw new Error(`MCP Server responded with ${(response as { ok?: any; status?: any; json?: any }).status}`);
 		}
 
-		const result = await response.json();
+		const result = await (response as { ok?: any; status?: any; json?: any }).json();
 		return { success: true, data: result };
 	} catch (error: any) {
 		console.error('MCP processing error:', error);
@@ -145,7 +145,7 @@ async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
 				})
 			});
 
-			if (!response.ok) {
+			if (!(response as { ok?: any; status?: any; json?: any }).ok) {
 				console.warn(`Failed to generate embedding for chunk, using fallback`);
 				// Generate a mock embedding vector for demo
 				const mockEmbedding = Array.from({ length: 384 }, () => Math.random() * 2 - 1);
@@ -153,8 +153,8 @@ async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
 				continue;
 			}
 
-			const result = await response.json();
-			embeddings.push(result.embedding || []);
+			const result = await (response as { ok?: any; status?: any; json?: any }).json();
+			embeddings.push((result as { embedding?: any }).embedding || []);
 		}
 
 		return embeddings;
@@ -173,8 +173,8 @@ async function storeInDatabase(data: any, minioPath: string): Promise<boolean> {
 		// Simulate database storage
 		console.log('[Database] Storing document metadata and embeddings...');
 		console.log(`[Database] MinIO path: ${minioPath}`);
-		console.log(`[Database] Chunks: ${data.chunks?.length || 0}`);
-		console.log(`[Database] Embeddings: ${data.embeddings?.length || 0}`);
+		console.log(`[Database] Chunks: ${(data as { chunks?: any; embeddings?: any }).chunks?.length || 0}`);
+		console.log(`[Database] Embeddings: ${(data as { chunks?: any; embeddings?: any }).embeddings?.length || 0}`);
 		
 		// In production, you'd use Drizzle ORM or raw SQL here
 		// to store in PostgreSQL with pgvector

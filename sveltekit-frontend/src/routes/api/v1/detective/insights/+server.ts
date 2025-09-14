@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         metadata: {
           insightType,
           depth,
-          evidenceCount: evidenceResult.data.length,
+          evidenceCount: evidenceResult.(data as { length?: any }).length,
           lastUpdated: new Date().toISOString(),
           confidence: insights.overallConfidence,
         },
@@ -366,8 +366,8 @@ async function generateConnectionInsights(evidence: any[]): Promise<any> {
       technical: Math.floor(evidence.length * 0.2),
     },
     centralNodes: evidence.slice(0, 3).map(item => ({
-      id: item.id,
-      title: item.title,
+      id: (item as { id?: any; title?: any }).id,
+      title: (item as { id?: any; title?: any }).title,
       connectionCount: Math.floor(Math.random() * 10) + 1,
       significance: 'high',
     })),

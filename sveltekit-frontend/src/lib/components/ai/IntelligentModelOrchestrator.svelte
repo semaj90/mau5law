@@ -226,13 +226,13 @@
     <div class="flex gap-4 mb-4">
       <input
         bind:value={queryInput}
-        onkeydown={(e) => e.key === 'Enter' && processQuery()}
+        on:keydown={(e) => e.key === 'Enter' && processQuery()}
         placeholder="Ask me anything... (the system will intelligently select the best model)"
         class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         disabled={isProcessing}
       />
       <button
-        onclick={processQuery}
+        on:click={processQuery}
         disabled={isProcessing || !queryInput.trim()}
         class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -458,13 +458,13 @@
               <div class="flex gap-2 ml-4">
                 {#if !$userFeedback.has(suggestion.id)}
                   <button
-                    onclick={() => acceptSuggestion(suggestion)}
+                    on:click={() => acceptSuggestion(suggestion)}
                     class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
                   >
                     ✓ Accept
                   </button>
                   <button
-                    onclick={() => rejectSuggestion(suggestion)}
+                    on:click={() => rejectSuggestion(suggestion)}
                     class="px-3 py-1 bg-gray-400 text-white rounded text-xs hover:bg-gray-500"
                   >
                     ✗ Reject

@@ -6,9 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   import * as monaco from 'monaco-editor';
   import { onDestroy, onMount } from 'svelte';
   let editorContainer: HTMLDivElement = $state();
-  let editor = $state<monaco.editor.IStandaloneCodeEditor;
-
-  onMount(() => {
+  let editor = $state<monaco.editor.IStandaloneCodeEditoronMount(() = | null>(null)() {
   // SSR safety: only run in browser
   if (typeof window !== 'undefined') {
     editor = monaco.editor.create(editorContainer, {

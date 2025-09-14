@@ -668,7 +668,7 @@ export class RabbitMQManager extends EventEmitter {
               userId: user_id,
               query: event_data.query || 'Analytics Event',
               response: event_data.response || 'No response',
-              model: event_data.model || 'unknown',
+              model: event_data?.model || "unknown" // @ts-ignore - Model property access || 'unknown',
               queryType: event_type,
               tokensUsed: event_data.tokensUsed || null,
               processingTime: response_time_ms || null,

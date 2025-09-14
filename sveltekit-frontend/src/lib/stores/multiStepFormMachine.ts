@@ -4,8 +4,8 @@ import { z } from 'zod';
 
 // src/lib/stores/multiStepFormMachine.ts - XState v5 Multi-step Forms with Superforms & Zod
 import { setup, createActor, assign, fromPromise } from 'xstate';
-import { cases, evidence } from "../server/db/schema-unified";
-import { db } from "../server/db/drizzle";
+import { cases, evidence } from '../server/db/schema-unified.js';
+import { db } from '../server/db/drizzle.js';
 
 // Zod Validation Schemas
 export const CaseFormSchema = z.object({
@@ -324,7 +324,7 @@ const generateEmbeddings = fromPromise(
 // Multi-step form machine setup
 export const multiStepFormMachine = setup({
   types: {
-    context: {} as {
+    context: Record<string, any> as {
       formType: "case" | "evidence" | "criminal";
       currentStep: number;
       totalSteps: number;
@@ -336,7 +336,7 @@ export const multiStepFormMachine = setup({
       submitResult: any;
       userId: string;
     },
-    events: {} as
+    events: Record<string, any> as
       | { type: "NEXT"; stepData: Record<string, any> }
       | { type: "PREVIOUS" }
       | { type: "GOTO_STEP"; step: number }
@@ -357,9 +357,9 @@ export const multiStepFormMachine = setup({
     formType: "case",
     currentStep: 1,
     totalSteps: 4,
-    formData: {},
-    stepData: {},
-    errors: {},
+    formData: Record<string, any>,
+    stepData: Record<string, any>,
+    errors: Record<string, any>,
     isValid: false,
     isSubmitting: false,
     submitResult: null,
@@ -377,13 +377,13 @@ export const multiStepFormMachine = setup({
         PREVIOUS: {
           actions: assign({
             currentStep: ({ context }) => Math.max(1, context.currentStep - 1),
-            errors: {},
+            errors: Record<string, any>,
           }),
         },
         GOTO_STEP: {
           actions: assign({
             currentStep: ({ event }) => event.step,
-            errors: {},
+            errors: Record<string, any>,
           }),
         },
         UPDATE_STEP_DATA: {
@@ -410,9 +410,9 @@ export const multiStepFormMachine = setup({
                   return 4;
               }
             },
-            formData: {},
-            stepData: {},
-            errors: {},
+            formData: Record<string, any>,
+            stepData: Record<string, any>,
+            errors: Record<string, any>,
           }),
         },
         SUBMIT: {
@@ -422,9 +422,9 @@ export const multiStepFormMachine = setup({
         RESET: {
           actions: assign({
             currentStep: 1,
-            formData: {},
-            stepData: {},
-            errors: {},
+            formData: Record<string, any>,
+            stepData: Record<string, any>,
+            errors: Record<string, any>,
             isValid: false,
             submitResult: null,
           }),
@@ -434,7 +434,7 @@ export const multiStepFormMachine = setup({
     validating: {
       entry: assign({
         isValid: false,
-        errors: {},
+        errors: Record<string, any>,
       }),
       always: [
         {
@@ -485,8 +485,8 @@ export const multiStepFormMachine = setup({
             }),
             currentStep: ({ context }) =>
               Math.min(context.totalSteps, context.currentStep + 1),
-            stepData: {},
-            errors: {},
+            stepData: Record<string, any>,
+            errors: Record<string, any>,
           }),
         },
         {
@@ -509,7 +509,7 @@ export const multiStepFormMachine = setup({
               }
 
               stepSchema.parse(stepData);
-              return { isValid: true, errors: {} };
+              return { isValid: true, errors: Record<string, any> };
             } catch (error: any) {
               if (error instanceof z.ZodError) {
                 const fieldErrors: Record<string, string[]> = {};
@@ -602,9 +602,9 @@ export const multiStepFormMachine = setup({
           target: "editing",
           actions: assign({
             currentStep: 1,
-            formData: {},
-            stepData: {},
-            errors: {},
+            formData: Record<string, any>,
+            stepData: Record<string, any>,
+            errors: Record<string, any>,
             isValid: false,
             submitResult: null,
           }),
@@ -620,9 +620,9 @@ export const multiStepFormMachine = setup({
           target: "editing",
           actions: assign({
             currentStep: 1,
-            formData: {},
-            stepData: {},
-            errors: {},
+            formData: Record<string, any>,
+            stepData: Record<string, any>,
+            errors: Record<string, any>,
             isValid: false,
             submitResult: null,
             isSubmitting: false,

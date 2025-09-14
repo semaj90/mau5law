@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * Enhanced RAG API Endpoints - Backend Integration
@@ -47,20 +47,20 @@ async function forwardToRAGBackend(
     clearTimeout(timeoutId);
     const duration = Date.now() - startTime;
 
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => "Unknown error");
+    if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
+      const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text().catch(() => "Unknown error");
 
       // Log failed API call
       console.error(`RAG Backend API call failed [${duration}ms]:`, {
         endpoint,
-        status: response.status,
+        status: (response as { ok?: any; text?: any; status?: any; json?: any }).status,
         error: errorText
       });
 
-      throw new Error(`RAG Backend Error (${response.status}): ${errorText}`);
+      throw new Error(`RAG Backend Error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`);
     }
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 
     // Log successful API call
     console.log(`RAG Backend API call succeeded [${duration}ms]:`, {
@@ -189,9 +189,9 @@ async function handleSearch(request: Request): Promise<any> {
         success: true,
         query,
         searchType,
-        results: result.results,
-        metadata: result.metadata,
-        total: result.total || result.results?.length || 0,
+        results: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).results,
+        metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata,
+        total: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).total || (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).results?.length || 0,
         source: 'rag-backend'
       });
     } catch (backendError: any) {
@@ -267,8 +267,8 @@ async function handleAnalyze(request: Request): Promise<any> {
 
     return json({
       success: true,
-      analysis: result.analysis,
-      metadata: result.metadata,
+      analysis: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).analysis,
+      metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata,
     });
   } catch (err: any) {
     console.error("Analysis error:", err);
@@ -299,8 +299,8 @@ async function handleSummarize(request: Request): Promise<any> {
 
     return json({
       success: true,
-      summary: result.summary,
-      metadata: result.metadata,
+      summary: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).summary,
+      metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata,
     });
   } catch (err: any) {
     console.error("Summarization error:", err);
@@ -514,7 +514,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
     return json({
       success: true,
-      message: result.message || "Cache cleared successfully",
+      message: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).message || "Cache cleared successfully",
       pattern: pattern || "all",
     });
   } catch (err: any) {

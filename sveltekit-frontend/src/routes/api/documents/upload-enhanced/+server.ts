@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { legalRAG } from '$lib/ai/langchain-rag';
 
 /**
@@ -67,15 +67,15 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
 
-    if (result.success) {
-      console.log(`✅ Document processed successfully: ${result.documentId} (${result.chunks} chunks)`);
+    if ((result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).success) {
+      console.log(`✅ Document processed successfully: ${(result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).documentId} (${(result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).chunks} chunks)`);
 
       return json({
         success: true,
-        documentId: result.documentId,
-        chunks: result.chunks,
-        processingDetails: result.processingDetails,
-        message: `Document uploaded and indexed successfully with ${result.chunks} semantic chunks`,
+        documentId: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).documentId,
+        chunks: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).chunks,
+        processingDetails: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).processingDetails,
+        message: `Document uploaded and indexed successfully with ${(result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).chunks} semantic chunks`,
         features: {
           textExtraction: true,
           semanticIndexing: true,
@@ -84,12 +84,12 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       });
     } else {
-      console.error(`❌ Document processing failed: ${result.error}`);
+      console.error(`❌ Document processing failed: ${(result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).error}`);
 
       return json({
         success: false,
-        error: result.error || 'Upload processing failed',
-        processingDetails: result.processingDetails
+        error: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).error || 'Upload processing failed',
+        processingDetails: (result as { success?: any; documentId?: any; chunks?: any; processingDetails?: any; error?: any }).processingDetails
       }, { status: 500 });
     }
 

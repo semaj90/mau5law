@@ -1,4 +1,4 @@
-import { synthesizeMultiLLMOutput } from "./custom-reranker";
+import { synthesizeMultiLLMOutput } from './custom-reranker.js';
 
 // TODOs and stub mocks for multi-LLM synthesis pipeline integration
 import type {
@@ -7,14 +7,14 @@ import type {
   UploadedFile,
   MCPServerData,
   SynthesisOptions,
-} from "./types";
+} from './types.js';
 import {
   mockAIModelOutput,
   mockUserHistory,
   mockUploadedFile,
   mockMCPServerData,
   mockSynthesisOptions,
-} from "./types";
+} from './types.js';
 
 // Example usage with stub mocks
 export async function runSynthesisExample(): Promise<any> {

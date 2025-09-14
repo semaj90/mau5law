@@ -20,7 +20,7 @@
 // Analyzes user patterns and generates insights for legal workflows
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { validateAuthSession } from '$lib/server/auth';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
@@ -95,7 +95,7 @@ Provide analysis in JSON format:
     let analysis;
 
     try {
-      analysis = JSON.parse(result.response);
+      analysis = JSON.parse((result as { response?: any }).response);
     } catch (error) {
       // Fallback analysis
       analysis = {

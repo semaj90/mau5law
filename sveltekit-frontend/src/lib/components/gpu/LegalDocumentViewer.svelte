@@ -841,12 +841,12 @@ https://svelte.dev/e/expected_token -->
     uploadProgress.set(progress.filename, progress);
   }
   
-  function handleUploadComplete(event: CustomEvent<{ file: MinIOFile }>) {
+  function handleUploadComplete(event: CustomEvent) {
     console.log(`✅ Upload completed: ${event.detail.file.filename}`);
     uploadProgress.delete(event.detail.file.filename);
   }
   
-  function handleUploadError(event: CustomEvent<{ error: string; file?: File }>) {
+  function handleUploadError(event: CustomEvent) {
     console.error(`❌ Upload error: ${event.detail.error}`, event.detail.file?.name);
     if (event.detail.file) {
       uploadProgress.delete(event.detail.file.name);
@@ -1286,18 +1286,18 @@ https://svelte.dev/e/expected_token -->
       <input 
         type="text" 
         bind:value={searchQuery} 
-        onkeydown={(e) => e.key === 'Enter' && searchDocuments(searchQuery)}
+        on:keydown={(e) => e.key === 'Enter' && searchDocuments(searchQuery)}
         placeholder="Search legal documents..." 
         class="flex-1 min-w-48 bg-black/50 border border-gray-500 rounded px-3 py-2 text-gray-200 placeholder-gray-400 text-sm"
       />
       <button 
-        onclick={() => searchDocuments(searchQuery)}
+        on:click={() => searchDocuments(searchQuery)}
         class="px-3 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded text-xs font-semibold hover:scale-105 transition-transform cursor-pointer border-none"
       >
         🔍 Search
       </button>
       <button 
-        onclick={() => render()}
+        on:click={() => render()}
         class="px-3 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded text-xs font-semibold hover:scale-105 transition-transform cursor-pointer border-none"
       >
         🔄 Render
@@ -1306,7 +1306,7 @@ https://svelte.dev/e/expected_token -->
   </div>
   
   <canvas 
-    bind:this={canvas}
+    bind:this={canvas as any}
     width="1200"
     height="800"
     class="w-full border-2 border-gray-500 rounded-md bg-radial-gradient"
@@ -1337,9 +1337,9 @@ https://svelte.dev/e/expected_token -->
         class:shadow-cyan-400/30={dragOverUpload}
         class:border-yellow-400={uploadInProgress}
         class:bg-yellow-400/5={uploadInProgress}
-        ondragover={handleDragOver}
+        on:dragover={handleDragOver}
         ondragleave={handleDragLeave}
-        role="region" aria-label="Drop zone" ondrop={handleDrop}
+        role="region" aria-label="Drop zone" on:drop={handleDrop}
       >
         {#if uploadInProgress}
           <div class="w-full">
@@ -1371,7 +1371,7 @@ https://svelte.dev/e/expected_token -->
             </div>
             <button 
               class="px-6 py-3 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded-md text-sm font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-              onclick={() => documentUploader?.selectFiles()}
+              on:click={() => documentUploader?.selectFiles()}
               disabled={uploadInProgress}
             >
               📂 Browse Files

@@ -22,7 +22,7 @@
 <div class="evidence-page-container">
   {#if showWelcome && pageLoaded}
     <div class="welcome-banner animate-fade-in">
-      <NesCard variant="evidence" hoverable fullWidth>
+      <div variant="evidence" hoverable fullWidth class="nes-container">
         <div class="nier-bits-yorha-panel-header">
           <h3 class="nier-bits-nes-text is-primary">🎯 Evidence Board Ready</h3>
           <p class="nier-bits-nes-text">
@@ -49,12 +49,12 @@
         <button class="nes-btn"
           variant="outline"
           size="sm"
-          onclick={() => showWelcome = false}
+          on:click={() => showWelcome = false}
         >
           Get Started →
         </button>
         </div>
-      </NesCard>
+      </div>
     </div>
   {/if}
 

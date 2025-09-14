@@ -15,14 +15,19 @@
     sortOrder: 'asc' | 'desc';
   }
 
-  let {
-    cases = [],
+  let { cases = [],
     filteredCases = [],
     searchQuery = '',
     statusFilter = 'all',
     sortBy = 'createdAt',
     sortOrder = 'desc'
-  } = $props();
+   }: { cases = [],
+    filteredCases = [],
+    searchQuery = '',
+    statusFilter = 'all',
+    sortBy = 'createdAt',
+    sortOrder = 'desc'
+  : any } = $props();
 
 
 
@@ -138,7 +143,7 @@
     variant="outline"
     size="sm"
     class="bits-btn"
-    onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
+    on:click={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
   >
     {#if sortOrder === 'asc'}
       <SortAsc class="w-4 h-4 mr-2" />
@@ -147,7 +152,7 @@
       <SortDesc class="w-4 h-4 mr-2" />
       Descending
     {/if}
-  </Button>
+
 </div>
 
 <style>

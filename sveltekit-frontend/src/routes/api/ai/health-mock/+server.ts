@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 /*
@@ -11,7 +11,7 @@ export const GET: RequestHandler = async () => {
   const startTime = Date.now();
   const healthData: any = {
     timestamp: new Date().toISOString(),
-    services: {},
+    services: Record<string, any>,
     overall: 'checking'
   };
   

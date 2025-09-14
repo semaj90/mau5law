@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { dbPool } from '$lib/server/database-pool-service';
 import { embeddingCache } from '$lib/server/embedding-cache-service';

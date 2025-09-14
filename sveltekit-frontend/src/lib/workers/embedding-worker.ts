@@ -188,10 +188,10 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return documentChunks;
     }
     
-    private async processSimilarity(task: SimilarityTask, taskId: string): Promise<Array<{index: number, similarity: number}>> {
+    private async processSimilarity(task: SimilarityTask, taskId: string): Promise<Array<any> {
       const { queryEmbedding, targetEmbeddings, threshold, maxResults } = task;
       
-      const similarities: Array<{index: number, similarity: number}> = [];
+      const similarities: Array< = [];
       
       for (let i = 0; i < targetEmbeddings.length; i++) {
         const similarity = this.cosineSimilarity(queryEmbedding, targetEmbeddings[i]);
@@ -577,7 +577,7 @@ export class EmbeddingWorkerManager {
   public async processSimilarity(
     task: SimilarityTask,
     onProgress?: (progress: number, data?: unknown) => void
-  ): Promise<Array<{index: number, similarity: number}>> {
+  ): Promise<Array<any> {
     return this.executeTask('similarity', task, onProgress);
   }
   

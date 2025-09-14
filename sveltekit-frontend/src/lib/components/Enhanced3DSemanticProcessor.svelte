@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
   let processing = $state(false);
   let inputText = $state('Analyze the semantic structure of this legal document: "This agreement shall be governed by the laws of the state of California and any disputes will be resolved through binding arbitration."');
   let results = $state<any>(null);
-  let spatialPoints = $state<Array<{x: number, y: number, z: number, label: string, confidence: number}>>([]);
+  let spatialPoints = $state<any[]>([])([]);
   let processingStats = $state({
     tokensProcessed: 0,
     embeddingsGenerated: 0,
@@ -115,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
   async function generateSpatialMappings() {
     // Generate spatial points based on semantic analysis
     const words = inputText.split(/\s+/).filter(w => w.length > 3);
-    const newPoints: Array<{x: number, y: number, z: number, label: string, confidence: number}> = [];
+    const newPoints: Array = [];
     
     words.forEach((word, index) => {
       if (index < maxConcurrent) {
@@ -242,9 +242,9 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="space-y-6">
   <!-- Control Panel -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         🎯 3D Semantic Analysis
         {#if processing}
           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Processing...</span>
@@ -269,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Process Button -->
         <div class="flex items-center gap-4">
           <button
-            onclick={processSemanticStructure}
+            on:click={processSemanticStructure}
             disabled={!inputText.trim() || processing}
             class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
@@ -291,12 +291,12 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Visualization -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- 3D Spatial View -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">📐 3D Spatial Mapping</h3>
       </div>
@@ -320,10 +320,10 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
 
     <!-- Results Panel -->
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">📊 Analysis Results</h3>
       </div>
@@ -380,7 +380,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   </div>
 
   <!-- Integration Bridge -->

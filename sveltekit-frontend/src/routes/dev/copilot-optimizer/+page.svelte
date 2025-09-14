@@ -64,12 +64,12 @@ https://svelte.dev/e/js_parse_error -->
       isLoading = true;
       const response = await fetch('/api/copilot/optimize?action=load_copilot');
 
-      if (!response.ok) {
-        throw new Error(`Failed to load: ${response.status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Failed to load: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
 
-      const data = await response.json();
-      copilotContent = data.content;
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
+      copilotContent = (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).content;
 
     } catch (error) {
       errorMessage = `Failed to load copilot content: ${error.message}`;
@@ -97,11 +97,11 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Optimization failed: ${response.status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Optimization failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
 
-      const data = await response.json();
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
       optimizationResults = data;
       optimizationStatus = 'completed';
 
@@ -139,12 +139,12 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Search failed: ${response.status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Search failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
 
-      const data = await response.json();
-      searchResults = data.results;
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
+      searchResults = (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).results;
 
     } catch (error) {
       errorMessage = `Search failed: ${error.message}`;
@@ -159,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
   async function loadSystemStatus() {
     try {
       const response = await fetch('/api/copilot/optimize?action=status');
-      const data = await response.json();
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
 
       realTimeMetrics.lastUpdated = new Date().toLocaleTimeString();
 
@@ -174,13 +174,13 @@ https://svelte.dev/e/js_parse_error -->
   async function loadMetrics() {
     try {
       const response = await fetch('/api/copilot/optimize?action=metrics');
-      const data = await response.json();
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
 
       performanceMetrics = data;
       realTimeMetrics = {
-        totalOptimizations: data.optimizer.totalOptimizations || 0,
-        avgOptimizationTime: data.optimizer.avgOptimizationTime || 0,
-        cacheHitRate: data.cache.hitRate || 0,
+        totalOptimizations: (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).optimizer.totalOptimizations || 0,
+        avgOptimizationTime: (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).optimizer.avgOptimizationTime || 0,
+        cacheHitRate: (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).cache.hitRate || 0,
         lastUpdated: new Date().toLocaleTimeString(),
       };
 
@@ -195,7 +195,7 @@ https://svelte.dev/e/js_parse_error -->
   async function generateSuggestions() {
     const testCode = `// Test Svelte 5 component
   <script lang="ts">
-  let { data = [] } = $props();
+  let { data = []  }: { data = [] : any } = $props();
   let count = $state(0);
 
   // Need suggestions here
@@ -217,12 +217,12 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Suggestion generation failed: ${response.status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Suggestion generation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
 
-      const data = await response.json();
-      searchResults = data.suggestions.map((suggestion, index) => ({
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
+      searchResults = (data as { content?: any; results?: any; optimizer?: any; cache?: any; suggestions?: any }).suggestions.map((suggestion, index) => ({
         id: `suggestion_${index}`,
         document: {
           title: `Suggestion: ${suggestion.category}`,
@@ -332,7 +332,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mb-6 p-4 bg-red-900/30 border border-red-500/50 rounded-lg text-red-100">
         <strong>Error:</strong> {errorMessage}
         <button
-          onclick={() => errorMessage = ''}
+          on:click={() => errorMessage = ''}
           class="ml-2 text-red-300 hover:text-red-100"
         >
           ✕
@@ -351,7 +351,7 @@ https://svelte.dev/e/js_parse_error -->
           { id: 'config', label: 'Configuration' }
         ] as tab}
           <button
-            onclick={() => selectedTab = tab.id}
+            on:click={() => selectedTab = tab.id}
             class="px-4 py-2 rounded-md text-sm font-medium transition-all
               {selectedTab === tab.id
                 ? 'bg-purple-600 text-white'
@@ -372,7 +372,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-purple-100">Copilot Content</h2>
             <button
-              onclick={loadCopilotContent}
+              on:click={loadCopilotContent}
               disabled={isLoading}
               class="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
                      text-white rounded-lg transition-colors"
@@ -390,7 +390,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <div class="flex gap-2">
             <button
-              onclick={optimizeIndex}
+              on:click={optimizeIndex}
               disabled={!copilotContent || isLoading}
               class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600
                      hover:from-purple-700 hover:to-blue-700 disabled:opacity-50
@@ -401,14 +401,14 @@ https://svelte.dev/e/js_parse_error -->
 
             {#if optimizationResults}
               <button
-                onclick={exportResults}
+                on:click={exportResults}
                 class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
               >
                 Export
               </button>
 
               <button
-                onclick={resetOptimization}
+                on:click={resetOptimization}
                 class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
               >
                 Reset
@@ -521,7 +521,7 @@ https://svelte.dev/e/js_parse_error -->
                   keydown={(e) => e.key === 'Enter' && performSearch()}
                 />
                 <button
-                  onclick={performSearch}
+                  on:click={performSearch}
                   disabled={!searchQuery.trim() || isLoading}
                   class="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
                          text-white rounded-lg transition-colors"
@@ -540,7 +540,7 @@ https://svelte.dev/e/js_parse_error -->
                 'Vector embeddings'
               ] as example}
                 <button
-                  onclick={() => { searchQuery = example; performSearch(); }}
+                  on:click={() => { searchQuery = example; performSearch(); }}
                   class="p-2 text-left text-sm bg-black/20 hover:bg-purple-700/20
                          text-purple-300 hover:text-purple-100 rounded border border-purple-500/20
                          transition-colors"
@@ -568,24 +568,24 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
                   <div class="flex items-start justify-between mb-2">
                     <h3 class="font-semibold text-purple-100 text-sm">
-                      {result.document?.title || `Result ${index + 1}`}
+                      {(result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).document?.title || `Result ${index + 1}`}
                     </h3>
                     <div class="text-xs px-2 py-1 bg-purple-600 text-white rounded">
-                      {(result.score * 100).toFixed(1)}%
+                      {((result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).score * 100).toFixed(1)}%
                     </div>
                   </div>
 
                   <p class="text-purple-300 text-sm mb-2 line-clamp-3">
-                    {result.document?.content || result.text || 'No content'}
+                    {(result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).document?.content || (result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).text || 'No content'}
                   </p>
 
                   <div class="flex items-center justify-between text-xs">
                     <span class="text-purple-400">
-                      {result.explanation || 'Semantic match'}
+                      {(result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).explanation || 'Semantic match'}
                     </span>
-                    {#if result.context7Pattern}
+                    {#if (result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).context7Pattern}
                       <span class="px-2 py-1 bg-blue-600/20 text-blue-300 rounded">
-                        Context7: {result.context7Pattern}
+                        Context7: {(result as { document?: any; score?: any; text?: any; explanation?: any; context7Pattern?: any }).context7Pattern}
                       </span>
                     {/if}
                   </div>
@@ -601,7 +601,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex items-center justify-between">
           <h2 class="text-xl font-semibold text-purple-100">Code Suggestions</h2>
           <button
-            onclick={generateSuggestions}
+            on:click={generateSuggestions}
             disabled={isLoading}
             class="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
                    text-white rounded-lg transition-colors"
@@ -614,10 +614,7 @@ https://svelte.dev/e/js_parse_error -->
           <!-- Test code context -->
           <div class="space-y-4">
             <h3 class="text-lg font-semibold text-purple-100">Test Context</h3>
-            <pre class="p-4 bg-black/40 rounded-lg border border-purple-500/30 text-purple-100 text-sm overflow-x-auto"><code>{`// Test Svelte 5 component
-<script lang="ts">
-</script>
-  let { data = [] } = $props();
+            <pre class="p-4 bg-black/40 rounded-lg border border-purple-500/30 text-purple-100 text-sm overflow-x-auto"><code>{/* JSX syntax converted to Svelte */} = $props();
   let count = $state(0);
 
   // Cursor position - suggestions generated here
@@ -838,7 +835,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Save configuration -->
         <div class="flex gap-2">
           <button
-            onclick={() => {
+            on:click={() => {
               localStorage.setItem('copilot-optimization-config', JSON.stringify(optimizationConfig);
               alert('Configuration saved!');
             }}
@@ -848,7 +845,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
 
           <button
-            onclick={() => {
+            on:click={() => {
               const saved = localStorage.getItem('copilot-optimization-config');
               if (saved) {
                 optimizationConfig = JSON.parse(saved);
@@ -861,7 +858,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
 
           <button
-            onclick={() => {
+            on:click={() => {
               optimizationConfig = {
                 enableContext7Boost: true,
                 enableSemanticClustering: true,

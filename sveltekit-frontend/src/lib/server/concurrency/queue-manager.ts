@@ -4,8 +4,8 @@
  * Integrates with Superforms + Zod validation and SvelteKit 2
  */
 
-import { transactionManager } from './transaction-manager';
-import { advisoryLocks, type LockType, type LockMode } from './advisory-locks';
+import { transactionManager } from './transaction-manager.js';
+import { advisoryLocks, type LockType, type LockMode } from './advisory-locks.js';
 import { randomUUID } from 'crypto';
 import { z } from 'zod';
 
@@ -398,11 +398,7 @@ export class QueueManager {
   /**
    * Health check and cleanup
    */
-  async healthCheck(): Promise<{
-    status: 'healthy' | 'degraded' | 'critical';
-    stats: QueueStats;
-    issues: string[];
-  }> {
+  async healthCheck(): Promise<any> {
     const stats = this.getStats();
     const issues: string[] = [];
 

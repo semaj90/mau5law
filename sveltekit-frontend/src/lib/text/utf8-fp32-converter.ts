@@ -225,7 +225,7 @@ export class UTF8ToFP32Converter {
         
         // Find corresponding byte indices for this character
         const charBytes = this.encodeText(char, config.encoding);
-        for (let i = 0; i < charBytes.length && byteIndex < result.length; i++) {
+        for (let i = 0; i < charBytes.length && byteIndex < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
           result[byteIndex] = specialValue;
           byteIndex++;
         }
@@ -252,7 +252,7 @@ export class UTF8ToFP32Converter {
         
         if (currentRange > 0) {
           const targetRange = maxRange - minRange;
-          for (let i = 0; i < result.length; i++) {
+          for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
             result[i] = minRange + ((result[i] - currentMin) / currentRange) * targetRange;
           }
         }
@@ -260,7 +260,7 @@ export class UTF8ToFP32Converter {
         
       case 'unicode':
         // Normalize based on Unicode code point ranges
-        for (let i = 0; i < result.length; i++) {
+        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
           // Normalize to [-1, 1] based on full Unicode range (0-1114111)
           result[i] = (result[i] / 557055.5) - 1.0;
           // Then scale to target range
@@ -270,12 +270,12 @@ export class UTF8ToFP32Converter {
         
       case 'gaussian':
         // Gaussian normalization (z-score)
-        const mean = result.reduce((sum, val) => sum + val, 0) / result.length;
-        const variance = result.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / result.length;
+        const mean = (result as { length?: any; reduce?: any; fp32Array?: any }).reduce((sum, val) => sum + val, 0) / (result as { length?: any; reduce?: any; fp32Array?: any }).length;
+        const variance = (result as { length?: any; reduce?: any; fp32Array?: any }).reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (result as { length?: any; reduce?: any; fp32Array?: any }).length;
         const stdDev = Math.sqrt(variance);
         
         if (stdDev > 0) {
-          for (let i = 0; i < result.length; i++) {
+          for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
             result[i] = (result[i] - mean) / stdDev;
             // Scale to target range (assuming ~99.7% of values within 3 std devs)
             result[i] = Math.max(-3, Math.min(3, result[i])); // Clip to [-3, 3]
@@ -286,7 +286,7 @@ export class UTF8ToFP32Converter {
         
       case 'sigmoid':
         // Sigmoid normalization for smooth mapping
-        for (let i = 0; i < result.length; i++) {
+        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
           // Apply sigmoid function: 1 / (1 + e^(-x/32))
           const normalized = 1 / (1 + Math.exp(-result[i] / 32));
           result[i] = minRange + normalized * (maxRange - minRange);
@@ -406,14 +406,14 @@ export class UTF8ToFP32Converter {
       case 'range':
         // Reverse min-max normalization (assuming original range was 0-255)
         const targetRange = maxRange - minRange;
-        for (let i = 0; i < result.length; i++) {
+        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
           result[i] = ((result[i] - minRange) / targetRange) * 255;
         }
         break;
         
       case 'unicode':
         // Reverse Unicode normalization
-        for (let i = 0; i < result.length; i++) {
+        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
           const normalized = ((result[i] - minRange) / (maxRange - minRange)) * 2 - 1;
           result[i] = (normalized + 1) * 557055.5;
         }
@@ -421,7 +421,7 @@ export class UTF8ToFP32Converter {
         
       case 'gaussian':
         // Reverse Gaussian normalization (approximate)
-        for (let i = 0; i < result.length; i++) {
+        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
           const normalized = ((result[i] - minRange) / (maxRange - minRange)) * 6 - 3;
           result[i] = normalized * 32 + 128; // Approximate reverse
         }
@@ -429,7 +429,7 @@ export class UTF8ToFP32Converter {
         
       case 'sigmoid':
         // Reverse sigmoid normalization
-        for (let i = 0; i < result.length; i++) {
+        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
           const sigmoid = (result[i] - minRange) / (maxRange - minRange);
           const logit = Math.log(sigmoid / (1 - sigmoid));
           result[i] = logit * 32;
@@ -520,5 +520,5 @@ export function normalizeTextForGPU(text: string, maxLength: number = 512): Floa
     preserveSpecialChars: true
   });
   
-  return result.fp32Array;
+  return (result as { length?: any; reduce?: any; fp32Array?: any }).fp32Array;
 }

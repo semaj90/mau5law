@@ -3,8 +3,8 @@
 
 import { writable, derived, get } from 'svelte/store';
 import { browser } from '$app/environment';
-import type { User } from '../server/db/schema-postgres';
-import { AccessControl, type UserRole, type Permission } from './roles';
+import type { User } from '../server/db/schema-postgres.js';
+import { AccessControl, type UserRole, type Permission } from './roles.js';
 
 export interface AuthUser extends Partial<User> {
   id: string;
@@ -92,7 +92,7 @@ export class AuthStore {
   /**
    * Login with email and password
    */
-  static async login(email: string, password: string, rememberMe = false): Promise<{ success: boolean; error?: string; requiresMFA?: boolean }> {
+  static async login(email: string, password: string, rememberMe = false): Promise<any> {
     authState.update(state => ({ ...state, isLoading: true }));
 
     try {
@@ -105,11 +105,11 @@ export class AuthStore {
         credentials: 'include'
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (response.ok && result.success) {
+      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).success) {
         // Update auth state with user data
-        await this.updateAuthState(result.user, result.session);
+        await this.updateAuthState((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user, (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session);
         
         // Track login activity
         this.trackActivity('login');
@@ -118,8 +118,8 @@ export class AuthStore {
       } else {
         return { 
           success: false, 
-          error: result.error || 'Login failed',
-          requiresMFA: result.requiresMFA 
+          error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Login failed',
+          requiresMFA: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).requiresMFA 
         };
       }
     } catch (error: any) {
@@ -139,7 +139,7 @@ export class AuthStore {
     firstName?: string;
     lastName?: string;
     role?: UserRole;
-  }): Promise<{ success: boolean; error?: string; requiresVerification?: boolean }> {
+  }): Promise<any> {
     authState.update(state => ({ ...state, isLoading: true }));
 
     try {
@@ -152,22 +152,22 @@ export class AuthStore {
         credentials: 'include'
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (response.ok && result.success) {
+      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).success) {
         // If auto-login after registration
-        if (result.user && result.session) {
-          await this.updateAuthState(result.user, result.session);
+        if ((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session) {
+          await this.updateAuthState((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user, (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session);
         }
         
         return { 
           success: true, 
-          requiresVerification: result.requiresVerification 
+          requiresVerification: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).requiresVerification 
         };
       } else {
         return { 
           success: false, 
-          error: result.error || 'Registration failed' 
+          error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Registration failed' 
         };
       }
     } catch (error: any) {
@@ -213,10 +213,10 @@ export class AuthStore {
         credentials: 'include'
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (response.ok && result.user && result.session) {
-        await this.updateAuthState(result.user, result.session);
+      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session) {
+        await this.updateAuthState((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user, (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session);
         return true;
       } else {
         this.clearAuth();
@@ -232,7 +232,7 @@ export class AuthStore {
   /**
    * Update user profile
    */
-  static async updateProfile(updates: Partial<AuthUser>): Promise<{ success: boolean; error?: string }> {
+  static async updateProfile(updates: Partial<AuthUser>): Promise<any> {
     const currentState = get(authState);
     if (!currentState.isAuthenticated || !currentState.user) {
       return { success: false, error: 'Not authenticated' };
@@ -248,18 +248,18 @@ export class AuthStore {
         credentials: 'include'
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (response.ok && result.success) {
+      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).success) {
         // Update local user data
         authState.update(state => ({
           ...state,
-          user: state.user ? { ...state.user, ...result.user } : null
+          user: state.user ? { ...state.user, ...(result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user } : null
         }));
         
         return { success: true };
       } else {
-        return { success: false, error: result.error || 'Profile update failed' };
+        return { success: false, error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Profile update failed' };
       }
     } catch (error: any) {
       console.error('Profile update error:', error);
@@ -270,7 +270,7 @@ export class AuthStore {
   /**
    * Change user password
    */
-  static async changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+  static async changePassword(currentPassword: string, newPassword: string): Promise<any> {
     try {
       const response = await fetch('/api/auth/change-password', {
         method: 'POST',
@@ -281,10 +281,10 @@ export class AuthStore {
         credentials: 'include'
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
       return { 
-        success: response.ok && result.success, 
-        error: result.error 
+        success: (response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).success, 
+        error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error 
       };
     } catch (error: any) {
       console.error('Password change error:', error);

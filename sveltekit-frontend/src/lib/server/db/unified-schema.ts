@@ -610,7 +610,7 @@ export const legalDocuments = pgTable(
       .$type<DocumentMetadataExt>()
       .default({
         keywords: [],
-        customFields: {},
+        customFields: Record<string, any>,
         confidentialityLevel: "restricted",
       })
       .notNull(),

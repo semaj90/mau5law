@@ -150,11 +150,11 @@ https://svelte.dev/e/unexpected_reserved_word -->
       // Store result
       processingResults = [{
         document: document.title,
-        processingTime: result.processingTime,
-        mipmapsGenerated: result.mipmaps.length,
-        memoryUsed: result.memoryUsed,
-        rtxAcceleration: result.optimization.rtxAcceleration,
-        streamingUsed: result.optimization.streamingUsed,
+        processingTime: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).processingTime,
+        mipmapsGenerated: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmaps.length,
+        memoryUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).memoryUsed,
+        rtxAcceleration: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.rtxAcceleration,
+        streamingUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.streamingUsed,
         timestamp: new Date()
       }, ...processingResults.slice(0, 9)]; // Keep last 10 results
 
@@ -164,7 +164,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       // Update system stats
       systemStats = yorhaTextureManager.getStatistics();
 
-      console.log(`✅ Document processed: ${result.mipmaps.length} mip levels generated`);
+      console.log(`✅ Document processed: ${(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmaps.length} mip levels generated`);
 
     } catch (error) {
       console.error('Document processing failed:', error);
@@ -256,16 +256,16 @@ https://svelte.dev/e/unexpected_reserved_word -->
 
       processingResults = [{
         document: 'Mipmap Demo (2048x2048)',
-        processingTime: result.totalGenerationTime,
-        mipmapsGenerated: result.mipmapLevels.length,
-        memoryUsed: result.memoryUsed,
-        rtxAcceleration: result.optimization.rtxAcceleration,
-        streamingUsed: result.optimization.streamingUsed,
+        processingTime: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).totalGenerationTime,
+        mipmapsGenerated: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmapLevels.length,
+        memoryUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).memoryUsed,
+        rtxAcceleration: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.rtxAcceleration,
+        streamingUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.streamingUsed,
         demo: true,
         timestamp: new Date()
       }, ...processingResults.slice(0, 9)];
 
-      console.log(`✅ Mipmap demo completed: ${result.mipmapLevels.length} levels generated in ${result.totalGenerationTime.toFixed(2)}ms`);
+      console.log(`✅ Mipmap demo completed: ${(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmapLevels.length} levels generated in ${(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).totalGenerationTime.toFixed(2)}ms`);
 
     } catch (error) {
       console.error('Mipmap demo failed:', error);
@@ -279,10 +279,10 @@ https://svelte.dev/e/unexpected_reserved_word -->
   function updatePerformanceMetrics(result: any) {
     performanceMetrics = {
       totalTexturesProcessed: performanceMetrics.totalTexturesProcessed + 1,
-      totalMipmapsGenerated: performanceMetrics.totalMipmapsGenerated + result.mipmaps.length,
-      averageProcessingTime: (performanceMetrics.averageProcessingTime * (performanceMetrics.totalTexturesProcessed - 1) + result.processingTime) / performanceMetrics.totalTexturesProcessed,
-      memoryEfficiency: Math.min(95, performanceMetrics.memoryEfficiency + (result.memoryUsed > 0 ? 5 : 0)),
-      rtxAccelerationUsage: result.optimization.rtxAcceleration ? performanceMetrics.rtxAccelerationUsage + 1 : performanceMetrics.rtxAccelerationUsage
+      totalMipmapsGenerated: performanceMetrics.totalMipmapsGenerated + (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmaps.length,
+      averageProcessingTime: (performanceMetrics.averageProcessingTime * (performanceMetrics.totalTexturesProcessed - 1) + (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).processingTime) / performanceMetrics.totalTexturesProcessed,
+      memoryEfficiency: Math.min(95, performanceMetrics.memoryEfficiency + ((result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).memoryUsed > 0 ? 5 : 0)),
+      rtxAccelerationUsage: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.rtxAcceleration ? performanceMetrics.rtxAccelerationUsage + 1 : performanceMetrics.rtxAccelerationUsage
     };
   }
 
@@ -319,7 +319,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
   </div>
 
   <!-- Initialization Status -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">System Status</h3>
     </div>
@@ -333,9 +333,9 @@ https://svelte.dev/e/unexpected_reserved_word -->
         </div>
         
         {#if !isInitialized && !isProcessing}
-          <Button class="bits-btn" onclick={initializeSystem} size="sm">
-            🔄 Initialize System
-          </button>
+          <Button class="bits-btn" on:click={initializeSystem} size="sm">
+🔄 Initialize System
+</Button>
         {/if}
 
         {#if isProcessing}
@@ -343,10 +343,10 @@ https://svelte.dev/e/unexpected_reserved_word -->
         {/if}
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Configuration -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Mipmap Configuration</h3>
     </div>
@@ -398,10 +398,10 @@ https://svelte.dev/e/unexpected_reserved_word -->
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Legal Documents -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Legal Document Processing</h3>
     </div>
@@ -422,12 +422,13 @@ https://svelte.dev/e/unexpected_reserved_word -->
               </div>
               
               <Button class="bits-btn" 
-                onclick={() => processDocument(index)}
+                on:click={() =>
+processDocument(index)}
                 disabled={!isInitialized || isProcessing}
                 size="sm"
               >
                 🔥 Process
-              </button>
+</Button>
             </div>
           {/each}
         </div>
@@ -435,75 +436,75 @@ https://svelte.dev/e/unexpected_reserved_word -->
         <!-- Batch Operations -->
         <div class="flex gap-2 pt-4 border-t">
           <Button class="bits-btn" 
-            onclick={batchProcessDocuments}
+            on:click={batchProcessDocuments}
             disabled={!isInitialized || isProcessing}
           >
-            🚀 Batch Process All
-          </button>
+🚀 Batch Process All
+</Button>
           
           <Button class="bits-btn" 
-            onclick={generateMipmapDemo}
+            on:click={generateMipmapDemo}
             disabled={!isInitialized || isProcessing}
             variant="outline"
           >
-            🔥 Mipmap Demo
-          </button>
+🔥 Mipmap Demo
+</Button>
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Performance Metrics -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-blue-600">{performanceMetrics.totalTexturesProcessed}</div>
           <div class="text-sm text-gray-500">Textures Processed</div>
         </div>
       </div>
-    </NesCard>
+    </div>
     
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-green-600">{performanceMetrics.totalMipmapsGenerated}</div>
           <div class="text-sm text-gray-500">Mipmaps Generated</div>
         </div>
       </div>
-    </NesCard>
+    </div>
     
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-purple-600">{formatTime(performanceMetrics.averageProcessingTime)}</div>
           <div class="text-sm text-gray-500">Avg Processing Time</div>
         </div>
       </div>
-    </NesCard>
+    </div>
     
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-orange-600">{performanceMetrics.memoryEfficiency.toFixed(1)}%</div>
           <div class="text-sm text-gray-500">Memory Efficiency</div>
         </div>
       </div>
-    </NesCard>
+    </div>
     
-    <NesCard>
-      <div class="yorha-panel-content" class="p-4">
+    <div class="nes-container">
+      <div class="yorha-panel-content p-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-red-600">{performanceMetrics.rtxAccelerationUsage}</div>
           <div class="text-sm text-gray-500">RTX Accelerated</div>
         </div>
       </div>
-    </NesCard>
+    </div>
   </div>
 
   <!-- System Statistics -->
   {#if systemStats}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">NES Memory Bank Statistics</h3>
       </div>
@@ -539,12 +540,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Processing Results -->
   {#if processingResults.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Recent Processing Results</h3>
       </div>
@@ -554,46 +555,46 @@ https://svelte.dev/e/unexpected_reserved_word -->
             <div class="p-3 border rounded-lg">
               <div class="flex justify-between items-start mb-2">
                 <div class="flex items-center gap-2">
-                  <span class="font-semibold">{result.document}</span>
-                  {#if result.batchProcessing}
+                  <span class="font-semibold">{(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).document}</span>
+                  {#if (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).batchProcessing}
                     <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">BATCH</span>
                   {/if}
-                  {#if result.demo}
+                  {#if (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).demo}
                     <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">DEMO</span>
                   {/if}
                 </div>
                 <div class="text-sm text-gray-500">
-                  {formatTime(result.processingTime)}
+                  {formatTime((result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).processingTime)}
                 </div>
               </div>
               
               <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
                 <div>
                   <span class="text-gray-500">Mipmaps:</span>
-                  <span class="font-medium">{result.mipmapsGenerated}</span>
+                  <span class="font-medium">{(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmapsGenerated}</span>
                 </div>
                 <div>
                   <span class="text-gray-500">Memory:</span>
-                  <span class="font-medium">{formatBytes(result.memoryUsed)}</span>
+                  <span class="font-medium">{formatBytes((result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).memoryUsed)}</span>
                 </div>
                 <div>
                   <span class="text-gray-500">RTX:</span>
-                  <span class="font-medium">{result.rtxAcceleration ? '✅' : '❌'}</span>
+                  <span class="font-medium">{(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).rtxAcceleration ? '✅' : '❌'}</span>
                 </div>
                 <div>
                   <span class="text-gray-500">Streaming:</span>
-                  <span class="font-medium">{result.streamingUsed ? '✅' : '❌'}</span>
+                  <span class="font-medium">{(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).streamingUsed ? '✅' : '❌'}</span>
                 </div>
               </div>
             </div>
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Technical Information -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Technical Architecture</h3>
     </div>
@@ -632,7 +633,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 </div>
 {/snippet}
 

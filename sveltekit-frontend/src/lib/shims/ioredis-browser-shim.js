@@ -198,7 +198,7 @@ export default class RedisShim {
 
   async hset(hash, field, value) {
     const existing = localStorage.getItem(`redis:${hash}`);
-    const obj = existing ? JSON.parse(existing) : {};
+    const obj = existing ? JSON.parse(existing) : Record<string, any>;
     obj[field] = value;
     localStorage.setItem(`redis:${hash}`, JSON.stringify(obj));
     return 1;

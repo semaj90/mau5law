@@ -148,7 +148,7 @@ RABBITMQ_URL="amqp://localhost"
 
 # AI Services
 OLLAMA_URL="http://localhost:11434"
-EMBEDDING_MODEL="nomic-embed-text"
+EMBEDDING_MODEL="embeddinggemma:latest"
 CHAT_MODEL="gemma3-legal:latest"
 
 # CUDA

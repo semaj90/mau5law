@@ -5,7 +5,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { 
   redisWebGPUIntegration,
   processLegalDocumentOptimized,
@@ -281,9 +281,9 @@ export const POST: RequestHandler = async ({ request }) => {
  */
 async function runPerformanceBenchmark(): Promise<any> {
   const results = {
-    traditional: {} as any,
-    optimized: {} as any,
-    improvement: {} as any
+    traditional: Record<string, any> as any,
+    optimized: Record<string, any> as any,
+    improvement: Record<string, any> as any
   };
   
   // Test 1: JSON Parsing Speed

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Nomic Embedding Service Test API
 // Tests the 768-dimensional embedding service with database integration

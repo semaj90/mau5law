@@ -740,10 +740,10 @@ class EnhancedErrorHandler {
 
     const stats: ErrorStats = {
       total: history.length,
-      byCode: {},
-      byCategory: {} as Record<ErrorCategory, number>,
-      bySeverity: {} as Record<ErrorSeverity, number>,
-      byLegalContext: {},
+      byCode: Record<string, any>,
+      byCategory: Record<string, any> as Record<ErrorCategory, number>,
+      bySeverity: Record<string, any> as Record<ErrorSeverity, number>,
+      byLegalContext: Record<string, any>,
       complianceViolations: 0,
       chainOfCustodyErrors: 0,
       privilegeViolations: 0,
@@ -793,10 +793,10 @@ class EnhancedErrorHandler {
   private createEmptyStats(): ErrorStats {
     return {
       total: 0,
-      byCode: {},
-      byCategory: {} as Record<ErrorCategory, number>,
-      bySeverity: {} as Record<ErrorSeverity, number>,
-      byLegalContext: {},
+      byCode: Record<string, any>,
+      byCategory: Record<string, any> as Record<ErrorCategory, number>,
+      bySeverity: Record<string, any> as Record<ErrorSeverity, number>,
+      byLegalContext: Record<string, any>,
       complianceViolations: 0,
       chainOfCustodyErrors: 0,
       privilegeViolations: 0,

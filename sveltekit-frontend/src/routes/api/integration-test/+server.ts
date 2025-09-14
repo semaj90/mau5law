@@ -2,9 +2,9 @@ import { json } from '@sveltejs/kit';
 import { db, testConnection, healthCheck } from '$lib/server/db';
 import { users, cases, evidence, documentChunks } from '$lib/server/db/schema-postgres';
 import { eq, sql } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
-// import { mcpTools } from '../../../mcp/index.js'; // Temporarily disabled due to dependency issues
+// import { mcpTools } from '../../../mcp/index.js.js'; // Temporarily disabled due to dependency issues
 import bcrypt from 'bcrypt';
 import crypto from "crypto";
 import { URL } from "url";

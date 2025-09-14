@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * QUIC AI Stream API - Real-time AI Streaming Service
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Prepare request payload
     const requestPayload = {
       prompt: aiRequest.prompt,
-      model: aiRequest.model || QUIC_AI_STREAM_CONFIG.defaultModel,
+      model: aiRequest?.model || "unknown" // @ts-ignore - Model property access || QUIC_AI_STREAM_CONFIG.defaultModel,
       maxTokens: aiRequest.maxTokens || QUIC_AI_STREAM_CONFIG.maxTokens,
       temperature: aiRequest.temperature || 0.7,
       stream: enableStreaming,
@@ -218,7 +218,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       response: responseData.response,
       streaming: enableStreaming,
       websocketUrl: enableStreaming ? `${QUIC_AI_STREAM_CONFIG.wsUrl}/ws/${sessionId}` : undefined,
-      model: responseData.model || requestPayload.model,
+      model: responseData?.model || "unknown" // @ts-ignore - Model property access || requestPayload?.model || "unknown" // @ts-ignore - Model property access,
       tokensUsed: responseData.tokensUsed || 0,
       executionTime: responseData.executionTime || 0,
     };

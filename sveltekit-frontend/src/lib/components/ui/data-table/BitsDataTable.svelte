@@ -49,7 +49,7 @@
   let sortColumn = $state<string | null>(null);
   let sortDirection = $state<'asc' | 'desc'>('asc');
   let currentPage = $state(0);
-  let selectedRows = $state<Set<number>>(new Set());
+  let selectedRows = $state<Set<number>(0)>(new Set());
 
   // Filter and sort data
   let filteredData = $derived(() => {
@@ -149,15 +149,15 @@
 
       {#if filterable}
         <Button class="bits-btn" variant="outline" size="sm">
-          <Filter class="w-4 h-4" />
-        </button>
+<Filter class="w-4 h-4" />
+
       {/if}
 
       {#if exportable}
-        <Button class="bits-btn" variant="outline" size="sm" onclick={handleExport}>
-          <Download class="w-4 h-4 mr-2" />
+        <Button class="bits-btn" variant="outline" size="sm" on:click={handleExport}>
+<Download class="w-4 h-4 mr-2" />
           Export
-        </button>
+
       {/if}
     </div>
   </div>
@@ -173,7 +173,7 @@
                 <input
                   type="checkbox"
                   checked={selectedRows.size === paginatedData.length && paginatedData.length > 0}
-                  onchange={toggleSelectAll}
+                  on:change={toggleSelectAll}
                   class="rounded border-yorha-border"
                 />
               </th>
@@ -186,7 +186,7 @@
                   column.class
                 )}
                 style={column.width ? `width: ${column.width}` : undefined}
-                onclick={() => handleSort(column)}
+                on:click={() => handleSort(column)}
               >
                 <div class="flex items-center gap-1">
                   {column.label}
@@ -200,7 +200,6 @@
                     {:else}
                       <div class="w-3 h-3"></div>
                     {/if}
-                  {/if}
                 </div>
               </th>
             {/each}
@@ -214,15 +213,15 @@
                 onRowClick && 'cursor-pointer',
                 selectedRows.has(index) && 'bg-yorha-primary/5'
               )}
-              onclick={() => onRowClick?.(row)}
+              on:click={() => onRowClick?.(row)}
             >
               {#if selectable}
                 <td class="p-3">
                   <input
                     type="checkbox"
                     checked={selectedRows.has(index)}
-                    onchange={() => toggleRowSelection(index)}
-                    onclick={(e) => e.stopPropagation()}
+                    on:change={() => toggleRowSelection(index)}
+                    on:click={(e) => e.stopPropagation()}
                     class="rounded border-yorha-border"
                   />
                 </td>
@@ -261,10 +260,10 @@
           variant="outline"
           size="sm"
           disabled={currentPage === 0}
-          onclick={() => currentPage = Math.max(0, currentPage - 1)}
+          on:click={() =>
+currentPage = Math.max(0, currentPage - 1)}
         >
           Previous
-        </button>
 
         <span class="px-3 py-1 text-yorha-text-primary">
           Page {currentPage + 1} of {totalPages}
@@ -273,11 +272,12 @@
         <Button class="bits-btn"
           variant="outline"
           size="sm"
-          disabled={currentPage >= totalPages - 1}
-          onclick={() => currentPage = Math.min(totalPages - 1, currentPage + 1)}
+          disabled={currentPage >
+= totalPages - 1}
+          on:click={() => currentPage = Math.min(totalPages - 1, currentPage + 1)}
         >
           Next
-        </button>
+
       </div>
     {/if}
   </div>

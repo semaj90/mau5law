@@ -42,7 +42,7 @@
   <div
     use:content
     class="space-y-4"
-    transitifly={{ y: -20, duration: 200  }}
+    /* transition removed */}
     
   >
     {#if children}

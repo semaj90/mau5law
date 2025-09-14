@@ -460,7 +460,7 @@ function createGPUSummaryStore() {
       return {
         fpsStability: 0,
         memoryTrend: 'stable',
-        recommendedSettings: {}
+        recommendedSettings: Record<string, any>
       };
     }
 

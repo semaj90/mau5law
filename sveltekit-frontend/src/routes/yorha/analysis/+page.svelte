@@ -162,9 +162,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
       <div class="header-right">
         <Button class="header-btn bits-btn bits-btn">
-          <Brain class="w-4 h-4" />
+<Brain class="w-4 h-4" />
           RUN ANALYSIS
-        </button>
+</Button>
       </div>
     </header>
 
@@ -172,15 +172,15 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     <div class="analysis-dashboard">
       <!-- Top Row - Key Metrics -->
       <div class="metrics-row">
-        <NesCard.Root class="metric-nier-bits-card">
-          <NesCard.Header class="metric-header">
+        <div.Root class="metric-nier-bits-card nes-container">
+          <div.Header class="metric-header nes-container">
             <BarChart3 class="metric-icon" />
             <div>
-              <NesCard.Title>Case Metrics</Card.Title>
-              <NesCard.Description>Investigation Progress</Card.Description>
+              <div.Title class="nes-container">Case Metrics</div.Title>
+              <div.Description class="nes-container">Investigation Progress</div.Description>
             </div>
-          </Card.Header>
-          <NesCard.Content class="metric-content">
+          </div.Header>
+          <div.Content class="metric-content nes-container">
             <div class="metric-grid">
               <div class="metric-item">
                 <span class="metric-number">{analysisData.caseMetrics.total}</span>
@@ -196,17 +196,17 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard.Root class="metric-nier-bits-card">
-          <NesCard.Header class="metric-header">
+        <div.Root class="metric-nier-bits-card nes-container">
+          <div.Header class="metric-header nes-container">
             <Database class="metric-icon" />
             <div>
-              <NesCard.Title>Evidence Analysis</Card.Title>
-              <NesCard.Description>Processing Status</Card.Description>
+              <div.Title class="nes-container">Evidence Analysis</div.Title>
+              <div.Description class="nes-container">Processing Status</div.Description>
             </div>
-          </Card.Header>
-          <NesCard.Content class="metric-content">
+          </div.Header>
+          <div.Content class="metric-content nes-container">
             <div class="progress-section">
               <div class="progress-item">
                 <span class="progress-label">Processed ({analysisData.evidenceAnalysis.processed}/{analysisData.evidenceAnalysis.total})</span>
@@ -218,17 +218,17 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard.Root class="metric-nier-bits-card">
-          <NesCard.Header class="metric-header">
+        <div.Root class="metric-nier-bits-card nes-container">
+          <div.Header class="metric-header nes-container">
             <AlertCircle class="metric-icon" />
             <div>
-              <NesCard.Title>Threat Assessment</Card.Title>
-              <NesCard.Description>Risk Analysis</Card.Description>
+              <div.Title class="nes-container">Threat Assessment</div.Title>
+              <div.Description class="nes-container">Risk Analysis</div.Description>
             </div>
-          </Card.Header>
-          <NesCard.Content class="metric-content">
+          </div.Header>
+          <div.Content class="metric-content nes-container">
             <div class="threat-grid">
               <div class="threat-item critical">
                 <span class="threat-number">{analysisData.threatAssessment.critical}</span>
@@ -248,18 +248,18 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       </div>
 
       <!-- AI Performance Panel -->
-      <NesCard.Root class="ai-performance-nier-bits-card">
-        <NesCard.Header>
-          <NesCard.Title class="flex items-center gap-2">
+      <div.Root class="ai-performance-nier-bits-card nes-container">
+        <div.Header class="nes-container">
+          <div.Title class="flex items-center gap-2 nes-container">
             <Brain class="w-5 h-5" />
             AI PERFORMANCE METRICS
-          </Card.Title>
-        </Card.Header>
-        <NesCard.Content class="ai-performance-content">
+          </div.Title>
+        </div.Header>
+        <div.Content class="ai-performance-content nes-container">
           <div class="performance-metrics">
             <div class="performance-item">
               <div class="performance-label">Accuracy</div>
@@ -282,15 +282,15 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             Last Updated: {analysisData.aiPerformance.last_update}
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Recent Analyses -->
-      <NesCard.Root class="recent-analyses-nier-bits-card">
-        <NesCard.Header>
-          <NesCard.Title>RECENT ANALYSES</Card.Title>
-          <NesCard.Description>Latest AI-powered investigations</Card.Description>
-        </Card.Header>
-        <NesCard.Content class="analyses-content">
+      <div.Root class="recent-analyses-nier-bits-card nes-container">
+        <div.Header class="nes-container">
+          <div.Title class="nes-container">RECENT ANALYSES</div.Title>
+          <div.Description class="nes-container">Latest AI-powered investigations</div.Description>
+        </div.Header>
+        <div.Content class="analyses-content nes-container">
           <div class="analyses-list">
             {#each recentAnalyses as analysis (analysis.id)}
               <div class="analysis-item">
@@ -325,7 +325,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </main>
 </div>
@@ -403,7 +403,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     color: #d4af37;
   }
 
-  .nav-item.analysis-active {
+  .nav-(item as { analysis?: any; critical?: any; high?: any; medium?: any; low?: any }).analysis-active {
     background: #1a2a1a;
     color: #d4af37;
     border-left: 3px solid #d4af37;
@@ -581,19 +581,19 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     font-size: 10px;
   }
 
-  .threat-item.critical .threat-number {
+  .threat-(item as { analysis?: any; critical?: any; high?: any; medium?: any; low?: any }).critical .threat-number {
     color: #ef4444;
   }
 
-  .threat-item.high .threat-number {
+  .threat-(item as { analysis?: any; critical?: any; high?: any; medium?: any; low?: any }).high .threat-number {
     color: #f97316;
   }
 
-  .threat-item.medium .threat-number {
+  .threat-(item as { analysis?: any; critical?: any; high?: any; medium?: any; low?: any }).medium .threat-number {
     color: #fbbf24;
   }
 
-  .threat-item.low .threat-number {
+  .threat-(item as { analysis?: any; critical?: any; high?: any; medium?: any; low?: any }).low .threat-number {
     color: #4ade80;
   }
 

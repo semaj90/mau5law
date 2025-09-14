@@ -3,9 +3,9 @@
   interface Props {
     cases: Case[] ;
   }
-  let {
-    cases = []
-  } = $props();
+  let { cases = []
+   }: { cases = []
+  : any } = $props();
 
 
 
@@ -33,8 +33,8 @@
   //   resolutionTimeAvg: number
   //   evidencePerCaseAvg: number
   //   casesByPriority: Record<string, number>;
-  //   monthlyTrends: Array<{ month: string count: number }>;
-  //   assigneeWorkload: Array<{ assignee: string activeCount: number }>;
+  //   monthlyTrends: Array;
+  //   assigneeWorkload: Array;
   //   statusTransitionRates: Record<string, number>;
   //   upcomingDeadlines: number
   //   overdueCount: number

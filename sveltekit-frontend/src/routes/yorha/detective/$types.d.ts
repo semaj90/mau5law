@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 
 export interface PageData {
   systemData: {
@@ -11,25 +11,8 @@ export interface PageData {
     memoryUsage: number;
     networkLatency: number;
   };
-  recentCases: Array<{
-    id: string;
-    title: string;
-    description: string | null;
-    status: string | null;
-    priority: string | null;
-    caseNumber: string | null;
-    createdAt: Date;
-    updatedAt: Date;
-    createdBy: string | null;
-    createdByLastName: string | null;
-  }>;
-  recentEvidence: Array<{
-    id: string;
-    title: string;
-    evidenceType: string | null;
-    createdAt: Date;
-    caseTitle: string | null;
-  }>;
+  recentCases: Array<any>;
+  recentEvidence: Array<any>;
   user: {
     id: string;
     firstName: string | null;

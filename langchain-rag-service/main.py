@@ -25,10 +25,10 @@ from langchain.prompts import PromptTemplate
 from langchain_community.vectorstores import PGVector
 
 # Configuration
-DATABASE_URL = "postgresql://legal_admin:123456@localhost:5432/legal_ai_db"
+DATABASE_URL = "postgresql://legal_admin:123456@localhost:5433/legal_ai_db"
 OLLAMA_BASE_URL = "http://localhost:11434"
 SSE_SERVICE_URL = "http://localhost:9003"
-EMBEDDING_MODEL = "nomic-embed-text"
+EMBEDDING_MODEL = "embeddinggemma:latest"
 GENERATION_MODEL = "gemma3-legal:latest"
 
 # Logging setup
@@ -178,7 +178,7 @@ Summary:""",
         return chunk_ids
     
     async def generate_embedding(self, text: str) -> List[float]:
-        """Generate embedding using nomic-embed-text via LangChain"""
+        """Generate embedding using embeddinggemma via LangChain"""
         try:
             embedding = await self.embeddings.aembed_query(text)
             return embedding

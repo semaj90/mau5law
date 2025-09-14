@@ -40,12 +40,15 @@
     showToolbar?: boolean;
   }
 
-  let {
-    width = 800,
+  let { width = 800,
     height = 600,
     enableDrawing = true,
     showToolbar = true
-  } = $props();
+   }: { width = 800,
+    height = 600,
+    enableDrawing = true,
+    showToolbar = true
+  : any } = $props();
 
   function resize() {
     if (!canvas) return;
@@ -178,7 +181,7 @@
     <h2 class="canvas-title">EVIDENCE BOARD</h2>
     <button
       class="close-btn"
-      onclick={closeBoard}
+      on:click={closeBoard}
       title="Close Evidence Board"
     >
       ✕
@@ -194,7 +197,7 @@
           <button
             class="tool-btn"
             class:active={tool === 'brush'}
-            onclick={() => setTool('brush')}
+            on:click={() => setTool('brush')}
             title="Brush Tool"
           >
             🖌️
@@ -202,14 +205,14 @@
           <button
             class="tool-btn"
             class:active={tool === 'eraser'}
-            onclick={() => setTool('eraser')}
+            on:click={() => setTool('eraser')}
             title="Eraser Tool"
           >
             🧽
           </button>
           <button
             class="tool-btn"
-            onclick={clearCanvas}
+            on:click={clearCanvas}
             title="Clear Canvas"
           >
             🗑️
@@ -225,7 +228,7 @@
               class="color-btn"
               class:active={color === yorhaColor}
               style="background-color: {yorhaColor};"
-              onclick={() => setColor(yorhaColor)}
+              on:click={() => setColor(yorhaColor)}
               title="Select {yorhaColor}"
             >
             </button>
@@ -240,7 +243,7 @@
           min="1"
           max="50"
           bind:value={brushSize}
-          onchange={() => setBrushSize(brushSize)}
+          on:change={() => setBrushSize(brushSize)}
           class="size-slider"
         />
         <span class="size-display">{brushSize}px</span>
@@ -251,7 +254,7 @@
   <!-- Canvas -->
   <div class="canvas-container">
     <canvas
-      bind:this={canvas}
+      bind:this={canvas as any}
       {width}
       {height}
       class="yorha-canvas"
@@ -259,7 +262,7 @@
       onmousedown={startDrawing}
       onmousemove={draw}
       onmouseup={stopDrawing}
-      onmouseleave={stopDrawing}
+      on:mouseleave={stopDrawing}
     >
       Canvas not supported
     </canvas>

@@ -3,7 +3,7 @@ export interface OCRResult {
   text: string;
   confidence: number;
   processing_time?: number;
-  pages?: Array<{ page: number; text: string }>;
+  pages?: Array<any>;
   metadata?: Record<string, any>;
 }
 

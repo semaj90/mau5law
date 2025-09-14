@@ -47,9 +47,7 @@
   		'data-testid': testId,
   		onCheckedChange
   	}: Props = $props();
-  	const dispatch = createEventDispatcher<{
-  		'checked-change': { checked: CheckedState };
-  	}>();
+  	const dispatch = createEventDispatcher();
 
   	function handleCheckedChange(newChecked: CheckedState) {
   		if (onCheckedChange) {

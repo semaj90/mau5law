@@ -7,14 +7,12 @@
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';
   import * as Dialog from '$lib/components/ui/dialog';
   // Card components removed - using native HTML elements
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/button/Button.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import * as Tooltip from '$lib/components/ui/tooltip';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea';
   import type { ChatMessage, MessageAnalysis, RAGContext, Recommendation } from '$lib/types/ai-chat';
 
@@ -278,7 +276,7 @@
         <div class="flex items-center gap-3">
           <ChatBubbleIcon class="w-6 h-6 text-primary" />
           <div>
-            <div.Title class="text-lg">Enhanced Legal AI Assistant</Card.Title>
+            <div.Title class="text-lg">Enhanced Legal AI Assistant</div.Title>
             <div.Description class="flex items-center gap-2">
               <div class="flex items-center gap-1">
                 <div class="w-2 h-2 rounded-full {isConnected ? 'bg-green-500' : 'bg-red-500'}"></div>
@@ -289,7 +287,7 @@
               {#if enableWebGPU && webgpuAccelerator}
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">WebGPU Enabled</span>
               {/if}
-            </Card.Description>
+            </div.Description>
           </div>
         </div>
         
@@ -304,8 +302,8 @@
                     builders={[builder]}
                     class="p-2 bits-btn bits-btn"
                   >
-                    <MagnifyingGlassIcon class="w-4 h-4" />
-                  </button>
+<MagnifyingGlassIcon class="w-4 h-4" />
+
                                               {/snippet}
                             </Tooltip.Trigger>
               <Tooltip.Content>
@@ -314,9 +312,9 @@
             </Tooltip.Root>
           {/if}
           
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat}>
-            Clear
-          </button>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={clearChat}>
+Clear
+
         </div>
       </div>
     </Card.Header>
@@ -390,16 +388,16 @@
           bind:value={currentMessage}
           placeholder="Ask about legal matters..."
           disabled={isTyping || !isConnected}
-          onkeydown={handleKeydown}
+          on:keydown={handleKeydown}
           class="flex-1 min-h-[40px] max-h-[120px] resize-none"
         />
         <Button 
-          onclick={sendMessage}
+          on:click={sendMessage}
           disabled={!currentMessage.trim() || isTyping || !isConnected}
           class="self-end bits-btn bits-btn"
         >
-          <PaperPlaneIcon class="w-4 h-4" />
-        </button>
+<PaperPlaneIcon class="w-4 h-4" />
+
       </div>
       
       {#if processingMetrics.tokensPerSecond > 0}
@@ -445,9 +443,10 @@
         </div>
         
         <Dialog.Footer>
-          <Button class="bits-btn" variant="outline" onclick={() => ($open = false)}>
+          <Button class="bits-btn" variant="outline" on:click={() =>
+($open = false)}>
             Close
-          </button>
+
         </Dialog.Footer>
       </Dialog.Content>
     </Dialog.Root>

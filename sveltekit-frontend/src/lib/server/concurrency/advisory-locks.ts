@@ -93,15 +93,15 @@ export class AdvisoryLockService {
         if (mode === LOCK_MODES.EXCLUSIVE) {
           // Exclusive lock - blocks all other access
           const [result] = await sql`SELECT pg_try_advisory_lock(${numericLockId}) as acquired`;
-          lockAcquired = result.acquired;
+          lockAcquired = (result as { acquired?: any; released?: any; locked?: any }).acquired;
         } else if (mode === LOCK_MODES.SHARED) {
           // Shared lock - allows multiple readers
           const [result] = await sql`SELECT pg_try_advisory_lock_shared(${numericLockId}) as acquired`;
-          lockAcquired = result.acquired;
+          lockAcquired = (result as { acquired?: any; released?: any; locked?: any }).acquired;
         } else {
           // Update lock (custom implementation using exclusive lock)
           const [result] = await sql`SELECT pg_try_advisory_lock(${numericLockId + 1}) as acquired`;
-          lockAcquired = result.acquired;
+          lockAcquired = (result as { acquired?: any; released?: any; locked?: any }).acquired;
         }
 
         if (!lockAcquired) {
@@ -158,14 +158,14 @@ export class AdvisoryLockService {
 
       if (mode === LOCK_MODES.EXCLUSIVE) {
         const [result] = await sql`SELECT pg_advisory_unlock(${numericLockId}) as released`;
-        released = result.released;
+        released = (result as { acquired?: any; released?: any; locked?: any }).released;
       } else if (mode === LOCK_MODES.SHARED) {
         const [result] = await sql`SELECT pg_advisory_unlock_shared(${numericLockId}) as released`;
-        released = result.released;
+        released = (result as { acquired?: any; released?: any; locked?: any }).released;
       } else {
         // Update lock
         const [result] = await sql`SELECT pg_advisory_unlock(${numericLockId + 1}) as released`;
-        released = result.released;
+        released = (result as { acquired?: any; released?: any; locked?: any }).released;
       }
 
       if (released) {
@@ -220,7 +220,7 @@ export class AdvisoryLockService {
           FROM pg_locks 
           WHERE locktype = 'advisory' AND objid = ${numericLockId}
         `;
-        return result.locked;
+        return (result as { acquired?: any; released?: any; locked?: any }).locked;
       } else {
         // Check for specific lock type
         const lockIdToCheck = mode === LOCK_MODES.UPDATE ? numericLockId + 1 : numericLockId;
@@ -229,7 +229,7 @@ export class AdvisoryLockService {
           FROM pg_locks 
           WHERE locktype = 'advisory' AND objid = ${lockIdToCheck}
         `;
-        return result.locked;
+        return (result as { acquired?: any; released?: any; locked?: any }).locked;
       }
     } catch (error: any) {
       console.error(`Error checking lock status for ${entityType} ${entityId}:`, error);
@@ -280,7 +280,7 @@ export class AdvisoryLockService {
   /**
    * Health check - clean up expired locks
    */
-  async healthCheck(): Promise<{ active: number; expired: number; cleaned: number }> {
+  async healthCheck(): Promise<any> {
     const now = new Date();
     let active = 0;
     let expired = 0;

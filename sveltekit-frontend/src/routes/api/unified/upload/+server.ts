@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { legalAI } from '$lib/server/unified/legal-ai-service';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -47,11 +47,11 @@ export const POST: RequestHandler = async ({ request }) => {
         const result = await legalAI.uploadDocument(upload);
         
         results.push({
-          id: result.id,
+          id: (result as { id?: any; fileUrl?: any; embeddingId?: any; cached?: any }).id,
           fileName: file.name,
-          fileUrl: result.fileUrl,
-          embeddingId: result.embeddingId,
-          cached: result.cached,
+          fileUrl: (result as { id?: any; fileUrl?: any; embeddingId?: any; cached?: any }).fileUrl,
+          embeddingId: (result as { id?: any; fileUrl?: any; embeddingId?: any; cached?: any }).embeddingId,
+          cached: (result as { id?: any; fileUrl?: any; embeddingId?: any; cached?: any }).cached,
           size: file.size,
           type: file.type
         });

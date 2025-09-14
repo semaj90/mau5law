@@ -1,7 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { criminals } from "$lib/server/db/schema-postgres";
 import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const GET: RequestHandler = async ({ params, locals }) => {

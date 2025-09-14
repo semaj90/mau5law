@@ -38,8 +38,8 @@ export type DocumentEvent =
 
 export const documentWorkflowMachine = setup({
   types: {
-    context: {} as DocumentContext,
-    events: {} as DocumentEvent
+    context: Record<string, any> as DocumentContext,
+    events: Record<string, any> as DocumentEvent
   },
   actions: {
     setDocumentInfo: assign({
@@ -221,8 +221,8 @@ export type CaseEvent =
 
 export const caseWorkflowMachine = setup({
   types: {
-    context: {} as CaseContext,
-    events: {} as CaseEvent
+    context: Record<string, any> as CaseContext,
+    events: Record<string, any> as CaseEvent
   },
   actions: {
     createCase: assign({
@@ -403,8 +403,8 @@ export type RAGEvent =
 
 export const ragWorkflowMachine = setup({
   types: {
-    context: {} as RAGContext,
-    events: {} as RAGEvent
+    context: Record<string, any> as RAGContext,
+    events: Record<string, any> as RAGEvent
   },
   actions: {
     initializeQuery: assign({

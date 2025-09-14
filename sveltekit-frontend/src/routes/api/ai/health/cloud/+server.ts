@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Cloud AI health check endpoint for fallback AI services
 import { json } from "@sveltejs/kit";

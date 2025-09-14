@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * Unified GPU/WASM Integration API Endpoint
@@ -321,35 +321,35 @@ async function handleLegalAnalysis(body: any): Promise<any> {
     
     const response: any = {
       success: true,
-      analysis: {},
+      analysis: Record<string, any>,
       processingTime: 0,
       sources: []
     };
     
     // Combine results from GPU processing
     if (gpuResult.status === 'fulfilled') {
-      response.analysis.gpu = gpuResult.value;
-      response.processingTime += gpuResult.value.processingTime || 0;
-      response.sources.push('gpu-flash-attention');
+      (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.gpu = gpuResult.value;
+      (response as { analysis?: any; processingTime?: any; sources?: any }).processingTime += gpuResult.value.processingTime || 0;
+      (response as { analysis?: any; processingTime?: any; sources?: any }).sources.push('gpu-flash-attention');
     }
     
     // Combine results from WASM processing
     if (wasmResult.status === 'fulfilled') {
-      response.analysis.wasm = wasmResult.value;
-      response.processingTime += wasmResult.value.processingTime || 0;
-      response.sources.push('llvm-wasm-bridge');
+      (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.wasm = wasmResult.value;
+      (response as { analysis?: any; processingTime?: any; sources?: any }).processingTime += wasmResult.value.processingTime || 0;
+      (response as { analysis?: any; processingTime?: any; sources?: any }).sources.push('llvm-wasm-bridge');
     }
     
     // Create unified result
-    response.analysis.unified = {
+    (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.unified = {
       confidence: Math.max(
-        response.analysis.gpu?.legalAnalysis?.confidenceMetrics?.semantic || 0,
+        (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.gpu?.legalAnalysis?.confidenceMetrics?.semantic || 0,
         0.7 // Base confidence from WASM processing
       ),
-      citations: response.analysis.wasm?.citations || [],
-      legalEntities: response.analysis.gpu?.legalAnalysis?.legalEntities || [],
-      conceptClusters: response.analysis.gpu?.legalAnalysis?.conceptClusters || [],
-      processedText: response.analysis.wasm?.processedText || text
+      citations: (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.wasm?.citations || [],
+      legalEntities: (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.gpu?.legalAnalysis?.legalEntities || [],
+      conceptClusters: (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.gpu?.legalAnalysis?.conceptClusters || [],
+      processedText: (response as { analysis?: any; processingTime?: any; sources?: any }).analysis.wasm?.processedText || text
     };
     
     return json(response);
@@ -390,8 +390,8 @@ async function handleEmbeddingGeneration(body: any): Promise<any> {
             text.split('').map(char => char.charCodeAt(0)),
             dimensions
           );
-          processingTime += result.processingTime;
-          return new Float32Array(result.embedding);
+          processingTime += (result as { processingTime?: any; embedding?: any; resolved?: any }).processingTime;
+          return new Float32Array((result as { processingTime?: any; embedding?: any; resolved?: any }).embedding);
         })
       );
       
@@ -428,7 +428,7 @@ async function handleErrorProcessing(body: any): Promise<any> {
     const result = await gpuServiceIntegration.processGPUError(errorContext);
     
     return json({
-      success: result.resolved,
+      success: (result as { processingTime?: any; embedding?: any; resolved?: any }).resolved,
       result,
       timestamp: new Date().toISOString()
     });
@@ -491,7 +491,7 @@ async function handleIntegrationTest(body: any): Promise<any> {
     const results: any = {
       testType,
       timestamp: new Date().toISOString(),
-      tests: {}
+      tests: Record<string, any>
     };
     
     // Test GPU service integration

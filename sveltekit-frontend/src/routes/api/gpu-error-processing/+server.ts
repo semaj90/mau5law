@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 const execAsync = promisify(exec);
@@ -77,10 +77,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
     };
 
     console.log(`⚡ GPU processing complete:`);
-    console.log(`   - Total errors: ${result.totalErrors}`);
-    console.log(`   - Fixes generated: ${result.processedErrors}`);
+    console.log(`   - Total errors: ${(result as { totalErrors?: any; processedErrors?: any; performance?: any }).totalErrors}`);
+    console.log(`   - Fixes generated: ${(result as { totalErrors?: any; processedErrors?: any; performance?: any }).processedErrors}`);
     console.log(`   - Processing time: ${processingTime.toFixed(2)}ms`);
-    console.log(`   - GPU utilization: ${result.performance.gpu_utilization.toFixed(1)}%`);
+    console.log(`   - GPU utilization: ${(result as { totalErrors?: any; processedErrors?: any; performance?: any }).performance.gpu_utilization.toFixed(1)}%`);
 
     return json(result);
   } catch (error: any) {

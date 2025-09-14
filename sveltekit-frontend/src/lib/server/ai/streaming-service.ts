@@ -3,8 +3,8 @@ import { EventEmitter } from "events";
 // lib/server/ai/streaming-service.ts
 // Real-time streaming service for AI synthesis with progressive updates
 
-import { logger } from './logger';
-import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer';
+import { logger } from './logger.js';
+import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
 
 export interface StreamEvent {
   type: 'status' | 'progress' | 'stage' | 'source' | 'complete' | 'error' | 'heartbeat';
@@ -220,16 +220,16 @@ class StreamingService extends EventEmitter {
         });
         
         options.onProgress?.('quality_assessment', 100, {
-          confidence: result.metadata.confidence,
-          qualityScore: result.metadata.qualityScore
+          confidence: (result as { metadata?: any; retrievedContext?: any }).metadata.confidence,
+          qualityScore: (result as { metadata?: any; retrievedContext?: any }).metadata.qualityScore
         });
         
         options.onStage?.('quality_assessment', { 
           status: 'complete',
           metrics: {
-            confidence: result.metadata.confidence,
-            qualityScore: result.metadata.qualityScore,
-            sourceCount: result.retrievedContext.sources.length
+            confidence: (result as { metadata?: any; retrievedContext?: any }).metadata.confidence,
+            qualityScore: (result as { metadata?: any; retrievedContext?: any }).metadata.qualityScore,
+            sourceCount: (result as { metadata?: any; retrievedContext?: any }).retrievedContext.sources.length
           }
         });
         
@@ -585,11 +585,11 @@ export class OllamaStreamingAdapter {
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Ollama request failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; body?: any }).ok) {
+        throw new Error(`Ollama request failed: ${(response as { ok?: any; statusText?: any; body?: any }).statusText}`);
       }
 
-      const reader = response.body.getReader();
+      const reader = (response as { ok?: any; statusText?: any; body?: any }).body.getReader();
       const decoder = new TextDecoder();
       let fullResponse = '';
 
@@ -603,11 +603,11 @@ export class OllamaStreamingAdapter {
         for (const line of lines) {
           try {
             const data = JSON.parse(line);
-            if (data.response) {
-              fullResponse += data.response;
-              onToken(data.response);
+            if ((data as { response?: any; done?: any }).response) {
+              fullResponse += (data as { response?: any; done?: any }).response;
+              onToken((data as { response?: any; done?: any }).response);
             }
-            if (data.done) {
+            if ((data as { response?: any; done?: any }).done) {
               onComplete(fullResponse);
             }
           } catch (e: any) {
@@ -627,7 +627,7 @@ export class OllamaStreamingAdapter {
   async checkAvailability(): Promise<boolean> {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/tags`);
-      return response.ok;
+      return (response as { ok?: any; statusText?: any; body?: any }).ok;
     } catch (error: any) {
       return false;
     }

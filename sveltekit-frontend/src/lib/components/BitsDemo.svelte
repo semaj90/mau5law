@@ -1,3 +1,4 @@
+<!-- Component exported by default -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import type { BitsDemoProps } from '$lib/types/component-props.js';
@@ -38,7 +39,7 @@
   let alertOpen = $state(false);
 
   // Simple native toast system
-  let toasts = $state<Array<{ id: string; data: ToastData }>>([]);
+  let toasts = $state<any[]>([]);
   function addToast(toast: { data: ToastData }) {
     const id = Date.now().toString();
     toasts = [...toasts, { id, data: toast.data }];
@@ -65,12 +66,12 @@
         })
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any }).json();
         addToast({
           data: {
             title: 'Case Created Successfully',
-            description: `Case ${result.case?.caseNumber} created and saved to database.`,
+            description: `Case ${(result as { case?: any; system_overview?: any; p99?: any }).case?.caseNumber} created and saved to database.`,
             color: 'success',
           },
         });
@@ -94,12 +95,12 @@
         method: 'GET'
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any }).json();
         addToast({
           data: {
             title: 'System Status Check',
-            description: `Services: ${result.system_overview?.healthy_services || 0}/${result.system_overview?.total_services || 0} healthy`,
+            description: `Services: ${(result as { case?: any; system_overview?: any; p99?: any }).system_overview?.healthy_services || 0}/${(result as { case?: any; system_overview?: any; p99?: any }).system_overview?.total_services || 0} healthy`,
             color: 'warning',
           },
         });
@@ -121,7 +122,7 @@
     try {
       const response = await fetch('/api/v1/upload?action=health');
 
-      if (response.ok) {
+      if ((response as { ok?: any; json?: any }).ok) {
         addToast({
           data: {
             title: 'Upload Service Test',
@@ -149,12 +150,12 @@
         method: 'GET'
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any }).json();
         addToast({
           data: {
             title: 'Multi-Protocol Check',
-            description: `QUIC metrics available. P99: ${result.p99 || 'N/A'}ms`,
+            description: `QUIC metrics available. P99: ${(result as { case?: any; system_overview?: any; p99?: any }).p99 || 'N/A'}ms`,
             color: 'info',
           },
         });
@@ -186,43 +187,43 @@
   <div class="mx-auto px-4 max-w-7xl">
     <h3 class="mx-auto px-4 max-w-7xl">Melt-UI Notifications Demo</h3>
     <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => showSuccessNotification()}>
+      <button class="mx-auto px-4 max-w-7xl" on:click={() => showSuccessNotification()}>
         Success Notification
       </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => showWarningNotification()}>
+      <button class="mx-auto px-4 max-w-7xl" on:click={() => showWarningNotification()}>
         Warning Notification
       </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => showErrorNotification()}>
+      <button class="mx-auto px-4 max-w-7xl" on:click={() => showErrorNotification()}>
         Error Notification
       </button>
-      <button class="mx-auto px-4 max-w-7xl" onclick={() => showInfoNotification()}>
+      <button class="mx-auto px-4 max-w-7xl" on:click={() => showInfoNotification()}>
         Info Notification
       </button>
     </div>
   </div>
 
   <!-- Bits UI Button -->
-  <Button.Root class="mx-auto px-4 max-w-7xl bits-btn bits-btn" onclick={showSuccessNotification}>
-    Create New Case
+  <Button.Root class="mx-auto px-4 max-w-7xl bits-btn bits-btn" on:click={showSuccessNotification}>
+Create New Case
   </Button.Root>
 
   <!-- Bits UI Select -->
   <div class="mx-auto px-4 max-w-7xl">
     <label class="mx-auto px-4 max-w-7xl" for="practice-area-select">Legal Practice Area</label>
-    <SelectRoot type="single" valuechange={() => showWarningNotification()}>
-      <SelectTrigger class="mx-auto px-4 max-w-7xl" id="practice-area-select">
+    <Select.Root>
+      <Select.Trigger class="mx-auto px-4 max-w-7xl" id="practice-area-select">
         Select practice area...
-      </SelectTrigger>
+      </Select.Trigger>
       <Select.Portal>
-        <SelectContent class="mx-auto px-4 max-w-7xl">
+        <Select.Content class="mx-auto px-4 max-w-7xl">
           {#each caseTypes as type}
-            <SelectItem value={type.value} class="mx-auto px-4 max-w-7xl">
+            <Select.Item value={type.value} class="mx-auto px-4 max-w-7xl">
               {type.label}
-            </SelectItem>
+            </Select.Item>
           {/each}
-        </SelectContent>
+        </Select.Content>
       </Select.Portal>
-    </SelectRoot>
+    </Select.Root>
   </div>
 
   <!-- Bits UI Dialog -->
@@ -287,7 +288,7 @@
           <AlertDialog.Cancel class="mx-auto px-4 max-w-7xl">
             Cancel
           </AlertDialog.Cancel>
-          <AlertDialog.Action class="mx-auto px-4 max-w-7xl" onclick={showErrorNotification}>
+          <AlertDialog.Action class="mx-auto px-4 max-w-7xl" on:click={showErrorNotification}>
             Delete Permanently
           </AlertDialog.Action>
         </div>
@@ -307,28 +308,28 @@
 <div class="toast-container">
   {#each toasts as { id, data } (id)}
     <div
-      class="toast toast-{data.color}"
+      class="toast toast-{(data as { color?: any; title?: any; description?: any }).color}"
       animate:flip={{ duration: 500 }}
       in:fly={{ duration: 150, x: '100%' }}
       out:fly={{ duration: 150, x: '100%' }}
     >
       <div class="toast-header">
-        {#if data.title}
+        {#if (data as { color?: any; title?: any; description?: any }).title}
           <div class="toast-title">
-            {data.title}
+            {(data as { color?: any; title?: any; description?: any }).title}
           </div>
         {/if}
-        <button 
-          class="toast-close" 
-          onclick={() => removeToast(id)} 
+        <button
+          class="toast-close"
+          on:click={() => removeToast(id)}
           aria-label="Close notification"
         >
           ✕
         </button>
       </div>
-      {#if data.description}
+      {#if (data as { color?: any; title?: any; description?: any }).description}
         <div class="toast-description">
-          {data.description}
+          {(data as { color?: any; title?: any; description?: any }).description}
         </div>
       {/if}
     </div>

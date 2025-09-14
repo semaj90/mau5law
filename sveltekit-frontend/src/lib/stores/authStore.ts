@@ -45,8 +45,8 @@ const createAuthStore = () => {
           credentials: "include",
         });
 
-        if (response.ok) {
-          const userData = await response.json();
+        if ((response as { ok?: any; json?: any }).ok) {
+          const userData = await (response as { ok?: any; json?: any }).json();
           set({
             user: userData.user,
             isAuthenticated: true,
@@ -85,8 +85,8 @@ const createAuthStore = () => {
           credentials: "include",
         });
 
-        if (response.ok) {
-          const userData = await response.json();
+        if ((response as { ok?: any; json?: any }).ok) {
+          const userData = await (response as { ok?: any; json?: any }).json();
           set({
             user: userData.user,
             isAuthenticated: true,
@@ -100,7 +100,7 @@ const createAuthStore = () => {
 
           return { success: true };
         } else {
-          const error = await response.json();
+          const error = await (response as { ok?: any; json?: any }).json();
           set({
             user: null,
             isAuthenticated: false,
@@ -138,22 +138,22 @@ const createAuthStore = () => {
           credentials: "include",
         });
 
-        if (response.ok) {
-          const result = await response.json();
+        if ((response as { ok?: any; json?: any }).ok) {
+          const result = await (response as { ok?: any; json?: any }).json();
           set({
-            user: result.user,
+            user: (result as { user?: any; sessionId?: any }).user,
             isAuthenticated: true,
             isLoading: false,
-            sessionId: result.sessionId,
+            sessionId: (result as { user?: any; sessionId?: any }).sessionId,
             lastActivity: new Date(),
           });
 
           // Initialize AI assistant for new user
-          aiAssistantStore.initializeForUser(result.user);
+          aiAssistantStore.initializeForUser((result as { user?: any; sessionId?: any }).user);
 
           return { success: true };
         } else {
-          const error = await response.json();
+          const error = await (response as { ok?: any; json?: any }).json();
           set({
             user: null,
             isAuthenticated: false,
@@ -211,8 +211,8 @@ const createAuthStore = () => {
           credentials: "include",
         });
 
-        if (response.ok) {
-          const updatedUser = await response.json();
+        if ((response as { ok?: any; json?: any }).ok) {
+          const updatedUser = await (response as { ok?: any; json?: any }).json();
           update((state: any) => ({
             ...state,
             user: { ...state.user!, ...updatedUser },
@@ -221,7 +221,7 @@ const createAuthStore = () => {
 
           return { success: true };
         } else {
-          const error = await response.json();
+          const error = await (response as { ok?: any; json?: any }).json();
           return { success: false, error: error.message };
         }
       } catch (error: any) {
@@ -263,15 +263,7 @@ export interface AIAssistantState {
     evidenceId?: string;
     reportId?: string;
   };
-  conversationHistory: Array<{
-    id: string;
-    timestamp: Date;
-    prompt: string;
-    response: string;
-    confidence: number;
-    context?: unknown;
-  }>;
-}
+  conversationHistory: Array<any>
 
 const createAIAssistantStore = () => {
   const { subscribe, set, update } = writable<AIAssistantState>({
@@ -312,8 +304,8 @@ const createAIAssistantStore = () => {
           credentials: "include",
         });
 
-        if (response.ok) {
-          const preferences = await response.json();
+        if ((response as { ok?: any; json?: any }).ok) {
+          const preferences = await (response as { ok?: any; json?: any }).json();
           update((state: any) => ({
             ...state,
             preferences: { ...state.preferences, ...preferences },
@@ -336,7 +328,7 @@ const createAIAssistantStore = () => {
           credentials: "include",
         });
 
-        if (response.ok) {
+        if ((response as { ok?: any; json?: any }).ok) {
           update((state: any) => ({
             ...state,
             preferences: { ...state.preferences, ...updates },

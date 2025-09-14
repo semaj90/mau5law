@@ -32,8 +32,8 @@ type CanvasEvent =
 
 export const canvasSystemMachine = setup({
   types: {
-    context: {} as CanvasContext,
-    events: {} as CanvasEvent,
+    context: Record<string, any> as CanvasContext,
+    events: Record<string, any> as CanvasEvent,
   },
   actions: {
     addNode: assign({

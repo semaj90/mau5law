@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // CrewAI Multi-Agent Document Review API
 // Orchestrates legal document analysis with multiple AI agents
@@ -194,7 +194,7 @@ export const GET: RequestHandler = async ({ url }) => {
               name: agent.name,
               role: agent.role,
               expertise: agent.expertise,
-              model: agent.model,
+              model: agent?.model || "unknown" // @ts-ignore - Model property access,
               description: getAgentDescription(agent)
             }))
           }
@@ -342,7 +342,7 @@ function calculateEstimatedTime(agentIds: string[], contentLength: number): stri
   for (const agentId of agentIds) {
     const agent = LEGAL_AGENTS[agentId];
     if (agent) {
-      const modelFactor = modelFactors[agent.model] || 1.0;
+      const modelFactor = modelFactors[agent?.model || "unknown" // @ts-ignore - Model property access] || 1.0;
       totalTime += baseTimePerAgent * modelFactor * contentFactor;
     }
   }

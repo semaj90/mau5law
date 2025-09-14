@@ -7,7 +7,7 @@
 
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { db } from '$lib/server/db/connection';
+import { db } from '$lib/server/db/unified-client';
 import { citations } from '$lib/server/db/schemas/cases-schema';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';

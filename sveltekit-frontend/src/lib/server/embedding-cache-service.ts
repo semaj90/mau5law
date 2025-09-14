@@ -3,8 +3,8 @@
  * Redis-based caching for embeddings and frequently accessed data
  */
 
-import { redisService } from './redis-service';
-import { dbPool } from './database-pool-service';
+import { redisService } from './redis-service.js';
+import { dbPool } from './database-pool-service.js';
 
 interface EmbeddingCacheEntry {
   text: string;
@@ -243,7 +243,7 @@ class EmbeddingCacheService {
    * Batch cache multiple embeddings efficiently
    */
   async batchCacheEmbeddings(
-    items: Array<{ text: string; embedding: number[]; model?: string }>
+    items: Array<
   ): Promise<void> {
     if (!redisService.isHealthy() || !items.length) return;
 
@@ -252,11 +252,11 @@ class EmbeddingCacheService {
       let cached = 0;
 
       for (const item of items) {
-        const key = this.generateEmbeddingKey(item.text, item.model || 'nomic-embed-text');
+        const key = this.generateEmbeddingKey((item as { text?: any; embedding?: any }).text, item?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text');
         const entry: EmbeddingCacheEntry = {
-          text: item.text,
-          embedding: this.compressEmbedding(item.embedding),
-          model: item.model || 'nomic-embed-text',
+          text: (item as { text?: any; embedding?: any }).text,
+          embedding: this.compressEmbedding((item as { text?: any; embedding?: any }).embedding),
+          model: item?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text',
           timestamp: Date.now(),
           accessCount: 0,
           lastAccessed: Date.now(),

@@ -222,10 +222,10 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Upload Drop Zone -->
   <div
     class={uploadClass}
-    ondragover={handleDragOver}
+    on:dragover={handleDragOver}
     ondragleave={handleDragLeave}
-    ondrop={handleDrop}
-    onclick={handleClick}
+    on:drop={handleDrop}
+    on:click={handleClick}
     role="button"
     tabindex="0"
     aria-label="File upload area"
@@ -237,8 +237,7 @@ https://svelte.dev/e/js_parse_error -->
       {accept}
       {multiple}
       {disabled}
-      class="sr-only"
-      change={handleInputChange}
+      class="sr-only" on:change={handleInputChange}
     />
     
     <div class="flex flex-col items-center justify-center text-center">
@@ -320,7 +319,7 @@ https://svelte.dev/e/js_parse_error -->
               <button
                 type="button"
                 class="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                onclick={() => removeFile(file.id)}
+                on:click={() => removeFile(file.id)}
                 aria-label="Remove file"
               >
                 <div class="i-lucide-x w-4 h-4" aria-hidden="true"></div>

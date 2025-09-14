@@ -177,7 +177,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         });
 
         const embeddingResult = await this.generateEmbeddingsForFiles(uploadResults, options);
-        result.embeddings = embeddingResult;
+        (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).embeddings = embeddingResult;
 
         this.postResponse({
           taskId: id,
@@ -189,7 +189,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       }
 
       // Step 3: SOM clustering if requested
-      if (options.enableSOMClustering && result.embeddings) {
+      if (options.enableSOMClustering && (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).embeddings) {
         this.postResponse({
           taskId: id,
           success: true,
@@ -199,7 +199,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         });
 
         const somResult = await this.performSOMClustering(uploadResults);
-        result.somClustering = somResult;
+        (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).somClustering = somResult;
       }
 
       // Step 4: RTX compression if requested
@@ -213,17 +213,17 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         });
 
         const rtxResult = await this.applyRTXCompression(uploadResults);
-        result.rtxCompression = rtxResult;
+        (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).rtxCompression = rtxResult;
       }
 
-      result.totalProcessingTime = performance.now() - startTime;
+      (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).totalProcessingTime = performance.now() - startTime;
 
       this.postResponse({
         taskId: id,
         success: true,
         progress: 100,
         stage: 'Ingestion completed',
-        data: { stage: 'completed', processingTime: result.totalProcessingTime },
+        data: { stage: 'completed', processingTime: (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).totalProcessingTime },
       });
 
       return result;
@@ -319,10 +319,10 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       let compressedSize = 0;
 
       for (const result of uploadResults) {
-        if (result.success) {
-          originalSize += result.size;
+        if ((result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).success) {
+          originalSize += (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).size;
           // Simulate 50:1 compression ratio
-          compressedSize += Math.floor(result.size / 50);
+          compressedSize += Math.floor((result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).size / 50);
         }
       }
 

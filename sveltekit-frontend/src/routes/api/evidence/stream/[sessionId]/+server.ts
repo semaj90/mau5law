@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // src/routes/api/evidence/stream/[sessionId]/+server.ts
 import { registerWsConnection, getMissedMessages } from "drizzle-orm";

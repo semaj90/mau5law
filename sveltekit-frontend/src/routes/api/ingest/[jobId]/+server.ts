@@ -8,7 +8,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { sharedWorkerPool } from '$lib/server/ingest/worker-pool-simple.js';
 import { db, userDocuments } from '$lib/server/index.js';
 import { eq, and, like } from 'drizzle-orm';

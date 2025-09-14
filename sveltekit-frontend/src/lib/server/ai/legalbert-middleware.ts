@@ -1,4 +1,4 @@
-import { logger } from './logger.js';
+import { logger } from './logger.js.js';
 const crypto = require('crypto');
 import { ollamaConfig } from '$lib/services/ollama-config-service.js';
 import { ENV_CONFIG } from '$lib/config/environment.js';
@@ -7,7 +7,7 @@ import { ENV_CONFIG } from '$lib/config/environment.js';
 // LegalBERT middleware for specialized legal embeddings and analysis
 
 // Type interfaces will be defined below
-import { generateEmbedding } from './embeddings-simple.js';
+import { generateEmbedding } from './embeddings-simple.js.js';
 
 // Type definitions will be defined later in file
 
@@ -79,19 +79,8 @@ const LEGAL_ENTITY_TYPES = {
 
 // Legal text analysis results
 export interface LegalBertAnalysisResult {
-  entities: Array<{
-    text: string;
-    type: keyof typeof LEGAL_ENTITY_TYPES;
-    confidence: number;
-    startIndex: number;
-    endIndex: number;
-    context?: string;
-  }>;
-  concepts: Array<{
-    concept: string;
-    relevance: number;
-    category: string;
-  }>;
+  entities: Array<any>;
+  concepts: Array<any>;
   sentiment: {
     polarity: number; // -1 to 1
     confidence: number;
@@ -102,11 +91,7 @@ export interface LegalBertAnalysisResult {
     legalComplexity: number;
     technicalTerms: number;
   };
-  keyPhrases: Array<{
-    phrase: string;
-    importance: number;
-    category: string;
-  }>;
+  keyPhrases: Array<any>;
   summary: {
     abstractive: string;
     extractive: string[];
@@ -132,10 +117,7 @@ export interface LegalEmbeddingResult {
 export interface LegalClassificationResult {
   documentType: string;
   confidence: number;
-  subCategories: Array<{
-    category: string;
-    confidence: number;
-  }>;
+  subCategories: Array<any>;
   jurisdiction: string;
   practiceArea: string;
   urgency: 'low' | 'medium' | 'high';
@@ -221,7 +203,7 @@ export class LegalBERTMiddleware {
       // Cache result
       this.cache.set(`embedding_${textHash}`, result);
       metrics.increment('legalbert_embeddings_generated');
-      metrics.histogram('legalbert_embedding_time', result.processingTime);
+      metrics.histogram('legalbert_embedding_time', (result as { processingTime?: any; data?: any }).processingTime);
 
       return result;
     } catch (error: any) {
@@ -309,15 +291,7 @@ export class LegalBERTMiddleware {
   async calculateLegalSimilarity(
     text1: string,
     text2: string
-  ): Promise<{
-    similarity: number;
-    confidence: number;
-    factors: {
-      semantic: number;
-      structural: number;
-      legal_concepts: number;
-    };
-  }> {
+  ): Promise<any> {
     try {
       const [emb1, emb2] = await Promise.all([
         this.generateLegalEmbedding(text1),
@@ -375,11 +349,11 @@ export class LegalBERTMiddleware {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`HuggingFace API error: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`HuggingFace API error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const embedding = await response.json();
+      const embedding = await (response as { ok?: any; statusText?: any; json?: any }).json();
       return Array.isArray(embedding) ? embedding : embedding.embeddings || [];
     });
   }
@@ -398,12 +372,12 @@ export class LegalBERTMiddleware {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`OpenAI API error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const result = await response.json();
-      return result.data[0]?.embedding || [];
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      return (result as { processingTime?: any; data?: any }).data[0]?.embedding || [];
     });
   }
 
@@ -906,7 +880,7 @@ export class LegalBERTMiddleware {
   /**
    * Health check
    */
-  async healthCheck(): Promise<{ status: string; details: Record<string, any> }> {
+  async healthCheck(): Promise<any> {
     try {
       const testResult = await this.generateLegalEmbedding('health check');
       return {

@@ -44,11 +44,7 @@ export interface ProcessingResult {
 
 export interface QueryResult {
   answer: string;
-  sources: Array<{
-    content: string;
-    metadata: Record<string, any>;
-    score: number;
-  }>;
+  sources: Array<any>;
   confidence: number;
   processingTime: number;
 }
@@ -89,7 +85,7 @@ export class LangChainOllamaService {
     // Initialize Chat Model with CUDA optimization
     this.chatModel = new ChatOllama({
       baseUrl: this.config.ollamaBaseUrl,
-      model: this.config.model,
+      model: this.config?.model || "unknown" // @ts-ignore - Model property access,
       temperature: this.config.temperature,
       // Note: numCtx, useGpu, numGpu, numThread may not be available in current ChatOllama version
     });
@@ -328,7 +324,7 @@ Answer:`;
       config: this.config,
       isInitialized: this.isInitialized,
       vectorStoreSize: this.vectorStore?.memoryVectors?.length || 0,
-      model: this.config.model,
+      model: this.config?.model || "unknown" // @ts-ignore - Model property access,
       embeddingModel: this.config.embeddingModel
     };
   }

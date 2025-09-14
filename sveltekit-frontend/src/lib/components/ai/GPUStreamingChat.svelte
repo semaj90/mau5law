@@ -8,7 +8,7 @@
   
   // Svelte 5 runes
   let prompt = $state('');
-  let messages = $state<Array<{role: string; content: string; embedding?: Float32Array}>>([]);
+  let messages = $state<any[]>([])([]);
   let isStreaming = $state(false);
   let currentStreamContent = $state('');
   let memoryStats = $state({
@@ -17,7 +17,7 @@
     availableVRAM: 0,
     chunksInMemory: 0
   });
-  let similarDocuments = $state<Array<{content: string; similarity: number}>>([]);
+  let similarDocuments = $state<any[]>([])([]);
   
   // Pipeline instance
   let pipeline: GPULLMStreamingPipeline;
@@ -261,11 +261,11 @@
   
   <!-- Input Area -->
   <div class="input-area">
-    <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+    <form on:submit={(e) => { e.preventDefault(); handleSubmit(); }}>
       <div class="input-wrapper">
         <textarea
           bind:value={prompt}
-          oninput={handleInputChange}
+          on:input={handleInputChange}
           placeholder="Ask anything... (GPU-accelerated with VRAM chunking)"
           rows="3"
           disabled={isStreaming}
@@ -275,7 +275,7 @@
           {#if isStreaming}
             <button 
               type="button" 
-              onclick={stopStreaming}
+              on:click={stopStreaming}
               class="btn btn-stop"
             >
               Stop
@@ -292,7 +292,7 @@
           {/if}
           <button 
             type="button"
-            onclick={clearChat}
+            on:click={clearChat}
             class="btn btn-clear"
           >
             Clear

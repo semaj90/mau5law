@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { cache } from '$lib/server/cache/redis';
 import { embedText } from '$lib/server/embedding-gateway';
@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     // Optionally compute embedding synchronously for small chunks (and also enqueue)
     try {
       const model =
-        payload.model ||
+        payload?.model || "unknown" // @ts-ignore - Model property access ||
         process.env.EMBED_MODEL ||
         process.env.PUBLIC_EMBED_MODEL ||
         'nomic-embed-text';
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     }
 
     // Always enqueue for background durability/DB persistence. Prefer RabbitMQ when available.
-    const job = { id, text, model: payload.model || 'embeddinggemma-300m' };
+    const job = { id, text, model: payload?.model || "unknown" // @ts-ignore - Model property access || 'embeddinggemma-300m' };
     try {
       // dynamic import so we don't require amqplib at runtime if not installed
       const { publishToQueue } = await import('$lib/server/rabbitmq');

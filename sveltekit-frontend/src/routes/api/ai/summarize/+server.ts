@@ -19,7 +19,7 @@
 /// <reference types="vite/client" />
 import { json } from "@sveltejs/kit";
 import { getCache, setCache, hashPayload, CACHE_CONSTANTS, deleteCache } from '$lib/server/summarizeCache';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
@@ -175,7 +175,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const maxTokens = Math.min(options.max_tokens || 500, 2048);
     const mode = options.mode || 'auto';
     const bullets = options.bullets && options.bullets > 0 ? Math.min(options.bullets, 10) : 5;
-    const model = options.model || PRIMARY_MODEL;
+    const model = options?.model || "unknown" // @ts-ignore - Model property access || PRIMARY_MODEL;
     const structuredRequested = !!options.structured;
     const prompt = buildSummarizerPrompt(text, mode, bullets, maxTokens, type === 'legal' ? 'legal document' : 'document', structuredRequested);
 
@@ -187,7 +187,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           summary: cached.entry.summary,
-          model: cached.entry.model,
+          model: cached.entry?.model || "unknown" // @ts-ignore - Model property access,
           type,
           mode,
           structured: cached.entry.structured || null,
@@ -200,7 +200,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           performance: cached.entry.perf,
           timestamp: new Date().toISOString(),
           clientCacheHint: options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined,
-          suggestions: ['Cached result. Adjust text or options to recompute.']
+          suggestions: ['Cached (result as { response?: any; eval_count?: any; prompt_eval_count?: any }). Adjust text or options to recompute.']
         });
       }
     }
@@ -213,8 +213,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       // Streaming path
       if (body.stream) {
         const response = await withTimeout(fetch(`${OLLAMA_BASE_URL}/api/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }), REQUEST_TIMEOUT_MS, 'ollama-generate');
-        if (!response.ok || !response.body) throw new Error(`Ollama API error: ${response.status}`);
-        const reader = response.body.getReader();
+        if (!(response as { ok?: any; body?: any; status?: any; json?: any }).ok || !(response as { ok?: any; body?: any; status?: any; json?: any }).body) throw new Error(`Ollama API error: ${(response as { ok?: any; body?: any; status?: any; json?: any }).status}`);
+        const reader = (response as { ok?: any; body?: any; status?: any; json?: any }).body.getReader();
         let accumulated = '';
         let finalJSON: any = null;
         return new Response(new ReadableStream({
@@ -239,8 +239,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         }), { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'X-Model': model } });
       } else {
         const response = await withTimeout(fetch(`${OLLAMA_BASE_URL}/api/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }), REQUEST_TIMEOUT_MS, 'ollama-generate');
-        if (!response.ok) throw new Error(`Ollama API error: ${response.status}`);
-        const jsonRes = await response.json();
+        if (!(response as { ok?: any; body?: any; status?: any; json?: any }).ok) throw new Error(`Ollama API error: ${(response as { ok?: any; body?: any; status?: any; json?: any }).status}`);
+        const jsonRes = await (response as { ok?: any; body?: any; status?: any; json?: any }).json();
         if (!jsonRes?.response) throw new Error('No response field in Ollama result');
         return jsonRes;
       }
@@ -281,13 +281,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       return result; // raw stream to client
     }
     const duration = Date.now() - startTime;
-    const rawSummary = String(result.response || '').trim();
+    const rawSummary = String((result as { response?: any; eval_count?: any; prompt_eval_count?: any }).response || '').trim();
     let summary = rawSummary;
     if (mode === 'bullets' && !/^\s*- /.test(rawSummary)) {
       const segmented = rawSummary.split(/\n+|(?<=\.)\s+/).map(l => l.trim()).filter(Boolean).slice(0, bullets);
       summary = segmented.map(s => s.startsWith('- ') ? s : `- ${s}`).join('\n');
     }
-    const performance: SummarizeResponseMeta = { duration, tokens: result.eval_count || 0, promptTokens: result.prompt_eval_count || 0, tokensPerSecond: result.eval_count ? (result.eval_count / (duration / 1000)).toFixed(2) : 0, modelUsed, fallbackUsed };
+    const performance: SummarizeResponseMeta = { duration, tokens: (result as { response?: any; eval_count?: any; prompt_eval_count?: any }).eval_count || 0, promptTokens: (result as { response?: any; eval_count?: any; prompt_eval_count?: any }).prompt_eval_count || 0, tokensPerSecond: (result as { response?: any; eval_count?: any; prompt_eval_count?: any }).eval_count ? ((result as { response?: any; eval_count?: any; prompt_eval_count?: any }).eval_count / (duration / 1000)).toFixed(2) : 0, modelUsed, fallbackUsed };
     let structured: any = null;
     if (structuredRequested) {
       // Try to extract final JSON object from summary tail

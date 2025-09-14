@@ -8,12 +8,15 @@
     duration?: number;
   }
 
-  let { 
-    message = $bindable(),
+  let { message = $bindable(),
     type = $bindable(),
     show = $bindable(),
     duration = $bindable()
-  } = $props();
+   }: { message = $bindable(),
+    type = $bindable(),
+    show = $bindable(),
+    duration = $bindable()
+  : any } = $props();
 
   function getTypeStyles(notificationType: string): string {
     switch (notificationType) {

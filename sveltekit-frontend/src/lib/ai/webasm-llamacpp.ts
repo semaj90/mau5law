@@ -2,7 +2,7 @@
 // Supports Gemma 3 Legal models in browser with hardware acceleration
 
 import '../types/index.js';
-import type { WebASMRankingCache } from '../webgpu/webasm-ranking-cache';
+import type { WebASMRankingCache } from '../webgpu/webasm-ranking-cache.js';
 // Use the ranking cache metrics only for reporting (kept separate from our local metrics)
 type RankingCacheMetrics = import('../webgpu/webasm-ranking-cache').CacheMetrics;
 
@@ -315,14 +315,14 @@ class WebAssemblyLlamaService {
       metrics.totalTime = performance.now() - startTime;
 
       // Enhanced result metadata
-      result.processingTime = metrics.totalTime;
-      result.fromCache = false;
-      result.cacheHit = false;
-      result.processingPath = this.worker && this.config.enableMultiCore ? 'worker' : 'wasm';
-      result.metrics = metrics;
+      (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).processingTime = metrics.totalTime;
+      (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).fromCache = false;
+      (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).cacheHit = false;
+      (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).processingPath = this.worker && this.config.enableMultiCore ? 'worker' : 'wasm';
+      (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).metrics = metrics;
 
       // Store in enhanced ranking cache
-      if (options.useCache !== false && result.confidence > 0.7) {
+      if (options.useCache !== false && (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).confidence > 0.7) {
         await this.storeInRankingCache(prompt, result, options);
         this.addToCache(prompt, options, result); // Legacy cache backup
       }
@@ -345,11 +345,8 @@ class WebAssemblyLlamaService {
     title: string,
     content: string,
     analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
-  ): Promise<{
-    summary: string;
-    keyTerms: string[];
-    entities: Array<{ type: string; value: string; confidence: number }>;
-    risks: Array<{ type: string; severity: string; description: string }>;
+  ): Promise<;
+    risks: Array<any>;
     recommendations: string[];
     confidence: number;
     processingTime: number;
@@ -363,7 +360,7 @@ class WebAssemblyLlamaService {
       useCache: true,
     });
 
-    const analysis = this.parseLegalAnalysisResponse(result.text) as any;
+    const analysis = this.parseLegalAnalysisResponse((result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).text) as any;
 
     return {
       summary: analysis?.summary || '',
@@ -372,7 +369,7 @@ class WebAssemblyLlamaService {
       risks: analysis?.risks || [],
       recommendations: analysis?.recommendations || [],
       confidence: analysis?.confidence || 0,
-      processingTime: result.processingTime,
+      processingTime: (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).processingTime,
       method: 'WebAssembly llama.cpp + Gemma 3 Legal',
     };
   }
@@ -688,12 +685,12 @@ class WebAssemblyLlamaService {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Ollama API error: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any; match?: any }).ok) {
+        throw new Error(`Ollama API error: ${(response as { ok?: any; statusText?: any; json?: any; match?: any }).statusText}`);
       }
 
-      const data = await response.json();
-      const resultText = data.response || '';
+      const data = await (response as { ok?: any; statusText?: any; json?: any; match?: any }).json();
+      const resultText = (data as { response?: any }).response || '';
 
       return {
         text: resultText,
@@ -745,18 +742,18 @@ Provide analysis in structured format:
     const analysis = {
       summary: '',
       keyTerms: [] as string[],
-      entities: [] as Array<{ type: string; value: string; confidence: number }>,
-      risks: [] as Array<{ type: string; severity: string; description: string }>,
+      entities: [] as Array<,
+      risks: [] as Array<,
       recommendations: [] as string[],
       confidence: 0.8,
     };
 
     try {
       // Extract sections using regex
-      const summaryMatch = response.match(/<summary>(.*?)<\/summary>/s);
+      const summaryMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<summary>(.*?)<\/summary>/s);
       if (summaryMatch) analysis.summary = summaryMatch[1].trim();
 
-      const keyTermsMatch = response.match(/<key_terms>(.*?)<\/key_terms>/s);
+      const keyTermsMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<key_terms>(.*?)<\/key_terms>/s);
       if (keyTermsMatch) {
         analysis.keyTerms = keyTermsMatch[1]
           .split(',')
@@ -764,7 +761,7 @@ Provide analysis in structured format:
           .filter((t) => t);
       }
 
-      const entitiesMatch = response.match(/<entities>(.*?)<\/entities>/s);
+      const entitiesMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<entities>(.*?)<\/entities>/s);
       if (entitiesMatch) {
         analysis.entities = entitiesMatch[1]
           .split('\n')
@@ -780,7 +777,7 @@ Provide analysis in structured format:
           .filter((e) => e.value);
       }
 
-      const risksMatch = response.match(/<risks>(.*?)<\/risks>/s);
+      const risksMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<risks>(.*?)<\/risks>/s);
       if (risksMatch) {
         analysis.risks = risksMatch[1]
           .split('\n')
@@ -796,7 +793,7 @@ Provide analysis in structured format:
           .filter((r) => r.description);
       }
 
-      const recommendationsMatch = response.match(/<recommendations>(.*?)<\/recommendations>/s);
+      const recommendationsMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<recommendations>(.*?)<\/recommendations>/s);
       if (recommendationsMatch) {
         analysis.recommendations = recommendationsMatch[1]
           .split('\n')
@@ -804,7 +801,7 @@ Provide analysis in structured format:
           .filter((r) => r);
       }
 
-      const confidenceMatch = response.match(/<confidence>(.*?)<\/confidence>/s);
+      const confidenceMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(/<confidence>(.*?)<\/confidence>/s);
       if (confidenceMatch) {
         analysis.confidence = parseFloat(confidenceMatch[1].trim()) || 0.8;
       }

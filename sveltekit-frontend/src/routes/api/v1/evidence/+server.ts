@@ -49,14 +49,14 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 
     return json({
       success: true,
-      data: result.data,
+      data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data,
       pagination: {
-        page: result.page,
-        limit: result.limit,
-        total: result.total,
-        totalPages: result.totalPages,
-        hasNext: result.page < result.totalPages,
-        hasPrev: result.page > 1,
+        page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page,
+        limit: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).limit,
+        total: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).total,
+        totalPages: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
+        hasNext: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page < (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
+        hasPrev: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page > 1,
       },
       meta: {
         userId: locals.user.id,

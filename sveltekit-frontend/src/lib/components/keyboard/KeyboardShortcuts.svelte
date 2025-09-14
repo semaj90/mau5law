@@ -25,10 +25,11 @@ https://svelte.dev/e/js_parse_error -->
   } from "lucide-svelte";
 
   // Convert to Svelte 5 $props
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     shortcutsHelp
-  } = $props();
+   }: { open = $bindable(false),
+    shortcutsHelp
+  : any } = $props();
 
   // Keyboard shortcuts configuration
   const shortcuts = [
@@ -537,7 +538,7 @@ https://svelte.dev/e/js_parse_error -->
     tabindex={0}
     aria-modal="true"
     aria-labelledby="command-palette-title"
-    onclick={(e) => { if ((e.target as HTMLButtonElement) === e.currentTarget) open = false; }}
+    on:click={(e) => { if ((e.target as HTMLButtonElement) === e.currentTarget) open = false; }}
     keydown={(e) => (e.key === "Escape" ? (open = false) : null)}
   >
     <div class="command-palette">
@@ -558,7 +559,7 @@ https://svelte.dev/e/js_parse_error -->
           <button class="nes-btn"
             variant="ghost"
             size="sm"
-            onclick={() => (open = false)}
+            on:click={() => (open = false)}
             class="close-button"
             aria-label="Close command palette"
           >
@@ -581,7 +582,7 @@ https://svelte.dev/e/js_parse_error -->
                 role="option"
                 aria-selected={index === selectedIndex}
                 tabindex={0}
-                onclick={() => shortcut.action && shortcut.action()}
+                on:click={() => shortcut.action && shortcut.action()}
                 keydown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
@@ -721,7 +722,7 @@ box-shadow: {}
     transition: background-color 0.1s ease;
 }
 .command-item:hover, {}
-  .command-item.selected {
+  .command-(item as { selected?: any }).selected {
     background: #f3f4f6;
 }
   .command-icon {
@@ -814,7 +815,7 @@ box-shadow: {}
       color: #9ca3af;
 }
 .command-item:hover, {}
-    .command-item.selected {
+    .command-(item as { selected?: any }).selected {
       background: #374151;
 }
     .command-icon {
@@ -856,7 +857,7 @@ box-shadow: {}
     .command-palette {
       border: 2px solid #000;
 }
-    .command-item.selected {
+    .command-(item as { selected?: any }).selected {
       background: #000;
       color: #fff;
 }}

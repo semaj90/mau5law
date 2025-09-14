@@ -5,9 +5,9 @@ import os from "os";
 const env = { ...process.env };
 
 // Fix the DATABASE_URL for authentication system
-env.DATABASE_URL = "postgresql://postgres:123456@localhost:5432/legal_ai_db";
-env.VITE_DATABASE_URL = "postgresql://postgres:123456@localhost:5432/legal_ai_db";
-env.DEV_DATABASE_URL = "postgresql://postgres:123456@localhost:5432/legal_ai_db";
+env.DATABASE_URL = "postgresql://legal_admin:123456@localhost:5432/legal_ai_db";
+env.VITE_DATABASE_URL = "postgresql://legal_admin:123456@localhost:5432/legal_ai_db";
+env.DEV_DATABASE_URL = "postgresql://legal_admin:123456@localhost:5432/legal_ai_db";
 
 // Redis configuration
 env.REDIS_URL = "redis://localhost:6379";
@@ -19,7 +19,7 @@ env.NODE_ENV = "development";
 env.POSTGRES_HOST = "localhost";
 env.POSTGRES_PORT = "5432";
 env.POSTGRES_DB = "legal_ai_db";
-env.POSTGRES_USER = "postgres";
+env.POSTGRES_USER = "legal_admin";
 env.POSTGRES_PASSWORD = "123456";
 
 // Pick the right command for npm scripts

@@ -13,9 +13,7 @@
     action: (node: HTMLElement) => { destroy(): void } | void;
   }
 
-  const { open } = getContext<{
-    isOpen: Writable<boolean>;
-    position: Writable<{ x: number; y: number }>;
+  const { open } = getContext;
     open: (x: number, y: number) => void;
     close: () => void;
   }>('context-menu');

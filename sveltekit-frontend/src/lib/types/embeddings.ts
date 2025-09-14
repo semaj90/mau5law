@@ -27,11 +27,7 @@ export interface EmbeddingMetadata {
 }
 
 export interface BatchEmbeddingRequest {
-  documents: Array<{
-    id: string;
-    text: string;
-    metadata?: any;
-  }>;
+  documents: Array<any>;
   options?: {
     batchSize?: number;
     maxConcurrent?: number;
@@ -40,12 +36,7 @@ export interface BatchEmbeddingRequest {
 
 export interface BatchEmbeddingResponse {
   success: boolean;
-  results: Array<{
-    id: string;
-    embedding?: number[];
-    error?: string;
-    metadata?: any;
-  }>;
+  results: Array<any>;
   summary: {
     total: number;
     successful: number;

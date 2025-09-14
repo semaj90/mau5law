@@ -18,9 +18,9 @@
 
 
 import { json } from '@sveltejs/kit';
-import { getEmbeddingRepository } from '../../../../lib/server/embedding/embedding-repository';
+import { getEmbeddingRepository } from '../../../../lib/server/embedding/embedding-repository.js';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Minimal vector search endpoint leveraging pgvector embedding repository

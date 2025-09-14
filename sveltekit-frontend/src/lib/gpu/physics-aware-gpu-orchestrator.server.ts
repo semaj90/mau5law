@@ -336,13 +336,7 @@ class PhysicsAwareGpuOrchestrator {
   /**
    * Health check for GPU orchestrator
    */
-  async healthCheck(): Promise<{
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    availableDevices: number;
-    averageLoad: number;
-    averageTemperature: number;
-    issues: string[];
-  }> {
+  async healthCheck(): Promise<any> {
     const availableDevices = this.availableDevices.filter(device => 
       device.temperature < 85 && device.load < 0.95
     ).length;

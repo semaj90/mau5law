@@ -4,7 +4,7 @@
  */
 
 import * as THREE from 'three';
-import { YoRHa3DComponent } from './YoRHaUI3D';
+import { YoRHa3DComponent } from './YoRHaUI3D.js';
 
 export interface YoRHaLayoutOptions {
   type: 'flex' | 'grid' | 'absolute' | 'stack' | 'flow';
@@ -51,11 +51,7 @@ export interface YoRHaPosition3D {
 
 export class YoRHaLayout3D extends THREE.Group {
   private options: YoRHaLayoutOptions;
-  private children3D: Array<{ 
-    component: YoRHa3DComponent; 
-    layout: YoRHaChildLayout;
-    originalPosition: THREE.Vector3;
-  }> = [];
+  private children3D: Array< = [];
   private bounds = new THREE.Box3();
   private needsLayout = true;
 
@@ -126,7 +122,7 @@ export class YoRHaLayout3D extends THREE.Group {
     let maxCrossSize = 0;
     let totalFlex = 0;
     
-    const childSizes: Array<{ main: number; cross: number; flex: number }> = [];
+    const childSizes: Array< = [];
     
     this.children3D.forEach(({ component, layout }) => {
       const bounds = this.getComponentBounds(component);

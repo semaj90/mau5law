@@ -1,9 +1,9 @@
 <!-- Detective Board - Enhanced 3-Column Grid with NES.css, RabbitMQ & GPU Integration -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  	import { Button } from '$lib/components/ui/enhanced-bits';
+  	import Button from '$lib/components/ui/Button.svelte';
   	import * as Card from '$lib/components/ui/card';
-  	import { Badge } from '$lib/components/ui/badge';
+  	import Badge from '$lib/components/ui/Badge.svelte';
   	import { page } from '$app/stores';
   	import Fuse from 'fuse.js';
   	import { dndzone } from 'svelte-dnd-action';
@@ -47,7 +47,7 @@
   	let canvasEvidence = $state([]);
 
   	// SVELTE 5: Converted from writable store to a rune.
-  	let activeUsers = $state<{ name?: string; email?: string }[]>([]);
+  	let activeUsers = $state([]);
 
   	// Enhanced system status tracking
   	let systemStatus = $state({
@@ -152,7 +152,7 @@
 
   		// Find and move evidence item
   		columns.forEach(column => {
-  			const itemIndex = column.items.findIndex((item: any) => item.id === evidenceId);
+  			const itemIndex = column.items.findIndex((item: any) => (item as { id?: any; title?: any; x?: any; y?: any }).id === evidenceId);
   			if (itemIndex !== -1) {
   				const item = column.items.splice(itemIndex, 1)[0];
   				const targetColumn = columns.find(col => col.id === targetColumnId);
@@ -172,22 +172,22 @@
 
   		// Create evidence item from MinIO upload result
   		const newEvidence = {
-  			id: result.id || `evidence-${Date.now()}-${Math.random()}`,
-  			title: result.originalName || result.fileName,
-  			fileName: result.fileName,
-  			fileSize: result.fileSize,
-  			type: result.metadata?.evidenceType || 'document',
-  			evidenceType: result.metadata?.evidenceType || 'document',
-  			createdAt: new Date(result.metadata?.uploadedAt || Date.now()),
+  			id: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).id || `evidence-${Date.now()}-${Math.random()}`,
+  			title: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).originalName || (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).fileName,
+  			fileName: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).fileName,
+  			fileSize: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).fileSize,
+  			type: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).metadata?.evidenceType || 'document',
+  			evidenceType: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).metadata?.evidenceType || 'document',
+  			createdAt: new Date((result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).metadata?.uploadedAt || Date.now()),
   			tags: [],
   			x: 100 + Math.random() * 200,
   			y: 100 + Math.random() * 200,
   			// MinIO specific fields
-  			url: result.url,
-  			bucket: result.bucket,
-  			hash: result.hash,
-  			minioId: result.id,
-  			caseId: result.metadata?.caseId
+  			url: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).url,
+  			bucket: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).bucket,
+  			hash: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).hash,
+  			minioId: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).id,
+  			caseId: (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).metadata?.caseId
   		};
 
   		// Add to the appropriate column
@@ -244,13 +244,13 @@
   	}
 
   	function handleViewEvidence(item: any) {
-  		console.log('Viewing evidence:', item.title);
+  		console.log('Viewing evidence:', (item as { id?: any; title?: any; x?: any; y?: any }).title);
   		// Add your logic to open a modal or navigate to a details page
-  		window.open(`/evidence/${item.id}`, '_blank');
+  		window.open(`/evidence/${(item as { id?: any; title?: any; x?: any; y?: any }).id}`, '_blank');
   	}
 
   	function handleShowMoreOptions(item: any) {
-  		console.log('Showing more options for:', item.title);
+  		console.log('Showing more options for:', (item as { id?: any; title?: any; x?: any; y?: any }).title);
   		// Add your logic to show a context menu
   		contextMenu.show = true;
   		contextMenu.item = item;
@@ -312,7 +312,7 @@
   			// SVELTE 5: Use the reactive `allEvidence` rune directly. No `get()` needed.
   			const items = allEvidence || [];
   			const fuse = new Fuse(items, { keys: ['title', 'description', 'tags'] });
-  			const fuseResults = fuse.search(findModal.query || contextMenu.item.title || '');
+  			const fuseResults = fuse.search(findModal.query || contextMenu.(item as { id?: any; title?: any; x?: any; y?: any }).title || '');
   			findModal.results = fuseResults.map((r) => r.item); // Extract the items
   		} catch (e) {
   			findModal.error = 'Local search failed';
@@ -324,7 +324,7 @@
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({
-  					query: findModal.query || contextMenu.item.title
+  					query: findModal.query || contextMenu.(item as { id?: any; title?: any; x?: any; y?: any }).title
   				})
   			});
   			const vectorResults = await resp.json();
@@ -346,8 +346,8 @@
   				const item = JSON.parse(data);
   				const rect = canvasContainer?.getBoundingClientRect();
   				if (rect) {
-  					item.x = event.clientX - rect.left;
-  					item.y = event.clientY - rect.top;
+  					(item as { id?: any; title?: any; x?: any; y?: any }).x = event.clientX - rect.left;
+  					(item as { id?: any; title?: any; x?: any; y?: any }).y = event.clientY - rect.top;
   					canvasEvidence = [...canvasEvidence, item];
   				}
   			} catch (e) {
@@ -370,9 +370,9 @@
   			const newX = event.clientX - rect.left;
   			const newY = event.clientY - rect.top;
   			canvasEvidence = canvasEvidence.map(e =>
-  				e.id === item.id ? { ...e, x: newX, y: newY } : e
+  				e.id === (item as { id?: any; title?: any; x?: any; y?: any }).id ? { ...e, x: newX, y: newY } : e
   			);
-  			broadcastPositionUpdate(item.id, newX, newY);
+  			broadcastPositionUpdate((item as { id?: any; title?: any; x?: any; y?: any }).id, newX, newY);
   		}
   	}
 
@@ -400,7 +400,7 @@
   	}
 </script>
 
-<svelte:window onclick={closeContextMenu} onkeydown={handleGlobalKeydown} />
+<svelte:window on:click={closeContextMenu} on:keydown={handleGlobalKeydown} />
 
 <div class="w-full h-full min-h-screen bg-background detective-board-nes">
 	<!-- Header -->
@@ -425,7 +425,7 @@
 						<Button
 							variant={viewMode === 'columns' ? 'default' : 'outline'}
 							class="bits-btn"
-							onclick={() => switchViewMode('columns')}
+							on:click={() => switchViewMode('columns')}
 							aria-pressed={viewMode === 'columns'}
 						>
 							<span class="mr-2">📋</span>
@@ -434,7 +434,7 @@
 						<Button
 							variant={viewMode === 'canvas' ? 'default' : 'outline'}
 							class="bits-btn"
-							onclick={() => switchViewMode('canvas')}
+							on:click={() => switchViewMode('canvas')}
 							aria-pressed={viewMode === 'canvas'}
 						>
 							<span class="mr-2">🎨</span>
@@ -514,7 +514,7 @@
 								onconsider={(e) => handleDndConsider(e, column.id)}
 								onfinalize={(e) => handleDndFinalize(e, column.id)}
 							>
-								{#each column.items as item (item.id)}
+								{#each column.items as item ((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 									<div
 										class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105"
 										oncontextmenu={(e) => handleRightClick(e, item)}
@@ -540,17 +540,17 @@
 					<div
 						bind:this={canvasContainer}
 						class="relative w-full h-full bg-slate-50 dark:bg-slate-900 overflow-auto"
-					 role="region" aria-label="Drop zone" ondrop={(e) => handleCanvasDrop(e)}
-						ondragover={(e) => e.preventDefault()}
+					 role="region" aria-label="Drop zone" on:drop={(e) => handleCanvasDrop(e)}
+						on:dragover={(e) => e.preventDefault()}
 					>
 						<!-- Grid background -->
 						<div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
 
 						<!-- Evidence nodes on canvas -->
-						{#each canvasEvidence as item (item.id)}
+						{#each canvasEvidence as item ((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 							<div
 								class="absolute p-4 bg-background border-2 border-border rounded-lg shadow-lg cursor-move hover:shadow-xl transition-shadow"
-								style="left: {item.x || 100}px; top: {item.y || 100}px; min-width: 200px;"
+								style="left: {(item as { id?: any; title?: any; x?: any; y?: any }).x || 100}px; top: {(item as { id?: any; title?: any; x?: any; y?: any }).y || 100}px; min-width: 200px;"
 								draggable="true"
 								ondragstart={(e) => handleCanvasDragStart(e, item)}
 								ondragend={(e) => handleCanvasDragEnd(e, item)}
@@ -606,7 +606,7 @@
 				variant="ghost"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				onclick={() => { window.open(`/evidence/${contextMenu.item?.id}`, '_blank'); closeContextMenu(); }}
+				on:click={() => { window.open(`/evidence/${contextMenu.item?.id}`, '_blank'); closeContextMenu(); }}
 			>
 				View Details
 			</Button>
@@ -614,7 +614,7 @@
 				variant="ghost"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				onclick={() => { window.location.href = `/evidence/${contextMenu.item?.id}/edit`; closeContextMenu(); }}
+				on:click={() => { window.location.href = `/evidence/${contextMenu.item?.id}/edit`; closeContextMenu(); }}
 			>
 				Edit
 			</Button>
@@ -623,9 +623,9 @@
 				variant="ghost"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				onmouseenter={(e) => showMiniModal('citation', e)}
-				onmouseleave={hideMiniModal}
-				onclick={() => saveTo('savedcitations')}
+				on:mouseenter={(e) => showMiniModal('citation', e)}
+				on:mouseleave={hideMiniModal}
+				on:click={() => saveTo('savedcitations')}
 			>
 				Add to /savedcitations
 			</Button>
@@ -633,9 +633,9 @@
 				variant="ghost"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				onmouseenter={(e) => showMiniModal('mcpcontext', e)}
-				onmouseleave={hideMiniModal}
-				onclick={() => saveTo('mcpcontext')}
+				on:mouseenter={(e) => showMiniModal('mcpcontext', e)}
+				on:mouseleave={hideMiniModal}
+				on:click={() => saveTo('mcpcontext')}
 			>
 				Add to MCP Context (LLM)
 			</Button>
@@ -644,9 +644,9 @@
 				variant="ghost"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				onmouseenter={(e) => showMiniModal('find', e)}
-				onmouseleave={hideMiniModal}
-				onclick={openFindModal}
+				on:mouseenter={(e) => showMiniModal('find', e)}
+				on:mouseleave={hideMiniModal}
+				on:click={openFindModal}
 			>
 				Find Related...
 			</Button>
@@ -659,7 +659,7 @@
 	<div
 		class="fixed z-50 inset-0 bg-black/60 flex items-center justify-center"
 	 role="button" tabindex="0"
-                onclick={(e) => { if (e.target === e.currentTarget) closeFindModal(); }}
+                on:click={(e) => { if (e.target === e.currentTarget) closeFindModal(); }}
 	>
 		<div
 			class="bg-background border border-primary rounded-lg shadow-lg p-6 w-full max-w-lg"
@@ -672,15 +672,15 @@
 					type="text"
 					bind:value={findModal.query}
 					placeholder="Enter keywords or question..."
-					onkeydown={(e) => {
+					on:keydown={(e) => {
 						if (e.key === 'Enter') runFindSearch();
 					}}
 				/>
 				<div class="flex gap-2">
-					<Button class="bits-btn" onclick={runFindSearch} disabled={findModal.loading}>
+					<Button class="bits-btn" on:click={runFindSearch} disabled={findModal.loading}>
 						{#if findModal.loading}Searching...{:else}Search{/if}
 					</Button>
-					<Button class="bits-btn" variant="outline" onclick={closeFindModal}>Close</Button>
+					<Button class="bits-btn" variant="outline" on:click={closeFindModal}>Close</Button>
 				</div>
 
 				{#if findModal.error}
@@ -692,7 +692,7 @@
 						<ul class="space-y-2 max-h-60 overflow-y-auto">
 							{#each findModal.results as result}
 								<li class="p-2 rounded hover:bg-muted cursor-pointer border-b border-muted-foreground/10">
-									{result.title || result.text || JSON.stringify(result)}
+									{(result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).title || (result as { id?: any; originalName?: any; fileName?: any; fileSize?: any; metadata?: any; url?: any; bucket?: any; hash?: any; title?: any; text?: any }).text || JSON.stringify(result)}
 								</li>
 							{/each}
 						</ul>

@@ -5,7 +5,7 @@ import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join } from 'path';
 import { eq } from 'drizzle-orm';
 import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 const UPLOAD_DIR = "static/uploads/avatars";

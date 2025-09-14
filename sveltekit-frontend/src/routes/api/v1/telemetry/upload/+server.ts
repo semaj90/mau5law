@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import type { TelemetryEvent } from '$lib/services/upload-telemetry-service';
 
 interface TelemetryBatch {
@@ -113,7 +113,7 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
     return {
       sessionId: batch.sessionId,
       eventCount: 0,
-      eventTypes: {},
+      eventTypes: Record<string, any>,
       timespan: { first: 0, last: 0, durationMs: 0 },
       performance: { avgUploadTime: 0, successRate: 0, retryRate: 0 },
     };

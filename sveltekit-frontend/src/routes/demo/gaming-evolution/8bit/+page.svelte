@@ -103,18 +103,19 @@
         <div class="nes-container">
           <p class="nes-text is-primary">GAME CONTROLS</p>
           <div class="button-grid">
-            <Button class="nes-btn action-btn bits-btn bits-btn" onclick={increaseScore}>
-              A BUTTON
-            </button>
-            <Button class="nes-btn action-btn bits-btn bits-btn" onclick={decreaseHealth}>
-              B BUTTON
-            </button>
-            <Button class="nes-btn start-btn bits-btn bits-btn" onclick={() => dialogOpen = true}>
+            <Button class="nes-btn action-btn bits-btn bits-btn" on:click={increaseScore}>
+A BUTTON
+
+            <Button class="nes-btn action-btn bits-btn bits-btn" on:click={decreaseHealth}>
+B BUTTON
+
+            <Button class="nes-btn start-btn bits-btn bits-btn" on:click={() =>
+dialogOpen = true}>
               START
-            </button>
+
             <Button class="nes-btn select-btn bits-btn bits-btn">
-              SELECT
-            </button>
+SELECT
+
           </div>
         </div>
       </div>
@@ -125,13 +126,21 @@
       <div class="nes-container">
         <p class="nes-text is-primary">DIRECTIONAL PAD</p>
         <div class="dpad">
-          <Button class="nes-btn dpad-btn dpad-up bits-btn bits-btn">▲</button>
+          <Button class="nes-btn dpad-btn dpad-up bits-btn bits-btn">
+▲
+
           <div class="dpad-middle">
-            <Button class="nes-btn dpad-btn dpad-left bits-btn bits-btn">◄</button>
+            <Button class="nes-btn dpad-btn dpad-left bits-btn bits-btn">
+◄
+
             <div class="dpad-center"></div>
-            <Button class="nes-btn dpad-btn dpad-right bits-btn bits-btn">►</button>
+            <Button class="nes-btn dpad-btn dpad-right bits-btn bits-btn">
+►
+
           </div>
-          <Button class="nes-btn dpad-btn dpad-down bits-btn bits-btn">▼</button>
+          <Button class="nes-btn dpad-btn dpad-down bits-btn bits-btn">
+▼
+
         </div>
       </div>
     </div>
@@ -180,7 +189,7 @@
         <h2 class="nes-text is-primary">GAME SELECT</h2>
         <div class="game-selection-description">
             <div class="game-list">
-              <NesCard class="nes-container game-nier-bits-card">
+              <div class="nes-container game-nier-bits-card nes-container">
                 <div class="game-preview">
                   <div class="game-icon mario-icon"></div>
                   <div class="game-info">
@@ -191,9 +200,9 @@
                     </Badge>
                   </div>
                 </div>
-              </NesCard>
+              </div>
 
-              <NesCard class="nes-container game-nier-bits-card">
+              <div class="nes-container game-nier-bits-card nes-container">
                 <div class="game-preview">
                   <div class="game-icon zelda-icon"></div>
                   <div class="game-info">
@@ -204,9 +213,9 @@
                     </Badge>
                   </div>
                 </div>
-              </NesCard>
+              </div>
 
-              <NesCard class="nes-container game-nier-bits-card">
+              <div class="nes-container game-nier-bits-card nes-container">
                 <div class="game-preview">
                   <div class="game-icon metroid-icon"></div>
                   <div class="game-info">
@@ -217,12 +226,16 @@
                     </Badge>
                   </div>
                 </div>
-              </NesCard>
+              </div>
             </div>
         </div>
         <div class="menu-actions">
-          <Button class="nes-btn is-primary bits-btn bits-btn" onclick={() => dialogOpen = false}>START GAME</button>
-          <Button class="nes-btn bits-btn bits-btn" onclick={() => dialogOpen = false}>CANCEL</button>
+          <Button class="nes-btn is-primary bits-btn bits-btn" on:click={() =>
+dialogOpen = false}>START GAME
+
+          <Button class="nes-btn bits-btn bits-btn" on:click={() =>
+dialogOpen = false}>CANCEL
+
         </div>
       </div>
       {/snippet}

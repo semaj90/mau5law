@@ -58,16 +58,16 @@ export async function fetchMinioObject(minioUrl: string) {
       Key: key
     }));
 
-    const body = response.Body as Readable;
+    const body = (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Body as Readable;
     const buffer = await streamToBuffer(body);
 
     return {
       buffer,
-      contentType: response.ContentType,
-      metadata: response.Metadata,
-      size: response.ContentLength,
-      lastModified: response.LastModified,
-      etag: response.ETag
+      contentType: (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).ContentType,
+      metadata: (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Metadata,
+      size: (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).ContentLength,
+      lastModified: (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).LastModified,
+      etag: (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).ETag
     };
   } catch (error) {
     throw new Error(`Failed to fetch ${minioUrl}: ${error}`);
@@ -85,7 +85,7 @@ export async function listMinioPrefix(bucket: string, prefix: string) {
       MaxKeys: 1000
     }));
 
-    return (response.Contents ?? []).map(obj => ({
+    return ((response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Contents ?? []).map(obj => ({
       key: obj.Key!,
       size: obj.Size!,
       lastModified: obj.LastModified!,
@@ -105,12 +105,7 @@ export async function batchFetchMinioObjects(minioUrls: string[], options: {
   failFast?: boolean;
 } = {}) {
   const { concurrency = 5, failFast = false } = options;
-  const results: Array<{
-    url: string;
-    success: boolean;
-    data?: any;
-    error?: string;
-  }> = [];
+  const results: Array< = [];
 
   // Process in batches to avoid overwhelming MinIO
   for (let i = 0; i < minioUrls.length; i += concurrency) {
@@ -128,13 +123,13 @@ export async function batchFetchMinioObjects(minioUrls: string[], options: {
 
     const batchResults = await Promise.allSettled(batchPromises);
     for (const result of batchResults) {
-      if (result.status === 'fulfilled') {
-        results.push(result.value);
+      if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
+        results.push((result as { status?: any; value?: any; reason?: any }).value);
       } else {
         results.push({
           url: 'unknown',
           success: false,
-          error: result.reason?.message || 'Unknown error'
+          error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error'
         });
       }
     }

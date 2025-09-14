@@ -51,10 +51,8 @@ https://svelte.dev/e/js_parse_error -->
   let isLoading = $state(false);
   let copiedIndex = $state<number | null>(null);
   let terminalElement = $state<HTMLDivElement;
-  let inputElement = $state<HTMLTextAreaElement;
-
-  // WebSocket for real-time updates
-  let ws: WebSocket | null >(null);
+  let inputElement = $state<HTMLTextAreaElement// WebSocket for real-time updates
+  let ws: WebSocket | null>(null)(null);
 
   onMount(() => {
     // Initialize with system message
@@ -405,7 +403,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
 
             <button
-              onclick={() => copyMessage(message.content, i)}
+              on:click={() => copyMessage(message.content, i)}
               class="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-muted rounded"
             >
               {#if copiedIndex === i}
@@ -429,7 +427,7 @@ https://svelte.dev/e/js_parse_error -->
             disabled={isLoading}
           />
           <button
-            onclick={handleSubmit}
+            on:click={handleSubmit}
             disabled={isLoading || !input.trim()}
             class={cn(
               "p-3 rounded-lg transition-colors",

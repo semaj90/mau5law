@@ -45,12 +45,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
       error = null;
       console.log('🔄 Loading cases from API...');
       const response = await fetch(`/api/v1/cases?userId=${DEMO_USER_ID}&limit=10`);
-      const result = await response.json();
-      if (result.success) {
-        cases = result.data.cases;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; data?: any; error?: any }).success) {
+        cases = (result as { success?: any; data?: any; error?: any }).data.cases;
         console.log(`✅ Loaded ${cases.length} cases`);
       } else {
-        error = result.error || 'Failed to load cases';
+        error = (result as { success?: any; data?: any; error?: any }).error || 'Failed to load cases';
       }
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to load cases';
@@ -77,16 +77,16 @@ https://svelte.dev/e/unexpected_reserved_word -->
         body: JSON.stringify(caseData)
       });
 
-      const result = await response.json();
-      if (result.success) {
-        successMessage = `Case "${result.data.case.title}" created successfully!`;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; data?: any; error?: any }).success) {
+        successMessage = `Case "${(result as { success?: any; data?: any; error?: any }).data.case.title}" created successfully!`;
         // Reset form
         newCaseForm = { title: '', description: '', priority: 'medium', status: 'open' };
         // Reload cases
         await loadCases();
-        console.log(`✅ Case created: ${result.data.caseId}`);
+        console.log(`✅ Case created: ${(result as { success?: any; data?: any; error?: any }).data.caseId}`);
       } else {
-        error = result.error || 'Failed to create case';
+        error = (result as { success?: any; data?: any; error?: any }).error || 'Failed to create case';
       }
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to create case';
@@ -102,12 +102,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
       error = null;
       console.log(`🔍 Loading case details: ${caseId}`);
       const response = await fetch(`/api/v1/cases/${caseId}`);
-      const result = await response.json();
-      if (result.success) {
-        selectedCase = result.data.case;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; data?: any; error?: any }).success) {
+        selectedCase = (result as { success?: any; data?: any; error?: any }).data.case;
         console.log(`✅ Case loaded: ${selectedCase?.title}`);
       } else {
-        error = result.error || 'Failed to load case details';
+        error = (result as { success?: any; data?: any; error?: any }).error || 'Failed to load case details';
       }
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to load case details';
@@ -135,16 +135,16 @@ https://svelte.dev/e/unexpected_reserved_word -->
         body: JSON.stringify(evidenceData)
       });
 
-      const result = await response.json();
-      if (result.success) {
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; data?: any; error?: any }).success) {
         successMessage = `Evidence added successfully!`;
         // Reset form
         newEvidenceForm = { content: '', evidenceType: 'document', source: '', tags: '' };
         // Reload case details to show new evidence
         await loadCaseDetails(selectedCase.id);
-        console.log(`✅ Evidence added: ${result.data.evidenceId}`);
+        console.log(`✅ Evidence added: ${(result as { success?: any; data?: any; error?: any }).data.evidenceId}`);
       } else {
-        error = result.error || 'Failed to add evidence';
+        error = (result as { success?: any; data?: any; error?: any }).error || 'Failed to add evidence';
       }
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to add evidence';
@@ -165,8 +165,8 @@ https://svelte.dev/e/unexpected_reserved_word -->
         body: JSON.stringify({ status: newStatus })
       });
 
-      const result = await response.json();
-      if (result.success) {
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; data?: any; error?: any }).success) {
         successMessage = `Case status updated to ${newStatus}`;
         await loadCases(); // Refresh the list
         if (selectedCase && selectedCase.id === caseId) {
@@ -174,7 +174,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         }
         console.log(`✅ Case status updated`);
       } else {
-        error = result.error || 'Failed to update case status';
+        error = (result as { success?: any; data?: any; error?: any }).error || 'Failed to update case status';
       }
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to update case status';
@@ -254,7 +254,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           Create New Case
         </h2>
 
-        <form onsubmit={createCase}>
+        <form on:submit={createCase}>
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-1" for="-case-title-">
@@ -330,7 +330,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
             Active Cases ({cases.length})
           </h2>
           <button
-            onclick={loadCases}
+            on:click={loadCases}
             disabled={isLoading}
             class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 disabled:opacity-50"
           >
@@ -369,14 +369,13 @@ https://svelte.dev/e/unexpected_reserved_word -->
                   </div>
                   <div class="flex gap-2 ml-4">
                     <button
-                      onclick={() => loadCaseDetails(caseItem.id)}
+                      on:click={() => loadCaseDetails(caseItem.id)}
                       class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs hover:bg-blue-200"
                     >
                       👁️ View
                     </button>
                     <select
-                      value={caseItem.status}
-                      change={(e) => updateCaseStatus(caseItem.id, (e.target as HTMLSelectElement).value)}
+                      value={caseItem.status} on:change={(e) => updateCaseStatus(caseItem.id, (e.target as HTMLSelectElement).value)}
                       class="text-xs border border-slate-300 rounded px-1 py-1"
                     >
                       <option value="open">Open</option>
@@ -418,7 +417,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           <!-- Add Evidence Form -->
           <div>
             <h3 class="text-lg font-medium text-slate-900 mb-3">Add Evidence</h3>
-            <form onsubmit={addEvidence}>
+            <form on:submit={addEvidence}>
               <div class="space-y-3">
                 <div>
                   <label class="block text-xs font-medium text-slate-700 mb-1" for="evidence-content-">Evidence Content *</label><textarea id="evidence-content-"

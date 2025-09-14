@@ -4,8 +4,8 @@
  * with Ollama nomic-embed-text model and pgvector storage
  */
 
-import { db } from "./db/index";
-import { users, documentEmbeddings, caseEmbeddings } from "./db/schema-unified";
+import { db } from './db/index.js';
+import { users, documentEmbeddings, caseEmbeddings } from './db/schema-unified.js';
 import { eq } from "drizzle-orm";
 
 export interface OllamaEmbeddingResponse {
@@ -29,7 +29,7 @@ export class EmbeddingService {
     dimensions = 384
   ) {
     this.baseUrl = baseUrl;
-    this.model = model;
+    this?.model || "unknown" // @ts-ignore - Model property access = model;
     this.dimensions = dimensions;
   }
 
@@ -47,7 +47,7 @@ export class EmbeddingService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: options.model || this.model,
+          model: options?.model || "unknown" // @ts-ignore - Model property access || this?.model || "unknown" // @ts-ignore - Model property access,
           prompt: text,
         }),
       });
@@ -224,8 +224,8 @@ export class EmbeddingService {
         chunkText: metadata.chunkText || content,
         chunkSize: content.length,
         parentChunkId: metadata.parentChunkId || null,
-        embeddingModel: this.model,
-        metadata: {}
+        embeddingModel: this?.model || "unknown" // @ts-ignore - Model property access,
+        metadata: Record<string, any>
       });
 
       console.log('Generated and stored document embedding');
@@ -248,7 +248,7 @@ export class EmbeddingService {
         caseId,
         content,
         embedding: `[${embedding.join(',')}]`, // Store as vector string
-        metadata: {}
+        metadata: Record<string, any>
       });
 
       console.log(`Generated and stored case embedding for case ${caseId}`);

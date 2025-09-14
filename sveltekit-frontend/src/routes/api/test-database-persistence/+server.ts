@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
 import { insertChatMessageWithEmbedding, searchSimilarMessages } from '$lib/server/db/pgvector-utils.js';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 /*
@@ -32,7 +32,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       });
     }
     
-    const userId = testUser.data.userId;
+    const userId = testUser.(data as { userId?: any; sessionId?: any; messageId?: any }).userId;
     
     // Test 2: Create chat session
     const testSession = await testCreateChatSession(userId);
@@ -46,7 +46,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       });
     }
     
-    const sessionId = testSession.data.sessionId;
+    const sessionId = testSession.(data as { userId?: any; sessionId?: any; messageId?: any }).sessionId;
     
     // Test 3: Generate and store embedding
     const testEmbedding = await testEmbeddingGeneration(testContent);
@@ -64,7 +64,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       });
     }
     
-    const messageId = testMessage.data.messageId;
+    const messageId = testMessage.(data as { userId?: any; sessionId?: any; messageId?: any }).messageId;
     
     // Test 5: Store recommendations
     const testRecommendations = await testStoreRecommendations(userId, messageId);
@@ -457,7 +457,7 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
     
     return {
       test: 'Update Recommendation Feedback',
-      success: result.length > 0,
+      success: (result as { length?: any }).length > 0,
       message: 'Recommendation feedback updated successfully',
       data: {
         updatedRecommendationId: recommendationId,

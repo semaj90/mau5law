@@ -17,7 +17,7 @@ export interface EvidenceProcessingContext {
   analysisResults?: {
     confidence: number;
     classifications: string[];
-    entities: Array<{ type: string; value: string; confidence: number }>;
+    entities: Array<any>;
     risk_assessment: 'low' | 'medium' | 'high' | 'critical';
     summary: string;
   };
@@ -38,14 +38,7 @@ export interface EvidenceProcessingContext {
   };
   errors: string[];
   processingTimeMs: number;
-  streamingUpdates: Array<{
-    step: string;
-    status: 'pending' | 'in_progress' | 'completed' | 'error';
-    progress: number;
-    message: string;
-    timestamp: number;
-  }>;
-}
+  streamingUpdates: Array<any>
 
 // Events for the evidence processing machine
 export type EvidenceProcessingEvent = 
@@ -119,12 +112,12 @@ const generateGlyphService = fromPromise(async ({ input }: {
     })
   });
 
-  const result = await response.json();
-  if (!result.success) {
-    throw new Error(result.error || 'Glyph generation failed');
+  const result = await (response as { json?: any }).json();
+  if (!(result as { success?: any; error?: any; data?: any }).success) {
+    throw new Error((result as { success?: any; error?: any; data?: any }).error || 'Glyph generation failed');
   }
 
-  return result.data;
+  return (result as { success?: any; error?: any; data?: any }).data;
 });
 
 const embedPNGService = fromPromise(async ({ input }: {
@@ -166,8 +159,8 @@ export const evidenceProcessingMachine = createMachine(
     id: 'evidenceProcessing',
     initial: 'idle',
     types: {
-      context: {} as EvidenceProcessingContext,
-      events: {} as EvidenceProcessingEvent,
+      context: Record<string, any> as EvidenceProcessingContext,
+      events: Record<string, any> as EvidenceProcessingEvent,
     },
     context: {
       evidenceId: '',

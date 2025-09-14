@@ -731,7 +731,7 @@ export class LokiRedisCache extends EventEmitter {
 
   private async evictLokiDocuments(): Promise<void> {
     // Find least recently used documents across all collections
-    const candidates: Array<{ collection: Collection<CachedDocument>; document: CachedDocument }> =
+    const candidates: Array< =
       [];
 
     for (const collection of this.collections.values()) {

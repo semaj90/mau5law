@@ -1,8 +1,8 @@
 // src/lib/machines/__tests__/auth-machine.test.ts
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createActor, createMachine, assign, fromPromise } from 'xstate';
-import { mockServices, perf } from '../../services/__tests__/setup';
-import type { AuthMachineState, LegalAIContext, LegalAIEvent } from '../../services/types';
+import { mockServices, perf } from '../../services/__tests__/setup.js';
+import type { AuthMachineState, LegalAIContext, LegalAIEvent } from '../../services/types.js';
 
 // XState v5 compatible auth machine for testing Phase 5-7 performance optimization
 const authMachine = createMachine({

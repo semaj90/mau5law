@@ -249,12 +249,7 @@ export async function enhanceRabbitMQMessage(message: any): Promise<any> {
 /**
  * Vector data parser optimized for SIMD
  */
-export async function parseVectorData(jsonString: string): Promise<{
-  embeddings?: number[][];
-  similarities?: number[];
-  vectors?: number[][];
-  metadata?: any;
-}> {
+export async function parseVectorData(jsonString: string): Promise<any> {
   const startTime = performance.now();
   
   try {
@@ -315,12 +310,7 @@ export function getSIMDStatus() {
 /**
  * Benchmark SIMD vs standard JSON parsing
  */
-export async function benchmarkJSONParsing(iterations: number = 1000): Promise<{
-  simd: { avgTime: number; totalTime: number };
-  standard: { avgTime: number; totalTime: number };
-  speedup: number;
-  testData: string;
-}> {
+export async function benchmarkJSONParsing(iterations: number = 1000): Promise<any> {
   // Create test data similar to real payloads
   const testObj = {
     jobId: 'test-job-123',

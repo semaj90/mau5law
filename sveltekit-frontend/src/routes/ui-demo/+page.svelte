@@ -64,11 +64,11 @@ https://svelte.dev/e/attribute_duplicate -->
             </div>
             <div class="grid md:grid-cols-2 gap-4">
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700" for="case-number">Case Number</label><input id="case-number" type="text" class="border rounded px-3 py-2 w-full" value="CAS-2025-001234" readonly id="field-1" />
+                <label class="block text-sm font-medium text-gray-700" for="case-number">Case Number</label><input id="case-number" />
               </div>
 
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700" for="case-status">Case Status</label><select id="case-status" class="border rounded px-3 py-2 w-full" id="field-2">
+                <label class="block text-sm font-medium text-gray-700" for="case-status">Case Status</label><select id="case-status">
                   <option>Active Investigation</option>
                   <option>Pending Review</option>
                   <option>Closed</option>

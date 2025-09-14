@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // SIMD + Redis Performance Testing API
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
       test_type,
       iterations,
       timestamp: new Date().toISOString(),
-      results: {},
+      results: Record<string, any>,
     };
 
     switch (test_type) {

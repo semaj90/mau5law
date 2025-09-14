@@ -2,7 +2,7 @@
   import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
-  import { ButtonBits } from '$lib/components/ui/bits-ui';
+  import Button from '$lib/components/ui/Button.svelte';
   import AccessibilitySettings from '$lib/components/ui/AccessibilitySettings.svelte';
   import { accessibilityService } from '$lib/services/accessibility-service';
 
@@ -85,7 +85,7 @@
         {#if variant === 'full'}
           <button
             class="sidebar-toggle nes-btn"
-            onclick={toggleSidebar}
+            on:click={toggleSidebar}
             aria-label="Toggle sidebar"
           >
             {sidebarOpen ? '✕' : '☰'}
@@ -107,56 +107,57 @@
       <nav class="navbar-center" aria-label="Main navigation">
         {#if variant === 'minimal'}
           <!-- Minimal nav for auth pages -->
-          <ButtonBits to="/" variant="ghost" size="sm">Home</ButtonBits>
-          <ButtonBits to="/all-routes" variant="ghost" size="sm">Browse</ButtonBits>
+          <Button href="/" variant="ghost" size="sm">
+Home</Button>
+          <Button href="/all-routes" variant="ghost" size="sm">Browse</Button>
         {:else if isDemo}
           <!-- Demo-specific navigation -->
           {#each demoNavItems as item}
-            <ButtonBits
-              to={item.path}
-              variant={isActive(item.path) ? 'primary' : 'ghost'}
+            <Button
+              href={(item as { path?: any; icon?: any; label?: any }).path}
+              variant={isActive((item as { path?: any; icon?: any; label?: any }).path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
-              <span class="nav-icon">{item.icon}</span>
-              <span class="nav-label">{item.label}</span>
-            </ButtonBits>
+              <span class="nav-icon">{(item as { path?: any; icon?: any; label?: any }).icon}</span>
+              <span class="nav-label">{(item as { path?: any; icon?: any; label?: any }).label}</span>
+            </Button>
           {/each}
         {:else if isAdmin && user?.role === 'admin'}
           <!-- Admin navigation -->
           {#each adminNavItems as item}
-            <ButtonBits
-              to={item.path}
-              variant={isActive(item.path) ? 'primary' : 'ghost'}
+            <Button
+              href={(item as { path?: any; icon?: any; label?: any }).path}
+              variant={isActive((item as { path?: any; icon?: any; label?: any }).path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
-              <span class="nav-icon">{item.icon}</span>
-              <span class="nav-label">{item.label}</span>
-            </ButtonBits>
+              <span class="nav-icon">{(item as { path?: any; icon?: any; label?: any }).icon}</span>
+              <span class="nav-label">{(item as { path?: any; icon?: any; label?: any }).label}</span>
+            </Button>
           {/each}
         {:else}
           <!-- Main navigation -->
           {#each mainNavItems as item}
-            <ButtonBits
-              to={item.path}
-              variant={isActive(item.path) ? 'primary' : 'ghost'}
+            <Button
+              href={(item as { path?: any; icon?: any; label?: any }).path}
+              variant={isActive((item as { path?: any; icon?: any; label?: any }).path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
-              <span class="nav-icon">{item.icon}</span>
-              <span class="nav-label">{item.label}</span>
-            </ButtonBits>
+              <span class="nav-icon">{(item as { path?: any; icon?: any; label?: any }).icon}</span>
+              <span class="nav-label">{(item as { path?: any; icon?: any; label?: any }).label}</span>
+            </Button>
           {/each}
         {/if}
       </nav>
 
-      <!-- User Menu / Auth ButtonBitss -->
+      <!-- User Menu / Auth Buttons -->
       <div class="navbar-end">
         <!-- Accessibility Settings Button -->
         <button
           class="accessibility-btn nes-btn is-primary"
-          onclick={toggleAccessibilitySettings}
+          on:click={toggleAccessibilitySettings}
           aria-label="Open accessibility settings (Alt+A)"
           title="Accessibility Settings (Alt+A)"
         >
@@ -166,20 +167,20 @@
         {#if user}
           <div class="user-menu">
             <span class="user-name">{user.name || user.email}</span>
-            <ButtonBits to="/settings" variant="ghost" size="sm">
+            <Button href="/settings" variant="ghost" size="sm">
               ⚙️ Settings
-            </ButtonBits>
-            <ButtonBits to="/auth/logout" variant="outline" size="sm">
+            </Button>
+            <Button href="/auth/logout" variant="outline" size="sm">
               Logout
-            </ButtonBits>
+            </Button>
           </div>
         {:else}
-          <ButtonBits to="/auth/login" variant="outline" size="sm">
+          <Button href="/auth/login" variant="outline" size="sm">
             Login
-          </ButtonBits>
-          <ButtonBits to="/auth/register" variant="primary" size="sm">
+          </Button>
+          <Button href="/auth/register" variant="primary" size="sm">
             Register
-          </ButtonBits>
+          </Button>
         {/if}
       </div>
     </div>
@@ -190,7 +191,7 @@
 <AccessibilitySettings bind:isOpen={showAccessibilitySettings} />
 
 <!-- Global keyboard shortcut handler -->
-<svelte:window onkeydown={handleKeyboardShortcut} />
+<svelte:window on:keydown={handleKeyboardShortcut} />
 
 <style>
   .navbar-header {

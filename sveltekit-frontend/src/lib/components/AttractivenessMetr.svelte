@@ -5,12 +5,13 @@ https://svelte.dev/e/props_duplicate -->
   import 'nes.css/css/nes.min.css';
 
   import { createEventDispatcher } from 'svelte';
-  let { score = $bindable() } = $props(); // number = 5; // Current attractiveness score (1-10)
-  let { label = $bindable() } = $props(); // string = 'Attractiveness Rating';
-  let { readOnly = $bindable() } = $props(); // boolean = false;
-  let { showDescription = $bindable() } = $props(); // boolean = true;
-  let { size = $bindable() } = $props(); // 'sm' | 'md' | 'lg' = 'md';
-  const dispatch = createEventDispatcher();
+  let { score = $bindable()  }: { score = $bindable() : any } = $props(); // number = 5; // Current attractiveness score (1-10)
+  let { label = $bindable()  }: { label = $bindable() : any } = $props(); // string = 'Attractiveness Rating';
+  let { readOnly = $bindable()  }: { readOnly = $bindable() : any } = $props(); // boolean = false;
+  let { showDescription = $bindable()  }: { showDescription = $bindable() : any } = $props(); // boolean = true;
+  let { size = $bindable()  }: { size = $bindable() : any } = $props(); // 'sm' | 'md' | 'lg' = 'md';
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
   let hoveredScore = $state<number | null >(null);
   const descriptions = {
     1: 'Very Low',
@@ -27,7 +28,7 @@ https://svelte.dev/e/props_duplicate -->
   function handleRatingClick(rating: number) {
     if (!readOnly) {
       score = rating;
-      dispatch('change', { score });
+      onChange?.({ score });
     }
   }
   function handleMouseEnter(rating: number) {
@@ -67,7 +68,7 @@ https://svelte.dev/e/props_duplicate -->
         class:active={isActive}
         class:hovered={isHovered}
         disabled={readOnly}
-        onclick={() => handleRatingClick(rating)}
+        on:click={() => handleRatingClick(rating)}
         on:mouseenter={() => handleMouseEnter(rating)}
         on:mouseleave={handleMouseLeave}
         aria-label="Rate {rating} out of 10"
@@ -92,8 +93,7 @@ https://svelte.dev/e/props_duplicate -->
         type="range"
         min="1"
         max="10"
-        bind:value={score}
-        input={() => dispatch('change', { score })}
+        bind:value={score} on:input={() => onChange?.({ score })}
         class="mx-auto px-4 max-w-7xl"
       />
     </div>

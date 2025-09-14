@@ -23,8 +23,8 @@ export const caseCreationMachine = createMachine({
   id: 'caseCreation',
   initial: 'idle',
   types: {
-    context: {} as CaseCreationContext,
-    events: {} as 
+    context: Record<string, any> as CaseCreationContext,
+    events: Record<string, any> as 
       | { type: 'START_CREATION' }
       | { type: 'UPDATE_FORM'; data: any }
       | { type: 'VALIDATE_FORM'; data: any }
@@ -39,7 +39,7 @@ export const caseCreationMachine = createMachine({
       priority: 'medium',
       status: 'open'
     },
-    validationErrors: {},
+    validationErrors: Record<string, any>,
     createdCase: null,
     error: null,
     isAutoSaving: false,
@@ -95,7 +95,7 @@ export const caseCreationMachine = createMachine({
         onDone: {
           target: 'editing',
           actions: assign({
-            validationErrors: {},
+            validationErrors: Record<string, any>,
             error: null
           })
         },
@@ -179,7 +179,7 @@ export const caseCreationMachine = createMachine({
               priority: 'medium',
               status: 'open'
             },
-            validationErrors: {},
+            validationErrors: Record<string, any>,
             createdCase: null,
             error: null,
             isAutoSaving: false,

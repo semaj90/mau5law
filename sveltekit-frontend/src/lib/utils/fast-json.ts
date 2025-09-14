@@ -43,7 +43,7 @@ export class FastJSON {
       const result = JSON.stringify(obj, options?.replacer, options?.space);
       
       // Cache simple objects
-      if (FastJSON.cache.size < FastJSON.maxCacheSize && result.length < 10000) {
+      if (FastJSON.cache.size < FastJSON.maxCacheSize && (result as { length?: any }).length < 10000) {
         const cacheKey = FastJSON.getCacheKey(obj);
         FastJSON.cache.set(cacheKey, result);
       }

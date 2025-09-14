@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Simplified task enqueue endpoint (placeholder for RabbitMQ / queue integration)
 export const POST: RequestHandler = async ({ request }) => {

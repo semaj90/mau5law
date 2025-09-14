@@ -246,7 +246,6 @@ https://svelte.dev/e/js_parse_error -->
 			{/if}
 		</button>
 	{/if}
-{/if}
 
 <style>
 	/* YoRHa terminal-style button animations */

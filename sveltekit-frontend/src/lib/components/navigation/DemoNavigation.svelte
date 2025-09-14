@@ -52,10 +52,10 @@
   }
 
   function navigateTo(item: NavItem) {
-    if (item.external) {
-      window.open(item.href, '_blank');
+    if ((item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).external) {
+      window.open((item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).href, '_blank');
     } else {
-      goto(item.href);
+      goto((item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).href);
       isOpen = false;
     }
   }
@@ -69,7 +69,7 @@
   <!-- Floating Navigation Button -->
   <button
     class="nav-toggle fixed top-4 right-4 z-50 w-12 h-12 bg-green-600 hover:bg-green-700 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center text-white font-bold text-lg"
-    onclick={toggleNav}
+    on:click={toggleNav}
     class:rotate-45={isOpen}
   >
     {isOpen ? '✕' : '🚀'}
@@ -86,19 +86,19 @@
         {#each navItems as item}
           <button
             class="nav-item w-full text-left p-3 rounded-lg transition-all duration-200 border border-transparent hover:border-green-500 hover:bg-green-500/10"
-            class:active={isCurrentPage(item.href)}
-            onclick={() => navigateTo(item)}
+            class:active={isCurrentPage((item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).href)}
+            on:click={() => navigateTo(item)}
           >
             <div class="flex items-start gap-3">
-              <div class="text-2xl">{item.icon}</div>
+              <div class="text-2xl">{(item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).icon}</div>
               <div class="flex-1">
                 <div class="font-semibold text-white flex items-center gap-2">
-                  {item.label}
-                  {#if item.external}
+                  {(item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).label}
+                  {#if (item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).external}
                     <span class="text-xs text-gray-400">↗</span>
                   {/if}
                 </div>
-                <div class="text-sm text-gray-400 mt-1">{item.description}</div>
+                <div class="text-sm text-gray-400 mt-1">{(item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).description}</div>
               </div>
             </div>
           </button>
@@ -111,25 +111,25 @@
         <div class="grid grid-cols-2 gap-2">
           <button
             class="px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
-            onclick={() => window.open('http://localhost:8081/api/health', '_blank')}
+            on:click={() => window.open('http://localhost:8081/api/health', '_blank')}
           >
             💚 Health
           </button>
           <button
             class="px-3 py-2 bg-purple-600 hover:bg-purple-700 rounded text-sm transition-colors"
-            onclick={() => navigateTo(navItems[0])}
+            on:click={() => navigateTo(navItems[0])}
           >
             🤖 AI Demo
           </button>
           <button
             class="px-3 py-2 bg-yellow-600 hover:bg-yellow-700 rounded text-sm transition-colors"
-            onclick={() => window.open('http://localhost:8081/test', '_blank')}
+            on:click={() => window.open('http://localhost:8081/test', '_blank')}
           >
             🧪 Test UI
           </button>
           <button
             class="px-3 py-2 bg-gray-600 hover:bg-gray-700 rounded text-sm transition-colors"
-            onclick={() => navigateTo({ href: '/dev/mcp-tools', external: false } as NavItem)}
+            on:click={() => navigateTo({ href: '/dev/mcp-tools', external: false } as NavItem)}
           >
             🛠️ Tools
           </button>
@@ -166,8 +166,7 @@
       type="button"
       aria-label="Close navigation"
       class="fixed inset-0 bg-black/50 z-30 backdrop-btn"
-      on:click={toggleNav}
-      on:keydown={(e) => e.key === 'Escape' && toggleNav()}
+      on:click={onkeydown}
       tabindex="0"
     ></button>
   {/if}
@@ -183,7 +182,7 @@
     box-shadow: 0 20px 64px rgba(0, 0, 0, 0.4);
   }
 
-  .nav-item.active {
+  .nav-(item as { external?: any; href?: any; icon?: any; label?: any; description?: any; active?: any }).active {
     background: rgba(34, 197, 94, 0.1);
     border-color: rgb(34, 197, 94);
   }

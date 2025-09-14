@@ -8,7 +8,7 @@
 
 // SvelteKit 2 Polyfills - Import first to ensure module availability
 import './polyfills.js';
-import { barrelStore } from './stores/barrel-functions.js';
+import { barrelStore } from './stores/barrel-functions.js.js';
 
 // Enhanced Type Definitions - Import to register module augmentations
 import './types/drizzle-enhanced.js';
@@ -16,24 +16,24 @@ import './types/lokijs-enhanced.js';
 import path from "path";
 
 // ===== CENTRALIZED TYPES (SINGLE SOURCE OF TRUTH) =====
-export * from './types/index';
+export * from './types/index.js';
 
 // ===== TYPE GUARDS & UTILITIES =====
-export * from './utils/type-guards';
+export * from './utils/type-guards.js';
 
 // ===== ENHANCED API CLIENT =====
 export { 
   EnhancedApiClient, 
   apiClient as enhancedApiClient 
-} from './services/enhanced-api-client';
+} from './services/enhanced-api-client.js';
 
 // ===== ALL COMPONENTS (COMPREHENSIVE BARREL EXPORT) =====
 // Temporarily commented to avoid LegalDocument export conflict
-// export * from './components/index';
+// export * from './components/index.js';
 
 // ===== FILE UPLOAD SERVICES =====
-export { default as localStorageFiles } from './services/localStorage-file-fallback.js';
-export { default as enhancedFileUpload } from './services/enhanced-file-upload.js';
+export { default as localStorageFiles } from './services/localStorage-file-fallback.js.js';
+export { default as enhancedFileUpload } from './services/enhanced-file-upload.js.js';
 
 // ===== UTILITIES & TYPES =====
 export { 
@@ -54,7 +54,7 @@ export {
   isBrowser,
   storage,
   theme
-} from './utils';
+} from './utils.js';
 
 // Export type helpers for Svelte 5 compatibility
 export type {
@@ -62,7 +62,7 @@ export type {
   WithoutChildren,
   WithoutChildrenOrChild,
   WithElementRef
-} from './utils';
+} from './utils.js';
 
 // ===== OLLAMA INTEGRATION SERVICES =====
 export { 
@@ -71,14 +71,14 @@ export {
   type ComprehensiveSummaryResponse,
   type SummarizerConfig,
   type SummarizerStats
-} from './services/comprehensive-ollama-summarizer';
+} from './services/comprehensive-ollama-summarizer.js';
 
 export { 
   ollamaIntegrationLayer,
   type IntegratedChatRequest,
   type IntegratedChatResponse,
   type OllamaServiceStatus
-} from './services/ollama-integration-layer';
+} from './services/ollama-integration-layer.js';
 
 export { 
   LangChainOllamaService,
@@ -86,12 +86,12 @@ export {
   type LangChainConfig,
   type ProcessingResult,
   type QueryResult
-} from './ai/langchain-ollama-service';
+} from './ai/langchain-ollama-service.js';
 
 // ===== SERVER SERVICES (Server-side only) =====
 // Note: These should only be imported on the server side
-export type { AuthService } from './server/auth';
-export type { EmbeddingService, EmbeddingOptions } from './server/embedding-service';
+export type { AuthService } from './server/auth.js';
+export type { EmbeddingService, EmbeddingOptions } from './server/embedding-service.js';
 
 // ===== VERSION INFO =====
 export const VERSION = '2.0.0';
@@ -136,7 +136,7 @@ export {
   lokiCollectionMethods,
   configurationProperties,
   utilityFunctions
-} from './stores/barrel-functions';
+} from './stores/barrel-functions.js';
 
 // ===== DATABASE COMPATIBILITY LAYER =====
 export {
@@ -149,7 +149,7 @@ export {
   enhanceResultWithTypes,
   entityEnhancers,
   createTypeSafeQuery
-} from './database/drizzle-compatibility-fix';
+} from './database/drizzle-compatibility-fix.js';
 
 // Make barrel store globally available
 if (typeof globalThis !== 'undefined') {
@@ -159,7 +159,7 @@ if (typeof globalThis !== 'undefined') {
 // ===== ENHANCED SERVICES & STORES =====
 
 // Global User Store with Svelte 5 Runes
-export { default as globalUserStore } from './stores/global-user-store.svelte';
+export { default as globalUserStore } from './stores/global-user-store.svelte.js';
 
 // Search Services with Fuse.js Integration
 export { 
@@ -169,7 +169,7 @@ export {
   searchComponents, 
   searchDocumentation, 
   searchDemos 
-} from './services/search-service';
+} from './services/search-service.js';
 
 // Hybrid Vector Operations
 export { 
@@ -177,7 +177,7 @@ export {
   hybridSearch, 
   syncVectorData, 
   getVectorSystemHealth 
-} from './services/hybrid-vector-operations';
+} from './services/hybrid-vector-operations.js';
 
 // Search Types
 export type {
@@ -186,7 +186,7 @@ export type {
   SearchOptions,
   SearchFilter,
   SearchState
-} from './types/search.types';
+} from './types/search.types.js';
 
 // Default export for convenience
 export default {

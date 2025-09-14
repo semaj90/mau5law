@@ -4,7 +4,7 @@
  * Supports image analysis, similarity operations, and embedding transforms
  */
 
-import { textureStreamer } from '../gpu/texture-streaming-service.js';
+import { textureStreamer } from '../gpu/texture-streaming-service.js.js';
 
 interface GPUTensorConfig {
   tileSize: number;
@@ -233,7 +233,7 @@ export class TensorAccelerator {
     vectorA: Float32Array,
     vectorB: Float32Array,
     options: TensorAccelerationOptions = {}
-  ): Promise<{ similarity: number; gpuMeta: GPUTensorMeta }> {
+  ): Promise<any> {
     const startTime = performance.now();
 
     if (!this.initialized && !(await this.initialize())) {
@@ -356,7 +356,7 @@ export class TensorAccelerator {
     embedding: Float32Array,
     operation: 'normalize' | 'quantize' | 'activate',
     options: TensorAccelerationOptions = {}
-  ): Promise<{ transformed: Float32Array; gpuMeta: GPUTensorMeta }> {
+  ): Promise<any> {
     const startTime = performance.now();
 
     if (!this.initialized && !(await this.initialize())) {
@@ -458,7 +458,7 @@ export class TensorAccelerator {
     width: number,
     height: number,
     options: TensorAccelerationOptions = {}
-  ): Promise<{ features: Float32Array; gpuMeta: GPUTensorMeta }> {
+  ): Promise<any> {
     const startTime = performance.now();
 
     if (!this.initialized && !(await this.initialize())) {

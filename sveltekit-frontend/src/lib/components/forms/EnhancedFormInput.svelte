@@ -15,9 +15,9 @@ https://svelte.dev/e/js_parse_error -->
   import { AlertCircle, CheckCircle, Eye, EyeOff, Info } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
 
-  let { name = $bindable() } = $props(); // string;
-  let { label = $bindable() } = $props(); // string;
-  let { type = $bindable() } = $props(); //
+  let { name = $bindable()  }: { name = $bindable() : any } = $props(); // string;
+  let { label = $bindable()  }: { label = $bindable() : any } = $props(); // string;
+  let { type = $bindable()  }: { type = $bindable() : any } = $props(); //
     | "text"
     | "email"
     | "password"
@@ -26,31 +26,26 @@ https://svelte.dev/e/js_parse_error -->
     | "number"
     | "date"
     | "textarea" = "text";
-  let { value = $bindable() } = $props(); // string = "";
-  let { placeholder = $bindable() } = $props(); // string = "";
-  let { required = $bindable() } = $props(); // boolean = false;
-  let { disabled = $bindable() } = $props(); // boolean = false;
-  let { readonly = $bindable() } = $props(); // boolean = false;
-  let { autocomplete = $bindable() } = $props(); // string = "";
-  let { maxlength = $bindable() } = $props(); // number | undefined = undefined;
-  let { minlength = $bindable() } = $props(); // number | undefined = undefined;
-  let { pattern = $bindable() } = $props(); // string | undefined = undefined;
-  let { step = $bindable() } = $props(); // string | undefined = undefined;
-  let { min = $bindable() } = $props(); // string | undefined = undefined;
-  let { max = $bindable() } = $props(); // string | undefined = undefined;
-  let { rows = $bindable() } = $props(); // number = 3;
-  let { validator = $bindable() } = $props(); // FormValidator | null = null;
-  let { config = $bindable() } = $props(); // FormFieldConfig | null = null;
-  let { helpText = $bindable() } = $props(); // string = "";
-  let { showValidation = $bindable() } = $props(); // boolean = true;
-  let { showPasswordToggle = $bindable() } = $props(); // boolean = true;
+  let { value = $bindable()  }: { value = $bindable() : any } = $props(); // string = "";
+  let { placeholder = $bindable()  }: { placeholder = $bindable() : any } = $props(); // string = "";
+  let { required = $bindable()  }: { required = $bindable() : any } = $props(); // boolean = false;
+  let { disabled = $bindable()  }: { disabled = $bindable() : any } = $props(); // boolean = false;
+  let { readonly = $bindable()  }: { readonly = $bindable() : any } = $props(); // boolean = false;
+  let { autocomplete = $bindable()  }: { autocomplete = $bindable() : any } = $props(); // string = "";
+  let { maxlength = $bindable()  }: { maxlength = $bindable() : any } = $props(); // number | undefined = undefined;
+  let { minlength = $bindable()  }: { minlength = $bindable() : any } = $props(); // number | undefined = undefined;
+  let { pattern = $bindable()  }: { pattern = $bindable() : any } = $props(); // string | undefined = undefined;
+  let { step = $bindable()  }: { step = $bindable() : any } = $props(); // string | undefined = undefined;
+  let { min = $bindable()  }: { min = $bindable() : any } = $props(); // string | undefined = undefined;
+  let { max = $bindable()  }: { max = $bindable() : any } = $props(); // string | undefined = undefined;
+  let { rows = $bindable()  }: { rows = $bindable() : any } = $props(); // number = 3;
+  let { validator = $bindable()  }: { validator = $bindable() : any } = $props(); // FormValidator | null = null;
+  let { config = $bindable()  }: { config = $bindable() : any } = $props(); // FormFieldConfig | null = null;
+  let { helpText = $bindable()  }: { helpText = $bindable() : any } = $props(); // string = "";
+  let { showValidation = $bindable()  }: { showValidation = $bindable() : any } = $props(); // boolean = true;
+  let { showPasswordToggle = $bindable()  }: { showPasswordToggle = $bindable() : any } = $props(); // boolean = true;
 
-  const dispatch = createEventDispatcher<{
-    input: { value: string; validation: ValidationResult };
-    change: { value: string; validation: ValidationResult };
-    focus: { name: string };
-    blur: { name: string };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Local validation state
   let errors = $state<string[] >([]);
@@ -100,9 +95,9 @@ https://svelte.dev/e/js_parse_error -->
   function validateField() {
     if (validator && config) {
       const result = validator.setValue(name, value);
-      errors = result.errors;
-      warnings = result.warnings;
-      isValid = result.isValid;
+      errors = (result as { errors?: any; warnings?: any; isValid?: any }).errors;
+      warnings = (result as { errors?: any; warnings?: any; isValid?: any }).warnings;
+      isValid = (result as { errors?: any; warnings?: any; isValid?: any }).isValid;
     } else if (config) {
       // Standalone validation
       import("$lib/utils/validation.js").then(({ validateField }) => {
@@ -116,9 +111,9 @@ https://svelte.dev/e/js_parse_error -->
   }
           );
         } else {
-          errors = result.errors;
-          warnings = result.warnings;
-          isValid = result.isValid;
+          errors = (result as { errors?: any; warnings?: any; isValid?: any }).errors;
+          warnings = (result as { errors?: any; warnings?: any; isValid?: any }).warnings;
+          isValid = (result as { errors?: any; warnings?: any; isValid?: any }).isValid;
   }
       });
     } else {
@@ -179,11 +174,9 @@ https://svelte.dev/e/js_parse_error -->
         class="container mx-auto px-4"
         class:textarea-error={showErrorState}
         class:textarea-success={showSuccessState}
-        class:textarea-disabled={disabled}
-        input={handleInput}
-        change={handleChange}
-        onfocus={handleFocus}
-        onblur={handleBlur}
+        class:textarea-disabled={disabled} on:input={handleInput} on:change={handleChange}
+        on:focus={handleFocus}
+        on:blur={handleBlur}
         aria-describedby="{name}-help {name}-error"
         aria-invalid={showErrorState}
       ></textarea>
@@ -209,11 +202,9 @@ https://svelte.dev/e/js_parse_error -->
         class:input-error={showErrorState}
         class:input-success={showSuccessState}
         class:input-disabled={disabled}
-        class:pr-12={type === "password" && showPasswordToggle}
-        input={handleInput}
-        change={handleChange}
-        onfocus={handleFocus}
-        onblur={handleBlur}
+        class:pr-12={type === "password" && showPasswordToggle} on:input={handleInput} on:change={handleChange}
+        on:focus={handleFocus}
+        on:blur={handleBlur}
         aria-describedby="{name}-help {name}-error"
         aria-invalid={showErrorState}
       />
@@ -223,7 +214,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           type="button"
           class="container mx-auto px-4"
-          onclick={() => togglePasswordVisibility()}
+          on:click={() => togglePasswordVisibility()}
           aria-label={showPassword ? "Hide password" : "Show password"}
           tabindex={-1}
         >
@@ -247,7 +238,6 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </div>
       {/if}
-    {/if}
   </div>
 
   <!-- Help Text and Validation Messages -->

@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { lucia } from '$lib/server/auth';
 import { db } from '$lib/server/db/drizzle';
 import { users, sessions } from '$lib/server/db/schema-postgres';

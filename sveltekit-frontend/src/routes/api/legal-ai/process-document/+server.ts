@@ -2,7 +2,7 @@
 
 import { URL } from "url";
 import { queueDocumentProcessing, getJobStatus, getQueueStats, type DocumentProcessingJobData } from "$lib/services/queue-service";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Types for Go server integration (kept for compatibility)
@@ -161,20 +161,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				signal: AbortSignal.timeout(120000) // 2 minute timeout
 			});
 
-			if (!response.ok) {
-				const errorText = await response.text();
-				console.error(`❌ Go server error (${response.status}):`, errorText);
+			if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
+				const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text();
+				console.error(`❌ Go server error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}):`, errorText);
 				
 				return json({ 
-					error: `Go server error: ${response.status}`,
+					error: `Go server error: ${(response as { ok?: any; text?: any; status?: any; json?: any }).status}`,
 					details: errorText 
-				}, { status: response.status });
+				}, { status: (response as { ok?: any; text?: any; status?: any; json?: any }).status });
 			}
 
-			const result: DocumentProcessResponse = await response.json();
+			const result: DocumentProcessResponse = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 			
-			console.log(`✅ Document processed successfully: ${result.document_id}`);
-			console.log(`📊 Processing time: ${result.processing_time}`);
+			console.log(`✅ Document processed successfully: ${(result as { document_id?: any; processing_time?: any }).document_id}`);
+			console.log(`📊 Processing time: ${(result as { document_id?: any; processing_time?: any }).processing_time}`);
 			
 			return json({
 				success: true,
@@ -213,14 +213,14 @@ export const GET: RequestHandler = async () => {
 			}
 		});
 
-		if (!response.ok) {
+		if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
 			return json({ 
 				error: 'Go server health check failed',
-				status: response.status 
+				status: (response as { ok?: any; text?: any; status?: any; json?: any }).status 
 			}, { status: 503 });
 		}
 
-		const healthData = await response.json();
+		const healthData = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 		
 		return json({
 			success: true,

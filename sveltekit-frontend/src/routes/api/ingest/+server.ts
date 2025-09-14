@@ -11,7 +11,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { sharedWorkerPool } from '$lib/server/ingest/worker-pool-simple.js';
 import { detectContentType, validateContentForIngestion } from '$lib/server/ingest/minio.js';
 import { checkEmbeddingEndpointHealth } from '$lib/server/ingest/embed.js';

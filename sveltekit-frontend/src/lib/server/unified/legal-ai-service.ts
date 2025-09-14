@@ -3,12 +3,12 @@
  * Integrates: MinIO storage, Qdrant vectors, PostgreSQL metadata, Redis cache, Neo4j recommendations
  */
 
-import { db } from '../db';
-import { evidence, cases, legalDocuments as documents } from '../db/schema';
-import { cache } from '../cache/redis';
-import { minioStorage } from '../storage/minio';
-import { qdrant } from '../vector/qdrant';
-import { embedText } from '../ai/embedder';
+import { db } from '../db.js';
+import { evidence, cases, legalDocuments as documents } from '../db/schema.js';
+import { cache } from '../cache/redis.js';
+import { minioStorage } from '../storage/minio.js';
+import { qdrant } from '../vector/qdrant.js';
+import { embedText } from '../ai/embedder.js';
 import { createId } from '@paralleldrive/cuid2';
 import { eq, sql } from 'drizzle-orm';
 
@@ -42,12 +42,7 @@ export class UnifiedLegalAIService {
    * 6. Cache frequently accessed data in Redis
    * 7. Update Neo4j relationships
    */
-  async uploadDocument(upload: DocumentUpload): Promise<{
-    id: string;
-    fileUrl: string;
-    embeddingId: string;
-    cached: boolean;
-  }> {
+  async uploadDocument(upload: DocumentUpload): Promise<any> {
     const documentId = createId();
 
     try {
@@ -166,12 +161,7 @@ export class UnifiedLegalAIService {
    * Uses Qdrant for vector similarity, PostgreSQL for metadata filtering,
    * Redis for caching, and Neo4j for recommendations
    */
-  async searchDocuments(options: SearchOptions): Promise<{
-    results: any[];
-    recommendations?: any[];
-    cached: boolean;
-    sources: string[];
-  }> {
+  async searchDocuments(options: SearchOptions): Promise<any> {
     const cacheKey = `search:${JSON.stringify(options)}`;
 
     // Check cache first
@@ -204,7 +194,7 @@ export class UnifiedLegalAIService {
           const dbRecord = await db
             .select()
             .from(evidence)
-            .where(eq(evidence.id, result.id))
+            .where(eq(evidence.id, (result as { id?: any }).id))
             .limit(1);
           if (dbRecord.length > 0) {
             results.push({
@@ -230,7 +220,7 @@ export class UnifiedLegalAIService {
           const dbRecord = await db
             .select()
             .from(documents)
-            .where(eq(documents.id, result.id))
+            .where(eq(documents.id, (result as { id?: any }).id))
             .limit(1);
           if (dbRecord.length > 0) {
             results.push({
@@ -273,13 +263,7 @@ export class UnifiedLegalAIService {
   /**
    * Get document with all associated data from all systems
    */
-  async getDocument(id: string): Promise<{
-    metadata: any;
-    fileUrl: string;
-    textContent: string;
-    similarDocuments: any[];
-    recommendations: any[];
-  }> {
+  async getDocument(id: string): Promise<any> {
     const cacheKey = `full_document:${id}`;
 
     // Check cache first
@@ -375,13 +359,7 @@ export class UnifiedLegalAIService {
   /**
    * Health check for all integrated systems
    */
-  async healthCheck(): Promise<{
-    postgresql: boolean;
-    redis: boolean;
-    minio: boolean;
-    qdrant: boolean;
-    neo4j: boolean;
-  }> {
+  async healthCheck(): Promise<any> {
     const health = {
       postgresql: false,
       redis: false,

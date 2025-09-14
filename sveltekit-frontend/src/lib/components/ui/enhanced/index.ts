@@ -4,10 +4,10 @@
 
 import crypto from "crypto";
 
-export { default as Button } from "./Button.svelte";
-export { default as Card } from "./Card.svelte";
-export { default as Input } from "./Input.svelte";
-export { buttonVariants, type ButtonVariants } from "./button-variants";
+export { default as Button } from './Button.svelte.js';
+export { default as Card } from './Card.svelte.js';
+export { default as Input } from './Input.svelte.js';
+export { buttonVariants, type ButtonVariants } from './button-variants.js';
 
 // Re-export commonly used types
 export type { HTMLButtonAttributes } from "svelte/elements";

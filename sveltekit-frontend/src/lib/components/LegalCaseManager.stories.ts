@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import LegalCaseManager from './LegalCaseManager.svelte';
+import LegalCaseManager from './LegalCaseManager.svelte.js';
 
 const meta = {
   title: 'Business/LegalCaseManager',

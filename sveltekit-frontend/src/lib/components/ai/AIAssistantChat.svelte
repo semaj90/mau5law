@@ -59,8 +59,8 @@ https://svelte.dev/e/bind_invalid_expression -->
   let useContext7 = $state(false);
   let showSettingsDialog = $state(false);
   let showExportDialog = $state(false);
-  let messageInput = $state<HTMLTextAreaElement>();
-  let chatContainer = $state<HTMLDivElement>();
+  let messageInput: HTMLTextAreaElement = $state(undefined as any);
+  let chatContainer: HTMLDivElement = $state(undefined as any);
   let availableModels = $state<string[]>(['gemma3-legal', 'nomic-embed-text', 'deeds-web']);
   let useUnifiedService = $state(true);
   let selectedMode = $state<'auto' | 'wasm' | 'langchain' | 'gpu'>('auto');
@@ -230,10 +230,10 @@ https://svelte.dev/e/bind_invalid_expression -->
   }
 </script>
 
-<NesCard class="w-full" style="height: {height};">
-  <div class="yorha-panel-header" class="p-4 border-b">
+<div class="w-full nes-container">
+  <div class="yorha-panel-header p-4 border-b">
     <div class="flex items-center justify-between">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <span class="text-lg font-semibold">Legal AI Assistant</span>
         <Badge variant={clusterStatus.healthy ? 'default' : 'destructive'} class="text-xs">
           {clusterStatus.healthy ? 'Online' : `${clusterStatus.count}/${clusterStatus.total} Healthy`}
@@ -245,31 +245,33 @@ https://svelte.dev/e/bind_invalid_expression -->
           <Button class="bits-btn" 
             variant="ghost" 
             size="sm"
-            onclick={() => showSettingsDialog = true}
+            on:click={() =>
+showSettingsDialog = true}
           >
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-          </button>
+</Button>
         {/if}
 
         {#if hasConversation}
           <Button class="bits-btn" 
             variant="ghost" 
             size="sm"
-            onclick={() => showExportDialog = true}
+            on:click={() =>
+showExportDialog = true}
           >
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-          </button>
+</Button>
         {/if}
       </div>
     </div>
   </div>
 
-  <div class="yorha-panel-content" class="p-0 flex flex-col" style="height: calc({height} - 80px);">
+  <div class="yorha-panel-content p-0 flex flex-col" style="height: calc({height} - 80px);">
     <!-- Chat Messages -->
     <div 
       bind:this={chatContainer}
@@ -329,10 +331,10 @@ https://svelte.dev/e/bind_invalid_expression -->
             variant="outline" 
             size="sm" 
             class="mt-2 bits-btn bits-btn"
-            onclick={retryLast}
+            on:click={retryLast}
           >
-            Retry
-          </button>
+Retry
+</Button>
         </div>
       {/if}
     </div>
@@ -389,29 +391,29 @@ https://svelte.dev/e/bind_invalid_expression -->
         
         <div class="flex flex-col gap-1">
           <Button 
-            onclick={sendMessage}
+            on:click={sendMessage}
             disabled={!canSend}
             class="px-4 bits-btn bits-btn"
           >
-            {#if isProcessing()}
+{#if isProcessing()}
               <div class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
             {:else}
               <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>
             {/if}
-          </button>
+</Button>
           
           {#if isProcessing()}
             <Button class="bits-btn" 
               variant="outline"
               size="sm"
-              onclick={stopGeneration}
+              on:click={stopGeneration}
             >
-              <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect x="6" y="6" width="12" height="12" />
               </svg>
-            </button>
+</Button>
           {/if}
         </div>
       </div>
@@ -426,7 +428,7 @@ https://svelte.dev/e/bind_invalid_expression -->
       {/if}
     </div>
   </div>
-</NesCard>
+</div>
 
 <!-- Settings Dialog -->
 <Dialog.Root open={showSettingsDialog} openchange={(open) => showSettingsDialog = open}>
@@ -488,24 +490,26 @@ https://svelte.dev/e/bind_invalid_expression -->
           <Button class="bits-btn" 
             variant="outline" 
             size="sm"
-            onclick={() => aiAssistantManager.checkClusterHealth()}
+            on:click={() =>
+aiAssistantManager.checkClusterHealth()}
           >
             Refresh Health
-          </button>
+</Button>
         </div>
       </div>
 
       <div class="flex justify-between gap-2">
         <Button class="bits-btn" 
           variant="destructive"
-          onclick={clearConversation}
+          on:click={clearConversation}
           disabled={!hasConversation}
         >
-          Clear Chat
-        </button>
-        <Button class="bits-btn" onclick={() => showSettingsDialog = false}>
+Clear Chat
+</Button>
+        <Button class="bits-btn" on:click={() =>
+showSettingsDialog = false}>
           Close
-        </button>
+</Button>
       </div>
     </Dialog.Content>
   </Dialog.Portal>
@@ -539,16 +543,18 @@ https://svelte.dev/e/bind_invalid_expression -->
       <div class="flex justify-end gap-2">
         <Button class="bits-btn" 
           variant="outline"
-          onclick={() => showExportDialog = false}
+          on:click={() =>
+showExportDialog = false}
         >
           Cancel
-        </button>
-        <Button class="bits-btn" onclick={() => {
+</Button>
+        <Button class="bits-btn" on:click={() =>
+{
           exportConversation();
           showExportDialog = false;
         }}>
           Export JSON
-        </button>
+</Button>
       </div>
     </Dialog.Content>
   </Dialog.Portal>

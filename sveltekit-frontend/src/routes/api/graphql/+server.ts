@@ -1,5 +1,5 @@
 import { mcpContext72GetLibraryDocs } from "$lib/mcp-context72-get-library-docs";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // import { createYoga as createServer } from "graphql-yoga"; // TODO: Install graphql-yoga dependency
@@ -44,16 +44,16 @@ const resolvers = {
       const docs = await mcpContext72GetLibraryDocs("svelte", "runes");
       return reranked
         .map((result) => {
-          let score = result.rerankScore;
-          // if (memory.some((m) => m.relatedId === result.id)) score += 1;
-          // if (docs && docs.includes(result.intent)) score += 1;
+          let score = (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).rerankScore;
+          // if (memory.some((m) => m.relatedId === (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).id)) score += 1;
+          // if (docs && docs.includes((result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).intent)) score += 1;
           return {
-            id: result.id,
-            content: result.content,
+            id: (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).id,
+            content: (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).content,
             score,
-            intent: result.intent,
-            timeOfDay: result.timeOfDay,
-            position: result.position,
+            intent: (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).intent,
+            timeOfDay: (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).timeOfDay,
+            position: (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).position,
           };
         })
         .sort((a, b) => b.score - a.score)

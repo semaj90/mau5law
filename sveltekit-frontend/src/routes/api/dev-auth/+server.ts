@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { json } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 // Use canonical server drizzle + schema-postgres to avoid mixed column naming
@@ -13,7 +13,7 @@ import { logger } from '$lib/server/logger';
  * POST -> clear session
  */
 
-async function findOrCreateDevUser(): Promise<{ id: string; created: boolean; passwordColumn: string; }> {
+async function findOrCreateDevUser(): Promise<any> {
   // Attempt fetch existing dev user
   const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, 'dev@example.com')).limit(1);
   if (existing.length) return { id: existing[0].id, created: false, passwordColumn: 'hashed_password' };

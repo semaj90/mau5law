@@ -207,6 +207,6 @@ export type SearchIndex = typeof searchIndex.$inferSelect;
 export type NewSearchIndex = typeof searchIndex.$inferInsert;
 
 // Re-export missing tables from additional-tables.ts
-export { embeddingCache } from '../server/db/additional-tables';
+export { embeddingCache } from '../server/db/additional-tables.js';
 
-// Database connection re-export { db } from '../server/db/index';
+// Database connection re-export { db } from '../server/db/index.js';

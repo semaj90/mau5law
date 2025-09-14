@@ -23,8 +23,7 @@
     footer?: Snippet;
   }
 
-  let {
-    open = false,
+  let { open = false,
     title = "",
     subtitle = "",
     size = "md",
@@ -37,7 +36,20 @@
     type = "default",
     children,
     footer,
-  } = $props();
+   }: { open = false,
+    title = "",
+    subtitle = "",
+    size = "md",
+    closable = true,
+    closeOnEscape = true,
+    closeOnBackdrop = true,
+    showHeader = true,
+    showFooter = false,
+    persistent = false,
+    type = "default",
+    children,
+    footer,
+  : any } = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -110,8 +122,8 @@
 {#if open}
   <div
     class="yorha-modal-backdrop {type}"
-    onclick={handleBackdropClick}
-    onkeydown={handleKeydown}
+    on:click={handleBackdropClick}
+    on:keydown={handleKeydown}
     transition:fade={{ duration: 200 }}
     role="dialog"
     aria-modal="true"
@@ -151,7 +163,7 @@
           {#if closable && !persistent}
             <button
               class="modal-close"
-              onclick={handleClose}
+              on:click={handleClose}
               aria-label="Close modal"
             >
               <span class="close-icon">✕</span>
@@ -174,18 +186,18 @@
             {@render footer()}
           {:else if type === "confirm"}
             <div class="modal-actions">
-              <button class="modal-button cancel" onclick={handleCancel}>
+              <button class="modal-button cancel" on:click={handleCancel}>
                 <span class="button-icon">✕</span>
                 Cancel
               </button>
-              <button class="modal-button confirm" onclick={handleConfirm}>
+              <button class="modal-button confirm" on:click={handleConfirm}>
                 <span class="button-icon">✓</span>
                 Confirm
               </button>
             </div>
           {:else if type === "alert"}
             <div class="modal-actions">
-              <button class="modal-button acknowledge" onclick={handleClose}>
+              <button class="modal-button acknowledge" on:click={handleClose}>
                 <span class="button-icon">■</span>
                 Acknowledge
               </button>

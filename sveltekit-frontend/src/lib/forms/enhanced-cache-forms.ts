@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { superForm, type SuperValidated, type Infer } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { writable, derived, type Writable } from 'svelte/store';
-import { cacheFirstService, CaseSchema, EvidenceSchema } from './cache-first-architecture.js';
+import { cacheFirstService, CaseSchema, EvidenceSchema } from './cache-first-architecture.js.js';
 
 // ===== ENHANCED CASE FORM SCHEMA =====
 
@@ -83,7 +83,7 @@ export class CacheFirstFormManager {
       status: 'open',
       priority: 'medium',
       userId: '', // Will be filled from session
-      metadata: {},
+      metadata: Record<string, any>,
       attachments: [],
       jurisdiction: '',
       clientContact: {
@@ -125,9 +125,9 @@ export class CacheFirstFormManager {
         },
 
         onResult: async ({ result, formEl, cancel }) => {
-          if (result.type === 'success') {
+          if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
             // Cache the created case immediately
-            const caseData = result.data as any;
+            const caseData = (result as { type?: any; data?: any; error?: any }).data as any;
             await cacheFirstService.createCase(caseData);
             
             // Clean up form cache
@@ -138,7 +138,7 @@ export class CacheFirstFormManager {
         onError: ({ result }) => {
           this.formErrors.update(errors => ({
             ...errors,
-            [formId]: result.error
+            [formId]: (result as { type?: any; data?: any; error?: any }).error
           }));
         }
       }
@@ -171,7 +171,7 @@ export class CacheFirstFormManager {
       description: '',
       relevanceScore: 5,
       confidentialityLevel: 'restricted',
-      analysisResults: {},
+      analysisResults: Record<string, any>,
       tags: [],
       chain_of_custody: [],
       file: null as any, // Will be set by file input
@@ -206,8 +206,8 @@ export class CacheFirstFormManager {
         },
 
         onResult: async ({ result }) => {
-          if (result.type === 'success') {
-            const evidenceData = result.data as any;
+          if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
+            const evidenceData = (result as { type?: any; data?: any; error?: any }).data as any;
             await cacheFirstService.createEvidence(evidenceData);
             this.cleanupForm(formId);
           }
@@ -373,7 +373,7 @@ export class CacheFirstFormManager {
       xhr.addEventListener('load', () => {
         if (xhr.status === 200) {
           const response = JSON.parse(xhr.responseText);
-          resolve(response.fileUrl);
+          resolve((response as { fileUrl?: any }).fileUrl);
         } else {
           reject(new Error(`Upload failed: ${xhr.statusText}`));
         }

@@ -45,7 +45,7 @@ export interface UserAnalytics {
     specialization: string[]; // legal, technical, etc.
   };
   interactionPatterns: {
-    clickHeatmap: Array<{ x: number; y: number; count: number }>;
+    clickHeatmap: Array<any>;
     scrollBehavior: { depth: number; speed: number };
     focusAreas: string[]; // element selectors
   };
@@ -58,13 +58,7 @@ export interface UserAnalytics {
 
 export interface QLoRATrainingData {
   user_id: string;
-  chunks: Array<{
-    input_text: string;
-    embeddings: number[];
-    context: UserAnalytics;
-    importance_weight: number;
-    created_at: number;
-  }>;
+  chunks: Array<any>;
   metadata: {
     page_url: string;
     session_data: UserAnalytics;
@@ -434,12 +428,12 @@ export class IntelligentWebAnalyzer {
               })
             });
 
-            if (response.ok) {
-              const data = await response.json();
-              chunk.embeddings = new Float32Array(data.embedding);
+            if ((response as { ok?: any; json?: any }).ok) {
+              const data = await (response as { ok?: any; json?: any }).json();
+              chunk.embeddings = new Float32Array((data as { interactionCount?: any; lastInteraction?: any; importance?: any; elementType?: any; embedding?: any }).embedding);
               
               // Cache the embedding
-              await cacheEmbedding(chunk.content, data.embedding, 'web-analysis');
+              await cacheEmbedding(chunk.content, (data as { interactionCount?: any; lastInteraction?: any; importance?: any; elementType?: any; embedding?: any }).embedding, 'web-analysis');
             }
           }
 
@@ -455,8 +449,8 @@ export class IntelligentWebAnalyzer {
 
       const batchResults = await Promise.allSettled(batchPromises);
       batchResults.forEach((result) => {
-        if (result.status === 'fulfilled') {
-          processedChunks.push(result.value);
+        if ((result as { status?: any; value?: any }).status === 'fulfilled') {
+          processedChunks.push((result as { status?: any; value?: any }).value);
         }
       });
 
@@ -521,7 +515,7 @@ export class IntelligentWebAnalyzer {
         })
       });
 
-      if (response.ok) {
+      if ((response as { ok?: any; json?: any }).ok) {
         console.log('✅ Analysis results cached successfully');
       }
     } catch (error) {

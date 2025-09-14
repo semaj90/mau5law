@@ -18,7 +18,7 @@
 
 import { json } from "@sveltejs/kit";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
@@ -59,10 +59,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     return json({
       success: true,
-      documentId: result.documentId,
-      embeddingId: result.embeddingId,
-      analysis: result.analysis,
-      processingTime: result.processingTime,
+      documentId: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).documentId,
+      embeddingId: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).embeddingId,
+      analysis: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).analysis,
+      processingTime: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).processingTime,
       timestamp: new Date().toISOString(),
       metadata: {
         filename: file.name,

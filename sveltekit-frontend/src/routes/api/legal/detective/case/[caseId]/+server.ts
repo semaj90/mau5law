@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface DetectiveCase {
   id: string;
@@ -140,12 +140,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
   }
 };
 
-async function getDetectiveCaseData(caseId: string): Promise<{
-  case: DetectiveCase;
-  suspects: Suspect[];
-  timeline: TimelineEvent[];
-  evidence: Evidence[];
-} | null> {
+async function getDetectiveCaseData(caseId: string): Promise<any> {
   
   // Mock implementation - in production, query database
   if (!caseId.startsWith('CASE-')) {

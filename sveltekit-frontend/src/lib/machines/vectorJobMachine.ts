@@ -144,8 +144,8 @@ const vectorJobServices = {
 
 export const vectorJobMachine = createMachine({
 	types: {
-		context: {} as VectorJobContext,
-		events: {} as VectorJobEvent,
+		context: Record<string, any> as VectorJobContext,
+		events: Record<string, any> as VectorJobEvent,
 	},
 	
 	id: 'vectorJob',
@@ -433,13 +433,7 @@ export async function createVectorJob(
 
 // Utility for batch vector job processing
 export async function processBatchVectorJobs(
-	jobs: Array<{
-		ownerType: string;
-		ownerId: string;
-		operation: string;
-		data?: any;
-		priority?: string;
-	}>
+	jobs: Array<
 ): Promise<VectorJobActor[]> {
 	const actors = await Promise.all(
 		jobs.map(job => 

@@ -71,7 +71,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     webgpuMode = false
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
 
   let inputElement: HTMLInputElement;
   let container: HTMLDivElement;
@@ -181,24 +182,24 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   function handleFocus(event: FocusEvent) {
     isFocused = true;
     playSpatialSound('focus', 440, 0.1);
-    dispatch('focus', event);
+    onFocus?.(event);
   }
 
   function handleBlur(event: FocusEvent) {
     isFocused = false;
     playSpatialSound('blur', 330, 0.1);
-    dispatch('blur', event);
+    onBlur?.(event);
   }
 
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
     value = target.value;
     playSpatialSound('input', 660, 0.05);
-    dispatch('input', event);
+    onInput?.(event);
   }
 
   function handleChange(event: Event) {
-    dispatch('change', event);
+    onChange?.(event);
   }
 
   function handleMouseEnter() {
@@ -262,9 +263,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     aria-label={ariaLabel}
     aria-describedby={ariaDescribedby}
     on:focus={handleFocus}
-    on:blur={handleBlur}
-    oninput={handleInput}
-    onchange={handleChange}
+    on:blur={oninput}
+    on:change={handleChange}
     on:mouseenter={handleMouseEnter}
     on:mouseleave={handleMouseLeave}
   />

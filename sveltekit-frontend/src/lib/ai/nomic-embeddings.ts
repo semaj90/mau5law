@@ -91,7 +91,7 @@ export class NomicEmbeddingsService {
             processingStatus:
               document.metadata?.processingStatus || "processed",
             text: document.text,
-            embeddingModel: embeddingResult.model,
+            embeddingModel: embeddingResult?.model || "unknown" // @ts-ignore - Model property access,
             embeddingTimestamp: embeddingResult.metadata?.timestamp,
             fileMetadata: {
               size: document.metadata?.size || 0,

@@ -1,16 +1,12 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Local AI health check endpoint for Gemma3 Ollama integration
 import { json } from "@sveltejs/kit";
 import { ollamaService } from "$lib/services/ollama-service";
 
 // Test Ollama connection directly
-async function testOllamaConnection(): Promise<{
-  success: boolean;
-  message: string;
-  models?: string[];
-}> {
+async function testOllamaConnection(): Promise<any> {
   try {
     // Test connection
     const versionResponse = await fetch("http://localhost:11434/api/version", {
@@ -48,10 +44,7 @@ async function testOllamaConnection(): Promise<{
   }
 }
 // Test llama.cpp connection
-async function testLlamaCppConnection(): Promise<{
-  success: boolean;
-  message: string;
-}> {
+async function testLlamaCppConnection(): Promise<any> {
   try {
     // Use working Node API endpoint instead of problematic 8080
     const response = await fetch("http://localhost:3005/healthz", {
@@ -59,7 +52,7 @@ async function testLlamaCppConnection(): Promise<{
       signal: AbortSignal.timeout(5000),
     });
 
-    if (response.ok) {
+    if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
       return { success: true, message: "llama.cpp server is running" };
     } else {
       return {
@@ -185,13 +178,13 @@ export const POST: RequestHandler = async ({ request }) => {
           signal: AbortSignal.timeout(30000),
         });
 
-        if (response.ok) {
-          const data = await response.json();
+        if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+          const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
           result = {
             success: true,
             provider: "ollama",
             model: "gemma3-legal",
-            response: data.response,
+            response: (data as { response?: any }).response,
             executionTime: Date.now() - startTime,
           };
         } else {
@@ -220,14 +213,14 @@ export const POST: RequestHandler = async ({ request }) => {
               success: true,
               provider: "ollama",
               model: "gemma2:2b",
-              response: data.response,
+              response: (data as { response?: any }).response,
               executionTime: Date.now() - startTime,
             };
           } else {
             result = {
               success: false,
               provider: "ollama",
-              error: `Generation failed: ${response.statusText}`,
+              error: `Generation failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`,
               executionTime: Date.now() - startTime,
             };
           }
@@ -241,7 +234,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
       }
     }
-    if (!result.success && service === "auto") {
+    if (!(result as { success?: any }).success && service === "auto") {
       result = {
         success: false,
         provider: "none",

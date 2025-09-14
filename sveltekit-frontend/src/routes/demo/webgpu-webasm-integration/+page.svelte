@@ -156,7 +156,7 @@
 
     <!-- Example Prompts -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">💡 Try These Examples</h3>
         </div>
@@ -171,7 +171,7 @@
                 <p class="text-sm text-gray-600 italic">"{example.prompt}"</p>
                 <button 
                   class="mt-2 text-xs text-blue-600 hover:text-blue-800"
-                  onclick={() => {
+                  on:click={() => {
                     // Copy to clipboard and scroll to demo
                     navigator.clipboard?.writeText(example.prompt);
                     document.querySelector('textarea')?.focus();
@@ -183,12 +183,12 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Technical Specifications -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">🔧 Technical Architecture</h3>
         </div>
@@ -209,12 +209,12 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Performance Benchmarks -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">📊 Performance Targets</h3>
         </div>
@@ -229,12 +229,12 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Architecture Flow Diagram -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">🏗️ Processing Pipeline</h3>
         </div>
@@ -307,7 +307,7 @@
             </ul>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </main>
 

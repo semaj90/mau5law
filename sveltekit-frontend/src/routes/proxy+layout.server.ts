@@ -1,5 +1,5 @@
 // @ts-nocheck
-import type { LayoutServerLoad } from './$types';
+import type { LayoutServerLoad } from './$types.js';
 import { loadWithSSR } from '$lib/server/api-ssr-helpers';
 
 /**

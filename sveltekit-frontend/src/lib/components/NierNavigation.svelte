@@ -6,11 +6,7 @@
   interface NavigationProps {
     brand?: string;
     version?: string;
-    links?: Array<{
-      href: string;
-      label: string;
-      icon?: string;
-    }>;
+    links?: Array;
   }
 
   let {

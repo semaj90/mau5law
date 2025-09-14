@@ -192,7 +192,7 @@ declare interface EnhancedOllamaService {
 declare interface LibraryDocsResponse {
   content?: string;
   metadata?: { library?: string; topic?: unknown; tokenCount?: number } | unknown;
-  snippets?: Array<{ title?: string; code?: string; description?: string }> | unknown;
+  snippets?: Array< | unknown;
   /** Some callers expect an object with `message` or `code` */
   error?: { message?: string; code?: string } | unknown;
   [k: string]: unknown;

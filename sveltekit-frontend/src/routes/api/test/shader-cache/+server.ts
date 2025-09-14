@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
 /*
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const testResults = {
       testType,
       timestamp: new Date().toISOString(),
-      results: {} as any,
+      results: Record<string, any> as any,
       metrics: {
         totalTests: 0,
         passedTests: 0,
@@ -199,7 +199,7 @@ async function testColdPath(testResults: any): Promise<any> {
         shader: shader.key,
         success: true,
         latency: latency,
-        details: `Shader cached successfully with ${result.metadata?.embedding?.length || 0} embedding dimensions`,
+        details: `Shader cached successfully with ${(result as { metadata?: any }).metadata?.embedding?.length || 0} embedding dimensions`,
       });
 
       testResults.metrics.passedTests++;

@@ -255,19 +255,7 @@ https://svelte.dev/e/js_parse_error -->
     editor.replaceSelection(formattedText);
   }
 
-  function addMark(mark: string, value: string) {
-    if (!editor) return;
-    const selectedText = editor.getSelectedText();
-    if (!selectedText) return;
-
-    let formattedText = selectedText;
-
-    switch (mark) {
-      case 'color':
-        formattedText = `<span style="color: ${value}">${selectedText}</span>`;
-        break;
-      case 'fontSize':
-        formattedText = `<span style="font-size: ${value}">${selectedText}</span>`;
+  function addMark(mark: string, value: string) {/* JSX syntax converted to Svelte */}">${selectedText}</span>`;
         break;
     }
     editor.replaceSelection(formattedText);

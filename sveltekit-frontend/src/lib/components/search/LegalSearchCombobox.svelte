@@ -44,16 +44,16 @@ https://svelte.dev/e/js_parse_error -->
     includeMetadata: boolean;
   }
   // Props
-  let { placeholder = $bindable() } = $props(); // "Search cases, precedents, statutes, evidence...";
-  let { value = $bindable() } = $props(); // "";
-  let { categories = $bindable() } = $props(); // SearchOptions['categories'] = ['cases', 'evidence', 'precedents', 'statutes'];
-  let { enableVectorSearch = $bindable() } = $props(); // true;
-  let { aiSuggestions = $bindable() } = $props(); // true;
-  let { maxResults = $bindable() } = $props(); // 20;
-  let { similarityThreshold = $bindable() } = $props(); // 0.7;
-  let { includeMetadata = $bindable() } = $props(); // true;
-  let { disabled = $bindable() } = $props(); // false;
-  let { class: className = $bindable("") } = $props();
+  let { placeholder = $bindable()  }: { placeholder = $bindable() : any } = $props(); // "Search cases, precedents, statutes, evidence...";
+  let { value = $bindable()  }: { value = $bindable() : any } = $props(); // "";
+  let { categories = $bindable()  }: { categories = $bindable() : any } = $props(); // SearchOptions['categories'] = ['cases', 'evidence', 'precedents', 'statutes'];
+  let { enableVectorSearch = $bindable()  }: { enableVectorSearch = $bindable() : any } = $props(); // true;
+  let { aiSuggestions = $bindable()  }: { aiSuggestions = $bindable() : any } = $props(); // true;
+  let { maxResults = $bindable()  }: { maxResults = $bindable() : any } = $props(); // 20;
+  let { similarityThreshold = $bindable()  }: { similarityThreshold = $bindable() : any } = $props(); // 0.7;
+  let { includeMetadata = $bindable()  }: { includeMetadata = $bindable() : any } = $props(); // true;
+  let { disabled = $bindable()  }: { disabled = $bindable() : any } = $props(); // false;
+  let { class: className = $bindable("")  }: { class: className = $bindable("") : any } = $props();
   // State
   let open = $state(false);
   let inputValue = value;
@@ -63,11 +63,7 @@ https://svelte.dev/e/js_parse_error -->
   let recentSearches = $state<string[] >([]);
   let suggestions = $state<string[] >([]);
   // Event dispatcher
-  const dispatch = createEventDispatcher<{
-    select: SearchResult;
-    search: { query: string; results: SearchResult[] };
-    clear: void;
-  }>();
+  const dispatch = createEventDispatcher();
   // Icons for different types
   const typeIcons = {
     caseItem: Scale,
@@ -114,27 +110,27 @@ https://svelte.dev/e/js_parse_error -->
         includeMetadata: includeMetadata.toString()
       });
       const response = await fetch(`/api/search/legal?${searchParams}`);
-      const data = await response.json();
-      if (data.success) {
-        searchResults = data.results.map((result: any) => ({
-          id: result.id,
-          title: result.title || result.content?.substring(0, 100) + '...',
-          type: result.type || 'document',
-          content: result.content || result.summary || '',
-          score: result.score || result.similarity || 0,
+      const data = await (response as { json?: any }).json();
+      if ((data as { toString?: any; success?: any; results?: any; error?: any; suggestions?: any }).success) {
+        searchResults = (data as { toString?: any; success?: any; results?: any; error?: any; suggestions?: any }).results.map((result: any) => ({
+          id: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).id,
+          title: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).title || (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).content?.substring(0, 100) + '...',
+          type: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).type || 'document',
+          content: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).content || (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).summary || '',
+          score: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).score || (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).similarity || 0,
           metadata: {
-            date: result.createdAt || result.date,
-            jurisdiction: result.jurisdiction,
-            status: result.status,
-            confidentiality: result.confidentialityLevel,
-            caseId: result.caseId,
-            tags: result.tags || []
+            date: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).createdAt || (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).date,
+            jurisdiction: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).jurisdiction,
+            status: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).status,
+            confidentiality: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).confidentialityLevel,
+            caseId: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).caseId,
+            tags: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).tags || []
           },
-          highlights: result.highlights || []
+          highlights: (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).highlights || []
         }));
         dispatch('search', { query, results: searchResults });
       } else {
-        console.error('Search failed:', data.error);
+        console.error('Search failed:', (data as { toString?: any; success?: any; results?: any; error?: any; suggestions?: any }).error);
         searchResults = [];
       }
     } catch (error) {
@@ -148,9 +144,9 @@ https://svelte.dev/e/js_parse_error -->
   async function loadAISuggestions() {
     try {
       const response = await fetch('/api/search/suggestions');
-      const data = await response.json();
-      if (data.success) {
-        suggestions = data.suggestions || [];
+      const data = await (response as { json?: any }).json();
+      if ((data as { toString?: any; success?: any; results?: any; error?: any; suggestions?: any }).success) {
+        suggestions = (data as { toString?: any; success?: any; results?: any; error?: any; suggestions?: any }).suggestions || [];
       }
     } catch (error) {
       console.error('Failed to load AI suggestions:', error);
@@ -170,12 +166,12 @@ https://svelte.dev/e/js_parse_error -->
   // Handle result selection
   function handleSelect(result: SearchResult) {
     selectedResult = result;
-    inputValue = result.title;
+    inputValue = (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).title;
     value = inputValue;
     open = false;
     // Add to recent searches
-    if (!recentSearches.includes(result.title)) {
-      recentSearches = [result.title, ...recentSearches.slice(0, 4)];
+    if (!recentSearches.includes((result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).title)) {
+      recentSearches = [(result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).title, ...recentSearches.slice(0, 4)];
       localStorage.setItem('legalSearchHistory', JSON.stringify(recentSearches));
     }
     dispatch('select', result);
@@ -214,8 +210,7 @@ https://svelte.dev/e/js_parse_error -->
           "disabled:cursor-not-allowed disabled:opacity-50",
           selectedResult && "text-gray-900 font-medium"
         )}
-        {placeholder}
-        input={handleInputChange}
+        {placeholder} on:input={handleInputChange}
         autocomplete="off"
       />
       
@@ -235,7 +230,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           type="button"
           class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-          onclick={handleClear}
+          on:click={handleClear}
         >
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -302,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
                   <Combobox.Item
                     value={search}
                     class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                    onclick={() => {
+                    on:click={() => {
                       inputValue = search;
                       performSearch(search);
                     }}
@@ -325,7 +320,7 @@ https://svelte.dev/e/js_parse_error -->
                   <Combobox.Item
                     value={suggestion}
                     class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                    onclick={() => {
+                    on:click={() => {
                       inputValue = suggestion;
                       performSearch(suggestion);
                     }}
@@ -340,65 +335,65 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           {#each displayResults as result}
             <Combobox.Item
-              value={result.title}
+              value={(result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).title}
               class={cn(
                 "flex items-start space-x-3 rounded-md p-3 text-sm",
                 "hover:bg-gray-50 cursor-pointer transition-colors",
                 "data-[highlighted]:bg-blue-50"
               )}
-              onclick={() => handleSelect(result)}
+              on:click={() => handleSelect(result)}
             >
               <!-- Type Icon -->
-              <div class={cn("flex-shrink-0 mt-1", typeColors[result.type] || 'text-gray-500')}>
-                <svelte:component this={typeIcons[result.type] || FileText} class="h-4 w-4" />
+              <div class={cn("flex-shrink-0 mt-1", typeColors[(result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).type] || 'text-gray-500')}>
+                <svelte:component this={typeIcons[(result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).type] || FileText} class="h-4 w-4" />
               </div>
               
               <!-- Content -->
               <div class="flex-1 min-w-0">
                 <div class="flex items-center justify-between">
                   <p class="font-medium text-gray-900 truncate">
-                    {result.title}
+                    {(result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).title}
                   </p>
-                  {#if result.score}
+                  {#if (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).score}
                     <span class="flex-shrink-0 ml-2 text-xs text-gray-500 bg-gray-100 rounded px-1.5 py-0.5">
-                      {Math.round(result.score * 100)}%
+                      {Math.round((result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).score * 100)}%
                     </span>
                   {/if}
                 </div>
                 
                 <!-- Content Preview -->
-                {#if result.content}
+                {#if (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).content}
                   <p class="text-gray-600 text-xs mt-1 line-clamp-2">
-                    {result.content.substring(0, 120)}...
+                    {(result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).content.substring(0, 120)}...
                   </p>
                 {/if}
                 
                 <!-- Metadata -->
-                {#if result.metadata && (result.metadata.date || result.metadata.status || result.metadata.jurisdiction)}
+                {#if (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).metadata && ((result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).metadata.date || (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).metadata.status || (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).metadata.jurisdiction)}
                   <div class="flex items-center space-x-2 mt-2">
-                    {#if result.metadata.date}
+                    {#if (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).metadata.date}
                       <span class="text-xs text-gray-500">
-                        {new Date(result.metadata.date).toLocaleDateString()}
+                        {new Date((result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).metadata.date).toLocaleDateString()}
                       </span>
                     {/if}
-                    {#if result.metadata.status}
+                    {#if (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).metadata.status}
                       <span class="text-xs bg-green-100 text-green-800 rounded px-1.5 py-0.5">
-                        {result.metadata.status}
+                        {(result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).metadata.status}
                       </span>
                     {/if}
-                    {#if result.metadata.jurisdiction}
+                    {#if (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).metadata.jurisdiction}
                       <span class="text-xs bg-blue-100 text-blue-800 rounded px-1.5 py-0.5">
-                        {result.metadata.jurisdiction}
+                        {(result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).metadata.jurisdiction}
                       </span>
                     {/if}
                   </div>
                 {/if}
                 
                 <!-- Highlights -->
-                {#if result.highlights && result.highlights.length > 0}
+                {#if (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).highlights && (result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).highlights.length > 0}
                   <div class="mt-1 text-xs text-yellow-700">
                     <span class="bg-yellow-100 px-1 rounded">
-                      ...{result.highlights[0]}...
+                      ...{(result as { id?: any; title?: any; content?: any; type?: any; summary?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; metadata?: any }).highlights[0]}...
                     </span>
                   </div>
                 {/if}

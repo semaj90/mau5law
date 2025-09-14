@@ -8,8 +8,8 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { browser } from '$app/environment';
 import type { RouteDefinition } from '$lib/data/routes-config';
-import type { GeneratedRoute } from './dynamic-route-generator.js';
-import { routeRegistry } from './route-registry.js';
+import type { GeneratedRoute } from './dynamic-route-generator.js.js';
+import { routeRegistry } from './route-registry.js.js';
 // Remove unused Node.js imports - not needed for this implementation
 
 export interface NavigationState {
@@ -240,7 +240,7 @@ export class DynamicNavigation {
   private async checkNavigationGuards(
     to: string,
     from: string
-  ): Promise<{ allowed: boolean; redirectTo?: string }> {
+  ): Promise<any> {
     for (const guard of this.guards.values()) {
       const allowed = await guard.condition(to, from);
 

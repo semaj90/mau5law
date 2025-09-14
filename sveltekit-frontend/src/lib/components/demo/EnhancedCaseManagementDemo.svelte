@@ -166,9 +166,9 @@
     <div>
       <divHeader class="flex flex-row items-center justify-between">
         <divTitle>Database Health</h3>
-        <Button class="bits-btn" variant="outline" size="sm" onclick={refreshHealth}>
-          Refresh
-        </button>
+        <Button class="bits-btn" variant="outline" size="sm" on:click={refreshHealth}>
+Refresh
+
       </div>
       <divContent>
         <div class="space-y-2">
@@ -196,9 +196,9 @@
     <div>
       <divHeader class="flex flex-row items-center justify-between">
         <divTitle>Cache Metrics</h3>
-        <Button class="bits-btn" variant="outline" size="sm" onclick={refreshMetrics}>
-          Refresh
-        </button>
+        <Button class="bits-btn" variant="outline" size="sm" on:click={refreshMetrics}>
+Refresh
+
       </div>
       <divContent>
         <div class="space-y-2">
@@ -279,12 +279,12 @@
           </div>
           
           <Button 
-            onclick={createCase}
+            on:click={createCase}
             disabled={isLoading || !newCaseData.title || !newCaseData.description}
             class="w-full bits-btn bits-btn"
           >
-            {isLoading && currentState === 'creatingCase' ? 'Creating...' : 'Create Case'}
-          </button>
+{isLoading && currentState === 'creatingCase' ? 'Creating...' : 'Create Case'}
+
         </div>
       </div>
     </div>
@@ -307,21 +307,20 @@
           </div>
           
           <Button 
-            onclick={searchCases}
+            on:click={searchCases}
             disabled={isLoading || !searchQuery.trim()}
             class="w-full bits-btn bits-btn"
           >
-            {isLoading && currentState === 'searchingWithCognition' ? 'Searching...' : 'Search with AI'}
-          </button>
-          
+{isLoading && currentState === 'searchingWithCognition' ? 'Searching...' : 'Search with AI'}
+
           {#if context.searchResults.length > 0}
             <div class="mt-4">
               <h4 class="font-medium mb-2">Search Results ({context.searchResults.length})</h4>
               <div class="space-y-2 max-h-40 overflow-y-auto">
                 {#each context.searchResults as result}
                   <div class="p-2 bg-gray-50 rounded text-sm">
-                    <div class="font-medium">{result.title}</div>
-                    <div class="text-gray-600 truncate">{result.description}</div>
+                    <div class="font-medium">{(result as { title?: any; description?: any }).title}</div>
+                    <div class="text-gray-600 truncate">{(result as { title?: any; description?: any }).description}</div>
                   </div>
                 {/each}
               </div>
@@ -346,27 +345,28 @@
         <div class="flex flex-wrap gap-2">
           <Button class="bits-btn" 
             variant="outline" 
-            onclick={() => loadCase('demo-case-001')}
+            on:click={() =>
+loadCase('demo-case-001')}
             disabled={isLoading}
           >
             Load Case (Standard)
-          </button>
-          
+
           <Button class="bits-btn" 
             variant="outline" 
-            onclick={() => loadCase('demo-case-002', true)}
+            on:click={() =>
+loadCase('demo-case-002', true)}
             disabled={isLoading}
           >
             Load Case (With Prediction)
-          </button>
-          
+
           <Button class="bits-btn" 
             variant="outline" 
-            onclick={() => loadCase('demo-case-003')}
+            on:click={() =>
+loadCase('demo-case-003')}
             disabled={isLoading}
           >
             Load Case (Cache Priority)
-          </button>
+
         </div>
         
         {#if context.currentCase}

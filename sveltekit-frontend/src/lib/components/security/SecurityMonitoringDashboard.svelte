@@ -229,25 +229,28 @@
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        onclick={() => loadSecurityEvents()}
+        on:click={() =>
+loadSecurityEvents()}
         disabled={loading}
       >
         <RefreshCw class={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
         Refresh
-      </button>
-      <Button class="bits-btn" variant="outline" size="sm" onclick={() => exportEvents()}>
+</Button>
+      <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+exportEvents()}>
         <Download class="h-4 w-4" />
         Export
-      </button>
+</Button>
       <Button 
         class="bits-btn container mx-auto px-4"
         variant="outline"
         size="sm"
-        onclick={() => clearAllEvents()}
+        on:click={() =>
+clearAllEvents()}
       >
         <Trash2 class="h-4 w-4" />
         Clear All
-      </button>
+</Button>
     </div>
   </div>
 
@@ -453,10 +456,11 @@
                   class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => toggleEventDetails(index)}
+                  on:click={() =>
+toggleEventDetails(index)}
                 >
                   <Eye class="h-4 w-4" />
-                </button>
+</Button>
               </div>
             </div>
           {/each}

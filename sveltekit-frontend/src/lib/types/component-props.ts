@@ -1,7 +1,7 @@
 // Centralized Component Props for Svelte 5 Components
 // This file contains strongly typed prop interfaces for reusable components
 
-import type { User } from './user';
+import type { User } from './user.js';
 
 // Base Props
 export interface BaseComponentProps {
@@ -253,10 +253,7 @@ export interface SelectOption {
 
 // Bits UI Demo Props
 export interface BitsDemoProps extends BaseComponentProps {
-  caseTypes?: Array<{
-    value: string;
-    label: string;
-  }>;
+  caseTypes?: Array<any>;
   useLibrary?: 'bits-ui' | 'melt-ui';
 }
 

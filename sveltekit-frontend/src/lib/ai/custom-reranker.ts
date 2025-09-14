@@ -45,20 +45,20 @@ export class LegalAIReranker {
   ): Promise<RerankResult[]> {
     return annResults
       .map((result) => {
-        let score = result.originalScore;
+        let score = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).originalScore;
 
         // Intent matching (critical for legal workflows)
-        if (result.intent === userContext.intent) {
+        if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).intent === userContext.intent) {
           score += this.contextWeights.intent;
         }
 
         // Time-based relevance (court schedules, deadlines)
-        if (result.timeOfDay === userContext.timeOfDay) {
+        if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).timeOfDay === userContext.timeOfDay) {
           score += this.contextWeights.timeOfDay;
         }
 
         // UI position context (focused evidence, active case)
-        if (result.position === userContext.focusedElement) {
+        if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).position === userContext.focusedElement) {
           score += this.contextWeights.position;
         }
 
@@ -72,7 +72,7 @@ export class LegalAIReranker {
         score += this.calculateRecencyScore(result, userContext.recentActions);
 
         // Confidence penalty for low-confidence AI results
-        score *= result.confidence / 100;
+        score *= (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).confidence / 100;
 
         return {
           ...result,
@@ -105,7 +105,7 @@ export class LegalAIReranker {
     };
 
     const boosts = roleBoosts[role as keyof typeof roleBoosts];
-    const contentType = result.metadata?.type as string;
+    const contentType = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata?.type as string;
 
     return boosts?.[contentType as keyof typeof boosts] || 0;
   }
@@ -124,7 +124,7 @@ export class LegalAIReranker {
     };
 
     const boosts = workflowBoosts[workflowState as keyof typeof workflowBoosts];
-    const actionType = result.metadata?.actionType as string;
+    const actionType = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata?.actionType as string;
 
     return boosts?.[actionType as keyof typeof boosts] || 0;
   }
@@ -136,7 +136,7 @@ export class LegalAIReranker {
     result: RerankResult,
     recentActions: string[],
   ): number {
-    const resultAction = result.metadata?.lastAction as string;
+    const resultAction = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata?.lastAction as string;
     const actionIndex = recentActions.indexOf(resultAction);
 
     if (actionIndex === -1) return 0;
@@ -154,9 +154,9 @@ export class LegalAIReranker {
     result: RerankResult,
     queryEmbedding: number[],
   ): Promise<number> {
-    if (!result.metadata?.embedding || !queryEmbedding) return 0;
+    if (!(result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata?.embedding || !queryEmbedding) return 0;
 
-    const resultEmbedding = result.metadata.embedding as number[];
+    const resultEmbedding = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).metadata.embedding as number[];
     return this.cosineSimilarity(queryEmbedding, resultEmbedding);
   }
 
@@ -215,19 +215,19 @@ export async function enhancedSearchWithNeo4j(
 
   // Convert to rerank format with Neo4j enrichment
   const rerankInput: RerankResult[] = annResults.map((result: any) => ({
-    id: result.id,
-    content: result.payload?.text || "",
+    id: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).id,
+    content: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.text || "",
     metadata: {
-      ...result.payload,
+      ...(result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload,
       neo4jPath: neo4jContext ? calculatePathScore(result, neo4jContext) : 0,
       relatedCases: neo4jContext?.relatedCases || [],
       userFrequency: neo4jContext
         ? calculateFrequencyScore(result, neo4jContext)
         : 0,
     },
-    originalScore: result.score || 0,
+    originalScore: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).score || 0,
     rerankScore: 0,
-    confidence: (result.score || 0) * 100,
+    confidence: ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).score || 0) * 100,
   }));
 
   // Apply custom reranking with Neo4j context
@@ -249,8 +249,8 @@ function calculatePathScore(
   // Check if result relates to user's recent path
   neo4jContext.userPath.forEach((pathNode, index) => {
     if (
-      result.content?.includes(pathNode) ||
-      result.payload?.tags?.includes(pathNode)
+      (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).content?.includes(pathNode) ||
+      (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.tags?.includes(pathNode)
     ) {
       pathScore +=
         (neo4jContext.userPath.length - index) / neo4jContext.userPath.length;
@@ -259,7 +259,7 @@ function calculatePathScore(
 
   // Boost score for related cases
   neo4jContext.relatedCases.forEach((caseId) => {
-    if (result.payload?.caseId === caseId) {
+    if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.caseId === caseId) {
       pathScore += 1.5;
     }
   });
@@ -274,7 +274,7 @@ function calculateFrequencyScore(
   result: any,
   neo4jContext: Neo4jPathContext,
 ): number {
-  const nodeId = result.id || result.payload?.nodeId;
+  const nodeId = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).id || (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.nodeId;
   if (!nodeId) return 0;
 
   const timeSpent = neo4jContext.timeSpentByNode[nodeId] || 0;
@@ -304,7 +304,7 @@ import type {
   UploadedFile,
   MCPServerData,
   SynthesisOptions,
-} from "./types";
+} from './types.js';
 
 export async function synthesizeMultiLLMOutput({
   llmOutputs,
@@ -318,15 +318,7 @@ export async function synthesizeMultiLLMOutput({
   uploadedFiles: UploadedFile[];
   mcpServers: MCPServerData[];
   options?: SynthesisOptions;
-}): Promise<{
-  fixes: string[];
-  codeReview: string;
-  analysis: string;
-  summary: string;
-  nextSteps: string[];
-  generativeAutocomplete: string;
-  selfPrompt: string;
-}> {
+}): Promise<any> {
   // 1. Cache and auto-encode all inputs for fast retrieval and training
   // (Use Loki.js or similar for local cache)
   // ...existing code...

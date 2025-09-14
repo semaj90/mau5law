@@ -5,24 +5,15 @@
  */
 
 // Remove problematic imports - these are handled internally
-// import { intelligentModelSwitcher } from './intelligent-model-switcher.js';
-// import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js';
+// import { intelligentModelSwitcher } from './intelligent-model-switcher.js.js';
+// import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js.js';
 // import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
 
 export interface UserIntentPrediction {
   primaryIntent: string;
   confidence: number;
-  alternativeIntents: Array<{
-    intent: string;
-    confidence: number;
-    reason: string;
-  }>;
-  suggestedActions: Array<{
-    action: string;
-    description: string;
-    confidence: number;
-    estimatedTime: number; // seconds to complete
-  }>;
+  alternativeIntents: Array<any>;
+  suggestedActions: Array<any>;
   contextualInsights: {
     userExpertiseLevel: number; // 0-1
     taskComplexity: number; // 0-1
@@ -48,13 +39,7 @@ export interface DidYouMeanSuggestion {
 
 export interface TaskCompletionPrediction {
   taskType: string;
-  estimatedSteps: Array<{
-    stepNumber: number;
-    description: string;
-    suggestedModel: string;
-    estimatedDuration: number;
-    confidence: number;
-  }>;
+  estimatedSteps: Array<any>;
   totalEstimatedTime: number;
   successProbability: number;
   potentialChallenges: string[];
@@ -65,11 +50,7 @@ export interface UserLearningInsights {
   learningVelocity: number; // How quickly user is learning (queries/hour improvement)
   preferredCommunicationStyle: 'concise' | 'detailed' | 'step_by_step' | 'contextual' | 'balanced';
   expertiseDomains: Map<string, number>; // domain -> proficiency (0-1)
-  commonMistakePatterns: Array<{
-    pattern: string;
-    frequency: number;
-    suggestedImprovement: string;
-  }>;
+  commonMistakePatterns: Array<any>;
   personalizedShortcuts: Map<string, string>; // user_term -> system_understanding
   adaptationRecommendations: string[];
 }
@@ -87,13 +68,7 @@ class UserIntentPredictionSystem {
   private userInsightCache = new Map<string, UserLearningInsights>();
 
   // Learning and adaptation
-  private feedbackHistory: Array<{
-    query: string;
-    predictedIntent: string;
-    actualIntent: string;
-    userFeedback: number; // 1-5
-    timestamp: number;
-  }> = [];
+  private feedbackHistory: Array< = [];
 
   constructor() {
     this.intentClassifier = new IntentClassifierModel();
@@ -117,13 +92,7 @@ class UserIntentPredictionSystem {
       currentTask?: string;
       userFeedback?: number;
     }
-  ): Promise<{
-    intentPrediction: UserIntentPrediction;
-    didYouMeanSuggestions: DidYouMeanSuggestion[];
-    taskCompletion: TaskCompletionPrediction;
-    userInsights: UserLearningInsights;
-    processingTime: number;
-  }> {
+  ): Promise<any> {
     const startTime = performance.now();
 
     try {
@@ -186,18 +155,8 @@ class UserIntentPredictionSystem {
   /**
    * Fast task assistance: Provide immediate help based on user query
    */
-  async provideFastTaskAssistance(query: string, userContext: any): Promise<{
-    quickActions: Array<{
-      action: string;
-      description: string;
-      oneClickExecute: boolean;
-      estimatedTime: string;
-    }>;
-    contextualHelp: Array<{
-      helpType: 'explanation' | 'example' | 'tutorial' | 'shortcut';
-      content: string;
-      relevanceScore: number;
-    }>;
+  async provideFastTaskAssistance(query: string, userContext: any): Promise<;
+    contextualHelp: Array<any>;
     personalizedSuggestions: string[];
     nextStepPrediction: string;
   }> {
@@ -622,13 +581,7 @@ class UserIntentPredictionSystem {
   /**
    * Get system performance statistics
    */
-  async getSystemStats(): Promise<{
-    totalPredictions: number;
-    cacheHitRate: number;
-    avgProcessingTime: number;
-    intentAccuracy: number;
-    suggestionAcceptanceRate: number;
-  }> {
+  async getSystemStats(): Promise<any> {
     const totalPredictions = this.feedbackHistory.length;
     const cacheHitRate = this.intentCache.size > 0 ? 0.75 : 0; // Estimated
 
@@ -653,7 +606,7 @@ class UserIntentPredictionSystem {
 
 // Placeholder classes for ML components
 class IntentClassifierModel {
-  async classify(features: Float32Array): Promise<{ intent: string; confidence: number }> {
+  async classify(features: Float32Array): Promise<any> {
     // Simplified classification based on features
     if (features[4] > 0.3) return { intent: 'legal_analysis', confidence: 0.8 };
     if (features[5] > 0.5) return { intent: 'search', confidence: 0.7 };
@@ -663,9 +616,9 @@ class IntentClassifierModel {
 }
 
 class SpellingCorrectionEngine {
-  async correct(query: string): Promise<Array<{ correctedText: string; originalWord: string; correctedWord: string; confidence: number }>> {
+  async correct(query: string): Promise<Array<any> {
     // Simplified spell checking
-    const corrections: Array<{ correctedText: string; originalWord: string; correctedWord: string; confidence: number }> = [];
+    const corrections: Array< = [];
     const words = query.split(' ');
 
     const commonMisspellings: Record<string, string> = {
@@ -693,8 +646,8 @@ class SpellingCorrectionEngine {
   }
 }
 class SynonymExpansionEngine {
-  async expand(query: string, intent: string): Promise<Array<{ expandedText: string; originalTerm: string; legalTerm: string; confidence: number }>> {
-    const expansions: Array<{ expandedText: string; originalTerm: string; legalTerm: string; confidence: number }> = [];
+  async expand(query: string, intent: string): Promise<Array<any> {
+    const expansions: Array< = [];
 
     const legalSynonyms: Record<string, string> = {
       'agreement': 'contract',

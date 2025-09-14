@@ -34,18 +34,18 @@ type AIEvent =
 
 export const aiGlobalMachine = setup({
   types: {
-    context: {} as AIContext,
-    events: {} as AIEvent,
+    context: Record<string, any> as AIContext,
+    events: Record<string, any> as AIEvent,
   },
   actions: {
     setContext: assign(({ event }) => {
       if (event.type !== "SUMMARIZE") return {};
-      const cacheKey = `${event.caseId}:${hashEvidence(event.evidence)}:${event.model}`;
+      const cacheKey = `${event.caseId}:${hashEvidence(event.evidence)}:${event?.model || "unknown" // @ts-ignore - Model property access}`;
       return {
         caseId: event.caseId,
         evidence: event.evidence,
         userId: event.userId,
-        model: event.model,
+        model: event?.model || "unknown" // @ts-ignore - Model property access,
         cacheKey,
         loading: true,
         error: "",
@@ -95,7 +95,7 @@ export const aiGlobalMachine = setup({
           caseId: input.caseId,
           evidence: input.evidence,
           userId: input.userId,
-          model: input.model,
+          model: input?.model || "unknown" // @ts-ignore - Model property access,
         }),
         headers: { "Content-Type": "application/json" },
       });

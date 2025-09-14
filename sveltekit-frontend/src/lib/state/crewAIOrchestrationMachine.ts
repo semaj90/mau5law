@@ -36,14 +36,7 @@ export interface CrewAIContext {
   focusSchema: 'document_edit' | 'review_mode' | 'analysis_mode' | 'idle_mode';
   
   // Results & recommendations
-  currentRecommendations: Array<{
-    id: string;
-    type: 'edit' | 'structure' | 'compliance' | 'risk';
-    text: string;
-    confidence: number;
-    position?: number;
-    accepted?: boolean;
-  }>;
+  currentRecommendations: Array<any>;
   
   // Error handling
   retryCount: number;
@@ -76,8 +69,8 @@ export type CrewAIEvents =
 
 export const crewAIOrchestrationMachine = setup({
   types: {
-    context: {} as CrewAIContext,
-    events: {} as CrewAIEvents,
+    context: Record<string, any> as CrewAIContext,
+    events: Record<string, any> as CrewAIEvents,
   },
   
   actors: {

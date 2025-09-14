@@ -1,6 +1,6 @@
 // Export a simple API compatible with named imports used in pages
-export { default as Tooltip } from "../Tooltip.svelte";
-export { default } from "../Tooltip.svelte";
+export { default as Tooltip } from '../Tooltip.svelte.js';
+export { default } from '../Tooltip.svelte.js';
 
 // Provide fallbacks for Content/Trigger/Provider to avoid TS import errors
 export const TooltipContent = undefined;

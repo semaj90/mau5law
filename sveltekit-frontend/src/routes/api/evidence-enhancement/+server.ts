@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';
 import { ollamaConfig } from '$lib/services/ollama-config-service.js';
 import { ENV_CONFIG } from '$lib/config/environment.js';
@@ -254,7 +254,7 @@ Consider:
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: CONFIG.ollama.model,
+        model: CONFIG.ollama?.model || "unknown" // @ts-ignore - Model property access,
         prompt: analysisPrompt,
         stream: false,
         options: {
@@ -369,7 +369,7 @@ ${evidenceText}`;
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: CONFIG.ollama.model,
+        model: CONFIG.ollama?.model || "unknown" // @ts-ignore - Model property access,
         prompt: entityPrompt,
         stream: false,
         options: {
@@ -513,7 +513,7 @@ Focus on:
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: CONFIG.ollama.model,
+        model: CONFIG.ollama?.model || "unknown" // @ts-ignore - Model property access,
         prompt: analysisPrompt,
         stream: false,
         options: {

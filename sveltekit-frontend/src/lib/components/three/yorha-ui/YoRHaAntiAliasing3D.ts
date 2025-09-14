@@ -5,8 +5,8 @@
  */
 
 import * as THREE from 'three';
-import { YoRHa3DComponent, YORHA_COLORS } from './YoRHaUI3D';
-import type { YoRHaStyle } from './YoRHaUI3D';
+import { YoRHa3DComponent, YORHA_COLORS } from './YoRHaUI3D.js';
+import type { YoRHaStyle } from './YoRHaUI3D.js';
 
 // Anti-aliasing configuration types
 export interface AntiAliasingConfig {

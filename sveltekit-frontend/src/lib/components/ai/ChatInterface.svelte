@@ -261,7 +261,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  function handleThinkingToggle(event: CustomEvent<{ enabled: boolean }>) {
+  function handleThinkingToggle(event: CustomEvent) {
     thinkingStyleEnabled = event.detail.enabled;
 
     // Add a system message to indicate the change
@@ -384,11 +384,11 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={quickAnalyzeEvidence}
+            on:click={quickAnalyzeEvidence}
             disabled={$isLoading}
           >
-            🔍 Quick Analysis
-          </Button>
+🔍 Quick Analysis
+
         {/if}
 
         <div class="mx-auto px-4 max-w-7xl">
@@ -489,8 +489,8 @@ https://svelte.dev/e/js_parse_error -->
             ? "Ask for detailed analysis... (Enter to send, Shift+Enter for new line)"
             : "Type your message... (Enter to send, Shift+Enter for new line)"}
           class="mx-auto px-4 max-w-7xl"
-          onkeydown={handleKeyDown}
-          oninput={autoResize}
+          on:keydown={handleKeyDown}
+          on:input={autoResize}
           disabled={$isLoading}
         />
       </div>
@@ -499,7 +499,7 @@ https://svelte.dev/e/js_parse_error -->
         variant="default"
         size="sm"
         class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-        onclick={() => sendMessage()}
+        on:click={() => sendMessage()}
         disabled={$isLoading || !messageInput.trim()}
       >
         {#if $isLoading}
@@ -507,7 +507,7 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           <Send class="mx-auto px-4 max-w-7xl" />
         {/if}
-      </button>
+
     </div>
 
     <!-- Enhanced Status Text -->

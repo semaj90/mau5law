@@ -239,7 +239,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     }
 
     this.metrics.stringifyTime = performance.now() - startTime;
-    this.metrics.compressionRatio = JSON.stringify(obj).length / result.length;
+    this.metrics.compressionRatio = JSON.stringify(obj).length / (result as { length?: any }).length;
 
     return result;
   }
@@ -547,7 +547,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       
       return {
         chunks: Array.isArray(result) ? result : [result],
-        totalSize: data.length,
+        totalSize: (data as { length?: any }).length,
         parseTime,
         errors: []
       };
@@ -555,7 +555,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       const parseTime = performance.now() - startTime;
       return {
         chunks: [],
-        totalSize: data.length,
+        totalSize: (data as { length?: any }).length,
         parseTime,
         errors: [error instanceof Error ? error.message : String(error)]
       };
@@ -581,11 +581,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
   /**
    * Benchmark against native JSON and RapidJSON
    */
-  async benchmark(): Promise<{
-    native: { parse: number; stringify: number };
-    ours: { parse: number; stringify: number };
-    speedup: { parse: number; stringify: number };
-  }> {
+  async benchmark(): Promise<any> {
     const testData = {
       users: Array.from({ length: 1000 }, (_, i) => ({
         id: i,

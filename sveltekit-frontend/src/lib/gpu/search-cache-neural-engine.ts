@@ -5,7 +5,7 @@
  * All duplicates were removed, keeping a single, coherent implementation
  * that now includes a sophisticated user analytics and recommendation engine.
  */
-import type { LegalDocument } from '../memory/nes-memory-architecture';
+import type { LegalDocument } from '../memory/nes-memory-architecture.js';
 // --- Helpers & Mock Subsystems ---
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -53,7 +53,7 @@ class MockMinioClient {
     await sleep(10);
     // Provide some deterministic pseudo-data for personalization synthesis
     const data = new Float32Array(16);
-    for (let i = 0; i < data.length; i++) data[i] = ((i + glyphId.length) % 7) / 7;
+    for (let i = 0; i < (data as { length?: any }).length; i++) data[i] = ((i + glyphId.length) % 7) / 7;
     return { id: glyphId, embeddedVertexData: data };
   }
 }
@@ -78,7 +78,7 @@ class UserAnalyticsEngine {
   async generateRecommendations(
     document: LegalDocument,
     context: RenderContext
-  ): Promise<{ personalizationVector: Float32Array; recommendedDocIds: string[] }> {
+  ): Promise<any> {
     console.log(`[Analytics] Generating recommendations for user & document ${document.id}`);
 
     const userId = 'user-123';
@@ -617,9 +617,9 @@ export class SearchCacheNeuralEngine {
       `neural_opt:${docId}:${Date.now()}`,
       JSON.stringify({
         t: Date.now(),
-        q: result.recommendedShaderVariant.quality,
-        lod: result.optimalLODLevel.level,
-        conf: result.confidenceScore,
+        q: (result as { recommendedShaderVariant?: any; optimalLODLevel?: any; confidenceScore?: any }).recommendedShaderVariant.quality,
+        lod: (result as { recommendedShaderVariant?: any; optimalLODLevel?: any; confidenceScore?: any }).optimalLODLevel.level,
+        conf: (result as { recommendedShaderVariant?: any; optimalLODLevel?: any; confidenceScore?: any }).confidenceScore,
       }),
       3600
     );

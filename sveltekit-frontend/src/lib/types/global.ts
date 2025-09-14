@@ -42,19 +42,7 @@ export interface SystemStatus {
   embeddings?: boolean;
   vectorSearch?: boolean;
   tauriLLM?: boolean;
-  localModels?: Array<{
-    name: string;
-    status: string;
-    size: string;
-    // Extended local model properties
-    id?: string;
-    isLoaded?: boolean;
-    type?: string;
-    domain?: string;
-    architecture?: string;
-    dimensions?: number;
-    description?: string;
-  }>;
+  localModels?: Array<any>;
   recommendations?: string[];
 }
 
@@ -80,18 +68,7 @@ export interface SearchResults {
   suggestions?: string[];
   // Extended properties for legal AI demo
   executionTime?: number;
-  results?: Array<{
-    id: string;
-    title: string;
-    content: string;
-    score: number;
-    metadata?: unknown;
-    // Additional search result properties
-    type?: string;
-    relevance?: number;
-    description?: string;
-    url?: string;
-  }>;
+  results?: Array<any>;
   hasMore?: boolean;
   nextCursor?: string;
   searchMetadata?: {
@@ -143,13 +120,7 @@ export interface AnalysisResults {
   processing_time?: number;
   model_used?: string;
   // Extended / flexible entities list
-  keyEntities?: Array<{
-    // Accept either `entity` or `text` for downstream compatibility
-    entity?: string;
-    text?: string;
-    type?: string;
-    confidence?: number;
-  }>;
+  keyEntities?: Array<any>;
   classification?: {
     // Support multiple naming variants encountered in pages
     documentType?: string;

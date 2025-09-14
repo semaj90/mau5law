@@ -5,7 +5,7 @@
 
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { db } from '$lib/server/db/connection';
+import { db } from '$lib/server/db/unified-client';
 import { citations } from '$lib/server/db/schemas/cases-schema';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
@@ -16,7 +16,7 @@ const VerificationRequestSchema = z.object({
   citationText: z.string().optional(),
   verificationLevel: z.enum(['basic', 'comprehensive', 'deep']).default('basic'),
   autoUpdate: z.boolean().default(false),
-}).refine(data => data.citationId || data.citationText, {
+}).refine(data => (data as { citationId?: any; citationText?: any }).citationId || (data as { citationId?: any; citationText?: any }).citationText, {
   message: "Either citationId or citationText must be provided"
 });
 
@@ -255,11 +255,11 @@ async function verifyWithLegalDatabases(citationText: string): Promise<any> {
   };
 
   const sources = Object.entries(mockResults)
-    .filter(([_, result]) => result.found)
+    .filter(([_, result]) => (result as { found?: any; confidence?: any; url?: any }).found)
     .map(([source, result]) => ({
       database: source,
-      confidence: result.confidence,
-      url: result.url,
+      confidence: (result as { found?: any; confidence?: any; url?: any }).confidence,
+      url: (result as { found?: any; confidence?: any; url?: any }).url,
       verified: true,
     }));
 

@@ -44,9 +44,7 @@ https://svelte.dev/e/js_parse_error -->
 
   	// Real-time updates
   let metricsInterval = $state<NodeJS.Timeout;
-  let statusInterval = $state<NodeJS.Timeout;
-
-  	onMount(async () => { {
+  let statusInterval = $state<NodeJS.TimeoutonMount(async () = | null>(null)() { {
   		await loadGPUData();
   		startRealtimeUpdates();
   		return () => { {
@@ -167,7 +165,7 @@ https://svelte.dev/e/js_parse_error -->
   				type: 'Query Processing',
   				input: queryText,
   				result: result,
-  				success: result.status === 'success'
+  				success: (result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).status === 'success'
   			}];
 
   		} catch (err: any) {
@@ -256,7 +254,7 @@ https://svelte.dev/e/js_parse_error -->
 							<h3 class="text-sm font-medium text-red-800">Error</h3>
 							<p class="mt-1 text-sm text-red-700">{error}</p>
 							<button 
-								onclick={loadGPUData}
+								on:click={loadGPUData}
 								class="mt-2 text-sm bg-red-100 text-red-800 px-3 py-1 rounded hover:bg-red-200"
 							>
 								Retry
@@ -339,7 +337,7 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 
 					<button
-						onclick={processDocument}
+						on:click={processDocument}
 						disabled={isProcessing || !documentText.trim()}
 						class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
 					>
@@ -373,7 +371,7 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 
 					<button
-						onclick={processQuery}
+						on:click={processQuery}
 						disabled={isProcessing || !queryText.trim()}
 						class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
 					>
@@ -396,7 +394,7 @@ https://svelte.dev/e/js_parse_error -->
 					<div class="flex justify-between items-center mb-4">
 						<h3 class="text-lg font-semibold text-gray-900">Processing Results</h3>
 						<button
-							onclick={clearResults}
+							on:click={clearResults}
 							class="text-sm text-gray-600 hover:text-gray-800"
 						>
 							Clear Results
@@ -405,35 +403,35 @@ https://svelte.dev/e/js_parse_error -->
 					
 					<div class="space-y-4 max-h-96 overflow-y-auto">
 						{#each processingResults.slice().reverse() as result}
-							<div class={`border-l-4 pl-4 py-2 ${result.success ? 'border-green-400 bg-green-50' : 'border-red-400 bg-red-50'}`}>
+							<div class={`border-l-4 pl-4 py-2 ${(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).success ? 'border-green-400 bg-green-50' : 'border-red-400 bg-red-50'}`}>
 								<div class="flex justify-between items-start">
 									<div class="flex-1">
 										<p class="font-medium text-sm">
-											{result.type} - {result.timestamp}
+											{(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).type} - {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).timestamp}
 										</p>
 										<p class="text-xs text-gray-600 mt-1">
-											Input: {result.input}
+											Input: {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).input}
 										</p>
-										{#if result.success && result.result}
+										{#if (result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).success && (result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).result}
 											<div class="mt-2">
 												<p class="text-xs text-green-800">
-													Status: {result.result.status}
+													Status: {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).status}
 												</p>
-												{#if result.result.result}
+												{#if (result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).result}
 													<p class="text-xs text-gray-600">
-														Result: {result.result.result.length} values generated
+														Result: {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).length} values generated
 													</p>
 												{/if}
-												{#if result.result.process_time}
+												{#if (result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).process_time}
 													<p class="text-xs text-gray-600">
-														Process time: {result.result.process_time}ms
+														Process time: {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).process_time}ms
 													</p>
 												{/if}
 											</div>
 										{/if}
-										{#if !result.success}
+										{#if !(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).success}
 											<p class="text-xs text-red-800 mt-1">
-												Error: {result.error}
+												Error: {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).error}
 											</p>
 										{/if}
 									</div>
@@ -527,7 +525,6 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 				</div>
 			{/if}
-		{/if}
 	</div>
 </div>
 

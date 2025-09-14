@@ -28,53 +28,53 @@
  */
 
 // Core N64 Components (New implementations with advanced 3D effects)
-export { default as Button } from './N643DButton.svelte';
-export { default as N64Button } from './N643DButton.svelte';
-export { default as Input } from './Input.svelte';
-export { default as N64Input } from './Input.svelte';
-export { default as TextField } from './N64TextField.svelte';
-export { default as N64TextField } from './N64TextField.svelte';
-export { default as Card } from './Card.svelte';
-export { default as N64Card } from './Card.svelte';
-export { default as Dialog } from './Dialog.svelte';
-export { default as N64Dialog } from './Dialog.svelte';
-export { default as Modal } from './N64Modal.svelte';
-export { default as N64Modal } from './N64Modal.svelte';
-export { default as Select } from './Select.svelte';
-export { default as N64Select } from './N64Select.svelte';
-export { default as Dropdown } from './Select.svelte'; // Alias
-export { default as ProgressBar } from './ProgressBar.svelte';
-export { default as N64ProgressBar } from './ProgressBar.svelte';
-export { default as Progress } from './N64Progress.svelte';
-export { default as N64Progress } from './N64Progress.svelte';
-export { default as Switch } from './Switch.svelte';
-export { default as N64Switch } from './Switch.svelte';
-export { default as Toggle } from './N64Toggle.svelte';
-export { default as N64Toggle } from './N64Toggle.svelte';
+export { default as Button } from './N643DButton.svelte.js';
+export { default as N64Button } from './N643DButton.svelte.js';
+export { default as Input } from './Input.svelte.js';
+export { default as N64Input } from './Input.svelte.js';
+export { default as TextField } from './N64TextField.svelte.js';
+export { default as N64TextField } from './N64TextField.svelte.js';
+export { default as Card } from './Card.svelte.js';
+export { default as N64Card } from './Card.svelte.js';
+export { default as Dialog } from './Dialog.svelte.js';
+export { default as N64Dialog } from './Dialog.svelte.js';
+export { default as Modal } from './N64Modal.svelte.js';
+export { default as N64Modal } from './N64Modal.svelte.js';
+export { default as Select } from './Select.svelte.js';
+export { default as N64Select } from './N64Select.svelte.js';
+export { default as Dropdown } from './Select.svelte.js'; // Alias
+export { default as ProgressBar } from './ProgressBar.svelte.js';
+export { default as N64ProgressBar } from './ProgressBar.svelte.js';
+export { default as Progress } from './N64Progress.svelte.js';
+export { default as N64Progress } from './N64Progress.svelte.js';
+export { default as Switch } from './Switch.svelte.js';
+export { default as N64Switch } from './Switch.svelte.js';
+export { default as Toggle } from './N64Toggle.svelte.js';
+export { default as N64Toggle } from './N64Toggle.svelte.js';
 
 // Additional N64 Components (Existing implementations)
-export { default as N64Badge } from './N64Badge.svelte';
-export { default as N64Canvas } from './N64Canvas.svelte';
-export { default as N64Cartridge } from './N64Cartridge.svelte';
-export { default as N64Checkbox } from './N64Checkbox.svelte';
-export { default as N64Controller } from './N64Controller.svelte';
-export { default as N64EvolutionLoader } from './N64EvolutionLoader.svelte';
-export { default as N64FormGrid } from './N64FormGrid.svelte';
-export { default as N64LoadingRing } from './N64LoadingRing.svelte';
-export { default as N64Panel } from './N64Panel.svelte';
-export { default as N64Screen } from './N64Screen.svelte';
-export { default as N64Slider } from './N64Slider.svelte';
-export { default as N64Surface } from './N64Surface.svelte';
-export { default as N64TextArea } from './N64TextArea.svelte';
-export { default as N64TextureFilteringCache } from './N64TextureFilteringCache.svelte';
-export { default as N64Toaster } from './N64Toaster.svelte';
+export { default as N64Badge } from './N64Badge.svelte.js';
+export { default as N64Canvas } from './N64Canvas.svelte.js';
+export { default as N64Cartridge } from './N64Cartridge.svelte.js';
+export { default as N64Checkbox } from './N64Checkbox.svelte.js';
+export { default as N64Controller } from './N64Controller.svelte.js';
+export { default as N64EvolutionLoader } from './N64EvolutionLoader.svelte.js';
+export { default as N64FormGrid } from './N64FormGrid.svelte.js';
+export { default as N64LoadingRing } from './N64LoadingRing.svelte.js';
+export { default as N64Panel } from './N64Panel.svelte.js';
+export { default as N64Screen } from './N64Screen.svelte.js';
+export { default as N64Slider } from './N64Slider.svelte.js';
+export { default as N64Surface } from './N64Surface.svelte.js';
+export { default as N64TextArea } from './N64TextArea.svelte.js';
+export { default as N64TextureFilteringCache } from './N64TextureFilteringCache.svelte.js';
+export { default as N64Toaster } from './N64Toaster.svelte.js';
 
 // Utility Modules
-export { default as N64ToastStore } from './N64ToastStore.ts';
-export { default as retroPerformanceGuard } from './retroPerformanceGuard.ts';
-export { default as useRetroTransform } from './useRetroTransform.js';
-export { default as parallaxDynamic } from './parallaxDynamic.js';
-export { default as tokens } from './tokens.ts';
+export { default as N64ToastStore } from './N64ToastStore.ts.js';
+export { default as retroPerformanceGuard } from './retroPerformanceGuard.ts.js';
+export { default as useRetroTransform } from './useRetroTransform.js.js';
+export { default as parallaxDynamic } from './parallaxDynamic.js.js';
+export { default as tokens } from './tokens.ts.js';
 
 // Type exports for component props
 export type {
@@ -89,7 +89,7 @@ export type {
   RetroEffect,
   GamingAudioConfig,
   ProgressiveGamingConfig
-} from '../types/gaming-types.js';
+} from '../types/gaming-types.js.js';
 
 // Constants and presets
 export {
@@ -102,7 +102,7 @@ export {
   GAMING_COMPONENT_SIZES,
   RETRO_EFFECTS,
   GAMING_SOUND_EFFECTS
-} from '../constants/gaming-constants.js';
+} from '../constants/gaming-constants.js.js';
 
 /**
  * Quick Start Configuration
@@ -219,7 +219,7 @@ export const N64_A11Y_HELPERS = {
   generateSwitchLabel: (checked: boolean, label: string) =>
     `${label}: ${checked ? 'On' : 'Off'}`,
 
-  generateSelectLabel: (value: string, options: Array<{value: string, label: string}>) => {
+  generateSelectLabel: (value: string, options: Array<) => {
     const option = options.find(opt => opt.value === value);
     return option ? `Selected: ${option.label}` : 'No selection';
   },

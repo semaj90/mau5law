@@ -5,7 +5,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Mock imports for now - replace with actual implementations
 const qloraIntegrationAnalyzer = {
@@ -64,14 +64,7 @@ interface DistillationRequest {
     modelSize?: 'small' | 'medium' | 'large';
     optimizeFor?: 'speed' | 'quality' | 'size';
   };
-  feedbackData?: Array<{
-    query: string;
-    response: string;
-    feedback: 'thumbs_up' | 'thumbs_down';
-    context: any;
-    corrections?: string[];
-  }>;
-}
+  feedbackData?: Array<any>
 
 // Distillation status response
 interface DistillationStatus {
@@ -415,7 +408,7 @@ async function runValidationTests(
   modelKey: string,
   domain: string,
   qualityThreshold: number
-): Promise<{passed: boolean; accuracy: number; reason?: string}> {
+): Promise<any> {
   console.log(`🧪 Running validation tests for domain: ${domain}`);
   
   try {
@@ -430,7 +423,7 @@ async function runValidationTests(
       });
       
       // Simple validation (in production would use more sophisticated metrics)
-      const score = calculateResponseQuality(result.text, prompt.expectedKeywords);
+      const score = calculateResponseQuality((result as { text?: any }).text, prompt.expectedKeywords);
       totalScore += score;
       
       console.log(`   • Test "${prompt.name}": ${score.toFixed(2)}`);
@@ -516,11 +509,7 @@ async function getMockFeedbackData(domain: string): Promise<any[]> {
 /**
  * Get validation prompts for domain testing
  */
-function getValidationPrompts(domain: string): Array<{
-  name: string;
-  input: string;
-  expectedKeywords: string[];
-}> {
+function getValidationPrompts(domain: string): Array< {
   const prompts = {
     contract: [
       {
@@ -550,7 +539,7 @@ function getValidationPrompts(domain: string): Array<{
  * Calculate response quality score
  */
 function calculateResponseQuality(response: string, expectedKeywords: string[]): number {
-  const lowerResponse = response.toLowerCase();
+  const lowerResponse = (response as { toLowerCase?: any; length?: any }).toLowerCase();
   let keywordMatches = 0;
   
   for (const keyword of expectedKeywords) {
@@ -560,7 +549,7 @@ function calculateResponseQuality(response: string, expectedKeywords: string[]):
   }
   
   const keywordScore = keywordMatches / expectedKeywords.length;
-  const lengthScore = Math.min(response.length / 200, 1.0); // Prefer detailed responses
+  const lengthScore = Math.min((response as { toLowerCase?: any; length?: any }).length / 200, 1.0); // Prefer detailed responses
   
   return (keywordScore * 0.7 + lengthScore * 0.3); // Weighted combination
 }

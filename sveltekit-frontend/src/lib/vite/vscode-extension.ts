@@ -13,11 +13,7 @@ export interface VSCodeCommand {
 export interface VSCodeNotification {
   message: string;
   type: 'error' | 'warning' | 'info';
-  actions?: Array<{
-    title: string;
-    command: VSCodeCommand;
-  }>;
-}
+  actions?: Array<any>
 
 export class VSCodeIntegration {
   private logFile: string;
@@ -114,12 +110,12 @@ export class VSCodeIntegration {
     // In a real VS Code extension, this would use the VS Code API
     // For now, we'll use console output with special formatting
     const timestamp = new Date().toLocaleTimeString();
-    const icon = notification.type === 'error' ? '🚨' : notification.type === 'warning' ? '⚠️' : 'ℹ️';
+    const icon = (notification as { type?: any; message?: any; actions?: any }).type === 'error' ? '🚨' : (notification as { type?: any; message?: any; actions?: any }).type === 'warning' ? '⚠️' : 'ℹ️';
     
-    console.log(`\n${icon} [${timestamp}] VS Code Notification: ${notification.message}`);
+    console.log(`\n${icon} [${timestamp}] VS Code Notification: ${(notification as { type?: any; message?: any; actions?: any }).message}`);
     
-    if (notification.actions) {
-      notification.actions.forEach((action, index) => {
+    if ((notification as { type?: any; message?: any; actions?: any }).actions) {
+      (notification as { type?: any; message?: any; actions?: any }).actions.forEach((action, index) => {
         console.log(`   ${index + 1}. ${action.title} (${action.command.command})`);
       });
     }
@@ -276,7 +272,7 @@ export class ErrorNavigator {
 
 // Auto-fix suggestions
 export class AutoFixSuggestions {
-  static getSuggestions(error: any): Array<{ title: string; command: string; args?: unknown[] }> {
+  static getSuggestions(error: any): Array< {
     const suggestions = [];
     const message = error.message.toLowerCase();
 

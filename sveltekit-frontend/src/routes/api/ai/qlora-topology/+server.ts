@@ -8,11 +8,11 @@
  * Redis Type: aiAnalysis
  *
  * Performance Impact:
- * - Cache Stra    if (trainingMode && result.success) {
+ * - Cache Stra    if (trainingMode && (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).success) {
       (response as any).trainingData = {
         dataFlywheelSamples: 0,
         modelUpdateApplied: false,
-        accuracyImprovement: result.accuracyMetrics?.accuracyImprovement || 0
+        accuracyImprovement: (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).accuracyMetrics?.accuracyImprovement || 0
       };
     }onservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
@@ -23,7 +23,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { UnifiedCacheEnhancedOrchestrator } from '$lib/ai/unified-cache-enhanced-orchestrator.js';
 import * as pako from 'pako';
 import { createHash } from 'crypto';
@@ -199,7 +199,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       },
       metadata: {
         timestamp: Date.now(),
-        clientCapabilities: {},
+        clientCapabilities: Record<string, any>,
         previousResults: []
       },
       cachePreferences: {
@@ -228,9 +228,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const cacheStats = await orch.getCacheStatistics();
 
     const response: QLoRATopologyResponse = {
-      prediction: result.results?.qloraConfig || {},
-      accuracy: (result.performance?.accuracy || 0) * 100,
-      topology: result.results?.renderOptimization || {},
+      prediction: (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).results?.qloraConfig || {},
+      accuracy: ((result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).performance?.accuracy || 0) * 100,
+      topology: (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).results?.renderOptimization || {},
       cacheHit,
       processingTime,
       metrics: {
@@ -242,11 +242,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     };
 
     // Add learning data if in training mode
-    if (trainingMode && result.success) {
-      response.learningData = {
+    if (trainingMode && (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).success) {
+      (response as { learningData?: any }).learningData = {
         dataFlywheelSamples: 0,
         modelUpdateApplied: false,
-        accuracyImprovement: result.accuracyMetrics?.accuracyImprovement || 0
+        accuracyImprovement: (result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).accuracyMetrics?.accuracyImprovement || 0
       };
     }
 
@@ -261,7 +261,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       console.log(`[QLoRA API] Cached response with key: ${cacheKey} (${compressedData.length} bytes)`);
     }
 
-    console.log(`[QLoRA API] Processed query in ${processingTime}ms with ${(result.performance?.accuracy || 0) * 100}% accuracy`);
+    console.log(`[QLoRA API] Processed query in ${processingTime}ms with ${((result as { success?: any; accuracyMetrics?: any; results?: any; performance?: any }).performance?.accuracy || 0) * 100}% accuracy`);
 
     if (binaryResponse) {
       // Return binary compressed response

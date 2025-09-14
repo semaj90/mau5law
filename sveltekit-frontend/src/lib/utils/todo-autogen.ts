@@ -75,8 +75,8 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'llm-misfire',
       severity: data.retryCount > 3 ? 'critical' : 'high',
-      title: `LLM Failure: ${data.model} - ${data.error.substring(0, 50)}...`,
-      description: `Model: ${data.model}\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,
+      title: `LLM Failure: ${data?.model || "unknown" // @ts-ignore - Model property access} - ${data.error.substring(0, 50)}...`,
+      description: `Model: ${data?.model || "unknown" // @ts-ignore - Model property access}\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,
       context: {
         ...data,
         timestamp: Date.now(),

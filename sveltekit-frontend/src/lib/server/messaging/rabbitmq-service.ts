@@ -2,7 +2,7 @@
 // Provides reliable message queuing with dead letter exchanges and retry logic
 
 import amqp from 'amqplib';
-import { logger } from '../ai/logger';
+import { logger } from '../ai/logger.js';
 import { EventEmitter } from 'events';
 
 export interface LegalDocumentMessage {
@@ -206,7 +206,7 @@ class RabbitMQService extends EventEmitter {
   /**
    * Health check method for compatibility
    */
-  async healthCheck(): Promise<{ healthy: boolean; queues?: any; error?: string }> {
+  async healthCheck(): Promise<any> {
     try {
       if (!this.isConnected) {
         await this.initialize();

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * Legal AI Platform API Router v2
@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js';
  */
 
 import { json, error } from '@sveltejs/kit';
-import { db } from '$lib/server/db/drizzle';
+import { db } from '$lib/server/db/unified-client';
 import { cases, evidence, criminals, legalDocuments } from '$lib/server/db/schema-postgres';
 import { eq, or, desc, ilike, and } from 'drizzle-orm';
 import { createId } from '@paralleldrive/cuid2';

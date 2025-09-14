@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * Upload Completion Webhook - MinIO → Ingestion Pipeline Trigger
@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { redisService } from '$lib/server/redis-service';
 import { minioService } from '$lib/server/storage/minio-service';
-import { db } from '$lib/server/db/client';
+import { db } from '$lib/server/db/unified-client';
 import { evidence, documents } from '$lib/db/schema';
 import crypto from 'crypto';
 import { URL } from 'url';

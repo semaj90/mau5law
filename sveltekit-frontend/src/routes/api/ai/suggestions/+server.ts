@@ -25,7 +25,7 @@ import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js
 import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Import our new AI suggestion services
@@ -388,13 +388,7 @@ function generateRuleBasedSuggestions(
   reportType: string,
   contentLower: string
 ) {
-  const suggestions: Array<{
-    content: string;
-    type: string;
-    confidence: number;
-    reasoning: string;
-    metadata: any;
-  }> = [];
+  const suggestions: Array< = [];
 
   if (reportType === 'prosecution_memo') {
     if (contentLower.includes('suspect') || contentLower.includes('defendant')) {
@@ -541,13 +535,7 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
 }
 
 async function generateContextualSuggestions(content: string, context: any): Promise<any> {
-  const suggestions: Array<{
-    content: string;
-    type: string;
-    confidence: number;
-    reasoning: string;
-    metadata: any;
-  }> = [];
+  const suggestions: Array< = [];
 
   try {
     // If we have case context, suggest case-specific improvements

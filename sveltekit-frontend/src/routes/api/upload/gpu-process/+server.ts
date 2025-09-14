@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 const UPLOAD_SERVICE_URL = 'http://localhost:8093';
 const CUDA_SERVICE_URL = 'http://localhost:8096';

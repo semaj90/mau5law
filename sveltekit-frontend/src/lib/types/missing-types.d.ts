@@ -124,8 +124,12 @@ declare module '@langchain/community/vectorstores/neo4j_vector' {
 
 // XState v5 compatibility stubs
 declare module 'xstate' {
-  export interface StateId {}
-  export interface MetaObject {}
+  export interface StateId {
+  [key: string]: any;
+}
+  export interface MetaObject {
+  [key: string]: any;
+}
 
   export interface TransitionConfig<TContext = any, TEvent = any, TResolvedEvent = any, TEventType = any> {
     cond?: any;

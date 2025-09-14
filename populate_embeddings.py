@@ -22,9 +22,9 @@ print(f"Found {len(messages)} messages without embeddings")
 for msg_id, content in messages:
     print(f"Processing message {msg_id}: {content[:50]}...")
 
-    # Generate embedding using nomic-embed-text via Ollama
+    # Generate embedding using embeddinggemma via Ollama
     response = requests.post("http://localhost:11434/api/embeddings", json={
-        "model": "nomic-embed-text",
+        "model": "embeddinggemma:latest",
         "prompt": content
     })
 

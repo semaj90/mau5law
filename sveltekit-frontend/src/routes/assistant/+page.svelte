@@ -32,13 +32,13 @@ https://svelte.dev/e/js_parse_error -->
     // Load recent evidence files as context
     try {
       const response = await fetch('/api/evidence-files?limit=10');
-      const data = await response.json();
-      if (data.success) {
-        contextItems = data.items.map(item => ({
-          id: item.id.toString(),
-          title: item.title,
-          content: `${item.evidence_type} - ${item.mime_type}`,
-          uploadedAt: item.uploaded_at
+      const data = await (response as { json?: any }).json();
+      if ((data as { success?: any; items?: any; mimeType?: any; fileSize?: any }).success) {
+        contextItems = (data as { success?: any; items?: any; mimeType?: any; fileSize?: any }).items.map(item => ({
+          id: (item as { id?: any; title?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; content?: any; similarity?: any }).id.toString(),
+          title: (item as { id?: any; title?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; content?: any; similarity?: any }).title,
+          content: `${(item as { id?: any; title?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; content?: any; similarity?: any }).evidence_type} - ${(item as { id?: any; title?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; content?: any; similarity?: any }).mime_type}`,
+          uploadedAt: (item as { id?: any; title?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; content?: any; similarity?: any }).uploaded_at
         }));
       }
     } catch (error) {
@@ -66,10 +66,10 @@ https://svelte.dev/e/js_parse_error -->
     if (results && results.length > 0) {
       // Update context with search results
       contextItems = results.map(result => ({
-        id: result.id.toString(),
-        title: result.title,
-        content: `${result.evidenceType} - Similarity: ${(result.similarity * 100).toFixed(1)}%`,
-        similarity: result.similarity
+        id: (result as { id?: any; title?: any; evidenceType?: any; similarity?: any; success?: any; result?: any }).id.toString(),
+        title: (result as { id?: any; title?: any; evidenceType?: any; similarity?: any; success?: any; result?: any }).title,
+        content: `${(result as { id?: any; title?: any; evidenceType?: any; similarity?: any; success?: any; result?: any }).evidenceType} - Similarity: ${((result as { id?: any; title?: any; evidenceType?: any; similarity?: any; success?: any; result?: any }).similarity * 100).toFixed(1)}%`,
+        similarity: (result as { id?: any; title?: any; evidenceType?: any; similarity?: any; success?: any; result?: any }).similarity
       }));
       // Switch to assistant tab to use the search context
       activeTab = 'assistant';
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Chat Interface -->
         <div class="lg:col-span-2">
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">💬 Legal AI Assistant</h3>
               <p class="text-sm text-gray-600">
@@ -112,13 +112,13 @@ https://svelte.dev/e/js_parse_error -->
                 {evidenceText}
               />
             </div>
-          </NesCard>
+          </div>
         </div>
 
         <!-- Context & Information Panel -->
         <div class="space-y-6">
           <!-- Case Configuration -->
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">📋 Case Context</h3>
             </div>
@@ -141,10 +141,10 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               </div>
             </div>
-          </NesCard>
+          </div>
 
           <!-- Context Items -->
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">🔍 Current Context</h3>
               <p class="text-xs text-gray-500">
@@ -156,14 +156,14 @@ https://svelte.dev/e/js_parse_error -->
                 {#each contextItems.slice(0, 10) as item}
                   <div class="p-2 bg-gray-50 rounded text-xs border-l-4 border-blue-200">
                     <div class="font-medium text-gray-900 truncate">
-                      {item.title}
+                      {(item as { id?: any; title?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; content?: any; similarity?: any }).title}
                     </div>
                     <div class="text-gray-600 mt-1">
-                      {item.content}
+                      {(item as { id?: any; title?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; content?: any; similarity?: any }).content}
                     </div>
-                    {#if item.similarity}
+                    {#if (item as { id?: any; title?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; content?: any; similarity?: any }).similarity}
                       <div class="text-blue-600 mt-1">
-                        Similarity: {(item.similarity * 100).toFixed(1)}%
+                        Similarity: {((item as { id?: any; title?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; content?: any; similarity?: any }).similarity * 100).toFixed(1)}%
                       </div>
                     {/if}
                   </div>
@@ -174,33 +174,33 @@ https://svelte.dev/e/js_parse_error -->
                 {/each}
               </div>
             </div>
-          </NesCard>
+          </div>
 
           <!-- Quick Actions -->
-          <NesCard>
+          <div class="nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">⚡ Quick Actions</h3>
             </div>
             <div class="yorha-panel-content">
               <div class="space-y-2">
                 <button
-                  onclick={() => activeTab = 'evidence'}
+                  on:click={() => activeTab = 'evidence'}
                   class="w-full p-2 text-left bg-blue-50 hover:bg-blue-100 rounded-md text-sm border border-blue-200 transition-colors"
                 >
                   📁 Manage Evidence Files
                 </button>
 
                 <button
-                  onclick={async () => {
+                  on:click={async () => {
                     try {
                       const response = await fetch('/api/evidence-embeddings', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ action: 'backfill' })
                       });
-                      const result = await response.json();
-                      if (result.success) {
-                        alert(`Embedding backfill completed: ${result.result.success} files processed`);
+                      const result = await (response as { json?: any }).json();
+                      if ((result as { id?: any; title?: any; evidenceType?: any; similarity?: any; success?: any; result?: any }).success) {
+                        alert(`Embedding backfill completed: ${(result as { id?: any; title?: any; evidenceType?: any; similarity?: any; success?: any; result?: any }).(result as { id?: any; title?: any; evidenceType?: any; similarity?: any; success?: any; result?: any }).success} files processed`);
                       }
                     } catch (error) {
                       alert('Error processing embeddings: ' + error.message);
@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
                 </button>
               </div>
             </div>
-          </NesCard>
+          </div>
         </div>
       </div>
     </TabsContent>

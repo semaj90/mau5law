@@ -17,13 +17,17 @@
   import { Loader2, Bot, MessageSquare, FileText, Search, Sparkles, Zap } from 'lucide-svelte';
 
   // Props
-  let {
-    onAISearch = null,
+  let { onAISearch = null,
     onAIChat = null,
     onAISummarize = null,
     disabled = false,
     compact = false,
-  } = $props();
+   }: { onAISearch = null,
+    onAIChat = null,
+    onAISummarize = null,
+    disabled = false,
+    compact = false,
+  : any } = $props();
 
   // State
   let aiSearchQuery = $state('');
@@ -60,20 +64,20 @@
         }),
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
-        aiSearchResults = result.results || [];
+      if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).success) {
+        aiSearchResults = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).results || [];
         console.log(
-          `🔍 Enhanced AI search found ${aiSearchResults.length} results in ${result.searchTime}`
+          `🔍 Enhanced AI search found ${aiSearchResults.length} results in ${(result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).searchTime}`
         );
-        console.log('Search analytics:', result.analytics);
+        console.log('Search analytics:', (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).analytics);
 
         if (onAISearch) {
           onAISearch(result);
         }
       } else {
-        console.error('Enhanced AI search failed:', result.error);
+        console.error('Enhanced AI search failed:', (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).error);
         // Fallback to basic search
         await performFallbackSearch();
       }
@@ -100,10 +104,10 @@
         }),
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
-        aiSearchResults = result.laws || [];
+      if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).success) {
+        aiSearchResults = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).laws || [];
         if (onAISearch) {
           onAISearch(result);
         }
@@ -130,15 +134,15 @@
         }),
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.response) {
-        aiChatResponse = result.response;
+      if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).response) {
+        aiChatResponse = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).response;
         if (onAIChat) {
           onAIChat(result);
         }
       } else {
-        console.error('AI chat failed:', result.error);
+        console.error('AI chat failed:', (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).error);
       }
     } catch (error) {
       console.error('AI chat error:', error);
@@ -165,15 +169,15 @@
         }),
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any }).json();
 
-      if (result.success) {
-        summaryResult = result.summary;
+      if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).success) {
+        summaryResult = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).summary;
         if (onAISummarize) {
           onAISummarize(result);
         }
       } else {
-        console.error('AI summarization failed:', result.error);
+        console.error('AI summarization failed:', (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).error);
       }
     } catch (error) {
       console.error('AI summarization error:', error);
@@ -217,14 +221,14 @@
 
   <div class="grid grid-cols-1 {compact ? 'lg:grid-cols-1' : 'lg:grid-cols-3'} gap-6">
     <!-- AI Search -->
-    <NesCard class="border-primary/20">
-      <div class="yorha-panel-header" class="pb-3">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2 text-lg">
+    <div class="border-primary/20 nes-container">
+      <div class="yorha-panel-header pb-3">
+        <h3 class="nes-text is-primary flex items-center gap-2 text-lg">
           <Bot class="h-5 w-5 text-primary" />
           AI Search
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <div class="flex gap-2">
           <div class="relative flex-1">
             <Bot class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
@@ -236,23 +240,23 @@
               class="pl-10" />
           </div>
           <Button class="bits-btn"
-            onclick={performAISearch}
+            on:click={performAISearch}
             disabled={disabled || isAISearching || !aiSearchQuery.trim()}
             size="sm">
-            {#if isAISearching}
+{#if isAISearching}
               <Loader2 class="h-4 w-4 animate-spin" />
             {:else}
               <Search class="h-4 w-4" />
             {/if}
-          </button>
+</Button>
         </div>
 
         {#if aiSearchResults.length > 0}
           <div class="space-y-2 max-h-32 overflow-y-auto">
             {#each aiSearchResults.slice(0, 3) as result}
               <div class="p-2 bg-muted/50 rounded text-sm">
-                <div class="font-medium truncate">{result.title}</div>
-                <div class="text-xs nes-text is-disabled">{result.jurisdiction}</div>
+                <div class="font-medium truncate">{(result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).title}</div>
+                <div class="text-xs nes-text is-disabled">{(result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).jurisdiction}</div>
               </div>
             {/each}
             {#if aiSearchResults.length > 3}
@@ -261,17 +265,17 @@
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
 
     <!-- AI Chat -->
-    <NesCard class="border-green-500/20">
-      <div class="yorha-panel-header" class="pb-3">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2 text-lg">
+    <div class="border-green-500/20 nes-container">
+      <div class="yorha-panel-header pb-3">
+        <h3 class="nes-text is-primary flex items-center gap-2 text-lg">
           <MessageSquare class="h-5 w-5 text-green-600" />
           AI Chat
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <div class="space-y-2">
           <Textarea
             placeholder="Ask a legal question..."
@@ -281,18 +285,18 @@
             rows="2"
             class="resize-none" />
           <Button
-            onclick={performAIChat}
+            on:click={performAIChat}
             disabled={disabled || isAIChatting || !aiChatMessage.trim()}
             size="sm"
             class="w-full bits-btn bits-btn">
-            {#if isAIChatting}
+{#if isAIChatting}
               <Loader2 class="h-4 w-4 animate-spin mr-2" />
               Thinking...
             {:else}
               <MessageSquare class="h-4 w-4 mr-2" />
               Ask AI
             {/if}
-          </button>
+</Button>
         </div>
 
         {#if aiChatResponse}
@@ -304,17 +308,17 @@
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
 
     <!-- AI Summarization -->
-    <NesCard class="border-blue-500/20">
-      <div class="yorha-panel-header" class="pb-3">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2 text-lg">
+    <div class="border-blue-500/20 nes-container">
+      <div class="yorha-panel-header pb-3">
+        <h3 class="nes-text is-primary flex items-center gap-2 text-lg">
           <FileText class="h-5 w-5 text-blue-600" />
           AI Summary
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <div class="space-y-2">
           <Textarea
             placeholder="Paste legal text to summarize..."
@@ -323,18 +327,18 @@
             rows="2"
             class="resize-none" />
           <Button
-            onclick={performAISummarization}
+            on:click={performAISummarization}
             disabled={disabled || isSummarizing || !summarizeText.trim()}
             size="sm"
             class="w-full bits-btn bits-btn">
-            {#if isSummarizing}
+{#if isSummarizing}
               <Loader2 class="h-4 w-4 animate-spin mr-2" />
               Summarizing...
             {:else}
               <Zap class="h-4 w-4 mr-2" />
               Summarize
             {/if}
-          </button>
+</Button>
         </div>
 
         {#if summaryResult}
@@ -345,13 +349,15 @@
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   </div>
 
   <!-- Clear Results Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
     <div class="text-center">
-      <Button class="bits-btn" variant="outline" onclick={clearResults} size="sm">Clear All Results</button>
+      <Button class="bits-btn" variant="outline" on:click={clearResults} size="sm">
+Clear All Results
+</Button>
     </div>
   {/if}
 
@@ -360,36 +366,39 @@
     <Button class="bits-btn"
       variant="outline"
       size="sm"
-      onclick={() => {
+      on:click={() =>
+{
         aiSearchQuery = 'California murder laws';
         performAISearch();
       }}
       disabled={disabled || isAISearching}>
       <Bot class="h-3 w-3 mr-1" />
       Murder Laws
-    </button>
+</Button>
     <Button class="bits-btn"
       variant="outline"
       size="sm"
-      onclick={() => {
+      on:click={() =>
+{
         aiChatMessage = 'What are the elements of a valid contract?';
         performAIChat();
       }}
       disabled={disabled || isAIChatting}>
       <MessageSquare class="h-3 w-3 mr-1" />
       Contract Elements
-    </button>
+</Button>
     <Button class="bits-btn"
       variant="outline"
       size="sm"
-      onclick={() => {
+      on:click={() =>
+{
         aiSearchQuery = 'evidence admissibility rules';
         performAISearch();
       }}
       disabled={disabled || isAISearching}>
       <Search class="h-3 w-3 mr-1" />
       Evidence Rules
-    </button>
+</Button>
   </div>
 </div>
 

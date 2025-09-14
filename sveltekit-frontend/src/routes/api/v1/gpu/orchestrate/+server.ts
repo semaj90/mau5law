@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * GPU Orchestration API - Advanced Task Dispatch & Automation
@@ -64,19 +64,19 @@ async function handleLegalAnalysis(data: any, config: any): Promise<any> {
   });
 
   // Add legal-specific post-processing
-  if (result.success && options?.extractEntities) {
-    result.result.entities = extractLegalEntities(document);
+  if ((result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success && options?.extractEntities) {
+    (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).(result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).entities = extractLegalEntities(document);
   }
 
-  if (result.success && options?.riskAssessment) {
-    result.result.riskAssessment = await performRiskAssessment(result.result);
+  if ((result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success && options?.riskAssessment) {
+    (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).(result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).riskAssessment = await performRiskAssessment((result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).result);
   }
 
   return json({
-    success: result.success,
-    analysis: result.result,
-    metrics: result.metrics,
-    recommendations: result.recommendations,
+    success: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success,
+    analysis: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).result,
+    metrics: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).metrics,
+    recommendations: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).recommendations,
     timestamp: new Date().toISOString(),
   });
 }
@@ -130,11 +130,11 @@ async function handleAutosolve(data: any, config: any): Promise<any> {
   const clusterStatus = await mcpGPUOrchestrator.getClusterStatus();
 
   return json({
-    success: result.success,
+    success: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success,
     autosolve: {
-      result: result.result,
-      metrics: result.metrics,
-      recommendations: result.recommendations,
+      result: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).result,
+      metrics: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).metrics,
+      recommendations: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).recommendations,
     },
     cluster: clusterStatus,
     timestamp: new Date().toISOString(),
@@ -157,12 +157,12 @@ async function handleGPUTask(data: any, config: any): Promise<any> {
   });
 
   return json({
-    success: result.success,
-    taskId: result.taskId,
-    result: result.result,
-    metrics: result.metrics,
-    error: result.error,
-    recommendations: result.recommendations,
+    success: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success,
+    taskId: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).taskId,
+    result: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).result,
+    metrics: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).metrics,
+    error: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).error,
+    recommendations: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).recommendations,
     timestamp: new Date().toISOString(),
   });
 }

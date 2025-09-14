@@ -1,9 +1,9 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 import { fail } from '@sveltejs/kit';
 import { superValidate, message } from 'sveltekit-superforms/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
-import type { Actions } from './$types';
+import type { Actions } from './$types.js';
 
 const testSchema = z.object({
   name: z.string().min(1, 'Name is required'),

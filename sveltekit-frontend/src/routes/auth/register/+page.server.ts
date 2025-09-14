@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types.js';
+import type { PageServerLoad, Actions } from './$types.js.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { EnhancedAuthService } from '$lib/services/enhanced-auth-service.js';
 
@@ -9,15 +9,15 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
   register: async ({ request, cookies, getClientAddress }) => {
     const data = await request.formData();
-    const email = data.get('email') as string;
-    const firstName = data.get('firstName') as string;
-    const lastName = data.get('lastName') as string;
-    const password = data.get('password') as string;
-    const confirmPassword = data.get('confirmPassword') as string;
-    const role = data.get('role') as string;
-    const department = data.get('department') as string;
-    const jurisdiction = data.get('jurisdiction') as string;
-    const badgeNumber = data.get('badgeNumber') as string;
+    const email = (data as { get?: any }).get('email') as string;
+    const firstName = (data as { get?: any }).get('firstName') as string;
+    const lastName = (data as { get?: any }).get('lastName') as string;
+    const password = (data as { get?: any }).get('password') as string;
+    const confirmPassword = (data as { get?: any }).get('confirmPassword') as string;
+    const role = (data as { get?: any }).get('role') as string;
+    const department = (data as { get?: any }).get('department') as string;
+    const jurisdiction = (data as { get?: any }).get('jurisdiction') as string;
+    const badgeNumber = (data as { get?: any }).get('badgeNumber') as string;
 
     // Basic validation
     if (!email || !firstName || !lastName || !password || !department || !jurisdiction) {
@@ -43,8 +43,8 @@ export const actions: Actions = {
         role: role || 'user'
       }, { request, cookies, getClientAddress } as any);
 
-      if (!result.success) {
-        return fail(400, { error: result.error });
+      if (!(result as { success?: any; error?: any; user?: any }).success) {
+        return fail(400, { error: (result as { success?: any; error?: any; user?: any }).error });
       }
 
       // Create a session using enhanced auth service
@@ -68,7 +68,7 @@ export const actions: Actions = {
         });
 
         console.log('User registered and logged in successfully:', {
-          userId: result.user?.id,
+          userId: (result as { success?: any; error?: any; user?: any }).user?.id,
           email: email
         });
       }

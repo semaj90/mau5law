@@ -2,7 +2,7 @@ import { db } from "$lib/db/connection";
 import { eq, desc } from "drizzle-orm";
 import { json } from '@sveltejs/kit';
 import { chatSessions } from '$lib/server/db/schema-unified';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
         context: sessionData.context || {},
         metadata: {
           ...(sessionData.metadata || {}),
-          model: sessionData.model || 'gemma3-legal',
+          model: sessionData?.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal',
           messageCount: 0,
           isActive: true,
         },

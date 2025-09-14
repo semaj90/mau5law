@@ -15,7 +15,7 @@
 	const userId: string = 'demo-user'; // External reference only
 
 	// Chat state using $state rune
-	let messages = $state<Array<any>>([]);
+	let messages = $state<Array<any>([])>([]);
 	let currentMessage = $state('');
 	let isTyping = $state(false);
 	let isProcessing = $state(false);
@@ -25,7 +25,7 @@
 	// Workflow state using $state
 	let workflowActive = $state(false);
 	let currentStep = $state(0);
-	let workflowData = $state<Record<string, any>>({
+	let workflowData = $state<Record<string, any>('')>({
 		what: '',
 		who: '',
 		when: '',
@@ -40,7 +40,7 @@
 	// RAG ingestion state using $state
 	let isIngesting = $state(false);
 	let ingestionProgress = $state(0);
-	let ragContext = $state<Array<any>>([]);
+	let ragContext = $state<Array<any>([])>([]);
 
 	const workflowSteps = [
 		{
@@ -260,19 +260,19 @@
 				body: JSON.stringify(caseData)
 			});
 
-			if (response.ok) {
-				const result = await response.json();
+			if ((response as { ok?: any; json?: any; text?: any; status?: any }).ok) {
+				const result = await (response as { ok?: any; json?: any; text?: any; status?: any }).json();
 				await typeMessage(
 					`🎉 Case successfully created! Case ID: ${result?.data?.id}\n\n📊 AI Analysis Complete:\n• ${ragContext.length} relevant precedents found\n• Priority: ${workflowData.priority}\n• Category: ${workflowData.category}\n\nReady to assist with evidence collection and legal strategy!`
 				);
 				try {
-					onCaseCreated(result.data.id);
+					onCaseCreated((result as { data?: any }).data.id);
 				} catch (err) {
 					// swallow callback errors
 				}
 			} else {
-				const text = await response.text().catch(() => '');
-				throw new Error('Failed to create case: ' + (text || response.status));
+				const text = await (response as { ok?: any; json?: any; text?: any; status?: any }).text().catch(() => '');
+				throw new Error('Failed to create case: ' + (text || (response as { ok?: any; json?: any; text?: any; status?: any }).status));
 			}
 		} catch (error) {
 			await typeMessage('❌ Failed to create case. Please try again or contact support.');
@@ -431,13 +431,13 @@
 				class="workflow-input"
 				placeholder={workflowSteps[currentStep].placeholder}
 				rows="3"
-				onkeydown={workflowKeydown}
+				on:keydown={workflowKeydown}
 			></textarea>
 
 			<div class="workflow-actions">
 				<button
 					class="workflow-btn primary"
-					onclick={(e) => {
+					on:click={(e) => {
 						const wrapper = (e.currentTarget as HTMLElement).closest('.workflow-interface');
 						const textarea = wrapper?.querySelector('.workflow-input') as HTMLTextAreaElement | null;
 						handleQuickAnswerFromText(textarea);
@@ -460,7 +460,7 @@
 					placeholder="Ask me anything about legal cases, or say 'help' to start a new case..."
 					rows="2"
 					class="chat-input"
-					onkeydown={(e) => {
+					on:keydown={(e) => {
 						if (e.key === 'Enter' && !(e as KeyboardEvent).shiftKey) {
 							e.preventDefault();
 							handleChatMessage();
@@ -469,7 +469,7 @@
 				></textarea>
 				<button
 					class="send-button"
-					onclick={handleChatMessage}
+					on:click={handleChatMessage}
 					disabled={!currentMessage.trim() || isProcessing}
 				>
 					🚀
@@ -477,10 +477,10 @@
 			</div>
 
 			<div class="quick-actions">
-				<button class="quick-btn" onclick={startWorkflow}>
+				<button class="quick-btn" on:click={startWorkflow}>
 					📋 Start Case Workflow
 				</button>
-				<button class="quick-btn" onclick={handleChatMessage}>
+				<button class="quick-btn" on:click={handleChatMessage}>
 					🔍 Analyze Evidence
 				</button>
 			</div>

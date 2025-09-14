@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   async function loadPipelineStatus() {
     try {
       const response = await fetch('/api/upload/gpu-process');
-      pipelineStatus = await response.json();
+      pipelineStatus = await (response as { json?: any; ok?: any }).json();
     } catch (error) {
       console.error('Failed to load pipeline status:', error);
       pipelineStatus = { pipeline_status: 'error', error: 'Failed to connect to pipeline' };
@@ -76,12 +76,12 @@ https://svelte.dev/e/js_parse_error -->
         body: formData
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (response.ok) {
+      if ((response as { json?: any; ok?: any }).ok) {
         uploadResult = result;
       } else {
-        uploadError = result.error || 'Upload failed';
+        uploadError = (result as { error?: any }).error || 'Upload failed';
       }
 
     } catch (error) {
@@ -171,7 +171,6 @@ https://svelte.dev/e/js_parse_error -->
                     {/each}
                   </div>
                 {/if}
-              {/if}
             </div>
           {/if}
         </div>
@@ -191,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
             </label><input id="-select-document-"
               type="file"
               bind:this={fileInput}
-              onchange={handleFileSelect}
+              on:change={handleFileSelect}
               accept=".pdf,.doc,.docx,.txt"
               class="w-full bg-nier-bg-tertiary border border-nier-border-muted rounded p-golden-md text-nier-text-primary"
             />
@@ -281,7 +280,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <!-- Upload Button -->
           <button
-            onclick={handleUpload}
+            on:click={handleUpload}
             disabled={!selectedFile || uploadLoading || pipelineStatus?.pipeline_status !== 'healthy'}
             class="w-full bg-gradient-to-r from-nier-accent-warm to-nier-accent-cool text-nier-bg-primary font-bold px-golden-lg py-golden-md rounded uppercase tracking-wide hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >

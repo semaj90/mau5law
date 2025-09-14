@@ -43,8 +43,8 @@ export type LegalFormEvent =
 
 export const legalFormMachine = setup({
   types: {
-    context: {} as LegalFormContext,
-    events: {} as LegalFormEvent,
+    context: Record<string, any> as LegalFormContext,
+    events: Record<string, any> as LegalFormEvent,
   },
   actors: {
     submitCaseService: fromPromise(
@@ -79,7 +79,7 @@ export const legalFormMachine = setup({
     confidence: 0,
     currentStep: 1,
     totalSteps: 4,
-    validationErrors: {},
+    validationErrors: Record<string, any>,
     aiRecommendations: [],
   },
 
@@ -418,7 +418,7 @@ export const legalFormMachine = setup({
             aiSuggestions: [],
             confidence: 0,
             currentStep: 1,
-            validationErrors: {},
+            validationErrors: Record<string, any>,
             aiRecommendations: [],
           }),
         },
@@ -435,7 +435,7 @@ export const legalFormMachine = setup({
           target: "review",
           actions: assign({
             currentStep: 3,
-            validationErrors: {},
+            validationErrors: Record<string, any>,
           }),
         },
         REQUEST_AI_HELP: {

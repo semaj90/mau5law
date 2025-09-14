@@ -4,7 +4,7 @@ import { cases, evidence } from "drizzle-orm";
 import { json } from "@sveltejs/kit";
 import { count, desc, sql, inArray, gte, lte, and } from "drizzle-orm";
 import { z } from 'zod';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Export request schema

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * T5 Transformer API
@@ -43,7 +43,7 @@ interface T5TransformResponse {
   structured?: {
     summary?: string;
     keyPoints?: string[];
-    entities?: Array<{ text: string; type: string; confidence: number }>;
+    entities?: Array<any>;
     recommendations?: string[];
   };
 }
@@ -100,59 +100,59 @@ export const POST: RequestHandler = async ({ request }) => {
       switch (task) {
         case 'summarize':
           structuredOutput = {
-            summary: result.output,
-            keyPoints: extractKeyPoints(result.output),
-            wordCount: result.output.split(' ').length,
-            compressionRatio: input.length / result.output.length
+            summary: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output,
+            keyPoints: extractKeyPoints((result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output),
+            wordCount: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output.split(' ').length,
+            compressionRatio: input.length / (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output.length
           };
           confidence = 0.90;
           break;
 
         case 'analyze':
           structuredOutput = {
-            analysis: result.output,
-            entities: extractLegalEntities(result.output),
-            sentiment: analyzeSentiment(result.output),
+            analysis: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output,
+            entities: extractLegalEntities((result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output),
+            sentiment: analyzeSentiment((result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output),
             complexity: assessComplexity(input),
-            recommendations: generateRecommendations(result.output, domain)
+            recommendations: generateRecommendations((result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output, domain)
           };
           confidence = 0.88;
           break;
 
         case 'extract':
           structuredOutput = {
-            extracted: result.output,
-            entities: extractLegalEntities(result.output),
-            structuredData: parseStructuredData(result.output, domain),
-            confidence: calculateExtractionConfidence(input, result.output)
+            extracted: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output,
+            entities: extractLegalEntities((result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output),
+            structuredData: parseStructuredData((result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output, domain),
+            confidence: calculateExtractionConfidence(input, (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output)
           };
           confidence = structuredOutput.confidence || 0.82;
           break;
 
         case 'generate':
           structuredOutput = {
-            generated: result.output,
+            generated: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output,
             creativity: parameters.temperature || 0.7,
-            coherence: assessCoherence(result.output),
-            relevance: assessRelevance(input, result.output)
+            coherence: assessCoherence((result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output),
+            relevance: assessRelevance(input, (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output)
           };
           confidence = 0.85;
           break;
 
         default:
-          structuredOutput = { transformed: result.output };
+          structuredOutput = { transformed: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output };
       }
 
       const response: T5TransformResponse = {
         success: true,
         task,
         input: input.substring(0, 200) + (input.length > 200 ? '...' : ''),
-        output: result.output,
+        output: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output,
         confidence,
         metadata: {
-          modelVersion: result.modelVersion || 'T5-Legal-v2.1',
+          modelVersion: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).modelVersion || 'T5-Legal-v2.1',
           processingTime: Math.round(processingTime),
-          tokensGenerated: result.tokensGenerated || Math.ceil(result.output.split(' ').length * 1.3),
+          tokensGenerated: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).tokensGenerated || Math.ceil((result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output.split(' ').length * 1.3),
           beamSearch: (parameters.beams || 4) > 1,
           parameters: {
             domain,
@@ -296,7 +296,7 @@ function extractKeyPoints(text: string): string[] {
   return sentences.slice(0, 5).map(s => s.trim());
 }
 
-function extractLegalEntities(text: string): Array<{ text: string; type: string; confidence: number }> {
+function extractLegalEntities(text: string): Array< {
   // Mock entity extraction - would use NER model in production
   const entities = [];
   const patterns = {

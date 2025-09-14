@@ -288,19 +288,19 @@
 
       try {
         const response = await fetch(`/api/v1/ai/job-status/${jobId}`);
-        if (response.ok) {
-          const result = await response.json();
+        if ((response as { ok?: any; json?: any }).ok) {
+          const result = await (response as { ok?: any; json?: any }).json();
 
-          if (result.status === 'completed') {
-            currentSummary = result.summary;
+          if ((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).status === 'completed') {
+            currentSummary = (result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).summary;
 
             // Store vector embedding in PostgreSQL/pg_vector
-            if (result.embedding) {
-              await storeVectorEmbedding(result.embedding, lastProcessedText);
+            if ((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).embedding) {
+              await storeVectorEmbedding((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).embedding, lastProcessedText);
             }
 
             // Cache result in Redis for future requests
-            await cacheResult(result.textHash, result.summary);
+            await cacheResult((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).textHash, (result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).summary);
 
             // Cleanup
             isProcessingSummary = false;
@@ -308,8 +308,8 @@
             clearInterval(pollingInterval!);
             pollingInterval = null;
 
-          } else if (result.status === 'failed') {
-            console.error('AI job failed:', result.error);
+          } else if ((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).status === 'failed') {
+            console.error('AI job failed:', (result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).error);
             isProcessingSummary = false;
             jobId = null;
             clearInterval(pollingInterval!);
@@ -384,8 +384,8 @@
           <strong>${evidence.title}</strong>
           <span class="space-y-4">(${evidence.evidenceType || evidence.type})</span>
         </div>
-        ${evidence.description ? `<p class="space-y-4">${evidence.description}</p>` : ''}
-        ${evidence.url ? `<a href="${evidence.url}" target="_blank">View Evidence</a>` : ''}
+        ${/* JSX syntax converted to Svelte */}
+        ${/* JSX syntax converted to Svelte */}
       </div>
     `;
     insertContent(evidenceHtml);

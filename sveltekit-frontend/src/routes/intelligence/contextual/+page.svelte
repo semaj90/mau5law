@@ -154,7 +154,7 @@
     }
   ]);
   
-  let optimisticInsights = $state<Item<ContextualInsight>[]>([]);
+  let optimisticInsights = $state<Item<ContextualInsight>(null)[]>([]);
   let isDialogOpen = $state(false);
   let selectedInsight = $state<ContextualInsight | null>(null);
   let isAnalyzing = $state(false);
@@ -268,12 +268,12 @@
       };
       
       contextualInsights = [realInsight, ...contextualInsights];
-      optimisticInsights = optimisticInsights.filter(item => item.id !== optimisticInsight.id);
+      optimisticInsights = optimisticInsights.filter(item => (item as { id?: any; data?: any; optimistic?: any }).id !== optimisticInsight.id);
       
       analysisQuery = '';
     } catch (error) {
       console.error('Analysis failed:', error);
-      optimisticInsights = optimisticInsights.filter(item => item.id !== optimisticInsight.id);
+      optimisticInsights = optimisticInsights.filter(item => (item as { id?: any; data?: any; optimistic?: any }).id !== optimisticInsight.id);
     } finally {
       isAnalyzing = false;
     }
@@ -353,8 +353,8 @@
                 {Math.round(metric.confidence * 100)}% confident
               </Badge>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </div.Content>
+        </div.Root>
       {/each}
     </div>
   </section>
@@ -366,11 +366,11 @@
         <div.Title class="flex items-center gap-2">
           <Search class="w-5 h-5" />
           Contextual Analysis
-        </Card.Title>
+        </div.Title>
         <div.Description>
           Query the intelligence system for contextual insights and recommendations
-        </Card.Description>
-      </Card.Header>
+        </div.Description>
+      </div.Header>
       <div.Content>
         <FormField name="analysis_query" label="Analysis Query" required={false}>
           {#snippet children({ inputId, fieldName, hasError, ariaDescribed })}
@@ -390,7 +390,7 @@
           <LoadingButton
             loading={isAnalyzing}
             variant="primary"
-            onclick={analyzeContextualQuery}
+            on:click={analyzeContextualQuery}
             loadingText="Analyzing..."
           >
             {#snippet children()}
@@ -401,8 +401,8 @@
             {/snippet}
           </LoadingButton>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   </section>
 
   <!-- Main Content Grid -->
@@ -414,11 +414,11 @@
           <div.Title class="flex items-center gap-2">
             <Eye class="w-5 h-5" />
             Contextual Insights
-          </Card.Title>
+          </div.Title>
           <div.Description>
             AI-generated insights and patterns from your legal data
-          </Card.Description>
-        </Card.Header>
+          </div.Description>
+        </div.Header>
         <div.Content class="p-0">
           <OptimisticList
             items={contextualInsights.map(insight => ({ id: insight.id, data: insight }))}
@@ -432,27 +432,27 @@
                 class:optimistic={isOptimistic}
                 role="button"
                 tabindex="0"
-                onclick={() => openInsightDetails(item.data)}
+                on:click={() => openInsightDetails((item as { id?: any; data?: any; optimistic?: any }).data)}
               >
                 <div class="insight-header">
-                  <div class="insight-type {getInsightTypeColor(item.data.type)}">
-                    {@render getInsightTypeIcon(item.data.type)({ class: "w-4 h-4" })}
+                  <div class="insight-type {getInsightTypeColor((item as { id?: any; data?: any; optimistic?: any }).data.type)}">
+                    {@render getInsightTypeIcon((item as { id?: any; data?: any; optimistic?: any }).data.type)({ class: "w-4 h-4" })}
                   </div>
                   <div class="insight-meta">
-                    <span class="insight-title">{item.data.title}</span>
-                    <span class="insight-time">{formatRelativeTime(item.data.timestamp)}</span>
+                    <span class="insight-title">{(item as { id?: any; data?: any; optimistic?: any }).data.title}</span>
+                    <span class="insight-time">{formatRelativeTime((item as { id?: any; data?: any; optimistic?: any }).data.timestamp)}</span>
                   </div>
                   <div class="insight-confidence">
                     <Badge variant="secondary">
-                      {Math.round(item.data.confidence * 100)}%
+                      {Math.round((item as { id?: any; data?: any; optimistic?: any }).data.confidence * 100)}%
                     </Badge>
                   </div>
                 </div>
                 
-                <p class="insight-description">{item.data.description}</p>
+                <p class="insight-description">{(item as { id?: any; data?: any; optimistic?: any }).data.description}</p>
                 
                 <div class="insight-sources">
-                  {#each item.data.sources.slice(0, 3) as source}
+                  {#each (item as { id?: any; data?: any; optimistic?: any }).data.sources.slice(0, 3) as source}
                     <Badge variant="outline" class="source-tag">
                       {source}
                     </Badge>
@@ -469,8 +469,8 @@
               </div>
             {/snippet}
           </OptimisticList>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </section>
 
     <!-- Processing Tasks -->
@@ -483,11 +483,11 @@
             {#if processingProgress}
               <div class="processing-indicator"></div>
             {/if}
-          </Card.Title>
+          </div.Title>
           <div.Description>
             Current AI processing and analysis tasks
-          </Card.Description>
-        </Card.Header>
+          </div.Description>
+        </div.Header>
         <div.Content>
           <div class="tasks-list">
             {#each processingTasks as task (task.id)}
@@ -524,8 +524,8 @@
               </div>
             {/each}
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </section>
   </div>
 
@@ -536,11 +536,11 @@
         <div.Title class="flex items-center gap-2">
           <FileSearch class="w-5 h-5" />
           Intelligence Document Processing
-        </Card.Title>
+        </div.Title>
         <div.Description>
           Upload documents for contextual analysis and embedding generation
-        </Card.Description>
-      </Card.Header>
+        </div.Description>
+      </div.Header>
       <div.Content>
         <DocumentUploader
           autoUpload={true}
@@ -576,7 +576,7 @@
               <LoadingButton
                 loading={isUploading}
                 variant="secondary"
-                onclick={selectFiles}
+                on:click={selectFiles}
                 loadingText="Uploading..."
               >
                 {#snippet children()}
@@ -600,8 +600,8 @@
             </div>
           {/snippet}
         </DocumentUploader>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   </section>
 </div>
 
@@ -648,7 +648,7 @@
         </div>
         
         <div class="modal-actions">
-          <button class="nes-btn" variant="outline" onclick={closeInsightDetails}>
+          <button class="nes-btn" variant="outline" on:click={closeInsightDetails}>
             Close
           </button>
           <button class="nes-btn is-primary">
@@ -841,7 +841,7 @@
     background-color: #f9fafb;
   }
 
-  .insight-item.optimistic {
+  .insight-(item as { id?: any; data?: any; optimistic?: any }).optimistic {
     opacity: 0.7;
     background-color: rgba(59, 130, 246, 0.05);
     border: 1px dashed rgba(59, 130, 246, 0.3);

@@ -18,26 +18,23 @@ https://svelte.dev/e/js_parse_error -->
 
   // Chat input
   let messageInput = $state('');
-  let chatContainer = $state<HTMLDivElement;
-
-  // Enhanced RAG service URL
-  const RAG_SERVICE_URL >('http://localhost:8093');
+  let chatContainer = $state<HTMLDivElement// Enhanced RAG service URL
+  const RAG_SERVICE_URL | null>(null)('http://localhost:8093');
 
   // Initialize with welcome message
   onMount(async () => {
     // Check Enhanced RAG service connection
     try {
-  let response = $state<Response;
-        try {
-          response >(await fetch(`${RAG_SERVICE_URL}/health`));
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  let response = $state<Responsetry {
+          response | null>(null)(await fetch(`${RAG_SERVICE_URL}/health`));
+          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+            throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
           }
         } catch (error) {
           console.error('Fetch failed:', error);
           throw error;
         }
-      if (response.ok) {
+      if ((response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
         $isConnected = true;
         $messages = [
           {
@@ -138,18 +135,18 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`RAG service error: ${response.status}`);
+      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`RAG service error: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}`);
       }
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
       const assistantMessage = {
         id: Date.now().toString(),
         role: 'assistant',
         content: formatRAGResponse(result),
         timestamp: new Date(),
         type: 'assistant',
-        metadata: result.metadata || {}
+        metadata: (result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).metadata || {}
       };
 
       $messages = [...$messages, assistantMessage];
@@ -246,10 +243,10 @@ https://svelte.dev/e/js_parse_error -->
             const result = await analysis.json();
             response = `📋 **Legal Analysis Results**
 
-  **Document Type:** ${result.document_type || 'Unknown'}
-  **Confidence:** ${result.confidence || 'N/A'}
-  **Key Entities:** ${result.entities?.join(', ') || 'None detected'}
-  **Summary:** ${result.summary || 'Analysis pending...'}`;
+  **Document Type:** ${(result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).document_type || 'Unknown'}
+  **Confidence:** ${(result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).confidence || 'N/A'}
+  **Key Entities:** ${(result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).entities?.join(', ') || 'None detected'}
+  **Summary:** ${(result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).summary || 'Analysis pending...'}`;
           } catch {
             response = '❌ **Analysis Failed** - Enhanced RAG service unavailable';
           }
@@ -278,24 +275,24 @@ https://svelte.dev/e/js_parse_error -->
   function formatRAGResponse(result: any): string {
     if (typeof result === 'string') return result;
   let formatted = $state(`🤖 **YoRHa AI Response**\n\n`);
-    if (result.response) {
-      formatted += `${result.response}\n\n`;
+    if ((result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).response) {
+      formatted += `${(result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).response}\n\n`;
     }
 
-    if (result.sources && result.sources.length > 0) {
+    if ((result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).sources && (result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).sources.length > 0) {
       formatted += `📚 **Sources:**\n`;
-      result.sources.forEach((source: any, index: number) => {
+      (result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).sources.forEach((source: any, index: number) => {
         formatted += `${index + 1}. ${source.title || source.filename || 'Unknown'}\n`;
       });
       formatted += '\n';
     }
 
-    if (result.confidence) {
-      formatted += `🎯 **Confidence:** ${Math.round(result.confidence * 100)}%\n`;
+    if ((result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).confidence) {
+      formatted += `🎯 **Confidence:** ${Math.round((result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).confidence * 100)}%\n`;
     }
 
-    if (result.processing_time) {
-      formatted += `⏱️ **Processing Time:** ${result.processing_time}ms\n`;
+    if ((result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).processing_time) {
+      formatted += `⏱️ **Processing Time:** ${(result as { metadata?: any; document_type?: any; confidence?: any; entities?: any; summary?: any; response?: any; sources?: any; processing_time?: any }).processing_time}ms\n`;
     }
 
     return formatted;
@@ -349,10 +346,7 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
           <div class="whitespace-pre-wrap break-words text-sm leading-relaxed">
-            {@html message.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                                    .replace(/`(.*?)`/g, '<code class="bg-black/30 px-1 rounded">$1</code>')
-                                    .replace(/\n/g, '<br>')
-            }
+            {/* JSX syntax converted to Svelte */}
           </div>
         </div>
       </div>
@@ -399,7 +393,7 @@ https://svelte.dev/e/js_parse_error -->
         class="flex-1 bg-yorha-dark border border-yorha-accent-warm/50 rounded px-4 py-3 text-yorha-light placeholder-yorha-muted/70 focus:outline-none focus:border-yorha-accent-warm focus:ring-1 focus:ring-yorha-accent-warm disabled:opacity-50"
       />
       <button
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={$isLoading || !messageInput.trim()}
         class="px-6 py-3 bg-yorha-accent-warm text-yorha-dark font-bold rounded hover:bg-yorha-accent-warm/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
       >

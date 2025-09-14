@@ -82,8 +82,8 @@
         }),
       });
 
-      const data = await response.json();
-      vectorResults = data.results || [];
+      const data = await (response as { json?: any }).json();
+      vectorResults = (data as { results?: any }).results || [];
 
       notifications.add({
         type: 'success',
@@ -117,10 +117,10 @@
           bind:value={searchQuery}
           placeholder="Search cases, evidence, legal documents..."
           class="flex-1" />
-  <Button class="bits-btn" onclick={performVectorSearch} loading={isSearching} disabled={!searchQuery.trim()}>
-          <Search class="w-5 h-5 mr-2" />
+  <Button class="bits-btn" on:click={performVectorSearch} loading={isSearching} disabled={!searchQuery.trim()}>
+<Search class="w-5 h-5 mr-2" />
           Search
-        </button>
+</Button>
       </div>
 
       {#if vectorResults.length > 0}
@@ -132,14 +132,14 @@
                 <div class="flex justify-between items-start">
                   <div>
                     <h5 class="font-semibold text-nier-white">
-                      {result.metadata?.title || 'Untitled'}
+                      {(result as { metadata?: any; content?: any; score?: any }).metadata?.title || 'Untitled'}
                     </h5>
-                    <p class="text-sm text-nier-text-muted">{result.content?.slice(0, 100)}...</p>
+                    <p class="text-sm text-nier-text-muted">{(result as { metadata?: any; content?: any; score?: any }).content?.slice(0, 100)}...</p>
                     <span class="text-xs text-nier-accent"
-                      >Score: {(result.score * 100).toFixed(1)}%</span>
+                      >Score: {((result as { metadata?: any; content?: any; score?: any }).score * 100).toFixed(1)}%</span>
                   </div>
-                  <span class="badge status-{result.metadata?.type || 'default'}"
-                    >{result.metadata?.type || 'document'}</span>
+                  <span class="badge status-{(result as { metadata?: any; content?: any; score?: any }).metadata?.type || 'default'}"
+                    >{(result as { metadata?: any; content?: any; score?: any }).metadata?.type || 'document'}</span>
                 </div>
               </div>
             {/each}
@@ -155,23 +155,33 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Button variants -->
-      <NesCard>
+      <div class="nes-container">
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Button Variants</h3>
           <div class="space-y-3">
-            <Button class="bits-btn" variant="default">Primary Action</button>
-            <Button class="bits-btn" variant="secondary">Secondary Action</button>
-            <Button class="bits-btn" variant="ghost">Ghost Button</button>
-            <Button class="bits-btn" variant="destructive">Delete Action</button>
+            <Button class="bits-btn" variant="default">
+Primary Action
+</Button>
+            <Button class="bits-btn" variant="secondary">
+Secondary Action
+</Button>
+            <Button class="bits-btn" variant="ghost">
+Ghost Button
+</Button>
+            <Button class="bits-btn" variant="destructive">
+Delete Action
+</Button>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Modal demo -->
-      <NesCard>
+      <div class="nes-container">
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Modal Component</h3>
-          <Button class="bits-btn" onclick={() => (modalOpen = true)}>Open Modal</button>
+          <Button class="bits-btn" on:click={() =>
+(modalOpen = true)}>Open Modal
+</Button>
 
           <Modal bind:open={modalOpen} title="System Alert">
             <div class="mt-4">
@@ -180,16 +190,20 @@
                 integrates with bits-ui and follows Svelte 5 best practices.
               </p>
               <div class="flex gap-2 justify-end">
-                <Button class="bits-btn" variant="ghost" onclick={() => (modalOpen = false)}>Cancel</button>
-                <Button class="bits-btn" onclick={() => (modalOpen = false)}>Acknowledge</button>
+                <Button class="bits-btn" variant="ghost" on:click={() =>
+(modalOpen = false)}>Cancel
+</Button>
+                <Button class="bits-btn" on:click={() =>
+(modalOpen = false)}>Acknowledge
+</Button>
               </div>
             </div>
           </Modal>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Input components -->
-      <NesCard>
+      <div class="nes-container">
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Input Components</h3>
           <div class="space-y-3">
@@ -201,7 +215,7 @@
               placeholder="Input with error..." />
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </section>
 
@@ -242,7 +256,7 @@
 </div>
 
 {#snippet StatusCard({ title, status, description })}
-  <NesCard variant="interactive">
+  <div variant="interactive" class="nes-container">
     <div class="p-4 text-center">
       <div
         class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center {status ===
@@ -264,7 +278,7 @@
         {status.toUpperCase()}
       </span>
     </div>
-  </NesCard>
+  </div>
 {/snippet}
 
 {#snippet LayoutDemo()}
@@ -276,12 +290,12 @@
       </div>
       <nav class="space-y-2">
         {#each [{ icon: LayoutDashboard, label: 'Dashboard' }, { icon: FileText, label: 'Cases' }, { icon: Scale, label: 'Evidence' }, { icon: Users, label: 'Users' }] as item}
-          {@const IconComponent = item.icon}
+          {@const IconComponent = (item as { icon?: any; label?: any }).icon}
           <a
             href="/showcase"
             class="flex items-center gap-3 p-2 rounded hover:bg-nier-surface-light text-nier-text">
             <IconComponent class="w-5 h-5" />
-            {item.label}
+            {(item as { icon?: any; label?: any }).label}
           </a>
         {/each}
       </nav>
@@ -296,7 +310,7 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         {#each [{ title: 'Total Cases', value: layoutData.stats.totalCases, icon: FileText }, { title: 'Open Cases', value: layoutData.stats.openCases, icon: FileText }, { title: 'Closed Cases', value: layoutData.stats.closedCases, icon: FileText }, { title: 'Evidence Items', value: layoutData.stats.evidenceCount, icon: Scale }] as stat}
           {@const StatIcon = stat.icon}
-          <NesCard>
+          <div class="nes-container">
             <div class="p-4">
               <div class="flex justify-between items-center mb-2">
                 <h4 class="text-sm font-medium text-nier-text-muted">{stat.title}</h4>
@@ -304,11 +318,11 @@
               </div>
               <p class="text-2xl font-bold text-nier-white">{stat.value}</p>
             </div>
-          </NesCard>
+          </div>
         {/each}
       </div>
 
-      <NesCard>
+      <div class="nes-container">
         <div class="p-6">
           <h3 class="text-lg font-semibold text-nier-white mb-4">Recent Activity</h3>
           <div class="space-y-3">
@@ -324,7 +338,7 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </main>
   </div>
 {/snippet}

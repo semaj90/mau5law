@@ -119,10 +119,7 @@ export interface VectorSearchHealthStatus {
     vectorCount?: number;
     
     /** Information about vector indexes */
-    indexes?: Array<{
-      name: string;
-      table: string;
-    }>;
+    indexes?: Array<any>;
     
     /** Performance metrics */
     performance?: {

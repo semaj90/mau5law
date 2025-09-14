@@ -9,7 +9,7 @@
 
 /// <reference types="@webgpu/types" />
 
-import { yorhaMipmapShaders } from './YoRHaMipmapShaders.js';
+import { yorhaMipmapShaders } from './YoRHaMipmapShaders.js.js';
 import { lodCacheEngine } from '$lib/ai/lod-cache-engine.js';
 import type { LODLevel, LODCacheEntry } from '$lib/ai/lod-cache-engine.js';
 import { ollamaService } from '$lib/server/ai/ollama-service.js';
@@ -59,7 +59,7 @@ export interface HeadlessProcessingResult {
   // Legal analysis results
   legalAnalysis?: {
     confidence: number;
-    entities: Array<{text: string; type: string; confidence: number}>;
+    entities: Array<any>;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     summary: string;
   };
@@ -88,13 +88,7 @@ export class HeadlessLegalProcessorFactory {
   private static instance: HeadlessLegalProcessorFactory;
   private device: GPUDevice | null = null;
   private isInitialized = false;
-  private processingQueue: Array<{
-    id: string;
-    text: string;
-    config: HeadlessProcessingConfig;
-    resolve: (result: HeadlessProcessingResult) => void;
-    reject: (error: Error) => void;
-  }> = [];
+  private processingQueue: Array< = [];
 
   private constructor() {}
 
@@ -301,11 +295,7 @@ export class HeadlessLegalProcessorFactory {
   private async processWithLODCache(
     text: string, 
     config: HeadlessProcessingConfig
-  ): Promise<{
-    lodEntry: LODCacheEntry;
-    instantRetrievalKey: string;
-    predictiveSuggestions: string[];
-  }> {
+  ): Promise<any> {
     const context = {
       session_id: `headless-${Date.now()}`,
       query_context: 'legal-document-analysis',
@@ -319,9 +309,9 @@ export class HeadlessLegalProcessorFactory {
     const result = await lodCacheEngine.processLLMOutput(text, context);
     
     return {
-      lodEntry: result.cache_entry,
-      instantRetrievalKey: result.instant_retrieval_key,
-      predictiveSuggestions: result.predictive_suggestions
+      lodEntry: (result as { cache_entry?: any; instant_retrieval_key?: any; predictive_suggestions?: any }).cache_entry,
+      instantRetrievalKey: (result as { cache_entry?: any; instant_retrieval_key?: any; predictive_suggestions?: any }).instant_retrieval_key,
+      predictiveSuggestions: (result as { cache_entry?: any; instant_retrieval_key?: any; predictive_suggestions?: any }).predictive_suggestions
     };
   }
 
@@ -518,7 +508,7 @@ Format your response as structured JSON.`;
    * Process multiple documents in batch
    */
   async processBatch(
-    documents: Array<{text: string; id?: string}>,
+    documents: Array<,
     config: Partial<HeadlessProcessingConfig> = {}
   ): Promise<HeadlessProcessingResult[]> {
     console.log(`📦 Processing ${documents.length} documents in headless batch mode`);

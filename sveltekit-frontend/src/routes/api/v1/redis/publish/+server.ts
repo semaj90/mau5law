@@ -1,5 +1,5 @@
 import { getRedisService } from '$lib/server/redis/redis-service';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const POST: RequestHandler = async ({ request }) => {

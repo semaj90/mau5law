@@ -1,7 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: `</DialogDescription>` attempted to close an element that was not open
+<!-- @migration-task Error while migrating Svelte code: `</Dialog.Description>` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</DialogDescription>` attempted to close an element that was not open -->
-<!-- @migration-task Error while migrating Svelte code: `</DialogDescription>` attempted to close an element that was not open
+<!-- @migration-task Error while migrating Svelte code: `</Dialog.Description>` attempted to close an element that was not open -->
+<!-- @migration-task Error while migrating Svelte code: `</Dialog.Description>` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- Legal Case Analysis Dialog - Bits UI Component -->
 <script lang="ts">
@@ -24,8 +24,16 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     aiInsights,
     loading,
     selectCase,
-    analyzeCase
+    analyzeCase,
+    loadCases
   } = legalCaseStore;
+
+  // Load cases when component mounts
+  $effect(() => {
+    if (filteredCases().length === 0) {
+      loadCases();
+    }
+  });
 
   let selectedCaseForAnalysis = $state<string | null>(null);
   let analysisProgress = $state(0);
@@ -38,22 +46,24 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     analysisProgress = 0;
 
     try {
-      // Simulate progress updates
+      // Progress updates for real analysis
       const progressInterval = setInterval(() => {
-        analysisProgress = Math.min(analysisProgress + 10, 90);
-      }, 200);
+        analysisProgress = Math.min(analysisProgress + 8, 85);
+      }, 300);
 
+      // Call the real API endpoint through the store
       await analyzeCase(selectedCaseForAnalysis);
+
       clearInterval(progressInterval);
       analysisProgress = 100;
       analysisStatus = 'complete';
 
-      // Auto-close after success
+      // Auto-close after showing success
       setTimeout(() => {
         onOpenChange(false);
         analysisStatus = 'idle';
         analysisProgress = 0;
-      }, 2000);
+      }, 3000);
 
     } catch (error) {
       analysisStatus = 'error';
@@ -75,12 +85,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 <Dialog.Root {open} {onOpenChange}>
   <Dialog.Trigger>
     <Button class="legal-action-btn bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn">
-      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
       Analyze Case Documents
-    </button>
+
   </Dialog.Trigger>
 
   <Dialog.Content class="legal-dialog max-w-2xl w-full bg-white border border-gray-200 rounded-lg shadow-xl">
@@ -97,15 +107,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       <!-- Case Selection -->
       <div class="space-y-3">
         <label class="text-sm font-medium text-gray-700">Select Case for Analysis</label>
-        <SelectRoot bind:value={selectedCaseForAnalysis} disabled={loading.analysis}>
-          <SelectTrigger class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            <SelectValue placeholder="Choose a case to analyze..." let:value>
-              {value ? value.title : ''}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent class="bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+        <Select.Root bind:value={selectedCaseForAnalysis} disabled={loading.analysis}>
+          <Select.Trigger class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <Select.Value placeholder="Choose a case to analyze..." />
+          </Select.Trigger>
+          <Select.Content class="bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
             {#each filteredCases() as legalCase}
-              <SelectItem
+              <Select.Item
                 value={legalCase.id}
                 class="px-3 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
               >
@@ -121,10 +129,10 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                     <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{legalCase.status}</span>
                   </div>
                 </div>
-              </SelectItem>
+              </Select.Item>
             {/each}
-          </SelectContent>
-        </SelectRoot>
+          </Select.Content>
+        </Select.Root>
       </div>
 
       <!-- Analysis Progress -->
@@ -155,38 +163,49 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       {/if}
 
       <!-- Analysis Results -->
-      {#if selectedCaseForAnalysis && aiInsights[selectedCaseForAnalysis.id] && analysisStatus === 'complete'}
-        {@const insights = aiInsights[selectedCaseForAnalysis.id]}
+      {#if selectedCaseForAnalysis && aiInsights[selectedCaseForAnalysis] && analysisStatus === 'complete'}
+        {@const insights = aiInsights[selectedCaseForAnalysis]}
         <div class="space-y-4 border-t border-gray-100 pt-4">
           <h3 class="font-medium text-gray-900">Analysis Results</h3>
 
+          <!-- Summary -->
+          {#if insights.summary}
+            <div class="p-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-md">
+              <p class="text-sm text-blue-800">{insights.summary}</p>
+            </div>
+          {/if}
+
           <!-- Risk Assessment -->
-          {#if insights.riskAssessment}
+          {#if insights.riskLevel}
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
               <span class="text-sm font-medium text-gray-700">Risk Level</span>
-              <Badge variant={getRiskBadgeVariant(insights.riskAssessment.level)}>
-                {insights.riskAssessment.level}
+              <Badge variant={getRiskBadgeVariant(insights.riskLevel.toUpperCase())}>
+                {insights.riskLevel.toUpperCase()}
               </Badge>
             </div>
           {/if}
 
           <!-- Compliance Status -->
-          {#if insights.complianceChecks}
+          {#if insights.complianceStatus}
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+              <span class="text-sm font-medium text-gray-700">Compliance Status</span>
+              <Badge variant={insights.complianceStatus === 'compliant' ? 'default' : 'destructive'}>
+                {insights.complianceStatus.toUpperCase()}
+              </Badge>
+            </div>
+          {/if}
+
+          <!-- Similar Cases -->
+          {#if insights.similarCases && insights.similarCases.length > 0}
             <div class="space-y-2">
-              <span class="text-sm font-medium text-gray-700">Compliance Checks</span>
-              <div class="grid grid-cols-2 gap-2">
-                {#each insights.complianceChecks as check}
-                  <div class="flex items-center space-x-2 p-2 bg-gray-50 rounded">
-                    {#if check.passed}
-                      <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                      </svg>
-                    {:else}
-                      <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                      </svg>
-                    {/if}
-                    <span class="text-xs text-gray-600">{check.description}</span>
+              <span class="text-sm font-medium text-gray-700">Similar Cases Found</span>
+              <div class="space-y-1 max-h-24 overflow-y-auto">
+                {#each insights.similarCases.slice(0, 3) as similarCase}
+                  <div class="text-xs text-gray-600 p-2 bg-gray-50 rounded flex items-center justify-between">
+                    <span class="truncate">{similarCase.title}</span>
+                    <Badge variant="outline" class="text-xs">
+                      {Math.round(similarCase.similarity * 100)}%
+                    </Badge>
                   </div>
                 {/each}
               </div>
@@ -194,17 +213,49 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           {/if}
 
           <!-- Key Findings -->
-          {#if insights.findings && insights.findings.length > 0}
+          {#if insights.keyFindings && insights.keyFindings.length > 0}
             <div class="space-y-2">
               <span class="text-sm font-medium text-gray-700">Key Findings</span>
-              <ul class="space-y-1">
-                {#each insights.findings.slice(0, 3) as finding}
+              <ul class="space-y-1 max-h-32 overflow-y-auto">
+                {#each insights.keyFindings.slice(0, 5) as finding}
                   <li class="text-sm text-gray-600 flex items-start space-x-2">
-                    <span class="w-1 h-1 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+                    <span class="w-1 h-1 bg-blue-400 rounded-full mt-2 flex-shrink-0"></span>
                     <span>{finding}</span>
                   </li>
                 {/each}
               </ul>
+            </div>
+          {/if}
+
+          <!-- Recommendations -->
+          {#if insights.recommendations && insights.recommendations.length > 0}
+            <div class="space-y-2">
+              <span class="text-sm font-medium text-gray-700">Recommendations</span>
+              <ul class="space-y-1 max-h-32 overflow-y-auto">
+                {#each insights.recommendations.slice(0, 4) as recommendation}
+                  <li class="text-sm text-gray-600 flex items-start space-x-2">
+                    <span class="w-1 h-1 bg-green-400 rounded-full mt-2 flex-shrink-0"></span>
+                    <span>{recommendation}</span>
+                  </li>
+                {/each}
+              </ul>
+            </div>
+          {/if}
+
+          <!-- Timeline -->
+          {#if insights.timeline && insights.timeline.length > 0}
+            <div class="space-y-2">
+              <span class="text-sm font-medium text-gray-700">Analysis Timeline</span>
+              <div class="space-y-1 max-h-24 overflow-y-auto">
+                {#each insights.timeline as event}
+                  <div class="text-xs text-gray-600 p-2 bg-gray-50 rounded flex items-center justify-between">
+                    <span class="truncate">{event.event}</span>
+                    <Badge variant={event.importance === 'high' ? 'secondary' : 'outline'} class="text-xs">
+                      {event.importance}
+                    </Badge>
+                  </div>
+                {/each}
+              </div>
             </div>
           {/if}
         </div>
@@ -229,17 +280,18 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     <Dialog.Footer class="border-t border-gray-100 p-6 flex justify-end space-x-3">
       <Button class="bits-btn"
         variant="outline"
-        onclick={() => onOpenChange(false)}
+        on:click={() =>
+onOpenChange(false)}
         disabled={loading.analysis}
       >
         Cancel
-      </button>
+
       <Button
-        onclick={handleAnalysis}
+        on:click={handleAnalysis}
         disabled={!selectedCaseForAnalysis || loading.analysis || analysisStatus === 'analyzing'}
         class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
       >
-        {#if analysisStatus === 'analyzing'}
+{#if analysisStatus === 'analyzing'}
           <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -253,7 +305,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         {:else}
           Start Analysis
         {/if}
-      </button>
+
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

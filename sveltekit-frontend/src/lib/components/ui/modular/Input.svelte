@@ -156,11 +156,9 @@ https://svelte.dev/e/js_parse_error -->
       {disabled}
       {readonly}
       {required}
-      class={cn(inputClass, icon && 'pl-10', suffix && 'pr-12')}
-      input={handleInput}
-      change={onchange}
-      onfocus={onfocus}
-      onblur={onblur}
+      class={cn(inputClass, icon && 'pl-10', suffix && 'pr-12')} on:input={handleInput} on:change={onchange}
+      on:focus={onfocus}
+      on:blur={onblur}
       {...restProps}
     />
 

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // CUDA preprocessing API with Clang/LLVM optimizations
 // Integrates with the Clang-compiled CUDA worker for high-performance file processing
@@ -90,11 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-async function checkCudaWorkerAvailability(workerPath: string): Promise<{
-  available: boolean;
-  error?: string;
-  version?: string;
-}> {
+async function checkCudaWorkerAvailability(workerPath: string): Promise<any> {
   try {
     // Test CUDA worker with version check
     const { stdout, stderr } = await execAsync(`"${workerPath}" --version`, {

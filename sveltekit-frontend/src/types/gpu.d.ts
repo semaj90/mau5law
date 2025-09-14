@@ -37,7 +37,7 @@ export interface WebGPUSOMCache {
   decayRate: number;
 
   // Methods that were missing
-  findSimilar(vector: Float32Array, k?: number): Array<{id: string, similarity: number}>;
+  findSimilar(vector: Float32Array, k?: number): Array<any>;
   updateWithWeight(id: string, vector: Float32Array, weight: number): void;
   getStats(): {nodeCount: number, avgSimilarity: number, lastUpdate: number};
   storeVector(id: string, vector: Float32Array): void;

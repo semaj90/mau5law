@@ -14,7 +14,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db, canvasStates, canvasAnnotations } from '$lib/server/db/client.js';
 import { eq, and } from 'drizzle-orm';
 

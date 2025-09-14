@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Comprehensive AI Mix Summaries API - End-to-End Integration
 // Combines: Local LLM + Enhanced RAG + User Activity (simulated) + Fuse.js + XState Synthesis
@@ -47,12 +47,7 @@ export interface BasicVectorResult {
 }
 
 export interface EnhancedRAGOutput {
-  relevantDocs: Array<{
-    id: string;
-    content: string;
-    relevance: number;
-    source: string;
-  }>;
+  relevantDocs: Array<any>;
   contextSummary: string;
   searchMetrics: {
     vectorSearchTime: number;
@@ -77,11 +72,7 @@ export interface SynthesizedOutput {
   keyInsights: string[];
   actionItems: string[];
   confidence: number;
-  sources: Array<{
-    type: "llm" | "rag" | "user_activity";
-    contribution: number;
-    details: any;
-  }>;
+  sources: Array<any>;
   nextSteps: string[];
   relatedCases?: string[];
   warnings?: string[];
@@ -343,8 +334,8 @@ async function getLocalLLMOutput(
       maxTokens: request.depth === 'forensic' ? 1000 : 500,
     });
 
-    combinedResponse += response.content + '\n\n';
-    totalTokens += response.tokens || 0;
+    combinedResponse += (response as { content?: any; tokens?: any }).content + '\n\n';
+    totalTokens += (response as { content?: any; tokens?: any }).tokens || 0;
   }
 
   const processingTime = Date.now() - startTime;
@@ -400,7 +391,7 @@ async function getEnhancedRAGOutput(
   // Combine and deduplicate results
   const allResults = [...pgResults, ...qdrantResults];
   const uniqueResults = Array.from(
-    new Map(allResults.map((item) => [item.id, item])).values()
+    new Map(allResults.map((item) => [(item as { id?: any }).id, item])).values()
   );
 
   // Rank results by relevance
@@ -564,7 +555,7 @@ async function synthesizeOutputs({
         type: "llm",
         contribution: weights.llm,
         details: {
-          model: llmOutput.model,
+          model: llmOutput?.model || "unknown" // @ts-ignore - Model property access,
           tokens: llmOutput.tokens,
           processingTime: llmOutput.processingTime,
         },

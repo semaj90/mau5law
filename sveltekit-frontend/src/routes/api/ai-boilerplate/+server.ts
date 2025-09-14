@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * AI-Assisted Boilerplate Generation API
@@ -191,7 +191,7 @@ async function getHighPerformingPhrases(
     `;
 
     const result = await db.query(sql, params);
-    return result.rows;
+    return (result as { rows?: any }).rows;
 }
 
 function getTypeSpecificFilter(type: string, paramIndex: number, params: any[]): string {
@@ -238,7 +238,7 @@ Generate the boilerplate text:`;
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: CONFIG.ollama.model,
+                model: CONFIG.ollama?.model || "unknown" // @ts-ignore - Model property access,
                 prompt: fullPrompt,
                 stream: false,
                 options: {
@@ -250,12 +250,12 @@ Generate the boilerplate text:`;
             })
         });
 
-        if (!response.ok) {
-            throw new Error(`LLM request failed: ${response.status}`);
+        if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+            throw new Error(`LLM request failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
         }
 
-        const data = await response.json();
-        const generatedText = data.response.trim();
+        const data = await (response as { ok?: any; status?: any; json?: any }).json();
+        const generatedText = (data as { response?: any }).(response as { ok?: any; status?: any; json?: any }).trim();
 
         // Calculate confidence based on phrase usage
         const phrasesUsed = sourcePhrases.filter((p: any) => generatedText.toLowerCase().includes(p.phrase.toLowerCase())

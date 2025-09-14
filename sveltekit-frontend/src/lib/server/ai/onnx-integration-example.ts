@@ -3,8 +3,8 @@
  * Shows how to use the Legal-BERT ONNX wrapper in production
  */
 
-import { legalBertONNXService } from './legal-bert-onnx-service';
-import { ollamaService } from './ollama-service';
+import { legalBertONNXService } from './legal-bert-onnx-service.js';
+import { ollamaService } from './ollama-service.js';
 
 /**
  * Example: Process a legal document with ONNX optimization
@@ -99,7 +99,7 @@ export async function initializeONNXServices() {
 /**
  * Example: Batch process multiple legal documents efficiently
  */
-export async function batchProcessLegalDocuments(documents: Array<{ id: string; text: string }>) {
+export async function batchProcessLegalDocuments(documents: Array<) {
   const results = [];
   const startTime = Date.now();
 

@@ -3,6 +3,10 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
   import 'nes.css/css/nes.min.css';
+
+
+// Auto-generated default export
+export default {};
 </script>
   import { createEventDispatcher } from 'svelte';
 
@@ -142,7 +146,7 @@ https://svelte.dev/e/js_parse_error -->
   role="button"
   aria-label={ariaLabel}
   tabindex="0"
-  onclick={() => !disabled && inputEl.click()}
+  on:click={() => !disabled && inputEl.click()}
   on:drop|preventDefault={onDrop}
   on:dragover|preventDefault={onDragOver}
 >
@@ -151,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
 	type="file"
 	{accept}
 	{multiple}
-	onchange={onInputChange}
+	on:change={onInputChange}
 	style="display: none;"
 	aria-hidden="true"
   />
@@ -175,7 +179,7 @@ https://svelte.dev/e/js_parse_error -->
 		  <div style="font-size: 0.85rem; color: #666;">{bytesToSize(f.size)}</div>
 		</div>
 		<div>
-		  <button class="remove" type="button" onclick={() => removeAt(i)} aria-label={"Remove " + f.name}>Remove</button>
+		  <button class="remove" type="button" on:click={() => removeAt(i)} aria-label={"Remove " + f.name}>Remove</button>
 		</div>
 	  </div>
 	{/each}

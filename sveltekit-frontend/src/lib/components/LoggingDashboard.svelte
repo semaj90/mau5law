@@ -19,10 +19,7 @@ https://svelte.dev/e/element_unclosed -->
   import { Badge } from '$lib/components/ui/badge';
 
   // Modern Svelte 5 props via $props rune
-  let { visible = true, height = '600px' } = $props<{
-    visible?: boolean;
-    height?: string;
-  }>();
+  let { visible = true, height = '600px' } = $props();
 
   let selectedLevel = $state<LogLevel | 'all'>('all');
   let selectedCategory = $state('all');
@@ -170,12 +167,12 @@ https://svelte.dev/e/element_unclosed -->
         </h2>
 
         <div class="flex items-center gap-2">
-          <Button class="bits-btn" size="sm" variant="outline" onclick={exportLogs}>
-            📤 Export
-          </button>
-          <Button class="bits-btn" size="sm" variant="outline" onclick={clearLogs}>
-            🗑️ Clear
-          </button>
+          <Button class="bits-btn" size="sm" variant="outline" on:click={exportLogs}>
+📤 Export
+
+          <Button class="bits-btn" size="sm" variant="outline" on:click={clearLogs}>
+🗑️ Clear
+
         </div>
       </div>
 
@@ -265,7 +262,7 @@ https://svelte.dev/e/element_unclosed -->
             <button
               type="button"
               class="log-entry group w-full text-left hover:bg-gray-800 p-2 rounded cursor-pointer transition-colors duration-150"
-              onclick={() => selectEntry(entry)}
+              on:click={() => selectEntry(entry)}
             >
               <div class="flex items-start gap-3">
                 <!-- Timestamp -->
@@ -309,12 +306,13 @@ https://svelte.dev/e/element_unclosed -->
 
                 <!-- Actions -->
                 <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button class="bits-btn" size="sm" variant="ghost" onclick={(e) => { e.stopPropagation(); selectEntry(entry); }}>
+                  <Button class="bits-btn" size="sm" variant="ghost" on:click={(e) =>
+{ e.stopPropagation(); selectEntry(entry); }}>
                     👁️
-                  </button>
+
                 </div>
               </div>
-            </button>
+
           {/each}
         </div>
       {/if}
@@ -331,9 +329,10 @@ https://svelte.dev/e/element_unclosed -->
           <h3 class="text-xl font-bold text-green-400 flex items-center gap-2">
             {getLevelIcon(selectedEntry.level)} Log Entry Details
           </h3>
-          <Button class="bits-btn" variant="ghost" onclick={() => showDetails = false}>
+          <Button class="bits-btn" variant="ghost" on:click={() =>
+showDetails = false}>
             ✕
-          </button>
+
         </div>
 
         <!-- Entry Details -->
@@ -454,13 +453,15 @@ https://svelte.dev/e/element_unclosed -->
         <div class="flex gap-2 mt-6">
           <Button class="bits-btn"
             variant="outline"
-            onclick={() => navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
+            on:click={() =>
+navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
           >
             📋 Copy JSON
-          </button>
-          <Button class="bits-btn" variant="outline" onclick={() => showDetails = false}>
+
+          <Button class="bits-btn" variant="outline" on:click={() =>
+showDetails = false}>
             Close
-          </button>
+
         </div>
       </div>
     </div>

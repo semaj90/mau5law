@@ -17,15 +17,7 @@
 
   // Access props via Svelte runes $props()
   let _props = $props();
-  const timelineEvents: Array<{
-    date: string;
-    time?: string;
-    event: string;
-    persons?: string[];
-    evidenceSource?: string;
-    confidence?: number;
-    category?: 'crime' | 'witness' | 'discovery' | 'movement' | 'communication';
-  }> = [];
+  const timelineEvents: Array = [];
 
   const caseId: string | undefined = _props.caseId;
 
@@ -112,20 +104,20 @@
   }
 </script>
 
-<NesCard class="w-full max-w-4xl">
+<div class="w-full max-w-4xl nes-container">
   <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
-      <h3 class="nes-text is-primary" class="text-xl font-semibold flex items-center gap-2">
+      <h3 class="nes-text is-primary text-xl font-semibold flex items-center gap-2">
         ⏰ Evidence Timeline
         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{timelineEvents.length} events</span>
       </h3>
       <div class="flex gap-2">
         <Button class="bits-btn" variant="outline" size="sm">
-          📊 Timeline Analysis
-        </button>
+📊 Timeline Analysis
+</Button>
         <Button class="bits-btn" variant="outline" size="sm">
-          🗂️ Export Timeline
-        </button>
+🗂️ Export Timeline
+</Button>
       </div>
     </div>
     {#if caseId}
@@ -157,7 +149,7 @@
                 <div class="flex-1">
                   <button
                     class="text-left w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                    onclick={() => toggleDate(date)}
+                    on:click={() => toggleDate(date)}
                   >
                     <div>
                       <h3 class="font-semibold text-lg">{formatDate(date)}</h3>
@@ -166,7 +158,7 @@
                     <div class="text-gray-400">
                       {expandedDates.has(date) ? '▼' : '▶'}
                     </div>
-                  </button>
+</Button>
                 </div>
               </div>
 
@@ -243,19 +235,19 @@
 
         <div class="flex gap-2">
           <Button class="bits-btn" variant="outline" size="sm">
-            🔍 Find Gaps
-          </button>
+🔍 Find Gaps
+</Button>
           <Button class="bits-btn" variant="outline" size="sm">
-            🕸️ Show Connections
-          </button>
+🕸️ Show Connections
+</Button>
           <Button class="bits-btn" size="sm">
-            📝 Generate Report
-          </button>
+📝 Generate Report
+</Button>
         </div>
       </div>
     {/if}
   </div>
-</NesCard>
+</div>
 
 <style>
   /* Timeline custom styles */

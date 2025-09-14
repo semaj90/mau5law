@@ -202,8 +202,8 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
 
     const payload = {
       success: true,
-      data: result.data,
-      pagination: result.pagination,
+      data: (result as { data?: any; pagination?: any }).data,
+      pagination: (result as { data?: any; pagination?: any }).pagination,
       meta: {
         caseId: validatedQuery.caseId,
         userId: locals.user.id,

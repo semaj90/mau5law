@@ -873,7 +873,7 @@ class ImageAnalysisProcessor extends JobProcessor {
   type: JobType = 'image_analysis';
   async process(job: JobDefinition): Promise<any> {
     await new Promise((resolve) => setTimeout(resolve, 1200));
-    return { objects_detected: [], text_regions: [], metadata: {} };
+    return { objects_detected: [], text_regions: [], metadata: Record<string, any> };
   }
 }
 

@@ -1,5 +1,5 @@
 import { cases, helpers } from "$lib/server/db";
-import type { LayoutServerLoad } from './$types.js';
+import type { LayoutServerLoad } from './$types.js.js';
 
 // This runs for /cases and all its sub-pages
 // Perfect for loading persistent 3-column layout data
@@ -59,7 +59,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
       priority: 'high',
       createdAt: new Date(),
       description: 'Test case for SuperForms',
-      metadata: {}
+      metadata: Record<string, any>
     }
   ];
 

@@ -74,9 +74,9 @@ https://svelte.dev/e/js_parse_error -->
   		updateCanvasDimensions();
   }
   	// Enhanced file upload state
-  let uploadProgress = $state<{ [key: string]: number } >({});
-  let uploadingFiles = $state<{ [key: string]: { name: string; size: number; hash?: string } } >({});
-  let completedUploads = $state<{ [key: string]: { name: string; hash: string; id: string } } >({});
+  let uploadProgress = $state({});
+  let uploadingFiles = $state({});
+  let completedUploads = $state({});
 
   	// Handle file drops with hash calculation
   	async function handleFileDrop(event: DragEvent) {
@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
   				completedUploads[fileId] = {
   					name: file.name,
   					hash: hash,
-  					id: result.id
+  					id: (result as { id?: any; uploaded?: any }).id
   				};
   				uploadProgress[fileId] = 100;
 
@@ -140,7 +140,7 @@ https://svelte.dev/e/js_parse_error -->
   		// Simulate progress for demo (real implementation would process chunks)
   		if (onProgress) {
   			for (let i = 0; i <= 100; i += 10) {
-  				await new Promise(resolve => setTimeout(resolve, 10);
+  				await new Promise(resolve => setTimeout(resolve, 10));
   				onProgress(i / 100);
   }}
   		return Array.from(new Uint8Array(hash))
@@ -148,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
   			.join('');
   }
   	// Upload file with calculated hash
-  	async function uploadFileWithHash(file: File, hash: string, onProgress?: (progress: number) => void): Promise<{ id: string }> {
+  	async function uploadFileWithHash(file: File, hash: string, onProgress?: (progress: number) => void): Promise {
   		const formData = new FormData();
   		formData.append('files', file);
   		formData.append('caseId', caseId);
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
   		// Simulate upload progress
   		if (onProgress) {
   			for (let i = 0; i <= 100; i += 5) {
-  				await new Promise(resolve => setTimeout(resolve, 50);
+  				await new Promise(resolve => setTimeout(resolve, 50));
   				onProgress(i / 100);
   }}
   		const response = await fetch('/api/evidence/upload', {
@@ -165,11 +165,11 @@ https://svelte.dev/e/js_parse_error -->
   			body: formData
   		});
 
-  		if (!response.ok) {
+  		if (!(response as { ok?: any; json?: any }).ok) {
   			throw new Error('Upload failed');
   }
-  		const result = await response.json();
-  		return { id: result.uploaded?.[0]?.id || crypto.randomUUID() };
+  		const result = await (response as { ok?: any; json?: any }).json();
+  		return { id: (result as { id?: any; uploaded?: any }).uploaded?.[0]?.id || crypto.randomUUID() };
   }
 </script>
 
@@ -190,9 +190,9 @@ https://svelte.dev/e/js_parse_error -->
 		<div
 			class="space-y-4"
 		 class:sidebar-open={sidebarOpen}
-			ondrop={handleFileDrop}
-		 role="region" aria-label="Drop zone" ondragover={handleDragOver}
-			role="main"
+			on:drop={handleFileDrop}
+		 role="button" aria-label="Drop zone" on:dragover={handleDragOver}
+		
 			aria-label="Interactive canvas workspace"
 		>
 			<!-- Toolbar -->
@@ -262,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
 									<span class="space-y-4">{upload.hash.substring(0, 12)}...{upload.hash.substring(-4)}</span>
 									<button
 										class="space-y-4"
-										onclick={() => window.open(`/evidence/hash?hash=${upload.hash}`, '_blank')}
+										on:click={() => window.open(`/evidence/hash?hash=${upload.hash}`, '_blank')}
 									>
 										🔍 Verify
 									</button>

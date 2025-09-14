@@ -49,7 +49,7 @@ const streamChatService = fromPromise(async ({ input }: { input: { messages: Cha
     },
     body: JSON.stringify({
       messages,
-      model: settings.model,
+      model: settings?.model || "unknown" // @ts-ignore - Model property access,
       temperature: settings.temperature,
       max_tokens: settings.maxTokens,
       stream: true,
@@ -66,8 +66,8 @@ const streamChatService = fromPromise(async ({ input }: { input: { messages: Cha
 export const chatMachine = createMachine({
   id: 'chat',
   types: {
-    context: {} as ChatContext,
-    events: {} as ChatEvent,
+    context: Record<string, any> as ChatContext,
+    events: Record<string, any> as ChatEvent,
   },
   context: {
     messages: [],

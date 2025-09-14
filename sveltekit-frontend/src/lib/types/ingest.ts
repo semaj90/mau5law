@@ -28,11 +28,7 @@ export interface BatchIngestResult {
   processed: number;
   failed: number;
   successRate: string;
-  results: Array<{
-    documentId: string;
-    embeddingId: string;
-    processingTime: number;
-  }>;
+  results: Array<any>;
   performance?: any;
 }
 

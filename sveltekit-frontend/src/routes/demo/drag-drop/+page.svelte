@@ -90,7 +90,7 @@
         <div class="file-summary">
           <div class="summary-header">
             <h3>Selected Files ({uploadedFiles.length})</h3>
-            <button class="clear-button" onclick={clearFiles}>
+            <button class="clear-button" on:click={clearFiles}>
               Clear All
             </button>
           </div>
@@ -183,13 +183,7 @@
   <!-- Code Example -->
   <section class="code-section">
     <h2 class="section-title">Usage Example</h2>
-    <pre class="code-block"><code>{`<script lang="ts">
-</script>
-  import SimpleDragDrop from '$lib/components/ui/SimpleDragDrop.svelte';
-  
-  function handleFiles(files) {
-    console.log('Files dropped:', files);
-  }
+    <pre class="code-block"><code>{/* JSX syntax converted to Svelte */}
 </script>
 
 <SimpleDragDrop
@@ -337,7 +331,7 @@
 
   .file-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 16px;
   }
 

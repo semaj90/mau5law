@@ -21,7 +21,7 @@ import { URL } from "url";
 
 import { ContextService } from "$lib/services/context-service";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Environment variables fallback

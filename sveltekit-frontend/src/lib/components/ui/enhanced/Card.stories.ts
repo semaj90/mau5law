@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import Card from './Card.svelte';
+import Card from './Card.svelte.js';
 
 const meta = {
   title: 'UI/Enhanced/Card',

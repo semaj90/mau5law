@@ -234,18 +234,18 @@
           recommendationContext || {}
         );
 
-        if (!result.success) {
+        if (!(result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).success) {
           throw new Error('Enhanced feedback submission failed');
         }
 
         // Trigger distillation if needed
-        if (result.shouldTriggerDistillation) {
+        if ((result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).shouldTriggerDistillation) {
           await fetch('/api/qlora-distillation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               trigger: 'feedback_threshold',
-              feedbackCount: result.totalFeedbackCount
+              feedbackCount: (result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).totalFeedbackCount
             })
           });
         }
@@ -280,19 +280,19 @@
           })
         });
 
-        if (!response.ok) {
-          throw new Error(`Feedback submission failed: ${response.statusText}`);
+        if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+          throw new Error(`Feedback submission failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
         }
 
-        result = await response.json();
+        result = await (response as { ok?: any; statusText?: any; json?: any }).json();
 
-        if (result.shouldTriggerDistillation) {
+        if ((result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).shouldTriggerDistillation) {
           await fetch('/api/qlora-distillation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               trigger: 'feedback_threshold',
-              feedbackCount: result.totalFeedbackCount
+              feedbackCount: (result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).totalFeedbackCount
             })
           });
         }
@@ -396,8 +396,8 @@
     bind:this={containerRef}
     class="recommendation-container {position} {consoleStyle}"
     class:has-critical={criticalCount > 0}
-    onmouseenter={handleMouseEnter}
-    onmouseleave={handleMouseLeave}
+    on:mouseenter={handleMouseEnter}
+    on:mouseleave={handleMouseLeave}
   >
     <Collapsible.Root bind:open={isOpen} class="w-full">
       <!-- Trigger/Header -->
@@ -407,7 +407,7 @@
             use:builder.action 
             {...builder}
             class="container-trigger"
-            onclick={toggleContainer}
+            on:click={toggleContainer}
           >
             <div class="trigger-content">
               <div class="trigger-left">
@@ -473,7 +473,7 @@
                     {recs.length}
                   </Badge.Root>
                 </div>
-              </Card.Header>
+              </div.Header>
               
               <div.Content class="nier-bits-yorha-panel-content">
                 <div class="recommendations-preview">
@@ -495,7 +495,7 @@
                                 use:builder.action
                                 {...builder}
                                 class={getFeedbackButtonClass(rec.id, 'positive', rec.feedback)}
-                                onclick={() => submitFeedback(rec.id, 'positive', rec)}
+                                on:click={() => submitFeedback(rec.id, 'positive', rec)}
                                 disabled={feedbackCooldown.has(rec.id) || processingFeedback}
                               >
                                 👍
@@ -516,7 +516,7 @@
                                 use:builder.action
                                 {...builder}
                                 class={getFeedbackButtonClass(rec.id, 'negative', rec.feedback)}
-                                onclick={() => submitFeedback(rec.id, 'negative', rec)}
+                                on:click={() => submitFeedback(rec.id, 'negative', rec)}
                                 disabled={feedbackCooldown.has(rec.id) || processingFeedback}
                               >
                                 👎
@@ -543,21 +543,21 @@
                 <div class="nier-bits-card-actions">
                   <button 
                     class="view-all-btn"
-                    onclick={() => openModal(type)}
+                    on:click={() => openModal(type)}
                   >
                     View All
                   </button>
                   {#if recs[0]}
                     <button 
                       class="quick-action-btn {recs[0].priority}"
-                      onclick={() => recs[0].action?.()}
+                      on:click={() => recs[0].action?.()}
                     >
                       Quick Action
                     </button>
                   {/if}
                 </div>
-              </Card.Content>
-            </Card.Root>
+              </div.Content>
+            </div.Root>
           {/each}
 
           <!-- View All Recommendations -->
@@ -565,14 +565,14 @@
             <div.Content class="view-all-content">
               <button 
                 class="view-all-recommendations"
-                onclick={() => openModal()}
+                on:click={() => openModal()}
               >
                 <span class="view-all-icon">📋</span>
                 <span class="view-all-text">View All Recommendations</span>
                 <span class="view-all-count">({recommendations.length})</span>
               </button>
-            </Card.Content>
-          </Card.Root>
+            </div.Content>
+          </div.Root>
         </div>
       </Collapsible.Content>
     </Collapsible.Root>

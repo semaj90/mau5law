@@ -56,13 +56,7 @@ async function ensureScriptLoaded(client: Redis): Promise<string> {
   return sha;
 }
 
-export async function redisRateLimit(opts: RedisRateLimitOptions): Promise<{
-  allowed: boolean;
-  count: number;
-  retryAfter: number;
-  remaining: number;
-  resetTime: number;
-}> {
+export async function redisRateLimit(opts: RedisRateLimitOptions): Promise<any> {
   const client = opts.redis || getClient();
 
   try {
@@ -152,12 +146,7 @@ export function createRateLimitConfig(
  * Lightweight health check for rate limiting subsystem.
  * Verifies Redis connectivity and Lua script availability.
  */
-export async function rateLimitHealthCheck(): Promise<{
-  redis: boolean;
-  latencyMs: number;
-  scriptLoaded: boolean;
-  timestamp: string;
-}> {
+export async function rateLimitHealthCheck(): Promise<any> {
   const client = getClient();
   const start = Date.now();
   try {

@@ -3,7 +3,7 @@
 import { json } from '@sveltejs/kit';
 import { readBodyFast } from '$lib/server/utils/json-fast';
 import { randomUUID } from 'crypto';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/client';
 import { chatSessions, chatMessages } from '$lib/server/db/schema-unified';
 import type { InferInsertModel } from 'drizzle-orm';
@@ -20,7 +20,7 @@ const CUDA_SERVER_URL = 'http://localhost:8096';
 const ENHANCED_GRPO_ENDPOINT = '/api/v1/submit';
 
 interface ChatRequest {
-  messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>;
+  messages: Array<any>;
   sessionId?: string;
   model?: string;
   stream?: boolean;
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         id: currentSessionId,
         userId: (locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747',
         title: 'Chat Session',
-        context: {},
+        context: Record<string, any>,
         metadata: {
           model,
           userAgent: request.headers.get('user-agent'),
@@ -227,11 +227,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             }),
           });
 
-          if (!response.ok) {
-            throw new Error(`CUDA server error: ${response.status}`);
+          if (!(response as { ok?: any; status?: any; body?: any }).ok) {
+            throw new Error(`CUDA server error: ${(response as { ok?: any; status?: any; body?: any }).status}`);
           }
 
-          const reader = response.body?.getReader();
+          const reader = (response as { ok?: any; status?: any; body?: any }).body?.getReader();
           if (!reader) {
             throw new Error('No response body from CUDA server');
           }
@@ -416,9 +416,9 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
       const result = resultData.result;
       return {
         success: true,
-        response: result.text || 'Generated response',
+        response: (result as { text?: any; tokens_per_second?: any }).text || 'Generated response',
         confidence: 0.8, // Mock confidence
-        tokensPerSecond: result.tokens_per_second || 0,
+        tokensPerSecond: (result as { text?: any; tokens_per_second?: any }).tokens_per_second || 0,
         vectorSimilarity: 0.85, // Mock similarity
         grpoScore: 0.9, // Mock GRPO score
         reasoning: 'CUDA GPU inference completed',

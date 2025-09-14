@@ -104,8 +104,7 @@
                 <input
                   type="number"
                   class="space-y-4"
-                  id="maxSize"
-                  input={(e) => {
+                  id="maxSize" on:input={(e) => {
                     const target = e.target as HTMLInputElement;
                     if (target) {
                       maxFileSize = parseInt(target.value) * 1024 * 1024;
@@ -158,7 +157,7 @@
             type="button"
             class="space-y-4"
             aria-label="Clear status"
-            onclick={() => clearStatus()}
+            on:click={() => clearStatus()}
           ></button>
         </div>
       {/if}
@@ -172,7 +171,7 @@
             <button
               type="button"
               class="space-y-4"
-              onclick={() => clearStatus()}
+              on:click={() => clearStatus()}
             >
               Clear
             </button>

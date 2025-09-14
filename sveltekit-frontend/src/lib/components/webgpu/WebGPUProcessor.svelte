@@ -15,13 +15,17 @@ https://svelte.dev/e/js_parse_error -->
   	import { writable, derived } from 'svelte/stores';
 
   	// Props
-  	let { 
-  		scene3D = true,
+  	let { scene3D = true,
   		enableGPUCompute = true,
   		enableServiceWorker = true,
   		lodOptimization = true,
   		cacheStrategy = 'aggressive'
-  	} = $props();
+  	 }: { scene3D = true,
+  		enableGPUCompute = true,
+  		enableServiceWorker = true,
+  		lodOptimization = true,
+  		cacheStrategy = 'aggressive'
+  	: any } = $props();
 
   	// ============================================================================
   	// WEBGPU INTEGRATION
@@ -95,17 +99,7 @@ https://svelte.dev/e/js_parse_error -->
   	// REACTIVE STORES
   	// ============================================================================
 
-  	const webgpuStore = writable<{
-  		device: WebGPUDevice | null;
-  		shaders: Map<string, ComputeShader>;
-  		buffers: Map<string, GPUBuffer>;
-  		active: boolean;
-  		performance: {
-  			computeTime: number;
-  			memoryUsage: number;
-  			throughput: number;
-  		};
-  	}>({
+  	const webgpuStore = writable({
   		device: null,
   		shaders: new Map(),
   		buffers: new Map(),
@@ -117,17 +111,7 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	});
 
-  	const threeStore = writable<{
-  		scene: THREE.Scene | null;
-  		renderer: THREE.WebGLRenderer | null;
-  		camera: THREE.PerspectiveCamera | null;
-  		objects: Map<string, RenderObject>;
-  		lodManager: {
-  			currentLevel: number;
-  			autoOptimize: boolean;
-  			performanceTarget: number;
-  		};
-  	}>({
+  	const threeStore = writable({
   		scene: null,
   		renderer: null,
   		camera: null,
@@ -139,16 +123,7 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	});
 
-  	const serviceWorkerStore = writable<{
-  		registration: ServiceWorkerRegistration | null;
-  		cache: ServiceWorkerCache;
-  		messageChannel: MessageChannel | null;
-  		performance: {
-  			cacheHitRate: number;
-  			averageLatency: number;
-  			totalRequests: number;
-  		};
-  	}>({
+  	const serviceWorkerStore = writable({
   		registration: null,
   		cache: {
   			name: 'webgpu-3d-cache-v1',
@@ -740,7 +715,7 @@ https://svelte.dev/e/js_parse_error -->
 
 	<div class="render-area">
 		<canvas 
-			bind:this={canvas}
+			bind:this={canvas as any}
 			width="800" 
 			height="600"
 			class="three-canvas"
@@ -800,7 +775,7 @@ https://svelte.dev/e/js_parse_error -->
 		transition: all 0.3s ease;
 	}
 
-	.status-item.active {
+	.status-(item as { active?: any }).active {
 		border-color: #00ff88;
 		background: rgba(0, 255, 136, 0.1);
 	}

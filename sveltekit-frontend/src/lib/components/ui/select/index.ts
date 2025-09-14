@@ -1,6 +1,6 @@
 // Barrel exports to match usage in forms
-export { default as Select } from "./Select.svelte";
-export { default as SelectValue } from "./SelectValue.svelte";
+export { default as Select } from './Select.svelte.js';
+export { default as SelectValue } from './SelectValue.svelte.js';
 
 // Re-export common Bits UI components under expected names
 import { Select } from "bits-ui";

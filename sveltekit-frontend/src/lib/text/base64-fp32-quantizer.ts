@@ -4,7 +4,7 @@
  * Optimized for CUDA thread processing and legal AI model outputs
  */
 
-import { enhancedCachingRevolutionaryBridge } from '../services/enhanced-caching-revolutionary-bridge';
+import { enhancedCachingRevolutionaryBridge } from '../services/enhanced-caching-revolutionary-bridge.js';
 
 export interface QuantizationOptions {
   quantizationBits: 4 | 8 | 16 | 32; // Quantization precision
@@ -160,8 +160,8 @@ export class Base64FP32Quantizer {
       // Step 7: Cache the result
       await this.cacheQuantizationResult(cacheKey, result);
       
-      console.log(`⚡ Quantized Gemma3 output in ${result.processingTime.toFixed(2)}ms`);
-      console.log(`📊 Compression: ${result.compressionRatio.toFixed(2)}x, Threads: ${result.cudaThreadsUsed}`);
+      console.log(`⚡ Quantized Gemma3 output in ${(result as { processingTime?: any; compressionRatio?: any; cudaThreadsUsed?: any }).processingTime.toFixed(2)}ms`);
+      console.log(`📊 Compression: ${(result as { processingTime?: any; compressionRatio?: any; cudaThreadsUsed?: any }).compressionRatio.toFixed(2)}x, Threads: ${(result as { processingTime?: any; compressionRatio?: any; cudaThreadsUsed?: any }).cudaThreadsUsed}`);
       
       return result;
       
@@ -233,14 +233,14 @@ export class Base64FP32Quantizer {
   ): Promise<Float32Array> {
     // Simulate CUDA kernel execution
     const startIdx = blockId * threadsPerBlock;
-    const endIdx = Math.min(startIdx + threadsPerBlock, data.length);
+    const endIdx = Math.min(startIdx + threadsPerBlock, (data as { length?: any; slice?: any }).length);
     const blockSize = endIdx - startIdx;
     
     if (blockSize <= 0) {
       return new Float32Array(0);
     }
     
-    const blockData = data.slice(startIdx, endIdx);
+    const blockData = (data as { length?: any; slice?: any }).slice(startIdx, endIdx);
     const quantized = new Float32Array(blockSize);
     
     // Parallel quantization within block
@@ -330,7 +330,7 @@ export class Base64FP32Quantizer {
   }
 
   private scaleToTargetLength(data: Float32Array, config: QuantizationOptions): Float32Array {
-    const currentLength = data.length;
+    const currentLength = (data as { length?: any; slice?: any }).length;
     const targetLength = config.targetLength;
     
     if (currentLength === targetLength) {

@@ -4,13 +4,13 @@
  */
 
 // Core Auth Components
-export { default as AuthGuard } from './AuthGuard.svelte';
-export { default as RoleGuard } from './RoleGuard.svelte';
-export { default as PermissionGuard } from './PermissionGuard.svelte';
-export { default as LoginButton } from './LoginButton.svelte';
-export { default as AuthProvider } from './AuthProvider.svelte';
-export { default as AuthForm } from './AuthForm.svelte';
-export { default as NesAuthModal } from './NesAuthModal.svelte';
+export { default as AuthGuard } from './AuthGuard.svelte.js';
+export { default as RoleGuard } from './RoleGuard.svelte.js';
+export { default as PermissionGuard } from './PermissionGuard.svelte.js';
+export { default as LoginButton } from './LoginButton.svelte.js';
+export { default as AuthProvider } from './AuthProvider.svelte.js';
+export { default as AuthForm } from './AuthForm.svelte.js';
+export { default as NesAuthModal } from './NesAuthModal.svelte.js';
 
 // Re-export auth store for convenience
 export { authStore, useAuth } from '$lib/stores/auth-store.svelte';

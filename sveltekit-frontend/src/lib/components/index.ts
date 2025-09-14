@@ -6,106 +6,106 @@
  */
 
 // ===== CORE UI COMPONENTS =====
-export * from './ui/index';
+export * from './ui/index.js';
 
 // ===== LAYOUT COMPONENTS =====
-export * from './ui/layout/index';
+export * from './ui/layout/index.js';
 
 // ===== ENHANCED UI COMPONENTS =====
 // Note: Using selective exports to avoid conflicts with base UI components
-export { Button as EnhancedButton, Card as EnhancedCard, Input as EnhancedInput } from './ui/enhanced/index';
-// export { SelectOption as EnhancedSelectOption } from './ui/enhanced-bits/index'; // Disabled: empty file
-export * from './ui/modern/index';
+export { Button as EnhancedButton, Card as EnhancedCard, Input as EnhancedInput } from './ui/enhanced/index.js';
+// export { SelectOption as EnhancedSelectOption } from './ui/enhanced-bits/index.js'; // Disabled: empty file
+export * from './ui/modern/index.js';
 
 // ===== FORM COMPONENTS =====
 // Selective form exports to avoid conflicts
-export { Form as ComponentForm, FormStandard as ComponentFormStandard } from './ui/form/index';
-export { Input as ComponentInput } from './ui/input/index';
+export { Form as ComponentForm, FormStandard as ComponentFormStandard } from './ui/form/index.js';
+export { Input as ComponentInput } from './ui/input/index.js';
 // Textarea export handled by base UI components
-// export * from './ui/textarea/index';
-export * from './ui/checkbox/index';
-export * from './ui/select/index';
+// export * from './ui/textarea/index.js';
+export * from './ui/checkbox/index.js';
+export * from './ui/select/index.js';
 // Use specific exports to avoid CommonProps conflict
-export { Switch, SwitchRoot, SwitchThumb } from './ui/switch/index';
-export type { SwitchProps } from './ui/switch/index';
-export { Slider, SliderRoot, SliderRange, SliderThumb, SliderTick } from './ui/slider/index';
-export type { SliderProps } from './ui/slider/index';
+export { Switch, SwitchRoot, SwitchThumb } from './ui/switch/index.js';
+export type { SwitchProps } from './ui/switch/index.js';
+export { Slider, SliderRoot, SliderRange, SliderThumb, SliderTick } from './ui/slider/index.js';
+export type { SliderProps } from './ui/slider/index.js';
 
 // ===== NAVIGATION & INTERACTION =====
-export * from './ui/tabs/index';
+export * from './ui/tabs/index.js';
 // Context menu exports handled selectively to avoid conflicts
-export { Trigger as ContextMenuTrigger, Content as ContextMenuContent, Item as ContextMenuItem } from './ui/context-menu/index';
-export * from './ui/dialog/index';
+export { Trigger as ContextMenuTrigger, Content as ContextMenuContent, Item as ContextMenuItem } from './ui/context-menu/index.js';
+export * from './ui/dialog/index.js';
 // Tooltip exports - conditional based on availability
-// export * from './ui/tooltip/index';
-export * from './ui/command/index';
+// export * from './ui/tooltip/index.js';
+export * from './ui/command/index.js';
 
 // ===== FEEDBACK & DISPLAY =====
-export * from './ui/alert/index';
-export * from './ui/badge/index';
-export * from './ui/progress/index';
-export * from './ui/scroll-area/index';
-export * from './ui/separator/index';
-export * from './ui/drawer/index';
+export * from './ui/alert/index.js';
+export * from './ui/badge/index.js';
+export * from './ui/progress/index.js';
+export * from './ui/scroll-area/index.js';
+export * from './ui/separator/index.js';
+export * from './ui/drawer/index.js';
 
 // ===== YORHA THEME COMPONENTS =====
-export * from './yorha/index';
-export * from './three/yorha-ui/index';
+export * from './yorha/index.js';
+export * from './three/yorha-ui/index.js';
 
 // ===== SEARCH COMPONENTS =====
-export * from './search/index';
+export * from './search/index.js';
 
 // ===== UNIFIED COMPONENTS =====
-export * from './unified/index';
+export * from './unified/index.js';
 
 // ===== BUSINESS LOGIC COMPONENTS =====
 
 // AI & Chat Components
-export { default as AIChat } from './AIChat.svelte';
-export { default as EnhancedLegalChat } from './EnhancedLegalChat.svelte';
-export { default as LLMAssistant } from './LLMAssistant.svelte';
-export * from './ai/index';
+export { default as AIChat } from './AIChat.svelte.js';
+export { default as EnhancedLegalChat } from './EnhancedLegalChat.svelte.js';
+export { default as LLMAssistant } from './LLMAssistant.svelte.js';
+export * from './ai/index.js';
 
 // Case Management
-export { default as CaseCard } from './+CaseCard.svelte';
-export { default as LegalCaseManager } from './LegalCaseManager.svelte';
-export * from './cases/index';
+export { default as CaseCard } from './+CaseCard.svelte.js';
+export { default as LegalCaseManager } from './LegalCaseManager.svelte.js';
+export * from './cases/index.js';
 
 // Evidence & Legal
-export { default as EvidencePanel } from './EvidencePanel.svelte';
-export * from './legal/index';
-export * from './evidence-editor/index';
+export { default as EvidencePanel } from './EvidencePanel.svelte.js';
+export * from './legal/index.js';
+export * from './evidence-editor/index.js';
 
 // Chat & Messaging
-export * from './chat/index';
+export * from './chat/index.js';
 
 // Canvas & Visual Editor
-export * from './canvas/index';
+export * from './canvas/index.js';
 
 // Authentication
-export * from './auth/index';
+export * from './auth/index.js';
 
 // Layout & Navigation
-export { default as NierNavigation } from './NierNavigation.svelte';
-export * from './layout/index';
+export { default as NierNavigation } from './NierNavigation.svelte.js';
+export * from './layout/index.js';
 
 // Realtime Components
-export * from './realtime/index';
+export * from './realtime/index.js';
 
 // Editor Components
-export * from './editor/index';
+export * from './editor/index.js';
 
 // Detective Interface
-export * from './detective/index';
+export * from './detective/index.js';
 
 // Subcomponents
-export * from './subcomponents/index';
+export * from './subcomponents/index.js';
 
 // Utility Components
-export { default as LoadingSpinner } from './LoadingSpinner.svelte';
-export { default as Typewriter } from './Typewriter.svelte';
-export { default as KeyboardShortcutProvider } from './KeyboardShortcutProvider.svelte';
-export { default as HeadlessDemo } from './HeadlessDemo.svelte';
+export { default as LoadingSpinner } from './LoadingSpinner.svelte.js';
+export { default as Typewriter } from './Typewriter.svelte.js';
+export { default as KeyboardShortcutProvider } from './KeyboardShortcutProvider.svelte.js';
+export { default as HeadlessDemo } from './HeadlessDemo.svelte.js';
 
 // ===== COMPONENT METADATA =====
 export const COMPONENT_REGISTRY = {

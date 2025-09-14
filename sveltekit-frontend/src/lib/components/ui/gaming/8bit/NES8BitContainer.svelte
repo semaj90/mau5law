@@ -52,7 +52,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     onHover
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
 
   const handleClick = () => {
     if (disabled) return;
@@ -140,9 +141,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     {minHeight ? `--container-min-height: ${minHeight};` : ''}
     {style}
   "
-  onclick={handleClick}
-  on:on:mouseenter={handleHover}
-  role={onClick ? 'button' : undefined}
+  on:click={handleClick}
+  onOnmouseenter={role}
   tabindex={onClick && !disabled ? 0 : undefined}
 >
   {#if title && containerType === 'with-title'}

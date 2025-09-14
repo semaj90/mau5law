@@ -41,10 +41,10 @@ let formData = $state({
         body: JSON.stringify(formData)
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (response.ok) {
-        submitResult = `✅ Success: Case created with ID ${result.id || 'unknown'}`;
+      if ((response as { json?: any; ok?: any }).ok) {
+        submitResult = `✅ Success: Case created with ID ${(result as { id?: any; error?: any }).id || 'unknown'}`;
         // Reset form
         formData = {
           caseNumber: '',
@@ -53,7 +53,7 @@ let formData = $state({
           priority: 'medium'
         };
       } else {
-        submitResult = `❌ Error: ${result.error || 'Unknown error'}`;
+        submitResult = `❌ Error: ${(result as { id?: any; error?: any }).error || 'Unknown error'}`;
       }
     } catch (error) {
       submitResult = `❌ Network Error: ${error instanceof Error ? error.message : 'Unknown error'}`;
@@ -93,14 +93,14 @@ let formData = $state({
       <div.Title class="flex items-center space-x-2">
         <FileText class="h-5 w-5" />
         <span>Case Information</span>
-      </Card.Title>
+      </div.Title>
       <div.Description>
         Fill out the basic case information to test the system integration
-      </Card.Description>
-    </Card.Header>
+      </div.Description>
+    </div.Header>
 
     <div.Content>
-      <form onsubmit={handleSubmit} class="space-y-6">
+      <form on:submit={handleSubmit} class="space-y-6">
         <!-- Case Number -->
         <div class="space-y-2">
           <Label for="caseNumber">
@@ -161,7 +161,8 @@ let formData = $state({
           <Button class="bits-btn"
             type="button"
             variant="outline"
-            onclick={() => {
+            on:click={() =>
+{
               formData = {
                 caseNumber: '',
                 title: '',
@@ -172,25 +173,24 @@ let formData = $state({
             }}
           >
             Clear Form
-          </button>
 
           <Button
             type="submit"
             disabled={isSubmitting || !formData.caseNumber || !formData.title}
             class="min-w-[120px] bits-btn bits-btn"
           >
-            {#if isSubmitting}
+{#if isSubmitting}
               <Loader2 class="mr-2 h-4 w-4 animate-spin" />
               Creating...
             {:else}
               <Save class="mr-2 h-4 w-4" />
               Create Case
             {/if}
-          </button>
+
         </div>
       </form>
-    </Card.Content>
-  </Card.Root>
+    </div.Content>
+  </div.Root>
 
   <!-- API Test Info -->
   <div class="mt-8 p-6 bg-muted/30 rounded-lg border">

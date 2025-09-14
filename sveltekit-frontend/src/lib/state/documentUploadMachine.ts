@@ -6,7 +6,7 @@ import crypto from "crypto";
  */
 
 import { createMachine, assign, fromPromise } from "xstate";
-// TODO: Fix import - // Orphaned content: import {  import type { EvidenceProcessingContext } from './evidenceProcessingMachine';
+// TODO: Fix import - // Orphaned content: import {  import type { EvidenceProcessingContext } from './evidenceProcessingMachine.js';
 
 // Types for document upload
 export interface DocumentUploadContext {
@@ -152,17 +152,17 @@ const uploadFileService = fromPromise(async ({ input }: { input: DocumentUploadC
     body: formData
   });
   
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Upload failed: ${response.status} ${errorText}`);
+  if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
+    const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text();
+    throw new Error(`Upload failed: ${(response as { ok?: any; text?: any; status?: any; json?: any }).status} ${errorText}`);
   }
   
-  const result = await response.json();
+  const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
   
   return {
-    documentId: result.documentId,
-    evidenceId: result.evidenceId,
-    extractedText: result.extractedText,
+    documentId: (result as { documentId?: any; evidenceId?: any; extractedText?: any }).documentId,
+    evidenceId: (result as { documentId?: any; evidenceId?: any; extractedText?: any }).evidenceId,
+    extractedText: (result as { documentId?: any; evidenceId?: any; extractedText?: any }).extractedText,
     uploadTime: Date.now() - input.uploadStartTime
   };
 });
@@ -196,8 +196,8 @@ const extractTextService = fromPromise(async ({ input }: { input: DocumentUpload
 export const documentUploadMachine = createMachine({
   id: 'documentUpload',
   types: {
-    context: {} as DocumentUploadContext,
-    events: {} as DocumentUploadEvent
+    context: Record<string, any> as DocumentUploadContext,
+    events: Record<string, any> as DocumentUploadEvent
   },
   initial: 'idle',
   context: {

@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  let { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = '' } = $props();
+  let { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = ''  }: { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = '' : any } = $props();
 
   import { createEventDispatcher } from 'svelte';
   
@@ -36,8 +36,8 @@ https://svelte.dev/e/js_parse_error -->
   bind:value
   {placeholder}
   {disabled}
-  oninput={onInput}
-  onchange={onChange}
+  on:input={onInput}
+  on:change={onChange}
   aria-label={placeholder || 'N64 text field'}
 />
 

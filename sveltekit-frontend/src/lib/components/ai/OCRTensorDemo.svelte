@@ -76,21 +76,21 @@
       results = [result, ...results];
       // Update performance metrics
       performanceMetrics = {
-        ocrTime: result.processingTime * 0.4, // Estimated OCR portion
-        embeddingTime: result.processingTime * 0.3, // Estimated embedding portion
-        tensorTime: result.processingTime * 0.2, // Estimated tensor portion
-        storageTime: result.processingTime * 0.1 // Estimated storage portion
+        ocrTime: (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime * 0.4, // Estimated OCR portion
+        embeddingTime: (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime * 0.3, // Estimated embedding portion
+        tensorTime: (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime * 0.2, // Estimated tensor portion
+        storageTime: (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime * 0.1 // Estimated storage portion
       };
       // Update cache stats
-      if (result.cacheHit) {
+      if ((result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).cacheHit) {
         cacheStats.hits++;
       } else {
         cacheStats.misses++;
       }
-      cacheStats.totalProcessingTime += result.processingTime;
-      addLog(`✅ Processing completed in ${result.processingTime.toFixed(2)}ms`);
-      addLog(`📝 Extracted ${result.ocr.text.length} characters with ${result.ocr.confidence.toFixed(1)}% confidence`);
-      addLog(`🧮 Generated ${result.embeddings.dimensions}-dimensional tensor`);
+      cacheStats.totalProcessingTime += (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime;
+      addLog(`✅ Processing completed in ${(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime.toFixed(2)}ms`);
+      addLog(`📝 Extracted ${(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).ocr.text.length} characters with ${(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).ocr.confidence.toFixed(1)}% confidence`);
+      addLog(`🧮 Generated ${(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).embeddings.dimensions}-dimensional tensor`);
       // Store results in database
       await storeResults([result]);
     } catch (error: any) {
@@ -131,9 +131,9 @@
       results = [...batchResults, ...results];
       // Update stats
       batchResults.forEach(result => {
-        if (result.cacheHit) cacheStats.hits++;
+        if ((result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).cacheHit) cacheStats.hits++;
         else cacheStats.misses++;
-        cacheStats.totalProcessingTime += result.processingTime;
+        cacheStats.totalProcessingTime += (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime;
       });
       addLog(`✅ Batch processing completed: ${batchResults.length} images processed`);
       // Store batch results
@@ -228,7 +228,7 @@
         bind:this={fileInput}
         type="file"
         accept="image/*"
-        onchange={handleFileSelect}
+        on:change={handleFileSelect}
         disabled={!initialized || processing}
       />
       
@@ -241,7 +241,7 @@
       
       <div class="action-buttons">
         <button
-          onclick={processImage}
+          on:click={processImage}
           disabled={!uploadedFile || !initialized || processing}
         >
           {#if processing}
@@ -252,14 +252,14 @@
         </button>
         
         <button
-          onclick={processBatchDemo}
+          on:click={processBatchDemo}
           disabled={!initialized || processing}
         >
           📊 Batch Demo
         </button>
         
         <button
-          onclick={clearResults}
+          on:click={clearResults}
           disabled={results.length === 0}
         >
           🗑️ Clear Results
@@ -323,29 +323,29 @@
         <h3>📋 Processing Results ({results.length})</h3>
         <div class="results-list">
           {#each results as result, i}
-            <div class="result-nier-bits-card" class:cache-hit={result.cacheHit}>
+            <div class="result-nier-bits-card" class:cache-hit={(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).cacheHit}>
               <div class="result-header">
                 <span class="result-index">#{i + 1}</span>
                 <span class="cache-indicator">
-                  {result.cacheHit ? '📦 Cache Hit' : '🔥 Fresh'}
+                  {(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).cacheHit ? '📦 Cache Hit' : '🔥 Fresh'}
                 </span>
                 <span class="processing-time">
-                  {result.processingTime.toFixed(2)}ms
+                  {(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime.toFixed(2)}ms
                 </span>
               </div>
               
               <div class="result-content">
                 <div class="ocr-text">
                   <strong>OCR Text:</strong>
-                  <p>{result.ocr.text.slice(0, 200)}{result.ocr.text.length > 200 ? '...' : ''}</p>
-                  <small>Confidence: {result.ocr.confidence.toFixed(1)}%</small>
+                  <p>{(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).ocr.text.slice(0, 200)}{(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).ocr.text.length > 200 ? '...' : ''}</p>
+                  <small>Confidence: {(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).ocr.confidence.toFixed(1)}%</small>
                 </div>
                 
                 <div class="tensor-info">
                   <strong>Tensor Data:</strong>
                   <div class="tensor-stats">
-                    <span>Dimensions: {result.embeddings.dimensions}</span>
-                    <span>ID: {result.embeddings.metadata.tensor_id.slice(-8)}</span>
+                    <span>Dimensions: {(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).embeddings.dimensions}</span>
+                    <span>ID: {(result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).embeddings.metadata.tensor_id.slice(-8)}</span>
                   </div>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Enhanced Vector Intelligence Recommendations API
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               .filter(Boolean)
               .slice(0, 10),
             collaborators: [],
-            timeSpentByNode: {},
+            timeSpentByNode: Record<string, any>,
           };
 
           const rerankedResults = await enhancedSearchWithNeo4j(

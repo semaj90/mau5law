@@ -219,8 +219,8 @@ const enhancedRAGService = fromPromise(async ({ input }) => {
     // Apply PageRank scoring to results
     const enhancedResults = orchestrationResult.semantic?.map((result: any) => ({
       ...result,
-      pageRankScore: pageRankScores.get(result.id) || 0,
-      enhancedRelevance: result.relevance * (1 + (pageRankScores.get(result.id) || 0))
+      pageRankScore: pageRankScores.get((result as { id?: any; relevance?: any }).id) || 0,
+      enhancedRelevance: (result as { id?: any; relevance?: any }).relevance * (1 + (pageRankScores.get((result as { id?: any; relevance?: any }).id) || 0))
     })) || [];
     
     // Sort by enhanced relevance
@@ -288,8 +288,8 @@ const apiCoordinationService = fromCallback(({ sendBack, receive }) => {
 // Main Phase 13 state machine
 export const phase13StateMachine = setup({
   types: {
-    context: {} as Phase13Context,
-    events: {} as Phase13Event,
+    context: Record<string, any> as Phase13Context,
+    events: Record<string, any> as Phase13Event,
   },
   actors: {
     webglVertexStreamingService,
@@ -593,7 +593,7 @@ export const phase13StateMachine = setup({
         src: "enhancedRAGService",
         input: ({ context, event }) => ({
           query: event.type === "ENHANCED_RAG_QUERY" ? event.query : "",
-          context: event.type === "ENHANCED_RAG_QUERY" ? event.context : {},
+          context: event.type === "ENHANCED_RAG_QUERY" ? event.context : Record<string, any>,
           pageRankScores: context.pageRankScores,
         }),
         onDone: {

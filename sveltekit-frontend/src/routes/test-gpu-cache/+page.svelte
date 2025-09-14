@@ -158,25 +158,25 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <button 
         class="nes-btn {selectedTheme === 'yorha' ? 'is-primary' : ''}"
-        on:onclick={() => applyTheme('yorha')}
+        on:click={() => applyTheme('yorha')}
       >
         YoRHa
       </button>
       <button 
         class="nes-btn {selectedTheme === 'nes' ? 'is-success' : ''}"
-        on:onclick={() => applyTheme('nes')}
+        on:click={() => applyTheme('nes')}
       >
         NES
       </button>
       <button 
         class="nes-btn {selectedTheme === 'n64' ? 'is-warning' : ''}"
-        on:onclick={() => applyTheme('n64')}
+        on:click={() => applyTheme('n64')}
       >
         N64
       </button>
       <button 
         class="nes-btn {selectedTheme === 'hybrid' ? 'is-error' : ''}"
-        on:onclick={() => applyTheme('hybrid')}
+        on:click={() => applyTheme('hybrid')}
       >
         Hybrid
       </button>
@@ -188,7 +188,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           type="checkbox" 
           class="nes-checkbox"
           bind:checked={enableGPUEffects}
-          onchange={() => applyTheme(selectedTheme)}
+          on:change={() => applyTheme(selectedTheme)}
         />
         <span>Enable GPU Effects</span>
       </label>
@@ -274,14 +274,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     <div class="flex gap-4">
       <button 
         class="nes-btn is-primary"
-        on:onclick={runGPUCacheTest}
+        on:click={runGPUCacheTest}
         disabled={isTestRunning}
       >
         {isTestRunning ? 'Running Tests...' : 'Run GPU Cache Tests'}
       </button>
       <button 
         class="nes-btn is-warning"
-        on:onclick={clearCache}
+        on:click={clearCache}
         disabled={isTestRunning}
       >
         Clear Cache
@@ -306,10 +306,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           <tbody>
             {#each testResults as result}
               <tr>
-                <td>{result.name}</td>
-                <td>{result.status}</td>
-                <td>{result.time}</td>
-                <td>{result.details}</td>
+                <td>{(result as { name?: any; status?: any; time?: any; details?: any }).name}</td>
+                <td>{(result as { name?: any; status?: any; time?: any; details?: any }).status}</td>
+                <td>{(result as { name?: any; status?: any; time?: any; details?: any }).time}</td>
+                <td>{(result as { name?: any; status?: any; time?: any; details?: any }).details}</td>
               </tr>
             {/each}
           </tbody>

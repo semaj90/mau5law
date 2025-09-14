@@ -41,13 +41,7 @@ export type UnifiedDialogProps = {
   webgpuEffects?: boolean;
   collaboration?: {
     enabled: boolean;
-    users?: Array<{
-      id: string;
-      name: string;
-      avatar?: string;
-      color: string;
-      cursor?: { x: number; y: number };
-    }>;
+    users?: Array<any>;
     sessionId?: string;
   };
   legalContext?: {

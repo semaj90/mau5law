@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Fix database schema to match Drizzle schema
 import { json } from "@sveltejs/kit";

@@ -4,7 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { ssrChatAssistant } from '$lib/server/chat/ssr-qlora-gpu-chat-assistant';
 import { qloraRLOrchestrator } from '$lib/services/qlora-rl-langextract-integration';
 

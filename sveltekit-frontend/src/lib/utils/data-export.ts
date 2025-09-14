@@ -238,7 +238,7 @@ export async function importCases(
           skipped: 0,
           errors: validationResult.errors,
           warnings: validationResult.warnings,
-          summary: {},
+          summary: Record<string, any>,
         };
       }
     }
@@ -247,7 +247,7 @@ export async function importCases(
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    for (const caseData of data.cases || data) {
+    for (const caseData of (data as { cases?: any; length?: any; map?: any; evidence?: any }).cases || data) {
       try {
         // Apply merge strategy
         const processedCase = await processCaseImport(caseData, options);
@@ -291,7 +291,7 @@ export async function importCases(
       skipped: 0,
       errors: [error instanceof Error ? error.message : "Unknown import error"],
       warnings: [],
-      summary: {},
+      summary: Record<string, any>,
     };
   }
 }
@@ -342,12 +342,12 @@ function applyEvidenceFilters(
   });
 }
 function convertToCSV(data: any[]): string {
-  if (data.length === 0) return "";
+  if ((data as { cases?: any; length?: any; map?: any; evidence?: any }).length === 0) return "";
 
   const headers = Object.keys(data[0]);
   const csvContent = [
     headers.join(","),
-    ...data.map((row) =>
+    ...(data as { cases?: any; length?: any; map?: any; evidence?: any }).map((row) =>
       headers
         .map((header) => {
           const value = row[header];
@@ -371,7 +371,7 @@ async function generatePDF(data: any[]): Promise<Blob> {
     Detective Mode Case Export
     Generated: ${new Date().toLocaleString()}
     
-    Total Cases: ${data.length}
+    Total Cases: ${(data as { cases?: any; length?: any; map?: any; evidence?: any }).length}
     
     ${data
       .map(
@@ -450,11 +450,11 @@ function validateImportData(
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  if (!data || (!Array.isArray(data) && !data.cases && !data.evidence)) {
+  if (!data || (!Array.isArray(data) && !(data as { cases?: any; length?: any; map?: any; evidence?: any }).cases && !(data as { cases?: any; length?: any; map?: any; evidence?: any }).evidence)) {
     errors.push("Invalid data format");
     return { success: false, errors, warnings };
   }
-  const items = Array.isArray(data) ? data : data.cases || data.evidence || [];
+  const items = Array.isArray(data) ? data : (data as { cases?: any; length?: any; map?: any; evidence?: any }).cases || (data as { cases?: any; length?: any; map?: any; evidence?: any }).evidence || [];
 
   if (items.length === 0) {
     warnings.push("No items found to import");
@@ -462,17 +462,17 @@ function validateImportData(
   // Basic validation
   items.forEach((item: any, index: number) => {
     if (type === "cases") {
-      if (!item.title || item.title.trim().length === 0) {
+      if (!(item as { title?: any; description?: any; type?: any }).title || (item as { title?: any; description?: any; type?: any }).title.trim().length === 0) {
         errors.push(`Case at index ${index}: Title is required`);
       }
-      if (!item.description || item.description.trim().length === 0) {
+      if (!(item as { title?: any; description?: any; type?: any }).description || (item as { title?: any; description?: any; type?: any }).description.trim().length === 0) {
         errors.push(`Case at index ${index}: Description is required`);
       }
     } else if (type === "evidence") {
-      if (!item.title || item.title.trim().length === 0) {
+      if (!(item as { title?: any; description?: any; type?: any }).title || (item as { title?: any; description?: any; type?: any }).title.trim().length === 0) {
         errors.push(`Evidence at index ${index}: Title is required`);
       }
-      if (!item.type) {
+      if (!(item as { title?: any; description?: any; type?: any }).type) {
         errors.push(`Evidence at index ${index}: Type is required`);
       }
     }
@@ -537,17 +537,17 @@ export async function exportData(
 
   const result = await exportCases(data, options);
 
-  if (result.success && result.blob) {
+  if ((result as { success?: any; blob?: any; filename?: any; errors?: any }).success && (result as { success?: any; blob?: any; filename?: any; errors?: any }).blob) {
     // Download the file
-    const url = URL.createObjectURL(result.blob);
+    const url = URL.createObjectURL((result as { success?: any; blob?: any; filename?: any; errors?: any }).blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = result.filename || `${filename}.${format}`;
+    a.download = (result as { success?: any; blob?: any; filename?: any; errors?: any }).filename || `${filename}.${format}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   } else {
-    throw new Error(result.errors?.join(", ") || "Export failed");
+    throw new Error((result as { success?: any; blob?: any; filename?: any; errors?: any }).errors?.join(", ") || "Export failed");
   }
 }

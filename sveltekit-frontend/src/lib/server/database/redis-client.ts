@@ -131,7 +131,7 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): Redi
 /**
  * Redis health check
  */
-export async function checkRedisHealth(): Promise<{ status: string; latency?: number; error?: string }> {
+export async function checkRedisHealth(): Promise<any> {
   try {
     const start = Date.now();
     const client = await getRedisClient();

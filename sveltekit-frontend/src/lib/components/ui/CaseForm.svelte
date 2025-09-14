@@ -61,8 +61,8 @@ https://svelte.dev/e/js_parse_error -->
   let isSubmitting = $state(false);
 
   // Store form state
-  let formValues = $state<Record<string, any> >({});
-  let formErrors = $state<Record<string, string> >({});
+  let formValues = $state<Record<string, any>('') >({});
+  let formErrors = $state<Record<string, string>('') >({});
   let isFormValid = $state(false);
   let isFormDirty = $state(false);
 
@@ -160,12 +160,10 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 
-  <NesCard variant="interactive" padding="lg">
+  <div variant="interactive" padding="lg" class="nes-container">
     <Form
       bind:formApi
-      options={formOptions}
-      submit={handleSubmit}
-      change={handleFormChange}
+      options={formOptions} on:submit={handleSubmit} on:change={handleFormChange}
       submitText="Create Case"
       submitVariant="primary"
       showResetButton={true}
@@ -198,8 +196,7 @@ https://svelte.dev/e/js_parse_error -->
                 value={formValues.title || ""}
                 error={formErrors.title}
                 data-icon="${1}"
-                clearable
-                input={(e) =>
+                clearable on:input={(e) =>
                   formApi?.setField(
                     "title",
                     (e.target as HTMLInputElement)?.value
@@ -223,8 +220,7 @@ https://svelte.dev/e/js_parse_error -->
                 value={values.description || ""}
                 class:border-red-300={errors.description}
                 class:border-green-300={values.description &&
-                  !errors.description}
-                input={(e) =>
+                  !errors.description} on:input={(e) =>
                   formApi.setField(
                     "description",
                     (e.target as HTMLTextAreaElement)?.value
@@ -248,8 +244,7 @@ https://svelte.dev/e/js_parse_error -->
               <select
                 id="case-priority"
                 class="container mx-auto px-4"
-                value={values.priority || "medium"}
-                change={(e) =>
+                value={values.priority || "medium"} on:change={(e) =>
                   formApi.setField(
                     "priority",
                     (e.target as HTMLSelectElement)?.value
@@ -269,8 +264,7 @@ https://svelte.dev/e/js_parse_error -->
                 type="date"
                 value={values.dueDate || ""}
                 error={errors.dueDate}
-                data-icon="${1}"
-                input={(e) =>
+                data-icon="${1}" on:input={(e) =>
                   formApi.setField(
                     "dueDate",
                     (e.target as HTMLInputElement)?.value
@@ -296,8 +290,7 @@ https://svelte.dev/e/js_parse_error -->
                 placeholder="Enter assignee email or name"
                 value={values.assignedTo || ""}
                 error={errors.assignedTo}
-                data-icon="${1}"
-                input={(e) =>
+                data-icon="${1}" on:input={(e) =>
                   formApi.setField(
                     "assignedTo",
                     (e.target as HTMLInputElement)?.value
@@ -315,8 +308,7 @@ https://svelte.dev/e/js_parse_error -->
                     value={values.tags || ""}
                     error={errors.tags}
                     data-icon="${1}"
-                    clearable
-                    input={(e) =>
+                    clearable on:input={(e) =>
                       formApi.setField(
                         "tags",
                         (e.target as HTMLInputElement)?.value
@@ -329,10 +321,11 @@ https://svelte.dev/e/js_parse_error -->
                   variant="secondary"
                   size="md"
                   data-icon="${1}"
-                  onclick={() => addTag()}
+                  on:click={() =>
+addTag()}
                 >
                   Add
-                </button>
+</Button>
               </div>
             </div>
           </div>
@@ -363,7 +356,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </Form>
-  </NesCard>
+  </div>
 </div>
 
 <style>

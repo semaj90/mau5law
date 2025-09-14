@@ -5,10 +5,7 @@
     import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
     import type { LegalDocumentResponse, RecommendationResponse } from '$lib/services/legal-ai-client';
 
-    let workflowResults = $state<{
-        analysis: LegalDocumentResponse | null;
-        recommendations: RecommendationResponse | null;
-    }>({
+    let workflowResults = $state({
         analysis: null,
         recommendations: null
     });
@@ -135,7 +132,7 @@
       <div class="space-y-2">
         <button
           class="nes-btn is-primary w-full text-xs"
-          onclick={() => {
+          on:click={() => {
             const mockFile = createMockFile(mockTestData.contractDispute);
             console.log('Mock contract dispute file created:', mockFile);
           }}
@@ -144,7 +141,7 @@
         </button>
         <button
           class="nes-btn is-success w-full text-xs"
-          onclick={() => {
+          on:click={() => {
             const mockFile = createMockFile(mockTestData.employmentCase);
             console.log('Mock employment case file created:', mockFile);
           }}

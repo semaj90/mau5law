@@ -1,7 +1,7 @@
 
 // Global case management store with real data integration
 import { writable, derived, get } from "svelte/store";
-import { authStore } from "./authStore";
+import { authStore } from './authStore.js';
 import type { Case, Evidence, Report } from '$lib/server/db/schema';
 
 // Extended case type with relations
@@ -39,7 +39,7 @@ const createCaseStore = () => {
     activeCase: null,
     isLoading: false,
     error: null,
-    filters: {},
+    filters: Record<string, any>,
     pagination: {
       page: 1,
       limit: 20,
@@ -363,7 +363,7 @@ const createCaseStore = () => {
     clearFilters() {
       update((state) => ({
         ...state,
-        filters: {},
+        filters: Record<string, any>,
         pagination: { ...state.pagination, page: 1 },
       }));
 

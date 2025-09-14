@@ -21,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
   let glitchEffect = $state('');
   const glitchChars = ['#', '%', '@', '◈', '◉', '◎', '⧨', '◐', '⬢'];
   // Use a cross-environment interval type to avoid Node vs DOM return-type mismatches
-  let glitchInterval = $state<ReturnType<typeof setInterval> | null >(null);
+  let glitchInterval = $state<ReturnType<typeof setInterval>(null) | null >(null);
 
   // Local snapshot of current user (subscribe to store to avoid $ pref in code)
   let currentUserValue: { email?: string; role?: string } | null = $state(null);
@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
   ];
 
   // Derive visible nav items from current user permissions
-  let visibleNavItems = $state<{ path: string; label: string; icon: string; permission: Permission }[] >([]);
+  let visibleNavItems = $state([]);
 
   // Derived display values for safer template usage
   let userEmail = $derived(currentUserValue?.email ?? '');
@@ -97,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
 
   $effect(() => {
     visibleNavItems = currentUserValue && currentUserValue.role
-      ? navItems.filter(item => AccessControl.hasPermission(currentUserValue.role, item.permission))
+      ? navItems.filter(item => AccessControl.hasPermission(currentUserValue.role, (item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).permission))
       : [];
   });
 
@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function navClass(item: { path: string; label: string; icon: string; permission: Permission; description: string }) {
-    return (isActivePath(item.path) ? executiveClasses.navLinkActive : executiveClasses.navLink) + ' w-full block text-left group';
+    return (isActivePath((item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).path) ? executiveClasses.navLinkActive : executiveClasses.navLink) + ' w-full block text-left group';
   }
 
   onMount(async () => {
@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
       await AuthStore.initialize();
 
       // Initialize current user from data or store snapshot and subscribe for updates
-      const initialUser = data.user || get(currentUser);
+      const initialUser = (data as { user?: any }).user || get(currentUser);
       currentUserValue = initialUser ?? null;
       unsubscribeCurrentUser = currentUser.subscribe(v => { currentUserValue = v; });
 
@@ -200,11 +200,11 @@ https://svelte.dev/e/js_parse_error -->
               <span class="text-amber-400 font-bold text-sm">{(userEmail || currentUserValue?.email || 'U')[0].toUpperCase()}</span>
             </div>
             <Button
-              onclick={() => AuthStore.logout()}
+              on:click={() => AuthStore.logout()}
               class="px-4 py-2 bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500/20 hover:border-red-500 transition-all duration-300 rounded-lg text-sm font-medium"
             >
               Sign Out
-            </Button>
+
           </div>
         </div>
       </div>
@@ -217,12 +217,12 @@ https://svelte.dev/e/js_parse_error -->
             <h3 class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-4 border-b border-amber-500/20 pb-2">Administration</h3>
           </div>
           {#each visibleNavItems as item}
-            <a href={item.path} class={navClass(item)}>
+            <a href={(item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).path} class={navClass(item)}>
               <div class="flex items-center gap-4">
-                <span class="text-xl">{item.icon}</span>
+                <span class="text-xl">{(item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).icon}</span>
                 <div class="flex-1">
-                  <div class="font-medium">{item.label}</div>
-                  <div class="text-xs text-slate-500 group-hover:text-slate-400 transition-colors">{item.description}</div>
+                  <div class="font-medium">{(item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).label}</div>
+                  <div class="text-xs text-slate-500 group-hover:text-slate-400 transition-colors">{(item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).description}</div>
                 </div>
               </div>
             </a>
@@ -240,7 +240,7 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="text-xs text-slate-500">Monitor platform status</div>
                 </div>
               </div>
-            </Button>
+
             <Button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
               <div class="flex items-center gap-3">
                 <span class="text-blue-400">💾</span>
@@ -249,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="text-xs text-slate-500">Secure system backup</div>
                 </div>
               </div>
-            </Button>
+
             <Button class="w-full text-left px-4 py-3 bg-slate-800/50 hover:bg-amber-500/10 rounded-lg transition-all duration-300 border border-slate-600/50 hover:border-amber-500/50 group">
               <div class="flex items-center gap-3">
                 <span class="text-purple-400">🗑️</span>
@@ -258,7 +258,7 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="text-xs text-slate-500">Optimize performance</div>
                 </div>
               </div>
-            </Button>
+
           </div>
         </div>
       </aside>
@@ -296,11 +296,11 @@ https://svelte.dev/e/js_parse_error -->
         <div class="text-xs text-slate-500 mt-2">Contact your system administrator for access</div>
       </div>
       <Button
-        onclick={() => goto('/')}
+        on:click={() => goto('/')}
         class="px-8 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-medium"
       >
         Return to Dashboard
-      </Button>
+
     </div>
   </div>
 {/if}

@@ -148,18 +148,18 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       {#if allowDownload && downloadUrl}
-        <Button onclick={handleDownload} class="flex items-center gap-2 bits-btn bits-btn">
-          <Download class="w-4 h-4" />
+        <Button on:click={handleDownload} class="flex items-center gap-2 bits-btn bits-btn">
+<Download class="w-4 h-4" />
           Download
-        </button>
+
       {/if}
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Image Preview -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Eye class="w-5 h-5" />
             Preview
           </h3>
@@ -183,17 +183,17 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
-      </NesCard>
+      </div>
 
       <!-- Artifact Information -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Info class="w-5 h-5" />
             Artifact Information
           </h3>
         </div>
-        <div class="yorha-panel-content" class="space-y-4">
+        <div class="yorha-panel-content space-y-4">
           <div class="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span class="font-medium text-gray-700">File Size:</span>
@@ -241,14 +241,14 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Detailed Analysis -->
     {#if showMetadata && (extractedMetadata || artifact.ai_analysis)}
-      <NesCard class="mt-6">
+      <div class="mt-6 nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <FileText class="w-5 h-5" />
             Legal AI Analysis
           </h3>
@@ -397,7 +397,7 @@ https://svelte.dev/e/js_parse_error -->
             </TabsContent>
           </Tabs>
         </div>
-      </NesCard>
+      </div>
     {/if}
   </div>
 {/if}

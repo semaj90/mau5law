@@ -1,14 +1,14 @@
 // Modular UI Components - Bits UI + UnoCSS + Svelte 5
 // Export all modular components for clean imports
 
-export { default as Button } from './Button.svelte';
-export { default as Card } from './Card.svelte';
-export { default as Dialog } from './Dialog.svelte';
-export { default as Input } from './Input.svelte';
-export { default as Form } from './Form.svelte';
-export { default as Progress } from './Progress.svelte';
-export { default as Badge } from './Badge.svelte';
-export { default as FileUpload } from './FileUpload.svelte';
+export { default as Button } from './Button.svelte.js';
+export { default as Card } from './Card.svelte.js';
+export { default as Dialog } from './Dialog.svelte.js';
+export { default as Input } from './Input.svelte.js';
+export { default as Form } from './Form.svelte.js';
+export { default as Progress } from './Progress.svelte.js';
+export { default as Badge } from './Badge.svelte.js';
+export { default as FileUpload } from './FileUpload.svelte.js';
 
 // Type exports
 export type {
@@ -20,7 +20,7 @@ export type {
   ProgressProps,
   BadgeProps,
   FileUploadProps
-} from './types';
+} from './types.js';
 
 // Component variants and types for external use
 export type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'yorha' | 'legal' | 'evidence' | 'case';

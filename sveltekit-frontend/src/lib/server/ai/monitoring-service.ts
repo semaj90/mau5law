@@ -2,7 +2,7 @@
 // lib/server/ai/monitoring-service.ts
 // Comprehensive monitoring and observability for AI synthesis pipeline
 
-import { logger } from './logger';
+import { logger } from './logger.js';
 import { EventEmitter } from "events";
 
 export interface MetricData {
@@ -34,7 +34,7 @@ class MonitoringService extends EventEmitter {
   private alerts: AlertRule[] = [];
   private healthChecks: Map<string, () => Promise<boolean>> = new Map();
   private performanceHistory: number[] = [];
-  private errorLog: Array<{ timestamp: Date; error: string; context: any }> = [];
+  private errorLog: Array< = [];
   private requestTracking: Map<string, any> = new Map();
 
   private counters = {
@@ -568,14 +568,7 @@ class MonitoringService extends EventEmitter {
   /**
    * Get aggregated metrics by name
    */
-  async getMetricStats(metricName: string): Promise<{
-    count: number;
-    sum: number;
-    avg: number;
-    min: number;
-    max: number;
-    latest: number;
-  }> {
+  async getMetricStats(metricName: string): Promise<any> {
     const metricData = Array.from((this.metrics as any).values())
       .flat()
       .filter((m: any) => m.data?.metric === metricName)

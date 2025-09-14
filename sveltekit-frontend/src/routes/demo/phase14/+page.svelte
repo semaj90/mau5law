@@ -28,13 +28,7 @@ https://svelte.dev/e/js_parse_error -->
   // Component state
   let isInitialized = $state(false);
   let currentDemo = $state('overview');
-  let performanceMetrics = $state<{
-    texture: any;
-    memory: MemoryStats | null;
-    cache: CacheStats | null;
-    ai: any;
-    gpu: any;
-  }>({
+  let performanceMetrics = $state({
     texture: null,
     memory: null,
     cache: null,
@@ -405,7 +399,7 @@ https://svelte.dev/e/js_parse_error -->
           <UnifiedButton
             {...getDemoButtonProps(scenario.id)}
             variant={currentDemo === scenario.id ? 'primary' : 'secondary'}
-            onclick={() => currentDemo = scenario.id}
+            on:click={() => currentDemo = scenario.id}
           >
             {scenario.title}
           </UnifiedButton>
@@ -454,13 +448,13 @@ https://svelte.dev/e/js_parse_error -->
               </div>
 
               <div class=\"flex flex-wrap gap-3\">
-                <UnifiedButton onclick={testMemoryOperations} variant=\"evidence\">
+                <UnifiedButton on:click={testMemoryOperations} variant=\"evidence\">
                   Test Memory Operations
                 </UnifiedButton>
-                <UnifiedButton onclick={testCacheOperations} variant=\"case\">
+                <UnifiedButton on:click={testCacheOperations} variant=\"case\">
                   Test Cache Operations
                 </UnifiedButton>
-                <UnifiedButton onclick={testGPUAnimations} variant=\"legal\">
+                <UnifiedButton on:click={testGPUAnimations} variant=\"legal\">
                   Test GPU Animations
                 </UnifiedButton>
               </div>
@@ -510,7 +504,7 @@ https://svelte.dev/e/js_parse_error -->
                 <!-- Dialog Demo -->
                 <div>
                   <h3 class=\"text-lg font-semibold mb-3\">Modal Dialog</h3>
-                  <UnifiedButton onclick={() => showDialog = true} variant=\"case\">
+                  <UnifiedButton on:click={() => showDialog = true} variant=\"case\">
                     Open Legal Analysis Dialog
                   </UnifiedButton>
                 </div>
@@ -529,8 +523,7 @@ https://svelte.dev/e/js_parse_error -->
                 <label class=\"block text-sm font-medium mb-2\">Legal Document</label>
                 <div class=\"mb-3\">
                   <select
-                    class=\"block w-full px-3 py-2 border border-gray-300 rounded-md\"
-                    change={(e) => sampleDocument = sampleDocuments[parseInt(e.currentTarget.value)]?.content || ''}
+                    class=\"block w-full px-3 py-2 border border-gray-300 rounded-md\" on:change={(e) => sampleDocument = sampleDocuments[parseInt(e.currentTarget.value)]?.content || ''}
                   >
                     {#each sampleDocuments as doc, index}
                       <option value={index}>{doc.title}</option>
@@ -547,7 +540,7 @@ https://svelte.dev/e/js_parse_error -->
 
               <div class=\"mb-6\">
                 <UnifiedButton
-                  onclick={runAIAnalysis}
+                  on:click={runAIAnalysis}
                   variant=\"legal\"
                   disabled={!sampleDocument.trim()}
                   legalContext={{
@@ -793,7 +786,7 @@ https://svelte.dev/e/js_parse_error -->
           <h3 class=\"font-semibold text-gray-900 mb-3\">Quick Actions</h3>
           <div class=\"space-y-2\">
             <UnifiedButton
-              onclick={runAIAnalysis}
+              on:click={runAIAnalysis}
               variant=\"legal\"
               size=\"sm\"
               disabled={!sampleDocument.trim()}
@@ -801,14 +794,14 @@ https://svelte.dev/e/js_parse_error -->
               Run AI Analysis
             </UnifiedButton>
             <UnifiedButton
-              onclick={testMemoryOperations}
+              on:click={testMemoryOperations}
               variant=\"evidence\"
               size=\"sm\"
             >
               Test Memory
             </UnifiedButton>
             <UnifiedButton
-              onclick={testGPUAnimations}
+              on:click={testGPUAnimations}
               variant=\"case\"
               size=\"sm\"
             >
@@ -894,7 +887,7 @@ https://svelte.dev/e/js_parse_error -->
 
   {#snippet footer()}
     <UnifiedButton
-      onclick={() => showDialog = false}
+      on:click={() => showDialog = false}
       variant=\"secondary\"
     >
       Close

@@ -29,8 +29,8 @@ const (
 	TensorCoreCount    = 112   // RTX 3060 Ti tensor cores
 	MemoryBandwidthGBs = 448   // RTX 3060 Ti memory bandwidth
 	OllamaBaseURL      = "http://localhost:11434"  // Ollama API endpoint
-	PostgreSQLURL      = "postgres://legal_admin:123456@localhost:5432/legal_ai_db"
-	EmbeddingModel     = "nomic-embed-text"  // Embedding model for pgvector
+	PostgreSQLURL      = "postgres://legal_admin:123456@localhost:5433/legal_ai_db"
+	EmbeddingModel     = "embeddinggemma:latest"  // Embedding model for pgvector
 	EmbeddingDimension = 768                 // Embedding vector dimension
 )
 

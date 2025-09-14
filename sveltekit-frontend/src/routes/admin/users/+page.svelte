@@ -351,7 +351,7 @@
           <h2 class="text-xl font-bold text-[#00ff88]">CREATE USER</h2>
           <button
             type="button"
-            onclick={() => showCreateModal = false}
+            on:click={() => showCreateModal = false}
             class="text-2xl hover:text-red-500"
           >
             ✕
@@ -419,7 +419,7 @@
       </div>
       ... (repeat for other fields; use form.data.*, form.errors.*)
       <div class="flex justify-end space-x-4 pt-4">
-       <button type="button" onclick={() => showCreateModal = false} class={yorhaClasses.button}>CANCEL</button>
+       <button type="button" on:click={() => showCreateModal = false} class={yorhaClasses.button}>CANCEL</button>
        <button type="submit" class={yorhaClasses.buttonPrimary}>◈ CREATE USER</button>
       </div>
       {#if form.message}<p class="text-xs text-green-400 pt-2">{form.message}</p>{/if}
@@ -429,7 +429,7 @@
 
   This placeholder only documents the migration; current code continues to work.
   -->
-        <form onsubmit={createUser} class="space-y-4">
+        <form on:submit={createUser} class="space-y-4">
         <!-- Email -->
         <div>
           <label class="block text-sm font-bold mb-2">EMAIL ADDRESS
@@ -511,7 +511,7 @@
         <div class="flex justify-end space-x-4 pt-4">
           <button
             type="button"
-            onclick={() => showCreateModal = false}
+            on:click={() => showCreateModal = false}
             class={yorhaClasses.button}
           >
             CANCEL
@@ -536,7 +536,7 @@
         <h2 class="text-xl font-bold text-[#00ff88]">EDIT USER</h2>
         <button
           type="button"
-          onclick={() => showEditModal = false}
+          on:click={() => showEditModal = false}
           class="text-2xl hover:text-red-500"
         >
           ✕
@@ -544,7 +544,7 @@
       </div>
 
       <!-- Single form using handleUpdate which omits the id and sends partial updates -->
-      <form onsubmit={handleUpdate} class="space-y-4">
+      <form on:submit={handleUpdate} class="space-y-4">
         <!-- Email -->
         <div>
           <label class="block text-sm font-bold mb-2">EMAIL ADDRESS
@@ -608,7 +608,7 @@
         <div class="flex justify-end space-x-4 pt-4">
           <button
             type="button"
-            onclick={() => showEditModal = false}
+            on:click={() => showEditModal = false}
             class={yorhaClasses.button}
           >
             CANCEL

@@ -67,13 +67,7 @@ export class IngestionService {
     documentId: string,
     chunks: string[],
     metadata?: Record<string, any>
-  ): Promise<{
-    success: boolean;
-    jobId?: string;
-    error?: string;
-    queuePosition?: number;
-    estimatedTime?: number;
-  }> {
+  ): Promise<any> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -257,12 +251,7 @@ export class IngestionService {
   }
 
   // Job Management API
-  async getJobStatus(jobId: string): Promise<{
-    success: boolean;
-    job?: any;
-    workflow?: any;
-    error?: string;
-  }> {
+  async getJobStatus(jobId: string): Promise<any> {
     try {
       // Try cache first, then LokiJS
       let job = await cache.get(`job:${jobId}`);
@@ -296,7 +285,7 @@ export class IngestionService {
     }
   }
 
-  async retryJob(jobId: string): Promise<{ success: boolean; message?: string; error?: string }> {
+  async retryJob(jobId: string): Promise<any> {
     try {
       // Send retry command to workflow
       this.workflowActor.send({ type: 'RETRY_FAILED_JOB', jobId });
@@ -334,7 +323,7 @@ export class IngestionService {
     }
   }
 
-  async cancelJob(jobId: string): Promise<{ success: boolean; message?: string; error?: string }> {
+  async cancelJob(jobId: string): Promise<any> {
     try {
       // Cancel in workflow
       this.workflowActor.send({ type: 'CANCEL_JOB', jobId });
@@ -359,17 +348,17 @@ export class IngestionService {
   }
 
   // Workflow Control API
-  async pauseProcessing(): Promise<{ success: boolean; message: string }> {
+  async pauseProcessing(): Promise<any> {
     this.workflowActor.send({ type: 'PAUSE_PROCESSING' });
     return { success: true, message: 'Processing paused' };
   }
 
-  async resumeProcessing(): Promise<{ success: boolean; message: string }> {
+  async resumeProcessing(): Promise<any> {
     this.workflowActor.send({ type: 'RESUME_PROCESSING' });
     return { success: true, message: 'Processing resumed' };
   }
 
-  async setConcurrency(concurrency: number): Promise<{ success: boolean; message?: string; error?: string }> {
+  async setConcurrency(concurrency: number): Promise<any> {
     if (concurrency < 1 || concurrency > 10) {
       return {
         success: false,
@@ -414,7 +403,7 @@ export class IngestionService {
   }
 
   // Cleanup and maintenance
-  async clearCompletedJobs(): Promise<{ success: boolean; message: string }> {
+  async clearCompletedJobs(): Promise<any> {
     this.workflowActor.send({ type: 'CLEAR_COMPLETED' });
     const cleared = jobTracker.clearCompletedJobs();
 
@@ -424,7 +413,7 @@ export class IngestionService {
     };
   }
 
-  async resetStats(): Promise<{ success: boolean; message: string }> {
+  async resetStats(): Promise<any> {
     this.workflowActor.send({ type: 'RESET_STATS' });
     jobTracker.reset();
 

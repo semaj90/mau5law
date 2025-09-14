@@ -223,7 +223,7 @@
             <TooltipBits content="Open professional dialog with NES.css styling" side="top">
               <ButtonBits
                 variant="primary"
-                onclick={() => dialogOpen = true}
+                on:click={() => dialogOpen = true}
                 class="nes-btn-enhanced"
               >
                 🏛️ Open Legal Dialog
@@ -278,8 +278,8 @@
         </div>
       </div>
       <div class="dialog-actions">
-        <ButtonBits variant="ghost" onclick={() => dialogOpen = false}>Cancel</ButtonBits>
-        <ButtonBits variant="primary" onclick={() => dialogOpen = false}>Awesome!</ButtonBits>
+        <ButtonBits variant="ghost" on:click={() => dialogOpen = false}>Cancel</ButtonBits>
+        <ButtonBits variant="primary" on:click={() => dialogOpen = false}>Awesome!</ButtonBits>
       </div>
     </div>
   </DialogBits>

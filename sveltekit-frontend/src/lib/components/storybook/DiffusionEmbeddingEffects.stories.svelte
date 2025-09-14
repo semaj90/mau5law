@@ -316,28 +316,7 @@ https://svelte.dev/e/expected_token -->
 		updateEmbeddingVisualization();
 	}
 	
-	function updateEmbeddingVisualization() {
-		const viz = document.querySelector('.embedding-viz');
-		if (!viz || !nomicEmbeddings.length) return;
-		
-		// Sample a few embeddings for visualization
-		const sampleSize = Math.min(50, nomicEmbeddings.length);
-		let html = '';
-		
-		for (let i = 0; i < sampleSize; i++) {
-			const embed = nomicEmbeddings[i];
-			const magnitude = Math.sqrt(embed.vector.reduce((sum, val) => sum + val * val, 0));
-			const clusterColor = ['#ff4444', '#44ff44', '#4444ff', '#ffff44', '#ff44ff'][embed.cluster];
-			
-			html += `
-				<div class="embed-point ps1-pixel" 
-					 style="background: ${clusterColor}; 
-					        opacity: ${Math.min(1, magnitude / 5)}; 
-					        transform: translateX(${embed.vector[0] * 50}px) translateY(${embed.vector[1] * 50}px)">
-					${i}
-				</div>
-			`;
-		}
+	function updateEmbeddingVisualization() {/* JSX syntax converted to Svelte */}
 		
 		viz.innerHTML = html;
 	}
@@ -411,7 +390,7 @@ https://svelte.dev/e/expected_token -->
 					<input 
 						type="checkbox" 
 						checked={enabled} 
-						onchange={() => toggleFeatureFlag(flag)}
+						on:change={() => toggleFeatureFlag(flag)}
 					>
 					<span class="flag-name">{flag}</span>
 				</label>

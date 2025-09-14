@@ -54,15 +54,7 @@
 
   // Chat history and UI state
   let chatHistory = $state<
-    Array<{
-      id: string;
-      type: "user" | "assistant";
-      content: string;
-      timestamp: Date;
-      performance?: ChatResponse["performance"];
-      suggestions?: string[];
-      relatedCases?: string[];
-    }>
+    Array()
   >([]);
 
   let chatContainer: HTMLElement;
@@ -299,10 +291,10 @@
 <!-- Chat Interface -->
 <div class="ollama-chat-interface {className}">
   <!-- Header with Status -->
-  <NesCard class="mb-4">
-    <div class="yorha-panel-header" class="pb-3">
+  <div class="mb-4 nes-container">
+    <div class="yorha-panel-header pb-3">
       <div class="flex items-center justify-between">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Brain class="w-5 h-5" />
           Legal AI Assistant
           <Badge
@@ -324,20 +316,21 @@
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={() => (showSettings = !showSettings)}
+            on:click={() =>
+(showSettings = !showSettings)}
           >
             <Settings class="w-4 h-4" />
-          </button>
+</Button>
 
           <!-- Health Check -->
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={checkOllamaHealth}
+            on:click={checkOllamaHealth}
             disabled={isLoading}
           >
-            <RefreshCw class="w-4 h-4" />
-          </button>
+<RefreshCw class="w-4 h-4" />
+</Button>
         </div>
       </div>
 
@@ -360,7 +353,7 @@
 
     <!-- Advanced Settings -->
     {#if showSettings}
-      <div class="yorha-panel-content" class="pt-0 border-t">
+      <div class="yorha-panel-content pt-0 border-t">
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="text-sm font-medium" for="temperature">Temperature</label><input id="temperature"
@@ -384,7 +377,7 @@
         </div>
       </div>
     {/if}
-  </NesCard>
+  </div>
 
   <!-- Token Usage Manager -->
   <TokenUsageManager
@@ -414,7 +407,7 @@
   {/if}
 
   <!-- Chat History -->
-  <NesCard class="flex-1 mb-4">
+  <div class="flex-1 mb-4 nes-container">
     <ScrollArea class="h-[600px] p-6" bind:viewport={chatContainer}>
       {#if chatHistory.length === 0}
         <div class="text-center nes-text is-disabled py-8">
@@ -460,10 +453,11 @@
                     class="bits-btn text-xs"
                     variant="outline"
                     size="sm"
-                    onclick={() => selectSuggestion(suggestion)}
+                    on:click={() =>
+selectSuggestion(suggestion)}
                   >
                     {suggestion}
-                  </button>
+</Button>
                 {/each}
               </div>
             {/if}
@@ -491,7 +485,7 @@
         </div>
       {/if}
     </ScrollArea>
-  </NesCard>
+  </div>
 
   <!-- Input Area -->
   <div class="flex gap-3 p-4 bg-white border-t border-gray-200 rounded-b-lg">
@@ -507,36 +501,36 @@
     </div>
 
     <Button
-      onclick={sendMessage}
+      on:click={sendMessage}
       disabled={!canSend || ollamaStatus !== "healthy"}
       class="h-12 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium bits-btn bits-btn"
       data-testid="send-button"
     >
-      {#if isLoading}
+{#if isLoading}
         <Loader2 class="w-5 h-5 animate-spin mr-2" />
         <span>Sending...</span>
       {:else}
         <Send class="w-5 h-5 mr-2" />
         <span>Send</span>
       {/if}
-    </button>
+</Button>
 
     <!-- Additional Actions -->
     <Button class="bits-btn"
       variant="outline"
-      onclick={clearChat}
+      on:click={clearChat}
       disabled={chatHistory.length === 0}
     >
-      Clear
-    </button>
+Clear
+</Button>
 
     <Button class="bits-btn"
       variant="outline"
-      onclick={exportChat}
+      on:click={exportChat}
       disabled={chatHistory.length === 0}
     >
-      Export
-    </button>
+Export
+</Button>
   </div>
 
   <!-- Chat Stats -->

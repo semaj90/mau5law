@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { db, sql } from '$lib/server/db';
 import { json, error } from '@sveltejs/kit';
 import { generateEmbedding, searchSimilarChatsKeyword } from '$lib/server/services/vectorDBService';
@@ -41,12 +41,12 @@ Response:`;
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Ollama generation error: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`Ollama generation error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    const result = await response.json();
-    return result.response;
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+    return (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).response;
   } catch (err) {
     console.error('RAG response generation failed:', err);
     throw new Error('Failed to generate RAG response');
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
         embedding: null,
         similarity: parseFloat(row.similarity),
         role: row.role,
-        metadata: row.metadata ? JSON.parse(row.metadata) : {}
+        metadata: row.metadata ? JSON.parse(row.metadata) : Record<string, any>
       }));
       
       console.log(`Found ${similarChunks.length} chat embeddings results`);
@@ -104,14 +104,14 @@ export const POST: RequestHandler = async ({ request }) => {
       // Fallback to keyword search
       const keywordResults = await searchSimilarChatsKeyword(query, limit);
       similarChunks = keywordResults.map(result => ({
-        id: result.conversationId,
-        chunk_text: result.content,
+        id: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).conversationId,
+        chunk_text: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).content,
         chunk_sequence: 1,
         evidence_id: null,
         embedding: null,
-        similarity: result.similarity,
-        role: result.role,
-        metadata: result.metadata
+        similarity: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).similarity,
+        role: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).role,
+        metadata: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).metadata
       }));
       
       console.log(`Used keyword fallback, found ${similarChunks.length} results`);

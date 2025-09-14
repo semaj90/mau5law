@@ -11,9 +11,9 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     children?: import('svelte').Snippet;
   }
   import { fade, scale } from 'svelte/transition';
-  let { open = $bindable() } = $props(); // false;
-  let { title = $bindable() } = $props(); // '';
-  let { onClose = $bindable() } = $props(); // () => void = () => {};
+  let { open = $bindable()  }: { open = $bindable() : any } = $props(); // false;
+  let { title = $bindable()  }: { title = $bindable() : any } = $props(); // '';
+  let { onClose = $bindable()  }: { onClose = $bindable() : any } = $props(); // () => void = () => {};
 </script>
 
 {#if open}

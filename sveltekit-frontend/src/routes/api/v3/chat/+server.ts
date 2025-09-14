@@ -1,7 +1,7 @@
 // Production-ready Enhanced Chat API v3
 // Features: Rate limiting, structured logging, vector embeddings, service worker support
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { ollamaChatStream } from '$lib/services/ollamaChatStream';
 import {
@@ -47,20 +47,20 @@ function generateRequestId(): string {
 async function withRateLimit(request: Request, handler: () => Promise<Response>): Promise<Response> {
   const result = chatRateLimiter.check(request);
 
-  if (!result.allowed) {
-    const retryAfter = Math.ceil((result.resetTime! - Date.now()) / 1000);
+  if (!(result as { allowed?: any; resetTime?: any; remaining?: any }).allowed) {
+    const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000);
 
     return json({
       success: false,
       error: 'Too many requests. Please wait before sending another message.',
       retryAfter,
-      resetTime: new Date(result.resetTime!).toISOString()
+      resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()
     }, {
       status: 429,
       headers: {
         'Retry-After': retryAfter.toString(),
         'X-RateLimit-Remaining': '0',
-        'X-RateLimit-Reset': result.resetTime!.toString()
+        'X-RateLimit-Reset': (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString()
       }
     });
   }
@@ -68,14 +68,14 @@ async function withRateLimit(request: Request, handler: () => Promise<Response>)
   const response = await handler();
 
   // Add rate limit headers
-  response.headers.set('X-RateLimit-Remaining', result.remaining!.toString());
-  response.headers.set('X-RateLimit-Reset', result.resetTime!.toString());
+  (response as { headers?: any }).headers.set('X-RateLimit-Remaining', (result as { allowed?: any; resetTime?: any; remaining?: any }).remaining!.toString());
+  (response as { headers?: any }).headers.set('X-RateLimit-Reset', (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString());
 
   return response;
 }
 
 // Health check for dependencies
-async function performHealthChecks(): Promise<{ ollama: boolean; database: boolean }> {
+async function performHealthChecks(): Promise<any> {
   const results = { ollama: false, database: false };
 
   try {

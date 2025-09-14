@@ -79,7 +79,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   }
 </script>
 
-<Dialog bind:open={open}>
+<Dialog.Root bind:open={open}>
   <div class="uno-p-4 uno-bg-white uno-shadow">
     <div class="mb-4">
       <h2 class="text-lg font-bold mb-2">Evidence Details</h2>
@@ -91,7 +91,9 @@ https://svelte.dev/e/attribute_invalid_name -->
         <!-- Add other view-only fields as needed -->
       </div>
       <div class="flex gap-2 mt-2">
-        <Button class="bits-btn" onclick={handleEdit}>Edit</button>
+        <Button class="bits-btn" on:click={handleEdit}>
+Edit
+
       </div>
     {:else}
       <form class="flex flex-col gap-2" onsubmit|preventDefault={handleSave}>
@@ -100,16 +102,22 @@ https://svelte.dev/e/attribute_invalid_name -->
         <input name="jsonData.tags" bind:value={tagsString} placeholder="Tags (comma separated)" class="input input-bordered" />
         <input name="jsonData.type" bind:value={type} placeholder="Type" class="input input-bordered" />
         <div class="flex gap-2 mt-2">
-          <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn bits-btn">Save</button>
-          <Button class="bits-btn" variant="outline" onclick={handleCancel}>Cancel</button>
+          <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn bits-btn">
+Save
+
+          <Button class="bits-btn" variant="outline" on:click={handleCancel}>
+Cancel
+
         </div>
       </form>
     {/if}
     <div class="mt-4 flex justify-end">
-      <Button class="bits-btn" onclick={() => (open = false)} variant="ghost">Close</button>
+      <Button class="bits-btn" on:click={() =>
+(open = false)} variant="ghost">Close
+
     </div>
   </div>
-</Dialog>
+</Dialog.Root>
 
 <style>
   /* @unocss-include */

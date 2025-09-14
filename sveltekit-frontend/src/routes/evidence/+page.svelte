@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
 
   import type { PageData } from "./$types";
   // ... other imports ...
-  let { data = $bindable() } = $props(); // PageData;
+  let { data }: { data: any } = $props(); // PageData;
 
   // State management
   let validationModal = $state({
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
   let evidenceUploadFeedback: any;
 
   // Filtering and selection
-  let selectedEvidence = $state<Set<string>>(new Set());
+  let selectedEvidence = $state<Set<string>('')>(new Set());
   let selectedType = $state("");
   let selectedStatus = $state("");
   let selectedCollector = $state("");
@@ -122,12 +122,12 @@ https://svelte.dev/e/js_parse_error -->
 
   // Reactive values from SSR data and store
   let ({ isLoading: loading, error } = $derived($evidenceGrid));
-  let allEvidence = $derived(data.evidence || []);
+  let allEvidence = $derived((data as { evidence?: any }).evidence || []);
   let filteredEvidence = $derived(filterAndSortEvidence(allEvidence));
   let visibleEvidence = $derived(getPaginatedEvidence());
   onMount(() => {
     // Initialize store with SSR data
-    evidenceActions.setItems(data.evidence || []);
+    evidenceActions.setItems((data as { evidence?: any }).evidence || []);
     // Set case context if available
     if (caseId) {
       evidenceActions.loadEvidence(caseId);
@@ -304,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  function handleThinkingToggle(event: CustomEvent<{ enabled: boolean }>) {
+  function handleThinkingToggle(event: CustomEvent) {
     thinkingStyleEnabled = event.detail.enabled;
 
     notifications.add({
@@ -527,23 +527,23 @@ https://svelte.dev/e/js_parse_error -->
 
     // Convert search results to evidence format for display
     const convertedEvidence = searchResults.map(result => ({
-      id: result.id,
-      title: result.title,
-      description: result.content.substring(0, 200) + '...',
-      evidenceType: result.metadata.documentType || 'document',
-      isAdmissible: result.confidence > 0.8,
-      collectedBy: result.metadata.source,
-      uploadedAt: result.metadata.uploadDate || new Date().toISOString(),
-      fileSize: result.metadata.fileSize || 0,
-      hash: result.metadata.filePath ? 'verified' : null,
-      tags: result.metadata.entities || [],
+      id: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).id,
+      title: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).title,
+      description: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).content.substring(0, 200) + '...',
+      evidenceType: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.documentType || 'document',
+      isAdmissible: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).confidence > 0.8,
+      collectedBy: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.source,
+      uploadedAt: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.uploadDate || new Date().toISOString(),
+      fileSize: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.fileSize || 0,
+      hash: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.filePath ? 'verified' : null,
+      tags: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.entities || [],
       aiAnalysis: {
-        confidence: result.confidence,
-        similarity: result.similarity,
-        source: result.source,
-        highlight: result.highlight
+        confidence: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).confidence,
+        similarity: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).similarity,
+        source: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).source,
+        highlight: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).highlight
       },
-      metadata: result.metadata
+      metadata: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata
     });
     // Update evidence display with search results
     if (convertedEvidence.length > 0) {
@@ -668,35 +668,38 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => refreshEvidence()}
+            on:click={() =>
+refreshEvidence()}
             disabled={loading}
             aria-label="Refresh evidence"
           >
             <span class:animate-spin={loading} class:neural-sprite-loading={loading}>
               <RefreshCw class="w-4 h-4" />
             </span>
-          </button>
+</Button>
         </Tooltip>
 
         <Tooltip content="Toggle filters">
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => (showFilters = !showFilters)}
+            on:click={() =>
+(showFilters = !showFilters)}
             class={showFilters ? 'nes-legal-priority-high' : ''}
             aria-label="Toggle filters"
             aria-expanded={showFilters}
           >
             <Filter class="w-4 h-4 mr-2" />
             Filters
-          </button>
+</Button>
         </Tooltip>
 
         <Tooltip content="Toggle view mode">
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => (viewMode = viewMode === "grid" ? "list" : "grid")}
+            on:click={() =>
+(viewMode = viewMode === "grid" ? "list" : "grid")}
             aria-label="Toggle view mode"
             class="yorha-3d-button"
           >
@@ -705,29 +708,31 @@ https://svelte.dev/e/js_parse_error -->
             {:else}
               <Grid class="w-4 h-4" />
             {/if}
-          </button>
+</Button>
         </Tooltip>
 
         <Tooltip content="Advanced file upload">
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => handleAdvancedUpload()}
+            on:click={() =>
+handleAdvancedUpload()}
             class="neural-sprite-cached"
           >
             <Upload class="w-4 h-4 mr-2" />
             Advanced Upload
-          </button>
+</Button>
         </Tooltip>
 
         <Tooltip content="Standard evidence upload">
           <Button class="bits-btn"
             variant="evidence"
-            onclick={() => openUploadModal()}
+            on:click={() =>
+openUploadModal()}
           >
             <Plus class="w-4 h-4 mr-2" />
             Upload Evidence
-          </button>
+</Button>
         </Tooltip>
       </div>
     </div>
@@ -761,7 +766,8 @@ https://svelte.dev/e/js_parse_error -->
         <Button class="bits-btn"
           variant="outline"
           size="sm"
-          onclick={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
+          on:click={() =>
+(sortOrder = sortOrder === "asc" ? "desc" : "asc")}
           aria-label="Toggle sort order"
           class="yorha-3d-button"
         >
@@ -770,7 +776,7 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <SortDesc class="w-4 h-4" />
           {/if}
-        </button>
+</Button>
       </div>
 
       <div class="flex items-center gap-2">
@@ -799,7 +805,8 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => bulkOperation("analyze")}
+            on:click={() =>
+bulkOperation("analyze")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -810,56 +817,61 @@ https://svelte.dev/e/js_parse_error -->
               <Zap class="mx-auto px-4 max-w-7xl" />
               Quick Analyze
             {/if}
-          </button>
+</Button>
 
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => bulkOperation("verify")}
+            on:click={() =>
+bulkOperation("verify")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
             <CheckCircle class="mx-auto px-4 max-w-7xl" />
             Verify
-          </button>
+</Button>
 
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => bulkOperation("archive")}
+            on:click={() =>
+bulkOperation("archive")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
             <Archive class="mx-auto px-4 max-w-7xl" />
             Archive
-          </button>
+</Button>
 
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => bulkOperation("export")}
+            on:click={() =>
+bulkOperation("export")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
             <Download class="mx-auto px-4 max-w-7xl" />
             Export
-          </button>
+</Button>
 
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => bulkOperation("delete")}
+            on:click={() =>
+bulkOperation("delete")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
           >
             <Trash2 class="mx-auto px-4 max-w-7xl" />
             Delete
-          </button>
+</Button>
 
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            onclick={() => {
+            on:click={() =>
+{
               selectedEvidence.clear();
               selectedEvidence = selectedEvidence;
               showBulkActions = false;
@@ -867,7 +879,7 @@ https://svelte.dev/e/js_parse_error -->
             disabled={bulkOperationLoading}
           >
             Cancel
-          </button>
+</Button>
         </div>
       </div>
     </div>
@@ -886,10 +898,11 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="mx-auto px-4 max-w-7xl">Error Loading Evidence</h3>
         <div class="mx-auto px-4 max-w-7xl">{error}</div>
       </div>
-  <Button class="bits-btn" variant="outline" size="sm" onclick={() => refreshEvidence()}>
+  <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+refreshEvidence()}>
         <RefreshCw class="mx-auto px-4 max-w-7xl" />
         Retry
-      </button>
+</Button>
     </div>
   {:else if filteredEvidence.length === 0}
     <div class="mx-auto px-4 max-w-7xl">
@@ -916,18 +929,20 @@ https://svelte.dev/e/js_parse_error -->
       </p>
       {#if !searchQuery && !selectedType && !selectedStatus && !selectedCollector && !dateFrom && !dateTo}
         <div class="mx-auto px-4 max-w-7xl">
-          <Button class="bits-btn" onclick={() => openUploadModal()} class="mx-auto px-4 max-w-7xl">
+          <Button class="bits-btn" on:click={() =>
+openUploadModal()} class="mx-auto px-4 max-w-7xl">
             <Plus class="mx-auto px-4 max-w-7xl" />
             Upload Evidence
-          </button>
+</Button>
           <Button class="bits-btn"
             variant="outline"
-            onclick={() => handleAdvancedUpload()}
+            on:click={() =>
+handleAdvancedUpload()}
             class="mx-auto px-4 max-w-7xl"
           >
             <Upload class="mx-auto px-4 max-w-7xl" />
             Advanced Upload
-          </button>
+</Button>
         </div>
       {/if}
     </div>
@@ -946,7 +961,8 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={() => selectAllEvidence()}
+            on:click={() =>
+selectAllEvidence()}
             class="mx-auto px-4 max-w-7xl"
             aria-label="Select all visible evidence"
           >
@@ -956,7 +972,7 @@ https://svelte.dev/e/js_parse_error -->
               <Square class="mx-auto px-4 max-w-7xl" />
             {/if}
             Select All
-          </button>
+</Button>
         {/if}
       </div>
     </div>
@@ -966,28 +982,27 @@ https://svelte.dev/e/js_parse_error -->
       {#if viewMode === "grid"}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {#each visibleEvidence as evidence}
-            <NesCard
+            <div
               variant="evidence"
               priority={evidence.isAdmissible ? "critical" : "medium"}
               loading={analysisInProgress.has(evidence.id)}
               interactive={true}
-              class="group hover:shadow-xl transition-all duration-300"
-            >
+              class="group hover:shadow-xl transition-all duration-300 nes-container">
               <!-- Card Header with Selection -->
               <div class="flex justify-between items-start mb-4">
                 <input
                   type="checkbox"
                   class="input-nes-primary w-4 h-4"
                   checked={selectedEvidence.has(evidence.id)}
-                  onchange={() => toggleEvidenceSelection(evidence.id)}
+                  on:change={() => toggleEvidenceSelection(evidence.id)}
                   aria-label="Select evidence {evidence.title || 'Untitled Evidence'}"
                 />
 
                 <div class="dropdown dropdown-end">
                   <Tooltip content="Evidence actions">
                     <Button variant="ghost" size="sm" class="yorha-3d-button bits-btn bits-btn">
-                      <MoreHorizontal class="w-4 h-4" />
-                    </button>
+<MoreHorizontal class="w-4 h-4" />
+</Button>
                   </Tooltip>
                 </div>
               </div>
@@ -1064,7 +1079,8 @@ https://svelte.dev/e/js_parse_error -->
                 <Button class="bits-btn"
                   size="sm"
                   variant={thinkingStyleEnabled ? "neural" : "yorha"}
-                  onclick={() => analyzeEvidence(evidence)}
+                  on:click={() =>
+analyzeEvidence(evidence)}
                   disabled={analysisInProgress.has(evidence.id)}
                   class="flex-1"
                 >
@@ -1078,16 +1094,16 @@ https://svelte.dev/e/js_parse_error -->
                     <Zap class="w-3 h-3 mr-1" />
                     Analyze
                   {/if}
-                </button>
+</Button>
 
                 <a href="/evidence/{evidence.id}">
                   <Button size="sm" variant="evidence" class="flex-1 bits-btn bits-btn">
-                    <Eye class="w-3 h-3 mr-1" />
+<Eye class="w-3 h-3 mr-1" />
                     View
-                  </button>
+</Button>
                 </a>
               </div>
-            </NesCard>
+            </div>
           {/each}
         </div>
       {:else}
@@ -1102,7 +1118,7 @@ https://svelte.dev/e/js_parse_error -->
                   type="checkbox"
                   class="w-4 h-4 rounded border-gray-300 focus:ring-2 focus:ring-yellow-400"
                   checked={selectedEvidence.has(evidence.id)}
-                  onchange={() => toggleEvidenceSelection(evidence.id)}
+                  on:change={() => toggleEvidenceSelection(evidence.id)}
                   aria-label="Select evidence {evidence.title ||
                     'Untitled Evidence'}"
                 />
@@ -1173,7 +1189,8 @@ https://svelte.dev/e/js_parse_error -->
                   <Button class="bits-btn"
                     size="sm"
                     variant="outline"
-                    onclick={() => analyzeEvidence(evidence)}
+                    on:click={() =>
+analyzeEvidence(evidence)}
                     disabled={analysisInProgress.has(evidence.id)}
                     class="mx-auto px-4 max-w-7xl"
                   >
@@ -1187,13 +1204,13 @@ https://svelte.dev/e/js_parse_error -->
                       <Zap class="mx-auto px-4 max-w-7xl" />
                       Analyze
                     {/if}
-                  </button>
+</Button>
 
                   <a href="/evidence/{evidence.id}" class="mx-auto px-4 max-w-7xl">
                     <Button class="bits-btn" size="sm" variant="outline">
-                      <Eye class="mx-auto px-4 max-w-7xl" />
+<Eye class="mx-auto px-4 max-w-7xl" />
                       View
-                    </button>
+</Button>
                   </a>
 
                   <div class="mx-auto px-4 max-w-7xl">
@@ -1206,8 +1223,8 @@ https://svelte.dev/e/js_parse_error -->
                         aria-label="More actions for {evidence.title ||
                           'Untitled Evidence'}"
                       >
-                        <MoreHorizontal class="mx-auto px-4 max-w-7xl" />
-                      </button>
+<MoreHorizontal class="mx-auto px-4 max-w-7xl" />
+</Button>
                     </Tooltip>
                     <ul
                       tabindex={0}
@@ -1224,7 +1241,7 @@ https://svelte.dev/e/js_parse_error -->
                         <button class="mx-auto px-4 max-w-7xl">
                           <Hash class="mx-auto px-4 max-w-7xl" />
                           Verify Hash
-                        </button>
+</Button>
                       </li>
                       <li>
                         <button class="mx-auto px-4 max-w-7xl">
@@ -1251,11 +1268,12 @@ https://svelte.dev/e/js_parse_error -->
             size="sm"
             class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
             disabled={currentPage === 1}
-            onclick={() => (currentPage = Math.max(1, currentPage - 1))}
+            on:click={() =>
+(currentPage = Math.max(1, currentPage - 1))}
             aria-label="Previous page"
           >
             Previous
-          </button>
+</Button>
 
           {#each Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
             const start = Math.max(1, currentPage - 2);
@@ -1265,12 +1283,13 @@ https://svelte.dev/e/js_parse_error -->
               variant={page === currentPage ? "default" : "outline"}
               size="sm"
               class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-              onclick={() => (currentPage = page)}
+              on:click={() =>
+(currentPage = page)}
               aria-label="Go to page {page}"
               aria-current={page === currentPage ? "page" : undefined}
             >
               {page}
-            </button>
+</Button>
           {/each}
 
           <Button
@@ -1278,16 +1297,15 @@ https://svelte.dev/e/js_parse_error -->
             size="sm"
             class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
             disabled={currentPage === totalPages}
-            onclick={() =>
-              (currentPage = Math.min(totalPages, currentPage + 1))}
+            on:click={() =>
+(currentPage = Math.min(totalPages, currentPage + 1))}
             aria-label="Next page"
           >
             Next
-          </button>
+</Button>
         </div>
       </div>
     {/if}
-  {/if}
 </div>
 
 <!-- Modals -->
@@ -1315,9 +1333,9 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
           - {analysisModal.evidence.title}
         </h3>
-  <Button class="bits-btn" variant="ghost" size="sm" onclick={closeAnalysisModal}>
-          ✕
-        </button>
+  <Button class="bits-btn" variant="ghost" size="sm" on:click={closeAnalysisModal}>
+✕
+</Button>
       </div>
 
       <div class="mx-auto px-4 max-w-7xl">
@@ -1325,11 +1343,11 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mx-auto px-4 max-w-7xl">{formatAnalysisForDisplay(analysisModal.result)}</div>
         </div>
 
-        {#if analysisModal.result.reasoning_steps && analysisModal.result.reasoning_steps.length > 0}
+        {#if analysisModal.(result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).reasoning_steps && analysisModal.(result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).reasoning_steps.length > 0}
           <div class="mx-auto px-4 max-w-7xl">
             <h4 class="mx-auto px-4 max-w-7xl">Reasoning Steps:</h4>
             <ol class="mx-auto px-4 max-w-7xl">
-              {#each analysisModal.result.reasoning_steps as step}
+              {#each analysisModal.(result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).reasoning_steps as step}
                 <li class="mx-auto px-4 max-w-7xl">{step}</li>
               {/each}
             </ol>
@@ -1338,14 +1356,18 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="mx-auto px-4 max-w-7xl">
-  <Button class="bits-btn" variant="outline" onclick={closeAnalysisModal}>Close</button>
-  <Button class="bits-btn" onclick={() => {
+  <Button class="bits-btn" variant="outline" on:click={closeAnalysisModal}>
+Close
+</Button>
+  <Button class="bits-btn" on:click={() =>
+{
           // Save analysis or perform other actions
           closeAnalysisModal();
-        }}>Save Analysis</button>
+        }}>Save Analysis
+</Button>
       </div>
     </div>
-  <div class="mx-auto px-4 max-w-7xl" role="button" tabindex="0" onclick={closeAnalysisModal} onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && closeAnalysisModal()}></div>
+  <div class="mx-auto px-4 max-w-7xl" role="button" tabindex="0" on:click={closeAnalysisModal} on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && closeAnalysisModal()}></div>
   </div>
 {/if}
 
@@ -1367,8 +1389,8 @@ https://svelte.dev/e/js_parse_error -->
       role="button"
       tabindex={0}
       aria-label="Close modal"
-      onclick={() => (showAdvancedUpload = false)}
-      onkeydown={(e) => e.key === "Escape" && (showAdvancedUpload = false)}
+      on:click={() => (showAdvancedUpload = false)}
+      on:keydown={(e) => e.key === "Escape" && (showAdvancedUpload = false)}
     ></div>
   </div>
 {/if}

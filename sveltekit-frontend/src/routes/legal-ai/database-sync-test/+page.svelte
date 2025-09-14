@@ -37,9 +37,9 @@
   
   $: langchainState = $langchainService;
   $: documentState = $documentProcessing;
-  $: serviceStatus = data.initialState.serviceStatus;
-  $: recentSessions = data.initialState.recentSessions;
-  $: recentDocuments = data.initialState.recentDocuments;
+  $: serviceStatus = (data as { initialState?: any; meta?: any }).initialState.serviceStatus;
+  $: recentSessions = (data as { initialState?: any; meta?: any }).initialState.recentSessions;
+  $: recentDocuments = (data as { initialState?: any; meta?: any }).initialState.recentDocuments;
   
   // Local component state for testing
   let testDocument = `
@@ -212,7 +212,7 @@
     <p class="last-checked">
       Last checked: {new Date(serviceStatus.lastChecked).toLocaleString()}
       <br>
-      Server render time: {data.meta.serverRenderTime}ms
+      Server render time: {(data as { initialState?: any; meta?: any }).meta.serverRenderTime}ms
     </p>
   </section>
 
@@ -556,7 +556,7 @@
     background: #f8f9fa;
   }
   
-  .session-item.selected {
+  .session-(item as { selected?: any }).selected {
     border-color: #0066cc;
     background: #e3f2fd;
   }

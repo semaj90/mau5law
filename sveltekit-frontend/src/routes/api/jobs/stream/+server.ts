@@ -5,7 +5,7 @@
  * Integrates with GlobalLokiStore for cross-worker state visibility
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { globalLoki } from '$lib/stores/global-loki-store.js';
 import { cacheService } from '$lib/api/services/cache-service.js';
 

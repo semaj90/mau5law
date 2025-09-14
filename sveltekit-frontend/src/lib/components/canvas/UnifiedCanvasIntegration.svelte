@@ -176,7 +176,7 @@
       <button class="nes-btn"
         variant={currentMode === 'evidence' ? 'default' : 'outline'}
         size="sm"
-        onclick={() => switchMode('evidence')}
+        on:click={() => switchMode('evidence')}
         class="bits-btn mode-btn"
       >
         📁 Evidence Only
@@ -185,7 +185,7 @@
       <button class="nes-btn"
         variant={currentMode === 'drawing' ? 'default' : 'outline'}
         size="sm" 
-        onclick={() => switchMode('drawing')}
+        on:click={() => switchMode('drawing')}
         class="bits-btn mode-btn"
       >
         🎨 Drawing Only
@@ -194,7 +194,7 @@
       <button class="nes-btn"
         variant={currentMode === 'both' ? 'default' : 'outline'}
         size="sm"
-        onclick={() => switchMode('both')}
+        on:click={() => switchMode('both')}
         class="bits-btn mode-btn"
       >
         🔄 Both
@@ -203,21 +203,20 @@
       <Button
         variant="outline"
         size="sm"
-        onclick={syncCanvasBoards}
+        on:click={syncCanvasBoards}
         disabled={syncInProgress}
         class="sync-btn bits-btn"
       >
-        {syncInProgress ? '🔄 Syncing...' : '🔄 Sync'}
-      </button>
-      
+{syncInProgress ? '🔄 Syncing...' : '🔄 Sync'}
+
       <Button
         variant="outline"
         size="sm"
-        onclick={clearAllCanvases}
+        on:click={clearAllCanvases}
         class="clear-btn bits-btn"
       >
-        🗑️ Clear
-      </button>
+🗑️ Clear
+
     </div>
   </div>
   
@@ -272,12 +271,12 @@
     
     <div class="status-actions">
       <button
-        onclick={exportCanvasState}
+        on:click={exportCanvasState}
         class="export-btn"
         title="Export Canvas State"
       >
         💾 Export
-      </button>
+
     </div>
   </div>
 </div>

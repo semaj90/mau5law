@@ -24,11 +24,13 @@ https://svelte.dev/e/attribute_duplicate -->
   } from "lucide-svelte";
   import { onMount } from "svelte";
 
-  let { 
-    showInline = false, // Show as inline alert vs modal
+  let { showInline = false, // Show as inline alert vs modal
     autoHide = true, // Auto-hide non-critical errors
     maxWidth = "max-w-lg" // Maximum width class
-  } = $props();
+   }: { showInline = false, // Show as inline alert vs modal
+    autoHide = true, // Auto-hide non-critical errors
+    maxWidth = "max-w-lg" // Maximum width class
+  : any } = $props();
   let currentError = $state<UserFriendlyError | null >(null);
   let showDetails = $state(false);
   let retryInProgress = $state(false);
@@ -203,11 +205,12 @@ https://svelte.dev/e/attribute_duplicate -->
                 class="bits-btn"
                 variant="ghost"
                 size="sm"
-                onclick={() => copyErrorDetails()}
+                on:click={() =>
+copyErrorDetails()}
                 aria-label="Copy error details"
               >
                 <Copy class="w-4 h-4" />
-              </button>
+</Button>
             </div>
             <div class="mx-auto px-4 max-w-7xl">
               <div>Severity: {currentError.severity}</div>
@@ -223,7 +226,8 @@ https://svelte.dev/e/attribute_duplicate -->
             size="sm"
             variant="outline"
             class={getButtonClass(currentError.severity)}
-            onclick={() => retryAction()}
+            on:click={() =>
+retryAction()}
             disabled={retryInProgress}
             aria-label="Retry action"
           >
@@ -233,14 +237,15 @@ https://svelte.dev/e/attribute_duplicate -->
               <RefreshCw class="mx-auto px-4 max-w-7xl" />
             {/if}
             Retry
-          </button>
+</Button>
         {/if}
 
         {#if currentError.showDetails}
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            onclick={() => (showDetails = !showDetails)}
+            on:click={() =>
+(showDetails = !showDetails)}
             aria-label="Toggle error details"
           >
             {#if showDetails}
@@ -248,17 +253,18 @@ https://svelte.dev/e/attribute_duplicate -->
             {:else}
               <ChevronDown class="mx-auto px-4 max-w-7xl" />
             {/if}
-          </button>
+</Button>
         {/if}
 
         <Button class="bits-btn"
           size="sm"
           variant="ghost"
-          onclick={() => clearError()}
+          on:click={() =>
+clearError()}
           aria-label="Dismiss error"
         >
           <X class="mx-auto px-4 max-w-7xl" />
-        </button>
+</Button>
       </div>
     </div>
   {:else}
@@ -296,13 +302,14 @@ https://svelte.dev/e/attribute_duplicate -->
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    onclick={() => copyErrorDetails()}
+                    on:click={() =>
+copyErrorDetails()}
                     class="mx-auto px-4 max-w-7xl"
                     aria-label="Copy error details"
                   >
                     <Copy class="mx-auto px-4 max-w-7xl" />
                     Copy
-                  </button>
+</Button>
                 </div>
                 <div class="mx-auto px-4 max-w-7xl">
                   <div>Severity: {currentError.severity}</div>
@@ -319,19 +326,21 @@ https://svelte.dev/e/attribute_duplicate -->
             <Button class="bits-btn"
               variant="outline"
               size="sm"
-              onclick={() => reportError()}
+              on:click={() =>
+reportError()}
               class="mx-auto px-4 max-w-7xl"
             >
               <Bug class="mx-auto px-4 max-w-7xl" />
               Report Issue
-            </button>
+</Button>
           {/if}
 
           {#if currentError.showDetails}
             <Button class="bits-btn"
               variant="outline"
               size="sm"
-              onclick={() => (showDetails = !showDetails)}
+              on:click={() =>
+(showDetails = !showDetails)}
               class="mx-auto px-4 max-w-7xl"
             >
               {#if showDetails}
@@ -341,13 +350,14 @@ https://svelte.dev/e/attribute_duplicate -->
                 <ChevronDown class="mx-auto px-4 max-w-7xl" />
                 Show Details
               {/if}
-            </button>
+</Button>
           {/if}
 
           {#if currentError.canRetry}
             <Button
               class={`gap-2 ${getButtonClass(currentError.severity)}`}
-              onclick={() => retryAction()}
+              on:click={() =>
+retryAction()}
               disabled={retryInProgress}
             >
               {#if retryInProgress}
@@ -357,20 +367,20 @@ https://svelte.dev/e/attribute_duplicate -->
                 <RefreshCw class="mx-auto px-4 max-w-7xl" />
                 Retry
               {/if}
-            </button>
+</Button>
           {/if}
 
           <Button class="bits-btn"
             variant={currentError.canRetry ? "outline" : "default"}
-            onclick={() => clearError()}
+            on:click={() =>
+clearError()}
           >
             {currentError.canRetry ? "Cancel" : "Close"}
-          </button>
+</Button>
         </div>
       </div>
     </div>
   {/if}
-{/if}
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 

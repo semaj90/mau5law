@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types.js';
+import type { PageServerLoad, Actions } from './$types.js.js';
 import { fail, redirect } from "@sveltejs/kit";
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -169,7 +169,7 @@ export const actions: Actions = {
         incidentDate: form.data.incidentDate || null,
         location: form.data.location || null,
         jurisdiction: form.data.jurisdiction || null,
-        metadata: {},
+        metadata: Record<string, any>,
         created_at: new Date(),
         updated_at: new Date()
       };
@@ -238,7 +238,7 @@ export const actions: Actions = {
         type: form.data.evidenceType, // another alias
         tags: form.data.tags ? form.data.tags.split(',').map(t => t.trim()) : [],
         createdBy: user.id,
-        metadata: {},
+        metadata: Record<string, any>,
         collectedAt: new Date(),
         created_at: new Date(),
         updated_at: new Date()

@@ -195,8 +195,7 @@ https://svelte.dev/e/tag_invalid_name -->
     <div class="flex gap-4 mb-4">
       <ModernButton
       <ModernButton
-  on:click={runCacheDemo}
-        disabled={cacheDemo.loading}
+  on:click={disabled}
         class="bg-blue-600 hover:bg-blue-700"
       >
         {cacheDemo.loading ? '⚡ Running...' : '🔍 Run Graph Query'}

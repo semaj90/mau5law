@@ -76,15 +76,9 @@ https://svelte.dev/e/js_parse_error -->
   oncomplete
   }: Props = $props();
   let overlayEl = $state<HTMLElement;
-  let autoProgressTimer: number | undefined;
-  let isPlaying >(autoProgress);
+  let autoProgressTimer: number | undefinedlet isPlaying>(null)(autoProgress);
   let targetElement = $state<Element | null >(null);
-  let highlightBox = $state<{
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-  } | null >(null);
+  let highlightBox = $state(null);
 
   // Reactive effect replacement for $effect
   // TODO: Convert to $derived: if (open && steps.length > 0) {
@@ -270,7 +264,7 @@ https://svelte.dev/e/js_parse_error -->
       class="w-4 h-4"
       role="button"
       tabindex={0}
-      onclick={() => closeOnboarding()}
+      on:click={() => closeOnboarding()}
       keydown={(e: KeyboardEvent) => {
         if (e.key === "Escape") {
           closeOnboarding();
@@ -313,7 +307,8 @@ https://svelte.dev/e/js_parse_error -->
               class="bits-btn w-4 h-4"
               variant="ghost"
               size="sm"
-              onclick={() => toggleAutoProgress()}
+              on:click={() =>
+toggleAutoProgress()}
               aria-label={isPlaying
                 ? "Pause auto-progress"
                 : "Play auto-progress"}
@@ -323,17 +318,18 @@ https://svelte.dev/e/js_parse_error -->
               {:else}
                 <Play class="w-4 h-4" />
               {/if}
-            </button>
+</Button>
           {/if}
 
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={() => closeOnboarding()}
+            on:click={() =>
+closeOnboarding()}
             aria-label="Close onboarding"
           >
             <X class="w-4 h-4" />
-          </button>
+</Button>
         </div>
       </div>
 
@@ -398,10 +394,11 @@ https://svelte.dev/e/js_parse_error -->
       <div class="w-4 h-4">
         <div class="w-4 h-4">
           {#if allowSkip}
-            <Button class="bits-btn" variant="ghost" size="sm" onclick={() => skipOnboarding()}>
+            <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+skipOnboarding()}>
               <SkipForward class="w-4 h-4" />
               Skip Tour
-            </button>
+</Button>
           {/if}
         </div>
 
@@ -413,7 +410,7 @@ https://svelte.dev/e/js_parse_error -->
                   class="w-4 h-4"
                   class:active={index === currentStep}
                   class:completed={index < currentStep}
-                  onclick={() => goToStep(index)}
+                  on:click={() => goToStep(index)}
                   aria-label={"Go to step " + (index + 1) + ": " + step.title}
                 >
                   {#if index < currentStep}
@@ -421,7 +418,7 @@ https://svelte.dev/e/js_parse_error -->
                   {:else}
                     <span class="w-4 h-4">{index + 1}</span>
                   {/if}
-                </button>
+</Button>
               {/each}
             </div>
           {/if}
@@ -431,14 +428,16 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={() => previousStep()}
+            on:click={() =>
+previousStep()}
             disabled={currentStep === 0}
           >
             <ArrowLeft class="w-4 h-4" />
             Back
-          </button>
+</Button>
 
-          <Button class="bits-btn" onclick={() => nextStep()} size="sm">
+          <Button class="bits-btn" on:click={() =>
+nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
               <Check class="w-4 h-4" />
               Complete
@@ -446,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
               Next
               <ArrowRight class="w-4 h-4" />
             {/if}
-          </button>
+</Button>
         </div>
       </div>
     </div>

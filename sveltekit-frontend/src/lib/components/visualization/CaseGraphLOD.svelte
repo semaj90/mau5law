@@ -82,7 +82,7 @@
   }: CaseGraphLODProps = $props();
 
   // Svelte 5 state management
-  let canvasElement = $state<HTMLCanvasElement>();
+  let canvasElement: HTMLCanvasElement = $state(undefined as any);
   let gpuDevice = $state<GPUDevice | null>(null);
   let isWebGPUReady = $state(false);
   
@@ -704,7 +704,7 @@
   <!-- Graph Controls -->
   <div class="graph-controls">
     <div class="view-controls">
-      <LoadingButton onclick={handleZoomIn} variant="outline" size="sm">
+      <LoadingButton on:click={handleZoomIn} variant="outline" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
@@ -712,11 +712,11 @@
         {Math.round(zoomLevel * 100)}%
       </span>
       
-      <LoadingButton onclick={handleZoomOut} variant="outline" size="sm">
+      <LoadingButton on:click={handleZoomOut} variant="outline" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={handleResetView} variant="outline" size="sm">
+      <LoadingButton on:click={handleResetView} variant="outline" size="sm">
         {#snippet children()}<RotateCcw class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
@@ -725,7 +725,7 @@
       <select 
         class="nes-select"
         bind:value={currentLOD}
-        onchange={handleLODChange}
+        on:change={handleLODChange}
       >
         {#each Object.entries(lodConfig) as [level, config]}
           <option value={parseInt(level)}>
@@ -755,7 +755,7 @@
                 <input 
                   type="checkbox" 
                   bind:checked={nodeTypeFilters[nodeType as keyof typeof nodeTypeFilters]}
-                  onchange={handleFilterChange}
+                  on:change={handleFilterChange}
                 />
                 <span>{nodeType}</span>
               </label>
@@ -772,7 +772,7 @@
               max="1" 
               step="0.1"
               bind:value={importanceThreshold}
-              onchange={handleFilterChange}
+              on:change={handleFilterChange}
             />
           </div>
         </div>
@@ -787,7 +787,7 @@
       width="800"
       height="600"
       class="graph-canvas"
-      onclick={handleCanvasClick}
+      on:click={handleCanvasClick}
       onmousemove={handleCanvasHover}
     ></canvas>
     

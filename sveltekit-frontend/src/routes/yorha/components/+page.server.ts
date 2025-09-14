@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ url, fetch }) => {
   try {
@@ -196,9 +196,9 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
     console.error('Error loading YoRHa components data:', error);
     
     return {
-      specs: {},
+      specs: Record<string, any>,
       gallery: { categories: [], components: [], totalComponents: 0, previewModes: [] },
-      codeSnippets: {},
+      codeSnippets: Record<string, any>,
       initialLoad: false,
       timestamp: new Date().toISOString(),
       error: 'Failed to load components data'

@@ -113,9 +113,9 @@
         }
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        recommendations = data.recommendations || [];
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        recommendations = (data as { recommendations?: any; context?: any }).recommendations || [];
       }
     } catch (error) {
       console.error('Error loading recommendations:', error);
@@ -133,9 +133,9 @@
         }
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        contextData = data.context;
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        contextData = (data as { recommendations?: any; context?: any }).context;
       }
     } catch (error) {
       console.error('Error loading context:', error);
@@ -163,11 +163,11 @@
         body: JSON.stringify(request)
       });
       
-      if (response.ok) {
-        const result = await response.json();
-        recommendations = result.recommendations || [];
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        recommendations = (result as { recommendations?: any }).recommendations || [];
       } else {
-        throw new Error(`Generation failed: ${response.statusText}`);
+        throw new Error(`Generation failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
       }
     } catch (error) {
       console.error('Error generating recommendations:', error);
@@ -185,7 +185,7 @@
         }
       });
       
-      if (response.ok) {
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         // Refresh recommendations
         await loadExistingRecommendations();
       }
@@ -284,7 +284,7 @@
       <p class="engine-subtitle">Intelligent suggestions for case strategy and next actions</p>
     </div>
     <div class="header-actions">
-      <button class="nes-btn" on:click={generateRecommendations} disabled={isGenerating}>
+      <button class="nes-btn" on:click={disabled}>
         {isGenerating ? 'Generating...' : 'Generate Recommendations'}
       </button>
     </div>
@@ -297,7 +297,7 @@
       <div class="context-controls">
         <div class="control-group">
           <label for="context-type">Context Type:</label>
-          <select id="context-type" bind:value={contextType} onchange={loadContextData} class="control-select">
+          <select id="context-type" bind:value={contextType} on:change={loadContextData} class="control-select">
             <option value="case">Case</option>
             <option value="evidence">Evidence</option>
             <option value="investigation">Investigation</option>
@@ -312,7 +312,7 @@
             type="text"
             placeholder="Enter case/evidence ID..."
             bind:value={contextId}
-            onblur={loadContextData}
+            on:blur={loadContextData}
             class="control-input"
           />
         </div>
@@ -383,12 +383,12 @@
     {:else}
       {#each filteredRecommendations as recommendation}
         <div.Root class="recommendation-nier-bits-card">
-          <div.Header>
+          <Card.Header>
             <div class="recommendation-header">
               <div class="recommendation-title-section">
                 <div class="recommendation-icon">{getCategoryIcon(recommendation.category)}</div>
                 <div>
-                  <div.Title class="recommendation-title">{recommendation.title}</Card.Title>
+                  <div.Title class="recommendation-title">{recommendation.title}</div.Title>
                   <div class="recommendation-badges">
                     <span class="category-badge {getCategoryColor(recommendation.category)}">
                       {recommendation.category.replace('_', ' ')}
@@ -408,10 +408,10 @@
             </div>
             <div.Description class="recommendation-description">
               {recommendation.description}
-            </Card.Description>
+            </div.Description>
           </Card.Header>
           
-          <div.Content>
+          <Card.Content>
             <div class="recommendation-stats">
               <div class="stat-grid">
                 <div class="stat">
@@ -482,7 +482,7 @@
                 Apply
               </button>
             </div>
-          </Card.Footer>
+          </div.Footer>
         </Card.Root>
       {/each}
     {/if}

@@ -125,11 +125,7 @@ export class LegalAIWebGPUBridge {
    * Batch process multiple legal documents with optimal resource management
    */
   async batchProcessLegalDocuments(
-    documents: Array<{
-      embeddings: Float32Array | number[] | ArrayBuffer;
-      type?: LegalDocumentProcessingOptions['documentType'];
-      priority?: LegalDocumentProcessingOptions['priority'];
-    }>,
+    documents: Array<,
     globalOptions: LegalDocumentProcessingOptions = {}
   ): Promise<LegalAIProcessingResult[]> {
     if (!this.isInitialized || !this.uploader) {
@@ -180,12 +176,7 @@ export class LegalAIWebGPUBridge {
       topK?: number;
       threshold?: number;
     } = {}
-  ): Promise<{
-    queryBuffer: GPUBuffer;
-    corpusBuffers: GPUBuffer[];
-    similarities?: Float32Array;
-    processingStats: any;
-  }> {
+  ): Promise<any> {
     if (!this.isInitialized || !this.uploader) {
       throw new Error('Legal AI WebGPU Bridge not initialized');
     }
@@ -340,7 +331,7 @@ export namespace LegalAIIntegration {
         enableCaching: true
       });
 
-      return result.buffer;
+      return (result as { buffer?: any }).buffer;
     } catch (error) {
       console.error('Legal AI processing failed, falling back to CPU:', error);
       return toFloat32Array(embeddings);

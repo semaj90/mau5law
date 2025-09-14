@@ -129,7 +129,7 @@
             <div class="flex flex-wrap gap-3">
               <button
                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                onclick={runDemoSearch}
+                on:click={runDemoSearch}
               >
                 <Zap class="mr-2 h-4 w-4" />
                 Try Demo Search
@@ -141,7 +141,7 @@
                     ? 'border-green-500 text-green-700 bg-green-50 hover:bg-green-100' 
                     : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
                 }`}
-                onclick={toggleVectorSearch}
+                on:click={toggleVectorSearch}
               >
                 <Database class="mr-2 h-4 w-4" />
                 Vector Search: {demoConfig.enableVectorSearch ? 'ON' : 'OFF'}
@@ -153,7 +153,7 @@
                     ? 'border-purple-500 text-purple-700 bg-purple-50 hover:bg-purple-100'
                     : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
                 }`}
-                onclick={toggleAISuggestions}
+                on:click={toggleAISuggestions}
               >
                 <Zap class="mr-2 h-4 w-4" />
                 AI Suggestions: {demoConfig.aiSuggestions ? 'ON' : 'OFF'}
@@ -246,8 +246,7 @@
                     <input
                       type="checkbox"
                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      checked={demoConfig.categories.includes(category)}
-                      change={(e) => {
+                      checked={demoConfig.categories.includes(category)} on:change={(e) => {
                         if (e.target.checked) {
                           demoConfig.categories = [...demoConfig.categories, category];
                         } else {
@@ -303,12 +302,12 @@
               {#each searchHistory as result}
                 <div class="p-3 bg-gray-50 rounded-lg">
                   <div class="flex items-center justify-between">
-                    <h4 class="font-medium text-gray-900 text-sm truncate">{result.title}</h4>
-                    <span class="text-xs text-gray-500 ml-2">{result.type}</span>
+                    <h4 class="font-medium text-gray-900 text-sm truncate">{(result as { title?: any; type?: any; score?: any }).title}</h4>
+                    <span class="text-xs text-gray-500 ml-2">{(result as { title?: any; type?: any; score?: any }).type}</span>
                   </div>
-                  {#if result.score}
+                  {#if (result as { title?: any; type?: any; score?: any }).score}
                     <div class="text-xs text-gray-500 mt-1">
-                      Score: {Math.round(result.score * 100)}%
+                      Score: {Math.round((result as { title?: any; type?: any; score?: any }).score * 100)}%
                     </div>
                   {/if}
                 </div>
@@ -332,7 +331,7 @@
                     ? 'bg-blue-50 text-blue-700 border border-blue-200'
                     : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                 }`}
-                onclick={() => {
+                on:click={() => {
                   const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
                   if (searchInput) {
                     searchInput.value = searchTerm;

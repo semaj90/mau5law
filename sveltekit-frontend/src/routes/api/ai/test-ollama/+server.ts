@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 import { json } from "@sveltejs/kit";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const GET = (async (): Promise<any> => {

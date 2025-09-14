@@ -79,12 +79,7 @@ export class SelfOrganizingMap {
 }
 
 export interface ClusterResultDetails {
-  clusters: Array<{
-    id: string;
-    center: number[];
-    points: any[];
-    confidence: number;
-  }>;
+  clusters: Array<any>;
   metrics: {
     silhouetteScore: number;
     inertia: number;

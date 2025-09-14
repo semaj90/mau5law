@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // src/routes/api/vectors/sync/+server.ts
 // Automatic vector synchronization to Qdrant after CUDA processing
@@ -14,7 +14,7 @@ import { eq } from 'drizzle-orm';
 
 // Initialize connections
 const sql = postgres(
-  import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'
+  import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db'
 );
 const db = drizzle(sql);
 

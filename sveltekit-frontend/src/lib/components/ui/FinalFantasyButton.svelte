@@ -55,7 +55,7 @@
          shadow-lg hover:shadow-xl
          text-shadow-md"
   {disabled}
-  onclick={handleClick}
+  on:click={handleClick}
 >
   <!-- FF-Style Button Corners -->
   <div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/60"></div>

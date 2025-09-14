@@ -64,8 +64,8 @@
   <!-- Main Toggle Button -->
   <div
     class="toggle-container"
-    onmouseenter={() => showTooltip = true}
-    onmouseleave={() => showTooltip = false}
+    on:mouseenter={() => showTooltip = true}
+    on:mouseleave={() => showTooltip = false}
     role="button"
     tabindex="0"
   >
@@ -73,14 +73,14 @@
       variant={enabled ? "crimson" : "nier"}
       size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
       disabled={loading || (!premium && !enabled)}
-      onclick={handleToggle}
+      on:click={handleToggle}
       class={cn(
         "thinking-toggle-btn transition-all duration-300",
         enabled && "animate-crimson-glow",
         loading && "animate-nier-pulse"
       )}
     >
-      <div class="icon-container">
+<div class="icon-container">
         {#if loading}
           <div class="loading-spinner nier-glow"></div>
         {:else if enabled}
@@ -103,19 +103,19 @@
       {#if premium && enabled}
         <Crown size={12} class="ml-2 text-harvard-gold opacity-80" />
       {/if}
-    </button>
+</Button>
 
     <!-- Configuration Button -->
     {#if premium}
       <Button
         variant="ghost"
         size="sm"
-        onclick={handleConfigure}
+        on:click={handleConfigure}
         class="config-btn ml-2 bits-btn bits-btn"
         disabled={loading}
       >
-        <Settings size={14} />
-      </button>
+<Settings size={14} />
+</Button>
     {/if}
 
     <!-- Info Button for non-premium users -->
@@ -123,11 +123,11 @@
       <Button
         variant="ghost"
         size="sm"
-        onclick={handleUpgrade}
+        on:click={handleUpgrade}
         class="upgrade-btn ml-2 bits-btn bits-btn"
       >
-        <Info size={14} class="text-harvard-gold" />
-      </button>
+<Info size={14} class="text-harvard-gold" />
+</Button>
     {/if}
 
     <!-- Tooltip -->
@@ -246,12 +246,13 @@
       </div>
 
       <div class="config-actions">
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => showConfig = false}>
+        <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+showConfig = false}>
           Cancel
-        </button>
+</Button>
         <Button class="bits-btn" variant="crimson" size="sm">
-          Save Configuration
-        </button>
+Save Configuration
+</Button>
       </div>
     </div>
   {/if}
@@ -268,9 +269,9 @@
           <strong>Unlock Advanced AI Reasoning</strong>
           <p>Get step-by-step legal analysis with transparent thinking process</p>
         </div>
-        <Button class="bits-btn" variant="gold" size="sm" onclick={handleUpgrade}>
-          Upgrade Now
-        </button>
+        <Button class="bits-btn" variant="gold" size="sm" on:click={handleUpgrade}>
+Upgrade Now
+</Button>
       </div>
     </div>
   {/if}

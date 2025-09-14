@@ -23,9 +23,7 @@ https://svelte.dev/e/expected_token -->
 
   let uploads: DocumentUpload[] = $state([]);
   let isDragging = $state(false);
-  let fileInput = $state<HTMLInputElement;
-
-  const API_BASE >('http://localhost:8081/api');
+  let fileInput = $state<HTMLInputElementconst API_BASE | null>(null)('http://localhost:8081/api');
   const MAX_LOCAL_STORAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
   async function simulateUpload(file: File): Promise<void> {
@@ -72,9 +70,8 @@ https://svelte.dev/e/expected_token -->
         embeddings,
         processedAt: new Date().toISOString()
       };
-  let localStorageKey = $state<string | undefined;
-      if (file.size < MAX_LOCAL_STORAGE_SIZE) {
-        localStorageKey >(`doc_${uploadId}`);
+  let localStorageKey = $state<string | undefinedif (file.size < MAX_LOCAL_STORAGE_SIZE) {
+        localStorageKey>(null)(`doc_${uploadId}`);
         localStorage.setItem(localStorageKey, JSON.stringify(processedData));
       }
 
@@ -104,12 +101,12 @@ https://svelte.dev/e/expected_token -->
         body: formData
       });
 
-      if (!response.ok) {
-        throw new Error(`OCR processing failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`OCR processing failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const result = await response.json();
-      return result.extracted_text || 'PDF text extraction failed';
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      return (result as { extracted_text?: any; summary?: any; embedding?: any }).extracted_text || 'PDF text extraction failed';
     } else if (file.type === 'text/plain') {
       return await file.text();
     } else {
@@ -129,12 +126,12 @@ https://svelte.dev/e/expected_token -->
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Summarization failed: ${response.statusText}`);
+    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`Summarization failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
 
-    const result = await response.json();
-    return result.summary || 'Summary generation failed';
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+    return (result as { extracted_text?: any; summary?: any; embedding?: any }).summary || 'Summary generation failed';
   }
 
   async function generateEmbeddings(text: string): Promise<number[]> {
@@ -146,9 +143,9 @@ https://svelte.dev/e/expected_token -->
       body: JSON.stringify({ text: text.substring(0, 8000) }) // Limit text length
     });
 
-    if (response.ok) {
-      const result = await response.json();
-      return result.embedding || [];
+    if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
+      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      return (result as { extracted_text?: any; summary?: any; embedding?: any }).embedding || [];
     }
 
     // Fallback: generate mock 384-dimensional embedding
@@ -249,8 +246,8 @@ https://svelte.dev/e/expected_token -->
     class="upload-area border-2 border-dashed border-gray-600 rounded-lg p-8 text-center transition-colors duration-200"
     class:border-green-400={isDragging}
     class:bg-green-400={isDragging && 'opacity-10'}
-    ondrop={handleDrop}
-    role="region" aria-label="Drop zone" ondragover={(e) => e.preventDefault()}
+    on:drop={handleDrop}
+    role="region" aria-label="Drop zone" on:dragover={(e) => e.preventDefault()}
     on:dragenter={() => isDragging = true}
     on:dragleave={() => isDragging = false}
   >
@@ -262,11 +259,11 @@ https://svelte.dev/e/expected_token -->
       accept=".pdf,.txt,.json"
       multiple
       class="hidden"
-      onchange={handleFileInput}
+      on:change={handleFileInput}
     />
     <button 
       class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
-      onclick={() => fileInput.click()}
+      on:click={() => fileInput.click()}
     >
       Select Files
     </button>
@@ -293,7 +290,7 @@ https://svelte.dev/e/expected_token -->
         </div>
         <button 
           class="text-gray-400 hover:text-red-400 transition-colors"
-          onclick={() => removeUpload(upload.id)}
+          on:click={() => removeUpload(upload.id)}
         >
           ✕
         </button>
@@ -355,7 +352,7 @@ https://svelte.dev/e/expected_token -->
           <div class="flex space-x-3">
             <button 
               class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
-              onclick={() => downloadProcessedData(upload)}
+              on:click={() => downloadProcessedData(upload)}
             >
               📥 Download JSON
             </button>

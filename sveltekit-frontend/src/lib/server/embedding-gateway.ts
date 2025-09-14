@@ -1,5 +1,5 @@
 import type { BackendId } from '$lib/types/pipeline';
-import { embedText as embedWithService, getEmbeddingServiceStatus } from './ai/embedder.js';
+import { embedText as embedWithService, getEmbeddingServiceStatus } from './ai/embedder.js.js';
 
 export interface EmbedGatewayOptions {
   model?: string;
@@ -19,7 +19,7 @@ export async function getEmbeddingViaGate(
   opts: EmbedGatewayOptions = {}
 ): Promise<EmbedGatewayResult> {
   const model =
-    opts.model ||
+    opts?.model || "unknown" // @ts-ignore - Model property access ||
     process.env.EMBED_MODEL ||
     process.env.PUBLIC_EMBED_MODEL ||
     process.env.EMBED_MODEL_DEFAULT ||
@@ -121,14 +121,14 @@ export async function getEmbeddingViaGate(
 }
 
 // Simple batch wrapper to align with sample endpoint usage
-export async function embedText(fetchFn: typeof fetch, texts: string[], model?: string): Promise<{ embeddings: number[][]; backend: BackendId; model: string }>{
+export async function embedText(fetchFn: typeof fetch, texts: string[], model?: string): Promise<any> {
   let backend: BackendId = 'unknown';
   let lastModel = model || process.env.EMBED_MODEL || process.env.PUBLIC_EMBED_MODEL || 'nomic-embed-text';
   const out: number[][] = [];
   for (const t of texts) {
     const res = await getEmbeddingViaGate(fetchFn, t, { model });
     backend = res.backend; // last write wins; heterogeneous batches not expected here
-    lastModel = res.model;
+    lastModel = res?.model || "unknown" // @ts-ignore - Model property access;
     out.push(res.embedding);
   }
   return { embeddings: out, backend, model: lastModel };

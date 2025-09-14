@@ -8,7 +8,7 @@ import * as crypto from "crypto";
  * Coordinates multiple state machines and manages global application state
  */
 import { createMachine, assign, fromPromise, spawn, type ActorRefFrom } from "xstate";
-import { legalCaseMachine } from './legal-case-machine';
+import { legalCaseMachine } from './legal-case-machine.js';
 
 // Global application context
 export interface AppContext {
@@ -35,21 +35,13 @@ export interface AppContext {
 
   // Navigation
   currentRoute: string;
-  breadcrumbs: Array<{ label: string; path: string }>;
+  breadcrumbs: Array<any>;
 
   // Child machines
   legalCaseMachine?: ActorRefFrom<typeof legalCaseMachine>;
 
   // Global notifications
-  notifications: Array<{
-    id: string;
-    type: 'success' | 'error' | 'warning' | 'info';
-    title: string;
-    message: string;
-    timestamp: Date;
-    persistent?: boolean;
-    actions?: Array<{ label: string; action: string }>;
-  }>;
+  notifications: Array<any>>;
 
   // Global loading states
   globalLoading: boolean;
@@ -87,12 +79,7 @@ export interface AppContext {
 
   // Offline state
   isOnline: boolean;
-  offlineQueue: Array<{
-    id: string;
-    action: string;
-    data: any;
-    timestamp: Date;
-  }>;
+  offlineQueue: Array<any>;
 
   // WebSocket connection
   websocket: {
@@ -194,8 +181,8 @@ const logoutService = fromPromise(async () => {
 const initializeAppService = fromPromise(async () => {
   // Load user preferences, feature flags, etc.
   const [userPrefs, features] = await Promise.all([
-    fetch('/api/user/preferences').then((r: any) => r.ok ? r.json() : {}),
-    fetch('/api/features').then((r: any) => r.ok ? r.json() : {})
+    fetch('/api/user/preferences').then((r: any) => r.ok ? r.json() : Record<string, any>),
+    fetch('/api/features').then((r: any) => r.ok ? r.json() : Record<string, any>)
   ]);
 
   return { userPrefs, features };
@@ -248,7 +235,7 @@ const addNotification = assign({
       type: 'info' as const,
       title: '',
       message: '',
-      ...('notification' in event ? event.notification : {})
+      ...('notification' in event ? event.notification : Record<string, any>)
     }
   ]
 });
@@ -286,7 +273,7 @@ const clearGlobalLoading = assign({
 const updateSettings = assign({
   settings: ({ context, event }: { context: AppContext; event: AppEvents }) => ({
     ...context.settings,
-    ...('settings' in event ? event.settings : {})
+    ...('settings' in event ? event.settings : Record<string, any>)
   })
 });
 
@@ -355,8 +342,8 @@ const navigate = assign({
 export const appMachine = createMachine({
   id: 'app',
   types: {
-    context: {} as AppContext,
-    events: {} as AppEvents,
+    context: Record<string, any> as AppContext,
+    events: Record<string, any> as AppEvents,
   },
   context: {
     user: null,
@@ -371,11 +358,11 @@ export const appMachine = createMachine({
     error: null,
     performance: {
       pageLoadTime: 0,
-      apiResponseTimes: {},
+      apiResponseTimes: Record<string, any>,
       memoryUsage: 0,
       cacheHitRate: 0
     },
-    features: {},
+    features: Record<string, any>,
     settings: {
       autoSave: true,
       autoSaveInterval: 30000,

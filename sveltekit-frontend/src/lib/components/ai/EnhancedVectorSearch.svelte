@@ -53,23 +53,24 @@ https://svelte.dev/e/js_parse_error -->
   import { derived, get, writable } from "svelte/store";
 
   // Props
-  let {
-    caseId = "",
+  let { caseId = "",
     userId = "",
     maxResults = 20,
     enableAnalytics = true,
     enableFilters = true,
     showPreview = true,
     class: className = "",
-  } = $props();
+   }: { caseId = "",
+    userId = "",
+    maxResults = 20,
+    enableAnalytics = true,
+    enableFilters = true,
+    showPreview = true,
+    class: className = "",
+  : any } = $props();
 
   // Event dispatcher
-  const dispatch = createEventDispatcher<{
-    search: { query: string; results: SearchResult[] };
-    select: { result: SearchResult };
-    filter: { filters: SearchFilters };
-    analytics: { event: string; data: any };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Types
   interface SearchResult {
@@ -93,11 +94,7 @@ https://svelte.dev/e/js_parse_error -->
     };
     highlights: string[];
     aiSummary?: string;
-    entities?: Array<{
-      text: string;
-      type: string;
-      confidence: number;
-    }>;
+    entities?: Array;
   }
 
   interface SearchFilters {
@@ -117,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
   interface SearchAnalytics {
     totalSearches: number;
     averageResultCount: number;
-    topQueries: Array<{ query: string; count: number }>;
+    topQueries: Array;
     averageSimilarity: number;
     responseTime: number;
     clickThroughRate: number;
@@ -168,14 +165,14 @@ https://svelte.dev/e/js_parse_error -->
   const averageSimilarity = derived(searchResults, ($results) => {
     if ($results.length === 0) return 0;
     return (
-      $results.reduce((acc, result) => acc + result.similarity, 0) /
+      $results.reduce((acc, result) => acc + (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).similarity, 0) /
       $results.length
     );
   });
   const topDocumentTypes = derived(searchResults, ($results) => {
     const types = new Map<string, number>();
     $results.forEach((result) => {
-      const type = result.metadata.documentType || "unknown";
+      const type = (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.documentType || "unknown";
       types.set(type, (types.get(type) || 0) + 1);
     });
     return Array.from(types.entries())
@@ -250,19 +247,19 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify(searchRequest),
       });
 
-      if (!response.ok) {
-        throw new Error(`Search failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const data = await response.json();
+      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
 
       // Process results
-      const results: SearchResult[] = data.results.map(
+      const results: SearchResult[] = (data as { results?: any; analytics?: any; createdAt?: any }).results.map(
         (result: any, index: number) => ({
           ...result,
           rank: index + 1,
-          highlights: result.highlights || [],
-          snippet: result.snippet || result.content.substring(0, 200) + "...",
+          highlights: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).highlights || [],
+          snippet: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).snippet || (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).content.substring(0, 200) + "...",
         })
       );
 
@@ -278,7 +275,7 @@ https://svelte.dev/e/js_parse_error -->
       });
 
       // Update analytics
-      if (enableAnalytics && data.analytics) {
+      if (enableAnalytics && (data as { results?: any; analytics?: any; createdAt?: any }).analytics) {
         searchAnalytics.update((analytics) => ({
           ...analytics,
           totalSearches: analytics.totalSearches + 1,
@@ -287,7 +284,7 @@ https://svelte.dev/e/js_parse_error -->
           ),
           responseTime: Date.now() - startTime,
           performanceMetrics:
-            data.analytics.performanceMetrics || analytics.performanceMetrics,
+            (data as { results?: any; analytics?: any; createdAt?: any }).analytics.performanceMetrics || analytics.performanceMetrics,
           averageSimilarity: get(averageSimilarity),
         }));
       }
@@ -318,8 +315,8 @@ https://svelte.dev/e/js_parse_error -->
       dispatch("analytics", {
         event: "result_clicked",
         data: {
-          resultId: result.id,
-          rank: result.rank,
+          resultId: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).id,
+          rank: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).rank,
           query: get(searchQuery),
         },
       });
@@ -459,8 +456,8 @@ https://svelte.dev/e/js_parse_error -->
   async function loadAnalytics() {
     try {
       const response = await fetch("/api/search/analytics");
-      if (response.ok) {
-        const data = await response.json();
+      if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
         searchAnalytics.set(data);
       }
     } catch (error) {
@@ -490,7 +487,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <div class="search-actions">
         <button class="nes-btn" 
-          onclick={() => performSearch()}
+          on:click={() => performSearch()}
           disabled={$isSearching || !$searchQuery.trim()}
           class="bits-btn search-button"
         >
@@ -506,7 +503,8 @@ https://svelte.dev/e/js_parse_error -->
         {#if enableFilters}
           <Button class="bits-btn"
             variant="outline"
-            onclick={() => showFilters.update((s) => !s)}
+            on:click={() =>
+showFilters.update((s) => !s)}
             class="filter-button"
           >
             <Filter class="mr-2" size={16} />
@@ -516,17 +514,18 @@ https://svelte.dev/e/js_parse_error -->
             {:else}
               <ChevronDown class="ml-2" size={16} />
             {/if}
-          </button>
+
         {/if}
 
         {#if enableAnalytics}
           <Button class="bits-btn"
             variant="outline"
-            onclick={() => showAnalytics.update((s) => !s)}
+            on:click={() =>
+showAnalytics.update((s) => !s)}
           >
             <BarChart3 class="mr-2" size={16} />
             Analytics
-          </button>
+
         {/if}
       </div>
     </div>
@@ -540,7 +539,8 @@ https://svelte.dev/e/js_parse_error -->
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              onclick={() => {
+              on:click={() =>
+{
                 searchQuery.set(historyItem);
                 performSearch(historyItem);
               }}
@@ -548,7 +548,7 @@ https://svelte.dev/e/js_parse_error -->
             >
               <Clock class="mr-1" size={12} />
               {historyItem}
-            </button>
+
           {/each}
         </div>
       </div>
@@ -557,16 +557,16 @@ https://svelte.dev/e/js_parse_error -->
 
   <!-- Advanced Filters -->
   {#if $showFilters && enableFilters}
-    <NesCard class="filters-panel">
+    <div class="filters-panel nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           <span>Advanced Filters</span>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={resetFilters}>
-            Reset
-          </button>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={resetFilters}>
+Reset
+
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <div class="filter-grid">
           <!-- Document Types -->
           <div class="filter-group">
@@ -576,8 +576,7 @@ https://svelte.dev/e/js_parse_error -->
                 <Checkbox
                   bind:checked={
                     $searchFilters.documentTypes.includes(type.value
-                  }
-                  change={() => {
+                  } on:change={() => {
                     searchFilters.update((f) => {
                       if (f.documentTypes.includes(type.value)) {
                         f.documentTypes = f.documentTypes.filter(
@@ -604,8 +603,7 @@ https://svelte.dev/e/js_parse_error -->
                 <Checkbox
                   bind:checked={
                     $searchFilters.jurisdictions.includes(jurisdiction.value
-                  }
-                  change={() => {
+                  } on:change={() => {
                     searchFilters.update((f) => {
                       if (f.jurisdictions.includes(jurisdiction.value)) {
                         f.jurisdictions = f.jurisdictions.filter(
@@ -659,9 +657,11 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
 
-        <Button onclick={applyFilters} class="w-full bits-btn bits-btn">Apply Filters</button>
+        <Button on:click={applyFilters} class="w-full bits-btn bits-btn">
+Apply Filters
+
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Search Results -->
@@ -695,29 +695,29 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Results List -->
       <div class="results-list">
-        {#each $searchResults as result (result.id)}
-          <NesCard class="result-item" onclick={() => handleResultClick(result)}>
-            <div class="yorha-panel-content" class="result-content">
+        {#each $searchResults as result ((result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).id)}
+          <div class="result-item nes-container"> handleResultClick(result)}>
+            <div class="yorha-panel-content result-content">
               <!-- Result Header -->
               <div class="result-header">
                 <div class="result-title-section">
-                  <h4 class="result-title">{result.title}</h4>
+                  <h4 class="result-title">{(result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).title}</h4>
                   <div class="result-meta">
                     <Badge
                       variant={getDocumentTypeColor(
-                        result.metadata.documentType
+                        (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.documentType
                       )}
                     >
                       {documentTypes.find(
-                        (t) => t.value === result.metadata.documentType
+                        (t) => t.value === (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.documentType
                       )?.label || "Document"}
                     </Badge>
                     <span class="result-date"
-                      >{formatDate(result.metadata.createdAt)}</span
+                      >{formatDate((result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.createdAt)}</span
                     >
-                    {#if result.metadata.fileSize}
+                    {#if (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.fileSize}
                       <span class="result-size"
-                        >{formatFileSize(result.metadata.fileSize)}</span
+                        >{formatFileSize((result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.fileSize)}</span
                       >
                     {/if}
                   </div>
@@ -728,26 +728,26 @@ https://svelte.dev/e/js_parse_error -->
                     <Target size={14} />
                     <span class="metric-label">Similarity</span>
                     <span class="metric-value"
-                      >{formatSimilarity(result.similarity)}</span
+                      >{formatSimilarity((result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).similarity)}</span
                     >
                   </div>
                   <div class="metric">
                     <TrendingUp size={14} />
                     <span class="metric-label">Rank</span>
-                    <span class="metric-value">#{result.rank}</span>
+                    <span class="metric-value">#{(result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).rank}</span>
                   </div>
                 </div>
               </div>
 
               <!-- Result Content -->
               <div class="result-snippet">
-                {@html highlightText(result.snippet, result.highlights)}
+                {@html highlightText((result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).snippet, (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).highlights)}
               </div>
 
               <!-- Result Tags -->
-              {#if result.metadata.tags && result.metadata.tags.length > 0}
+              {#if (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.tags && (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.tags.length > 0}
                 <div class="result-tags">
-                  {#each result.metadata.tags as tag}
+                  {#each (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.tags as tag}
                     <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                   {/each}
                 </div>
@@ -756,20 +756,20 @@ https://svelte.dev/e/js_parse_error -->
               <!-- Result Actions -->
               <div class="result-actions">
                 <Button class="bits-btn" variant="ghost" size="sm">
-                  <Eye class="mr-1" size={14} />
+<Eye class="mr-1" size={14} />
                   View
-                </button>
+
                 <Button class="bits-btn" variant="ghost" size="sm">
-                  <Download class="mr-1" size={14} />
+<Download class="mr-1" size={14} />
                   Download
-                </button>
+
                 <Button class="bits-btn" variant="ghost" size="sm">
-                  <Share2 class="mr-1" size={14} />
+<Share2 class="mr-1" size={14} />
                   Share
-                </button>
+
               </div>
             </div>
-          </NesCard>
+          </div>
         {/each}
       </div>
     </div>
@@ -782,18 +782,20 @@ https://svelte.dev/e/js_parse_error -->
         <p class="no-results-description">
           Try adjusting your search terms or filters
         </p>
-        <Button class="bits-btn" variant="outline" onclick={resetFilters}>Reset Filters</button>
+        <Button class="bits-btn" variant="outline" on:click={resetFilters}>
+Reset Filters
+
       </div>
     </div>
   {/if}
 
   <!-- Analytics Panel -->
   {#if $showAnalytics && enableAnalytics}
-    <Dialog bind:open={$showAnalytics}>
-      <DialogContent class="max-w-4xl">
-        <DialogHeader>
-          <DialogTitle>Search Analytics</DialogTitle>
-        </DialogHeader>
+    <Dialog.Root bind:open={$showAnalytics}>
+      <Dialog.RootContent class="max-w-4xl">
+        <Dialog.Header>
+          <Dialog.Title>Search Analytics</Dialog.Title>
+        </Dialog.Header>
 
         <Tabs value="overview" class="analytics-tabs">
           <TabsList>
@@ -804,8 +806,8 @@ https://svelte.dev/e/js_parse_error -->
 
           <TabsContent value="overview" class="analytics-overview">
             <div class="analytics-grid">
-              <NesCard class="metric-nier-bits-card">
-                <div class="yorha-panel-content" class="metric-content">
+              <div class="metric-nier-bits-card nes-container">
+                <div class="yorha-panel-content metric-content">
                   <div class="metric-icon">
                     <Search size={24} />
                   </div>
@@ -814,10 +816,10 @@ https://svelte.dev/e/js_parse_error -->
                     <p class="metric-value">{$searchAnalytics.totalSearches}</p>
                   </div>
                 </div>
-              </NesCard>
+              </div>
 
-              <NesCard class="metric-nier-bits-card">
-                <div class="yorha-panel-content" class="metric-content">
+              <div class="metric-nier-bits-card nes-container">
+                <div class="yorha-panel-content metric-content">
                   <div class="metric-icon">
                     <Target size={24} />
                   </div>
@@ -828,10 +830,10 @@ https://svelte.dev/e/js_parse_error -->
                     </p>
                   </div>
                 </div>
-              </NesCard>
+              </div>
 
-              <NesCard class="metric-nier-bits-card">
-                <div class="yorha-panel-content" class="metric-content">
+              <div class="metric-nier-bits-card nes-container">
+                <div class="yorha-panel-content metric-content">
                   <div class="metric-icon">
                     <Zap size={24} />
                   </div>
@@ -842,10 +844,10 @@ https://svelte.dev/e/js_parse_error -->
                     </p>
                   </div>
                 </div>
-              </NesCard>
+              </div>
 
-              <NesCard class="metric-nier-bits-card">
-                <div class="yorha-panel-content" class="metric-content">
+              <div class="metric-nier-bits-card nes-container">
+                <div class="yorha-panel-content metric-content">
                   <div class="metric-icon">
                     <Brain size={24} />
                   </div>
@@ -856,13 +858,13 @@ https://svelte.dev/e/js_parse_error -->
                     </p>
                   </div>
                 </div>
-              </NesCard>
+              </div>
             </div>
           </TabsContent>
 
           <TabsContent value="performance" class="analytics-performance">
             <div class="performance-metrics">
-              <NesCard>
+              <div class="nes-container">
                 <div class="yorha-panel-header">
                   <h3 class="nes-text is-primary">Performance Breakdown</h3>
                 </div>
@@ -905,13 +907,13 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
                   </div>
                 </div>
-              </NesCard>
+              </div>
             </div>
           </TabsContent>
 
           <TabsContent value="queries" class="analytics-queries">
             {#if $searchAnalytics.topQueries.length > 0}
-              <NesCard>
+              <div class="nes-container">
                 <div class="yorha-panel-header">
                   <h3 class="nes-text is-primary">Most Popular Queries</h3>
                 </div>
@@ -925,7 +927,7 @@ https://svelte.dev/e/js_parse_error -->
                     {/each}
                   </div>
                 </div>
-              </NesCard>
+              </div>
             {:else}
               <div class="no-analytics">
                 <p>
@@ -936,8 +938,8 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </TabsContent>
         </Tabs>
-      </DialogContent>
-    </Dialog>
+      </Dialog.Content>
+    </Dialog.Root>
   {/if}
 </div>
 

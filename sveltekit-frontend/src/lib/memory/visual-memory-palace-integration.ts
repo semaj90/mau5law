@@ -243,14 +243,14 @@ export class VisualMemoryPalaceManager {
       const value = char.charCodeAt(0) - 1; // -1 to reverse the +1 from compression
       
       if (reverseDict.has(value)) {
-        result.push(reverseDict.get(value)!);
+        (result as { push?: any; join?: any }).push(reverseDict.get(value)!);
       } else {
         // Direct character mapping
-        result.push(String.fromCharCode(value));
+        (result as { push?: any; join?: any }).push(String.fromCharCode(value));
       }
     }
     
-    return result.join(' ');
+    return (result as { push?: any; join?: any }).join(' ');
   }
 
   private buildCompressionTree(): CompressionNode {
@@ -594,7 +594,7 @@ export class VisualMemoryPalaceManager {
     id: string,
     name: string,
     description: string,
-    rooms: Array<{id: string, name: string, anchor: string}>
+    rooms: Array<
   ): Promise<void> {
     const palace: MemoryPalace = {
       id,

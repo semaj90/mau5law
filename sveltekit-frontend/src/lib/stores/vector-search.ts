@@ -31,12 +31,7 @@ export interface VectorSearchState {
   vectorDbConnected: boolean;
 
   // History
-  searchHistory: Array<{
-    query: string;
-    timestamp: number;
-    resultCount: number;
-    latency: number;
-  }>;
+  searchHistory: Array<any>;
 
   error: string | null;
 }
@@ -77,7 +72,7 @@ export const averageSearchLatency = derived(
   vectorSearchStore,
   $store => {
     if ($store.searchHistory.length === 0) return 0;
-    const total = $store.searchHistory.reduce((sum, item) => sum + item.latency, 0);
+    const total = $store.searchHistory.reduce((sum, item) => sum + (item as { latency?: any }).latency, 0);
     return total / $store.searchHistory.length;
   }
 );
@@ -113,16 +108,16 @@ export const vectorSearchActions = {
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Search failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const data = await response.json();
+      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       const latency = Date.now() - startTime;
 
       vectorSearchStore.update(state => ({
         ...state,
-        results: data.results || [],
+        results: (data as { results?: any; response?: any; context?: any; status?: any }).results || [],
         searchLatency: latency,
         lastSearchTime: Date.now(),
         isSearching: false,
@@ -131,7 +126,7 @@ export const vectorSearchActions = {
           {
             query,
             timestamp: Date.now(),
-            resultCount: data.results?.length || 0,
+            resultCount: (data as { results?: any; response?: any; context?: any; status?: any }).results?.length || 0,
             latency
           }
         ]
@@ -179,17 +174,17 @@ export const vectorSearchActions = {
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`RAG query failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`RAG query failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const data = await response.json();
+      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       const latency = Date.now() - startTime;
 
       vectorSearchStore.update(state => ({
         ...state,
-        ragResponse: data.response,
-        ragContext: data.context || state.results,
+        ragResponse: (data as { results?: any; response?: any; context?: any; status?: any }).response,
+        ragContext: (data as { results?: any; response?: any; context?: any; status?: any }).context || state.results,
         ragLatency: latency,
         isGeneratingResponse: false
       }));
@@ -221,15 +216,15 @@ export const vectorSearchActions = {
         body: JSON.stringify({ caseId, userId, limit })
       });
 
-      if (!response.ok) {
-        throw new Error(`Similar cases search failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Similar cases search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const data = await response.json();
+      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
 
       vectorSearchStore.update(state => ({
         ...state,
-        results: data.results || [],
+        results: (data as { results?: any; response?: any; context?: any; status?: any }).results || [],
         isSearching: false
       }));
 
@@ -246,11 +241,7 @@ export const vectorSearchActions = {
   /**
    * Update search configuration
    */
-  updateConfig(config: Partial<{
-    searchThreshold: number;
-    searchLimit: number;
-    embeddingModel: 'nomic-embed-text' | 'nvidia-llama';
-  }>): void {
+  updateConfig(config: Partial): void {
     vectorSearchStore.update(state => ({
       ...state,
       ...config
@@ -277,11 +268,11 @@ export const vectorSearchActions = {
   async checkConnection(): Promise<void> {
     try {
       const response = await fetch('/api/v1/vector/health');
-      const data = await response.json();
+      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
 
       vectorSearchStore.update(state => ({
         ...state,
-        vectorDbConnected: response.ok && data.status === 'healthy'
+        vectorDbConnected: (response as { ok?: any; statusText?: any; json?: any }).ok && (data as { results?: any; response?: any; context?: any; status?: any }).status === 'healthy'
       }));
     } catch (error: any) {
       vectorSearchStore.update(state => ({

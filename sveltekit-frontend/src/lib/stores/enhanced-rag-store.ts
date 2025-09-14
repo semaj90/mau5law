@@ -177,7 +177,7 @@ export function createEnhancedRAGStore() {
   const state = writable<RAGStoreState>({
     documents: [],
     searchResults: [],
-    embeddings: {},
+    embeddings: Record<string, any>,
     currentQuery: '',
     selectedDocuments: [],
     status: {
@@ -220,7 +220,7 @@ export function createEnhancedRAGStore() {
     error: null,
     somClusters: [],
     neuralPredictions: [],
-    cachingLayers: {},
+    cachingLayers: Record<string, any>,
     autoOptimization: true,
   });
 
@@ -249,7 +249,7 @@ export function createEnhancedRAGStore() {
   async function search(
     query: string,
     options: any = {}
-  ): Promise<{ results: any[]; recommendations: any[] }> {
+  ): Promise<any> {
     state.update((s) => ({ ...s, isLoading: true, currentQuery: query, error: null }));
 
     try {

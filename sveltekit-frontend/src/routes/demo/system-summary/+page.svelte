@@ -50,7 +50,7 @@
   	);
   	let completedFeatures = $derived(() =>
   		implementedFeatures.reduce((sum, category) => 
-  			sum + category.items.filter(item => item.status === 'complete').length, 0
+  			sum + category.items.filter(item => (item as { status?: any; name?: any; description?: any }).status === 'complete').length, 0
   		)
   	);
   	let completionPercentage = $derived(() =>
@@ -102,7 +102,7 @@
   	async function loadSystemHealth() {
   		try {
   			const response = await fetch('http://localhost:40000/health');
-  			systemHealth = await response.json();
+  			systemHealth = await (response as { json?: any }).json();
   		} catch (error) {
   			systemHealth = { status: 'offline', error: error.message };
   		}
@@ -217,14 +217,14 @@
 							<div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
 								<div class="flex items-start justify-between mb-2">
 									<div class="flex items-center">
-										<span class="text-lg mr-2">{getStatusIcon(item.status)}</span>
-										<h4 class="font-medium text-gray-900">{item.name}</h4>
+										<span class="text-lg mr-2">{getStatusIcon((item as { status?: any; name?: any; description?: any }).status)}</span>
+										<h4 class="font-medium text-gray-900">{(item as { status?: any; name?: any; description?: any }).name}</h4>
 									</div>
-									<span class="px-2 py-1 rounded-full text-xs font-medium {getStatusColor(item.status)}">
-										{item.status}
+									<span class="px-2 py-1 rounded-full text-xs font-medium {getStatusColor((item as { status?: any; name?: any; description?: any }).status)}">
+										{(item as { status?: any; name?: any; description?: any }).status}
 									</span>
 								</div>
-								<p class="text-sm text-gray-600">{item.description}</p>
+								<p class="text-sm text-gray-600">{(item as { status?: any; name?: any; description?: any }).description}</p>
 							</div>
 						{/each}
 					</div>

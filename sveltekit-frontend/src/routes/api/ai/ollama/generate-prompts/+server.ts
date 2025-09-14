@@ -20,7 +20,7 @@
 // Generates intelligent prompts based on legal context and user behavior
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { validateAuthSession } from '$lib/server/auth';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
@@ -96,7 +96,7 @@ Respond in JSON format:
     let promptsData;
 
     try {
-      promptsData = JSON.parse(result.response);
+      promptsData = JSON.parse((result as { response?: any }).response);
     } catch (error) {
       // Fallback prompts based on timing and context
       promptsData = generateFallbackPrompts(timing, context, legalContext);

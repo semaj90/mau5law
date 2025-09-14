@@ -113,13 +113,7 @@ export class MatrixUICompiler {
   async compileEnhanced(
     nodes: MatrixUINode[],
     xstateContext?: unknown,
-  ): Promise<{
-    compiled: CompiledNode[];
-    webgl: EnhancedWebGLBuffer;
-    css: CSSOutput;
-    events: EventMapping[];
-    optimizations: string[];
-  }> {
+  ): Promise<any> {
     const optimizations: string[] = [];
 
     // 1. Optimize node tree for performance
@@ -165,7 +159,7 @@ export class MatrixUICompiler {
    */
   async compile(uiDefinition: MatrixUINode[]): Promise<CompiledNode[]> {
     const result = await this.compileEnhanced(uiDefinition);
-    return result.compiled;
+    return (result as { compiled?: any }).compiled;
   }
 
   // Missing method implementations

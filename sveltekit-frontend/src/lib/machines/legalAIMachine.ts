@@ -137,7 +137,7 @@ const initialContext: LegalAIContext = {
 };
 
 export const legalAIMachine = setup({
-  types: {} as {
+  types: Record<string, any> as {
     context: LegalAIContext;
     events: LegalAIEvent;
   },

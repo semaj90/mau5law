@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { json } from '@sveltejs/kit';
 import { withSSRHandler, createSSRResponse, createSSRErrorResponse } from '$lib/server/api-ssr-helpers.js';
 
@@ -104,8 +104,8 @@ class LegalAIOrchestrator {
           apiEndpoint: stepConfig.endpoint
         };
         
-        result.steps.push(step);
-        result.metrics.apiCalls++;
+        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).steps.push(step);
+        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).metrics.apiCalls++;
 
         const stepStartTime = Date.now();
         
@@ -116,7 +116,7 @@ class LegalAIOrchestrator {
           }
 
           step.result = await executor(
-            { ...request.parameters, previousResults: this.getPreviousResults(result.steps) },
+            { ...request.parameters, previousResults: this.getPreviousResults((result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).steps) },
             request.options
           );
           step.status = 'completed';
@@ -124,25 +124,25 @@ class LegalAIOrchestrator {
         } catch (error) {
           step.status = 'failed';
           step.error = error instanceof Error ? error.message : String(error);
-          result.status = 'failed';
-          result.error = `Workflow failed at step: ${stepConfig.name}`;
+          (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status = 'failed';
+          (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).error = `Workflow failed at step: ${stepConfig.name}`;
           break;
         }
         
         step.duration = Date.now() - stepStartTime;
       }
 
-      if (result.status !== 'failed') {
-        result.status = 'completed';
-        result.result = this.aggregateWorkflowResults(result.steps, request.workflow);
+      if ((result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status !== 'failed') {
+        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status = 'completed';
+        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).result = this.aggregateWorkflowResults((result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).steps, request.workflow);
       }
 
     } catch (error) {
-      result.status = 'failed';
-      result.error = error instanceof Error ? error.message : String(error);
+      (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status = 'failed';
+      (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).error = error instanceof Error ? error.message : String(error);
     }
 
-    result.metrics.totalTime = Date.now() - startTime;
+    (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).metrics.totalTime = Date.now() - startTime;
     this.activeWorkflows.set(workflowId, result);
     
     return result;
@@ -161,11 +161,11 @@ class LegalAIOrchestrator {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Search failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Search failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    return await response.json();
+    return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
   private async executeAnalyzePrecedents(params: any, options?: any): Promise<any> {
@@ -183,11 +183,11 @@ class LegalAIOrchestrator {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Precedent analysis failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Precedent analysis failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    return await response.json();
+    return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
   private async executeGenerateResearchSummary(params: any, options?: any): Promise<any> {
@@ -203,11 +203,11 @@ class LegalAIOrchestrator {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Summary generation failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Summary generation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    return await response.json();
+    return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
   private async executeExtractDocumentEntities(params: any, options?: any): Promise<any> {
@@ -222,11 +222,11 @@ class LegalAIOrchestrator {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Entity extraction failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Entity extraction failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    return await response.json();
+    return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
   private async executeAnalyzeDocumentContent(params: any, options?: any): Promise<any> {
@@ -240,11 +240,11 @@ class LegalAIOrchestrator {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Document analysis failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Document analysis failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    return await response.json();
+    return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
   private async executeGenerateDocumentSummary(params: any, options?: any): Promise<any> {
@@ -259,11 +259,11 @@ class LegalAIOrchestrator {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Document summarization failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Document summarization failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    return await response.json();
+    return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
   private async executeScoreCaseStrength(params: any, options?: any): Promise<any> {
@@ -278,11 +278,11 @@ class LegalAIOrchestrator {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Case scoring failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Case scoring failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    return await response.json();
+    return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
   private async executeSuggestResearchTopics(params: any, options?: any): Promise<any> {
@@ -296,11 +296,11 @@ class LegalAIOrchestrator {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Research suggestions failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Research suggestions failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    return await response.json();
+    return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
   private async executeCreateCaseTimeline(params: any, options?: any): Promise<any> {
@@ -328,11 +328,11 @@ class LegalAIOrchestrator {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Evidence metadata processing failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Evidence metadata processing failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    return await response.json();
+    return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
   private async executeAnalyzeEvidenceRelevance(params: any, options?: any): Promise<any> {
@@ -346,11 +346,11 @@ class LegalAIOrchestrator {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Evidence relevance analysis failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Evidence relevance analysis failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    return await response.json();
+    return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
   private async executeGenerateEvidenceReport(params: any, options?: any): Promise<any> {
@@ -367,11 +367,11 @@ class LegalAIOrchestrator {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Evidence report generation failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Evidence report generation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
 
-    return await response.json();
+    return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
   // Helper methods
@@ -491,7 +491,7 @@ export const POST: RequestHandler = withSSRHandler(async ({ request }) => {
     const result = await orchestrator.executeWorkflow(requestData);
     return createSSRResponse(result, {
       gpuAccelerated: requestData.options?.useGPU,
-      cacheKey: requestData.options?.cacheResults ? `orchestrator_${result.workflowId}` : undefined
+      cacheKey: requestData.options?.cacheResults ? `orchestrator_${(result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).workflowId}` : undefined
     });
   } catch (error) {
     return createSSRErrorResponse(

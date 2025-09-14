@@ -26,7 +26,7 @@ https://svelte.dev/e/js_parse_error -->
       webgpu: number;
       webgl: number;
     };
-    topOperations: Array<{ operation: string; count: number }>;
+    topOperations: Array;
     averagePerformance: number;
     totalUsage: number;
   }
@@ -226,7 +226,7 @@ https://svelte.dev/e/js_parse_error -->
           <h3>Top Operations</h3>
           <div class="operation-tags">
             {#each stats.topOperations as op}
-              <span class="operation-tag" onclick={() => selectedOperation = op.operation}>
+              <span class="operation-tag" on:click={() => selectedOperation = op.operation}>
                 {op.operation} ({op.count})
               </span>
             {/each}
@@ -244,10 +244,10 @@ https://svelte.dev/e/js_parse_error -->
           type="text"
           placeholder="Search shaders by description, operation, or WGSL code..."
           bind:value={searchQuery}
-          onkeydown={(e) => e.key === 'Enter' && performSearch()}
+          on:keydown={(e) => e.key === 'Enter' && performSearch()}
           class="search-input"
         />
-        <button onclick={performSearch} disabled={isSearching} class="search-button">
+        <button on:click={performSearch} disabled={isSearching} class="search-button">
           {isSearching ? '⏳' : '🔍'} Search
         </button>
       </div>
@@ -288,7 +288,7 @@ https://svelte.dev/e/js_parse_error -->
           </select>
         </div>
 
-        <button onclick={clearFilters} class="clear-button">Clear Filters</button>
+        <button on:click={clearFilters} class="clear-button">Clear Filters</button>
       </div>
 
       <!-- Tag Filters -->
@@ -300,7 +300,7 @@ https://svelte.dev/e/js_parse_error -->
               <button
                 class="tag-button"
                 class:selected={selectedTags.includes(tag)}
-                onclick={() => toggleTag(tag)}
+                on:click={() => toggleTag(tag)}
               >
                 {tag}
               </button>
@@ -313,7 +313,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="selected-tags">
           <strong>Selected Tags:</strong>
           {#each selectedTags as tag}
-            <span class="selected-tag" onclick={() => toggleTag(tag)}>
+            <span class="selected-tag" on:click={() => toggleTag(tag)}>
               {tag} ×
             </span>
           {/each}
@@ -335,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </span>
           {#if searchResults.length > 0}
-            <button onclick={exportResults} class="export-button">📥 Export Results</button>
+            <button on:click={exportResults} class="export-button">📥 Export Results</button>
           {/if}
         </div>
       </div>
@@ -355,7 +355,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="results-grid">
         {#each searchResults as shader}
           <div class="shader-nier-bits-card" role="button" tabindex="0"
-                onclick={() => selectedShader = shader}>
+                on:click={() => selectedShader = shader}>
             <div class="shader-header">
               <h3>{shader.id}</h3>
               <div class="shader-badges">
@@ -403,12 +403,12 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Shader Detail Modal -->
   {#if selectedShader}
     <div class="modal-backdrop" role="button" tabindex="0"
-                onclick={() => selectedShader = null}>
+                on:click={() => selectedShader = null}>
       <div class="modal" role="button" tabindex="0"
-                onclick={(e) => e.stopPropagation()}>
+                on:click={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h2>{selectedShader.id}</h2>
-          <button onclick={() => selectedShader = null} class="close-button">×</button>
+          <button on:click={() => selectedShader = null} class="close-button">×</button>
         </div>
 
         <div class="modal-content">
@@ -448,7 +448,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="detail-group">
               <div class="code-header">
                 <h3>WGSL Code</h3>
-                <button onclick={() => copyShaderCode(selectedShader!)} class="copy-button">
+                <button on:click={() => copyShaderCode(selectedShader!)} class="copy-button">
                   📋 Copy Code
                 </button>
               </div>
@@ -722,7 +722,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .results-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1.5rem;
   }
 

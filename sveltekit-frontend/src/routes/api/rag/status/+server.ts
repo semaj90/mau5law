@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { exec } from 'child_process';
 import { promisify } from 'util';
@@ -27,7 +27,7 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<boolean>
   }
 }
 
-async function checkDockerDesktop(): Promise<{ running: boolean; version?: string; error?: string }> {
+async function checkDockerDesktop(): Promise<any> {
   try {
     const { stdout } = await execAsync('docker info --format "{{.ServerVersion}}"');
     return {
@@ -42,7 +42,7 @@ async function checkDockerDesktop(): Promise<{ running: boolean; version?: strin
   }
 }
 
-async function checkDockerContainer(containerName: string): Promise<{ running: boolean; status?: string; error?: string }> {
+async function checkDockerContainer(containerName: string): Promise<any> {
   try {
     const { stdout } = await execAsync(`docker ps --filter "name=${containerName}" --format "{{.Status}}"`);
     const status = stdout.trim();

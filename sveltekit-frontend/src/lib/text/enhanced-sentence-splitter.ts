@@ -125,7 +125,7 @@ export class EnhancedSentenceSplitter {
 }
 
 export function createStreamingSplitter(options: SplitterOptions = {}) {
-  return { splitter: new EnhancedSentenceSplitter(options), context: {} };
+  return { splitter: new EnhancedSentenceSplitter(options), context: Record<string, any> };
 }
 
 export default { splitSentencesEnhanced, EnhancedSentenceSplitter, createStreamingSplitter };

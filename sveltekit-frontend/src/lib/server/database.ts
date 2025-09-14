@@ -3,11 +3,11 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from "postgres";
 import { pgTable, serial, text, timestamp, jsonb, vector, real, uuid } from 'drizzle-orm/pg-core';
-import * as schema from './db/schema.js';
+import * as schema from './db/schema.js.js';
 
 // Database connection configuration
 const connectionString = process.env.DATABASE_URL ||
-  `postgresql://${process.env.POSTGRES_USER || 'postgres'}:${process.env.POSTGRES_PASSWORD || '123456'}@${process.env.POSTGRES_HOST || 'localhost'}:${process.env.POSTGRES_PORT || '5432'}/${process.env.POSTGRES_DB || 'legal_ai_db'}`;
+  `postgresql://${process.env.POSTGRES_USER || 'legal_admin'}:${process.env.POSTGRES_PASSWORD || '123456'}@${process.env.POSTGRES_HOST || 'localhost'}:${process.env.POSTGRES_PORT || '5433'}/${process.env.POSTGRES_DB || 'legal_ai_db'}`;
 
 // Create PostgreSQL connection with proper configuration
 const sql = postgres(connectionString, {
@@ -109,7 +109,7 @@ export async function initializeDatabase(): Promise<any> {
 export async function testDatabaseConnection(): Promise<any> {
   try {
     const result = await sql`SELECT 1 as test`;
-    return result.length > 0;
+    return (result as { length?: any }).length > 0;
   } catch (error: any) {
     console.error('[Database] Connection test failed:', error);
     return false;

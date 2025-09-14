@@ -15,7 +15,7 @@ import fs from "fs/promises";
 import path from "path";
 import { spawn } from "child_process";
 import { tmpdir } from "os";
-import { fetchMinioObject } from "./minio.js";
+import { fetchMinioObject } from './minio.js.js';
 
 // Type imports for extractors
 export interface ExtractionResult {
@@ -378,11 +378,7 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
 /**
  * Utility functions for media info
  */
-async function getAudioInfo(filePath: string, ffmpegPath: string): Promise<{
-  duration: number;
-  sampleRate: number;
-  channels: number;
-}> {
+async function getAudioInfo(filePath: string, ffmpegPath: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const ffprobe = spawn(ffmpegPath.replace('ffmpeg', 'ffprobe'), [
       '-v', 'quiet',
@@ -421,11 +417,7 @@ async function getAudioInfo(filePath: string, ffmpegPath: string): Promise<{
   });
 }
 
-async function getVideoInfo(filePath: string, ffmpegPath: string): Promise<{
-  duration: number;
-  width: number;
-  height: number;
-}> {
+async function getVideoInfo(filePath: string, ffmpegPath: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const ffprobe = spawn(ffmpegPath.replace('ffmpeg', 'ffprobe'), [
       '-v', 'quiet',

@@ -17,11 +17,7 @@
   import { onMount, createEventDispatcher } from 'svelte';
   import Fuse from 'fuse.js';
 
-  const dispatch = createEventDispatcher<{
-    tagsUpdate: any;
-    evidenceSelect: { id: string };
-    connectionSelect: { connection: any };
-  }>();
+  const dispatch = createEventDispatcher();
 
   interface Props {
     selectedNode?: any;
@@ -39,7 +35,7 @@
   let processingStatus = $state('');
   let searchQuery = $state('');
   let searchResults = $state<any[]>([]);
-  let fuse = $state<Fuse<any> | null >(null);
+  let fuse = $state<Fuse<any>(null) | null >(null);
   let aiInsights = $state({
     connections: [],
     similarEvidence: [],
@@ -90,8 +86,8 @@
         })
       });
 
-      if (response.ok) {
-        const analysis = await response.json();
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const analysis = await (response as { ok?: any; json?: any; statusText?: any }).json();
 
         // Update the selected node with AI tags
         if (selectedNode) {
@@ -110,7 +106,7 @@
         dispatch('tagsUpdate', analysis);
         processingStatus = 'Analysis complete!';
       } else {
-        throw new Error(`Analysis failed: ${response.statusText}`);
+        throw new Error(`Analysis failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
       }
     } catch (error) {
       console.error('AI analysis error:', error);
@@ -138,12 +134,12 @@
         })
       });
 
-      if (response.ok) {
-        const insights = await response.json();
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const insights = await (response as { ok?: any; json?: any; statusText?: any }).json();
         aiInsights = insights;
         processingStatus = 'Insights generated!';
       } else {
-        throw new Error(`Insight generation failed: ${response.statusText}`);
+        throw new Error(`Insight generation failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
       }
     } catch (error) {
       console.error('Insight generation error:', error);
@@ -155,7 +151,7 @@
   }
 
   function selectEvidence(item: any) {
-    dispatch('evidenceSelect', { id: item.id });
+    dispatch('evidenceSelect', { id: (item as { id?: any }).id });
   }
 
   function selectConnection(connection: any) {
@@ -177,14 +173,14 @@
   </div>
 
   <!-- Search Section -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <Search class="w-5 h-5" />
         Evidence Search
       </h3>
     </div>
-    <div class="yorha-panel-content" class="space-y-4">
+    <div class="yorha-panel-content space-y-4">
       <div class="flex gap-2">
         <Input
           bind:value={searchQuery}
@@ -192,9 +188,9 @@
           class="flex-1"
         />
         {#if searchQuery}
-          <Button class="bits-btn" onclick={clearSearch} variant="outline" size="sm">
-            Clear
-          </button>
+          <Button class="bits-btn" on:click={clearSearch} variant="outline" size="sm">
+Clear
+
         {/if}
       </div>
 
@@ -206,49 +202,49 @@
           <div class="space-y-2 max-h-60 overflow-y-auto">
             {#each searchResults as result}
               <button
-                onclick={() => selectEvidence(result)}
+                on:click={() => selectEvidence(result)}
                 class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 <div class="flex justify-between items-start">
                   <div class="flex-1">
                     <p class="font-medium text-gray-900 dark:text-white">
-                      {result.name || result.title || 'Unknown'}
+                      {(result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).name || (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).title || 'Unknown'}
                     </p>
-                    {#if result.description}
+                    {#if (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).description}
                       <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-                        {result.description}
+                        {(result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).description}
                       </p>
                     {/if}
-                    {#if result.tags && result.tags.length > 0}
+                    {#if (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).tags && (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).tags.length > 0}
                       <div class="flex flex-wrap gap-1 mt-2">
-                        {#each result.tags.slice(0, 3) as tag}
+                        {#each (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).tags.slice(0, 3) as tag}
                           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
                         {/each}
                       </div>
                     {/if}
                   </div>
-                  {#if result.score !== undefined}
-                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round((1 - result.score) * 100)}% match</span>
+                  {#if (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).score !== undefined}
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round((1 - (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).score) * 100)}% match</span>
                   {/if}
                 </div>
-              </button>
+
             {/each}
           </div>
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Selected Evidence Analysis -->
   {#if selectedNode}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <FileText class="w-5 h-5" />
           Evidence Analysis
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
           <p class="font-medium text-gray-900 dark:text-white">
             {selectedNode.name || selectedNode.title || 'Selected Evidence'}
@@ -261,13 +257,13 @@
         </div>
 
         <div class="flex gap-2">
-          <Button onclick={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn bits-btn">
-            <Sparkles class="w-4 h-4 mr-2" />
+          <Button on:click={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn bits-btn">
+<Sparkles class="w-4 h-4 mr-2" />
             {isProcessing ? 'Analyzing...' : 'Analyze with AI'}
-          </button>
-          <Button class="bits-btn" onclick={generateInsights} disabled={isProcessing} variant="outline">
-            Generate Insights
-          </button>
+
+          <Button class="bits-btn" on:click={generateInsights} disabled={isProcessing} variant="outline">
+Generate Insights
+
         </div>
 
         <!-- AI Analysis Results -->
@@ -308,19 +304,19 @@
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- AI Insights -->
   {#if aiInsights.connections.length > 0 || aiInsights.similarEvidence.length > 0 || aiInsights.suggestedActions.length > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Sparkles class="w-5 h-5" />
           AI Insights
         </h3>
       </div>
-      <div class="yorha-panel-content" class="space-y-4">
+      <div class="yorha-panel-content space-y-4">
         {#if aiInsights.connections.length > 0}
           <div>
             <h4 class="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
@@ -330,7 +326,7 @@
             <div class="space-y-2">
               {#each aiInsights.connections as connection}
                 <button
-                  onclick={() => selectConnection(connection)}
+                  on:click={() => selectConnection(connection)}
                   class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <p class="font-medium text-gray-900 dark:text-white">
@@ -339,7 +335,7 @@
                   <p class="text-sm text-gray-600 dark:text-gray-300">
                     {connection.description}
                   </p>
-                </button>
+
               {/each}
             </div>
           </div>
@@ -354,7 +350,7 @@
             <div class="space-y-2">
               {#each aiInsights.similarEvidence as similar}
                 <button
-                  onclick={() => selectEvidence(similar)}
+                  on:click={() => selectEvidence(similar)}
                   class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <p class="font-medium text-gray-900 dark:text-white">
@@ -390,7 +386,7 @@
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Empty State -->

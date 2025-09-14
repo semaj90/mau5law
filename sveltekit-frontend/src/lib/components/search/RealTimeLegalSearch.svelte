@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
   // Handle result selection
   function handleSelect(result: any) {
     selectedResult = result;
-    inputValue = result.title;
+    inputValue = (result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).title;
     open = false;
     // Dispatch custom event for parent components
     const event = new CustomEvent('select', {
@@ -224,7 +224,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             type="button"
             class="p-1 hover:bg-gray-100 rounded"
-            onclick={handleSearch}
+            on:click={handleSearch}
             disabled={!inputValue.trim()}
           >
             <Search class="h-4 w-4 text-gray-500" />
@@ -253,49 +253,49 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         
         <!-- Streaming Results -->
-        {#each filteredResults as result, index (result.id)}
+        {#each filteredResults as result, index ((result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).id)}
           <Combobox.Item
-            value={result.id}
+            value={(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).id}
             class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 
                    text-sm outline-none hover:bg-gray-50 data-[highlighted]:bg-blue-50
-                   {result.realTime ? 'animate-pulse border-l-2 border-blue-400' : ''}"
+                   {(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).realTime ? 'animate-pulse border-l-2 border-blue-400' : ''}"
             onSelect={() => handleSelect(result)}
           >
             <!-- Result Type Icon -->
             <div class="mt-1 text-lg">
-              {getResultTypeIcon(result.type)}
+              {getResultTypeIcon((result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).type)}
             </div>
 
             <!-- Result Content -->
             <div class="flex-1 min-w-0">
               <div class="flex items-start justify-between gap-2">
                 <div class="font-medium text-gray-900 truncate">
-                  {result.title}
+                  {(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).title}
                 </div>
                 <div class="flex items-center gap-1 text-xs text-gray-500 shrink-0">
-                  {#if result.realTime}
+                  {#if (result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).realTime}
                     <TrendingUp class="w-3 h-3 text-blue-500" />
                   {/if}
-                  <span>{(result.score * 100).toFixed(0)}%</span>
+                  <span>{((result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).score * 100).toFixed(0)}%</span>
                 </div>
               </div>
               
               <div class="text-xs text-gray-600 mt-1 line-clamp-2">
-                {result.content.substring(0, 120)}...
+                {(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).content.substring(0, 120)}...
               </div>
               
               <!-- Enhanced Metadata -->
               <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
                 <span class="capitalize bg-gray-100 px-2 py-1 rounded">
-                  {result.type}
+                  {(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).type}
                 </span>
-                {#if result.metadata.jurisdiction}
-                  <span>{result.metadata.jurisdiction}</span>
+                {#if (result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).metadata.jurisdiction}
+                  <span>{(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).metadata.jurisdiction}</span>
                 {/if}
-                {#if result.metadata.status}
-                  <span class="capitalize">{result.metadata.status}</span>
+                {#if (result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).metadata.status}
+                  <span class="capitalize">{(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).metadata.status}</span>
                 {/if}
-                {#if result.realTime}
+                {#if (result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).realTime}
                   <span class="text-blue-500 font-medium">Live</span>
                 {/if}
               </div>
@@ -304,51 +304,51 @@ https://svelte.dev/e/js_parse_error -->
         {/each}
       {:else if filteredResults.length > 0}
         <!-- Standard Results -->
-        {#each filteredResults as result (result.id)}
+        {#each filteredResults as result ((result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).id)}
           <Combobox.Item
-            value={result.id}
+            value={(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).id}
             class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 
                    text-sm outline-none hover:bg-gray-50 data-[highlighted]:bg-blue-50"
             onSelect={() => handleSelect(result)}
           >
             <!-- Result Type Icon -->
             <div class="mt-1 text-lg">
-              {getResultTypeIcon(result.type)}
+              {getResultTypeIcon((result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).type)}
             </div>
 
             <!-- Result Content -->
             <div class="flex-1 min-w-0">
               <div class="flex items-start justify-between gap-2">
                 <div class="font-medium text-gray-900 truncate">
-                  {result.title}
+                  {(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).title}
                 </div>
                 <div class="text-xs text-gray-500 shrink-0">
-                  {(result.score * 100).toFixed(0)}%
+                  {((result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).score * 100).toFixed(0)}%
                 </div>
               </div>
               
               <div class="text-xs text-gray-600 mt-1 line-clamp-2">
-                {result.content.substring(0, 120)}...
+                {(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).content.substring(0, 120)}...
               </div>
               
               <!-- Metadata Tags -->
               <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
                 <span class="capitalize bg-gray-100 px-2 py-1 rounded">
-                  {result.type}
+                  {(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).type}
                 </span>
-                {#if result.metadata.jurisdiction}
-                  <span>{result.metadata.jurisdiction}</span>
+                {#if (result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).metadata.jurisdiction}
+                  <span>{(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).metadata.jurisdiction}</span>
                 {/if}
-                {#if result.metadata.date}
-                  <span>{new Date(result.metadata.date).toLocaleDateString()}</span>
+                {#if (result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).metadata.date}
+                  <span>{new Date((result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).metadata.date).toLocaleDateString()}</span>
                 {/if}
               </div>
 
               <!-- Highlights -->
-              {#if result.highlights && result.highlights.length > 0}
+              {#if (result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).highlights && (result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).highlights.length > 0}
                 <div class="mt-2 text-xs text-blue-600">
                   <span class="font-medium">Highlights:</span>
-                  {result.highlights[0].substring(0, 80)}...
+                  {(result as { title?: any; id?: any; realTime?: any; type?: any; score?: any; content?: any; metadata?: any; highlights?: any }).highlights[0].substring(0, 80)}...
                 </div>
               {/if}
             </div>
@@ -376,7 +376,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               type="button"
               class="block w-full text-left text-xs text-gray-600 hover:text-gray-900 py-1"
-              onclick={() => handleInputChange(query)}
+              on:click={() => handleInputChange(query)}
             >
               {query}
             </button>

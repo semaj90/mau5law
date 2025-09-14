@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   import { Badge } from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/button';
   // import { Avatar } from '$lib/components/ui/Avatar.svelte';
-  let { person = $bindable() } = $props(); // {
+  let { person = $bindable()  }: { person = $bindable() : any } = $props(); // {
     name: string;
     role: 'suspect' | 'witness' | 'victim' | 'associate' | 'unknown';
     details?: {
@@ -31,13 +31,7 @@ https://svelte.dev/e/js_parse_error -->
     sourceContext?: string;
   };
 
-  let { relationships = $bindable() } = $props(); // Array<{
-    person1: string;
-    person2: string;
-    relationship: string;
-    context?: string;
-    confidence: number;
-  }> = [];
+  let { relationships = $bindable()  }: { relationships = $bindable() : any } = $props(); // Array = [];
 
   // Filter relationships for this person
   let personRelationships = $derived(relationships.filter(rel => 
@@ -80,15 +74,15 @@ https://svelte.dev/e/js_parse_error -->
   let showFullDetails = $state(false);
 </script>
 
-<NesCard class="w-full max-w-md hover:shadow-lg transition-shadow">
-  <div class="yorha-panel-header" class="pb-3">
+<div class="w-full max-w-md hover:shadow-lg transition-shadow nes-container">
+  <div class="yorha-panel-header pb-3">
     <div class="flex items-start justify-between">
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 bg-gray-200 flex items-center justify-center text-lg rounded-full">
           {roleInfo.icon}
         </div>
         <div>
-          <h3 class="nes-text is-primary" class="text-lg font-semibold">{person.name}</h3>
+          <h3 class="nes-text is-primary text-lg font-semibold">{person.name}</h3>
           <Badge class="mt-1 text-xs {roleInfo.color}">
             {roleInfo.label}
           </Badge>
@@ -112,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 
-  <div class="yorha-panel-content" class="space-y-4">
+  <div class="yorha-panel-content space-y-4">
     <!-- Basic Details -->
     {#if person.details}
       <div>
@@ -210,31 +204,32 @@ https://svelte.dev/e/js_parse_error -->
         variant="outline" 
         size="sm" 
         class="flex-1 text-xs bits-btn bits-btn"
-        onclick={() => showFullDetails = !showFullDetails}
+        on:click={() =>
+showFullDetails = !showFullDetails}
       >
         {showFullDetails ? 'Less' : 'More'} Info
-      </button>
+</Button>
       
       <Button 
         variant="outline" 
         size="sm" 
         class="flex-1 text-xs bits-btn bits-btn"
       >
-        🕸️ Graph View
-      </button>
+🕸️ Graph View
+</Button>
       
       {#if person.role === 'suspect'}
         <Button size="sm" class="flex-1 text-xs bits-btn bits-btn">
-          📋 Profile
-        </button>
+📋 Profile
+</Button>
       {:else if person.role === 'witness'}
         <Button size="sm" class="flex-1 text-xs bits-btn bits-btn">
-          📞 Contact
-        </button>
+📞 Contact
+</Button>
       {/if}
     </div>
   </div>
-</NesCard>
+</div>
 
 <style>
   .max-h-32 {

@@ -116,21 +116,21 @@ const phaseIntegration = {
 const importGuide = {
   // Old imports that still work
   legacy: {
-    "import aiCommands from './stores/ai-commands'":
+    "import aiCommands from './stores/ai-commands.js'":
       "✅ Works - Redirects to ai-unified.ts",
-    "import { evidence } from './stores/evidence'":
+    "import { evidence } from './stores/evidence.js'":
       "✅ Works - Redirects to evidence-unified.ts",
-    "import { parseAICommand } from './stores/ai-command-parser'":
+    "import { parseAICommand } from './stores/ai-command-parser.js'":
       "✅ Works - Available in ai-unified.ts",
   },
 
   // Recommended new imports
   modern: {
-    "import { aiStore, parseAICommand } from './stores/ai-unified'":
+    "import { aiStore, parseAICommand } from './stores/ai-unified.js'":
       "✅ Recommended",
-    "import { evidenceStore, evidenceById } from './stores/evidence-unified'":
+    "import { evidenceStore, evidenceById } from './stores/evidence-unified.js'":
       "✅ Recommended",
-    "import { aiStore, evidenceStore } from './stores'": "✅ Barrel exports",
+    "import { aiStore, evidenceStore } from './stores.js'": "✅ Barrel exports",
   },
 };
 

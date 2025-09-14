@@ -6,12 +6,12 @@
 
 import { writable, derived, readable } from 'svelte/store';
 import { browser } from '$app/environment';
-import { cognitiveRoutingOrchestrator } from './cognitive-routing-orchestrator';
-import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache';
-import { multiDimensionalRoutingMatrix } from '../routing/multidimensional-routing-matrix';
-import { physicsAwareGPUOrchestrator } from '../gpu/physics-aware-gpu-orchestrator';
-import { webgpuRAGService } from '../webgpu/webgpu-rag-service';
-import { nesCacheOrchestrator } from '../services/nes-cache-orchestrator';
+import { cognitiveRoutingOrchestrator } from './cognitive-routing-orchestrator.js';
+import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache.js';
+import { multiDimensionalRoutingMatrix } from '../routing/multidimensional-routing-matrix.js';
+import { physicsAwareGPUOrchestrator } from '../gpu/physics-aware-gpu-orchestrator.js';
+import { webgpuRAGService } from '../webgpu/webgpu-rag-service.js';
+import { nesCacheOrchestrator } from '../services/nes-cache-orchestrator.js';
 
 // 🎮 Master cognitive state with secret developer modes
 export interface MasterCognitiveState {
@@ -575,8 +575,8 @@ export class MasterCognitiveHub {
     ];
 
     for (const item of warmupData) {
-      await reinforcementLearningCache.set(item.key, {
-        ...item.value,
+      await reinforcementLearningCache.set((item as { key?: any; value?: any }).key, {
+        ...(item as { key?: any; value?: any }).value,
         priority: 0.9,
         cognitiveValue: 0.8,
         semanticTags: ['system', 'warmup', 'cognitive']
@@ -994,13 +994,7 @@ export class MasterCognitiveHub {
     data: any;
     context?: any;
     priority?: number;
-  }): Promise<{
-    result: any;
-    intelligence: number;
-    insights: string[];
-    secrets: string[];
-    achievements: string[];
-  }> {
+  }): Promise<any> {
     const insights: string[] = [];
     const secrets: string[] = [];
     const achievements: string[] = [];

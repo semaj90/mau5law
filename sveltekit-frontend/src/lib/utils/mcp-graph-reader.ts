@@ -24,10 +24,7 @@ export class MCPGraphReader {
   /**
    * Read case nodes with proper Drizzle ORM query patterns
    */
-  private static async readCaseNodes(query: GraphQuery): Promise<{
-    nodes: any[];
-    relations: any[];
-  }> {
+  private static async readCaseNodes(query: GraphQuery): Promise<any> {
     // Build conditions array
     const conditions = [];
     if (query.userId) {
@@ -57,35 +54,35 @@ export class MCPGraphReader {
       : await caseQuery.execute();
 
     const nodes = caseData.map((item) => ({
-      id: item.case.id,
+      id: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.id,
       type: "case",
-      label: item.case.title,
+      label: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.title,
       data: {
-        title: item.case.title,
-        description: item.case.description,
-        status: item.case.status,
-        priority: item.case.priority,
-        caseType: item.case.category,
-        creator: item.creator,
+        title: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.title,
+        description: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.description,
+        status: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.status,
+        priority: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.priority,
+        caseType: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.category,
+        creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator,
       },
       connections: [],
       metadata: {
-        createdAt: item.case.createdAt,
-        updatedAt: item.case.updatedAt,
+        createdAt: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.createdAt,
+        updatedAt: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.updatedAt,
         weight:
-          item.case.priority === "high"
+          (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.priority === "high"
             ? 10
-            : item.case.priority === "medium"
+            : (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.priority === "medium"
               ? 7
               : 5,
       },
     }));
 
     const relations = caseData
-      .filter((item) => item.creator)
+      .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator)
       .map((item) => ({
-        from: item.creator!.id,
-        to: item.case.id,
+        from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator!.id,
+        to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.id,
         type: "owns" as const,
         weight: 8,
         metadata: { relationship: "case_owner" },
@@ -97,10 +94,7 @@ export class MCPGraphReader {
   /**
    * Read evidence nodes with proper query patterns
    */
-  private static async readEvidenceNodes(query: GraphQuery): Promise<{
-    nodes: any[];
-    relations: any[];
-  }> {
+  private static async readEvidenceNodes(query: GraphQuery): Promise<any> {
     // Build conditions
     const conditions = [];
     if (query.userId) {
@@ -133,28 +127,28 @@ export class MCPGraphReader {
       : await evidenceQuery.execute();
 
     const nodes = evidenceData.map((item) => ({
-      id: item.evidence.id,
+      id: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.id,
       type: "evidence",
-      label: item.evidence.title,
+      label: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.title,
       data: {
-        title: item.evidence.title,
-        description: item.evidence.description,
-        evidenceType: item.evidence.evidenceType,
-        filePath: item.evidence.fileUrl,
-        fileSize: item.evidence.fileSize,
-        mimeType: item.evidence.mimeType,
-        tags: item.evidence.tags,
-        aiTags: item.evidence.aiTags,
-        case: item.case,
-        creator: item.creator,
+        title: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.title,
+        description: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.description,
+        evidenceType: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.evidenceType,
+        filePath: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.fileUrl,
+        fileSize: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.fileSize,
+        mimeType: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.mimeType,
+        tags: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.tags,
+        aiTags: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.aiTags,
+        case: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case,
+        creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator,
       },
       connections: [],
       metadata: {
-        createdAt: item.evidence.uploadedAt,
+        createdAt: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.uploadedAt,
         weight:
-          item.evidence.evidenceType === "critical"
+          (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.evidenceType === "critical"
             ? 10
-            : item.evidence.evidenceType === "digital"
+            : (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.evidenceType === "digital"
               ? 8
               : 6,
       },
@@ -162,19 +156,19 @@ export class MCPGraphReader {
 
     const relations = [
       ...evidenceData
-        .filter((item) => item.case)
+        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).case)
         .map((item) => ({
-          from: item.evidence.id,
-          to: item.case!.id,
+          from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.id,
+          to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case!.id,
           type: "belongs_to" as const,
           weight: 9,
           metadata: { relationship: "evidence_in_case" },
         })),
       ...evidenceData
-        .filter((item) => item.creator)
+        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator)
         .map((item) => ({
-          from: item.creator!.id,
-          to: item.evidence.id,
+          from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator!.id,
+          to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.id,
           type: "owns" as const,
           weight: 7,
           metadata: { relationship: "evidence_owner" },
@@ -187,10 +181,7 @@ export class MCPGraphReader {
   /**
    * Read report nodes with proper query patterns
    */
-  private static async readReportNodes(query: GraphQuery): Promise<{
-    nodes: any[];
-    relations: any[];
-  }> {
+  private static async readReportNodes(query: GraphQuery): Promise<any> {
     // Build conditions
     const conditions = [];
     if (query.userId) {
@@ -223,26 +214,26 @@ export class MCPGraphReader {
       : await reportQuery.execute();
 
     const nodes = reportData.map((item) => ({
-      id: item.report.id,
+      id: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.id,
       type: "report",
-      label: item.report.title,
+      label: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.title,
       data: {
-        title: item.report.title,
-        content: item.report.content,
-        reportType: item.report.reportType,
-        status: item.report.status,
-        aiAnalysis: item.report.metadata,
-        case: item.case,
-        creator: item.creator,
+        title: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.title,
+        content: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.content,
+        reportType: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.reportType,
+        status: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.status,
+        aiAnalysis: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.metadata,
+        case: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case,
+        creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator,
       },
       connections: [],
       metadata: {
-        createdAt: item.report.createdAt,
-        updatedAt: item.report.updatedAt,
+        createdAt: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.createdAt,
+        updatedAt: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.updatedAt,
         weight:
-          item.report.reportType === "person_of_interest"
+          (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.reportType === "person_of_interest"
             ? 9
-            : item.report.reportType === "case_analysis"
+            : (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.reportType === "case_analysis"
               ? 8
               : 6,
       },
@@ -250,19 +241,19 @@ export class MCPGraphReader {
 
     const relations = [
       ...reportData
-        .filter((item) => item.case)
+        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).case)
         .map((item) => ({
-          from: item.report.id,
-          to: item.case!.id,
+          from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.id,
+          to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case!.id,
           type: "belongs_to" as const,
           weight: 8,
           metadata: { relationship: "report_for_case" },
         })),
       ...reportData
-        .filter((item) => item.creator)
+        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator)
         .map((item) => ({
-          from: item.creator!.id,
-          to: item.report.id,
+          from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator!.id,
+          to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.id,
           type: "generated_from" as const,
           weight: 7,
           metadata: { relationship: "report_generator" },
@@ -275,11 +266,7 @@ export class MCPGraphReader {
   /**
    * Main read graph method
    */
-  static async readGraph(query: GraphQuery): Promise<{
-    nodes: any[];
-    relations: any[];
-    metadata: { totalNodes: number; queryTime: number; mcpSource: string };
-  }> {
+  static async readGraph(query: GraphQuery): Promise<any> {
     const startTime = Date.now();
     const nodes: any[] = [];
     const relations: any[] = [];

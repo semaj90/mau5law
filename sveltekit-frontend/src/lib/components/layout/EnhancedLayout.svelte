@@ -88,15 +88,15 @@
         </div>
 
         <nav class="header-nav" class:yorha-nav={layoutVariant === 'yorha'}>
-          {#each navigationItems as item (item.href)}
+          {#each navigationItems as item ((item as { href?: any; label?: any; icon?: any; active?: any }).href)}
             <a
-              href={item.href}
+              href={(item as { href?: any; label?: any; icon?: any; active?: any }).href}
               class="nav-item"
-              class:active={currentPath === item.href}
-              aria-label={item.label}
+              class:active={currentPath === (item as { href?: any; label?: any; icon?: any; active?: any }).href}
+              aria-label={(item as { href?: any; label?: any; icon?: any; active?: any }).label}
             >
-              <span class="nav-icon">{item.icon}</span>
-              <span class="nav-label">{item.label}</span>
+              <span class="nav-icon">{(item as { href?: any; label?: any; icon?: any; active?: any }).icon}</span>
+              <span class="nav-label">{(item as { href?: any; label?: any; icon?: any; active?: any }).label}</span>
             </a>
           {/each}
         </nav>
@@ -104,7 +104,7 @@
         {#if showSidebar}
           <button
             class="sidebar-toggle nes-btn"
-            onclick={toggleSidebar}
+            on:click={toggleSidebar}
             aria-label="Toggle sidebar"
           >
             ☰
@@ -232,12 +232,12 @@
     color: #ffd700;
   }
 
-  .nav-item.active {
+  .nav-(item as { href?: any; label?: any; icon?: any; active?: any }).active {
     background: var(--nes-primary-color, #000);
     color: #fff;
   }
 
-  .enhanced-layout[data-variant="yorha"] .nav-item.active {
+  .enhanced-layout[data-variant="yorha"] .nav-(item as { href?: any; label?: any; icon?: any; active?: any }).active {
     background: #ffd700;
     color: #000;
   }

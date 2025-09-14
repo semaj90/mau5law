@@ -76,7 +76,8 @@
     onFocus
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
 
   let isPressed = $state(false);
   let isHovered = $state(false);
@@ -343,10 +344,10 @@
   {form}
   {name}
   {value}
-  onclick={handleClick}
+  on:click={handleClick}
   on:on:mouseenter={handleHover}
   on:on:mouseleave={handleUnhover}
-  on:mousemove={handleMouseMove}
+  onMousemove={handleMouseMove}
   on:focus={handleFocus}
   on:blur={handleBlur}
   class="n64-3d-button {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
@@ -377,7 +378,6 @@
     {#if enableReflections}
       <div class="reflection-overlay"></div>
     {/if}
-  {/if}
 </BitsButton.Root>
 
 <style>

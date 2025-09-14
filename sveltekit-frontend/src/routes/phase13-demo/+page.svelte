@@ -23,8 +23,7 @@ https://svelte.dev/e/js_parse_error -->
   import { CheckCircle, AlertCircle, Cpu, Database, Zap, Activity } from 'lucide-svelte';
 
   // Phase 13 system instances
-  let canvas = $state<HTMLCanvasElement;
-  let phase13System: any >(null);
+  let canvas = $state<HTMLCanvasElementlet phase13System: any | null>(null)(null);
   let apiCoordinator = $state<any >(null);
   let ragEngine = $state<any >(null);
   let context7Integration = $state<any >(null);
@@ -298,11 +297,11 @@ https://svelte.dev/e/js_parse_error -->
       console.log('🚀 Starting full Phase 13 demo...');
 
       await startWebGLDemo();
-      await new Promise((resolve) => setTimeout(resolve, 1000);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await startAPICoordination();
-      await new Promise((resolve) => setTimeout(resolve, 1000);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await performEnhancedRAGSearch();
-      await new Promise((resolve) => setTimeout(resolve, 1000);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await getContext7Recommendations();
 
       console.log('✅ Full Phase 13 demo completed successfully!');
@@ -334,7 +333,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- System Status -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div
             class="p-2 rounded-lg"
@@ -347,9 +346,9 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{frameRate}fps</p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg" class:bg-green-100={apiActive} class:bg-red-100={!apiActive}>
             <Database class="h-5 w-5 {apiActive ? 'text-green-600' : 'text-red-600'}" />
@@ -359,9 +358,9 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{apiThroughput.toFixed(1)} tasks/s</p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div
             class="p-2 rounded-lg"
@@ -377,9 +376,9 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{ragQueryTime}ms</p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div
             class="p-2 rounded-lg"
@@ -392,38 +391,38 @@ https://svelte.dev/e/js_parse_error -->
             <p class="text-sm text-gray-400">{systemHealth}% health</p>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- WebGL Canvas -->
-    <NesCard class="p-6 mb-8 bg-slate-800/50 border-slate-700">
+    <div class="p-6 mb-8 bg-slate-800/50 border-slate-700 nes-container">
       <h3 class="text-lg font-semibold text-white mb-4">WebGL Vertex Streaming Canvas</h3>
       <div class="flex gap-4 items-start">
         <canvas
-          bind:this={canvas}
+          bind:this={canvas as any}
           width="400"
           height="300"
           class="border border-slate-600 rounded bg-black"></canvas>
         <div class="flex flex-col gap-2">
           <Button
-            onclick={startWebGLDemo}
+            on:click={startWebGLDemo}
             disabled={!systemInitialized}
             variant="outline"
             class="text-white border-slate-600 hover:bg-slate-700 bits-btn bits-btn">
-            Start WebGL Demo
-          </button>
+Start WebGL Demo
+</Button>
           <p class="text-sm text-gray-400">
             Frame Rate: {frameRate} fps<br />
             Status: {webglReady ? 'Streaming' : 'Idle'}
           </p>
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Control Panel -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
       <!-- Search Controls -->
-      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
+      <div class="p-6 bg-slate-800/50 border-slate-700 nes-container">
         <h3 class="text-lg font-semibold text-white mb-4">Enhanced RAG Search</h3>
         <div class="space-y-4">
           <input
@@ -432,76 +431,77 @@ https://svelte.dev/e/js_parse_error -->
             class="w-full p-3 rounded border border-slate-600 bg-slate-700 text-white placeholder-gray-400" />
           <div class="flex gap-2">
             <Button
-              onclick={performEnhancedRAGSearch}
+              on:click={performEnhancedRAGSearch}
               disabled={!systemInitialized || ragActive}
               class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
-              {ragActive ? 'Searching...' : 'Search'}
-            </button>
+{ragActive ? 'Searching...' : 'Search'}
+</Button>
             <Button
-              onclick={getContext7Recommendations}
+              on:click={getContext7Recommendations}
               disabled={!systemInitialized}
               variant="outline"
               class="text-white border-slate-600 hover:bg-slate-700 bits-btn bits-btn">
-              Get Recommendations
-            </button>
+Get Recommendations
+</Button>
           </div>
           <div class="text-sm text-gray-400">
             PageRank Score: {pageRankScore.toFixed(3)} | Feedback: {feedbackCount} votes
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- System Controls -->
-      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
+      <div class="p-6 bg-slate-800/50 border-slate-700 nes-container">
         <h3 class="text-lg font-semibold text-white mb-4">System Controls</h3>
         <div class="space-y-4">
           <Button
-            onclick={startAPICoordination}
+            on:click={startAPICoordination}
             disabled={!systemInitialized || apiActive}
             class="w-full bg-green-600 hover:bg-green-700 bits-btn bits-btn">
-            {apiActive ? 'API Active' : 'Start API Coordination'}
-          </button>
+{apiActive ? 'API Active' : 'Start API Coordination'}
+</Button>
           <Button
-            onclick={runFullDemo}
+            on:click={runFullDemo}
             disabled={!systemInitialized}
             class="w-full bg-purple-600 hover:bg-purple-700 bits-btn bits-btn">
-            Run Full Demo
-          </button>
+Run Full Demo
+</Button>
           <div class="text-sm text-gray-400">
             System Status: {systemInitialized ? 'Initialized' : 'Initializing...'}<br />
             Health: {systemHealth}%
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Results Display -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Search Results -->
-      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
+      <div class="p-6 bg-slate-800/50 border-slate-700 nes-container">
         <h3 class="text-lg font-semibold text-white mb-4">Search Results</h3>
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each searchResults as result, index}
             <div class="p-3 rounded border border-slate-600 bg-slate-700/50">
               <div class="flex justify-between items-start mb-2">
-                <h4 class="font-medium text-white">{result.document.title}</h4>
+                <h4 class="font-medium text-white">{(result as { document?: any; finalScore?: any; pageRankBoost?: any }).document.title}</h4>
                 <span class="text-xs px-2 py-1 rounded bg-blue-600 text-white">
-                  {(result.finalScore * 100).toFixed(1)}%
+                  {((result as { document?: any; finalScore?: any; pageRankBoost?: any }).finalScore * 100).toFixed(1)}%
                 </span>
               </div>
               <p class="text-sm text-gray-300 mb-2">
-                {result.document.content.substring(0, 150)}...
+                {(result as { document?: any; finalScore?: any; pageRankBoost?: any }).document.content.substring(0, 150)}...
               </p>
               <div class="flex justify-between items-center">
                 <span class="text-xs text-gray-400">
-                  PageRank: {result.pageRankBoost?.toFixed(3) || '0.000'}
+                  PageRank: {(result as { document?: any; finalScore?: any; pageRankBoost?: any }).pageRankBoost?.toFixed(3) || '0.000'}
                 </span>
                 <Button class="bits-btn"
                   size="sm"
-                  onclick={() => submitPositiveFeedback(index)}
+                  on:click={() =>
+submitPositiveFeedback(index)}
                   class="text-xs bg-green-600 hover:bg-green-700">
                   👍 Relevant
-                </button>
+</Button>
               </div>
             </div>
           {:else}
@@ -510,10 +510,10 @@ https://svelte.dev/e/js_parse_error -->
             </p>
           {/each}
         </div>
-      </NesCard>
+      </div>
 
       <!-- AI Recommendations -->
-      <NesCard class="p-6 bg-slate-800/50 border-slate-700">
+      <div class="p-6 bg-slate-800/50 border-slate-700 nes-container">
         <h3 class="text-lg font-semibold text-white mb-4">Context7 MCP Recommendations</h3>
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each recommendations as rec}
@@ -548,7 +548,7 @@ https://svelte.dev/e/js_parse_error -->
             </p>
           {/each}
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Footer -->

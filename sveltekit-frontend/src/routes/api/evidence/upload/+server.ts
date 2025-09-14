@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * Evidence Upload API (Production Ready)
@@ -166,18 +166,18 @@ async function sendToIngestService(evidenceId: string, content: string, options:
       body: JSON.stringify(payload)
     });
     
-    if (response.ok) {
-      const result = await response.json();
-      console.log(`📊 Sent evidence ${evidenceId} to ingest service: ${result.document_id}`);
+    if ((response as { ok?: any; json?: any; status?: any }).ok) {
+      const result = await (response as { ok?: any; json?: any; status?: any }).json();
+      console.log(`📊 Sent evidence ${evidenceId} to ingest service: ${(result as { document_id?: any; embedding?: any; response?: any }).document_id}`);
       
       // Link the document to evidence in PostgreSQL
-      if (result.document_id) {
+      if ((result as { document_id?: any; embedding?: any; response?: any }).document_id) {
         await db.update(documentMetadata)
           .set({ evidenceId: evidenceId })
-          .where(eq(documentMetadata.id, result.document_id));
+          .where(eq(documentMetadata.id, (result as { document_id?: any; embedding?: any; response?: any }).document_id));
       }
     } else {
-      console.warn(`⚠️  Ingest service error for evidence ${evidenceId}:`, response.status);
+      console.warn(`⚠️  Ingest service error for evidence ${evidenceId}:`, (response as { ok?: any; json?: any; status?: any }).status);
     }
   } catch (error: any) {
     console.warn(`⚠️  Failed to send evidence ${evidenceId} to ingest service:`, error.message);
@@ -207,8 +207,8 @@ class GPUVectorProcessor {
             prompt: text
           })
         });
-        const result = await response.json();
-        embeddings.push(result.embedding);
+        const result = await (response as { ok?: any; json?: any; status?: any }).json();
+        embeddings.push((result as { document_id?: any; embedding?: any; response?: any }).embedding);
       } catch (error: any) {
         console.error('Embedding failed:', error);
         embeddings.push([]);
@@ -260,7 +260,7 @@ class QdrantService {
           with_payload: true
         })
       });
-      return await response.json();
+      return await (response as { ok?: any; json?: any; status?: any }).json();
     } catch (error: any) {
       console.error('Qdrant search failed:', error);
       return { result: [] };
@@ -669,10 +669,10 @@ Provide structured JSON analysis:
       })
     });
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; json?: any; status?: any }).json();
 
     try {
-      const parsed = JSON.parse(result.response);
+      const parsed = JSON.parse((result as { document_id?: any; embedding?: any; response?: any }).response);
       return {
         summary: parsed.summary || '',
         keyPoints: parsed.keyFindings || [],
@@ -685,7 +685,7 @@ Provide structured JSON analysis:
       };
     } catch (parseError) {
       return {
-        summary: result.response.substring(0, 500),
+        summary: (result as { document_id?: any; embedding?: any; response?: any }).(response as { ok?: any; json?: any; status?: any }).substring(0, 500),
         keyPoints: [],
         categories: [],
         confidence: 0.5,
@@ -704,7 +704,7 @@ async function performAIAnalysis(
   buffer: Buffer,
   uploadData: Partial<FileUpload>,
   ocrText?: string
-): Promise<{ analysis?: AiAnalysisResult; embedding?: number[] }> {
+): Promise<any> {
   try {
     let textContent = '';
 

@@ -1,8 +1,8 @@
 // Enhanced XState Machine for AI Agent Shell with MCP Tools Integration
 import { createMachine, assign } from "xstate";
-import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient';
-import { productionServiceClient, services } from '../services/productionServiceClient';
-import { mcpTools, type MCPToolResponse } from '../../mcp/index';
+import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient.js';
+import { productionServiceClient, services } from '../services/productionServiceClient.js';
+import { mcpTools, type MCPToolResponse } from '../../mcp/index.js';
 import type { Evidence, User } from "$lib/types/index.js"; 
 import type { Case } from "$lib/types/case";
 
@@ -60,7 +60,7 @@ export const agentShellMachineMCP = createMachine({
   context: {
     input: "",
     response: "",
-    mcpResults: {},
+    mcpResults: Record<string, any>,
     serviceHealth: {
       enhancedRAG: false,
       uploadService: false,
@@ -68,7 +68,7 @@ export const agentShellMachineMCP = createMachine({
       mcpDatabase: false
     }
   },
-  types: {} as {
+  types: Record<string, any> as {
     context: AgentShellContext;
     events: AgentShellEvent;
   },

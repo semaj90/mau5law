@@ -48,7 +48,7 @@ export async function setJSON(key: string, value: unknown, ttlSeconds = 60): Pro
 }
 
 // Simple anti-stampede: coalesce concurrent misses per key in-process.
-export async function withCache<T>(key: string, ttlSeconds: number, compute: () => Promise<T>): Promise<{ value: T; cached: boolean }>{
+export async function withCache<T>(key: string, ttlSeconds: number, compute: () => Promise<T>): Promise<any> {
   const hit = await getJSON<T>(key);
   if (hit != null) return { value: hit, cached: true };
 

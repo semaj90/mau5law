@@ -159,19 +159,8 @@ export interface PerformanceComparison {
 export interface ScalingAnalysis {
 	linear_scaling: boolean;
 	optimal_batch_size: number;
-	performance_by_batch_size: Array<{
-		batch_size: number;
-		throughput: number;
-		latency: number;
-		efficiency: number;
-	}>;
-	resource_scaling: Array<{
-		batch_size: number;
-		cpu_usage: number;
-		memory_usage: number;
-		gpu_usage?: number;
-	}>;
-}
+	performance_by_batch_size: Array<any>;
+	resource_scaling: Array<any>
 
 // Service Status Types
 

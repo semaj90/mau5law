@@ -1,7 +1,7 @@
 <!-- YoRHa Interface Layout -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  let { children } = $props();
+  let { children  }: { children : any } = $props();
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
@@ -135,7 +135,7 @@
       <div class="yorha-brand">
         <button
           class="yorha-menu-toggle"
-          onclick={() => sidebarOpen = !sidebarOpen}
+          on:click={() => sidebarOpen = !sidebarOpen}
           aria-label="Toggle sidebar"
         >
           <Terminal size={20} />
@@ -168,11 +168,11 @@
 
       <!-- Quick Actions -->
       <div class="yorha-quick-actions">
-        <button class="yorha-quick-btn" onclick={() => goto('/')}>
+        <button class="yorha-quick-btn" on:click={() => goto('/')}>
           <Home size={16} />
           <span>MAIN</span>
         </button>
-        <button class="yorha-quick-btn" onclick={() => goto('/demos')}>
+        <button class="yorha-quick-btn" on:click={() => goto('/demos')}>
           <FileText size={16} />
           <span>DEMOS</span>
         </button>
@@ -187,7 +187,7 @@
         <h2>NAVIGATION</h2>
         <button
           class="yorha-sidebar-close"
-          onclick={() => sidebarOpen = false}
+          on:click={() => sidebarOpen = false}
         >
           <ChevronLeft size={20} />
         </button>
@@ -195,17 +195,17 @@
 
       <ul class="yorha-nav-list">
         {#each navItems as item}
-          {@const Icon = item.icon}
+          {@const Icon = (item as { icon?: any; path?: any; label?: any; description?: any }).icon}
           <li class="yorha-nav-item">
             <button
               class="yorha-nav-link"
-              class:yorha-nav-active={isActivePath(item.path)}
-              onclick={() => navigateTo(item.path)}
+              class:yorha-nav-active={isActivePath((item as { icon?: any; path?: any; label?: any; description?: any }).path)}
+              on:click={() => navigateTo((item as { icon?: any; path?: any; label?: any; description?: any }).path)}
             >
               <Icon size={18} />
               <div class="yorha-nav-content">
-                <span class="yorha-nav-label">{item.label}</span>
-                <span class="yorha-nav-desc">{item.description}</span>
+                <span class="yorha-nav-label">{(item as { icon?: any; path?: any; label?: any; description?: any }).label}</span>
+                <span class="yorha-nav-desc">{(item as { icon?: any; path?: any; label?: any; description?: any }).description}</span>
               </div>
               <ChevronRight size={16} class="yorha-nav-arrow" />
             </button>
@@ -226,8 +226,8 @@
       class="yorha-overlay"
       role="button"
       tabindex="0"
-      onclick={() => sidebarOpen = false}
-      onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? sidebarOpen = false : null}
+      on:click={() => sidebarOpen = false}
+      on:keydown={(e) => e.key === 'Enter' || e.key === ' ' ? sidebarOpen = false : null}
       aria-label="Close sidebar"
     ></div>
   {/if}

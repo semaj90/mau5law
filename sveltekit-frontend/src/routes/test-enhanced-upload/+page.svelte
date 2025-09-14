@@ -59,7 +59,7 @@
           });
           return { 
             name: service.name, 
-            status: response.ok ? 'online' : 'offline',
+            status: (response as { ok?: any }).ok ? 'online' : 'offline',
             url: service.url 
           };
         } catch (error) {
@@ -75,7 +75,7 @@
 
     systemStatus = {
       services: statusChecks.map(result => 
-        result.status === 'fulfilled' ? result.value : 
+        (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).value : 
         { name: 'unknown', status: 'error' }
       ),
       timestamp: new Date().toISOString()
@@ -155,7 +155,7 @@
         <div class="mb-4 p-4 bg-blue-50 rounded-lg">
           <h3 class="font-medium text-blue-800 mb-2">Test Configuration</h3>
           <div class="text-sm text-blue-700">
-            <p><strong>Case ID:</strong> {data.form.caseId}</p>
+            <p><strong>Case ID:</strong> {(data as { form?: any }).form.caseId}</p>
             <p><strong>Enhanced Flow:</strong> ✅ Enabled (preserveExistingFlow = true)</p>
             <p><strong>Processing Pipeline:</strong> OCR → LegalBERT → Semantic Architecture → Enhanced RAG</p>
           </div>
@@ -164,7 +164,7 @@
         <!-- The Enhanced Upload Component -->
         <EnhancedLegalUpload 
           data={data}
-          caseId={data.form.caseId}
+          caseId={(data as { form?: any }).form.caseId}
           preserveExistingFlow={true}
           onUploadComplete={handleUploadComplete}
           onUploadError={handleUploadError}
@@ -200,13 +200,13 @@
               <div class="border rounded-lg p-4 bg-gradient-to-r from-green-50 to-blue-50">
                 <div class="flex justify-between items-start mb-3">
                   <h3 class="font-semibold text-lg">
-                    #{index + 1}: {result.filename || 'Unknown file'}
+                    #{index + 1}: {(result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).filename || 'Unknown file'}
                   </h3>
                   <div class="flex gap-2">
-                    <span class="px-3 py-1 text-xs rounded-full {result.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                      {result.success ? '✅ Success' : '❌ Failed'}
+                    <span class="px-3 py-1 text-xs rounded-full {(result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                      {(result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).success ? '✅ Success' : '❌ Failed'}
                     </span>
-                    {#if result.enhancedProcessing}
+                    {#if (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).enhancedProcessing}
                       <span class="px-3 py-1 text-xs rounded-full bg-purple-100 text-purple-800">
                         🧠 Enhanced
                       </span>
@@ -219,17 +219,17 @@
                   <div>
                     <h4 class="font-medium mb-2">📄 File Information</h4>
                     <div class="space-y-1 text-gray-600">
-                      {#if result.documentId}
-                        <p><strong>Document ID:</strong> {result.documentId}</p>
+                      {#if (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).documentId}
+                        <p><strong>Document ID:</strong> {(result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).documentId}</p>
                       {/if}
-                      {#if result.caseId}
-                        <p><strong>Case ID:</strong> {result.caseId}</p>
+                      {#if (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).caseId}
+                        <p><strong>Case ID:</strong> {(result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).caseId}</p>
                       {/if}
-                      {#if result.size}
-                        <p><strong>Size:</strong> {(result.size / 1024).toFixed(1)} KB</p>
+                      {#if (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).size}
+                        <p><strong>Size:</strong> {((result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).size / 1024).toFixed(1)} KB</p>
                       {/if}
-                      {#if result.type}
-                        <p><strong>Type:</strong> {result.type}</p>
+                      {#if (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).type}
+                        <p><strong>Type:</strong> {(result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).type}</p>
                       {/if}
                     </div>
                   </div>
@@ -238,16 +238,16 @@
                   <div>
                     <h4 class="font-medium mb-2">🧠 Enhanced Analysis</h4>
                     <div class="space-y-1 text-gray-600">
-                      {#if result.analysis?.ocr}
-                        <p>✅ OCR: {result.analysis.ocr.pages} pages, {result.analysis.ocr.averageConfidence}% confidence</p>
+                      {#if (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).analysis?.ocr}
+                        <p>✅ OCR: {(result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).analysis.ocr.pages} pages, {(result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).analysis.ocr.averageConfidence}% confidence</p>
                       {/if}
-                      {#if result.analysis?.legal}
-                        <p>✅ LegalBERT: {result.analysis.legal.concepts?.length || 0} concepts</p>
+                      {#if (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).analysis?.legal}
+                        <p>✅ LegalBERT: {(result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).analysis.legal.concepts?.length || 0} concepts</p>
                       {/if}
-                      {#if result.analysis?.semantic}
+                      {#if (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).analysis?.semantic}
                         <p>✅ Semantic: Embeddings generated</p>
                       {/if}
-                      {#if result.webhookTriggered}
+                      {#if (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).webhookTriggered}
                         <p>✅ Webhook: Enhanced RAG pipeline triggered</p>
                       {/if}
                     </div>
@@ -255,9 +255,9 @@
                 </div>
                 
                 <!-- Error Display -->
-                {#if result.error}
+                {#if (result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).error}
                   <div class="mt-3 p-3 bg-red-100 rounded-md">
-                    <p class="text-red-700 text-sm"><strong>Error:</strong> {result.error}</p>
+                    <p class="text-red-700 text-sm"><strong>Error:</strong> {(result as { status?: any; value?: any; filename?: any; success?: any; enhancedProcessing?: any; documentId?: any; caseId?: any; size?: any; type?: any; analysis?: any; webhookTriggered?: any; error?: any }).error}</p>
                   </div>
                 {/if}
               </div>

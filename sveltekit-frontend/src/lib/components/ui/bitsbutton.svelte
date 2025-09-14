@@ -158,7 +158,7 @@
 		tabindex="0"
 		aria-disabled={isDisabled}
 		data-testid={dataTestid || 'bits-button'}
-		onclick={handleClick}
+		on:click={handleClick}
 	>
 		{#if loading}
 			<svg class="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -177,7 +177,7 @@
 		disabled={isDisabled}
 		class={buttonClass}
 		data-testid={dataTestid || 'bits-button'}
-		onclick={handleClick}
+		on:click={handleClick}
 	>
 		{#if loading}
 			<svg class="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">

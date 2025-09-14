@@ -5,18 +5,11 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { cache } from '$lib/server/cache/redis.js';
 
 interface TensorStoreRequest {
-  results: Array<{
-    text: string;
-    embeddings: number[];
-    dimensions: number;
-    confidence: number;
-    tensor_id: string;
-    search_index: number[];
-  }>;
+  results: Array<any>;
   metadata: {
     processed_at: number;
     batch_size: number;
@@ -135,7 +128,7 @@ async function storeTensorData(
     
     // 4. Cache in Redis for quick access
     try {
-      await cache.set(`tensor:${result.tensor_id}`, {
+      await cache.set(`tensor:${(result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id}`, {
         ...result,
         metadata,
         stored_at: Date.now()
@@ -154,7 +147,7 @@ async function storeTensorData(
   }
   
   return {
-    tensor_id: result.tensor_id,
+    tensor_id: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id,
     stored_in: storedIn,
     processing_time: performance.now() - startTime,
     error
@@ -169,13 +162,13 @@ async function storeInNeo4j(
   metadata: TensorStoreRequest['metadata']
 ): Promise<void> {
   // Mock implementation - replace with actual Neo4j driver
-  console.log('📊 Storing in Neo4j:', result.tensor_id);
+  console.log('📊 Storing in Neo4j:', (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id);
   
   const graphData = {
-    tensor_id: result.tensor_id,
-    text: result.text,
-    confidence: result.confidence,
-    dimensions: result.dimensions,
+    tensor_id: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id,
+    text: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).text,
+    confidence: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).confidence,
+    dimensions: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).dimensions,
     created_at: new Date().toISOString(),
     source: metadata.source || 'ocr',
     relationships: []
@@ -204,15 +197,15 @@ async function storeInPostgreSQL(
   result: TensorStoreRequest['results'][0],
   metadata: TensorStoreRequest['metadata']
 ): Promise<void> {
-  console.log('🐘 Storing in PostgreSQL:', result.tensor_id);
+  console.log('🐘 Storing in PostgreSQL:', (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id);
   
   const pgData = {
-    tensor_id: result.tensor_id,
-    text: result.text,
-    embedding: result.embeddings,
-    confidence: result.confidence,
-    dimensions: result.dimensions,
-    search_index: result.search_index,
+    tensor_id: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id,
+    text: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).text,
+    embedding: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).embeddings,
+    confidence: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).confidence,
+    dimensions: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).dimensions,
+    search_index: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).search_index,
     metadata: {
       ...metadata,
       stored_at: new Date().toISOString()
@@ -250,7 +243,7 @@ async function storeInQdrant(
   result: TensorStoreRequest['results'][0],
   metadata: TensorStoreRequest['metadata']
 ): Promise<void> {
-  console.log('🔍 Storing in Qdrant:', result.tensor_id);
+  console.log('🔍 Storing in Qdrant:', (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id);
   
   try {
     const response = await fetch(`${QDRANT_URL}/collections/tensor_embeddings/points`, {
@@ -260,22 +253,22 @@ async function storeInQdrant(
       },
       body: JSON.stringify({
         points: [{
-          id: result.tensor_id,
-          vector: result.embeddings,
+          id: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id,
+          vector: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).embeddings,
           payload: {
-            text: result.text,
-            confidence: result.confidence,
-            dimensions: result.dimensions,
+            text: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).text,
+            confidence: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).confidence,
+            dimensions: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).dimensions,
             source: metadata.source || 'ocr',
             processed_at: metadata.processed_at,
-            search_index: result.search_index
+            search_index: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).search_index
           }
         }]
       })
     });
     
-    if (!response.ok) {
-      throw new Error(`Qdrant storage failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any }).ok) {
+      throw new Error(`Qdrant storage failed: ${(response as { ok?: any; status?: any }).status}`);
     }
     
     console.log('✅ Qdrant storage completed');
@@ -326,7 +319,7 @@ async function checkPostgreSQL(): Promise<boolean> {
 async function checkQdrant(): Promise<boolean> {
   try {
     const response = await fetch(`${QDRANT_URL}/health`);
-    return response.ok;
+    return (response as { ok?: any; status?: any }).ok;
   } catch {
     return false;
   }

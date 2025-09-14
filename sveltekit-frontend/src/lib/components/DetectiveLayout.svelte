@@ -5,6 +5,10 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   import 'nes.css/css/nes.min.css';
   const { title = "Detective Interface", subtitle = "" } = $props();
 
+
+
+// Auto-generated default export
+export default {};
 </script>
   
   

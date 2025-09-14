@@ -117,14 +117,14 @@
         <button class="nes-btn"
           variant="outline"
           size="sm"
-          onclick={() => showSystemDialog = true}
+          on:click={() => showSystemDialog = true}
         >
           System Status
         </button>
         <button class="nes-btn"
           variant="outline"
           size="sm"
-          onclick={() => showConfigDialog = true}
+          on:click={() => showConfigDialog = true}
         >
           Demo Config
         </button>
@@ -154,11 +154,11 @@
 
   <!-- Context Cards -->
   <div class="context-cards">
-    <NesCard.Root class="context-nier-bits-card user-nier-bits-card">
-      <NesCard.Header>
-        <NesCard.Title>👤 Current User</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="context-nier-bits-card user-nier-bits-card nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">👤 Current User</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="user-info">
           <div class="user-name">{mockUser.name}</div>
           <div class="user-details">
@@ -166,14 +166,14 @@
             <span class="bar-number">Bar: {mockUser.barNumber}</span>
           </div>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
 
-    <NesCard.Root class="context-nier-bits-card case-nier-bits-card">
-      <NesCard.Header>
-        <NesCard.Title>📁 Active Case</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="context-nier-bits-card case-nier-bits-card nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">📁 Active Case</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="case-info">
           <div class="case-title">{mockCase.title}</div>
           <div class="case-details">
@@ -184,14 +184,14 @@
           </div>
           <div class="case-id">Case ID: {mockCase.id}</div>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
 
-    <NesCard.Root class="context-nier-bits-card mode-nier-bits-card">
-      <NesCard.Header>
-        <NesCard.Title>🔧 Current Mode</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="context-nier-bits-card mode-nier-bits-card nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">🔧 Current Mode</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="mode-info">
           <div class="mode-badge yorha-badge">
             {demoConfig.mode === 'detective' ? '🕵️ Detective' :
@@ -207,17 +207,17 @@
             </span>
           </div>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   </div>
 
   <!-- Production Warning -->
   {#if !systemStatus.ollama || !systemStatus.database}
-    <NesCard.Root class="warning-nier-bits-card">
-      <NesCard.Header>
-        <NesCard.Title class="warning-title">⚠️ Production Services Status</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="warning-nier-bits-card nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="warning-title nes-container">⚠️ Production Services Status</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="warning-content">
           <p>Some production services are not available. The system will use fallback implementations:</p>
           <ul class="service-list">
@@ -241,8 +241,8 @@
             {/if}
           </ul>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   {/if}
 
   <!-- Enhanced Legal Upload Component -->
@@ -266,11 +266,11 @@
 
   <!-- Feature Highlights -->
   <div class="feature-highlights">
-    <NesCard.Root class="feature-nier-bits-card">
-      <NesCard.Header>
-        <NesCard.Title>🚀 Production Features</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="feature-nier-bits-card nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">🚀 Production Features</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="features-grid">
           <div class="feature-item">
             <div class="feature-icon">🤖</div>
@@ -320,8 +320,8 @@
             </div>
           </div>
         </div>
-      </Card.Content>
-    </Card.Root>
+      </div.Content>
+    </div.Root>
   </div>
 </div>
 
@@ -390,10 +390,10 @@
       </div>
 
       <Dialog.Footer>
-        <button class="nes-btn" variant="outline" onclick={() => checkSystemStatus()}>
+        <button class="nes-btn" variant="outline" on:click={() => checkSystemStatus()}>
           Refresh Status
         </button>
-        <button class="nes-btn" onclick={() => showSystemDialog = false}>Close</button>
+        <button class="nes-btn" on:click={() => showSystemDialog = false}>Close</button>
       </Dialog.Footer>
     </Dialog.Content>
   </Dialog.Root>
@@ -499,10 +499,10 @@
       </div>
 
       <Dialog.Footer>
-        <button class="nes-btn" variant="outline" onclick={() => showConfigDialog = false}>
+        <button class="nes-btn" variant="outline" on:click={() => showConfigDialog = false}>
           Cancel
         </button>
-        <button class="nes-btn" onclick={() => showConfigDialog = false}>
+        <button class="nes-btn" on:click={() => showConfigDialog = false}>
           Apply Settings
         </button>
       </Dialog.Footer>
@@ -675,7 +675,7 @@
     margin-bottom: 0.5rem;
   }
 
-  .service-item.offline {
+  .service-(item as { offline?: any }).offline {
     border-color: #ff6b6b;
     background: rgba(255, 107, 107, 0.1);
   }

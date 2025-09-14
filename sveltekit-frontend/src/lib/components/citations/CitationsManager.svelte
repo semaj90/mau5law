@@ -59,10 +59,7 @@ https://svelte.dev/e/attribute_duplicate -->
   	let { 
   		caseId = '',
   		readonly = false
-  	} = $props<{
-  		caseId?: string;
-  		readonly?: boolean;
-  	}>();
+  	} = $props();
 
   	// Initialize citations
   	onMount(async () => {
@@ -332,15 +329,15 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- Citations Manager Interface -->
 <div class="w-full h-full flex flex-col bg-background">
 	<!-- Header -->
-	<NesCard class="mb-4">
-		<div class="yorha-panel-header" class="pb-3">
+	<div class="mb-4 nes-container">
+		<div class="yorha-panel-header pb-3">
 			<div class="flex justify-between items-center">
 				<div class="flex items-center gap-4">
 					<div class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
 						<BookOpen class="w-5 h-5 text-primary" />
 					</div>
 					<div>
-						<h3 class="nes-text is-primary" class="text-xl">Citations & References</h3>
+						<h3 class="nes-text is-primary text-xl">Citations & References</h3>
 						<p class="text-sm nes-text is-disabled">Legal citation management system</p>
 					</div>
 				</div>
@@ -351,7 +348,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-add-btn"
 							variant="outline" 
 							size="sm" 
-							onclick={showAddCitationForm}
+							on:click={showAddCitationForm}
 							aria-label="Open dialog to add a new legal citation"
 							aria-describedby="add-citation-help"
 							role="button"
@@ -359,9 +356,9 @@ https://svelte.dev/e/attribute_duplicate -->
 							data-enhanced-bits="true"
 							data-operation="add-citation"
 						>
-							<Plus class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Plus icon" />
+<Plus class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Plus icon" />
 							Add Citation
-						</button>
+</Button>
 						<div id="add-citation-help" class="sr-only">
 							Create a new legal citation with complete source information
 						</div>
@@ -370,7 +367,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-export-btn"
 						variant="outline" 
 						size="sm" 
-						onclick={exportCitations}
+						on:click={exportCitations}
 						aria-label="Export citations to downloadable file"
 						aria-describedby="export-help"
 						role="button"
@@ -378,20 +375,20 @@ https://svelte.dev/e/attribute_duplicate -->
 						data-enhanced-bits="true"
 						data-operation="export-citations"
 					>
-						<Download class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Download icon" />
+<Download class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Download icon" />
 						Export
-					</button>
+</Button>
 					<div id="export-help" class="sr-only">
 						Download all filtered citations as a JSON file for backup or sharing
 					</div>
 				</div>
 			</div>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- Search and Filters -->
-	<NesCard class="mb-4">
-		<div class="yorha-panel-content" class="py-4">
+	<div class="mb-4 nes-container">
+		<div class="yorha-panel-content py-4">
 			<div class="flex flex-col lg:flex-row gap-4">
 				<!-- Search -->
 				<div class="flex-1">
@@ -400,7 +397,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Input
 							placeholder="Search citations, authors, sources..."
 							value={searchQuery}
-							oninput={handleSearch}
+							on:input={handleSearch}
 							class="pl-9"
 						/>
 					</div>
@@ -412,7 +409,8 @@ https://svelte.dev/e/attribute_duplicate -->
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'date' ? 'default' : 'outline'}
 						size="sm"
-						onclick={() => changeSortBy('date')}
+						on:click={() =>
+changeSortBy('date')}
 						aria-label={sortBy === 'date' ? 'Currently sorting by date' : 'Sort citations by date added'}
 						aria-describedby="sort-date-help"
 						role="button"
@@ -423,7 +421,7 @@ https://svelte.dev/e/attribute_duplicate -->
 					>
 						<Calendar class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Calendar icon" />
 						Date
-					</button>
+</Button>
 					<div id="sort-date-help" class="sr-only">
 						Sort citations by the date they were added to the system
 					</div>
@@ -431,7 +429,8 @@ https://svelte.dev/e/attribute_duplicate -->
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'title' ? 'default' : 'outline'}
 						size="sm"
-						onclick={() => changeSortBy('title')}
+						on:click={() =>
+changeSortBy('title')}
 						aria-label={sortBy === 'title' ? 'Currently sorting by title' : 'Sort citations alphabetically by title'}
 						aria-describedby="sort-title-help"
 						role="button"
@@ -442,7 +441,7 @@ https://svelte.dev/e/attribute_duplicate -->
 					>
 						<SortAsc class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Sort ascending icon" />
 						Title
-					</button>
+</Button>
 					<div id="sort-title-help" class="sr-only">
 						Sort citations alphabetically by title
 					</div>
@@ -450,7 +449,8 @@ https://svelte.dev/e/attribute_duplicate -->
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'relevance' ? 'default' : 'outline'}
 						size="sm"
-						onclick={() => changeSortBy('relevance')}
+						on:click={() =>
+changeSortBy('relevance')}
 						aria-label={sortBy === 'relevance' ? 'Currently sorting by relevance score' : 'Sort citations by relevance score'}
 						aria-describedby="sort-relevance-help"
 						role="button"
@@ -461,60 +461,60 @@ https://svelte.dev/e/attribute_duplicate -->
 					>
 						<Filter class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="Filter icon" />
 						Relevance
-					</button>
+</Button>
 					<div id="sort-relevance-help" class="sr-only">
 						Sort citations by their calculated relevance score to your case
 					</div>
 				</div>
 			</div>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- Main Content -->
 	<div class="flex-1 grid grid-cols-4 gap-4">
 		<!-- Categories Sidebar -->
-		<NesCard class="h-fit">
-			<div class="yorha-panel-header" class="pb-3">
-				<h3 class="nes-text is-primary" class="text-sm">Categories</h3>
+		<div class="h-fit nes-container">
+			<div class="yorha-panel-header pb-3">
+				<h3 class="nes-text is-primary text-sm">Categories</h3>
 			</div>
-			<div class="yorha-panel-content" class="space-y-2">
+			<div class="yorha-panel-content space-y-2">
 				{#each citationCategories as category}
 					<button
 						class="w-full flex justify-between items-center p-2 rounded text-sm hover:bg-muted transition-colors"
 						class:bg-primary={selectedCategory === category.id}
 						class:text-primary-foreground={selectedCategory === category.id}
-						onclick={() => selectCategory(category.id)}
+						on:click={() => selectCategory(category.id)}
 					>
 						<span>{category.label}</span>
 						<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{category.count}</span>
-					</button>
+</Button>
 				{/each}
 			</div>
-		</NesCard>
+		</div>
 
 		<!-- Citations List -->
 		<div class="col-span-3 space-y-4">
 			{#if isLoading}
-				<NesCard>
-					<div class="yorha-panel-content" class="py-8 text-center">
+				<div class="nes-container">
+					<div class="yorha-panel-content py-8 text-center">
 						<div class="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
 						<p class="text-sm nes-text is-disabled">Loading citations...</p>
 					</div>
-				</NesCard>
+				</div>
 			{:else if filteredCitations.length === 0}
-				<NesCard>
-					<div class="yorha-panel-content" class="py-8 text-center">
+				<div class="nes-container">
+					<div class="yorha-panel-content py-8 text-center">
 						<BookOpen class="w-12 h-12 nes-text is-disabled mx-auto mb-4" />
 						<p class="text-sm nes-text is-disabled mb-2">No citations found</p>
 						{#if searchQuery}
 							<p class="text-xs nes-text is-disabled">Try adjusting your search terms</p>
 						{/if}
 					</div>
-				</NesCard>
+				</div>
 			{:else}
 				{#each filteredCitations as citation}
-					<NesCard class="hover:shadow-md transition-shadow">
-						<div class="yorha-panel-content" class="py-4">
+					<div class="hover:shadow-md transition-shadow nes-container">
+						<div class="yorha-panel-content py-4">
 							<div class="flex justify-between items-start">
 								<div class="flex-1 pr-4">
 									<div class="flex items-center gap-2 mb-2">
@@ -563,7 +563,7 @@ https://svelte.dev/e/attribute_duplicate -->
 									<button class="nes-btn"
 										variant="ghost"
 										size="sm"
-										onclick={() => viewCitationDetails(citation)}
+										on:click={() => viewCitationDetails(citation)}
 										class="h-8 w-8 p-0"
 									>
 										<Eye class="w-4 h-4" />
@@ -573,7 +573,8 @@ https://svelte.dev/e/attribute_duplicate -->
 											class="enhanced-bits-btn nes-citation-action n64-enhanced lod-optimized retro-external-btn h-8 w-8 p-0"
 											variant="ghost"
 											size="sm"
-											onclick={() => window.open(citation.url, '_blank')}
+											on:click={() =>
+window.open(citation.url, '_blank')}
 											aria-label="Open citation source in new tab"
 											aria-describedby={`external-${citation.id}-help`}
 											role="button"
@@ -582,14 +583,15 @@ https://svelte.dev/e/attribute_duplicate -->
 											data-operation="external-link"
 										>
 											<ExternalLink class="w-4 h-4" />
-										</button>
+</Button>
 									{/if}
 									{#if !readonly}
 										<Button 
 											class="enhanced-bits-btn nes-citation-action n64-enhanced lod-optimized retro-delete-btn danger-variant h-8 w-8 p-0 text-destructive hover:text-destructive"
 											variant="ghost"
 											size="sm"
-											onclick={() => deleteCitation(citation.id)}
+											on:click={() =>
+deleteCitation(citation.id)}
 											aria-label="Delete this citation permanently"
 											aria-describedby={`delete-${citation.id}-help`}
 											role="button"
@@ -599,12 +601,12 @@ https://svelte.dev/e/attribute_duplicate -->
 											data-critical="true"
 										>
 											<Trash2 class="w-4 h-4" />
-										</button>
+</Button>
 									{/if}
 								</div>
 							</div>
 						</div>
-					</NesCard>
+					</div>
 				{/each}
 			{/if}
 		</div>
@@ -614,12 +616,12 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- Add Citation Modal -->
 {#if showAddForm}
 	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" role="button" tabindex="0"
-                onclick={(e) => { if (e.target === e.currentTarget) hideAddCitationForm(); }}>
-		<NesCard class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                on:click={(e) => { if (e.target === e.currentTarget) hideAddCitationForm(); }}>
+		<div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto nes-container">
 			<div class="yorha-panel-header">
 				<h3 class="nes-text is-primary">Add New Citation</h3>
 			</div>
-			<div class="yorha-panel-content" class="space-y-4">
+			<div class="yorha-panel-content space-y-4">
 				<div class="grid grid-cols-2 gap-4">
 					<div>
 						<label class="block text-sm font-medium mb-1">Title *</label>
@@ -674,17 +676,17 @@ https://svelte.dev/e/attribute_duplicate -->
 					<Button 
 						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
 						variant="outline" 
-						onclick={hideAddCitationForm}
+						on:click={hideAddCitationForm}
 						aria-label="Cancel adding citation and close dialog"
 						role="button"
 						data-nes-theme="dialog-secondary"
 						data-enhanced-bits="true"
 					>
-						Cancel
-					</button>
+Cancel
+</Button>
 					<Button 
 						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
-						onclick={saveCitation}
+						on:click={saveCitation}
 						aria-label="Save new citation to collection"
 						aria-describedby="save-citation-help"
 						role="button"
@@ -692,25 +694,25 @@ https://svelte.dev/e/attribute_duplicate -->
 						data-enhanced-bits="true"
 						data-operation="save-citation"
 					>
-						Save Citation
-					</button>
+Save Citation
+</Button>
 					<div id="save-citation-help" class="sr-only">
 						Add this citation to your legal reference collection
 					</div>
 				</div>
 			</div>
-		</NesCard>
+		</div>
 	</div>
 {/if}
 
 <!-- Citation Detail Modal -->
 {#if showDetailModal && selectedCitation}
 	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onclick|self={hideDetailModal}>
-		<NesCard class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+		<div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto nes-container">
 			<div class="yorha-panel-header">
 				<h3 class="nes-text is-primary">{selectedCitation.title}</h3>
 			</div>
-			<div class="yorha-panel-content" class="space-y-4">
+			<div class="yorha-panel-content space-y-4">
 				<div class="bg-muted p-4 rounded font-mono text-sm">
 					{formatCitation(selectedCitation)}
 				</div>
@@ -759,7 +761,8 @@ https://svelte.dev/e/attribute_duplicate -->
 							<Button 
 								class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-external-btn"
 								variant="outline" 
-								onclick={() => window.open(selectedCitation.url, '_blank')}
+								on:click={() =>
+window.open(selectedCitation.url, '_blank')}
 								aria-label="Open citation source link in new tab"
 								role="button"
 								data-nes-theme="dialog-external"
@@ -768,22 +771,22 @@ https://svelte.dev/e/attribute_duplicate -->
 							>
 								<ExternalLink class="w-4 h-4 mr-1" aria-hidden="true" role="img" aria-label="External link icon" />
 								Open Link
-							</button>
+</Button>
 						{/if}
 						<Button 
 							class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-close-btn"
-							onclick={hideDetailModal}
+							on:click={hideDetailModal}
 							aria-label="Close citation details dialog"
 							role="button"
 							data-nes-theme="dialog-primary"
 							data-enhanced-bits="true"
 						>
-							Close
-						</button>
+Close
+</Button>
 					</div>
 				</div>
 			</div>
-		</NesCard>
+		</div>
 	</div>
 {/if}
 

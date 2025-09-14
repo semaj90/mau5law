@@ -254,7 +254,7 @@
     <!-- Cluster Overview -->
     <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
       <!-- Total Workers -->
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-blue-100">
             <Users class="h-5 w-5 text-blue-600" />
@@ -267,10 +267,10 @@
             </p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Requests -->
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-green-100">
             <Activity class="h-5 w-5 text-green-600" />
@@ -280,10 +280,10 @@
             <p class="text-sm text-gray-400">{clusterHealth.totalRequests.toLocaleString()}</p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Response Time -->
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-purple-100">
             <Zap class="h-5 w-5 text-purple-600" />
@@ -293,10 +293,10 @@
             <p class="text-sm text-gray-400">{clusterHealth.averageResponseTime.toFixed(0)}ms</p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Memory Usage -->
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-orange-100">
             <MemoryStick class="h-5 w-5 text-orange-600" />
@@ -306,10 +306,10 @@
             <p class="text-sm text-gray-400">{formatBytes(clusterHealth.memoryUsage.average)}</p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- CPU Usage -->
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div class="p-2 rounded-lg bg-yellow-100">
             <Cpu class="h-5 w-5 text-yellow-600" />
@@ -319,10 +319,10 @@
             <p class="text-sm text-gray-400">{formatCpuTime(clusterHealth.cpuUsage.average)}</p>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Error Rate -->
-      <NesCard class="p-4 bg-slate-800/50 border-slate-700">
+      <div class="p-4 bg-slate-800/50 border-slate-700 nes-container">
         <div class="flex items-center gap-3">
           <div
             class="p-2 rounded-lg"
@@ -341,13 +341,13 @@
             <p class="text-sm text-gray-400">{clusterHealth.errors.rate.toFixed(2)}</p>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Control Panel -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
       <!-- Scaling Controls -->
-      <NesCard class="p-6 bg-slate-800/30 border-slate-600">
+      <div class="p-6 bg-slate-800/30 border-slate-600 nes-container">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
           <TrendingUp class="h-5 w-5" />
           Cluster Scaling
@@ -365,7 +365,8 @@
 
           <div class="flex gap-2">
             <Button class="bits-btn flex-1"
-              onclick={() => scaleCluster(targetWorkers)}
+              on:click={() =>
+scaleCluster(targetWorkers)}
               disabled={isScaling || targetWorkers === clusterHealth.totalWorkers}>
               {#if isScaling}
                 <RefreshCw class="h-4 w-4 mr-2 animate-spin" />
@@ -377,24 +378,25 @@
             </Button>
 
             <Button class="bits-btn px-3"
-              onclick={() => scaleCluster(clusterHealth.totalWorkers + 1)}
+              on:click={() => scaleCluster(clusterHealth.totalWorkers + 1)}
               disabled={isScaling}
               variant="outline">
               +1
-            </button>
+</Button>
 
             <Button class="bits-btn px-3"
-              onclick={() => scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
+              on:click={() =>
+scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
               disabled={isScaling || clusterHealth.totalWorkers <= 1}
               variant="outline">
               -1
-            </button>
+</Button>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Cluster Operations -->
-      <NesCard class="p-6 bg-slate-800/30 border-slate-600">
+      <div class="p-6 bg-slate-800/30 border-slate-600 nes-container">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
           <RefreshCw class="h-5 w-5" />
           Operations
@@ -402,27 +404,27 @@
 
         <div class="space-y-3">
           <Button
-            onclick={rollingRestart}
+            on:click={rollingRestart}
             disabled={isRestarting}
             class="w-full bg-orange-600 hover:bg-orange-700 bits-btn bits-btn">
-            {#if isRestarting}
+{#if isRestarting}
               <RefreshCw class="h-4 w-4 mr-2 animate-spin" />
               Restarting...
             {:else}
               <RefreshCw class="h-4 w-4 mr-2" />
               Rolling Restart
             {/if}
-          </button>
+</Button>
 
-          <Button onclick={fetchClusterStatus} variant="outline" class="w-full bits-btn bits-btn">
-            <RefreshCw class="h-4 w-4 mr-2" />
+          <Button on:click={fetchClusterStatus} variant="outline" class="w-full bits-btn bits-btn">
+<RefreshCw class="h-4 w-4 mr-2" />
             Refresh Status
-          </button>
+</Button>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Health Summary -->
-      <NesCard class="p-6 bg-slate-800/30 border-slate-600">
+      <div class="p-6 bg-slate-800/30 border-slate-600 nes-container">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
           <Activity class="h-5 w-5" />
           Health Summary
@@ -463,13 +465,13 @@
             <span class="text-white">{formatBytes(clusterHealth.memoryUsage.peak)}</span>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 
   <!-- Worker Details -->
   <div class="max-w-7xl mx-auto">
-    <NesCard class="p-6 bg-slate-800/30 border-slate-600">
+    <div class="p-6 bg-slate-800/30 border-slate-600 nes-container">
       <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
         <Users class="h-5 w-5" />
         Worker Details
@@ -527,7 +529,7 @@
           </tbody>
         </table>
       </div>
-    </NesCard>
+    </div>
   </div>
 </div>
 

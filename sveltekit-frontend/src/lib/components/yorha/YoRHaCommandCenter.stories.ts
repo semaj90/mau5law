@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import { within, userEvent, expect } from '@storybook/test';
-import YoRHaCommandCenter from './YoRHaCommandCenter.svelte';
+import YoRHaCommandCenter from './YoRHaCommandCenter.svelte.js';
 
 const meta = {
   title: 'YoRHa/CommandCenter',

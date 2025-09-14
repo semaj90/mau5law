@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { 
   webgpuLangChainBridge, 
@@ -16,7 +16,7 @@ import {
 
 interface WebGPULangExtractRequest {
   text?: string;
-  documents?: Array<{ text: string; metadata?: any }>;
+  documents?: Array<any>;
   action: 'process' | 'batch' | 'benchmark' | 'stats' | 'config';
   config?: Partial<LangChainWebGPUConfig>;
   benchmark?: {
@@ -146,16 +146,16 @@ async function handleSingleDocumentProcessing(request: WebGPULangExtractRequest)
   return {
     processing: result,
     optimizations: {
-      webgpuUtilized: result.performance.webgpuUtilized,
-      cacheHit: result.embeddings.cacheHit,
-      compressionRatio: result.embeddings.compressionRatio,
-      throughput: result.performance.throughput
+      webgpuUtilized: (result as { performance?: any; embeddings?: any; extraction?: any }).performance.webgpuUtilized,
+      cacheHit: (result as { performance?: any; embeddings?: any; extraction?: any }).embeddings.cacheHit,
+      compressionRatio: (result as { performance?: any; embeddings?: any; extraction?: any }).embeddings.compressionRatio,
+      throughput: (result as { performance?: any; embeddings?: any; extraction?: any }).performance.throughput
     },
     extracted: {
-      summary: result.extraction.summary,
-      keyTerms: result.extraction.keyTerms,
-      entities: result.extraction.entities,
-      risks: result.extraction.risks
+      summary: (result as { performance?: any; embeddings?: any; extraction?: any }).extraction.summary,
+      keyTerms: (result as { performance?: any; embeddings?: any; extraction?: any }).extraction.keyTerms,
+      entities: (result as { performance?: any; embeddings?: any; extraction?: any }).extraction.entities,
+      risks: (result as { performance?: any; embeddings?: any; extraction?: any }).extraction.risks
     }
   };
 }

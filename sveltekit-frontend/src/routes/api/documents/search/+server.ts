@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Enhanced Document Search API with PostgreSQL + pgvector + Cognitive Cache
 import { db, getDatabaseHealth } from '$lib/server/db';
@@ -322,23 +322,23 @@ async function hybridSearch(
 
   // Add vector results with higher weight
   vectorResults.forEach((result) => {
-    combinedResults.set(result.id, {
+    combinedResults.set((result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).id, {
       ...result,
-      score: result.similarity * 0.7, // Vector weight
+      score: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).similarity * 0.7, // Vector weight
       sources: ['vector'],
     });
   });
 
   // Add/update with keyword results
   keywordResults.forEach((result) => {
-    if (combinedResults.has(result.id)) {
-      const existing = combinedResults.get(result.id);
-      existing.score += result.similarity * 0.3; // Keyword weight
+    if (combinedResults.has((result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).id)) {
+      const existing = combinedResults.get((result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).id);
+      existing.score += (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).similarity * 0.3; // Keyword weight
       existing.sources.push('keyword');
     } else {
-      combinedResults.set(result.id, {
+      combinedResults.set((result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).id, {
         ...result,
-        score: result.similarity * 0.3,
+        score: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).similarity * 0.3,
         sources: ['keyword'],
       });
     }
@@ -350,9 +350,9 @@ async function hybridSearch(
     .slice(0, limit)
     .map((result) => ({
       ...result,
-      similarity: result.score,
+      similarity: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).score,
       searchType: 'hybrid',
-      matchedBy: result.sources,
+      matchedBy: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).sources,
     }));
 }
 
@@ -372,14 +372,14 @@ async function semanticSearch(
   // Enhance with semantic context analysis
   return vectorResults
     .map((result) => {
-      const contextScore = calculateContextScore(query, result.content);
-      const legalRelevance = calculateLegalRelevance(query, result.legalAnalysis);
+      const contextScore = calculateContextScore(query, (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).content);
+      const legalRelevance = calculateLegalRelevance(query, (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).legalAnalysis);
 
       return {
         ...result,
         contextScore,
         legalRelevance,
-        enhancedSimilarity: result.similarity * 0.6 + contextScore * 0.2 + legalRelevance * 0.2,
+        enhancedSimilarity: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).similarity * 0.6 + contextScore * 0.2 + legalRelevance * 0.2,
         searchType: 'semantic',
       };
     })

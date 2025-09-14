@@ -8,7 +8,7 @@ import { eq, and, or, desc, count, ilike } from 'drizzle-orm';
 import { z } from 'zod';
 import { generateEmbedding } from '$lib/server/embedding-service';
 import { validateSession } from '$lib/server/lucia';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import crypto from 'crypto';
 import { URL } from 'url';
 
@@ -688,9 +688,9 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
 
     // Log any failures in related data deletion
     deleteResults.forEach((result, index) => {
-      if (result.status === 'rejected') {
+      if ((result as { status?: any; reason?: any }).status === 'rejected') {
         const tableName = ['timeline', 'activities', 'documents'][index];
-        console.warn(`Failed to delete ${tableName} for case ${caseId}:`, result.reason);
+        console.warn(`Failed to delete ${tableName} for case ${caseId}:`, (result as { status?: any; reason?: any }).reason);
       }
     });
 

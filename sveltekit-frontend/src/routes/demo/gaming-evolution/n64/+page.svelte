@@ -175,16 +175,16 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     <!-- Technical Analysis with 3D elements -->
     <section class="tech-panel">
-      <NesCard.Root class="n64-nier-bits-card">
-        <NesCard.Header>
-          <NesCard.Title class="n64-title">
+      <div.Root class="n64-nier-bits-card nes-container">
+        <div.Header class="nes-container">
+          <div.Title class="n64-title nes-container">
             🎮 Nintendo 64 3D Architecture
-          </Card.Title>
-          <NesCard.Description class="n64-subtitle">
+          </div.Title>
+          <div.Description class="n64-subtitle nes-container">
             Reality Co-Processor (RCP) with Anti-Aliasing & Texture Filtering
-          </Card.Description>
-        </Card.Header>
-        <NesCard.Content class="n64-content">
+          </div.Description>
+        </div.Header>
+        <div.Content class="n64-content nes-container">
 
           <!-- 3D Cube Demo -->
           <div class="cube-demo">
@@ -297,22 +297,22 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
             </div>
 
-          </Card.Content>
-        </Card.Root>
+          </div.Content>
+        </div.Root>
     </section>
 
     <!-- Interactive 3D Components -->
     <section class="components-panel">
-      <NesCard.Root class="n64-nier-bits-card">
-        <NesCard.Header>
-          <NesCard.Title class="n64-title">
+      <div.Root class="n64-nier-bits-card nes-container">
+        <div.Header class="nes-container">
+          <div.Title class="n64-title nes-container">
             🎮 3D Interface Elements
-          </Card.Title>
-          <NesCard.Description class="n64-subtitle">
+          </div.Title>
+          <div.Description class="n64-subtitle nes-container">
             bits-ui Components with N64 3D Aesthetics & Texture Filtering
-          </Card.Description>
-        </Card.Header>
-        <NesCard.Content class="components-3d">
+          </div.Description>
+        </div.Header>
+        <div.Content class="components-3d nes-container">
 
           <!-- N64 Controller -->
           <div class="controller-section">
@@ -330,7 +330,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               <!-- Center section -->
               <div class="controller-center">
                 <div class="dpad-3d">
-                  <Button.Root class="dpad-btn-3d dpad-up-3d bits-btn bits-btn">▲</Button.Root>
+                  <Button.Root class="dpad-btn-3d dpad-up-3d bits-btn bits-btn">
+▲</Button.Root>
                   <div class="dpad-middle-3d">
                     <Button.Root class="dpad-btn-3d dpad-left-3d bits-btn bits-btn">◄</Button.Root>
                     <div class="dpad-center-3d"></div>
@@ -393,22 +394,22 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </div>
           </div>
 
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </section>
 
     <!-- 3D Game Interface -->
     <section class="game-interface-panel">
-      <NesCard.Root class="n64-nier-bits-card">
-        <NesCard.Header>
-          <NesCard.Title class="n64-title">
+      <div.Root class="n64-nier-bits-card nes-container">
+        <div.Header class="nes-container">
+          <div.Title class="n64-title nes-container">
             🌟 3D Game Menu System
-          </Card.Title>
-          <NesCard.Description class="n64-subtitle">
+          </div.Title>
+          <div.Description class="n64-subtitle nes-container">
             N64-style Menus with Hardware Anti-Aliasing
-          </Card.Description>
-        </Card.Header>
-        <NesCard.Content class="interface-3d">
+          </div.Description>
+        </div.Header>
+        <div.Content class="interface-3d nes-container">
 
           <!-- 3D Tabs -->
           <Tabs.Root bind:value={activeTab} class="n64-tabs">
@@ -542,7 +543,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                 <div class="legal-controls">
                   <Button.Root
                     class="n64-btn-legal bits-btn"
-                    onclick={queryLegalRecommendations}
+                    on:click={queryLegalRecommendations}
                     disabled={legalLoading || !legalQuery.trim()}
                   >
                     {legalLoading ? '🔄 Analyzing...' : '🎯 Get Legal Recommendations'}
@@ -550,7 +551,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
                   <Button.Root
                     class="n64-btn-evidence bits-btn"
-                    onclick={() => evidenceCanvasOpen = true}
+                    on:click={() => evidenceCanvasOpen = true}
                   >
                     📋 Evidence Canvas
                   </Button.Root>
@@ -614,7 +615,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                       on:click={() => { legalError = null; checkLegalServiceHealth(); }}
                     >
                       🔄 Retry
-                    </button>
+</Button>
                   </div>
                 {/if}
 
@@ -626,7 +627,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <div class="dialog-section-3d">
             <Button.Root
               class="n64-nes-btn is-primary bits-btn bits-btn"
-              onclick={() => dialogOpen = true}
+              on:click={() => dialogOpen = true}
             >
               🌟 Show N64 Dialog
             </Button.Root>
@@ -647,7 +648,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                     <div class="dialog-actions-3d">
                       <Button.Root
                         class="n64-btn-dialog bits-btn bits-btn"
-                        onclick={() => dialogOpen = false}
+                        on:click={() => dialogOpen = false}
                       >
                         ✓ Acknowledge
                       </Button.Root>
@@ -658,8 +659,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             </Dialog.Root>
           </div>
 
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </section>
 
   </main>
@@ -746,13 +747,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         <div class="evidence-actions-3d">
           <Button.Root
             class="n64-btn-evidence-action bits-btn"
-            onclick={() => evidenceCanvasOpen = false}
+            on:click={() => evidenceCanvasOpen = false}
           >
             💾 Save Evidence
           </Button.Root>
           <Button.Root
             class="n64-btn-close bits-btn"
-            onclick={() => evidenceCanvasOpen = false}
+            on:click={() => evidenceCanvasOpen = false}
           >
             ❌ Close Canvas
           </Button.Root>

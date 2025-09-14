@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema-postgres';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     const result = await db.insert(users).values(newUser as any).returning();
 
-    if (result.length > 0) {
+    if ((result as { length?: any }).length > 0) {
       return json({
         success: true,
         message: "User created successfully",

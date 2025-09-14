@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // src/routes/api/pipeline/test/+server.ts
 // End-to-end pipeline testing endpoint
@@ -13,7 +13,7 @@ import { eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 
 // Initialize connections
-const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db');
+const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db');
 const db = drizzle(sql);
 
 const redis = createClient({ 
@@ -494,7 +494,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: false,
       error: error instanceof Error ? error.message : 'Health check failed',
-      health: {},
+      health: Record<string, any>,
       healthScore: 0,
       ready: false,
     }, { status: 500 });

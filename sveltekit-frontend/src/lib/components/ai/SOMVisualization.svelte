@@ -25,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
   let isInitialized = $state(false);
   let isTraining = $state(false);
   let visualizationData = $state<unknown[]>([]);
-  let stats = $state<IngestionStats & { queue_size: number; is_processing: boolean; som_visualization: any }>({
+  let stats = $state<IngestionStats & { queue_size: number; is_processing: booleansom_visualization: any } | null>(null)({
     total_processed: 0,
     successful: 0,
     failed: 0,
@@ -217,7 +217,7 @@ https://svelte.dev/e/js_parse_error -->
     ctx.lineWidth = 2;
     ctx.globalAlpha = 0.7;
     // Group nodes by cluster and draw boundaries
-    const clusterNodes = new Map<number, Array<{ x: number; y: number }>>();
+    const clusterNodes = new Map<number, Array>();
     visualizationData.forEach(node => {
       if (!clusterNodes.has(node.cluster)) {
         clusterNodes.set(node.cluster, []);
@@ -263,11 +263,11 @@ https://svelte.dev/e/js_parse_error -->
     evidenceTypes.forEach((item, index) => {
       const y = legendY + 35 + (index * 20);
       // Color indicator
-      ctx.fillStyle = item.color;
+      ctx.fillStyle = (item as { color?: any; label?: any }).color;
       ctx.fillRect(legendX, y - 8, 12, 12);
       // Label
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(item.label, legendX + 20, y);
+      ctx.fillText((item as { color?: any; label?: any }).label, legendX + 20, y);
     });
     // Cluster info
     ctx.fillStyle = '#cccccc';
@@ -343,8 +343,7 @@ https://svelte.dev/e/js_parse_error -->
           <label class="block text-sm text-gray-300 mb-1">Map Size</label>
           <div class="flex gap-2">
             <input 
-              bind:value={somConfig.mapWidth}
-              change={updateSOMConfig}
+              bind:value={somConfig.mapWidth} on:change={updateSOMConfig}
               type="number" 
               min="5" 
               max="50" 
@@ -353,8 +352,7 @@ https://svelte.dev/e/js_parse_error -->
             />
             <span class="text-gray-400 text-sm">×</span>
             <input 
-              bind:value={somConfig.mapHeight}
-              change={updateSOMConfig}
+              bind:value={somConfig.mapHeight} on:change={updateSOMConfig}
               type="number" 
               min="5" 
               max="50" 
@@ -378,8 +376,7 @@ https://svelte.dev/e/js_parse_error -->
         
         <div>
           <label class="block text-sm text-gray-300 mb-1" for="clusters">Clusters</label><input id="clusters" 
-            bind:value={somConfig.clusterCount}
-            change={updateSOMConfig}
+            bind:value={somConfig.clusterCount} on:change={updateSOMConfig}
             type="number" 
             min="2" 
             max="16" 
@@ -453,7 +450,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <div class="space-y-3">
         <button 
-          onclick={trainWithSampleData}
+          on:click={trainWithSampleData}
           disabled={!isInitialized || isTraining}
           class="w-full yorha-button px-4 py-2 bg-blue-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -461,7 +458,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
         
         <button 
-          onclick={processTestDocument}
+          on:click={processTestDocument}
           disabled={!isInitialized || isTraining}
           class="w-full yorha-button px-4 py-2 bg-green-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -469,7 +466,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
         
         <button 
-          onclick={exportSOMData}
+          on:click={exportSOMData}
           disabled={!isInitialized}
           class="w-full yorha-button px-4 py-2 bg-purple-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -499,7 +496,7 @@ https://svelte.dev/e/js_parse_error -->
     
     <div class="canvas-wrapper relative bg-black border border-gray-700 rounded">
       <canvas 
-        bind:this={canvas}
+        bind:this={canvas as any}
         {width}
         {height}
         class="w-full h-auto"

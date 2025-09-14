@@ -173,34 +173,34 @@
 
     <!-- Quick Stats -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      <NesCard class="text-center">
-        <div class="yorha-panel-content" class="pt-6">
+      <div class="text-center nes-container">
+        <div class="yorha-panel-content pt-6">
           <Database class="h-8 w-8 mx-auto mb-2 text-blue-600" />
           <div class="text-2xl font-bold">8/9</div>
           <div class="text-sm text-gray-600">Services Active</div>
         </div>
-      </NesCard>
-      <NesCard class="text-center">
-        <div class="yorha-panel-content" class="pt-6">
+      </div>
+      <div class="text-center nes-container">
+        <div class="yorha-panel-content pt-6">
           <Brain class="h-8 w-8 mx-auto mb-2 text-purple-600" />
           <div class="text-2xl font-bold">6</div>
           <div class="text-sm text-gray-600">AI Features</div>
         </div>
-      </NesCard>
-      <NesCard class="text-center">
-        <div class="yorha-panel-content" class="pt-6">
+      </div>
+      <div class="text-center nes-container">
+        <div class="yorha-panel-content pt-6">
           <CheckCircle class="h-8 w-8 mx-auto mb-2 text-green-600" />
           <div class="text-2xl font-bold">12/12</div>
           <div class="text-sm text-gray-600">Components</div>
         </div>
-      </NesCard>
-      <NesCard class="text-center">
-        <div class="yorha-panel-content" class="pt-6">
+      </div>
+      <div class="text-center nes-container">
+        <div class="yorha-panel-content pt-6">
           <Zap class="h-8 w-8 mx-auto mb-2 text-yellow-600" />
           <div class="text-2xl font-bold">Phase 5</div>
           <div class="text-sm text-gray-600">Active</div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 
@@ -216,9 +216,9 @@
 
     <!-- Overview Tab -->
     <TabsContent value="overview" class="space-y-6">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Sparkles class="h-6 w-6" />
             Phase 5 Enhanced Features
           </h3>
@@ -248,10 +248,10 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Performance Improvements -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Performance & Optimization</h3>
         </div>
@@ -285,11 +285,11 @@
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Quick Access -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Try Vector Intelligence</h3>
             <p class="nes-text">
@@ -299,16 +299,17 @@
           <div class="yorha-panel-content">
             <Button
               class="w-full bits-btn bits-btn"
-              onclick={() => activeTab = 'vector-demo'}
+              on:click={() =>
+activeTab = 'vector-demo'}
             >
               <Search class="h-4 w-4 mr-2" />
               Launch Vector Demo
               <ArrowRight class="h-4 w-4 ml-2" />
-            </button>
-          </div>
-        </NesCard>
 
-        <NesCard>
+          </div>
+        </div>
+
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Evidence Canvas</h3>
             <p class="nes-text">
@@ -319,14 +320,15 @@
             <Button
               variant="outline"
               class="w-full bits-btn bits-btn"
-              onclick={() => activeTab = 'fabric-canvas'}
+              on:click={() =>
+activeTab = 'fabric-canvas'}
             >
               <Canvas class="h-4 w-4 mr-2" />
               Open Canvas
               <ArrowRight class="h-4 w-4 ml-2" />
-            </button>
+
           </div>
-        </NesCard>
+        </div>
       </div>
     </TabsContent>
 
@@ -337,7 +339,7 @@
 
     <!-- Fabric Canvas Tab -->
     <TabsContent value="fabric-canvas">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Evidence Management Canvas</h3>
           <p class="nes-text">
@@ -354,15 +356,15 @@
             select={(e) => console.log('Object selected:', e.detail)}
           />
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
 
     <!-- Context7 MCP Tab -->
     <TabsContent value="context7">
       <div class="space-y-6">
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <Brain class="h-6 w-6" />
               Context7 MCP Service
             </h3>
@@ -443,13 +445,13 @@
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
       </div>
     </TabsContent>
 
     <!-- Modernization Checklist Tab -->
     <TabsContent value="modernization">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Component Modernization Checklist</h3>
           <p class="nes-text">
@@ -467,12 +469,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {#each category.items as item}
                     <div class="flex items-center gap-3 p-3 border rounded-lg">
-                      <CheckCircle class="h-5 w-5 {getStatusIcon(item.status)} flex-shrink-0" />
+                      <CheckCircle class="h-5 w-5 {getStatusIcon((item as { status?: any; name?: any }).status)} flex-shrink-0" />
                       <div class="flex-1">
-                        <div class="font-medium">{item.name}</div>
+                        <div class="font-medium">{(item as { status?: any; name?: any }).name}</div>
                       </div>
-                      <Badge variant={getStatusBadge(item.status)} class="text-xs">
-                        {item.status}
+                      <Badge variant={getStatusBadge((item as { status?: any; name?: any }).status)} class="text-xs">
+                        {(item as { status?: any; name?: any }).status}
                       </Badge>
                     </div>
                   {/each}
@@ -506,7 +508,7 @@
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </TabsContent>
   </Tabs>
 </div>

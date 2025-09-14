@@ -136,10 +136,10 @@ export class CrewAILegalReviewSystem {
       const agentResponses = await Promise.allSettled(agentPromises);
 
       agentResponses.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          responses.push(result.value);
+        if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
+          responses.push((result as { status?: any; value?: any; reason?: any }).value);
         } else {
-          console.error(`Agent ${assignedAgents[index]} failed:`, result.reason);
+          console.error(`Agent ${assignedAgents[index]} failed:`, (result as { status?: any; value?: any; reason?: any }).reason);
           responses.push({
             agentId: assignedAgents[index],
             taskId: task.taskId,
@@ -149,7 +149,7 @@ export class CrewAILegalReviewSystem {
             riskLevel: 'high',
             confidence: 0,
             processingTime: 0,
-            errors: [result.reason?.message || 'Unknown error']
+            errors: [(result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error']
           });
         }
       });
@@ -203,7 +203,7 @@ Please provide your analysis in the following JSON format:
       ];
 
       const response = await ollama.invoke(messages.map(m => m.content).join('\n'));
-      const responseText = response.content.toString();
+      const responseText = (response as { content?: any }).content.toString();
 
       // Parse structured response
       const analysis = this.parseAgentResponse(responseText);

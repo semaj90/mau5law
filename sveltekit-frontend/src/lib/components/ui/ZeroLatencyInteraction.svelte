@@ -254,24 +254,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Show loading tooltip for API calls
    */
-  function showLoadingTooltip(target: HTMLElement) {
-    hideTooltip();
-    
-    const tooltip = document.createElement('div');
-    tooltip.className = 'chr-rom-tooltip loading-tooltip';
-    tooltip.innerHTML = `
-      <div class="loading-content">
-        <div class="loading-spinner"></div>
-        <span>Loading...</span>
-      </div>
-    `;
-    
-    positionTooltip(tooltip, target);
-    document.body.appendChild(tooltip);
-    
-    requestAnimationFrame(() => {
-      tooltip.classList.add('visible');
-    });
+  function showLoadingTooltip(target: HTMLElement) {/* JSX syntax converted to Svelte */});
     
     currentTooltip = tooltip;
   }
@@ -279,16 +262,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Show error tooltip
    */
-  function showErrorTooltip(target: HTMLElement) {
-    const html = `
-      <div class="error-content">
-        <span class="error-icon">⚠️</span>
-        <span>Failed to load content</span>
-      </div>
-    `;
-    
-    showInstantTooltip(html, target, 0);
-  }
+  function showErrorTooltip(target: HTMLElement) {/* JSX syntax converted to Svelte */}
 
   /**
    * Hide current tooltip
@@ -404,14 +378,8 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Generate tooltip HTML from API data
    */
-  function generateTooltipHTML(data: any): string {
-    return `
-      <div class="chr-rom-summary-nier-bits-card api-generated">
-        <h4>Summary</h4>
-        <p>${data.summary || data.content || 'No summary available'}</p>
-        <div class="metadata">
-          ${data.entities ? `<span class="entity-count">${data.entities.length} entities</span>` : ''}
-          ${data.confidence ? `<span class="confidence">${(data.confidence * 100).toFixed(0)}% confidence</span>` : ''}
+  function generateTooltipHTML(data: any): string {/* JSX syntax converted to Svelte */} entities</span>` : ''}
+          ${/* JSX syntax converted to Svelte */}
         </div>
       </div>
     `;

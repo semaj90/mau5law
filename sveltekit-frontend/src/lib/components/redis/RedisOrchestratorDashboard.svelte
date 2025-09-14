@@ -100,13 +100,13 @@
     </div>
     
     <div class="action-buttons">
-      <button class="nes-button" onclick={refresh} disabled={isLoading}>
+      <button class="nes-button" on:click={refresh} disabled={isLoading}>
         {isLoading ? 'REFRESHING...' : 'REFRESH'}
       </button>
       
       <button 
         class="nes-button danger" 
-        onclick={handleClearCache}
+        on:click={handleClearCache}
         disabled={clearingCache}
       >
         {clearingCache ? 'CLEARING...' : showClearConfirm ? 'CONFIRM CLEAR' : 'CLEAR CACHE'}
@@ -118,7 +118,7 @@
     <div class="initialization-status">
       {#if initError}
         <div class="error-message">⚠️ INITIALIZATION FAILED: {initError}</div>
-        <button class="nes-button" onclick={initialize}>RETRY INITIALIZATION</button>
+        <button class="nes-button" on:click={initialize}>RETRY INITIALIZATION</button>
       {:else}
         <div class="loading-message">🎮 INITIALIZING REDIS ORCHESTRATOR...</div>
       {/if}
@@ -236,7 +236,7 @@
         <div class="panel-header">
           <span class="panel-icon">📋</span>
           <span class="panel-title">ACTIVE TASKS</span>
-          <button class="clear-completed-btn" onclick={clearCompletedTasks}>
+          <button class="clear-completed-btn" on:click={clearCompletedTasks}>
             CLEAR COMPLETED
           </button>
         </div>
@@ -283,7 +283,6 @@
         </div>
       </div>
     {/if}
-  {/if}
 </div>
 
 <style>
@@ -458,19 +457,19 @@
     border-left: 3px solid #7c7c7c;
   }
 
-  .task-item.queued {
+  .task-(item as { queued?: any; processing?: any; completed?: any; failed?: any }).queued {
     border-left-color: #fc9838;
   }
 
-  .task-item.processing {
+  .task-(item as { queued?: any; processing?: any; completed?: any; failed?: any }).processing {
     border-left-color: #3cbcfc;
   }
 
-  .task-item.completed {
+  .task-(item as { queued?: any; processing?: any; completed?: any; failed?: any }).completed {
     border-left-color: #00d800;
   }
 
-  .task-item.failed {
+  .task-(item as { queued?: any; processing?: any; completed?: any; failed?: any }).failed {
     border-left-color: #f83800;
   }
 

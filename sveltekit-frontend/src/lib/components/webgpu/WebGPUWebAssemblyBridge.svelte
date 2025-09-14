@@ -226,9 +226,9 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="space-y-6">
   <!-- Header -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         🔗 WebGPU + WebAssembly Integration Bridge
         {#if loading}
           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Initializing...</span>
@@ -245,7 +245,7 @@ https://svelte.dev/e/js_parse_error -->
           <p class="text-red-800 font-medium">❌ Initialization Error</p>
           <p class="text-red-600 text-sm mt-1">{error}</p>
           <button 
-            onclick={initializeWebGPUWebAssembly}
+            on:click={initializeWebGPUWebAssembly}
             class="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
           >
             Retry
@@ -277,11 +277,11 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- System Status -->
   {#if initialized && systemInfo}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">🔍 System Status</h3>
       </div>
@@ -365,12 +365,12 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Interactive Demo -->
   {#if initialized && enableDemo}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">🧪 Live Demo</h3>
       </div>
@@ -386,7 +386,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           
           <button
-            onclick={runDemo}
+            on:click={runDemo}
             disabled={!demoText.trim() || demoProcessing}
             class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -401,7 +401,7 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

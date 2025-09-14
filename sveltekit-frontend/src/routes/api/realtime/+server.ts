@@ -1,5 +1,5 @@
 import stream from "stream";
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Minimal SSE endpoint: emits keepalive and relays posted messages to connected clients

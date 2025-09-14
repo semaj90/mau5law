@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Sample dynamic layout definition (would normally be DB or config driven)
 export const GET: RequestHandler = async () => {

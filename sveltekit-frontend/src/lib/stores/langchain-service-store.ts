@@ -37,7 +37,7 @@ export interface ProcessedDocument {
 }
 
 export interface ChatState {
-  messages: Array<{ role: 'user' | 'assistant'; content: string }>;
+  messages: Array<any>;
   isTyping: boolean;
   error: string | null;
 }
@@ -143,12 +143,12 @@ class LangChainServiceLogic {
 
       documentProcessingState.update(state => ({ ...state, progress: 75 }));
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).ok) {
+        const errorData = await (response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).status}: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).statusText}`);
       }
 
-      const result: ProcessedDocument = await response.json();
+      const result: ProcessedDocument = await (response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).json();
       
       documentProcessingState.update(state => ({ ...state, progress: 100 }));
 
@@ -158,8 +158,8 @@ class LangChainServiceLogic {
         progress: 100,
         result,
         error: null,
-        sessionId: result.sessionId,
-        documentId: result.id
+        sessionId: (result as { sessionId?: any; id?: any }).sessionId,
+        documentId: (result as { sessionId?: any; id?: any }).id
       });
 
     } catch (error) {
@@ -186,11 +186,11 @@ class LangChainServiceLogic {
     try {
       const response = await fetch(`/api/legal-processing?sessionId=${sessionId}&limit=10`);
       
-      if (!response.ok) {
-        throw new Error(`Failed to load session: ${response.statusText}`);
+      if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).ok) {
+        throw new Error(`Failed to load session: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).statusText}`);
       }
 
-      const sessionData = await response.json();
+      const sessionData = await (response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).json();
       
       // Update state with session data
       documentProcessingState.update(state => ({
@@ -227,8 +227,8 @@ class LangChainServiceLogic {
         method: 'DELETE'
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to delete document: ${response.statusText}`);
+      if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).ok) {
+        throw new Error(`Failed to delete document: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).statusText}`);
       }
 
       // Clear current result if it was the deleted document
@@ -265,7 +265,7 @@ class LangChainServiceLogic {
       
       chatState.update(state => ({
         ...state,
-        messages: [...state.messages, { role: 'assistant', content: response.summary }],
+        messages: [...state.messages, { role: 'assistant', content: (response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).summary }],
         isTyping: false
       }));
 

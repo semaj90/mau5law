@@ -349,7 +349,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="view-btn"
           class:active={viewMode === 'grid'}
-          onclick={() => viewMode = 'grid'}
+          on:click={() => viewMode = 'grid'}
           title="Grid View"
         >
           <Archive class="w-4 h-4" />
@@ -357,7 +357,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="view-btn"
           class:active={viewMode === 'timeline'}
-          onclick={() => viewMode = 'timeline'}
+          on:click={() => viewMode = 'timeline'}
           title="Timeline View"
         >
           <Clock class="w-4 h-4" />
@@ -365,7 +365,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="view-btn"
           class:active={viewMode === 'network'}
-          onclick={() => viewMode = 'network'}
+          on:click={() => viewMode = 'network'}
           title="Network View"
         >
           <Network class="w-4 h-4" />
@@ -376,7 +376,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="detective-toggle"
         class:active={detectiveMode}
-        onclick={toggleDetectiveMode}
+        on:click={toggleDetectiveMode}
         title="Toggle Detective Mode"
       >
         {#if detectiveMode}
@@ -392,7 +392,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if $selectedEvidence.length > 0}
         <button
           class="analyze-btn"
-          onclick={analyzeSelectedEvidence}
+          on:click={analyzeSelectedEvidence}
           disabled={loadingAnalysis}
           title="Analyze Selected Evidence"
         >
@@ -410,7 +410,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="filter-toggle"
         class:active={showFilters}
-        onclick={() => showFilters = !showFilters}
+        on:click={() => showFilters = !showFilters}
         title="Toggle Filters"
       >
         <Filter class="w-4 h-4" />
@@ -479,7 +479,7 @@ https://svelte.dev/e/js_parse_error -->
         <h3>🕵️ Detective Insights</h3>
         <button
           class="insights-toggle"
-          onclick={() => showInsights = !showInsights}
+          on:click={() => showInsights = !showInsights}
         >
           {showInsights ? 'Hide' : 'Show'} Insights
         </button>
@@ -516,8 +516,7 @@ https://svelte.dev/e/js_parse_error -->
             draggable={detectiveMode}
             on:dragstart={e => handleDragStart(e, evidence.id)}
             on:dragover={e => e.preventDefault()}
-            on:drop={e => handleDrop(e, evidence.id)}
-            onclick={() => toggleEvidenceSelection(evidence.id)}
+            on:drop={onclick}
           >
             <!-- Evidence Header -->
             <div class="nier-bits-yorha-panel-header">
@@ -618,7 +617,7 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Network View -->
       <div class="network-view">
         <canvas
-          bind:this={canvas}
+          bind:this={canvas as any}
           class="network-canvas"
           width="800"
           height="600"
@@ -885,7 +884,7 @@ https://svelte.dev/e/js_parse_error -->
     border-left: 4px solid #f59e0b;
   }
 
-  .insight-item.high-confidence {
+  .insight-(item as { high?: any }).high-confidence {
     border-left-color: #dc2626;
   }
 

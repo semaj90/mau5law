@@ -142,9 +142,9 @@ export class Context7Phase8Integrator {
       }),
     });
 
-    if (!response.ok) throw new Error("Context7 MCP request failed");
+    if (!(response as { ok?: any; json?: any }).ok) throw new Error("Context7 MCP request failed");
 
-    const analysis = await response.json();
+    const analysis = await (response as { ok?: any; json?: any }).json();
 
     return (
       analysis.recommendations?.map((rec: any) => ({
@@ -184,23 +184,23 @@ export class Context7Phase8Integrator {
       }),
     });
 
-    if (!response.ok) throw new Error("RAG query failed");
+    if (!(response as { ok?: any; json?: any }).ok) throw new Error("RAG query failed");
 
-    const insights = await response.json();
+    const insights = await (response as { ok?: any; json?: any }).json();
 
     return (
       insights.results?.map((result: any) => ({
         type: "ai-enhancement" as const,
-        priority: this.calculatePriorityFromScore(result.score),
-        title: `Legal AI Enhancement: ${result.title}`,
-        description: result.content,
+        priority: this.calculatePriorityFromScore((result as { score?: any; title?: any; content?: any }).score),
+        title: `Legal AI Enhancement: ${(result as { score?: any; title?: any; content?: any }).title}`,
+        description: (result as { score?: any; title?: any; content?: any }).content,
         context7Source: "rag-legal",
-        aiConfidence: Math.round(result.score * 100),
+        aiConfidence: Math.round((result as { score?: any; title?: any; content?: any }).score * 100),
         implementation: {
           component: query.component,
           timeEstimate: "2-4 hours",
         },
-        benefits: this.extractBenefits(result.content),
+        benefits: this.extractBenefits((result as { score?: any; title?: any; content?: any }).content),
         risks: [],
       })) || []
     );
@@ -401,7 +401,7 @@ const adaptiveLOD = {
       // Simple fallback reranking based on confidence scores
       reranked = rerankInput.map(item => ({
         ...item,
-        rerankScore: item.confidence / 100,
+        rerankScore: (item as { confidence?: any }).confidence / 100,
       })).sort((a, b) => b.rerankScore - a.rerankScore);
 
       // Apply rerank scores back to recommendations

@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * AI Integration Test Suite
@@ -150,7 +150,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
     }
     
     const hasRequiredFields = ['semantic', 'memory', 'agentResults', 'synthesized'].some(
-      (field: any) => result.hasOwnProperty(field)
+      (field: any) => (result as { hasOwnProperty?: any; aiConfidence?: any }).hasOwnProperty(field)
     );
     
     if (!hasRequiredFields) {
@@ -215,12 +215,12 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       signal: AbortSignal.timeout(5000)
     });
     
-    if (!response.ok) {
-      throw new Error(`Ollama service returned ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Ollama service returned ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
     
-    const data = await response.json();
-    return `Ollama service healthy, version: ${data.version || 'unknown'}`;
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
+    return `Ollama service healthy, version: ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).version || 'unknown'}`;
   });
 
   // Test 2: Model Availability
@@ -230,12 +230,12 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       signal: AbortSignal.timeout(5000)
     });
     
-    if (!response.ok) {
-      throw new Error(`Failed to get model list: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Failed to get model list: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
     
-    const data = await response.json();
-    const models = data.models || [];
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
+    const models = (data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).models || [];
     
     if (models.length === 0) {
       throw new Error('No models available in Ollama');
@@ -265,21 +265,21 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       })
     });
     
-    if (!response.ok) {
-      throw new Error(`AI generation failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`AI generation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
     
-    const data = await response.json();
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
     
-    if (!data.response || typeof data.response !== 'string') {
+    if (!(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).response || typeof (data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).response !== 'string') {
       throw new Error('AI response invalid or empty');
     }
     
-    if (data.response.length < 5) {
+    if ((data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).(response as { ok?: any; status?: any; json?: any }).length < 5) {
       return 'AI response too short, may indicate issues';
     }
     
-    return `AI generated response: "${data.response.substring(0, 50)}..."`;
+    return `AI generated response: "${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).(response as { ok?: any; status?: any; json?: any }).substring(0, 50)}..."`;
   });
 
   // Test 4: JSON Response Parsing
@@ -305,14 +305,14 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       })
     });
     
-    if (!response.ok) {
-      throw new Error(`Structured AI request failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Structured AI request failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
     
-    const data = await response.json();
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
     
     try {
-      const parsed = JSON.parse(data.response);
+      const parsed = JSON.parse((data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).response);
       
       if (parsed.status !== 'success' || parsed.number !== 42) {
         return 'AI returned JSON but with incorrect values';
@@ -355,21 +355,21 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       })
     });
     
-    if (!response.ok) {
-      throw new Error(`Find API request failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Find API request failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
     
-    const data = await response.json();
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
     
-    if (!data.success) {
-      throw new Error(`Find API returned error: ${data.error}`);
+    if (!(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).success) {
+      throw new Error(`Find API returned error: ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).error}`);
     }
     
-    if (!Array.isArray(data.results)) {
+    if (!Array.isArray((data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).results)) {
       throw new Error('Find API did not return results array');
     }
     
-    return `Find API returned ${data.results.length} results in ${data.metadata.processingTime}ms`;
+    return `Find API returned ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).results.length} results in ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).metadata.processingTime}ms`;
   });
 
   // Test 2: AI-Enhanced Search
@@ -387,25 +387,25 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       })
     });
     
-    if (!response.ok) {
-      throw new Error(`AI-enhanced search failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`AI-enhanced search failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
     
-    const data = await response.json();
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
     
-    if (!data.success) {
-      throw new Error(`AI search returned error: ${data.error}`);
+    if (!(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).success) {
+      throw new Error(`AI search returned error: ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).error}`);
     }
     
-    const hasAiConfidence = data.results.some((result: any) => 
-      result.aiConfidence !== undefined
+    const hasAiConfidence = (data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).results.some((result: any) => 
+      (result as { hasOwnProperty?: any; aiConfidence?: any }).aiConfidence !== undefined
     );
     
     if (!hasAiConfidence) {
       return 'AI enhancement may not be working (no confidence scores)';
     }
     
-    return `AI-enhanced search returned ${data.results.length} results with confidence scores`;
+    return `AI-enhanced search returned ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).results.length} results with confidence scores`;
   });
 
   // Test 3: MCP Analysis Integration
@@ -422,22 +422,22 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       })
     });
     
-    if (!response.ok) {
-      throw new Error(`MCP analysis request failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`MCP analysis request failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
     
-    const data = await response.json();
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
     
-    if (!data.success) {
-      throw new Error(`MCP analysis returned error: ${data.error}`);
+    if (!(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).success) {
+      throw new Error(`MCP analysis returned error: ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).error}`);
     }
     
-    if (!data.metadata.mcpAnalysis) {
+    if (!(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).metadata.mcpAnalysis) {
       return 'MCP analysis was not executed (may be expected)';
     }
     
-    const hasMcpContext = data.mcpContext !== null;
-    const hasAutoSuggestions = data.autoSuggestions && data.autoSuggestions.length > 0;
+    const hasMcpContext = (data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).mcpContext !== null;
+    const hasAutoSuggestions = (data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).autoSuggestions && (data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).autoSuggestions.length > 0;
     
     return `MCP analysis executed, context: ${hasMcpContext}, suggestions: ${hasAutoSuggestions}`;
   });
@@ -446,21 +446,21 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'Search Suggestions API', async () => {
     const response = await fetch('/api/ai/find?q=contract');
     
-    if (!response.ok) {
-      throw new Error(`Suggestions API failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Suggestions API failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
     
-    const data = await response.json();
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
     
-    if (!data.success) {
-      throw new Error(`Suggestions API returned error: ${data.error}`);
+    if (!(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).success) {
+      throw new Error(`Suggestions API returned error: ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).error}`);
     }
     
-    if (!Array.isArray(data.suggestions)) {
+    if (!Array.isArray((data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).suggestions)) {
       throw new Error('Suggestions API did not return array');
     }
     
-    return `Suggestions API returned ${data.suggestions.length} suggestions`;
+    return `Suggestions API returned ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).suggestions.length} suggestions`;
   });
 
   // Test 5: Rate Limiting
@@ -531,15 +531,15 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
     });
     
     // If endpoint doesn't exist, this is expected for now
-    if (response.status === 404) {
+    if ((response as { ok?: any; status?: any; json?: any }).status === 404) {
       return 'Memory graph endpoint not implemented yet (expected)';
     }
     
-    if (!response.ok) {
-      throw new Error(`Memory graph read failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Memory graph read failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
     
-    const data = await response.json();
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
     return `Memory graph read successful, returned ${JSON.stringify(data).length} characters`;
   });
 
@@ -560,16 +560,16 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
     });
     
     // If endpoint doesn't exist, this is expected for now
-    if (response.status === 404) {
+    if ((response as { ok?: any; status?: any; json?: any }).status === 404) {
       return 'Memory relation endpoint not implemented yet (expected)';
     }
     
-    if (!response.ok) {
-      throw new Error(`Memory relation creation failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Memory relation creation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
     
-    const data = await response.json();
-    return `Memory relation created successfully: ${data.success}`;
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
+    return `Memory relation created successfully: ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).success}`;
   });
 
   return {
@@ -601,21 +601,21 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
     });
     
     // If endpoint doesn't exist, this is expected for now
-    if (response.status === 404) {
+    if ((response as { ok?: any; status?: any; json?: any }).status === 404) {
       return 'Semantic search endpoint not implemented yet (expected)';
     }
     
-    if (!response.ok) {
-      throw new Error(`Semantic search failed: ${response.status}`);
+    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+      throw new Error(`Semantic search failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
     }
     
-    const data = await response.json();
+    const data = await (response as { ok?: any; status?: any; json?: any }).json();
     
-    if (!data.results || !Array.isArray(data.results)) {
+    if (!(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).results || !Array.isArray((data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).results)) {
       throw new Error('Semantic search did not return results array');
     }
     
-    return `Semantic search returned ${data.results.length} results`;
+    return `Semantic search returned ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).results.length} results`;
   });
 
   // Test 2: Vector Database Connection
@@ -626,17 +626,17 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
         signal: AbortSignal.timeout(5000)
       });
       
-      if (!response.ok) {
-        throw new Error(`Qdrant connection failed: ${response.status}`);
+      if (!(response as { ok?: any; status?: any; json?: any }).ok) {
+        throw new Error(`Qdrant connection failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
       }
       
-      const data = await response.json();
+      const data = await (response as { ok?: any; status?: any; json?: any }).json();
       
-      if (!data.result || !data.result.collections) {
+      if (!(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).result || !(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).(result as { hasOwnProperty?: any; aiConfidence?: any }).collections) {
         return 'Qdrant connected but no collections found';
       }
       
-      return `Qdrant connected, ${data.result.collections.length} collections available`;
+      return `Qdrant connected, ${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).(result as { hasOwnProperty?: any; aiConfidence?: any }).collections.length} collections available`;
       
     } catch (error: any) {
       return 'Qdrant vector database not available (may be expected)';

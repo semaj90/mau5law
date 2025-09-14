@@ -3,7 +3,7 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
 // Environment check that works in both SvelteKit and worker contexts
 const isDev = process.env.NODE_ENV === 'development';
-import * as schema from './schema-unified';
+import * as schema from './schema-unified.js';
 
 // Connection strings with role separation
 const RUNTIME_DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
@@ -96,14 +96,14 @@ if (!isDev) {
 }
 
 // Export schema for type safety
-export * from './schema-postgres';
+export * from './schema-postgres.js';
 
 // Health check utilities
 export async function testRuntimeConnection(): Promise<boolean> {
 	try {
 		const result = await db.execute('SELECT 1 as test');
 		console.log('✅ Runtime database connection healthy');
-		return Array.isArray(result) && result.length > 0;
+		return Array.isArray(result) && (result as { length?: any }).length > 0;
 	} catch (error) {
 		console.error('❌ Runtime database connection test failed:', error);
 		return false;
@@ -114,7 +114,7 @@ export async function testAdminConnection(): Promise<boolean> {
 	try {
 		const result = await adminDb.execute('SELECT 1 as test');
 		console.log('✅ Admin database connection healthy');
-		return Array.isArray(result) && result.length > 0;
+		return Array.isArray(result) && (result as { length?: any }).length > 0;
 	} catch (error) {
 		console.error('❌ Admin database connection test failed:', error);
 		return false;

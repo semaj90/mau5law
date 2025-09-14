@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types.js';
+import type { PageServerLoad, Actions } from './$types.js.js';
 import { error, fail, json } from '@sveltejs/kit';
 import { legalRAGService } from '$lib/services/enhanced-rag-semantic-analyzer';
 
@@ -380,11 +380,11 @@ async function processBatchEmbedding(documents: any[], options: any) {
 
 function getDefaultRAGData() {
   return {
-    ragCapabilities: { vectorDatabase: {}, embeddingModel: {}, llmModel: {} },
+    ragCapabilities: { vectorDatabase: Record<string, any>, embeddingModel: Record<string, any>, llmModel: Record<string, any> },
     vectorStats: { totalDocuments: 0, totalChunks: 0 },
-    modelInfo: { embedding: {}, llm: {} },
+    modelInfo: { embedding: Record<string, any>, llm: Record<string, any> },
     recentQueries: [],
-    knowledgeBase: { categories: {}, recentAdditions: 0 },
+    knowledgeBase: { categories: Record<string, any>, recentAdditions: 0 },
     demoQueries: []
   };
 }

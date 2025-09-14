@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import { copilotOrchestrator } from "$lib/utils/mcp-helpers";
 import { performContext7Search, context7AgentOrchestrator, context7SemanticAuditor } from '$lib/ai/context7-adapter';
 import type { AuditLogEntry } from '$lib/types/legal';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // Phase 10: Semantic Search Audit API Endpoint (Context7) - REAL IMPLEMENTATION
@@ -44,7 +44,7 @@ async function logAuditResult(results: SemanticAuditResult[]): Promise<any> {
       id: `audit_${Date.now()}_${Math.random().toString(36).substring(2)}`,
       action: 'semantic_audit',
       entityType: 'SYSTEM' as const,
-      entityId: result.id || 'unknown',
+      entityId: (result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).id || 'unknown',
       userId: 'system',
       severity: 'INFO' as const,
       timestamp: new Date(),
@@ -66,12 +66,12 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
   const triggeredAgents: AgentTrigger[] = [];
 
   for (const result of auditResults) {
-    if ((result.status === "missing" || result.status === "error" || result.status === "improvement")
-        && result.todoId) {
+    if (((result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).status === "missing" || (result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).status === "error" || (result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).status === "improvement")
+        && (result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).todoId) {
 
       // Determine appropriate action based on status
       let action: AgentTrigger['action'];
-      switch (result.status) {
+      switch ((result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).status) {
         case 'missing':
           action = 'analyze';
           break;
@@ -86,7 +86,7 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
       }
 
       const trigger: AgentTrigger = {
-        todoId: result.todoId,
+        todoId: (result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).todoId,
         action: action,
         status: 'pending'
       };
@@ -95,14 +95,14 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
       try {
         const completedTrigger = await context7AgentOrchestrator.triggerAgent(trigger);
         triggeredAgents.push(completedTrigger);
-        result.agentTriggered = true;
+        (result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).agentTriggered = true;
 
         // Safe logging of result snippet
         const snippet = (completedTrigger && (completedTrigger as any).result) ? String((completedTrigger as any).result).slice(0, 100) : undefined;
-        console.log(`[Real Agent Trigger] Completed ${action} for ${result.todoId}:`, snippet ? snippet + '...' : '<no-result>');
+        console.log(`[Real Agent Trigger] Completed ${action} for ${(result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).todoId}:`, snippet ? snippet + '...' : '<no-result>');
       } catch (error: any) {
-        console.error(`[Real Agent Trigger] Failed ${action} for ${result.todoId}:`, error);
-        result.agentTriggered = false;
+        console.error(`[Real Agent Trigger] Failed ${action} for ${(result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).todoId}:`, error);
+        (result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).agentTriggered = false;
       }
     }
   }
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const enhancedResults: SemanticAuditResult[] = auditResults.map((result: any) => ({
       ...result,
       searchContext: searchResults.filter((search: any) => search.content.toLowerCase().includes(component.toLowerCase()) ||
-        search.content.toLowerCase().includes(result.step.toLowerCase())
+        search.content.toLowerCase().includes((result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).step.toLowerCase())
       ).slice(0, 3) // Top 3 relevant search results
     }));
 

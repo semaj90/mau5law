@@ -235,8 +235,8 @@ export function validateCaseData(data: any): ValidationResult {
 
   for (const [field, fieldConfig] of Object.entries(config)) {
     const result = validateField(data[field], fieldConfig);
-    errors.push(...result.errors.map((e: any) => `${field}: ${e}`));
-    warnings.push(...result.warnings.map((w) => `${field}: ${w}`));
+    errors.push(...(result as { errors?: any; warnings?: any }).errors.map((e: any) => `${field}: ${e}`));
+    warnings.push(...(result as { errors?: any; warnings?: any }).warnings.map((w) => `${field}: ${w}`));
   }
   return createValidationResult(errors.length === 0, errors, warnings, data);
 }
@@ -246,21 +246,21 @@ export function validateEvidenceData(data: any): ValidationResult {
   const warnings: string[] = [];
 
   // Basic required fields
-  if (!data.title || data.title.trim().length < 3) {
+  if (!(data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).title || (data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).title.trim().length < 3) {
     errors.push("Evidence title must be at least 3 characters");
   }
-  if (!data.type) {
+  if (!(data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).type) {
     errors.push("Evidence type is required");
   }
-  if (!data.caseId) {
+  if (!(data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).caseId) {
     errors.push("Case ID is required");
   }
   // File-specific validation
-  if (data.type === "file" && !data.filePath && !data.fileUrl) {
+  if ((data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).type === "file" && !(data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).filePath && !(data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).fileUrl) {
     errors.push("File path or URL is required for file evidence");
   }
   // Hash validation
-  if (data.hash && !isValidHash(data.hash)) {
+  if ((data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).hash && !isValidHash((data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).hash)) {
     warnings.push("Hash format appears to be invalid");
   }
   return createValidationResult(errors.length === 0, errors, warnings, data);
@@ -335,13 +335,13 @@ export class FormValidator {
     }
     const result = validateField(value, config);
 
-    if (result.errors.length > 0) {
-      this.errors.set(name, result.errors);
+    if ((result as { errors?: any; warnings?: any }).errors.length > 0) {
+      this.errors.set(name, (result as { errors?: any; warnings?: any }).errors);
     } else {
       this.errors.delete(name);
     }
-    if (result.warnings.length > 0) {
-      this.warnings.set(name, result.warnings);
+    if ((result as { errors?: any; warnings?: any }).warnings.length > 0) {
+      this.warnings.set(name, (result as { errors?: any; warnings?: any }).warnings);
     } else {
       this.warnings.delete(name);
     }
@@ -355,13 +355,13 @@ export class FormValidator {
       const value = this.values.get(name);
       const result = validateField(value, config);
 
-      if (result.errors.length > 0) {
-        allErrors.push(...result.errors.map((e: any) => `${name}: ${e}`));
-        this.errors.set(name, result.errors);
+      if ((result as { errors?: any; warnings?: any }).errors.length > 0) {
+        allErrors.push(...(result as { errors?: any; warnings?: any }).errors.map((e: any) => `${name}: ${e}`));
+        this.errors.set(name, (result as { errors?: any; warnings?: any }).errors);
       }
-      if (result.warnings.length > 0) {
-        allWarnings.push(...result.warnings.map((w) => `${name}: ${w}`));
-        this.warnings.set(name, result.warnings);
+      if ((result as { errors?: any; warnings?: any }).warnings.length > 0) {
+        allWarnings.push(...(result as { errors?: any; warnings?: any }).warnings.map((w) => `${name}: ${w}`));
+        this.warnings.set(name, (result as { errors?: any; warnings?: any }).warnings);
       }
     }
     return createValidationResult(
@@ -419,8 +419,8 @@ export function validateObject(
 
   for (const [key, config] of Object.entries(schema)) {
     const result = validateField(obj[key], config);
-    errors.push(...result.errors.map((e: any) => `${key}: ${e}`));
-    warnings.push(...result.warnings.map((w) => `${key}: ${w}`));
+    errors.push(...(result as { errors?: any; warnings?: any }).errors.map((e: any) => `${key}: ${e}`));
+    warnings.push(...(result as { errors?: any; warnings?: any }).warnings.map((w) => `${key}: ${w}`));
   }
   return createValidationResult(errors.length === 0, errors, warnings, obj);
 }

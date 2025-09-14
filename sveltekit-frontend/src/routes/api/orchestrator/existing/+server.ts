@@ -1,6 +1,6 @@
 // API using existing services - no new Docker downloads
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 interface QueryRequest {
   query: string;
@@ -9,11 +9,7 @@ interface QueryRequest {
 
 interface HealthResponse {
   overall_status: 'healthy' | 'degraded' | 'critical';
-  services: Array<{
-    service: string;
-    status: 'healthy' | 'down';
-    details: string;
-  }>;
+  services: Array<any>;
   existing_infrastructure: {
     redis: boolean;
     postgres: boolean;

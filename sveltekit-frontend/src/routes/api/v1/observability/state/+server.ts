@@ -6,7 +6,7 @@ import {
 import { getBudgetCounters } from '$lib/services/pipeline-metrics';
 import fs from 'fs';
 import path from 'path';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // GET /api/v1/observability/state - Get current observability state with enhanced persistence

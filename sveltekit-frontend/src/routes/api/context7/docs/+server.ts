@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // Context7 Documentation RAG API endpoint
 // Integrates with Go RAG pipeline and Gemma embeddings
@@ -34,11 +34,11 @@ export const GET: RequestHandler = async ({ url }) => {
       // Get list of available libraries from Go RAG server
       const response = await fetch(`${GO_RAG_QUERY_SERVER}/api/rag/libraries`);
       
-      if (!response.ok) {
+      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
         throw new Error('Failed to fetch libraries');
       }
       
-      const libraries = await response.json();
+      const libraries = await (response as { ok?: any; json?: any; statusText?: any }).json();
       
       return json({
         success: true,
@@ -57,11 +57,11 @@ export const GET: RequestHandler = async ({ url }) => {
       
       const response = await fetch(topicsUrl);
       
-      if (!response.ok) {
+      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
         throw new Error('Failed to fetch topics');
       }
       
-      const topics = await response.json();
+      const topics = await (response as { ok?: any; json?: any; statusText?: any }).json();
       
       return json({
         success: true,
@@ -171,17 +171,17 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
         })
       });
       
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
         
-        if (result.success && result.result) {
+        if ((result as { success?: any; result?: any }).success && (result as { success?: any; result?: any }).result) {
           results.push({
             library: library.name,
             library_id: library.id,
             topic: req.topic,
-            content: result.result.content,
-            metadata: result.result.metadata,
-            snippets: result.result.snippets
+            content: (result as { success?: any; result?: any }).(result as { success?: any; result?: any }).content,
+            metadata: (result as { success?: any; result?: any }).(result as { success?: any; result?: any }).metadata,
+            snippets: (result as { success?: any; result?: any }).(result as { success?: any; result?: any }).snippets
           });
         }
       }
@@ -237,11 +237,11 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       body: JSON.stringify(searchRequest)
     });
     
-    if (!response.ok) {
-      throw new Error(`Search failed: ${response.statusText}`);
+    if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+      throw new Error(`Search failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
     }
     
-    const searchResults = await response.json();
+    const searchResults = await (response as { ok?: any; json?: any; statusText?: any }).json();
     
     // If using Enhanced RAG, also get memory context
     let memoryContext = null;

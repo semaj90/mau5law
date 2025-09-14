@@ -39,8 +39,8 @@ async function forwardToRAGBackend(
     clearTimeout(timeoutId);
     const duration = Date.now() - startTime;
 
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => "Unknown error");
+    if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
+      const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text().catch(() => "Unknown error");
 
       await librarySyncService.logAgentCall({
         id: crypto.randomUUID(),
@@ -48,16 +48,16 @@ async function forwardToRAGBackend(
         agentType: "rag",
         operation: `${options.method || "GET"} ${endpoint}`,
         input: { endpoint, options: { ...options, signal: undefined } },
-        output: { error: errorText, status: response.status },
+        output: { error: errorText, status: (response as { ok?: any; text?: any; status?: any; json?: any }).status },
         duration,
         success: false,
-        error: `HTTP ${response.status}: ${errorText}`,
+        error: `HTTP ${(response as { ok?: any; text?: any; status?: any; json?: any }).status}: ${errorText}`,
       });
 
-      throw new Error(`RAG Backend Error (${response.status}): ${errorText}`);
+      throw new Error(`RAG Backend Error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`);
     }
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 
     await librarySyncService.logAgentCall({
       id: crypto.randomUUID(),
@@ -125,9 +125,9 @@ export async function handleUpload(request: Request): Promise<any> {
 
     return json({
       success: true,
-      document: result.document,
-      processing: result.processing,
-      metadata: result.metadata,
+      document: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).document,
+      processing: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).processing,
+      metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata,
     });
   } catch (err: any) {
     console.error("Upload error:", err);
@@ -163,9 +163,9 @@ export async function handleCrawl(request: Request): Promise<any> {
 
     return json({
       success: true,
-      document: result.document,
-      crawlStats: result.crawlStats,
-      processingTime: result.processingTime,
+      document: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).document,
+      crawlStats: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).crawlStats,
+      processingTime: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).processingTime,
     });
   } catch (err: any) {
     console.error("Crawl error:", err);
@@ -193,8 +193,8 @@ export async function handleWorkflow(request: Request): Promise<any> {
 
     return json({
       success: true,
-      workflow: result.result,
-      metadata: result.metadata,
+      workflow: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).result,
+      metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata,
     });
   } catch (err: any) {
     console.error("Workflow error:", err);
@@ -221,8 +221,8 @@ export async function handleChat(request: Request): Promise<any> {
 
     return json({
       success: true,
-      response: result.response,
-      metadata: result.metadata,
+      response: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
+      metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata,
     });
   } catch (err: any) {
     console.error("Chat error:", err);
@@ -267,16 +267,16 @@ export async function handlePgaiProcess(request: Request): Promise<any> {
       }),
     });
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 
     let parsedResult;
     try {
-      parsedResult = JSON.parse(result.response);
+      parsedResult = JSON.parse((result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response);
     } catch {
       parsedResult = {
-        summary: result.response,
+        summary: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
         key_points: [],
-        entities: {},
+        entities: Record<string, any>,
         legal_issues: [],
         risk_level: "medium",
         recommended_actions: [],
@@ -321,11 +321,11 @@ export async function handlePgaiCustomAnalysis(request: Request): Promise<any> {
       }),
     });
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 
     return json({
       success: true,
-      data: result.response,
+      data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
     });
   } catch (err: any) {
     console.error("pgai custom analysis error:", err);
@@ -370,11 +370,11 @@ Provide analysis covering:
       }),
     });
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 
     return json({
       success: true,
-      data: result.response,
+      data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
     });
   } catch (err: any) {
     console.error("pgai comparison error:", err);
@@ -411,11 +411,11 @@ Document content: ${content.substring(0, 4000)}`,
       }),
     });
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 
     return json({
       success: true,
-      data: result.response,
+      data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
     });
   } catch (err: any) {
     console.error("pgai extraction error:", err);

@@ -15,19 +15,19 @@
  * high-accuracy legal AI system that learns from every user interaction.
  */
 
-import { qloraTopologyPredictor } from './qlora-topology-predictor';
-import type { QLoRATopologyState, TopologyPrediction, UserBehaviorPattern } from './qlora-topology-predictor';
-import { searchCacheNeuralEngine } from '../gpu/search-cache-neural-engine';
-import type { RenderContext, NeuralOptimizationResult } from '../gpu/search-cache-neural-engine';
-import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache';
-import { lokiRedisCache } from '../cache/loki-redis-integration';
-import type { LegalDocument } from '../memory/nes-memory-architecture';
+import { qloraTopologyPredictor } from './qlora-topology-predictor.js';
+import type { QLoRATopologyState, TopologyPrediction, UserBehaviorPattern } from './qlora-topology-predictor.js';
+import { searchCacheNeuralEngine } from '../gpu/search-cache-neural-engine.js';
+import type { RenderContext, NeuralOptimizationResult } from '../gpu/search-cache-neural-engine.js';
+import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache.js';
+import { lokiRedisCache } from '../cache/loki-redis-integration.js';
+import type { LegalDocument } from '../memory/nes-memory-architecture.js';
 
 // Import existing components (these imports represent the integration points)
-// import { AsyncRabbitMQStateManager } from '../state/async-rabbitmq-state-manager';
-// import { AIAssistantInputSynthesizer } from '../server/ai/ai-assistant-input-synthesizer';
-// import { MoogleGraphSynthesizer } from './moogle-graph-synthesizer';
-// import { LegalBERTSemanticAnalyzer } from './legal-bert-semantic-analyzer';
+// import { AsyncRabbitMQStateManager } from '../state/async-rabbitmq-state-manager.js';
+// import { AIAssistantInputSynthesizer } from '../server/ai/ai-assistant-input-synthesizer.js';
+// import { MoogleGraphSynthesizer } from './moogle-graph-synthesizer.js';
+// import { LegalBERTSemanticAnalyzer } from './legal-bert-semantic-analyzer.js';
 
 // Synthesis coordination types
 export interface SynthesisRequest {

@@ -50,12 +50,15 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     enabledProviders?: string[];
   }
 
-  let { 
-    autoStart = true,
+  let { autoStart = true,
     showMetrics = true,
     maxConcurrentTasks = 3,
     enabledProviders = ['ollama', 'autogen', 'crewai']
-  } = $props();
+   }: { autoStart = true,
+    showMetrics = true,
+    maxConcurrentTasks = 3,
+    enabledProviders = ['ollama', 'autogen', 'crewai']
+  : any } = $props();
 
   // Component state
   let isInitialized = $state(false);
@@ -63,9 +66,9 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   let workerStatus = $state<WorkerStatus | null>(null);
   let workerPool = $state<WorkerPool | null>(null);
   let processingMetrics = $state<ProcessingMetrics[]>([]);
-  let activeTasks = $state<Map<string, AITask>>(new Map());
-  let completedTasks = $state<Map<string, AIResponse>>(new Map());
-  let taskErrors = $state<Map<string, Error>>(new Map());
+  let activeTasks = $state<Map<string, AITask>('')>(new Map());
+  let completedTasks = $state<Map<string, AIResponse>('')>(new Map());
+  let taskErrors = $state<Map<string, Error>('')>(new Map());
 
   // UI state
   let selectedTask = $state<string | null>(null);
@@ -272,26 +275,25 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        onclick={refreshStatus}
+        on:click={refreshStatus}
         disabled={isProcessing}
       >
-        <RefreshCw class="h-4 w-4 mr-2 {isProcessing ? 'animate-spin' : ''}" />
+<RefreshCw class="h-4 w-4 mr-2 {isProcessing ? 'animate-spin' : ''}" />
         Refresh
-      </button>
-      
+
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        onclick={() => showSettings = !showSettings}
+        on:click={() =>
+showSettings = !showSettings}
       >
         <Settings class="h-4 w-4" />
-      </button>
-      
+
       {#if !isInitialized}
-        <Button class="bits-btn" onclick={initializeOrchestrator} disabled={isProcessing}>
-          <Play class="h-4 w-4 mr-2" />
+        <Button class="bits-btn" on:click={initializeOrchestrator} disabled={isProcessing}>
+<Play class="h-4 w-4 mr-2" />
           Initialize
-        </button>
+
       {/if}
     </div>
   </div>
@@ -299,8 +301,8 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   <!-- Status Overview -->
   {#if isInitialized && workerStatus}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <NesCard>
-        <div class="yorha-panel-content" class="p-4">
+      <div class="nes-container">
+        <div class="yorha-panel-content p-4">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">Active Tasks</p>
@@ -309,10 +311,10 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             <Activity class="h-8 w-8 text-blue-500" />
           </div>
         </div>
-      </NesCard>
+      </div>
       
-      <NesCard>
-        <div class="yorha-panel-content" class="p-4">
+      <div class="nes-container">
+        <div class="yorha-panel-content p-4">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">Queue Length</p>
@@ -321,10 +323,10 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             <Clock class="h-8 w-8 text-yellow-500" />
           </div>
         </div>
-      </NesCard>
+      </div>
       
-      <NesCard>
-        <div class="yorha-panel-content" class="p-4">
+      <div class="nes-container">
+        <div class="yorha-panel-content p-4">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">Success Rate</p>
@@ -333,10 +335,10 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             <CheckCircle class="h-8 w-8 text-green-500" />
           </div>
         </div>
-      </NesCard>
+      </div>
       
-      <NesCard>
-        <div class="yorha-panel-content" class="p-4">
+      <div class="nes-container">
+        <div class="yorha-panel-content p-4">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-600 dark:text-gray-400">Avg Response</p>
@@ -345,14 +347,14 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
             <Zap class="h-8 w-8 text-purple-500" />
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   {/if}
 
   <!-- Provider Status -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <Database class="h-5 w-5" />
         AI Providers
       </h3>
@@ -388,30 +390,31 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
                 variant="outline"
                 size="sm"
                 class="w-full mt-2 bits-btn bits-btn"
-                onclick={() => submitTestTask(provider.id)}
+                on:click={() =>
+submitTestTask(provider.id)}
                 disabled={provider.status !== 'online'}
               >
                 Test Connection
-              </button>
+
             </div>
           </div>
         {/each}
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Active Tasks -->
   {#if activeTasks.size > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           <span class="flex items-center gap-2">
             <Activity class="h-5 w-5" />
             Active Tasks ({activeTasks.size})
           </span>
-          <Button class="bits-btn" variant="outline" size="sm" onclick={clearCompletedTasks}>
-            Clear Completed
-          </button>
+          <Button class="bits-btn" variant="outline" size="sm" on:click={clearCompletedTasks}>
+Clear Completed
+
         </h3>
       </div>
       <div class="yorha-panel-content">
@@ -436,23 +439,24 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => cancelTask(taskId)}
+                  on:click={() =>
+cancelTask(taskId)}
                 >
                   <X class="h-4 w-4" />
-                </button>
+
               </div>
             </div>
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Recent Results -->
   {#if completedTasks.size > 0 || taskErrors.size > 0}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <CheckCircle class="h-5 w-5" />
           Recent Results
         </h3>
@@ -494,14 +498,14 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Worker Pool Status -->
   {#if showMetrics && workerPool}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2">
+        <h3 class="nes-text is-primary flex items-center gap-2">
           <Cpu class="h-5 w-5" />
           Worker Pool Status
         </h3>
@@ -539,7 +543,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
           </div>
         {/if}
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

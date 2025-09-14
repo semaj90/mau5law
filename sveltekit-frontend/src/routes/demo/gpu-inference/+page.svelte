@@ -242,8 +242,8 @@
     <!-- Engine Status Dashboard -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       {#each Object.entries($engineStatus) as [engine, status]}
-        <NesCard class="transition-all hover:shadow-md">
-          <div class="yorha-panel-content" class="p-4">
+        <div class="transition-all hover:shadow-md nes-container">
+          <div class="yorha-panel-content p-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="text-2xl">{getEngineEmoji(engine)}</span>
@@ -262,12 +262,12 @@
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       {/each}
     </div>
 
     <!-- Performance Metrics -->
-    <NesCard class="mb-6">
+    <div class="mb-6 nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">📊 Real-time Performance Metrics</h3>
       </div>
@@ -295,14 +295,14 @@
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Main Chat Interface -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
       <!-- Chat Messages -->
       <div class="lg:col-span-2">
-        <NesCard class="h-[600px] flex flex-col">
+        <div class="h-[600px] flex flex-col nes-container">
           <div class="yorha-panel-header">
             <div class="flex items-center justify-between">
               <h3 class="nes-text is-primary">💬 AI Assistant Chat</h3>
@@ -310,10 +310,10 @@
                 <Button class="bits-btn" 
                   variant="outline" 
                   size="sm"
-                  onclick={clearChat}
+                  on:click={clearChat}
                 >
-                  🗑️ Clear
-                </button>
+🗑️ Clear
+</Button>
                 <select 
                   bind:value={selectedEngine}
                   class="px-3 py-1 text-sm border rounded-md bg-white"
@@ -325,7 +325,7 @@
               </div>
             </div>
           </div>
-          <div class="yorha-panel-content" class="flex-1 flex flex-col p-0">
+          <div class="yorha-panel-content flex-1 flex flex-col p-0">
             
             <!-- Messages Container -->
             <div 
@@ -384,31 +384,35 @@
                     <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
-                      onclick={() => currentInput = "Analyze the key elements of a valid contract"}
+                      on:click={() =>
+currentInput = "Analyze the key elements of a valid contract"}
                     >
                       📝 Contract Analysis
-                    </button>
+</Button>
                     <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
-                      onclick={() => currentInput = "What are common legal risks in mergers?"}
+                      on:click={() =>
+currentInput = "What are common legal risks in mergers?"}
                     >
                       ⚖️ Legal Risks
-                    </button>
+</Button>
                     <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
-                      onclick={() => currentInput = "Test GPU performance with vector embeddings"}
+                      on:click={() =>
+currentInput = "Test GPU performance with vector embeddings"}
                     >
                       🎮 GPU Test
-                    </button>
+</Button>
                     <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
-                      onclick={() => currentInput = "Compare different AI engines"}
+                      on:click={() =>
+currentInput = "Compare different AI engines"}
                     >
                       🚀 Engine Comparison
-                    </button>
+</Button>
                   </div>
                 </div>
               {/if}
@@ -426,27 +430,27 @@
                   disabled={isProcessing}
                 ></textarea>
                 <Button
-                  onclick={sendMessage}
+                  on:click={sendMessage}
                   disabled={!currentInput.trim() || isProcessing}
                   class="px-6 bits-btn bits-btn"
                 >
-                  {#if isProcessing}
+{#if isProcessing}
                     ⏳ Processing...
                   {:else}
                     ➤ Send
                   {/if}
-                </button>
+</Button>
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       </div>
 
       <!-- System Information -->
       <div class="space-y-4">
         
         <!-- Current Session -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">🔍 Session Info</h3>
           </div>
@@ -470,10 +474,10 @@
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
 
         <!-- Engine Capabilities -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">⚡ Engine Capabilities</h3>
           </div>
@@ -509,10 +513,10 @@
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
 
         <!-- Performance Tips -->
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">💡 Performance Tips</h3>
           </div>
@@ -525,7 +529,7 @@
               <div>• All engines support vector embeddings</div>
             </div>
           </div>
-        </NesCard>
+        </div>
 
       </div>
     </div>

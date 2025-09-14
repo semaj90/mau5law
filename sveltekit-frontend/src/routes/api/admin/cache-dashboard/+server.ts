@@ -5,7 +5,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { redisService } from '$lib/server/redis-service';
 import { getVectorCacheStats, clearVectorCache } from '$lib/server/vector-cache';
 import { getCache as getSummaryCache, memoryStats as getSummaryMemoryStats } from '$lib/server/summarizeCache';

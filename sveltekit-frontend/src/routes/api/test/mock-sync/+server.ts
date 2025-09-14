@@ -2,7 +2,7 @@
 // This endpoint provides test data and verifies database connectivity
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { initializeMockDataWithEmbeddings, mockApiResponses } from '$lib/data/mock-legal-data.js';
 
 // Database connection (with fallback for development)

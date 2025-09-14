@@ -32,10 +32,10 @@ Displays all media: evidence, generated images, documents, uploads
   let galleryStats = $derived(() => {
     const stats = {
       total: mediaItems.length,
-      evidence: mediaItems.filter(item => item.category === 'evidence').length,
-      images: mediaItems.filter(item => item.category === 'images').length,
-      documents: mediaItems.filter(item => item.category === 'documents').length,
-      aiGenerated: mediaItems.filter(item => item.metadata?.aiGenerated).length
+      evidence: mediaItems.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'evidence').length,
+      images: mediaItems.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'images').length,
+      documents: mediaItems.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'documents').length,
+      aiGenerated: mediaItems.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).metadata?.aiGenerated).length
     };
     return stats;
   });
@@ -47,25 +47,25 @@ Displays all media: evidence, generated images, documents, uploads
     // Filter by category
     if (selectedCategory !== 'all') {
       if (selectedCategory === 'ai-generated') {
-        items = items.filter(item => item.metadata?.aiGenerated);
+        items = items.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).metadata?.aiGenerated);
       } else {
-        items = items.filter(item => item.category === selectedCategory);
+        items = items.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === selectedCategory);
       }
     }
 
     // Filter by case
     if (selectedCaseId !== 'all') {
-      items = items.filter(item => item.caseId === selectedCaseId);
+      items = items.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).caseId === selectedCaseId);
     }
 
     // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       items = items.filter(item =>
-        item.title?.toLowerCase().includes(query) ||
-        item.description?.toLowerCase().includes(query) ||
-        item.tags?.some((tag: string) => tag.toLowerCase().includes(query)) ||
-        item.caseTitle?.toLowerCase().includes(query)
+        (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title?.toLowerCase().includes(query) ||
+        (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).description?.toLowerCase().includes(query) ||
+        (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags?.some((tag: string) => tag.toLowerCase().includes(query)) ||
+        (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).caseTitle?.toLowerCase().includes(query)
       );
     }
 
@@ -119,12 +119,12 @@ Displays all media: evidence, generated images, documents, uploads
 
     try {
       const response = await fetch('/api/gallery');
-      if (!response.ok) {
-        throw new Error(`Failed to load gallery: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Failed to load gallery: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const data = await response.json();
-      mediaItems = data.items || [];
+      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      mediaItems = (data as { items?: any; cases?: any; prompt?: any }).items || [];
 
     } catch (err) {
       console.error('Failed to load gallery data:', err);
@@ -138,9 +138,9 @@ Displays all media: evidence, generated images, documents, uploads
   async function loadCases() {
     try {
       const response = await fetch('/api/cases');
-      if (response.ok) {
-        const data = await response.json();
-        availableCases = data.cases || [];
+      if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
+        availableCases = (data as { items?: any; cases?: any; prompt?: any }).cases || [];
       }
     } catch (err) {
       console.error('Failed to load cases:', err);
@@ -148,11 +148,11 @@ Displays all media: evidence, generated images, documents, uploads
   }
 
   function getItemIcon(item: any): string {
-    if (item.metadata?.aiGenerated) return '🎨';
+    if ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).metadata?.aiGenerated) return '🎨';
 
-    switch (item.category) {
+    switch ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category) {
       case 'evidence':
-        switch (item.type) {
+        switch ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).type) {
           case 'image': return '🖼️';
           case 'video': return '🎥';
           case 'audio': return '🎵';
@@ -166,9 +166,9 @@ Displays all media: evidence, generated images, documents, uploads
   }
 
   function getItemPreview(item: any): string {
-    if (item.fileUrl) return item.fileUrl;
-    if (item.imageUrl) return item.imageUrl;
-    if (item.thumbnailUrl) return item.thumbnailUrl;
+    if ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).fileUrl) return (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).fileUrl;
+    if ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).imageUrl) return (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).imageUrl;
+    if ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).thumbnailUrl) return (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).thumbnailUrl;
     return '/api/placeholder-image';
   }
 
@@ -181,11 +181,11 @@ Displays all media: evidence, generated images, documents, uploads
   }
 
   function downloadItem(item: any) {
-    if (item.fileUrl || item.imageUrl) {
-      const url = item.fileUrl || item.imageUrl;
+    if ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).fileUrl || (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).imageUrl) {
+      const url = (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).fileUrl || (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).imageUrl;
       const a = document.createElement('a');
       a.href = url;
-      a.download = item.title || `item-${item.id}`;
+      a.download = (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title || `item-${(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).id}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -193,17 +193,17 @@ Displays all media: evidence, generated images, documents, uploads
   }
 
   async function deleteItem(item: any) {
-    if (!confirm(`Delete "${item.title}"? This action cannot be undone.`)) {
+    if (!confirm(`Delete "${(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title}"? This action cannot be undone.`)) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/gallery/${item.id}`, {
+      const response = await fetch(`/api/gallery/${(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).id}`, {
         method: 'DELETE'
       });
 
-      if (response.ok) {
-        mediaItems = mediaItems.filter(i => i.id !== item.id);
+      if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
+        mediaItems = mediaItems.filter(i => i.id !== (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).id);
         selectedItem = null;
       } else {
         alert('Failed to delete item');
@@ -216,8 +216,8 @@ Displays all media: evidence, generated images, documents, uploads
 
   function shareItem(item: any) {
     const shareData = {
-      title: item.title || 'Gallery Item',
-      text: item.description || '',
+      title: (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title || 'Gallery Item',
+      text: (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).description || '',
       url: window.location.href
     };
 
@@ -255,7 +255,7 @@ Displays all media: evidence, generated images, documents, uploads
         body: formData
       });
 
-      if (!response.ok) {
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error('Upload failed');
       }
 
@@ -299,13 +299,13 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="header-actions">
         <button
           class="nes-btn is-success"
-          onclick={() => showUploadModal = true}
+          on:click={() => showUploadModal = true}
         >
           📤 Upload Files
         </button>
         <button
           class="nes-btn is-normal"
-          onclick={() => loadGalleryData()}
+          on:click={() => loadGalleryData()}
           disabled={isLoading}
         >
           {isLoading ? '🔄' : '↻'} Refresh
@@ -371,7 +371,7 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="control-group">
         <button
           class="nes-btn {sortOrder === 'desc' ? 'is-primary' : 'is-normal'}"
-          onclick={() => sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'}
+          on:click={() => sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'}
         >
           {sortOrder === 'desc' ? '↓' : '↑'}
         </button>
@@ -381,19 +381,19 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="control-group view-modes">
         <button
           class="nes-btn {viewMode === 'grid' ? 'is-primary' : 'is-normal'}"
-          onclick={() => viewMode = 'grid'}
+          on:click={() => viewMode = 'grid'}
         >
           ⊞
         </button>
         <button
           class="nes-btn {viewMode === 'list' ? 'is-primary' : 'is-normal'}"
-          onclick={() => viewMode = 'list'}
+          on:click={() => viewMode = 'list'}
         >
           ☰
         </button>
         <button
           class="nes-btn {viewMode === 'masonry' ? 'is-primary' : 'is-normal'}"
-          onclick={() => viewMode = 'masonry'}
+          on:click={() => viewMode = 'masonry'}
         >
           ⊡
         </button>
@@ -403,7 +403,7 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="control-group">
         <button
           class="nes-btn is-error"
-          onclick={clearFilters}
+          on:click={clearFilters}
         >
           🗑️ Clear
         </button>
@@ -425,7 +425,7 @@ Displays all media: evidence, generated images, documents, uploads
   {#if error}
     <div class="error-state nes-container is-error">
       <p>❌ {error}</p>
-  <button class="nes-btn is-normal" onclick={() => loadGalleryData()}>
+  <button class="nes-btn is-normal" on:click={() => loadGalleryData()}>
         Retry
       </button>
     </div>
@@ -444,14 +444,14 @@ Displays all media: evidence, generated images, documents, uploads
         <div class="empty-actions">
           <button
             class="nes-btn is-success"
-            onclick={() => showUploadModal = true}
+            on:click={() => showUploadModal = true}
           >
             📤 Upload Files
           </button>
           {#if searchQuery || selectedCategory !== 'all' || selectedCaseId !== 'all'}
             <button
               class="nes-btn is-normal"
-              onclick={clearFilters}
+              on:click={clearFilters}
             >
               Clear Filters
             </button>
@@ -463,15 +463,15 @@ Displays all media: evidence, generated images, documents, uploads
         {#each filteredItems as item}
           <div class="gallery-item nes-container is-rounded">
             <div class="item-preview" role="button" tabindex="0"
-                onclick={() => openItem(item)}>
-              {#if item.type === 'image' || item.category === 'images'}
+                on:click={() => openItem(item)}>
+              {#if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).type === 'image' || (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'images'}
                 <img
                   src={getItemPreview(item)}
-                  alt={item.title || 'Gallery item'}
+                  alt={(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title || 'Gallery item'}
                   class="preview-image"
                   loading="lazy"
                 >
-              {:else if item.type === 'video'}
+              {:else if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).type === 'video'}
                 <video
                   src={getItemPreview(item)}
                   class="preview-video"
@@ -482,23 +482,23 @@ Displays all media: evidence, generated images, documents, uploads
               {:else}
                 <div class="preview-placeholder">
                   <div class="file-icon">{getItemIcon(item)}</div>
-                  <div class="file-type">{item.type || 'file'}</div>
+                  <div class="file-type">{(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).type || 'file'}</div>
                 </div>
               {/if}
 
               <!-- Overlay Info -->
               <div class="item-overlay">
                 <div class="overlay-info">
-                  <p class="item-title">{item.title || 'Untitled'}</p>
-                  {#if item.caseTitle}
-                    <p class="item-case">{item.caseTitle}</p>
+                  <p class="item-title">{(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title || 'Untitled'}</p>
+                  {#if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).caseTitle}
+                    <p class="item-case">{(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).caseTitle}</p>
                   {/if}
                 </div>
                 <div class="overlay-actions">
-                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); downloadItem(item); }}>
+                  <button class="nes-btn is-small" on:click={(e) => { e.stopPropagation(); downloadItem(item); }}>
                     ⬇️
                   </button>
-                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); shareItem(item); }}>
+                  <button class="nes-btn is-small" on:click={(e) => { e.stopPropagation(); shareItem(item); }}>
                     📤
                   </button>
                 </div>
@@ -508,44 +508,43 @@ Displays all media: evidence, generated images, documents, uploads
             <!-- Item Info -->
             <div class="item-info">
               <div class="item-meta">
-                <span class="category-badge nes-badge is-{item.category === 'evidence' ? 'primary' : item.category === 'images' ? 'success' : 'normal'}">
-                  {item.category}
+                <span class="category-badge nes-badge is-{(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'evidence' ? 'primary' : (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'images' ? 'success' : 'normal'}">
+                  {(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category}
                 </span>
-                {#if item.metadata?.aiGenerated}
+                {#if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).metadata?.aiGenerated}
                   <span class="ai-badge nes-badge is-error">AI</span>
                 {/if}
               </div>
 
-              {#if item.tags && item.tags.length > 0}
+              {#if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags && (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags.length > 0}
                 <div class="item-tags">
-                  {#each item.tags.slice(0, 3) as tag}
+                  {#each (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags.slice(0, 3) as tag}
                     <span class="tag-badge">{tag}</span>
                   {/each}
-                  {#if item.tags.length > 3}
-                    <span class="tag-more">+{item.tags.length - 3}</span>
+                  {#if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags.length > 3}
+                    <span class="tag-more">+{(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags.length - 3}</span>
                   {/if}
                 </div>
               {/if}
 
               <div class="item-timestamp">
-                {new Date(item.createdAt || item.timestamp).toLocaleDateString()}
+                {new Date((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).createdAt || (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).timestamp).toLocaleDateString()}
               </div>
             </div>
           </div>
         {/each}
       </div>
     {/if}
-  {/if}
 
   <!-- Upload Modal -->
   {#if showUploadModal}
   <div class="modal-overlay" role="button" tabindex="0"
-                onclick={() => showUploadModal = false}>
+                on:click={() => showUploadModal = false}>
   <div class="modal-content nes-container is-rounded" role="button" tabindex="0"
-                onclick={(e) => e.stopPropagation()}>
+                on:click={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h3>Upload Files</h3>
-          <button class="nes-btn is-error" onclick={() => showUploadModal = false}>×</button>
+          <button class="nes-btn is-error" on:click={() => showUploadModal = false}>×</button>
         </div>
         <div class="modal-body">
           <div class="upload-area nes-container is-dark">
@@ -554,7 +553,7 @@ Displays all media: evidence, generated images, documents, uploads
               id="file-upload"
               multiple
               accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
-              onchange={handleFileUpload}
+              on:change={handleFileUpload}
               style="display: none;"
             >
             <label for="file-upload" class="upload-label">
@@ -587,12 +586,12 @@ Displays all media: evidence, generated images, documents, uploads
   <!-- Item Detail Modal -->
   {#if selectedItem}
   <div class="modal-overlay" role="button" tabindex="0"
-                onclick={closeModal}>
+                on:click={closeModal}>
   <div class="modal-content detail-modal nes-container is-rounded" role="button" tabindex="0"
-                onclick={(e) => e.stopPropagation()}>
+                on:click={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h3>{selectedItem.title || 'Gallery Item'}</h3>
-          <button class="nes-btn is-error" onclick={closeModal}>×</button>
+          <button class="nes-btn is-error" on:click={closeModal}>×</button>
         </div>
         <div class="modal-body">
           <div class="detail-content">
@@ -673,10 +672,10 @@ Displays all media: evidence, generated images, documents, uploads
           </div>
 
           <div class="detail-actions">
-            <button class="nes-btn is-success" onclick={() => downloadItem(selectedItem)}>
+            <button class="nes-btn is-success" on:click={() => downloadItem(selectedItem)}>
               ⬇️ Download
             </button>
-            <button class="nes-btn is-primary" onclick={() => shareItem(selectedItem)}>
+            <button class="nes-btn is-primary" on:click={() => shareItem(selectedItem)}>
               📤 Share
             </button>
             {#if selectedItem.caseId}
@@ -684,7 +683,7 @@ Displays all media: evidence, generated images, documents, uploads
                 🔗 View Case
               </a>
             {/if}
-            <button class="nes-btn is-error" onclick={() => deleteItem(selectedItem)}>
+            <button class="nes-btn is-error" on:click={() => deleteItem(selectedItem)}>
               🗑️ Delete
             </button>
           </div>
@@ -789,7 +788,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
 
   .gallery-grid.gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   }
 
   .gallery-grid.gallery-list {
@@ -797,7 +796,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
 
   .gallery-grid.gallery-masonry {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   }
 
   .gallery-item {
@@ -1081,7 +1080,7 @@ Displays all media: evidence, generated images, documents, uploads
     }
 
     .gallery-grid.gallery-grid {
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     }
 
     .modal-content {

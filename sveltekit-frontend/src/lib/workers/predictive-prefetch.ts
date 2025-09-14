@@ -204,7 +204,7 @@ export class PredictivePrefetcher {
       assets: ["/assets/css/forms.css", "/assets/js/case-validator.js"],
       uiBuffers: ["case-form", "precedent-search"],
       priority: "medium",
-      conditions: {},
+      conditions: Record<string, any>,
     });
 
     // Evidence search
@@ -235,7 +235,7 @@ export class PredictivePrefetcher {
       assets: ["/assets/css/settings.css"],
       uiBuffers: ["/api/ui/buffers/settings"],
       priority: "low",
-      conditions: {},
+      conditions: Record<string, any>,
       llmIntegration: {
         useLocalLLM: true,
         intentThreshold: 0.7,
@@ -430,7 +430,7 @@ export class PredictivePrefetcher {
         userProfile: {
           role: "user",
           recentActions: this.intentHistory.slice(-5).map((intent: any) => intent.action),
-          preferences: {},
+          preferences: Record<string, any>,
           workflowPatterns: []
         }
       };

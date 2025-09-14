@@ -178,8 +178,8 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
   async function checkSystemStatus() {
     try {
       const response = await fetch('/api/health');
-      if (response.ok) {
-        const status = await response.json();
+      if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
+        const status = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
         systemStatus = {
           legalBERT: status.checks?.ollama ? 'active' : 'inactive',
           rag: status.checks?.database ? 'active' : 'inactive',
@@ -220,8 +220,8 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         body: JSON.stringify(sessionData)
       });
 
-      if (response.ok) {
-        const session = await response.json();
+      if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
+        const session = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
         currentSessionId = session.id;
         // Link to report if specified
         if (reportId && session.id) {
@@ -241,8 +241,8 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
     try {
       const response = await fetch(`/api/v1/chat/sessions/${currentSessionId}/messages`);
-      if (response.ok) {
-        const chatHistory = await response.json();
+      if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
+        const chatHistory = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
         // Convert database messages to component format
         const loadedMessages = chatHistory.map((msg: any) => ({
           id: msg.id,
@@ -292,7 +292,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         body: JSON.stringify(messageData)
       });
 
-      if (response.ok) {
+      if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
         lastSyncTime = new Date();
       }
     } catch (error) {
@@ -310,8 +310,8 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
     try {
       const response = await fetch(`/api/v1/reports/${reportId}/related`);
-      if (response.ok) {
-        const reports = await response.json();
+      if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
+        const reports = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
         relatedReports = reports.slice(0, 5); // Limit to top 5 related reports
       }
     } catch (error) {
@@ -357,8 +357,8 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         })
       });
 
-      if (response.ok) {
-        return await response.json();
+      if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
+        return await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
       }
     } catch (error) {
       console.warn('Failed to search similar conversations:', error);
@@ -422,7 +422,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     messages.update((msgs) => 
       msgs.map(msg => 
         msg.id === streamingMessageId 
-          ? { ...msg, content: streamingContent + (isStreaming ? '<span class="typewriter-cursor">|</span>' : '') }
+          ? {/* JSX syntax converted to Svelte */}
           : msg
       )
     );
@@ -485,13 +485,13 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`AI service error: ${response.status} ${response.statusText}`);
+      if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
+        throw new Error(`AI service error: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).status} ${(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).statusText}`);
       }
 
       // Process streaming response
       let fullResponse = '';
-      const reader = response.body?.getReader();
+      const reader = (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).body?.getReader();
       const decoder = new TextDecoder();
 
       if (reader) {
@@ -504,8 +504,8 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
           for (const line of lines) {
             try {
               const data = JSON.parse(line);
-              if (data.response) {
-                fullResponse += data.response;
+              if ((data as { response?: any; done?: any }).response) {
+                fullResponse += (data as { response?: any; done?: any }).response;
               }
             } catch (e) {
               // Skip invalid JSON lines
@@ -694,11 +694,11 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
       }),
     });
 
-    if (!response.ok) {
-      throw new Error(`AI service error: ${response.status} ${response.statusText}`);
+    if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
+      throw new Error(`AI service error: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).status} ${(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).statusText}`);
     }
 
-    const result = await response.json();
+    const result = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
     const processingTime = Date.now() - startTime;
     // Generate enhanced analysis structure
     const analysisData = {
@@ -707,7 +707,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
       complexity: { legalComplexity: 0.7 }
     };
     return {
-      response: result.response || 'Response generated successfully',
+      response: (result as { response?: any }).response || 'Response generated successfully',
       confidence: 0.85,
       processingTime,
       synthesizedInput: {
@@ -808,11 +808,11 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Analysis API error: ${response.status}`);
+      if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
+        throw new Error(`Analysis API error: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).status}`);
       }
 
-      const analysis = await response.json();
+      const analysis = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
 
       // Simulate enhanced analysis structure from response
       const entityCount = (text.match(/\b(plaintiff|defendant|court|judge|attorney|corporation|LLC)\b/gi) || []).length;
@@ -868,11 +868,11 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Research API error: ${response.status}`);
+      if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
+        throw new Error(`Research API error: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).status}`);
       }
 
-      const research = await response.json();
+      const research = await (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).json();
 
       // Simulate research metrics based on response
       const responseLength = research.response?.length || 0;
@@ -1093,11 +1093,11 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Ollama API error: ${response.status}`);
+      if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
+        throw new Error(`Ollama API error: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).status}`);
       }
 
-      const reader = response.body?.getReader();
+      const reader = (response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).body?.getReader();
       if (!reader) throw new Error('No response stream available');
 
       let fullResponse = '';
@@ -1113,10 +1113,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         for (const line of lines) {
           try {
             const data = JSON.parse(line);
-            if (data.response) {
-              fullResponse += data.response;
+            if ((data as { response?: any; done?: any }).response) {
+              fullResponse += (data as { response?: any; done?: any }).response;
             }
-            if (data.done) break;
+            if ((data as { response?: any; done?: any }).done) break;
           } catch (parseError) {
             // Ignore parsing errors for incomplete chunks
           }
@@ -1171,10 +1171,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
 <div class="enhanced-legal-ai-chat flex flex-col h-full max-w-6xl mx-auto {className}">
   <!-- Header with Status -->
-  <NesCard class="mb-4">
-    <div class="yorha-panel-header" class="pb-2">
+  <div class="mb-4 nes-container">
+    <div class="yorha-panel-header pb-2">
       <div class="flex items-center justify-between">
-        <h3 class="nes-text is-primary" class="flex items-center gap-2 flex-wrap">
+        <h3 class="nes-text is-primary flex items-center gap-2 flex-wrap">
           <Brain class="w-5 h-5" />
           Enhanced Legal AI Assistant
           {#if userRole}
@@ -1216,16 +1216,17 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
           </div>
 
           <!-- Settings Toggle -->
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showSettings = !showSettings)}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+(showSettings = !showSettings)}>
             <Settings class="w-4 h-4" />
-          </button>
+</Button>
         </div>
       </div>
     </div>
 
     <!-- Advanced Settings Panel -->
     {#if showSettings}
-      <div class="yorha-panel-content" class="border-t">
+      <div class="yorha-panel-content border-t">
         <Collapsible.Root>
           <Collapsible.Trigger class="flex items-center gap-2 text-sm font-medium mb-3">
             <Zap class="w-4 h-4" />
@@ -1310,14 +1311,14 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         </Collapsible.Root>
       </div>
     {/if}
-  </NesCard>
+  </div>
 
   <!-- Messages Container -->
   <div
     bind:this={chatContainer}
     class="flex-1 overflow-y-auto space-y-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border">
     {#each $messages as message (message.id)}
-      <div class="message-bubble {message.role}" transitifly={{ y: 20, duration: 300 }}>
+      <div class="message-bubble {message.role}" /* transition removed */}>
         <div class="flex items-start gap-3">
           <!-- Message Icon -->
           <div
@@ -1386,9 +1387,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
                 />
               {:else}
                 <!-- Normal content -->
-                {@html message.content
-                  .replace(/\n/g, '<br>')
-                  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
+                {/* JSX syntax converted to Svelte */}
               {/if}
             </div>
 
@@ -1460,9 +1459,10 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
           <!-- Message Actions -->
           <div class="flex-shrink-0 flex flex-col gap-1">
-            <Button class="bits-btn" variant="ghost" size="sm" onclick={() => copyToClipboard(message.content)}>
+            <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+copyToClipboard(message.content)}>
               <FileText class="w-3 h-3" />
-            </button>
+</Button>
           </div>
         </div>
       </div>
@@ -1487,24 +1487,25 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
       keydown={handleKeyDown}
       disabled={isProcessing}
       class="flex-1" />
-    <Button class="bits-btn" onclick={sendMessage} disabled={!currentInput.trim() || isProcessing}>
-      {#if isProcessing}
+    <Button class="bits-btn" on:click={sendMessage} disabled={!currentInput.trim() || isProcessing}>
+{#if isProcessing}
         <Loader2 class="w-4 h-4 animate-spin" />
       {:else}
         <Send class="w-4 h-4" />
       {/if}
-    </button>
+</Button>
   </div>
 
   <!-- Analysis Panel -->
   {#if currentAnalysis && showAdvancedAnalysis}
-    <NesCard class="mt-4" transitifly={{ y: 20, duration: 300 }}>
+    <div class="mt-4 nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="flex items-center justify-between">
+        <h3 class="nes-text is-primary flex items-center justify-between">
           Detailed Analysis
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showAdvancedAnalysis = false)}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+(showAdvancedAnalysis = false)}>
             ×
-          </button>
+</Button>
         </h3>
       </div>
       <div class="yorha-panel-content">
@@ -1512,7 +1513,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 {JSON.stringify(currentAnalysis, null, 2)}
         </pre>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

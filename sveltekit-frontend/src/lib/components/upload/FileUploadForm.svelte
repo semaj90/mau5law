@@ -9,9 +9,9 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent,
-    Button,
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/button/Button.svelte';
   import type { UploadFile } from '$lib/components/ui/modular/types';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import { Label } from '$lib/components/ui/label';
@@ -39,8 +39,8 @@ https://svelte.dev/e/js_parse_error -->
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
 
-  let { data = $bindable() } = $props(); // { form: any };
-  let { caseId = $bindable() } = $props(); // string = '';
+  let { data }: { data: any } = $props(); // { form: any };
+  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string = '';
   const { form, errors, enhance, submitting, delayed, message } = superForm(data.form, {
     validators: zodClient(fileUploadSchema),
     multipleSubmits: 'prevent',
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<NesCard variant="legal" class="w-full max-w-2xl">
+<div variant="legal" class="w-full max-w-2xl nes-container">
   {#snippet header()}
     <div class="space-y-2">
       <h3 class="text-xl font-semibold">Upload Evidence</h3>
@@ -151,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/snippet}
 
-  <Form method="POST" enctype="multipart/form-data" submit={enhance} variant="legal">
+  <Form method="POST" enctype="multipart/form-data" on:submit={enhance} variant="legal">
     <!-- File Upload Component -->
     <div class="space-y-2">
       <Label for="file">File</Label>
@@ -282,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
           class="w-full bits-btn bits-btn"
           loading={$submitting}
         >
-          {#snippet children()}
+{#snippet children()}
             {#if $submitting}
               Uploading Evidence...
             {:else}
@@ -290,9 +290,9 @@ https://svelte.dev/e/js_parse_error -->
               Upload Evidence
             {/if}
           {/snippet}
-        </button>
+
   </Form>
-</NesCard>
+</div>
 
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
 

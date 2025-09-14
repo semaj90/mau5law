@@ -39,13 +39,7 @@ export interface WorkflowResult {
   crewId: string;
   workflowName: string;
   status: "completed" | "failed" | "partial";
-  results: Array<{
-    taskId: string;
-    agentId: string;
-    output: string;
-    executionTime: number;
-    confidence: number;
-  }>;
+  results: Array<any>;
   finalDeliverable: string;
   totalTime: number;
   insights: string[];
@@ -125,7 +119,7 @@ class CrewAILegalTeam {
           dependencies: [],
           priority: "critical",
           estimatedDuration: 120000,
-          context: {},
+          context: Record<string, any>,
         },
         {
           id: "evidence_analysis",
@@ -137,7 +131,7 @@ class CrewAILegalTeam {
           dependencies: ["initial_case_review"],
           priority: "high",
           estimatedDuration: 180000,
-          context: {},
+          context: Record<string, any>,
         },
         {
           id: "legal_research",
@@ -149,7 +143,7 @@ class CrewAILegalTeam {
           dependencies: ["initial_case_review"],
           priority: "high",
           estimatedDuration: 150000,
-          context: {},
+          context: Record<string, any>,
         },
       ],
     });
@@ -210,7 +204,7 @@ class CrewAILegalTeam {
           dependencies: [],
           priority: "critical",
           estimatedDuration: 240000,
-          context: {},
+          context: Record<string, any>,
         },
         {
           id: "witness_preparation",
@@ -221,7 +215,7 @@ class CrewAILegalTeam {
           dependencies: ["trial_strategy"],
           priority: "high",
           estimatedDuration: 120000,
-          context: {},
+          context: Record<string, any>,
         },
         {
           id: "exhibit_organization",
@@ -233,7 +227,7 @@ class CrewAILegalTeam {
           dependencies: ["trial_strategy"],
           priority: "medium",
           estimatedDuration: 90000,
-          context: {},
+          context: Record<string, any>,
         },
       ],
     });
@@ -290,7 +284,7 @@ class CrewAILegalTeam {
           dependencies: [],
           priority: "high",
           estimatedDuration: 180000,
-          context: {},
+          context: Record<string, any>,
         },
         {
           id: "procedural_compliance_review",
@@ -302,7 +296,7 @@ class CrewAILegalTeam {
           dependencies: [],
           priority: "high",
           estimatedDuration: 120000,
-          context: {},
+          context: Record<string, any>,
         },
       ],
     });
@@ -378,8 +372,8 @@ class CrewAILegalTeam {
 
       // Extract insights and recommendations
       for (const result of results) {
-        insights.push(...this.extractInsights(result.output));
-        recommendations.push(...this.extractRecommendations(result.output));
+        insights.push(...this.extractInsights((result as { output?: any }).output));
+        recommendations.push(...this.extractRecommendations((result as { output?: any }).output));
       }
 
       return {
@@ -536,11 +530,7 @@ class CrewAILegalTeam {
   ): Promise<void> {
     // All agents work on the same tasks and reach consensus
     for (const task of crew.tasks) {
-      const agentOutputs: Array<{
-        agentId: string;
-        output: string;
-        confidence: number;
-      }> = [];
+      const agentOutputs: Array< = [];
 
       // Get output from each agent
       for (const agent of crew.members) {
@@ -604,12 +594,12 @@ class CrewAILegalTeam {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`AI request failed: ${response.statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`AI request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
 
-      const data = await response.json();
-      return data.response;
+      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      return (data as { response?: any }).response;
     } catch (error: any) {
       console.error(`Agent ${agent.id} task execution failed:`, error);
       throw error;
@@ -688,8 +678,8 @@ Final synthesis:`;
         }),
       });
 
-      const data = await response.json();
-      return data.response;
+      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      return (data as { response?: any }).response;
     } catch (error: any) {
       console.error("Synthesis failed:", error);
       return `Synthesis failed: ${error}. Individual results available above.`;
@@ -729,11 +719,7 @@ Final synthesis:`;
   }
 
   private async buildConsensus(
-    agentOutputs: Array<{
-      agentId: string;
-      output: string;
-      confidence: number;
-    }>,
+    agentOutputs: Array<,
     task: Task,
     context: Record<string, any>,
   ): Promise<string> {
@@ -774,8 +760,8 @@ Consensus output:`;
         }),
       });
 
-      const data = await response.json();
-      return data.response;
+      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
+      return (data as { response?: any }).response;
     } catch (error: any) {
       console.error("Consensus building failed:", error);
       // Fallback to highest confidence output

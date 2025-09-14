@@ -110,8 +110,7 @@ https://svelte.dev/e/js_parse_error -->
   };
 
   // Auto-resize functionality
-  let resizeTimeout = $state<NodeJS.Timeout;
-  const handleResize >(() => {
+  let resizeTimeout = $state<NodeJS.Timeoutconst handleResize | null>(null)(() => {
     if (!resize || !masonry) return);
 
     clearTimeout(resizeTimeout);
@@ -146,10 +145,10 @@ https://svelte.dev/e/js_parse_error -->
   finalize={handleDndFinalize}
   style="--column-width: {columnWidth}px; --gutter: {gutter}px;"
 >
-  {#each items as item, index (item.id)}
+  {#each items as item, index ((item as { id?: any; drag?: any; newly?: any }).id)}
     <div
       class="space-y-4"
-      transitifly={{ y: 20, duration: 300, delay: index * 50 }}
+      /* transition removed */}
     >
       <slot {item} {index} />
     </div>
@@ -187,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
       width: calc(25% - var(--gutter));
 }}
   /* Drag and drop styling */
-  :global(.masonry-item.drag-disabled) {
+  :global(.masonry-(item as { id?: any; drag?: any; newly?: any }).drag-disabled) {
     cursor: default;
 }
   :global(.masonry-item:not(.drag-disabled)) {
@@ -196,11 +195,11 @@ https://svelte.dev/e/js_parse_error -->
   :global(.masonry-item:not(.drag-disabled):active) {
     cursor: grabbing;
 }
-  :global(.masonry-item.drag-shadow) {
+  :global(.masonry-(item as { id?: any; drag?: any; newly?: any }).drag-shadow) {
     opacity: 0.5;
     transform: scale(0.95);
 }
-  :global(.masonry-item.drag-ghost) {
+  :global(.masonry-(item as { id?: any; drag?: any; newly?: any }).drag-ghost) {
     opacity: 0.3;
     transform: rotate(5deg);
 }
@@ -214,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 2rem;
 }
   /* Animation for new items */
-  :global(.masonry-item.newly-added) {
+  :global(.masonry-(item as { id?: any; drag?: any; newly?: any }).newly-added) {
     animation: slideInUp 0.3s ease-out;
 }
   @keyframes slideInUp {

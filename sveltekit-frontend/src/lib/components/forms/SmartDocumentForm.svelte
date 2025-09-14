@@ -21,22 +21,17 @@ https://svelte.dev/e/js_parse_error -->
   	import { fade, fly, scale } from 'svelte/transition';
   	import { writable } from 'svelte/store';
 
-  	let { title = $bindable() } = $props(); // "Smart Document Form";
-  	let { description = $bindable() } = $props(); // "Upload a document for automatic field extraction and population";
-  	let { formSchema = $bindable() } = $props(); // FormField[] = [];
-  	let { enableOCR = $bindable() } = $props(); // true;
-  	let { enableSmartSuggestions = $bindable() } = $props(); // true;
-  	let { documentTypes = $bindable() } = $props(); // string[] = ['legal_document', 'contract', 'form'];
+  	let { title = $bindable()  }: { title = $bindable() : any } = $props(); // "Smart Document Form";
+  	let { description = $bindable()  }: { description = $bindable() : any } = $props(); // "Upload a document for automatic field extraction and population";
+  	let { formSchema = $bindable()  }: { formSchema = $bindable() : any } = $props(); // FormField[] = [];
+  	let { enableOCR = $bindable()  }: { enableOCR = $bindable() : any } = $props(); // true;
+  	let { enableSmartSuggestions = $bindable()  }: { enableSmartSuggestions = $bindable() : any } = $props(); // true;
+  	let { documentTypes = $bindable()  }: { documentTypes = $bindable() : any } = $props(); // string[] = ['legal_document', 'contract', 'form'];
 
-  	const dispatch = createEventDispatcher<{
-  		submit: { formData: Record<string, any>; extractedFields: ExtractedField[] };
-  		fieldChange: { fieldName: string; value: string; confidence?: number };
-  		ocrComplete: { result: any; extractedFields: ExtractedField[] };
-  	}>();
+  	const dispatch = createEventDispatcher();
 
   	// Component state
-  let fileInput = $state<HTMLInputElement;
-  	let uploadedFile: File | null >(null);
+  let fileInput = $state<HTMLInputElementlet uploadedFile: File | null>(null)(null);
   let populatedFields = $state<FormField[] >([...formSchema]);
   let isProcessing = $state(false);
   let showPreview = $state(false);
@@ -53,8 +48,8 @@ https://svelte.dev/e/js_parse_error -->
   let isFormValid = $state(false);
 
   	// Smart suggestions
-  let activeSuggestions = $state<Record<string, string[]> >({});
-  let suggestionLoading = $state<Record<string, boolean> >({});
+  let activeSuggestions = $state<Record<string, string[]>([]) >({});
+  let suggestionLoading = $state<Record<string, boolean>(false) >({});
 
   	// Default form schema if none provided
   	onMount(() => {
@@ -90,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
 
   			// Generate smart suggestions for incomplete fields
   			if (enableSmartSuggestions) {
-  				await generateSmartSuggestions(result.text);
+  				await generateSmartSuggestions((result as { text?: any }).text);
   			}
 
   			showPreview = true;
@@ -233,14 +228,14 @@ https://svelte.dev/e/js_parse_error -->
 
 	<!-- File Upload Section -->
 	{#if enableOCR}
-		<NesCard>
+		<div class="nes-container">
 			<div class="yorha-panel-header">
-				<h3 class="nes-text is-primary" class="flex items-center space-x-2">
+				<h3 class="nes-text is-primary flex items-center space-x-2">
 					<span>📄</span>
 					<span>Document Upload & Processing</span>
 				</h3>
 			</div>
-			<div class="yorha-panel-content" class="space-y-4">
+			<div class="yorha-panel-content space-y-4">
 				<!-- Document Type Selection -->
 				<div class="flex items-center space-x-4">
 					<Label class="text-sm font-medium">Document Type:</Label>
@@ -259,10 +254,10 @@ https://svelte.dev/e/js_parse_error -->
 				<div
 					class="border-2 border-dashed border-yorha-border rounded-lg p-8 text-center transition-colors duration-200 hover:border-yorha-primary hover:bg-yorha-bg-secondary/50"
 					class:border-yorha-primary={uploadedFile}
-					ondrop={handleDrop}
+					on:drop={handleDrop}
 					role="button" 
 					aria-label="Drop zone" 
-					ondragover={handleDragOver}
+					on:dragover={handleDragOver}
 					tabindex="0"
 				>
 					{#if uploadedFile}
@@ -287,8 +282,7 @@ https://svelte.dev/e/js_parse_error -->
 						bind:this={fileInput}
 						type="file"
 						accept=".pdf,.png,.jpg,.jpeg,.tiff"
-						class="hidden"
-						change={(e) => {
+						class="hidden" on:change={(e) => {
 							const files = e.target?.files;
 							if (files && files.length > 0) {
 								uploadedFile = files[0];
@@ -301,10 +295,11 @@ https://svelte.dev/e/js_parse_error -->
 						<Button
 							variant="outline"
 							class="mt-4 bits-btn"
-							onclick={() => fileInput.click()}
+							on:click={() =>
+fileInput.click()}
 						>
 							Browse Files
-						</button>
+</Button>
 					{/if}
 				</div>
 
@@ -321,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
 
 				<!-- OCR Results Preview -->
 				{#if $ocrResult && showPreview}
-					<div class="bg-yorha-bg-secondary rounded-md p-4 border border-yorha-border" transitifly={{ y: 20 }}>
+					<div class="bg-yorha-bg-secondary rounded-md p-4 border border-yorha-border" /* transition removed */}>
 						<div class="flex items-center justify-between mb-2">
 							<h4 class="font-medium text-yorha-text-primary">Extraction Results</h4>
 							<Badge class="bg-yorha-success text-yorha-bg-primary">
@@ -336,13 +331,13 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 				{/if}
 			</div>
-		</NesCard>
+		</div>
 	{/if}
 
 	<!-- Form Fields -->
-	<NesCard>
+	<div class="nes-container">
 		<div class="yorha-panel-header">
-			<h3 class="nes-text is-primary" class="flex items-center space-x-2">
+			<h3 class="nes-text is-primary flex items-center space-x-2">
 				<span>📝</span>
 				<span>Form Fields</span>
 				{#if enableOCR && $extractedFields.length > 0}
@@ -383,8 +378,7 @@ https://svelte.dev/e/js_parse_error -->
 								<Textarea
 									bind:value={field.value}
 									placeholder={`Enter ${field.label.toLowerCase()}...`}
-									class="min-h-[80px] bg-yorha-bg-secondary border-yorha-border text-yorha-text-primary"
-									input={(e) => handleFieldChange(field.name, e.target.value)}
+									class="min-h-[80px] bg-yorha-bg-secondary border-yorha-border text-yorha-text-primary" on:input={(e) => handleFieldChange(field.name, e.target.value)}
 								/>
 							{:else}
 								<Input
@@ -393,8 +387,7 @@ https://svelte.dev/e/js_parse_error -->
 									placeholder={`Enter ${field.label.toLowerCase()}...`}
 									class="bg-yorha-bg-secondary border-yorha-border text-yorha-text-primary"
 																class:border-yorha-danger={$formErrors[field.name]}
-								class:border-yorha-success={field.confidence && field.confidence > 0.8}
-									input={(e) => handleFieldChange(field.name, e.target.value)}
+								class:border-yorha-success={field.confidence && field.confidence > 0.8} on:input={(e) => handleFieldChange(field.name, e.target.value)}
 								/>
 							{/if}
 
@@ -407,7 +400,7 @@ https://svelte.dev/e/js_parse_error -->
 
 							<!-- Smart Suggestions -->
 							{#if activeSuggestions[field.name] && activeSuggestions[field.name].length > 0}
-								<div class="space-y-1" transitifly={{ y: -10 }}>
+								<div class="space-y-1" /* transition removed */}>
 									<p class="text-xs text-yorha-text-secondary">Suggestions:</p>
 									<div class="flex flex-wrap gap-1">
 										{#each activeSuggestions[field.name] as suggestion}
@@ -415,10 +408,11 @@ https://svelte.dev/e/js_parse_error -->
 												variant="outline"
 												size="sm"
 												class="text-xs h-6 px-2 bits-btn"
-												onclick={() => applySuggestion(field.name, suggestion)}
+												on:click={() =>
+applySuggestion(field.name, suggestion)}
 											>
 												{suggestion}
-											</button>
+</Button>
 										{/each}
 									</div>
 								</div>
@@ -452,41 +446,43 @@ https://svelte.dev/e/js_parse_error -->
 					<div class="flex items-center space-x-3">
 						<Button class="bits-btn"
 							variant="outline"
-							onclick={() => {
+							on:click={() =>
+{
 								populatedFields = populatedFields.map(f => ({ ...f, value: '' }));
 								formErrors.set({});
 							}}
 						>
 							Clear All
-						</button>
+</Button>
 
 						<Button
 							type="submit"
 							disabled={!isFormValid}
 							class="bg-yorha-primary hover:bg-yorha-primary/80 disabled:opacity-50 bits-btn"
 						>
-							Submit Form
-						</button>
+Submit Form
+</Button>
 					</div>
 				</div>
 			</form>
 		</div>
-	</NesCard>
+	</div>
 
 	<!-- Extracted Fields Preview -->
 	{#if $extractedFields.length > 0 && showPreview}
-		<NesCard>
+		<div class="nes-container">
 			<div class="yorha-panel-header">
-				<h3 class="nes-text is-primary" class="flex items-center space-x-2">
+				<h3 class="nes-text is-primary flex items-center space-x-2">
 					<span>🔍</span>
 					<span>Extracted Data</span>
 					<Button class="bits-btn"
 						variant="ghost"
 						size="sm"
-						onclick={() => showPreview = !showPreview}
+						on:click={() =>
+showPreview = !showPreview}
 					>
 						{showPreview ? 'Hide' : 'Show'}
-					</button>
+</Button>
 				</h3>
 			</div>
 			<div class="yorha-panel-content">
@@ -516,7 +512,7 @@ https://svelte.dev/e/js_parse_error -->
 					{/each}
 				</div>
 			</div>
-		</NesCard>
+		</div>
 	{/if}
 </div>
 

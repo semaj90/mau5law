@@ -39,8 +39,8 @@
   let success = $state('');
 
   // Focus management for accessibility
-  let emailInput = $state<HTMLInputElement>();
-  let passwordInput = $state<HTMLInputElement>();
+  let emailInput: HTMLInputElement = $state(undefined as any);
+  let passwordInput: HTMLInputElement = $state(undefined as any);
 
   // Derived state for form validation
   let isValid = $derived(() => {
@@ -87,10 +87,10 @@
         body: JSON.stringify(formData)
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (response.ok) {
-        success = result.message || `${mode === 'login' ? 'Login' : 'Registration'} successful!`;
+      if ((response as { json?: any; ok?: any }).ok) {
+        success = (result as { message?: any; user?: any; error?: any }).message || `${mode === 'login' ? 'Login' : 'Registration'} successful!`;
         // Log successful authentication with AI context
         await mcpGPUOrchestrator.processLegalDocument(
           `Authentication success: ${mode} for ${formData.email}`,
@@ -111,14 +111,14 @@
             lastName: ''
           };
           open = false;
-          onSuccess?.(result.user);
+          onSuccess?.((result as { message?: any; user?: any; error?: any }).user);
         }, 1000);
       } else {
-        error = result.error || 'Authentication failed';
+        error = (result as { message?: any; user?: any; error?: any }).error || 'Authentication failed';
         // Log failed authentication attempt for security analysis
         await mcpGPUOrchestrator.routeAPIRequest(
           '/api/security/log-failed-auth',
-          { ...authContext, error: result.error },
+          { ...authContext, error: (result as { message?: any; user?: any; error?: any }).error },
           { userId: null, securityLevel: 'high' }
         );
       }
@@ -169,7 +169,7 @@
         }
     </p>
 
-      <form submit={handleSubmit} class="space-y-4">
+      <form on:submit={handleSubmit} class="space-y-4">
         <!-- Success Message -->
         {#if success}
           <Alert variant="default" class="border-green-200 bg-green-50 text-green-800">
@@ -287,7 +287,7 @@
           class="w-full bits-btn bits-btn"
           disabled={loading || !isValid}
         >
-          {#if loading}
+{#if loading}
             <svg class="mr-2 h-4 w-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
@@ -295,13 +295,12 @@
           {:else}
             {mode === 'login' ? 'Sign In' : 'Create Account'}
           {/if}
-        </button>
 
         <!-- Mode Toggle -->
         <div class="text-center">
           <button 
             type="button"
-            onclick={toggleMode}
+            on:click={toggleMode}
             class="text-sm text-primary hover:underline"
             disabled={loading}
           >
@@ -309,7 +308,7 @@
               ? "Don't have an account? Sign up" 
               : "Already have an account? Sign in"
             }
-          </button>
+
         </div>
       </form>
 
@@ -324,7 +323,7 @@
 
     <button 
       type="button"
-      onclick={() => open = false}
+      on:click={() => open = false}
       class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
     >
       <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

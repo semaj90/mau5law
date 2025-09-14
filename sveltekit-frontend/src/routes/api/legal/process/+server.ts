@@ -5,7 +5,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js';
 import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js';
 
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		// Convert status stores to serializable format
 		const jobStatuses: Record<string, any> = {};
-		for (const [jobId, store] of result.statusStores) {
+		for (const [jobId, store] of (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).statusStores) {
 			jobStatuses[jobId] = {
 				subscriptionEndpoint: `/api/legal/status/${jobId}`
 			};
@@ -49,10 +49,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		return json({
 			success: true,
-			jobIds: result.jobIds,
+			jobIds: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds,
 			jobStatuses,
-			aggregateStatusEndpoint: `/api/legal/status/aggregate/${result.jobIds.join(',')}`,
-			processingMetrics: result.processingMetrics
+			aggregateStatusEndpoint: `/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,
+			processingMetrics: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).processingMetrics
 		});
 
 	} catch (error) {

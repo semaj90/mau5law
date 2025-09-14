@@ -18,7 +18,7 @@
 
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Self-Prompting AI System for Prosecutors
@@ -53,10 +53,10 @@ Return only 4 concise, actionable questions as a JSON array:
       })
     });
 
-    const result = await response.json();
+    const result = await (response as { json?: any }).json();
     
     try {
-      const suggestions = JSON.parse(result.response);
+      const suggestions = JSON.parse((result as { response?: any }).response);
       return json({ 
         success: true, 
         suggestions: Array.isArray(suggestions) ? suggestions : [

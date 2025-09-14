@@ -37,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
     selectedIndex = $bindable(-1),
     onitemClick
   }: Props = $props();
-  let scrollContainer = $state<HTMLElement>();
+  let scrollContainer: HTMLElement = $state(undefined as any);
   let displayedItems: any[] = $state([]);
   let currentPage = $state(0);
   let hasMore = $state(true);
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
       return Palette;
     } else {
       // Evidence
-      const fileType = item.fileType || item.type || "";
+      const fileType = (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).fileType || (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).type || "";
       if (fileType.startsWith("image/")) return Image;
       if (fileType.startsWith("video/")) return Video;
       if (fileType.includes("text") || fileType.includes("pdf"))
@@ -136,12 +136,12 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {:else}
     <div class="items-list">
-      {#each displayedItems as item, index (item.id || index)}
+      {#each displayedItems as item, index ((item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).id || index)}
         <div
           class="list-item"
           transition:slide={{ duration: 300, easing: quintOut }}
-          onclick={() => handleItemClick(item)}
-          onkeydown={(e) => e.key === "Enter" && handleItemClick(item)}
+          on:click={() => handleItemClick(item)}
+          on:keydown={(e) => e.key === "Enter" && handleItemClick(item)}
           role="option"
           tabindex={0}
           aria-label="{itemType} item"
@@ -155,37 +155,37 @@ https://svelte.dev/e/js_parse_error -->
             <div class="item-header">
               <h4 class="item-title">
                 {#if itemType === "evidence"}
-                  {item.fileName || item.title || "Untitled Evidence"}
+                  {(item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).fileName || (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).title || "Untitled Evidence"}
                 {:else if itemType === "notes"}
-                  {item.title || "Untitled Note"}
+                  {(item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).title || "Untitled Note"}
                 {:else}
-                  {item.name || `Canvas ${formatDate(item.lastModified)}`}
+                  {(item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).name || `Canvas ${formatDate((item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).lastModified)}`}
                 {/if}
               </h4>
               <span class="item-date">
                 {formatDate(
-                  item.createdAt || item.lastModified || item.updatedAt
+                  (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).createdAt || (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).lastModified || (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).updatedAt
                 )}
               </span>
             </div>
 
             <p class="item-description">
               {#if itemType === "evidence"}
-                {truncateText(item.description)}
+                {truncateText((item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).description)}
               {:else if itemType === "notes"}
-                {truncateText(item.content)}
+                {truncateText((item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).content)}
               {:else}
-                Canvas state with {item.objectCount || 0} objects
+                Canvas state with {(item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).objectCount || 0} objects
               {/if}
             </p>
 
-            {#if item.tags && item.tags.length > 0}
+            {#if (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).tags && (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).tags.length > 0}
               <div class="item-tags">
-                {#each item.tags.slice(0, 3) as tag}
+                {#each (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).tags.slice(0, 3) as tag}
                   <span class="tag">{tag}</span>
                 {/each}
-                {#if item.tags.length > 3}
-                  <span class="tag-more">+{item.tags.length - 3}</span>
+                {#if (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).tags.length > 3}
+                  <span class="tag-more">+{(item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).tags.length - 3}</span>
                 {/if}
               </div>
             {/if}

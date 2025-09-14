@@ -53,13 +53,7 @@ export interface UserWorkflowContext extends WorkflowContext {
     completedAt?: Date;
   };
   collaborators: User[];
-  notifications: Array<{
-    id: string;
-    type: 'info' | 'warning' | 'error' | 'success';
-    message: string;
-    timestamp: Date;
-    read: boolean;
-  }>;
+  notifications: Array<any>;
   preferences: {
     autoSave: boolean;
     notifications: boolean;
@@ -91,8 +85,8 @@ export type UserWorkflowEvent =
 export const userWorkflowMachine = createMachine({
   id: 'userWorkflow',
   types: {
-    context: {} as UserWorkflowContext,
-    events: {} as UserWorkflowEvent
+    context: Record<string, any> as UserWorkflowContext,
+    events: Record<string, any> as UserWorkflowEvent
   },
   initial: 'idle',
   context: {
@@ -101,7 +95,7 @@ export const userWorkflowMachine = createMachine({
     currentStep: 'idle',
     progress: 0,
     errors: [],
-    data: {},
+    data: Record<string, any>,
     workflow: {
       type: 'case_creation',
       status: 'pending',
@@ -324,7 +318,7 @@ export const userWorkflowMachine = createMachine({
                 currentStep: 'ready',
                 progress: 0,
                 errors: [],
-                data: {}
+                data: Record<string, any>
               })
             }
           }
@@ -364,7 +358,7 @@ export const userWorkflowMachine = createMachine({
                 currentStep: 'ready',
                 progress: 0,
                 errors: [],
-                data: {}
+                data: Record<string, any>
               })
             }
           }
@@ -377,8 +371,8 @@ export const userWorkflowMachine = createMachine({
               ...context.notifications,
               {
                 id: `notification_${Date.now()}`,
-                type: event.notification.type,
-                message: event.notification.message,
+                type: event.(notification as { type?: any; message?: any }).type,
+                message: event.(notification as { type?: any; message?: any }).message,
                 timestamp: new Date(),
                 read: false
               }
@@ -424,7 +418,7 @@ export const userWorkflowMachine = createMachine({
             currentStep: 'idle',
             progress: 0,
             errors: [],
-            data: {}
+            data: Record<string, any>
           })
         }
       }

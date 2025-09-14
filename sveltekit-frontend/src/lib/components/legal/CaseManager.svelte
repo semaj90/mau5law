@@ -222,8 +222,8 @@ https://svelte.dev/e/js_parse_error -->
     <Dialog bind:open={$isCreateDialogOpen}>
       <DialogTrigger asChild let:builder>
         <Button builders={[builder]} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
-          Create New Case
-        </button>
+Create New Case
+
       </DialogTrigger>
       <DialogContent class="max-w-2xl">
         <DialogHeader>
@@ -305,17 +305,18 @@ https://svelte.dev/e/js_parse_error -->
             <Button class="bits-btn" 
               type="button" 
               variant="outline"
-              onclick={() => isCreateDialogOpen.set(false)}
+              on:click={() =>
+isCreateDialogOpen.set(false)}
             >
               Cancel
-            </button>
+
             <Button 
               type="submit" 
               disabled={$loading}
               class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn"
             >
-              {$loading ? 'Creating...' : 'Create Case'}
-            </button>
+{$loading ? 'Creating...' : 'Create Case'}
+
           </div>
         </form>
       </DialogContent>
@@ -350,11 +351,11 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Cases Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {#each $cases as caseData (caseData.id)}
-      <NesCard class="hover:shadow-lg transition-shadow">
-        <div class="yorha-panel-header" class="pb-3">
+      <div class="hover:shadow-lg transition-shadow nes-container">
+        <div class="yorha-panel-header pb-3">
           <div class="flex justify-between items-start">
             <div class="flex-1">
-              <h3 class="nes-text is-primary" class="text-lg line-clamp-2">{caseData.title}</h3>
+              <h3 class="nes-text is-primary text-lg line-clamp-2">{caseData.title}</h3>
               <p class="text-sm text-gray-500 mt-1">#{caseData.id?.slice(-8)}</p>
             </div>
             <div class="flex space-x-2">
@@ -368,7 +369,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
         
-        <div class="yorha-panel-content" class="pt-0">
+        <div class="yorha-panel-content pt-0">
           {#if caseData.description}
             <p class="text-sm text-gray-600 mb-3 line-clamp-2">
               {caseData.description}
@@ -396,21 +397,23 @@ https://svelte.dev/e/js_parse_error -->
               <Button class="bits-btn" 
                 size="sm" 
                 variant="outline"
-                onclick={() => openEditDialog(caseData)}
+                on:click={() =>
+openEditDialog(caseData)}
               >
                 Edit
-              </button>
+
               <Button class="bits-btn" 
                 size="sm" 
                 variant="destructive"
-                onclick={() => deleteCase(caseData.id!)}
+                on:click={() =>
+deleteCase(caseData.id!)}
               >
                 Delete
-              </button>
+
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     {/each}
   </div>
 
@@ -426,10 +429,11 @@ https://svelte.dev/e/js_parse_error -->
         {#if !$searchQuery}
           <Button 
             class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn"
-            onclick={() => isCreateDialogOpen.set(true)}
+            on:click={() =>
+isCreateDialogOpen.set(true)}
           >
             Create First Case
-          </button>
+
         {/if}
       </div>
     </div>
@@ -517,17 +521,18 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn" 
             type="button" 
             variant="outline"
-            onclick={() => isEditDialogOpen.set(false)}
+            on:click={() =>
+isEditDialogOpen.set(false)}
           >
             Cancel
-          </button>
+
           <Button 
             type="submit" 
             disabled={$loading}
             class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn"
           >
-            {$loading ? 'Updating...' : 'Update Case'}
-          </button>
+{$loading ? 'Updating...' : 'Update Case'}
+
         </div>
       </form>
     </DialogContent>

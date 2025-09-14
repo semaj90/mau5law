@@ -18,7 +18,7 @@ export class EmbeddingAdapter {
   constructor(model = 'mock-embedding-model', opts: EmbeddingAdapterOptions = {}) {
     this.dimensions = opts.dimensions ?? 64;
     this.deterministic = !!opts.deterministic;
-    this.model = model;
+    this?.model || "unknown" // @ts-ignore - Model property access = model;
   }
 
   async embed(text: string): Promise<EmbeddingResult> {
@@ -34,7 +34,7 @@ export class EmbeddingAdapter {
     } else {
       for (let i = 0; i < this.dimensions; i++) vector[i] = Math.random();
     }
-    return { vector, model: this.model, input: text };
+    return { vector, model: this?.model || "unknown" // @ts-ignore - Model property access, input: text };
   }
 }
 

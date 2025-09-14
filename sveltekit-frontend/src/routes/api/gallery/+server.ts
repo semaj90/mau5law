@@ -4,7 +4,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { db } from '$lib/server/database';
 import { cases, evidence, users, legalDocuments } from '$lib/server/database';
 import { eq, desc, asc, and, or, like, isNull } from 'drizzle-orm';
@@ -33,12 +33,11 @@ export interface GalleryItem {
 export interface GalleryResponse {
   items: GalleryItem[];
   totalCount: number;
-  categories: Array<{ name: string; count: number }>;
+  categories: Array<any>;
   filters: {
     types: string[];
-    cases: Array<{ id: string; title: string }>;
-    users: Array<{ id: string; name: string }>;
-  };
+    cases: Array<any>;
+    users: Array<any>;
   pagination: {
     page: number;
     pageSize: number;
@@ -207,23 +206,23 @@ async function getEvidenceItems(filters: GalleryFilters, page: number, pageSize:
     const evidenceData = await evidenceQuery.execute();
 
     const items: GalleryItem[] = evidenceData.map(item => ({
-      id: item.id,
+      id: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).id,
       type: 'evidence' as const,
-      title: item.title || item.fileName || 'Untitled Evidence',
-      description: item.description || undefined,
-      url: `/api/files/evidence/${item.id}`,
-      thumbnailUrl: generateThumbnailUrl(item.filePath, item.fileType),
-      fileType: item.fileType || 'unknown',
-      size: item.fileSize || 0,
-      uploadedAt: item.uploadedAt?.toISOString() || new Date().toISOString(),
+      title: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).title || (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).fileName || 'Untitled Evidence',
+      description: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).description || undefined,
+      url: `/api/files/evidence/${(item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).id}`,
+      thumbnailUrl: generateThumbnailUrl((item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).filePath, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).fileType),
+      fileType: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).fileType || 'unknown',
+      size: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).fileSize || 0,
+      uploadedAt: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).uploadedAt?.toISOString() || new Date().toISOString(),
       uploadedBy: 'System', // TODO: Add user tracking
-      caseId: item.caseId || undefined,
-      caseTitle: item.caseTitle || undefined,
-      tags: Array.isArray(item.tags) ? item.tags : [],
-      metadata: item.metadata as Record<string, any> || {},
-      isPublic: item.isPublic || false,
+      caseId: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).caseId || undefined,
+      caseTitle: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).caseTitle || undefined,
+      tags: Array.isArray((item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).tags) ? (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).tags : [],
+      metadata: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).metadata as Record<string, any> || {},
+      isPublic: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).isPublic || false,
       category: 'Legal Evidence',
-      searchableText: [item.title, item.description, item.contentText].filter(Boolean).join(' ')
+      searchableText: [(item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).title, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).description, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).contentText].filter(Boolean).join(' ')
     }));
 
     return { items, total: items.length };
@@ -336,16 +335,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const data = await request.json();
     
     // Handle bulk operations like delete, move, tag
-    if (data.action === 'bulk_delete') {
-      return await handleBulkDelete(data.ids);
+    if ((data as { action?: any; ids?: any; tags?: any; caseId?: any }).action === 'bulk_delete') {
+      return await handleBulkDelete((data as { action?: any; ids?: any; tags?: any; caseId?: any }).ids);
     }
     
-    if (data.action === 'bulk_tag') {
-      return await handleBulkTag(data.ids, data.tags);
+    if ((data as { action?: any; ids?: any; tags?: any; caseId?: any }).action === 'bulk_tag') {
+      return await handleBulkTag((data as { action?: any; ids?: any; tags?: any; caseId?: any }).ids, (data as { action?: any; ids?: any; tags?: any; caseId?: any }).tags);
     }
     
-    if (data.action === 'bulk_move') {
-      return await handleBulkMove(data.ids, data.caseId);
+    if ((data as { action?: any; ids?: any; tags?: any; caseId?: any }).action === 'bulk_move') {
+      return await handleBulkMove((data as { action?: any; ids?: any; tags?: any; caseId?: any }).ids, (data as { action?: any; ids?: any; tags?: any; caseId?: any }).caseId);
     }
     
     throw error(400, 'Invalid action');

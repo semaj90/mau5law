@@ -5,12 +5,12 @@
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import * as schema from './schema.js';
+import * as schema from './schema.js.js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // Environment configuration with fallbacks for legal_ai_db
-const DATABASE_URL = import.meta.env.DATABASE_URL || 
-  `postgresql://${import.meta.env.POSTGRES_USER || 'postgres'}:${import.meta.env.POSTGRES_PASSWORD || '123456'}@${import.meta.env.POSTGRES_HOST || 'localhost'}:${import.meta.env.POSTGRES_PORT || '5432'}/${import.meta.env.POSTGRES_DB || 'legal_ai_db'}`;
+const DATABASE_URL = import.meta.env.DATABASE_URL ||
+  `postgresql://${import.meta.env.POSTGRES_USER || 'legal_admin'}:${import.meta.env.POSTGRES_PASSWORD || '123456'}@${import.meta.env.POSTGRES_HOST || 'localhost'}:${import.meta.env.POSTGRES_PORT || '5433'}/${import.meta.env.POSTGRES_DB || 'legal_ai_db'}`;
 
 // Create postgres client with enhanced configuration for vector operations
 const client = postgres(DATABASE_URL, {
@@ -79,13 +79,7 @@ export async function testConnection(): Promise<boolean> {
 }
 
 // Enhanced health check with vector capabilities
-export async function getDatabaseHealth(): Promise<{
-  connected: boolean;
-  pgvectorEnabled: boolean;
-  tablesCount: number;
-  version: string;
-  uptime?: string;
-}> {
+export async function getDatabaseHealth(): Promise<any> {
   try {
     // Basic connection test
     const versionResult = await client`SELECT version()`;
@@ -192,4 +186,4 @@ export type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 export type Database = typeof db;
 
 // Re-export schema for convenience
-export * from './schema.js';
+export * from './schema.js.js';

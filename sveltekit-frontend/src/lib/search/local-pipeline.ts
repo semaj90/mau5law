@@ -133,9 +133,9 @@ export class LocalSearchPipeline {
     // Fuse v7: search takes only the query; enforce limit by slicing
     const hits = this.fuse.search(query).slice(0, limit);
     const results: LocalSearchResult[] = hits.map((h) => ({
-      id: h.item.id,
-      text: h.item.text,
-      metadata: h.item.metadata,
+      id: h.(item as { id?: any; text?: any; metadata?: any }).id,
+      text: h.(item as { id?: any; text?: any; metadata?: any }).text,
+      metadata: h.(item as { id?: any; text?: any; metadata?: any }).metadata,
       score: 1 - (h.score ?? 0),
     }));
 

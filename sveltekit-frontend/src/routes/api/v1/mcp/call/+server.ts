@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 /*
  * MCP API Endpoint - Tool Call Router
@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
 // Import MCP Tools
-import * as casesMCP from '../../../../../lib/mcp/cases.mcp.js';
+import * as casesMCP from '../../../../../lib/mcp/cases.mcp.js.js';
 import { URL } from "url";
 
 // MCP Tool Registry

@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ url, fetch }) => {
   try {
@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         method: 'GET',
         type: 'yorha-api',
         description: 'Get real-time system health and metrics',
-        headers: {},
+        headers: Record<string, any>,
         body: null
       },
       {
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         method: 'GET',
         type: 'yorha-api',
         description: 'Retrieve system architecture graph data',
-        headers: {},
+        headers: Record<string, any>,
         body: null
       },
       {
@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         method: 'GET',
         type: 'context7',
         description: 'Get Context7 multicore service health',
-        headers: {},
+        headers: Record<string, any>,
         body: null
       },
       {
@@ -71,7 +71,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         method: 'GET',
         type: 'yorha-api',
         description: 'Get 3D component performance metrics',
-        headers: {},
+        headers: Record<string, any>,
         body: null
       },
       {
@@ -81,7 +81,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         method: 'GET',
         type: 'standard',
         description: 'Test database connectivity and performance',
-        headers: {},
+        headers: Record<string, any>,
         body: null
       },
       {

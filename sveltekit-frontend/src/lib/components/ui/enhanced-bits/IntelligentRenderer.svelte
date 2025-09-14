@@ -16,28 +16,31 @@
   import GlyphEngineRenderer from './GlyphEngineRenderer.svelte';
 
   // Props - single source of truth
-  export let data: {
-    documents?: LegalDocument[];
-    evidence?: EvidenceItem[];
-    textContent?: string;
-    interactiveElements?: number;
-    realTimeUpdates?: boolean;
-  };
+  interface Props {
+    data: {
+      documents?: LegalDocument[];
+      evidence?: EvidenceItem[];
+      textContent?: string;
+      interactiveElements?: number;
+      realTimeUpdates?: boolean;
+    };
+    type: 'evidence-card' | 'document-viewer' | 'chat-interface' | 'case-timeline';
+    title?: string;
+    priority?: 'critical' | 'high' | 'medium' | 'low';
+  }
 
-  export let type: 'evidence-card' | 'document-viewer' | 'chat-interface' | 'case-timeline';
-  export let title: string = '';
-  export let priority: 'critical' | 'high' | 'medium' | 'low' = 'medium';
+  let { data, type, title = '', priority = 'medium' }: Props = $props();
 
   // Intelligent rendering decision
   $: useGlyphEngine = LegalAILogic.requiresGlyphEngine(data);
 
   // Process data with pure logic
   $: processedData = (() => {
-    if (data.evidence) {
-      return LegalAILogic.categorizeEvidence(data.evidence);
+    if ((data as { evidence?: any; documents?: any; textContent?: any }).evidence) {
+      return LegalAILogic.categorizeEvidence((data as { evidence?: any; documents?: any; textContent?: any }).evidence);
     }
-    if (data.documents && data.documents.length > 0) {
-      return LegalAILogic.processDocument(data.documents[0]);
+    if ((data as { evidence?: any; documents?: any; textContent?: any }).documents && (data as { evidence?: any; documents?: any; textContent?: any }).documents.length > 0) {
+      return LegalAILogic.processDocument((data as { evidence?: any; documents?: any; textContent?: any }).documents[0]);
     }
     return data;
   })();
@@ -60,44 +63,43 @@
       {type}
       {title}
       {priority}
-      on:interact={handleInteraction}
+      onInteract={handleInteraction}
     />
   </div>
 {:else}
   <!-- Regular Enhanced-Bits + NES.css UI (90% of app) -->
-  <NesCard.Root class="enhanced-bits-nier-bits-card legal-case-priority-{priority} gaming-transition gaming-hover">
-    <NesCard.Header>
-      <NesCard.Title class="nes-text text-yorha-white">
+  <Card.Root class="enhanced-bits-nier-bits-card legal-case-priority-{priority} gaming-transition gaming-hover nes-container">
+    <Card.Header class="nes-container">
+      <Card.Title class="nes-text text-yorha-white nes-container">
         {title}
       </Card.Title>
     </Card.Header>
 
-    <NesCard.Content class="space-y-4">
-      {#if type === 'evidence-card' && data.evidence}
+    <Card.Content class="space-y-4 nes-container">
+      {#if type === 'evidence-card' && (data as { evidence?: any; documents?: any; textContent?: any }).evidence}
         <!-- Regular DOM evidence display -->
         <div class="grid gap-2">
-          {#each data.evidence as item}
+          {#each (data as { evidence?: any; documents?: any; textContent?: any }).evidence as item}
             <div class="enhanced-bits-nier-bits-card p-3 border-l-4 border-n64-blue">
               <div class="flex justify-between items-center">
-                <span class="nes-text text-sm">{item.title}</span>
-                <span class="nes-badge is-{item.priority}">{item.confidence}%</span>
+                <span class="nes-text text-sm">{(item as { title?: any; priority?: any; confidence?: any }).title}</span>
+                <span class="nes-badge is-{(item as { title?: any; priority?: any; confidence?: any }).priority}">{(item as { title?: any; priority?: any; confidence?: any }).confidence}%</span>
               </div>
             </div>
           {/each}
         </div>
 
-      {:else if type === 'document-viewer' && data.documents}
+      {:else if type === 'document-viewer' && (data as { evidence?: any; documents?: any; textContent?: any }).documents}
         <!-- Regular DOM document display -->
         <div class="space-y-3">
-          {#each data.documents as doc}
+          {#each (data as { evidence?: any; documents?: any; textContent?: any }).documents as doc}
             <div class="enhanced-bits-nier-bits-card p-4">
               <h3 class="nes-text font-bold mb-2">{doc.title}</h3>
               <p class="text-yorha-white text-sm">{doc.content.slice(0, 200)}...</p>
               <div class="mt-2 flex justify-between">
                 <span class="nes-text text-xs">Confidence: {doc.confidence}%</span>
                 <Button class="enhanced-bits-button is-small" on:click={handleInteraction}>
-                  Analyze
-                </button>
+Analyze
               </div>
             </div>
           {/each}
@@ -109,8 +111,8 @@
           <div class="nes-text text-yorha-white">
             💬 Legal AI Assistant
           </div>
-          {#if data.textContent}
-            <p class="mt-2 text-sm text-yorha-white">{data.textContent}</p>
+          {#if (data as { evidence?: any; documents?: any; textContent?: any }).textContent}
+            <p class="mt-2 text-sm text-yorha-white">{(data as { evidence?: any; documents?: any; textContent?: any }).textContent}</p>
           {/if}
         </div>
 
@@ -129,15 +131,13 @@
           class="enhanced-bits-button nes-btn is-primary gaming-transition"
           on:click={handleInteraction}
         >
-          Process
-        </button>
+Process
         <Button
           class="enhanced-bits-button nes-btn gaming-transition"
           variant="outline"
           on:click={handleInteraction}
         >
-          Details
-        </button>
+Details
       </div>
     </Card.Content>
   </Card.Root>

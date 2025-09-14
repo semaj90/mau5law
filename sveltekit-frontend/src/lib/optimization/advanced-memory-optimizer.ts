@@ -5,13 +5,13 @@
  */
 
 import { Worker } from "worker_threads";
-import { SelfOrganizingMapRAG } from '../ai/som-rag-system';
+import { SelfOrganizingMapRAG } from '../ai/som-rag-system.js';
 // Docker dependency removed - using native memory optimization
 import crypto from "crypto";
 import {
   SIMDJSONParser,
   type ParsedLegalDocument,
-} from '../parsers/simd-json-parser';
+} from '../parsers/simd-json-parser.js';
 
 // Initialize SIMD parser instance
 const simdParser = new SIMDJSONParser({
@@ -366,7 +366,7 @@ export class AdvancedMemoryOptimizer {
     return scoredLayers
       .sort((a, b) => b.score - a.score)
       .slice(0, 3)
-      .map((item) => item.layer);
+      .map((item) => (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).layer);
   }
 
   /**
@@ -404,13 +404,13 @@ export class AdvancedMemoryOptimizer {
     k: number = 5
   ): Promise<ClusterMetrics[]> {
     console.log(
-      `🔄 Performing k-means clustering (k=${k}) on ${data.length} items using worker threads...`
+      `🔄 Performing k-means clustering (k=${k}) on ${(data as { length?: any; forEach?: any; map?: any }).length} items using worker threads...`
     );
 
     const startTime = Date.now();
 
     // Determine if we should use worker threads
-    const useWorkerThread = data.length > 1000 && this.enableWorkerThreads();
+    const useWorkerThread = (data as { length?: any; forEach?: any; map?: any }).length > 1000 && this.enableWorkerThreads();
 
     if (useWorkerThread) {
       return this.performKMeansWithWorker(data, k);
@@ -495,7 +495,7 @@ export class AdvancedMemoryOptimizer {
   ): Promise<ClusterMetrics[]> {
     // Keep original implementation for small datasets
     console.log(
-      `🔄 Performing in-process k-means clustering (k=${k}) on ${data.length} items...`
+      `🔄 Performing in-process k-means clustering (k=${k}) on ${(data as { length?: any; forEach?: any; map?: any }).length} items...`
     );
 
     const startTime = Date.now();
@@ -524,14 +524,14 @@ export class AdvancedMemoryOptimizer {
       clusters.forEach((cluster) => (cluster.length = 0));
 
       // Assign points to nearest centroid
-      data.forEach((item, index) => {
-        if (!item.embedding) return;
+      (data as { length?: any; forEach?: any; map?: any }).forEach((item, index) => {
+        if (!(item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).embedding) return;
 
         let minDistance = Infinity;
         let bestCluster = 0;
 
         for (let i = 0; i < centroids.length; i++) {
-          const distance = this.euclideanDistance(item.embedding, centroids[i]);
+          const distance = this.euclideanDistance((item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).embedding, centroids[i]);
           if (distance < minDistance) {
             minDistance = distance;
             bestCluster = i;
@@ -540,8 +540,8 @@ export class AdvancedMemoryOptimizer {
 
         clusters[bestCluster].push(index);
 
-        if (item.clusterId !== bestCluster) {
-          item.clusterId = bestCluster;
+        if ((item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).clusterId !== bestCluster) {
+          (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).clusterId = bestCluster;
           hasConverged = false;
         }
       });
@@ -781,13 +781,13 @@ export class AdvancedMemoryOptimizer {
     k: number = 5
   ): Promise<ClusterMetrics[]> {
     console.log(
-      `🔄 Performing worker-based k-means clustering (k=${k}) on ${data.length} items...`
+      `🔄 Performing worker-based k-means clustering (k=${k}) on ${(data as { length?: any; forEach?: any; map?: any }).length} items...`
     );
 
     const startTime = Date.now();
 
     // For small datasets, use main thread to avoid worker overhead
-    if (data.length < 1000) {
+    if ((data as { length?: any; forEach?: any; map?: any }).length < 1000) {
       return this.performKMeansClustering(data, k);
     }
 
@@ -795,10 +795,10 @@ export class AdvancedMemoryOptimizer {
       const worker = await this.getKMeansWorker();
 
       // Prepare data for worker (extract only necessary fields)
-      const workerData = data.map((item, index) => ({
-        id: item.id || `item_${index}`,
-        embedding: item.embedding || [],
-        metadata: item.metadata || {},
+      const workerData = (data as { length?: any; forEach?: any; map?: any }).map((item, index) => ({
+        id: (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).id || `item_${index}`,
+        embedding: (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).embedding || [],
+        metadata: (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).metadata || {},
       }));
 
       // Send clustering task to worker
@@ -812,7 +812,7 @@ export class AdvancedMemoryOptimizer {
       const processingTime = Date.now() - startTime;
 
       // Convert worker result to ClusterMetrics format
-      const clusterMetrics: ClusterMetrics[] = result.clusters.map(
+      const clusterMetrics: ClusterMetrics[] = (result as { clusters?: any; processedDocuments?: any; recommendations?: any; allocatedPool?: any }).clusters.map(
         (cluster: any, index: number) => {
           const metrics: ClusterMetrics = {
             id: `cluster_${index}`,
@@ -856,12 +856,12 @@ export class AdvancedMemoryOptimizer {
       }, 30000); // 30 second timeout
 
       const messageHandler = (response: any) => {
-        if (response.messageId === messageId) {
+        if ((response as { messageId?: any; error?: any }).messageId === messageId) {
           clearTimeout(timeout);
           worker.off("message", messageHandler);
 
-          if (response.error) {
-            reject(new Error(response.error));
+          if ((response as { messageId?: any; error?: any }).error) {
+            reject(new Error((response as { messageId?: any; error?: any }).error));
           } else {
             resolve(response);
           }
@@ -964,7 +964,7 @@ export class AdvancedMemoryOptimizer {
         },
       });
 
-      return result.processedDocuments || [];
+      return (result as { clusters?: any; processedDocuments?: any; recommendations?: any; allocatedPool?: any }).processedDocuments || [];
     } catch (error: any) {
       console.error(
         `❌ Document chunk processing failed for chunk ${chunkIndex}:`,
@@ -1009,11 +1009,11 @@ export class AdvancedMemoryOptimizer {
       });
 
       // Apply optimizations from worker result
-      if (result.recommendations) {
-        await this.applyOptimizationRecommendations(result.recommendations);
+      if ((result as { clusters?: any; processedDocuments?: any; recommendations?: any; allocatedPool?: any }).recommendations) {
+        await this.applyOptimizationRecommendations((result as { clusters?: any; processedDocuments?: any; recommendations?: any; allocatedPool?: any }).recommendations);
       }
 
-      return result.allocatedPool || this.allocateToDefaultPool(request);
+      return (result as { clusters?: any; processedDocuments?: any; recommendations?: any; allocatedPool?: any }).allocatedPool || this.allocateToDefaultPool(request);
     } catch (error: any) {
       console.error(
         "❌ Worker-based optimization failed, using fallback:",
@@ -1144,8 +1144,8 @@ export class AdvancedMemoryOptimizer {
     let validItems = 0;
 
     clusterData.forEach((item) => {
-      if (item.embedding) {
-        totalDistance += this.euclideanDistance(item.embedding, centroid);
+      if ((item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).embedding) {
+        totalDistance += this.euclideanDistance((item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).embedding, centroid);
         validItems++;
       }
     });

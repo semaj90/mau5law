@@ -221,36 +221,37 @@
   </div>
 
   <!-- Test Controls -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Test Controls</h3>
     </div>
     <div class="yorha-panel-content">
       <div class="flex flex-wrap gap-3">
-  <Button class="bits-btn" onclick={runFullCRUDTest} disabled={isLoading} variant="default">
-          {isLoading ? '⏳ Testing...' : '🚀 Run Full CRUD Test'}
-        </button>
-  <Button class="bits-btn" onclick={testGETOperations} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn" on:click={runFullCRUDTest} disabled={isLoading} variant="default">
+{isLoading ? '⏳ Testing...' : '🚀 Run Full CRUD Test'}
+
+  <Button class="bits-btn" on:click={testGETOperations} disabled={isLoading} variant="secondary">
           🔍 Test GET
-        </button>
-  <Button class="bits-btn" onclick={testPOSTOperation} disabled={isLoading} variant="secondary">
+
+  <Button class="bits-btn" on:click={testPOSTOperation} disabled={isLoading} variant="secondary">
           📝 Test POST
-        </button>
-  <Button class="bits-btn" onclick={() => testPUTOperation()} disabled={isLoading} variant="secondary">
+
+  <Button class="bits-btn" on:click={() => testPUTOperation()} disabled={isLoading} variant="secondary">
           ✏️ Test PUT
-        </button>
-  <Button class="bits-btn" onclick={() => testDELETEOperation()} disabled={isLoading} variant="secondary">
+
+  <Button class="bits-btn" on:click={() =>
+testDELETEOperation()} disabled={isLoading} variant="secondary">
           🗑️ Test DELETE
-        </button>
-  <Button class="bits-btn" onclick={clearResults} variant="ghost">
-          🧹 Clear Results
-        </button>
+
+  <Button class="bits-btn" on:click={clearResults} variant="ghost">
+🧹 Clear Results
+
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Test Results Summary -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Test Results Summary</h3>
     </div>
@@ -274,10 +275,10 @@
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Current Cases -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Current Cases ({cases.length})</h3>
     </div>
@@ -303,10 +304,10 @@
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Test Results Log -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Test Results Log</h3>
     </div>
@@ -321,17 +322,17 @@
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Selected Case Details -->
   {#if selectedCase}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Selected Case Details</h3>
       </div>
       <div class="yorha-panel-content">
         <pre class="bg-gray-100 p-4 rounded text-sm overflow-auto">{JSON.stringify(selectedCase, null, 2)}</pre>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>

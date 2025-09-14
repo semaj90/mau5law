@@ -3,38 +3,30 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import uvicorn
-import numpy as np
 import asyncio
 import logging
-from concurrent.futures import ThreadPoolExecutor
 import os
+import httpx
+import time
+import sys
+
+# Add parent directory to path for database_config import
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from database_config import get_database_health, init_database, close_database
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Global thread pool for CPU-intensive tasks
-executor = ThreadPoolExecutor(max_workers=4)
-
-try:
-    from sentence_transformers import SentenceTransformer
-    # Load nomic-embed-text model
-    embedding_model = SentenceTransformer('nomic-ai/nomic-embed-text-v1', trust_remote_code=True)
-    logger.info("✅ Loaded nomic-embed-text-v1 model successfully")
-    EMBEDDING_MODEL_AVAILABLE = True
-except ImportError:
-    logger.warning("⚠️ sentence-transformers not available, using fallback embedding")
-    embedding_model = None
-    EMBEDDING_MODEL_AVAILABLE = False
-except Exception as e:
-    logger.error(f"❌ Failed to load nomic-embed-text model: {e}")
-    embedding_model = None
-    EMBEDDING_MODEL_AVAILABLE = False
+# Ollama configuration
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+DEFAULT_EMBEDDING_MODEL = "embeddinggemma:latest"
+FALLBACK_MODELS = ["embeddinggemma", "nomic-embed-text"]
 
 app = FastAPI(
-    title="LegalAI FastAPI Workers with Nomic Embeddings",
-    description="FastAPI service for OCR and nomic-embed-text embedding generation",
-    version="1.1.0"
+    title="LegalAI FastAPI Workers with Ollama Embeddings",
+    description="FastAPI service for OCR and Ollama embedding generation using embeddinggemma",
+    version="2.0.0"
 )
 
 app.add_middleware(
@@ -46,9 +38,8 @@ app.add_middleware(
 
 class EmbedRequest(BaseModel):
     text: str
-    model: Optional[str] = "nomic-embed-text"
+    model: Optional[str] = DEFAULT_EMBEDDING_MODEL
     tags: Optional[List[str]] = []
-    task_type: Optional[str] = "search_document"  # nomic-embed-text supports different task types
     normalize: Optional[bool] = True
 
 class EmbedResponse(BaseModel):
@@ -95,23 +86,51 @@ def generate_mock_legal_text(data_size: int, lang: str) -> str:
     else:  # Large image
         return f"LEGAL BRIEF\nCase No. 2024-CV-{data_size % 10000}\n\nFACTUAL BACKGROUND:\nThe facts of this case involve multiple parties and complex legal issues regarding...\n\nLEGAL ANALYSIS:\nUnder applicable law, the Court must consider..."
 
+async def generate_ollama_embedding(text: str, model: str = DEFAULT_EMBEDDING_MODEL) -> tuple[List[float], str]:
+    """Generate embedding using Ollama with fallback models"""
+    models_to_try = [model] if model != DEFAULT_EMBEDDING_MODEL else []
+    models_to_try.extend([m for m in [DEFAULT_EMBEDDING_MODEL] + FALLBACK_MODELS if m not in models_to_try])
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        for model_name in models_to_try:
+            try:
+                response = await client.post(
+                    f"{OLLAMA_BASE_URL}/api/embeddings",
+                    json={
+                        "model": model_name,
+                        "prompt": text
+                    }
+                )
+
+                if response.status_code == 200:
+                    data = response.json()
+                    logger.info(f"Successfully generated embedding with model: {model_name}")
+                    return data.get("embedding", []), model_name
+                else:
+                    logger.warning(f"Model {model_name} returned status {response.status_code}")
+
+            except Exception as e:
+                logger.warning(f"Model {model_name} failed: {e}")
+                continue
+
+    # If all models fail, return fallback embedding
+    logger.error("All Ollama models failed, using fallback embedding")
+    return generate_fallback_embedding(text), "fallback-deterministic"
+
 @app.post('/embed', response_model=EmbedResponse)
 async def embed_endpoint(req: EmbedRequest):
-    """Generate embeddings using nomic-embed-text model"""
-    import time
+    """Generate embeddings using Ollama embeddinggemma model"""
     start_time = time.time()
 
     try:
-        if EMBEDDING_MODEL_AVAILABLE and embedding_model is not None:
-            # Use real nomic-embed-text model
-            embedding = await generate_nomic_embedding(req.text, req.task_type, req.normalize)
-            dimensions = len(embedding)
-            model_used = "nomic-embed-text-v1"
-        else:
-            # Fallback to deterministic embedding
-            embedding = generate_fallback_embedding(req.text)
-            dimensions = len(embedding)
-            model_used = "fallback-deterministic"
+        embedding, model_used = await generate_ollama_embedding(req.text, req.model)
+        dimensions = len(embedding)
+
+        # Normalize if requested
+        if req.normalize and model_used != "fallback-deterministic":
+            norm = sum(x * x for x in embedding) ** 0.5
+            if norm > 0:
+                embedding = [x / norm for x in embedding]
 
         processing_time = (time.time() - start_time) * 1000
 
@@ -137,44 +156,8 @@ async def embed_endpoint(req: EmbedRequest):
             cached=False
         )
 
-async def generate_nomic_embedding(text: str, task_type: str = "search_document", normalize: bool = True) -> List[float]:
-    """Generate embedding using nomic-embed-text model"""
-    def _generate():
-        try:
-            # Add task prefix for nomic-embed-text
-            if task_type == "search_document":
-                prefixed_text = f"search_document: {text}"
-            elif task_type == "search_query":
-                prefixed_text = f"search_query: {text}"
-            elif task_type == "classification":
-                prefixed_text = f"classification: {text}"
-            else:
-                prefixed_text = text
-
-            # Generate embedding
-            embedding = embedding_model.encode(
-                prefixed_text,
-                normalize_embeddings=normalize,
-                convert_to_tensor=False
-            )
-
-            # Convert to list if numpy array
-            if hasattr(embedding, 'tolist'):
-                return embedding.tolist()
-            else:
-                return list(embedding)
-
-        except Exception as e:
-            logger.error(f"nomic-embed-text generation failed: {e}")
-            raise
-
-    # Run in thread pool to avoid blocking
-    loop = asyncio.get_event_loop()
-    embedding = await loop.run_in_executor(executor, _generate)
-    return embedding
-
 def generate_fallback_embedding(text: str, dimensions: int = 768) -> List[float]:
-    """Generate deterministic fallback embedding (768-dim to match nomic-embed-text)"""
+    """Generate deterministic fallback embedding (768-dim to match embedding models)"""
     import hashlib
 
     # Create multiple hashes to get enough bytes for 768 dimensions
@@ -195,34 +178,79 @@ def generate_fallback_embedding(text: str, dimensions: int = 768) -> List[float]
 
 @app.get('/health')
 async def health_check():
-    """Health check endpoint"""
+    """Health check endpoint with Ollama and database connectivity test"""
+    ollama_status = "unknown"
+    available_models = []
+
+    # Test Ollama connectivity
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(f"{OLLAMA_BASE_URL}/api/tags")
+            if response.status_code == 200:
+                ollama_status = "connected"
+                data = response.json()
+                # Filter for embedding models
+                for model in data.get("models", []):
+                    name = model.get("name", "")
+                    if "embed" in name.lower() or "gemma" in name.lower():
+                        available_models.append(name)
+    except Exception as e:
+        ollama_status = f"error: {str(e)}"
+
+    # Test database connectivity
+    database_health = await get_database_health()
+
     return {
-        "status": "healthy",
-        "embedding_model_available": EMBEDDING_MODEL_AVAILABLE,
-        "model": "nomic-embed-text-v1" if EMBEDDING_MODEL_AVAILABLE else "fallback-deterministic",
-        "dimensions": 768,
-        "supported_task_types": ["search_document", "search_query", "classification"]
+        "status": "healthy" if database_health['status'] == 'healthy' and ollama_status == "connected" else "degraded",
+        "ollama": {
+            "status": ollama_status,
+            "url": OLLAMA_BASE_URL,
+            "models": available_models
+        },
+        "database": database_health,
+        "embedding": {
+            "default_model": DEFAULT_EMBEDDING_MODEL,
+            "dimensions": 768,
+            "fallback_models": FALLBACK_MODELS
+        },
+        "version": "2.0.0-unified"
     }
 
 @app.post('/embed/batch')
-async def embed_batch_endpoint(texts: List[str], task_type: str = "search_document", normalize: bool = True):
+async def embed_batch_endpoint(texts: List[str], model: str = DEFAULT_EMBEDDING_MODEL, normalize: bool = True):
     """Batch embedding generation for multiple texts"""
-    import time
     start_time = time.time()
 
     try:
-        if EMBEDDING_MODEL_AVAILABLE and embedding_model is not None:
-            embeddings = await generate_nomic_embeddings_batch(texts, task_type, normalize)
-            model_used = "nomic-embed-text-v1"
-        else:
-            embeddings = [generate_fallback_embedding(text) for text in texts]
-            model_used = "fallback-deterministic"
+        embeddings = []
+        model_used = None
+
+        # Process texts in parallel batches
+        tasks = []
+        for text in texts:
+            tasks.append(generate_ollama_embedding(text, model))
+
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        for result in results:
+            if isinstance(result, Exception):
+                logger.error(f"Batch embedding error: {result}")
+                embeddings.append(generate_fallback_embedding(""))
+            else:
+                embedding, used_model = result
+                if normalize and used_model != "fallback-deterministic":
+                    norm = sum(x * x for x in embedding) ** 0.5
+                    if norm > 0:
+                        embedding = [x / norm for x in embedding]
+                embeddings.append(embedding)
+                if model_used is None:
+                    model_used = used_model
 
         processing_time = (time.time() - start_time) * 1000
 
         return {
             "embeddings": embeddings,
-            "model": model_used,
+            "model": model_used or "mixed",
             "dimensions": len(embeddings[0]) if embeddings else 0,
             "count": len(embeddings),
             "processing_time_ms": processing_time
@@ -239,46 +267,59 @@ async def embed_batch_endpoint(texts: List[str], task_type: str = "search_docume
             "processing_time_ms": (time.time() - start_time) * 1000
         }
 
-async def generate_nomic_embeddings_batch(texts: List[str], task_type: str = "search_document", normalize: bool = True) -> List[List[float]]:
-    """Generate embeddings for multiple texts using nomic-embed-text model"""
-    def _generate_batch():
-        try:
-            # Add task prefixes
-            prefixed_texts = []
-            for text in texts:
-                if task_type == "search_document":
-                    prefixed_texts.append(f"search_document: {text}")
-                elif task_type == "search_query":
-                    prefixed_texts.append(f"search_query: {text}")
-                elif task_type == "classification":
-                    prefixed_texts.append(f"classification: {text}")
-                else:
-                    prefixed_texts.append(text)
+@app.get('/models')
+async def list_embedding_models():
+    """List available embedding models from Ollama"""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{OLLAMA_BASE_URL}/api/tags")
+            if response.status_code == 200:
+                data = response.json()
+                embedding_models = []
 
-            # Generate embeddings
-            embeddings = embedding_model.encode(
-                prefixed_texts,
-                normalize_embeddings=normalize,
-                convert_to_tensor=False,
-                show_progress_bar=len(texts) > 10
-            )
+                for model in data.get("models", []):
+                    name = model.get("name", "")
+                    # Filter for embedding models
+                    if "embed" in name.lower() or name in ["embeddinggemma", "embeddinggemma:latest"]:
+                        embedding_models.append({
+                            "name": name,
+                            "size": model.get("size"),
+                            "modified": model.get("modified_at")
+                        })
 
-            # Convert to list format
-            if hasattr(embeddings, 'tolist'):
-                return embeddings.tolist()
-            else:
-                return [list(emb) for emb in embeddings]
+                return {
+                    "models": embedding_models,
+                    "default": DEFAULT_EMBEDDING_MODEL,
+                    "count": len(embedding_models)
+                }
+    except Exception as e:
+        logger.error(f"Failed to list models: {e}")
+        return {
+            "error": str(e),
+            "models": [],
+            "default": DEFAULT_EMBEDDING_MODEL
+        }
 
-        except Exception as e:
-            logger.error(f"Batch nomic-embed-text generation failed: {e}")
-            raise
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database connections on startup"""
+    try:
+        await init_database()
+        logger.info("✅ Database connections initialized")
+    except Exception as e:
+        logger.error(f"❌ Failed to initialize database: {e}")
 
-    # Run in thread pool
-    loop = asyncio.get_event_loop()
-    embeddings = await loop.run_in_executor(executor, _generate_batch)
-    return embeddings
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Close database connections on shutdown"""
+    try:
+        await close_database()
+        logger.info("🛑 Database connections closed")
+    except Exception as e:
+        logger.error(f"❌ Error closing database connections: {e}")
 
 if __name__ == '__main__':
-    logger.info(f"🚀 Starting LegalAI FastAPI Workers with nomic-embed-text support")
-    logger.info(f"📊 Embedding model available: {EMBEDDING_MODEL_AVAILABLE}")
+    logger.info(f"🚀 Starting LegalAI FastAPI Workers with Ollama Embeddings")
+    logger.info(f"📊 Default model: {DEFAULT_EMBEDDING_MODEL}")
+    logger.info(f"🔗 Ollama URL: {OLLAMA_BASE_URL}")
     uvicorn.run(app, host='0.0.0.0', port=8000)

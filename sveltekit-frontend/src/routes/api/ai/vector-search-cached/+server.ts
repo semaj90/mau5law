@@ -23,7 +23,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { pgVectorService } from '$lib/server/db/pgvector-service';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import { 

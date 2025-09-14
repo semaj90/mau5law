@@ -204,13 +204,7 @@
 
       // Store in CHR-ROM pattern cache if high priority
       if (newJobForm.priority === 'high' && newJobForm.useGPU) {
-        await nesGPUBridge.storeCHRROMPattern(`job_${job.id}`, {
-          renderableHTML: `<div>Processing ${job.documentId}</div>`,
-          type: 'job_pattern',
-          priority: 4,
-          compressedData: new Uint8Array(64),
-          bankId: job.bankId
-        });
+        await nesGPUBridge.storeCHRROMPattern(`job_${job.id}`, {/* JSX syntax converted to Svelte */});
       }
 
       processingQueue = [...processingQueue, job];
@@ -302,7 +296,7 @@
       
       <div class="flex items-center gap-3">
         <button
-          onclick={() => realTimeStats = !realTimeStats}
+          on:click={() => realTimeStats = !realTimeStats}
           class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
           <Monitor class="w-4 h-4" />
@@ -310,7 +304,7 @@
         </button>
         
         <button
-          onclick={() => showJobDialog = true}
+          on:click={() => showJobDialog = true}
           class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-blue-700"
         >
           <Play class="w-4 h-4" />
@@ -432,7 +426,7 @@
               </div>
               <div class="flex justify-end mt-2">
                 <button 
-                  onclick={() => cancelJob(job.id)}
+                  on:click={() => cancelJob(job.id)}
                   class="text-xs text-red-600 hover:text-red-800"
                 >
                   Cancel
@@ -569,7 +563,7 @@
         <h2 class="text-lg font-semibold text-gray-900">Create Processing Job</h2>
       </div>
       
-      <form onsubmit={submitProcessingJob} class="p-6 space-y-4">
+      <form on:submit={submitProcessingJob} class="p-6 space-y-4">
         <FormField name="documentId" errors={newJobForm.errors.documentId}>
           <label for="documentId" class="block text-sm font-medium text-gray-700 mb-1">
             Document ID
@@ -636,7 +630,7 @@
         <div class="flex justify-end gap-3 pt-4">
           <button
             type="button"
-            onclick={() => showJobDialog = false}
+            on:click={() => showJobDialog = false}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Cancel

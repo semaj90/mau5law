@@ -135,7 +135,7 @@ export interface DocumentProcessingResult {
     vectors: number[];
   };
   analysis?: {
-    entities: Array<{ text: string; type: string; confidence: number }>;
+    entities: Array<any>;
     summary: string;
     topics: string[];
     sentiment?: { score: number; label: "positive" | "negative" | "neutral" };
@@ -200,7 +200,7 @@ export interface StreamingChatResponse {
   metadata?: {
     tokensGenerated?: number;
     processingTime?: number;
-    ragContext?: Array<{ id: string; relevance: number; snippet: string }>;
+    ragContext?: Array<any>;
     error?: string;
   };
   done: boolean;
@@ -243,13 +243,7 @@ export interface Evidence {
     confidence: number;
     methodology: string;
   };
-  files: Array<{
-    id: string;
-    filename: string;
-    size: number;
-    mimeType: string;
-  }>;
-}
+  files: Array<any>
 
 export interface CaseNote {
   id: string;
@@ -368,38 +362,38 @@ export interface ServiceEndpoints {
 // =====================================
 
 // Authentication Services
-export * from "./services/auth-service";
-export * from "./services/user-service";
+export * from './services/auth-service.js';
+export * from './services/user-service.js';
 
 // Document Processing Services
-export * from "./services/document-service";
-export * from "./services/processing-service";
-export * from "./services/upload-service";
+export * from './services/document-service.js';
+export * from './services/processing-service.js';
+export * from './services/upload-service.js';
 
 // Search & AI Services
-export * from "./services/chat-service";
-export * from "./services/embedding-service";
-export * from "./services/ollama-service";
-export * from "./services/search-service";
-export * from "./services/vector-service";
+export * from './services/chat-service.js';
+export * from './services/embedding-service.js';
+export * from './services/ollama-service.js';
+export * from './services/search-service.js';
+export * from './services/vector-service.js';
 
 // Case Management Services
-export * from "./services/case-service";
-export * from "./services/evidence-service";
-export * from "./services/note-service";
+export * from './services/case-service.js';
+export * from './services/evidence-service.js';
+export * from './services/note-service.js';
 
 // Infrastructure Services
-export * from "./services/cache-service";
-export * from "./services/health-service";
-export * from "./services/metrics-service";
+export * from './services/cache-service.js';
+export * from './services/health-service.js';
+export * from './services/metrics-service.js';
 
 // API Clients & Utilities
-export * from "./clients/api-client";
-export * from "./clients/sse-client";
-export * from "./clients/websocket-client";
-export * from "./utils/api-helpers";
-export * from "./utils/error-handlers";
-export * from "./utils/rate-limiter";
+export * from './clients/api-client.js';
+export * from './clients/sse-client.js';
+export * from './clients/websocket-client.js';
+export * from './utils/api-helpers.js';
+export * from './utils/error-handlers.js';
+export * from './utils/rate-limiter.js';
 
 // =====================================
 // Route Constants

@@ -66,15 +66,15 @@ export function withRedisOrchestrator(
       );
       
       // If we have a cached result, return it immediately
-      if (result.cached || result.source === 'queued') {
-        console.log(`🎮 [REDIS MIDDLEWARE] ${config.endpointName} - ${result.source.toUpperCase()} (${result.processing_time.toFixed(2)}ms)`);
+      if ((result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).cached || (result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).source === 'queued') {
+        console.log(`🎮 [REDIS MIDDLEWARE] ${config.endpointName} - ${(result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).source.toUpperCase()} (${(result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).processing_time.toFixed(2)}ms)`);
         
         return json({
           ...parseRedisResult(result),
           _redis_optimization: {
             endpoint: config.endpointName,
-            source: result.source,
-            processing_time: result.processing_time,
+            source: (result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).source,
+            processing_time: (result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).processing_time,
             cache_strategy: config.cacheStrategy,
             memory_bank: config.memoryBank,
             session_id: sessionId,
@@ -328,18 +328,18 @@ function calculatePriority(strategy: string, endpoint: string): number {
 function parseRedisResult(result: any): any {
   try {
     // If result contains structured data, parse it
-    if (typeof result.response === 'string' && result.response.startsWith('{')) {
-      return JSON.parse(result.response);
+    if (typeof (result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).response === 'string' && (result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).response.startsWith('{')) {
+      return JSON.parse((result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).response);
     }
     
     return {
-      response: result.response,
-      sources: result.sources || [],
-      confidence: result.confidence || 0.8,
-      processing_time: result.processing_time
+      response: (result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).response,
+      sources: (result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).sources || [],
+      confidence: (result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).confidence || 0.8,
+      processing_time: (result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).processing_time
     };
   } catch {
-    return { response: result.response || 'Redis optimization result' };
+    return { response: (result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).response || 'Redis optimization result' };
   }
 }
 

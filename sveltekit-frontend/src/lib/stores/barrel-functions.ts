@@ -134,7 +134,7 @@ export const databaseEntityProperties = {
     case_id: null,
     document_id: null,
     content: '',
-    metadata: {},
+    metadata: Record<string, any>,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     user_id: null,
@@ -337,8 +337,8 @@ export const configurationProperties = {
     deletes: 0,
     totalOperations: 0,
     totalOperationTime: 0,
-    hitsByLayer: {},
-    writesByLayer: {},
+    hitsByLayer: Record<string, any>,
+    writesByLayer: Record<string, any>,
     hitRate: 0,
     averageOperationTime: 0
   },
@@ -348,14 +348,14 @@ export const configurationProperties = {
     accessPatterns: new Map(),
     hotKeys: new Set(),
     coldKeys: new Set(),
-    performanceMetrics: {},
-    usageStats: {}
+    performanceMetrics: Record<string, any>,
+    usageStats: Record<string, any>
   },
 
   // Cache entry with missing properties
   cacheEntry: {
     value: null,
-    metadata: {},
+    metadata: Record<string, any>,
     ttl: 3600000,
     createdAt: Date.now(),
     lastAccessed: Date.now(),

@@ -159,9 +159,9 @@
   <!-- Theme Controls -->
   <section class="theme-controls">
     <div class="space-y-4">
-      <NesCard class="controls-nier-bits-card">
+      <div class="controls-nier-bits-card nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Settings class="h-5 w-5" />
             Gallery Controls
           </h3>
@@ -206,7 +206,7 @@
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </section>
 
@@ -219,15 +219,15 @@
       
       <div class="features-grid">
         {#each features as feature}
-          <NesCard class="feature-showcase">
-            <div class="yorha-panel-content" class="text-center p-6">
+          <div class="feature-showcase nes-container">
+            <div class="yorha-panel-content text-center p-6">
               <feature.icon 
                 class="feature-icon {feature.color} mx-auto mb-4" 
               />
               <h3 class="feature-title">{feature.title}</h3>
               <p class="feature-description">{feature.description}</p>
             </div>
-          </NesCard>
+          </div>
         {/each}
       </div>
     </div>
@@ -249,30 +249,42 @@
         
         <div class="component-grid">
           <!-- Buttons -->
-          <NesCard class="component-demo">
+          <div class="component-demo nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">Buttons</h3>
             </div>
-            <div class="yorha-panel-content" class="space-y-4">
+            <div class="yorha-panel-content space-y-4">
               <div class="button-group">
-                <Button class="yorha-nes-btn is-primary bits-btn bits-btn">Primary Action</button>
-                <Button class="yorha-nes-btn bits-btn bits-btn">Secondary</button>
-                <Button class="bits-btn" disabled>Disabled</button>
+                <Button class="yorha-nes-btn is-primary bits-btn bits-btn">
+Primary Action
+
+                <Button class="yorha-nes-btn bits-btn bits-btn">
+Secondary
+
+                <Button class="bits-btn" disabled>
+Disabled
+
               </div>
               <div class="button-group">
-                <Button class="bits-btn" size="sm">Small</button>
-                <Button class="bits-btn" size="md">Medium</button>
-                <Button class="bits-btn" size="lg">Large</button>
+                <Button class="bits-btn" size="sm">
+Small
+
+                <Button class="bits-btn" size="md">
+Medium
+
+                <Button class="bits-btn" size="lg">
+Large
+
               </div>
             </div>
-          </NesCard>
+          </div>
 
           <!-- Form Elements -->
-          <NesCard class="component-demo">
+          <div class="component-demo nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">Form Elements</h3>
             </div>
-            <div class="yorha-panel-content" class="space-y-4">
+            <div class="yorha-panel-content space-y-4">
               <div class="form-group">
                 <Label for="demo-input">Professional Input</Label>
                 <Input 
@@ -291,14 +303,14 @@
                 ></textarea>
               </div>
             </div>
-          </NesCard>
+          </div>
 
           <!-- Status Indicators -->
-          <NesCard class="component-demo">
+          <div class="component-demo nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">Status & Badges</h3>
             </div>
-            <div class="yorha-panel-content" class="space-y-4">
+            <div class="yorha-panel-content space-y-4">
               <div class="badge-group">
                 <span class="badge badge-success">Active Case</span>
                 <span class="badge badge-warning">Under Review</span>
@@ -313,7 +325,7 @@
                 <span class="progress-text">75% Complete</span>
               </div>
             </div>
-          </NesCard>
+          </div>
         </div>
       </div>
 
@@ -325,7 +337,7 @@
         </h3>
         
         <div class="ai-showcase">
-          <NesCard class="ai-demo">
+          <div class="ai-demo nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">AI Chat Interface</h3>
             </div>
@@ -355,9 +367,9 @@
                 </div>
               </div>
             </div>
-          </NesCard>
+          </div>
 
-          <NesCard class="ai-demo">
+          <div class="ai-demo nes-container">
             <div class="yorha-panel-header">
               <h3 class="nes-text is-primary">Multi-Agent Analysis</h3>
             </div>
@@ -393,7 +405,7 @@
                 </div>
               </div>
             </div>
-          </NesCard>
+          </div>
         </div>
       </div>
 
@@ -404,7 +416,7 @@
           Professional Editor
         </h3>
         
-        <NesCard class="editor-showcase">
+        <div class="editor-showcase nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Full-Featured Document Editor</h3>
             <p class="text-sm text-yorha-text-muted">
@@ -421,7 +433,7 @@
               />
             </div>
           </div>
-        </NesCard>
+        </div>
       </div>
     </div>
   </section>
@@ -434,7 +446,7 @@
       </h2>
       
       <div class="docs-grid">
-        <NesCard class="color-palette">
+        <div class="color-palette nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Color Palette</h3>
           </div>
@@ -484,9 +496,9 @@
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard class="typography-demo">
+        <div class="typography-demo nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Typography System</h3>
           </div>
@@ -500,9 +512,9 @@
               <code class="type-sample code">Code and monospace elements</code>
             </div>
           </div>
-        </NesCard>
+        </div>
 
-        <NesCard class="accessibility-info">
+        <div class="accessibility-info nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Accessibility Features</h3>
           </div>
@@ -538,7 +550,7 @@
               </div>
             </div>
           </div>
-        </NesCard>
+        </div>
       </div>
     </div>
   </section>

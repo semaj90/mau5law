@@ -4,7 +4,7 @@
  */
 
 import { createMachine, assign, fromPromise, type StateFrom } from 'xstate';
-import type { CaseData, EvidenceData } from '../mcp/cases.mcp';
+import type { CaseData, EvidenceData } from '../mcp/cases.mcp.js';
 
 // Machine Context
 export interface CaseManagementContext {
@@ -200,7 +200,7 @@ export const caseManagementMachine = createMachine({
     evidence: [],
     searchQuery: '',
     searchResults: [],
-    filters: {},
+    filters: Record<string, any>,
     selectedCaseId: null,
     isLoading: false,
     error: null,

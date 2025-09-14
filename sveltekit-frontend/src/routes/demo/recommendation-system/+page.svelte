@@ -214,17 +214,17 @@ https://svelte.dev/e/js_parse_error -->
 <div class="demo-content">
   <div class="demo-grid">
     <!-- Console Style Selector -->
-    <NesCard.Root class="control-nier-bits-card">
-      <NesCard.Header>
-        <NesCard.Title>🎮 Console Style</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="control-nier-bits-card nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">🎮 Console Style</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="console-grid">
           {#each consoleOptions as console}
             <button
               class="console-option"
               class:selected={currentConsole === console.value}
-              onclick={() => currentConsole = console.value}
+              on:click={() => currentConsole = console.value}
             >
               <div class="console-label">{console.label}</div>
               <div class="console-desc">{console.description}</div>
@@ -232,61 +232,60 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Demo Controls -->
-    <NesCard.Root class="control-nier-bits-card">
-      <NesCard.Header>
-        <NesCard.Title>🎯 Demo Controls</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="control-nier-bits-card nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">🎯 Demo Controls</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="demo-controls">
           <Button class="bits-btn"
             variant={isDetectiveMode ? 'default' : 'outline'}
-            onclick={toggleDetectiveMode}
+            on:click={toggleDetectiveMode}
           >
-            {isDetectiveMode ? 'Exit Detective Mode' : 'Enter Detective Mode'}
-          </button>
-          
+{isDetectiveMode ? 'Exit Detective Mode' : 'Enter Detective Mode'}
+
           <Button class="bits-btn"
             variant="outline"
-            onclick={() => simulateActivity('idle')}
+            on:click={() =>
+simulateActivity('idle')}
           >
             Simulate Idle State
-          </button>
-          
+
           <Button class="bits-btn"
             variant="outline"
-            onclick={() => simulateActivity('typing')}
+            on:click={() =>
+simulateActivity('typing')}
           >
             Simulate Typing
-          </button>
-          
+
           <Button class="bits-btn"
             variant="destructive"
-            onclick={addCriticalAlert}
+            on:click={addCriticalAlert}
           >
-            Add Critical Alert
-          </button>
+Add Critical Alert
+
         </div>
         
         <div class="utility-controls">
-          <Button class="bits-btn" variant="secondary" onclick={clearRecommendations}>
-            Clear All
-          </button>
-          <Button class="bits-btn" variant="secondary" onclick={resetDemo}>
-            Reset Demo
-          </button>
+          <Button class="bits-btn" variant="secondary" on:click={clearRecommendations}>
+Clear All
+
+          <Button class="bits-btn" variant="secondary" on:click={resetDemo}>
+Reset Demo
+
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Activity Status -->
-    <NesCard.Root class="status-nier-bits-card">
-      <NesCard.Header>
-        <NesCard.Title>📊 System Status</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="status-nier-bits-card nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">📊 System Status</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="status-grid">
           <div class="status-item">
             <label>User Activity:</label>
@@ -308,14 +307,14 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
 
     <!-- Feature Description -->
-    <NesCard.Root class="description-nier-bits-card">
-      <NesCard.Header>
-        <NesCard.Title>🚀 Features</Card.Title>
-      </Card.Header>
-      <NesCard.Content>
+    <div.Root class="description-nier-bits-card nes-container">
+      <div.Header class="nes-container">
+        <div.Title class="nes-container">🚀 Features</div.Title>
+      </div.Header>
+      <div.Content class="nes-container">
         <div class="feature-list">
           <div class="feature-item">
             <span class="feature-icon">🎮</span>
@@ -354,7 +353,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   </div>
 </div>
 

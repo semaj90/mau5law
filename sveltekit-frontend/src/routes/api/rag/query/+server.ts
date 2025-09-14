@@ -11,7 +11,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
 import type { RAGQuery, RAGResponse } from '$lib/services/enhanced-rag-pipeline';
 import { rateLimiter } from '$lib/server/rate-limiter'; // Assuming rate limiting exists
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
           documentsRetrieved: ragResponse.metadata.documentsRetrieved,
           documentsUsed: ragResponse.metadata.documentsUsed,
           cacheHit: ragResponse.metadata.cacheHit,
-          model: ragResponse.metadata.model,
+          model: ragResponse.metadata?.model || "unknown" // @ts-ignore - Model property access,
           reranked: ragResponse.metadata.reranked,
           apiProcessingTime: Date.now() - startTime
         }

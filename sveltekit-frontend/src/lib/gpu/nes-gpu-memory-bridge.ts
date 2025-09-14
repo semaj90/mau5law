@@ -10,8 +10,8 @@
  * - Real-time performance monitoring and adaptive allocation
  */
 
-import { nesMemory, type LegalDocument, type MemoryStats } from '../memory/nes-memory-architecture';
-import type { FlashAttention2Config } from '../services/flashattention2-rtx3060';
+import { nesMemory, type LegalDocument, type MemoryStats } from '../memory/nes-memory-architecture.js';
+import type { FlashAttention2Config } from '../services/flashattention2-rtx3060.js';
 
 // FlatBuffer schema definitions for binary data
 export interface GPUNodeDataFB {
@@ -675,14 +675,7 @@ export class NESGPUMemoryBridge {
   /**
    * Batch load multiple CHR-ROM patterns
    */
-  async batchLoadCHRROMPatterns(patterns: Array<{
-    id: string;
-    renderableHTML: string;
-    type: string;
-    priority: number;
-    compressedData: Uint8Array;
-    bankId: number;
-  }>): Promise<number> {
+  async batchLoadCHRROMPatterns(patterns: Array<): Promise<number> {
     console.log(`🔄 Batch loading ${patterns.length} CHR-ROM patterns...`);
     
     const loadPromises = patterns.map(pattern => 

@@ -113,11 +113,11 @@
     <Button class="bits-btn"
       variant="primary"
       size="md"
-      onclick={() => showDialog = true}
+      on:click={() =>
+showDialog = true}
     >
       <Plus class="w-4 h-4 mr-2" />
       Create New Case
-    </button>
 
     <!-- Dialog Component -->
     <BitsDialog
@@ -166,17 +166,18 @@
       {#snippet footer()}
         <Button class="bits-btn"
           variant="outline"
-          onclick={() => showDialog = false}
+          on:click={() =>
+showDialog = false}
         >
           Cancel
-        </button>
+
         <Button class="bits-btn"
           variant="primary"
-          onclick={handleCreateCase}
+          on:click={handleCreateCase}
           disabled={!caseName || !clientName || !selectedCaseType}
         >
-          Create Case
-        </button>
+Create Case
+
       {/snippet}
     </BitsDialog>
   </section>
@@ -201,11 +202,11 @@
             </div>
             <div class="flex gap-2">
               <Button class="bits-btn" variant="outline" size="sm">
-                <Eye class="w-4 h-4" />
-              </button>
+<Eye class="w-4 h-4" />
+
               <Button class="bits-btn" variant="outline" size="sm">
-                <Edit class="w-4 h-4" />
-              </button>
+<Edit class="w-4 h-4" />
+
             </div>
           </div>
         </div>

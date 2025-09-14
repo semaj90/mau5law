@@ -46,17 +46,8 @@ export interface StateTransition {
 
 // Prediction result with asset recommendations
 export interface AssetPrediction {
-  nextStates: Array<{
-    state: HMMSOMState;
-    probability: number;
-    timeEstimate: number;
-  }>;
-  recommendedAssets: Array<{
-    type: string;
-    priority: number;
-    cacheKey: string;
-    estimatedUsage: number;
-  }>;
+  nextStates: Array<any>;
+  recommendedAssets: Array<any>;
   confidence: number;
   reasoning: string[];
 }
@@ -249,11 +240,7 @@ export class BitmapHMMSOMPredictor {
   /**
    * Generate CHR-ROM cache keys for predicted assets
    */
-  generateCHRROMPredictions(prediction: AssetPrediction): Array<{
-    cacheKey: string;
-    svgPattern: string;
-    priority: number;
-  }> {
+  generateCHRROMPredictions(prediction: AssetPrediction): Array< {
     const chrPatterns = [];
 
     for (const asset of prediction.recommendedAssets) {
@@ -510,12 +497,7 @@ export class BitmapHMMSOMPredictor {
     transitions.forEach(t => t.probability /= totalProb);
   }
 
-  private generateAssetRecommendations(nextStates: Array<{ state: HMMSOMState; probability: number }>): Array<{
-    type: string;
-    priority: number;
-    cacheKey: string;
-    estimatedUsage: number;
-  }> {
+  private generateAssetRecommendations(nextStates: Array<): Array< {
     const assetMap = new Map<string, { priority: number; usage: number }>();
 
     for (const { state, probability } of nextStates) {
@@ -535,7 +517,7 @@ export class BitmapHMMSOMPredictor {
     }));
   }
 
-  private calculatePredictionConfidence(nextStates: Array<{ probability: number }>): number {
+  private calculatePredictionConfidence(nextStates: Array<): number {
     if (nextStates.length === 0) return 0;
 
     const topProbability = nextStates[0]?.probability || 0;

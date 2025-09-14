@@ -27,6 +27,10 @@
   function reset() {
     count = initialCount;
   }
+
+
+// Auto-generated default export
+export default {};
 </script>
 -->
 
@@ -77,8 +81,8 @@
   </div>
   
   <div class="controls">
-    <button onclick={increment}>Increment</button>
-    <button onclick={reset}>Reset</button>
+    <button on:click={increment}>Increment</button>
+    <button on:click={reset}>Reset</button>
   </div>
 </div>
 

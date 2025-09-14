@@ -86,7 +86,7 @@
     {/if}
   </div>
 
-  <form onsubmit={(e) => { e.preventDefault(); handleSubmit(e); }} class="flex gap-2">
+  <form on:submit={(e) => { e.preventDefault(); handleSubmit(e); }} class="flex gap-2">
     <input class="flex-1 border rounded px-3 py-2" bind:value={userInput} placeholder="Type your message…" />
     <button class="border rounded px-3 py-2" disabled={isLoading}>Send</button>
   </form>

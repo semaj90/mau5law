@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Evidence search API endpoint with advanced vector capabilities
 // Supports document content search, image analysis, and multi-modal search
@@ -227,11 +227,11 @@ async function searchEvidenceHybrid(query: string, options: any): Promise<any> {
   const addResults = (results: any[], boost = 1) => {
     if (results) {
       results.forEach((result) => {
-        if (!seenIds.has(result.id)) {
-          seenIds.add(result.id);
+        if (!seenIds.has((result as { id?: any; similarity?: any }).id)) {
+          seenIds.add((result as { id?: any; similarity?: any }).id);
           allResults.push({
             ...result,
-            similarity: result.similarity * boost,
+            similarity: (result as { id?: any; similarity?: any }).similarity * boost,
           });
         }
       });

@@ -30,12 +30,12 @@ https://svelte.dev/e/js_parse_error -->
   import { fade } from "svelte/transition";
 
   // Props
-  let { caseId = $bindable() } = $props(); // string | undefined = undefined;
-  let { documentId = $bindable() } = $props(); // string | undefined = undefined;
-  let { documentType = $bindable() } = $props(); // "brief" | "contract" | "motion" | "evidence" =
+  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined;
+  let { documentId = $bindable()  }: { documentId = $bindable() : any } = $props(); // string | undefined = undefined;
+  let { documentType = $bindable()  }: { documentType = $bindable() : any } = $props(); // "brief" | "contract" | "motion" | "evidence" =
     "brief";
-  let { title = $bindable() } = $props(); // "Legal Document";
-  let { readonly = $bindable() } = $props(); // false;
+  let { title = $bindable()  }: { title = $bindable() : any } = $props(); // "Legal Document";
+  let { readonly = $bindable()  }: { readonly = $bindable() : any } = $props(); // false;
 
   // Component state
   let content = $state("");
@@ -45,15 +45,10 @@ https://svelte.dev/e/js_parse_error -->
   let error = $state("");
   let loadingDocument = $state(false);
   let documentLoadError = $state("");
-  let citations = $state<Array<{
-    id: string;
-    text: string;
-    source: string;
-    type: "case" | "statute" | "regulation";
-  }> >([]);
+  let citations = $state<Array() >([]);
 
   // Auto-save state
-  let autoSaveTimer = $state<ReturnType<typeof setTimeout> | null >(null);
+  let autoSaveTimer = $state<ReturnType<typeof setTimeout>(null) | null >(null);
   let lastSaved = $state("");
   let isSaving = $state(false);
   let saveError = $state("");
@@ -68,18 +63,9 @@ https://svelte.dev/e/js_parse_error -->
     caseId?: string;
     createdAt: string;
     updatedAt: string;
-    citations?: Array<{
-      id: string;
-      text: string;
-      source: string;
-      type: "case" | "statute" | "regulation";
-    }>;
+    citations?: Array;
   }
-  const dispatch = createEventDispatcher<{
-    save: { content: string; title: string };
-    aiRequest: { query: string; context: string };
-    citationAdded: { citation: any };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Melt UI Dialog for AI Assistant
   const {
@@ -131,12 +117,12 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      if (!response.ok) throw new Error("AI request failed");
+      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) throw new Error("AI request failed");
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
 
       // Insert AI response into document
-      const aiSuggestion = `\n\n<!-- AI Suggestion -->\n${result.answer}\n`;
+      const aiSuggestion = `\n\n<!-- AI Suggestion -->\n${(result as { answer?: any; success?: any; error?: any }).answer}\n`;
       content += aiSuggestion;
 
       query = "";
@@ -194,17 +180,17 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      if (!response.ok) {
+      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
         throw new Error("Failed to auto-save document");
   }
-      const result = await response.json();
+      const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
 
-      if (result.success) {
+      if ((result as { answer?: any; success?: any; error?: any }).success) {
         lastSaved = new Date().toLocaleTimeString();
         hasUnsavedChanges = false;
         console.log("Document auto-saved successfully");
       } else {
-        throw new Error(result.error || "Auto-save failed");
+        throw new Error((result as { answer?: any; success?: any; error?: any }).error || "Auto-save failed");
   }
     } catch (err) {
       saveError = err instanceof Error ? err.message : "Auto-save failed";
@@ -234,17 +220,17 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      if (!response.ok) {
+      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
         throw new Error("Failed to save document");
   }
-      const result = await response.json();
+      const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
 
-      if (result.success) {
+      if ((result as { answer?: any; success?: any; error?: any }).success) {
         lastSaved = new Date().toLocaleTimeString();
         hasUnsavedChanges = false;
         console.log("Document saved successfully");
       } else {
-        throw new Error(result.error || "Save failed");
+        throw new Error((result as { answer?: any; success?: any; error?: any }).error || "Save failed");
   }
     } catch (err) {
       saveError = err instanceof Error ? err.message : "Save failed";
@@ -308,10 +294,10 @@ https://svelte.dev/e/js_parse_error -->
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to load document: ${response.statusText}`);
+      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
+        throw new Error(`Failed to load document: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
   }
-      const documentData: DocumentData = await response.json();
+      const documentData: DocumentData = await (response as { ok?: any; json?: any; statusText?: any }).json();
 
       // Update component state with loaded data
       content = documentData.content || "";
@@ -424,7 +410,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
 
           <button
-            onclick={() => manualSaveDocument()}
+            on:click={() => manualSaveDocument()}
             class="container mx-auto px-4"
             disabled={readonly || loadingDocument || isSaving}
           >
@@ -506,7 +492,7 @@ https://svelte.dev/e/js_parse_error -->
                     <p class="container mx-auto px-4">{documentLoadError}</p>
                     <button
                       class="container mx-auto px-4"
-                      onclick={() => loadDocument()}
+                      on:click={() => loadDocument()}
                     >
                       Try Again
                     </button>
@@ -557,7 +543,7 @@ https://svelte.dev/e/js_parse_error -->
 
               <button
                 class="container mx-auto px-4"
-                onclick={() =>
+                on:click={() =>
                   insertCitation({
                     id: Math.random().toString(),
                     text: "Sample Citation",
@@ -677,7 +663,7 @@ https://svelte.dev/e/js_parse_error -->
               Cancel
             </button>
             <button
-              onclick={() => handleAIRequest()}
+              on:click={() => handleAIRequest()}
               class="container mx-auto px-4"
               disabled={!query.trim() || isProcessingAI}
             >

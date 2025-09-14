@@ -5,7 +5,7 @@
  */
 
 import { writable, get, derived } from "svelte/store";
-import { selectedCase } from "./case-store";
+import { selectedCase } from './case-store.js';
 
 // Core Evidence Interface
 export interface Evidence {
@@ -194,12 +194,12 @@ const createEvidenceStore = () => {
         }
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
+        const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
         throw new Error(errorData.message || "Failed to fetch evidence");
       }
 
-      const evidenceData = await response.json();
+      const evidenceData = await (response as { ok?: any; json?: any; blob?: any }).json();
       const evidenceList: Evidence[] = evidenceData.evidence || [];
       const stats: EvidenceStats = evidenceData.stats || null;
 
@@ -284,12 +284,12 @@ const createEvidenceStore = () => {
           body: JSON.stringify(evidencePayload),
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
+        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
+          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
           throw new Error(errorData.message || "Failed to add evidence");
         }
 
-        const createdEvidence: Evidence = await response.json();
+        const createdEvidence: Evidence = await (response as { ok?: any; json?: any; blob?: any }).json();
 
         update((state) => ({
           ...state,
@@ -329,9 +329,9 @@ const createEvidenceStore = () => {
 
       // Optimistic update
       update((state) => {
-        originalEvidence = state.evidence.find((item) => item.id === evidenceId);
+        originalEvidence = state.evidence.find((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId);
         const updatedEvidence = state.evidence.map((item) => {
-          if (item.id === evidenceId) {
+          if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId) {
             const updated = {
               ...item,
               ...updates,
@@ -375,8 +375,8 @@ const createEvidenceStore = () => {
           body: JSON.stringify(payload),
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
+        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
+          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
           throw new Error(errorData.message || "Failed to update evidence");
         }
 
@@ -392,10 +392,10 @@ const createEvidenceStore = () => {
           update((state) => ({
             ...state,
             evidence: state.evidence.map((item) =>
-              item.id === evidenceId ? original : item
+              (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? original : item
             ),
             filtered_evidence: applyFilter(
-              state.evidence.map((item) => item.id === evidenceId ? original : item),
+              state.evidence.map((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? original : item),
               state.current_filter
             ),
             error: error.message,
@@ -412,7 +412,7 @@ const createEvidenceStore = () => {
       // Optimistic update
       update((state) => {
         originalList = state.evidence;
-        const newList = state.evidence.filter((item) => item.id !== evidenceId);
+        const newList = state.evidence.filter((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id !== evidenceId);
         return {
           ...state,
           evidence: newList,
@@ -430,8 +430,8 @@ const createEvidenceStore = () => {
           body: JSON.stringify({ reason }),
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
+        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
+          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
           throw new Error(errorData.message || "Failed to delete evidence");
         }
 
@@ -469,20 +469,20 @@ const createEvidenceStore = () => {
           body: JSON.stringify({ type: processingType }),
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
+        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
+          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
           throw new Error(errorData.message || "Failed to process evidence");
         }
 
-        const processedEvidence: Evidence = await response.json();
+        const processedEvidence: Evidence = await (response as { ok?: any; json?: any; blob?: any }).json();
 
         update((state) => ({
           ...state,
           evidence: state.evidence.map((item) =>
-            item.id === evidenceId ? processedEvidence : item
+            (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? processedEvidence : item
           ),
           filtered_evidence: applyFilter(
-            state.evidence.map((item) => item.id === evidenceId ? processedEvidence : item),
+            state.evidence.map((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? processedEvidence : item),
             state.current_filter
           ),
           processing_queue: state.processing_queue.filter(id => id !== evidenceId)
@@ -580,20 +580,20 @@ const createEvidenceStore = () => {
           body: JSON.stringify(entry),
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
+        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
+          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
           throw new Error(errorData.message || "Failed to add chain of custody entry");
         }
 
-        const updatedEvidence: Evidence = await response.json();
+        const updatedEvidence: Evidence = await (response as { ok?: any; json?: any; blob?: any }).json();
 
         update((state) => ({
           ...state,
           evidence: state.evidence.map((item) =>
-            item.id === evidenceId ? updatedEvidence : item
+            (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? updatedEvidence : item
           ),
           filtered_evidence: applyFilter(
-            state.evidence.map((item) => item.id === evidenceId ? updatedEvidence : item),
+            state.evidence.map((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? updatedEvidence : item),
             state.current_filter
           )
         }));
@@ -618,12 +618,12 @@ const createEvidenceStore = () => {
           body: JSON.stringify({ evidenceIds, reportType }),
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
+        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
+          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
           throw new Error(errorData.message || "Failed to generate evidence report");
         }
 
-        return await response.blob(); // PDF or other report format
+        return await (response as { ok?: any; json?: any; blob?: any }).blob(); // PDF or other report format
 
       } catch (error: any) {
         update((state) => ({ ...state, error: error.message }));
@@ -639,12 +639,12 @@ const createEvidenceStore = () => {
           headers: { "X-Legal-Request": "true" }
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
+        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
+          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
           throw new Error(errorData.message || "Failed to validate evidence integrity");
         }
 
-        const validation = await response.json();
+        const validation = await (response as { ok?: any; json?: any; blob?: any }).json();
 
         if (!validation.valid) {
           update((state) => ({
@@ -694,8 +694,8 @@ const createEvidenceStore = () => {
           headers: { "X-Legal-Request": "true" }
         });
 
-        if (response.ok) {
-          const stats = await response.json();
+        if ((response as { ok?: any; json?: any; blob?: any }).ok) {
+          const stats = await (response as { ok?: any; json?: any; blob?: any }).json();
           update((state) => ({ ...state, stats }));
         }
       } catch (error: any) {
@@ -715,12 +715,12 @@ const createEvidenceStore = () => {
           body: JSON.stringify({ evidenceIds, format }),
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
+        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
+          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
           throw new Error(errorData.message || "Failed to export evidence");
         }
 
-        return await response.blob();
+        return await (response as { ok?: any; json?: any; blob?: any }).blob();
 
       } catch (error: any) {
         update((state) => ({ ...state, error: error.message }));
@@ -736,24 +736,24 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
 
   return evidence.filter((item) => {
     // Type filter
-    if (filter.type && filter.type.length > 0 && !filter.type.includes(item.type)) {
+    if (filter.type && filter.type.length > 0 && !filter.type.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).type)) {
       return false;
     }
 
     // Confidentiality filter
     if (filter.confidentiality_level && filter.confidentiality_level.length > 0 &&
-        !filter.confidentiality_level.includes(item.confidentiality_level)) {
+        !filter.confidentiality_level.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).confidentiality_level)) {
       return false;
     }
 
     // Priority filter
-    if (filter.priority && filter.priority.length > 0 && !filter.priority.includes(item.priority)) {
+    if (filter.priority && filter.priority.length > 0 && !filter.priority.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).priority)) {
       return false;
     }
 
     // Date range filter
     if (filter.date_range) {
-      const itemDate = new Date(item.collected_date);
+      const itemDate = new Date((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).collected_date);
       const startDate = new Date(filter.date_range.start);
       const endDate = new Date(filter.date_range.end);
       if (itemDate < startDate || itemDate > endDate) {
@@ -763,13 +763,13 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
 
     // Collected by filter
     if (filter.collected_by && filter.collected_by.length > 0 &&
-        !filter.collected_by.includes(item.collected_by)) {
+        !filter.collected_by.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).collected_by)) {
       return false;
     }
 
     // Tags filter
     if (filter.tags && filter.tags.length > 0) {
-      const itemTags = item.tags || [];
+      const itemTags = (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).tags || [];
       if (!filter.tags.some(tag => itemTags.includes(tag))) {
         return false;
       }
@@ -779,12 +779,12 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
     if (filter.search_text) {
       const searchText = filter.search_text.toLowerCase();
       const searchableText = [
-        item.title,
-        item.evidence_tag,
-        item.collected_by,
-        item.ocr_text || '',
-        (item.tags || []).join(' '),
-        (item.notes || []).map(n => n.content).join(' ')
+        (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).title,
+        (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).evidence_tag,
+        (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).collected_by,
+        (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).ocr_text || '',
+        ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).tags || []).join(' '),
+        ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).notes || []).map(n => n.content).join(' ')
       ].join(' ').toLowerCase();
 
       if (!searchableText.includes(searchText)) {
@@ -793,11 +793,11 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
     }
 
     // Processing status filters
-    if (filter.processed_only && !item.processed) {
+    if (filter.processed_only && !(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).processed) {
       return false;
     }
 
-    if (filter.unprocessed_only && item.processed) {
+    if (filter.unprocessed_only && (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).processed) {
       return false;
     }
 
@@ -808,8 +808,8 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
 async function validateEvidenceIntegrity(evidence: Evidence[]): Promise<void> {
   // Validate file hashes and integrity
   for (const item of evidence) {
-    if (item.hash && item.originalHash && item.hash !== item.originalHash) {
-      console.warn(`Evidence integrity check failed for ${item.id}: hash mismatch`);
+    if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).hash && (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).originalHash && (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).hash !== (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).originalHash) {
+      console.warn(`Evidence integrity check failed for ${(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id}: hash mismatch`);
     }
   }
 }
@@ -849,15 +849,15 @@ export const securityAlerts = derived(evidenceStore, ($s) => $s.security_alerts.
 
 // Helper utilities (exported as standalone functions)
 export function getUnprocessedEvidence(evidence: Evidence[]): Evidence[] {
-  return evidence.filter(item => !item.processed);
+  return evidence.filter(item => !(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).processed);
 }
 
 export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
   const stats: EvidenceStats = {
     total_count: evidence.length,
-    by_type: {},
-    by_priority: {},
-    by_confidentiality: {},
+    by_type: Record<string, any>,
+    by_priority: Record<string, any>,
+    by_confidentiality: Record<string, any>,
     processed_count: 0,
     unprocessed_count: 0,
     encrypted_count: 0,
@@ -869,14 +869,14 @@ export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
   let relevanceScoreCount = 0;
 
   for (const item of evidence) {
-    stats.by_type[item.type] = (stats.by_type[item.type] || 0) + 1;
-    stats.by_priority[item.priority] = (stats.by_priority[item.priority] || 0) + 1;
-    stats.by_confidentiality[item.confidentiality_level] = (stats.by_confidentiality[item.confidentiality_level] || 0) + 1;
-    if (item.processed) stats.processed_count++; else stats.unprocessed_count++;
-    if (item.encrypted) stats.encrypted_count++;
-    if (item.file_size) stats.total_file_size += item.file_size;
-    if (item.relevance_score !== undefined) {
-      totalRelevanceScore += item.relevance_score;
+    stats.by_type[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).type] = (stats.by_type[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).type] || 0) + 1;
+    stats.by_priority[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).priority] = (stats.by_priority[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).priority] || 0) + 1;
+    stats.by_confidentiality[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).confidentiality_level] = (stats.by_confidentiality[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).confidentiality_level] || 0) + 1;
+    if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).processed) stats.processed_count++; else stats.unprocessed_count++;
+    if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).encrypted) stats.encrypted_count++;
+    if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).file_size) stats.total_file_size += (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).file_size;
+    if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).relevance_score !== undefined) {
+      totalRelevanceScore += (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).relevance_score;
       relevanceScoreCount++;
     }
   }

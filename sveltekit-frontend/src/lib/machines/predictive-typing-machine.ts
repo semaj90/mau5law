@@ -30,12 +30,7 @@ interface PredictiveTypingContext {
   // Analytics results
   predictiveResults: PredictiveAnalyticsResult | null;
   glyphContext: GlyphContext[];
-  suggestions: Array<{
-    text: string;
-    confidence: number;
-    intent: string;
-    topology_score: number;
-  }>;
+  suggestions: Array<any>;
   
   // Performance metrics
   predictionLatency: number;
@@ -133,7 +128,7 @@ const glyphContextActor = fromPromise(async ({
       }
     );
     
-    return result.glyph_context;
+    return (result as { glyph_context?: any }).glyph_context;
   } catch (error: any) {
     console.warn('Glyph context retrieval failed, using empty context:', error);
     return [];
@@ -207,9 +202,9 @@ const feedbackLearningActor = fromPromise(async ({
 // Main predictive typing XState machine
 export const predictiveTypingMachine = setup({
   types: {
-    context: {} as PredictiveTypingContext,
-    events: {} as PredictiveTypingEvent,
-    input: {} as {
+    context: Record<string, any> as PredictiveTypingContext,
+    events: Record<string, any> as PredictiveTypingEvent,
+    input: Record<string, any> as {
       sessionId: string;
       userId?: string;
       initialConfig?: Partial<PredictiveTypingContext['config']>;
@@ -649,7 +644,7 @@ export const predictiveTypingMachine = setup({
             input: ({ context, event }) => ({
               originalQuery: context.previousQuery,
               predictiveResults: context.predictiveResults!,
-              userFeedback: event.type === 'PROVIDE_FEEDBACK' ? event.feedback : {},
+              userFeedback: event.type === 'PROVIDE_FEEDBACK' ? event.feedback : Record<string, any>,
               sessionContext: {
                 session_id: context.sessionId,
                 interaction_timestamp: Date.now(),

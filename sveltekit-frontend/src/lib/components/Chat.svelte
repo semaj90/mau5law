@@ -56,25 +56,16 @@ https://svelte.dev/e/js_parse_error -->
   let showModeSelector = $state(false);
   let componentError = $state<Error | null>(null);
   let messagesContainer = $state<HTMLElement;
-  let messageInput = $state<HTMLTextAreaElement;
-
-  // Messages store (keeping as writable for complex state management)
-  let messages >(writable<
-    Array<{
-      id: string);
-      role: "user" | "assistant";
-      content: string;
-      timestamp: Date;
-      contextUsed?: unknown;
-      suggestions?: string[];
-      actions?: Array<{ type: string; text: string; data?: unknown }>;
+  let messageInput = $state<HTMLTextAreaElement// Messages store (keeping as writable for complex state management)
+  let messages | null>(null)(writable<
+    Array;
       isTyping?: boolean;
       isError?: boolean;
     }>
   >([]);
 
   // AI modes/vibes
-  const aiModes >([
+  const aiModes = $state([
     {
       id: "professional",
       label: "Professional",
@@ -129,10 +120,10 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch(
         `/api/chat?conversationId=${conversationId}&userId=${userId}&limit=50`
       );
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success && result.conversation) {
-          messages.set(result.conversation);
+      if ((response as { ok?: any; json?: any }).ok) {
+        const result = await (response as { ok?: any; json?: any }).json();
+        if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).success && (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).conversation) {
+          messages.set((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).conversation);
         }
       }
     } catch (error) {
@@ -213,29 +204,29 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      const result = await response.json();
+      const result = await (response as { ok?: any; json?: any }).json();
 
       // Remove typing indicator
       messages.update((msgs) => msgs.filter((m) => !m.isTyping));
 
-      if (result.success && result.message) {
+      if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).success && (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).message) {
         // Add AI response with enhanced features
         const aiMessage = {
-          ...result.message,
-          contextUsed: result.contextUsed,
-          suggestions: result.suggestions,
-          actions: result.actions,
+          ...(result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).message,
+          contextUsed: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).contextUsed,
+          suggestions: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).suggestions,
+          actions: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).actions,
         };
 
         messages.update((msgs) => [...msgs, aiMessage]);
 
         // Dispatch events for suggestions and actions
-        if (result.suggestions?.length > 0 && onsuggestionsreceived) {
-          onsuggestionsreceived(result.suggestions);
+        if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).suggestions?.length > 0 && onsuggestionsreceived) {
+          onsuggestionsreceived((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).suggestions);
         }
 
-        if (result.actions?.length > 0 && onactionsreceived) {
-          onactionsreceived(result.actions);
+        if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).actions?.length > 0 && onactionsreceived) {
+          onactionsreceived((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).actions);
         }
 
         // Store message embedding for future context
@@ -243,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
           storeMessageEmbedding(aiMessage.content, "assistant");
         }
       } else {
-        throw new Error(result.error || "Failed to get AI response");
+        throw new Error((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).error || "Failed to get AI response");
       }
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -322,7 +313,7 @@ https://svelte.dev/e/js_parse_error -->
     <p>The chat component encountered an error:</p>
     <p class="error-message">{componentError.message}</p>
     <button 
-      onclick={() => { componentError = null; }}
+      on:click={() => { componentError = null; }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -333,8 +324,8 @@ https://svelte.dev/e/js_parse_error -->
   <div
     class="chat-overlay"
     transitifade={{ duration: 200 }}
-    onclick={(e) => { if (e.target === e.currentTarget) closeChat(); }}
-    onkeydown={(e) => e.key === "Escape" && closeChat()}
+    on:click={(e) => { if (e.target === e.currentTarget) closeChat(); }}
+    on:keydown={(e) => e.key === "Escape" && closeChat()}
     role="dialog"
     aria-modal="true"
     aria-labelledby="chat-title"
@@ -343,7 +334,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Chat container -->
     <div
       class="chat-container"
-      transitifly={{ y: 50, duration: 300, easing: quintOut }}
+      /* transition removed */}
     >
       <!-- Header -->
       <div class="chat-header">
@@ -360,7 +351,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="mode-button"
               class:active={showModeSelector}
-              onclick={() => (showModeSelector = !showModeSelector)}
+              on:click={() => (showModeSelector = !showModeSelector)}
               title="Select AI mode"
               aria-label="Select AI mode"
               aria-expanded={showModeSelector}
@@ -382,7 +373,7 @@ https://svelte.dev/e/js_parse_error -->
                   <button
                     class="mode-option"
                     class:selected={mode.id === selectedMode}
-                    onclick={() => {
+                    on:click={() => {
                       selectedMode = mode.id;
                       showModeSelector = false;
                     }}
@@ -404,7 +395,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="header-actions">
           <button
             class="header-action"
-            onclick={() => clearConversation()}
+            on:click={() => clearConversation()}
             title="Clear conversation"
             disabled={isGenerating}
             aria-label="Clear conversation"
@@ -413,7 +404,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
           <button
             class="header-action"
-            onclick={() => closeChat()}
+            on:click={() => closeChat()}
             title="Close chat"
             aria-label="Close chat"
           >
@@ -430,10 +421,7 @@ https://svelte.dev/e/js_parse_error -->
             class:user={message.role === "user"}
             class:assistant={message.role === "assistant"}
             class:error={message.isError}
-            transitifly={{
-              x: message.role === "user" ? 20 : -20,
-              duration: 300,
-            }}
+            /* transition removed */}
           >
             <div class="message-avatar">
               {#if message.role === "user"}
@@ -474,7 +462,7 @@ https://svelte.dev/e/js_parse_error -->
                     {#each message.actions as action}
                       <button
                         class="action-button"
-                        onclick={() => handleActionClick(action)}
+                        on:click={() => handleActionClick(action)}
                         title={action.text}
                         aria-label="Action: {action.text}"
                       >
@@ -511,7 +499,7 @@ https://svelte.dev/e/js_parse_error -->
             {#each quickActions as action}
               <button
                 class="quick-action"
-                onclick={() => handleQuickAction(action.text)}
+                on:click={() => handleQuickAction(action.text)}
                 disabled={isGenerating}
                 aria-label="Quick action: {action.text}"
               >
@@ -531,7 +519,7 @@ https://svelte.dev/e/js_parse_error -->
             bind:value={currentMessage}
             placeholder="Ask about your case, evidence, or legal strategy..."
             disabled={isGenerating}
-            onkeydown={handleKeydown}
+            on:keydown={handleKeydown}
             rows="4"
             class="message-input"
             aria-label="Type your message here"
@@ -541,7 +529,7 @@ https://svelte.dev/e/js_parse_error -->
             class="send-button"
             class:sending={isGenerating}
             disabled={!currentMessage.trim() || isGenerating}
-            onclick={() => sendMessage()}
+            on:click={() => sendMessage()}
             title="Send message"
             aria-label="Send message"
           >

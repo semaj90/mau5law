@@ -5,6 +5,10 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
   const { title = "System status", status = "OK", updatedAt = null } = $props();
 
+
+
+// Auto-generated default export
+export default {};
 </script>
   
    // e.g. "OK", "WARN", "ERROR"

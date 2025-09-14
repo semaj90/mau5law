@@ -4,7 +4,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { db } from '$lib/server/database';
 import { evidence, cases, users } from '$lib/server/db/schema';
 import { eq, desc, asc, and, or, like, ilike, gte, lte, inArray, sql } from 'drizzle-orm';
@@ -63,12 +63,11 @@ interface SearchResponse {
   totalCount: number;
   searchTime: number;
   facets: {
-    types: Array<{ name: string; count: number }>;
-    fileTypes: Array<{ name: string; count: number }>;
-    cases: Array<{ id: string; title: string; count: number }>;
-    tags: Array<{ name: string; count: number }>;
-    dateRanges: Array<{ range: string; count: number }>;
-  };
+    types: Array<any>;
+    fileTypes: Array<any>;
+    cases: Array<any>;
+    tags: Array<any>;
+    dateRanges: Array<any>;
   suggestions?: string[];
   pagination: {
     page: number;
@@ -320,20 +319,20 @@ async function processSearchResult(item: any, filters: SearchFilters): Promise<S
   const snippet = filters.contentSearch ? generateSnippet(item, filters.query) : undefined;
 
   return {
-    id: item.id,
-    type: determineItemType(item.fileType),
-    title: item.title || item.fileName || 'Untitled',
-    description: item.description || undefined,
-    fileName: item.fileName || '',
-    fileType: item.fileType || 'unknown',
-    fileSize: item.fileSize || 0,
-    url: `/api/files/evidence/${item.id}`,
-    thumbnailUrl: generateThumbnailUrl(item.filePath, item.fileType),
-    uploadedAt: item.uploadedAt?.toISOString() || new Date().toISOString(),
-    caseId: item.caseId || undefined,
-    caseTitle: item.caseTitle || undefined,
-    tags: Array.isArray(item.tags) ? item.tags : [],
-    metadata: item.metadata || undefined,
+    id: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).id,
+    type: determineItemType((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileType),
+    title: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).title || (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileName || 'Untitled',
+    description: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).description || undefined,
+    fileName: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileName || '',
+    fileType: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileType || 'unknown',
+    fileSize: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileSize || 0,
+    url: `/api/files/evidence/${(item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).id}`,
+    thumbnailUrl: generateThumbnailUrl((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).filePath, (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileType),
+    uploadedAt: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).uploadedAt?.toISOString() || new Date().toISOString(),
+    caseId: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).caseId || undefined,
+    caseTitle: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).caseTitle || undefined,
+    tags: Array.isArray((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags) ? (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags : [],
+    metadata: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).metadata || undefined,
     relevanceScore,
     matchedFields,
     snippet
@@ -347,35 +346,35 @@ function calculateRelevanceScore(item: any, filters: SearchFilters): number {
   const query = filters.query.toLowerCase();
 
   // Title match (highest weight)
-  if (item.title?.toLowerCase().includes(query)) {
+  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).title?.toLowerCase().includes(query)) {
     score += 10;
-    if (item.title?.toLowerCase().startsWith(query)) score += 5;
+    if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).title?.toLowerCase().startsWith(query)) score += 5;
   }
 
   // Filename match
-  if (item.fileName?.toLowerCase().includes(query)) {
+  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileName?.toLowerCase().includes(query)) {
     score += 7;
   }
 
   // Description match
-  if (item.description?.toLowerCase().includes(query)) {
+  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).description?.toLowerCase().includes(query)) {
     score += 5;
   }
 
   // Case title match
-  if (item.caseTitle?.toLowerCase().includes(query)) {
+  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).caseTitle?.toLowerCase().includes(query)) {
     score += 4;
   }
 
   // Content match
   if (filters.contentSearch) {
-    if (item.ocrText?.toLowerCase().includes(query)) score += 3;
-    if (item.contentText?.toLowerCase().includes(query)) score += 3;
+    if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).ocrText?.toLowerCase().includes(query)) score += 3;
+    if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).contentText?.toLowerCase().includes(query)) score += 3;
   }
 
   // Tag match
-  if (Array.isArray(item.tags)) {
-    for (const tag of item.tags) {
+  if (Array.isArray((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags)) {
+    for (const tag of (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags) {
       if (tag.toLowerCase().includes(query)) {
         score += 6;
       }
@@ -391,18 +390,18 @@ function getMatchedFields(item: any, filters: SearchFilters): string[] {
   const matchedFields = [];
   const query = filters.query.toLowerCase();
 
-  if (item.title?.toLowerCase().includes(query)) matchedFields.push('title');
-  if (item.fileName?.toLowerCase().includes(query)) matchedFields.push('fileName');
-  if (item.description?.toLowerCase().includes(query)) matchedFields.push('description');
-  if (item.caseTitle?.toLowerCase().includes(query)) matchedFields.push('caseTitle');
+  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).title?.toLowerCase().includes(query)) matchedFields.push('title');
+  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileName?.toLowerCase().includes(query)) matchedFields.push('fileName');
+  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).description?.toLowerCase().includes(query)) matchedFields.push('description');
+  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).caseTitle?.toLowerCase().includes(query)) matchedFields.push('caseTitle');
   
   if (filters.contentSearch) {
-    if (item.ocrText?.toLowerCase().includes(query)) matchedFields.push('ocrText');
-    if (item.contentText?.toLowerCase().includes(query)) matchedFields.push('contentText');
+    if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).ocrText?.toLowerCase().includes(query)) matchedFields.push('ocrText');
+    if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).contentText?.toLowerCase().includes(query)) matchedFields.push('contentText');
   }
 
-  if (Array.isArray(item.tags)) {
-    for (const tag of item.tags) {
+  if (Array.isArray((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags)) {
+    for (const tag of (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags) {
       if (tag.toLowerCase().includes(query)) {
         matchedFields.push('tags');
         break;
@@ -416,7 +415,7 @@ function getMatchedFields(item: any, filters: SearchFilters): string[] {
 function generateSnippet(item: any, query?: string): string | undefined {
   if (!query) return undefined;
 
-  const text = item.contentText || item.ocrText || item.description || '';
+  const text = (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).contentText || (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).ocrText || (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).description || '';
   if (!text) return undefined;
 
   const index = text.toLowerCase().indexOf(query.toLowerCase());

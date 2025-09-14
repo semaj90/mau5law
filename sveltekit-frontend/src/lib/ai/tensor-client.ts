@@ -28,12 +28,12 @@ async function runGpuTile(embedding: number[]) {
     
     return { 
       op: 'simdGpuTiling', 
-      similarity: result.similarity,
+      similarity: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).similarity,
       length: v.length, 
       timeMs: +(t1 - t0).toFixed(2),
-      gpuMeta: result.gpuMeta,
-      tilingMeta: result.tilingMeta,
-      performance: result.performanceMetrics
+      gpuMeta: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).gpuMeta,
+      tilingMeta: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).tilingMeta,
+      performance: (result as { similarity?: any; gpuMeta?: any; tilingMeta?: any; performanceMetrics?: any }).performanceMetrics
     };
   } catch (e: any) {
     return { op: 'simdGpuTiling', error: e?.message || String(e) };

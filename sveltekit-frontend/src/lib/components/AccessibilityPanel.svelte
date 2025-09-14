@@ -18,7 +18,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   } from "lucide-svelte";
   import { onMount } from "svelte";
 
-  let { showPanel = $bindable() } = $props(); // false;
+  let { showPanel = $bindable()  }: { showPanel = $bindable() : any } = $props(); // false;
 
   interface AccessibilityIssue {
     id: string;
@@ -481,8 +481,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 {#if showPanel}
   <div
     class="mx-auto px-4 max-w-7xl"
-    onclick={() => (showPanel = false)}
-    onkeydown={(e) => e.key === 'Escape' && (showPanel = false)}
+    on:click={() => (showPanel = false)}
+    on:keydown={(e) => e.key === 'Escape' && (showPanel = false)}
     role="dialog"
     aria-modal="true"
     aria-labelledby="accessibility-panel-title"
@@ -497,11 +497,12 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={() => (showPanel = false)}
+            on:click={() =>
+(showPanel = false)}
             aria-label="Close accessibility panel"
           >
             ✕
-          </button>
+</Button>
         </div>
 
         <!-- Accessibility Settings -->
@@ -514,7 +515,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={highContrast}
-                onchange={applyAccessibilitySettings}
+                on:change={applyAccessibilitySettings}
               />
               <span>High Contrast</span>
             </label>
@@ -524,7 +525,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={reducedMotion}
-                onchange={applyAccessibilitySettings}
+                on:change={applyAccessibilitySettings}
               />
               <span>Reduced Motion</span>
             </label>
@@ -534,7 +535,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={largeText}
-                onchange={applyAccessibilitySettings}
+                on:change={applyAccessibilitySettings}
               />
               <span>Large Text</span>
             </label>
@@ -544,7 +545,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={keyboardNavigation}
-                onchange={applyAccessibilitySettings}
+                on:change={applyAccessibilitySettings}
               />
               <span>Enhanced Keyboard Navigation</span>
             </label>
@@ -554,7 +555,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={screenReaderMode}
-                onchange={applyAccessibilitySettings}
+                on:change={applyAccessibilitySettings}
               />
               <span>Screen Reader Optimizations</span>
             </label>
@@ -568,7 +569,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             <Button 
               class="bits-btn mx-auto px-4 max-w-7xl"
               size="sm"
-              onclick={() => runAccessibilityAudit()}
+              on:click={() =>
+runAccessibilityAudit()}
               disabled={isAuditing}
             >
               {#if isAuditing}
@@ -578,7 +580,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 <RefreshCw class="w-4 h-4" />
                 Run Audit
               {/if}
-            </button>
+</Button>
           </div>
 
           {#if isAuditing}
@@ -622,11 +624,12 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 variant="outline"
                 size="sm"
                 class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-                onclick={() => exportAuditResults()}
+                on:click={() =>
+exportAuditResults()}
               >
                 <Download class="mx-auto px-4 max-w-7xl" />
                 Export Report
-              </button>
+</Button>
             </div>
 
             <!-- Audit Results -->

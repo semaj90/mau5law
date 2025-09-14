@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector';
 
 /*
@@ -30,14 +30,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
         return json({
           success: true,
-          documentId: result.documentId,
-          entities: result.parsedDocument.entities,
-          suggestions: result.parsedDocument.suggestions,
-          confidence: result.parsedDocument.confidence,
-          processingStats: result.processingStats,
-          simdStats: result.parsedDocument.processingTime,
+          documentId: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).documentId,
+          entities: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).parsedDocument.entities,
+          suggestions: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).parsedDocument.suggestions,
+          confidence: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).parsedDocument.confidence,
+          processingStats: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).processingStats,
+          simdStats: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).parsedDocument.processingTime,
           gpuAccelerated: true,
-          vectorized: result.vectorized
+          vectorized: (result as { documentId?: any; parsedDocument?: any; processingStats?: any; vectorized?: any }).vectorized
         });
       }
 

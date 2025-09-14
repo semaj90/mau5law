@@ -62,7 +62,7 @@
   {type}
   {disabled}
   class={finalClass}
-  onclick={handleClick}
+  on:click={handleClick}
   {...restProps}
 >
   {#if loading}

@@ -55,8 +55,7 @@
             >
             <select
               id="document-type-selector"
-              bind:value={selectedDocumentType}
-              change={() => switchDocumentType(selectedDocumentType)}
+              bind:value={selectedDocumentType} on:change={() => switchDocumentType(selectedDocumentType)}
               class="space-y-4"
             >
               <option value="brief">Brief</option>
@@ -68,7 +67,7 @@
 
           <!-- New Document Button -->
           <button
-            onclick={() => createNewDocument()}
+            on:click={() => createNewDocument()}
             class="space-y-4"
           >
             New Document

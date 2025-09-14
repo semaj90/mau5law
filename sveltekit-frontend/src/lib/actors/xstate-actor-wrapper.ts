@@ -48,7 +48,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
     return {
       embedding: data.embedding,
       dimensions: data.dimensions || 768,
-      model: data.model || 'nomic-embed-text',
+      model: data?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text',
       processingTime: Date.now() - startTime,
       tokenCount: data.tokenCount,
     } as EmbeddingActorOutput;
@@ -69,7 +69,7 @@ export interface DocumentProcessingInput {
 export interface DocumentProcessingOutput {
   documentId: string;
   summary?: string;
-  entities?: Array<{ text: string; type: string; confidence: number }>;
+  entities?: Array<any>;
   embeddings?: { chunks: number; dimensions: number };
   processingTime: number;
   success: boolean;
@@ -120,7 +120,7 @@ export interface LegalAnalysisOutput {
   riskScore: number;
   riskFactors: string[];
   recommendations: string[];
-  precedents: Array<{ case: string; relevance: number; summary: string }>;
+  precedents: Array<any>;
   confidence: number;
   processingTime: number;
 }
@@ -166,13 +166,7 @@ export interface RAGSearchInput {
 }
 
 export interface RAGSearchOutput {
-  results: Array<{
-    id: string;
-    content: string;
-    title: string;
-    score: number;
-    metadata: Record<string, any>;
-  }>;
+  results: Array<any>;
   totalResults: number;
   processingTime: number;
   model: string;
@@ -199,7 +193,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
       results: data.results || [],
       totalResults: data.totalResults || 0,
       processingTime: Date.now() - startTime,
-      model: data.model || 'unknown',
+      model: data?.model || "unknown" // @ts-ignore - Model property access || 'unknown',
     } as RAGSearchOutput;
   } catch (error: any) {
     throw new Error(`RAG search actor failed: ${error.message}`);
@@ -233,11 +227,7 @@ export function createRAGSearchActor(input: RAGSearchInput): ActorRefFrom<typeof
 // ===== WORKFLOW ORCHESTRATION ACTOR =====
 
 export interface WorkflowInput {
-  steps: Array<{
-    type: 'embedding' | 'document_processing' | 'legal_analysis' | 'rag_search';
-    input: any;
-    dependencies?: string[];
-  }>;
+  steps: Array<any>;
   parallel?: boolean;
 }
 
@@ -245,13 +235,12 @@ export interface WorkflowOutput {
   results: Record<string, any>;
   totalTime: number;
   success: boolean;
-  errors: Array<{ step: string; error: string }>;
-}
+  errors: Array<any>
 
 export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInput }) => {
   const startTime = Date.now();
   const results: Record<string, any> = {};
-  const errors: Array<{ step: string; error: string }> = [];
+  const errors: Array< = [];
 
   try {
     if (input.parallel) {

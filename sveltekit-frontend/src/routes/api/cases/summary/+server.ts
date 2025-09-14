@@ -1,7 +1,7 @@
 import { json } from "@sveltejs/kit";
 import type { Case } from "$lib/types";
 import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 
@@ -25,11 +25,7 @@ export interface CaseSummaryResponse {
       level: "low" | "medium" | "high";
       factors: string[];
     };
-    timeline: Array<{
-      date: Date;
-      event: string;
-      importance: "low" | "medium" | "high";
-    }>;
+    timeline: Array<any>;
     evidence: {
       total: number;
       admissible: number;
@@ -192,7 +188,7 @@ async function gatherCaseData(
       {
         id: '1',
         content: 'Evidence item 1',
-        metadata: {},
+        metadata: Record<string, any>,
         createdAt: new Date()
       }
     ];

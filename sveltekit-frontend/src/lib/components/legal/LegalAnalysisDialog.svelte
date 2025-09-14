@@ -25,13 +25,7 @@ https://svelte.dev/e/js_parse_error -->
     sessionId: string
     analysis: string
     confidence: number
-    sources: Array<{
-      type: 'document' | 'precedent' | 'statute';
-      id: string
-      title: string
-      relevance: number
-      excerpt: string
-    }>;
+    sources: Array;
     recommendations: string[];
     processingTime: number
   }
@@ -107,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<Dialog bind:isOpen title="Legal AI Analysis" onClose={closeDialog}>
+<Dialog.Root bind:isOpen title="Legal AI Analysis" onClose={closeDialog}>
   <div class="space-y-6">
     {#if !analysis}
       <!-- Analysis Input Form -->
@@ -149,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex gap-3 pt-4">
           <button
             type="button"
-            onclick={performAnalysis}
+            on:click={performAnalysis}
             disabled={loading || !prompt.trim()}
             class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -164,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
           <button
             type="button"
-            onclick={closeDialog}
+            on:click={closeDialog}
             class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
           >
             Cancel
@@ -228,14 +222,14 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex gap-3 pt-4">
           <button
             type="button"
-            onclick={resetDialog}
+            on:click={resetDialog}
             class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
           >
             New Analysis
           </button>
           <button
             type="button"
-            onclick={closeDialog}
+            on:click={closeDialog}
             class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
           >
             Close
@@ -244,4 +238,4 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   </div>
-</Dialog>
+</Dialog.Root>

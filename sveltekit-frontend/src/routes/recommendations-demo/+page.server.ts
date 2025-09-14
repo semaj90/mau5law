@@ -1,5 +1,5 @@
 // Server-side data loading for recommendations demo
-import type { PageServerLoad } from './$types.js';
+import type { PageServerLoad } from './$types.js.js';
 import { URL } from "url";
 
 export const load: PageServerLoad = async ({ fetch, url }) => {

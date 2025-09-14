@@ -3,7 +3,7 @@
  * SvelteKit 2 API endpoint for legal AI topology optimization
  */
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { qloraTopologyPredictor } from '$lib/ai/qlora-topology-predictor';
 import { webgpuRAGService } from '$lib/webgpu/webgpu-rag-service';
 import type { LegalDocument } from '$lib/memory/nes-memory-architecture';
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
       riskLevel: complexity > 0.8 ? 'high' : complexity > 0.5 ? 'medium' : 'low',
       lastAccessed: Date.now(),
       compressed: true,
-      metadata: {},
+      metadata: Record<string, any>,
     };
 
     // Create user behavior pattern (use satisfies to enforce exact keys & avoid stale interface collisions)

@@ -183,11 +183,12 @@
 
       <Button 
         class="bits-btn flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-        onclick={() => (showAdvanced = !showAdvanced)}
+        on:click={() =>
+(showAdvanced = !showAdvanced)}
       >
         <span class="i-tabler-settings w-4 h-4"></span>
         Advanced
-      </button>
+</Button>
     </div>
 
     <!-- Search Input -->
@@ -214,7 +215,7 @@
       </div>
 
       <Button.Root
-        onclick={performSearch}
+        on:click={performSearch}
         disabled={loading || !query.trim()}
         class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg
                disabled:opacity-50 disabled:cursor-not-allowed
@@ -352,7 +353,7 @@
               <h3
                 class="text-lg font-semibold text-gray-900 dark:text-white mb-1"
               >
-                {result.title || `Document ${result.id}`}
+                {(result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).title || `Document ${(result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).id}`}
               </h3>
               <div
                 class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400"
@@ -360,26 +361,26 @@
                 <span
                   class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full"
                 >
-                  {result.documentType}
+                  {(result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).documentType}
                 </span>
-                {#if result.practiceArea}
+                {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).practiceArea}
                   <span
                     class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full"
                   >
-                    {result.practiceArea.replace("_", " ")}
+                    {(result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).practiceArea.replace("_", " ")}
                   </span>
                 {/if}
                 <span
                   class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full"
                 >
-                  {result.jurisdiction}
+                  {(result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).jurisdiction}
                 </span>
               </div>
             </div>
 
             <div class="text-right">
               <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                {formatScore(result.similarity)}
+                {formatScore((result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).similarity)}
               </div>
               <div class="text-xs text-gray-500 dark:text-gray-400">
                 relevance
@@ -391,25 +392,25 @@
           <div class="prose dark:prose-invert max-w-none">
             <p class="text-gray-700 dark:text-gray-300 line-clamp-3">
               {@html highlightContent(
-                result.content.substring(0, 300) + "...",
+                (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).content.substring(0, 300) + "...",
                 query
               )}
             </p>
           </div>
 
           <!-- Analysis Results -->
-          {#if result.analysisResults}
+          {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults}
             <div
               class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
             >
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                {#if result.analysisResults.keyInsights?.length}
+                {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.keyInsights?.length}
                   <div>
                     <h4 class="font-medium text-gray-900 dark:text-white mb-2">
                       Key Insights
                     </h4>
                     <ul class="space-y-1">
-                      {#each result.analysisResults.keyInsights.slice(0, 3) as insight}
+                      {#each (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.keyInsights.slice(0, 3) as insight}
                         <li
                           class="text-gray-600 dark:text-gray-400 flex items-start gap-2"
                         >
@@ -423,13 +424,13 @@
                   </div>
                 {/if}
 
-                {#if result.analysisResults.risks?.length}
+                {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.risks?.length}
                   <div>
                     <h4 class="font-medium text-gray-900 dark:text-white mb-2">
                       Risk Factors
                     </h4>
                     <ul class="space-y-1">
-                      {#each result.analysisResults.risks.slice(0, 3) as risk}
+                      {#each (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.risks.slice(0, 3) as risk}
                         <li
                           class="text-red-600 dark:text-red-400 flex items-start gap-2"
                         >

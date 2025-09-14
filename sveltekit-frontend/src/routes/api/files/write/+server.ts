@@ -1,7 +1,7 @@
 import { writeFile, mkdir } from 'fs/promises';
 import { dirname, extname } from 'path';
 import { existsSync } from 'fs';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 export const POST: RequestHandler = async ({ request }) => {

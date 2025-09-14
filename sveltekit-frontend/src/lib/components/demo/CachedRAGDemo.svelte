@@ -50,13 +50,13 @@
         })
       });
 
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
 
-      if (data.success) {
-        result = data.data;
-        console.log('✅ Cached RAG query successful:', data.data);
+      if ((data as { success?: any; data?: any; error?: any }).success) {
+        result = (data as { success?: any; data?: any; error?: any }).data;
+        console.log('✅ Cached RAG query successful:', (data as { success?: any; data?: any; error?: any }).data);
       } else {
-        error = data.error || 'Query failed';
+        error = (data as { success?: any; data?: any; error?: any }).error || 'Query failed';
       }
 
     } catch (err: any) {
@@ -70,10 +70,10 @@
   async function loadCacheMetrics() {
     try {
       const response = await fetch('/api/v1/rag/cached?action=metrics');
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
 
-      if (data.success) {
-        cacheMetrics = data.data.metrics;
+      if ((data as { success?: any; data?: any; error?: any }).success) {
+        cacheMetrics = (data as { success?: any; data?: any; error?: any }).(data as { success?: any; data?: any; error?: any }).metrics;
       }
     } catch (err: any) {
       console.error('Failed to load cache metrics:', err);
@@ -84,9 +84,9 @@
     loading = true;
     try {
       const response = await fetch('/api/v1/rag/cached?action=test&type=smoke');
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
       
-      if (data.success) {
+      if ((data as { success?: any; data?: any; error?: any }).success) {
         alert('Cache test passed! ✅');
       } else {
         alert('Cache test failed! ❌');
@@ -107,9 +107,9 @@
         body: JSON.stringify({ action: 'warmup' })
       });
 
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
       
-      if (data.success) {
+      if ((data as { success?: any; data?: any; error?: any }).success) {
         alert('Cache warmup completed! 🔥');
         await loadCacheMetrics();
       } else {
@@ -152,7 +152,7 @@
         {#each sampleQueries as sampleQuery}
           <button
             type="button"
-            onclick={() => { query = sampleQuery; }}
+            on:click={() => { query = sampleQuery; }}
             disabled={loading}
             class="sample-btn"
           >
@@ -164,7 +164,7 @@
 
     <div class="actions">
       <button
-        onclick={runCachedQuery}
+        on:click={runCachedQuery}
         disabled={loading || !query.trim()}
         class="primary-btn"
       >
@@ -172,7 +172,7 @@
       </button>
 
       <button
-        onclick={runCacheTest}
+        on:click={runCacheTest}
         disabled={loading}
         class="secondary-btn"
       >
@@ -180,7 +180,7 @@
       </button>
 
       <button
-        onclick={warmupCache}
+        on:click={warmupCache}
         disabled={loading}
         class="secondary-btn"
       >
@@ -188,7 +188,7 @@
       </button>
 
       <button
-        onclick={loadCacheMetrics}
+        on:click={loadCacheMetrics}
         disabled={loading}
         class="secondary-btn"
       >
@@ -208,45 +208,45 @@
     <div class="results">
       <h3>✅ Query Results</h3>
       
-      {#if result.cacheStats}
+      {#if (result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats}
         <div class="cache-stats">
           <h4>🎯 Cache Performance</h4>
           <div class="stats-grid">
             <div class="stat">
               <span class="label">Embedding Cache:</span>
-              <span class="value {result.cacheStats.embeddingCacheHit ? 'hit' : 'miss'}">
-                {result.cacheStats.embeddingCacheHit ? '✅ HIT' : '🔄 MISS'}
+              <span class="value {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats.embeddingCacheHit ? 'hit' : 'miss'}">
+                {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats.embeddingCacheHit ? '✅ HIT' : '🔄 MISS'}
               </span>
             </div>
             <div class="stat">
               <span class="label">Query Cache:</span>
-              <span class="value {result.cacheStats.queryCacheHit ? 'hit' : 'miss'}">
-                {result.cacheStats.queryCacheHit ? '✅ HIT' : '🔄 MISS'}
+              <span class="value {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats.queryCacheHit ? 'hit' : 'miss'}">
+                {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats.queryCacheHit ? '✅ HIT' : '🔄 MISS'}
               </span>
             </div>
             <div class="stat">
               <span class="label">Response Cache:</span>
-              <span class="value {result.cacheStats.responseCacheHit ? 'hit' : 'miss'}">
-                {result.cacheStats.responseCacheHit ? '✅ HIT' : '🔄 MISS'}
+              <span class="value {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats.responseCacheHit ? 'hit' : 'miss'}">
+                {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats.responseCacheHit ? '✅ HIT' : '🔄 MISS'}
               </span>
             </div>
             <div class="stat">
               <span class="label">GPU Time Saved:</span>
-              <span class="value">{result.cacheStats.gpuTimeSaved}ms</span>
+              <span class="value">{(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats.gpuTimeSaved}ms</span>
             </div>
             <div class="stat">
               <span class="label">Total Time:</span>
-              <span class="value">{result.cacheStats.totalProcessingTime}ms</span>
+              <span class="value">{(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).cacheStats.totalProcessingTime}ms</span>
             </div>
           </div>
         </div>
       {/if}
 
       <div class="query-results">
-        <h4>📄 Document Results ({result.totalFound})</h4>
-        {#if result.results && result.results.length > 0}
+        <h4>📄 Document Results ({(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).totalFound})</h4>
+        {#if (result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).results && (result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).results.length > 0}
           <div class="results-list">
-            {#each result.results.slice(0, 3) as docResult}
+            {#each (result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).results.slice(0, 3) as docResult}
               <div class="result-item">
                 <div class="result-header">
                   <h5>{docResult.title}</h5>
@@ -264,11 +264,11 @@
         {/if}
       </div>
 
-      {#if result.responseText}
+      {#if (result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).responseText}
         <div class="ai-response">
           <h4>🤖 AI Response (gemma3:legal-latest)</h4>
           <div class="response-text">
-            {result.responseText}
+            {(result as { cacheStats?: any; totalFound?: any; results?: any; responseText?: any }).responseText}
           </div>
         </div>
       {/if}

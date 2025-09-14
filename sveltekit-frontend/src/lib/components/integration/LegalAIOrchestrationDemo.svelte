@@ -190,11 +190,11 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Workflow Selection -->
     <div class="lg:col-span-1">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">Select Workflow</h3>
         </div>
-        <div class="yorha-panel-content" class="space-y-4">
+        <div class="yorha-panel-content space-y-4">
           <div class="space-y-2">
             <label class="flex items-center space-x-3">
               <input 
@@ -238,16 +238,16 @@
 
           <Button 
             variant="outline" 
-            onclick={loadDemoData}
+            on:click={loadDemoData}
             class="w-full bits-btn bits-btn"
           >
-            Load Demo Data
-          </button>
+Load Demo Data
+</Button>
         </div>
-      </NesCard>
+      </div>
 
       <!-- System Status -->
-      <NesCard class="mt-4">
+      <div class="mt-4 nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">System Status</h3>
         </div>
@@ -263,18 +263,18 @@
             {/each}
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
 
     <!-- Workflow Form -->
     <div class="lg:col-span-2">
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">
             {selectedWorkflow.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Workflow
           </h3>
         </div>
-        <div class="yorha-panel-content" class="space-y-4">
+        <div class="yorha-panel-content space-y-4">
           {#if selectedWorkflow === 'legal-research'}
             <div class="space-y-4">
               <div>
@@ -376,11 +376,11 @@
           <!-- Execute Button -->
           <div class="pt-4 border-t border-gray-200">
             <Button 
-              onclick={executeWorkflow}
+              on:click={executeWorkflow}
               disabled={isProcessing || !systemHealthy}
               class="w-full {isProcessing ? 'opacity-50 cursor-not-allowed' : ''} bits-btn bits-btn"
             >
-              {#if isProcessing}
+{#if isProcessing}
                 <div class="flex items-center justify-center space-x-2">
                   <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   <span>Processing...</span>
@@ -388,16 +388,16 @@
               {:else}
                 Execute {selectedWorkflow.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Workflow
               {/if}
-            </button>
+</Button>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 
   <!-- Workflow Status -->
   {#if activeWorkflowStatus}
-    <NesCard>
+    <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary">Workflow Status: {activeWorkflowStatus.type}</h3>
       </div>
@@ -428,25 +428,25 @@
           </div>
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   <!-- Results -->
   {#if errorMessage}
-    <NesCard class="border-red-200 bg-red-50">
+    <div class="border-red-200 bg-red-50 nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="text-red-800">Error</h3>
+        <h3 class="nes-text is-primary text-red-800">Error</h3>
       </div>
       <div class="yorha-panel-content">
         <p class="text-red-600">{errorMessage}</p>
       </div>
-    </NesCard>
+    </div>
   {/if}
 
   {#if workflowResult}
-    <NesCard class="border-green-200 bg-green-50">
+    <div class="border-green-200 bg-green-50 nes-container">
       <div class="yorha-panel-header">
-        <h3 class="nes-text is-primary" class="text-green-800">
+        <h3 class="nes-text is-primary text-green-800">
           Workflow Results - {formatTime(workflowResult.processingTime)}
         </h3>
       </div>
@@ -473,7 +473,6 @@
                 </ul>
               </div>
             {/if}
-          {/if}
 
           {#if selectedWorkflow === 'document-processing'}
             <div>
@@ -498,7 +497,6 @@
                 <div class="text-sm text-green-700">Found {workflowResult.entities.length} entities</div>
               </div>
             {/if}
-          {/if}
 
           {#if selectedWorkflow === 'case-creation'}
             <div>
@@ -523,10 +521,9 @@
                 <div class="text-sm text-green-700">{workflowResult.timeline.milestones.length} milestones planned</div>
               </div>
             {/if}
-          {/if}
         </div>
       </div>
-    </NesCard>
+    </div>
   {/if}
 </div>
 

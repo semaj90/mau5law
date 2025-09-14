@@ -3,10 +3,10 @@
  * Complete routing solution for SvelteKit with dynamic generation
  */
 
-import type { DynamicRouteConfig, GeneratedRoute } from './dynamic-route-generator.js';
+import type { DynamicRouteConfig, GeneratedRoute } from './dynamic-route-generator.js.js';
 import type { RouteDefinition } from '$lib/data/routes-config';
-import { getAllDynamicRoutes } from './dynamic-route-generator.js';
-import { registerDynamicRoute, getRoute } from './route-registry.js';
+import { getAllDynamicRoutes } from './dynamic-route-generator.js.js';
+import { registerDynamicRoute, getRoute } from './route-registry.js.js';
 import path from "path";
 
 // Core route generation
@@ -22,7 +22,7 @@ export {
   createDynamicRouteHandler,
   type DynamicRouteConfig,
   type GeneratedRoute
-} from './dynamic-route-generator';
+} from './dynamic-route-generator.js';
 
 // Route registry and management
 export {
@@ -45,7 +45,7 @@ export {
   isFavorite,
   type RouteRegistryState,
   type RouteRegistryOptions
-} from './route-registry';
+} from './route-registry.js';
 
 // Route guards and protection
 export {
@@ -62,7 +62,7 @@ export {
   type GuardResult,
   type RouteGuard,
   type RouteGuardConfig
-} from './route-guards';
+} from './route-guards.js';
 
 // Dynamic navigation
 export {
@@ -91,7 +91,7 @@ export {
   type BreadcrumbItem,
   type NavigationOptions,
   type NavigationGuard
-} from './dynamic-navigation';
+} from './dynamic-navigation.js';
 
 // Re-export route configuration types
 export type {
@@ -238,11 +238,7 @@ export function createRoute(id: string, path: string): RouteBuilder {
 /**
  * Batch route registration utility
  */
-export function registerRoutes(routes: Array<{
-  id: string;
-  path: string;
-  config?: Partial<DynamicRouteConfig>;
-}>): GeneratedRoute[] {
+export function registerRoutes(routes: Array<): GeneratedRoute[] {
   return routes.map(route => {
     const config = route.config || {};
     return registerDynamicRoute(route.id, route.path, config);
@@ -260,7 +256,7 @@ export function matchRoute(
   const pathParts = path.split('/').filter(Boolean);
   
   if (patternParts.length !== pathParts.length) {
-    return { match: false, params: {} };
+    return { match: false, params: Record<string, any> };
   }
   
   const params: Record<string, string> = {};
@@ -278,7 +274,7 @@ export function matchRoute(
       params[name] = pathPart;
     } else if (patternPart !== pathPart) {
       // Static segment mismatch
-      return { match: false, params: {} };
+      return { match: false, params: Record<string, any> };
     }
   }
   
@@ -363,14 +359,7 @@ export function debugRoutes(): {
   totalRoutes: number;
   staticRoutes: number;
   dynamicRoutes: number;
-  routeList: Array<{
-    id: string;
-    path: string;
-    type: 'static' | 'dynamic';
-    category?: string;
-    status?: string;
-  }>;
-} {
+  routeList: Array<any> {
   const dynamicRoutes = getAllDynamicRoutes();
   const staticRoutesFromRegistry: Array<[string, RouteDefinition]> = [];
   

@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Agent Orchestrator API Endpoint
@@ -7,9 +7,9 @@ import type { RequestHandler } from './$types';
  */
 
 
-// import { autoGenAgent } from '../../../../../agents/autogen-agent';
+// import { autoGenAgent } from '../../../../../agents/autogen-agent.js';
 
-// import { enhancedRAGService } from '../../../../../rag/enhanced-rag-service';
+// import { enhancedRAGService } from '../../../../../rag/enhanced-rag-service.js';
 
 export interface AgentOrchestrationRequest {
   prompt: string;
@@ -28,13 +28,7 @@ export interface AgentOrchestrationRequest {
 
 export interface AgentOrchestrationResponse {
   success: boolean;
-  results: Array<{
-    agent: string;
-    output: string;
-    score: number;
-    metadata: any;
-    error?: string;
-  }>;
+  results: Array<any>;
   synthesis: {
     bestResult: string;
     consensusScore: number;
@@ -125,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
         agent: 'claude',
         output: '',
         score: 0,
-        metadata: {},
+        metadata: Record<string, any>,
         error: error.message
       }));
       
@@ -151,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
         agent: 'autogen',
         output: '',
         score: 0,
-        metadata: {},
+        metadata: Record<string, any>,
         error: error.message
       }));
       
@@ -175,7 +169,7 @@ export const POST: RequestHandler = async ({ request }) => {
         agent: 'crewai',
         output: '',
         score: 0,
-        metadata: {},
+        metadata: Record<string, any>,
         error: error.message
       }));
       
@@ -202,7 +196,7 @@ export const POST: RequestHandler = async ({ request }) => {
         output: '',
         score: 0,
         sources: [],
-        metadata: {},
+        metadata: Record<string, any>,
         error: error.message
       }));
       
@@ -224,15 +218,15 @@ export const POST: RequestHandler = async ({ request }) => {
         ]) as PromiseSettledResult<any>[];
 
         agentResults.forEach((result, index) => {
-          if (result.status === 'fulfilled') {
-            results.push(result.value);
+          if ((result as { status?: any; value?: any; reason?: any; score?: any }).status === 'fulfilled') {
+            results.push((result as { status?: any; value?: any; reason?: any; score?: any }).value);
           } else {
             results.push({
               agent: agents[index] || 'unknown',
               output: '',
               score: 0,
-              metadata: {},
-              error: result.reason?.message || 'Agent execution failed'
+              metadata: Record<string, any>,
+              error: (result as { status?: any; value?: any; reason?: any; score?: any }).reason?.message || 'Agent execution failed'
             });
           }
         });
@@ -243,7 +237,7 @@ export const POST: RequestHandler = async ({ request }) => {
           agent: 'orchestrator',
           output: '',
           score: 0,
-          metadata: {},
+          metadata: Record<string, any>,
           error: 'Execution timeout - partial results may be available'
         });
       }
@@ -258,7 +252,7 @@ export const POST: RequestHandler = async ({ request }) => {
             agent: 'unknown',
             output: '',
             score: 0,
-            metadata: {},
+            metadata: Record<string, any>,
             error: error instanceof Error ? error.message : 'Unknown error'
           });
         }
@@ -327,7 +321,7 @@ function synthesizeResults(results: any[], originalPrompt: string) {
   );
 
   // Calculate consensus score
-  const avgScore = validResults.reduce((sum, result) => sum + result.score, 0) / validResults.length;
+  const avgScore = validResults.reduce((sum, result) => sum + (result as { status?: any; value?: any; reason?: any; score?: any }).score, 0) / validResults.length;
   
   // Generate recommendations based on results
   const recommendations = [

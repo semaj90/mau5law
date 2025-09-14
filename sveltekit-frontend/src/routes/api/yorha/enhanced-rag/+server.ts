@@ -4,7 +4,7 @@ import { enhancedSearchWithNeo4j } from "$lib/ai/custom-reranker";
 import { legalDocuments, cases, evidence } from "$lib/server/db/schema-postgres";
 import { db, sql } from '$lib/server/db';
 import { or, like } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 
 // YoRHa Enhanced RAG API
@@ -204,7 +204,7 @@ async function performYoRHaAnalysis(
       yorha_processed: true,
       yorha_timestamp: new Date(),
       yorha_analysis: {
-        relevanceScore: calculateRelevance(query, result.content || ''),
+        relevanceScore: calculateRelevance(query, (result as { content?: any; documentType?: any; evidenceType?: any; source?: any }).content || ''),
         legalWeight: calculateLegalWeight(result),
         riskFactor: calculateRiskFactor(result),
         actionRequired: determineActionRequired(result),
@@ -268,14 +268,14 @@ function calculateRelevance(query: string, content: string): number {
 
 function calculateLegalWeight(result: any): number {
   const legalTerms = ["contract", "liability", "breach", "damages", "jurisdiction", "statute", "precedent"];
-  const content = (result.content || "").toLowerCase();
+  const content = ((result as { content?: any; documentType?: any; evidenceType?: any; source?: any }).content || "").toLowerCase();
   const matches = legalTerms.filter(term => content.includes(term));
   return Math.min(matches.length / 3, 1); // Normalize to 0-1
 }
 
 function calculateRiskFactor(result: any): number {
   const riskTerms = ["litigation", "penalty", "violation", "breach", "liability", "damages"];
-  const content = (result.content || "").toLowerCase();
+  const content = ((result as { content?: any; documentType?: any; evidenceType?: any; source?: any }).content || "").toLowerCase();
   const matches = riskTerms.filter(term => content.includes(term));
   return Math.min(matches.length / 2, 1); // Normalize to 0-1
 }
@@ -288,9 +288,9 @@ function determineActionRequired(result: any): string {
 }
 
 function classifyResult(result: any): string {
-  if (result.documentType) return result.documentType.toUpperCase();
-  if (result.evidenceType) return result.evidenceType.toUpperCase();
-  if (result.source === "enhanced-rag") return "AI_ANALYSIS";
+  if ((result as { content?: any; documentType?: any; evidenceType?: any; source?: any }).documentType) return (result as { content?: any; documentType?: any; evidenceType?: any; source?: any }).documentType.toUpperCase();
+  if ((result as { content?: any; documentType?: any; evidenceType?: any; source?: any }).evidenceType) return (result as { content?: any; documentType?: any; evidenceType?: any; source?: any }).evidenceType.toUpperCase();
+  if ((result as { content?: any; documentType?: any; evidenceType?: any; source?: any }).source === "enhanced-rag") return "AI_ANALYSIS";
   return "GENERAL";
 }
 

@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
   let scene: THREE.Scene;
   let camera: THREE.PerspectiveCamera;
   let animationId: number;
-  let nodeMeshes = $state<Record<string, THREE.Mesh>>({});
+  let nodeMeshes = $state<Record<string, THREE.Mesh>('')>({});
   let linkLines = $state<THREE.Line[]>([]);
 
   const nodeGeometry = new THREE.SphereGeometry(0.25, 24, 24);

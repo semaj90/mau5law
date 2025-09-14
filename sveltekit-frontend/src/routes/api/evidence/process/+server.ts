@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 
 // Simplified and type-safe evidence processing endpoint with an in-memory processing service
 // POST: start processing -> returns sessionId and jobId
@@ -71,7 +71,7 @@ class EvidenceProcessingService {
     return EvidenceProcessingService.instance;
   }
 
-  async startProcessing(request: ProcessingRequest): Promise<{ sessionId: string; jobId: string }> {
+  async startProcessing(request: ProcessingRequest): Promise<any> {
     const sessionId = crypto.randomUUID();
     const jobId = crypto.randomUUID();
 
@@ -83,7 +83,7 @@ class EvidenceProcessingService {
       steps: request.steps,
       currentStep: request.steps.length > 0 ? request.steps[0] : null,
       stepProgress: 0,
-      results: {},
+      results: Record<string, any>,
       error: null,
       startTime: new Date(),
       processingTime: 0,
@@ -131,9 +131,9 @@ class EvidenceProcessingService {
       const results: Record<string, any> = {};
       for (let i = 0; i < request.steps.length; i++) {
         const step = request.steps[i];
-        result.currentStep = step;
-        result.stepProgress = 0;
-        result.progress = Math.floor((i / totalSteps) * 100);
+        (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).currentStep = step;
+        (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).stepProgress = 0;
+        (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).progress = Math.floor((i / totalSteps) * 100);
         this.processingJobs.set(jobId, result);
 
         // simple simulated work per step
@@ -165,15 +165,15 @@ class EvidenceProcessingService {
         }
 
         results[step] = stepResult;
-        result.stepProgress = 100;
-        result.progress = Math.floor(((i + 1) / totalSteps) * 100);
+        (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).stepProgress = 100;
+        (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).progress = Math.floor(((i + 1) / totalSteps) * 100);
         this.processingJobs.set(jobId, result);
       }
 
-      result.status = 'completed';
-      result.results = results;
-      result.endTime = new Date();
-      result.processingTime = result.startTime ? Date.now() - result.startTime.getTime() : 0;
+      (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).status = 'completed';
+      (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).results = results;
+      (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).endTime = new Date();
+      (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).processingTime = (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).startTime ? Date.now() - (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).startTime.getTime() : 0;
       this.processingJobs.set(jobId, result);
 
       // Best-effort persist results
@@ -181,10 +181,10 @@ class EvidenceProcessingService {
         console.warn('Failed to persist results:', e);
       });
     } catch (err: any) {
-      result.status = 'error';
-      result.error = err?.message ?? String(err);
-      result.endTime = new Date();
-      result.processingTime = result.startTime ? Date.now() - result.startTime.getTime() : 0;
+      (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).status = 'error';
+      (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).error = err?.message ?? String(err);
+      (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).endTime = new Date();
+      (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).processingTime = (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).startTime ? Date.now() - (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).startTime.getTime() : 0;
       this.processingJobs.set(jobId, result);
     }
   }

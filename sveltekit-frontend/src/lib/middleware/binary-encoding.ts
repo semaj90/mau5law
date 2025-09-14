@@ -131,12 +131,7 @@ export class AdvancedBinaryEncodingService {
   /**
    * Advanced encoding with caching and performance optimization
    */
-  async encode(data: unknown, format?: EncodingFormat, context?: LegalWorkflowContext): Promise<{
-    encoded: ArrayBuffer | string;
-    format: EncodingFormat;
-    metrics: EncodingMetrics;
-    cacheKey?: string;
-  }> {
+  async encode(data: unknown, format?: EncodingFormat, context?: LegalWorkflowContext): Promise<any> {
     const startTime = performance.now();
     const targetFormat = format || this.detectOptimalFormat(data, context);
     const originalSize = new TextEncoder().encode(JSON.stringify(data)).length;
@@ -150,8 +145,8 @@ export class AdvancedBinaryEncodingService {
       const metrics: EncodingMetrics = {
         format: targetFormat,
         originalSize,
-        encodedSize: cached.data instanceof ArrayBuffer ? cached.data.byteLength : new TextEncoder().encode(cached.data).length,
-        compressionRatio: originalSize / (cached.data instanceof ArrayBuffer ? cached.data.byteLength : new TextEncoder().encode(cached.data).length),
+        encodedSize: cached.data instanceof ArrayBuffer ? cached.(data as { byteLength?: any; length?: any; some?: any }).byteLength : new TextEncoder().encode(cached.data).length,
+        compressionRatio: originalSize / (cached.data instanceof ArrayBuffer ? cached.(data as { byteLength?: any; length?: any; some?: any }).byteLength : new TextEncoder().encode(cached.data).length),
         encodeTime: 0.1, // Cache hit time
         decodeTime: 0,
         bandwidth: 0,
@@ -238,10 +233,7 @@ export class AdvancedBinaryEncodingService {
   /**
    * Advanced decoding with validation and error recovery
    */
-  async decode(data: ArrayBuffer | string, format: EncodingFormat): Promise<{
-    decoded: unknown;
-    metrics: EncodingMetrics;
-  }> {
+  async decode(data: ArrayBuffer | string, format: EncodingFormat): Promise<any> {
     const startTime = performance.now();
     let decoded: unknown;
 
@@ -262,7 +254,7 @@ export class AdvancedBinaryEncodingService {
       }
 
       const decodeTime = performance.now() - startTime;
-      const dataSize = data instanceof ArrayBuffer ? data.byteLength : new TextEncoder().encode(data).length;
+      const dataSize = data instanceof ArrayBuffer ? (data as { byteLength?: any; length?: any; some?: any }).byteLength : new TextEncoder().encode(data).length;
       
       const metrics: EncodingMetrics = {
         format,
@@ -293,13 +285,7 @@ export class AdvancedBinaryEncodingService {
   /**
    * Streaming encoder for large datasets
    */
-  async *encodeStream(data: AsyncIterable<any>, config: BinaryStreamConfig): AsyncGenerator<{
-    chunk: ArrayBuffer | string;
-    format: EncodingFormat;
-    chunkIndex: number;
-    totalChunks?: number;
-    metrics: EncodingMetrics;
-  }> {
+  async *encodeStream(data: AsyncIterable<any>, config: BinaryStreamConfig): AsyncGenerator {
     let chunkIndex = 0;
     const format = this.detectOptimalFormat(data);
     
@@ -307,10 +293,10 @@ export class AdvancedBinaryEncodingService {
       const result = await this.encode(chunk, format);
       
       yield {
-        chunk: result.encoded,
-        format: result.format,
+        chunk: (result as { encoded?: any; format?: any; metrics?: any }).encoded,
+        format: (result as { encoded?: any; format?: any; metrics?: any }).format,
         chunkIndex: chunkIndex++,
-        metrics: result.metrics
+        metrics: (result as { encoded?: any; format?: any; metrics?: any }).metrics
       };
       
       // Respect chunk size and priority
@@ -455,8 +441,8 @@ export class AdvancedBinaryEncodingService {
       const response = await resolve(event);
 
       // Handle response encoding
-      if (response.headers.get('content-type')?.includes('application/json') && preferredFormat !== 'json') {
-        const text = await response.text();
+      if ((response as { headers?: any; text?: any; status?: any; statusText?: any }).headers.get('content-type')?.includes('application/json') && preferredFormat !== 'json') {
+        const text = await (response as { headers?: any; text?: any; status?: any; statusText?: any }).text();
         const data = JSON.parse(text);
         const { encoded, format, metrics } = await this.encode(data, preferredFormat, workflowContext);
 
@@ -465,10 +451,10 @@ export class AdvancedBinaryEncodingService {
                            'application/json';
 
         return new Response(encoded, {
-          status: response.status,
-          statusText: response.statusText,
+          status: (response as { headers?: any; text?: any; status?: any; statusText?: any }).status,
+          statusText: (response as { headers?: any; text?: any; status?: any; statusText?: any }).statusText,
           headers: {
-            ...Object.fromEntries(response.headers.entries()),
+            ...Object.fromEntries((response as { headers?: any; text?: any; status?: any; statusText?: any }).headers.entries()),
             'content-type': contentType,
             'x-encoding-format': format,
             'x-compression-ratio': metrics.compressionRatio.toFixed(2),
@@ -599,7 +585,7 @@ export class AdvancedBinaryEncodingService {
     if (typeof data !== 'object' || data === null) return false;
     
     if (Array.isArray(data)) {
-      return data.length > 5 && data.some(item => typeof item === 'object');
+      return (data as { byteLength?: any; length?: any; some?: any }).length > 5 && (data as { byteLength?: any; length?: any; some?: any }).some(item => typeof item === 'object');
     }
     
     const keys = Object.keys(data);
@@ -674,12 +660,7 @@ export async function decodeMessagePack(data: ArrayBuffer): Promise<any> {
 }
 
 // Legal workflow-specific encoding helpers
-export async function encodeLegalDocument(data: unknown, context: LegalWorkflowContext): Promise<{
-  encoded: ArrayBuffer | string;
-  format: EncodingFormat;
-  metrics: EncodingMetrics;
-  optimization: any;
-}> {
+export async function encodeLegalDocument(data: unknown, context: LegalWorkflowContext): Promise<any> {
   const optimization = binaryEncoder.analyzeWorkflowOptimization(context);
   const result = await binaryEncoder.encode(data, optimization.recommendedFormat, context);
   

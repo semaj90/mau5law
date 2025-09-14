@@ -57,15 +57,15 @@
     
     try {
       const response = await fetch(`/api/instant-search-test?test=${testType}`);
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
       testResults = data;
       
-      if (data.status === 'success') {
+      if ((data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).status === 'success') {
         performanceMetrics = {
-          searchTime: data.performance.instantSearch || 0,
-          cacheHitRate: data.results.health?.components?.instantSearch?.stats?.cacheHitRate || 0,
-          totalSearches: data.results.health?.components?.instantSearch?.stats?.totalSearches || 0,
-          averageResponseTime: data.results.health?.components?.instantSearch?.stats?.averageResponseTime || 0
+          searchTime: (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).performance.instantSearch || 0,
+          cacheHitRate: (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).results.health?.components?.instantSearch?.stats?.cacheHitRate || 0,
+          totalSearches: (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).results.health?.components?.instantSearch?.stats?.totalSearches || 0,
+          averageResponseTime: (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).results.health?.components?.instantSearch?.stats?.averageResponseTime || 0
         };
       }
     } catch (error) {
@@ -92,8 +92,8 @@
         })
       });
       
-      const data = await response.json();
-      benchmarkResults = data.benchmarks;
+      const data = await (response as { json?: any }).json();
+      benchmarkResults = (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).benchmarks;
     } catch (error) {
       console.error('Benchmark failed:', error);
     } finally {
@@ -114,8 +114,8 @@
         })
       });
       
-      const data = await response.json();
-      if (data.success) {
+      const data = await (response as { json?: any }).json();
+      if ((data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).success) {
         await checkSystemHealth();
       }
     } catch (error) {
@@ -135,8 +135,8 @@
         body: JSON.stringify({ action: 'clear-cache' })
       });
       
-      const data = await response.json();
-      if (data.success) {
+      const data = await (response as { json?: any }).json();
+      if ((data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).success) {
         testResults = null;
         benchmarkResults = null;
         await checkSystemHealth();
@@ -151,8 +151,8 @@
   async function checkSystemHealth() {
     try {
       const response = await fetch('/api/instant-search-test?test=health');
-      const data = await response.json();
-      systemHealth = data.results.health;
+      const data = await (response as { json?: any }).json();
+      systemHealth = (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).results.health;
     } catch (error) {
       console.error('Health check failed:', error);
     }
@@ -225,13 +225,13 @@
         <div.Title class="flex items-center gap-2">
           <Activity class="h-5 w-5" />
           System Health
-        </Card.Title>
-        <button class="nes-btn" size="sm" onclick={checkSystemHealth} disabled={isTestRunning}>
+        </div.Title>
+        <button class="nes-btn" size="sm" on:click={checkSystemHealth} disabled={isTestRunning}>
           <RefreshCw class="h-4 w-4 mr-2" />
           Refresh
         </button>
       </div>
-    </Card.Header>
+    </div.Header>
     <div.Content>
       {#if systemHealth}
         {@const SvelteComponent = getStatusIcon(systemHealth.components?.redis?.connected ? 'connected' : 'error')}
@@ -298,8 +298,8 @@
           <p class="nes-text is-disabled">Loading system health...</p>
         </div>
       {/if}
-    </Card.Content>
-  </Card.Root>
+    </div.Content>
+  </div.Root>
 
   <!-- Main Content Tabs -->
   <Tabs.Root value="search" class="w-full">
@@ -314,11 +314,11 @@
     <Tabs.Content value="search" class="space-y-6">
       <div.Root>
         <div.Header>
-          <div.Title>Live Instant Search</Card.Title>
+          <div.Title>Live Instant Search</div.Title>
           <div.Description>
             Test real-time search with legal pattern recognition and smart filtering.
-          </Card.Description>
-        </Card.Header>
+          </div.Description>
+        </div.Header>
         <div.Content>
           <InstantLegalSearch
             placeholder="Search contracts, evidence, legal briefs, case law..."
@@ -330,8 +330,8 @@
             onResultAction={handleResultAction}
             class="w-full"
           />
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
 
       <!-- Performance Metrics -->
       {#if performanceMetrics.totalSearches > 0}
@@ -340,8 +340,8 @@
             <div.Title class="flex items-center gap-2">
               <BarChart3 class="h-5 w-5" />
               Live Performance Metrics
-            </Card.Title>
-          </Card.Header>
+            </div.Title>
+          </div.Header>
           <div.Content>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div class="text-center">
@@ -361,8 +361,8 @@
                 <div class="text-sm nes-text is-disabled">Avg Response Time</div>
               </div>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </div.Content>
+        </div.Root>
       {/if}
     </Tabs.Content>
 
@@ -371,32 +371,32 @@
       <!-- Test Controls -->
       <div.Root>
         <div.Header>
-          <div.Title>Integration Testing</Card.Title>
+          <div.Title>Integration Testing</div.Title>
           <div.Description>
             Test individual components and full pipeline integration.
-          </Card.Description>
-        </Card.Header>
+          </div.Description>
+        </div.Header>
         <div.Content>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <button class="nes-btn" onclick={() => runIntegrationTest('redis')} disabled={isTestRunning}>
+            <button class="nes-btn" on:click={() => runIntegrationTest('redis')} disabled={isTestRunning}>
               <Database class="h-4 w-4 mr-2" />
               Test Redis
             </button>
-            <button class="nes-btn" onclick={() => runIntegrationTest('loki')} disabled={isTestRunning}>
+            <button class="nes-btn" on:click={() => runIntegrationTest('loki')} disabled={isTestRunning}>
               <Activity class="h-4 w-4 mr-2" />
               Test Loki.js
             </button>
-            <button class="nes-btn" onclick={() => runIntegrationTest('search')} disabled={isTestRunning}>
+            <button class="nes-btn" on:click={() => runIntegrationTest('search')} disabled={isTestRunning}>
               <Zap class="h-4 w-4 mr-2" />
               Test Search
             </button>
-            <button class="nes-btn" onclick={() => runIntegrationTest('all')} disabled={isTestRunning}>
+            <button class="nes-btn" on:click={() => runIntegrationTest('all')} disabled={isTestRunning}>
               <Play class="h-4 w-4 mr-2" />
               Test All
             </button>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
 
       <!-- Test Results -->
       {#if testResults}
@@ -409,8 +409,8 @@
               <Badge class="{testResults.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                 {testResults.status}
               </Badge>
-            </Card.Title>
-          </Card.Header>
+            </div.Title>
+          </div.Header>
           <div.Content>
             <!-- Summary -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -436,26 +436,26 @@
             {#if testResults.results}
               <div class="space-y-4">
                 {#each Object.entries(testResults.results) as [component, result]}
-                  {@const SvelteComponent_5 = getStatusIcon(result.status)}
+                  {@const SvelteComponent_5 = getStatusIcon((result as { status?: any; operations?: any; message?: any }).status)}
                   <div class="border rounded-lg p-4">
                     <div class="flex items-center gap-2 mb-2">
-                      <SvelteComponent_5 class="h-4 w-4 {getStatusColor(result.status)}" 
+                      <SvelteComponent_5 class="h-4 w-4 {getStatusColor((result as { status?: any; operations?: any; message?: any }).status)}" 
                       />
                       <span class="font-medium capitalize">{component}</span>
-                      <Badge class="{result.status === 'working' || result.status === 'connected' || result.status === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                        {result.status}
+                      <Badge class="{(result as { status?: any; operations?: any; message?: any }).status === 'working' || (result as { status?: any; operations?: any; message?: any }).status === 'connected' || (result as { status?: any; operations?: any; message?: any }).status === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                        {(result as { status?: any; operations?: any; message?: any }).status}
                       </Badge>
                     </div>
                     
-                    {#if result.operations}
+                    {#if (result as { status?: any; operations?: any; message?: any }).operations}
                       <div class="text-sm nes-text is-disabled mb-2">
-                        Operations: {result.operations.join(', ')}
+                        Operations: {(result as { status?: any; operations?: any; message?: any }).operations.join(', ')}
                       </div>
                     {/if}
                     
-                    {#if result.message}
+                    {#if (result as { status?: any; operations?: any; message?: any }).message}
                       <div class="text-sm text-red-600">
-                        Error: {result.message}
+                        Error: {(result as { status?: any; operations?: any; message?: any }).message}
                       </div>
                     {/if}
                   </div>
@@ -474,8 +474,8 @@
                 </ul>
               </div>
             {/if}
-          </Card.Content>
-        </Card.Root>
+          </div.Content>
+        </div.Root>
       {/if}
     </Tabs.Content>
 
@@ -484,11 +484,11 @@
       <!-- Benchmark Controls -->
       <div.Root>
         <div.Header>
-          <div.Title>Performance Benchmarking</Card.Title>
+          <div.Title>Performance Benchmarking</div.Title>
           <div.Description>
             Run performance tests to measure search speed and cache efficiency.
-          </Card.Description>
-        </Card.Header>
+          </div.Description>
+        </div.Header>
         <div.Content>
           <div class="flex items-center gap-4 mb-4">
             <div class="flex items-center gap-2">
@@ -502,7 +502,7 @@
                 disabled={isTestRunning}
               />
             </div>
-            <button class="nes-btn" onclick={runBenchmark} disabled={isTestRunning}>
+            <button class="nes-btn" on:click={runBenchmark} disabled={isTestRunning}>
               {#if isTestRunning}
                 <RefreshCw class="h-4 w-4 mr-2 animate-spin" />
                 Running...
@@ -512,15 +512,15 @@
               {/if}
             </button>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
 
       <!-- Benchmark Results -->
       {#if benchmarkResults}
         <div.Root>
           <div.Header>
-            <div.Title>Benchmark Results</Card.Title>
-          </Card.Header>
+            <div.Title>Benchmark Results</div.Title>
+          </div.Header>
           <div.Content>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div class="text-center">
@@ -544,8 +544,8 @@
             <div class="mt-4 text-sm nes-text is-disabled">
               Ran {benchmarkResults.iterations} searches across {benchmarkResults.queries} different queries
             </div>
-          </Card.Content>
-        </Card.Root>
+          </div.Content>
+        </div.Root>
       {/if}
     </Tabs.Content>
 
@@ -553,22 +553,22 @@
     <Tabs.Content value="config" class="space-y-6">
       <div.Root>
         <div.Header>
-          <div.Title>System Configuration</Card.Title>
+          <div.Title>System Configuration</div.Title>
           <div.Description>
             Manage test data and system configuration.
-          </Card.Description>
-        </Card.Header>
+          </div.Description>
+        </div.Header>
         <div.Content>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button class="nes-btn" onclick={populateTestData} disabled={isTestRunning}>
+            <button class="nes-btn" on:click={populateTestData} disabled={isTestRunning}>
               <Database class="h-4 w-4 mr-2" />
               Populate Test Data
             </button>
-            <button class="nes-btn" variant="outline" onclick={clearCache} disabled={isTestRunning}>
+            <button class="nes-btn" variant="outline" on:click={clearCache} disabled={isTestRunning}>
               <RefreshCw class="h-4 w-4 mr-2" />
               Clear All Caches
             </button>
-            <button class="nes-btn" variant="outline" onclick={checkSystemHealth} disabled={isTestRunning}>
+            <button class="nes-btn" variant="outline" on:click={checkSystemHealth} disabled={isTestRunning}>
               <Activity class="h-4 w-4 mr-2" />
               Check System Health
             </button>
@@ -603,8 +603,8 @@
               </div>
             </div>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div.Content>
+      </div.Root>
     </Tabs.Content>
   </Tabs.Root>
 </div>

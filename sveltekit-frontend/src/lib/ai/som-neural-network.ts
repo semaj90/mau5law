@@ -6,7 +6,7 @@
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-webgpu';
-import { MultiLayerCache } from '../services/multiLayerCache';
+import { MultiLayerCache } from '../services/multiLayerCache.js';
 
 export interface SOMConfig {
   gridSize: { width: number; height: number };
@@ -273,7 +273,7 @@ export class SOMNeuralNetwork {
     return result;
   }
 
-  private async findBestMatchingUnit(inputSample: number[]): Promise<{ x: number; y: number }> {
+  private async findBestMatchingUnit(inputSample: number[]): Promise<any> {
     if (this.gpuBackend !== 'cpu' && this.weightTensor) {
       // GPU-accelerated BMU finding
       return this.findBMUGPU(inputSample);
@@ -283,7 +283,7 @@ export class SOMNeuralNetwork {
     }
   }
 
-  private async findBMUGPU(inputSample: number[]): Promise<{ x: number; y: number }> {
+  private async findBMUGPU(inputSample: number[]): Promise<any> {
     const inputTensor = tf.tensor1d(inputSample);
     
     // Calculate distances using GPU

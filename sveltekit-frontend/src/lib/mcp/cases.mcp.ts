@@ -6,13 +6,13 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { sql, eq, and, like, desc } from 'drizzle-orm';
-import * as schema from '../db/schema.js';
-import { cache } from '../server/cache/redis.js';
-import { minioService } from '../server/storage/minio-service.js';
+import * as schema from '../db/schema.js.js';
+import { cache } from '../server/cache/redis.js.js';
+import { minioService } from '../server/storage/minio-service.js.js';
 
 // Database connection
 const pool = new Pool({
-  connectionString: import.meta.env.DATABASE_URL || 'postgresql://postgres:123456@localhost:5432/legal_ai_db'
+  connectionString: import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db'
 });
 
 const db = drizzle(pool, { schema });
@@ -91,7 +91,7 @@ export async function loadCase(caseId: string): Promise<CaseData | null> {
  * MCP Tool: Create Case
  * Creates new case with auto-generated case number
  */
-export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | 'updatedAt'>): Promise<{ success: boolean; caseId?: string; error?: string }> {
+export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | 'updatedAt'>): Promise<any> {
   try {
     console.log('🆕 MCP Tool: createCase', caseData.title);
 
@@ -131,7 +131,7 @@ export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | '
  * MCP Tool: Update Case
  * Updates case with optimistic locking
  */
-export async function updateCase(caseId: string, updates: Partial<CaseData>): Promise<{ success: boolean; error?: string }> {
+export async function updateCase(caseId: string, updates: Partial<CaseData>): Promise<any> {
   try {
     console.log(`📝 MCP Tool: updateCase(${caseId})`);
 
@@ -172,7 +172,7 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
  * MCP Tool: Add Evidence
  * Adds evidence to case with file upload support
  */
-export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, 'id' | 'createdAt'>): Promise<{ success: boolean; evidenceId?: string; error?: string }> {
+export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, 'id' | 'createdAt'>): Promise<any> {
   try {
     console.log(`📋 MCP Tool: addEvidence to case ${caseId}`);
 
@@ -226,7 +226,7 @@ export async function searchCases(query: string, userId: string, filters?: {
   status?: string;
   priority?: string;
   dateRange?: { from: Date; to: Date };
-}): Promise<{ cases: CaseData[]; totalCount: number }> {
+}): Promise<any> {
   try {
     console.log(`🔍 MCP Tool: searchCases("${query}")`);
 
@@ -292,7 +292,7 @@ export async function getUserCases(userId: string, options: {
   limit?: number;
   offset?: number;
   status?: string;
-} = {}): Promise<{ cases: CaseData[]; totalCount: number }> {
+} = {}): Promise<any> {
   try {
     console.log(`👤 MCP Tool: getUserCases(${userId})`);
 
@@ -353,7 +353,7 @@ async function generateCaseNumber(): Promise<string> {
     .limit(1);
 
   let nextNumber = 1;
-  if (result.length > 0 && result[0].caseNumber) {
+  if ((result as { length?: any; rows?: any }).length > 0 && result[0].caseNumber) {
     const lastNumber = parseInt(result[0].caseNumber.replace(prefix, ''));
     if (!isNaN(lastNumber)) {
       nextNumber = lastNumber + 1;
@@ -367,13 +367,13 @@ async function generateCaseNumber(): Promise<string> {
  * MCP Tool: Health Check
  * Verifies database connectivity and performance
  */
-export async function healthCheck(): Promise<{ status: 'healthy' | 'unhealthy'; details: any }> {
+export async function healthCheck(): Promise<any> {
   try {
     const start = Date.now();
 
     // Test query
     const result = await db.execute(sql`SELECT 1 as test, NOW() as timestamp`);
-    const firstRow = Array.isArray(result) ? result[0] : result.rows?.[0];
+    const firstRow = Array.isArray(result) ? result[0] : (result as { length?: any; rows?: any }).rows?.[0];
 
     const responseTime = Date.now() - start;
 

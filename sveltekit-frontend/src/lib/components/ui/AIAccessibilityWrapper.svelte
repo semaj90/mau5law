@@ -120,7 +120,7 @@
     <div class="voice-commands-control">
       <button
         class="voice-toggle nes-btn {voiceCommandsActive ? 'is-success' : 'is-primary'}"
-        onclick={handleVoiceCommand}
+        on:click={handleVoiceCommand}
         aria-pressed={voiceCommandsActive}
         aria-label="Toggle voice commands (Ctrl+Shift+V)"
         title="Voice Commands (Ctrl+Shift+V)"

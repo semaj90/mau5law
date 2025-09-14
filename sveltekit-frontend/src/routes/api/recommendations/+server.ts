@@ -3,7 +3,7 @@ import { json } from "@sveltejs/kit";
 import { enhancedSearchWithNeo4j } from "$lib/ai/custom-reranker";
 import { mcpContext72GetLibraryDocs } from "$lib/mcp-context72-get-library-docs";
 import { userRecommendationService } from '$lib/server/services/user-recommendation-service';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js.js';
 import { URL } from "url";
 
 
@@ -46,9 +46,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Final scoring pass
         const recommendations = reranked
           .map((result) => {
-            let score = result.rerankScore;
-            if (memory.some((m) => m.relatedId === result.id)) score += 1;
-            if (docs && docs.includes(result.intent)) score += 1;
+            let score = (result as { rerankScore?: any; id?: any; intent?: any }).rerankScore;
+            if (memory.some((m) => m.relatedId === (result as { rerankScore?: any; id?: any; intent?: any }).id)) score += 1;
+            if (docs && docs.includes((result as { rerankScore?: any; id?: any; intent?: any }).intent)) score += 1;
             return { ...result, finalScore: score };
           })
           .sort((a, b) => b.finalScore - a.finalScore)

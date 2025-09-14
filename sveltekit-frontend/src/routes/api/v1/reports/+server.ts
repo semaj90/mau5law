@@ -66,13 +66,13 @@ class ReportsCRUDService {
     const [row] = await db
       .insert(reports)
       .values({
-        caseId: data.caseId as any,
-        title: data.title,
-        content: data.content ?? null,
-        reportType: data.reportType ?? 'case_summary',
-        status: data.status ?? 'draft',
-        tags: data.tags ?? [],
-        metadata: data.metadata ?? {},
+        caseId: (data as { caseId?: any; title?: any; content?: any; reportType?: any; status?: any; tags?: any; metadata?: any }).caseId as any,
+        title: (data as { caseId?: any; title?: any; content?: any; reportType?: any; status?: any; tags?: any; metadata?: any }).title,
+        content: (data as { caseId?: any; title?: any; content?: any; reportType?: any; status?: any; tags?: any; metadata?: any }).content ?? null,
+        reportType: (data as { caseId?: any; title?: any; content?: any; reportType?: any; status?: any; tags?: any; metadata?: any }).reportType ?? 'case_summary',
+        status: (data as { caseId?: any; title?: any; content?: any; reportType?: any; status?: any; tags?: any; metadata?: any }).status ?? 'draft',
+        tags: (data as { caseId?: any; title?: any; content?: any; reportType?: any; status?: any; tags?: any; metadata?: any }).tags ?? [],
+        metadata: (data as { caseId?: any; title?: any; content?: any; reportType?: any; status?: any; tags?: any; metadata?: any }).metadata ?? {},
         createdAt: now,
         updatedAt: now,
       })
@@ -128,14 +128,14 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 
     return json({
       success: true,
-      data: result.data,
+      data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data,
       pagination: {
-        page: result.page,
-        limit: result.limit,
-        total: result.total,
-        totalPages: result.totalPages,
-        hasNext: result.page < result.totalPages,
-        hasPrev: result.page > 1,
+        page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page,
+        limit: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).limit,
+        total: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).total,
+        totalPages: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
+        hasNext: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page < (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
+        hasPrev: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page > 1,
       },
       meta: {
         userId: locals.user.id,

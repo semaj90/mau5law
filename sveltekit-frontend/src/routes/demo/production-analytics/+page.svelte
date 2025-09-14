@@ -23,12 +23,7 @@
   let singleVector = $state<Float32Array | null>(null);
   let encodedMetadata = $state<VectorMetadata | null>(null);
   let batchResults = $state<AdaptiveEncodingResult | null>(null);
-  let adaptiveDemo = $state<{
-    iterations: number;
-    scalings: number;
-    avgTime: number;
-    compressionHistory: number[];
-  }>({
+  let adaptiveDemo = $state({
     iterations: 0,
     scalings: 0,
     avgTime: 0,
@@ -205,9 +200,9 @@
 
         adaptiveDemo = {
           iterations: i + 1,
-          scalings: adaptiveDemo.scalings + (result.encodedDimensions !== 768 ? 1 : 0),
-          avgTime: (adaptiveDemo.avgTime * i + result.processingTime) / (i + 1),
-          compressionHistory: [...adaptiveDemo.compressionHistory, result.compressionRatio]
+          scalings: adaptiveDemo.scalings + ((result as { encodedDimensions?: any; processingTime?: any; compressionRatio?: any }).encodedDimensions !== 768 ? 1 : 0),
+          avgTime: (adaptiveDemo.avgTime * i + (result as { encodedDimensions?: any; processingTime?: any; compressionRatio?: any }).processingTime) / (i + 1),
+          compressionHistory: [...adaptiveDemo.compressionHistory, (result as { encodedDimensions?: any; processingTime?: any; compressionRatio?: any }).compressionRatio]
         };
 
         // Update status
@@ -281,8 +276,7 @@
         </p>
         
         <button
-          on:click={demonstrateSingleVector}
-          disabled={!isInitialized || isProcessing}
+          on:click={disabled}
           class="w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded"
         >
@@ -310,8 +304,7 @@
         </p>
         
         <button
-          on:click={demonstrateBatchProcessing}
-          disabled={!isInitialized || isProcessing}
+          on:click={disabled}
           class="w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded"
         >
@@ -338,8 +331,7 @@
         </p>
         
         <button
-          on:click={demonstrateAdaptiveScaling}
-          disabled={!isInitialized || isProcessing}
+          on:click={disabled}
           class="w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded"
         >

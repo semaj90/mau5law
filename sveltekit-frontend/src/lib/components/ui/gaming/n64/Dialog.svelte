@@ -112,7 +112,8 @@ https://svelte.dev/e/attribute_duplicate -->
     class: className = ''
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  // Events now handled via props in Svelte 5
+  // const dispatch = createEventDispatcher();
 
   let isVisible = $state(false);
   let isAnimating = $state(false);
@@ -400,7 +401,7 @@ https://svelte.dev/e/attribute_duplicate -->
     class:backdrop-blur={enableBackdropBlur}
     role="button" 
     tabindex="0"
-    onclick={handleBackdropClick}
+    on:click={handleBackdropClick}
     style="
       --atmosphere-intensity: {atmosphereIntensity};
       --fog-color: {effectiveRenderOptions.fogColor};
@@ -445,7 +446,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {#if !preventClose}
             <button
               class="dialog-close-button"
-              onclick={closeDialog}
+              on:click={closeDialog}
               aria-label="Close dialog"
               type="button"
             >

@@ -9,11 +9,13 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     stage: string
     stageName: string
   }
-  let {
-    progress,
+  let { progress,
     stage,
     stageName
-  } = $props();
+   }: { progress,
+    stage,
+    stageName
+  : any } = $props();
 
 
 

@@ -12,7 +12,7 @@
     enableAISearch?: boolean;
     maxSuggestions?: number;
     searchHistory?: string[];
-    filters?: Array<{label: string, value: string, active: boolean}>;
+    filters?: Array;
     size?: 'sm' | 'md' | 'lg';
     variant?: 'default' | 'legal' | 'evidence';
     class?: string;
@@ -40,12 +40,7 @@
   let inputElement: HTMLInputElement;
   let debounceTimer: number;
 
-  const dispatch = createEventDispatcher<{
-    search: { query: string; results: VectorSearchResult[] };
-    select: VectorSearchResult;
-    clear: void;
-    filter: { filters: typeof filters };
-  }>();
+  const dispatch = createEventDispatcher();
 
   // Size configurations
   let sizeClasses = $derived({
@@ -171,7 +166,7 @@
   }
 </script>
 
-<svelte:window onclick={handleClickOutside} onkeydown={handleKeydown} />
+<svelte:window on:click={handleClickOutside} on:keydown={handleKeydown} />
 
 <div class="{containerClasses} search-container">
   <!-- Main Search Input -->
@@ -181,8 +176,8 @@
       bind:value={value}
       class={inputClasses}
       {placeholder}
-      oninput={handleInput}
-      onfocus={() => value && (showSuggestions = true)}
+      on:input={handleInput}
+      on:focus={() => value && (showSuggestions = true)}
       {...restProps}
     />
 
@@ -201,7 +196,7 @@
     {#if value}
       <button
         class="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        onclick={clearSearch}
+        on:click={clearSearch}
       >
         <X class={iconSizes[size]} />
       </button>
@@ -211,7 +206,7 @@
     {#if filters.length > 0}
       <button
         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        onclick={() => showFilters = !showFilters}
+        on:click={() => showFilters = !showFilters}
         class:text-blue-600={filters.some(f => f.active)}
       >
         <Filter class={iconSizes[size]} />
@@ -249,7 +244,7 @@
           <button
             class="nes-btn is-small"
             class:is-primary={filter.active}
-            onclick={() => toggleFilter(index)}
+            on:click={() => toggleFilter(index)}
           >
             {filter.label}
           </button>
@@ -275,7 +270,7 @@
           {#each suggestions as suggestion}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
-              onclick={() => selectSuggestion(suggestion)}
+              on:click={() => selectSuggestion(suggestion)}
             >
               <div class="font-medium text-sm truncate">{suggestion.content}</div>
               {#if suggestion.score}
@@ -308,7 +303,7 @@
           {#each searchHistory.slice(0, 3) as historyItem}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
-              onclick={() => { value = historyItem; performSearch(historyItem); }}
+              on:click={() => { value = historyItem; performSearch(historyItem); }}
             >
               <div class="text-sm text-gray-700">{historyItem}</div>
             </button>

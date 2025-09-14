@@ -24,7 +24,7 @@
  * by intelligently coordinating all systems based on user context and performance metrics.
  */
 
-import { BitmapHMMSOMPredictor } from './bitmap-hmm-som-predictor.js';
+import { BitmapHMMSOMPredictor } from './bitmap-hmm-som-predictor.js.js';
 import { QLoRAReinforcementLearningService } from '$lib/services/qlora-rl-training-service.js';
 import { GenerativeUICacheIndex } from '$lib/services/generative-ui-cache-index.js';
 import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
@@ -98,16 +98,8 @@ export interface UnifiedProcessingResult {
   
   // Predictions
   predictions: {
-    nextUserActions: Array<{
-      action: string;
-      probability: number;
-      timeEstimate: number;
-    }>;
-    recommendedAssets: Array<{
-      type: string;
-      priority: number;
-      cacheKey: string;
-    }>;
+    nextUserActions: Array<any>;
+    recommendedAssets: Array<any>;
     qualityRecommendation: '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64';
   };
   
@@ -127,12 +119,7 @@ export interface UnifiedProcessingResult {
   embeddings?: Float32Array;
   tiledData?: any[];
   visualizations?: string[];
-  generatedAssets?: Array<{
-    type: string;
-    data: string;
-    compressionRatio: number;
-  }>;
-}
+  generatedAssets?: Array<any>
 
 export class UltimateNeuralTopologyOrchestrator {
   // Core AI systems
@@ -283,7 +270,7 @@ export class UltimateNeuralTopologyOrchestrator {
 
       this.processingQueue.delete(requestId);
       
-      console.log(`✅ Unified processing complete: ${totalTime}ms, ${result.performance.accuracy}% accuracy`);
+      console.log(`✅ Unified processing complete: ${totalTime}ms, ${(result as { performance?: any; qualityTier?: any; targetResolution?: any }).performance.accuracy}% accuracy`);
       
       return result;
 
@@ -297,22 +284,8 @@ export class UltimateNeuralTopologyOrchestrator {
   /**
    * Real-time neural topology visualization data
    */
-  async getNeuralTopologyVisualization(): Promise<{
-    nodes: Array<{
-      id: string;
-      type: 'predictor' | 'processor' | 'cache' | 'optimizer';
-      x: number;
-      y: number;
-      z: number;
-      activation: number;
-      connections: string[];
-    }>;
-    edges: Array<{
-      from: string;
-      to: string;
-      weight: number;
-      dataFlow: number;
-    }>;
+  async getNeuralTopologyVisualization(): Promise<;
+    edges: Array<any>;
     metrics: {
       totalNodes: number;
       activeConnections: number;
@@ -386,12 +359,7 @@ export class UltimateNeuralTopologyOrchestrator {
   /**
    * Advanced system diagnostics
    */
-  async getComprehensiveSystemDiagnostics(): Promise<{
-    neuralTopology: any;
-    cognitivePerformance: any;
-    systemHealth: any;
-    optimizationRecommendations: string[];
-  }> {
+  async getComprehensiveSystemDiagnostics(): Promise<any> {
     const [
       hmmMetrics,
       qloraMetrics,
@@ -506,11 +474,7 @@ export class UltimateNeuralTopologyOrchestrator {
     }
   }
 
-  private async determineOptimalQuality(request: UnifiedProcessingRequest): Promise<{
-    tier: '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64';
-    targetResolution: number;
-    enableWebGPU: boolean;
-  }> {
+  private async determineOptimalQuality(request: UnifiedProcessingRequest): Promise<any> {
     const systemMetrics = {
       fps: request.userContext.performanceProfile.averageFPS,
       memoryUsage: this.currentState.systemLoad,
@@ -519,8 +483,8 @@ export class UltimateNeuralTopologyOrchestrator {
 
     const result = this.hmmSomPredictor.calculateOptimalQuality(systemMetrics);
     return {
-      tier: result.qualityTier || '16-BIT_SNES' as const,
-      targetResolution: result.targetResolution || 256,
+      tier: (result as { performance?: any; qualityTier?: any; targetResolution?: any }).qualityTier || '16-BIT_SNES' as const,
+      targetResolution: (result as { performance?: any; qualityTier?: any; targetResolution?: any }).targetResolution || 256,
       enableWebGPU: !!this.webgpuDevice
     };
   }
@@ -597,11 +561,7 @@ export class UltimateNeuralTopologyOrchestrator {
     };
   }
 
-  private async generatePredictiveAssets(predictions: any): Promise<Array<{
-    type: string;
-    data: string;
-    compressionRatio: number;
-  }>> {
+  private async generatePredictiveAssets(predictions: any): Promise<Array<any> {
     const assets = [];
     const chrPatterns = this.hmmSomPredictor.generateCHRROMPredictions(predictions);
 
@@ -792,11 +752,7 @@ export class UltimateNeuralTopologyOrchestrator {
     return recommendations;
   }
 
-  private async getWebGPUDiagnostics(): Promise<{
-    available: boolean;
-    memoryUsage: number;
-    utilization: number;
-  }> {
+  private async getWebGPUDiagnostics(): Promise<any> {
     return {
       available: !!this.webgpuDevice,
       memoryUsage: Math.random() * 0.6 + 0.2, // 20-80% simulated

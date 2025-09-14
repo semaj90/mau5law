@@ -29,11 +29,11 @@
           const start = Date.now();
           const response = await fetch(test.endpoint);
           const time = Date.now() - start;
-          const data = await response.json();
+          const data = await (response as { json?: any; ok?: any }).json();
 
           return {
             ...test,
-            status: response.ok ? 'online' : 'error',
+            status: (response as { json?: any; ok?: any }).ok ? 'online' : 'error',
             responseTime: time,
             data: data
           };
@@ -42,7 +42,7 @@
 
       systemStatus = results.map((result, index) => ({
         ...tests[index],
-        ...(result.status === 'fulfilled' ? result.value : { status: 'error', error: result.reason })
+        ...((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value : { status: 'error', error: (result as { status?: any; value?: any; reason?: any }).reason })
       }));
 
     } catch (error) {
@@ -68,8 +68,8 @@
               maxResults: 5
             })
           });
-          const data = await response.json();
-          return { success: response.ok, data };
+          const data = await (response as { json?: any; ok?: any }).json();
+          return { success: (response as { json?: any; ok?: any }).ok, data };
         }
       },
       {
@@ -84,8 +84,8 @@
               useEnhancedFeatures: true
             })
           });
-          const data = await response.json();
-          return { success: response.ok, data };
+          const data = await (response as { json?: any; ok?: any }).json();
+          return { success: (response as { json?: any; ok?: any }).ok, data };
         }
       },
       {
@@ -100,8 +100,8 @@
               includeEnhancedSearch: true
             })
           });
-          const data = await response.json();
-          return { success: response.ok, data };
+          const data = await (response as { json?: any; ok?: any }).json();
+          return { success: (response as { json?: any; ok?: any }).ok, data };
         }
       },
       {
@@ -109,9 +109,9 @@
         description: 'Verify enhanced upload endpoint configuration',
         test: async () => {
           const response = await fetch('/api/documents/upload-enhanced');
-          const data = await response.json();
+          const data = await (response as { json?: any; ok?: any }).json();
           return {
-            success: response.ok && data.enhancedFeatures && data.supportedFormats,
+            success: (response as { json?: any; ok?: any }).ok && (data as { enhancedFeatures?: any; supportedFormats?: any }).enhancedFeatures && (data as { enhancedFeatures?: any; supportedFormats?: any }).supportedFormats,
             data
           };
         }
@@ -181,9 +181,9 @@
               {#if service.responseTime}
                 <div class="status-time">{service.responseTime}ms</div>
               {/if}
-              {#if service.data && service.data.enhancedFeatures}
+              {#if service.data && service.(data as { enhancedFeatures?: any; supportedFormats?: any }).enhancedFeatures}
                 <div class="status-features">
-                  Enhanced Features: {service.data.enhancedFeatures.length}
+                  Enhanced Features: {service.(data as { enhancedFeatures?: any; supportedFormats?: any }).enhancedFeatures.length}
                 </div>
               {/if}
             </div>
@@ -192,10 +192,10 @@
       </div>
 
       <div class="status-actions">
-        <ModernButton onclick={loadSystemStatus} variant="secondary">
+        <ModernButton on:click={loadSystemStatus} variant="secondary">
           🔄 Refresh Status
         </ModernButton>
-        <ModernButton onclick={runIntegrationTests} disabled={testRunning} variant="primary">
+        <ModernButton on:click={runIntegrationTests} disabled={testRunning} variant="primary">
           {testRunning ? '🔄 Running Tests...' : '🧪 Run Integration Tests'}
         </ModernButton>
       </div>
@@ -251,14 +251,14 @@
     <button
       class="tab-button"
       class:active={activeTab === 'upload'}
-      onclick={() => activeTab = 'upload'}
+      on:click={() => activeTab = 'upload'}
     >
       📄 Document Upload Testing
     </button>
     <button
       class="tab-button"
       class:active={activeTab === 'search'}
-      onclick={() => activeTab = 'search'}
+      on:click={() => activeTab = 'search'}
     >
       🔍 Enhanced Search Testing
     </button>
@@ -434,11 +434,11 @@
     padding: 1rem;
   }
 
-  .test-item.success {
+  .test-(item as { success?: any; error?: any }).success {
     border-color: #00ff41;
   }
 
-  .test-item.error {
+  .test-(item as { success?: any; error?: any }).error {
     border-color: #ff4444;
   }
 

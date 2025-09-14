@@ -69,7 +69,7 @@ https://svelte.dev/e/attribute_duplicate -->
   async function loadServiceStatus() {
     try {
       const response = await fetch('/api/rag?action=status');
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
       serviceStatus = data;
     } catch (error) {
       console.error('Failed to load service status:', error);
@@ -79,8 +79,8 @@ https://svelte.dev/e/attribute_duplicate -->
   async function loadRecentLogs() {
     try {
       const response = await fetch('/api/logs');
-      const data = await response.json();
-      recentLogs = (data.logs || []) as LogEntry[];
+      const data = await (response as { json?: any }).json();
+      recentLogs = ((data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).logs || []) as LogEntry[];
     } catch (error) {
       console.error('Failed to load logs:', error);
     }
@@ -89,8 +89,8 @@ https://svelte.dev/e/attribute_duplicate -->
   async function loadEmbeddings() {
     try {
       const response = await fetch('/api/embeddings');
-      const data = await response.json();
-      embeddings = data.embeddings || [];
+      const data = await (response as { json?: any }).json();
+      embeddings = (data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).embeddings || [];
     } catch (error) {
       console.error('Failed to load embeddings:', error);
     }
@@ -110,11 +110,11 @@ https://svelte.dev/e/attribute_duplicate -->
         })
       });
 
-      const data = await response.json();
-      searchResults = (data.results || []) as SearchResult[];
+      const data = await (response as { json?: any }).json();
+      searchResults = ((data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).results || []) as SearchResult[];
 
       // Log search activity
-      await logActivity('search', { query: searchQuery, results: data.results?.length || 0 });
+      await logActivity('search', { query: searchQuery, results: (data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).results?.length || 0 });
 
     } catch (error) {
       console.error('Search failed:', error);
@@ -136,10 +136,10 @@ https://svelte.dev/e/attribute_duplicate -->
         body: formData
       });
 
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
 
-      if (data.success) {
-        await logActivity('upload', { filename: uploadFile.name, chunks: data.document.chunks });
+      if ((data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).success) {
+        await logActivity('upload', { filename: uploadFile.name, chunks: (data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).document.chunks });
         uploadFile = null;
         await loadEmbeddings();
       }
@@ -165,10 +165,10 @@ https://svelte.dev/e/attribute_duplicate -->
         })
       });
 
-      const data = await response.json();
+      const data = await (response as { json?: any }).json();
 
-      if (data.success) {
-        await logActivity('crawl', { url: crawlUrl, chunks: data.document.chunks });
+      if ((data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).success) {
+        await logActivity('crawl', { url: crawlUrl, chunks: (data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).document.chunks });
         crawlUrl = '';
         await loadEmbeddings();
       }
@@ -233,9 +233,9 @@ https://svelte.dev/e/attribute_duplicate -->
   </div>
 
   <!-- Service Status Bar -->
-  <NesCard class="mb-6">
+  <div class="mb-6 nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary" class="flex items-center gap-2">
+      <h3 class="nes-text is-primary flex items-center gap-2">
         <Activity class="w-5 h-5" />
         Service Status
       </h3>
@@ -261,79 +261,84 @@ https://svelte.dev/e/attribute_duplicate -->
         {/if}
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Navigation Tabs -->
   <div class="flex gap-2 mb-6">
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'search' ? 'default' : 'outline'}
-      onclick={() => activeTab = 'search'}
+      on:click={() =>
+activeTab = 'search'}
     >
       <Search class="w-4 h-4" />
       Search
-    </button>
+
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'upload' ? 'default' : 'outline'}
-      onclick={() => activeTab = 'upload'}
+      on:click={() =>
+activeTab = 'upload'}
     >
       <Upload class="w-4 h-4" />
       Upload
-    </button>
+
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'crawl' ? 'default' : 'outline'}
-      onclick={() => activeTab = 'crawl'}
+      on:click={() =>
+activeTab = 'crawl'}
     >
       <Globe class="w-4 h-4" />
       Crawl
-    </button>
+
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'logs' ? 'default' : 'outline'}
-      onclick={() => activeTab = 'logs'}
+      on:click={() =>
+activeTab = 'logs'}
     >
       <FileText class="w-4 h-4" />
       Logs
-    </button>
+
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'settings' ? 'default' : 'outline'}
-      onclick={() => activeTab = 'settings'}
+      on:click={() =>
+activeTab = 'settings'}
     >
       <Settings class="w-4 h-4" />
       Settings
-    </button>
+
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Content Area -->
     <div class="lg:col-span-2">
       {#if activeTab === 'search'}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <Search class="w-5 h-5" />
               Semantic Search
             </h3>
           </div>
-          <div class="yorha-panel-content" class="space-y-4">
+          <div class="yorha-panel-content space-y-4">
             <div class="flex gap-2">
               <Input
                 bind:value={searchQuery}
                 placeholder="Enter your search query..."
                 class="flex-1"
-                onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && handleSearch()}
+                on:keydown={(e: KeyboardEvent) => e.key === 'Enter' && handleSearch()}
               />
-              <Button class="bits-btn" onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
-                {#if isLoading}
+              <Button class="bits-btn" on:click={handleSearch} disabled={isLoading || !searchQuery.trim()}>
+{#if isLoading}
                   <RefreshCw class="w-4 h-4 animate-spin" />
                 {:else}
                   <Search class="w-4 h-4" />
                 {/if}
                 Search
-              </button>
+
             </div>
 
             <!-- Search Results -->
@@ -344,28 +349,30 @@ https://svelte.dev/e/attribute_duplicate -->
                   <div class="border rounded-lg p-4 space-y-2">
                     <div class="flex justify-between items-start">
                       <div class="flex-1">
-                        <div class="font-medium">{result.metadata.title || 'Untitled'}</div>
-                        <div class="text-sm text-gray-600 mb-2">{result.content}</div>
+                        <div class="font-medium">{(result as { metadata?: any; content?: any; score?: any; id?: any }).metadata.title || 'Untitled'}</div>
+                        <div class="text-sm text-gray-600 mb-2">{(result as { metadata?: any; content?: any; score?: any; id?: any }).content}</div>
                         <div class="flex gap-2">
-                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Score: {result.score.toFixed(3)}</span>
-                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.metadata.type}</span>
+                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Score: {(result as { metadata?: any; content?: any; score?: any; id?: any }).score.toFixed(3)}</span>
+                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { metadata?: any; content?: any; score?: any; id?: any }).metadata.type}</span>
                         </div>
                       </div>
                       <div class="flex gap-1 ml-4">
                         <Button class="bits-btn"
                           size="sm"
                           variant="outline"
-                          onclick={() => submitFeedback(result.id, 1)}
+                          on:click={() =>
+submitFeedback((result as { metadata?: any; content?: any; score?: any; id?: any }).id, 1)}
                         >
                           👍
-                        </button>
+
                         <Button class="bits-btn"
                           size="sm"
                           variant="outline"
-                          onclick={() => submitFeedback(result.id, -1)}
+                          on:click={() =>
+submitFeedback((result as { metadata?: any; content?: any; score?: any; id?: any }).id, -1)}
                         >
                           👎
-                        </button>
+
                       </div>
                     </div>
                   </div>
@@ -373,47 +380,47 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
 
       {:else if activeTab === 'upload'}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <Upload class="w-5 h-5" />
               Document Upload
             </h3>
           </div>
-          <div class="yorha-panel-content" class="space-y-4">
+          <div class="yorha-panel-content space-y-4">
             <div>
               <label for="rag-upload-file" class="block text-sm font-medium mb-2">Select PDF Document</label>
               <input
                 type="file"
                 accept=".pdf"
                 id="rag-upload-file"
-                onchange={(e: Event) => { const t = e.target as HTMLInputElement; uploadFile = t.files?.[0] || null; }}
+                on:change={(e: Event) => { const t = e.target as HTMLInputElement; uploadFile = t.files?.[0] || null; }}
                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
             </div>
-            <Button class="bits-btn" onclick={handleUpload} disabled={isLoading || !uploadFile}>
-              {#if isLoading}
+            <Button class="bits-btn" on:click={handleUpload} disabled={isLoading || !uploadFile}>
+{#if isLoading}
                 <RefreshCw class="w-4 h-4 animate-spin mr-2" />
               {:else}
                 <Upload class="w-4 h-4 mr-2" />
               {/if}
               Upload & Process
-            </button>
+
           </div>
-        </NesCard>
+        </div>
 
       {:else if activeTab === 'crawl'}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <Globe class="w-5 h-5" />
               Web Crawler
             </h3>
           </div>
-          <div class="yorha-panel-content" class="space-y-4">
+          <div class="yorha-panel-content space-y-4">
             <div>
               <label for="rag-crawl-url" class="block text-sm font-medium mb-2">Website URL</label>
               <Input
@@ -423,21 +430,21 @@ https://svelte.dev/e/attribute_duplicate -->
                 type="url"
               />
             </div>
-            <Button class="bits-btn" onclick={handleCrawl} disabled={isLoading || !crawlUrl.trim()}>
-              {#if isLoading}
+            <Button class="bits-btn" on:click={handleCrawl} disabled={isLoading || !crawlUrl.trim()}>
+{#if isLoading}
                 <RefreshCw class="w-4 h-4 animate-spin mr-2" />
               {:else}
                 <Globe class="w-4 h-4 mr-2" />
               {/if}
               Crawl & Process
-            </button>
+
           </div>
-        </NesCard>
+        </div>
 
       {:else if activeTab === 'logs'}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <FileText class="w-5 h-5" />
               Activity Logs
             </h3>
@@ -459,17 +466,17 @@ https://svelte.dev/e/attribute_duplicate -->
               {/each}
             </div>
           </div>
-        </NesCard>
+        </div>
 
       {:else if activeTab === 'settings'}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center gap-2">
+            <h3 class="nes-text is-primary flex items-center gap-2">
               <Settings class="w-5 h-5" />
               System Settings
             </h3>
           </div>
-          <div class="yorha-panel-content" class="space-y-4">
+          <div class="yorha-panel-content space-y-4">
             <div>
               <label for="rag-search-threshold" class="block text-sm font-medium mb-2">Search Threshold</label>
               <Input id="rag-search-threshold" type="number" step="0.1" min="0" max="1" value="0.7" />
@@ -482,18 +489,20 @@ https://svelte.dev/e/attribute_duplicate -->
               <label for="rag-cache-ttl" class="block text-sm font-medium mb-2">Cache TTL (seconds)</label>
               <Input id="rag-cache-ttl" type="number" min="60" max="86400" value="7200" />
             </div>
-            <Button class="bits-btn">Save Settings</button>
+            <Button class="bits-btn">
+Save Settings
+
           </div>
-        </NesCard>
+        </div>
       {/if}
     </div>
 
     <!-- Sidebar - Metrics & Monitoring -->
     <div class="space-y-6">
       <!-- Embeddings Overview -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Database class="w-5 h-5" />
             Vector Database
           </h3>
@@ -514,12 +523,12 @@ https://svelte.dev/e/attribute_duplicate -->
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- RL Metrics -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <Brain class="w-5 h-5" />
             RL Feedback
           </h3>
@@ -540,12 +549,12 @@ https://svelte.dev/e/attribute_duplicate -->
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
 
       <!-- Performance Metrics -->
-      <NesCard>
+      <div class="nes-container">
         <div class="yorha-panel-header">
-          <h3 class="nes-text is-primary" class="flex items-center gap-2">
+          <h3 class="nes-text is-primary flex items-center gap-2">
             <TrendingUp class="w-5 h-5" />
             Performance
           </h3>
@@ -566,7 +575,7 @@ https://svelte.dev/e/attribute_duplicate -->
             </div>
           </div>
         </div>
-      </NesCard>
+      </div>
     </div>
   </div>
 </div>

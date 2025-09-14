@@ -16,14 +16,19 @@ and AI-powered verification features.
     onWorkflowComplete: ((result: any) ;
     onWorkflowError: ((error: string) ;
   }
-  let {
-    evidenceId,
+  let { evidenceId,
     caseId,
     userId,
     originalHash,
     onWorkflowComplete = > void) | undefined = undefined,
     onWorkflowError = > void) | undefined = undefined
-  } = $props();
+   }: { evidenceId,
+    caseId,
+    userId,
+    originalHash,
+    onWorkflowComplete = > void) | undefined = undefined,
+    onWorkflowError = > void) | undefined = undefined
+  : any } = $props();
 
 
 
@@ -314,9 +319,9 @@ and AI-powered verification features.
     <div class="lg:col-span-2 space-y-6">
       <!-- Workflow Controls -->
       {#if !isWorkflowActive && currentState.value === 'idle'}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center">
+            <h3 class="nes-text is-primary flex items-center">
               <Shield class="w-5 h-5 mr-2" />
               Start Custody Workflow
             </h3>
@@ -326,18 +331,18 @@ and AI-powered verification features.
               Begin the Evidence Chain of Custody workflow to ensure proper handling,
               verification, and documentation of evidence integrity.
             </p>
-            <Button onclick={startWorkflow} class="w-full bits-btn bits-btn">
-              Start Custody Workflow
-            </button>
+            <Button on:click={startWorkflow} class="w-full bits-btn bits-btn">
+Start Custody Workflow
+
           </div>
-        </NesCard>
+        </div>
       {/if}
 
       <!-- Integrity Verification -->
       {#if currentState.context.verificationResults || currentState.value === 'integrityVerification'}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center justify-between">
+            <h3 class="nes-text is-primary flex items-center justify-between">
               <div class="flex items-center">
                 <FileCheck class="w-5 h-5 mr-2" />
                 Integrity Verification
@@ -345,10 +350,11 @@ and AI-powered verification features.
               <Button class="bits-btn" 
                 variant="outline" 
                 size="sm"
-                onclick={() => showIntegrityDetails = !showIntegrityDetails}
+                on:click={() =>
+showIntegrityDetails = !showIntegrityDetails}
               >
                 {showIntegrityDetails ? 'Hide' : 'Show'} Details
-              </button>
+
             </h3>
           </div>
           <div class="yorha-panel-content">
@@ -361,14 +367,14 @@ and AI-powered verification features.
               showDetails={showIntegrityDetails}
             />
           </div>
-        </NesCard>
+        </div>
       {/if}
 
       <!-- Custody Timeline -->
       {#if custodyEvents.length > 0}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
-            <h3 class="nes-text is-primary" class="flex items-center">
+            <h3 class="nes-text is-primary flex items-center">
               <Clock class="w-5 h-5 mr-2" />
               Custody Timeline
             </h3>
@@ -379,56 +385,57 @@ and AI-powered verification features.
               currentStage={stage}
             />
           </div>
-        </NesCard>
+        </div>
       {/if}
 
       <!-- Workflow Actions -->
       {#if isWorkflowActive}
-        <NesCard>
+        <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Workflow Actions</h3>
           </div>
-          <div class="yorha-panel-content" class="space-y-4">
+          <div class="yorha-panel-content space-y-4">
             {#if currentState.value === 'awaitingApproval'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" onclick={approveWorkflow} variant="success">
-                  Approve Custody
-                </button>
-                <Button class="bits-btn" onclick={rejectWorkflow} variant="destructive">
-                  Reject Custody
-                </button>
+                <Button class="bits-btn" on:click={approveWorkflow} variant="success">
+Approve Custody
+
+                <Button class="bits-btn" on:click={rejectWorkflow} variant="destructive">
+Reject Custody
+
               </div>
             {/if}
 
             {#if currentState.value === 'collaboration'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" onclick={() => showTransferDialog = true} variant="outline">
+                <Button class="bits-btn" on:click={() =>
+showTransferDialog = true} variant="outline">
                   Transfer Custody
-                </button>
+
                 {#if !activeCollaborators.includes(userId)}
-                  <Button class="bits-btn" onclick={joinCollaboration} variant="outline">
-                    Join Collaboration
-                  </button>
+                  <Button class="bits-btn" on:click={joinCollaboration} variant="outline">
+Join Collaboration
+
                 {:else}
-                  <Button class="bits-btn" onclick={leaveCollaboration} variant="outline">
-                    Leave Collaboration
-                  </button>
+                  <Button class="bits-btn" on:click={leaveCollaboration} variant="outline">
+Leave Collaboration
+
                 {/if}
               </div>
             {/if}
 
             {#if currentState.value === 'error'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" onclick={retryWorkflow}>
-                  Retry Workflow
-                </button>
-                <Button class="bits-btn" onclick={cancelWorkflow} variant="destructive">
-                  Cancel Workflow
-                </button>
+                <Button class="bits-btn" on:click={retryWorkflow}>
+Retry Workflow
+
+                <Button class="bits-btn" on:click={cancelWorkflow} variant="destructive">
+Cancel Workflow
+
               </div>
             {/if}
           </div>
-        </NesCard>
+        </div>
       {/if}
     </div>
 
@@ -469,19 +476,20 @@ and AI-powered verification features.
         ></textarea>
         <div class="flex space-x-3">
           <Button 
-            onclick={startCustodyTransfer}
+            on:click={startCustodyTransfer}
             disabled={!transferReason.trim()}
             class="flex-1 bits-btn bits-btn"
           >
-            Transfer
-          </button>
+Transfer
+
           <Button class="bits-btn" 
-            onclick={() => showTransferDialog = false}
+            on:click={() =>
+showTransferDialog = false}
             variant="outline"
             class="flex-1"
           >
             Cancel
-          </button>
+
         </div>
       </div>
     </div>

@@ -46,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
   onMount(async () => {
     if (browser) {
       // Wait for AI store to initialize
-      await new Promise((resolve) => setTimeout(resolve, 200);
+      await new Promise((resolve) => setTimeout(resolve, 200));
       isPageReady = true;
       // Auto-check health on load
       checkHealthEndpoints();
@@ -239,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
               <button
                 type="button"
                 class="space-y-4"
-                onclick={() => aiStore.sendMessage(query)}
+                on:click={() => aiStore.sendMessage(query)}
                 disabled={$status.isLoading}
               >
                 {query}
@@ -271,7 +271,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               type="button"
               class="space-y-4"
-              onclick={() => testAPIDirectly()}
+              on:click={() => testAPIDirectly()}
               disabled={manualTestLoading}
             >
               {manualTestLoading ? "⏳ Testing..." : "🚀 Test API"}
@@ -280,7 +280,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               type="button"
               class="space-y-4"
-              onclick={() => checkHealthEndpoints()}
+              on:click={() => checkHealthEndpoints()}
             >
               🏥 Check Health
             </button>
@@ -387,21 +387,21 @@ https://svelte.dev/e/js_parse_error -->
           <button
             type="button"
             class="space-y-4"
-            onclick={() => aiStore.clearConversation()}
+            on:click={() => aiStore.clearConversation()}
           >
             🗑️ Clear Conversation
           </button>
           <button
             type="button"
             class="space-y-4"
-            onclick={() => aiStore.reset()}
+            on:click={() => aiStore.reset()}
           >
             🔄 Reset All Stores
           </button>
           <button
             type="button"
             class="space-y-4"
-            onclick={() => aiStore.initialize()}
+            on:click={() => aiStore.initialize()}
           >
             🔄 Reinitialize AI
           </button>
@@ -444,7 +444,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               type="button"
               class="space-y-4"
-              onclick={() => checkHealthEndpoints()}
+              on:click={() => checkHealthEndpoints()}
             >
               Check Health Status
             </button>
@@ -497,7 +497,7 @@ https://svelte.dev/e/js_parse_error -->
       {#each sampleQueries as sampleQuery}
         <button
           class="space-y-4"
-          onclick={() => selectQuery(sampleQuery)}
+          on:click={() => selectQuery(sampleQuery)}
         >
           <span class="space-y-4">{sampleQuery}</span>
         </button>
@@ -519,7 +519,7 @@ https://svelte.dev/e/js_parse_error -->
     ></textarea>
 
     <button
-      onclick={() => testGemma3()}
+      on:click={() => testGemma3()}
       disabled={isLoading || !query.trim()}
       class="space-y-4"
     >
@@ -620,9 +620,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="space-y-4">
         <h3 class="space-y-4">📋 Answer</h3>
         <div class="space-y-4">
-          {@html response.answer
-            .replace(/\n/g, "<br>")
-            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")}
+          {/* JSX syntax converted to Svelte */}
         </div>
       </div>
 

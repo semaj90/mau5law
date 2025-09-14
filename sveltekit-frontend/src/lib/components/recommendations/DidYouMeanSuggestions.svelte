@@ -73,7 +73,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   let userProfile = $state<UserProfile | null>(null);
   let loading = $state(false);
   let error = $state<string | null>(null);
-  let metadata = $state<{ took_ms?: number; cached?: boolean }>({});
+  let metadata = $state({});
   let debounceTimer = $state<NodeJS.Timeout | null>(null);
 
   // Melt-UI combobox builder
@@ -271,7 +271,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     <div
       
       class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-auto"
-      transition:fly={{ y: -5, duration: 150 }}
+      transitionFly={{ y: -5, duration: 150 }}
     >
       <!-- Regular Suggestions -->
       {#if suggestions.length > 0}

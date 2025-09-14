@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 // WebGPU/WebGL Integration Test API
 // Tests WebGPU polyfill and WebGL shader cache

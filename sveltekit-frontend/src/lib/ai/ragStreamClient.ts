@@ -19,7 +19,7 @@ import type {     Readable     } from 'svelte/store';
  *    onToken?: (token: string) => void;
  *    onDone?: () => void;
  *    onError?: (err: Error) => void;
- *  }) => Promise<{ traceparent?: string }>
+ *  }) => Promise<
  *
  * Usage (Svelte component):
  *  import { streamRag } from '$lib/ai/ragStreamClient';
@@ -98,7 +98,7 @@ function processSSELine(
   state.dataLines.push(line.trim());
 }
 
-export async function streamRag(opts: RagStreamOptions): Promise<{ traceparent?: string }> {
+export async function streamRag(opts: RagStreamOptions): Promise<any> {
   const {
     query,
     contextIds = [],
@@ -243,7 +243,7 @@ export async function* streamRagGenerator(
         query: base.query,
         contextIds: base.contextIds ?? [],
         intent: base.intent,
-        model: base.model ?? 'default',
+        model: base?.model || "unknown" // @ts-ignore - Model property access ?? 'default',
         ingestionId: base.ingestionId,
         ...(base.extra || {}),
       });
@@ -282,7 +282,7 @@ export async function* streamRagGenerator(
         const ev = evt.event || 'message';
         if (ev === 'token' || ev === 'message') {
           if (evt.data)
-            for (const piece of evt.data.split(/\n+/))
+            for (const piece of evt.(data as { split?: any; length?: any }).split(/\n+/))
               if (piece) queue.push({ type: 'token', token: piece });
         } else if (ev === 'patch') {
           if (evt.data) {
@@ -345,13 +345,7 @@ export interface RagStreamStore {
   >;
   error: Readable<Error | null>;
   tokenCount: Readable<number>;
-  metrics: Readable<{
-    reconnects: number;
-    errors: number;
-    startedAt?: number;
-    endedAt?: number;
-    durationMs?: number;
-  }>;
+  metrics: Readable;
   traceparent: Readable<string | undefined>;
   streamId: Readable<string | undefined>;
   patches: Readable<any[]>;
@@ -405,13 +399,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
   >('idle');
   const errorW = writable<Error | null>(null);
   const tokenCountW = writable<number>(0);
-  const metricsW = writable<{
-    reconnects: number;
-    errors: number;
-    startedAt?: number;
-    endedAt?: number;
-    durationMs?: number;
-  }>({ reconnects: 0, errors: 0 });
+  const metricsW = writable({ reconnects: 0, errors: 0 });
   const traceparentW = writable<string | undefined>(undefined);
   const streamIdW = writable<string | undefined>(undefined);
   const patchesW = writable<any[]>([]);
@@ -453,7 +441,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
         parsed.version === 1 &&
         typeof parsed.data === 'string'
       ) {
-        return parsed.data.length ? parsed.data.split('\n') : [];
+        return parsed.(data as { split?: any; length?: any }).length ? parsed.(data as { split?: any; length?: any }).split('\n') : [];
       }
     } catch {}
     return [];
@@ -609,7 +597,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
             if (initial?.patches?.autoApply) {
               const prevObj = get(appliedObjectW) || (initial?.patches?.initialObject ?? {});
               const mode = initial.patches?.mode || 'auto';
-              let newObj = prevObj ? JSON.parse(JSON.stringify(prevObj)) : {};
+              let newObj = prevObj ? JSON.parse(JSON.stringify(prevObj)) : Record<string, any>;
               let changed = false;
               let inverseForPatch: any[] | null = null;
               const keepInv = initial?.patches?.keepInverses;
@@ -747,8 +735,8 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     const chosen: string[] = [];
     for (const item of scored) {
       if (chosen.length >= maxSent) break;
-      if (item.s.length < minLen && sentences.length > maxSent) continue;
-      chosen.push(item.s);
+      if ((item as { s?: any }).s.length < minLen && sentences.length > maxSent) continue;
+      chosen.push((item as { s?: any }).s);
     }
     return chosen.join(' ');
   }
@@ -822,7 +810,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     const limit = upToIndex == null ? all.length : Math.max(0, Math.min(upToIndex, all.length));
     let base = initial?.patches?.initialObject
       ? JSON.parse(JSON.stringify(initial.patches.initialObject))
-      : {};
+      : Record<string, any>;
     if (snapshots.length) {
       let best = snapshots[0];
       for (const s of snapshots) if (s.index <= limit && s.index > best.index) best = s;
@@ -840,7 +828,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     if (count <= 0) return;
     if (initial?.patches?.keepInverses && inverseStack.length >= count) {
       appliedObjectW.update((cur) => {
-        let obj = cur ? JSON.parse(JSON.stringify(cur)) : {};
+        let obj = cur ? JSON.parse(JSON.stringify(cur)) : Record<string, any>;
         for (let i = 0; i < count; i++) {
           const inv = inverseStack.pop();
           if (inv) applyJsonPatch(obj, inv);

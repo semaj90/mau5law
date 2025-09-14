@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { ChatHistoryService } from '$lib/server/chat/history-service';
 
 export const GET: RequestHandler = async ({ url, locals }) => {

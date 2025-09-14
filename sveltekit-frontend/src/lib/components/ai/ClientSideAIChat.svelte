@@ -21,7 +21,7 @@
 
   // State
   let chatInput = $state('');
-  let messages = $state<Array<{id: string, role: 'user' | 'assistant', content: string, timestamp: number}>>([]);
+  let messages = $state<any[]>([])([]);
   let isProcessing = $state(false);
   let isInitialized = $state(false);
   let error = $state<string | null>(null);
@@ -155,7 +155,7 @@
 </script>
 
 <div class="client-ai-chat" class:collapsed data-testid="ai-chat-container">
-  <NesCard class="bg-gray-900/90 backdrop-blur-md border-yellow-500/30 shadow-xl">
+  <div class="bg-gray-900/90 backdrop-blur-md border-yellow-500/30 shadow-xl nes-container">
     <div class="yorha-panel-header pb-3">
       <h3 class="nes-text is-primary flex items-center gap-2 text-yellow-400 text-sm font-mono">
         <Brain class="w-4 h-4" />
@@ -242,7 +242,7 @@
             <div class="flex flex-wrap gap-1">
               {#each quickPrompts.slice(0, 2) as prompt}
                 <button
-                  onclick={() => sendMessage(prompt)}
+                  on:click={() => sendMessage(prompt)}
                   disabled={isProcessing || !isInitialized}
                   class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded border border-gray-600 hover:border-yellow-500 transition-colors disabled:opacity-50"
                 >
@@ -273,7 +273,7 @@
               data-testid="chat-input"
             ></textarea>
             <button
-              onclick={() => sendMessage()}
+              on:click={() => sendMessage()}
               disabled={!chatInput.trim() || isProcessing || !isInitialized}
               class="px-3 py-1 bg-yellow-600 text-black text-xs font-mono rounded hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               data-testid="send-button"
@@ -287,7 +287,7 @@
               Running locally • No data sent to servers
             </div>
             <button
-              onclick={clearChat}
+              on:click={clearChat}
               class="text-xs text-gray-400 hover:text-gray-300 font-mono"
             >
               Clear
@@ -305,7 +305,7 @@
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 </div>
 
 <style>

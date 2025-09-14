@@ -4,22 +4,14 @@ import { createMachine, assign, sendParent, fromPromise } from "xstate";
 
 export interface PrefetchContext {
   // User behavior tracking
-  userActions: Array<{
-    action: string;
-    timestamp: number;
-    context: any;
-  }>;
+  userActions: Array<any>;
   
   // Intent prediction
   predictedIntent: string | null;
   confidence: number;
   
   // Prefetch state
-  prefetchQueue: Array<{
-    resource: string;
-    priority: number;
-    type: 'embedding' | 'document' | 'api' | 'route';
-  }>;
+  prefetchQueue: Array<any>;
   
   // Model state
   embeddings: number[][];
@@ -56,7 +48,7 @@ type PrefetchEvent =
   | { type: 'CACHE_MISS'; resource: string };
 
 export const prefetchMachine = createMachine({
-  types: {} as {
+  types: Record<string, any> as {
     context: PrefetchContext;
     events: PrefetchEvent;
   },
@@ -318,15 +310,15 @@ export const prefetchMachine = createMachine({
     prefetchResources: fromPromise(async ({ input }: { input: any }) => {
       const context = input;
       const promises = context.prefetchQueue.map(async (item: any) => {
-        switch (item.type) {
+        switch ((item as { type?: any; resource?: any }).type) {
           case 'embedding':
-            return prefetchEmbedding(item.resource);
+            return prefetchEmbedding((item as { type?: any; resource?: any }).resource);
           case 'document':
-            return prefetchDocument(item.resource);
+            return prefetchDocument((item as { type?: any; resource?: any }).resource);
           case 'api':
-            return prefetchApiData(item.resource);
+            return prefetchApiData((item as { type?: any; resource?: any }).resource);
           case 'route':
-            return prefetchRoute(item.resource);
+            return prefetchRoute((item as { type?: any; resource?: any }).resource);
           default:
             return Promise.resolve();
         }
@@ -408,7 +400,7 @@ async function prefetchEmbedding(resource: string): Promise<any> {
     })
   });
   
-  return response.ok;
+  return (response as { ok?: any }).ok;
 }
 
 async function prefetchDocument(resource: string): Promise<any> {

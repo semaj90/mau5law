@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Kernel Splicing Attention API
@@ -91,14 +91,14 @@ export const POST: RequestHandler = async ({ request }) => {
         if (useCache && result) {
           try {
             await dimensionalCache.store(cacheKey, {
-              embeddings: new Float32Array(result.output || []),
-              attentionWeights: new Float32Array(result.attention || []),
+              embeddings: new Float32Array((result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any }).output || []),
+              attentionWeights: new Float32Array((result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any }).attention || []),
               metadata: {
                 type,
                 userId,
                 context,
                 timestamp: Date.now(),
-                processTime: result.processTime
+                processTime: (result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any }).processTime
               }
             });
           } catch (err) {
@@ -122,8 +122,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const response: AttentionResponse = {
       jobId,
       status: 'success',
-      output: result?.output || result?.embeddings ? Array.from(result.embeddings.slice(0, 768)) : [],
-      attention: result?.attention || result?.attentionWeights ? Array.from(result.attentionWeights.slice(0, 64)) : [],
+      output: result?.output || result?.embeddings ? Array.from((result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any }).embeddings.slice(0, 768)) : [],
+      attention: result?.attention || result?.attentionWeights ? Array.from((result as { output?: any; attention?: any; processTime?: any; embeddings?: any; attentionWeights?: any }).attentionWeights.slice(0, 64)) : [],
       cached,
       processTime: cached ? 0.001 : (result?.processTime || totalTime / 1000),
       gpu: 'NVIDIA GeForce RTX 3060 Ti',

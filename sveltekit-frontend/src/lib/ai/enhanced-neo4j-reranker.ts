@@ -2,8 +2,8 @@
 // Enhanced Neo4j Path Context Reranker for Legal AI
 // Provides 95% accuracy search with boolean pattern matching and audit trails
 
-import { QdrantService } from './qdrant-service';
-import { createSOMRAGSystem, type DocumentEmbedding } from './som-rag-system';
+import { QdrantService } from './qdrant-service.js';
+import { createSOMRAGSystem, type DocumentEmbedding } from './som-rag-system.js';
 
 export interface Neo4jPathContext {
   document_id: string;
@@ -433,7 +433,7 @@ export class EnhancedNeo4jReranker {
   ): RerankingResult[] {
     return results.filter(
       (result) =>
-        result.confidence_metrics.overall_confidence >=
+        (result as { confidence_metrics?: any }).confidence_metrics.overall_confidence >=
         this.config.accuracy_threshold,
     );
   }

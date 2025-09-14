@@ -167,8 +167,7 @@ export interface QueryResult<T = any> {
   rows: T[];
   rowCount: number;
   command?: string;
-  fields?: Array<{ name: string; dataTypeID: number }>;
-}
+  fields?: Array<any>
 
 export interface DatabaseConnection {
   query<T = any>(sql: string, params?: any[]): Promise<QueryResult<T>>;

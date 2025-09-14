@@ -228,11 +228,11 @@ export class MatrixTransformLib {
     };
 
     if (this.config.optimizeForCSS) {
-      result.css3d = this.matrixToCSS(matrix);
+      (result as { css3d?: any; webgl?: any }).css3d = this.matrixToCSS(matrix);
     }
 
     if (this.config.enableGPUAcceleration) {
-      result.webgl = this.matrixToWebGL(matrix);
+      (result as { css3d?: any; webgl?: any }).webgl = this.matrixToWebGL(matrix);
     }
 
     return result;
@@ -305,8 +305,8 @@ export class MatrixTransformLib {
   private getCacheKey(data: string): string {
     // Simple hash for cache key (djb2 algorithm)
     let hash = 5381;
-    for (let i = 0; i < data.length; i++) {
-      hash = (hash << 5) + hash + data.charCodeAt(i);
+    for (let i = 0; i < (data as { length?: any; charCodeAt?: any }).length; i++) {
+      hash = (hash << 5) + hash + (data as { length?: any; charCodeAt?: any }).charCodeAt(i);
     }
     return hash.toString(16);
   }

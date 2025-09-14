@@ -6,18 +6,18 @@
  * Integrates topology-aware predictive analytics for intelligent content prefetching.
  */
 
-import { simdTextTilingEngine } from './simd-text-tiling-engine.js';
+import { simdTextTilingEngine } from './simd-text-tiling-engine.js.js';
 import { ollamaService } from '$lib/server/ai/ollama-service.js';
-import type { TextEmbeddingResult, CompressedTextTile } from './simd-text-tiling-engine.js';
+import type { TextEmbeddingResult, CompressedTextTile } from './simd-text-tiling-engine.js.js';
 
 // Import hybrid GPU context for acceleration
-import type { HybridGPUContext } from '../gpu/hybrid-gpu-context.js';
+import type { HybridGPUContext } from '../gpu/hybrid-gpu-context.js.js';
 
 // Import advanced GPU context provider and environment configuration
-import { gpuContextProvider, type GPUBackendType, type ShaderResources } from '../gpu/gpu-context-provider.js';
+import { gpuContextProvider, type GPUBackendType, type ShaderResources } from '../gpu/gpu-context-provider.js.js';
 import { gpuVectorProcessor } from '$lib/gpu/gpu-vector-processor.js';
 import { telemetryBus } from '$lib/telemetry/telemetry-bus.js';
-import { GPU_CONFIG, CLIENT_ENV } from '../config/env.js';
+import { GPU_CONFIG, CLIENT_ENV } from '../config/env.js.js';
 
 // ================= Additional Explicit Types =================
 // Narrow previously 'any' usages into explicit interfaces
@@ -655,7 +655,7 @@ class LODCacheEngine {
 
   private calculateCompressionStats(text: string, compressed: LODCacheEntry['compressed_data']) {
     const originalSize = text.length;
-    const compressedSize = Object.values(compressed).reduce((sum, data) => sum + data.length, 0);
+    const compressedSize = Object.values(compressed).reduce((sum, data) => sum + (data as { prediction_confidence?: any; access_count?: any; last_accessed?: any; embeddings?: any; length?: any; retrieval_priority?: any; context_anchors?: any; semantic_clusters?: any; topology_features?: any; compression_stats?: any }).length, 0);
 
     return {
       original_size: originalSize,
@@ -1407,10 +1407,10 @@ LODCacheEngine.prototype.createWebGL2EmbeddingFragmentShader = function(): strin
 
           float phase = (dimIndex + i) * 0.1 * lodLevel;
           float semantic = charValue * sin(phase) * cos(dimIndex * 0.05);
-          result.x += semantic;
+          (result as { x?: any }).x += semantic;
         }
 
-        result.x = tanh(result.x / maxLength);
+        (result as { x?: any }).x = tanh((result as { x?: any }).x / maxLength);
         return result;
       }
 

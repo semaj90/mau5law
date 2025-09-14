@@ -125,7 +125,7 @@ class EnhancedAuthStore {
   }
 
   // Authentication methods
-  async login(credentials: LoginCredentials): Promise<{ success: boolean; error?: string }> {
+  async login(credentials: LoginCredentials): Promise<any> {
     this._state.isLoading = true;
     this._error = null;
 
@@ -142,11 +142,11 @@ class EnhancedAuthStore {
         })
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (response.ok && result.success) {
-        this._state.user = result.user;
-        this._state.session = result.session;
+      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
+        this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
+        this._state.session = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).session;
         this._state.isAuthenticated = true;
         this._state.lastActivity = new Date();
         
@@ -158,7 +158,7 @@ class EnhancedAuthStore {
         this.trackActivity();
         return { success: true };
       } else {
-        this._error = result.error || 'Login failed';
+        this._error = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).error || 'Login failed';
         return { success: false, error: this._error };
       }
     } catch (error: any) {
@@ -170,7 +170,7 @@ class EnhancedAuthStore {
     }
   }
 
-  async register(data: RegisterData): Promise<{ success: boolean; error?: string; requiresVerification?: boolean }> {
+  async register(data: RegisterData): Promise<any> {
     this._state.isLoading = true;
     this._error = null;
 
@@ -187,23 +187,23 @@ class EnhancedAuthStore {
         })
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
 
-      if (response.ok && result.success) {
-        if (result.requiresVerification) {
+      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
+        if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).requiresVerification) {
           return { success: true, requiresVerification: true };
         }
         
         // Auto-login after registration
-        this._state.user = result.user;
-        this._state.session = result.session;
+        this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
+        this._state.session = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).session;
         this._state.isAuthenticated = true;
         this._state.lastActivity = new Date();
         
         this.trackActivity();
         return { success: true };
       } else {
-        this._error = result.error || 'Registration failed';
+        this._error = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).error || 'Registration failed';
         return { success: false, error: this._error };
       }
     } catch (error: any) {
@@ -238,7 +238,7 @@ class EnhancedAuthStore {
     }
   }
 
-  async verifyEmail(token: string): Promise<{ success: boolean; error?: string }> {
+  async verifyEmail(token: string): Promise<any> {
     try {
       const response = await fetch('/api/auth/verify-email', {
         method: 'POST',
@@ -248,10 +248,10 @@ class EnhancedAuthStore {
         body: JSON.stringify({ token })
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
       
-      if (result.success) {
-        this._state.user = result.user;
+      if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
+        this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
         this._state.isAuthenticated = true;
         this._state.lastActivity = new Date();
       }
@@ -263,7 +263,7 @@ class EnhancedAuthStore {
     }
   }
 
-  async requestPasswordReset(email: string): Promise<{ success: boolean; error?: string }> {
+  async requestPasswordReset(email: string): Promise<any> {
     try {
       const response = await fetch('/api/auth/request-password-reset', {
         method: 'POST',
@@ -273,14 +273,14 @@ class EnhancedAuthStore {
         body: JSON.stringify({ email })
       });
 
-      return await response.json();
+      return await (response as { json?: any; ok?: any }).json();
     } catch (error: any) {
       console.error('Password reset request error:', error);
       return { success: false, error: 'Request failed' };
     }
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+  async resetPassword(token: string, newPassword: string): Promise<any> {
     try {
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
@@ -290,9 +290,9 @@ class EnhancedAuthStore {
         body: JSON.stringify({ token, newPassword })
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
       
-      if (result.success) {
+      if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
         // Clear any existing session and redirect to login
         this.clearAuthState();
       }
@@ -304,7 +304,7 @@ class EnhancedAuthStore {
     }
   }
 
-  async updateProfile(updates: Partial<User>): Promise<{ success: boolean; error?: string }> {
+  async updateProfile(updates: Partial<User>): Promise<any> {
     if (!this._state.isAuthenticated) {
       return { success: false, error: 'Not authenticated' };
     }
@@ -318,10 +318,10 @@ class EnhancedAuthStore {
         body: JSON.stringify(updates)
       });
 
-      const result = await response.json();
+      const result = await (response as { json?: any; ok?: any }).json();
       
-      if (result.success) {
-        this._state.user = { ...this._state.user!, ...result.user };
+      if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
+        this._state.user = { ...this._state.user!, ...(result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user };
       }
 
       return result;
@@ -331,7 +331,7 @@ class EnhancedAuthStore {
     }
   }
 
-  async changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+  async changePassword(currentPassword: string, newPassword: string): Promise<any> {
     if (!this._state.isAuthenticated) {
       return { success: false, error: 'Not authenticated' };
     }
@@ -345,7 +345,7 @@ class EnhancedAuthStore {
         body: JSON.stringify({ currentPassword, newPassword })
       });
 
-      return await response.json();
+      return await (response as { json?: any; ok?: any }).json();
     } catch (error: any) {
       console.error('Password change error:', error);
       return { success: false, error: 'Password change failed' };
@@ -360,12 +360,12 @@ class EnhancedAuthStore {
         credentials: 'include'
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if ((response as { json?: any; ok?: any }).ok) {
+        const result = await (response as { json?: any; ok?: any }).json();
         
-        if (result.success && result.user) {
-          this._state.user = result.user;
-          this._state.session = result.session;
+        if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success && (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user) {
+          this._state.user = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user;
+          this._state.session = (result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).session;
           this._state.isAuthenticated = true;
           this._state.lastActivity = new Date();
           return true;
@@ -400,8 +400,8 @@ class EnhancedAuthStore {
 
     try {
       const response = await fetch('/api/auth/security-summary');
-      if (response.ok) {
-        return await response.json();
+      if ((response as { json?: any; ok?: any }).ok) {
+        return await (response as { json?: any; ok?: any }).json();
       }
     } catch (error: any) {
       console.error('Security summary error:', error);
@@ -507,8 +507,8 @@ class EnhancedAuthStore {
   private async getClientIP(): Promise<string> {
     try {
       const response = await fetch('/api/client-ip');
-      const data = await response.json();
-      return data.ip || 'unknown';
+      const data = await (response as { json?: any; ok?: any }).json();
+      return (data as { ip?: any }).ip || 'unknown';
     } catch {
       return 'unknown';
     }

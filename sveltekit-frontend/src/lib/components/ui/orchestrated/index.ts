@@ -31,15 +31,8 @@ export interface LegalEvidenceItem {
 
 export interface AIAnalysisResult {
   confidence: number;
-  entities: Array<{
-    text: string;
-    type: string;
-    confidence: number;
-  }>;
-  themes: Array<{
-    topic: string;
-    weight: number;
-  }>;
+  entities: Array<any>;
+  themes: Array<any>;
   summary: string;
 }
 

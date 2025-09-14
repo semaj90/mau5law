@@ -61,20 +61,20 @@
   async function checkAuth() {
     try {
       const response = await fetch('/api/test-cases?limit=1');
-      const data = await response.json();
+      const data = await (response as { json?: any; status?: any; ok?: any }).json();
 
-      if (response.status === 401) {
+      if ((response as { json?: any; status?: any; ok?: any }).status === 401) {
         isAuthenticated = false;
         authError = 'Authentication required - please log in';
         addResult('Authentication check failed - user not logged in', 'error');
         return false;
       }
 
-      if (response.ok && data.user) {
+      if ((response as { json?: any; status?: any; ok?: any }).ok && (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).user) {
         isAuthenticated = true;
-        currentUser = data.user;
+        currentUser = (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).user;
         authError = null;
-        addResult(`Authentication verified - logged in as ${data.user.email}`, 'success');
+        addResult(`Authentication verified - logged in as ${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).user.email}`, 'success');
         return true;
       }
 
@@ -130,7 +130,7 @@
         const singleData = await singleResponse.json();
 
         if (singleResponse.ok && singleData.success) {
-          addResult(`GET specific case - Success with ${singleData.data.documents?.length || 0} docs, ${singleData.data.activities?.length || 0} activities`, 'success');
+          addResult(`GET specific case - Success with ${singleData.(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).documents?.length || 0} docs, ${singleData.(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).activities?.length || 0} activities`, 'success');
         } else {
           addResult(`GET specific case - Failed: ${singleData.error}`, 'error');
         }
@@ -163,26 +163,26 @@
         })
       });
 
-      const data = await response.json();
+      const data = await (response as { json?: any; status?: any; ok?: any }).json();
 
-      if (response.status === 401) {
+      if ((response as { json?: any; status?: any; ok?: any }).status === 401) {
         addResult('POST operation failed - session expired', 'error');
         isAuthenticated = false;
         return null;
       }
 
-      if (response.ok && data.success) {
-        addResult(`POST /api/test-cases - Success (ID: ${data.data?.id})`, 'success');
-        addResult(`Embedding generated: ${data.data?.hasEmbedding ? 'Yes' : 'No'}`, 'info');
-        addResult(`Created by: ${data.data?.createdBy?.name || data.data?.createdBy?.email}`, 'info');
+      if ((response as { json?: any; status?: any; ok?: any }).ok && (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).success) {
+        addResult(`POST /api/test-cases - Success (ID: ${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.id})`, 'success');
+        addResult(`Embedding generated: ${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.hasEmbedding ? 'Yes' : 'No'}`, 'info');
+        addResult(`Created by: ${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.createdBy?.name || (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.createdBy?.email}`, 'info');
 
         // Refresh cases list
         await testAuthenticatedGET();
-        return data.data.id;
+        return (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).id;
       } else {
-        addResult(`POST /api/test-cases - Failed: ${data.message || data.error}`, 'error');
-        if (data.details) {
-          addResult(`   Details: ${JSON.stringify(data.details)}`, 'error');
+        addResult(`POST /api/test-cases - Failed: ${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).message || (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).error}`, 'error');
+        if ((data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).details) {
+          addResult(`   Details: ${JSON.stringify((data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).details)}`, 'error');
         }
       }
     } catch (error) {
@@ -229,29 +229,29 @@
         body: JSON.stringify(updateData)
       });
 
-      const data = await response.json();
+      const data = await (response as { json?: any; status?: any; ok?: any }).json();
 
-      if (response.status === 401) {
+      if ((response as { json?: any; status?: any; ok?: any }).status === 401) {
         addResult('PUT operation failed - session expired', 'error');
         isAuthenticated = false;
         return;
       }
 
-      if (response.status === 403) {
+      if ((response as { json?: any; status?: any; ok?: any }).status === 403) {
         addResult('PUT operation failed - access denied (not case owner)', 'error');
         return;
       }
 
-      if (response.ok && data.success) {
+      if ((response as { json?: any; status?: any; ok?: any }).ok && (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).success) {
         addResult(`PUT /api/test-cases - Success`, 'success');
-        addResult(`New embedding generated: ${data.data?.hasNewEmbedding ? 'Yes' : 'No'}`, 'info');
-        addResult(`Updated by: ${data.data?.updatedBy?.name || data.data?.updatedBy?.email}`, 'info');
-        addResult(`Changed fields: ${data.data?.changedFields?.join(', ')}`, 'info');
+        addResult(`New embedding generated: ${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.hasNewEmbedding ? 'Yes' : 'No'}`, 'info');
+        addResult(`Updated by: ${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.updatedBy?.name || (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.updatedBy?.email}`, 'info');
+        addResult(`Changed fields: ${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.changedFields?.join(', ')}`, 'info');
 
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
-        addResult(`PUT /api/test-cases - Failed: ${data.message || data.error}`, 'error');
+        addResult(`PUT /api/test-cases - Failed: ${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).message || (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).error}`, 'error');
       }
     } catch (error) {
       addResult(`PUT operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
@@ -281,28 +281,28 @@
         method: 'DELETE'
       });
 
-      const data = await response.json();
+      const data = await (response as { json?: any; status?: any; ok?: any }).json();
 
-      if (response.status === 401) {
+      if ((response as { json?: any; status?: any; ok?: any }).status === 401) {
         addResult('DELETE operation failed - session expired', 'error');
         isAuthenticated = false;
         return;
       }
 
-      if (response.status === 403) {
+      if ((response as { json?: any; status?: any; ok?: any }).status === 403) {
         addResult('DELETE operation failed - access denied (not case owner or admin)', 'error');
         return;
       }
 
-      if (response.ok && data.success) {
+      if ((response as { json?: any; status?: any; ok?: any }).ok && (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).success) {
         addResult(`DELETE /api/test-cases - Success`, 'success');
-        addResult(`Deleted by: ${data.data?.deletedBy?.name || data.data?.deletedBy?.email}`, 'info');
-        addResult(`Related data cleaned: timeline(${data.data?.relatedDataDeleted?.timeline}), activities(${data.data?.relatedDataDeleted?.activities}), docs(${data.data?.relatedDataDeleted?.documents})`, 'info');
+        addResult(`Deleted by: ${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.deletedBy?.name || (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.deletedBy?.email}`, 'info');
+        addResult(`Related data cleaned: timeline(${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.relatedDataDeleted?.timeline}), activities(${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.relatedDataDeleted?.activities}), docs(${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).data?.relatedDataDeleted?.documents})`, 'info');
 
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
-        addResult(`DELETE /api/test-cases - Failed: ${data.message || data.error}`, 'error');
+        addResult(`DELETE /api/test-cases - Failed: ${(data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).message || (data as { user?: any; documents?: any; activities?: any; success?: any; data?: any; message?: any; error?: any; details?: any }).error}`, 'error');
       }
     } catch (error) {
       addResult(`DELETE operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
@@ -369,7 +369,7 @@
   </div>
 
   <!-- Authentication Status -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary flex items-center gap-2">
         {#if isAuthenticated}
@@ -391,40 +391,40 @@
       {:else if authError}
         <div class="text-red-600 space-y-2">
           <p><strong>Error:</strong> {authError}</p>
-          <Button class="bits-btn" onclick={goToLogin} variant="default">Go to Login</Button>
+          <Button class="bits-btn" on:click={goToLogin} variant="default">Go to Login</Button>
         </div>
       {:else}
         <p class="text-gray-500">Checking authentication...</p>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Test Controls -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Test Controls</h3>
     </div>
     <div class="yorha-panel-content">
       <div class="flex flex-wrap gap-3">
-  <Button class="bits-btn" onclick={runAuthenticatedCRUDTest} disabled={isLoading || !isAuthenticated} variant="default">
+  <Button class="bits-btn" on:click={runAuthenticatedCRUDTest} disabled={isLoading || !isAuthenticated} variant="default">
           {isLoading ? '⏳ Testing...' : '🚀 Run Authenticated CRUD Test'}
         </Button>
-  <Button class="bits-btn" onclick={() => checkAuth()} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn" on:click={() => checkAuth()} disabled={isLoading} variant="secondary">
           🔍 Check Auth
         </Button>
-  <Button class="bits-btn" onclick={testAuthenticatedGET} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button class="bits-btn" on:click={testAuthenticatedGET} disabled={isLoading || !isAuthenticated} variant="secondary">
           📋 Test GET
         </Button>
-  <Button class="bits-btn" onclick={testAuthenticatedPOST} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button class="bits-btn" on:click={testAuthenticatedPOST} disabled={isLoading || !isAuthenticated} variant="secondary">
           📝 Test POST
         </Button>
-  <Button class="bits-btn" onclick={() => testAuthenticatedPUT()} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button class="bits-btn" on:click={() => testAuthenticatedPUT()} disabled={isLoading || !isAuthenticated} variant="secondary">
           ✏️ Test PUT
         </Button>
-  <Button class="bits-btn" onclick={() => testAuthenticatedDELETE()} disabled={isLoading || !isAuthenticated} variant="secondary">
+  <Button class="bits-btn" on:click={() => testAuthenticatedDELETE()} disabled={isLoading || !isAuthenticated} variant="secondary">
           🗑️ Test DELETE
         </Button>
-  <Button class="bits-btn" onclick={clearResults} variant="ghost">
+  <Button class="bits-btn" on:click={clearResults} variant="ghost">
           🧹 Clear Results
         </Button>
       </div>
@@ -435,10 +435,10 @@
         </p>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Test Results Summary -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Test Results Summary</h3>
     </div>
@@ -466,10 +466,10 @@
         </div>
       </div>
     </div>
-  </NesCard>
+  </div>
 
   <!-- Current User's Cases -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Your Cases ({cases.length})</h3>
     </div>
@@ -507,10 +507,10 @@
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 
   <!-- Test Results Log -->
-  <NesCard>
+  <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Test Results Log</h3>
     </div>
@@ -521,9 +521,9 @@
         <div class="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm max-h-96 overflow-y-auto space-y-1">
           {#each testResults as result}
             <div class={
-              result.includes('❌') ? 'text-red-400' :
-              result.includes('⚠️') ? 'text-yellow-400' :
-              result.includes('✅') ? 'text-green-400' :
+              (result as { includes?: any }).includes('❌') ? 'text-red-400' :
+              (result as { includes?: any }).includes('⚠️') ? 'text-yellow-400' :
+              (result as { includes?: any }).includes('✅') ? 'text-green-400' :
               'text-gray-300'
             }>
               {result}
@@ -532,5 +532,5 @@
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 </div>

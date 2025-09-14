@@ -17,12 +17,7 @@
       progress: number;
       complexity: number;
     };
-    connections?: Array<{
-      id: string;
-      source: string;
-      target: string;
-      strength: number;
-    }>;
+    connections?: Array;
     lodLevel?: 'low' | 'medium' | 'high' | 'ultra';
     style?: 'nes' | 'snes' | 'n64' | 'ps1' | 'yorha';
     adaptiveRendering?: boolean;
@@ -44,18 +39,7 @@
   // State
   let container: HTMLDivElement;
   let animationFrame: number;
-  let particles: Array<{
-    id: string;
-    x: number;
-    y: number;
-    z: number;
-    velocity: { x: number; y: number; z: number };
-    type: 'data' | 'connection' | 'analysis' | 'result';
-    color: string;
-    size: number;
-    life: number;
-    maxLife: number;
-  }> = [];
+  let particles: Array = [];
 
   let processingStage = $state<'parsing' | 'analyzing' | 'connecting' | 'synthesizing' | 'complete'>('parsing');
   let rotationX = $state(0);

@@ -108,33 +108,32 @@
     <div class="flex flex-wrap gap-4 mb-6">
       <Button class="bits-btn"
         variant="outline"
-        onclick={() => loadSampleDocuments('contracts')}
+        on:click={() =>
+loadSampleDocuments('contracts')}
       >
         {#snippet children()}
           <FileText class="w-4 h-4 mr-2" />
           Load Contract Samples ({sampleLegalDocuments.length})
         {/snippet}
-      </button>
 
       <Button class="bits-btn"
         variant="outline"
-        onclick={() => loadSampleDocuments('cases')}
+        on:click={() =>
+loadSampleDocuments('cases')}
       >
         {#snippet children()}
           <Gavel class="w-4 h-4 mr-2" />
           Load Litigation Cases ({sampleCaseDocuments.length})
         {/snippet}
-      </button>
 
       <Button class="bits-btn"
         variant="outline"
-        onclick={clearDocuments}
+        on:click={clearDocuments}
         disabled={currentDocuments.length === 0}
       >
-        {#snippet children()}
+{#snippet children()}
           Clear Documents
         {/snippet}
-      </button>
 
       <div class="ml-auto bg-gray-100 px-3 py-2 rounded-md text-sm">
         <strong>Current:</strong> {currentDocuments.length} documents
