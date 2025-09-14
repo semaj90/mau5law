@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       currentSessionId = generateId();
       const newSession: NewChatSession = {
         id: currentSessionId,
-        userId: (locals.user as any)?.id || null,
+        userId: (locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747',
         title: 'Chat Session',
         context: {},
         metadata: {
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       embedding: null, // Will be populated by embedding worker later
       metadata: {
         model,
-        userId: (locals.user as any)?.id,
+        userId: (locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747',
       },
     };
     await db.insert(chatMessages).values(newUserMessage);
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!stream) {
       // Non-streaming response
       const personalization = useProfile
-        ? await buildUserContextPrompt((locals.user as any)?.id, {
+        ? await buildUserContextPrompt((locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
             jurisdictionHint: true,
             practiceAreasHint: true,
             tone: 'concise',
@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
           // Build contextual query again in stream scope
           const personalization = useProfile
-            ? await buildUserContextPrompt((locals.user as any)?.id, {
+            ? await buildUserContextPrompt((locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
                 jurisdictionHint: true,
                 practiceAreasHint: true,
                 tone: 'concise',

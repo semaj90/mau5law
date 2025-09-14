@@ -1,12 +1,12 @@
 /**
  * RAG Document Indexing API Endpoint
- * 
+ *
  * Provides API for indexing legal documents into the vector database:
  * - Automatic text chunking optimized for legal content
  * - Vector embedding generation with Gemma embeddings
  * - Metadata extraction and storage
  * - Bulk document processing support
- * 
+ *
  * @route POST /api/rag/index-document
  */
 
@@ -15,15 +15,38 @@ import type { RequestHandler } from './$types';
 import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
 import { db, sql } from '$lib/server/db/drizzle';
 import * as schema from '$lib/server/db/schema-postgres';
-import type { LegalDocument, NewLegalDocument } from '$lib/server/db/schema-postgres';
-import { authenticate } from '$lib/server/auth'; // Assuming auth helper exists
+import { requireAuth } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
+
+// Define document interfaces locally since schema doesn't export them
+interface LegalDocumentData {
+  id?: string;
+  title: string;
+  documentType: string;
+  jurisdiction?: string;
+  court?: string;
+  citation?: string;
+  fullCitation?: string;
+  docketNumber?: string;
+  dateDecided?: string;
+  datePublished?: string;
+  fullText?: string;
+  content: string;
+  summary?: string;
+  headnotes?: string;
+  keywords?: string[];
+  topics?: string[];
+  parties?: any;
+  judges?: string[];
+  attorneys?: any;
+  metadata?: any;
+}
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
   const startTime = Date.now();
-  
+
   try {
     // Authentication required for document indexing
-    const user = await authenticate(cookies);
+    const { user } = await requireAuth({ cookies } as any);
     if (!user) {
       return json({
         success: false,
@@ -35,8 +58,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const { documents, mode = 'single' } = requestData;
 
     // Handle both single document and bulk processing
-    const documentsToProcess = mode === 'bulk' && Array.isArray(documents) 
-      ? documents 
+    const documentsToProcess = mode === 'bulk' && Array.isArray(documents)
+      ? documents
       : [requestData];
 
     const results = [];
@@ -48,7 +71,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       try {
         const result = await processDocument(docData, user.id);
         results.push(result);
-        
+
         if (result.success) {
           totalChunks += result.chunksCreated;
           successCount++;
@@ -85,7 +108,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
   } catch (error: any) {
     console.error('Document Indexing API Error:', error);
-    
+
     return json({
       success: false,
       error: 'Failed to process document indexing request',
@@ -177,7 +200,7 @@ async function processDocument(docData: any, userId: string): Promise<{
 
   } else {
     // Create new document
-    const newDocData: NewLegalDocument = {
+    const newDocData: LegalDocumentData = {
       title: docData.title,
       documentType: docData.documentType,
       jurisdiction: docData.jurisdiction,
@@ -281,7 +304,7 @@ export const GET: RequestHandler = async ({ url }) => {
     } else {
       // Get overall indexing statistics
       const stats = await enhancedRAGPipeline.getSystemStats();
-      
+
       return json({
         success: true,
         systemStats: stats

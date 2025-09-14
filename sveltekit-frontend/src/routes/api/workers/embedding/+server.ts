@@ -218,7 +218,8 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
 
     // Queue job
     const ok = await rabbitMQService.publish(
-      payload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING : QUEUES.DOCUMENT_EMBEDDING,
+      'embeddings', // exchange name
+      payload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING : QUEUES.DOCUMENT_EMBEDDING, // routing key
       {
         type: jobType,
         payload,
@@ -279,7 +280,8 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
 
     // Queue bulk job
     const ok = await rabbitMQService.publish(
-      'legal_ai.embedding.bulk', // Use dedicated bulk queue
+      'embeddings', // exchange name
+      'legal_ai.embedding.bulk', // routing key - Use dedicated bulk queue
       {
         type: jobType,
         payload,
@@ -352,7 +354,8 @@ async function testWorker(request: Request): Promise<Response> {
 
     // Queue test job
     const ok = await rabbitMQService.publish(
-      testPayload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING : QUEUES.DOCUMENT_EMBEDDING,
+      'embeddings', // exchange name
+      testPayload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING : QUEUES.DOCUMENT_EMBEDDING, // routing key
       {
         type: `test_${testPayload.entity_type}_embedding`,
         payload: testPayload,

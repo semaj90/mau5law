@@ -113,9 +113,6 @@ export class WorkerPool {
 
 // Instantiate a shared pool export
 export const sharedWorkerPool = new WorkerPool();
-  processingTime: number;
-  workerId: string;
-}
 
 class WorkerInstance {
   public readonly id: string;

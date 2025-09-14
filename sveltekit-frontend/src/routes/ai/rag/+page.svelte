@@ -1,0 +1,212 @@
+<!--
+AI RAG Interface - Retrieval Augmented Generation for legal documents
+TODO: Implement RAG functionality, vector search, document context
+-->
+<script lang="ts">
+	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
+	import { Button } from '$lib/components/ui/enhanced-bits';
+	import * as Card from '$lib/components/ui/card';
+	import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
+	import { FileText, Brain, Search, Zap } from 'lucide-svelte';
+
+	let query = $state('');
+	let isSearching = $state(false);
+	let results = $state([]);
+
+	async function handleRAGSearch() {
+		if (!query.trim()) return;
+
+		isSearching = true;
+		try {
+			// TODO: Implement RAG search
+			// const response = await fetch('/api/ai/rag/search', {
+			// 	method: 'POST',
+			// 	headers: { 'Content-Type': 'application/json' },
+			// 	body: JSON.stringify({ query })
+			// });
+			// results = await response.json();
+
+			// Simulate search for now
+			setTimeout(() => {
+				results = [
+					{
+						id: 1,
+						title: 'Contract Law Precedent',
+						snippet: 'This case establishes...',
+						relevance: 0.95
+					},
+					{
+						id: 2,
+						title: 'Evidence Standards',
+						snippet: 'The court ruled that...',
+						relevance: 0.87
+					}
+				];
+				isSearching = false;
+			}, 1500);
+		} catch (error) {
+			console.error('RAG search failed:', error);
+			isSearching = false;
+		}
+	}
+
+	const features = [
+		{
+			icon: Brain,
+			title: 'Intelligent Search',
+			description: 'AI-powered document retrieval with semantic understanding'
+		},
+		{
+			icon: FileText,
+			title: 'Context Aware',
+			description: 'Retrieves relevant legal documents based on case context'
+		},
+		{
+			icon: Search,
+			title: 'Vector Search',
+			description: 'Advanced vector similarity search across legal corpus'
+		},
+		{
+			icon: Zap,
+			title: 'Fast Results',
+			description: 'Sub-second response times with cached embeddings'
+		}
+	];
+</script>
+
+<EssentialRoutePage
+	pageTitle="RAG Interface"
+	description="Retrieval Augmented Generation for Legal Research"
+	showBackButton={true}
+>
+	{#snippet children()}
+		<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+			<!-- Search Interface -->
+			<div class="lg:col-span-2">
+				<Card.Root class="nes-container is-rounded mb-6">
+					<Card.Header>
+						<Card.Title class="nes-text is-primary">
+							Legal Document Search
+						</Card.Title>
+					</Card.Header>
+					<Card.Content>
+						<div class="space-y-4">
+							<div>
+								<label class="nes-text text-sm mb-2 block">
+									Enter your legal question or search query
+								</label>
+								<div class="flex gap-2">
+									<input
+										class="nes-input flex-1"
+										type="text"
+										bind:value={query}
+										placeholder="What evidence supports the prosecution's case?"
+										onkeydown={(e) => e.key === 'Enter' && handleRAGSearch()}
+									/>
+									<Button
+										class="nes-btn is-primary"
+										onclick={handleRAGSearch}
+										disabled={isSearching || !query.trim()}
+									>
+										{#if isSearching}
+											<div class="animate-pulse">...</div>
+										{:else}
+											Search
+										{/if}
+									</Button>
+								</div>
+							</div>
+
+							<!-- Results -->
+							{#if results.length > 0}
+								<div class="space-y-3">
+									<h3 class="nes-text is-success text-sm">
+										Found {results.length} relevant documents
+									</h3>
+									{#each results as result}
+										<div class="nes-container with-title is-centered">
+											<p class="title">{result.title}</p>
+											<p class="text-sm">{result.snippet}</p>
+											<div class="flex justify-between items-center mt-2">
+												<span class="nes-badge is-success">
+													{Math.round(result.relevance * 100)}% match
+												</span>
+												<Button size="sm" class="nes-btn">
+													View Document
+												</Button>
+											</div>
+										</div>
+									{/each}
+								</div>
+							{/if}
+						</div>
+					</Card.Content>
+				</Card.Root>
+
+				<!-- Chat Interface -->
+				<Card.Root class="nes-container is-rounded">
+					<Card.Header>
+						<Card.Title class="nes-text is-primary">
+							RAG Assistant Chat
+						</Card.Title>
+					</Card.Header>
+					<Card.Content class="p-0">
+						<div class="h-96">
+							<RAGAssistantChat />
+						</div>
+					</Card.Content>
+				</Card.Root>
+			</div>
+
+			<!-- Features Sidebar -->
+			<div>
+				<Card.Root class="nes-container is-rounded">
+					<Card.Header>
+						<Card.Title class="nes-text is-primary text-sm">
+							RAG Features
+						</Card.Title>
+					</Card.Header>
+					<Card.Content>
+						<div class="space-y-4">
+							{#each features as feature}
+								<div class="border-b border-gray-600 pb-3 last:border-0">
+									<div class="flex items-center gap-2 mb-2">
+										<svelte:component this={feature.icon} class="w-4 h-4" />
+										<h4 class="nes-text text-xs font-bold">
+											{feature.title}
+										</h4>
+									</div>
+									<p class="nes-text is-disabled text-xs leading-relaxed">
+										{feature.description}
+									</p>
+								</div>
+							{/each}
+						</div>
+					</Card.Content>
+				</Card.Root>
+
+				<!-- Quick Actions -->
+				<Card.Root class="nes-container is-rounded mt-6">
+					<Card.Header>
+						<Card.Title class="nes-text is-primary text-sm">
+							Quick Actions
+						</Card.Title>
+					</Card.Header>
+					<Card.Content>
+						<div class="space-y-2">
+							<Button class="nes-btn w-full text-xs" size="sm">
+								Search Similar Cases
+							</Button>
+							<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
+								Browse Legal Database
+							</Button>
+							<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
+								View Search History
+							</Button>
+						</div>
+					</Card.Content>
+				</Card.Root>
+			</div>
+		</div>
+	{/snippet}
+</EssentialRoutePage>

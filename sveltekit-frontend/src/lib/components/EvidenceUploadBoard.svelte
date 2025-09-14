@@ -1,16 +1,9 @@
 <!-- Evidence Upload Board Component with AI Analysis -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import { Textarea } from '$lib/components/ui/textarea';
+  // import { Button } from '$lib/components/ui/enhanced-bits'; // Temporarily disabled due to SSR issues
+  // import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits'; // Temporarily disabled due to SSR issues
+  // import { Textarea } from '$lib/components/ui/textarea'; // Replaced with native HTML textarea
   import { AIAnalysisService } from '$lib/services/ai-analysis';
   let files = $state<File[]>([]);
   let analysis = $state('');
@@ -38,11 +31,11 @@
 </script>
 
 <div class="p-6 space-y-6">
-  <NesCard>
+  <div class="nes-container is-dark">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary">Evidence Upload & AI Analysis</h3>
     </div>
-    <div class="yorha-panel-content" class="space-y-4">
+    <div class="yorha-panel-content space-y-4">
       <input 
         type="file" 
         change={handleFileUpload}
@@ -64,13 +57,13 @@
       {/if}
       
       {#if analysis}
-        <div class="border rounded-lg p-4 bg-gray-50">
-          <h3 class="font-semibold mb-2">AI Analysis:</h3>
-          <Textarea readonly value={analysis} rows={10} />
+        <div class="nes-container is-rounded">
+          <h4 class="nes-text is-success">AI Analysis:</h4>
+          <textarea readonly class="nes-textarea" rows={10}>{analysis}</textarea>
         </div>
       {/if}
     </div>
-  </NesCard>
+  </div>
 </div>
 
 

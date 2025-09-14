@@ -81,7 +81,6 @@ export const soraGraphTraversal: SoraGraphTraversal = {
 };
 
 export default {
-  optimizedOrchestrator,
   soraMoogleIntegration,
-  soraGraphTraversal
+  soraGraphTraversal,
 };

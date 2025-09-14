@@ -3,6 +3,8 @@
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
   import { ButtonBits } from '$lib/components/ui/bits-ui';
+  import AccessibilitySettings from '$lib/components/ui/AccessibilitySettings.svelte';
+  import { accessibilityService } from '$lib/services/accessibility-service';
 
   interface Props {
     user?: any;
@@ -20,6 +22,7 @@
   let isDemo = $derived(currentPath.startsWith('/demo'));
   let isAuth = $derived(currentPath.startsWith('/auth'));
   let isAdmin = $derived(currentPath.startsWith('/admin'));
+  let showAccessibilitySettings = $state(false);
 
   // Main navigation items
   const mainNavItems = [
@@ -56,6 +59,21 @@
 
   function toggleSidebar() {
     sidebarOpen = !sidebarOpen;
+  }
+
+  function toggleAccessibilitySettings() {
+    showAccessibilitySettings = !showAccessibilitySettings;
+    if (showAccessibilitySettings) {
+      accessibilityService.announceToScreenReader('Accessibility settings opened');
+    }
+  }
+
+  function handleKeyboardShortcut(event: KeyboardEvent) {
+    // Alt + A: Open accessibility settings
+    if (event.altKey && event.key.toLowerCase() === 'a') {
+      event.preventDefault();
+      toggleAccessibilitySettings();
+    }
   }
 </script>
 
@@ -135,6 +153,16 @@
 
       <!-- User Menu / Auth ButtonBitss -->
       <div class="navbar-end">
+        <!-- Accessibility Settings Button -->
+        <button
+          class="accessibility-btn nes-btn is-primary"
+          onclick={toggleAccessibilitySettings}
+          aria-label="Open accessibility settings (Alt+A)"
+          title="Accessibility Settings (Alt+A)"
+        >
+          ♿
+        </button>
+
         {#if user}
           <div class="user-menu">
             <span class="user-name">{user.name || user.email}</span>
@@ -157,6 +185,12 @@
     </div>
   </div>
 </header>
+
+<!-- Accessibility Settings Modal -->
+<AccessibilitySettings bind:isOpen={showAccessibilitySettings} />
+
+<!-- Global keyboard shortcut handler -->
+<svelte:window onkeydown={handleKeyboardShortcut} />
 
 <style>
   .navbar-header {
@@ -278,6 +312,33 @@
     color: var(--color-text-secondary);
     font-size: 0.875rem;
     display: none;
+  }
+
+  .accessibility-btn {
+    padding: 0.5rem;
+    font-size: 1.25rem;
+    border-radius: 0.375rem;
+    background: transparent;
+    border: 1px solid var(--color-primary, #4a90e2);
+    color: var(--color-primary, #4a90e2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .accessibility-btn:hover {
+    background: var(--color-primary, #4a90e2);
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .accessibility-btn:focus-visible {
+    outline: 2px solid var(--color-primary, #4a90e2);
+    outline-offset: 2px;
   }
 
   @media (min-width: 768px) {
