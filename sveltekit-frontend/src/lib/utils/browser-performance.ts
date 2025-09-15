@@ -109,7 +109,7 @@ export class BrowserPerformanceMonitor {
 
 // Browser error handling and reporting
 export class BrowserErrorHandler {
-  private errors: Array< = [];
+  private errors: Array<any> = [];
 
   constructor() {
     this.initializeErrorHandling();

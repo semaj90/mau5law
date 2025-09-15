@@ -273,7 +273,7 @@ class ParallelCacheOrchestrator {
     }
 
     try {
-      const results: Array< = [];
+      const results: Array<any> = [];
       
       // Search for cached shaders
       for (const key of request.keys) {
@@ -309,7 +309,7 @@ class ParallelCacheOrchestrator {
     request: ParallelCacheRequest
   ): Promise<Array<any> {
     try {
-      const results: Array< = [];
+      const results: Array<any> = [];
       
       for (const key of request.keys) {
         const cacheResult = await (cacheActor as any).send({ 
@@ -352,7 +352,7 @@ class ParallelCacheOrchestrator {
       }
 
       // Execute RAG queries using cached embeddings
-      const results: Array< = [];
+      const results: Array<any> = [];
       
       for (const key of request.keys) {
         // Simulate RAG lookup using cached embeddings

@@ -404,7 +404,7 @@ export class WebASMRankingCache {
       );
 
       // Read results from WASM memory
-      const results: Array< = [];
+      const results: Array<any> = [];
       const resultData = new Float32Array(
         wasmMemory.buffer,
         resultPtr,
@@ -539,7 +539,7 @@ export class WebASMRankingCache {
     rankings: Uint16Array,
     summary: Float32Array
   ): Array< {
-    const results: Array< = [];
+    const results: Array<any> = [];
     
     for (let i = 0; i < rankings.length; i += 2) {
       results.push({
@@ -588,7 +588,7 @@ export class WebASMRankingCache {
       rankingsCount * 2
     );
 
-    const rankings: Array< = [];
+    const rankings: Array<any> = [];
     for (let i = 0; i < rankingsCount; i++) {
       rankings.push({
         index: Math.floor(rankingDataView[i * 2]),

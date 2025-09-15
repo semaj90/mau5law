@@ -4,21 +4,21 @@
  * Integrates with Nintendo memory architecture and ShaderBundle system
  */
 
-import { telemetryBus, measureAsync } from '$lib/telemetry/event-bus.js';
-import type { 
-  VectorEncodingConfig, 
-  VectorDimensions, 
+import { telemetryBus, measureAsync } from '$lib/telemetry/event-bus';
+import type {
+  VectorEncodingConfig,
+  VectorDimensions,
   QuantizationLevel,
   GPUPerformanceMetrics,
   AdaptiveScalingMode,
-  ShaderBundle 
-} from '$lib/gpu/types.js';
-import { 
-  validateVectorDimensions, 
+  ShaderBundle
+} from '$lib/gpu/types';
+import {
+  validateVectorDimensions,
   calculateOptimalQuantization,
-  adaptiveScalingDecision 
-} from '$lib/gpu/types.js';
-import type { HybridGPUContext } from '$lib/gpu/hybrid-gpu-context.js';
+  adaptiveScalingDecision
+} from '$lib/gpu/types';
+import type { HybridGPUContext } from '$lib/gpu/hybrid-gpu-context';
 
 export interface VectorMetadata {
   id: string;

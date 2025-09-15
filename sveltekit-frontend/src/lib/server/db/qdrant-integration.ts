@@ -289,7 +289,7 @@ export class QdrantPostgreSQLService {
       useQdrant = true,
     } = options;
 
-    const results: Array< = [];
+    const results: Array<any> = [];
 
     let postgresqlTime: number | undefined;
     let qdrantTime: number | undefined;

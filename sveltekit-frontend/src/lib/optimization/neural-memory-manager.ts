@@ -52,7 +52,7 @@ export class NeuralMemoryManager extends EventEmitter {
   private memoryPools: Map<string, MemoryPool> = new Map();
   private currentLOD: LODLevel;
   private clusters: Map<string, ClusterMetrics> = new Map();
-  private usageHistory: Array< = [];
+  private usageHistory: Array<any> = [];
   private neuralWeights: number[][][] = [];
   private maxMemoryMB: number;
   private isTraining = false;

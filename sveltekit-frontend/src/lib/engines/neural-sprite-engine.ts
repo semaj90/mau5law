@@ -698,7 +698,7 @@ export class NeuralSpriteEngine {
     }));
 
     // Generate connections between nearby nodes
-    const connections: Array< =
+    const connections: Array<any> =
       [];
     for (const nodeA of this.somNodes.values()) {
       for (const nodeB of this.somNodes.values()) {

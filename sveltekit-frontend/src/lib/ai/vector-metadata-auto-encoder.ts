@@ -543,7 +543,7 @@ class VectorMetadataAutoEncoder {
     encodedMetadata: EncodedVectorMetadata,
     targetIndexes?: string[]
   ): Promise<Array<any> {
-    const operations: Array< = [];
+    const operations: Array<any> = [];
     const indexesToUpdate = targetIndexes || Array.from(this.searchIndexes.keys());
 
     for (const indexId of indexesToUpdate) {

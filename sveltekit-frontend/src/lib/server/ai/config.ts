@@ -398,7 +398,7 @@ export function validateDocumentSize(content: string): void {
 export function extractLegalEntities(
   text: string
 ): Array< {
-  const entities: Array< = [];
+  const entities: Array<any> = [];
 
   // Case law citations
   const casePattern = /\b\d{1,4}\s+[A-Z][a-z]+\s+\d{1,4}\b/g;

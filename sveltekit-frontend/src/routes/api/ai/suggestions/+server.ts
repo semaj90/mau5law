@@ -388,7 +388,7 @@ function generateRuleBasedSuggestions(
   reportType: string,
   contentLower: string
 ) {
-  const suggestions: Array< = [];
+  const suggestions: Array<any> = [];
 
   if (reportType === 'prosecution_memo') {
     if (contentLower.includes('suspect') || contentLower.includes('defendant')) {
@@ -535,7 +535,7 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
 }
 
 async function generateContextualSuggestions(content: string, context: any): Promise<any> {
-  const suggestions: Array< = [];
+  const suggestions: Array<any> = [];
 
   try {
     // If we have case context, suggest case-specific improvements

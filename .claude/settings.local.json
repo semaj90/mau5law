@@ -242,7 +242,9 @@
       "Bash(export PGPASSWORD=postgres)",
       "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5434/legal_ai_db\" npx drizzle-kit push:pg)",
       "Bash(npx drizzle-kit:*)",
-      "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" npx tsx src/lib/server/db/seed.ts)"
+      "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" npx tsx src/lib/server/db/seed.ts)",
+      "Bash(./cmd/cuda-service/cuda-service.exe:*)",
+      "Bash(wsl:*)"
     ],
     "deny": [],
     "ask": []

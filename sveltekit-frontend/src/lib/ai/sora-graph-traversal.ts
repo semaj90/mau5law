@@ -448,7 +448,7 @@ export class SoraGraphTraversal {
     if (!startNode) return paths;
 
     // Priority queue for best-first search
-    const priorityQueue: Array< = [];
+    const priorityQueue: Array<any> = [];
     priorityQueue.push({
       node: startNode,
       path: [startNode],
@@ -616,7 +616,7 @@ export class SoraGraphTraversal {
           LIMIT 20
         `, { nodeId: parseInt(nodeId) });
 
-        const neighbors: Array< = [];
+        const neighbors: Array<any> = [];
 
         for (const record of (result as { records?: any; id?: any; rerankScore?: any }).records) {
           const targetNode = record.get('m');

@@ -414,7 +414,7 @@ export class SelfOrganizingMapRAG {
     console.log(`🔍 Performing SOM-enhanced semantic search...`);
 
     // Find best matching SOM nodes
-    const candidateNodes: Array< = [];
+    const candidateNodes: Array<any> = [];
 
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
@@ -438,7 +438,7 @@ export class SelfOrganizingMapRAG {
     });
 
     // Score documents using boolean patterns and legal context
-    const scoredDocuments: Array< =
+    const scoredDocuments: Array<any> =
       [];
 
     candidateDocuments.forEach((docId) => {
@@ -645,7 +645,7 @@ export class SelfOrganizingMapRAG {
    * Get cluster visualization data for UI
    */
   getVisualizationData(): Array< {
-    const vizData: Array< = [];
+    const vizData: Array<any> = [];
 
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {

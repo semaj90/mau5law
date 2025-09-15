@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     
     const now = Date.now();
-    const entries: Array< = [];
+    const entries: Array<any> = [];
     
     // Get recent entries matching prefix
     for (const [key, cached] of memoryCache.entries()) {

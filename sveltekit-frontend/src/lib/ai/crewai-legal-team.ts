@@ -530,7 +530,7 @@ class CrewAILegalTeam {
   ): Promise<void> {
     // All agents work on the same tasks and reach consensus
     for (const task of crew.tasks) {
-      const agentOutputs: Array< = [];
+      const agentOutputs: Array<any> = [];
 
       // Get output from each agent
       for (const agent of crew.members) {

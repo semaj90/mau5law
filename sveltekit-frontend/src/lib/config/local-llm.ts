@@ -141,7 +141,7 @@ export async function startLocalServices(): Promise<any> {
   const { spawn } = await import("child_process");
   const status = checkLocalInstallations();
 
-  const services: Array< = [];
+  const services: Array<any> = [];
 
   // Start Ollama if available
   if (status.ollama.available) {

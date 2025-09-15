@@ -291,7 +291,7 @@ class SIMDBodyParser {
    * Extract legal entities with optimized regex
    */
   private extractLegalEntities(content: string): Array< {
-    const entities: Array< = [];
+    const entities: Array<any> = [];
     
     const patterns = [
       { pattern: /\b\d+\s+U\.S\.C\.\s+§?\s*\d+/g, type: 'statute', confidence: 0.95 },
@@ -321,7 +321,7 @@ class SIMDBodyParser {
    * Extract legal citations with court identification
    */
   private extractCitations(content: string): Array< {
-    const citations: Array< = [];
+    const citations: Array<any> = [];
     const citationPattern = /(\d+)\s+(U\.S\.|F\.\d+d|S\.Ct\.)\s+(\d+)/g;
     
     let match;

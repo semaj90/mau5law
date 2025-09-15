@@ -220,7 +220,7 @@ export class SoraGraphTraversal {
   private async semanticSimilarityTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
-    const paths: Array< = [];
+    const paths: Array<any> = [];
 
     let nodesVisited = 0;
     let edgesTraversed = 0;
@@ -307,7 +307,7 @@ export class SoraGraphTraversal {
   private async jsSemanticTraversal(query: GraphTraversalQuery, embeddings: Map<string, Float32Array>): Promise<any> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
-    const paths: Array< = [];
+    const paths: Array<any> = [];
 
     let nodesVisited = 0;
     let edgesTraversed = 0;
@@ -349,9 +349,9 @@ export class SoraGraphTraversal {
   private async breadthFirstTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
-    const paths: Array< = [];
+    const paths: Array<any> = [];
 
-    const queue: Array< = [];
+    const queue: Array<any> = [];
     const visited = new Set<string>();
 
     let nodesVisited = 0;
@@ -432,9 +432,9 @@ export class SoraGraphTraversal {
   private async depthFirstTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
-    const paths: Array< = [];
+    const paths: Array<any> = [];
 
-    const stack: Array< = [];
+    const stack: Array<any> = [];
     const visited = new Set<string>();
 
     let nodesVisited = 0;
@@ -518,7 +518,7 @@ export class SoraGraphTraversal {
     // Use Dijkstra's algorithm for weighted shortest paths
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
-    const paths: Array< = [];
+    const paths: Array<any> = [];
 
     const distances = new Map<string, number>();
     const previous = new Map<string, string | null>();
@@ -789,7 +789,7 @@ export class SoraGraphTraversal {
 
   private async getNodeNeighbors(nodeId: string, relationshipTypes?: string[]): Promise<Array<any> {
     // Mock neighbor retrieval
-    const neighbors: Array< = [];
+    const neighbors: Array<any> = [];
 
     for (let i = 0; i < Math.floor(Math.random() * 5) + 1; i++) {
       const neighborId = `neighbor_${nodeId}_${i}`;

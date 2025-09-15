@@ -34,7 +34,7 @@ class MonitoringService extends EventEmitter {
   private alerts: AlertRule[] = [];
   private healthChecks: Map<string, () => Promise<boolean>> = new Map();
   private performanceHistory: number[] = [];
-  private errorLog: Array< = [];
+  private errorLog: Array<any> = [];
   private requestTracking: Map<string, any> = new Map();
 
   private counters = {

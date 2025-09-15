@@ -200,7 +200,7 @@ function parseRangeHeader(range: string, fileSize: number): Array< | null {
     }
 
     const ranges = range.slice(6).split(',').map(r => r.trim());
-    const parsedRanges: Array< = [];
+    const parsedRanges: Array<any> = [];
 
     for (const rangeStr of ranges) {
       const [startStr, endStr] = rangeStr.split('-');
