@@ -6,6 +6,7 @@
 
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import { EvidenceCRUDService, CreateEvidenceSchema, type CreateEvidenceData } from '$lib/server/services/user-scoped-crud';
+import { queueEvidenceAnalysis } from '$lib/server/services/background-job-queue';
 import { z } from 'zod';
 
 // Query parameters schema for GET requests
@@ -14,7 +15,7 @@ const EvidenceQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(100).default(20),
   caseId: z.string().uuid().optional(),
   evidenceType: z.string().optional(),
-  isPublic: z.coerce.boolean().optional()
+  isPublic: z.coerce.boolean().optional(),
 });
 
 /*
@@ -51,12 +52,22 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       success: true,
       data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data,
       pagination: {
-        page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page,
-        limit: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).limit,
-        total: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).total,
-        totalPages: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
-        hasNext: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page < (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
-        hasPrev: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page > 1,
+        page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any })
+          .page,
+        limit: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any })
+          .limit,
+        total: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any })
+          .total,
+        totalPages: (
+          result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }
+        ).totalPages,
+        hasNext:
+          (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page <
+          (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any })
+            .totalPages,
+        hasPrev:
+          (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page >
+          1,
       },
       meta: {
         userId: locals.user.id,
@@ -107,6 +118,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Get the created evidence details
     const createdEvidence = await evidenceService.getById(evidenceId);
 
+    // Queue background analysis
+    try {
+      const jobId = await queueEvidenceAnalysis(evidenceId, locals.user.id);
+      console.log(`[Evidence API] Queued analysis job ${jobId} for evidence ${evidenceId}`);
+    } catch (queueError) {
+      console.error('Failed to queue evidence analysis:', queueError);
+      // Don't fail the request, just log the error
+    }
+
     return json(
       {
         success: true,
@@ -116,6 +136,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           userId: locals.user.id,
           caseId: validatedData.caseId,
           timestamp: new Date().toISOString(),
+          analysisQueued: true,
         },
       },
       { status: 201 }

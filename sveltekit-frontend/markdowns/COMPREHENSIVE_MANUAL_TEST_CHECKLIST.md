@@ -22,7 +22,7 @@ npm run dev
 
 - Navigate to `http://localhost:5173`
 - **Expected Result:** ✅ Homepage loads with modern CSS styling
-- **Check for:** PicoCSS, UnoCSS, or Tailwind styling
+- **Check for:** UnoCSS,
 - **Status:** [ ] Pass [ ] Fail
 
 ---
@@ -221,7 +221,7 @@ Use the enhanced SearchBar component:
 
 ## 🎨 **Phase 10: CSS Framework Integration**
 
-### 10.1 PicoCSS/CSS Framework
+### 10.1 uno CSS Framework
 
 - **Check:** Inspect elements for framework classes
 - **Look for:** Modern button styles, form styling, color themes

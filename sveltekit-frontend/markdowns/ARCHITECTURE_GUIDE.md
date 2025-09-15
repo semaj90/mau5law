@@ -30,8 +30,8 @@
 │  AI/Vector Operations               │
 │  ├── Auto-tagging → pgvector        │
 │  ├── Semantic Search → pgvector     │
-│  ├── Document Embeddings → nomic-embed-text -> Qdrant   │
-│  └── AI Analysis →Local llm gemma3     │
+│  ├── Document Embeddings → gemma embeds -> nomic-embed-text -> Qdrant   │
+│  └── AI Analysis →Local llm gemma3:legal-latest  │
 ├─────────────────────────────────────┤
 │         Database Layer              │
 │  ├── PostgreSQL (CRUD)              │
@@ -220,7 +220,7 @@ docker-compose up -d  # Now limited to 768MB total
 
 ```bash
 # .env.docker
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/prosecutor_db"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/legal_ai_db"
 QDRANT_URL="http://localhost:6333"
 NODE_ENV="development"
 ```

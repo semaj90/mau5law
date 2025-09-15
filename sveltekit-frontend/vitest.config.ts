@@ -6,15 +6,17 @@ export default defineConfig({
   plugins: [sveltekit()],
   test: {
     include: ['src/**/*.{test,spec}.{js,ts}', 'tests/**/*.{test,spec}.{js,ts}'],
-    environment: 'jsdom',
+    environment: 'node', // Changed to node for integration tests
     globals: true,
-    setupFiles: ['src/lib/services/__tests__/setup.ts'],
+    setupFiles: ['src/tests/setup.ts'], // Updated setup file path
+    testTimeout: 30000, // Increased timeout for integration tests
+    hookTimeout: 10000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       exclude: [
         'node_modules/**',
-        'src/lib/services/__tests__/**',
+        'src/tests/**',
         '**/*.d.ts',
         'src/app.html',
         'src/lib/server/**', // Exclude server-side code from browser tests
