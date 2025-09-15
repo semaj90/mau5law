@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package legal;
+
+service LegalAI {
+  rpc AnalyzeDocument (DocumentRequest) returns (DocumentAnalysis);
+  rpc ExtractEntities (DocumentRequest) returns (EntityResponse);
+  rpc QueryCaselaw (CaselawRequest) returns (CaselawResponse);
+}
+
+message DocumentRequest {
+  string content = 1;
+  string document_type = 2;
+  string model = 3;
+}
+
+message DocumentAnalysis {
+  string summary = 1;
+  repeated string key_points = 2;
+  repeated RiskFactor risks = 3;
+  float confidence = 4;
+}
+
+message EntityResponse {
+  repeated LegalEntity entities = 1;
+  repeated string dates = 2;
+  repeated string parties = 3;
+}
+
+message LegalEntity {
+  string type = 1;
+  string value = 2;
+  float confidence = 3;
+}
+
+message RiskFactor {
+  string category = 1;
+  string description = 2;
+  string severity = 3;
+}
+
+message CaselawRequest {
+  string query = 1;
+  string jurisdiction = 2;
+  int32 max_results = 3;
+}
+
+message CaselawResponse {
+  repeated CaseReference cases = 1;
+  int32 total_found = 2;
+}
+
+message CaseReference {
+  string citation = 1;
+  string title = 2;
+  string summary = 3;
+  string court = 4;
+  string date = 5;
+}

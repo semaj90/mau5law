@@ -149,7 +149,7 @@ export async function performLegalVectorSearch(
   console.log('⚡ Vector similarity compute shader created');
   
   // Step 4: Filter results by threshold
-  const results: Array< = [];
+  const results: Array<any> = [];
   
   // Simulate results for demo
   documentEmbeddings.forEach((_, documentId) => {

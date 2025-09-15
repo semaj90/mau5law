@@ -276,7 +276,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
   const startTime = Date.now();
   const { concurrency = 3, failFast = false } = options;
 
-  const results: Array< = [];
+  const results: Array<any> = [];
 
   // Process in batches to avoid overwhelming the endpoint
   for (let i = 0; i < buffers.length; i += concurrency) {

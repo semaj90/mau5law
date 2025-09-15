@@ -88,7 +88,7 @@ export class HeadlessLegalProcessorFactory {
   private static instance: HeadlessLegalProcessorFactory;
   private device: GPUDevice | null = null;
   private isInitialized = false;
-  private processingQueue: Array< = [];
+  private processingQueue: Array<any> = [];
 
   private constructor() {}
 

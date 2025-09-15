@@ -1593,7 +1593,7 @@ export class MoogleGraphSynthesizer {
   ): Promise<Map<string, { x: number; y: number }>> {
     try {
       // Create embeddings for SOM analysis
-      const nodeEmbeddings: Array< = [];
+      const nodeEmbeddings: Array<any> = [];
 
       for (const [nodeId, node] of nodes) {
         if (node.embedding) {

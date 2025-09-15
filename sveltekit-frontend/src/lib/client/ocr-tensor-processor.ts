@@ -493,7 +493,7 @@ export class OCRTensorProcessor {
     const chunkSize = this.getOptimalChunkSize();
     
     // Create processing queue with priority scheduling
-    const processingQueue: Array< = images.map((image, index) => ({
+    const processingQueue: Array<any> = images.map((image, index) => ({
       image,
       priority: this.calculateProcessingPriority(image, index),
       options

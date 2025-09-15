@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Fetch embeddings from multiple sources for redundancy
     let embeddings: number[][] = [];
-    let documentMetadata: Array< = [];
+    let documentMetadata: Array<any> = [];
 
     try {
       // Primary: PostgreSQL with pgvector

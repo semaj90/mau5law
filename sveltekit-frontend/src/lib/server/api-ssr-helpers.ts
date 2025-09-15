@@ -66,7 +66,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
       });
 
       if (gpuResult.result?.serialized) {
-        sanitizedData = gpuResult.(result as { serialized?: any }).serialized[0].serialized;
+        sanitizedData = gpuResult.result?.serialized?.[0]?.serialized;
       } else {
         sanitizedData = sanitizeForSSR(data);
       }

@@ -73,7 +73,7 @@ export class QLoRAOllamaOrchestrator {
   
   // CrewAI-style agent coordination
   private agentCrew: Map<string, LegalAgent[]> = new Map();
-  private workflowHistory: Array< = [];
+  private workflowHistory: Array<any> = [];
 
   constructor(ollamaEndpoint = 'http://localhost:11434') {
     this.ollamaEndpoint = ollamaEndpoint;

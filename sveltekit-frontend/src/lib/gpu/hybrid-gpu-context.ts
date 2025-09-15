@@ -111,7 +111,7 @@ export class HybridGPUContext {
 
       this.gpuDevice = await adapter.requestDevice({
         requiredFeatures: [],
-        requiredLimits: Record<string, any>
+        requiredLimits: {}
       });
 
       // Configure canvas for WebGPU

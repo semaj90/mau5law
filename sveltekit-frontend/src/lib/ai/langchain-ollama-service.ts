@@ -85,7 +85,7 @@ export class LangChainOllamaService {
     // Initialize Chat Model with CUDA optimization
     this.chatModel = new ChatOllama({
       baseUrl: this.config.ollamaBaseUrl,
-      model: this.config?.model || "unknown" // @ts-ignore - Model property access,
+      model: this.config?.model || 'gemma3:2b',
       temperature: this.config.temperature,
       // Note: numCtx, useGpu, numGpu, numThread may not be available in current ChatOllama version
     });
@@ -123,7 +123,7 @@ export class LangChainOllamaService {
     try {
       // Split document into chunks
       const chunks = await this.textSplitter.splitText(content);
-      
+
       // Create LangChain documents
       const documents = chunks.map((chunk, index) => ({
         pageContent: chunk,
@@ -254,9 +254,7 @@ export class LangChainOllamaService {
 
     // Filter by document types
     if (context.documentTypes && context.documentTypes.length > 0) {
-      filtered = filtered.filter(doc => 
-        context.documentTypes.includes(doc.metadata.type)
-      );
+      filtered = filtered.filter((doc) => context.documentTypes.includes(doc.metadata.type));
     }
 
     // Filter by date range
@@ -275,7 +273,7 @@ export class LangChainOllamaService {
       .map(doc => `[Source: ${doc.metadata.chunkId}]\n${doc.pageContent}`)
       .join('\n\n');
 
-    return `You are a legal AI assistant specializing in document analysis and legal research. 
+    return `You are a legal AI assistant specializing in document analysis and legal research.
 Use the provided context to answer the question accurately and professionally.
 
 Context:
@@ -295,12 +293,12 @@ Answer:`;
 
   private calculateConfidence(documents: LangChainDocument[], question: string): number {
     if (documents.length === 0) return 0.1;
-    
+
     // Simple confidence calculation based on document count and relevance
     const avgScore = documents.reduce((sum, doc) => sum + (doc.metadata.score || 0.8), 0) / documents.length;
     const documentCountFactor = Math.min(documents.length / 5, 1.0);
     const questionLengthFactor = Math.min(question.length / 50, 1.0);
-    
+
     return Math.min(avgScore * documentCountFactor * questionLengthFactor, 0.95);
   }
 
@@ -324,8 +322,8 @@ Answer:`;
       config: this.config,
       isInitialized: this.isInitialized,
       vectorStoreSize: this.vectorStore?.memoryVectors?.length || 0,
-      model: this.config?.model || "unknown" // @ts-ignore - Model property access,
-      embeddingModel: this.config.embeddingModel
+      model: this.config?.model || 'gemma3:2b',
+      embeddingModel: this.config.embeddingModel,
     };
   }
 

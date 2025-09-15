@@ -5,8 +5,8 @@ import { EventEmitter } from "events";
  * Features: Auto-switching, predictive loading, self-prompting intelligence
  */
 
-import { OLLAMA_CONFIG, getModelConfig, getOptimalModel, selectBestAvailableModel, isLegalTask } from './ollama-config.js';
-import { getOptimalEmbeddingModel, getEmbeddingModelConfig } from '../../ai/embedding-config.js';
+import { OLLAMA_CONFIG, getModelConfig, getOptimalModel, selectBestAvailableModel, isLegalTask } from './ollama-config';
+import { getOptimalEmbeddingModel, getEmbeddingModelConfig } from '../../ai/embedding-config';
 import type {
   OllamaGenerateRequest,
   OllamaResponse,
@@ -67,7 +67,7 @@ class EnhancedOllamaService extends EventEmitter {
   private modelPerformance: Map<string, ModelPerformanceMetrics> = new Map();
   private userContexts: Map<string, UserContextData> = new Map();
   private preloadedModels: Set<string> = new Set();
-  private modelSwitchHistory: Array< = [];
+  private modelSwitchHistory: Array<any> = [];
 
   // Intelligent model variants support
   private modelVariants: Map<string, ModelVariant> = new Map();

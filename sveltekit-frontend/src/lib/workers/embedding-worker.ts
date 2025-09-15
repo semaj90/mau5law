@@ -191,7 +191,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     private async processSimilarity(task: SimilarityTask, taskId: string): Promise<Array<any> {
       const { queryEmbedding, targetEmbeddings, threshold, maxResults } = task;
       
-      const similarities: Array< = [];
+      const similarities: Array<any> = [];
       
       for (let i = 0; i < targetEmbeddings.length; i++) {
         const similarity = this.cosineSimilarity(queryEmbedding, targetEmbeddings[i]);

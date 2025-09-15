@@ -56,7 +56,7 @@ export interface SIMDQueryResult extends QueryResult {
 
 export class LangChainSIMDBridge {
   private config: SIMDLangChainConfig;
-  private processingQueue: Array< = [];
+  private processingQueue: Array<any> = [];
   private performanceMetrics = {
     totalProcessed: 0,
     averageCompressionRatio: 0,

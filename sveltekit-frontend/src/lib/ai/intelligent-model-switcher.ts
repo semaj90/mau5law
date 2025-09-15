@@ -55,7 +55,7 @@ export interface FastUXOptimization {
 class IntelligentModelSwitcher {
   private userProfiles = new Map<string, UserLearningProfile>();
   private fastUXOptimizations = new Map<string, FastUXOptimization>();
-  private switchHistory: Array< = [];
+  private switchHistory: Array<any> = [];
   
   // Learning and adaptation
   private adaptationThreshold = 0.7; // Switch if confidence > 70%

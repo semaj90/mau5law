@@ -51,7 +51,7 @@ export interface YoRHaPosition3D {
 
 export class YoRHaLayout3D extends THREE.Group {
   private options: YoRHaLayoutOptions;
-  private children3D: Array< = [];
+  private children3D: Array<any> = [];
   private bounds = new THREE.Box3();
   private needsLayout = true;
 
@@ -122,7 +122,7 @@ export class YoRHaLayout3D extends THREE.Group {
     let maxCrossSize = 0;
     let totalFlex = 0;
     
-    const childSizes: Array< = [];
+    const childSizes: Array<any> = [];
     
     this.children3D.forEach(({ component, layout }) => {
       const bounds = this.getComponentBounds(component);

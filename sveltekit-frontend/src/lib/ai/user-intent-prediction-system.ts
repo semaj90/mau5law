@@ -68,7 +68,7 @@ class UserIntentPredictionSystem {
   private userInsightCache = new Map<string, UserLearningInsights>();
 
   // Learning and adaptation
-  private feedbackHistory: Array< = [];
+  private feedbackHistory: Array<any> = [];
 
   constructor() {
     this.intentClassifier = new IntentClassifierModel();
@@ -618,7 +618,7 @@ class IntentClassifierModel {
 class SpellingCorrectionEngine {
   async correct(query: string): Promise<Array<any> {
     // Simplified spell checking
-    const corrections: Array< = [];
+    const corrections: Array<any> = [];
     const words = query.split(' ');
 
     const commonMisspellings: Record<string, string> = {
@@ -647,7 +647,7 @@ class SpellingCorrectionEngine {
 }
 class SynonymExpansionEngine {
   async expand(query: string, intent: string): Promise<Array<any> {
-    const expansions: Array< = [];
+    const expansions: Array<any> = [];
 
     const legalSynonyms: Record<string, string> = {
       'agreement': 'contract',

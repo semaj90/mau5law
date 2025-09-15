@@ -165,7 +165,7 @@ export class SecureStorageClient {
     onProgress?: (completed: number, total: number) => void
   ): Promise<any>> {
     const successful: UploadResponse[] = [];
-    const failed: Array< = [];
+    const failed: Array<any> = [];
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];

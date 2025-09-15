@@ -966,7 +966,7 @@ export class EnhancedLegalRAGPipeline {
       }
 
       // Auto-generate tags if enabled
-      let tags: Array< = [];
+      let tags: Array<any> = [];
       if (this.config.rag.enableAutoTagging) {
         try {
           tags = await this.generateAutoTags(content, documentType);

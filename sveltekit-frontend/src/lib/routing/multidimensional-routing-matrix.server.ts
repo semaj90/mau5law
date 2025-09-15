@@ -25,7 +25,7 @@ class MultidimensionalRoutingMatrix {
   private matrix: Map<string, Route[]> = new Map();
   private isInitialized = false;
   private efficiencyScore = 0.92; // Mock efficiency score
-  private routingHistory: Array< = [];
+  private routingHistory: Array<any> = [];
 
   constructor() {
     console.log("MultidimensionalRoutingMatrix (server-only) instance created.");

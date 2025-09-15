@@ -232,7 +232,7 @@ class VectorEmbeddingCache {
     threshold: number;
     filters?: any;
   }): Promise<Array<any> {
-    const results: Array< = [];
+    const results: Array<any> = [];
     
     for (const [key, embedding] of this.cache.entries()) {
       const similarity = this.calculateCosineSimilarity(queryEmbedding, embedding);

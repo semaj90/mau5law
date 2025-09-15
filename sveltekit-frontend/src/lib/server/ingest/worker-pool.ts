@@ -217,7 +217,7 @@ class WorkerInstance {
 }
 
 class PriorityQueue<T> {
-  private items: Array< = [];
+  private items: Array<any> = [];
 
   enqueue(item: T, priority = 0) {
     this.items.push({ priority, item });

@@ -105,7 +105,7 @@ export async function batchFetchMinioObjects(minioUrls: string[], options: {
   failFast?: boolean;
 } = {}) {
   const { concurrency = 5, failFast = false } = options;
-  const results: Array< = [];
+  const results: Array<any> = [];
 
   // Process in batches to avoid overwhelming MinIO
   for (let i = 0; i < minioUrls.length; i += concurrency) {

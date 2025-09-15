@@ -842,7 +842,7 @@ class EnhancedLokiDB {
     try {
       // Approximate current total
       let total = 0;
-      const sizes: Array< = [];
+      const sizes: Array<any> = [];
       for (const [name, stats] of this.cacheStats.collections) {
         const size = stats.memoryUsage || 0;
         total += size;

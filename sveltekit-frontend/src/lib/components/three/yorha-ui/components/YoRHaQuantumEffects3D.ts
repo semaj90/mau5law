@@ -44,10 +44,10 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
   private realityMatrix: THREE.Group | null = null;
   
   // Quantum simulation data
-  private quantumParticles: Array< = [];
+  private quantumParticles: Array<any> = [];
   
   // Consciousness simulation
-  private consciousnessNodes: Array< = [];
+  private consciousnessNodes: Array<any> = [];
   
   // Reality distortion effects
   private glitchMaterials: THREE.ShaderMaterial[] = [];
