@@ -16,8 +16,8 @@ Handles file uploads, evidence display, and drag-to-board functionality
   } = $props();
 
   // Component state using Svelte 5 $state()
-  let files: FileList | null = null;
-  let fileInput: HTMLInputElement | null = null;
+  let files = $state<FileList | null>(null);
+  let fileInput = $state<HTMLInputElement | null>(null);
   let isUploading = $state(false);
   let uploadProgress = $state(0);
   let draggedEvidence = $state<Evidence | null>(null);
