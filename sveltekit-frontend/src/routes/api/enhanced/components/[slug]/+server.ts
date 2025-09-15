@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { cacheManager } from '$lib/services/cache-layer-manager';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // Enhanced SSR Components API with multi-layer caching
 // Supports procedural rendering with CRUD-triggered cache invalidation

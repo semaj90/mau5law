@@ -3,7 +3,7 @@ import { productionLogger } from '$lib/server/production-logger';
 import { db } from '$lib/server/db/index';
 import { users } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 

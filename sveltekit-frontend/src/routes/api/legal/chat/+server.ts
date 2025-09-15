@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 
 // Legal AI Chat API - Context7 Enhanced with Gemma3 Legal

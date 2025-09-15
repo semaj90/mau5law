@@ -1,4 +1,4 @@
-import { rabbitMQService } from '../services/rabbitmq-service.js.js';
+import { rabbitMQService } from '../services/rabbitmq-service.js';
 import { db } from '$lib/server/db';
 import * as schema from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';

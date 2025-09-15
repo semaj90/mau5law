@@ -4,8 +4,8 @@
  * Integrates CUDA cache optimizer, parallel cache, and user learning for optimal UX
  */
 
-import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js.js';
-import { unifiedClientLLMOrchestrator } from './unified-client-llm-orchestrator.js.js';
+import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js';
+import { unifiedClientLLMOrchestrator } from './unified-client-llm-orchestrator.js';
 import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
 import { browser } from '$app/environment';
 

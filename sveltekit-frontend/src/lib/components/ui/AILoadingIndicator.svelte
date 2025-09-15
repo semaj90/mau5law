@@ -4,17 +4,31 @@
   import { cubicOut } from 'svelte/easing';
   import { Brain, Cpu, Zap, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-svelte';
 
-  let { isLoading } = $props();: boolean = false;
-  let { title } = $props();: string = 'Processing...';
-  let { description } = $props();: string = '';
-  let { progress } = $props();: number = 0; // 0-100
-  let { status } = $props();: 'loading' | 'success' | 'error' | 'warning' = 'loading';
-  let { showProgress } = $props();: boolean = true;
-  let { showEstimate } = $props();: boolean = false;
-  let { estimatedTime } = $props();: number = 0; // in seconds
-  let { operation } = $props();: string = 'ai'; // 'ai', 'gpu', 'upload', 'processing'
-  let { size } = $props();: 'sm' | 'md' | 'lg' = 'md';
-  let { variant } = $props();: 'overlay' | 'inline' | 'modal' = 'inline';
+  let {
+    isLoading = false,
+    title = 'Processing...',
+    description = '',
+    progress = 0,
+    status = 'loading',
+    showProgress = true,
+    showEstimate = false,
+    estimatedTime = 0,
+    operation = 'ai',
+    size = 'md',
+    variant = 'inline'
+  }: {
+    isLoading?: boolean;
+    title?: string;
+    description?: string;
+    progress?: number;
+    status?: 'loading' | 'success' | 'error' | 'warning';
+    showProgress?: boolean;
+    showEstimate?: boolean;
+    estimatedTime?: number;
+    operation?: string;
+    size?: 'sm' | 'md' | 'lg';
+    variant?: 'overlay' | 'inline' | 'modal';
+  } = $props();
 
   const progressTween = tweened(0, {
     duration: 300,
@@ -39,28 +53,28 @@
     lg: 'w-6 h-6'
   });
 
-  let getOperationIcon = $derived((op: string) => {
+  function getOperationIcon(op: string) {
     switch (op) {
-      case 'ai': return Brain);
+      case 'ai': return Brain;
       case 'gpu': return Zap;
       case 'cpu': return Cpu;
       case 'upload': return CheckCircle;
       default: return Brain;
     }
-  };
+  }
 
-  let getStatusIcon = $derived((st: string) => {
+  function getStatusIcon(st: string) {
     switch (st) {
-      case 'success': return CheckCircle);
+      case 'success': return CheckCircle;
       case 'error': return XCircle;
       case 'warning': return AlertCircle;
       default: return getOperationIcon(operation);
     }
-  };
+  }
 
-  let getStatusColor = $derived((st: string) => {
+  function getStatusColor(st: string) {
     switch (st) {
-      case 'success': return 'text-green-400');
+      case 'success': return 'text-green-400';
       case 'error': return 'text-red-400';
       case 'warning': return 'text-yellow-400';
       case 'loading':
@@ -73,13 +87,13 @@
         }
       default: return 'text-gray-400';
     }
-  };
+  }
 
-  let formatTime = $derived((seconds: number) => {
-    if (seconds < 60) return `${Math.round(seconds)}s`);
+  function formatTime(seconds: number) {
+    if (seconds < 60) return `${Math.round(seconds)}s`;
     if (seconds < 3600) return `${Math.round(seconds / 60)}m ${Math.round(seconds % 60)}s`;
     return `${Math.round(seconds / 3600)}h ${Math.round((seconds % 3600) / 60)}m`;
-  };
+  }
 
   function updateElapsedTime() {
     elapsedTime = (Date.now() - startTime) / 1000;
@@ -98,17 +112,19 @@
     }
   });
 
-  $effect(() => { if (isLoading) ; });{
-    if (!intervalId) {
-      startTime = Date.now();
-      intervalId = setInterval(updateElapsedTime, 100);
+  $effect(() => {
+    if (isLoading) {
+      if (!intervalId) {
+        startTime = Date.now();
+        intervalId = setInterval(updateElapsedTime, 100);
+      }
+    } else {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = 0;
+      }
     }
-  } else {
-    if (intervalId) {
-      clearInterval(intervalId);
-      intervalId = 0;
-    }
-  }
+  });
 </script>
 
 {#if isLoading || status !== 'loading'}

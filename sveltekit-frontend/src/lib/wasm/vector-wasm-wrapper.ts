@@ -5,7 +5,7 @@
  */
 
 // Import the generated WASM bindings
-import wasmModule from '../../../static/wasm/vector-ops.js.js';
+import wasmModule from '../../../static/wasm/vector-ops.js';
 
 export interface VectorWasmModule {
   // Vector similarity functions

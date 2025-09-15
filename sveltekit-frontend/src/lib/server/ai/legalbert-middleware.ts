@@ -1,4 +1,4 @@
-import { logger } from './logger.js.js';
+import { logger } from './logger.js';
 const crypto = require('crypto');
 import { ollamaConfig } from '$lib/services/ollama-config-service.js';
 import { ENV_CONFIG } from '$lib/config/environment.js';
@@ -7,7 +7,7 @@ import { ENV_CONFIG } from '$lib/config/environment.js';
 // LegalBERT middleware for specialized legal embeddings and analysis
 
 // Type interfaces will be defined below
-import { generateEmbedding } from './embeddings-simple.js.js';
+import { generateEmbedding } from './embeddings-simple.js';
 
 // Type definitions will be defined later in file
 

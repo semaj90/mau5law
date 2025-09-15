@@ -3,8 +3,8 @@
 
 import { z } from "zod";
 import crypto from "crypto";
-import type { RAGConfiguration } from './types.js.js';
-import { logger } from './logger.js.js';
+import type { RAGConfiguration } from './types.js';
+import { logger } from './logger.js';
 import { URL } from "url";
 
 // === ENVIRONMENT VALIDATION ===

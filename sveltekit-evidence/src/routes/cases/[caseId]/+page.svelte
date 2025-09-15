@@ -373,7 +373,7 @@ Route: /cases/[caseId]
     font-size: 0.9em;
   }
 
-  .empty-timeline, .empty-reports, .chat-placeholder {
+  .empty-timeline, .empty-reports {
     text-align: center;
     padding: 3rem 2rem;
   }

@@ -153,13 +153,14 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
             // Add pgvector results
             for (const result of semanticData.results) {
+              const resultData = result as any;
               results.push({
-                chunk: (result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).content || `Document: ${(result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).title}`,
-                distance: (result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).distance,
-                semantic_score: (result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).semantic_score,
-                relevance_level: (result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).relevance_level,
+                chunk: resultData.content || `Document: ${resultData.title}`,
+                distance: resultData.distance,
+                semantic_score: resultData.semantic_score,
+                relevance_level: resultData.relevance_level,
                 doc: result,
-                metadata: (result as { content?: any; title?: any; distance?: any; semantic_score?: any; relevance_level?: any; metadata?: any }).metadata,
+                metadata: resultData.metadata,
                 source: includePgVector && !useGemmaEmbeddings ? 'pgvector' : 'hybrid',
               });
             }

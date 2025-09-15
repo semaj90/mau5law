@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // Enhanced Evidence API with pgvector Integration
 // Production-ready evidence management with AI analysis

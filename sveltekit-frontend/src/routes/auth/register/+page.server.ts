@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types.js.js';
+import type { PageServerLoad, Actions } from './$types.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { EnhancedAuthService } from '$lib/services/enhanced-auth-service.js';
 

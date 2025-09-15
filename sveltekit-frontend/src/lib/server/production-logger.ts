@@ -4,8 +4,8 @@
  */
 
 const dev = import.meta.env.NODE_ENV === 'development';
-import { getConfig } from '../config/unified-config.js.js';
-import type { LoggingConfig } from '../config/unified-config.js.js';
+import { getConfig } from '../config/unified-config.js';
+import type { LoggingConfig } from '../config/unified-config.js';
 
 // Log levels in order of severity
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';

@@ -2,7 +2,7 @@
 
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from 'postgres';
-import * as schema from './schema.js.js';
+import * as schema from './schema.js';
 
 // Get DATABASE_URL from environment with fallback
 const DATABASE_URL = import.meta.env.VITE_DATABASE_URL ||

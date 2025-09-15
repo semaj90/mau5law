@@ -12,7 +12,7 @@ import {
   BufferTypeGuards,
   createAlignedBuffer,
   copyBufferAligned
-} from './buffer-conversion.js.js';
+} from './buffer-conversion.js';
 
 import {
   quantizeForWebGPU,
@@ -23,7 +23,7 @@ import {
   type QuantizedData,
   quantizeWithStats,
   dequantize
-} from './typed-array-quantization.js.js';
+} from './typed-array-quantization.js';
 
 export interface WebGPUBufferUploadOptions {
   usage: GPUBufferUsageFlags;

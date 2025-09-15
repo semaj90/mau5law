@@ -8,11 +8,11 @@
  * - Bridge: Routes requests to optimal orchestrator based on task type and context
  */
 
-import { orchestrator as enhancedOrchestrator } from './enhanced-orchestrator.js.js';
+import { orchestrator as enhancedOrchestrator } from './enhanced-orchestrator.js';
 import { unifiedClientLLMOrchestrator } from '$lib/ai/unified-client-llm-orchestrator.js';
 import { mcpMultiCore } from '$lib/server/mcp/multi-core-integration.js';
 import type { MCPTask } from '$lib/server/mcp/multi-core-integration.js';
-import { logger } from './logger.js.js';
+import { logger } from './logger.js';
 import type { ClientLLMRequest, InferenceResult } from '$lib/ai/unified-client-llm-orchestrator.js';
 
 export interface LLMBridgeRequest {

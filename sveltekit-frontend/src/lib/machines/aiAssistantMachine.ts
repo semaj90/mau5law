@@ -932,7 +932,7 @@ class MemoryManager {
 // Web Worker pool for concurrent processing
 class WebWorkerPool {
   private workers: Worker[] = [];
-  private taskQueue: Array< = [];
+  private taskQueue: Array<any> = [];
   private activeWorkers = new Set<Worker>();
   private maxWorkers: number;
 

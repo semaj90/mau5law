@@ -4,10 +4,10 @@
  * Integrates NES memory architecture for 8-bit color quantization
  */
 
-import type { HybridGPUContext } from './hybrid-gpu-context.js.js';
+import type { HybridGPUContext } from './hybrid-gpu-context.js';
 
 // Import GPU configuration from environment
-import { GPU_CONFIG, CLIENT_ENV } from '../config/env.js.js';
+import { GPU_CONFIG, CLIENT_ENV } from '../config/env.js';
 
 // NES PPU (Picture Processing Unit) Memory Map
 export const NES_MEMORY_MAP = {

@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 /*
  * AI-Assisted Boilerplate Generation API

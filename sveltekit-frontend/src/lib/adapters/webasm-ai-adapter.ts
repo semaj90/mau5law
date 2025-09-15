@@ -217,7 +217,7 @@ export class WebAssemblyAIAdapter {
     const statusCheck = await fetch(`${this.config.pythonMiddlewareEndpoint}/status`);
     const status = await statusCheck.json();
 
-    this.currentModel = status?.model || "unknown" // @ts-ignore - Model property access || 'gemma3:270m';
+    this.currentModel = status?.model || 'unknown'; // @ts-ignore - Model property access || 'gemma3:270m';
     console.log(`[WebAssembly AI] Python middleware initialized with model: ${this.currentModel}`);
   }
 
@@ -567,7 +567,7 @@ export class WebAssemblyAIAdapter {
     title: string,
     content: string,
     analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
-  ): Promise<;
+  ): Promise<{
     risks: Array<any>;
     recommendations: string[];
     confidence: number;

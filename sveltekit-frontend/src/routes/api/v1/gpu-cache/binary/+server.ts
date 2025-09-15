@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
 /*
@@ -6,8 +6,8 @@ import { json } from '@sveltejs/kit';
  * Combines GPU shader caching with binary encoding middleware for maximum performance
  */
 
-import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cache-binary-extension.js.js';
-import { binaryEncoder } from '../../../../../lib/middleware/binary-encoding.js.js';
+import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cache-binary-extension.js';
+import { binaryEncoder } from '../../../../../lib/middleware/binary-encoding.js';
 // URL is globally available in SvelteKit; avoid Node 'url' import
 
 // GET /api/v1/gpu-cache/binary/shader?key=<cacheKey>

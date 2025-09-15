@@ -44,7 +44,7 @@ const REDIS_EMBEDDING_PREFIX = 'embedding:';
 const vectorCache: Map<string, VectorCacheEntry> = new Map();
 const embeddingCache: Map<string, EmbeddingCacheEntry> = new Map();
 
-import { redisService } from './redis-service.js.js';
+import { redisService } from './redis-service.js';
 
 function getRedisClient(): any | null {
   return redisService.getClient() || (globalThis as any).__REDIS || null;

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // Unified Service Orchestrator API Endpoint
 // Provides HTTP interface to the complete GPU/WASM integration system

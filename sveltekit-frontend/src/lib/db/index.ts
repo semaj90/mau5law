@@ -5,7 +5,7 @@
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import * as schema from './schema.js.js';
+import * as schema from './schema.js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // Environment configuration with fallbacks for legal_ai_db
@@ -186,4 +186,4 @@ export type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 export type Database = typeof db;
 
 // Re-export schema for convenience
-export * from './schema.js.js';
+export * from './schema.js';

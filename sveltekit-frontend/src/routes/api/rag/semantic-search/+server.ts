@@ -160,16 +160,20 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 		// Step 5: Enhanced result formatting
 		const enhancedResults = results.map((result: VectorSearchResult) => ({
-			...result,
-			semantic_score: (1 - (result as { metadata?: any; distance?: any }).distance), // Convert distance to similarity score
-			relevance_level: (result as { metadata?: any; distance?: any }).distance < 0.3 ? 'high' :
-							(result as { metadata?: any; distance?: any }).distance < 0.7 ? 'medium' : 'low',
-			embedding_metadata: {
-				model: embeddingData?.model || "unknown" // @ts-ignore - Model property access,
-				dimensions: embeddingData.dimensions,
-				query: body.query
-			}
-		}));
+      ...result,
+      semantic_score: 1 - (result as { metadata?: any; distance?: any }).distance, // Convert distance to similarity score
+      relevance_level:
+        (result as { metadata?: any; distance?: any }).distance < 0.3
+          ? 'high'
+          : (result as { metadata?: any; distance?: any }).distance < 0.7
+            ? 'medium'
+            : 'low',
+      embedding_metadata: {
+        model: embeddingData?.model || 'unknown',
+        dimensions: embeddingData.dimensions,
+        query: body.query,
+      },
+    }));
 
 		const response: SemanticSearchResponse = {
 			success: true,

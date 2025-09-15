@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // src/routes/api/vectors/sync/+server.ts
 // Automatic vector synchronization to Qdrant after CUDA processing

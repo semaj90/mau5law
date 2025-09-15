@@ -14,7 +14,7 @@
  */
 
 import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache.js';
-import { fastStringify, fastParse } from '../utils/fast-json.js.js';
+import { fastStringify, fastParse } from '../utils/fast-json.js';
 import { lokiRedisCache } from '../cache/loki-redis-integration.js';
 import { searchCacheNeuralEngine } from '../gpu/search-cache-neural-engine.js';
 import type { LegalDocument } from '../memory/nes-memory-architecture.js';

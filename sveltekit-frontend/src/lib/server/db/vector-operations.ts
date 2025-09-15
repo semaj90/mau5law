@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Enhanced Vector Operations with GRPMO (GPU-Reinforced Predictive Memory Orchestration)
-import { db } from './index.js.js';
-import { legalDocuments, userAiQueries, embeddingCache } from './schema-postgres.js.js';
+import { db } from './index.js';
+import { legalDocuments, userAiQueries, embeddingCache } from './schema-postgres.js';
 import { sql } from 'drizzle-orm';
 
 // GRPMO imports

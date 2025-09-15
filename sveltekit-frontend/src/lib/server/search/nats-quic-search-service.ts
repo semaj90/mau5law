@@ -10,9 +10,9 @@
  */
 
 import { connect, JSONCodec, type NatsConnection } from 'nats';
-import { redisService } from '../redis-service.js.js';
+import { redisService } from '../redis-service.js';
 import { createHash } from 'crypto';
-import { fastStringify, fastParse } from '../../utils/fast-json.js.js';
+import { fastStringify, fastParse } from '../../utils/fast-json.js';
 
 // QUIC Configuration for ultra-low latency
 const QUIC_CONFIG = {

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { AuthenticatedUser } from './auth-guard.js.js';
+import type { AuthenticatedUser } from './auth-guard.js';
 import { db } from './db.js';
 import { storage_audits } from './schema.js';
 

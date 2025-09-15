@@ -23,7 +23,7 @@ declare module '@qdrant/js-client-rest' {
   }
   
   export interface PointStruct {
-    id: string | number;
+    id: string;
     vector: number[];
     payload?: Record<string, any>;
   }

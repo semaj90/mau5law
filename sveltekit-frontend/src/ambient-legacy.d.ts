@@ -22,7 +22,8 @@ interface EnhancedOllamaServiceLegacy {
   classifyLegalDocument?: (text: string) => Promise<string>;
   generateEmbeddings?: (text: string | string[]) => Promise<number[] | number[][]>;
   generateLegalEmbeddings?: (text: string | string[]) => Promise<number[] | number[][]>;
-  healthCheck?: () => Promise<any>
+  healthCheck?: () => Promise<any>;
+}
 
 declare const enhancedOllamaService: EnhancedOllamaServiceLegacy;
 

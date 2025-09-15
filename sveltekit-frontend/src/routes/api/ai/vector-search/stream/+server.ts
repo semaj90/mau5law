@@ -17,7 +17,7 @@
  */
 
 
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // Streaming (SSE) vector search endpoint.
 // Usage: GET /api/ai/vector-search/stream?query=...&limit=8&threshold=0.2&model=...&mode=simple

@@ -72,8 +72,8 @@ export { default as N64Toaster } from './N64Toaster.svelte.js';
 // Utility Modules
 export { default as N64ToastStore } from './N64ToastStore.ts.js';
 export { default as retroPerformanceGuard } from './retroPerformanceGuard.ts.js';
-export { default as useRetroTransform } from './useRetroTransform.js.js';
-export { default as parallaxDynamic } from './parallaxDynamic.js.js';
+export { default as useRetroTransform } from './useRetroTransform.js';
+export { default as parallaxDynamic } from './parallaxDynamic.js';
 export { default as tokens } from './tokens.ts.js';
 
 // Type exports for component props
@@ -89,7 +89,7 @@ export type {
   RetroEffect,
   GamingAudioConfig,
   ProgressiveGamingConfig
-} from '../types/gaming-types.js.js';
+} from '../types/gaming-types.js';
 
 // Constants and presets
 export {
@@ -102,7 +102,7 @@ export {
   GAMING_COMPONENT_SIZES,
   RETRO_EFFECTS,
   GAMING_SOUND_EFFECTS
-} from '../constants/gaming-constants.js.js';
+} from '../constants/gaming-constants.js';
 
 /**
  * Quick Start Configuration

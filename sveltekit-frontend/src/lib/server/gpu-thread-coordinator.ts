@@ -4,9 +4,9 @@
  * Coordinates between cognitive cache, PostgreSQL, and JSON serialization
  */
 
-import { threadSafePostgres } from './thread-safe-postgres.js.js';
-import { concurrentSerializer } from './concurrent-json-serializer.js.js';
-import { cognitiveCache } from '../services/cognitive-cache-integration.js.js';
+import { threadSafePostgres } from './thread-safe-postgres.js';
+import { concurrentSerializer } from './concurrent-json-serializer.js';
+import { cognitiveCache } from '../services/cognitive-cache-integration.js';
 import { performance } from 'perf_hooks';
 
 interface GPUTask {
@@ -193,8 +193,11 @@ export class GPUThreadCoordinator {
   /**
    * Batch database operations with GPU-optimized serialization
    */
-  async batchDatabaseOperations<T>(
-    operations: Array<,
+  async batchDatabaseOperations(
+    operations: Array<{
+      data: any;
+      [key: string]: any;
+    }>,
     options: {
       atomic?: boolean;
       gpuSerialize?: boolean;
@@ -698,7 +701,7 @@ export async function gpuVectorSearch(
     dimensions?: number;
     batchSize?: number;
   }
-): Promise<Array<any> {
+): Promise<Array<any>> {
   const config = {
     dimensions: options?.dimensions || queryVector.length,
     batchSize: options?.batchSize || 1000,
@@ -712,7 +715,7 @@ export async function gpuVectorSearch(
 }
 
 export async function gpuBatchDatabase<T>(
-  operations: Array<,
+  operations: Array<T>,
   options?: {
     atomic?: boolean;
     gpuSerialize?: boolean;

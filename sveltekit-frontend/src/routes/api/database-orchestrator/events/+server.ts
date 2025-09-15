@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // Database Orchestrator Events API
 // Real-time event monitoring and WebSocket integration

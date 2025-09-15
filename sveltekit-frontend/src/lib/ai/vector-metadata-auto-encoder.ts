@@ -7,8 +7,8 @@
  * topology-aware retrieval with predictive analytics.
  */
 
-import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js.js';
-import type { SIMDProcessingResult } from '../evidence/simd-gpu-tiling-engine.js.js';
+import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js';
+import type { SIMDProcessingResult } from '../evidence/simd-gpu-tiling-engine.js';
 
 // Vector encoding configurations for different use cases
 interface VectorEncodingConfig {

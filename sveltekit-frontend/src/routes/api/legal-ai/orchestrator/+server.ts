@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { withSSRHandler, createSSRResponse, createSSRErrorResponse } from '$lib/server/api-ssr-helpers.js';
 

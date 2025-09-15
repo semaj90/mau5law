@@ -4,7 +4,7 @@
  */
 
 import { error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { readFile, stat } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';

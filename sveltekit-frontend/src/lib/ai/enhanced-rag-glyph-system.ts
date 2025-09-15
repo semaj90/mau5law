@@ -7,9 +7,9 @@
  * with predictive analytics for optimal content retrieval.
  */
 
-import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js.js';
-import { vectorMetadataAutoEncoder, type EncodedVectorMetadata } from './vector-metadata-auto-encoder.js.js';
-import { simdTextTilingEngine } from './simd-text-tiling-engine.js.js';
+import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js';
+import { vectorMetadataAutoEncoder, type EncodedVectorMetadata } from './vector-metadata-auto-encoder.js';
+import { simdTextTilingEngine } from './simd-text-tiling-engine.js';
 import { ollamaService } from '$lib/server/ai/ollama-service.js';
 
 // Glyph-based RAG configuration

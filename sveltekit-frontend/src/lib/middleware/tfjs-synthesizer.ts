@@ -3,10 +3,10 @@
 // TensorFlow.js Synthesizer Middleware
 // Advanced NLP pipeline combining Legal-BERT, Language Extraction, and WebAssembly AI
 
-import { legalBERTMiddleware, type LegalBERTAnalysis } from '../services/legal-bert-middleware.js.js';
-import { langExtractTensorFlow, type AdvancedExtractionResult } from '../services/langextract-tfjs.js.js';
-import { webAssemblyAIAdapter } from '../adapters/webasm-ai-adapter.js.js';
-import { webAssemblyLangChainBridge, type HybridRAGResult } from '../services/webasm-langchain-bridge.js.js';
+import { legalBERTMiddleware, type LegalBERTAnalysis } from '../services/legal-bert-middleware.js';
+import { langExtractTensorFlow, type AdvancedExtractionResult } from '../services/langextract-tfjs.js';
+import { webAssemblyAIAdapter } from '../adapters/webasm-ai-adapter.js';
+import { webAssemblyLangChainBridge, type HybridRAGResult } from '../services/webasm-langchain-bridge.js';
 import * as tf from '@tensorflow/tfjs';
 import { browser } from '$app/environment';
 

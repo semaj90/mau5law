@@ -19,11 +19,11 @@ import {
   getPostgresJsClient,
   getDatabaseConfig,
   getConnectionString
-} from './connection-manager.js.js';
+} from './connection-manager.js';
 
 // Import unified schema
-import * as schema from './schema-unified.js.js';
-import type { DocumentMetadata } from './schema-unified.js.js';
+import * as schema from './schema-unified.js';
+import type { DocumentMetadata } from './schema-unified.js';
 
 // ============================================================================
 // TYPES
@@ -337,7 +337,7 @@ export const unifiedDb = {
 };
 
 // Re-export schema for convenience
-export * from './schema-unified.js.js';
+export * from './schema-unified.js';
 
 // Re-export types
 export type {

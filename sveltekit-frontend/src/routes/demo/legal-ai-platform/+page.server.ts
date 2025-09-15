@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types.js.js';
+import type { PageServerLoad } from './$types.js';
 import { legalRAGService } from '$lib/services/enhanced-rag-semantic-analyzer';
 import { authService } from '$lib/server/auth';
 

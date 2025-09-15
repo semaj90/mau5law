@@ -5,7 +5,7 @@
  */
 
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
-import { cacheActor, getCacheStats } from './xstate-cache-integration.js.js';
+import { cacheActor, getCacheStats } from './xstate-cache-integration.js';
 import MultiTierCache from '$lib/ai/cache/multiTierCache.js';
 import { getCache, setCache } from '$lib/server/utils/server-cache.js';
 import { browser } from '$app/environment';

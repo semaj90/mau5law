@@ -24,7 +24,7 @@
  * by intelligently coordinating all systems based on user context and performance metrics.
  */
 
-import { BitmapHMMSOMPredictor } from './bitmap-hmm-som-predictor.js.js';
+import { BitmapHMMSOMPredictor } from './bitmap-hmm-som-predictor.js';
 import { QLoRAReinforcementLearningService } from '$lib/services/qlora-rl-training-service.js';
 import { GenerativeUICacheIndex } from '$lib/services/generative-ui-cache-index.js';
 import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
@@ -561,7 +561,7 @@ export class UltimateNeuralTopologyOrchestrator {
     };
   }
 
-  private async generatePredictiveAssets(predictions: any): Promise<Array<any> {
+  private async generatePredictiveAssets(predictions: any): Promise<Array<any>> {
     const assets = [];
     const chrPatterns = this.hmmSomPredictor.generateCHRROMPredictions(predictions);
 

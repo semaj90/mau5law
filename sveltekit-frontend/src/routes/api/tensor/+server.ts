@@ -25,9 +25,9 @@ async function ensureInitialized() {
 // GET: Health check and service status
 export const GET: RequestHandler = async ({ url }) => {
   await ensureInitialized();
-  
+
   const endpoint = url.searchParams.get('endpoint');
-  
+
   switch (endpoint) {
     case 'health':
       try {
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         });
       }
-    
+
     case 'metrics':
       try {
         const metrics = await goTensorService.getMetrics();
@@ -68,26 +68,26 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         });
       }
-    
+
     case 'test':
       // Generate test tensor data
       const testData = mockTensorData(768);
       const testRequest = generateTensorRequest('test-doc-123', testData, 'vectorize');
-      
+
       return json({
         success: true,
         data: {
           request: {
             id: testRequest.id,
             documentId: testRequest.documentId,
-            dataLength: testRequest.(data as { length?: any }).length,
+            dataLength: testRequest.data.length,
             operation: testRequest.operation
           },
           testVector: Array.from(testData).slice(0, 10), // First 10 values for preview
           message: 'Test tensor data generated successfully'
         }
       });
-    
+
     default:
       return json({
         success: false,
@@ -99,11 +99,11 @@ export const GET: RequestHandler = async ({ url }) => {
 // POST: Process tensor data
 export const POST: RequestHandler = async ({ request }) => {
   await ensureInitialized();
-  
+
   try {
     const body = await request.json();
     const { operation, documentId, data, options } = body;
-    
+
     // Validate request
     if (!operation || !documentId || !data) {
       return json({
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'Missing required fields: operation, documentId, data'
       }, { status: 400 });
     }
-    
+
     // Create tensor request
     const tensorRequest: TensorRequest = {
       id: `api_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -125,11 +125,11 @@ export const POST: RequestHandler = async ({ request }) => {
         ...options
       }
     };
-    
+
     // Try to process with Go service
     try {
       const response = await goTensorService.processTensor(tensorRequest);
-      
+
       return json({
         success: true,
         data: {
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } catch (serviceError) {
       // Fallback to mock processing
       console.log('Go service unavailable, using mock processing');
-      
+
       const mockResult = {
         id: tensorRequest.id,
         success: true,
@@ -170,13 +170,13 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date(),
         source: 'mock-fallback'
       };
-      
+
       return json({
         success: true,
         data: mockResult
       });
     }
-    
+
   } catch (error) {
     return json({
       success: false,
@@ -188,18 +188,18 @@ export const POST: RequestHandler = async ({ request }) => {
 // PUT: Batch processing
 export const PUT: RequestHandler = async ({ request }) => {
   await ensureInitialized();
-  
+
   try {
     const body = await request.json();
     const { requests } = body;
-    
+
     if (!Array.isArray(requests) || requests.length === 0) {
       return json({
         success: false,
         error: 'Invalid or empty requests array'
       }, { status: 400 });
     }
-    
+
     // Convert to tensor requests
     const tensorRequests: TensorRequest[] = requests.map((req: any, index: number) => ({
       id: `batch_${Date.now()}_${index}_${Math.random().toString(36).substr(2, 9)}`,
@@ -208,11 +208,11 @@ export const PUT: RequestHandler = async ({ request }) => {
       operation: req.operation || 'process',
       options: req.options || {}
     }));
-    
+
     try {
       // Process batch with Go service
       const responses = await goTensorService.processBatch(tensorRequests);
-      
+
       return json({
         success: true,
         data: {
@@ -236,7 +236,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     } catch (serviceError) {
       // Fallback to mock batch processing
       console.log('Go service unavailable, using mock batch processing');
-      
+
       const mockResponses = tensorRequests.map(req => ({
         id: req.id,
         success: true,
@@ -255,7 +255,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         timestamp: new Date(),
         source: 'mock-fallback'
       }));
-      
+
       return json({
         success: true,
         data: {
@@ -265,7 +265,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         }
       });
     }
-    
+
   } catch (error) {
     return json({
       success: false,

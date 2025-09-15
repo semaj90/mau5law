@@ -5,8 +5,8 @@
  */
 
 // Remove problematic imports - these are handled internally
-// import { intelligentModelSwitcher } from './intelligent-model-switcher.js.js';
-// import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js.js';
+// import { intelligentModelSwitcher } from './intelligent-model-switcher.js';
+// import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js';
 // import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
 
 export interface UserIntentPrediction {

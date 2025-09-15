@@ -9,7 +9,7 @@ import { intelligentWebAnalyzer } from '$lib/ai/intelligent-web-analyzer.js';
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
 import { cache, cacheEmbedding, getCachedEmbedding } from '$lib/server/cache/redis.js';
 import { extractTextFromImage } from '$lib/ocr/ocr-client.js';
-import { simdGPUTilingEngine, calculateOptimalTileSize, estimateProcessingTime } from './simd-gpu-tiling-engine.js.js';
+import { simdGPUTilingEngine, calculateOptimalTileSize, estimateProcessingTime } from './simd-gpu-tiling-engine.js';
 import { browser } from '$app/environment';
 
 // Types for evidence analysis

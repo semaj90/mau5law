@@ -6,18 +6,18 @@
  * Integrates topology-aware predictive analytics for intelligent content prefetching.
  */
 
-import { simdTextTilingEngine } from './simd-text-tiling-engine.js.js';
+import { simdTextTilingEngine } from './simd-text-tiling-engine.js';
 import { ollamaService } from '$lib/server/ai/ollama-service.js';
-import type { TextEmbeddingResult, CompressedTextTile } from './simd-text-tiling-engine.js.js';
+import type { TextEmbeddingResult, CompressedTextTile } from './simd-text-tiling-engine.js';
 
 // Import hybrid GPU context for acceleration
-import type { HybridGPUContext } from '../gpu/hybrid-gpu-context.js.js';
+import type { HybridGPUContext } from '../gpu/hybrid-gpu-context.js';
 
 // Import advanced GPU context provider and environment configuration
-import { gpuContextProvider, type GPUBackendType, type ShaderResources } from '../gpu/gpu-context-provider.js.js';
+import { gpuContextProvider, type GPUBackendType, type ShaderResources } from '../gpu/gpu-context-provider.js';
 import { gpuVectorProcessor } from '$lib/gpu/gpu-vector-processor.js';
 import { telemetryBus } from '$lib/telemetry/telemetry-bus.js';
-import { GPU_CONFIG, CLIENT_ENV } from '../config/env.js.js';
+import { GPU_CONFIG, CLIENT_ENV } from '../config/env.js';
 
 // ================= Additional Explicit Types =================
 // Narrow previously 'any' usages into explicit interfaces

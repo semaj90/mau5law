@@ -9,7 +9,7 @@
 
 /// <reference types="@webgpu/types" />
 
-import { yorhaMipmapShaders } from './YoRHaMipmapShaders.js.js';
+import { yorhaMipmapShaders } from './YoRHaMipmapShaders.js';
 import { lodCacheEngine } from '$lib/ai/lod-cache-engine.js';
 import type { LODLevel, LODCacheEntry } from '$lib/ai/lod-cache-engine.js';
 import { ollamaService } from '$lib/server/ai/ollama-service.js';

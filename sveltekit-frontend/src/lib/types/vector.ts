@@ -30,7 +30,7 @@ export interface QdrantSearchParams {
   with_vectors?: boolean;
 }
 export interface QdrantSearchResult {
-  id: string | number;
+  id: string;
   score: number;
   payload?: Record<string, any>;
   vector?: number[];

@@ -1,7 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { db, helpers, sql, legalDocuments, cases as casesTable, evidence as evidenceTable } from "$lib/server/db";
 import crypto from "crypto";
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 

@@ -8,7 +8,7 @@ import { eq, and, or, desc, count, ilike } from 'drizzle-orm';
 import { z } from 'zod';
 import { generateEmbedding } from '$lib/server/embedding-service';
 import { validateSession } from '$lib/server/lucia';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import crypto from 'crypto';
 import { URL } from 'url';
 

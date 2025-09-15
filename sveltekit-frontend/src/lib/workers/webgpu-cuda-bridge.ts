@@ -1,7 +1,7 @@
 // WebGPU to CUDA Service Worker Bridge
 // Enables GPU acceleration for AI processing tasks using WebGPU as a bridge to CUDA
 
-import { WebGPUBufferUtils, toFloat32Array, toArrayBuffer, BufferTypeGuards, type BufferLike } from '../utils/buffer-conversion.js.js';
+import { WebGPUBufferUtils, toFloat32Array, toArrayBuffer, BufferTypeGuards, type BufferLike } from '../utils/buffer-conversion.js';
 
 interface WebGPUCudaBridgeMessage {
 	type: 'init' | 'process' | 'status' | 'cleanup';

@@ -3,7 +3,7 @@
  * Simple test for the compiled WASM vector operations module
  */
 
-import { vectorWasm } from './vector-wasm-wrapper.js.js';
+import { vectorWasm } from './vector-wasm-wrapper.js';
 
 export async function testWasmModule(): Promise<boolean> {
   try {

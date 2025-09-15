@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { URL } from "url";
 

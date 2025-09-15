@@ -11,7 +11,7 @@ import type { RequestHandler } from './$types.js';
 class ONNXWorkerPool {
   private workers: Worker[] = [];
   private workerStats: Map<number, any> = new Map();
-  private taskQueue: Array< = [];
+  private taskQueue: Array<any> = [];
   private isInitialized = false;
   private maxWorkers = Math.min(4, navigator?.hardwareConcurrency || 2);
   private roundRobinIndex = 0;

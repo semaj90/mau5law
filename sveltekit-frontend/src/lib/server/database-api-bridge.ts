@@ -4,7 +4,7 @@
  * Integrates with existing SSR helpers and GPU acceleration
  */
 
-import { queryLegalDocumentsSSR, type SSRResponse } from './api-ssr-helpers.js.js';
+import { queryLegalDocumentsSSR, type SSRResponse } from './api-ssr-helpers.js';
 
 // Type definitions based on database schema
 export interface LegalDocument {

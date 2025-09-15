@@ -13,8 +13,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/minio/minio-go/v7"
-	"github.com/pgvector/pgvector-go"
+	minio "github.com/minio/minio-go/v7"
+	pgvector "github.com/pgvector/pgvector-go"
 	"go.uber.org/zap"
 )
 
@@ -40,7 +40,7 @@ var DefaultChunkingStrategies = map[string]ChunkingStrategy{
 		UseSemanticBreaks: true,
 	},
 	"case_law": {
-		Name:              "case_law", 
+		Name:              "case_law",
 		ChunkSize:         1024,
 		OverlapSize:       256,
 		PreserveSentences: true,
@@ -58,24 +58,24 @@ var DefaultChunkingStrategies = map[string]ChunkingStrategy{
 // processDocumentChunks handles intelligent document chunking
 func (s *UnifiedRAGService) processDocumentChunks(doc *Document) error {
 	ctx := context.Background()
-	
+
 	// Download document from MinIO
 	content, err := s.getDocumentContent(ctx, doc.MinIOPath)
 	if err != nil {
 		return fmt.Errorf("failed to get document content: %w", err)
 	}
-	
+
 	// Determine chunking strategy based on document type
 	strategy := s.selectChunkingStrategy(doc, content)
-	
+
 	// Create smart chunks with overlapping windows
 	chunks := s.createSmartChunks(content, strategy)
-	
+
 	s.logger.Info("Created document chunks",
 		zap.String("document_id", doc.ID),
 		zap.Int("chunk_count", len(chunks)),
 		zap.String("strategy", strategy.Name))
-	
+
 	// Store chunks in database and queue for embedding generation
 	for i, chunk := range chunks {
 		chunkObj := &DocumentChunk{
@@ -89,19 +89,19 @@ func (s *UnifiedRAGService) processDocumentChunks(doc *Document) error {
 			Confidence:  s.calculateChunkConfidence(chunk.Content),
 			CreatedAt:   time.Now(),
 		}
-		
+
 		// Store chunk
 		if err := s.storeDocumentChunk(ctx, chunkObj); err != nil {
 			s.logger.Error("Failed to store chunk", zap.Error(err))
 			continue
 		}
-		
+
 		// Queue for embedding generation
 		embeddingJob := &embeddingJob{
 			Chunk:    chunkObj,
 			Response: make(chan error, 1),
 		}
-		
+
 		select {
 		case s.embeddingQueue <- embeddingJob:
 			// Queued successfully
@@ -109,12 +109,12 @@ func (s *UnifiedRAGService) processDocumentChunks(doc *Document) error {
 			s.logger.Warn("Embedding queue full, skipping chunk")
 		}
 	}
-	
+
 	// Update document with chunk count
 	_, err = s.db.Exec(ctx,
 		"UPDATE rag_documents SET chunk_count = $1, processed_at = CURRENT_TIMESTAMP WHERE id = $2",
 		len(chunks), doc.ID)
-	
+
 	return err
 }
 
@@ -128,13 +128,11 @@ type SmartChunk struct {
 
 // createSmartChunks implements advanced chunking with semantic boundaries
 func (s *UnifiedRAGService) createSmartChunks(content string, strategy ChunkingStrategy) []SmartChunk {
-	var chunks []SmartChunk
-	
 	if strategy.UseSemanticBreaks {
 		// Use legal document structure markers
 		return s.createSemanticChunks(content, strategy)
 	}
-	
+
 	// Fallback to overlapping window chunking
 	return s.createOverlappingChunks(content, strategy)
 }
@@ -142,25 +140,25 @@ func (s *UnifiedRAGService) createSmartChunks(content string, strategy ChunkingS
 // createSemanticChunks creates chunks based on legal document structure
 func (s *UnifiedRAGService) createSemanticChunks(content string, strategy ChunkingStrategy) []SmartChunk {
 	var chunks []SmartChunk
-	
+
 	// Legal document patterns
 	sectionPattern := regexp.MustCompile(`(?i)(section|§|\d+\.|article|chapter|part)\s*[\d\w]+`)
 	paragraphPattern := regexp.MustCompile(`\n\n+`)
-	
+
 	sections := sectionPattern.Split(content, -1)
-	
+
 	for i, section := range sections {
 		if len(section) <= 50 { // Skip tiny sections
 			continue
 		}
-		
+
 		// Split large sections into paragraphs
 		if len(section) > strategy.ChunkSize*2 {
 			paragraphs := paragraphPattern.Split(section, -1)
 			currentChunk := ""
 			startPos := strings.Index(content, section)
 			currentStart := startPos
-			
+
 			for _, para := range paragraphs {
 				if len(currentChunk)+len(para) > strategy.ChunkSize {
 					if currentChunk != "" {
@@ -183,7 +181,7 @@ func (s *UnifiedRAGService) createSemanticChunks(content string, strategy Chunki
 					currentChunk += para
 				}
 			}
-			
+
 			if currentChunk != "" {
 				chunks = append(chunks, SmartChunk{
 					Content:   currentChunk,
@@ -209,7 +207,7 @@ func (s *UnifiedRAGService) createSemanticChunks(content string, strategy Chunki
 			})
 		}
 	}
-	
+
 	return chunks
 }
 
@@ -217,15 +215,15 @@ func (s *UnifiedRAGService) createSemanticChunks(content string, strategy Chunki
 func (s *UnifiedRAGService) createOverlappingChunks(content string, strategy ChunkingStrategy) []SmartChunk {
 	var chunks []SmartChunk
 	runes := []rune(content)
-	
+
 	for i := 0; i < len(runes); i += (strategy.ChunkSize - strategy.OverlapSize) {
 		end := i + strategy.ChunkSize
 		if end > len(runes) {
 			end = len(runes)
 		}
-		
+
 		chunkContent := string(runes[i:end])
-		
+
 		// Preserve sentence boundaries if requested
 		if strategy.PreserveSentences && end < len(runes) {
 			lastSentence := strings.LastIndex(chunkContent, ".")
@@ -234,7 +232,7 @@ func (s *UnifiedRAGService) createOverlappingChunks(content string, strategy Chu
 				chunkContent = string(runes[i:end])
 			}
 		}
-		
+
 		chunks = append(chunks, SmartChunk{
 			Content:   chunkContent,
 			StartChar: i,
@@ -244,12 +242,12 @@ func (s *UnifiedRAGService) createOverlappingChunks(content string, strategy Chu
 				"overlap_size": strategy.OverlapSize,
 			},
 		})
-		
+
 		if end >= len(runes) {
 			break
 		}
 	}
-	
+
 	return chunks
 }
 
@@ -260,73 +258,73 @@ func (s *UnifiedRAGService) createOverlappingChunks(content string, strategy Chu
 // generateChunkEmbedding generates vector embedding for a chunk with caching
 func (s *UnifiedRAGService) generateChunkEmbedding(chunk *DocumentChunk) error {
 	ctx := context.Background()
-	
-	// Check if embedding already exists
-	var existingEmbedding pgvector.Vector
+func (s *UnifiedRAGService) generateChunkEmbedding(chunk *DocumentChunk) error {
+	ctx := context.Background()
+
+	// Check if an embedding already exists (avoid scanning a pgvector type)
+	var exists bool
 	err := s.db.QueryRow(ctx,
-		"SELECT embedding FROM rag_document_chunks WHERE id = $1 AND embedding IS NOT NULL",
-		chunk.ID).Scan(&existingEmbedding)
-	
-	if err == nil {
+		"SELECT EXISTS (SELECT 1 FROM rag_document_chunks WHERE id = $1 AND embedding IS NOT NULL)",
+		chunk.ID).Scan(&exists)
+
+	if err == nil && exists {
 		// Embedding already exists
 		return nil
 	}
-	
+
 	// Generate new embedding via Ollama
 	embedding, err := s.generateEmbeddingViaOllama(ctx, chunk.Content)
 	if err != nil {
 		return fmt.Errorf("failed to generate embedding: %w", err)
 	}
-	
-	// Store embedding in database
+
+	// Store embedding in database (pass the pgvector value)
 	_, err = s.db.Exec(ctx,
 		"UPDATE rag_document_chunks SET embedding = $1 WHERE id = $2",
 		embedding, chunk.ID)
-	
+
 	if err != nil {
 		return fmt.Errorf("failed to store embedding: %w", err)
 	}
-	
+
 	s.logger.Debug("Generated embedding for chunk",
 		zap.String("chunk_id", chunk.ID),
 		zap.Int("embedding_dim", len(embedding.Slice())))
-	
+
 	return nil
 }
-
-// generateEmbeddingViaOllama calls Ollama API for embedding generation
 func (s *UnifiedRAGService) generateEmbeddingViaOllama(ctx context.Context, text string) (pgvector.Vector, error) {
 	embedReq := map[string]interface{}{
 		"model":  EmbeddingModel,
 		"prompt": text,
 	}
-	
+
 	reqBody, _ := json.Marshal(embedReq)
-	
+
 	req, err := http.NewRequestWithContext(ctx, "POST",
 		fmt.Sprintf("%s/api/embeddings", OllamaBaseURL),
 		strings.NewReader(string(reqBody)))
 	if err != nil {
 		return pgvector.Vector{}, err
 	}
-	
+
 	req.Header.Set("Content-Type", "application/json")
-	
+
 	client := &http.Client{Timeout: 30 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
 		return pgvector.Vector{}, err
 	}
 	defer resp.Body.Close()
-	
+
 	var result struct {
 		Embedding []float32 `json:"embedding"`
 	}
-	
+
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return pgvector.Vector{}, err
 	}
-	
+
 	return pgvector.NewVector(result.Embedding), nil
 }
 
@@ -341,10 +339,10 @@ func (s *UnifiedRAGService) retrieveSimilarChunks(ctx context.Context, query *RA
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate query embedding: %w", err)
 	}
-	
+
 	// Build search query with filters
 	searchQuery := `
-		SELECT 
+		SELECT
 			c.id, c.document_id, c.chunk_index, c.content, c.embedding,
 			c.start_char, c.end_char, c.token_count, c.legal_domain, c.confidence,
 			c.created_at,
@@ -353,10 +351,10 @@ func (s *UnifiedRAGService) retrieveSimilarChunks(ctx context.Context, query *RA
 		FROM rag_document_chunks c
 		WHERE c.embedding IS NOT NULL
 	`
-	
+
 	args := []interface{}{queryEmbedding, query.Query}
 	argIndex := 3
-	
+
 	// Add legal domain filter
 	if len(query.LegalDomains) > 0 {
 		placeholders := make([]string, len(query.LegalDomains))
@@ -367,22 +365,22 @@ func (s *UnifiedRAGService) retrieveSimilarChunks(ctx context.Context, query *RA
 		}
 		searchQuery += fmt.Sprintf(" AND c.legal_domain = ANY(ARRAY[%s])", strings.Join(placeholders, ","))
 	}
-	
+
 	// Add confidence filter
 	if query.MinConfidence > 0 {
 		searchQuery += fmt.Sprintf(" AND c.confidence >= $%d", argIndex)
 		args = append(args, query.MinConfidence)
 		argIndex++
 	}
-	
+
 	// Hybrid scoring: combine vector similarity and keyword relevance
 	searchQuery += `
 		ORDER BY (
-			0.7 * (1 - (c.embedding <=> $1)) + 
+			0.7 * (1 - (c.embedding <=> $1)) +
 			0.3 * ts_rank(to_tsvector('english', c.content), plainto_tsquery('english', $2))
 		) DESC
 	`
-	
+
 	// Add limit
 	limit := query.MaxResults
 	if limit == 0 {
@@ -390,18 +388,18 @@ func (s *UnifiedRAGService) retrieveSimilarChunks(ctx context.Context, query *RA
 	}
 	searchQuery += fmt.Sprintf(" LIMIT $%d", argIndex)
 	args = append(args, limit)
-	
+
 	rows, err := s.db.Query(ctx, searchQuery, args...)
 	if err != nil {
 		return nil, fmt.Errorf("vector search failed: %w", err)
 	}
 	defer rows.Close()
-	
+
 	var chunks []DocumentChunk
 	for rows.Next() {
 		var chunk DocumentChunk
 		var vectorDistance, keywordScore float64
-		
+
 		err := rows.Scan(
 			&chunk.ID, &chunk.DocumentID, &chunk.ChunkIndex, &chunk.Content,
 			&chunk.Embedding, &chunk.StartChar, &chunk.EndChar, &chunk.TokenCount,
@@ -412,14 +410,14 @@ func (s *UnifiedRAGService) retrieveSimilarChunks(ctx context.Context, query *RA
 			s.logger.Error("Failed to scan chunk", zap.Error(err))
 			continue
 		}
-		
+
 		chunks = append(chunks, chunk)
 	}
-	
+
 	s.logger.Info("Vector search completed",
 		zap.String("query", query.Query),
 		zap.Int("results", len(chunks)))
-	
+
 	return chunks, nil
 }
 
@@ -449,14 +447,14 @@ func (s *UnifiedRAGService) cacheShaderHandler(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	// Generate shader hash for caching
 	hasher := sha256.Sum256([]byte(shader.Source))
 	shaderID := fmt.Sprintf("shader_%x", hasher)
 	shader.ID = shaderID
 	shader.CreatedAt = time.Now()
 	shader.LastUsed = time.Now()
-	
+
 	// Store in database
 	ctx := context.Background()
 	_, err := s.db.Exec(ctx, `
@@ -465,9 +463,9 @@ func (s *UnifiedRAGService) cacheShaderHandler(c *gin.Context) {
 		ON CONFLICT (id) DO UPDATE SET
 			hit_count = gpu_shader_cache.hit_count + 1,
 			last_used = CURRENT_TIMESTAMP
-	`, shader.ID, shader.ShaderType, shader.Source, shader.Compiled, 
+	`, shader.ID, shader.ShaderType, shader.Source, shader.Compiled,
 		shader.Metadata, 1, shader.CreatedAt, shader.LastUsed)
-	
+
 	if err != nil {
 		s.logger.Error("Failed to cache shader", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -476,7 +474,7 @@ func (s *UnifiedRAGService) cacheShaderHandler(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"success":   true,
 		"shader_id": shaderID,
@@ -496,17 +494,17 @@ func (s *UnifiedRAGService) storeDocument(doc *Document) (string, error) {
 		INSERT INTO rag_documents (title, file_type, file_size, minio_path, metadata, uploaded_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
 		RETURNING id
-	`, doc.Title, doc.FileType, doc.FileSize, doc.MinIOPath, 
+	`, doc.Title, doc.FileType, doc.FileSize, doc.MinIOPath,
 		doc.Metadata, doc.UploadedAt).Scan(&id)
 	return id, err
 }
 
 func (s *UnifiedRAGService) storeDocumentChunk(ctx context.Context, chunk *DocumentChunk) error {
 	_, err := s.db.Exec(ctx, `
-		INSERT INTO rag_document_chunks 
+		INSERT INTO rag_document_chunks
 		(document_id, chunk_index, content, start_char, end_char, token_count, legal_domain, confidence, created_at)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-	`, chunk.DocumentID, chunk.ChunkIndex, chunk.Content, chunk.StartChar, 
+	`, chunk.DocumentID, chunk.ChunkIndex, chunk.Content, chunk.StartChar,
 		chunk.EndChar, chunk.TokenCount, chunk.LegalDomain, chunk.Confidence, chunk.CreatedAt)
 	return err
 }
@@ -517,12 +515,12 @@ func (s *UnifiedRAGService) getDocumentContent(ctx context.Context, minioPath st
 		return "", err
 	}
 	defer object.Close()
-	
+
 	content, err := io.ReadAll(object)
 	if err != nil {
 		return "", err
 	}
-	
+
 	return string(content), nil
 }
 
@@ -530,19 +528,19 @@ func (s *UnifiedRAGService) selectChunkingStrategy(doc *Document, content string
 	// Simple heuristics for strategy selection
 	lowerTitle := strings.ToLower(doc.Title)
 	lowerContent := strings.ToLower(content)
-	
+
 	if strings.Contains(lowerTitle, "contract") || strings.Contains(lowerContent, "agreement") {
 		return DefaultChunkingStrategies["legal_contracts"]
 	}
-	
+
 	if strings.Contains(lowerTitle, "case") || strings.Contains(lowerContent, "plaintiff") || strings.Contains(lowerContent, "defendant") {
 		return DefaultChunkingStrategies["case_law"]
 	}
-	
+
 	if strings.Contains(lowerContent, "statute") || strings.Contains(lowerContent, "section") {
 		return DefaultChunkingStrategies["statutes"]
 	}
-	
+
 	// Default to contract strategy
 	return DefaultChunkingStrategies["legal_contracts"]
 }
@@ -554,7 +552,7 @@ func (s *UnifiedRAGService) estimateTokenCount(text string) int {
 
 func (s *UnifiedRAGService) classifyLegalDomain(text string) string {
 	lower := strings.ToLower(text)
-	
+
 	switch {
 	case strings.Contains(lower, "contract") || strings.Contains(lower, "agreement"):
 		return "contract"
@@ -577,7 +575,7 @@ func (s *UnifiedRAGService) classifyLegalDomain(text string) string {
 
 func (s *UnifiedRAGService) calculateChunkConfidence(content string) float32 {
 	confidence := float32(0.5)
-	
+
 	// Legal terminology increases confidence
 	legalTerms := []string{"law", "legal", "court", "judge", "statute", "regulation", "case", "precedent"}
 	for _, term := range legalTerms {
@@ -589,7 +587,7 @@ func (s *UnifiedRAGService) calculateChunkConfidence(content string) float32 {
 			}
 		}
 	}
-	
+
 	return confidence
 }
 
@@ -598,7 +596,7 @@ func (s *UnifiedRAGService) processDocumentAsync(doc *Document) {
 		Document: doc,
 		Response: make(chan error, 1),
 	}
-	
+
 	select {
 	case s.chunkProcessor <- job:
 		if err := <-job.Response; err != nil {
@@ -631,12 +629,12 @@ func (s *UnifiedRAGService) deleteDocumentHandler(c *gin.Context) {
 func (s *UnifiedRAGService) semanticSearchHandler(c *gin.Context) {
 	query := c.Query("q")
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
-	
+
 	ragQuery := &RAGQuery{
 		Query:      query,
 		MaxResults: limit,
 	}
-	
+
 	chunks, err := s.retrieveSimilarChunks(context.Background(), ragQuery)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -645,7 +643,7 @@ func (s *UnifiedRAGService) semanticSearchHandler(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"query":   query,
@@ -666,7 +664,7 @@ func (s *UnifiedRAGService) healthHandler(c *gin.Context) {
 		},
 		"features": []string{
 			"document_chunking",
-			"streaming_embeddings", 
+			"streaming_embeddings",
 			"vector_search",
 			"shader_caching",
 			"gpu_workers",
@@ -675,14 +673,14 @@ func (s *UnifiedRAGService) healthHandler(c *gin.Context) {
 		},
 	}
 	s.mutex.RUnlock()
-	
+
 	c.JSON(http.StatusOK, stats)
 }
 
 func (s *UnifiedRAGService) metricsHandler(c *gin.Context) {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"documents_processed": s.documentsProcessed,
 		"chunks_generated":   s.chunksGenerated,

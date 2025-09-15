@@ -1,5 +1,5 @@
 import type { BackendId } from '$lib/types/pipeline';
-import { embedText as embedWithService, getEmbeddingServiceStatus } from './ai/embedder.js.js';
+import { embedText as embedWithService, getEmbeddingServiceStatus } from './ai/embedder.js';
 
 export interface EmbedGatewayOptions {
   model?: string;

@@ -38,8 +38,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     // Validate required fields
     if (!caseId || !summary) {
-      return json({ 
-        error: 'Missing required fields: caseId, summary' 
+      return json({
+        error: 'Missing required fields: caseId, summary'
       }, { status: 400 });
     }
 
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         caseId,
         userId: user.id,
         analysisType: metadata.analysisType || 'summary',
-        model: metadata?.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal:latest',
+        model: metadata?.model || 'gemma3-legal:latest',
         summary,
         confidence: metadata.confidence || 0.85,
         processingTime: metadata.processingTime || 0,
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     // Update case with latest analysis timestamp
     await db
       .update(cases)
-      .set({ 
+      .set({
         updatedAt: new Date(),
         lastAnalysisAt: new Date()
       })
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
   } catch (error: any) {
     console.error('Summary save error:', error);
-    
+
     return json({
       error: 'Failed to save summary',
       details: error instanceof Error ? error.message : 'Unknown error'

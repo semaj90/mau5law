@@ -3,7 +3,7 @@ import { getConfig } from '$lib/config/unified-config';
 import { redisRateLimit } from '$lib/server/redisRateLimit';
 import { productionLogger } from '$lib/server/production-logger';
 import { dev } from '$app/environment';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 

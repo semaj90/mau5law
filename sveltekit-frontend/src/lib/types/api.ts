@@ -733,7 +733,7 @@ export interface ClusterMetrics {
   };
   events: Array<any>;
   workers: Array<any>;
-  deferredQueue: Array<any>
+  deferredQueue: Array<any>;
 
 // Performance Metrics Interface
 export interface PerformanceMetrics {
@@ -1019,7 +1019,7 @@ export interface ProtocolRouter {
 
   getServiceConfig<T extends keyof ServiceEndpoints>(service: T): ServiceEndpoints[T];
 
-  getAllServices(): Array<any>
+  getAllServices(): Array<any>;
 
 // Utility Type for API Route Handlers with Enhanced Context
 export type EnhancedAPIHandler<TRequest = any, TResponse = APIResponse> = (

@@ -719,7 +719,7 @@ Final synthesis:`;
   }
 
   private async buildConsensus(
-    agentOutputs: Array<,
+    agentOutputs: Array<any>,
     task: Task,
     context: Record<string, any>,
   ): Promise<string> {

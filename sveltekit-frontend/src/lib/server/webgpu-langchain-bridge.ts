@@ -4,8 +4,8 @@
  * Provides GPU-accelerated embedding generation and caching for legal document processing
  */
 
-import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } from './embedding-cache-middleware.js.js';
-import { webgpuRedisOptimizer, optimizedCache } from './webgpu-redis-optimizer.js.js';
+import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } from './embedding-cache-middleware.js';
+import { webgpuRedisOptimizer, optimizedCache } from './webgpu-redis-optimizer.js';
 import { langExtractService } from '$lib/services/langextract-ollama-service.js';
 
 export interface LangChainWebGPUConfig {

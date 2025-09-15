@@ -664,3 +664,6 @@ go.sum
 
 # Large files and build artifacts
 comprehensive-all-routes-phase-file.txt
+*.exe
+**/*.exe
+# Go binaries

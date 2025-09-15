@@ -3,7 +3,7 @@
 
 import { json, type RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
-import type { ApiResponse, ApiError } from '../../types/api.js.js';
+import type { ApiResponse, ApiError } from '../../types/api.js';
 import type { APIResponse as UnifiedAPIResponse } from '$lib/types';
 import path from 'path';
 import { URL } from 'url';

@@ -2,7 +2,7 @@
 // Connects Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama, and Go services
 // TypeScript-safe implementation with MCP Context7 best practices
 
-import { logger } from '../logger.js.js';
+import { logger } from '../logger.js';
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { createMachine, createActor, fromPromise } from "xstate";
@@ -11,10 +11,10 @@ import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
 import { Neo4jVectorStore } from "@langchain/community/vectorstores/neo4j_vector";
 import type { Document } from '@langchain/core/documents';
 import Redis from 'ioredis';
-import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js.js';
-import { legalBERT } from './legalbert-middleware.js.js';
-import { cachingLayer } from './caching-layer.js.js';
-import { monitoringService } from './monitoring-service.js.js';
+import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
+import { legalBERT } from './legalbert-middleware.js';
+import { cachingLayer } from './caching-layer.js';
+import { monitoringService } from './monitoring-service.js';
 
 // Type-safe stub for production
 const prisma = null as any; // Will be replaced with proper Drizzle implementation

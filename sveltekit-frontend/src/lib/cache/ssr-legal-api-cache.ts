@@ -4,7 +4,7 @@
  * Integrates with existing parallel cache orchestrator
  */
 
-import { parallelCacheOrchestrator, type ParallelCacheRequest } from './parallel-cache-orchestrator.js.js';
+import { parallelCacheOrchestrator, type ParallelCacheRequest } from './parallel-cache-orchestrator.js';
 import { dev } from '$app/environment';
 import { browser } from '$app/environment';
 

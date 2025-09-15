@@ -7,7 +7,7 @@
  */
 
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { eq, and, or, ilike, count, desc } from 'drizzle-orm';
 import { citations } from '$lib/server/db/schemas/cases-schema.js';

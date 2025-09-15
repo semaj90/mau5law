@@ -64,12 +64,12 @@ async function handleLegalAnalysis(data: any, config: any): Promise<any> {
   });
 
   // Add legal-specific post-processing
-  if ((result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success && options?.extractEntities) {
-    (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).(result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).entities = extractLegalEntities(document);
+  if (result.success && options?.extractEntities) {
+    result.result.entities = extractLegalEntities(document);
   }
 
-  if ((result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success && options?.riskAssessment) {
-    (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).(result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).riskAssessment = await performRiskAssessment((result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).result);
+  if (result.success && options?.riskAssessment) {
+    result.result.riskAssessment = await performRiskAssessment(result.result);
   }
 
   return json({

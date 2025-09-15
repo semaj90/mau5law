@@ -3,7 +3,7 @@ import { orchestrator } from '$lib/services/unified-legal-orchestrator';
 import { qdrant } from '$lib/server/vector/qdrant-manager';
 import { db, vectorSearch } from '$lib/server/database/connection';
 import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // Unified Search API with hybrid vector + text + filtered search
 export const POST: RequestHandler = async ({ request }) => {

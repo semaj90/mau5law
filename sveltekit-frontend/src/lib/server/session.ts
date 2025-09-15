@@ -1,4 +1,4 @@
-import { getUserById } from './db/queries.js.js';
+import { getUserById } from './db/queries.js';
 
 // import { type RequestEvent } from "@sveltejs/kit";
 
@@ -9,7 +9,7 @@ interface RequestEvent {
     delete(name: string, options?: any): void;
   };
 }
-import { signJWT, verifyJWT, type JWTPayload } from './authUtils.js.js';
+import { signJWT, verifyJWT, type JWTPayload } from './authUtils.js';
 
 // In-memory session store (for development)
 const sessions = new Map<string, Session>();

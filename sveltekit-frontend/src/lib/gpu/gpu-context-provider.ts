@@ -4,9 +4,9 @@
  * Implements proper type narrowing for shader loading and resource management
  */
 
-import type { HybridGPUContext } from './hybrid-gpu-context.js.js';
-import { GPU_CONFIG, CLIENT_ENV } from '../config/env.js.js';
-import type { GPUBackend, BackendCapabilities, MemoryUsageTracker, TrackedBuffer } from './types.js.js';
+import type { HybridGPUContext } from './hybrid-gpu-context.js';
+import { GPU_CONFIG, CLIENT_ENV } from '../config/env.js';
+import type { GPUBackend, BackendCapabilities, MemoryUsageTracker, TrackedBuffer } from './types.js';
 
 export type GPUBackendType = GPUBackend;
 

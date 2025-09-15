@@ -7,7 +7,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool, type PoolClient } from 'pg';
 import postgres from 'postgres';
 import { getDatabaseConfig, getPoolConfig, getConnectionString, validateDatabaseConfig } from '$lib/config/database.js';
-import * as schema from './schema-postgres.js.js';
+import * as schema from './schema-postgres.js';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 

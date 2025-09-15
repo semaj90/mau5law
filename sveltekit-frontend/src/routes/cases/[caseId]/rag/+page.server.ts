@@ -1,5 +1,5 @@
-import type { PageServerLoad } from './$types.js.js';
-import type { Actions } from './$types.js.js';
+import type { PageServerLoad } from './$types.js';
+import type { Actions } from './$types.js';
 import { error, json } from '@sveltejs/kit';
 import { authService } from '$lib/server/auth';
 import { legalRAGService } from '$lib/services/enhanced-rag-semantic-analyzer';

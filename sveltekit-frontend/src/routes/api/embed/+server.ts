@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { db } from '$lib/db';
 import { documents } from '$lib/db/schema';
 import crypto from "crypto";

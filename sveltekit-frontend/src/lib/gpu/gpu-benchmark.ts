@@ -1,5 +1,5 @@
-import { gpuVectorProcessor } from './gpu-vector-processor.js.js';
-import { telemetryBus } from '../telemetry/telemetry-bus.js.js';
+import { gpuVectorProcessor } from './gpu-vector-processor.js';
+import { telemetryBus } from '../telemetry/telemetry-bus.js';
 
 export interface EmbeddingBenchmarkOptions {
   runs?: number;            // number of repetitions per mode

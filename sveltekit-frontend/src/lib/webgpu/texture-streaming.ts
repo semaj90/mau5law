@@ -16,7 +16,7 @@ import {
   BufferTypeGuards, 
   type BufferLike,
   BufferDebugUtils
-} from '../utils/buffer-conversion.js.js';
+} from '../utils/buffer-conversion.js';
 
 // Memory constraints (Nintendo NES inspired)
 const MEMORY_CONSTRAINTS = {

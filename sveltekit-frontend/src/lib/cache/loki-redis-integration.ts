@@ -11,7 +11,7 @@
 
 import Loki from 'lokijs';
 import { redisService } from '$lib/server/redis-service.js';
-import { nesMemory, type LegalDocument } from '../memory/nes-memory-architecture.js.js';
+import { nesMemory, type LegalDocument } from '../memory/nes-memory-architecture.js';
 import { EventEmitter } from 'events';
 import type Redis from 'ioredis';
 import crypto from 'crypto';

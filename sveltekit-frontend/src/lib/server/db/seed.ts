@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { db } from './index.js.js';
+import { db } from './index.js';
 import { 
   users, 
   cases, 
@@ -8,7 +8,7 @@ import {
   autoTags,
   documentChunks,
   embeddingCache
-} from './schema.js.js';
+} from './schema.js';
 import { hash } from '@node-rs/argon2';
 import { generateIdFromEntropySize } from 'lucia';
 

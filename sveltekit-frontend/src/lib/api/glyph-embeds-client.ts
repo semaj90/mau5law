@@ -13,7 +13,7 @@ export interface SIMDGlyphConfig {
 }
 
 export interface GlyphEmbedRequest {
-  evidence_id: string | number;
+  evidence_id: string;
   prompt: string;
   style?: string;
   dimensions?: [number, number];
@@ -70,7 +70,7 @@ export interface GlyphEmbedResponse {
   data?: GlyphEmbedResult;
   error?: string;
   metadata?: {
-    evidence_id: string | number;
+    evidence_id: string;
     prompt: string;
     style: string;
     dimensions: [number, number];

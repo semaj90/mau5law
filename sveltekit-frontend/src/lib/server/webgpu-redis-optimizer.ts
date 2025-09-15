@@ -10,9 +10,9 @@
  * - Thread-safe multi-core parallelism with SIMD acceleration
  */
 
-import { cache } from './cache/redis.js.js';
-import { gpuCoordinator } from './gpu-thread-coordinator.js.js';
-import { textureStreamer } from '../gpu/texture-streaming-service.js.js';
+import { cache } from './cache/redis.js';
+import { gpuCoordinator } from './gpu-thread-coordinator.js';
+import { textureStreamer } from '../gpu/texture-streaming-service.js';
 
 interface GPUMetrics {
   gpuUtilization: number;

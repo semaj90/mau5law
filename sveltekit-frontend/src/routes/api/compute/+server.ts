@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // src/routes/api/compute/+server.ts
 // SvelteKit API endpoint for multi-threaded job pipeline

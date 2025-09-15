@@ -526,7 +526,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     return mitigations[factor] || 'Consult legal counsel for specific mitigation strategies';
   }
 
-  private async extractKeyphrases(text: string): Promise<Array<any> {
+  private async extractKeyphrases(text: string): Promise<Array<any>> {
     // Simple keyphrase extraction (in production, use TF-IDF or similar)
     const words = text.toLowerCase().match(/\b\w{4,}\b/g) || [];
     const wordFreq: Record<string, number> = {};

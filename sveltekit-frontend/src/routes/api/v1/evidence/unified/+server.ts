@@ -80,6 +80,7 @@ interface UnifiedAnalysisResult {
       mitigations: string[];
     };
     outcomeProjections: Array<any>;
+  };
 
   // WASM processing results
   wasmAnalysis?: {
@@ -279,7 +280,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       const wasmProcessor = new WasmLegalProcessor();
       await wasmProcessor.initialize();
 
-      const processedResults: Array< = await Promise.all(
+      const processedResults: Array<any> = await Promise.all(
         evidence.map(async (e) => {
           const analysis: any = await wasmProcessor.processDocument({
             content: `Mock content for ${e.filename}`,
@@ -297,7 +298,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       );
 
       // Calculate cross-document similarity
-      const crossSimilarity: Array< =
+      const crossSimilarity: Array<any> =
         [];
       for (let i = 0; i < processedResults.length; i++) {
         for (let j = i + 1; j < processedResults.length; j++) {

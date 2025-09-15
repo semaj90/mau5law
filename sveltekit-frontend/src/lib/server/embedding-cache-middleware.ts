@@ -6,11 +6,11 @@
  */
 
 import crypto from 'crypto';
-import { threadSafePostgres } from './thread-safe-postgres.js.js';
-import { concurrentSerializer } from './concurrent-json-serializer.js.js';
-import { gpuCoordinator } from './gpu-thread-coordinator.js.js';
-import { cache, cacheEmbedding, getCachedEmbedding } from './cache/redis.js.js';
-import { webgpuRedisOptimizer, optimizedCache } from './webgpu-redis-optimizer.js.js';
+import { threadSafePostgres } from './thread-safe-postgres.js';
+import { concurrentSerializer } from './concurrent-json-serializer.js';
+import { gpuCoordinator } from './gpu-thread-coordinator.js';
+import { cache, cacheEmbedding, getCachedEmbedding } from './cache/redis.js';
+import { webgpuRedisOptimizer, optimizedCache } from './webgpu-redis-optimizer.js';
 
 interface EmbeddingCacheConfig {
   redisUrl?: string;

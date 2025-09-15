@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Upload Completion Webhook - MinIO → Ingestion Pipeline Trigger

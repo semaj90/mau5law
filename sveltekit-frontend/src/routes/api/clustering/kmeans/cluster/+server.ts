@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 /*
  * SvelteKit 2 API Route: K-Means Clustering

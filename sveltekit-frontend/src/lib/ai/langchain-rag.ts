@@ -22,7 +22,7 @@ const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
 type QdrantVectorStore = any;
 type QdrantClient = any;
 
-import type { LegalDocumentMetadata } from './qdrant-service.js.js';
+import type { LegalDocumentMetadata } from './qdrant-service.js';
 
 export interface LegalRAGConfig {
   qdrantUrl: string;

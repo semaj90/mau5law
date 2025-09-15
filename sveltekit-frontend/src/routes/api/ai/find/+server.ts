@@ -17,7 +17,7 @@
  */
 
 
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 /*
  * AI-Powered Find API with Context7 MCP Integration

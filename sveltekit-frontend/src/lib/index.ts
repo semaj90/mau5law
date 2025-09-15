@@ -8,7 +8,7 @@
 
 // SvelteKit 2 Polyfills - Import first to ensure module availability
 import './polyfills.js';
-import { barrelStore } from './stores/barrel-functions.js.js';
+import { barrelStore } from './stores/barrel-functions.js';
 
 // Enhanced Type Definitions - Import to register module augmentations
 import './types/drizzle-enhanced.js';
@@ -32,8 +32,8 @@ export {
 // export * from './components/index.js';
 
 // ===== FILE UPLOAD SERVICES =====
-export { default as localStorageFiles } from './services/localStorage-file-fallback.js.js';
-export { default as enhancedFileUpload } from './services/enhanced-file-upload.js.js';
+export { default as localStorageFiles } from './services/localStorage-file-fallback.js';
+export { default as enhancedFileUpload } from './services/enhanced-file-upload.js';
 
 // ===== UTILITIES & TYPES =====
 export { 

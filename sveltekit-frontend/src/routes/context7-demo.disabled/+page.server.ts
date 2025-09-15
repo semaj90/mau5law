@@ -1,5 +1,5 @@
 import path from 'path';
-import type { PageServerLoad } from './$types.js.js';
+import type { PageServerLoad } from './$types.js';
 import { copilotSelfPrompt } from '$lib/utils/copilot-self-prompt';
 
 import { resolveLibraryId, getLibraryDocs } from '$lib/services/context7-lib-resolver';

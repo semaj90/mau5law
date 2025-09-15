@@ -529,7 +529,7 @@ export const GRPOUtils = {
    */
   async getTrendingTopics(
     days: number = 7
-  ): Promise<Array<any> {
+  ): Promise<Array<any>> {
     const result = await db.execute(sql`
       SELECT
         legal_domain as topic,

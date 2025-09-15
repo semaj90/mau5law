@@ -10,7 +10,7 @@ import {
   toFloat32Array,
   type BufferLike,
   BufferDebugUtils
-} from '../utils/buffer-conversion.js.js';
+} from '../utils/buffer-conversion.js';
 
 import {
   quantizeForLegalAI,
@@ -18,12 +18,12 @@ import {
   type LegalAIProfile,
   quantizeWithStats,
   LEGAL_AI_QUANTIZATION_PROFILES
-} from '../utils/typed-array-quantization.js.js';
+} from '../utils/typed-array-quantization.js';
 
 import {
   WebGPUBufferUploader,
   WebGPUBufferUtils_Extended
-} from '../utils/webgpu-buffer-uploader.js.js';
+} from '../utils/webgpu-buffer-uploader.js';
 
 /**
  * Example 1: Basic Legal Document Embedding Processing
