@@ -34,14 +34,14 @@
     role="dialog"
     aria-modal="true"
     tabindex="0"
-    on:click={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    on:keydown={(e) => { if (e.key === 'Escape') onClose(); }}
+    onclick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    onkeydown={(e) => { if (e.key === 'Escape') onClose(); }}
   >
     <div
       class="w-[28rem] rounded-md border border-neutral-700 bg-neutral-900 p-4 text-neutral-100 shadow-xl"
       role="document"
-      on:click={(e) => e.stopPropagation()}
-      on:keydown={(e) => { if (e.key === 'Escape') onClose(); }}
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => { if (e.key === 'Escape') onClose(); }}
     >
       <div class="mb-3 text-lg font-semibold">{title}</div>
       <div class="space-y-3">
@@ -59,8 +59,8 @@
         />
       </div>
   <div class="mt-4 flex justify-end gap-2">
-  <button class="rounded bg-neutral-700 px-3 py-1" on:click={onClose}>Cancel</button>
-  <button class="rounded bg-emerald-600 px-3 py-1" on:click={submit}>Sign in</button>
+  <button class="rounded bg-neutral-700 px-3 py-1" onclick={onClose}>Cancel</button>
+  <button class="rounded bg-emerald-600 px-3 py-1" onclick={submit}>Sign in</button>
       </div>
     </div>
   </div>

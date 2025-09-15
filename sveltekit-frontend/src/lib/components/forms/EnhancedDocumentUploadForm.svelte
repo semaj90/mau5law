@@ -47,11 +47,11 @@
 </script>
 
   // Props
-  let { data }: { data: any } = $props(); // SuperValidated<Infer<typeof DocumentUploadSchema>>;
-  let { onSuccess = $bindable()  }: { onSuccess = $bindable() : any } = $props(); // ((result: any) => void) | undefined = undefined;
-  let { onError = $bindable()  }: { onError = $bindable() : any } = $props(); // ((error: string) => void) | undefined = undefined;
-  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined;
-  let { autoSave = $bindable()  }: { autoSave = $bindable() : any } = $props(); // true;
+  let { data }: { data: unknown } = $props(); // SuperValidated<Infer<typeof DocumentUploadSchema>>;
+  let { onSuccess = $bindable()  }: { onSuccess = $bindable() : unknown } = $props(); // ((result: unknown) => void) | undefined = undefined;
+  let { onError = $bindable()  }: { onError = $bindable() : unknown } = $props(); // ((error: string) => void) | undefined = undefined;
+  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string | undefined = undefined;
+  let { autoSave = $bindable()  }: { autoSave = $bindable() : unknown } = $props(); // true;
 
   // Form state management
   const formIntegration = createDocumentUploadForm(data, {
@@ -273,7 +273,7 @@
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:click={handleSaveDraft}
+              onclick={handleSaveDraft}
               disabled={$isSubmitting}
             >
 <Save size={16} />
@@ -281,7 +281,7 @@
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:click={handleReset}
+              onclick={handleReset}
               disabled={$isSubmitting}
             >
 <RotateCcw size={16} />
@@ -315,11 +315,11 @@
       <div
         class="drop-zone"
         class:drag-active={dragActive}
-        on:drop={handleDrop}
-        role="button" aria-label="Drop zone" on:dragover={handleDragOver}
+        ondrop={handleDrop}
+        role="button" aria-label="Drop zone" ondragover={handleDragOver}
         ondragleave={handleDragLeave}
         tabindex="0"
-        on:click={() => fileInput?.click()}
+        onclick={() => fileInput?.click()}
         keydown={(e) => e.key === "Enter" && fileInput?.click()}
       >
         {#if selectedFile}
@@ -335,7 +335,7 @@
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:click={removeFile}
+              onclick={removeFile}
               disabled={$isSubmitting}
             >
 <X size={16} />
@@ -361,7 +361,7 @@
       <input
         bind:this={fileInput}
         type="file"
-        accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp" on:change={handleFileSelect}
+        accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp" onchange={handleFileSelect}
         class="sr-only"
         disabled={$isSubmitting}
       />
@@ -454,7 +454,7 @@
             </label>
             <Input
               id="tags"
-              value={$formData.tags.join(", ")} on:input={(e) => {
+              value={$formData.tags.join(", ")} oninput={(e) => {
                 const value = e.currentTarget.value;
                 $formData.tags = value
                   .split(",")
@@ -544,7 +544,7 @@
               <Button class="bits-btn"
                 variant="outline"
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 actor.send({ type: "RETRY" })}
                 disabled={contextValue.retryCount >= contextValue.maxRetries}
               >
@@ -556,7 +556,7 @@ actor.send({ type: "RETRY" })}
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 actor.send({ type: "SKIP_PROCESSING" })}
                   class="ml-2"
                 >
@@ -599,7 +599,7 @@ actor.send({ type: "SKIP_PROCESSING" })}
       <div class="flex gap-3">
         <Button class="bits-btn"
           variant="outline"
-          on:click={handleReset}
+          onclick={handleReset}
           disabled={$isSubmitting}
         >
 Reset Form

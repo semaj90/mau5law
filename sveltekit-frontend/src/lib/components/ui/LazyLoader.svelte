@@ -3,13 +3,13 @@
   import { componentLoader } from '$lib/utils/dynamic-imports';
   import AILoadingIndicator from './AILoadingIndicator.svelte';
 
-  export let loader: () => Promise<any>;
-  export let key: string;
-  export let fallback: string = 'Loading component...';
-  export let errorFallback: string = 'Failed to load component';
-  export let props: Record<string, any> = {};
+  let { loader } = $props();: () => Promise<any>;
+  let { key } = $props();: string;
+  let { fallback } = $props();: string = 'Loading component...';
+  let { errorFallback } = $props();: string = 'Failed to load component';
+  let { props } = $props();: Record<string, any> = {};
 
-  let Component: any = null;
+  let Component: unknown = null;
   let isLoading = true;
   let error: Error | null = null;
 
@@ -53,7 +53,7 @@
       {errorFallback}
     </p>
     <button
-      on:click={retry}
+      onclick={retry}
       class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors"
     >
       Retry

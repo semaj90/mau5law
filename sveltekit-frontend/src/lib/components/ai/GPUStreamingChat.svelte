@@ -210,7 +210,7 @@
       {#each visibleMessages as message, i (i)}
         <div 
           class="message {message.role}"
-          transition:slide={{ duration: 300 }}
+          transitionslide={{ duration: 300 }}
         >
           <div class="message-role">
             {#if message.role === 'user'}
@@ -261,11 +261,11 @@
   
   <!-- Input Area -->
   <div class="input-area">
-    <form on:submit={(e) => { e.preventDefault(); handleSubmit(); }}>
+    <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
       <div class="input-wrapper">
         <textarea
           bind:value={prompt}
-          on:input={handleInputChange}
+          oninput={handleInputChange}
           placeholder="Ask anything... (GPU-accelerated with VRAM chunking)"
           rows="3"
           disabled={isStreaming}
@@ -275,7 +275,7 @@
           {#if isStreaming}
             <button 
               type="button" 
-              on:click={stopStreaming}
+              onclick={stopStreaming}
               class="btn btn-stop"
             >
               Stop
@@ -292,7 +292,7 @@
           {/if}
           <button 
             type="button"
-            on:click={clearChat}
+            onclick={clearChat}
             class="btn btn-clear"
           >
             Clear

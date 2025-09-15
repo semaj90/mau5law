@@ -169,9 +169,9 @@
 				{placeholder}
 				type="password"
 				aria-invalid={hasError}
-				aria-describedby={(hasError ? errorId : '') + (hint ? ' ' + hintId : '')} on:input={handleInput} on:change={handleChange}
-				on:focus={handleFocus}
-				on:blur={handleBlur}
+				aria-describedby={(hasError ? errorId : '') + (hint ? ' ' + hintId : '')} oninput={handleInput} onchange={handleChange}
+				onfocus={handleFocus}
+				onblur={handleBlur}
 				{...restProps}
 			/>
 		{:else if type === 'email'}
@@ -186,9 +186,9 @@
 				{placeholder}
 				type="email"
 				aria-invalid={hasError}
-				aria-describedby={(hasError ? errorId : '') + (hint ? ' ' + hintId : '')} on:input={handleInput} on:change={handleChange}
-				on:focus={handleFocus}
-				on:blur={handleBlur}
+				aria-describedby={(hasError ? errorId : '') + (hint ? ' ' + hintId : '')} oninput={handleInput} onchange={handleChange}
+				onfocus={handleFocus}
+				onblur={handleBlur}
 				{...restProps}
 			/>
 		{:else}
@@ -203,9 +203,9 @@
 				{placeholder}
 				type="text"
 				aria-invalid={hasError}
-				aria-describedby={(hasError ? errorId : '') + (hint ? ' ' + hintId : '')} on:input={handleInput} on:change={handleChange}
-				on:focus={handleFocus}
-				on:blur={handleBlur}
+				aria-describedby={(hasError ? errorId : '') + (hint ? ' ' + hintId : '')} oninput={handleInput} onchange={handleChange}
+				onfocus={handleFocus}
+				onblur={handleBlur}
 				{...restProps}
 			/>
 		{/if}
@@ -234,7 +234,7 @@
 			<button
 				type="button"
 				class="space-y-4"
-				on:click={handleClear}
+				onclick={handleClear}
 				tabindex={-1}
 				aria-label="Clear input"
 			>

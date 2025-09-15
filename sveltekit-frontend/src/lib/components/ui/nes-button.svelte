@@ -26,27 +26,27 @@
 
   const dispatch = createEventDispatcher();
 
-  $: variantClass = {
+  let variantClass = $derived({
     primary: 'is-primary',
     success: 'is-success',
     warning: 'is-warning',
     error: 'is-error',
     default: ''
-  }[variant];
+  }[variant]);
 
-  $: sizeClass = {
+  let sizeClass = $derived({
     small: 'is-small',
     normal: '',
     large: 'is-large'
-  }[size];
+  }[size]);
 
-  $: finalClass = [
+  let finalClass = $derived([
     'nes-btn',
     variantClass,
     sizeClass,
     loading && 'is-disabled',
     className
-  ].filter(Boolean).join(' ');
+  ].filter(Boolean).join(' '));
 
   function handleClick(e: MouseEvent) {
     if (disabled || loading) {
@@ -62,13 +62,13 @@
   {type}
   {disabled}
   class={finalClass}
-  on:click={handleClick}
+  onclick={handleClick}
   {...restProps}
 >
   {#if loading}
     <span class="loading-dots">...</span>
   {:else}
-    <slot />
+    {@render children?.()}
   {/if}
 </button>
 

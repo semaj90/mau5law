@@ -297,10 +297,10 @@ let passedTests = $state(0);
 		</div>
 
 		<div class="action-buttons">
-			<button on:click={runSystemDiagnostics} class="diagnostic-button">
+			<button onclick={runSystemDiagnostics} class="diagnostic-button">
 				🔬 Run System Diagnostics
 			</button>
-			<button on:click={clearLogs} class="clear-logs-button">
+			<button onclick={clearLogs} class="clear-logs-button">
 				🧹 Clear Logs
 			</button>
 		</div>

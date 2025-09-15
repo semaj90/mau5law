@@ -10,9 +10,7 @@ https://svelte.dev/e/js_parse_error -->
     Trash2, Edit2, Bot, Zap, AlertCircle, CheckCircle,
     Clock, BarChart3
   } from 'lucide-svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -354,12 +352,12 @@ https://svelte.dev/e/js_parse_error -->
         </p>
       </div>
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="outline" on:click={() =>
+        <Button class="bits-btn" variant="outline" onclick={() =>
 goto('/legal/documents/templates')}>
           <FileText class="h-4 w-4 mr-2" />
           Templates
 
-        <Button class="bits-btn" on:click={() =>
+        <Button class="bits-btn" onclick={() =>
 showUploadDialog = true}>
           <Plus class="h-4 w-4 mr-2" />
           Upload Document
@@ -477,7 +475,7 @@ showUploadDialog = true}>
               : 'Try adjusting your search terms or filters'
             }
           </p>
-          <Button class="bits-btn" on:click={() =>
+          <Button class="bits-btn" onclick={() =>
 showUploadDialog = true}>
             <Plus class="h-4 w-4 mr-2" />
             Upload Document
@@ -487,7 +485,7 @@ showUploadDialog = true}>
     {:else}
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {#each filteredDocuments as document}
-          <div.Root class="cursor-pointer transition-colors hover:bg-muted/50" on:click={() => viewDocument(document)}>
+          <div.Root class="cursor-pointer transition-colors hover:bg-muted/50" onclick={() => viewDocument(document)}>
             <div.Header>
               <div class="flex items-start justify-between">
                 <div class="flex items-center gap-3">
@@ -508,11 +506,11 @@ showUploadDialog = true}>
                   </div>
                 </div>
                 <div class="flex gap-1">
-                  <Button class="bits-btn" variant="ghost" size="sm" on:click={(e) =>
+                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) =>
 { e.stopPropagation(); editDocument(document); }}>
                     <Edit2 class="h-4 w-4" />
 
-                  <Button class="bits-btn" variant="ghost" size="sm" on:click={(e) =>
+                  <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) =>
 { e.stopPropagation(); deleteDocument(document); }}>
                     <Trash2 class="h-4 w-4" />
 
@@ -583,16 +581,16 @@ showUploadDialog = true}>
           class="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
                  {dragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-muted-foreground/50'}
                  {uploadFile ? 'border-green-500 bg-green-50' : ''}"
-          on:dragover={handleDragOver}
+          ondragover={handleDragOver}
           ondragleave={handleDragLeave}
-          role="region" aria-label="Drop zone" on:drop={handleDrop}
+          role="region" aria-label="Drop zone" ondrop={handleDrop}
         >
           {#if uploadFile}
             <div class="space-y-2">
               <FileText class="h-8 w-8 mx-auto text-green-600" />
               <p class="font-medium">{uploadFile.name}</p>
               <p class="text-sm nes-text is-disabled">{formatFileSize(uploadFile.size)}</p>
-              <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+              <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
 uploadFile = null}>
                 Remove
 
@@ -609,7 +607,7 @@ uploadFile = null}>
                     type="file" 
                     class="sr-only" 
                     accept=".pdf,.doc,.docx,.txt,.rtf" 
-                    on:change={handleFileSelect} 
+                    onchange={handleFileSelect} 
                   />
                 </label>
               </div>
@@ -673,11 +671,11 @@ uploadFile = null}>
     </div>
 
     <Dialog.Footer>
-      <Button class="bits-btn" variant="outline" on:click={() =>
+      <Button class="bits-btn" variant="outline" onclick={() =>
 { showUploadDialog = false; resetUploadForm(); }}>
         Cancel
 
-      <Button class="bits-btn" on:click={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
+      <Button class="bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
 {#if uploading}
           <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2"></div>
         {:else}
@@ -797,11 +795,11 @@ uploadFile = null}>
       </div>
       
       <Dialog.Footer>
-        <Button class="bits-btn" variant="outline" on:click={() =>
+        <Button class="bits-btn" variant="outline" onclick={() =>
 showAIAnalysisDialog = false}>
           Close
 
-        <Button class="bits-btn" on:click={() =>
+        <Button class="bits-btn" onclick={() =>
 editDocument(selectedDocument)}>
           <Edit2 class="h-4 w-4 mr-2" />
           Edit Document

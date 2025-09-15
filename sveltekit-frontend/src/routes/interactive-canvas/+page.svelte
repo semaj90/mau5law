@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   	import type { PageData } from "./$types";
 
   	// Case ID - extract from data or generate
-  	function resolveCaseId(d: any) {
+  	function resolveCaseId(d: unknown) {
   		return d?.reportData?.id
   			|| d?.reportId
   			|| d?.canvasState?.caseId
@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
   				completedUploads[fileId] = {
   					name: file.name,
   					hash: hash,
-  					id: (result as { id?: any; uploaded?: any }).id
+  					id: (result as { id?: unknown; uploaded?: unknown }).id
   				};
   				uploadProgress[fileId] = 100;
 
@@ -165,11 +165,11 @@ https://svelte.dev/e/js_parse_error -->
   			body: formData
   		});
 
-  		if (!(response as { ok?: any; json?: any }).ok) {
+  		if (!(response as { ok?: unknown; json?: unknown }).ok) {
   			throw new Error('Upload failed');
   }
-  		const result = await (response as { ok?: any; json?: any }).json();
-  		return { id: (result as { id?: any; uploaded?: any }).uploaded?.[0]?.id || crypto.randomUUID() };
+  		const result = await (response as { ok?: unknown; json?: unknown }).json();
+  		return { id: (result as { id?: unknown; uploaded?: unknown }).uploaded?.[0]?.id || crypto.randomUUID() };
   }
 </script>
 
@@ -190,8 +190,8 @@ https://svelte.dev/e/js_parse_error -->
 		<div
 			class="space-y-4"
 		 class:sidebar-open={sidebarOpen}
-			on:drop={handleFileDrop}
-		 role="button" aria-label="Drop zone" on:dragover={handleDragOver}
+			ondrop={handleFileDrop}
+		 role="button" aria-label="Drop zone" ondragover={handleDragOver}
 		
 			aria-label="Interactive canvas workspace"
 		>
@@ -262,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
 									<span class="space-y-4">{upload.hash.substring(0, 12)}...{upload.hash.substring(-4)}</span>
 									<button
 										class="space-y-4"
-										on:click={() => window.open(`/evidence/hash?hash=${upload.hash}`, '_blank')}
+										onclick={() => window.open(`/evidence/hash?hash=${upload.hash}`, '_blank')}
 									>
 										🔍 Verify
 									</button>

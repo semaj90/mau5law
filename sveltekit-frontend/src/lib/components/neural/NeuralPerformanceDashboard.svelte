@@ -201,11 +201,11 @@ https://svelte.dev/e/js_parse_error -->
       
       <div class="control-buttons">
         {#if isMonitoring}
-          <button class="btn btn-warning" on:click={stopMonitoring}>
+          <button class="btn btn-warning" onclick={stopMonitoring}>
             ⏸️ Pause
           </button>
         {:else}
-          <button class="btn nes-btn is-primary" on:click={startMonitoring}>
+          <button class="btn nes-btn is-primary" onclick={startMonitoring}>
             ▶️ Start
           </button>
         {/if}

@@ -14,9 +14,7 @@ https://svelte.dev/e/js_parse_error -->
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -152,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
     ragState.somClusters.map(cluster => ({
       ...cluster,
       isSelected: selectedClusters.includes(cluster.id),
-      relevantResults: optimizedResults.filter(result => (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).clusterId === cluster.id)
+      relevantResults: optimizedResults.filter(result => (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).clusterId === cluster.id)
     }))
   );
 
@@ -233,7 +231,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <Button
-            on:click={handleSearch}
+            onclick={handleSearch}
             disabled={!searchQuery.trim() || ragState.isLoading}
             class="px-6 bits-btn bits-btn"
           >
@@ -242,7 +240,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <Button class="bits-btn"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 showAdvancedOptions = !showAdvancedOptions}
           >
             <Settings class="h-4 w-4" />
@@ -272,7 +270,7 @@ showAdvancedOptions = !showAdvancedOptions}
                 class="h-8 px-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border border-yellow-200"
                 variant="ghost"
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 selectSuggestion(suggestion)}
               >
                 <Sparkles class="h-3 w-3 mr-1" />
@@ -290,7 +288,7 @@ selectSuggestion(suggestion)}
             Did you mean:
             {#each ragState.didYouMean as suggestion, i}
               <button
-                on:click={() => selectSuggestion(suggestion)}
+                onclick={() => selectSuggestion(suggestion)}
                 class="text-blue-600 hover:text-blue-800 underline ml-1"
               >
                 {suggestion}
@@ -335,7 +333,7 @@ selectSuggestion(suggestion)}
               <Button
                 variant="outline"
                 size="sm"
-                on:click={handleOptimization}
+                onclick={handleOptimization}
                 class="mt-2 w-full bits-btn bits-btn"
               >
 <Zap class="h-4 w-4 mr-1" />
@@ -371,7 +369,7 @@ selectSuggestion(suggestion)}
               <Button class="bits-btn"
                 variant={visualizationMode === 'list' ? 'default' : 'outline'}
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 visualizationMode = 'list'}
               >
                 List
@@ -379,7 +377,7 @@ visualizationMode = 'list'}
               <Button class="bits-btn"
                 variant={visualizationMode === 'clusters' ? 'default' : 'outline'}
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 visualizationMode = 'clusters'}
               >
                 <Target class="h-4 w-4 mr-1" />
@@ -388,7 +386,7 @@ visualizationMode = 'clusters'}
               <Button class="bits-btn"
                 variant={visualizationMode === 'performance' ? 'default' : 'outline'}
                 size="sm"
-                on:click={() => visualizationMode = 'performance'}
+                onclick={() => visualizationMode = 'performance'}
               >
                 <BarChart3 class="h-4 w-4 mr-1" />
                 Analytics
@@ -408,24 +406,24 @@ visualizationMode = 'clusters'}
                 <div class="flex items-start justify-between mb-3">
                   <div class="flex-1">
                     <h4 class="font-semibold text-lg mb-1">
-                      {(result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).document.title || `Document ${(result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).id}`}
+                      {(result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).document.title || `Document ${(result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).id}`}
                     </h4>
                     <div class="flex items-center gap-4 text-sm text-gray-600">
-                      <span>Relevance: {Math.round((result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).score * 100)}%</span>
-                      {#if (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).cacheLayer}
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).cacheLayer}</span>
+                      <span>Relevance: {Math.round((result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).score * 100)}%</span>
+                      {#if (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).cacheLayer}
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).cacheLayer}</span>
                       {/if}
-                      {#if (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).clusterId}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Cluster {(result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).clusterId}</span>
+                      {#if (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).clusterId}
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Cluster {(result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).clusterId}</span>
                       {/if}
                     </div>
                   </div>
 
                   <!-- Neural Prediction Indicator -->
-                  {#if (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).legalRelevance}
+                  {#if (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).legalRelevance}
                     <div class="text-right">
                       <div class="text-2xl font-bold text-blue-600">
-                        {Math.round((result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).legalRelevance.overall * 100)}
+                        {Math.round((result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).legalRelevance.overall * 100)}
                       </div>
                       <div class="text-xs text-gray-500">Legal Score</div>
                     </div>
@@ -433,10 +431,10 @@ visualizationMode = 'clusters'}
                 </div>
 
                 <!-- Document Preview -->
-                {#if (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).highlights && (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).highlights.length > 0}
+                {#if (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).highlights && (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).highlights.length > 0}
                   <div class="mb-3">
                     <div class="text-sm bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded border-l-4 border-yellow-400">
-                      {#each (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).highlights.slice(0, 2) as highlight}
+                      {#each (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).highlights.slice(0, 2) as highlight}
                         <p class="mb-1 last:mb-0">...{@html highlight}...</p>
                       {/each}
                     </div>
@@ -444,9 +442,9 @@ visualizationMode = 'clusters'}
                 {/if}
 
                 <!-- Metadata Tags -->
-                {#if (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).document.metadata.tags}
+                {#if (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).document.metadata.tags}
                   <div class="flex flex-wrap gap-1">
-                    {#each (result as { clusterId?: any; document?: any; id?: any; score?: any; cacheLayer?: any; legalRelevance?: any; highlights?: any }).document.metadata.tags.slice(0, 5) as tag}
+                    {#each (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).document.metadata.tags.slice(0, 5) as tag}
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                     {/each}
                   </div>

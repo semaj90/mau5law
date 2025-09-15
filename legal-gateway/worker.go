@@ -80,7 +80,7 @@ func main() {
 	log.Println("✅ Worker connected to Redis")
 
 	// Initialize PostgreSQL
-	dsn := getEnv("DATABASE_URL", "postgres://legal_admin:123456@localhost:5433/legal_ai_db?sslmode=disable")
+	dsn := getEnv("DATABASE_URL", "postgres://legal_admin:123456@localhost:5432/legal_ai_db?sslmode=disable")
 	workerDB, err = sql.Open("pgx", dsn)
 	if err != nil {
 		log.Fatal("Failed to connect to PostgreSQL:", err)

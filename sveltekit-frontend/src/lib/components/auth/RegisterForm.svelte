@@ -455,7 +455,7 @@
           <label for="password" class="label">Password</label>
           <div class="relative">
             <input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Enter secure password" bind:value={$form.password} disabled={isLoading} class="input pr-10" />
-            <button type="button" class="pw-toggle" on:click={togglePasswordVisibility} disabled={isLoading} aria-label="Toggle password visibility">
+            <button type="button" class="pw-toggle" onclick={togglePasswordVisibility} disabled={isLoading} aria-label="Toggle password visibility">
               {#if showPassword}
                 <EyeOff class="h-4 w-4 text-gray-400" />
               {:else}
@@ -477,7 +477,7 @@
           <label for="confirmPassword" class="label">Confirm Password</label>
           <div class="relative">
             <input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} placeholder="Confirm your password" bind:value={$form.confirmPassword} disabled={isLoading} class="input pr-10" />
-            <button type="button" class="pw-toggle" on:click={toggleConfirmPasswordVisibility} disabled={isLoading} aria-label="Toggle confirm password visibility">
+            <button type="button" class="pw-toggle" onclick={toggleConfirmPasswordVisibility} disabled={isLoading} aria-label="Toggle confirm password visibility">
               {#if showConfirmPassword}
                 <EyeOff class="h-4 w-4 text-gray-400" />
               {:else}

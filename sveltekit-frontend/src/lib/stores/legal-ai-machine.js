@@ -908,10 +908,10 @@ import { useLegalAI, createWebSocketService } from '$lib/stores/legal-ai-machine
     });
     
     // Reactive statements
-    $: isSearching = $currentState === 'searching';
-    $: isChatting = typeof $currentState === 'object' && $currentState.chatting;
-    $: gpuReady = $gpuStatus === 'initialized';
-    $: wsConnected = $wsState.matches('connected');
+    let isSearching = $derived($currentState === 'searching');
+    let isChatting = $derived(typeof $currentState === 'object' && $currentState.chatting);
+    let gpuReady = $derived($gpuStatus === 'initialized');
+    let wsConnected = $derived($wsState.matches('connected'));
 </script>
 
 <div class="legal-ai-interface">
@@ -941,11 +941,11 @@ import { useLegalAI, createWebSocketService } from '$lib/stores/legal-ai-machine
         {/each}
     </div>
     
-    <button on:click={() => startSearch('contract law')}>
+    <button onclick={() => startSearch('contract law')}>
         Search Contract Law
     </button>
     
-    <button on:click={() => sendMessage('What is consideration in contracts?')}>
+    <button onclick={() => sendMessage('What is consideration in contracts?')}>
         Ask Question
     </button>
 </div>

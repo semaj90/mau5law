@@ -129,10 +129,10 @@
             prompt: doc.content
           })
         });
-        if ((response as { ok?: any; json?: any }).ok) {
-          const result = await (response as { ok?: any; json?: any }).json();
-          embeddings.set(doc.id, (result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).embedding);
-          console.log(`✅ Generated ${(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).embedding?.length || 0}-dim embedding for doc ${doc.id}`);
+        if ((response as { ok?: unknown; json?: unknown }).ok) {
+          const result = await (response as { ok?: unknown; json?: unknown }).json();
+          embeddings.set(doc.id, (result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).embedding);
+          console.log(`✅ Generated ${(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).embedding?.length || 0}-dim embedding for doc ${doc.id}`);
         }
       } catch (error) {
         console.warn(`⚠️ Embedding failed for doc ${doc.id}:`, error);
@@ -174,8 +174,8 @@
     }
     const results = fuseSearch.search(searchQuery);
     searchResults = results.map(result => ({
-      ...(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).item,
-      searchScore: 1 - ((result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).score || 0) // Convert distance to similarity
+      ...(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).item,
+      searchScore: 1 - ((result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).score || 0) // Convert distance to similarity
     }));
     console.log(`🔍 Search "${searchQuery}" returned ${searchResults.length} results`);
   }
@@ -208,7 +208,7 @@
     return colors[label as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
   // Analyze document with gemma3-legal
-  async function analyzeDocument(doc: any) {
+  async function analyzeDocument(doc: unknown) {
     try {
       console.log(`🤖 Analyzing document ${doc.id} with ${config.legalModel}...`);
       const response = await fetch(`${config.ollamaHost}/api/generate`, {
@@ -221,9 +221,9 @@
           stream: false
         })
       });
-      if ((response as { ok?: any; json?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any }).json();
-        alert(`AI Analysis:\n\n${(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).response}`);
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; json?: unknown }).json();
+        alert(`AI Analysis:\n\n${(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).response}`);
       } else {
         alert('AI analysis failed. Make sure Ollama is running with gemma3-legal model.');
       }
@@ -274,7 +274,7 @@
         class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
       <button
-        on:click={() => performSearch()}
+        onclick={() => performSearch()}
         class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
       >
         Search
@@ -288,26 +288,26 @@
           {#each searchResults as result}
             <div class="result-nier-bits-card bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
               <div class="flex justify-between items-start mb-2">
-                <span class="inline-block px-2 py-1 rounded-full text-xs font-medium {getLabelColor((result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).label)}">
-                  {(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).label}
+                <span class="inline-block px-2 py-1 rounded-full text-xs font-medium {getLabelColor((result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).label)}">
+                  {(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).label}
                 </span>
                 <div class="flex gap-2 text-sm">
-                  <span class="score {getScoreColor((result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).score)}">
-                    Score: {(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).score.toFixed(2)}
+                  <span class="score {getScoreColor((result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).score)}">
+                    Score: {(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).score.toFixed(2)}
                   </span>
                   <span class="search-score text-gray-600">
-                    Match: {((result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).searchScore * 100).toFixed(0)}%
+                    Match: {((result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).searchScore * 100).toFixed(0)}%
                   </span>
                 </div>
               </div>
-              <p class="text-gray-800 mb-2">{(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).summary}</p>
-              <p class="text-sm text-gray-600 mb-3">{(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).content}</p>
+              <p class="text-gray-800 mb-2">{(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).summary}</p>
+              <p class="text-sm text-gray-600 mb-3">{(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).content}</p>
               <div class="flex justify-between items-center">
                 <div class="text-xs text-gray-500">
-                  {(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).metadata.wordCount} words • {(result as { embedding?: any; item?: any; score?: any; response?: any; label?: any; searchScore?: any; summary?: any; content?: any; metadata?: any }).metadata.legalTerms.length} legal terms
+                  {(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).metadata.wordCount} words • {(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).metadata.legalTerms.length} legal terms
                 </div>
                 <button
-                  on:click={() => analyzeDocument(result)}
+                  onclick={() => analyzeDocument(result)}
                   class="px-3 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 transition-colors"
                 >
                   🤖 AI Analyze
@@ -388,7 +388,7 @@
                 Source: {doc.source} • {doc.metadata.wordCount} words • {doc.timestamp.toLocaleDateString()}
               </div>
               <button
-                on:click={() => analyzeDocument(doc)}
+                onclick={() => analyzeDocument(doc)}
                 class="px-3 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 transition-colors"
               >
                 🤖 Analyze with AI

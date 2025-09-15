@@ -5,7 +5,7 @@
   }
   let { cases = []
    }: { cases = []
-  : any } = $props();
+  : unknown } = $props();
 
 
 

@@ -1,5 +1,6 @@
 <!-- Modular Badge Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
@@ -84,7 +85,7 @@
     <button
       type="button"
       class="inline-flex items-center justify-center w-4 h-4 ml-1 rounded-full hover:bg-black/20 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-current"
-      on:click={handleRemove}
+      onclick={handleRemove}
       aria-label="Remove"
     >
       <div class="i-lucide-x w-3 h-3" aria-hidden="true"></div>

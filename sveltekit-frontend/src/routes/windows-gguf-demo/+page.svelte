@@ -164,8 +164,8 @@ https://svelte.dev/e/js_parse_error -->
         // Test WebGPU status in service worker
         const channel = new MessageChannel();
         channel.port1.onmessage = (event) => {
-          if (event.(data as { type?: any; data?: any; error?: any }).type === 'WEBGPU_STATUS') {
-            console.log('Service Worker WebGPU Status:', event.(data as { type?: any; data?: any; error?: any }).data);
+          if (event.(data as { type?: unknown; data?: unknown; error?: unknown }).type === 'WEBGPU_STATUS') {
+            console.log('Service Worker WebGPU Status:', event.(data as { type?: unknown; data?: unknown; error?: unknown }).data);
           }
         };
 
@@ -194,11 +194,11 @@ https://svelte.dev/e/js_parse_error -->
           id: Date.now(),
           type: 'GGUF Inference',
           input: demoInput.substring(0, 100) + '...',
-          output: (response as { text?: any; processingTime?: any; tokensPerSecond?: any; memoryUsed?: any }).text,
+          output: (response as { text?: unknown; processingTime?: unknown; tokensPerSecond?: unknown; memoryUsed?: unknown }).text,
           metrics: {
-            processingTime: (response as { text?: any; processingTime?: any; tokensPerSecond?: any; memoryUsed?: any }).processingTime,
-            tokensPerSecond: (response as { text?: any; processingTime?: any; tokensPerSecond?: any; memoryUsed?: any }).tokensPerSecond,
-            memoryUsed: (response as { text?: any; processingTime?: any; tokensPerSecond?: any; memoryUsed?: any }).memoryUsed,
+            processingTime: (response as { text?: unknown; processingTime?: unknown; tokensPerSecond?: unknown; memoryUsed?: unknown }).processingTime,
+            tokensPerSecond: (response as { text?: unknown; processingTime?: unknown; tokensPerSecond?: unknown; memoryUsed?: unknown }).tokensPerSecond,
+            memoryUsed: (response as { text?: unknown; processingTime?: unknown; tokensPerSecond?: unknown; memoryUsed?: unknown }).memoryUsed,
             windowsOptimized: true,
             rtx3060Accelerated: true
           },
@@ -229,10 +229,10 @@ https://svelte.dev/e/js_parse_error -->
 
       const result = await new Promise((resolve, reject) => {
         channel.port1.onmessage = (event) => {
-          if (event.(data as { type?: any; data?: any; error?: any }).type === 'WEBGPU_RESULT') {
-            resolve(event.(data as { type?: any; data?: any; error?: any }).data);
-          } else if (event.(data as { type?: any; data?: any; error?: any }).type === 'WEBGPU_ERROR') {
-            reject(new Error(event.(data as { type?: any; data?: any; error?: any }).error));
+          if (event.(data as { type?: unknown; data?: unknown; error?: unknown }).type === 'WEBGPU_RESULT') {
+            resolve(event.(data as { type?: unknown; data?: unknown; error?: unknown }).data);
+          } else if (event.(data as { type?: unknown; data?: unknown; error?: unknown }).type === 'WEBGPU_ERROR') {
+            reject(new Error(event.(data as { type?: unknown; data?: unknown; error?: unknown }).error));
           }
         };
 
@@ -459,21 +459,21 @@ https://svelte.dev/e/js_parse_error -->
 
           <div class="flex flex-wrap gap-3">
             <Button
-              on:click={runGGUFInference}
+              onclick={runGGUFInference}
               disabled={isProcessing || !$modelStatus.loaded}
               class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
             >
 {isProcessing ? 'Processing...' : 'GGUF Inference'}
 
             <Button
-              on:click={runWebGPUProcessing}
+              onclick={runWebGPUProcessing}
               disabled={isProcessing || !webgpuStatus.available}
               class="bg-green-600 hover:bg-green-700 text-white bits-btn bits-btn"
             >
 WebGPU Processing
 
             <Button
-              on:click={runNodeJSOrchestration}
+              onclick={runNodeJSOrchestration}
               disabled={isProcessing}
               class="bg-purple-600 hover:bg-purple-700 text-white bits-btn bits-btn"
             >
@@ -483,14 +483,14 @@ Node.js Orchestration
 
           <div class="mt-4 flex gap-2">
             <Button
-              on:click={clearResults}
+              onclick={clearResults}
               variant="outline"
               class="border-slate-600 text-slate-300 hover:bg-slate-700 bits-btn bits-btn"
             >
 Clear Results
 
             <Button
-              on:click={exportResults}
+              onclick={exportResults}
               variant="outline"
               class="border-slate-600 text-slate-300 hover:bg-slate-700 bits-btn bits-btn"
             >
@@ -544,14 +544,14 @@ Export Data
         <h2 class="text-2xl font-semibold mb-6">Processing Results</h2>
 
         <div class="space-y-4">
-          {#each results as result ((result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).id)}
+          {#each results as result ((result as { id?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; output?: unknown; metrics?: unknown }).id)}
             <div class="bg-slate-800/50 border-blue-800/30 nes-container">
               <div class="p-6">
                 <div class="flex items-center justify-between mb-4">
                   <div class="flex items-center gap-3">
                     <div class="w-3 h-3 rounded-full bg-green-400"></div>
-                    <h3 class="text-lg font-semibold">{(result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).type}</h3>
-                    <span class="text-sm text-slate-400">{(result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).timestamp}</span>
+                    <h3 class="text-lg font-semibold">{(result as { id?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; output?: unknown; metrics?: unknown }).type}</h3>
+                    <span class="text-sm text-slate-400">{(result as { id?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; output?: unknown; metrics?: unknown }).timestamp}</span>
                   </div>
                 </div>
 
@@ -559,14 +559,14 @@ Export Data
                   <div>
                     <h4 class="text-sm font-medium text-slate-300 mb-2">Input</h4>
                     <div class="bg-slate-700 rounded p-3 text-sm text-slate-300">
-                      {(result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).input}
+                      {(result as { id?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; output?: unknown; metrics?: unknown }).input}
                     </div>
                   </div>
 
                   <div>
                     <h4 class="text-sm font-medium text-slate-300 mb-2">Output</h4>
                     <div class="bg-slate-700 rounded p-3 text-sm text-slate-300">
-                      {(result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).output}
+                      {(result as { id?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; output?: unknown; metrics?: unknown }).output}
                     </div>
                   </div>
                 </div>
@@ -574,7 +574,7 @@ Export Data
                 <div class="mt-4">
                   <h4 class="text-sm font-medium text-slate-300 mb-2">Performance Metrics</h4>
                   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-                    {#each Object.entries((result as { id?: any; type?: any; timestamp?: any; input?: any; output?: any; metrics?: any }).metrics) as [key, value]}
+                    {#each Object.entries((result as { id?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; output?: unknown; metrics?: unknown }).metrics) as [key, value]}
                       <div class="bg-slate-700 rounded p-2">
                         <div class="text-slate-400 capitalize">{key.replace(/([A-Z])/g, ' $1')}</div>
                         <div class="font-mono text-white">

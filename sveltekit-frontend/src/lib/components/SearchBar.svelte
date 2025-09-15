@@ -90,7 +90,7 @@
 			<div class="sort-container">
 				<select
 					bind:value={selectedSort}
-					on:change={() => handleSortChange(selectedSort)}
+					onchange={() => handleSortChange(selectedSort)}
 					class="sort-select"
 					aria-label="Sort by"
 				>
@@ -105,7 +105,7 @@
 			<button
 				class="filter-button"
 				class:active={filtersOpen}
-				on:click={() => toggleFilters()}
+				onclick={() => toggleFilters()}
 				aria-label="Toggle filters"
 				title="Filters"
 			>
@@ -126,7 +126,7 @@
 						type="checkbox" 
 						value="image" 
 						checked={selectedFileTypes.includes('image')}
-						on:change={handleFileTypeChange}
+						onchange={handleFileTypeChange}
 					/>
 					Images
 				</label>
@@ -135,7 +135,7 @@
 						type="checkbox" 
 						value="document" 
 						checked={selectedFileTypes.includes('document')}
-						on:change={handleFileTypeChange}
+						onchange={handleFileTypeChange}
 					/>
 					Documents
 				</label>
@@ -144,7 +144,7 @@
 						type="checkbox" 
 						value="video" 
 						checked={selectedFileTypes.includes('video')}
-						on:change={handleFileTypeChange}
+						onchange={handleFileTypeChange}
 					/>
 					Videos
 				</label>
@@ -153,7 +153,7 @@
 						type="checkbox" 
 						value="audio" 
 						checked={selectedFileTypes.includes('audio')}
-						on:change={handleFileTypeChange}
+						onchange={handleFileTypeChange}
 					/>
 					Audio
 				</label>
@@ -168,7 +168,7 @@
 					class="date-input" 
 					aria-label="From date"
 					bind:value={dateRange.from}
-					on:change={handleDateChange}
+					onchange={handleDateChange}
 				/>
 				<span>to</span>
 				<input 
@@ -176,7 +176,7 @@
 					class="date-input" 
 					aria-label="To date"
 					bind:value={dateRange.to}
-					on:change={handleDateChange}
+					onchange={handleDateChange}
 				/>
 			</div>
 		</div>
@@ -185,7 +185,7 @@
 			<button 
 				type="button" 
 				class="clear-filters-btn"
-				on:click={() => {
+				onclick={() => {
 					selectedFileTypes = [];
 					dateRange = { from: '', to: '' };
 					dispatchFilters();

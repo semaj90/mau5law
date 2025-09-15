@@ -23,7 +23,7 @@
       .join(' ');
   }
 
-  function deriveLabel(path: string, mod: any): string {
+  function deriveLabel(path: string, mod: unknown): string {
     return (
       mod?.routeMeta?.title ||
       mod?.metadata?.title ||
@@ -146,7 +146,7 @@
     <div class="groups">
       {#each Object.keys(grouped).sort() as g}
         <section class="group" aria-labelledby={`group-${g}`}>
-          <button class="group-header" type="button" on:click={() => toggleGroup(g)} aria-expanded={!groupCollapse[g]} id={`group-${g}`}>
+          <button class="group-header" type="button" onclick={() => toggleGroup(g)} aria-expanded={!groupCollapse[g]} id={`group-${g}`}>
             <span>{g === 'root' ? 'Root' : g}</span>
             <span class="count">{grouped[g].length}</span>
             <span class="chevron" aria-hidden="true">{groupCollapse[g] ? '▸' : '▾'}</span>
@@ -194,7 +194,7 @@
   .label { font-weight:500; }
   .badge { background:#2563eb; color:#fff; font-size:.55rem; padding:.15rem .4rem; border-radius:.4rem; text-transform:uppercase; letter-spacing:.05em; }
   .badge.api { background:#059669; }
-  .route-(item as { is?: any }).is-dynamic code { background:#92400e; }
+  .route-(item as { is?: unknown }).is-dynamic code { background:#92400e; }
   .empty { padding:2rem; text-align:center; color:#6b7280; }
   @media (min-width: 700px){ .route-list { grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); } }
 </style>

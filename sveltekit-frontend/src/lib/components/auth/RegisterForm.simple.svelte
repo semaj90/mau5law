@@ -6,9 +6,7 @@
   import 'nes.css/css/nes.min.css';
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -306,7 +304,7 @@
             <button
               type="button"
               class="absolute inset-y-0 right-0 pr-3 flex items-center"
-              on:click={togglePasswordVisibility}
+              onclick={togglePasswordVisibility}
               disabled={isLoading}
             >
               {#if showPassword}
@@ -350,7 +348,7 @@
             <button
               type="button"
               class="absolute inset-y-0 right-0 pr-3 flex items-center"
-              on:click={toggleConfirmPasswordVisibility}
+              onclick={toggleConfirmPasswordVisibility}
               disabled={isLoading}
             >
               {#if showConfirmPassword}

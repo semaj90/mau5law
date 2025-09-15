@@ -15,7 +15,7 @@ https://svelte.dev/e/js_parse_error -->
   		status: 'online' | 'offline' | 'degraded';
   		responseTime?: number;
   		lastCheck: number;
-  		details?: any;
+  		details?: unknown;
   	}
 
   	interface HealthData {
@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	};
 
-  	const mergeHealthData = (legacy: any, coordinator: any): HealthData => {
+  	const mergeHealthData = (legacy: unknown, coordinator: unknown): HealthData => {
   		const now = Date.now();
   		// Use coordinator data if available, fallback to legacy
   		if (coordinator?.success && coordinator.data) {
@@ -343,7 +343,7 @@ https://svelte.dev/e/js_parse_error -->
 			<p class="text-gray-600 mt-1">Legal AI Platform - CUDA GPU Integration Status</p>
 		</div>
 		<button
-			on:click={fetchHealth}
+			onclick={fetchHealth}
 			class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
 			disabled={$loading}
 		>

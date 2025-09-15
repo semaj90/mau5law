@@ -31,7 +31,7 @@
     enableEnhancedSound?: boolean;
     soundChannel?: number; // SNES had 8 audio channels
     // Content
-    children?: any;
+    children?: unknown;
     class?: string;
   }
 
@@ -182,10 +182,10 @@
   {form}
   {name}
   {value}
-  on:click={handleClick}
-  on:on:mouseenter={handleHover}
-  on:on:mouseleave={handleUnhover}
-  on:focus={handleFocus}
+  onclick={handleClick}
+  ononmouseenter={handleHover}
+  ononmouseleave={handleUnhover}
+  onfocus={handleFocus}
   class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7 ? 'mode7' : ''} {plasmaEffect ? 'plasma' : ''}"
   style="
     --button-gradient: {variantGradient};

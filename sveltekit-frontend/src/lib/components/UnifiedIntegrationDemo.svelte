@@ -77,9 +77,9 @@
   async function updateSystemHealth() {
     try {
       const response = await fetch('/api/v1/orchestrator?endpoint=health');
-      const data = await (response as { json?: any }).json();
-      if ((data as { success?: any; data?: any }).success) {
-        systemHealth.set((data as { success?: any; data?: any }).data);
+      const data = await (response as { json?: unknown }).json();
+      if ((data as { success?: unknown; data?: unknown }).success) {
+        systemHealth.set((data as { success?: unknown; data?: unknown }).data);
       }
     } catch (error) {
       console.error('Failed to fetch system health:', error);
@@ -89,9 +89,9 @@
   async function updateMetrics() {
     try {
       const response = await fetch('/api/v1/orchestrator?endpoint=metrics');
-      const data = await (response as { json?: any }).json();
-      if ((data as { success?: any; data?: any }).success) {
-        metrics.set((data as { success?: any; data?: any }).data);
+      const data = await (response as { json?: unknown }).json();
+      if ((data as { success?: unknown; data?: unknown }).success) {
+        metrics.set((data as { success?: unknown; data?: unknown }).data);
       }
     } catch (error) {
       console.error('Failed to fetch metrics:', error);
@@ -171,21 +171,21 @@
         },
         body: JSON.stringify(requestData)
       });
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).success) {
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).success) {
         results.update(prev => [
           {
             id: Date.now(),
             operation: selectedOperation,
             timestamp: new Date(),
-            data: (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).data,
-            metadata: (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata,
-            processingTime: (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).totalProcessingTime
+            data: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data,
+            metadata: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata,
+            processingTime: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).totalProcessingTime
           },
           ...prev.slice(0, 9) // Keep last 10 results
         ]);
       } else {
-        errorMessage = (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).error || 'Operation failed';
+        errorMessage = (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).error || 'Operation failed';
       }
     } catch (error) {
       errorMessage = `Error: ${error.message}`;
@@ -291,7 +291,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2" for="-operation-type-">
               Operation Type
             </label><select id="-operation-type-" 
-              bind:value={selectedOperation} on:change={onOperationChange}
+              bind:value={selectedOperation} onchange={onOperationChange}
               class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="processDocument">Legal Document Processing</option>
@@ -310,7 +310,7 @@
               bind:value={testInput}
               rows="8"
               class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
-              placeholder="Enter test (data as { success?: any; data?: any })..."
+              placeholder="Enter test (data as { success?: unknown; data?: unknown })..."
 ></textarea>
           </div>
 
@@ -323,7 +323,7 @@
 
           <!-- Execute Button -->
           <Button 
-            on:click={executeOperation}
+            onclick={executeOperation}
             disabled={isLoading || !testInput.trim()}
             class="w-full bits-btn bits-btn"
           >
@@ -354,45 +354,45 @@
       <div class="yorha-panel-content">
         <div class="space-y-4 max-h-96 overflow-y-auto">
           {#if $results.length > 0}
-            {#each $results as result ((result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).id)}
+            {#each $results as result ((result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).id)}
               <div class="border border-gray-200 rounded-lg p-4">
                 <div class="flex justify-between items-start mb-2">
                   <div>
                     <h4 class="font-medium text-gray-900 capitalize">
-                      {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).operation.replace(/([A-Z])/g, ' $1').trim()}
+                      {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).operation.replace(/([A-Z])/g, ' $1').trim()}
                     </h4>
                     <p class="text-xs text-gray-500">
-                      {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).timestamp.toLocaleTimeString()}
+                      {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).timestamp.toLocaleTimeString()}
                     </p>
                   </div>
                   <div class="text-right">
                     <p class="text-xs text-gray-600">
-                      {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).processingTime}ms
+                      {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).processingTime}ms
                     </p>
-                    {#if (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata?.servicesUsed}
+                    {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata?.servicesUsed}
                       <p class="text-xs text-blue-600">
-                        {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata.servicesUsed.join(', ')}
+                        {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.servicesUsed.join(', ')}
                       </p>
                     {/if}
                   </div>
                 </div>
                 
                 <div class="bg-gray-50 rounded p-2 text-xs font-mono">
-                  {#if (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).data?.success !== undefined}
-                    <p class="text-{(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).(data as { success?: any; data?: any }).success ? 'green' : 'red'}-600 mb-1">
-                      Status: {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).(data as { success?: any; data?: any }).success ? 'Success' : 'Failed'}
+                  {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data?.success !== undefined}
+                    <p class="text-{(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).(data as { success?: unknown; data?: unknown }).success ? 'green' : 'red'}-600 mb-1">
+                      Status: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).(data as { success?: unknown; data?: unknown }).success ? 'Success' : 'Failed'}
                     </p>
                   {/if}
                   
-                  {#if (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata?.performance}
-                    <p>Latency: {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata.performance.latency}ms</p>
-                    <p>Throughput: {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata.performance.throughput.toFixed(2)}/s</p>
-                    <p>Resource Usage: {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata.performance.resourceUsage.toFixed(2)}</p>
+                  {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata?.performance}
+                    <p>Latency: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.latency}ms</p>
+                    <p>Throughput: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.throughput.toFixed(2)}/s</p>
+                    <p>Resource Usage: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.resourceUsage.toFixed(2)}</p>
                   {/if}
                   
-                  {#if (result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata?.fallbacksTriggered?.length > 0}
+                  {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata?.fallbacksTriggered?.length > 0}
                     <p class="text-yellow-600">
-                      Fallbacks: {(result as { success?: any; data?: any; metadata?: any; totalProcessingTime?: any; error?: any; id?: any; operation?: any; timestamp?: any; processingTime?: any }).metadata.fallbacksTriggered.join(' → ')}
+                      Fallbacks: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.fallbacksTriggered.join(' → ')}
                     </p>
                   {/if}
                 </div>
@@ -454,7 +454,7 @@
           </div>
         {:else}
           <div class="text-center text-gray-500 py-8">
-            No metrics available yet. Execute some operations to see performance (data as { success?: any; data?: any }).
+            No metrics available yet. Execute some operations to see performance (data as { success?: unknown; data?: unknown }).
           </div>
         {/if}
       </div>

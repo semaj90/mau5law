@@ -7,9 +7,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { wasmLlama } from '$lib/services/webasm-llama-complete';
   import * as Card from '$lib/components/ui/card';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -410,7 +408,7 @@
             <Button class="bits-btn" 
               variant={useWebAssembly ? "default" : "outline"} 
               size="sm"
-              on:click={() =>
+              onclick={() =>
 useWebAssembly = true}
             >
               <Cpu class="h-3 w-3 mr-1" />
@@ -419,7 +417,7 @@ useWebAssembly = true}
             <Button class="bits-btn" 
               variant={!useWebAssembly ? "default" : "outline"} 
               size="sm"
-              on:click={() =>
+              onclick={() =>
 useWebAssembly = false}
             >
               <Code class="h-3 w-3 mr-1" />
@@ -482,7 +480,7 @@ useWebAssembly = false}
           </div.Title>
           <div class="flex gap-2">
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{chatHistory.length} messages</span>
-            <Button class="bits-btn" variant="outline" size="sm" on:click={clearChat}>
+            <Button class="bits-btn" variant="outline" size="sm" onclick={clearChat}>
 Clear Chat
 
           </div>
@@ -532,7 +530,7 @@ Clear Chat
             placeholder="Ask a legal question or test the AI..."
             class="resize-none"
             rows="2"
-            on:keydown={(e) => {
+            onkeydown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
@@ -540,7 +538,7 @@ Clear Chat
             }}
           />
           <Button 
-            on:click={sendMessage}
+            onclick={sendMessage}
             disabled={!currentPrompt.trim() || isStreamingActive}
             class="shrink-0 bits-btn bits-btn"
           >

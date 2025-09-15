@@ -1,5 +1,9 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
+  import { debounce } from '$lib/utils/debounce';
   import 'nes.css/css/nes.min.css';
   interface Props {
     caseId: string | undefined ;
@@ -54,6 +58,7 @@
   }
   // Component state
   let query = $state("");
+  let errorMessage = $state('');
   let isLoading = $state(false);
   let error = $state("");
   let conversation = $state<ConversationMessage[] >([]);
@@ -80,7 +85,7 @@
   // Reusable AudioContext for TTS playback
   let audioContext = $state<AudioContext | null >(null);
 
-  const dispatch = createEventDispatcher();
+  // TODO: Replace createEventDispatcher with callback props in Svelte 5
 
   // Simple localStorage wrapper for conversation storage
   const getLocalStorageService = () => ({
@@ -99,7 +104,8 @@
         localStorage.setItem(key, JSON.stringify(value));
       } catch (error) {
         console.warn("Storage failed:", error);
-  }
+  
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
     },
   });
 
@@ -111,7 +117,8 @@
       // In a real app, this would send to analytics
     } catch (error) {
       console.warn("Activity tracking failed:", error);
-  }}
+  
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}}
   onMount(() => {
     // Initialize speech recognition if supported and enabled
     if (enableVoiceInput && "webkitSpeechRecognition" in window) {
@@ -151,7 +158,8 @@
   }
     } catch (error) {
       console.warn("Failed to load conversation history:", error);
-  }}
+  
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}}
   async function saveConversationHistory() {
     try {
       const contextKey = caseId ? `case_${caseId}` : "general";
@@ -162,7 +170,8 @@
       );
     } catch (error) {
       console.warn("Failed to save conversation history:", error);
-  }}
+  
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}}
   async function askAI() {
     if (!query.trim() || isLoading) return;
 
@@ -220,12 +229,20 @@
       // Use streaming endpoint for Ollama/Gemma3
       const endpoint = selectedModel === "ollama" ? "/api/ai/chat" : "/api/ai/ask";
       const controller = new AbortController();
-      const response = await fetch(endpoint, {
+      try {
+    const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(requestBody);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  },
         signal: controller.signal,
       });
       if (!response.ok) {
@@ -282,7 +299,14 @@
         });
       } else {
         // Non-streaming (OpenAI or fallback)
-        const aiResponse = await response.json();
+        const aiResponse = awaitawait (async () => {
+      try {
+        return await  response.json();
+      } catch (error) {
+        console.error('JSON parsing failed:', error);
+        throw new Error('Invalid JSON response');
+      }
+    })();
         aiMessage = {
           id: aiMessageId,
           type: "ai",
@@ -354,7 +378,15 @@
     ttsLoading = true;
     try {
       // Try Coqui TTS HTTP API via SvelteKit endpoint
-      const res = await fetch(`/api/tts?text=${encodeURIComponent(text)}`);
+      try {
+    const res = await fetch(`/api/tts?text=${encodeURIComponent(text);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  }}`);
       if (res.ok) {
         const audioData = await res.arrayBuffer();
         if (!audioContext) {
@@ -414,6 +446,11 @@
     return "text-red-600";
   }
   function getConfidenceIcon(confidence: number) {
+    // Parameter validation
+    if (!confidence || typeof confidence !== 'string') {
+      throw new Error('Invalid confidence parameter');
+    }
+
     if (confidence >= 0.8) return CheckCircle;
     if (confidence >= 0.6) return AlertCircle;
     return AlertCircle;
@@ -439,17 +476,17 @@
       </div>
 
       <div>
-        <button
+        <button aria-label="Action button"
           type="button"
-          on:click={() => (showAdvancedOptions = !showAdvancedOptions)}
+          onclick={(event: MouseEvent) => ) => (showAdvancedOptions = !showAdvancedOptions}
         >
           Advanced
         </button>
 
         {#if conversation.length > 0}
-          <button
+          <button aria-label="Action button"
             type="button"
-            on:click={() => clearConversation()}
+            onclick={(event: MouseEvent) => ) => clearConversation(}
           >
             Clear
           </button>
@@ -575,7 +612,7 @@
               <button
                 type="button"
                 aria-label="Listen to AI response"
-                on:click={() => speak(message.content)}
+                onclick={(event: MouseEvent) => ) => speak(message.content}
                 disabled={ttsLoading}
               >
                 {#if ttsLoading}
@@ -594,9 +631,9 @@
               <h4>References:</h4>
               <div>
                 {#each message.references as reference}
-                  <button
+                  <button aria-label="Action button"
                     type="button"
-                    on:click={() => handleReferenceClick(reference)}
+                    onclick={(event: MouseEvent) => ) => handleReferenceClick(reference}
                   >
                     <span>{reference.type.toUpperCase()}:</span>
                     {reference.title}
@@ -642,7 +679,7 @@
         <textarea
           bind:this={textareaRef}
           bind:value={query}
-          onkeypress={handleKeyPress} on:input={autoResize}
+          onkeypress={handleKeyPress} oninput={(event: Event) => debounce(autoResize, 300}
           {placeholder}
           disabled={isLoading}
           rows={1}
@@ -653,7 +690,7 @@
             type="button"
             class:text-red-500={isListening}
             aria-label={isListening ? "Stop voice input" : "Start voice input"}
-            on:click={() => (isListening ? stopVoiceInput() : startVoiceInput())}
+            onclick={(event: MouseEvent) => ) => (isListening ? stopVoiceInput() : startVoiceInput()}
             disabled={isLoading}
           >
             🎤
@@ -661,9 +698,9 @@
         {/if}
       </div>
 
-      <button
+      <button aria-label="Action button"
         type="button"
-        on:click={() => askAI()}
+        onclick={(event: MouseEvent) => ) => askAI(}
         disabled={!query.trim() || isLoading}
         aria-label="Send question to AI"
       >
@@ -682,7 +719,7 @@
             type="button"
             class="container mx-auto px-4 {isListening ? 'text-red-500' : ''}"
             aria-label={isListening ? "Stop voice input" : "Start voice input"}
-            on:click={() => (isListening ? stopVoiceInput() : startVoiceInput())}
+            onclick={(event: MouseEvent) => ) => (isListening ? stopVoiceInput() : startVoiceInput()}
             disabled={isLoading}
           >
             🎤

@@ -335,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Store pattern in CHR-ROM for future zero-latency access
    */
-  async function storeInCHRROM(patternId: string, pattern: any) {
+  async function storeInCHRROM(patternId: string, pattern: unknown) {
     try {
       const chrRomPattern = {
         renderableHTML: pattern.renderableHTML,
@@ -354,7 +354,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Cache API result for future use
    */
-  async function cacheApiResult(elementId: string, data: any, html: string) {
+  async function cacheApiResult(elementId: string, data: unknown, html: string) {
     try {
       // Store in CHR-ROM
       const chrRomPattern = {
@@ -378,7 +378,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Generate tooltip HTML from API data
    */
-  function generateTooltipHTML(data: any): string {/* JSX syntax converted to Svelte */} entities</span>` : ''}
+  function generateTooltipHTML(data: unknown): string {/* JSX syntax converted to Svelte */} entities</span>` : ''}
           ${/* JSX syntax converted to Svelte */}
         </div>
       </div>

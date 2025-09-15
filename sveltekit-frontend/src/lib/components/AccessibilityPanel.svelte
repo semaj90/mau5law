@@ -1,12 +1,13 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import {
     AlertTriangle,
@@ -31,6 +32,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
   let auditResults = $state<AccessibilityIssue[] >([]);
   let isAuditing = $state(false);
+  let isLoading = $state(false);
   let auditProgress = $state(0);
   let totalIssues = $state(0);
   let errorCount = $state(0);
@@ -419,7 +421,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         category: "structure",
         element: "document",
         description: "Page missing navigation landmark",
-        suggestion: "Use <nav> element for navigation sections",
+        suggestion: "Use <a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav> element for navigation sections",
         wcagGuideline: "WCAG 2.1 - 1.3.1 Info and Relationships",
       });
     }
@@ -479,10 +482,10 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 </script>
 
 {#if showPanel}
-  <div
+  <div role="button" tabindex="0"
     class="mx-auto px-4 max-w-7xl"
-    on:click={() => (showPanel = false)}
-    on:keydown={(e) => e.key === 'Escape' && (showPanel = false)}
+    onclick={(event: MouseEvent) => ) => (showPanel = false}
+    onkeydown={(e) => e.key === 'Escape' && (showPanel = false)}
     role="dialog"
     aria-modal="true"
     aria-labelledby="accessibility-panel-title"
@@ -497,8 +500,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={() =>
-(showPanel = false)}
+            onclick={(event: MouseEvent) => ) =>
+(showPanel = false}
             aria-label="Close accessibility panel"
           >
             ✕
@@ -515,7 +518,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={highContrast}
-                on:change={applyAccessibilitySettings}
+                onchange={(event: Event) => applyAccessibilitySettings}
               />
               <span>High Contrast</span>
             </label>
@@ -525,7 +528,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={reducedMotion}
-                on:change={applyAccessibilitySettings}
+                onchange={(event: Event) => applyAccessibilitySettings}
               />
               <span>Reduced Motion</span>
             </label>
@@ -535,7 +538,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={largeText}
-                on:change={applyAccessibilitySettings}
+                onchange={(event: Event) => applyAccessibilitySettings}
               />
               <span>Large Text</span>
             </label>
@@ -545,7 +548,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={keyboardNavigation}
-                on:change={applyAccessibilitySettings}
+                onchange={(event: Event) => applyAccessibilitySettings}
               />
               <span>Enhanced Keyboard Navigation</span>
             </label>
@@ -555,7 +558,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 type="checkbox"
                 class="mx-auto px-4 max-w-7xl"
                 bind:checked={screenReaderMode}
-                on:change={applyAccessibilitySettings}
+                onchange={(event: Event) => applyAccessibilitySettings}
               />
               <span>Screen Reader Optimizations</span>
             </label>
@@ -569,8 +572,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             <Button 
               class="bits-btn mx-auto px-4 max-w-7xl"
               size="sm"
-              on:click={() =>
-runAccessibilityAudit()}
+              onclick={(event: MouseEvent) => ) =>
+runAccessibilityAudit(}
               disabled={isAuditing}
             >
               {#if isAuditing}
@@ -624,8 +627,8 @@ runAccessibilityAudit()}
                 variant="outline"
                 size="sm"
                 class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-                on:click={() =>
-exportAuditResults()}
+                onclick={(event: MouseEvent) => ) =>
+exportAuditResults(}
               >
                 <Download class="mx-auto px-4 max-w-7xl" />
                 Export Report

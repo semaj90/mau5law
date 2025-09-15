@@ -32,15 +32,15 @@
   // ===== LOGIC LAYER =====
   // Pure reactive state, no UI concerns
   
-  $: langchainState = $langchainService;
-  $: documentState = $documentProcessing;
+  let langchainState = $derived($langchainService);
+  let documentState = $derived($documentProcessing);
   
   // Chat adapter for complex state management
   const chatAdapter = createChatAdapter([
     { role: 'assistant', content: 'Hello! I can help you with legal document analysis.' }
   ]);
   
-  $: chatState = chatAdapter.state;
+  let chatState = $derived(chatAdapter.state);
   
   // Document processing logic
   let documentText = '';
@@ -58,7 +58,7 @@
   }
   
   async function sendMessage() {
-    const input = $chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).currentInput;
+    const input = $chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).currentInput;
     if (!input.trim()) return;
     
     chatAdapter.actions.addMessage({ role: 'user', content: input });
@@ -72,7 +72,7 @@
       if (result?.summary) {
         chatAdapter.actions.addMessage({ 
           role: 'assistant', 
-          content: (result as { summary?: any; keyTerms?: any; entities?: any }).summary 
+          content: (result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).summary 
         });
       }
     } finally {
@@ -95,12 +95,12 @@
   };
   
   // Computed ARIA state (derived from logic)
-  $: ariaProps = {
+  let ariaProps = $derived({
     expanded: dialogOpen,
     disabled: isProcessing || !langchainState.isAvailable,
     label: isProcessing ? 'Processing document...' : 'Analyze document',
     live: isProcessing ? 'polite' : 'off'
-  };
+  });
   
   onMount(() => {
     // Announce service availability
@@ -166,25 +166,25 @@
       <div class="result-grid">
         <div class="result-nier-bits-card">
           <h3>Summary</h3>
-          <p>{documentState.(result as { summary?: any; keyTerms?: any; entities?: any }).summary}</p>
+          <p>{documentState.(result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).summary}</p>
         </div>
         
-        {#if documentState.(result as { summary?: any; keyTerms?: any; entities?: any }).keyTerms?.length}
+        {#if documentState.(result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).keyTerms?.length}
           <div class="result-nier-bits-card">
             <h3>Key Terms</h3>
             <ul>
-              {#each documentState.(result as { summary?: any; keyTerms?: any; entities?: any }).keyTerms as term}
+              {#each documentState.(result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).keyTerms as term}
                 <li>{term}</li>
               {/each}
             </ul>
           </div>
         {/if}
         
-        {#if documentState.(result as { summary?: any; keyTerms?: any; entities?: any }).entities?.length}
+        {#if documentState.(result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).entities?.length}
           <div class="result-nier-bits-card">
             <h3>Legal Entities</h3>
             <ul>
-              {#each documentState.(result as { summary?: any; keyTerms?: any; entities?: any }).entities as entity}
+              {#each documentState.(result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).entities as entity}
                 <li>{entity.text || entity}</li>
               {/each}
             </ul>
@@ -231,7 +231,7 @@
         </div>
         
         <div class="chat-messages" role="log" aria-label="Chat messages">
-          {#each $chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).messages as message}
+          {#each $chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).messages as message}
             <div 
               class="message {message.role}"
               role="listitem"
@@ -241,7 +241,7 @@
             </div>
           {/each}
           
-          {#if $chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).isTyping}
+          {#if $chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).isTyping}
             <div class="message assistant typing" aria-live="polite">
               <strong>AI:</strong> <span aria-label="AI is typing">⟳ Thinking...</span>
             </div>
@@ -251,19 +251,19 @@
         <div class="chat-input">
           <input
             bind:this={chatInput}
-            bind:value={$chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).currentInput}
-            on:keydown={(e) => e.key === 'Enter' && sendMessage()}
+            bind:value={$chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).currentInput}
+            onkeydown={(e) => e.key === 'Enter' && sendMessage()}
             placeholder="Ask about legal documents..."
             aria-label="Chat message input"
-            disabled={$chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).isTyping}
+            disabled={$chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).isTyping}
           />
           <button
             use:accessibleClick={{
               handler: sendMessage,
               label: 'Send message',
-              disabled: $chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).isTyping || !$chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).currentInput.trim()
+              disabled: $chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).isTyping || !$chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).currentInput.trim()
             }}
-            disabled={$chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).isTyping || !$chatState.(data as { currentInput?: any; messages?: any; isTyping?: any }).currentInput.trim()}
+            disabled={$chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).isTyping || !$chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).currentInput.trim()}
           >
             Send
           </button>

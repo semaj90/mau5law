@@ -4,7 +4,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { Button } from 'bits-ui';
+  import Button from 'bits-ui';
   import { Badge } from 'bits-ui';
   import { Card } from 'bits-ui';
   import { Dialog } from 'bits-ui';
@@ -543,7 +543,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                 <div class="legal-controls">
                   <Button.Root
                     class="n64-btn-legal bits-btn"
-                    on:click={queryLegalRecommendations}
+                    onclick={queryLegalRecommendations}
                     disabled={legalLoading || !legalQuery.trim()}
                   >
                     {legalLoading ? '🔄 Analyzing...' : '🎯 Get Legal Recommendations'}
@@ -551,7 +551,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
                   <Button.Root
                     class="n64-btn-evidence bits-btn"
-                    on:click={() => evidenceCanvasOpen = true}
+                    onclick={() => evidenceCanvasOpen = true}
                   >
                     📋 Evidence Canvas
                   </Button.Root>
@@ -612,7 +612,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                     <button
                       class="retry-btn bits-btn"
                       type="button"
-                      on:click={() => { legalError = null; checkLegalServiceHealth(); }}
+                      onclick={() => { legalError = null; checkLegalServiceHealth(); }}
                     >
                       🔄 Retry
 </Button>
@@ -627,7 +627,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <div class="dialog-section-3d">
             <Button.Root
               class="n64-nes-btn is-primary bits-btn bits-btn"
-              on:click={() => dialogOpen = true}
+              onclick={() => dialogOpen = true}
             >
               🌟 Show N64 Dialog
             </Button.Root>
@@ -648,7 +648,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                     <div class="dialog-actions-3d">
                       <Button.Root
                         class="n64-btn-dialog bits-btn bits-btn"
-                        on:click={() => dialogOpen = false}
+                        onclick={() => dialogOpen = false}
                       >
                         ✓ Acknowledge
                       </Button.Root>
@@ -747,13 +747,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         <div class="evidence-actions-3d">
           <Button.Root
             class="n64-btn-evidence-action bits-btn"
-            on:click={() => evidenceCanvasOpen = false}
+            onclick={() => evidenceCanvasOpen = false}
           >
             💾 Save Evidence
           </Button.Root>
           <Button.Root
             class="n64-btn-close bits-btn"
-            on:click={() => evidenceCanvasOpen = false}
+            onclick={() => evidenceCanvasOpen = false}
           >
             ❌ Close Canvas
           </Button.Root>

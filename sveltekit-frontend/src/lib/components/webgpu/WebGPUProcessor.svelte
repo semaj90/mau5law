@@ -25,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
   		enableServiceWorker = true,
   		lodOptimization = true,
   		cacheStrategy = 'aggressive'
-  	: any } = $props();
+  	: unknown } = $props();
 
   	// ============================================================================
   	// WEBGPU INTEGRATION
@@ -413,7 +413,7 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	}
 
-  	function handleServiceWorkerMessage(message: any) {
+  	function handleServiceWorkerMessage(message: unknown) {
   		switch (message.type) {
   			case 'CACHE_HIT':
   				serviceWorkerStore.update(store => ({
@@ -775,7 +775,7 @@ https://svelte.dev/e/js_parse_error -->
 		transition: all 0.3s ease;
 	}
 
-	.status-(item as { active?: any }).active {
+	.status-(item as { active?: unknown }).active {
 		border-color: #00ff88;
 		background: rgba(0, 255, 136, 0.1);
 	}

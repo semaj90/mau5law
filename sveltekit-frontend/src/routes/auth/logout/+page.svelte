@@ -4,7 +4,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 -->
 <script lang="ts">
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
-	import { Button } from '$lib/components/ui/enhanced-bits';
+	import Button from '$lib/components/ui/enhanced-bits';
 	import * as Card from '$lib/components/ui/card';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -66,14 +66,14 @@ TODO: Implement logout functionality, clear session, redirect to login
 					<div class="flex justify-center gap-4">
 						<Button
 							class="nes-btn is-error"
-							on:click={handleLogout}
+							onclick={handleLogout}
 							disabled={isLoggingOut}
 						>
 							Logout Now
 						<Button
 							variant="outline"
 							class="nes-btn"
-							on:click={() => window.history.back()}
+							onclick={() => window.history.back()}
 						>
 							Cancel
 					</div>

@@ -32,7 +32,7 @@
 <button
 	 class="mx-auto px-4 max-w-7xl"
  class:generating={isGenerating}
-	 on:click={() => toggleDialog()}
+	 onclick={() => toggleDialog()}
 	aria-label="Open AI Assistant"
 	title="AI Assistant"
 >

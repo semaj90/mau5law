@@ -156,7 +156,7 @@ https://svelte.dev/e/js_parse_error -->
   let ragAnalysis = $state<any>(null);
 
   // Functions
-  function handleGridAction(action: string, row: any) {
+  function handleGridAction(action: string, row: unknown) {
     switch (action) {
       case 'edit':
         openEditModal(row);
@@ -173,19 +173,19 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  function openEditModal(row: any) {
+  function openEditModal(row: unknown) {
     modalOpen = true;
     addNotification('info', `Editing document: ${row.title}`);
   }
 
   function deleteDocument(id: string) {
     if (confirm('Confirm deletion of classified document?')) {
-      demoData = demoData.filter(item => (item as { id?: any }).id !== id);
+      demoData = demoData.filter(item => (item as { id?: unknown }).id !== id);
       addNotification('success', 'Document securely deleted from YoRHa archives');
     }
   }
 
-  function performAnalysis(row: any) {
+  function performAnalysis(row: unknown) {
     addNotification('info', `Initiating enhanced AI analysis for ${row.yorha_id}`);
 
     // Simulate enhanced analysis
@@ -226,12 +226,12 @@ https://svelte.dev/e/js_parse_error -->
     }, 2000);
   }
 
-  function viewDocument(row: any) {
+  function viewDocument(row: unknown) {
     addNotification('info', `Accessing classified document: ${row.yorha_id}`);
     currentView = 'document';
   }
 
-  function createDocument(data: any) {
+  function createDocument(data: unknown) {
     const newDoc = {
       id: `DOC-${String(demoData.length + 1).padStart(6, '0')}`,
       yorha_id: `YORHA-DOC-${String(demoData.length + 1).padStart(6, '0')}`,
@@ -309,7 +309,7 @@ https://svelte.dev/e/js_parse_error -->
     notifications = [...notifications, notification];
 
     setTimeout(() => {
-      notifications = notifications.filter(n => n.id !== (notification as { id?: any; type?: any; message?: any }).id);
+      notifications = notifications.filter(n => n.id !== (notification as { id?: unknown; type?: unknown; message?: unknown }).id);
     }, 5000);
   }
 
@@ -338,25 +338,25 @@ https://svelte.dev/e/js_parse_error -->
     <nav class="demo-nav">
       <button
         class="nav-btn {currentView === 'grid' ? 'active' : ''}"
-        on:click={() => currentView = 'grid'}
+        onclick={() => currentView = 'grid'}
       >
         DATA GRID
       </button>
       <button
         class="nav-btn {currentView === 'analysis' ? 'active' : ''}"
-        on:click={() => currentView = 'analysis'}
+        onclick={() => currentView = 'analysis'}
       >
         AI ANALYSIS
       </button>
       <button
         class="nav-btn {currentView === 'form' ? 'active' : ''}"
-        on:click={() => currentView = 'form'}
+        onclick={() => currentView = 'form'}
       >
         DOCUMENT ENTRY
       </button>
       <button
         class="nav-btn"
-        on:click={() => modalOpen = true}
+        onclick={() => modalOpen = true}
       >
         CREATE NEW
       </button>
@@ -407,20 +407,20 @@ https://svelte.dev/e/js_parse_error -->
               {#each ragResults as result}
                 <div class="analysis-result">
                   <div class="result-header">
-                    <h3 class="result-title">{(result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).title}</h3>
+                    <h3 class="result-title">{(result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).title}</h3>
                     <div class="result-meta">
-                      <span class="confidence">Confidence: {((result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).confidence * 100).toFixed(1)}%</span>
-                      <span class="risk-level">Risk: {(result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).riskLevel}</span>
+                      <span class="confidence">Confidence: {((result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).confidence * 100).toFixed(1)}%</span>
+                      <span class="risk-level">Risk: {(result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).riskLevel}</span>
                     </div>
                   </div>
 
                   <div class="result-content">
-                    <p class="summary">{(result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).summary}</p>
+                    <p class="summary">{(result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).summary}</p>
 
                     <div class="key-terms">
                       <h4>Key Legal Terms:</h4>
                       <div class="terms">
-                        {#each (result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).keyTerms as term}
+                        {#each (result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).keyTerms as term}
                           <span class="term">{term}</span>
                         {/each}
                       </div>
@@ -429,31 +429,31 @@ https://svelte.dev/e/js_parse_error -->
                     <div class="recommendations">
                       <h4>AI Recommendations:</h4>
                       <ul>
-                        {#each (result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).recommendations as rec}
+                        {#each (result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).recommendations as rec}
                           <li>{rec}</li>
                         {/each}
                       </ul>
                     </div>
 
-                    {#if (result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).yorhaAnalysis}
+                    {#if (result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).yorhaAnalysis}
                       <div class="detailed-analysis">
                         <h4>Detailed Analysis Metrics:</h4>
                         <div class="metrics">
                           <div class="metric">
                             <span class="metric-label">Relevance Score:</span>
-                            <span class="metric-value">{((result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).yorhaAnalysis.relevanceScore * 100).toFixed(1)}%</span>
+                            <span class="metric-value">{((result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).yorhaAnalysis.relevanceScore * 100).toFixed(1)}%</span>
                           </div>
                           <div class="metric">
                             <span class="metric-label">Legal Weight:</span>
-                            <span class="metric-value">{((result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).yorhaAnalysis.legalWeight * 100).toFixed(1)}%</span>
+                            <span class="metric-value">{((result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).yorhaAnalysis.legalWeight * 100).toFixed(1)}%</span>
                           </div>
                           <div class="metric">
                             <span class="metric-label">Risk Factor:</span>
-                            <span class="metric-value">{((result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).yorhaAnalysis.riskFactor * 100).toFixed(1)}%</span>
+                            <span class="metric-value">{((result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).yorhaAnalysis.riskFactor * 100).toFixed(1)}%</span>
                           </div>
                           <div class="metric">
                             <span class="metric-label">Action Required:</span>
-                            <span class="metric-value action-{String((result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).yorhaAnalysis.actionRequired).toLowerCase()}">{String((result as { title?: any; confidence?: any; riskLevel?: any; summary?: any; keyTerms?: any; recommendations?: any; yorhaAnalysis?: any }).yorhaAnalysis.actionRequired)}</span>
+                            <span class="metric-value action-{String((result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).yorhaAnalysis.actionRequired).toLowerCase()}">{String((result as { title?: unknown; confidence?: unknown; riskLevel?: unknown; summary?: unknown; keyTerms?: unknown; recommendations?: unknown; yorhaAnalysis?: unknown }).yorhaAnalysis.actionRequired)}</span>
                           </div>
                         </div>
                       </div>
@@ -465,7 +465,7 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <div class="no-analysis">
               <p>No analysis results available. Select a document and run analysis to see results here.</p>
-              <button class="demo-btn" on:click={() => currentView = 'grid'}>
+              <button class="demo-btn" onclick={() => currentView = 'grid'}>
                 Go to Document Grid
               </button>
             </div>
@@ -483,7 +483,7 @@ https://svelte.dev/e/js_parse_error -->
             subtitle="Enter classified legal document information"
             fields={formFields}
             submitLabel="CREATE DOCUMENT"
-            cancelLabel="ABORT" on:submit={createDocument}
+            cancelLabel="ABORT" onsubmit={createDocument}
             cancel={() => currentView = 'grid'}
           />
         </section>
@@ -512,7 +512,7 @@ https://svelte.dev/e/js_parse_error -->
         subtitle="Enter classified document information"
         fields={formFields}
         submitLabel="CREATE"
-        cancelLabel="CANCEL" on:submit={createDocument}
+        cancelLabel="CANCEL" onsubmit={createDocument}
         cancel={() => modalOpen = false}
       />
     </YoRHaModal>
@@ -521,14 +521,14 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Notifications -->
   <div class="notifications">
     {#each notifications as notification}
-      <div class="notification notification-{(notification as { id?: any; type?: any; message?: any }).type}">
+      <div class="notification notification-{(notification as { id?: unknown; type?: unknown; message?: unknown }).type}">
         <div class="notification-content">
-          <span class="notification-type">[{(notification as { id?: any; type?: any; message?: any }).type.toUpperCase()}]</span>
-          <span class="notification-message">{(notification as { id?: any; type?: any; message?: any }).message}</span>
+          <span class="notification-type">[{(notification as { id?: unknown; type?: unknown; message?: unknown }).type.toUpperCase()}]</span>
+          <span class="notification-message">{(notification as { id?: unknown; type?: unknown; message?: unknown }).message}</span>
         </div>
         <button
           class="notification-close"
-          on:click={() => notifications = notifications.filter(n => n.id !== (notification as { id?: any; type?: any; message?: any }).id)}
+          onclick={() => notifications = notifications.filter(n => n.id !== (notification as { id?: unknown; type?: unknown; message?: unknown }).id)}
         >
           ✕
         </button>

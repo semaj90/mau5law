@@ -67,11 +67,11 @@ https://svelte.dev/e/expected_token -->
       
       const result = await glyphEmbedsClient.generateGlyph(request);
       
-      if ((result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).success && (result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).data) {
-        glyphResults = [(result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).data, ...glyphResults];
-        successMessage = `Generated in ${(result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).data.generation_time_ms}ms with ${(result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).data.cache_hits} cache hits`;
+      if ((result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).success && (result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).data) {
+        glyphResults = [(result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).data, ...glyphResults];
+        successMessage = `Generated in ${(result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).data.generation_time_ms}ms with ${(result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).data.cache_hits} cache hits`;
       } else {
-        errorMessage = (result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).error || 'Generation failed';
+        errorMessage = (result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).error || 'Generation failed';
       }
       
     } catch (error) {
@@ -181,14 +181,14 @@ https://svelte.dev/e/expected_token -->
       {#if errorMessage}
         <div class="bg-red-900 border border-red-700 text-red-200 px-4 py-3 rounded mb-4">
           <span>{errorMessage}</span>
-          <button on:click={clearMessages} class="float-right text-red-400 hover:text-red-200">✕</button>
+          <button onclick={clearMessages} class="float-right text-red-400 hover:text-red-200">✕</button>
         </div>
       {/if}
       
       {#if successMessage}
         <div class="bg-green-900 border border-green-700 text-green-200 px-4 py-3 rounded mb-4">
           <span>{successMessage}</span>
-          <button on:click={clearMessages} class="float-right text-green-400 hover:text-green-200">✕</button>
+          <button onclick={clearMessages} class="float-right text-green-400 hover:text-green-200">✕</button>
         </div>
       {/if}
     </header>
@@ -322,7 +322,7 @@ https://svelte.dev/e/expected_token -->
           <!-- Action Buttons -->
           <div class="border-t border-gray-700 pt-4 space-y-3">
             <button 
-              on:click={generateGlyph}
+              onclick={generateGlyph}
               disabled={isLoading}
               class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-colors"
             >
@@ -330,7 +330,7 @@ https://svelte.dev/e/expected_token -->
             </button>
             
             <button 
-              on:click={generateVariations}
+              onclick={generateVariations}
               disabled={isLoading}
               class="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-colors"
             >
@@ -356,7 +356,7 @@ https://svelte.dev/e/expected_token -->
                   <!-- Glyph Image -->
                   <div class="mb-4">
                     <img 
-                      src={(result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).glyph_url} 
+                      src={(result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).glyph_url} 
                       alt="Generated glyph"
                       class="w-full h-48 object-cover rounded-lg bg-gray-600"
                       loading="lazy"
@@ -367,34 +367,34 @@ https://svelte.dev/e/expected_token -->
                   <div class="space-y-2 text-sm">
                     <div class="flex justify-between">
                       <span class="text-gray-400">Generation Time:</span>
-                      <span class="text-white">{(result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).generation_time_ms}ms</span>
+                      <span class="text-white">{(result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).generation_time_ms}ms</span>
                     </div>
                     
                     <div class="flex justify-between">
                       <span class="text-gray-400">Cache Hits:</span>
-                      <span class="text-white">{(result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).cache_hits}</span>
+                      <span class="text-white">{(result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).cache_hits}</span>
                     </div>
                     
                     <div class="flex justify-between">
                       <span class="text-gray-400">Tensors:</span>
-                      <span class="text-white">{(result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).tensor_ids.length}</span>
+                      <span class="text-white">{(result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).tensor_ids.length}</span>
                     </div>
                     
-                    {#if (result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).simd_shader_data}
+                    {#if (result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).simd_shader_data}
                       <div class="border-t border-gray-600 pt-2 mt-2">
                         <div class="flex justify-between">
                           <span class="text-yellow-400">SIMD Compression:</span>
-                          <span class="text-white">{(result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).simd_shader_data.compression_ratio.toFixed(1)}:1</span>
+                          <span class="text-white">{(result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).simd_shader_data.compression_ratio.toFixed(1)}:1</span>
                         </div>
                         
                         <div class="flex justify-between">
                           <span class="text-yellow-400">Tiles:</span>
-                          <span class="text-white">{(result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).simd_shader_data.tile_map.length}</span>
+                          <span class="text-white">{(result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).simd_shader_data.tile_map.length}</span>
                         </div>
                         
                         <div class="flex justify-between">
                           <span class="text-yellow-400">Processing:</span>
-                          <span class="text-white">{(result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).simd_shader_data.performance_stats.total_optimization_time_ms}ms</span>
+                          <span class="text-white">{(result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).simd_shader_data.performance_stats.total_optimization_time_ms}ms</span>
                         </div>
                       </div>
                     {/if}
@@ -402,18 +402,18 @@ https://svelte.dev/e/expected_token -->
                   
                   <!-- Actions -->
                   <div class="mt-4 space-y-2">
-                    {#if (result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).enhanced_artifact_url}
+                    {#if (result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).enhanced_artifact_url}
                       <button 
-                        on:click={() => downloadArtifact(result)}
+                        onclick={() => downloadArtifact(result)}
                         class="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-3 rounded transition-colors"
                       >
                         Download Enhanced PNG
                       </button>
                     {/if}
                     
-                    {#if (result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).simd_shader_data}
+                    {#if (result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).simd_shader_data}
                       <button 
-                        on:click={() => navigator.clipboard.writeText((result as { success?: any; data?: any; error?: any; glyph_url?: any; generation_time_ms?: any; cache_hits?: any; tensor_ids?: any; simd_shader_data?: any; enhanced_artifact_url?: any }).simd_shader_data.shader_code)}
+                        onclick={() => navigator.clipboard.writeText((result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).simd_shader_data.shader_code)}
                         class="w-full bg-gray-600 hover:bg-gray-500 text-white text-sm font-medium py-2 px-3 rounded transition-colors"
                       >
                         Copy Shader Code

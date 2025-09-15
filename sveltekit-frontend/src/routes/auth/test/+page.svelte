@@ -12,9 +12,7 @@
   import * as Card from '$lib/components/ui/card';
   import * as Alert from '$lib/components/ui/alert';
   import * as Tabs from '$lib/components/ui/tabs';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
   import {
@@ -82,8 +80,8 @@
       ]);
 
       testResults.context7 = {
-        success: docsTest.every(result => (result as { status?: any; value?: any }).status === 'fulfilled'),
-        data: docsTest.map(result => (result as { status?: any; value?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any }).value : null),
+        success: docsTest.every(result => (result as { status?: unknown; value?: unknown }).status === 'fulfilled'),
+        data: docsTest.map(result => (result as { status?: unknown; value?: unknown }).status === 'fulfilled' ? (result as { status?: unknown; value?: unknown }).value : null),
         timestamp: new Date().toISOString()
       };
       context7Docs = testResults.context7.data;
@@ -284,7 +282,7 @@
 
       <div class="flex gap-2">
         <Button class="bits-btn"
-          on:click={runInitialTests}
+          onclick={runInitialTests}
           disabled={testRunning}
           variant="outline"
         >
@@ -325,7 +323,7 @@
           </div.Header>
           <Card.Content class="space-y-4">
             <Button class="bits-btn"
-              on:click={() => populateTestData('login')}
+              onclick={() => populateTestData('login')}
               variant="outline"
               size="sm"
             >
@@ -352,7 +350,7 @@
           </div.Header>
           <Card.Content class="space-y-4">
             <Button class="bits-btn"
-              on:click={() => populateTestData('register')}
+              onclick={() => populateTestData('register')}
               variant="outline"
               size="sm"
             >

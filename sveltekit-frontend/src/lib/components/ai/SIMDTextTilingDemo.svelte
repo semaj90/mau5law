@@ -5,7 +5,7 @@ https://svelte.dev/e/expected_token -->
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
@@ -372,7 +372,7 @@ https://svelte.dev/e/expected_token -->
         
         <div class="flex items-end">
           <Button class="bits-btn" 
-            on:click={() =>
+            onclick={() =>
 processSingleText(Math.floor(Math.random() * sampleTexts.length))}
             disabled={isProcessing}
             class="w-full text-sm"
@@ -384,13 +384,13 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
       
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2">
-        <Button class="bits-btn" on:click={processBatchTexts} disabled={isProcessing} variant="outline" size="sm">
+        <Button class="bits-btn" onclick={processBatchTexts} disabled={isProcessing} variant="outline" size="sm">
 📦 Batch Process ({sampleTexts.length})
 
-        <Button class="bits-btn" on:click={benchmarkCompressionLevels} disabled={isProcessing} variant="outline" size="sm">
+        <Button class="bits-btn" onclick={benchmarkCompressionLevels} disabled={isProcessing} variant="outline" size="sm">
 🧪 Compression Benchmark
 
-        <Button class="bits-btn" on:click={clearAll} variant="outline" size="sm">
+        <Button class="bits-btn" onclick={clearAll} variant="outline" size="sm">
 🗑️ Clear All
 
       </div>
@@ -559,7 +559,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
         <h3 class="text-lg font-medium mb-2">No SIMD Text Processing Results Yet</h3>
         <p class="mb-4">Process your first text with ultra-compressed 7-bit tiling!</p>
         <Button class="bits-btn" 
-          on:click={() =>
+          onclick={() =>
 processSingleText(0)}
           disabled={isProcessing}
         >
@@ -575,7 +575,7 @@ processSingleText(0)}
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex justify-between items-center">
           📝 Processing Logs
-          <Button class="bits-btn" on:click={() =>
+          <Button class="bits-btn" onclick={() =>
 processingLogs = []} variant="outline" size="sm">
             Clear Logs
 

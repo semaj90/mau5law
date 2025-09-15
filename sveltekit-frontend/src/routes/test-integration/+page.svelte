@@ -5,7 +5,7 @@
   import { fade, fly } from 'svelte/transition';
 
   // Test state
-  let testResults: any = $state({});
+  let testResults: unknown = $state({});
   let isRunning = $state(false);
   let currentTest = $state('');
   let testLog: string[] = $state([]);
@@ -71,7 +71,7 @@
         const response = await fetch('http://localhost:11434/api/tags');
         if (response.ok) {
           const data = await response.json();
-          const models = data.models?.map((m: any) => m.name) || [];
+          const models = data.models?.map((m: unknown) => m.name) || [];
           const hasGemma3Legal = models.some((m: string) => m.includes('gemma3-legal'));
           const hasGemma = models.some((m: string) => m.includes('gemma'));
           if (hasGemma3Legal) {
@@ -272,7 +272,7 @@
 
       <div class="flex flex-wrap gap-4 mb-6">
         <button
-          on:click={runHealthChecks}
+          onclick={runHealthChecks}
           disabled={isRunning}
           class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
         >
@@ -280,7 +280,7 @@
         </button>
 
         <button
-          on:click={testDirectOllama}
+          onclick={testDirectOllama}
           disabled={isRunning || ollamaStatus !== 'connected'}
           class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 transition-colors"
         >
@@ -314,7 +314,7 @@
             class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <button
-            on:click={testChatAPI}
+            onclick={testChatAPI}
             disabled={chatLoading || !chatMessage.trim()}
             class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 transition-colors"
           >

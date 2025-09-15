@@ -414,7 +414,7 @@
     
     <button
       class="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
-      on:click={runAllValidationTests}
+      onclick={runAllValidationTests}
       disabled={isRunning}
     >
       {#if isRunning}

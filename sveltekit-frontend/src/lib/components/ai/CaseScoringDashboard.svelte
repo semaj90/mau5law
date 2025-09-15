@@ -8,12 +8,13 @@
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
-  // Using native <button> elements for consistent event handling
+  // Using native <button aria-label="Button"> elements for consistent event handling
 
   // Case scoring state
   let cases = $state<CaseScore[]>([]);
   let selectedCase = $state<CaseScore | null>(null);
   let isLoading = $state(false);
+  let errorMessage = $state('');
   let scoringInProgress = $state(false);
   let showScoreDetails = $state(false);
   let useMockData = $state(true); // Toggle for demo mode
@@ -219,7 +220,8 @@
       console.error('Error loading case scores:', error);
       // Fall back to mock data on error
       cases = generateMockCases();
-    } finally {
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
       isLoading = false;
     }
   }
@@ -280,7 +282,8 @@
     } catch (error) {
       console.error('Error scoring case:', error);
       throw error;
-    } finally {
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
       scoringInProgress = false;
     }
   }
@@ -360,10 +363,10 @@
     </div>
     <div class="header-actions">
       <label class="demo-toggle">
-        <input type="checkbox" bind:checked={useMockData} on:change={loadCaseScores} />
+        <input type="checkbox" bind:checked={useMockData} onchange={(event: Event) => loadCaseScores} />
         <span>Demo Mode</span>
       </label>
-      <button type="button" on:click={loadCaseScores} disabled={isLoading} class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50">
+      <button aria-label="Action button" type="button" onclick={(event: MouseEvent) => loadCaseScores} disabled={isLoading} class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50">
         {isLoading ? 'Loading...' : 'Refresh'}
       </button>
     </div>
@@ -418,6 +421,7 @@
       </div>
     {:else}
       {#each filteredCases as caseItem}
+<!-- TODO: Consider virtual scrolling for large lists (filteredCases) -->
         <div class="case-score-nier-bits-card">
           <div class="nier-bits-yorha-panel-header">
             <div class="case-header">
@@ -467,12 +471,12 @@
 
             <div class="nier-bits-yorha-panel-content">
               <div class="nier-bits-card-actions">
-                <button type="button" on:click={() => openScoreDetails(caseItem)} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
+                <button aria-label="Action button" type="button" onclick={(event: MouseEvent) => ) => openScoreDetails(caseItem} class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50">
                   View Details
                 </button>
-                <button
+                <button aria-label="Action button"
                   type="button"
-                  on:click={() => scoreCase(caseItem.id)}
+                  onclick={(event: MouseEvent) => ) => scoreCase(caseItem.id}
                   disabled={scoringInProgress}
                   class="px-2 py-1 text-sm rounded bg-blue-600 text-white disabled:opacity-50"
                 >
@@ -488,12 +492,12 @@
 
 <!-- Score Details Modal -->
 {#if showScoreDetails && selectedCase}
-  <div class="modal-overlay" role="dialog" aria-modal="true" on:click={() => showScoreDetails = false} on:keydown={(e) => e.key === 'Escape' && (showScoreDetails = false)}>
-    <div class="modal-content score-details-dialog" role="document" on:click={(e) => e.stopPropagation()}>
+  <div class="modal-overlay" role="dialog" aria-modal="true" onclick={(event: MouseEvent) => ) => showScoreDetails = false} onkeydown={(e) => e.key === 'Escape' && (showScoreDetails = false)}>
+    <div class="modal-content score-details-dialog" role="document" onclick={(event: MouseEvent) => e) => e.stopPropagation(}>
       <div class="modal-header">
         <h2 class="modal-title">Case Score Analysis: {selectedCase.title}</h2>
         <p class="modal-description">Detailed scoring breakdown and recommendations</p>
-        <button type="button" on:click={() => showScoreDetails = false} class="modal-close" aria-label="Close">
+        <button aria-label="Action button" type="button" onclick={(event: MouseEvent) => ) => showScoreDetails = false} class="modal-close" aria-label="Close">
           ×
         </button>
       </div>
@@ -543,10 +547,10 @@
         </section>
       </div>
       <div class="dialog-actions">
-        <button type="button" on:click={() => showScoreDetails = false} class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50">
+        <button aria-label="Action button" type="button" onclick={(event: MouseEvent) => ) => showScoreDetails = false} class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50">
           Close
         </button>
-        <button type="button" on:click={() => selectedCase && scoreCase(selectedCase.id)} class="px-3 py-2 rounded bg-blue-600 text-white">
+        <button aria-label="Action button" type="button" onclick={(event: MouseEvent) => ) => selectedCase && scoreCase(selectedCase.id} class="px-3 py-2 rounded bg-blue-600 text-white">
           Rescore Case
         </button>
       </div>

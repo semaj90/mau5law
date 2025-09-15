@@ -5,12 +5,12 @@
   interface GridColumn {
     key: string;
     title: string;
-    formatter?: (value: any, row: any) => string;
+    formatter?: (value: unknown, row: unknown) => string;
   }
 
   interface DataGridProps {
     columns?: GridColumn[];
-    data?: any[];
+    data?: unknown[];
     loading?: boolean;
     className?: string;
     actionsSnippet?: Snippet<[any, number]>;
@@ -24,7 +24,7 @@
     actionsSnippet
   }: DataGridProps = $props();
 
-  function format(value: any, col: GridColumn, row: any) {
+  function format(value: unknown, col: GridColumn, row: unknown) {
     return col.formatter ? col.formatter(value, row) : value;
   }
 </script>

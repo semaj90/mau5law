@@ -3,9 +3,9 @@
   // $props is a built-in rune in Svelte 5, no import needed
 
   interface Props {
-    overlay: any;
-    content: any;
-    openState: any;
+    overlay: unknown;
+    content: unknown;
+    openState: unknown;
     size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   }
   let {

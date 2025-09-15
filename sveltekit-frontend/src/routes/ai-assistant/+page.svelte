@@ -57,7 +57,7 @@
         postgres: data?.services?.postgres === 'connected',
         neo4j: data?.services?.neo4j === 'active'
       };
-    } catch (e: any) {
+    } catch (e: unknown) {
       error = 'System health check failed';
       console.error('Health check error:', e);
     }
@@ -168,7 +168,7 @@
           error = 'Stream connection failed';
         }
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       error = e?.message ?? 'Failed to send message';
       console.error('Send message error:', e);
     } finally {
@@ -227,7 +227,7 @@
         ragAnalysisResults = await ragResponse.json();
 
         // Extract POI timeline data from semantic analysis
-        poiTimelineData = ragAnalysisResults.persons?.map((person: any) => ({
+        poiTimelineData = ragAnalysisResults.persons?.map((person: unknown) => ({
           id: person.id,
           name: person.name,
           type: person.type || 'person',
@@ -268,7 +268,7 @@
     }
   }
 
-  function selectPOI(poi: any) {
+  function selectPOI(poi: unknown) {
     selectedPOI = poi;
     showPOIDialog = true;
   }
@@ -336,7 +336,7 @@
           <Button 
             class="bits-btn justify-start"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
           >
@@ -345,7 +345,7 @@ handleQuickQuery('Explain contract formation requirements')}
           <Button 
             class="bits-btn justify-start"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
           >
@@ -354,7 +354,7 @@ handleQuickQuery('What is the chain of custody for evidence?')}
           <Button 
             class="bits-btn justify-start"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
           >
@@ -363,7 +363,7 @@ handleQuickQuery('Explain liability limitations in contracts')}
           <Button 
             class="bits-btn justify-start"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
           >
@@ -385,7 +385,7 @@ handleQuickQuery('What are the elements of negligence?')}
                 <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
                   {isStreaming ? 'Streaming...' : 'Ready'}
                 </span>
-                <Button variant="outline" size="sm" class="bits-btn bits-nes-btn bits-btn bits-btn" on:click={clearChat} disabled={isStreaming}>
+                <Button variant="outline" size="sm" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={clearChat} disabled={isStreaming}>
 {#snippet children()}Clear{/snippet}
 </Button>
               </div>
@@ -438,13 +438,13 @@ handleQuickQuery('What are the elements of negligence?')}
               <div class="flex gap-2">
                 <input
                   bind:value={currentMessage}
-                  on:keydown={handleKeydown}
+                  onkeydown={handleKeydown}
                   placeholder="Ask a legal question..."
                   disabled={isStreaming}
                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <Button
-                  on:click={sendMessage}
+                  onclick={sendMessage}
                   disabled={!currentMessage.trim() || isStreaming}
                   class="px-6 bits-btn bits-btn"
                 >
@@ -477,7 +477,7 @@ handleQuickQuery('What are the elements of negligence?')}
                 <button class="nes-btn"
                   variant="outline"
                   size="sm"
-                  on:click={() => showTimeline = false}
+                  onclick={() => showTimeline = false}
                   class="bits-btn"
                 >
                   {#snippet children()}
@@ -506,7 +506,7 @@ handleQuickQuery('What are the elements of negligence?')}
                       <button class="nes-btn"
                         variant="outline"
                         size="sm"
-                        on:click={() => selectPOI(poi)}
+                        onclick={() => selectPOI(poi)}
                         class="bits-btn"
                       >
                         {#snippet children()}
@@ -654,7 +654,7 @@ handleQuickQuery('What are the elements of negligence?')}
                 <Button
                   variant="outline"
                   size="sm"
-                  on:click={checkSystemStatus}
+                  onclick={checkSystemStatus}
                   class="w-full justify-start bits-btn bits-btn"
                   fullWidth={true}
                 >
@@ -669,7 +669,7 @@ handleQuickQuery('What are the elements of negligence?')}
                   class="bits-btn w-full justify-start"
                   variant="outline"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 window.open('/api/v1/cluster/health', '_blank')}
                   fullWidth={true}
                 >
@@ -713,7 +713,7 @@ window.open('/api/v1/cluster/health', '_blank')}
                 <Button
                   variant="outline"
                   size="sm"
-                  on:click={generateUserActivityTimeline}
+                  onclick={generateUserActivityTimeline}
                   disabled={activityLoading}
                   class="w-full justify-start bits-btn"
                   fullWidth={true}
@@ -793,7 +793,7 @@ window.open('/api/v1/cluster/health', '_blank')}
           <Button
             variant="outline"
             size="sm"
-            on:click={closePOIDetails}
+            onclick={closePOIDetails}
             class="bits-btn"
           >
 {#snippet children()}
@@ -901,7 +901,7 @@ window.open('/api/v1/cluster/health', '_blank')}
         <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
           <Button
             variant="outline"
-            on:click={closePOIDetails}
+            onclick={closePOIDetails}
             class="bits-btn"
           >
 {#snippet children()}
@@ -909,7 +909,7 @@ window.open('/api/v1/cluster/health', '_blank')}
             {/snippet}
 </Button>
           <button class="nes-btn is-primary"
-            on:click={() => handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`)}
+            onclick={() => handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`)}
             class="bits-btn"
           >
             {#snippet children()}

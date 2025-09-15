@@ -1,7 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from "svelte";
-  let items: any[] = $state([]);
+  let items: unknown[] = $state([]);
   let count = $state(0);
   onMount(async () => {
     try {

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   import { Card } from "bits-ui";
   // Tooltip functionality removed for now - can be re-added with bits-ui Tooltip
@@ -78,7 +79,7 @@
   class={cardClasses}
   role={clickable ? 'button' : undefined}
   tabindex={clickable ? 0 : undefined}
-  on:click={handleClick}
+  onclick={handleClick}
   keydown={(e) = class="nes-container"> {
     if (clickable && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();

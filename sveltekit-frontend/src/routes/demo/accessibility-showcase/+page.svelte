@@ -90,7 +90,7 @@
           <ButtonBits
             variant={currentSimulation === simulation ? 'primary' : 'outline'}
             size="sm"
-            on:click={() => simulateRouteChange(simulation)}
+            onclick={() => simulateRouteChange(simulation)}
           >
             {simulation.name}
           </ButtonBits>
@@ -157,7 +157,7 @@
           >
             <InputBits
               value={testInput}
-              on:input={(e) => (testInput = (e.target as HTMLInputElement)?.value || '')}
+              oninput={(e) => (testInput = (e.target as HTMLInputElement)?.value || '')}
               placeholder="Enhanced input with route context..."
             />
           </BitsUIAccessibilityWrapper>
@@ -172,7 +172,7 @@
             component="button"
             keyboardShortcut="Alt+D"
           >
-            <ButtonBits on:click={() => showDialog = true}>
+            <ButtonBits onclick={() => showDialog = true}>
               Open Dialog (Alt+D)
             </ButtonBits>
           </BitsUIAccessibilityWrapper>
@@ -202,7 +202,7 @@
           >
             <ButtonBits
               variant="primary"
-              on:click={testAIFeatures}
+              onclick={testAIFeatures}
               disabled={aiStatus === 'processing'}
             >
               {aiStatus === 'processing' ? 'Analyzing...' : 'Start AI Analysis'}
@@ -212,7 +212,7 @@
           <BitsUIAccessibilityWrapper component="button">
             <ButtonBits
               variant="outline"
-              on:click={resetAIDemo}
+              onclick={resetAIDemo}
             >
               Reset Demo
             </ButtonBits>
@@ -327,10 +327,10 @@
           screen reader announcements.
         </p>
         <div class="dialog-actions">
-          <ButtonBits variant="outline" on:click={() => showDialog = false}>
+          <ButtonBits variant="outline" onclick={() => showDialog = false}>
             Cancel
           </ButtonBits>
-          <ButtonBits variant="primary" on:click={() => showDialog = false}>
+          <ButtonBits variant="primary" onclick={() => showDialog = false}>
             Confirm
           </ButtonBits>
         </div>

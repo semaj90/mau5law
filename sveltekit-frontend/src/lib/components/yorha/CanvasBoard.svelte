@@ -48,7 +48,7 @@
     height = 600,
     enableDrawing = true,
     showToolbar = true
-  : any } = $props();
+  : unknown } = $props();
 
   function resize() {
     if (!canvas) return;
@@ -181,7 +181,7 @@
     <h2 class="canvas-title">EVIDENCE BOARD</h2>
     <button
       class="close-btn"
-      on:click={closeBoard}
+      onclick={closeBoard}
       title="Close Evidence Board"
     >
       ✕
@@ -197,7 +197,7 @@
           <button
             class="tool-btn"
             class:active={tool === 'brush'}
-            on:click={() => setTool('brush')}
+            onclick={() => setTool('brush')}
             title="Brush Tool"
           >
             🖌️
@@ -205,14 +205,14 @@
           <button
             class="tool-btn"
             class:active={tool === 'eraser'}
-            on:click={() => setTool('eraser')}
+            onclick={() => setTool('eraser')}
             title="Eraser Tool"
           >
             🧽
           </button>
           <button
             class="tool-btn"
-            on:click={clearCanvas}
+            onclick={clearCanvas}
             title="Clear Canvas"
           >
             🗑️
@@ -228,7 +228,7 @@
               class="color-btn"
               class:active={color === yorhaColor}
               style="background-color: {yorhaColor};"
-              on:click={() => setColor(yorhaColor)}
+              onclick={() => setColor(yorhaColor)}
               title="Select {yorhaColor}"
             >
             </button>
@@ -243,7 +243,7 @@
           min="1"
           max="50"
           bind:value={brushSize}
-          on:change={() => setBrushSize(brushSize)}
+          onchange={() => setBrushSize(brushSize)}
           class="size-slider"
         />
         <span class="size-display">{brushSize}px</span>
@@ -262,7 +262,7 @@
       onmousedown={startDrawing}
       onmousemove={draw}
       onmouseup={stopDrawing}
-      on:mouseleave={stopDrawing}
+      onmouseleave={stopDrawing}
     >
       Canvas not supported
     </canvas>

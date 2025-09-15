@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   export interface Item<T = any> {
     id: string;
@@ -39,7 +40,7 @@
     merged.map((item, index) => ({
       item,
       index,
-      isOptimistic: !!(item as { __optimistic?: any }).__optimistic || optimistic.includes(item)
+      isOptimistic: !!(item as { __optimistic?: unknown }).__optimistic || optimistic.includes(item)
     }))
   );
 </script>

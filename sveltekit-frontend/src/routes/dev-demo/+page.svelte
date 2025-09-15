@@ -69,11 +69,11 @@
       for (const endpoint of endpoints) {
         try {
           const response = await fetch(endpoint.url);
-          const data = await (response as { json?: any; ok?: any }).json();
+          const data = await (response as { json?: unknown; ok?: unknown }).json();
           apiStatus[endpoint.name] = {
-            status: (response as { json?: any; ok?: any }).ok ? 'healthy' : 'error',
-            data: (response as { json?: any; ok?: any }).ok ? data : null,
-            error: (response as { json?: any; ok?: any }).ok ? null : data
+            status: (response as { json?: unknown; ok?: unknown }).ok ? 'healthy' : 'error',
+            data: (response as { json?: unknown; ok?: unknown }).ok ? data : null,
+            error: (response as { json?: unknown; ok?: unknown }).ok ? null : data
           };
         } catch (error) {
           apiStatus[endpoint.name] = {
@@ -96,18 +96,18 @@
   async function loadCases() {
     try {
       const response = await fetch('/api/cases');
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((result as { success?: any; data?: any; error?: any; response?: any }).success) {
-        cases = (result as { success?: any; data?: any; error?: any; response?: any }).data.cases || [];
+      const result = await (response as { json?: unknown; ok?: unknown }).json();
+      if ((result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).success) {
+        cases = (result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).data.cases || [];
       } else {
-        console.error('Failed to load cases:', (result as { success?: any; data?: any; error?: any; response?: any }).error);
+        console.error('Failed to load cases:', (result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).error);
       }
     } catch (error) {
       console.error('Error loading cases:', error);
     }
   }
 
-  async function createCase(caseData: any) {
+  async function createCase(caseData: unknown) {
     try {
       const response = await fetch('/api/cases', {
         method: 'POST',
@@ -117,10 +117,10 @@
         body: JSON.stringify(caseData)
       });
 
-      const result = await (response as { json?: any; ok?: any }).json();
+      const result = await (response as { json?: unknown; ok?: unknown }).json();
 
-      if ((result as { success?: any; data?: any; error?: any; response?: any }).success) {
-        console.log('Case created successfully:', (result as { success?: any; data?: any; error?: any; response?: any }).data);
+      if ((result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).success) {
+        console.log('Case created successfully:', (result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).data);
         await loadCases(); // Refresh case list
         // Reset form
         $form = {
@@ -132,7 +132,7 @@
           jurisdiction: ''
         };
       } else {
-        console.error('Failed to create caseItem:', (result as { success?: any; data?: any; error?: any; response?: any }).error);
+        console.error('Failed to create caseItem:', (result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).error);
       }
     } catch (error) {
       console.error('Error creating caseItem:', error);
@@ -166,11 +166,11 @@
         })
       });
 
-      if ((response as { json?: any; ok?: any }).ok) {
-        const result = await (response as { json?: any; ok?: any }).json();
+      if ((response as { json?: unknown; ok?: unknown }).ok) {
+        const result = await (response as { json?: unknown; ok?: unknown }).json();
         const aiMessage = {
           role: 'assistant',
-          content: (result as { success?: any; data?: any; error?: any; response?: any }).response || 'No response received',
+          content: (result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).response || 'No response received',
           timestamp: new Date()
         };
         chatMessages = [...chatMessages, aiMessage];
@@ -416,12 +416,12 @@
                   <Input
                     type="text"
                     bind:value={currentMessage}
-                    on:keydown={handleKeydown}
+                    onkeydown={handleKeydown}
                     placeholder="Ask a legal question..."
                     disabled={isStreaming}
                     class="flex-1"
                   />
-                  <Button class="bits-btn" on:click={sendChatMessage} disabled={isStreaming || !currentMessage.trim()}>
+                  <Button class="bits-btn" onclick={sendChatMessage} disabled={isStreaming || !currentMessage.trim()}>
 {#snippet children()}
                       {isStreaming ? 'Sending...' : 'Send'}
                     {/snippet}

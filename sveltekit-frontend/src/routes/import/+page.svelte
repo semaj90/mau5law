@@ -5,9 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { UiTooltip as Tooltip } from "$lib/components/ui";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import {
     AlertCircle,
@@ -212,17 +210,17 @@ https://svelte.dev/e/js_parse_error -->
         body: formData,
       });
 
-      const result = await (response as { json?: any; ok?: any }).json();
+      const result = await (response as { json?: unknown; ok?: unknown }).json();
 
-      if ((response as { json?: any; ok?: any }).ok) {
+      if ((response as { json?: unknown; ok?: unknown }).ok) {
         importResults = result;
         notifications.add({
           type: "success",
           title: "Import Successful",
-          message: (result as { message?: any; error?: any }).message,
+          message: (result as { message?: unknown; error?: unknown }).message,
         });
       } else {
-        throw new Error((result as { message?: any; error?: any }).error || "Import failed");
+        throw new Error((result as { message?: unknown; error?: unknown }).error || "Import failed");
   }
     } catch (error) {
       console.error("Import error:", error);
@@ -322,7 +320,7 @@ https://svelte.dev/e/js_parse_error -->
                   <Button class="bits-btn"
                     variant="outline"
                     size="sm"
-                    on:click={() =>
+                    onclick={() =>
 clearImport()}
                   >
                     <X class="space-y-4" />
@@ -340,7 +338,7 @@ clearImport()}
                 </p>
                 <p class="space-y-4">or click to browse</p>
               </div>
-              <Button class="bits-btn" variant="outline" on:click={() =>
+              <Button class="bits-btn" variant="outline" onclick={() =>
 fileInput?.click()}>
                 Select File
 </Button>
@@ -354,7 +352,7 @@ fileInput?.click()}>
           bind:this={fileInput}
           type="file"
           accept=".json,.csv,.xml"
-          on:change={handleFileInput}
+          onchange={handleFileInput}
           class="space-y-4"
           aria-label="Select import file"
         />
@@ -500,7 +498,7 @@ fileInput?.click()}>
         <div class="space-y-4">
           <div class="space-y-4">
             <Button class="bits-btn"
-              on:click={() =>
+              onclick={() =>
 performImport()}
               disabled={isImporting}
               class="space-y-4"
@@ -516,7 +514,7 @@ performImport()}
               {/if}
 </Button>
             <Tooltip content="Clear current import and start over">
-              <Button class="bits-btn" variant="outline" on:click={() =>
+              <Button class="bits-btn" variant="outline" onclick={() =>
 clearImport()}>
                 <X class="space-y-4" />
                 Cancel
@@ -544,7 +542,7 @@ clearImport()}>
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 downloadExampleTemplate("cases", "json")}
                 >
                   JSON
@@ -554,7 +552,7 @@ downloadExampleTemplate("cases", "json")}
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 downloadExampleTemplate("cases", "csv")}
                 >
                   CSV
@@ -570,7 +568,7 @@ downloadExampleTemplate("cases", "csv")}
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 downloadExampleTemplate("evidence", "json")}
                 >
                   JSON
@@ -580,7 +578,7 @@ downloadExampleTemplate("evidence", "json")}
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 downloadExampleTemplate("evidence", "csv")}
                 >
                   CSV

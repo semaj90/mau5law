@@ -24,7 +24,7 @@
   <Card.Content class="space-y-4">
     <p>{caseFile.summary}</p>
     <div class="flex justify-end">
-      <Button class="nes-btn is-primary" on:click={handleAnalyzeClick}>
+      <Button class="nes-btn is-primary" onclick={handleAnalyzeClick}>
         Analyze
     </div>
   </div.Content>

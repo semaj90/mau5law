@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import { createEventDispatcher } from 'svelte';
 
     interface Props {
-        steps?: any[];
+        steps?: unknown[];
         currentStep?: number;
         validationResults?: Record<number, {
             isValid: boolean;
@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
 
                     <li class="flex-1 min-w-0">
                         <button
-                            on:click={() => handleStepClick(index)}
+                            onclick={() => handleStepClick(index)}
                             disabled={!isClickable}
                             class="group flex items-center w-full text-left
                                    {isClickable ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700' : 'cursor-not-allowed'}

@@ -182,7 +182,7 @@ https://svelte.dev/e/js_parse_error -->
   {accept}
   {multiple}
   {disabled}
-  on:change={handleFileInput}
+  onchange={handleFileInput}
   style="display: none;"
   aria-label="File input"
 />
@@ -193,12 +193,12 @@ https://svelte.dev/e/js_parse_error -->
   class:drag-over={isDragOver}
   class:disabled={disabled}
   class:processing={isProcessing}
-  on:dragover={handleDragOver}
+  ondragover={handleDragOver}
   ondragleave={handleDragLeave}
-  role="button" on:drop={handleDrop}
+  role="button" ondrop={handleDrop}
   tabindex="0"
-  on:click={openFileDialog}
-  on:keydown={(e) => e.key === 'Enter' && openFileDialog()}
+  onclick={openFileDialog}
+  onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
   aria-label="Drag and drop files here or click to select"
 >
   <!-- Drag Overlay -->
@@ -249,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <button
           class="remove-file"
-          on:click={() => removeFile(index)}
+          onclick={() => removeFile(index)}
           aria-label="Remove {file.name}"
         >
           <X size={14} />

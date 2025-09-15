@@ -7,7 +7,7 @@
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap, X, Cpu, Database, Layers } from 'lucide-svelte';
   // Enhanced ingestion system (mock implementations for demo)
   const ingestionWorkerManager = {
-    processIngestion: async (task: any, onProgress?: Function) => {
+    processIngestion: async (task: unknown, onProgress?: Function) => {
       // Simulate processing with callbacks
       if (onProgress) {
         setTimeout(() => onProgress(25, 'Uploading files'), 500);
@@ -39,7 +39,7 @@
     async initialize() { 
       console.log('🎮 Mock Enhanced Ingestion Pipeline initialized'); 
     }
-    async processMultimodalEvidence(evidence: any) {
+    async processMultimodalEvidence(evidence: unknown) {
       // Simulate multimodal processing
       await new Promise(resolve => setTimeout(resolve, 2000));
       return {
@@ -99,8 +99,8 @@
     acceptedTypes = ['image/*', 'application/pdf', 'text/*', '.docx', '.xlsx']
   }: Props = $props();
   let canvasEl: HTMLCanvasElement = $state();
-  let fabricCanvas: any;
-  let fabric: any;
+  let fabricCanvas: unknown;
+  let fabric: unknown;
   let fileInput: HTMLInputElement;
 
   let analyzing = $state(false);
@@ -140,12 +140,12 @@
     cudaProcessed?: boolean;
     errorMessage?: string;
     canvasObjectId?: string;
-    ingestionResult?: any;
+    ingestionResult?: unknown;
     detectiveAnalysis?: {
-      ocrResults: any;
-      embeddings: any;
-      analysis: any;
-      conflicts: any[];
+      ocrResults: unknown;
+      embeddings: unknown;
+      analysis: unknown;
+      conflicts: unknown[];
       processingTime: number;
     };
     anchorPoints?: Array;
@@ -208,7 +208,7 @@
   });
 
   function collectObjects() {
-    const objs = (fabricCanvas?.getObjects?.() ?? []).map((o: any) => {
+    const objs = (fabricCanvas?.getObjects?.() ?? []).map((o: unknown) => {
       const type = o.type || "object";
       const left = typeof o.left === "number" ? o.left : 0;
       const top = typeof o.top === "number" ? o.top : 0;
@@ -240,15 +240,15 @@
         'legal'
       );
       // Subscribe to task completion
-      const unsubscribe = concurrencyOrchestrator.subscribe((snapshot: any) => {
+      const unsubscribe = concurrencyOrchestrator.subscribe((snapshot: unknown) => {
         const completedResult = snapshot.context.results.find(
-          (r: any) => r.taskId === analysisTaskId && r.success
+          (r: unknown) => r.taskId === analysisTaskId && r.success
         );
         if (completedResult) {
           result = {
-            analysis: completedResult.(data as { response?: any; analysis?: any; summary?: any; confidence?: any; processingTime?: any }).response || completedResult.(data as { response?: any; analysis?: any; summary?: any; confidence?: any; processingTime?: any }).analysis || 'Analysis completed',
-            summary: completedResult.(data as { response?: any; analysis?: any; summary?: any; confidence?: any; processingTime?: any }).summary || 'Summary generated',
-            confidence: completedResult.(data as { response?: any; analysis?: any; summary?: any; confidence?: any; processingTime?: any }).confidence || 0.85,
+            analysis: completedResult.(data as { response?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processingTime?: unknown }).response || completedResult.(data as { response?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processingTime?: unknown }).analysis || 'Analysis completed',
+            summary: completedResult.(data as { response?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processingTime?: unknown }).summary || 'Summary generated',
+            confidence: completedResult.(data as { response?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processingTime?: unknown }).confidence || 0.85,
             processing_time_ms: completedResult.duration,
             status: 'success'
           };
@@ -256,7 +256,7 @@
           analyzing = false;
         }
         const failedResult = snapshot.context.results.find(
-          (r: any) => r.taskId === analysisTaskId && !r.success
+          (r: unknown) => r.taskId === analysisTaskId && !r.success
         );
         if (failedResult) {
           error = failedResult.error || 'Analysis failed';
@@ -272,7 +272,7 @@
           unsubscribe();
         }
       }, 30000);
-    } catch (e: any) {
+    } catch (e: unknown) {
       error = e instanceof Error ? e.message : String(e);
       analyzing = false;
     }
@@ -377,11 +377,11 @@
 
         // Upload to MinIO via evidence API
         const result = await uploadSingleFile(uploadFile, preprocessedData, cudaProcessed);
-        if ((result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).success) {
+        if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).success) {
           uploadFile.status = 'ingestion';
           uploadFile.progress = 100;
           uploadFile.cudaProcessed = cudaProcessed;
-          uploadFile.minioPath = (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).(data as { response?: any; analysis?: any; summary?: any; confidence?: any; processingTime?: any }).minioPath;
+          uploadFile.minioPath = (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).(data as { response?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processingTime?: unknown }).minioPath;
           // Start enhanced ingestion processing
           try {
             const ingestionResult = await processEnhancedIngestion(uploadFile);
@@ -393,7 +393,7 @@
             uploadFile.detectiveAnalysis = detectiveResult;
             uploadFile.status = 'completed';
             // Add file to canvas with anchor points and detective insights
-            await addFileToCanvas(uploadFile, position, (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).data);
+            await addFileToCanvas(uploadFile, position, (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).data);
             // Add anchor points visualization
             if (ingestionResult.anchor_points) {
               await addAnchorPointsToCanvas(uploadFile, ingestionResult.anchor_points);
@@ -405,7 +405,7 @@
           } catch (ingestionError) {
             console.warn('Enhanced ingestion failed:', ingestionError);
             uploadFile.status = 'completed'; // Still mark as completed if upload succeeded
-            await addFileToCanvas(uploadFile, position, (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).data);
+            await addFileToCanvas(uploadFile, position, (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).data);
           }
           // Adjust position for next file
           position.x += 120;
@@ -415,7 +415,7 @@
           }
         } else {
           uploadFile.status = 'error';
-          uploadFile.errorMessage = (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).error;
+          uploadFile.errorMessage = (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).error;
         }
       }
 
@@ -453,15 +453,15 @@
         body: formData
       });
 
-      if (!(response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).ok) {
-        throw new Error(`CUDA preprocessing failed: ${(response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).statusText}`);
+      if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).ok) {
+        throw new Error(`CUDA preprocessing failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).statusText}`);
       }
 
-      const result = await (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).json();
+      const result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).json();
       return {
         success: true,
-        processedFile: (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).processedFile ? new File([(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).processedFile], file.name, { type: file.type }) : undefined,
-        metadata: (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).metadata
+        processedFile: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).processedFile ? new File([(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).processedFile], file.name, { type: file.type }) : undefined,
+        metadata: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).metadata
       };
 
     } catch (error) {
@@ -488,20 +488,20 @@
       body: formData
     });
 
-    if (!(response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).ok) {
-      const errorData = await (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).json();
+    if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).ok) {
+      const errorData = await (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).json();
       return {
         success: false,
         error: errorData.error?.message || 'Upload failed'
       };
     }
 
-    const result = await (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).json();
-    if ((result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).success && (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).data?.[0]) {
+    const result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).json();
+    if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).success && (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).data?.[0]) {
       return {
         success: true,
         data: {
-          ...(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).data[0],
+          ...(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).data[0],
           cudaOptimized: cudaProcessed
         } as UploadResult
       };
@@ -674,11 +674,11 @@
     }
   }
 
-  async function addDetectiveInsightsToCanvas(uploadFile: UploadedFile, detectiveResult: any) {
+  async function addDetectiveInsightsToCanvas(uploadFile: UploadedFile, detectiveResult: unknown) {
     if (!fabricCanvas || !detectiveResult.analysis.detectedPatterns.length) return;
     // Find the uploaded file's canvas object
     const canvasObjects = fabricCanvas.getObjects();
-    const fileObject = canvasObjects.find((obj: any) => obj.id === uploadFile.canvasObjectId);
+    const fileObject = canvasObjects.find((obj: unknown) => obj.id === uploadFile.canvasObjectId);
     if (!fileObject) return;
     // Add detective insights indicator
     const insightsIcon = new fabric.Text('🔍', {
@@ -716,7 +716,7 @@
   }
 
   // Enhanced evidence processing using unified legal orchestration service
-  async function processEvidenceWithUnifiedService(canvasId: string, evidenceItems: any[]) {
+  async function processEvidenceWithUnifiedService(canvasId: string, evidenceItems: unknown[]) {
     try {
       console.log(`🚀 Starting unified evidence processing for canvas: ${canvasId}`);
       // Use the unified legal orchestration service for comprehensive processing
@@ -732,18 +732,18 @@
         })
       });
 
-      if ((response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).success) {
+      if ((response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).success) {
         console.log(`✅ Evidence processing initiated:`, {
-          jobIds: (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).jobIds,
-          evidenceCount: (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).evidenceCount
+          jobIds: (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).jobIds,
+          evidenceCount: (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).evidenceCount
         });
 
         // Start monitoring job progress
-        monitorUnifiedProcessingJobs((response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).jobIds, (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).jobStatuses);
+        monitorUnifiedProcessingJobs((response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).jobIds, (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).jobStatuses);
 
         return response;
       } else {
-        console.error('❌ Evidence processing failed:', (response as { ok?: any; statusText?: any; json?: any; success?: any; jobIds?: any; evidenceCount?: any; jobStatuses?: any; error?: any }).error);
+        console.error('❌ Evidence processing failed:', (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).error);
         return null;
       }
     } catch (error) {
@@ -782,7 +782,7 @@
   }
 
   // Update UI with job progress
-  function updateJobProgressUI(jobId: string, status: any) {
+  function updateJobProgressUI(jobId: string, status: unknown) {
     // Update any UI elements that show processing status
     console.log(`📊 Job ${jobId} status: ${status.status} (${status.progress || 0}%)`);
     // You could add visual indicators here, update progress bars, etc.
@@ -792,7 +792,7 @@
   }
 
   // Handle job completion
-  function handleJobCompletion(jobId: string, status: any) {
+  function handleJobCompletion(jobId: string, status: unknown) {
     console.log(`✅ Job ${jobId} completed:`, status);
     // Update canvas with results if applicable
     if (status.results) {
@@ -801,7 +801,7 @@
   }
 
   // Add processing results to canvas
-  function addProcessingResultsToCanvas(results: any) {
+  function addProcessingResultsToCanvas(results: unknown) {
     if (!fabricCanvas) return;
 
     // Add visual representations of processing results
@@ -840,15 +840,15 @@
   // Helper function to get canvas object position
   function getCanvasObjectPosition(objectId: string) {
     if (!fabricCanvas) return null;
-    const obj = fabricCanvas.getObjects().find((o: any) => o.id === objectId);
+    const obj = fabricCanvas.getObjects().find((o: unknown) => o.id === objectId);
     return obj ? { x: obj.left, y: obj.top } : null;
   }
 
-  async function addAnchorPointsToCanvas(uploadFile: UploadedFile, anchorPoints: any[]) {
+  async function addAnchorPointsToCanvas(uploadFile: UploadedFile, anchorPoints: unknown[]) {
     if (!fabricCanvas || !anchorPoints?.length) return;
     // Find the uploaded file's canvas object
     const canvasObjects = fabricCanvas.getObjects();
-    const fileObject = canvasObjects.find((obj: any) => obj.id === uploadFile.canvasObjectId);
+    const fileObject = canvasObjects.find((obj: unknown) => obj.id === uploadFile.canvasObjectId);
     if (!fileObject) return;
     // Add anchor point indicators
     anchorPoints.forEach((anchor, index) => {
@@ -891,11 +891,11 @@
     // Remove from canvas if it exists
     if (file.canvasObjectId && fabricCanvas) {
       const canvasObjects = fabricCanvas.getObjects();
-      const objectsToRemove = canvasObjects.filter((obj: any) => 
+      const objectsToRemove = canvasObjects.filter((obj: unknown) => 
         obj.id === file.canvasObjectId || 
         (obj.left === file.canvasObjectId) // For grouped objects
       );
-      objectsToRemove.forEach((obj: any) => fabricCanvas.remove(obj));
+      objectsToRemove.forEach((obj: unknown) => fabricCanvas.remove(obj));
       fabricCanvas.renderAll();
     }
     // Remove from files array
@@ -909,7 +909,7 @@
   multiple
   accept={acceptedTypes.join(',')}
   bind:this={fileInput}
-  on:change={handleFileSelect}
+  onchange={handleFileSelect}
   style="display: none;"
 />
 
@@ -972,7 +972,7 @@
   <!-- Toolbar -->
   <div class="toolbar" class:n64-toolbar={enableN64Style}>
     <button 
-      on:click={analyzeCanvas} 
+      onclick={analyzeCanvas} 
       disabled={analyzing}
       class="analyze-btn"
       class:n64-btn={enableN64Style}
@@ -987,7 +987,7 @@
     </button>
     
     <button 
-      on:click={openFileDialog} 
+      onclick={openFileDialog} 
       disabled={uploading}
       class="upload-btn"
       class:n64-btn={enableN64Style}
@@ -997,7 +997,7 @@
     </button>
     
     <button 
-      on:click={triggerUnifiedProcessing} 
+      onclick={triggerUnifiedProcessing} 
       disabled={uploadedFiles.length === 0}
       class="unified-process-btn"
       class:n64-btn={enableN64Style}
@@ -1044,7 +1044,7 @@
     </small>
     
     {#if error}<span class="error">{error}</span>{/if}
-    {#if result && (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).status === "success"}<span class="ok">✓</span>{/if}
+    {#if result && (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).status === "success"}<span class="ok">✓</span>{/if}
     {#if analyzing}<span class="spinner">⏳</span>{/if}
   </div>
 
@@ -1142,7 +1142,7 @@
             <button 
               class="remove-btn" 
               class:n64-remove={enableN64Style}
-              on:click={() => removeFile(file.id)}
+              onclick={() => removeFile(file.id)}
               disabled={file.status === 'uploading'}
             >
               <X class="w-3 h-3" />
@@ -1160,16 +1160,16 @@
       <div class="analysis-content">
         <div class="analysis-section">
           <h4>{enableN64Style ? '🔍 ANALYSIS' : 'Analysis'}</h4>
-          <pre>{(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).analysis}</pre>
+          <pre>{(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).analysis}</pre>
         </div>
         <div class="analysis-section">
           <h4>{enableN64Style ? '📋 SUMMARY' : 'Summary'}</h4>
-          <pre>{(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).summary}</pre>
+          <pre>{(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).summary}</pre>
         </div>
         <div class="meta-info">
-          <span>Confidence: {(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).confidence?.toFixed?.(2)}</span>
-          <span>Time: {(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).processing_time_ms} ms</span>
-          <span>Status: {(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any; status?: any; analysis?: any; summary?: any; confidence?: any; processing_time_ms?: any }).status}</span>
+          <span>Confidence: {(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).confidence?.toFixed?.(2)}</span>
+          <span>Time: {(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).processing_time_ms} ms</span>
+          <span>Status: {(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).status}</span>
           {#if uploadedFiles.some(f => f.cudaProcessed)}
             <span class="cuda-meta">⚡ CUDA Optimized</span>
           {/if}
@@ -1468,15 +1468,15 @@
     color: #FFD700;
   }
   
-  .file-(item as { status?: any }).status-completed {
+  .file-(item as { status?: unknown }).status-completed {
     border-color: #28a745;
   }
   
-  .file-(item as { status?: any }).status-error {
+  .file-(item as { status?: unknown }).status-error {
     border-color: #dc3545;
   }
   
-  .file-(item as { status?: any }).status-uploading {
+  .file-(item as { status?: unknown }).status-uploading {
     border-color: #007bff;
   }
   
@@ -1714,7 +1714,7 @@
     box-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
   }
   
-  .file-(item as { status?: any }).status-ingestion {
+  .file-(item as { status?: unknown }).status-ingestion {
     border-color: #4090FF;
     background: linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 100%);
   }
@@ -1724,7 +1724,7 @@
     background: linear-gradient(135deg, #1a1a3e 0%, #0a0a2a 100%);
   }
 
-  .file-(item as { status?: any }).status-detective_analysis {
+  .file-(item as { status?: unknown }).status-detective_analysis {
     border-color: #8B5CF6;
     background: linear-gradient(135deg, #f3e8ff 0%, #faf5ff 100%);
   }

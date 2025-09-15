@@ -22,7 +22,7 @@
     showContainer?: boolean;
     autoHide?: boolean;
     recommendations?: EnhancedRecommendation[];
-    documents?: any[];
+    documents?: unknown[];
     query?: string;
     recommendationContext?: RecommendationContext;
     userProfile?: UserProfile;
@@ -234,18 +234,18 @@
           recommendationContext || {}
         );
 
-        if (!(result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).success) {
+        if (!(result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).success) {
           throw new Error('Enhanced feedback submission failed');
         }
 
         // Trigger distillation if needed
-        if ((result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).shouldTriggerDistillation) {
+        if ((result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).shouldTriggerDistillation) {
           await fetch('/api/qlora-distillation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               trigger: 'feedback_threshold',
-              feedbackCount: (result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).totalFeedbackCount
+              feedbackCount: (result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).totalFeedbackCount
             })
           });
         }
@@ -280,19 +280,19 @@
           })
         });
 
-        if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-          throw new Error(`Feedback submission failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+        if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
+          throw new Error(`Feedback submission failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
         }
 
-        result = await (response as { ok?: any; statusText?: any; json?: any }).json();
+        result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
 
-        if ((result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).shouldTriggerDistillation) {
+        if ((result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).shouldTriggerDistillation) {
           await fetch('/api/qlora-distillation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               trigger: 'feedback_threshold',
-              feedbackCount: (result as { success?: any; shouldTriggerDistillation?: any; totalFeedbackCount?: any }).totalFeedbackCount
+              feedbackCount: (result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).totalFeedbackCount
             })
           });
         }
@@ -396,8 +396,8 @@
     bind:this={containerRef}
     class="recommendation-container {position} {consoleStyle}"
     class:has-critical={criticalCount > 0}
-    on:mouseenter={handleMouseEnter}
-    on:mouseleave={handleMouseLeave}
+    onmouseenter={handleMouseEnter}
+    onmouseleave={handleMouseLeave}
   >
     <Collapsible.Root bind:open={isOpen} class="w-full">
       <!-- Trigger/Header -->
@@ -407,7 +407,7 @@
             use:builder.action 
             {...builder}
             class="container-trigger"
-            on:click={toggleContainer}
+            onclick={toggleContainer}
           >
             <div class="trigger-content">
               <div class="trigger-left">
@@ -461,7 +461,7 @@
       <Collapsible.Content class="collapsible-content">
         <div 
           class="recommendations-grid"
-          transition:fly={{ y: -20, duration: 300, easing: quintOut }}
+          transitionfly={{ y: -20, duration: 300, easing: quintOut }}
         >
           {#each Object.entries(groupedRecommendations) as [type, recs]}
             <div.Root class="recommendation-nier-bits-card {type}">
@@ -495,7 +495,7 @@
                                 use:builder.action
                                 {...builder}
                                 class={getFeedbackButtonClass(rec.id, 'positive', rec.feedback)}
-                                on:click={() => submitFeedback(rec.id, 'positive', rec)}
+                                onclick={() => submitFeedback(rec.id, 'positive', rec)}
                                 disabled={feedbackCooldown.has(rec.id) || processingFeedback}
                               >
                                 👍
@@ -516,7 +516,7 @@
                                 use:builder.action
                                 {...builder}
                                 class={getFeedbackButtonClass(rec.id, 'negative', rec.feedback)}
-                                on:click={() => submitFeedback(rec.id, 'negative', rec)}
+                                onclick={() => submitFeedback(rec.id, 'negative', rec)}
                                 disabled={feedbackCooldown.has(rec.id) || processingFeedback}
                               >
                                 👎
@@ -543,14 +543,14 @@
                 <div class="nier-bits-card-actions">
                   <button 
                     class="view-all-btn"
-                    on:click={() => openModal(type)}
+                    onclick={() => openModal(type)}
                   >
                     View All
                   </button>
                   {#if recs[0]}
                     <button 
                       class="quick-action-btn {recs[0].priority}"
-                      on:click={() => recs[0].action?.()}
+                      onclick={() => recs[0].action?.()}
                     >
                       Quick Action
                     </button>
@@ -565,7 +565,7 @@
             <div.Content class="view-all-content">
               <button 
                 class="view-all-recommendations"
-                on:click={() => openModal()}
+                onclick={() => openModal()}
               >
                 <span class="view-all-icon">📋</span>
                 <span class="view-all-text">View All Recommendations</span>

@@ -221,7 +221,7 @@
                 id="image-upload"
                 type="file"
                 accept="image/*"
-                on:change={handleImageUpload}
+                onchange={handleImageUpload}
                 class="nes-input"
               />
             </div>
@@ -267,7 +267,7 @@
           <button
             class="nes-btn is-success w-full"
             disabled={!uploadedImage || processing}
-            on:click={quantizeImage}
+            onclick={quantizeImage}
           >
             {#if processing}
               🔄 Processing...
@@ -279,7 +279,7 @@
           <button
             class="nes-btn w-full"
             disabled={!uploadedImage || processing}
-            on:click={resetToOriginal}
+            onclick={resetToOriginal}
           >
             🔄 Reset to Original
           </button>

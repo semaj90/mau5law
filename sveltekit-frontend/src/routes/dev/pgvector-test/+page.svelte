@@ -10,9 +10,7 @@ https://svelte.dev/e/expected_token -->
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -30,9 +28,9 @@ https://svelte.dev/e/expected_token -->
 
   // Test results state
   let connectionStatus = 'untested';
-  let connectionDetails: any = null;
-  let dbStats: any = null;
-  let searchResults: any[] = [];
+  let connectionDetails: unknown = null;
+  let dbStats: unknown = null;
+  let searchResults: unknown[] = [];
   let testQuery = 'contract liability and indemnification terms';
   let isLoading = false;
   let lastError = '';
@@ -54,14 +52,14 @@ https://svelte.dev/e/expected_token -->
 
     try {
       const response = await fetch('/api/pgvector/test?action=connection');
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      connectionStatus = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success ? 'connected' : 'failed';
-      connectionDetails = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).details;
-      performanceMetrics.connectionTest = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTime;
+      connectionStatus = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success ? 'connected' : 'failed';
+      connectionDetails = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).details;
+      performanceMetrics.connectionTest = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).responseTime;
 
-      if (!(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
-        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).details.error || 'Connection test failed';
+      if (!(result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
+        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).details.error || 'Connection test failed';
       }
     } catch (error) {
       connectionStatus = 'failed';
@@ -80,12 +78,12 @@ https://svelte.dev/e/expected_token -->
 
     try {
       const response = await fetch('/api/pgvector/test?action=stats');
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
-        dbStats = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).stats;
+      if ((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
+        dbStats = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).stats;
       } else {
-        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Failed to get database statistics';
+        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).error || 'Failed to get database statistics';
       }
     } catch (error) {
       lastError = error.message;
@@ -103,10 +101,10 @@ https://svelte.dev/e/expected_token -->
 
     try {
       const response = await fetch(`/api/pgvector/test?action=seed&count=${count}`);
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if (!(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
-        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Failed to seed database';
+      if (!(result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
+        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).error || 'Failed to seed database';
       }
 
       // Refresh stats after seeding
@@ -127,12 +125,12 @@ https://svelte.dev/e/expected_token -->
 
     try {
       const response = await fetch(`/api/pgvector/test?action=index&lists=${lists}&metric=${metric}`);
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
-        performanceMetrics.indexCreation = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTime;
+      if ((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
+        performanceMetrics.indexCreation = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).responseTime;
       } else {
-        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Failed to create index';
+        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).error || 'Failed to create index';
       }
     } catch (error) {
       lastError = error.message;
@@ -162,13 +160,13 @@ https://svelte.dev/e/expected_token -->
         })
       });
 
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
-        searchResults = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).results || [];
-        performanceMetrics.vectorSearch = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTime;
+      if ((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
+        searchResults = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).results || [];
+        performanceMetrics.vectorSearch = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).responseTime;
       } else {
-        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Vector search failed';
+        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).error || 'Vector search failed';
       }
     } catch (error) {
       lastError = error.message;
@@ -209,17 +207,17 @@ https://svelte.dev/e/expected_token -->
         body: JSON.stringify(sampleDoc)
       });
 
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
-        performanceMetrics.documentInsert = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTime;
+      if ((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
+        performanceMetrics.documentInsert = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).responseTime;
         // Refresh stats and search to see new document
         await getDatabaseStats();
         if (testQuery.includes('test') || testQuery.includes('sample')) {
           await performVectorSearch();
         }
       } else {
-        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Document insertion failed';
+        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).error || 'Document insertion failed';
       }
     } catch (error) {
       lastError = error.message;
@@ -305,7 +303,7 @@ https://svelte.dev/e/expected_token -->
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button on:click={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button onclick={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Testing...' : 'Test Connection'}
 
             {#if connectionDetails}
@@ -331,7 +329,7 @@ https://svelte.dev/e/expected_token -->
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button on:click={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button onclick={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Loading...' : 'Get Statistics'}
 
             {#if dbStats}
@@ -359,15 +357,15 @@ https://svelte.dev/e/expected_token -->
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Button class="bits-btn" on:click={() =>
+            <Button class="bits-btn" onclick={() =>
 seedDatabase(10)} disabled={isLoading}>
               Seed 10 Documents
 
-            <Button class="bits-btn" on:click={() =>
+            <Button class="bits-btn" onclick={() =>
 seedDatabase(50)} disabled={isLoading}>
               Seed 50 Documents
 
-            <Button class="bits-btn" on:click={() =>
+            <Button class="bits-btn" onclick={() =>
 createIndex(100, 'cosine')} disabled={isLoading}>
               Create IVFFLAT Index
 
@@ -397,7 +395,7 @@ createIndex(100, 'cosine')} disabled={isLoading}>
               />
             </div>
             <div class="flex items-end">
-              <Button class="bits-btn" on:click={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
+              <Button class="bits-btn" onclick={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
 {isLoading ? 'Searching...' : 'Search'}
 
             </div>
@@ -413,19 +411,19 @@ createIndex(100, 'cosine')} disabled={isLoading}>
                     <div class="flex justify-between items-start gap-4">
                       <div class="flex-1 space-y-2">
                         <div class="flex items-center gap-2">
-                          <h4 class="font-medium">{(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).title || (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).document_id}</h4>
-                          <Badge>{(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).document_type}</Badge>
+                          <h4 class="font-medium">{(result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).title || (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).document_id}</h4>
+                          <Badge>{(result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).document_type}</Badge>
                           <span class="text-sm nes-text is-disabled">
-                            Distance: {formatDistance((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).distance)}
+                            Distance: {formatDistance((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).distance)}
                           </span>
                         </div>
-                        {#if (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).content}
+                        {#if (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).content}
                           <p class="text-sm nes-text is-disabled line-clamp-2">
-                            {(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).content.substring(0, 200)}...
+                            {(result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).content.substring(0, 200)}...
                           </p>
                         {/if}
                         <div class="text-xs nes-text is-disabled">
-                          Created: {new Date((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).created_at).toLocaleDateString()}
+                          Created: {new Date((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).created_at).toLocaleDateString()}
                         </div>
                       </div>
                     </div>
@@ -456,7 +454,7 @@ createIndex(100, 'cosine')} disabled={isLoading}>
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button on:click={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button onclick={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Inserting...' : 'Test Document Insert'}
 
             <p class="text-sm nes-text is-disabled">
@@ -475,19 +473,19 @@ createIndex(100, 'cosine')} disabled={isLoading}>
           </div>
           <div class="yorha-panel-content space-y-3">
             <div class="grid grid-cols-2 gap-2">
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(50, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (50 lists)
 
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(100, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (100 lists)
 
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(100, 'euclidean')} disabled={isLoading} size="sm">
                 Euclidean
 
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
                 Inner Product
 

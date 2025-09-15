@@ -73,7 +73,7 @@
           <button 
             type="button"
             class="toast-dismiss nes-btn is-error"
-            on:click={() => dismissToast(toast.id)}
+            onclick={() => dismissToast(toast.id)}
             aria-label="Dismiss notification"
           >
             <X size={12} />
@@ -107,7 +107,7 @@
               <button 
                 type="button"
                 class="nes-btn {action.style === 'primary' ? 'is-primary' : action.style === 'danger' ? 'is-error' : ''}"
-                on:click={() => executeAction(action)}
+                onclick={() => executeAction(action)}
               >
                 {#if action.label === 'Retry'}
                   <RotateCcw size={12} />
@@ -154,27 +154,27 @@
     font-family: "Press Start 2P", cursive;
   }
 
-  .toast-(item as { is?: any; removing?: any }).is-success {
+  .toast-(item as { is?: unknown; removing?: unknown }).is-success {
     border-color: #92cc41;
     background: #f8fff8;
   }
 
-  .toast-(item as { is?: any; removing?: any }).is-error {
+  .toast-(item as { is?: unknown; removing?: unknown }).is-error {
     border-color: #e76e55;
     background: #fff8f8;
   }
 
-  .toast-(item as { is?: any; removing?: any }).is-warning {
+  .toast-(item as { is?: unknown; removing?: unknown }).is-warning {
     border-color: #f7d51d;
     background: #fffef8;
   }
 
-  .toast-(item as { is?: any; removing?: any }).is-primary {
+  .toast-(item as { is?: unknown; removing?: unknown }).is-primary {
     border-color: #209cee;
     background: #f8fcff;
   }
 
-  .toast-(item as { is?: any; removing?: any }).is-dark {
+  .toast-(item as { is?: unknown; removing?: unknown }).is-dark {
     border-color: #212529;
     background: #f5f5f5;
   }
@@ -275,7 +275,7 @@
     }
   }
 
-  .toast-(item as { is?: any; removing?: any }).removing {
+  .toast-(item as { is?: unknown; removing?: unknown }).removing {
     animation: slideOutRight 0.3s ease-in forwards;
   }
 

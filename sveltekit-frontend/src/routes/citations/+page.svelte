@@ -108,10 +108,10 @@
     <div class="auth-controls">
       {#if currentUser}
         <span class="user-info">👤 {currentUser.name}</span>
-        <ButtonBits variant="ghost" size="sm" on:click={handleSignOut}>
+        <ButtonBits variant="ghost" size="sm" onclick={handleSignOut}>
 Sign Out</ButtonBits>
       {:else}
-        <ButtonBits variant="secondary" size="sm" on:click={() => showAuthDemo = true}>
+        <ButtonBits variant="secondary" size="sm" onclick={() => showAuthDemo = true}>
           🔐 Demo Sign In
         </ButtonBits>
       {/if}
@@ -166,8 +166,8 @@ Sign Out</ButtonBits>
           <CitationsSaveButton
             {citation}
             size="sm"
-            on:saved={(e) => console.log('Citation saved:', e.detail)}
-            on:error={(e) => console.error('Save error:', e.detail)}
+            onsaved={(e) => console.log('Citation saved:', e.detail)}
+            onerror={(e) => console.error('Save error:', e.detail)}
           />
           <ButtonBits variant="primary" size="sm">
             📖 Full Text
@@ -182,11 +182,11 @@ Sign Out</ButtonBits>
 
 <!-- Demo Authentication Modal -->
 {#if showAuthDemo}
-  <div class="auth-modal-overlay" on:click={() => showAuthDemo = false}>
-    <div class="auth-modal" on:click={(e) => e.stopPropagation()}>
+  <div class="auth-modal-overlay" onclick={() => showAuthDemo = false}>
+    <div class="auth-modal" onclick={(e) => e.stopPropagation()}>
       <div class="auth-header">
         <h3>🔐 Demo Authentication</h3>
-        <button class="close-btn" on:click={() => showAuthDemo = false}>✕
+        <button class="close-btn" onclick={() => showAuthDemo = false}>✕
 
       </div>
       <div class="auth-content">
@@ -195,7 +195,7 @@ Sign Out</ButtonBits>
           {#each authDemo.getDemoUsers() as user}
             <button
               class="demo-user-btn"
-              on:click={() => handleDemoSignIn(user.email)}
+              onclick={() => handleDemoSignIn(user.email)}
             >
               <div class="user-details">
                 <strong>{user.name}</strong>

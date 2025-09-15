@@ -18,14 +18,14 @@ https://svelte.dev/e/js_parse_error -->
   } from "lucide-svelte";
 
   interface Props {
-    items?: any[];
+    items?: unknown[];
     itemType?: "evidence" | "notes" | "canvas";
     loadMoreThreshold?: number;
     pageSize?: number;
     isLoading?: boolean;
     selectedIndex?: number;
     onloadMore?: () => void;
-    onitemClick?: (event: { item: any; type: string }) => void;
+    onitemClick?: (event: { item: unknown; type: string }) => void;
   }
 
   let {
@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
     onitemClick
   }: Props = $props();
   let scrollContainer: HTMLElement = $state(undefined as any);
-  let displayedItems: any[] = $state([]);
+  let displayedItems: unknown[] = $state([]);
   let currentPage = $state(0);
   let hasMore = $state(true);
 
@@ -77,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   }
 
-  function handleItemClick(item: any) {
+  function handleItemClick(item: unknown) {
   onitemClick?.({ item, type: itemType });
   }
 
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
       return Palette;
     } else {
       // Evidence
-      const fileType = (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).fileType || (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).type || "";
+      const fileType = (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).fileType || (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).type || "";
       if (fileType.startsWith("image/")) return Image;
       if (fileType.startsWith("video/")) return Video;
       if (fileType.includes("text") || fileType.includes("pdf"))
@@ -128,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
   aria-label="{itemType} list"
 >
   {#if displayedItems.length === 0 && !isLoading}
-    <div class="empty-state" transition:fade={{ duration: 200 }}>
+    <div class="empty-state" transitionfade={{ duration: 200 }}>
       <div class="empty-icon">
         <svelte:component this={getItemIcon({})} size={48} />
       </div>
@@ -136,12 +136,12 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {:else}
     <div class="items-list">
-      {#each displayedItems as item, index ((item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).id || index)}
+      {#each displayedItems as item, index ((item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).id || index)}
         <div
           class="list-item"
-          transition:slide={{ duration: 300, easing: quintOut }}
-          on:click={() => handleItemClick(item)}
-          on:keydown={(e) => e.key === "Enter" && handleItemClick(item)}
+          transitionslide={{ duration: 300, easing: quintOut }}
+          onclick={() => handleItemClick(item)}
+          onkeydown={(e) => e.key === "Enter" && handleItemClick(item)}
           role="option"
           tabindex={0}
           aria-label="{itemType} item"
@@ -155,37 +155,37 @@ https://svelte.dev/e/js_parse_error -->
             <div class="item-header">
               <h4 class="item-title">
                 {#if itemType === "evidence"}
-                  {(item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).fileName || (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).title || "Untitled Evidence"}
+                  {(item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).fileName || (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).title || "Untitled Evidence"}
                 {:else if itemType === "notes"}
-                  {(item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).title || "Untitled Note"}
+                  {(item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).title || "Untitled Note"}
                 {:else}
-                  {(item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).name || `Canvas ${formatDate((item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).lastModified)}`}
+                  {(item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).name || `Canvas ${formatDate((item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).lastModified)}`}
                 {/if}
               </h4>
               <span class="item-date">
                 {formatDate(
-                  (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).createdAt || (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).lastModified || (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).updatedAt
+                  (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).createdAt || (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).lastModified || (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).updatedAt
                 )}
               </span>
             </div>
 
             <p class="item-description">
               {#if itemType === "evidence"}
-                {truncateText((item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).description)}
+                {truncateText((item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).description)}
               {:else if itemType === "notes"}
-                {truncateText((item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).content)}
+                {truncateText((item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).content)}
               {:else}
-                Canvas state with {(item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).objectCount || 0} objects
+                Canvas state with {(item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).objectCount || 0} objects
               {/if}
             </p>
 
-            {#if (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).tags && (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).tags.length > 0}
+            {#if (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags && (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags.length > 0}
               <div class="item-tags">
-                {#each (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).tags.slice(0, 3) as tag}
+                {#each (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags.slice(0, 3) as tag}
                   <span class="tag">{tag}</span>
                 {/each}
-                {#if (item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).tags.length > 3}
-                  <span class="tag-more">+{(item as { fileType?: any; type?: any; id?: any; fileName?: any; title?: any; name?: any; lastModified?: any; createdAt?: any; updatedAt?: any; description?: any; content?: any; objectCount?: any; tags?: any }).tags.length - 3}</span>
+                {#if (item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags.length > 3}
+                  <span class="tag-more">+{(item as { fileType?: unknown; type?: unknown; id?: unknown; fileName?: unknown; title?: unknown; name?: unknown; lastModified?: unknown; createdAt?: unknown; updatedAt?: unknown; description?: unknown; content?: unknown; objectCount?: unknown; tags?: unknown }).tags.length - 3}</span>
                 {/if}
               </div>
             {/if}
@@ -196,14 +196,14 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 
   {#if isLoading}
-    <div class="loading-indicator" transition:fade={{ duration: 200 }}>
+    <div class="loading-indicator" transitionfade={{ duration: 200 }}>
       <div class="spinner"></div>
       <p>Loading more {itemType}...</p>
     </div>
   {/if}
 
   {#if !hasMore && displayedItems.length > 0}
-    <div class="end-indicator" transition:fade={{ duration: 200 }}>
+    <div class="end-indicator" transitionfade={{ duration: 200 }}>
       <p>No more {itemType} to load</p>
     </div>
   {/if}

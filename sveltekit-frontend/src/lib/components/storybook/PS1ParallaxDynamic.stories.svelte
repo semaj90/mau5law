@@ -292,8 +292,8 @@ https://svelte.dev/e/expected_token -->
 		</div>
 		
 		<div class="button-row">
-			<button class="ps1-button" on:click={resetParallax}>🔄 Reset</button>
-			<button class="ps1-button" on:click={toggleAutoRotate}>
+			<button class="ps1-button" onclick={resetParallax}>🔄 Reset</button>
+			<button class="ps1-button" onclick={toggleAutoRotate}>
 				{parallaxConfig.enableAutoRotate ? '⏸️' : '▶️'} Auto Rotate
 			</button>
 		</div>
@@ -543,8 +543,8 @@ https://svelte.dev/e/expected_token -->
 		color: #aaa;
 	}
 	
-	.status-(item as { status?: any }).status-ok { color: #00ff88; }
-	.status-(item as { status?: any }).status-warn { color: #ffaa00; }
+	.status-(item as { status?: unknown }).status-ok { color: #00ff88; }
+	.status-(item as { status?: unknown }).status-warn { color: #ffaa00; }
 	
 	.parallax-viewport {
 		position: relative;

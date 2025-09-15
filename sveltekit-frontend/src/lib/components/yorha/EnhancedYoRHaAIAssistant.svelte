@@ -86,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
         model: 'gemma3-legal',
         intent: getIntentForRole(userRole),
         endpoint: '/api/rag/stream',
-        contextIds: evidenceItems.map((item) => (item as { id?: any; name?: any; type?: any }).id),
+        contextIds: evidenceItems.map((item) => (item as { id?: unknown; name?: unknown; type?: unknown }).id),
         onToken: (token) => {
           responseContent += token;
           // Update the last assistant message in real-time
@@ -174,7 +174,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function removeEvidence(id: string) {
-    evidenceItems = evidenceItems.filter((item) => (item as { id?: any; name?: any; type?: any }).id !== id);
+    evidenceItems = evidenceItems.filter((item) => (item as { id?: unknown; name?: unknown; type?: unknown }).id !== id);
   }
 
   function exportEvidence() {
@@ -207,12 +207,12 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 
 {#if isOpen}
-  <div class="ai-assistant-overlay" transitifade={{ duration: 200 }} on:click={onClose}>
+  <div class="ai-assistant-overlay" transitifade={{ duration: 200 }} onclick={onClose}>
     <div
       class="ai-assistant-container"
       style="width: {containerWidth}px; height: {containerHeight}px;"
       /* transition removed */}
-      on:click={(e) => e.stopPropagation()}>
+      onclick={(e) => e.stopPropagation()}>
       <!-- Header -->
       <header class="assistant-header">
         <div class="header-left">
@@ -228,24 +228,24 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="mode-btn"
               class:active={currentMode === 'chat'}
-              on:click={() => switchMode('chat')}>
+              onclick={() => switchMode('chat')}>
               💬 Chat
             </button>
             <button
               class="mode-btn"
               class:active={currentMode === 'evidence'}
-              on:click={() => switchMode('evidence')}>
+              onclick={() => switchMode('evidence')}>
               📁 Evidence
             </button>
             <button
               class="mode-btn"
               class:active={currentMode === 'analysis'}
-              on:click={() => switchMode('analysis')}>
+              onclick={() => switchMode('analysis')}>
               📊 Analysis
             </button>
           </div>
 
-          <button class="close-btn" on:click={onClose}>✕</button>
+          <button class="close-btn" onclick={onClose}>✕</button>
         </div>
       </header>
 
@@ -265,7 +265,7 @@ https://svelte.dev/e/js_parse_error -->
             disabled={isProcessing} />
           <button
             class="search-btn"
-            on:click={handleSearch}
+            onclick={handleSearch}
             disabled={isProcessing || !searchQuery.trim()}>
             {isProcessing ? '⚡' : '🔍'}
           </button>
@@ -273,7 +273,7 @@ https://svelte.dev/e/js_parse_error -->
 
         <!-- Context Toggle -->
         <div class="context-controls">
-          <button class="context-toggle" on:click={() => (contextExpanded = !contextExpanded)}>
+          <button class="context-toggle" onclick={() => (contextExpanded = !contextExpanded)}>
             📋 Context ({evidenceItems.length})
           </button>
 
@@ -290,13 +290,13 @@ https://svelte.dev/e/js_parse_error -->
         <div class="context-panel" /* transition removed */}>
           <div class="context-header">
             <h3>Active Context</h3>
-            <button on:click={() => (contextExpanded = false)}>✕</button>
+            <button onclick={() => (contextExpanded = false)}>✕</button>
           </div>
           <div class="context-items">
             {#each evidenceItems.slice(0, 3) as item}
               <div class="context-item">
-                <span class="context-name">{(item as { id?: any; name?: any; type?: any }).name}</span>
-                <span class="context-type">{(item as { id?: any; name?: any; type?: any }).type}</span>
+                <span class="context-name">{(item as { id?: unknown; name?: unknown; type?: unknown }).name}</span>
+                <span class="context-type">{(item as { id?: unknown; name?: unknown; type?: unknown }).type}</span>
               </div>
             {/each}
             {#if evidenceItems.length > 3}
@@ -347,15 +347,15 @@ https://svelte.dev/e/js_parse_error -->
                 <input
                   type="file"
                   id="evidence-upload"
-                  style="display: none;" on:change={(e) => {
+                  style="display: none;" onchange={(e) => {
                     const file = e.target?.files?.[0];
                     if (file) addEvidence(file);
                   }} />
-                <button on:click={() => document.getElementById('evidence-upload')?.click()}>
+                <button onclick={() => document.getElementById('evidence-upload')?.click()}>
                   📁 Upload
                 </button>
-                <button on:click={() => addEvidence()}> ➕ Add Item </button>
-                <button on:click={exportEvidence}> 💾 Export </button>
+                <button onclick={() => addEvidence()}> ➕ Add Item </button>
+                <button onclick={exportEvidence}> 💾 Export </button>
               </div>
             </div>
 
@@ -364,7 +364,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="evidence-item" transitiscale={{ duration: 200, delay: index * 50 }}>
                   <div class="evidence-header">
                     <h3>{evidence.name}</h3>
-                    <button on:click={() => removeEvidence(evidence.id)}>🗑️</button>
+                    <button onclick={() => removeEvidence(evidence.id)}>🗑️</button>
                   </div>
                   <div class="evidence-content">
                     <div class="evidence-type">{evidence.type}</div>
@@ -382,7 +382,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="evidence-empty">
                   <div class="empty-icon">📁</div>
                   <p>No evidence items yet</p>
-                  <button on:click={() => addEvidence()}>Add your first evidence item</button>
+                  <button onclick={() => addEvidence()}>Add your first evidence item</button>
                 </div>
               {/if}
             </div>
@@ -428,7 +428,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="analysis-content">
                   {#each evidenceItems.slice(0, 3) as item}
                     <div class="evidence-analysis">
-                      <strong>{(item as { id?: any; name?: any; type?: any }).name}</strong>: Relevance score 94%, supports primary argument
+                      <strong>{(item as { id?: unknown; name?: unknown; type?: unknown }).name}</strong>: Relevance score 94%, supports primary argument
                     </div>
                   {/each}
                 </div>
@@ -448,8 +448,8 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <div class="footer-controls">
-          <button on:click={() => ragStore.clear()}>Clear Session</button>
-          <button on:click={exportEvidence}>Export All</button>
+          <button onclick={() => ragStore.clear()}>Clear Session</button>
+          <button onclick={exportEvidence}>Export All</button>
         </div>
       </footer>
     </div>

@@ -56,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <button
-          on:click={() => showAdvancedSettings = !showAdvancedSettings}
+          onclick={() => showAdvancedSettings = !showAdvancedSettings}
           class="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
         >
           ⚙️ {showAdvancedSettings ? 'Hide' : 'Show'} Advanced Settings

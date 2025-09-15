@@ -1644,7 +1644,7 @@ export class WebGPUSOMCache {
     queryEmbedding: Float32Array, 
     documentEmbeddings: Float32Array[], 
     metadata: any[]
-  ): Promise<Array<any> {
+  ): Promise<Array<any>> {
     try {
       if (!this.device || documentEmbeddings.length === 0) {
         return this.searchLegalDocumentsCPU(queryEmbedding, documentEmbeddings, metadata);
@@ -1900,7 +1900,7 @@ export class WebGPUSOMCache {
     query: Float32Array, 
     docs: Float32Array[], 
     metadata: any[]
-  ): Array< {
+  ): Array<{ similarity: number; index: number; metadata: any }> {
     return docs.map((doc, index) => {
       let dotProduct = 0, queryNorm = 0, docNorm = 0;
       

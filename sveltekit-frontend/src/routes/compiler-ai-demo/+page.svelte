@@ -7,9 +7,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -75,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
         clusters = newClusters;
       });
 
-      feedbackLoop.performance.subscribe((newPerformance: any) => {
+      feedbackLoop.performance.subscribe((newPerformance: unknown) => {
         performance = newPerformance;
       });
 
@@ -280,18 +278,18 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Controls -->
     <div class="flex gap-4 mb-8 justify-center">
       <Button
-        on:click={startMonitoring}
+        onclick={startMonitoring}
         disabled={!systemInitialized || isMonitoring}
         class="bg-green-600 hover:bg-green-700 bits-btn bits-btn">
 Start Monitoring
 </Button>
 
-  <Button on:click={stopMonitoring} disabled={!isMonitoring} class="bg-red-600 hover:bg-red-700 bits-btn bits-btn">
+  <Button onclick={stopMonitoring} disabled={!isMonitoring} class="bg-red-600 hover:bg-red-700 bits-btn bits-btn">
 Stop Monitoring
 </Button>
 
       <Button
-        on:click={addTestError}
+        onclick={addTestError}
         disabled={!systemInitialized}
         class="bg-orange-600 hover:bg-orange-700 bits-btn bits-btn">
 Add Test Error
@@ -315,7 +313,7 @@ Add Test Error
             <button
               type="button"
               class="w-full p-3 rounded-lg bg-slate-700/50 border border-slate-600 cursor-pointer hover:bg-slate-700 transition-colors text-left"
-              on:click={() => (selectedEvent = event)}
+              onclick={() => (selectedEvent = event)}
               keydown={(e) => e.key === 'Enter' && (selectedEvent = event)}
               class:ring-2={selectedEvent?.logs[0]?.id === event.logs[0]?.id}
               class:ring-blue-500={selectedEvent?.logs[0]?.id === event.logs[0]?.id}
@@ -366,7 +364,7 @@ Add Test Error
             <div
               class="p-3 rounded-lg bg-slate-700/50 border border-slate-600 cursor-pointer hover:bg-slate-700 transition-colors"
               role="button" tabindex="0"
-                on:click={() => (selectedPatch = patch)}
+                onclick={() => (selectedPatch = patch)}
               class:ring-2={selectedPatch?.id === patch.id}
               class:ring-green-500={selectedPatch?.id === patch.id}>
               <div class="flex items-start gap-3">

@@ -50,9 +50,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // TODO: Replace with melt-ui equivalent when available
   // import { Tabs } from 'bits-ui';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -304,20 +302,20 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
 
         const assistantMessage: ChatMessage = {
           id: `msg_${Date.now()}_ai`,
           type: 'assistant',
-          content: (data as { response?: any; suggestions?: any; metadata?: any }).response,
+          content: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).response,
           timestamp: new Date(),
-          suggestions: (data as { response?: any; suggestions?: any; metadata?: any }).suggestions || [],
-          metadata: (data as { response?: any; suggestions?: any; metadata?: any }).metadata,
+          suggestions: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).suggestions || [],
+          metadata: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).metadata,
         };
 
         chatMessages = [...chatMessages, assistantMessage];
-        aiSuggestions = (data as { response?: any; suggestions?: any; metadata?: any }).suggestions || [];
+        aiSuggestions = (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).suggestions || [];
 
         aiService.send('RESPONSE_COMPLETE');
       } else {
@@ -410,8 +408,8 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch(`/api/context/${contextId}`);
-      if ((response as { ok?: any; json?: any }).ok) {
-        const contextData = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const contextData = await (response as { ok?: unknown; json?: unknown }).json();
 
         // Update relevant panels with new context
         // This would load specific reports, summaries, etc.
@@ -477,7 +475,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="flex items-center space-x-2">
-  <Button class="bits-btn" variant="outline" size="sm" on:click={exportChatHistory}>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={exportChatHistory}>
 <Download class="h-4 w-4 mr-1" />
           Export
 </Button>
@@ -500,11 +498,11 @@ https://svelte.dev/e/js_parse_error -->
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Reports</h3>
             <div class="flex items-center space-x-1">
-              <Button class="bits-btn" size="sm" variant="ghost" on:click={() =>
+              <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
 adjustPanelWidth('reports', -5)}>
                 <Minimize class="h-3 w-3" />
 </Button>
-              <Button class="bits-btn" size="sm" variant="ghost" on:click={() =>
+              <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
 togglePanel('reports')}>
                 <Minimize class="h-3 w-3" />
 </Button>
@@ -550,7 +548,7 @@ togglePanel('reports')}>
         <div class="h-full flex flex-col">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Summaries</h3>
-            <Button class="bits-btn" size="sm" variant="ghost" on:click={() =>
+            <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
 togglePanel('summaries')}>
               <Minimize class="h-3 w-3" />
 </Button>
@@ -579,7 +577,7 @@ togglePanel('summaries')}>
         <div class="h-full flex flex-col">
           <div class="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 class="font-semibold text-slate-900">Citations</h3>
-            <Button class="bits-btn" size="sm" variant="ghost" on:click={() =>
+            <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
 togglePanel('citations')}>
               <Minimize class="h-3 w-3" />
 </Button>
@@ -625,7 +623,7 @@ togglePanel('citations')}>
               </span>
             </div>
           </div>
-          <Button class="bits-btn" size="sm" variant="ghost" on:click={() =>
+          <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
 togglePanel('chat')}>
             <Expand class="h-3 w-3" />
 </Button>
@@ -639,7 +637,7 @@ togglePanel('chat')}>
               {#each contextualSuggestions as suggestion}
                 <button
                   class="text-xs px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded transition-colors"
-                  on:click={() => useSuggestion(suggestion)}>
+                  onclick={() => useSuggestion(suggestion)}>
                   {suggestion}
 </Button>
               {/each}
@@ -676,7 +674,7 @@ togglePanel('chat')}>
                       {#each message.suggestions as suggestion}
                         <button
                           class="block w-full text-left text-xs p-2 bg-white/20 hover:bg-white/30 rounded transition-colors"
-                          on:click={() => useSuggestion(suggestion)}>
+                          onclick={() => useSuggestion(suggestion)}>
                           {suggestion}
                         </button>
                       {/each}
@@ -716,7 +714,7 @@ togglePanel('chat')}>
               enableVectorSearch={true}
               aiSuggestions={true}
               select={(result) => {
-                currentMessage = `Tell me about: ${(result as { title?: any }).title}`;
+                currentMessage = `Tell me about: ${(result as { title?: unknown }).title}`;
                 sendMessage();
               }}
             />
@@ -736,7 +734,7 @@ togglePanel('chat')}>
               <Button
                 variant="outline"
                 size="sm"
-                on:click={startVoiceInput}
+                onclick={startVoiceInput}
                 disabled={isListening || isProcessing}
                 class={isListening ? 'bg-red-100 border-red-300' : ''}>
 {#if isListening}
@@ -747,7 +745,7 @@ togglePanel('chat')}>
 </Button>
             {/if}
 
-            <Button class="bits-btn" on:click={sendMessage} disabled={!currentMessage.trim() || isProcessing}>
+            <Button class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing}>
 <Send class="h-4 w-4" />
 </Button>
           </div>

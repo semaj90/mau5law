@@ -84,7 +84,7 @@
       className
     )}
     {disabled}
-    on:click={onclick}
+    onclick={onclick}
   >
     {#if children}
       {@render children()}

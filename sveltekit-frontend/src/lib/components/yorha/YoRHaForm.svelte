@@ -9,7 +9,7 @@ https://svelte.dev/e/js_parse_error -->
     id: string
     label: string
     type: 'text' | 'email' | 'password' | 'textarea' | 'select' | 'checkbox' | 'radio' | 'file' | 'number' | 'date';
-    value?: any;
+    value?: unknown;
     placeholder?: string;
     required?: boolean;
     disabled?: boolean;
@@ -54,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
     showCancel = true,
     onsubmit,
     oncancel
-  : any } = $props();
+  : unknown } = $props();
 
   let formData = $state<Record<string, any>('')>({});
   let errors = $state<Record<string, string>('')>({});
@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
     formData = initialData;
   });
 
-  function validateField(field: FormField, value: any): string {
+  function validateField(field: FormField, value: unknown): string {
     if (field.required && (!value || (typeof value === 'string' && value.trim() === ''))) {
       return `${field.label} is required`;
     }
@@ -96,7 +96,7 @@ https://svelte.dev/e/js_parse_error -->
     return '';
   }
 
-  function handleFieldChange(fieldId: string, value: any) {
+  function handleFieldChange(fieldId: string, value: unknown) {
     formData[fieldId] = value;
     touched[fieldId] = true;
 
@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<div class="yorha-form" on:keydown={handleKeyDown}>
+<div class="yorha-form" onkeydown={handleKeyDown}>
   <!-- Form Header -->
   <div class="form-header">
     <div class="header-content">
@@ -188,7 +188,7 @@ https://svelte.dev/e/js_parse_error -->
               placeholder={field.placeholder || ''}
               disabled={field.disabled || loading}
               class="field-input"
-              on:input={(e) => handleFieldChange(field.id, (e.target as HTMLInputElement).value)}
+              oninput={(e) => handleFieldChange(field.id, (e.target as HTMLInputElement).value)}
             />
 
           {:else if field.type === 'textarea'}
@@ -199,7 +199,7 @@ https://svelte.dev/e/js_parse_error -->
               disabled={field.disabled || loading}
               class="field-textarea"
               rows="4"
-              on:input={(e) => handleFieldChange(field.id, (e.target as HTMLInputElement).value)}
+              oninput={(e) => handleFieldChange(field.id, (e.target as HTMLInputElement).value)}
             ></textarea>
 
           {:else if field.type === 'select'}
@@ -208,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
               bind:value={formData[field.id]}
               disabled={field.disabled || loading}
               class="field-select"
-              on:change={(e) => handleFieldChange(field.id, (e.target as HTMLSelectElement).value)}
+              onchange={(e) => handleFieldChange(field.id, (e.target as HTMLSelectElement).value)}
             >
               <option value="">{field.placeholder || 'Select an option'}</option>
               {#each field.options || [] as option}
@@ -224,7 +224,7 @@ https://svelte.dev/e/js_parse_error -->
                 bind:checked={formData[field.id]}
                 disabled={field.disabled || loading}
                 class="field-checkbox"
-                on:change={(e) => handleFieldChange(field.id, (e.target as HTMLInputElement).checked)}
+                onchange={(e) => handleFieldChange(field.id, (e.target as HTMLInputElement).checked)}
               />
               <div class="checkbox-indicator"></div>
               <span class="checkbox-text">{field.placeholder || field.label}</span>
@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
                     bind:group={formData[field.id]}
                     disabled={field.disabled || loading}
                     class="field-radio"
-                    on:change={(e) => handleFieldChange(field.id, (e.target as HTMLSelectElement).value)}
+                    onchange={(e) => handleFieldChange(field.id, (e.target as HTMLSelectElement).value)}
                   />
                   <div class="radio-indicator"></div>
                   <span class="radio-text">{option.label}</span>
@@ -255,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
               type="file"
               disabled={field.disabled || loading}
               class="field-file"
-              on:change={(e) => handleFieldChange(field.id, (e.target as HTMLInputElement).files?.[0])}
+              onchange={(e) => handleFieldChange(field.id, (e.target as HTMLInputElement).files?.[0])}
             />
           {/if}
 
@@ -282,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
           type="button"
           class="form-button cancel"
           disabled={loading}
-          on:click={handleCancel}
+          onclick={handleCancel}
         >
           <span class="button-icon">✕</span>
           {cancelLabel}
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
         type="submit"
         class="form-button submit"
         disabled={loading || Object.keys(errors).length > 0}
-        on:click={handleSubmit}
+        onclick={handleSubmit}
       >
         {#if loading}
           <span class="button-spinner">◌</span>

@@ -36,13 +36,13 @@ https://svelte.dev/e/js_parse_error -->
 
   // Svelte 5 Props Interface
   interface Props {
-    data?: any; // SuperValidated<CaseForm>
+    data?: unknown; // SuperValidated<CaseForm>
     submitAction?: string;
     editMode?: boolean;
     enableAutoSave?: boolean;
     enableRealTimeValidation?: boolean;
     onsubmit?: (event: { data: CaseForm }) => void;
-    onsuccess?: (event: { caseItem: any }) => void;
+    onsuccess?: (event: { caseItem: unknown }) => void;
     onerror?: (event: { message: string }) => void;
     ondraft?: (event: { data: CaseForm }) => void;
   }
@@ -155,18 +155,18 @@ https://svelte.dev/e/js_parse_error -->
       }));
 
       return async ({ result, update }) => {
-        if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
+        if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'success') {
           // Handle success
-          if (onsuccess) onsuccess({ caseItem: (result as { type?: any; data?: any; error?: any }).data });
+          if (onsuccess) onsuccess({ caseItem: (result as { type?: unknown; data?: unknown; error?: unknown }).data });
 
           // Reset form if not in edit mode
           if (!editMode) {
             uploadedFiles = [];
             lastSaved = null;
           }
-        } else if ((result as { type?: any; data?: any; error?: any }).type === 'error') {
+        } else if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'error') {
           // Handle error
-          const errorMsg = (result as { type?: any; data?: any; error?: any }).error?.message || 'Submission failed';
+          const errorMsg = (result as { type?: unknown; data?: unknown; error?: unknown }).error?.message || 'Submission failed';
           if (onerror) onerror({ message: errorMsg });
           componentError = new Error(errorMsg);
         }
@@ -337,7 +337,7 @@ https://svelte.dev/e/js_parse_error -->
         <Button
           type="button"
           variant="ghost"
-          on:click={() => showAdvanced = !showAdvanced}
+          onclick={() => showAdvanced = !showAdvanced}
           class="mb-4"
         >
           {showAdvanced ? 'Hide' : 'Show'} Advanced Options
@@ -445,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
                     type="file"
                     multiple
                     accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
-                    on:change={handleFileUpload}
+                    onchange={handleFileUpload}
                     class="sr-only"
                   />
                 </Label>
@@ -475,7 +475,7 @@ https://svelte.dev/e/js_parse_error -->
                       type="button"
                       variant="ghost"
                       size="sm"
-                      on:click={() => removeFile(index)}
+                      onclick={() => removeFile(index)}
                     >
                       Remove
                     </Button>
@@ -491,7 +491,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex items-center justify-between pt-6 border-t">
         <div class="flex items-center space-x-4">
           {#if enableAutoSave && !editMode}
-            <Button type="button" variant="outline" on:click={() => {
+            <Button type="button" variant="outline" onclick={() => {
               if (ondraft) ondraft({ data: $form });
             }}>
               Save as Draft
@@ -529,7 +529,7 @@ https://svelte.dev/e/js_parse_error -->
     <p class="text-red-700 mb-4">The case form encountered an error:</p>
     <p class="text-red-600 font-mono text-sm mb-4 bg-red-100 p-2 rounded">{componentError.message}</p>
     <Button
-      on:click={() => { componentError = null; }}
+      onclick={() => { componentError = null; }}
       variant="outline"
       class="border-red-300 text-red-700 hover:bg-red-50"
     >

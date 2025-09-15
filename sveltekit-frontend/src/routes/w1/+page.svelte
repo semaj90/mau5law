@@ -200,35 +200,35 @@ https://svelte.dev/e/expected_token -->
 			<button
 				class="nav-item"
 				class:active={activeView === 'dashboard'}
-				on:click={() => activeView = 'dashboard'}
+				onclick={() => activeView = 'dashboard'}
 			>
 				📊 Dashboard
 			</button>
 			<button
 				class="nav-item"
 				class:active={activeView === 'cases'}
-				on:click={() => activeView = 'cases'}
+				onclick={() => activeView = 'cases'}
 			>
 				📂 Cases ({mockUser.cases})
 			</button>
 			<button
 				class="nav-item"
 				class:active={activeView === 'evidence'}
-				on:click={() => activeView = 'evidence'}
+				onclick={() => activeView = 'evidence'}
 			>
 				🔍 Evidence
 			</button>
 			<button
 				class="nav-item"
 				class:active={activeView === 'detective'}
-				on:click={() => activeView = 'detective'}
+				onclick={() => activeView = 'detective'}
 			>
 				🧠 Detective Mode
 			</button>
 			<button
 				class="nav-item"
 				class:active={activeView === 'timeline'}
-				on:click={() => activeView = 'timeline'}
+				onclick={() => activeView = 'timeline'}
 			>
 				⏱️ Timeline
 			</button>
@@ -248,7 +248,7 @@ https://svelte.dev/e/expected_token -->
 	<!-- Main Content -->
 	<main class="platform-content">
 		{#if activeView === 'dashboard'}
-			<div class="dashboard" transition:fade={{ duration: 300 }}>
+			<div class="dashboard" transitionfade={{ duration: 300 }}>
 				<div class="stats-grid">
 					<div class="stat-nier-bits-card">
 						<div class="stat-icon">📂</div>
@@ -311,7 +311,7 @@ https://svelte.dev/e/expected_token -->
 			</div>
 
 		{:else if activeView === 'cases'}
-			<div class="cases-view" transition:fade={{ duration: 300 }}>
+			<div class="cases-view" transitionfade={{ duration: 300 }}>
 				<h2>📂 Case Management</h2>
 				<div class="cases-grid">
 					{#each cases as cse}
@@ -347,7 +347,7 @@ https://svelte.dev/e/expected_token -->
 			</div>
 
 		{:else if activeView === 'detective'}
-			<div class="detective-mode" transition:fade={{ duration: 300 }}>
+			<div class="detective-mode" transitionfade={{ duration: 300 }}>
 				<h2>🧠 Detective Mode - "Who, What, Why, How"</h2>
 				<div class="workflow-progress">
 					{#each prosecutionWorkflow as step, index}
@@ -369,7 +369,7 @@ https://svelte.dev/e/expected_token -->
 						></textarea>
 						<button
 							class="nes-btn is-primary"
-							on:click={() => {
+							onclick={() => {
 								workflowStep++;
 								if (workflowStep < prosecutionWorkflow.length) {
 									startTypewriter(`Great! Now: ${prosecutionWorkflow[workflowStep].question}`);
@@ -391,7 +391,7 @@ https://svelte.dev/e/expected_token -->
 			</div>
 
 		{:else}
-			<div class="feature-view" transition:fade={{ duration: 300 }}>
+			<div class="feature-view" transitionfade={{ duration: 300 }}>
 				<h2>🚧 {activeView.charAt(0).toUpperCase() + activeView.slice(1)} Feature</h2>
 				<p>This feature is fully implemented in the platform. Click around to explore!</p>
 				<div class="feature-grid">
@@ -444,7 +444,7 @@ https://svelte.dev/e/expected_token -->
 			<div class="ai-actions">
 				<button
 					class="nes-btn is-primary"
-					on:click={() => {
+					onclick={() => {
 						showQuickInput = true;
 						startTypewriter("What's wrong? Describe the situation and I'll help you build the caseItem:");
 					}}
@@ -453,7 +453,7 @@ https://svelte.dev/e/expected_token -->
 				</button>
 				<button
 					class="nes-btn"
-					on:click={() => startTypewriter("Ready to analyze evidence, detect patterns, and suggest prosecution strategies. What would you like me to focus on?")}
+					onclick={() => startTypewriter("Ready to analyze evidence, detect patterns, and suggest prosecution strategies. What would you like me to focus on?")}
 				>
 					Analyze Evidence
 				</button>
@@ -461,7 +461,7 @@ https://svelte.dev/e/expected_token -->
 		{/if}
 
 		{#if showQuickInput}
-			<div class="quick-input-panel" transition:fly={{ y: 20, duration: 300 }}>
+			<div class="quick-input-panel" transitionfly={{ y: 20, duration: 300 }}>
 				<textarea
 					bind:value={quickInput}
 					placeholder="Describe what happened... (e.g., 'Urgent fraud case with missing financial records and uncooperative witness')"
@@ -471,14 +471,14 @@ https://svelte.dev/e/expected_token -->
 				<div class="input-actions">
 					<button
 						class="nes-btn is-primary"
-						on:click={processQuickInput}
+						onclick={processQuickInput}
 						disabled={!quickInput.trim()}
 					>
 						Auto-Fill Case
 					</button>
 					<button
 						class="nes-btn"
-						on:click={() => {
+						onclick={() => {
 							showQuickInput = false;
 							quickInput = '';
 						}}
@@ -541,7 +541,7 @@ https://svelte.dev/e/expected_token -->
 		font-size: 0.875rem;
 	}
 
-	.nav-item:hover, .nav-(item as { active?: any }).active {
+	.nav-item:hover, .nav-(item as { active?: unknown }).active {
 		background: rgba(16, 185, 129, 0.1);
 		border-color: #10b981;
 		color: #10b981;

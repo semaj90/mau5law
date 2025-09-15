@@ -312,7 +312,7 @@
             </Tooltip.Root>
           {/if}
           
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={clearChat}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat}>
 Clear
 
         </div>
@@ -388,11 +388,11 @@ Clear
           bind:value={currentMessage}
           placeholder="Ask about legal matters..."
           disabled={isTyping || !isConnected}
-          on:keydown={handleKeydown}
+          onkeydown={handleKeydown}
           class="flex-1 min-h-[40px] max-h-[120px] resize-none"
         />
         <Button 
-          on:click={sendMessage}
+          onclick={sendMessage}
           disabled={!currentMessage.trim() || isTyping || !isConnected}
           class="self-end bits-btn bits-btn"
         >
@@ -443,7 +443,7 @@ Clear
         </div>
         
         <Dialog.Footer>
-          <Button class="bits-btn" variant="outline" on:click={() =>
+          <Button class="bits-btn" variant="outline" onclick={() =>
 ($open = false)}>
             Close
 

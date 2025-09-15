@@ -47,9 +47,9 @@
     enableDepthShadows?: boolean;
 
     // Content slots
-    header?: any;
-    footer?: any;
-    children?: any;
+    header?: unknown;
+    footer?: unknown;
+    children?: unknown;
     class?: string;
   }
 
@@ -367,13 +367,13 @@
   bind:this={cardElement}
   role={clickable ? 'button' : 'region'}
   tabindex={clickable ? 0 : -1}
-  on:click={handleClick}
-  on:mouseenter={handleHover}
-  on:mouseleave={handleUnhover}
+  onclick={handleClick}
+  onmouseenter={handleHover}
+  onmouseleave={handleUnhover}
   onmousemove={handleMouseMove}
-  on:focus={handleFocus}
-  on:blur={handleBlur}
-  on:keydown={handleKeyDown}
+  onfocus={handleFocus}
+  onblur={handleBlur}
+  onkeydown={handleKeyDown}
   class="n64-nier-bits-card {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
   class:clickable
   class:hoverable

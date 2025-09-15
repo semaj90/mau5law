@@ -285,7 +285,7 @@ https://svelte.dev/e/attribute_invalid_name -->
             <button
               )}
               class="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
-              on:click={() => handleSelection(suggestion)}
+              onclick={() => handleSelection(suggestion)}
             >
               <div class="flex items-center gap-3">
                 <!-- Icon -->
@@ -359,7 +359,7 @@ https://svelte.dev/e/attribute_invalid_name -->
           {#each taskSuggestions as task, index}
             <button
               class="w-full px-3 py-2 text-left hover:bg-blue-50 dark:hover:bg-blue-900/20 focus:bg-blue-50 dark:focus:bg-blue-900/20 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
-              on:click={() => handleTaskSelection(task)}
+              onclick={() => handleTaskSelection(task)}
             >
               <div class="flex items-start justify-between">
                 <div class="flex-1">

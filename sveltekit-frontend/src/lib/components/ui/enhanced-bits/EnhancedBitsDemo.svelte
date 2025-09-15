@@ -124,7 +124,7 @@
       {#each demoSections as section (section.id)}
         <button
           class={tabClasses(section.id)}
-          on:click={() => currentTab = section.id}
+          onclick={() => currentTab = section.id}
         >
           <div class="flex items-center gap-2">
             <section.icon class="w-4 h-4" />
@@ -297,17 +297,17 @@ Low Priority
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Button class="bits-btn" variant="yorha" legal on:click={() =>
+          <Button class="bits-btn" variant="yorha" legal onclick={() =>
 dialogOpen = true}>
             Case Management
 </Button>
 
-          <Button class="bits-btn" variant="primary" legal on:click={() =>
+          <Button class="bits-btn" variant="primary" legal onclick={() =>
 evidenceDialogOpen = true}>
             Evidence Upload
 </Button>
 
-          <Button class="bits-btn" variant="outline" legal on:click={runAIAnalysis} loading={aiAnalysisLoading}>
+          <Button class="bits-btn" variant="outline" legal onclick={runAIAnalysis} loading={aiAnalysisLoading}>
 {#if aiAnalysisLoading}
               Running AI Analysis...
             {:else}
@@ -372,7 +372,7 @@ evidenceDialogOpen = true}>
               </div>
 
               <div class="bits-dialog-footer">
-                <Button class="bits-btn" variant="outline" on:click={() =>
+                <Button class="bits-btn" variant="outline" onclick={() =>
 dialogOpen = false}>
                   Cancel
 </Button>
@@ -430,11 +430,11 @@ Create Case
               </div>
 
               <div class="bits-dialog-footer">
-                <Button class="bits-btn" variant="outline" on:click={() =>
+                <Button class="bits-btn" variant="outline" onclick={() =>
 evidenceDialogOpen = false}>
                   Cancel
 </Button>
-                <Button class="bits-btn" variant="primary" legal on:click={uploadEvidence} disabled={evidenceUploadProgress >
+                <Button class="bits-btn" variant="primary" legal onclick={uploadEvidence} disabled={evidenceUploadProgress >
 0}>
                   Upload Evidence
 </Button>
@@ -453,42 +453,42 @@ evidenceDialogOpen = false}>
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {#each mockEvidenceItems as item ((item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).id)}
+          {#each mockEvidenceItems as item ((item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).id)}
             <div
               variant="evidence"
               evidenceCard
               legal
               clickable
               hoverable
-              priority={(item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).priority}
-              confidence={(item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).confidence}
-              selected={selectedEvidenceCard === (item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).id}
-              on:click={() = class="nes-container"> selectEvidenceCard((item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).id)}
+              priority={(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).priority}
+              confidence={(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).confidence}
+              selected={selectedEvidenceCard === (item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).id}
+              onclick={() = class="nes-container"> selectEvidenceCard((item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).id)}
             >
               <div class="space-y-3">
                 <div class="flex items-start justify-between">
                   <h3 class="font-semibold text-nier-text-primary text-sm">
-                    {(item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).title}
+                    {(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).title}
                   </h3>
-                  <div class="vector-confidence-badge vector-confidence-{(item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).confidence}">
-                    {(item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).confidence.toUpperCase()}
+                  <div class="vector-confidence-badge vector-confidence-{(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).confidence}">
+                    {(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).confidence.toUpperCase()}
                   </div>
                 </div>
 
                 <p class="text-xs text-nier-text-secondary">
-                  {(item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).description}
+                  {(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).description}
                 </p>
 
                 <div class="flex items-center justify-between text-xs">
-                  <span class="yorha-priority-{(item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).priority} px-2 py-1 rounded text-white">
-                    {(item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).priority.toUpperCase()}
+                  <span class="yorha-priority-{(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).priority} px-2 py-1 rounded text-white">
+                    {(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).priority.toUpperCase()}
                   </span>
                   <span class="text-nier-text-muted">
-                    {(item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).type.toUpperCase()}
+                    {(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).type.toUpperCase()}
                   </span>
                 </div>
 
-                {#if selectedEvidenceCard === (item as { id?: any; priority?: any; confidence?: any; title?: any; description?: any; type?: any }).id}
+                {#if selectedEvidenceCard === (item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).id}
                   <div class="border-t border-nier-border-secondary pt-3 mt-3">
                     <div class="flex gap-2">
                       <Button size="sm" variant="outline" class="flex-1 bits-btn bits-btn">

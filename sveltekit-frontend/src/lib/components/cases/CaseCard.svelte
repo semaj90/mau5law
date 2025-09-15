@@ -17,7 +17,7 @@
     Clock,
     CheckCircle
   } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import * as Card from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
 
@@ -294,7 +294,7 @@
     <!-- Action Buttons -->
     <div class="flex gap-2 mt-4">
       <Button
-        on:click={() => onView(caseData.id)}
+        onclick={() => onView(caseData.id)}
         class="bits-btn flex-1"
         size="sm"
       >
@@ -302,7 +302,7 @@
         View Details
       </Button>
       <Button
-        on:click={() => onEdit(caseData.id)}
+        onclick={() => onEdit(caseData.id)}
         variant="outline"
         class="bits-btn"
         size="sm"
@@ -323,7 +323,7 @@
     transitionscale={{ duration: 200, start: 0.95 }}
   >
     <Button
-      on:click={() => onView(caseData.id)}
+      onclick={() => onView(caseData.id)}
       variant="ghost"
       class="bits-btn w-full justify-start"
       size="sm"
@@ -333,7 +333,7 @@
     </Button>
 
     <Button
-      on:click={() => onEdit(caseData.id)}
+      onclick={() => onEdit(caseData.id)}
       variant="ghost"
       class="bits-btn w-full justify-start"
       size="sm"
@@ -345,7 +345,7 @@
     <div class="h-px bg-nier-light-gray dark:bg-nier-gray/30 my-2"></div>
 
     <Button
-      on:click={() => onArchive(caseData.id)}
+      onclick={() => onArchive(caseData.id)}
       variant="ghost"
       class="bits-btn w-full justify-start text-nier-amber hover:bg-nier-amber/10"
       size="sm"
@@ -355,7 +355,7 @@
     </Button>
 
     <Button
-      on:click={() => onDelete(caseData.id)}
+      onclick={() => onDelete(caseData.id)}
       variant="ghost"
       class="bits-btn w-full justify-start text-harvard-crimson hover:bg-harvard-crimson/10"
       size="sm"

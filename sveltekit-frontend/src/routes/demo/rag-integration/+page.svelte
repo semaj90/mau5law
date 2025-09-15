@@ -43,10 +43,10 @@
 
   // Derived states
   let canQuery = $derived(!isQuerying && currentQuery.trim().length > 0);
-  let totalDocuments = $derived((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats?.totalDocuments || 0);
+  let totalDocuments = $derived((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats?.totalDocuments || 0);
   let knowledgeBaseHealth = $derived(
-    ((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).knowledgeBase?.qualityScore || 0) > 0.85 ? 'excellent' :
-    ((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).knowledgeBase?.qualityScore || 0) > 0.7 ? 'good' : 'needs-improvement'
+    ((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).knowledgeBase?.qualityScore || 0) > 0.85 ? 'excellent' :
+    ((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).knowledgeBase?.qualityScore || 0) > 0.7 ? 'good' : 'needs-improvement'
   );
 
   // RAG query functions
@@ -68,9 +68,9 @@
         body: formData
       });
       
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; result?: any }).success) {
-        ragResult = (result as { success?: any; result?: any }).result;
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; result?: unknown }).success) {
+        ragResult = (result as { success?: unknown; result?: unknown }).result;
       }
     } catch (error) {
       console.error('RAG query failed:', error);
@@ -132,18 +132,18 @@
       </Badge>
       <Badge variant="secondary" class="gap-1">
         <Layers class="w-3 h-3" />
-        {(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats?.totalVectors?.toLocaleString() || '0'} Vectors
+        {(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats?.totalVectors?.toLocaleString() || '0'} Vectors
       </Badge>
       <Badge variant="secondary" class="gap-1">
         <Sparkles class="w-3 h-3" />
-        {(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).modelInfo?.embedding?.model || 'nomic-embed-text'}
+        {(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).modelInfo?.embedding?.model || 'nomic-embed-text'}
       </Badge>
       <Badge 
         variant={knowledgeBaseHealth === 'excellent' ? 'default' : 'secondary'}
         class="gap-1"
       >
         <TrendingUp class="w-3 h-3" />
-        {Math.round(((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).knowledgeBase?.qualityScore || 0) * 100)}% Quality
+        {Math.round(((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).knowledgeBase?.qualityScore || 0) * 100)}% Quality
       </Badge>
     </div>
   </div>
@@ -158,7 +158,7 @@
         { id: 'admin', label: 'Administration', icon: Settings }
       ] as tab}
         <button
-          on:click={() => selectedTab = tab.id}
+          onclick={() => selectedTab = tab.id}
           class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
@@ -221,7 +221,7 @@
 
           <!-- Query Button -->
           <OrchestratedButton.AnalyzeEvidence
-            on:click={performRAGQuery}
+            onclick={performRAGQuery}
             disabled={!canQuery}
             class="w-full gap-2"
           >
@@ -238,9 +238,9 @@
           <div class="space-y-2">
             <h4 class="text-sm font-medium">Demo Queries</h4>
             <div class="space-y-2">
-              {#each ((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).demoQueries || []) as demoQuery}
+              {#each ((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).demoQueries || []) as demoQuery}
                 <button
-                  on:click={() => useDemoQuery(demoQuery)}
+                  onclick={() => useDemoQuery(demoQuery)}
                   class="w-full text-left p-2 text-sm bg-muted hover:bg-muted/80 rounded border nes-text is-disabled hover:text-foreground transition-colors"
                   disabled={isQuerying}
                 >
@@ -351,16 +351,16 @@
               <p class="text-sm nes-text is-disabled">Total Documents</p>
             </div>
             <div class="text-center p-4 bg-muted/50 rounded-lg">
-              <p class="text-2xl font-bold text-primary">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats?.totalChunks?.toLocaleString() || '0'}</p>
+              <p class="text-2xl font-bold text-primary">{(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats?.totalChunks?.toLocaleString() || '0'}</p>
               <p class="text-sm nes-text is-disabled">Text Chunks</p>
             </div>
           </div>
 
           <!-- Category Breakdown -->
-          {#if (data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).knowledgeBase?.categories}
+          {#if (data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).knowledgeBase?.categories}
             <div class="space-y-3">
               <h4 class="font-medium">Document Categories</h4>
-              {#each Object.entries((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).knowledgeBase.categories) as [category, stats]}
+              {#each Object.entries((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).knowledgeBase.categories) as [category, stats]}
                 <div class="flex items-center justify-between p-2 bg-muted/30 rounded">
                   <div class="flex items-center gap-2">
                     <span class="font-medium capitalize">{category}</span>
@@ -391,23 +391,23 @@
           <div class="space-y-3">
             <div class="flex justify-between">
               <span class="text-sm nes-text is-disabled">Vector Database:</span>
-              <span class="text-sm font-medium">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).ragCapabilities?.vectorDatabase?.provider || 'pgvector'}</span>
+              <span class="text-sm font-medium">{(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).ragCapabilities?.vectorDatabase?.provider || 'pgvector'}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-sm nes-text is-disabled">Dimensions:</span>
-              <span class="text-sm font-medium">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).ragCapabilities?.vectorDatabase?.dimensions || 768}</span>
+              <span class="text-sm font-medium">{(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).ragCapabilities?.vectorDatabase?.dimensions || 768}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-sm nes-text is-disabled">Embedding Model:</span>
-              <span class="text-sm font-medium">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).ragCapabilities?.embeddingModel?.name || 'nomic-embed-text'}</span>
+              <span class="text-sm font-medium">{(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).ragCapabilities?.embeddingModel?.name || 'nomic-embed-text'}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-sm nes-text is-disabled">LLM Model:</span>
-              <span class="text-sm font-medium">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).ragCapabilities?.llmModel?.name || 'gemma2:27b'}</span>
+              <span class="text-sm font-medium">{(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).ragCapabilities?.llmModel?.name || 'gemma2:27b'}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-sm nes-text is-disabled">Context Length:</span>
-              <span class="text-sm font-medium">{(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).ragCapabilities?.llmModel?.contextLength || 8192} tokens</span>
+              <span class="text-sm font-medium">{(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).ragCapabilities?.llmModel?.contextLength || 8192} tokens</span>
             </div>
           </div>
         </div.Content>
@@ -427,17 +427,17 @@
           </div.Title>
         </div.Header>
         <div.Content class="space-y-4 nes-container">
-          {#if (data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats?.queryLatency}
+          {#if (data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats?.queryLatency}
             <div class="grid grid-cols-2 gap-4">
               <div class="text-center p-3 bg-muted/50 rounded-lg">
-                <p class="text-lg font-bold {getPerformanceColor((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats.queryLatency.p50, 50)}">
-                  {(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats.queryLatency.p50}ms
+                <p class="text-lg font-bold {getPerformanceColor((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats.queryLatency.p50, 50)}">
+                  {(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats.queryLatency.p50}ms
                 </p>
                 <p class="text-xs nes-text is-disabled">P50 Latency</p>
               </div>
               <div class="text-center p-3 bg-muted/50 rounded-lg">
-                <p class="text-lg font-bold {getPerformanceColor((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats.queryLatency.p95, 100)}">
-                  {(data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).vectorStats.queryLatency.p95}ms
+                <p class="text-lg font-bold {getPerformanceColor((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats.queryLatency.p95, 100)}">
+                  {(data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats.queryLatency.p95}ms
                 </p>
                 <p class="text-xs nes-text is-disabled">P95 Latency</p>
               </div>
@@ -456,11 +456,11 @@
         </div.Header>
         <div.Content class="space-y-4 nes-container">
           <div class="text-center p-4 bg-muted/50 rounded-lg">
-            <p class="text-2xl font-bold text-primary">{formatLatency((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).modelInfo?.embedding?.avgLatency || 0)}</p>
+            <p class="text-2xl font-bold text-primary">{formatLatency((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).modelInfo?.embedding?.avgLatency || 0)}</p>
             <p class="text-sm nes-text is-disabled">Embedding Latency</p>
           </div>
           <div class="text-center p-4 bg-muted/50 rounded-lg">
-            <p class="text-2xl font-bold text-primary">{formatLatency((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).modelInfo?.llm?.avgLatency || 0)}</p>
+            <p class="text-2xl font-bold text-primary">{formatLatency((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).modelInfo?.llm?.avgLatency || 0)}</p>
             <p class="text-sm nes-text is-disabled">LLM Latency</p>
           </div>
         </div.Content>
@@ -481,7 +481,7 @@
     </div.Header>
     <div.Content class="nes-container">
       <div class="space-y-3">
-        {#each ((data as { vectorStats?: any; knowledgeBase?: any; modelInfo?: any; demoQueries?: any; ragCapabilities?: any; recentQueries?: any }).recentQueries || []) as query}
+        {#each ((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).recentQueries || []) as query}
           <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
             <div class="flex-1">
               <p class="font-medium text-sm mb-1">{query.query}</p>
@@ -494,7 +494,7 @@
                 {formatAnalysisDate(new Date(query.timestamp))}
               </div>
             </div>
-            <button class="nes-btn" variant="ghost" size="sm" on:click={() => useDemoQuery(query.query)}>
+            <button class="nes-btn" variant="ghost" size="sm" onclick={() => useDemoQuery(query.query)}>
               <Eye class="w-3 h-3" />
             </button>
           </div>

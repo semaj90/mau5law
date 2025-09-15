@@ -1,9 +1,10 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   import { melt } from 'melt';
 
   interface Props {
-    item?: any;
+    item?: unknown;
     children?: import('svelte').Snippet;
     class?: string;
     href?: string;

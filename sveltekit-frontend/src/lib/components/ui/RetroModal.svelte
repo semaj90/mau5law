@@ -8,15 +8,23 @@ https://svelte.dev/e/slot_snippet_conflict -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { Dialog } from "bits-ui";
+  import type { Snippet } from 'svelte';
+
   interface Props {
     open?: boolean;
     title?: string;
     onClose?: () => void;
+    trigger?: Snippet;
+    children?: Snippet;
+    footer?: Snippet;
   }
-  let { 
-    open = false, 
-    title = "Dialog", 
-    onClose 
+  let {
+    open = false,
+    title = "Dialog",
+    onClose,
+    trigger,
+    children,
+    footer
   }: Props = $props();
   function handleOpenChange(isOpen: boolean) {
     if (!isOpen && onClose) {
@@ -59,9 +67,9 @@ https://svelte.dev/e/slot_snippet_conflict -->
         </div>
         
         <!-- Optional footer -->
-        {#if $$slots.footer}
+        {#if footer}
           <div class="modal-footer mt-4 pt-4 border-t-2 border-gray-300">
-            {@render footer?.()}
+            {@render footer()}
           </div>
         {/if}
         

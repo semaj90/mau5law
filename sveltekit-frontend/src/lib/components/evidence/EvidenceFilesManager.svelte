@@ -52,7 +52,7 @@
 		  <span class="size">({Math.round(f.size / 1024)} KB)</span>
 		</div>
 		<div class="actions">
-		  <button type="button" on:click={() => removeFile(i)} disabled={readonly}>Remove</button>
+		  <button type="button" onclick={() => removeFile(i)} disabled={readonly}>Remove</button>
 		</div>
 	  </li>
 	{/each}
@@ -61,7 +61,7 @@
   {#if !readonly}
 	<div class="upload">
 	  <label class="upload-label">
-		<input type="file" multiple on:change={handleChange} />
+		<input type="file" multiple onchange={handleChange} />
 		Add files
 	  </label>
 	  <div class="hint">You can add up to {maxFiles} files.</div>

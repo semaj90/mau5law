@@ -4,9 +4,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -365,7 +363,7 @@
 
           <div class="flex gap-2">
             <Button class="bits-btn flex-1"
-              on:click={() =>
+              onclick={() =>
 scaleCluster(targetWorkers)}
               disabled={isScaling || targetWorkers === clusterHealth.totalWorkers}>
               {#if isScaling}
@@ -378,14 +376,14 @@ scaleCluster(targetWorkers)}
             </Button>
 
             <Button class="bits-btn px-3"
-              on:click={() => scaleCluster(clusterHealth.totalWorkers + 1)}
+              onclick={() => scaleCluster(clusterHealth.totalWorkers + 1)}
               disabled={isScaling}
               variant="outline">
               +1
 </Button>
 
             <Button class="bits-btn px-3"
-              on:click={() =>
+              onclick={() =>
 scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
               disabled={isScaling || clusterHealth.totalWorkers <= 1}
               variant="outline">
@@ -404,7 +402,7 @@ scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
 
         <div class="space-y-3">
           <Button
-            on:click={rollingRestart}
+            onclick={rollingRestart}
             disabled={isRestarting}
             class="w-full bg-orange-600 hover:bg-orange-700 bits-btn bits-btn">
 {#if isRestarting}
@@ -416,7 +414,7 @@ scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
             {/if}
 </Button>
 
-          <Button on:click={fetchClusterStatus} variant="outline" class="w-full bits-btn bits-btn">
+          <Button onclick={fetchClusterStatus} variant="outline" class="w-full bits-btn bits-btn">
 <RefreshCw class="h-4 w-4 mr-2" />
             Refresh Status
 </Button>

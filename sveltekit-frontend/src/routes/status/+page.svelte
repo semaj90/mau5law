@@ -7,7 +7,7 @@
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import { Button } from 'bits-ui';
+  import Button from 'bits-ui';
   import GPUCacheIntegrationDemo from '$lib/components/ui/gaming/demo/GPUCacheIntegrationDemo.svelte';
   import {
     Card,
@@ -19,7 +19,7 @@
 
   // System status state
   let systemHealth = $state<any>(null);
-  let integrationTests = $state<Record<string, { status: 'success' | 'warning' | 'error'; message: stringdetails?: any } | null>(null)()>({});
+  let integrationTests = $state<Record<string, { status: 'success' | 'warning' | 'error'; message: stringdetails?: unknown } | null>(null)()>({});
   let isLoading = $state(true);
   let lastUpdated = $state<string>('');
 
@@ -129,15 +129,15 @@
   async function testPostgreSQLIntegration() {
     try {
       const response = await fetch('/api/v1/health');
-      if ((response as { ok?: any; json?: any; status?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any; status?: any }).json();
-        const pgStatus = (data as { services?: any }).services?.databases?.postgres?.status;
+      if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
+        const pgStatus = (data as { services?: unknown }).services?.databases?.postgres?.status;
 
         if (pgStatus === 'healthy') {
           integrationTests['postgresql'] = {
             status: 'success',
             message: 'PostgreSQL + pgvector connected and healthy',
-            details: { host: (data as { services?: any }).services.databases.postgres.host, port: (data as { services?: any }).services.databases.postgres.port }
+            details: { host: (data as { services?: unknown }).services.databases.postgres.host, port: (data as { services?: unknown }).services.databases.postgres.port }
           };
         } else {
           integrationTests['postgresql'] = {
@@ -171,7 +171,7 @@
       for (const endpoint of endpoints) {
         try {
           const response = await fetch(endpoint, { method: 'HEAD' });
-          if ((response as { ok?: any; json?: any; status?: any }).status !== 404) successCount++;
+          if ((response as { ok?: unknown; json?: unknown; status?: unknown }).status !== 404) successCount++;
         } catch (e) {
           // Endpoint might not exist yet, that's ok
         }
@@ -233,7 +233,7 @@
       <div class="flex items-center gap-4">
         <span class="text-gray-400">Last updated: {lastUpdated}</span>
         <Button.Root
-          on:click={loadSystemStatus}
+          onclick={loadSystemStatus}
           disabled={isLoading}
           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg bits-btn bits-btn"
         >
@@ -273,18 +273,18 @@
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary flex items-center justify-between text-white">
               <span class="capitalize">{testName.replace('-', ' ')}</span>
-              <span class="text-xl">{getStatusIcon((result as { status?: any; message?: any; details?: any }).status)}</span>
+              <span class="text-xl">{getStatusIcon((result as { status?: unknown; message?: unknown; details?: unknown }).status)}</span>
             </h3>
           </div>
           <div class="yorha-panel-content">
-            <p class="text-sm {getStatusColor((result as { status?: any; message?: any; details?: any }).status)} mb-2">
-              {(result as { status?: any; message?: any; details?: any }).message}
+            <p class="text-sm {getStatusColor((result as { status?: unknown; message?: unknown; details?: unknown }).status)} mb-2">
+              {(result as { status?: unknown; message?: unknown; details?: unknown }).message}
             </p>
-            {#if (result as { status?: any; message?: any; details?: any }).details}
+            {#if (result as { status?: unknown; message?: unknown; details?: unknown }).details}
               <details class="text-xs text-gray-400">
                 <summary class="cursor-pointer">Details</summary>
                 <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">
-{JSON.stringify((result as { status?: any; message?: any; details?: any }).details, null, 2)}
+{JSON.stringify((result as { status?: unknown; message?: unknown; details?: unknown }).details, null, 2)}
                 </pre>
               </details>
             {/if}

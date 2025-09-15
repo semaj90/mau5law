@@ -20,7 +20,7 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	// Import the standardized payload envelope
-	"legal-ai-production/go-microservice/internal/payload"
+	"legal-ai-production/internal/payload"
 )
 
 // Enhanced Legal Recommendation Engine with gRPC Binary Protocol Support

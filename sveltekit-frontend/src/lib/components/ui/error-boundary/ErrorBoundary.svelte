@@ -2,20 +2,20 @@
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import { Button } from 'bits-ui';
+  import Button from 'bits-ui';
   import { Card } from 'bits-ui';
   import ModernButton from '$lib/components/ui/button/Button.svelte';
   interface Props {
-    fallback?: any;
-    children: any;
-    onError?: (error: Error, errorInfo?: any) => void;
+    fallback?: unknown;
+    children: unknown;
+    onError?: (error: Error, errorInfo?: unknown) => void;
   }
   let { fallback, children, onError }: Props = $props();
   let hasError = $state(false);
   let error = $state<Error | null>(null);
   let errorId = $state<string>('');
   // Error logging
-  function logError(err: Error, context?: any) {
+  function logError(err: Error, context?: unknown) {
     const errorData = {
       id: errorId,
       message: err.message,
@@ -129,7 +129,7 @@
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-golden-sm justify-center">
           <ModernButton 
-            on:click={resetError}
+            onclick={resetError}
             variant="primary"
             class="bg-gradient-to-r from-nier-accent-warm to-nier-accent-cool text-nier-bg-primary"
           >
@@ -137,7 +137,7 @@
           </ModernButton>
           
           <ModernButton 
-            on:click={reloadPage}
+            onclick={reloadPage}
             variant="outline"
             class="border-nier-accent-cool text-nier-accent-cool hover:bg-nier-accent-cool hover:text-nier-bg-primary"
           >

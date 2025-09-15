@@ -7,8 +7,8 @@
   interface Props {
     userContext?: unknown;
     neo4jContext?: unknown;
-    analyticsLog?: (event: any) => void;
-    onRecommendations?: (results: any) => void;
+    analyticsLog?: (event: unknown) => void;
+    onRecommendations?: (results: unknown) => void;
   }
 
   const {

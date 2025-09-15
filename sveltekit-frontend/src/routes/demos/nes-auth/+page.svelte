@@ -25,7 +25,7 @@ https://svelte.dev/e/props_duplicate -->
     form = $bindable(),
     data = $bindable({ chat: [], recommendations: [] }) 
   }: {
-    form?: any;
+    form?: unknown;
     data?: {
       chat?: ChatMessage[];
       recommendations?: Recommendation[];
@@ -238,14 +238,14 @@ https://svelte.dev/e/props_duplicate -->
         <div.Content class="nes-container">
           <div class="actions-grid">
             <button class="nes-btn"
-              on:click={() => openModal('login')}
+              onclick={() => openModal('login')}
               variant="primary"
               class="bits-nes-btn is-primary"
             >
               🎮 Login
             </button>
             <button class="nes-btn"
-              on:click={() => openModal('register')}
+              onclick={() => openModal('register')}
               variant="success"
               class="bits-btn-success"
             >
@@ -322,7 +322,7 @@ https://svelte.dev/e/props_duplicate -->
         </p>
       </div>
 
-      <form on:submit={handleSubmit} class="space-y-4">
+      <form onsubmit={handleSubmit} class="space-y-4">
         <div class="form-grid">
           <!-- Email Field -->
           <div class="space-y-2">
@@ -398,7 +398,7 @@ https://svelte.dev/e/props_duplicate -->
           <Button
             type="button"
             variant="outline"
-            on:click={closeModal}
+            onclick={closeModal}
             class="bits-nes-btn"
           >
 ❌ Cancel
@@ -406,7 +406,7 @@ https://svelte.dev/e/props_duplicate -->
           <Button
             type="button"
             variant="secondary"
-            on:click={switchMode}
+            onclick={switchMode}
             class="bits-nes-btn"
           >
 🔄 Switch to {mode === 'login' ? 'Register' : 'Login'}

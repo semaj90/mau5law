@@ -26,15 +26,15 @@ https://svelte.dev/e/bindable_invalid_location -->
     loadingText = 'Loading AI analysis...',
     errorText = 'Failed to load AI analysis',
     // Callbacks
-    onAnalysisComplete = undefined as ((result: any) => void) | undefined,
+    onAnalysisComplete = undefined as ((result: unknown) => void) | undefined,
     onAnalysisError = undefined as ((error: Error) => void) | undefined,
     // Component state binding
     lazyState = $bindable() as LazyComponentState | undefined
   } = $props();
 
   // Dynamic import and analysis state
-  let analysisComponent: any = $state(null);
-  let analysisResult: any = $state(null);
+  let analysisComponent: unknown = $state(null);
+  let analysisResult: unknown = $state(null);
   let isAnalyzing = $state(false);
   let loadError: Error | null = $state(null);
 
@@ -230,7 +230,7 @@ https://svelte.dev/e/bindable_invalid_location -->
         <small>{loadError.message}</small>
         <button 
           class="retry-button"
-          on:click={() => {
+          onclick={() => {
             loadError = null;
             analysisProgress = 0;
             analysisStep = 'Initializing...';

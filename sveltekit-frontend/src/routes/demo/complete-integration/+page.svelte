@@ -262,7 +262,7 @@ https://svelte.dev/e/tag_invalid_name -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               {#each testPrompts as example}
                 <button
-                  on:click={() => setTestPrompt(example.prompt)}
+                  onclick={() => setTestPrompt(example.prompt)}
                   class="p-3 bg-gray-800 border border-gray-600 rounded-lg hover:border-green-500 transition-colors text-left"
                 >
                   <div class="flex items-center gap-2 mb-2">
@@ -290,7 +290,7 @@ https://svelte.dev/e/tag_invalid_name -->
 
               <div class="flex items-center gap-4">
                 <button
-                  on:click={() => sendToAI()}
+                  onclick={() => sendToAI()}
                   disabled={!aiInput.trim() || aiProcessing}
                   class="px-6 py-2 bg-green-600 text-white font-mono rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
@@ -303,7 +303,7 @@ https://svelte.dev/e/tag_invalid_name -->
                 </button>
 
                 <button
-                  on:click={clearConversation}
+                  onclick={clearConversation}
                   class="px-4 py-2 bg-gray-600 text-white font-mono rounded-md hover:bg-gray-700"
                 >
                   Clear
@@ -363,7 +363,7 @@ https://svelte.dev/e/tag_invalid_name -->
               <div>
                 <label class="block text-sm text-purple-400 font-mono mb-2">Processing:</label>
                 <button
-                  on:click={toggleProcessing}
+                  onclick={toggleProcessing}
                   class="w-full px-4 py-2 {processingActive ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'} text-white font-mono rounded-md"
                 >
                   {processingActive ? 'Stop' : 'Start'}

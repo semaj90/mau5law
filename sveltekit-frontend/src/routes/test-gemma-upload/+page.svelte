@@ -10,7 +10,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	let uploadStatus = $state<'idle' | 'uploading' | 'processing' | 'completed' | 'error'>('idle');
 	let selectedFile: File | null = $state(null);
 	let uploadProgress = $state(0);
-	let results: any = $state(null);
+	let results: unknown = $state(null);
 	let logs: string[] = $state([]);
 	let processingTime = $state(0);
 
@@ -85,32 +85,32 @@ https://svelte.dev/e/attribute_duplicate -->
 			clearInterval(progressInterval);
 			uploadProgress = 100;
 
-			const result = await (response as { json?: any }).json();
+			const result = await (response as { json?: unknown }).json();
 			processingTime = performance.now() - startTime;
 
-			if ((result as { success?: any; data?: any; error?: any }).success) {
+			if ((result as { success?: unknown; data?: unknown; error?: unknown }).success) {
 				uploadStatus = 'completed';
-				results = (result as { success?: any; data?: any; error?: any }).data;
+				results = (result as { success?: unknown; data?: unknown; error?: unknown }).data;
 				
 				addLog('✅ Upload completed successfully!');
 				addLog(`📊 Processed in ${processingTime.toFixed(2)}ms`);
-				addLog(`📄 Text length: ${(result as { success?: any; data?: any; error?: any }).data.textLength} characters`);
-				addLog(`🧩 Chunks created: ${(result as { success?: any; data?: any; error?: any }).data.chunksCount}`);
-				addLog(`🧮 Embeddings generated: ${(result as { success?: any; data?: any; error?: any }).data.embeddingsCount}`);
-				addLog(`📐 Embedding dimensions: ${(result as { success?: any; data?: any; error?: any }).data.embeddingDimensions}`);
-				addLog(`🗄️ Stored in MinIO: ${(result as { success?: any; data?: any; error?: any }).data.minioPath}`);
+				addLog(`📄 Text length: ${(result as { success?: unknown; data?: unknown; error?: unknown }).data.textLength} characters`);
+				addLog(`🧩 Chunks created: ${(result as { success?: unknown; data?: unknown; error?: unknown }).data.chunksCount}`);
+				addLog(`🧮 Embeddings generated: ${(result as { success?: unknown; data?: unknown; error?: unknown }).data.embeddingsCount}`);
+				addLog(`📐 Embedding dimensions: ${(result as { success?: unknown; data?: unknown; error?: unknown }).data.embeddingDimensions}`);
+				addLog(`🗄️ Stored in MinIO: ${(result as { success?: unknown; data?: unknown; error?: unknown }).data.minioPath}`);
 				
 				// Log all processing steps
-				(result as { success?: any; data?: any; error?: any }).data.processingSteps.forEach((step: string) => {
+				(result as { success?: unknown; data?: unknown; error?: unknown }).data.processingSteps.forEach((step: string) => {
 					addLog(step);
 				});
 
 			} else {
 				uploadStatus = 'error';
-				addLog(`❌ Upload failed: ${(result as { success?: any; data?: any; error?: any }).error}`);
+				addLog(`❌ Upload failed: ${(result as { success?: unknown; data?: unknown; error?: unknown }).error}`);
 			}
 
-		} catch (error: any) {
+		} catch (error: unknown) {
 			uploadStatus = 'error';
 			addLog(`❌ Error: ${error.message}`);
 		}
@@ -178,7 +178,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 			// Auto-start the upload
 			await testGemmaUpload();
 			
-		} catch (error: any) {
+		} catch (error: unknown) {
 			addLog(`❌ Error loading test PDF: ${error.message}`);
 		}
 	}
@@ -209,10 +209,10 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 				class:has-file={selectedFile}
 				class:uploading={uploadStatus === 'uploading'}
 				class:processing={uploadStatus === 'processing'}
-				on:drop={handleDrop}
-			 role="button" aria-label="Drop zone" on:dragover={handleDragOver}
+				ondrop={handleDrop}
+			 role="button" aria-label="Drop zone" ondragover={handleDragOver}
 			 tabindex="0"
-                on:click={() => fileInput?.click()}
+                onclick={() => fileInput?.click()}
 				role="button"
 				tabindex="0"
 			>
@@ -220,7 +220,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 					bind:this={fileInput}
 					type="file"
 					accept=".pdf,.txt,.doc,.docx"
-					on:change={handleFileSelect}
+					onchange={handleFileSelect}
 					style="display: none"
 				/>
 
@@ -265,7 +265,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 			<!-- Action Buttons -->
 			<div class="actions">
 				<button
-					on:click={testGemmaUpload}
+					onclick={testGemmaUpload}
 					disabled={!selectedFile || uploadStatus === 'uploading' || uploadStatus === 'processing'}
 					class="primary-button"
 				>
@@ -277,7 +277,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 				</button>
 
 				<button
-					on:click={testWithLegalPDF}
+					onclick={testWithLegalPDF}
 					disabled={uploadStatus === 'uploading' || uploadStatus === 'processing'}
 					class="secondary-button"
 				>
@@ -285,7 +285,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 				</button>
 
 				<button
-					on:click={clearAll}
+					onclick={clearAll}
 					disabled={uploadStatus === 'uploading' || uploadStatus === 'processing'}
 					class="clear-button"
 				>

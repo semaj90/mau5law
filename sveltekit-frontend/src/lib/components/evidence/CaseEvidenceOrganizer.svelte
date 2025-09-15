@@ -19,7 +19,7 @@
   // Props
   interface Props {
     caseId: string;
-    initialEvidence?: any[];
+    initialEvidence?: unknown[];
     organizationMode?: 'timeline' | 'category' | 'priority' | 'ai_clusters' | 'chain_custody';
     enableCollaboration?: boolean;
     showMetrics?: boolean;
@@ -553,7 +553,7 @@
   /**
    * Calculate evidence priority based on metadata
    */
-  function calculateEvidencePriority(evidence: any): string {
+  function calculateEvidencePriority(evidence: unknown): string {
     // AI-based priority calculation
     if (evidence.metadata?.aiAnalysis?.importance > 0.8) return 'critical';
     if (evidence.metadata?.aiAnalysis?.importance > 0.6) return 'high';
@@ -570,7 +570,7 @@
   /**
    * Validate chain of custody
    */
-  function validateChainOfCustody(custody: any[]): string {
+  function validateChainOfCustody(custody: unknown[]): string {
     if (!custody || custody.length === 0) return 'missing';
     
     const requiredFields = ['officer_id', 'timestamp', 'action'];
@@ -616,7 +616,7 @@
   /**
    * Select evidence
    */
-  function selectEvidence(evidence: any, context: string = 'organization') {
+  function selectEvidence(evidence: unknown, context: string = 'organization') {
     if (selectedEvidence.includes(evidence)) {
       selectedEvidence = selectedEvidence.filter(e => e.id !== evidence.id);
     } else {
@@ -629,7 +629,7 @@
   /**
    * Utility functions
    */
-  function performSimpleClustering(evidenceWithEmbeddings: any[]) {
+  function performSimpleClustering(evidenceWithEmbeddings: unknown[]) {
     // Simple fallback clustering
     return [{
       evidence: evidenceWithEmbeddings,
@@ -638,12 +638,12 @@
     }];
   }
   
-  function generateClusterDescription(evidence: any[]): string {
+  function generateClusterDescription(evidence: unknown[]): string {
     const types = [...new Set(evidence.map(e => e.evidenceType))];
     return `Contains ${evidence.length} items of types: ${types.join(', ')}`;
   }
   
-  function extractClusterKeywords(evidence: any[]): string[] {
+  function extractClusterKeywords(evidence: unknown[]): string[] {
     // Extract common keywords from evidence titles and descriptions
     const allText = evidence.map(e => (e.title + ' ' + (e.description || '')).toLowerCase()).join(' ');
     const words = allText.split(/\s+/).filter(word => word.length > 3);
@@ -688,7 +688,7 @@
           type="button"
           class="mode-button"
           class:active={organizationMode === mode.value}
-          on:click={() => handleModeChange(mode.value)}
+          onclick={() => handleModeChange(mode.value)}
         >
           <span class="mode-icon">{mode.icon}</span>
           <span class="mode-label">{mode.label}</span>
@@ -789,7 +789,7 @@
                 <div 
                   class="evidence-nier-bits-card"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'category')}
+                  onclick={() => selectEvidence(evidence, 'category')}
                 >
                   <div class="evidence-header">
                     <h4>{evidence.title}</h4>
@@ -829,7 +829,7 @@
                 <div 
                   class="timeline-item"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'timeline')}
+                  onclick={() => selectEvidence(evidence, 'timeline')}
                 >
                   <div class="timeline-marker"></div>
                   <div class="timeline-content">
@@ -876,7 +876,7 @@
                 <div 
                   class="evidence-nier-bits-card compact"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'cluster')}
+                  onclick={() => selectEvidence(evidence, 'cluster')}
                 >
                   <h4>{evidence.title}</h4>
                   <span class="evidence-type">{evidence.evidenceType}</span>
@@ -906,7 +906,7 @@
                 <div 
                   class="evidence-nier-bits-card custody"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'custody')}
+                  onclick={() => selectEvidence(evidence, 'custody')}
                 >
                   <div class="evidence-header">
                     <h4>{evidence.title}</h4>

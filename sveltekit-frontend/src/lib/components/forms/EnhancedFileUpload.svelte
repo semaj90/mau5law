@@ -14,9 +14,7 @@ export default {};
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from "svelte";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -299,7 +297,7 @@ export default {};
   bind:this={fileInput}
   type="file"
   {multiple}
-  accept={acceptedTypes.join(",")} on:change={handleFileSelect}
+  accept={acceptedTypes.join(",")} onchange={handleFileSelect}
   class="hidden"
 />
 
@@ -319,10 +317,10 @@ export default {};
       class:bg-primary/5={isDragOver}
       class:opacity-50={disabled}
       class:cursor-not-allowed={disabled}
-      on:dragover={handleDragOver}
+      ondragover={handleDragOver}
       ondragleave={handleDragLeave}
-      role="button" on:drop={handleDrop}
-      on:click={openFileDialog}
+      role="button" ondrop={handleDrop}
+      onclick={openFileDialog}
       keydown={(e: KeyboardEvent) => e.key === "Enter" && openFileDialog()}
       tabindex="0"
       aria-label="File upload area"
@@ -378,7 +376,7 @@ export default {};
                 {/if}
               </div>
 
-              <button class="nes-btn" variant="ghost" size="sm" on:click={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
+              <button class="nes-btn" variant="ghost" size="sm" onclick={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
                 <X class="h-4 w-4" />
               </button>
             </div>
@@ -434,7 +432,7 @@ export default {};
           <Label for="tags">Tags</Label>
           <div class="flex gap-2">
             <Input bind:value={tagInput} placeholder="Add a tag" disabled={isUploading} keydown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())} />
-            <Button class="bits-btn" type="button" variant="outline" on:click={addTag} disabled={isUploading}>
+            <Button class="bits-btn" type="button" variant="outline" onclick={addTag} disabled={isUploading}>
 Add
 </Button>
           </div>
@@ -444,7 +442,7 @@ Add
               {#each formState.tags as tag}
                 <Badge variant="secondary" class="gap-1 inline-flex items-center">
                   <span>{tag}</span>
-                  <button type="button" class="ml-2" on:click={() => removeTag(tag)} disabled={isUploading} aria-label="Remove tag">
+                  <button type="button" class="ml-2" onclick={() => removeTag(tag)} disabled={isUploading} aria-label="Remove tag">
                     <X class="h-3 w-3" />
 </Button>
                 </Badge>
@@ -489,11 +487,11 @@ Add
       </p>
 
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="outline" on:click={() =>
+        <Button class="bits-btn" variant="outline" onclick={() =>
 oncancel?.()} disabled={isUploading}>Cancel
 </Button>
 
-        <button class="nes-btn" on:click={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
+        <button class="nes-btn" onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
           {#if isUploading}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />Uploading...
           {:else}

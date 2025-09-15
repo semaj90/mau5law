@@ -15,7 +15,7 @@
     showGrid = true,
     children,
     rightPanel = undefined
-  : any } = $props();
+  : unknown } = $props();
 
   // Connection status (matching Evidence Board)
   let isConnected = $state(false);
@@ -130,12 +130,12 @@
     transform: translateY(-2px);
   }
 
-  .evidence-(item as { active?: any; pending?: any }).active {
+  .evidence-(item as { active?: unknown; pending?: unknown }).active {
     border-color: #28a745;
     background: #f8fff9;
   }
 
-  .evidence-(item as { active?: any; pending?: any }).pending {
+  .evidence-(item as { active?: unknown; pending?: unknown }).pending {
     border-color: #ffc107;
     background: #fffbf0;
   }

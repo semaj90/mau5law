@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
 
   import { browser } from "$app/environment";
   import { onMount, onDestroy } from "svelte";
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { notifications } from "$lib/stores/notification";
   import {
     Circle,
@@ -457,7 +457,7 @@ https://svelte.dev/e/js_parse_error -->
         <Button class="bits-btn"
           variant={selectedTool === "select" ? "primary" : "outline"}
           size="sm"
-          on:click={() =>
+          onclick={() =>
 selectTool("select")}
           disabled={readonly}
         >
@@ -466,7 +466,7 @@ selectTool("select")}
         <Button class="bits-btn"
           variant={selectedTool === "draw" ? "primary" : "outline"}
           size="sm"
-          on:click={() =>
+          onclick={() =>
 selectTool("draw")}
           disabled={readonly}
         >
@@ -475,7 +475,7 @@ selectTool("draw")}
         <Button class="bits-btn"
           variant={selectedTool === "text" ? "primary" : "outline"}
           size="sm"
-          on:click={() =>
+          onclick={() =>
 selectTool("text")}
           disabled={readonly}
         >
@@ -491,7 +491,7 @@ selectTool("text")}
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 addShape("rectangle")}
           >
             <Square class="space-y-4" />
@@ -499,7 +499,7 @@ addShape("rectangle")}
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 addShape("circle")}
           >
             <Circle class="space-y-4" />
@@ -514,7 +514,7 @@ addShape("circle")}
         <Button class="bits-btn"
           variant="outline"
           size="sm"
-          on:click={() =>
+          onclick={() =>
 undo()}
           disabled={readonly || historyIndex <= 0}
         >
@@ -523,7 +523,7 @@ undo()}
         <Button class="bits-btn"
           variant="outline"
           size="sm"
-          on:click={() =>
+          onclick={() =>
 redo()}
           disabled={readonly || historyIndex >= canvasHistory.length - 1}
         >
@@ -533,18 +533,18 @@ redo()}
 
       <!-- Zoom -->
       <div class="space-y-4">
-        <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+        <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
 zoomOut()}>
           <ZoomOut class="space-y-4" />
 </Button>
         <span class="space-y-4"
           >{Math.round(zoom * 100)}%</span
         >
-        <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+        <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
 zoomIn()}>
           <ZoomIn class="space-y-4" />
 </Button>
-        <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+        <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
 resetZoom()}
           >Reset</Button
         >
@@ -554,16 +554,16 @@ resetZoom()}
     <!-- Actions -->
     <div class="space-y-4">
       {#if !readonly}
-        <Button class="bits-btn" variant="outline" size="sm" on:click={() => deleteSelected()}>
+        <Button class="bits-btn" variant="outline" size="sm" onclick={() => deleteSelected()}>
           <Trash2 class="space-y-4" />
 </Button>
-        <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+        <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
 saveCanvas()}>
           <Save class="space-y-4" />
           Save
 </Button>
       {/if}
-      <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+      <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
 exportCanvas()}>
         <Download class="space-y-4" />
         Export

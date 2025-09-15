@@ -3,9 +3,7 @@
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -429,13 +427,13 @@
                 min="128"
                 max="1024"
                 step="128"
-                bind:value={vectorDimensions} on:input={generateTestData}
+                bind:value={vectorDimensions} oninput={generateTestData}
                 class="w-full"
                 disabled={isProcessing} />
             </div>
 
             <Button
-              on:click={runSimilarityDemo}
+              onclick={runSimilarityDemo}
               disabled={isProcessing || activeDemo === 'similarity'}
               class="w-full bits-btn bits-btn">
 {isProcessing && activeDemo === 'similarity' ? 'Computing...' : 'Run Similarity Test'}
@@ -464,7 +462,7 @@
                 min="100"
                 max="5000"
                 step="100"
-                bind:value={numDataPoints} on:input={generateTestData}
+                bind:value={numDataPoints} oninput={generateTestData}
                 class="w-full"
                 disabled={isProcessing} />
             </div>
@@ -478,13 +476,13 @@
                 type="range"
                 min="2"
                 max="20"
-                bind:value={numClusters} on:input={generateTestData}
+                bind:value={numClusters} oninput={generateTestData}
                 class="w-full"
                 disabled={isProcessing} />
             </div>
 
             <Button
-              on:click={runClusteringDemo}
+              onclick={runClusteringDemo}
               disabled={isProcessing || activeDemo === 'clustering'}
               class="w-full bits-btn bits-btn">
 {isProcessing && activeDemo === 'clustering' ? 'Clustering...' : 'Run Clustering'}
@@ -513,13 +511,13 @@
                 min="64"
                 max="512"
                 step="64"
-                bind:value={matrixSize} on:input={generateTestData}
+                bind:value={matrixSize} oninput={generateTestData}
                 class="w-full"
                 disabled={isProcessing} />
             </div>
 
             <Button
-              on:click={runMatrixDemo}
+              onclick={runMatrixDemo}
               disabled={isProcessing || activeDemo === 'matrix'}
               class="w-full bits-btn bits-btn">
 {isProcessing && activeDemo === 'matrix' ? 'Computing...' : 'Run Matrix Multiply'}

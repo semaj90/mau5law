@@ -5,7 +5,7 @@
 	import { browser } from '$app/environment';
 
 	// stores
-	let { stores, page, constructors, components = [], form, data_0 = null, data_1 = null  }: { stores, page, constructors, components = [], form, data_0 = null, data_1 = null : any } = $props();
+	let { stores, page, constructors, components = [], form, data_0 = null, data_1 = null  }: { stores, page, constructors, components = [], form, data_0 = null, data_1 = null : unknown } = $props();
 
 	if (!browser) {
 		setContext('__svelte__', stores);

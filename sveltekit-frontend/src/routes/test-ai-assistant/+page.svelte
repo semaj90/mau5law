@@ -61,7 +61,7 @@
     }
   ];
 
-  async function runTest(test: any) {
+  async function runTest(test: unknown) {
     currentTest = test.name;
     try {
       const options: RequestInit = {
@@ -76,11 +76,11 @@
       }
 
       const response = await fetch(test.endpoint, options);
-      const data = await (response as { json?: any; ok?: any; status?: any; body?: any }).json();
+      const data = await (response as { json?: unknown; ok?: unknown; status?: unknown; body?: unknown }).json();
 
       testResults[test.name] = {
-        success: (response as { json?: any; ok?: any; status?: any; body?: any }).ok,
-        status: (response as { json?: any; ok?: any; status?: any; body?: any }).status,
+        success: (response as { json?: unknown; ok?: unknown; status?: unknown; body?: unknown }).ok,
+        status: (response as { json?: unknown; ok?: unknown; status?: unknown; body?: unknown }).status,
         data: data,
         endpoint: test.endpoint,
         timestamp: new Date().toISOString()
@@ -127,12 +127,12 @@
         })
       });
 
-      if (!(response as { json?: any; ok?: any; status?: any; body?: any }).ok) {
-        throw new Error(`HTTP ${(response as { json?: any; ok?: any; status?: any; body?: any }).status}`);
+      if (!(response as { json?: unknown; ok?: unknown; status?: unknown; body?: unknown }).ok) {
+        throw new Error(`HTTP ${(response as { json?: unknown; ok?: unknown; status?: unknown; body?: unknown }).status}`);
       }
 
       let streamData = '';
-      const reader = (response as { json?: any; ok?: any; status?: any; body?: any }).body?.getReader();
+      const reader = (response as { json?: unknown; ok?: unknown; status?: unknown; body?: unknown }).body?.getReader();
       const decoder = new TextDecoder();
 
       if (reader) {
@@ -148,7 +148,7 @@
 
       testResults['SSE Stream Test'] = {
         success: true,
-        status: (response as { json?: any; ok?: any; status?: any; body?: any }).status,
+        status: (response as { json?: unknown; ok?: unknown; status?: unknown; body?: unknown }).status,
         streamSample: streamData.substring(0, 500) + '...',
         timestamp: new Date().toISOString()
       };
@@ -188,7 +188,7 @@
           <div class="flex gap-3">
             <Button class="bits-btn"
               variant="outline"
-              on:click={runAllTests}
+              onclick={runAllTests}
               disabled={isRunning}
             >
               {#snippet children()}
@@ -197,7 +197,7 @@
             </Button>
             <Button class="bits-btn"
               variant="default"
-              on:click={testSSEStream}
+              onclick={testSSEStream}
               disabled={isRunning}
             >
               {#snippet children()}Test SSE Stream{/snippet}
@@ -239,39 +239,39 @@
                   <span class="font-medium">Status:</span>
                   <span class={cn(
                     "ml-2",
-                    (result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).success ? "text-green-600" : "text-red-600"
+                    (result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).success ? "text-green-600" : "text-red-600"
                   )}>
-                    {(result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).status || 'N/A'} {(result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).success ? '✓' : '✗'}
+                    {(result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).status || 'N/A'} {(result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).success ? '✓' : '✗'}
                   </span>
                 </div>
 
-                {#if (result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).error}
+                {#if (result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).error}
                   <div>
                     <span class="font-medium text-red-600">Error:</span>
-                    <span class="ml-2 text-red-600">{(result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).error}</span>
+                    <span class="ml-2 text-red-600">{(result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).error}</span>
                   </div>
                 {/if}
 
-                {#if (result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).data && typeof (result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).data === 'object'}
+                {#if (result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).data && typeof (result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).data === 'object'}
                   <details class="mt-2">
                     <summary class="font-medium cursor-pointer">Response Data</summary>
                     <pre class="mt-2 p-2 bg-gray-100 rounded text-xs overflow-auto max-h-40">
-{JSON.stringify((result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).data, null, 2)}
+{JSON.stringify((result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).data, null, 2)}
                     </pre>
                   </details>
                 {/if}
 
-                {#if (result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).streamSample}
+                {#if (result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).streamSample}
                   <details class="mt-2">
                     <summary class="font-medium cursor-pointer">Stream Sample</summary>
                     <pre class="mt-2 p-2 bg-gray-100 rounded text-xs overflow-auto max-h-40">
-{(result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).streamSample}
+{(result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).streamSample}
                     </pre>
                   </details>
                 {/if}
 
                 <div class="text-xs text-gray-500">
-                  Tested: {(result as { success?: any; status?: any; error?: any; data?: any; streamSample?: any; timestamp?: any }).timestamp}
+                  Tested: {(result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).timestamp}
                 </div>
               </div>
             {:else}

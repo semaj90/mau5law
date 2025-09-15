@@ -89,23 +89,23 @@ https://svelte.dev/e/js_parse_error -->
         body: formData,
       });
 
-      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+      if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
       }
 
-      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+      const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
 
-      if ((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).success) {
-        processedDocuments = (result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).documents || [];
-        processingSummary = (result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).summary;
-        systemMetrics.caseAIScore = (result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).caseAISummaryScore;
+      if ((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).success) {
+        processedDocuments = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).documents || [];
+        processingSummary = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).summary;
+        systemMetrics.caseAIScore = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).caseAISummaryScore;
 
-        addLog(`✅ Processing complete: ${(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).documentsProcessed} documents`);
-        addLog(`📊 Total entities extracted: ${(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).summary?.totalEntities || 0}`);
+        addLog(`✅ Processing complete: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).documentsProcessed} documents`);
+        addLog(`📊 Total entities extracted: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).summary?.totalEntities || 0}`);
         addLog(`🎯 Average prosecution score: ${(averageProsecutionScore * 100).toFixed(1)}%`);
-        addLog(`📈 Case AI summary score: ${(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).caseAISummaryScore}/100`);
+        addLog(`📈 Case AI summary score: ${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).caseAISummaryScore}/100`);
       } else {
-        throw new Error((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).error || 'Processing failed');
+        throw new Error((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).error || 'Processing failed');
       }
     } catch (err) {
       const error = err as Error;
@@ -137,23 +137,23 @@ https://svelte.dev/e/js_parse_error -->
         }),
       });
 
-      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+      if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
       }
 
-      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+      const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
 
-      if ((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).success) {
-        ragResults = (result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).results || [];
+      if ((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).success) {
+        ragResults = (result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).results || [];
         addLog(
-          `✅ RAG query complete: ${ragResults.length} results, score: ${((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).ragScore * 100).toFixed(1)}%`
+          `✅ RAG query complete: ${ragResults.length} results, score: ${((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).ragScore * 100).toFixed(1)}%`
         );
 
-        if ((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).aggregatedAnalysis?.recommendedNextQuery) {
-          addLog(`💡 Recommended follow-up: "${(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).aggregatedAnalysis.recommendedNextQuery}"`);
+        if ((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).aggregatedAnalysis?.recommendedNextQuery) {
+          addLog(`💡 Recommended follow-up: "${(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).aggregatedAnalysis.recommendedNextQuery}"`);
         }
       } else {
-        throw new Error((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).error || 'RAG query failed');
+        throw new Error((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).error || 'RAG query failed');
       }
     } catch (err) {
       const error = err as Error;
@@ -350,7 +350,7 @@ https://svelte.dev/e/js_parse_error -->
               type="file"
               multiple
               accept=".pdf"
-              on:change={handleFileSelect}
+              onchange={handleFileSelect}
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             {#if hasFiles}
               <p class="text-sm text-gray-600 mt-1">
@@ -380,7 +380,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex space-x-2">
             <button
               type="button"
-              on:click={processLegalDocuments}
+              onclick={processLegalDocuments}
               disabled={!canProcess}
               class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
               {#if isProcessing}
@@ -442,7 +442,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex space-x-2 mt-3">
               <button
                 type="button"
-                on:click={executeRAGQuery}
+                onclick={executeRAGQuery}
                 disabled={!canQuery}
                 class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50">
                 <Brain class="h-4 w-4 mr-2" />
@@ -460,14 +460,14 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="p-3 bg-gray-50 rounded-md">
                     <div class="flex justify-between items-start mb-2">
                       <span class="text-sm font-medium text-gray-800">
-                        {(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).sourceDocument ?? 'Unknown Source'}
+                        {(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).sourceDocument ?? 'Unknown Source'}
                       </span>
                       <div class="flex space-x-1">
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Similarity: {(((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).similarity ?? 0) * 100).toFixed(0)}%</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Similarity: {(((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).similarity ?? 0) * 100).toFixed(0)}%</span>
                         <Badge
-                          variant={getFactCheckBadgeVariant((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).factCheckStatus ?? 'UNVERIFIED')}
+                          variant={getFactCheckBadgeVariant((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).factCheckStatus ?? 'UNVERIFIED')}
                           class="text-xs">
-                          {(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).factCheckStatus ?? 'N/A'}
+                          {(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).factCheckStatus ?? 'N/A'}
                         </Badge>
                       </div>
                     </div>
@@ -475,9 +475,9 @@ https://svelte.dev/e/js_parse_error -->
                       {((result as any)?.content ?? "").substring(0, 200)}...
                     </p>
                     <div class="flex justify-between items-center text-xs text-gray-500">
-                      <span>Jurisdiction: {(result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).jurisdiction ?? 'Unknown'}</span>
-                      <span class={getProsecutionScoreColor((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).prosecutionScore ?? 0)}>
-                        Prosecution Score: {(((result as { success?: any; documents?: any; summary?: any; caseAISummaryScore?: any; documentsProcessed?: any; error?: any; results?: any; ragScore?: any; aggregatedAnalysis?: any; sourceDocument?: any; similarity?: any; factCheckStatus?: any; jurisdiction?: any; prosecutionScore?: any }).prosecutionScore ?? 0) * 100).toFixed(0)}%
+                      <span>Jurisdiction: {(result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).jurisdiction ?? 'Unknown'}</span>
+                      <span class={getProsecutionScoreColor((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).prosecutionScore ?? 0)}>
+                        Prosecution Score: {(((result as { success?: unknown; documents?: unknown; summary?: unknown; caseAISummaryScore?: unknown; documentsProcessed?: unknown; error?: unknown; results?: unknown; ragScore?: unknown; aggregatedAnalysis?: unknown; sourceDocument?: unknown; similarity?: unknown; factCheckStatus?: unknown; jurisdiction?: unknown; prosecutionScore?: unknown }).prosecutionScore ?? 0) * 100).toFixed(0)}%
                       </span>
                     </div>
                   </div>
@@ -567,7 +567,7 @@ https://svelte.dev/e/js_parse_error -->
         </h3>
         <button
           type="button"
-          on:click={clearLogs}
+          onclick={clearLogs}
           class="px-3 py-1 border border-gray-300 text-sm rounded-md hover:bg-gray-50">
           Clear Logs
         </button>

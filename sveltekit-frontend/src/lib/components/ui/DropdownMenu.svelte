@@ -13,7 +13,7 @@
    }: { items = [],
     trigger = 'Menu',
     ...props 
-  : any } = $props();
+  : unknown } = $props();
 </script>
 
 <DropdownMenuRoot {...props}>
@@ -21,15 +21,15 @@
   
   <DropdownMenuContent>
     {#each items as item, index}
-      {#if (item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).separator}
+      {#if (item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown }).separator}
         <DropdownMenuSeparator />
       {:else}
         <DropdownMenuItem 
-          value={(item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).value}
-          disabled={(item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).disabled || false}
-          on:click={() => (item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).onClick?.((item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).value)}
+          value={(item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown }).value}
+          disabled={(item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown }).disabled || false}
+          onclick={() => (item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown }).onClick?.((item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown }).value)}
         >
-          {(item as { separator?: any; value?: any; disabled?: any; onClick?: any; label?: any }).label}
+          {(item as { separator?: unknown; value?: unknown; disabled?: unknown; onClick?: unknown; label?: unknown }).label}
         </DropdownMenuItem>
       {/if}
     {/each}

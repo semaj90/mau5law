@@ -6,9 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -359,13 +357,13 @@ https://svelte.dev/e/js_parse_error -->
             <div class="space-y-2">
               <h4 class="font-semibold">🎯 Demo Actions:</h4>
               <div class="space-y-2">
-                <Button class="bits-btn" on:click={demoLogin} disabled={authenticatedUser !== null}>
+                <Button class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
 Demo Login
 
-                <Button class="bits-btn" on:click={demoAIInteraction} disabled={!authenticatedUser}>
+                <Button class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
 Test AI Assistant
 
-                <Button class="bits-btn" on:click={demoLogout} disabled={!authenticatedUser} variant="outline">
+                <Button class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="outline">
 Demo Logout
 
               </div>
@@ -387,7 +385,7 @@ Demo Logout
               <p class="text-gray-600">
                 Demonstrate the modern authentication system with Svelte 5 runes and XState integration.
               </p>
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 showAuthDialog = true}>
                 Open Authentication Dialog
 
@@ -402,7 +400,7 @@ showAuthDialog = true}>
                   <p><strong>Status:</strong> {authenticatedUser.isActive ? 'Active' : 'Inactive'}</p>
                 </div>
               </div>
-              <Button class="bits-btn" on:click={demoLogout} variant="outline">
+              <Button class="bits-btn" onclick={demoLogout} variant="outline">
 Logout
 
             </div>
@@ -442,14 +440,14 @@ Logout
               
               <div class="flex gap-2">
                 <Button class="bits-btn" 
-                  on:click={() =>
+                  onclick={() =>
 sessionManager.performSecurityCheck()} 
                   size="sm"
                 >
                   Security Check
 
                 <Button class="bits-btn" 
-                  on:click={() =>
+                  onclick={() =>
 sessionManager.refreshSession()} 
                   size="sm" 
                   variant="outline"
@@ -517,7 +515,7 @@ sessionManager.refreshSession()}
               </div>
             </div>
             
-            <Button class="bits-btn" on:click={checkSystemHealth}>
+            <Button class="bits-btn" onclick={checkSystemHealth}>
 Refresh System Health
 
           </div>

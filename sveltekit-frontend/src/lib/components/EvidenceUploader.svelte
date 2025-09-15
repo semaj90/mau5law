@@ -5,7 +5,7 @@
   interface Props {
     caseId: string;
     maxFileSize?: number;
-    onuploaded?: (event: { file: File; evidence: any }) => void;
+    onuploaded?: (event: { file: File; evidence: unknown }) => void;
   }
 
   // Svelte 5 props with event handlers
@@ -93,19 +93,19 @@
           body: formData
         });
 
-        if ((response as { ok?: any; json?: any }).ok) {
-          const result = await (response as { ok?: any; json?: any }).json();
+        if ((response as { ok?: unknown; json?: unknown }).ok) {
+          const result = await (response as { ok?: unknown; json?: unknown }).json();
           uploadProgress = ((i + 1) / files.length) * 100;
 
           // Dispatch success event
           if (onuploaded) {
             onuploaded({
               file,
-              evidence: (result as { evidence?: any }).evidence
+              evidence: (result as { evidence?: unknown }).evidence
             });
           }
         } else {
-          const error = await (response as { ok?: any; json?: any }).json();
+          const error = await (response as { ok?: unknown; json?: unknown }).json();
           uploadStatus = `Upload failed: ${error.error}`;
         }
       }
@@ -158,7 +158,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button 
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" 
-      on:click={() => { componentError = null; }}
+      onclick={() => { componentError = null; }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -170,14 +170,14 @@
     class="upload-zone"
     class:drag-active={dragActive}
     class:uploading
-    on:dragover={handleDragOver}
+    ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    on:drop={handleDrop}
+    ondrop={handleDrop}
     role="button" 
     aria-label="Upload evidence files - drag and drop or click to browse"
     tabindex="0"
-    on:click={() => document.getElementById('file-input')?.click()}
-    on:keydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
+    onclick={() => document.getElementById('file-input')?.click()}
+    onkeydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
   >
     <input
       id="file-input"
@@ -185,7 +185,7 @@
       multiple
       accept={allAllowedTypes.join(',')}
       style="display: none;"
-      on:change={handleFileSelect}
+      onchange={handleFileSelect}
     />
 
     {#if uploading}

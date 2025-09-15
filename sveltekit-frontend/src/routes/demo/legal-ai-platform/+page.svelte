@@ -154,7 +154,7 @@
       { id: 'cases', label: 'Case Management', icon: Scale }
     ] as tab}
       <button
-        on:click={() => selectedDemo = tab.id}
+        onclick={() => selectedDemo = tab.id}
         class="p-4 border rounded-lg text-left transition-all hover:shadow-md {selectedDemo === tab.id ? 'bg-primary/5 border-primary' : 'hover:border-primary/50'}"
       >
         <div class="flex items-center gap-3">
@@ -266,7 +266,7 @@
       <div.Content class="space-y-4 nes-container">
         <div class="flex gap-3">
           <OrchestratedButton.AnalyzeEvidence
-            on:click={runRAGDemo}
+            onclick={runRAGDemo}
             disabled={isRunningDemo}
             class="gap-2"
           >
@@ -279,7 +279,7 @@
             {/if}
           </OrchestratedButton.AnalyzeEvidence>
           
-          <button class="nes-btn" variant="outline" on:click={() => goto('/dashboard/search')}>
+          <button class="nes-btn" variant="outline" onclick={() => goto('/dashboard/search')}>
             <Search class="w-4 h-4 mr-2" />
             Open Vector Search
           </button>
@@ -310,7 +310,7 @@
       <div.Content class="space-y-4 nes-container">
         <div class="flex gap-3">
           <OrchestratedButton.SearchSimilar
-            on:click={runVectorSearchDemo}
+            onclick={runVectorSearchDemo}
             disabled={isRunningDemo}
             class="gap-2"
           >
@@ -323,7 +323,7 @@
             {/if}
           </OrchestratedButton.SearchSimilar>
           
-          <button class="nes-btn" variant="outline" on:click={() => goto('/dashboard/search')}>
+          <button class="nes-btn" variant="outline" onclick={() => goto('/dashboard/search')}>
             <Eye class="w-4 h-4 mr-2" />
             Open Search Dashboard
           </button>
@@ -386,14 +386,14 @@
                   <button class="nes-btn" 
                     variant="outline" 
                     size="sm"
-                    on:click={() => navigateToCase(caseItem.id)}
+                    onclick={() => navigateToCase(caseItem.id)}
                   >
                     <Eye class="w-4 h-4 mr-1" />
                     View
                   </button>
                   <OrchestratedButton.AnalyzeEvidence
                     size="sm"
-                    on:click={() => navigateToRAG(caseItem.id)}
+                    onclick={() => navigateToRAG(caseItem.id)}
                   >
                     <Brain class="w-4 h-4 mr-1" />
                     RAG
@@ -440,15 +440,15 @@
 
   <!-- Platform Actions -->
   <div class="flex justify-center gap-4 pt-8">
-    <button class="nes-btn" on:click={() => goto('/dashboard/search')} class="gap-2">
+    <button class="nes-btn" onclick={() => goto('/dashboard/search')} class="gap-2">
       <Search class="w-4 h-4" />
       Open Search Dashboard
     </button>
-    <button class="nes-btn" on:click={() => goto('/cases')} variant="outline" class="gap-2">
+    <button class="nes-btn" onclick={() => goto('/cases')} variant="outline" class="gap-2">
       <Scale class="w-4 h-4" />
       Manage Cases
     </button>
-    <button class="nes-btn" on:click={() => goto('/auth/login')} variant="outline" class="gap-2">
+    <button class="nes-btn" onclick={() => goto('/auth/login')} variant="outline" class="gap-2">
       <Shield class="w-4 h-4" />
       User Authentication
     </button>

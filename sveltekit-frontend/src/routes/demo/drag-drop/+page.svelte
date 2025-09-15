@@ -90,7 +90,7 @@
         <div class="file-summary">
           <div class="summary-header">
             <h3>Selected Files ({uploadedFiles.length})</h3>
-            <button class="clear-button" on:click={clearFiles}>
+            <button class="clear-button" onclick={clearFiles}>
               Clear All
             </button>
           </div>

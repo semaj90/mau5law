@@ -3,9 +3,7 @@
   import 'nes.css/css/nes.min.css';
   import MonacoEditor from "$lib/components/MonacoEditor.svelte";
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte";
   import { evidenceStore } from "$lib/stores/evidenceStore";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
@@ -196,14 +194,14 @@
 
         <div class="space-y-4">
           {#if !demoMode}
-            <Button class="bits-btn" on:click={() =>
+            <Button class="bits-btn" onclick={() =>
 startDemoMode()}>
               <Activity class="space-y-4" />
               Start Demo
 
           {/if}
 
-          <Button class="bits-btn" variant="outline" on:click={() =>
+          <Button class="bits-btn" variant="outline" onclick={() =>
 clearAllEvidence()}>
             <Database class="space-y-4" />
             Clear All
@@ -391,7 +389,7 @@ clearAllEvidence()}>
                 size="sm"
                 variant="outline"
                 class="space-y-4 bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 (selectedTypes = ["video", "image"])}
               >
                 Visual Evidence
@@ -400,7 +398,7 @@ clearAllEvidence()}>
                 size="sm"
                 variant="outline"
                 class="space-y-4 bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 (selectedTypes = ["testimony", "document"])}
               >
                 Testimonial
@@ -409,7 +407,7 @@ clearAllEvidence()}>
                 size="sm"
                 variant="outline"
                 class="space-y-4 bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 {
                   selectedTypes = [];
                   searchQuery = "";

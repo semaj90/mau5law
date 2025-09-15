@@ -340,7 +340,7 @@ https://svelte.dev/e/expected_token -->
     transition: all 0.2s ease;
   }
 
-  .sample-(item as { active?: any }).active {
+  .sample-(item as { active?: unknown }).active {
     border-color: var(--ps1-accent);
     box-shadow: 0 0 10px var(--ps1-glow);
   }

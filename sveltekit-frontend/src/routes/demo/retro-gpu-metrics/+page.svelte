@@ -184,7 +184,7 @@ https://svelte.dev/e/tag_invalid_name -->
     <!-- Effects Controls -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <button
-        on:click={togglePS1Effects}
+        onclick={togglePS1Effects}
         class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 
                text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105
                {ps1EffectsActive ? 'ring-2 ring-orange-300' : ''}"
@@ -193,7 +193,7 @@ https://svelte.dev/e/tag_invalid_name -->
       </button>
 
       <button
-        on:click={toggleParallax}
+        onclick={toggleParallax}
         class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 
                text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105
                {parallaxActive ? 'ring-2 ring-blue-300' : ''}"
@@ -202,7 +202,7 @@ https://svelte.dev/e/tag_invalid_name -->
       </button>
 
       <button
-        on:click={toggleCRTScans}
+        onclick={toggleCRTScans}
         class="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 
                text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105
                {crtScansActive ? 'ring-2 ring-green-300' : ''}"
@@ -211,7 +211,7 @@ https://svelte.dev/e/tag_invalid_name -->
       </button>
 
       <button
-        on:click={toggleRetroTransform}
+        onclick={toggleRetroTransform}
         class="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 
                text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105
                {retroTransformActive ? 'ring-2 ring-pink-300' : ''}"
@@ -289,7 +289,7 @@ https://svelte.dev/e/tag_invalid_name -->
     <!-- Metrics Actions -->
     <div class="flex flex-wrap gap-4 justify-center">
       <button
-        on:click={forceFlush}
+        onclick={forceFlush}
         class="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-6 rounded-lg 
                transition-all duration-200 transform hover:scale-105"
       >
@@ -297,7 +297,7 @@ https://svelte.dev/e/tag_invalid_name -->
       </button>
       
       <button
-        on:click={drainMetrics}
+        onclick={drainMetrics}
         class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg 
                transition-all duration-200 transform hover:scale-105"
       >

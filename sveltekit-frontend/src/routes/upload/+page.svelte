@@ -16,16 +16,16 @@
   const caseId = $page.url.searchParams.get('caseId') || '';
 
   // Upload completion handler
-  function handleUploadComplete(result: any) {
+  function handleUploadComplete(result: unknown) {
     console.log('Upload completed:', result);
     
     // Show success notification
     const notification = {
       type: 'success',
       title: 'Upload Successful',
-      message: `Document "${(result as { objectName?: any; documentId?: any; url?: any }).objectName}" has been uploaded and is being processed.`,
-      documentId: (result as { objectName?: any; documentId?: any; url?: any }).documentId,
-      url: (result as { objectName?: any; documentId?: any; url?: any }).url
+      message: `Document "${(result as { objectName?: unknown; documentId?: unknown; url?: unknown }).objectName}" has been uploaded and is being processed.`,
+      documentId: (result as { objectName?: unknown; documentId?: unknown; url?: unknown }).documentId,
+      url: (result as { objectName?: unknown; documentId?: unknown; url?: unknown }).url
     };
     
     // Store notification in session storage for display
@@ -60,8 +60,8 @@
   async function loadRecentUploads() {
     try {
       const response = await fetch('/api/documents/recent');
-      if ((response as { ok?: any; json?: any }).ok) {
-        recentUploads = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        recentUploads = await (response as { ok?: unknown; json?: unknown }).json();
         showRecentUploads = true;
       }
     } catch (error) {
@@ -134,7 +134,7 @@
           <h3>📋 Recent Uploads</h3>
           <button
             type="button"
-            on:click={loadRecentUploads}
+            onclick={loadRecentUploads}
             class="text-button"
           >
             {showRecentUploads ? 'Refresh' : 'Show'}

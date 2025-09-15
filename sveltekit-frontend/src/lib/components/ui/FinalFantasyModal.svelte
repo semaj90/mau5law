@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount } from 'svelte';
   import { fade, scale } from 'svelte/transition';
@@ -80,7 +81,7 @@
     role="dialog"
     aria-modal="true"
     aria-labelledby="modal-title"
-    on:click={handleClose}
+    onclick={handleClose}
     keydown={handleKeydown}
     tabindex="-1"
     bind:this={modalElement}
@@ -112,7 +113,7 @@
           <button
             class="absolute top-2 right-2 w-6 h-6 text-white hover:text-red-300
                    transition-colors duration-200 font-bold text-xl leading-none"
-            on:click={handleClose}
+            onclick={handleClose}
             aria-label="Close modal"
           >
             ×

@@ -7,7 +7,7 @@
     open?: boolean;
     title?: string;
     description?: string;
-    analyticsLog?: (event: any) => void;
+    analyticsLog?: (event: unknown) => void;
     onClose?: () => void;
   }
 

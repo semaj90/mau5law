@@ -224,7 +224,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="console-option"
               class:selected={currentConsole === console.value}
-              on:click={() => currentConsole = console.value}
+              onclick={() => currentConsole = console.value}
             >
               <div class="console-label">{console.label}</div>
               <div class="console-desc">{console.description}</div>
@@ -243,37 +243,37 @@ https://svelte.dev/e/js_parse_error -->
         <div class="demo-controls">
           <Button class="bits-btn"
             variant={isDetectiveMode ? 'default' : 'outline'}
-            on:click={toggleDetectiveMode}
+            onclick={toggleDetectiveMode}
           >
 {isDetectiveMode ? 'Exit Detective Mode' : 'Enter Detective Mode'}
 
           <Button class="bits-btn"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 simulateActivity('idle')}
           >
             Simulate Idle State
 
           <Button class="bits-btn"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 simulateActivity('typing')}
           >
             Simulate Typing
 
           <Button class="bits-btn"
             variant="destructive"
-            on:click={addCriticalAlert}
+            onclick={addCriticalAlert}
           >
 Add Critical Alert
 
         </div>
         
         <div class="utility-controls">
-          <Button class="bits-btn" variant="secondary" on:click={clearRecommendations}>
+          <Button class="bits-btn" variant="secondary" onclick={clearRecommendations}>
 Clear All
 
-          <Button class="bits-btn" variant="secondary" on:click={resetDemo}>
+          <Button class="bits-btn" variant="secondary" onclick={resetDemo}>
 Reset Demo
 
         </div>

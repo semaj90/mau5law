@@ -71,8 +71,8 @@
       bind:value={searchQuery}
       placeholder="Search legal documents and cases..."
       showAdvancedFilters={true}
-      on:search={handleSearch}
-      on:filter={handleFilter}
+      onsearch={handleSearch}
+      onfilter={handleFilter}
     />
     <p class="status">Query: <strong>{searchQuery || 'Empty'}</strong></p>
   </div>

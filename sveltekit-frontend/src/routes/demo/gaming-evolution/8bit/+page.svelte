@@ -1,9 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { Dialog } from '$lib/components/ui/dialog';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import {
     Card,
@@ -103,13 +101,13 @@
         <div class="nes-container">
           <p class="nes-text is-primary">GAME CONTROLS</p>
           <div class="button-grid">
-            <Button class="nes-btn action-btn bits-btn bits-btn" on:click={increaseScore}>
+            <Button class="nes-btn action-btn bits-btn bits-btn" onclick={increaseScore}>
 A BUTTON
 
-            <Button class="nes-btn action-btn bits-btn bits-btn" on:click={decreaseHealth}>
+            <Button class="nes-btn action-btn bits-btn bits-btn" onclick={decreaseHealth}>
 B BUTTON
 
-            <Button class="nes-btn start-btn bits-btn bits-btn" on:click={() =>
+            <Button class="nes-btn start-btn bits-btn bits-btn" onclick={() =>
 dialogOpen = true}>
               START
 
@@ -230,10 +228,10 @@ SELECT
             </div>
         </div>
         <div class="menu-actions">
-          <Button class="nes-btn is-primary bits-btn bits-btn" on:click={() =>
+          <Button class="nes-btn is-primary bits-btn bits-btn" onclick={() =>
 dialogOpen = false}>START GAME
 
-          <Button class="nes-btn bits-btn bits-btn" on:click={() =>
+          <Button class="nes-btn bits-btn bits-btn" onclick={() =>
 dialogOpen = false}>CANCEL
 
         </div>

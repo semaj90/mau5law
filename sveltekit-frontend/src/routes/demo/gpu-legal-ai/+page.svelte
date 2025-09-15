@@ -85,10 +85,10 @@
       
       // Fallback check via API
       const response = await fetch('/api/v1/gpu/status');
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        isGpuAvailable = (data as { available?: any; info?: any }).available;
-        gpuInfo = (data as { available?: any; info?: any }).info;
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        isGpuAvailable = (data as { available?: unknown; info?: unknown }).available;
+        gpuInfo = (data as { available?: unknown; info?: unknown }).info;
       }
     } catch (error) {
       console.error('GPU check failed:', error);
@@ -273,7 +273,7 @@
         { id: 'settings', label: 'Configuration', icon: Settings }
       ] as tab}
         <button
-          on:click={() => currentTab = tab.id}
+          onclick={() => currentTab = tab.id}
           class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {currentTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
@@ -324,7 +324,7 @@
           
           <div class="flex gap-2">
             <Button 
-              on:click={processLegalQuery}
+              onclick={processLegalQuery}
               disabled={!legalQuery.trim() || gpuStatus === 'processing'}
               class="flex-1 gap-2"
             >
@@ -338,7 +338,7 @@
 
             <button class="nes-btn" 
               variant="outline" 
-              on:click={resetProcessor}
+              onclick={resetProcessor}
               disabled={gpuStatus === 'processing'}
             >
               <RefreshCw class="w-4 h-4" />
@@ -519,7 +519,7 @@
       <divContent class="space-y-6">
         <div class="flex gap-3">
           <Button 
-            on:click={runBenchmark}
+            onclick={runBenchmark}
             disabled={gpuStatus === 'processing' || !isGpuAvailable}
             class="gap-2"
           >
@@ -557,7 +557,7 @@
                     <span class="font-medium text-sm">{test.name}</span>
                     <Badge variant="secondary">{test.unit}</Badge>
                   </div>
-                  <p class="text-2xl font-bold text-primary">{test.(result as { toLocaleString?: any }).toLocaleString()}</p>
+                  <p class="text-2xl font-bold text-primary">{test.(result as { toLocaleString?: unknown }).toLocaleString()}</p>
                 </div>
               {/each}
             </div>

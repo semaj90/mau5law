@@ -45,7 +45,7 @@
   } from 'lucide-svelte';
 
   // Import our enhanced UI components
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Card } from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/Input.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
@@ -82,8 +82,8 @@
         }),
       });
 
-      const data = await (response as { json?: any }).json();
-      vectorResults = (data as { results?: any }).results || [];
+      const data = await (response as { json?: unknown }).json();
+      vectorResults = (data as { results?: unknown }).results || [];
 
       notifications.add({
         type: 'success',
@@ -117,7 +117,7 @@
           bind:value={searchQuery}
           placeholder="Search cases, evidence, legal documents..."
           class="flex-1" />
-  <Button class="bits-btn" on:click={performVectorSearch} loading={isSearching} disabled={!searchQuery.trim()}>
+  <Button class="bits-btn" onclick={performVectorSearch} loading={isSearching} disabled={!searchQuery.trim()}>
 <Search class="w-5 h-5 mr-2" />
           Search
 </Button>
@@ -132,14 +132,14 @@
                 <div class="flex justify-between items-start">
                   <div>
                     <h5 class="font-semibold text-nier-white">
-                      {(result as { metadata?: any; content?: any; score?: any }).metadata?.title || 'Untitled'}
+                      {(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata?.title || 'Untitled'}
                     </h5>
-                    <p class="text-sm text-nier-text-muted">{(result as { metadata?: any; content?: any; score?: any }).content?.slice(0, 100)}...</p>
+                    <p class="text-sm text-nier-text-muted">{(result as { metadata?: unknown; content?: unknown; score?: unknown }).content?.slice(0, 100)}...</p>
                     <span class="text-xs text-nier-accent"
-                      >Score: {((result as { metadata?: any; content?: any; score?: any }).score * 100).toFixed(1)}%</span>
+                      >Score: {((result as { metadata?: unknown; content?: unknown; score?: unknown }).score * 100).toFixed(1)}%</span>
                   </div>
-                  <span class="badge status-{(result as { metadata?: any; content?: any; score?: any }).metadata?.type || 'default'}"
-                    >{(result as { metadata?: any; content?: any; score?: any }).metadata?.type || 'document'}</span>
+                  <span class="badge status-{(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata?.type || 'default'}"
+                    >{(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata?.type || 'document'}</span>
                 </div>
               </div>
             {/each}
@@ -179,7 +179,7 @@ Delete Action
       <div class="nes-container">
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Modal Component</h3>
-          <Button class="bits-btn" on:click={() =>
+          <Button class="bits-btn" onclick={() =>
 (modalOpen = true)}>Open Modal
 </Button>
 
@@ -190,10 +190,10 @@ Delete Action
                 integrates with bits-ui and follows Svelte 5 best practices.
               </p>
               <div class="flex gap-2 justify-end">
-                <Button class="bits-btn" variant="ghost" on:click={() =>
+                <Button class="bits-btn" variant="ghost" onclick={() =>
 (modalOpen = false)}>Cancel
 </Button>
-                <Button class="bits-btn" on:click={() =>
+                <Button class="bits-btn" onclick={() =>
 (modalOpen = false)}>Acknowledge
 </Button>
               </div>
@@ -290,12 +290,12 @@ Delete Action
       </div>
       <nav class="space-y-2">
         {#each [{ icon: LayoutDashboard, label: 'Dashboard' }, { icon: FileText, label: 'Cases' }, { icon: Scale, label: 'Evidence' }, { icon: Users, label: 'Users' }] as item}
-          {@const IconComponent = (item as { icon?: any; label?: any }).icon}
+          {@const IconComponent = (item as { icon?: unknown; label?: unknown }).icon}
           <a
             href="/showcase"
             class="flex items-center gap-3 p-2 rounded hover:bg-nier-surface-light text-nier-text">
             <IconComponent class="w-5 h-5" />
-            {(item as { icon?: any; label?: any }).label}
+            {(item as { icon?: unknown; label?: unknown }).label}
           </a>
         {/each}
       </nav>

@@ -16,7 +16,7 @@
     config = {} as Partial<ProgressiveEnhancementConfig>,
     // Event handlers
     onsubmit = undefined as ((data: FormData) => void) | undefined,
-    onsuccess = undefined as ((result: any) => void) | undefined,
+    onsuccess = undefined as ((result: unknown) => void) | undefined,
     onerror = undefined as ((error: string) => void) | undefined,
     // Form styling
     class: className = '',
@@ -45,7 +45,7 @@
   };
 
   // Validation functions
-  function validateField(fieldName: string, value: any): string | null {
+  function validateField(fieldName: string, value: unknown): string | null {
     switch (fieldName) {
       case 'email':
         return progressiveForm.validateRequired(value, 'Email') || 
@@ -54,7 +54,7 @@
         return progressiveForm.validateRequired(value, 'Password') ||
                progressiveForm.validateLength(value, 8, 128);
       case 'confirmPassword':
-        if (value !== formState.(data as { password?: any; firstName?: any; lastName?: any; email?: any; confirmPassword?: any; terms?: any }).password) {
+        if (value !== formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).password) {
           return 'Passwords do not match';
         }
         return null;
@@ -72,7 +72,7 @@
   }
 
   // Handle field changes with validation
-  function handleFieldChange(fieldName: string, value: any) {
+  function handleFieldChange(fieldName: string, value: unknown) {
     // Update form data
     formState.data[fieldName] = value;
     formState.isDirty = true;
@@ -127,7 +127,7 @@
     }
     return async ({ result, update }) => {
       isSubmitting = false;
-      if ((result as { type?: any; data?: any }).type === 'success') {
+      if ((result as { type?: unknown; data?: unknown }).type === 'success') {
         submitMessage = 'Form submitted successfully!';
         submitMessageType = 'success';
         // Reset form on success if configured
@@ -135,19 +135,19 @@
           formState = progressiveForm.createFormState();
         }
         if (onsuccess) {
-          onsuccess((result as { type?: any; data?: any }).data);
+          onsuccess((result as { type?: unknown; data?: unknown }).data);
         }
-      } else if ((result as { type?: any; data?: any }).type === 'failure') {
-        submitMessage = (result as { type?: any; data?: any }).data?.message || 'Form submission failed. Please try again.';
+      } else if ((result as { type?: unknown; data?: unknown }).type === 'failure') {
+        submitMessage = (result as { type?: unknown; data?: unknown }).data?.message || 'Form submission failed. Please try again.';
         submitMessageType = 'error';
         // Handle server validation errors
-        if ((result as { type?: any; data?: any }).data?.errors) {
-          formState.errors = { ...formState.errors, ...(result as { type?: any; data?: any }).(data as { password?: any; firstName?: any; lastName?: any; email?: any; confirmPassword?: any; terms?: any }).errors };
+        if ((result as { type?: unknown; data?: unknown }).data?.errors) {
+          formState.errors = { ...formState.errors, ...(result as { type?: unknown; data?: unknown }).(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).errors };
         }
         if (onerror) {
           onerror(submitMessage);
         }
-      } else if ((result as { type?: any; data?: any }).type === 'error') {
+      } else if ((result as { type?: unknown; data?: unknown }).type === 'error') {
         submitMessage = 'An unexpected error occurred. Please try again.';
         submitMessageType = 'error';
         if (onerror) {
@@ -207,7 +207,7 @@
   {method}
   class="progressive-form {className}"
   use:enhance={handleEnhancedSubmit}
-  on:submit={handleNativeSubmit}
+  onsubmit={handleNativeSubmit}
   novalidate
   data-progressive-enhanced="true"
 >
@@ -257,9 +257,9 @@
           type="text"
           name="firstName"
           class="form-input {hasError('firstName') ? 'error' : ''}"
-          bind:value={formState.(data as { password?: any; firstName?: any; lastName?: any; email?: any; confirmPassword?: any; terms?: any }).firstName}
-          on:input={(e) => handleFieldChange('firstName', e.target.value)}
-          on:blur={() => formState.touched.firstName = true}
+          bind:value={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).firstName}
+          oninput={(e) => handleFieldChange('firstName', e.target.value)}
+          onblur={() => formState.touched.firstName = true}
           required
         />
         {#if hasError('firstName')}
@@ -282,9 +282,9 @@
           type="text"
           name="lastName"
           class="form-input {hasError('lastName') ? 'error' : ''}"
-          bind:value={formState.(data as { password?: any; firstName?: any; lastName?: any; email?: any; confirmPassword?: any; terms?: any }).lastName}
-          on:input={(e) => handleFieldChange('lastName', e.target.value)}
-          on:blur={() => formState.touched.lastName = true}
+          bind:value={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).lastName}
+          oninput={(e) => handleFieldChange('lastName', e.target.value)}
+          onblur={() => formState.touched.lastName = true}
           required
         />
         {#if hasError('lastName')}
@@ -313,9 +313,9 @@
         type="email"
         name="email"
         class="form-input {hasError('email') ? 'error' : ''}"
-        bind:value={formState.(data as { password?: any; firstName?: any; lastName?: any; email?: any; confirmPassword?: any; terms?: any }).email}
-        on:input={(e) => handleFieldChange('email', e.target.value)}
-        on:blur={() => formState.touched.email = true}
+        bind:value={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).email}
+        oninput={(e) => handleFieldChange('email', e.target.value)}
+        onblur={() => formState.touched.email = true}
         autocomplete="email"
         required
       />
@@ -339,9 +339,9 @@
         type="password"
         name="password"
         class="form-input {hasError('password') ? 'error' : ''}"
-        bind:value={formState.(data as { password?: any; firstName?: any; lastName?: any; email?: any; confirmPassword?: any; terms?: any }).password}
-        on:input={(e) => handleFieldChange('password', e.target.value)}
-        on:blur={() => formState.touched.password = true}
+        bind:value={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).password}
+        oninput={(e) => handleFieldChange('password', e.target.value)}
+        onblur={() => formState.touched.password = true}
         autocomplete="new-password"
         minlength="8"
         required
@@ -369,9 +369,9 @@
         type="password"
         name="confirmPassword"
         class="form-input {hasError('confirmPassword') ? 'error' : ''}"
-        bind:value={formState.(data as { password?: any; firstName?: any; lastName?: any; email?: any; confirmPassword?: any; terms?: any }).confirmPassword}
-        on:input={(e) => handleFieldChange('confirmPassword', e.target.value)}
-        on:blur={() => formState.touched.confirmPassword = true}
+        bind:value={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).confirmPassword}
+        oninput={(e) => handleFieldChange('confirmPassword', e.target.value)}
+        onblur={() => formState.touched.confirmPassword = true}
         autocomplete="new-password"
         required
       />
@@ -397,8 +397,8 @@
         type="checkbox"
         name="terms"
         class="form-checkbox"
-        bind:checked={formState.(data as { password?: any; firstName?: any; lastName?: any; email?: any; confirmPassword?: any; terms?: any }).terms}
-        on:change={(e) => handleFieldChange('terms', e.target.checked)}
+        bind:checked={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).terms}
+        onchange={(e) => handleFieldChange('terms', e.target.checked)}
         aria-describedby={hasError('terms') ? progressiveForm.generateErrorId(fieldIds.terms) : undefined}
         required
       />
@@ -437,7 +437,7 @@
     <button
       type="button"
       class="reset-button secondary"
-      on:click={() => {
+      onclick={() => {
         formState = progressiveForm.createFormState();
         submitMessage = '';
         submitMessageType = '';

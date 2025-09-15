@@ -13,8 +13,8 @@ https://svelte.dev/e/js_parse_error -->
     required?: boolean;
     variant?: 'default' | 'legal' | 'search' | 'ai';
     size?: 'sm' | 'md' | 'lg';
-    leftIcon?: any;
-    rightIcon?: any;
+    leftIcon?: unknown;
+    rightIcon?: unknown;
     class?: string;
   }
 

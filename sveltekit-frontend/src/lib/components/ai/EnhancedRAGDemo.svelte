@@ -172,14 +172,14 @@
       class="tab px-4 py-2 font-medium {activeTab === 'analyze'
         ? 'border-b-2 border-blue-500 text-blue-600'
         : 'text-gray-500 hover:text-gray-700'}"
-      on:click={() => (activeTab = 'analyze')}>
+      onclick={() => (activeTab = 'analyze')}>
       Document Analysis
     </button>
     <button
       class="tab px-4 py-2 font-medium {activeTab === 'query'
         ? 'border-b-2 border-blue-500 text-blue-600'
         : 'text-gray-500 hover:text-gray-700'}"
-      on:click={() => (activeTab = 'query')}>
+      onclick={() => (activeTab = 'query')}>
       Enhanced RAG Query
     </button>
   </div>
@@ -214,7 +214,7 @@
                 )} words
               </div>
               <Button
-                on:click={analyzeDocument}
+                onclick={analyzeDocument}
                 disabled={isAnalyzing || !sampleLegalText.trim()}
                 class="px-6 bits-btn bits-btn">
 {isAnalyzing ? 'Analyzing...' : 'Analyze Document'}
@@ -414,7 +414,7 @@
 
             <div class="flex justify-end">
               <Button
-                on:click={performRAGQuery}
+                onclick={performRAGQuery}
                 disabled={isAnalyzing || !queryText.trim()}
                 class="px-6 bits-btn bits-btn">
 {isAnalyzing ? 'Querying...' : 'Execute RAG Query'}

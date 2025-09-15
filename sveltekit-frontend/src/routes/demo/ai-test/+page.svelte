@@ -92,7 +92,7 @@
 
   <div class="mb-6">
     <button 
-      on:click={runAITests}
+      onclick={runAITests}
       disabled={isRunning}
       class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
     >
@@ -103,29 +103,29 @@
   <div class="space-y-4">
     {#each testResults as result}
       <div class="p-4 border rounded-lg {
-        (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'success' ? 'border-green-200 bg-green-50' :
-        (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'error' ? 'border-red-200 bg-red-50' :
+        (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status === 'success' ? 'border-green-200 bg-green-50' :
+        (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status === 'error' ? 'border-red-200 bg-red-50' :
         'border-gray-200 bg-gray-50'
       }">
         <div class="flex items-center justify-between mb-2">
-          <h3 class="font-semibold">{(result as { status?: any; test?: any; duration?: any; message?: any }).test}</h3>
+          <h3 class="font-semibold">{(result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).test}</h3>
           <div class="flex items-center gap-2">
-            {#if (result as { status?: any; test?: any; duration?: any; message?: any }).duration}
-              <span class="text-sm text-gray-500">{(result as { status?: any; test?: any; duration?: any; message?: any }).duration}ms</span>
+            {#if (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).duration}
+              <span class="text-sm text-gray-500">{(result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).duration}ms</span>
             {/if}
             <span class="px-2 py-1 text-xs rounded {
-              (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'success' ? 'bg-green-200 text-green-800' :
-              (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'error' ? 'bg-red-200 text-red-800' :
+              (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status === 'success' ? 'bg-green-200 text-green-800' :
+              (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status === 'error' ? 'bg-red-200 text-red-800' :
               'bg-gray-200 text-gray-800'
             }">
-              {(result as { status?: any; test?: any; duration?: any; message?: any }).status.toUpperCase()}
+              {(result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status.toUpperCase()}
             </span>
           </div>
         </div>
         <p class="text-sm {
-          (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'error' ? 'text-red-700' : 'text-gray-700'
+          (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status === 'error' ? 'text-red-700' : 'text-gray-700'
         }">
-          {(result as { status?: any; test?: any; duration?: any; message?: any }).message}
+          {(result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).message}
         </p>
       </div>
     {/each}

@@ -62,9 +62,9 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; evidence?: any }).success) {
-        evidence = { ...evidence, ...(result as { success?: any; evidence?: any }).evidence };
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; evidence?: unknown }).success) {
+        evidence = { ...evidence, ...(result as { success?: unknown; evidence?: unknown }).evidence };
         onevidenceUpdated?.();
   }
     } catch (error) {
@@ -86,9 +86,9 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; evidence?: any }).success) {
-        evidence = { ...evidence, tags: (result as { success?: any; evidence?: any }).evidence.tags };
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; evidence?: unknown }).success) {
+        evidence = { ...evidence, tags: (result as { success?: unknown; evidence?: unknown }).evidence.tags };
         newTags = '';
         onevidenceUpdated?.();
   }
@@ -145,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn" 
             variant="primary" 
             size="sm" 
-            on:click={() =>
+            onclick={() =>
 analyzeEvidence()}
             disabled={isAnalyzing}
           >
@@ -280,7 +280,7 @@ analyzeEvidence()}
                 placeholder="Add tags (comma-separated)"
                 class="space-y-4"
               />
-              <Button class="bits-btn" size="sm" on:click={() =>
+              <Button class="bits-btn" size="sm" onclick={() =>
 updateTags()} disabled={!newTags.trim()}>
                 Add
 
@@ -310,11 +310,11 @@ updateTags()} disabled={!newTags.trim()}>
 
   {#snippet footer({ close })}
   
-      <Button class="bits-btn" variant="secondary" on:click={() =>
+      <Button class="bits-btn" variant="secondary" onclick={() =>
 close()}>
         Close
 
-      <Button class="bits-btn" variant="primary" on:click={() =>
+      <Button class="bits-btn" variant="primary" onclick={() =>
 onsaveAnalysis?.()}>
         Save Analysis
 

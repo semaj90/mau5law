@@ -31,7 +31,7 @@
     height = 300,
     showGrid = true,
     animated = true
-  : any } = $props();
+  : unknown } = $props();
 
   let chartRef: HTMLDivElement
   let isVisible = $state(false);
@@ -58,7 +58,7 @@
   });
 
   // Calculate max value for scaling
-  let maxValue = $derived(() => Math.max(...(data as { map?: any; reduce?: any; length?: any }).map(d => d.value)));
+  let maxValue = $derived(() => Math.max(...(data as { map?: unknown; reduce?: unknown; length?: unknown }).map(d => d.value)));
 
   // Status colors mapping
   const statusColors = {
@@ -74,8 +74,8 @@
   }
 
   function getStatusColor(item: DataPoint): string {
-    if ((item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).color) return (item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).color;
-    if ((item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).status) return statusColors[(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).status];
+    if ((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).color) return (item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).color;
+    if ((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status) return statusColors[(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status];
     return 'var(--yorha-secondary, #ffd700)';
   }
 </script>
@@ -118,15 +118,15 @@
                 class="bar" 
                 class:animated={animated && isVisible}
                 style="
-                  height: {getBarHeight((item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value)}%; 
+                  height: {getBarHeight((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value)}%; 
                   background: {getStatusColor(item)};
                   animation-delay: {index * 100}ms;
                 "
               >
-                <div class="bar-value">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value}</div>
+                <div class="bar-value">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value}</div>
                 <div class="bar-glow" style="background: {getStatusColor(item)}"></div>
               </div>
-              <div class="bar-label">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).label}</div>
+              <div class="bar-label">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).label}</div>
             </div>
           {/each}
         </div>
@@ -136,8 +136,8 @@
           {#each data as item, index}
             <div class="progress-item">
               <div class="progress-header">
-                <span class="progress-label">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).label}</span>
-                <span class="progress-value">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value}%</span>
+                <span class="progress-label">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).label}</span>
+                <span class="progress-value">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value}%</span>
               </div>
               <div class="progress-bar">
                 <div class="progress-track"></div>
@@ -145,7 +145,7 @@
                   class="progress-fill"
                   class:animated={animated && isVisible}
                   style="
-                    width: {(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value}%; 
+                    width: {(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value}%; 
                     background: {getStatusColor(item)};
                     animation-delay: {index * 200}ms;
                   "
@@ -169,10 +169,10 @@
                 <div class="indicator-pulse"></div>
               </div>
               <div class="status-content">
-                <div class="status-label">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).label}</div>
-                <div class="status-value">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value}</div>
-                {#if (item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).status}
-                  <div class="status-badge {(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).status}">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).status.toUpperCase()}</div>
+                <div class="status-label">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).label}</div>
+                <div class="status-value">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value}</div>
+                {#if (item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status}
+                  <div class="status-badge {(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status}">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).status.toUpperCase()}</div>
                 {/if}
               </div>
             </div>
@@ -187,14 +187,14 @@
               class="timeline-item"
               class:animated={animated && isVisible}
               style="
-                left: {((item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value / maxValue) * 100}%; 
+                left: {((item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value / maxValue) * 100}%; 
                 animation-delay: {index * 100}ms;
               "
             >
               <div class="timeline-node" style="background: {getStatusColor(item)}">
                 <div class="node-pulse"></div>
               </div>
-              <div class="timeline-label">{(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).label}</div>
+              <div class="timeline-label">{(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).label}</div>
             </div>
           {/each}
         </div>
@@ -207,11 +207,11 @@
     <div class="summary-stats">
       <div class="stat">
         <span class="stat-label">TOTAL</span>
-        <span class="stat-value">{(data as { map?: any; reduce?: any; length?: any }).reduce((sum, item) => sum + (item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value, 0)}</span>
+        <span class="stat-value">{(data as { map?: unknown; reduce?: unknown; length?: unknown }).reduce((sum, item) => sum + (item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value, 0)}</span>
       </div>
       <div class="stat">
         <span class="stat-label">AVG</span>
-        <span class="stat-value">{Math.round((data as { map?: any; reduce?: any; length?: any }).reduce((sum, item) => sum + (item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).value, 0) / (data as { map?: any; reduce?: any; length?: any }).length)}</span>
+        <span class="stat-value">{Math.round((data as { map?: unknown; reduce?: unknown; length?: unknown }).reduce((sum, item) => sum + (item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value, 0) / (data as { map?: unknown; reduce?: unknown; length?: unknown }).length)}</span>
       </div>
       <div class="stat">
         <span class="stat-label">MAX</span>
@@ -462,7 +462,7 @@
     transition: all 0.3s ease;
   }
 
-  .status-(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).animated {
+  .status-(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).animated {
     animation: slideIn 0.6s ease-out;
   }
 
@@ -543,7 +543,7 @@
     transform: translate(-50%, -50%);
   }
 
-  .timeline-(item as { color?: any; status?: any; value?: any; label?: any; animated?: any }).animated {
+  .timeline-(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).animated {
     animation: fadeInUp 0.8s ease-out;
   }
 

@@ -10,7 +10,7 @@ https://svelte.dev/e/expected_token -->
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   // Card components removed - using native HTML elements
   import {
     ensureFloat32Array,
@@ -162,7 +162,7 @@ https://svelte.dev/e/expected_token -->
     <div.Content>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <button class="nes-btn" 
-          on:click={() => demonstrateArrayHandling('arrayBuffer')}
+          onclick={() => demonstrateArrayHandling('arrayBuffer')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
         >
@@ -172,7 +172,7 @@ https://svelte.dev/e/expected_token -->
         </button>
         
         <button class="nes-btn" 
-          on:click={() => demonstrateArrayHandling('float32Array')}
+          onclick={() => demonstrateArrayHandling('float32Array')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
         >
@@ -182,7 +182,7 @@ https://svelte.dev/e/expected_token -->
         </button>
         
         <button class="nes-btn" 
-          on:click={() => demonstrateArrayHandling('numberArray')}
+          onclick={() => demonstrateArrayHandling('numberArray')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
         >
@@ -192,7 +192,7 @@ https://svelte.dev/e/expected_token -->
         </button>
         
         <button class="nes-btn" 
-          on:click={() => demonstrateArrayHandling('mixedPrecision')}
+          onclick={() => demonstrateArrayHandling('mixedPrecision')}
           disabled={isProcessing}
           class="flex flex-col items-center p-4 h-auto"
         >
@@ -215,7 +215,7 @@ https://svelte.dev/e/expected_token -->
       </div.Header>
       <div.Content>
         <Button 
-          on:click={testWebGPUIntegration}
+          onclick={testWebGPUIntegration}
           disabled={isProcessing}
           class="w-full"
         >

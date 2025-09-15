@@ -144,7 +144,7 @@
       const maxScore = selectedConfidence === 'low' ? 0.7 : 1.0;
 
       return searchResults.filter(result =>
-        (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).score >= minScore && (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).score < maxScore
+        (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).score >= minScore && (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).score < maxScore
       );
     })()
   );
@@ -183,7 +183,7 @@
       searchResults = mockSearchResults.map(result => ({
         ...result,
         score: Math.random() * 0.3 + 0.7, // Random score between 0.7-1.0
-        highlights: (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).highlights.filter(() => Math.random() > 0.3) // Random highlights
+        highlights: (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).highlights.filter(() => Math.random() > 0.3) // Random highlights
       }));
 
       // Mock entity extraction
@@ -285,7 +285,7 @@
         variant="primary"
         legal
         loading={isSearching}
-        on:click={performVectorSearch}
+        onclick={performVectorSearch}
         disabled={!searchQuery.trim()}
       >
 {#if isSearching}
@@ -300,7 +300,7 @@
       {#if searchResults.length > 0}
         <Button class="bits-btn"
           variant="outline"
-          on:click={clearResults}
+          onclick={clearResults}
         >
 Clear
 </Button>
@@ -364,15 +364,15 @@ Clear
       </div>
 
       <div class="space-y-4">
-        {#each filteredResults as result ((result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).id)}
+        {#each filteredResults as result ((result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).id)}
           <div
             variant="default"
             evidenceCard
             hoverable
             clickable
             class="vector-result-item nes-container">
-            {@const SvelteComponent_1 = (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).source.type === 'case' ? Scale :
-                          (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).source.type === 'precedent' ? FileText :
+            {@const SvelteComponent_1 = (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).source.type === 'case' ? Scale :
+                          (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).source.type === 'precedent' ? FileText :
                           FileText}
             <div class="space-y-3">
               <!-- Result Header -->
@@ -382,26 +382,26 @@ Clear
                     class="w-4 h-4 text-nier-text-muted"
                   />
                   <span class="text-sm font-medium text-nier-text-primary">
-                    {(result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).source.name}
+                    {(result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).source.name}
                   </span>
                 </div>
 
-                <div class={cn('vector-confidence-badge', getConfidenceBadgeClass((result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).score))}>
-                  {formatConfidence((result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).score)}
+                <div class={cn('vector-confidence-badge', getConfidenceBadgeClass((result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).score))}>
+                  {formatConfidence((result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).score)}
                 </div>
               </div>
 
               <!-- Result Content -->
               <div class="text-sm text-nier-text-secondary leading-relaxed">
-                {@html (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).content.replace(
-                  new RegExp(`(${(result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).highlights.join('|')})`, 'gi'),
+                {@html (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).content.replace(
+                  new RegExp(`(${(result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).highlights.join('|')})`, 'gi'),
                   '<span class="vector-highlight">$1</span>'
                 )}
               </div>
 
               <!-- Result Metadata -->
               <div class="vector-metadata-grid">
-                {#each Object.entries((result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).metadata) as [key, value]}
+                {#each Object.entries((result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).metadata) as [key, value]}
                   <div class="flex flex-col">
                     <span class="text-xs font-medium text-nier-text-muted uppercase tracking-wide">
                       {key.replace(/([A-Z])/g, ' $1').toLowerCase()}
@@ -416,7 +416,7 @@ Clear
               <!-- Action Buttons -->
               <div class="flex items-center justify-between pt-2 border-t border-nier-border-muted">
                 <div class="flex gap-2">
-                  {#each (result as { score?: any; highlights?: any; id?: any; source?: any; content?: any; metadata?: any }).highlights as highlight}
+                  {#each (result as { score?: unknown; highlights?: unknown; id?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).highlights as highlight}
                     <span class="text-xs px-2 py-1 bg-nier-bg-tertiary rounded text-nier-text-secondary">
                       {highlight}
                     </span>
@@ -450,7 +450,7 @@ Add to Case
       <div class="flex justify-center gap-2">
         <Button class="bits-btn"
           variant="outline"
-          on:click={() =>
+          onclick={() =>
 searchQuery = 'contract breach non-disclosure agreement'}
         >
           Try Sample Query

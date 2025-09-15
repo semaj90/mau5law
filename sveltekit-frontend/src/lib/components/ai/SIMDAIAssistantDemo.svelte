@@ -11,7 +11,7 @@ export default {};
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { aiAssistantMachine } from '$lib/machines/aiAssistantMachine.js';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
@@ -351,7 +351,7 @@ export default {};
         </div>
         
         <div class="flex items-end">
-          <Button on:click={toggleSIMD} variant="outline" class="w-full text-sm bits-btn bits-btn">
+          <Button onclick={toggleSIMD} variant="outline" class="w-full text-sm bits-btn bits-btn">
 {enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
 
         </div>
@@ -366,10 +366,10 @@ export default {};
             placeholder="Enter your legal AI query..."
             class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             disabled={isProcessing}
-            on:keydown={(e) => e.key === 'Enter' && submitQuery()}
+            onkeydown={(e) => e.key === 'Enter' && submitQuery()}
           />
           <Button
-            on:click={submitQuery}
+            onclick={submitQuery}
             disabled={isProcessing || !queryInput.trim()}
             class={isProcessing ? 'processing' : ''}
           >
@@ -381,7 +381,7 @@ export default {};
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as sample, index}
             <Button class="bits-btn"
-              on:click={() =>
+              onclick={() =>
 loadSampleQuery(index)}
               variant="outline"
               size="sm"
@@ -391,7 +391,7 @@ loadSampleQuery(index)}
               Sample {index + 1}
 
           {/each}
-          <Button class="bits-btn" on:click={clearConversation} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={clearConversation} variant="outline" size="sm">
 Clear All
 
         </div>
@@ -560,7 +560,7 @@ Clear All
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex justify-between items-center">
           📝 System Logs
-          <Button class="bits-btn" on:click={() =>
+          <Button class="bits-btn" onclick={() =>
 processingLogs = []} variant="outline" size="sm">
             Clear Logs
 

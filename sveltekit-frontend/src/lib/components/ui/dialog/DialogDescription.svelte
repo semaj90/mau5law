@@ -3,7 +3,7 @@
   import type { Snippet } from 'svelte';
 
   interface Props {
-    description: any;
+    description: unknown;
     children?: Snippet;
   }
   let {

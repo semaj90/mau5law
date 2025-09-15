@@ -9,7 +9,7 @@
   		glowEffect?: boolean;
   		soundEnabled?: boolean;
   		onclick?: () => void;
-  		children: any
+  		children: unknown
   	}
   	let { variant = 'primary',
   		size = 'md',
@@ -27,7 +27,7 @@
   		soundEnabled = true,
   		onclick,
   		children
-  	: any } = $props();
+  	: unknown } = $props();
   	let buttonElement: HTMLButtonElement = $state(undefined as any);
   	let isPressed = $state(false);
   	function handleClick(event: MouseEvent) {
@@ -68,7 +68,7 @@
 	class:pressed={isPressed}
 	class:glow={glowEffect}
 	{disabled}
-	on:click={handleClick}
+	onclick={handleClick}
 	
 >
 	{#if loading}

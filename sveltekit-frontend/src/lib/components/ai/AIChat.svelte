@@ -21,6 +21,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   // Use the XState machine through the store
   const { state } = useChatActor();
   let userInput = $state('');
+  let chatContainer: HTMLElement | null = null;
   let chatContainer = $state<HTMLElement | null>(null);
 
   // Send message handler
@@ -67,7 +68,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         {/if}
       </p>
     </div>
-  <Button class="bits-btn" variant="outline" size="sm" on:click={handleClear}>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={(event: MouseEvent) => handleClear}>
 Clear Chat
 
   </div>
@@ -86,8 +87,8 @@ Clear Chat
     {/each}
 
     {#if $state.matches('error')}
-      <div class="chat-message error">
-        <div class="message-bubble error-bubble">
+      <div class="chat-message error" aria-live="polite" role="alert">
+        <div class="message-bubble error-bubble" aria-live="polite" role="alert">
           <p>Error: {$state.context.error?.message || 'Unknown error'}</p>
           <p>Please try again.</p>
         </div>

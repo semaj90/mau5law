@@ -1,6 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { createAccordion, melt } from 'melt';
   // Bits UI Dialog
   const {
@@ -39,13 +39,13 @@
   <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
     {#each demoItems as item}
       <button
-        class="p-4 rounded-lg border-2 transition-all hover:shadow-md {selectedDemo === (item as { id?: any; label?: any; description?: any }).id 
+        class="p-4 rounded-lg border-2 transition-all hover:shadow-md {selectedDemo === (item as { id?: unknown; label?: unknown; description?: unknown }).id 
           ? 'border-primary bg-primary/5 shadow-md' 
           : 'border-border hover:border-primary/50'}"
-        on:click={() => selectedDemo = (item as { id?: any; label?: any; description?: any }).id}
+        onclick={() => selectedDemo = (item as { id?: unknown; label?: unknown; description?: unknown }).id}
       >
-        <h3 class="font-semibold">{(item as { id?: any; label?: any; description?: any }).label}</h3>
-        <p class="text-sm nes-text is-disabled mt-1">{(item as { id?: any; label?: any; description?: any }).description}</p>
+        <h3 class="font-semibold">{(item as { id?: unknown; label?: unknown; description?: unknown }).label}</h3>
+        <p class="text-sm nes-text is-disabled mt-1">{(item as { id?: unknown; label?: unknown; description?: unknown }).description}</p>
       </button>
     {/each}
   </div>

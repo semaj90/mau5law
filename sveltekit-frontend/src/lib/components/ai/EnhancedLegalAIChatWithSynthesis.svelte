@@ -25,9 +25,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     Settings,
     Zap,
   } from 'lucide-svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -429,7 +427,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
     currentChunkIndex++;
     // Auto-scroll to bottom during streaming
-    await tick();
+    await tick(); // In Svelte 5, consider using flushSync() for immediate DOM updates
     scrollToBottom();
 
     // Schedule next chunk
@@ -654,7 +652,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
       messages.update((msgs) => [...msgs, errorMessage]);
     } finally {
       isProcessing = false;
-      await tick();
+      await tick(); // In Svelte 5, consider using flushSync() for immediate DOM updates
       scrollToBottom();
     }
   }
@@ -953,7 +951,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     };
 
     messages.update((msgs) => [...msgs, systemMessage]);
-    await tick();
+    await tick(); // In Svelte 5, consider using flushSync() for immediate DOM updates
     scrollToBottom();
   }
 
@@ -1216,7 +1214,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
           </div>
 
           <!-- Settings Toggle -->
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 (showSettings = !showSettings)}>
             <Settings class="w-4 h-4" />
 </Button>
@@ -1370,7 +1368,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
                   cursorChar="█"
                   enableThinking={false}
                   autoStart={true}
-                  on:complete={() => {
+                  oncomplete={() => {
                     // Handle streaming completion
                     isStreaming = false;
                     streamingMessageId = null;
@@ -1459,7 +1457,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
           <!-- Message Actions -->
           <div class="flex-shrink-0 flex flex-col gap-1">
-            <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 copyToClipboard(message.content)}>
               <FileText class="w-3 h-3" />
 </Button>
@@ -1487,7 +1485,7 @@ copyToClipboard(message.content)}>
       keydown={handleKeyDown}
       disabled={isProcessing}
       class="flex-1" />
-    <Button class="bits-btn" on:click={sendMessage} disabled={!currentInput.trim() || isProcessing}>
+    <Button class="bits-btn" onclick={sendMessage} disabled={!currentInput.trim() || isProcessing}>
 {#if isProcessing}
         <Loader2 class="w-4 h-4 animate-spin" />
       {:else}
@@ -1502,7 +1500,7 @@ copyToClipboard(message.content)}>
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           Detailed Analysis
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 (showAdvancedAnalysis = false)}>
             ×
 </Button>

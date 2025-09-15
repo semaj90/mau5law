@@ -27,7 +27,7 @@ Displays detailed integrity verification results with AI analysis
     currentHash,
     aiAnalysis,
     showDetails = false
-  : any } = $props();
+  : unknown } = $props();
 
 
 

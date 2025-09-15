@@ -4,9 +4,7 @@
   import { useMachine } from '@xstate/svelte';
   // Toast notifications removed - using simple state instead
 
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -183,7 +181,7 @@
     <div class="text-sm">{(notification as { id?: any; title?: any; description?: any }).description}</div>
     <button
       class="absolute top-2 right-2 text-white hover:text-gray-200"
-      on:click={() => notifications = notifications.filter(n => n.id !== (notification as { id?: any; title?: any; description?: any }).id)}
+      onclick={() => notifications = notifications.filter(n => n.id !== (notification as { id?: any; title?: any; description?: any }).id)}
     >
       &times;
     </button>
@@ -215,7 +213,7 @@
       <Textarea
         id="legal-prompt"
         bind:value={promptInput}
-        on:keydown={handleKeydown}
+        onkeydown={handleKeydown}
         placeholder="Ask a legal question (e.g., 'What are the key elements of a valid contract?', 'Explain force majeure clauses', etc.)"
         rows={4}
         class="yorha-textarea"
@@ -231,7 +229,7 @@
     <div class="flex gap-2">
       <EnhancedButton
         variant="legal"
-        on:click={handleQuery}
+        onclick={handleQuery}
         disabled={!canSubmit}
         loading={isLoading}
         loadingText="Analyzing..."
@@ -244,7 +242,7 @@
       {#if snapshot.matches('error')}
         <EnhancedButton
           variant="outline"
-          on:click={handleRetry}
+          onclick={handleRetry}
           useMelt={true}
         >
           Retry
@@ -254,7 +252,7 @@
       {#if currentResponse}
         <EnhancedButton
           variant="ghost"
-          on:click={handleClear}
+          onclick={handleClear}
           useMelt={true}
         >
           Clear

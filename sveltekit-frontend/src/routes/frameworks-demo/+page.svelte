@@ -216,7 +216,7 @@
               class:bg-blue-500={activeTab === "document-editor"}
               class:text-white={activeTab === "document-editor"}
               class:bg-gray-100={activeTab !== "document-editor"}
-              on:click={() => activeTab = "document-editor"}
+              onclick={() => activeTab = "document-editor"}
             >
               <FileText size={16} />
               Document Editor
@@ -226,7 +226,7 @@
               class:bg-blue-500={activeTab === "wysiwyg-editor"}
               class:text-white={activeTab === "wysiwyg-editor"}
               class:bg-gray-100={activeTab !== "wysiwyg-editor"}
-              on:click={() => activeTab = "wysiwyg-editor"}
+              onclick={() => activeTab = "wysiwyg-editor"}
             >
               <Settings size={16} />
               WYSIWYG Editor
@@ -236,7 +236,7 @@
               class:bg-blue-500={activeTab === "ai-assistant"}
               class:text-white={activeTab === "ai-assistant"}
               class:bg-gray-100={activeTab !== "ai-assistant"}
-              on:click={() => activeTab = "ai-assistant"}
+              onclick={() => activeTab = "ai-assistant"}
             >
               <Brain size={16} />
               AI Assistant
@@ -274,7 +274,7 @@
                 content={sampleContent}
                 enableAI={true}
                 enableCitation={true}
-                height="400px" on:change={(e) => console.log("Content changed:", e.detail)}
+                height="400px" onchange={(e) => console.log("Content changed:", e.detail)}
               />
             </div>
           </div>

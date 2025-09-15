@@ -2,9 +2,7 @@
   import 'nes.css/css/nes.min.css';
   import type { SearchResults } from "$lib/types/global";
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -135,7 +133,7 @@
           keydown={(e) => e.key === 'Enter' && performSearch()}
         />
         <Button
-          on:click={performSearch}
+          onclick={performSearch}
           disabled={$isAnalyzing || !searchQuery.trim()}
           class="px-6 bits-btn bits-btn"
         >
@@ -157,7 +155,7 @@
             <Badge
               variant={selectedFilters.includes(filter) ? 'default' : 'outline'}
               class="cursor-pointer hover:bg-blue-100 transition-colors"
-              on:click={() => toggleFilter(filter)}
+              onclick={() => toggleFilter(filter)}
             >
               {filter}
             </Badge>
@@ -174,7 +172,7 @@
               variant="outline"
               size="sm"
               class="text-xs bits-btn bits-btn"
-              on:click={() =>
+              onclick={() =>
 useSampleQuery(query)}
             >
               {query}
@@ -286,7 +284,7 @@ useSampleQuery(query)}
           <div class="yorha-panel-header">
             <div class="flex items-center justify-between">
               <h3 class="nes-text is-primary text-lg">Recent Searches</h3>
-              <Button class="bits-btn" variant="ghost" size="sm" on:click={clearHistory}>
+              <Button class="bits-btn" variant="ghost" size="sm" onclick={clearHistory}>
 Clear
 </Button>
             </div>
@@ -296,7 +294,7 @@ Clear
               {#each searchHistory as query}
                 <button
                   class="w-full text-left p-2 text-sm rounded hover:bg-gray-100 transition-colors"
-                  on:click={() => useHistoryQuery(query)}
+                  onclick={() => useHistoryQuery(query)}
                 >
                   {query}
 </Button>

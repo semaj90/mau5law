@@ -80,7 +80,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="brand-section">
       <button
         class="brand-button"
-        on:click={() => handleNavigation("/")}
+        onclick={() => handleNavigation("/")}
         aria-label="Go to homepage"
       >
         <Palette size={24} aria-hidden="true" />
@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="nav-button"
         class:active={isActiveRoute('/dashboard')}
-        on:click={() => handleNavigation("/dashboard")}
+        onclick={() => handleNavigation("/dashboard")}
         aria-label="Dashboard"
         aria-current={isActiveRoute('/dashboard') ? 'page' : undefined}
       >
@@ -104,7 +104,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="nav-button"
         class:active={isActiveRoute('/cases')}
-        on:click={() => handleNavigation("/cases")}
+        onclick={() => handleNavigation("/cases")}
         aria-label="Cases"
         aria-current={isActiveRoute('/cases') ? 'page' : undefined}
       >
@@ -115,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="nav-button"
         class:active={isActiveRoute('/interactive-canvas')}
-        on:click={() => handleNavigation("/interactive-canvas")}
+        onclick={() => handleNavigation("/interactive-canvas")}
         aria-label="Interactive Canvas"
         aria-current={isActiveRoute('/interactive-canvas') ? 'page' : undefined}
       >
@@ -126,7 +126,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="nav-button"
         class:active={isActiveRoute('/evidence/hash')}
-        on:click={() => handleNavigation("/evidence/hash")}
+        onclick={() => handleNavigation("/evidence/hash")}
         aria-label="Hash Verification"
         aria-current={isActiveRoute('/evidence/hash') ? 'page' : undefined}
         title="Verify evidence file integrity"
@@ -151,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="user-menu-container">
           <button
             class="user-button"
-            on:click={toggleUserMenu}
+            onclick={toggleUserMenu}
             aria-label="User menu"
             aria-expanded={userMenuOpen}
             aria-haspopup="menu"
@@ -173,7 +173,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="user-menu" role="menu" aria-labelledby="user-button">
               <button
                 class="menu-item"
-                on:click={() => handleNavigation("/profile")}
+                onclick={() => handleNavigation("/profile")}
                 role="menuitem"
                 tabindex="0"
               >
@@ -183,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
 
               <button
                 class="menu-item"
-                on:click={() => handleNavigation("/settings")}
+                onclick={() => handleNavigation("/settings")}
                 role="menuitem"
                 tabindex="0"
               >
@@ -195,7 +195,7 @@ https://svelte.dev/e/js_parse_error -->
 
               <button
                 class="menu-item"
-                on:click={handleLogout}
+                onclick={handleLogout}
                 role="menuitem"
                 tabindex="0"
               >
@@ -208,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
       {:else}
         <button
           class="sign-in-button"
-          on:click={() => handleNavigation("/login")}
+          onclick={() => handleNavigation("/login")}
           aria-label="Sign in"
         >
           Sign In
@@ -222,7 +222,7 @@ https://svelte.dev/e/js_parse_error -->
 {#if userMenuOpen}
   <div
     class="menu-overlay"
-    on:click={closeUserMenu}
+    onclick={closeUserMenu}
     keydown={(e) => e.key === "Escape" && closeUserMenu()}
     role="button"
     tabindex="-1"

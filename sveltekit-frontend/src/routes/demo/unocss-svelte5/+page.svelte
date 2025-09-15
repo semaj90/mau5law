@@ -112,7 +112,7 @@ Large Destructive
 			<!-- Interactive Demo -->
 			<div class="p-6 space-y-4 col-span-full lg:col-span-2 nes-container">
 				<h3 class="text-xl font-semibold">Interactive Demo</h3>
-				<form on:submit={preventDefault(handleSubmit)} class="space-y-4">
+				<form onsubmit={preventDefault(handleSubmit)} class="space-y-4">
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<Input
 							bind:value={name}

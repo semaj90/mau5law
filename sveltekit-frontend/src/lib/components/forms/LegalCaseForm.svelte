@@ -387,7 +387,7 @@
       <TooltipBits content="Clear all form data">
         <ButtonBits
           variant="ghost"
-          on:click={() => {
+          onclick={() => {
             if (confirm('Are you sure you want to clear all form data?')) {
               formData = {
                 caseTitle: '',
@@ -416,7 +416,7 @@
           variant="primary"
           loading={isSubmitting}
           disabled={!isFormValid || isSubmitting}
-          on:click={handleSubmit}
+          onclick={handleSubmit}
         >
           {isSubmitting ? '⏳ Creating Case...' : '⚖️ Create Case'}
         </ButtonBits>

@@ -100,13 +100,13 @@
     </div>
     
     <div class="action-buttons">
-      <button class="nes-button" on:click={refresh} disabled={isLoading}>
+      <button class="nes-button" onclick={refresh} disabled={isLoading}>
         {isLoading ? 'REFRESHING...' : 'REFRESH'}
       </button>
       
       <button 
         class="nes-button danger" 
-        on:click={handleClearCache}
+        onclick={handleClearCache}
         disabled={clearingCache}
       >
         {clearingCache ? 'CLEARING...' : showClearConfirm ? 'CONFIRM CLEAR' : 'CLEAR CACHE'}
@@ -118,7 +118,7 @@
     <div class="initialization-status">
       {#if initError}
         <div class="error-message">⚠️ INITIALIZATION FAILED: {initError}</div>
-        <button class="nes-button" on:click={initialize}>RETRY INITIALIZATION</button>
+        <button class="nes-button" onclick={initialize}>RETRY INITIALIZATION</button>
       {:else}
         <div class="loading-message">🎮 INITIALIZING REDIS ORCHESTRATOR...</div>
       {/if}
@@ -236,7 +236,7 @@
         <div class="panel-header">
           <span class="panel-icon">📋</span>
           <span class="panel-title">ACTIVE TASKS</span>
-          <button class="clear-completed-btn" on:click={clearCompletedTasks}>
+          <button class="clear-completed-btn" onclick={clearCompletedTasks}>
             CLEAR COMPLETED
           </button>
         </div>
@@ -457,19 +457,19 @@
     border-left: 3px solid #7c7c7c;
   }
 
-  .task-(item as { queued?: any; processing?: any; completed?: any; failed?: any }).queued {
+  .task-(item as { queued?: unknown; processing?: unknown; completed?: unknown; failed?: unknown }).queued {
     border-left-color: #fc9838;
   }
 
-  .task-(item as { queued?: any; processing?: any; completed?: any; failed?: any }).processing {
+  .task-(item as { queued?: unknown; processing?: unknown; completed?: unknown; failed?: unknown }).processing {
     border-left-color: #3cbcfc;
   }
 
-  .task-(item as { queued?: any; processing?: any; completed?: any; failed?: any }).completed {
+  .task-(item as { queued?: unknown; processing?: unknown; completed?: unknown; failed?: unknown }).completed {
     border-left-color: #00d800;
   }
 
-  .task-(item as { queued?: any; processing?: any; completed?: any; failed?: any }).failed {
+  .task-(item as { queued?: unknown; processing?: unknown; completed?: unknown; failed?: unknown }).failed {
     border-left-color: #f83800;
   }
 

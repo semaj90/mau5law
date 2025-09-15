@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
   async function checkSystemHealth() {
     try {
       const response = await fetch('/api/search/vector?action=health');
-      const health = await (response as { json?: any }).json();
+      const health = await (response as { json?: unknown }).json();
       systemHealth.set(health);
     } catch (error) {
       console.error('Health check failed:', error);
@@ -91,14 +91,14 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify(searchOptions)
       });
 
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).success) {
-        searchResults = (result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).results || [];
-        searchAnalytics.set((result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).metadata || {]);
-        searchSuggestions.set((result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).suggestions || []);
+      if ((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).success) {
+        searchResults = (result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).results || [];
+        searchAnalytics.set((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).metadata || {]);
+        searchSuggestions.set((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).suggestions || []);
       } else {
-        searchError.set((result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).error || 'Search failed');
+        searchError.set((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).error || 'Search failed');
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -181,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
             onkeypress={(e) => e.key === 'Enter' && performSearch()}
           />
           <button
-            on:click={performSearch}
+            onclick={performSearch}
             disabled={$isSearching || !$searchQuery.trim()}
             class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
@@ -193,7 +193,7 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </button>
           <button
-            on:click={clearSearch}
+            onclick={clearSearch}
             class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
           >
             Clear
@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as query}
             <button
-              on:click={() => { searchQuery.set(query); performSearch(); }}
+              onclick={() => { searchQuery.set(query); performSearch(); }}
               class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors"
             >
               {query}
@@ -327,7 +327,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex flex-wrap gap-2">
         {#each $searchSuggestions as suggestion}
           <button
-            on:click={() => applySuggestion(suggestion)}
+            onclick={() => applySuggestion(suggestion)}
             class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition-colors"
           >
             {suggestion}
@@ -386,39 +386,39 @@ https://svelte.dev/e/js_parse_error -->
           <!-- Result header -->
           <div class="flex items-start justify-between mb-3">
             <div>
-              {#if (result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).title}
+              {#if (result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).title}
                 <h3 class="text-xl font-semibold text-gray-900 mb-1">
-                  {(result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).title}
+                  {(result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).title}
                 </h3>
               {/if}
               <div class="flex items-center gap-4 text-sm text-gray-600">
-                <span>Score: {((result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).score * 100).toFixed(1)}%</span>
-                {#if (result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).semanticRelevance}
-                  <span>Relevance: {((result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).semanticRelevance * 100).toFixed(1)}%</span>
+                <span>Score: {((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).score * 100).toFixed(1)}%</span>
+                {#if (result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).semanticRelevance}
+                  <span>Relevance: {((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).semanticRelevance * 100).toFixed(1)}%</span>
                 {/if}
-                <span>Rank: #{(result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).metadata?.rank || index + 1}</span>
+                <span>Rank: #{(result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).metadata?.rank || index + 1}</span>
               </div>
             </div>
             <div class="text-sm text-gray-500">
-              ID: {(result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).id}
+              ID: {(result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).id}
             </div>
           </div>
 
           <!-- Content snippet -->
-          {#if (result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).snippet}
+          {#if (result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).snippet}
             <div class="mb-4">
               <p class="text-gray-700 leading-relaxed">
-                {(result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).snippet}
+                {(result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).snippet}
               </p>
             </div>
           {/if}
 
           <!-- Highlights -->
-          {#if (result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).highlights && (result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).highlights.length > 0}
+          {#if (result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).highlights && (result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).highlights.length > 0}
             <div class="mb-4">
               <h4 class="text-sm font-medium text-gray-600 mb-2">Key Terms:</h4>
               <div class="flex flex-wrap gap-1">
-                {#each (result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).highlights as highlight}
+                {#each (result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).highlights as highlight}
                   <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-sm">
                     {highlight}
                   </span>
@@ -428,33 +428,33 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
 
           <!-- Reasoning -->
-          {#if (result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).reasoning}
+          {#if (result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).reasoning}
             <div class="mb-4 p-3 bg-green-50 border-l-4 border-green-400">
               <h4 class="text-sm font-medium text-green-800 mb-1">Why this result matches:</h4>
-              <p class="text-sm text-green-700">{(result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).reasoning}</p>
+              <p class="text-sm text-green-700">{(result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).reasoning}</p>
             </div>
           {/if}
 
           <!-- Metadata -->
-          {#if includeMetadata && (result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).metadata}
+          {#if includeMetadata && (result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).metadata}
             <details class="mt-4">
               <summary class="cursor-pointer text-sm font-medium text-gray-600">
                 Metadata & Technical Details
               </summary>
               <div class="mt-2 p-3 bg-gray-50 rounded text-xs">
-                <pre class="whitespace-pre-wrap text-gray-700">{JSON.stringify((result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).metadata, null, 2)}</pre>
+                <pre class="whitespace-pre-wrap text-gray-700">{JSON.stringify((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).metadata, null, 2)}</pre>
               </div>
             </details>
           {/if}
 
           <!-- Full content -->
-          {#if includeContent && (result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).content}
+          {#if includeContent && (result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).content}
             <details class="mt-4">
               <summary class="cursor-pointer text-sm font-medium text-gray-600">
                 Full Content
               </summary>
               <div class="mt-2 p-4 bg-gray-50 rounded max-h-60 overflow-y-auto">
-                <p class="text-sm text-gray-700 whitespace-pre-wrap">{(result as { success?: any; results?: any; metadata?: any; suggestions?: any; error?: any; title?: any; score?: any; semanticRelevance?: any; id?: any; snippet?: any; highlights?: any; reasoning?: any; content?: any }).content}</p>
+                <p class="text-sm text-gray-700 whitespace-pre-wrap">{(result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).content}</p>
               </div>
             </details>
           {/if}

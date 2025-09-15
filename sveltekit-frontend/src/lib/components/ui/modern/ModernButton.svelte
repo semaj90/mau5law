@@ -1,6 +1,7 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
-  import { Button } from "bits-ui";
+  import Button from "bits-ui";
   // Tooltip functionality will use CSS-only or bits-ui Tooltip when needed
 
   interface Props {
@@ -82,7 +83,7 @@
     class={buttonClasses}
     target={external ? '_blank' : undefined}
     rel={external ? 'noopener noreferrer' : undefined}
-    on:click={handleClick}
+    onclick={handleClick}
   >
     <span class="button-content">
       {#if loading}
@@ -100,7 +101,7 @@
     {type}
     {disabled}
     class={buttonClasses}
-    on:click={handleClick}
+    onclick={handleClick}
   >
     <span class="button-content">
       {#if loading}

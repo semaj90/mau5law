@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
       // Load background image if provided
       // Fix for Fabric.js v5+ (Image.fromURL returns a Promise)
       if (fileUrl) {
-        (window as any).fabric.Image.fromURL(fileUrl).then((img: any) => {
+        (window as any).fabric.Image.fromURL(fileUrl).then((img: unknown) => {
           // Scale image to fit canvas
           const scale = Math.min(
             (size.width - 20) / (img.width || 100),

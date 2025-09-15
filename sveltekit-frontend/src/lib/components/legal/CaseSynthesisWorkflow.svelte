@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
    }: { caseId,
     documents = [],
     evidenceReports = []
-  : any } = $props();
+  : unknown } = $props();
 
 
 
@@ -58,12 +58,12 @@ https://svelte.dev/e/js_parse_error -->
     priority: string
     createdAt: string
     updatedAt: string
-    analyst: any
-    evidence: any
-    methodology: any
-    findings: any
-    legalImplications: any
-    attachments: any[];
+    analyst: unknown
+    evidence: unknown
+    methodology: unknown
+    findings: unknown
+    legalImplications: unknown
+    attachments: unknown[];
   }
 
   interface SynthesisContext {
@@ -469,7 +469,7 @@ https://svelte.dev/e/js_parse_error -->
         
         {#if $state.context.synthesisResult}
           <button
-            on:click={exportSynthesis}
+            onclick={exportSynthesis}
             class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
           >
             <Download class="w-4 h-4" />
@@ -515,7 +515,7 @@ https://svelte.dev/e/js_parse_error -->
                   type="checkbox"
                   class="mt-1"
                   checked={selectedDocuments.has(doc.id)}
-                  on:change={() => toggleSelection(doc.id, 'document')}
+                  onchange={() => toggleSelection(doc.id, 'document')}
                 />
                 <div class="flex-1">
                   <div class="font-medium text-gray-900">{doc.title}</div>
@@ -541,7 +541,7 @@ https://svelte.dev/e/js_parse_error -->
                   type="checkbox"
                   class="mt-1"
                   checked={selectedReports.has(report.id)}
-                  on:change={() => toggleSelection(report.id, 'report')}
+                  onchange={() => toggleSelection(report.id, 'report')}
                 />
                 <div class="flex-1">
                   <div class="font-medium text-gray-900">{report.title}</div>
@@ -563,7 +563,7 @@ https://svelte.dev/e/js_parse_error -->
           {selectedCount} items selected for synthesis
         </div>
         <button
-          on:click={startSynthesis}
+          onclick={startSynthesis}
           disabled={selectedCount === 0}
           class="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
@@ -601,13 +601,13 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <div class="mt-4 flex gap-3">
         <button
-          on:click={() => send({ type: 'RETRY' })}
+          onclick={() => send({ type: 'RETRY' })}
           class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
         >
           Retry Synthesis
         </button>
         <button
-          on:click={() => send({ type: 'RESTART' })}
+          onclick={() => send({ type: 'RESTART' })}
           class="px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition-colors"
         >
           Start Over
@@ -805,13 +805,13 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Action Buttons -->
       <div class="flex gap-4">
         <button
-          on:click={() => send({ type: 'RESTART' })}
+          onclick={() => send({ type: 'RESTART' })}
           class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
         >
           New Synthesis
         </button>
         <button
-          on:click={exportSynthesis}
+          onclick={exportSynthesis}
           class="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
         >
           <Download class="w-4 h-4" />

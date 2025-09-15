@@ -2,11 +2,12 @@
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: '<!--' is not a valid attribute name -->
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   import { melt } from 'melt';
 
   interface Props {
-    menu: any;
+    menu: unknown;
     children?: import('svelte').Snippet;
     class?: string;
   }

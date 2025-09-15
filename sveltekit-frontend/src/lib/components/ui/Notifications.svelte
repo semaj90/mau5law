@@ -1,9 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
 
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { quintOut } from "svelte/easing";
   import { fly } from "svelte/transition";
   import { notifications, type Notification } from "../../stores/notification";
@@ -34,7 +32,7 @@
   };
 
   function handleClose(notification: Notification) {
-    notifications.remove((notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).id);
+    notifications.remove((notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).id);
   }
 
   // Clean up notifications on component destroy (e.g., app shutdown or navigation)
@@ -47,17 +45,17 @@
     action: NonNullable<Notification["actions"]>[0]
   ) {
     action.action();
-    notifications.remove((notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).id);
+    notifications.remove((notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).id);
   }
 </script>
 
 <!-- Notification Container -->
 <div class="space-y-4">
-  {#each $notifications.notifications as notification ((notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).id)}
+  {#each $notifications.notifications as notification ((notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).id)}
     <div
       class={`
         relative p-4 rounded-lg border shadow-lg backdrop-blur-sm
-        ${colorClasses[(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).type]}
+        ${colorClasses[(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).type]}
       `}
       in:fly={{ x: 300, duration: 300, easing: quintOut }}
       out:fly={{ x: 300, duration: 200, easing: quintOut  }}
@@ -66,30 +64,30 @@
         <!-- Icon -->
         <div class="space-y-4">
           <iconify-icon
-            icon={icons[(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).type]}
-            class={`w-5 h-5 ${iconColorClasses[(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).type]}`}
+            icon={icons[(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).type]}
+            class={`w-5 h-5 ${iconColorClasses[(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).type]}`}
           ></iconify-icon>
         </div>
 
         <!-- Content -->
         <div class="space-y-4">
           <p class="space-y-4">
-            {(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).title}
+            {(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).title}
           </p>
-          {#if (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).message}
+          {#if (notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).message}
             <p class="space-y-4">
-              {(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).message}
+              {(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).message}
             </p>
           {/if}
 
           <!-- Actions -->
-          {#if (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).actions && (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).actions.length > 0}
+          {#if (notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).actions && (notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).actions.length > 0}
             <div class="space-y-4">
-              {#each (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).actions as action}
+              {#each (notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).actions as action}
                 <Button class="bits-btn"
                   size="sm"
                   variant={action.variant || "secondary"}
-                  on:click={() =>
+                  onclick={() =>
 handleAction(notification, action)}
                 >
                   {action.label}
@@ -104,7 +102,7 @@ handleAction(notification, action)}
           <button
             type="button"
             class="space-y-4"
-            on:click={() => handleClose(notification)}
+            onclick={() => handleClose(notification)}
           >
             <span class="space-y-4">Dismiss</span>
             <iconify-icon icon="ph:x" class="space-y-4"></iconify-icon>
@@ -113,13 +111,13 @@ handleAction(notification, action)}
       </div>
 
       <!-- Progress bar for timed notifications -->
-      {#if (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).duration && (notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).duration > 0}
+      {#if (notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).duration && (notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).duration > 0}
         <div
           class="space-y-4"
         >
           <div
             class="space-y-4"
-            style="animation: shrink {(notification as { id?: any; type?: any; title?: any; message?: any; actions?: any; duration?: any }).duration}ms linear forwards;"
+            style="animation: shrink {(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).duration}ms linear forwards;"
           ></div>
         </div>
       {/if}

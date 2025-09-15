@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
   : any } = $props();
 
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  // TODO: Replace createEventDispatcher with callback props in Svelte 5
 
   // Types
   interface SearchResult {
@@ -487,7 +487,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <div class="search-actions">
         <button class="nes-btn" 
-          on:click={() => performSearch()}
+          onclick={() => performSearch()}
           disabled={$isSearching || !$searchQuery.trim()}
           class="bits-btn search-button"
         >
@@ -503,7 +503,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if enableFilters}
           <Button class="bits-btn"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 showFilters.update((s) => !s)}
             class="filter-button"
           >
@@ -520,7 +520,7 @@ showFilters.update((s) => !s)}
         {#if enableAnalytics}
           <Button class="bits-btn"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 showAnalytics.update((s) => !s)}
           >
             <BarChart3 class="mr-2" size={16} />
@@ -539,7 +539,7 @@ showAnalytics.update((s) => !s)}
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 {
                 searchQuery.set(historyItem);
                 performSearch(historyItem);
@@ -561,7 +561,7 @@ showAnalytics.update((s) => !s)}
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           <span>Advanced Filters</span>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={resetFilters}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={resetFilters}>
 Reset
 
         </h3>
@@ -576,7 +576,7 @@ Reset
                 <Checkbox
                   bind:checked={
                     $searchFilters.documentTypes.includes(type.value
-                  } on:change={() => {
+                  } onchange={() => {
                     searchFilters.update((f) => {
                       if (f.documentTypes.includes(type.value)) {
                         f.documentTypes = f.documentTypes.filter(
@@ -603,7 +603,7 @@ Reset
                 <Checkbox
                   bind:checked={
                     $searchFilters.jurisdictions.includes(jurisdiction.value
-                  } on:change={() => {
+                  } onchange={() => {
                     searchFilters.update((f) => {
                       if (f.jurisdictions.includes(jurisdiction.value)) {
                         f.jurisdictions = f.jurisdictions.filter(
@@ -657,7 +657,7 @@ Reset
           </div>
         </div>
 
-        <Button on:click={applyFilters} class="w-full bits-btn bits-btn">
+        <Button onclick={applyFilters} class="w-full bits-btn bits-btn">
 Apply Filters
 
       </div>
@@ -782,7 +782,7 @@ Apply Filters
         <p class="no-results-description">
           Try adjusting your search terms or filters
         </p>
-        <Button class="bits-btn" variant="outline" on:click={resetFilters}>
+        <Button class="bits-btn" variant="outline" onclick={resetFilters}>
 Reset Filters
 
       </div>

@@ -7,7 +7,7 @@
   import { accessibilityService } from '$lib/services/accessibility-service';
 
   interface Props {
-    user?: any;
+    user?: unknown;
     sidebarOpen?: boolean;
     variant?: 'full' | 'minimal' | 'demo';
   }
@@ -85,7 +85,7 @@
         {#if variant === 'full'}
           <button
             class="sidebar-toggle nes-btn"
-            on:click={toggleSidebar}
+            onclick={toggleSidebar}
             aria-label="Toggle sidebar"
           >
             {sidebarOpen ? '✕' : '☰'}
@@ -114,39 +114,39 @@ Home</Button>
           <!-- Demo-specific navigation -->
           {#each demoNavItems as item}
             <Button
-              href={(item as { path?: any; icon?: any; label?: any }).path}
-              variant={isActive((item as { path?: any; icon?: any; label?: any }).path) ? 'primary' : 'ghost'}
+              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path}
+              variant={isActive((item as { path?: unknown; icon?: unknown; label?: unknown }).path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
-              <span class="nav-icon">{(item as { path?: any; icon?: any; label?: any }).icon}</span>
-              <span class="nav-label">{(item as { path?: any; icon?: any; label?: any }).label}</span>
+              <span class="nav-icon">{(item as { path?: unknown; icon?: unknown; label?: unknown }).icon}</span>
+              <span class="nav-label">{(item as { path?: unknown; icon?: unknown; label?: unknown }).label}</span>
             </Button>
           {/each}
         {:else if isAdmin && user?.role === 'admin'}
           <!-- Admin navigation -->
           {#each adminNavItems as item}
             <Button
-              href={(item as { path?: any; icon?: any; label?: any }).path}
-              variant={isActive((item as { path?: any; icon?: any; label?: any }).path) ? 'primary' : 'ghost'}
+              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path}
+              variant={isActive((item as { path?: unknown; icon?: unknown; label?: unknown }).path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
-              <span class="nav-icon">{(item as { path?: any; icon?: any; label?: any }).icon}</span>
-              <span class="nav-label">{(item as { path?: any; icon?: any; label?: any }).label}</span>
+              <span class="nav-icon">{(item as { path?: unknown; icon?: unknown; label?: unknown }).icon}</span>
+              <span class="nav-label">{(item as { path?: unknown; icon?: unknown; label?: unknown }).label}</span>
             </Button>
           {/each}
         {:else}
           <!-- Main navigation -->
           {#each mainNavItems as item}
             <Button
-              href={(item as { path?: any; icon?: any; label?: any }).path}
-              variant={isActive((item as { path?: any; icon?: any; label?: any }).path) ? 'primary' : 'ghost'}
+              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path}
+              variant={isActive((item as { path?: unknown; icon?: unknown; label?: unknown }).path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
-              <span class="nav-icon">{(item as { path?: any; icon?: any; label?: any }).icon}</span>
-              <span class="nav-label">{(item as { path?: any; icon?: any; label?: any }).label}</span>
+              <span class="nav-icon">{(item as { path?: unknown; icon?: unknown; label?: unknown }).icon}</span>
+              <span class="nav-label">{(item as { path?: unknown; icon?: unknown; label?: unknown }).label}</span>
             </Button>
           {/each}
         {/if}
@@ -157,7 +157,7 @@ Home</Button>
         <!-- Accessibility Settings Button -->
         <button
           class="accessibility-btn nes-btn is-primary"
-          on:click={toggleAccessibilitySettings}
+          onclick={toggleAccessibilitySettings}
           aria-label="Open accessibility settings (Alt+A)"
           title="Accessibility Settings (Alt+A)"
         >
@@ -191,7 +191,7 @@ Home</Button>
 <AccessibilitySettings bind:isOpen={showAccessibilitySettings} />
 
 <!-- Global keyboard shortcut handler -->
-<svelte:window on:keydown={handleKeyboardShortcut} />
+<svelte:window onkeydown={handleKeyboardShortcut} />
 
 <style>
   .navbar-header {

@@ -1,9 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { user } from "$lib/stores/user";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import Modal from "$lib/components/ui/Modal.svelte";
   let cases = $state([
     { id: "case-1", name: "State v. John Doe" },
@@ -18,7 +16,7 @@
   }
 </script>
 
-<Button class="bits-btn" on:click={() =>
+<Button class="bits-btn" onclick={() =>
 showModal = true}>Select Case
 
 <Modal bind:open={showModal} title="Select a Case">
@@ -30,7 +28,7 @@ showModal = true}>Select Case
 
   <div class="space-y-4">
     {#each cases as caseItem}
-      <Button class="bits-btn" on:click={() =>
+      <Button class="bits-btn" onclick={() =>
 selectCase(caseItem.id)} variant="secondary">
         {caseItem.name}
 

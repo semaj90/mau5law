@@ -360,7 +360,7 @@
       <input
         type="file"
         bind:this={fileInput}
-        on:change={handleFileUpload}
+        onchange={handleFileUpload}
         multiple
         accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg"
         style="display: none;"
@@ -369,7 +369,7 @@
 
     <button
       class="nes-btn {analysisStatus === 'idle' ? 'is-primary' : analysisStatus === 'complete' ? 'is-success' : 'is-warning'}"
-      on:click={handleAnalysis}
+      onclick={handleAnalysis}
       disabled={analysisStatus === 'analyzing' || analysisStatus === 'pending'}
     >
       {#if analysisStatus === 'analyzing'}
@@ -387,7 +387,7 @@
       {/if}
     </button>
 
-    <button class="nes-btn" on:click={saveCanvas}>
+    <button class="nes-btn" onclick={saveCanvas}>
       <Save size={16} />
       Save Canvas
     </button>

@@ -57,7 +57,7 @@
    }: { caseId = '',
     showUpload = true,
     showSearch = true
-  : any } = $props();
+  : unknown } = $props();
 
   // State
   let evidenceFiles = $state<EvidenceFile[]>([]);
@@ -94,9 +94,9 @@
     loading.files = true;
     try {
       const response = await fetch('/api/evidence-files?limit=50');
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success) {
-        evidenceFiles = (result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).items.map((item: any) => ({
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
+        evidenceFiles = (result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).items.map((item: unknown) => ({
           ...item,
           hasEmbedding: true // We'll check this when we get embedding status
         }));
@@ -113,9 +113,9 @@
     loading.stats = true;
     try {
       const response = await fetch('/api/evidence-embeddings');
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success) {
-        embeddingStats = (result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).stats;
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
+        embeddingStats = (result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).stats;
       }
     } catch (err) {
       console.error('Failed to load embedding stats:', err);
@@ -146,12 +146,12 @@
           body: formData
         });
 
-        const result = await (response as { json?: any }).json();
-        if (!(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success) {
-          throw new Error((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).error || 'Upload failed');
+        const result = await (response as { json?: unknown }).json();
+        if (!(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
+          throw new Error((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).error || 'Upload failed');
         }
 
-        if ((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).duplicate) {
+        if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).duplicate) {
           uploadProgress = `${file.name} already exists (duplicate detected)`;
         } else {
           uploadProgress = `${file.name} uploaded successfully`;
@@ -181,12 +181,12 @@
         body: JSON.stringify({ action: 'backfill' })
       });
 
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success) {
-        uploadProgress = `Backfill complete! Processed: ${(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).processed}, Success: ${(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success}, Failed: ${(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).failed}`;
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
+        uploadProgress = `Backfill complete! Processed: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).processed}, Success: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success}, Failed: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).failed}`;
         await loadEmbeddingStats();
       } else {
-        throw new Error((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).error);
+        throw new Error((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).error);
       }
     } catch (err) {
       error = `Embedding backfill failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
@@ -209,12 +209,12 @@
       if (caseId) params.set('case_id', caseId);
 
       const response = await fetch(`/api/evidence-embeddings?${params}`);
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).success) {
-        searchResults = (result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).results;
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
+        searchResults = (result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).results;
         showSearchResults = true;
       } else {
-        throw new Error((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).error);
+        throw new Error((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).error);
       }
     } catch (err) {
       error = `Search failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
@@ -307,7 +307,7 @@ export default {};
 
       <div class="flex gap-2">
         <Button
-          on:click={loadEmbeddingStats}
+          onclick={loadEmbeddingStats}
           disabled={loading.stats}
           variant="outline"
           class="text-sm bits-btn bits-btn"
@@ -316,7 +316,7 @@ export default {};
 </Button>
 
         <Button
-          on:click={triggerEmbeddingBackfill}
+          onclick={triggerEmbeddingBackfill}
           disabled={loading.backfill || embeddingStats.withoutEmbeddings === 0}
           variant="secondary"
           class="text-sm bits-btn bits-btn"
@@ -338,15 +338,15 @@ export default {};
           class="upload-area {dragActive ? 'drag-active' : ''}"
           ondragenter={handleDragEnter}
           ondragleave={handleDragLeave}
-          on:dragover={handleDragOver}
-          role="region" aria-label="Drop zone" on:drop={handleDrop}
+          ondragover={handleDragOver}
+          role="region" aria-label="Drop zone" ondrop={handleDrop}
         >
           <input
             bind:this={fileInput}
             type="file"
             multiple
             class="hidden"
-            on:change={(e: Event) => {
+            onchange={(e: Event) => {
               const target = e.currentTarget as HTMLInputElement;
               if (target?.files) handleFileUpload(target.files);
             }}
@@ -358,7 +358,7 @@ export default {};
             <p class="text-sm text-gray-600 mb-4">Supports PDFs, images, documents, and more</p>
 
             <Button class="bits-btn"
-              on:click={() =>
+              onclick={() =>
 fileInput?.click()}
               disabled={loading.upload}
             >
@@ -389,10 +389,10 @@ fileInput?.click()}
             type="text"
             placeholder="Search for similar evidence..."
             class="flex-1 px-3 py-2 border rounded-lg"
-            on:keydown={(e) => e.key === 'Enter' && performSemanticSearch()}
+            onkeydown={(e) => e.key === 'Enter' && performSemanticSearch()}
           />
           <Button class="bits-btn"
-            on:click={performSemanticSearch}
+            onclick={performSemanticSearch}
             disabled={loading.search || !searchQuery.trim()}
           >
 {loading.search ? 'Searching...' : 'Search'}
@@ -404,7 +404,7 @@ fileInput?.click()}
             <div class="flex justify-between items-center mb-4">
               <h4 class="font-semibold">Search Results ({searchResults.length})</h4>
               <button class="nes-btn"
-                on:click={() => { showSearchResults = false; searchResults = []; }}
+                onclick={() => { showSearchResults = false; searchResults = []; }}
                 variant="outline"
                 class="bits-btn text-sm"
               >
@@ -420,20 +420,20 @@ fileInput?.click()}
                   <div class="search-result-item p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                     <div class="flex justify-between items-start">
                       <div class="flex-1">
-                        <h5 class="font-medium text-gray-900">{(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).title}</h5>
-                        {#if (result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).description}
-                          <p class="text-sm text-gray-600 mt-1">{(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).description}</p>
+                        <h5 class="font-medium text-gray-900">{(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).title}</h5>
+                        {#if (result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).description}
+                          <p class="text-sm text-gray-600 mt-1">{(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).description}</p>
                         {/if}
                         <div class="flex gap-4 mt-2 text-xs text-gray-500">
-                          <span>📁 {(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).evidence_type}</span>
-                          <span>📄 {(result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).mime_type}</span>
-                          <span>📅 {formatDate((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).uploaded_at)}</span>
-                          <span>💾 {formatFileSize((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).file_size)}</span>
+                          <span>📁 {(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).evidence_type}</span>
+                          <span>📄 {(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).mime_type}</span>
+                          <span>📅 {formatDate((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).uploaded_at)}</span>
+                          <span>💾 {formatFileSize((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).file_size)}</span>
                         </div>
                       </div>
                       <div class="text-right ml-4">
                         <div class="similarity-score text-lg font-bold text-green-600">
-                          {Math.round((result as { success?: any; items?: any; stats?: any; error?: any; duplicate?: any; result?: any; results?: any; title?: any; description?: any; evidence_type?: any; mime_type?: any; uploaded_at?: any; file_size?: any; similarity?: any }).similarity * 100)}%
+                          {Math.round((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).similarity * 100)}%
                         </div>
                         <div class="text-xs text-gray-500">similarity</div>
                       </div>
@@ -454,7 +454,7 @@ fileInput?.click()}
       <div class="flex justify-between items-center">
         <h3 class="nes-text is-primary">📋 Evidence Files ({evidenceFiles.length})</h3>
         <Button
-          on:click={loadEvidenceFiles}
+          onclick={loadEvidenceFiles}
           disabled={loading.files}
           variant="outline"
           class="text-sm bits-btn bits-btn"
@@ -523,7 +523,7 @@ fileInput?.click()}
           <h4 class="error-title">Error</h4>
           <p class="error-message">{error}</p>
           <button class="nes-btn"
-            on:click={() => { error = ''; }}
+            onclick={() => { error = ''; }}
             variant="outline"
             class="bits-btn mt-3 text-xs dismiss-btn"
           >

@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
-  let { data, form  }: { data, form : any } = $props();
+  let { data, form  }: { data, form : unknown } = $props();
   let isAutoLoggingIn = $state(false);
   // Check for registration success message
   let showRegistrationSuccess = $derived($page.url.searchParams.get('registered') === 'true');
@@ -45,15 +45,15 @@ https://svelte.dev/e/js_parse_error -->
           'Content-Type': 'application/json',
         }
       });
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
       console.log('📨 Auto-login response:', result);
-      if ((result as { success?: any; redirectTo?: any; error?: any }).success) {
+      if ((result as { success?: unknown; redirectTo?: unknown; error?: unknown }).success) {
         console.log('✅ Auto-login successful, redirecting...');
         // Redirect to dashboard
-        window.location.href = (result as { success?: any; redirectTo?: any; error?: any }).redirectTo || '/dashboard';
+        window.location.href = (result as { success?: unknown; redirectTo?: unknown; error?: unknown }).redirectTo || '/dashboard';
       } else {
         // Fall back to auto-fill if auto-login fails
-        console.warn('⚠️ Auto-login failed, falling back to auto-fill:', (result as { success?: any; redirectTo?: any; error?: any }).error);
+        console.warn('⚠️ Auto-login failed, falling back to auto-fill:', (result as { success?: unknown; redirectTo?: unknown; error?: unknown }).error);
         autoLoginDemo();
       }
     } catch (error) {
@@ -143,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mt-4 space-y-2">
         <button
           type="button"
-          on:click={handleQuickLogin}
+          onclick={handleQuickLogin}
           disabled={isAutoLoggingIn}
           class="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded transition-colors flex items-center justify-center"
         >
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
 
         <button
           type="button"
-          on:click={handleAutoFill}
+          onclick={handleAutoFill}
           class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors"
         >
           📝 Auto-fill Demo Credentials

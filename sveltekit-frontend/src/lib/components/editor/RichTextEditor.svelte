@@ -19,7 +19,7 @@
   }: Props = $props();
 
   // Enhanced state management for AI-powered features
-  let editorInstance: any;
+  let editorInstance: unknown;
   let isInitialized = $state(false);
   let isProcessingSummary = $state(false);
   let currentSummary = $state<string>('');
@@ -122,7 +122,7 @@
       reportActions.save();
     },
     // Content change handler
-    setup: (editor: any) => {
+    setup: (editor: unknown) => {
       editorInstance = editor;
 
       editor.on('init', () => {
@@ -288,19 +288,19 @@
 
       try {
         const response = await fetch(`/api/v1/ai/job-status/${jobId}`);
-        if ((response as { ok?: any; json?: any }).ok) {
-          const result = await (response as { ok?: any; json?: any }).json();
+        if ((response as { ok?: unknown; json?: unknown }).ok) {
+          const result = await (response as { ok?: unknown; json?: unknown }).json();
 
-          if ((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).status === 'completed') {
-            currentSummary = (result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).summary;
+          if ((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).status === 'completed') {
+            currentSummary = (result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).summary;
 
             // Store vector embedding in PostgreSQL/pg_vector
-            if ((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).embedding) {
-              await storeVectorEmbedding((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).embedding, lastProcessedText);
+            if ((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).embedding) {
+              await storeVectorEmbedding((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).embedding, lastProcessedText);
             }
 
             // Cache result in Redis for future requests
-            await cacheResult((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).textHash, (result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).summary);
+            await cacheResult((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).textHash, (result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).summary);
 
             // Cleanup
             isProcessingSummary = false;
@@ -308,8 +308,8 @@
             clearInterval(pollingInterval!);
             pollingInterval = null;
 
-          } else if ((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).status === 'failed') {
-            console.error('AI job failed:', (result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).error);
+          } else if ((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).status === 'failed') {
+            console.error('AI job failed:', (result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).error);
             isProcessingSummary = false;
             jobId = null;
             clearInterval(pollingInterval!);
@@ -377,7 +377,7 @@
     }
   }
 
-  function insertEvidence(evidence: any) {
+  function insertEvidence(evidence: unknown) {
     const evidenceHtml = `
       <div class="space-y-4" data-evidence-id="${evidence.id}">
         <div class="space-y-4">

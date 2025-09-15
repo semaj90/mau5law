@@ -38,7 +38,7 @@
   <!-- Simple Select -->
   <div class="space-y-4 relative">
     <button 
-      on:click={toggleSelect}
+      onclick={toggleSelect}
       class="border border-gray-300 rounded px-4 py-2 w-full text-left"
       aria-label="Case Type Filter"
     >
@@ -48,13 +48,13 @@
     {#if selectOpen}
       <div 
         class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-lg mt-1 z-10"
-        transition:fade={{ duration: 150 }}
+        transitionfade={{ duration: 150 }}
       >
         {#each items as item}
           <div 
             class="p-2 hover:bg-gray-100 cursor-pointer"
             role="button" tabindex="0"
-                on:click={() => selectItem(item)}
+                onclick={() => selectItem(item)}
           >
             {item}
           </div>
@@ -65,7 +65,7 @@
   
   <!-- Dialog Trigger -->
   <button 
-    on:click={toggleDialog}
+    onclick={toggleDialog}
     class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
   >
     Open Case Details Dialog
@@ -73,7 +73,7 @@
   
   <!-- Dialog -->
   {#if dialogOpen}
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" transition:fade={{ duration: 150 }}>
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" transitionfade={{ duration: 150 }}>
       <div 
         class="bg-white p-6 rounded shadow-lg max-w-md w-full"
         role="dialog"
@@ -88,7 +88,7 @@
         </p>
         
         <div class="flex gap-2 justify-end">
-          <button on:click={toggleDialog} class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+          <button onclick={toggleDialog} class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
             Cancel
           </button>
           <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">

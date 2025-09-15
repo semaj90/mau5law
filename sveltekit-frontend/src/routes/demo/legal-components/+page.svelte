@@ -19,7 +19,7 @@ https://svelte.dev/e/js_parse_error -->
   import { Calendar, FileText, Users, Scale, Shield, AlertTriangle } from 'lucide-svelte';
   // Page state
   let activeTab = $state('data-table');
-  let toastProvider: any;
+  let toastProvider: unknown;
 
   // Sample data for components
   const evidenceData = [
@@ -238,11 +238,11 @@ https://svelte.dev/e/js_parse_error -->
   };
 
   // Event handlers
-  function handleRowClick(row: any) {
+  function handleRowClick(row: unknown) {
     toastProvider?.showEvidenceProcessed(`Evidence ${row.itemNumber} details viewed`);
   }
 
-  function handleExport(data: any[]) {
+  function handleExport(data: unknown[]) {
     toastProvider?.addToast({
       variant: 'success',
       title: 'Export Complete',
@@ -323,7 +323,7 @@ https://svelte.dev/e/js_parse_error -->
         {#each tabs as tab}
           {@const IconComponent = tab.icon}
           <button
-            on:click={class}`}
+            onclick={class}`}
           >
             <IconComponent class="w-4 h-4" />
             {tab.label}

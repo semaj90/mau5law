@@ -171,7 +171,7 @@
                 <p class="text-sm text-gray-600 italic">"{example.prompt}"</p>
                 <button 
                   class="mt-2 text-xs text-blue-600 hover:text-blue-800"
-                  on:click={() => {
+                  onclick={() => {
                     // Copy to clipboard and scroll to demo
                     navigator.clipboard?.writeText(example.prompt);
                     document.querySelector('textarea')?.focus();

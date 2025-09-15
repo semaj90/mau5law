@@ -10,8 +10,8 @@ https://svelte.dev/e/script_duplicate -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   
-  let query = 'contract liability terms'
-  let results: any[] = []
+  let query = $state('contract liability terms'
+  let results: unknown[] = []
   let wsMsg = ''
 
   async function runSearch() {
@@ -33,8 +33,8 @@ https://svelte.dev/e/script_duplicate -->
 
   <h1>Vector Search Demo</h1>
   <div class="row">
-  <input bind:value={query} placeholder="Enter query" />
-  <button on:click={runSearch}>Search</button>
+  <input )bind:value={query} placeholder="Enter query" />
+  <button onclick={runSearch}>Search</button>
   </div>
 
   <p>Log: {wsMsg}</p>
@@ -72,7 +72,7 @@ https://svelte.dev/e/script_duplicate -->
   interface VectorSearchResponse {
     response: string;
     confidence: number;
-    sources: any[];
+    sources: unknown[];
     searchResults: SearchResult[];
     searchMetadata: {
       totalResults: number;
@@ -267,7 +267,7 @@ https://svelte.dev/e/script_duplicate -->
 
       <div class="form-actions">
         <button
-          on:click={performSearch}
+          onclick={performSearch}
           disabled={isSearching || !query.trim()}
           class="search-button"
         >
@@ -275,7 +275,7 @@ https://svelte.dev/e/script_duplicate -->
         </button>
 
         <button
-          on:click={indexSampleDocument}
+          onclick={indexSampleDocument}
           class="index-button"
         >
           📄 Index Sample Document

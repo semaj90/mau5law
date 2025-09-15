@@ -48,7 +48,7 @@
       <div class="demo-grid">
         <LoadingButton 
           loading={loading1} 
-          on:click={() => simulateAsync(loadingState1)}
+          onclick={() => simulateAsync(loadingState1)}
           loadingText="Processing..."
         >
           Click me!
@@ -56,7 +56,7 @@
         
         <LoadingButton 
           loading={loading2} 
-          on:click={() => simulateAsync(loadingState2)}
+          onclick={() => simulateAsync(loadingState2)}
           variant="secondary"
         >
           Secondary Button
@@ -68,23 +68,23 @@
     <section class="demo-section">
       <h2>Variants</h2>
       <div class="demo-grid">
-        <LoadingButton variant="primary" on:click={() => console.log('Primary clicked')}>
+        <LoadingButton variant="primary" onclick={() => console.log('Primary clicked')}>
           Primary
         </LoadingButton>
         
-        <LoadingButton variant="secondary" on:click={() => console.log('Secondary clicked')}>
+        <LoadingButton variant="secondary" onclick={() => console.log('Secondary clicked')}>
           Secondary
         </LoadingButton>
         
-        <LoadingButton variant="destructive" on:click={() => console.log('Destructive clicked')}>
+        <LoadingButton variant="destructive" onclick={() => console.log('Destructive clicked')}>
           Destructive
         </LoadingButton>
         
-        <LoadingButton variant="outline" on:click={() => console.log('Outline clicked')}>
+        <LoadingButton variant="outline" onclick={() => console.log('Outline clicked')}>
           Outline
         </LoadingButton>
         
-        <LoadingButton variant="ghost" on:click={() => console.log('Ghost clicked')}>
+        <LoadingButton variant="ghost" onclick={() => console.log('Ghost clicked')}>
           Ghost
         </LoadingButton>
       </div>
@@ -94,15 +94,15 @@
     <section class="demo-section">
       <h2>Sizes</h2>
       <div class="demo-grid demo-grid--aligned">
-        <LoadingButton size="sm" on:click={() => console.log('Small clicked')}>
+        <LoadingButton size="sm" onclick={() => console.log('Small clicked')}>
           Small
         </LoadingButton>
         
-        <LoadingButton size="md" on:click={() => console.log('Medium clicked')}>
+        <LoadingButton size="md" onclick={() => console.log('Medium clicked')}>
           Medium
         </LoadingButton>
         
-        <LoadingButton size="lg" on:click={() => console.log('Large clicked')}>
+        <LoadingButton size="lg" onclick={() => console.log('Large clicked')}>
           Large
         </LoadingButton>
       </div>
@@ -114,7 +114,7 @@
       <div class="demo-grid">
         <LoadingButton 
           loading={loading3} 
-          on:click={() => simulateAsync(loadingState3)}
+          onclick={() => simulateAsync(loadingState3)}
           loadingText="Saving..."
           variant="primary"
         >
@@ -123,7 +123,7 @@
         
         <LoadingButton 
           loading={loading4} 
-          on:click={() => simulateAsync(loadingState4)}
+          onclick={() => simulateAsync(loadingState4)}
           loadingText="Deleting..."
           variant="destructive"
         >
@@ -132,7 +132,7 @@
         
         <LoadingButton 
           loading={loading5} 
-          on:click={() => simulateAsync(loadingState5)}
+          onclick={() => simulateAsync(loadingState5)}
           loadingText="Loading..."
           variant="outline"
           size="lg"
@@ -146,7 +146,7 @@
     <section class="demo-section">
       <h2>Disabled State</h2>
       <div class="demo-grid">
-        <LoadingButton disabled on:click={() => console.log('Should not fire')}>
+        <LoadingButton disabled onclick={() => console.log('Should not fire')}>
           Disabled Button
         </LoadingButton>
         
@@ -160,7 +160,7 @@
     <section class="demo-section">
       <h2>With Custom Content</h2>
       <div class="demo-grid">
-        <LoadingButton on:click={() => console.log('Icon button clicked')}>
+        <LoadingButton onclick={() => console.log('Icon button clicked')}>
           {#snippet children()}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -174,7 +174,7 @@
     <!-- Form Integration -->
     <section class="demo-section">
       <h2>Form Integration</h2>
-      <form class="demo-form" on:submit={(e) => { e.preventDefault(); console.log('Form submitted'); }}>
+      <form class="demo-form" onsubmit={(e) => { e.preventDefault(); console.log('Form submitted'); }}>
         <div class="form-group">
           <label for="demo-input">Sample Input:</label>
           <input id="demo-input" type="text" placeholder="Enter some text..." />

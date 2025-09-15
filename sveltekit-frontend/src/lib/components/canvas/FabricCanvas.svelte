@@ -505,7 +505,7 @@ let uploadProgress = $state(new Map<string, number>());
               multiple
               accept="image/*,.pdf,.doc,.docx,.txt"
               class="hidden"
-              on:change={handleFileUpload}
+              onchange={handleFileUpload}
               disabled={isLoading}
             />
             <Button class="bits-btn" variant="outline" disabled={isLoading}>
@@ -517,26 +517,26 @@ let uploadProgress = $state(new Map<string, number>());
 
         <!-- Add Annotation -->
         {#if !readOnly}
-          <Button class="bits-btn" variant="outline" on:click={addAnnotation}>
+          <Button class="bits-btn" variant="outline" onclick={addAnnotation}>
             <FileText class="h-4 w-4 mr-2" />
             Add Note
           </Button>
         {/if}
 
         <!-- Zoom Controls -->
-        <Button class="bits-btn" variant="outline" on:click={zoomIn}>
+        <Button class="bits-btn" variant="outline" onclick={zoomIn}>
           <ZoomIn class="h-4 w-4" />
         </Button>
-        <Button class="bits-btn" variant="outline" on:click={zoomOut}>
+        <Button class="bits-btn" variant="outline" onclick={zoomOut}>
           <ZoomOut class="h-4 w-4" />
         </Button>
-        <Button class="bits-btn" variant="outline" on:click={resetZoom}>
+        <Button class="bits-btn" variant="outline" onclick={resetZoom}>
           <RotateCcw class="h-4 w-4" />
         </Button>
 
         <!-- Object Controls -->
         {#if hasSelectedObject && !readOnly}
-          <Button class="bits-btn" variant="destructive" on:click={deleteSelected}>
+          <Button class="bits-btn" variant="destructive" onclick={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
           </Button>
@@ -544,13 +544,13 @@ let uploadProgress = $state(new Map<string, number>());
 
         <!-- Save & Export -->
         {#if !readOnly}
-          <Button class="bits-btn" variant="default" on:click={saveCanvas}>
+          <Button class="bits-btn" variant="default" onclick={saveCanvas}>
             <Save class="h-4 w-4 mr-2" />
             Save
           </Button>
         {/if}
 
-        <Button class="bits-btn" variant="outline" on:click={exportCanvas}>
+        <Button class="bits-btn" variant="outline" onclick={exportCanvas}>
           <Download class="h-4 w-4 mr-2" />
           Export
         </Button>

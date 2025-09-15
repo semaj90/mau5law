@@ -11,9 +11,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -41,14 +39,14 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   }: Props = $props();
 
   // Chat state
-  let messages: any[] = $state([]);
+  let messages: unknown[] = $state([]);
   let currentMessage = $state('');
   let isTyping = $state(false);
   let hoveredElement: string | null = $state(null);
-  let elementAnalysis: any = $state(null);
+  let elementAnalysis: unknown = $state(null);
 
   // AI capabilities
-  let ragSources: any[] = $state([]);
+  let ragSources: unknown[] = $state([]);
   let aiConfidence = $state(0);
   let selfPromptSuggestions: string[] = $state([]);
 
@@ -92,8 +90,8 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           currentPhase: 'evidence_review'
         })
       });
-      const result = await (response as { json?: any }).json();
-      selfPromptSuggestions = (result as { suggestions?: any }).suggestions || [
+      const result = await (response as { json?: unknown }).json();
+      selfPromptSuggestions = (result as { suggestions?: unknown }).suggestions || [
         "Analyze evidence strength for this case",
         "Find similar cases with comparable evidence",
         "Identify potential defense arguments",
@@ -123,7 +121,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           context: 'legal_analysis'
         })
       });
-      const analysis = await (response as { json?: any }).json();
+      const analysis = await (response as { json?: unknown }).json();
       elementAnalysis = analysis;
     } catch (error) {
       console.error('Element analysis failed:', error);
@@ -283,7 +281,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
             <Button class="bits-btn" 
               variant="outline" 
               size="sm"
-              on:click={() =>
+              onclick={() =>
 useSelfPrompt(suggestion)}
               disabled={isTyping}
             >
@@ -389,7 +387,7 @@ useSelfPrompt(suggestion)}
           />
         </div>
         <Button class="bits-btn" 
-          on:click={sendMessage}
+          onclick={sendMessage}
           disabled={isTyping || !currentMessage.trim()}
         >
 <Send class="w-4 h-4" />

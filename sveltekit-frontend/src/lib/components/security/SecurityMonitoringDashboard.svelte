@@ -4,9 +4,7 @@
 -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import { getSecurityEvents, type SecurityEvent } from "$lib/utils/security";
   import {
@@ -229,14 +227,14 @@
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        on:click={() =>
+        onclick={() =>
 loadSecurityEvents()}
         disabled={loading}
       >
         <RefreshCw class={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
         Refresh
 </Button>
-      <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+      <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
 exportEvents()}>
         <Download class="h-4 w-4" />
         Export
@@ -245,7 +243,7 @@ exportEvents()}>
         class="bits-btn container mx-auto px-4"
         variant="outline"
         size="sm"
-        on:click={() =>
+        onclick={() =>
 clearAllEvents()}
       >
         <Trash2 class="h-4 w-4" />
@@ -456,7 +454,7 @@ clearAllEvents()}
                   class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 toggleEventDetails(index)}
                 >
                   <Eye class="h-4 w-4" />

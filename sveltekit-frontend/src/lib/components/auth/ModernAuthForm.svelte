@@ -3,9 +3,7 @@
   // Svelte 5 runes are used directly without imports
   import { enhance } from '$app/forms';
   // import { Dialog } from 'bits-ui';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -169,7 +167,7 @@
         }
     </p>
 
-      <form on:submit={handleSubmit} class="space-y-4">
+      <form onsubmit={handleSubmit} class="space-y-4">
         <!-- Success Message -->
         {#if success}
           <Alert variant="default" class="border-green-200 bg-green-50 text-green-800">
@@ -300,7 +298,7 @@
         <div class="text-center">
           <button 
             type="button"
-            on:click={toggleMode}
+            onclick={toggleMode}
             class="text-sm text-primary hover:underline"
             disabled={loading}
           >
@@ -323,7 +321,7 @@
 
     <button 
       type="button"
-      on:click={() => open = false}
+      onclick={() => open = false}
       class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
     >
       <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -3,7 +3,7 @@
   // LoginButton component - Enhanced login/logout button - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
   import { goto } from '$app/navigation';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   interface Props {
     variant?: 'default' | 'outline' | 'ghost' | 'secondary';
     size?: 'sm' | 'md' | 'lg';
@@ -52,7 +52,7 @@
     <Button class="bits-btn" 
       {variant} 
       {size}
-      on:click={handleLogout}
+      onclick={handleLogout}
       disabled={authStore.isLoading}
       aria-label="Sign out"
     >
@@ -64,7 +64,7 @@
     {variant} 
     {size}
     class={className}
-    on:click={handleLogin}
+    onclick={handleLogin}
     disabled={authStore.isLoading}
     aria-label="Sign in"
   >

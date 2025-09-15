@@ -1,3 +1,6 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
@@ -8,6 +11,44 @@ https://svelte.dev/e/js_parse_error -->
   - Backend: expects /api/ai/process-evidence (LangChain, Ollama, pg_vector, Neo4j, Redis, Docker)
 -->
 <script lang="ts">
+interface EvidenceItem {
+  id: string;
+  title: string;
+  description?: string;
+  type: string;
+  createdAt: string;
+  metadata?: Record<string, unknown>;
+}
+
+interface CaseData {
+  id: string;
+  title: string;
+  status: string;
+  evidence?: EvidenceItem[];
+  createdAt: string;
+}
+
+interface ApiResponse<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+}
+
+interface FileData {
+  name: string;
+  size: number;
+  type: string;
+  lastModified: number;
+}
+
+interface UserData {
+  id: string;
+  name: string;
+  email?: string;
+  role?: string;
+}
+
   import 'nes.css/css/nes.min.css';
   import { getContext, onMount } from 'svelte';
 
@@ -36,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Get user from context (SSR-safe)
-  const getUser = getContext('user');
+  const getUser = getContext<unknown>('user');
   const user = typeof getUser === 'function' ? getUser() : undefined;
 
   interface Props {
@@ -95,7 +136,8 @@ https://svelte.dev/e/js_parse_error -->
     async function saveSummary() {
       if (!(($aiGlobalStore as AIStore).context.summary) || !caseId || !user?.id) return;
       try {
-        const response = await fetch('/api/summaries', {
+        try {
+    const response = await fetch('/api/summaries', {
           method: 'POST',
           body: JSON.stringify({
             type: 'case',
@@ -105,7 +147,14 @@ https://svelte.dev/e/js_parse_error -->
             includeUserActivity: false,
             enableStreaming: false,
             userId: user.id
-          }),
+          });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  },
           headers: { 'Content-Type': 'application/json' }
         });
 
@@ -118,7 +167,8 @@ https://svelte.dev/e/js_parse_error -->
         }
       } catch (error) {
         console.error('Error saving summary:', error);
-      }
+      
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
     }
   </script>
 
@@ -127,7 +177,7 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
     <div class="flex gap-2 flex-wrap">
       <Button
-        on:click={handleSummarize}
+        onclick={(event: MouseEvent) => handleSummarize}
         disabled={!user || $aiGlobalStore.context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
@@ -135,7 +185,7 @@ https://svelte.dev/e/js_parse_error -->
 {!user ? 'Sign in to Summarize' : ($aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence')}
 
       <Button
-        on:click={saveSummary}
+        onclick={(event: MouseEvent) => saveSummary}
         disabled={!$aiGlobalStore.context.summary || $aiGlobalStore.context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
@@ -144,7 +194,7 @@ Save Summary
 
       {#if evidenceText}
         <Button
-          on:click={handleGenerateEmbedding}
+          onclick={(event: MouseEvent) => handleGenerateEmbedding}
           disabled={!user || $legalCaseStore.context.generatingEmbedding}
           variant="secondary"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
@@ -152,7 +202,7 @@ Save Summary
 {$legalCaseStore.context.generatingEmbedding ? 'Generating...' : 'Find Related Evidence'}
 
         <Button
-          on:click={handleSearchRelatedEvidence}
+          onclick={(event: MouseEvent) => handleSearchRelatedEvidence}
           disabled={!user || $legalCaseStore.context.searchingRelatedEvidence}
           variant="outline"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
@@ -163,7 +213,7 @@ Save Summary
     </div>
   </div>
 
-  <div class="nier-content">
+  <main>
     {#if $aiGlobalStore.context.loading}
       <div class="nier-loading">
         <span class="nier-text-muted">Summarizing evidence...</span>
@@ -173,7 +223,7 @@ Save Summary
         {/if}
       </div>
     {:else if $aiGlobalStore.context.error}
-      <div class="nier-error p-3 rounded">
+      <div class="nier-error p-3 rounded" aria-live="polite" role="alert">
         <span class="text-red-600">{$aiGlobalStore.context.error}</span>
       </div>
     {:else if $aiGlobalStore.context.summary}

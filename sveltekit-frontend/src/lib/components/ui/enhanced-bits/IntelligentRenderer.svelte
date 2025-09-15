@@ -32,15 +32,15 @@
   let { data, type, title = '', priority = 'medium' }: Props = $props();
 
   // Intelligent rendering decision
-  $: useGlyphEngine = LegalAILogic.requiresGlyphEngine(data);
+  let useGlyphEngine = $derived(LegalAILogic.requiresGlyphEngine(data));
 
   // Process data with pure logic
-  $: processedData = (() => {
-    if ((data as { evidence?: any; documents?: any; textContent?: any }).evidence) {
-      return LegalAILogic.categorizeEvidence((data as { evidence?: any; documents?: any; textContent?: any }).evidence);
+  let processedData = $derived((() => {
+    if ((data as { evidence?: unknown); documents?: unknown; textContent?: unknown }).evidence) {
+      return LegalAILogic.categorizeEvidence((data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence);
     }
-    if ((data as { evidence?: any; documents?: any; textContent?: any }).documents && (data as { evidence?: any; documents?: any; textContent?: any }).documents.length > 0) {
-      return LegalAILogic.processDocument((data as { evidence?: any; documents?: any; textContent?: any }).documents[0]);
+    if ((data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents && (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents.length > 0) {
+      return LegalAILogic.processDocument((data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents[0]);
     }
     return data;
   })();
@@ -76,29 +76,29 @@
     </Card.Header>
 
     <Card.Content class="space-y-4 nes-container">
-      {#if type === 'evidence-card' && (data as { evidence?: any; documents?: any; textContent?: any }).evidence}
+      {#if type === 'evidence-card' && (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence}
         <!-- Regular DOM evidence display -->
         <div class="grid gap-2">
-          {#each (data as { evidence?: any; documents?: any; textContent?: any }).evidence as item}
+          {#each (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence as item}
             <div class="enhanced-bits-nier-bits-card p-3 border-l-4 border-n64-blue">
               <div class="flex justify-between items-center">
-                <span class="nes-text text-sm">{(item as { title?: any; priority?: any; confidence?: any }).title}</span>
-                <span class="nes-badge is-{(item as { title?: any; priority?: any; confidence?: any }).priority}">{(item as { title?: any; priority?: any; confidence?: any }).confidence}%</span>
+                <span class="nes-text text-sm">{(item as { title?: unknown; priority?: unknown; confidence?: unknown }).title}</span>
+                <span class="nes-badge is-{(item as { title?: unknown; priority?: unknown; confidence?: unknown }).priority}">{(item as { title?: unknown; priority?: unknown; confidence?: unknown }).confidence}%</span>
               </div>
             </div>
           {/each}
         </div>
 
-      {:else if type === 'document-viewer' && (data as { evidence?: any; documents?: any; textContent?: any }).documents}
+      {:else if type === 'document-viewer' && (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents}
         <!-- Regular DOM document display -->
         <div class="space-y-3">
-          {#each (data as { evidence?: any; documents?: any; textContent?: any }).documents as doc}
+          {#each (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents as doc}
             <div class="enhanced-bits-nier-bits-card p-4">
               <h3 class="nes-text font-bold mb-2">{doc.title}</h3>
               <p class="text-yorha-white text-sm">{doc.content.slice(0, 200)}...</p>
               <div class="mt-2 flex justify-between">
                 <span class="nes-text text-xs">Confidence: {doc.confidence}%</span>
-                <Button class="enhanced-bits-button is-small" on:click={handleInteraction}>
+                <Button class="enhanced-bits-button is-small" onclick={handleInteraction}>
 Analyze
               </div>
             </div>
@@ -111,8 +111,8 @@ Analyze
           <div class="nes-text text-yorha-white">
             💬 Legal AI Assistant
           </div>
-          {#if (data as { evidence?: any; documents?: any; textContent?: any }).textContent}
-            <p class="mt-2 text-sm text-yorha-white">{(data as { evidence?: any; documents?: any; textContent?: any }).textContent}</p>
+          {#if (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).textContent}
+            <p class="mt-2 text-sm text-yorha-white">{(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).textContent}</p>
           {/if}
         </div>
 
@@ -129,13 +129,13 @@ Analyze
       <div class="flex gap-2 mt-4">
         <Button
           class="enhanced-bits-button nes-btn is-primary gaming-transition"
-          on:click={handleInteraction}
+          onclick={handleInteraction}
         >
 Process
         <Button
           class="enhanced-bits-button nes-btn gaming-transition"
           variant="outline"
-          on:click={handleInteraction}
+          onclick={handleInteraction}
         >
 Details
       </div>

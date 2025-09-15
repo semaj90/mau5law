@@ -2,9 +2,7 @@
 <!-- Uses Svelte 5 patterns with bits-ui components -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Textarea } from "$lib/components/ui/textarea/index";
   import { notifications } from "$lib/stores/notification";
   import { Bot, Send, Loader2, Brain, Zap, FileText, Search, Activity, Database } from "lucide-svelte";
@@ -73,7 +71,7 @@
       isTyping = true;
 
       let response: Response;
-      let responseData: any;
+      let responseData: unknown;
 
       if (useAdvancedRAG && (availableDocuments.length > 0 || selectedDocuments.length > 0)) {
         // Use Enhanced Embedding Service with full infrastructure integration
@@ -112,8 +110,8 @@
             assistantResponse += `**📚 Found ${ragResult.similarDocuments.length} relevant documents:**\n\n`;
 
             ragResult.similarDocuments.forEach((result, index) => {
-              const doc = (result as { document?: any; similarity?: any; queued?: any }).document;
-              assistantResponse += `**Document ${index + 1}** (Similarity: ${((result as { document?: any; similarity?: any; queued?: any }).similarity * 100).toFixed(1)}%)\n`;
+              const doc = (result as { document?: unknown; similarity?: unknown; queued?: unknown }).document;
+              assistantResponse += `**Document ${index + 1}** (Similarity: ${((result as { document?: unknown; similarity?: unknown; queued?: unknown }).similarity * 100).toFixed(1)}%)\n`;
               assistantResponse += `${doc.content.substring(0, 200)}${doc.content.length > 200 ? '...' : ''}\n`;
               if (doc.metadata.practiceArea) {
                 assistantResponse += `*Practice Area: ${doc.metadata.practiceArea}*\n`;
@@ -182,11 +180,11 @@
             body: JSON.stringify(ragRequest),
           });
 
-          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-            throw new Error(`RAG API fallback error: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status} ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+          if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+            throw new Error(`RAG API fallback error: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status} ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
           }
 
-          responseData = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+          responseData = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
 
           if (!responseData.success) {
             throw new Error(responseData.error || "RAG query failed");
@@ -199,7 +197,7 @@
           if (ragContext.similarDocs && ragContext.similarDocs.length > 0) {
             assistantResponse += `Found ${ragContext.similarDocs.length} relevant document(s):\n\n`;
 
-            ragContext.similarDocs.forEach((doc: any, index: number) => {
+            ragContext.similarDocs.forEach((doc: unknown, index: number) => {
               assistantResponse += `**Document ${index + 1}** (Similarity: ${(doc.score * 100).toFixed(1)}%)\n`;
               assistantResponse += `${doc.document}\n\n`;
             });
@@ -219,7 +217,7 @@
               fallbackMode: true,
               model: ragContext.metadata?.model || 'fallback',
               processingTime: ragContext.processingTime,
-              similarityScores: ragContext.similarDocs?.map((d: any) => d.score) || [],
+              similarityScores: ragContext.similarDocs?.map((d: unknown) => d.score) || [],
               vectorDimensions: ragContext.metadata?.vectorDimensions || 384,
               gpuAccelerated: ragContext.metadata?.gpuUsed || false
             },
@@ -238,11 +236,11 @@
           }),
         });
 
-        if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+        if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
           throw new Error("Failed to get AI response");
         }
 
-        responseData = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+        responseData = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
 
         if (!responseData.success || !responseData.data) {
           throw new Error(responseData.error || "Invalid response format");
@@ -250,9 +248,9 @@
 
         messages = [...messages, {
           role: 'assistant',
-          content: responseData.(data as { infrastructureUsed?: any; model?: any; dimensions?: any; cacheHits?: any; totalDocuments?: any; practiceArea?: any; content?: any; metadata?: any }).content,
+          content: responseData.(data as { infrastructureUsed?: unknown; model?: unknown; dimensions?: unknown; cacheHits?: unknown; totalDocuments?: unknown; practiceArea?: unknown; content?: unknown; metadata?: unknown }).content,
           timestamp: new Date().toLocaleTimeString(),
-          metadata: responseData.(data as { infrastructureUsed?: any; model?: any; dimensions?: any; cacheHits?: any; totalDocuments?: any; practiceArea?: any; content?: any; metadata?: any }).metadata
+          metadata: responseData.(data as { infrastructureUsed?: unknown; model?: unknown; dimensions?: unknown; cacheHits?: unknown; totalDocuments?: unknown; practiceArea?: unknown; content?: unknown; metadata?: unknown }).metadata
         }];
       }
 
@@ -395,7 +393,7 @@
           doc
         );
 
-        if ((result as { document?: any; similarity?: any; queued?: any }).queued) successCount++;
+        if ((result as { document?: unknown; similarity?: unknown; queued?: unknown }).queued) successCount++;
       }
 
       notifications.add({
@@ -464,7 +462,7 @@
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        on:click={() =>
+        onclick={() =>
 useAdvancedRAG = !useAdvancedRAG}
         disabled={isLoading}
       >
@@ -483,7 +481,7 @@ useAdvancedRAG = !useAdvancedRAG}
         <Button class="bits-btn"
           variant="outline"
           size="sm"
-          on:click={analyzeDocuments}
+          onclick={analyzeDocuments}
           disabled={isLoading || availableDocuments.length === 0}
         >
 {#snippet children()}
@@ -496,7 +494,7 @@ useAdvancedRAG = !useAdvancedRAG}
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        on:click={checkServiceHealth}
+        onclick={checkServiceHealth}
         disabled={isLoading}
       >
 {#snippet children()}
@@ -512,7 +510,7 @@ useAdvancedRAG = !useAdvancedRAG}
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        on:click={queueEmbeddingJobs}
+        onclick={queueEmbeddingJobs}
         disabled={isLoading || availableDocuments.length === 0}
       >
 {#snippet children()}
@@ -531,7 +529,7 @@ useAdvancedRAG = !useAdvancedRAG}
           RAG Context: {selectedDocuments.length > 0 ? selectedDocuments.length : availableDocuments.length} of {availableDocuments.length} documents
         </span>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="outline" size="xs" on:click={addDocument}>
+          <Button class="bits-btn" variant="outline" size="xs" onclick={addDocument}>
 {#snippet children()}
               <FileText class="w-3 h-3 mr-1" />
               Add Doc
@@ -559,7 +557,7 @@ useAdvancedRAG = !useAdvancedRAG}
               <input
                 type="checkbox"
                 checked={selectedDocuments.includes(doc)}
-                on:change={() => toggleDocumentSelection(index)}
+                onchange={() => toggleDocumentSelection(index)}
                 class="w-3 h-3"
               />
               <span class="text-xs text-gray-600 truncate">
@@ -633,8 +631,8 @@ useAdvancedRAG = !useAdvancedRAG}
             ? "Ask me to analyze your documents with EmbeddingGemma... (Enter to send)"
             : "Type your message... (Enter to send)"}
           class="resize-none min-h-[50px] max-h-[120px]"
-          on:keydown={handleKeyDown}
-          on:input={autoResize}
+          onkeydown={handleKeyDown}
+          oninput={autoResize}
           disabled={isLoading}
         />
       </div>
@@ -642,7 +640,7 @@ useAdvancedRAG = !useAdvancedRAG}
       <Button class="bits-btn"
         variant="default"
         size="default"
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={isLoading || !messageInput.trim()}
       >
 {#snippet children()}

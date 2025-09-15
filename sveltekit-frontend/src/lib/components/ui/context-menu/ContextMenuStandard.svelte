@@ -28,36 +28,36 @@
   <ContextMenu.Portal>
     <ContextMenu.Content {...contentProps}>
       {#each items as item}
-        {#if (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).type === 'separator'}
+        {#if (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).type === 'separator'}
           <ContextMenu.Separator />
-        {:else if (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).type === 'checkbox'}
+        {:else if (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).type === 'checkbox'}
           <ContextMenu.CheckboxItem 
-            value={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).value} 
-            disabled={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).disabled}
-            select={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).onSelect}
+            value={(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).value} 
+            disabled={(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).disabled}
+            select={(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).onSelect}
           >
             {#snippet children({ checked })}
               {#if checked}✓{/if}
-              {(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).label}
+              {(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).label}
             {/snippet}
           </ContextMenu.CheckboxItem>
-        {:else if (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).type === 'radio'}
+        {:else if (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).type === 'radio'}
           <ContextMenu.RadioItem 
-            value={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).value} 
-            disabled={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).disabled}
-            select={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).onSelect}
+            value={(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).value} 
+            disabled={(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).disabled}
+            select={(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).onSelect}
           >
             {#snippet children({ checked })}
               {#if checked}●{/if}
-              {(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).label}
+              {(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).label}
             {/snippet}
           </ContextMenu.RadioItem>
-        {:else if (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).type === 'sub' && (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).items}
+        {:else if (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).type === 'sub' && (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).items}
           <ContextMenu.Sub>
-            <ContextMenu.SubTrigger>{(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).label}</ContextMenu.SubTrigger>
+            <ContextMenu.SubTrigger>{(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).label}</ContextMenu.SubTrigger>
             <ContextMenu.Portal>
               <ContextMenu.SubContent>
-                {#each (item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).items as subItem}
+                {#each (item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).items as subItem}
                   <ContextMenu.Item 
                     textValue={subItem.label}
                     disabled={subItem.disabled}
@@ -71,11 +71,11 @@
           </ContextMenu.Sub>
         {:else}
           <ContextMenu.Item 
-            textValue={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).label}
-            disabled={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).disabled}
-            select={(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).onSelect}
+            textValue={(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).label}
+            disabled={(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).disabled}
+            select={(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).onSelect}
           >
-            {(item as { type?: any; value?: any; disabled?: any; onSelect?: any; label?: any; items?: any }).label}
+            {(item as { type?: unknown; value?: unknown; disabled?: unknown; onSelect?: unknown; label?: unknown; items?: unknown }).label}
           </ContextMenu.Item>
         {/if}
       {/each}

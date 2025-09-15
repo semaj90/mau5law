@@ -205,7 +205,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <div class="flex justify-between items-center mt-4">
       <button
-        on:click={processErrors}
+        onclick={processErrors}
         disabled={isLoading || !somCache}
         class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-medium transition-colors"
       >

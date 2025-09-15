@@ -102,16 +102,16 @@
         body: formData
       });
 
-      const data = await (response as { json?: any; ok?: any }).json();
+      const data = await (response as { json?: unknown; ok?: unknown }).json();
 
       testResults = [...testResults, {
         test: 'File Upload + AI Analysis',
-        status: (response as { json?: any; ok?: any }).ok && (data as { success?: any; confidence?: any }).success ? 'PASS' : 'FAIL',
+        status: (response as { json?: unknown; ok?: unknown }).ok && (data as { success?: unknown; confidence?: unknown }).success ? 'PASS' : 'FAIL',
         data: data,
         timestamp: new Date().toISOString()
       }];
 
-      if ((response as { json?: any; ok?: any }).ok && (data as { success?: any; confidence?: any }).success) {
+      if ((response as { json?: unknown; ok?: unknown }).ok && (data as { success?: unknown; confidence?: unknown }).success) {
         uploadResult = data;
 
         // Test file listing after upload
@@ -187,7 +187,7 @@
         bind:this={fileInput}
         type="file"
         accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
-        on:change={handleFileSelect}
+        onchange={handleFileSelect}
         disabled={uploading}
       />
 
@@ -202,7 +202,7 @@
       <button
         class="upload-btn"
         disabled={!selectedFile || uploading}
-        on:click={uploadTestFile}
+        onclick={uploadTestFile}
       >
         {#if uploading}
           🔄 Uploading...
@@ -242,30 +242,30 @@
   <!-- Test Results -->
   <div class="results-panel">
     <h3>📊 Test Results</h3>
-    <button class="refresh-btn" on:click={runPhase1Test}>🔄 Refresh Tests</button>
+    <button class="refresh-btn" onclick={runPhase1Test}>🔄 Refresh Tests</button>
 
     <div class="results-list">
       {#each testResults as result}
-        <div class="result-item" class:pass={(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status === 'PASS' || (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status === 'COMPLETE'} class:fail={(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status === 'FAIL' || (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status === 'ERROR'}>
+        <div class="result-item" class:pass={(result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).status === 'PASS' || (result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).status === 'COMPLETE'} class:fail={(result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).status === 'FAIL' || (result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).status === 'ERROR'}>
           <div class="result-header">
-            <span class="test-name">{(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).test}</span>
-            <span class="test-status status-{(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status.toLowerCase()}">{(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).status}</span>
+            <span class="test-name">{(result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).test}</span>
+            <span class="test-status status-{(result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).status.toLowerCase()}">{(result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).status}</span>
           </div>
 
-          {#if (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).message}
-            <p class="result-message">{(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).message}</p>
+          {#if (result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).message}
+            <p class="result-message">{(result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).message}</p>
           {/if}
 
-          {#if (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).error}
-            <p class="result-error">❌ {(result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).error}</p>
+          {#if (result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).error}
+            <p class="result-error">❌ {(result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).error}</p>
           {/if}
 
-          <div class="result-timestamp">{new Date((result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).timestamp).toLocaleTimeString()}</div>
+          <div class="result-timestamp">{new Date((result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).timestamp).toLocaleTimeString()}</div>
 
-          {#if (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).data && typeof (result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).data === 'object'}
+          {#if (result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).data && typeof (result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).data === 'object'}
             <details class="result-details">
               <summary>View Details</summary>
-              <pre>{JSON.stringify((result as { status?: any; test?: any; message?: any; error?: any; timestamp?: any; data?: any }).data, null, 2)}</pre>
+              <pre>{JSON.stringify((result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).data, null, 2)}</pre>
             </details>
           {/if}
         </div>
@@ -449,12 +449,12 @@
     background: white;
   }
 
-  .result-(item as { pass?: any; fail?: any }).pass {
+  .result-(item as { pass?: unknown; fail?: unknown }).pass {
     border-color: #28a745;
     background: #f8fff8;
   }
 
-  .result-(item as { pass?: any; fail?: any }).fail {
+  .result-(item as { pass?: unknown; fail?: unknown }).fail {
     border-color: #dc3545;
     background: #fff8f8;
   }

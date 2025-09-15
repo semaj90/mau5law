@@ -26,7 +26,7 @@
   
   // Enhanced UI components
   import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Progress } from '$lib/components/ui/progress';
   import { Badge } from '$lib/components/ui/badge';
   
@@ -268,12 +268,12 @@
       };
       
       contextualInsights = [realInsight, ...contextualInsights];
-      optimisticInsights = optimisticInsights.filter(item => (item as { id?: any; data?: any; optimistic?: any }).id !== optimisticInsight.id);
+      optimisticInsights = optimisticInsights.filter(item => (item as { id?: unknown; data?: unknown; optimistic?: unknown }).id !== optimisticInsight.id);
       
       analysisQuery = '';
     } catch (error) {
       console.error('Analysis failed:', error);
-      optimisticInsights = optimisticInsights.filter(item => (item as { id?: any; data?: any; optimistic?: any }).id !== optimisticInsight.id);
+      optimisticInsights = optimisticInsights.filter(item => (item as { id?: unknown; data?: unknown; optimistic?: unknown }).id !== optimisticInsight.id);
     } finally {
       isAnalyzing = false;
     }
@@ -390,7 +390,7 @@
           <LoadingButton
             loading={isAnalyzing}
             variant="primary"
-            on:click={analyzeContextualQuery}
+            onclick={analyzeContextualQuery}
             loadingText="Analyzing..."
           >
             {#snippet children()}
@@ -432,27 +432,27 @@
                 class:optimistic={isOptimistic}
                 role="button"
                 tabindex="0"
-                on:click={() => openInsightDetails((item as { id?: any; data?: any; optimistic?: any }).data)}
+                onclick={() => openInsightDetails((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data)}
               >
                 <div class="insight-header">
-                  <div class="insight-type {getInsightTypeColor((item as { id?: any; data?: any; optimistic?: any }).data.type)}">
-                    {@render getInsightTypeIcon((item as { id?: any; data?: any; optimistic?: any }).data.type)({ class: "w-4 h-4" })}
+                  <div class="insight-type {getInsightTypeColor((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.type)}">
+                    {@render getInsightTypeIcon((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.type)({ class: "w-4 h-4" })}
                   </div>
                   <div class="insight-meta">
-                    <span class="insight-title">{(item as { id?: any; data?: any; optimistic?: any }).data.title}</span>
-                    <span class="insight-time">{formatRelativeTime((item as { id?: any; data?: any; optimistic?: any }).data.timestamp)}</span>
+                    <span class="insight-title">{(item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.title}</span>
+                    <span class="insight-time">{formatRelativeTime((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.timestamp)}</span>
                   </div>
                   <div class="insight-confidence">
                     <Badge variant="secondary">
-                      {Math.round((item as { id?: any; data?: any; optimistic?: any }).data.confidence * 100)}%
+                      {Math.round((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.confidence * 100)}%
                     </Badge>
                   </div>
                 </div>
                 
-                <p class="insight-description">{(item as { id?: any; data?: any; optimistic?: any }).data.description}</p>
+                <p class="insight-description">{(item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.description}</p>
                 
                 <div class="insight-sources">
-                  {#each (item as { id?: any; data?: any; optimistic?: any }).data.sources.slice(0, 3) as source}
+                  {#each (item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.sources.slice(0, 3) as source}
                     <Badge variant="outline" class="source-tag">
                       {source}
                     </Badge>
@@ -576,7 +576,7 @@
               <LoadingButton
                 loading={isUploading}
                 variant="secondary"
-                on:click={selectFiles}
+                onclick={selectFiles}
                 loadingText="Uploading..."
               >
                 {#snippet children()}
@@ -648,7 +648,7 @@
         </div>
         
         <div class="modal-actions">
-          <button class="nes-btn" variant="outline" on:click={closeInsightDetails}>
+          <button class="nes-btn" variant="outline" onclick={closeInsightDetails}>
             Close
           </button>
           <button class="nes-btn is-primary">
@@ -841,7 +841,7 @@
     background-color: #f9fafb;
   }
 
-  .insight-(item as { id?: any; data?: any; optimistic?: any }).optimistic {
+  .insight-(item as { id?: unknown; data?: unknown; optimistic?: unknown }).optimistic {
     opacity: 0.7;
     background-color: rgba(59, 130, 246, 0.05);
     border: 1px dashed rgba(59, 130, 246, 0.3);

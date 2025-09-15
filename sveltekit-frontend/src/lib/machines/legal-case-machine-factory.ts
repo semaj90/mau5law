@@ -130,7 +130,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
  *   import { useMachine } from '@xstate/svelte';
  *   import { createLegalCaseMachineForRoute } from '$lib/machines/legal-case-machine-factory';
  *   
- *   $: machine = createLegalCaseMachineForRoute($page);
+ *   let machine = $derived(createLegalCaseMachineForRoute($page));
  *   const [state, send] = useMachine(machine);
  * </script>
  * ```

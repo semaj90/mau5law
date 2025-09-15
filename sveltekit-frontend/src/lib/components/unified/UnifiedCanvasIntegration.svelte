@@ -83,7 +83,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		console.log(`📋 Switched to ${mode} view mode`);
   	}
 
-  	async function handleEvidenceAnalysis(evidenceItem: any) {
+  	async function handleEvidenceAnalysis(evidenceItem: unknown) {
   		console.log('🔍 Starting evidence analysis:', evidenceItem.title);
   		// Add to processing queue
   		processingQueue = [...processingQueue, evidenceItem];
@@ -98,29 +98,29 @@ https://svelte.dev/e/attribute_duplicate -->
   					forceReanalyze: false
   				})
   			});
-  			const analysisResult = await (response as { json?: any }).json();
+  			const analysisResult = await (response as { json?: unknown }).json();
   			if (analysisResult.success) {
   				activeAnalysis = [...activeAnalysis, {
   					evidenceId: evidenceItem.id,
-  					...analysisResult.(data as { analysis?: any }).analysis,
+  					...analysisResult.(data as { analysis?: unknown }).analysis,
   					timestamp: new Date().toISOString()
   				}];
-  				console.log('✅ Evidence analysis completed:', analysisResult.(data as { analysis?: any }).analysis.summary);
+  				console.log('✅ Evidence analysis completed:', analysisResult.(data as { analysis?: unknown }).analysis.summary);
   			}
   		} catch (error) {
   			console.error('❌ Evidence analysis failed:', error);
   		} finally {
   			// Remove from processing queue
-  			processingQueue = processingQueue.filter(item => (item as { id?: any }).id !== evidenceItem.id);
+  			processingQueue = processingQueue.filter(item => (item as { id?: unknown }).id !== evidenceItem.id);
   		}
   	}
 
-  	function handleCanvasEvidenceUpdate(evidenceData: any[]) {
+  	function handleCanvasEvidenceUpdate(evidenceData: unknown[]) {
   		canvasEvidence = evidenceData;
   		console.log(`🎨 Canvas evidence updated: ${evidenceData.length} items`);
   	}
 
-  	function handleDetectiveAnalysis(analysisData: any) {
+  	function handleDetectiveAnalysis(analysisData: unknown) {
   		console.log('🕵️ Detective analysis received:', analysisData);
   		activeAnalysis = [...activeAnalysis, analysisData];
   	}
@@ -141,7 +141,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		// Combine evidence from both canvas and board
   		const allEvidence = [...canvasEvidence, ...evidence];
   		for (const item of allEvidence) {
-  			if (!activeAnalysis.find(analysis => analysis.evidenceId === (item as { id?: any }).id)) {
+  			if (!activeAnalysis.find(analysis => analysis.evidenceId === (item as { id?: unknown }).id)) {
   				await handleEvidenceAnalysis(item);
   			}
   		}
@@ -170,7 +170,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button class="bits-btn"
 							variant={viewMode === 'canvas' ? 'default' : 'ghost'}
 							size="sm"
-							on:click={() =>
+							onclick={() =>
 switchViewMode('canvas')}
 							class="h-8 px-3"
 						>
@@ -180,7 +180,7 @@ switchViewMode('canvas')}
 						<Button class="bits-btn"
 							variant={viewMode === 'board' ? 'default' : 'ghost'}
 							size="sm"
-							on:click={() =>
+							onclick={() =>
 switchViewMode('board')}
 							class="h-8 px-3"
 						>
@@ -190,7 +190,7 @@ switchViewMode('board')}
 						<Button class="bits-btn"
 							variant={viewMode === 'hybrid' ? 'default' : 'ghost'}
 							size="sm"
-							on:click={() =>
+							onclick={() =>
 switchViewMode('hybrid')}
 							class="h-8 px-3"
 						>
@@ -239,13 +239,13 @@ switchViewMode('hybrid')}
 				</div>
 				
 				<div class="flex gap-2">
-					<Button class="bits-btn" variant="outline" size="sm" on:click={syncCanvasToBoard}>
+					<Button class="bits-btn" variant="outline" size="sm" onclick={syncCanvasToBoard}>
 Sync Canvas → Board
 
-					<Button class="bits-btn" variant="outline" size="sm" on:click={syncBoardToCanvas}>
+					<Button class="bits-btn" variant="outline" size="sm" onclick={syncBoardToCanvas}>
 Sync Board → Canvas
 
-					<Button class="bits-btn" variant="default" size="sm" on:click={processUnifiedAnalysis}>
+					<Button class="bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>
 Analyze All Evidence
 
 				</div>

@@ -2,9 +2,7 @@
   import 'nes.css/css/nes.min.css';
   import { enhance } from '$app/forms';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -313,7 +311,7 @@
         </Dialog.Description>
       </div>
 
-      <form on:submit={handleSubmit} class="space-y-4">
+      <form onsubmit={handleSubmit} class="space-y-4">
         <!-- Success Message -->
         {#if formState.success}
           <Alert variant="default" class="border-green-200 bg-green-50 text-green-800">
@@ -415,7 +413,7 @@
             />
             <button
               type="button"
-              on:click={() => formState.showPassword = !formState.showPassword}
+              onclick={() => formState.showPassword = !formState.showPassword}
               class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
               {#if formState.showPassword}
@@ -470,7 +468,7 @@
               />
               <button
                 type="button"
-                on:click={() => formState.showConfirmPassword = !formState.showConfirmPassword}
+                onclick={() => formState.showConfirmPassword = !formState.showConfirmPassword}
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
               >
                 {#if formState.showConfirmPassword}
@@ -541,7 +539,7 @@
             type="button"
             variant="outline"
             class="w-full bits-btn bits-btn"
-            on:click={handleGuestLogin}
+            onclick={handleGuestLogin}
             disabled={formState.loading}
           >
 Continue as Guest
@@ -552,7 +550,7 @@ Continue as Guest
         <div class="text-center">
           <button 
             type="button"
-            on:click={toggleMode}
+            onclick={toggleMode}
             class="text-sm text-primary hover:underline"
             disabled={formState.loading}
           >

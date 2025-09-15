@@ -320,7 +320,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Demo Controls -->
   <div class="demo-controls">
     {#if demoStage === 'ready'}
-      <button class="demo-btn primary" on:click={runNeuralTopologyDemo}>
+      <button class="demo-btn primary" onclick={runNeuralTopologyDemo}>
         🎬 Start Neural Topology Demo
       </button>
     {:else if demoStage === 'running'}
@@ -334,7 +334,7 @@ https://svelte.dev/e/js_parse_error -->
     {:else if demoStage === 'completed'}
       <div class="demo-completed">
         <h3>✅ Demo Completed!</h3>
-        <button class="demo-btn secondary" on:click={() => { demoStage = 'ready'; predictions = []; animations = []; searchResults = []; }}>
+        <button class="demo-btn secondary" onclick={() => { demoStage = 'ready'; predictions = []; animations = []; searchResults = []; }}>
           🔄 Run Again
         </button>
       </div>

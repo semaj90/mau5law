@@ -39,7 +39,7 @@ https://svelte.dev/e/attribute_duplicate -->
     persistent = false,
     value = "",
     children
-  : any } = $props();
+  : unknown } = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -138,9 +138,9 @@ https://svelte.dev/e/attribute_duplicate -->
 {#if open}
   <div
     class="yorha-dialog-backdrop"
-    on:click={handleBackdropClick}
-    on:keydown={handleKeydown}
-    transition:fade={{ duration: 150 }}
+    onclick={handleBackdropClick}
+    onkeydown={handleKeydown}
+    transitionfade={{ duration: 150 }}
     role="dialog"
     aria-modal="true"
     aria-labelledby={title ? "dialog-title" : undefined}
@@ -150,7 +150,7 @@ https://svelte.dev/e/attribute_duplicate -->
       bind:this={dialogElement}
       class="yorha-dialog {positionClasses[position]}"
       style="border-color: {config.border}"
-      transition:fly={{
+      transitionfly={{
         y: position === "top" ? -50 : position === "bottom" ? 50 : 0,
         duration: 250,
         easing: quintOut,
@@ -180,7 +180,7 @@ https://svelte.dev/e/attribute_duplicate -->
         {#if closable && !persistent}
           <button
             class="dialog-close"
-            on:click={handleClose}
+            onclick={handleClose}
             aria-label="Close dialog"
           >
             ✕
@@ -212,14 +212,14 @@ https://svelte.dev/e/attribute_duplicate -->
       <!-- Actions -->
       <div class="dialog-actions">
         {#if type === "confirm" || type === "prompt"}
-          <button class="dialog-button cancel" on:click={handleCancel}>
+          <button class="dialog-button cancel" onclick={handleCancel}>
             <span class="button-icon">✕</span>
             Cancel
           </button>
           <button
             class="dialog-button confirm"
             style="border-color: {config.color}; color: {config.color}"
-            on:click={handleConfirm}
+            onclick={handleConfirm}
           >
             <span class="button-icon">✓</span>
             {type === "prompt" ? "Submit" : "Confirm"}
@@ -228,7 +228,7 @@ https://svelte.dev/e/attribute_duplicate -->
           <button
             class="dialog-button acknowledge"
             style="border-color: {config.color}; color: {config.color}"
-            on:click={handleClose}
+            onclick={handleClose}
           >
             <span class="button-icon">■</span>
             OK

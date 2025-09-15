@@ -4,8 +4,8 @@
   import EvidenceCanvas from '$lib/components/canvas/EvidenceCanvas.svelte';
   import type { CaseFile } from '$lib/core/logic/case-logic';
 
-  export let caseFiles: CaseFile[] = [];
-  export let threshold = 100; // when to switch to canvas
+  let { caseFiles } = $props();: CaseFile[] = [];
+  let { threshold = 100 } = $props(); // when to switch to canvas
 
   const shouldUseCanvas = () => {
     if (caseFiles.length > threshold) return true;

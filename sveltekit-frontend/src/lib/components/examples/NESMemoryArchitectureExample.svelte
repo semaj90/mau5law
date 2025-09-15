@@ -28,11 +28,11 @@
   // Demo data
   let cacheWarmer: LegalCacheWarmer;
   let isInitialized = false;
-  let registryStats: any = {};
-  let warmingStats: any = {};
-  let memoryBankData: any = {};
+  let registryStats: unknown = {};
+  let warmingStats: unknown = {};
+  let memoryBankData: unknown = {};
   let isWarming = false;
-  let lastWarmingResult: any = null;
+  let lastWarmingResult: unknown = null;
   
   // Sample legal documents for demo
   const sampleDocuments: LegalDocument[] = [
@@ -106,12 +106,12 @@
   };
   
   // Component priorities for demo
-  $: documentPriorities = sampleDocuments.map(doc => ({
+  let documentPriorities = $derived(sampleDocuments.map(doc => ({
     document: doc,
     priority: calculateDocumentPriority(doc),
     memoryBank: selectMemoryBank(calculateDocumentPriority(doc)),
     analysis: analyzePriority(doc)
-  }));
+  })));
   
   onMount(async () => {
     if (!browser) return;
@@ -238,32 +238,32 @@
         <divContent>
           <div class="priority-grid">
             {#each documentPriorities as item}
-              <div class="priority-nier-bits-card" style:border-color={getPriorityColor((item as { priority?: any; document?: any; memoryBank?: any }).priority)}>
+              <div class="priority-nier-bits-card" style:border-color={getPriorityColor((item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).priority)}>
                 <div class="document-header">
-                  <h4>{(item as { priority?: any; document?: any; memoryBank?: any }).document.type}</h4>
-                  <span class="priority-score" style:background={getPriorityColor((item as { priority?: any; document?: any; memoryBank?: any }).priority)}>
-                    {(item as { priority?: any; document?: any; memoryBank?: any }).priority}
+                  <h4>{(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).document.type}</h4>
+                  <span class="priority-score" style:background={getPriorityColor((item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).priority)}>
+                    {(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).priority}
                   </span>
                 </div>
                 
                 <div class="document-details">
-                  <p><strong>Category:</strong> {(item as { priority?: any; document?: any; memoryBank?: any }).document.category}</p>
-                  <p><strong>Urgency:</strong> {(item as { priority?: any; document?: any; memoryBank?: any }).document.urgency}</p>
+                  <p><strong>Category:</strong> {(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).document.category}</p>
+                  <p><strong>Urgency:</strong> {(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).document.urgency}</p>
                   <p><strong>Memory Bank:</strong> 
-                    <span style:color={getMemoryBankColor((item as { priority?: any; document?: any; memoryBank?: any }).memoryBank)}>
-                      {(item as { priority?: any; document?: any; memoryBank?: any }).memoryBank}
+                    <span style:color={getMemoryBankColor((item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).memoryBank)}>
+                      {(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).memoryBank}
                     </span>
                   </p>
-                  <p><strong>Active Review:</strong> {(item as { priority?: any; document?: any; memoryBank?: any }).document.activeReview ? '✅' : '❌'}</p>
+                  <p><strong>Active Review:</strong> {(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).document.activeReview ? '✅' : '❌'}</p>
                 </div>
                 
                 <!-- Texture preview -->
                 <div class="texture-preview">
                   <SSRWebGPULoader
-                    assetId={(item as { priority?: any; document?: any; memoryBank?: any }).document.id}
+                    assetId={(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).document.id}
                     width={48}
                     height={48}
-                    viewportDistance={(item as { priority?: any; document?: any; memoryBank?: any }).priority > 150 ? 20 : 60}
+                    viewportDistance={(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).priority > 150 ? 20 : 60}
                     enableGPU={true}
                   />
                 </div>
@@ -357,7 +357,7 @@
                 </div>
                 
                 <button class="nes-btn" 
-                  on:click={disabled}
+                  onclick={disabled}
                 >
                   {isWarming ? '⚡ Warming...' : 'Start Warming'}
                 </button>

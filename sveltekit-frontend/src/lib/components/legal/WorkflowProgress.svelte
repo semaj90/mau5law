@@ -15,7 +15,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
    }: { progress,
     stage,
     stageName
-  : any } = $props();
+  : unknown } = $props();
 
 
 

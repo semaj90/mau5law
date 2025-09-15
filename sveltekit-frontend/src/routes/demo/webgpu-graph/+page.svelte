@@ -445,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
           class:active={$demoState.currentStep === index + 1}
           class:completed={$demoState.currentStep > index + 1}
           disabled={!$canProceed}
-          on:click={() => demoState.update(s => ({ ...s, currentStep: index + 1 }))}
+          onclick={() => demoState.update(s => ({ ...s, currentStep: index + 1 }))}
         >
           <span class="step-number">{index + 1}</span>
           <span class="step-title">{step.title}</span>
@@ -489,7 +489,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
 
-          <button on:click={nextStep} disabled={!$webgpuSupported} class="primary-button">
+          <button onclick={nextStep} disabled={!$webgpuSupported} class="primary-button">
             Initialize System
           </button>
         </div>
@@ -513,7 +513,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <div class="action-buttons">
             <button
-              on:click={generateSampleData}
+              onclick={generateSampleData}
               disabled={$demoState.isGeneratingData || $demoState.dataGenerated}
               class="primary-button"
             >
@@ -522,7 +522,7 @@ https://svelte.dev/e/js_parse_error -->
             </button>
 
             {#if $demoState.dataGenerated}
-              <button on:click={nextStep} class="secondary-button">
+              <button onclick={nextStep} class="secondary-button">
                 Continue to Storage
               </button>
             {/if}
@@ -560,11 +560,11 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <div class="action-buttons">
-            <button on:click={async () => { await updateDatabaseStats(); }} class="secondary-button">
+            <button onclick={async () => { await updateDatabaseStats(); }} class="secondary-button">
               Refresh Stats
             </button>
 
-            <button on:click={nextStep} class="primary-button">
+            <button onclick={nextStep} class="primary-button">
               Launch Visualization
             </button>
           </div>
@@ -596,20 +596,20 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <div class="visualization-controls">
-            <button on:click={() => $graphViewer?.resetCamera()} class="control-button">
+            <button onclick={() => $graphViewer?.resetCamera()} class="control-button">
               🎯 Reset Camera
             </button>
 
-            <button on:click={() => $graphViewer?.togglePhysics()} class="control-button">
+            <button onclick={() => $graphViewer?.togglePhysics()} class="control-button">
               ⚡ Toggle Physics
             </button>
 
-            <button on:click={() => $graphViewer?.focusOnNode('case-001')} class="control-button">
+            <button onclick={() => $graphViewer?.focusOnNode('case-001')} class="control-button">
               🔍 Focus on Case
             </button>
           </div>
 
-          <button on:click={nextStep} class="primary-button">
+          <button onclick={nextStep} class="primary-button">
             Test Vector Search
           </button>
         </div>
@@ -629,7 +629,7 @@ https://svelte.dev/e/js_parse_error -->
                 class="search-input"
                 keydown={(e) => e.key === 'Enter' && performVectorSearch()}
               />
-              <button on:click={performVectorSearch} class="search-button">
+              <button onclick={performVectorSearch} class="search-button">
                 🔍 Search
               </button>
             </div>
@@ -653,24 +653,24 @@ https://svelte.dev/e/js_parse_error -->
               {#each $demoState.searchResults as result}
                 <div class="result-item">
                   <div class="result-header">
-                    <span class="result-title">{(result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).metadata?.title || (result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).id}</span>
+                    <span class="result-title">{(result as { metadata?: unknown; id?: unknown; similarity?: unknown; content?: unknown; sourceType?: unknown; ragLevel?: unknown }).metadata?.title || (result as { metadata?: unknown; id?: unknown; similarity?: unknown; content?: unknown; sourceType?: unknown; ragLevel?: unknown }).id}</span>
                     <span class="result-similarity">
-                      {((result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).similarity * 100).toFixed(1)}% match
+                      {((result as { metadata?: unknown; id?: unknown; similarity?: unknown; content?: unknown; sourceType?: unknown; ragLevel?: unknown }).similarity * 100).toFixed(1)}% match
                     </span>
                   </div>
                   <div class="result-content">
-                    {(result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).content.substring(0, 200)}...
+                    {(result as { metadata?: unknown; id?: unknown; similarity?: unknown; content?: unknown; sourceType?: unknown; ragLevel?: unknown }).content.substring(0, 200)}...
                   </div>
                   <div class="result-meta">
-                    <span class="result-type">{(result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).sourceType}</span>
-                    <span class="result-lod">LOD {(result as { metadata?: any; id?: any; similarity?: any; content?: any; sourceType?: any; ragLevel?: any }).ragLevel}</span>
+                    <span class="result-type">{(result as { metadata?: unknown; id?: unknown; similarity?: unknown; content?: unknown; sourceType?: unknown; ragLevel?: unknown }).sourceType}</span>
+                    <span class="result-lod">LOD {(result as { metadata?: unknown; id?: unknown; similarity?: unknown; content?: unknown; sourceType?: unknown; ragLevel?: unknown }).ragLevel}</span>
                   </div>
                 </div>
               {/each}
             </div>
           {/if}
 
-          <button on:click={nextStep} class="primary-button">
+          <button onclick={nextStep} class="primary-button">
             Test Server Sync
           </button>
         </div>
@@ -720,14 +720,14 @@ https://svelte.dev/e/js_parse_error -->
 
           <div class="action-buttons">
             <button
-              on:click={syncToServer}
+              onclick={syncToServer}
               disabled={!$syncStatus.isOnline}
               class="primary-button"
             >
               Sync to Server
             </button>
 
-            <button on:click={async () => { await syncService.clearCache(); }} class="secondary-button">
+            <button onclick={async () => { await syncService.clearCache(); }} class="secondary-button">
               Clear Cache
             </button>
           </div>
@@ -746,7 +746,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Navigation Controls -->
     <footer class="demo-navigation">
       <button
-        on:click={prevStep}
+        onclick={prevStep}
         disabled={$demoState.currentStep === 1}
         class="nav-button prev"
       >
@@ -758,7 +758,7 @@ https://svelte.dev/e/js_parse_error -->
       </span>
 
       <button
-        on:click={nextStep}
+        onclick={nextStep}
         disabled={$demoState.currentStep === $demoState.maxSteps}
         class="nav-button next"
       >

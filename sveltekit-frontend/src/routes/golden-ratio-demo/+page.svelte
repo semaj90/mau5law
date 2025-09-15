@@ -4,9 +4,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import GoldenRatioGrid from '$lib/components/ui/layout/GoldenRatioGrid.svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Card } from '$lib/components/ui/enhanced-bits';
 
   let currentVariant = $state<'sidebar' | 'dashboard' | 'split' | 'content' | 'legal-document'>('dashboard');
@@ -49,7 +47,7 @@ https://svelte.dev/e/attribute_duplicate -->
             <Button class="bits-btn"
               variant={currentVariant === variant ? 'primary' : 'outline'}
               size="sm"
-              on:click={() =>
+              onclick={() =>
 currentVariant = variant}
               class="capitalize"
             >
@@ -66,7 +64,7 @@ currentVariant = variant}
             <Button class="bits-btn"
               variant={currentDirection === direction ? 'primary' : 'outline'}
               size="sm"
-              on:click={() =>
+              onclick={() =>
 currentDirection = direction}
               class="capitalize"
             >
@@ -80,7 +78,7 @@ currentDirection = direction}
     <div class="flex gap-phi-md mb-phi-lg">
       <Button
         variant="outline"
-  on:click={toggleDebugGrid}
+  onclick={toggleDebugGrid}
         class="text-phi-sm bits-btn bits-btn"
       >
 {showDebugGrid ? 'Hide' : 'Show'} Debug Grid

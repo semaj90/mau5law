@@ -67,7 +67,7 @@ https://svelte.dev/e/js_parse_error -->
       const workerResponse = await fetch('/api/workers?stats=true');
       if (workerResponse.ok) {
         const data = await workerResponse.json();
-        systemStatus.workerSystem = (data as { stats?: any }).stats;
+        systemStatus.workerSystem = (data as { stats?: unknown }).stats;
       }
 
       // Update performance charts
@@ -193,7 +193,7 @@ https://svelte.dev/e/js_parse_error -->
       </p>
       <div class="flex gap-4 mt-4">
         <button
-          on:click={isMonitoring ? stopMonitoring : startMonitoring}
+          onclick={isMonitoring ? stopMonitoring : startMonitoring}
           class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
         >
           {isMonitoring ? '⏸️ Stop Monitoring' : '▶️ Start Monitoring'}
@@ -300,7 +300,7 @@ https://svelte.dev/e/js_parse_error -->
           Test the SOM clustering, neural memory optimization, and recommendation engine
         </p>
         <button
-          on:click={runRAGSearch}
+          onclick={runRAGSearch}
           class="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
         >
           Run RAG Search
@@ -324,7 +324,7 @@ https://svelte.dev/e/js_parse_error -->
           Trigger ML-based cache optimization and memory rebalancing
         </p>
         <button
-          on:click={optimizeCache}
+          onclick={optimizeCache}
           class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
         >
           Optimize Cache
@@ -338,7 +338,7 @@ https://svelte.dev/e/js_parse_error -->
           Submit a test job to the specialized worker system
         </p>
         <button
-          on:click={testWorkerSystem}
+          onclick={testWorkerSystem}
           disabled={isSubmittingJob}
           class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 rounded-lg transition-colors"
         >
@@ -352,7 +352,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="text-xs text-green-300">
                 ✅ Success! Processing time: {testJobResult.processingTime}ms
                 {#if testJobResult.result?.summary}
-                  <p class="mt-2 text-slate-300">Summary: {testJobResult.(result as { summary?: any }).summary}</p>
+                  <p class="mt-2 text-slate-300">Summary: {testJobResult.(result as { summary?: unknown }).summary}</p>
                 {/if}
               </div>
             {:else}

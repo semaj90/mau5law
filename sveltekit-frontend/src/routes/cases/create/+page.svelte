@@ -19,7 +19,7 @@ https://svelte.dev/e/js_parse_error -->
   import type { PageData } from './$types';
   import type { CaseForm } from '$lib/schemas/forms';
 
-  let { data }: { data: any } = $props(); // PageData;
+  let { data }: { data: unknown } = $props(); // PageData;
   let isSubmitting = $state(false);
   let showSuccess = $state(false);
   let errorMessage = $state('');
@@ -112,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
           class="bits-btn flex items-center space-x-2"
           variant="ghost"
           size="sm"
-          on:click={() =>
+          onclick={() =>
 goto('/cases')}
         >
           <ArrowLeft class="h-4 w-4" />
@@ -139,7 +139,7 @@ goto('/cases')}
           <Button
             class="bits-btn flex items-center space-x-2"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 goto('/cases/templates')}
           >
             <Save class="h-4 w-4" />
@@ -179,7 +179,7 @@ goto('/cases/templates')}
     submitAction={data.editMode ? `?/updateCase&id=${data.caseId}` : '?/createCase'}
     editMode={data.editMode}
     enableAutoSave={true}
-    enableRealTimeValidation={true} on:submit={handleFormSubmit}
+    enableRealTimeValidation={true} onsubmit={handleFormSubmit}
     success={handleFormSuccess}
     error={handleFormError}
     draft={handleDraftSave}

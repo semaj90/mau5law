@@ -45,7 +45,7 @@
     }
   ];
 
-  async function runTest(test: any) {
+  async function runTest(test: unknown) {
     try {
       const options: RequestInit = {
         method: test.method || 'GET',
@@ -60,14 +60,14 @@
       let data;
 
       try {
-        data = await (response as { json?: any; text?: any; ok?: any; status?: any }).json();
+        data = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
       } catch {
-        data = await (response as { json?: any; text?: any; ok?: any; status?: any }).text();
+        data = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).text();
       }
 
       testResults[test.name] = {
-        success: (response as { json?: any; text?: any; ok?: any; status?: any }).ok,
-        status: (response as { json?: any; text?: any; ok?: any; status?: any }).status,
+        success: (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).ok,
+        status: (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).status,
         data: data,
         endpoint: test.endpoint,
         timestamp: new Date().toISOString()
@@ -100,7 +100,7 @@
   async function checkAuthStatus() {
     try {
       const response = await fetch('/api/auth/debug');
-      authStatus = await (response as { json?: any; text?: any; ok?: any; status?: any }).json();
+      authStatus = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
     } catch (error) {
       console.error('Auth status check failed:', error);
     }
@@ -109,9 +109,9 @@
   async function createDevSession() {
     try {
       const response = await fetch('/api/dev-auth?seed=true');
-      const result = await (response as { json?: any; text?: any; ok?: any; status?: any }).json();
+      const result = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
 
-      if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) {
+      if ((result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success) {
         await checkAuthStatus();
       }
 
@@ -124,9 +124,9 @@
   async function clearSession() {
     try {
       const response = await fetch('/api/dev-auth', { method: 'POST' });
-      const result = await (response as { json?: any; text?: any; ok?: any; status?: any }).json();
+      const result = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
 
-      if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) {
+      if ((result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success) {
         await checkAuthStatus();
       }
 
@@ -178,26 +178,26 @@
       <div class="space-y-2">
         <button
           class="nes-btn is-primary w-full text-xs"
-          on:click={runAllTests}
+          onclick={runAllTests}
           disabled={isRunning}
         >
           {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
         </button>
         <button
           class="nes-btn is-success w-full text-xs"
-          on:click={createDevSession}
+          onclick={createDevSession}
         >
           🔑 Create Dev Session
         </button>
         <button
           class="nes-btn is-normal w-full text-xs"
-          on:click={checkAuthStatus}
+          onclick={checkAuthStatus}
         >
           👤 Check Auth Status
         </button>
         <button
           class="nes-btn is-error w-full text-xs"
-          on:click={clearSession}
+          onclick={clearSession}
         >
           🚪 Clear Session
         </button>
@@ -228,25 +228,25 @@
                 <div class="space-y-2">
                   <div class="flex justify-between items-center">
                     <span class="nes-text">Status:</span>
-                    <span class="nes-text {(result as { success?: any; error?: any; data?: any; timestamp?: any }).success ? 'is-success' : 'is-error'}">
+                    <span class="nes-text {(result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success ? 'is-success' : 'is-error'}">
                       {result?.success ? '✅ PASS' : '❌ FAIL'}
                     </span>
                   </div>
 
-                  {#if (result as { success?: any; error?: any; data?: any; timestamp?: any }).error}
+                  {#if (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).error}
                     <div class="nes-container is-rounded bg-red-50 p-2">
-                      <p class="text-xs text-red-700">Error: {(result as { success?: any; error?: any; data?: any; timestamp?: any }).error}</p>
+                      <p class="text-xs text-red-700">Error: {(result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).error}</p>
                     </div>
                   {/if}
 
-                  {#if (result as { success?: any; error?: any; data?: any; timestamp?: any }).data && (result as { success?: any; error?: any; data?: any; timestamp?: any }).success && typeof (result as { success?: any; error?: any; data?: any; timestamp?: any }).data === 'object'}
+                  {#if (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).data && (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success && typeof (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).data === 'object'}
                     <div class="nes-container is-rounded bg-green-50 p-2">
                       <p class="text-xs text-green-700">✅ Response received</p>
                     </div>
                   {/if}
 
                   <p class="text-xs text-gray-500">
-                    {new Date((result as { success?: any; error?: any; data?: any; timestamp?: any }).timestamp).toLocaleString()}
+                    {new Date((result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).timestamp).toLocaleString()}
                   </p>
                 </div>
               {:else}

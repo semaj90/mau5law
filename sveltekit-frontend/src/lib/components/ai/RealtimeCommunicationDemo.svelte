@@ -13,9 +13,7 @@ https://svelte.dev/e/js_parse_error -->
     type RealtimeMessage,
     type StreamingResponse,
   } from '$lib/services/realtime-communication';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -312,11 +310,11 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="nes-text is-primary flex items-center justify-between">
         <span>Connection Status</span>
         {#if !isInitialized}
-          <Button on:click={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
+          <Button onclick={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
 {isInitializing ? 'Initializing...' : 'Connect'}
 
         {:else}
-          <Button on:click={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
+          <Button onclick={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
 Disconnect
 
         {/if}
@@ -424,7 +422,7 @@ Disconnect
               </div>
             </div>
 
-            <Button on:click={sendTestMessage} class="w-full bits-btn bits-btn">
+            <Button onclick={sendTestMessage} class="w-full bits-btn bits-btn">
 Send Message
 
           </div>
@@ -459,7 +457,7 @@ Send Message
               </select>
             </div>
 
-            <Button on:click={startStreamingRequest} class="w-full bits-btn bits-btn">
+            <Button onclick={startStreamingRequest} class="w-full bits-btn bits-btn">
 Start Stream
 
           </div>
@@ -472,7 +470,7 @@ Start Stream
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           <span>Performance Metrics</span>
-          <Button on:click={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">
+          <Button onclick={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">
 Run Performance Test
 
         </h3>

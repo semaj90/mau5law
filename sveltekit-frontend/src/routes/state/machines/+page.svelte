@@ -180,7 +180,7 @@ https://svelte.dev/e/expected_token -->
                   <button class="nes-btn" 
                     variant="outline" 
                     size="sm"
-                    on:click={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
+                    onclick={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
                   >
                     View Transitions
                   </button>
@@ -188,7 +188,7 @@ https://svelte.dev/e/expected_token -->
                   <button class="nes-btn" 
                     variant="outline" 
                     size="sm"
-                    on:click={() => restartMachine(machine.id)}
+                    onclick={() => restartMachine(machine.id)}
                   >
                     Restart
                   </button>
@@ -196,7 +196,7 @@ https://svelte.dev/e/expected_token -->
                   {#if machine.status === 'running'}
                     <button class="nes-btn is-error" 
                       size="sm"
-                      on:click={() => stopMachine(machine.id)}
+                      onclick={() => stopMachine(machine.id)}
                     >
                       Stop
                     </button>

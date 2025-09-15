@@ -44,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
     onTextureLoaded?: (entry: TextureCacheEntry) => void;
     onCacheHit?: (textureId: string) => void;
     onCacheMiss?: (textureId: string) => void;
-    onPerformanceUpdate?: (metrics: any) => void;
+    onPerformanceUpdate?: (metrics: unknown) => void;
   }
 
   let {
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
         startPerformanceMonitoring();
       }
       isInitialized = true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       hasError = true;
       errorMessage = error.message || 'Failed to initialize texture cache';
       console.error('Texture cache initialization error:', error);
@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
       // Notify texture loaded
       onTextureLoaded?.(cacheEntry);
       console.log(`🎨 Texture "${textureId}" cached with ${currentFilteringType} filtering in ${textureLoadTime.toFixed(2)}ms`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(`Failed to load and cache texture: ${error.message}`);
     }
   }
@@ -242,7 +242,7 @@ https://svelte.dev/e/js_parse_error -->
         compressionRatio: 1.0,
         qualityScore: calculateQualityScore(renderingOptions)
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(`Failed to load texture: ${error.message}`);
     }
   }
@@ -451,7 +451,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="error-overlay">
       <div class="error-icon">⚠️</div>
       <div class="error-message">{errorMessage}</div>
-      <button class="retry-button" on:click={() => initializeTextureCache()}>
+      <button class="retry-button" onclick={() => initializeTextureCache()}>
         RETRY
       </button>
     </div>

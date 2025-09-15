@@ -1,3 +1,6 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'autoFetch' has already been declared
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
@@ -29,22 +32,47 @@ https://svelte.dev/e/js_parse_error -->
 
 
   async function load() {
+    performance.mark('function-start');
     try {
-      const res = await fetch('/api/gpu/validate-setup');
-      data = await res.json();
+      try {
+    const res = await fetch('/api/gpu/validate-setup');
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  };
+      data = awaitawait (async () => {
+      try {
+        return await  res.json();
+      } catch (error) {
+        console.error('JSON parsing failed:', error);
+        throw new Error('Invalid JSON response');
+      }
+    })();
     } catch (e) {
       data = { ok: false, message: 'Validation failed to load' } as ValidateResponse;
     }
   }
 
   async function pullModel() {
+    performance.mark('function-start');
     const required = data?.details?.ollama?.required_model;
     if (!required) return;
     try {
-      const res = await fetch('/api/ollama/pull', {
+      try {
+    const res = await fetch('/api/ollama/pull', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: required })
+        body: JSON.stringify({ model: required });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  }
       });
       // Ignore body; re-run validation after a short delay
       await new Promise((r) => setTimeout(r, 1500));
@@ -89,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </span>
           {#if data.details?.ollama?.required_model && !data.details?.ai_summarize_checks?.model}
-            <button class="pull" on:click={pullModel} aria-label="Pull required model">Pull model</button>
+            <button class="pull" onclick={(event: MouseEvent) => pullModel} aria-label="Pull required model">Pull model</button>
           {/if}
         </div>
       </div>

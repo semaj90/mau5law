@@ -63,10 +63,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   role="button"
   tabindex="0"
   aria-label="Evidence upload area. Press Enter or Space to choose files, or drag and drop."
-  on:dragenter={handleDragEnter}
-  on:dragleave={handleDragLeave}
+  ondragenter={handleDragEnter}
+  ondragleave={handleDragLeave}
   on:dragover|preventDefault
-  on:drop={onkeydown}
+  ondrop={onkeydown}
 >
   <div class="upload-content">
     <svg
@@ -85,7 +85,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     <input
       type="file"
       multiple
-      on:change={(e) => {
+      onchange={(e) => {
         files = e.currentTarget.files;
         handleUpload();
       }}

@@ -55,7 +55,7 @@
 	// Debounce function
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	function debounce(fn: Function, delay: number) {
-		return (...args: any[]) => {
+		return (...args: unknown[]) => {
 			clearTimeout(debounceTimer);
 			debounceTimer = setTimeout(() => fn(...args), delay);
 		};
@@ -93,18 +93,18 @@
 				body: JSON.stringify(requestBody)
 			});
 
-			const data: SearchResponse = await (response as { json?: any }).json();
+			const data: SearchResponse = await (response as { json?: unknown }).json();
 
-			if ((data as { success?: any; results?: any; semantic_scores?: any; embedding_time?: any; search_time?: any; total_time?: any; error?: any }).success) {
-				results = (data as { success?: any; results?: any; semantic_scores?: any; embedding_time?: any; search_time?: any; total_time?: any; error?: any }).results;
-				searchStats = (data as { success?: any; results?: any; semantic_scores?: any; embedding_time?: any; search_time?: any; total_time?: any; error?: any }).semantic_scores || null;
+			if ((data as { success?: unknown; results?: unknown; semantic_scores?: unknown; embedding_time?: unknown; search_time?: unknown; total_time?: unknown; error?: unknown }).success) {
+				results = (data as { success?: unknown; results?: unknown; semantic_scores?: unknown; embedding_time?: unknown; search_time?: unknown; total_time?: unknown; error?: unknown }).results;
+				searchStats = (data as { success?: unknown; results?: unknown; semantic_scores?: unknown; embedding_time?: unknown; search_time?: unknown; total_time?: unknown; error?: unknown }).semantic_scores || null;
 				performanceMetrics = {
-					embedding_time: (data as { success?: any; results?: any; semantic_scores?: any; embedding_time?: any; search_time?: any; total_time?: any; error?: any }).embedding_time,
-					search_time: (data as { success?: any; results?: any; semantic_scores?: any; embedding_time?: any; search_time?: any; total_time?: any; error?: any }).search_time,
-					total_time: (data as { success?: any; results?: any; semantic_scores?: any; embedding_time?: any; search_time?: any; total_time?: any; error?: any }).total_time
+					embedding_time: (data as { success?: unknown; results?: unknown; semantic_scores?: unknown; embedding_time?: unknown; search_time?: unknown; total_time?: unknown; error?: unknown }).embedding_time,
+					search_time: (data as { success?: unknown; results?: unknown; semantic_scores?: unknown; embedding_time?: unknown; search_time?: unknown; total_time?: unknown; error?: unknown }).search_time,
+					total_time: (data as { success?: unknown; results?: unknown; semantic_scores?: unknown; embedding_time?: unknown; search_time?: unknown; total_time?: unknown; error?: unknown }).total_time
 				};
 			} else {
-				error = (data as { success?: any; results?: any; semantic_scores?: any; embedding_time?: any; search_time?: any; total_time?: any; error?: any }).error || 'Search failed';
+				error = (data as { success?: unknown; results?: unknown; semantic_scores?: unknown; embedding_time?: unknown; search_time?: unknown; total_time?: unknown; error?: unknown }).error || 'Search failed';
 				results = [];
 			}
 		} catch (err) {
@@ -179,7 +179,7 @@
 			{#each sampleQueries as sampleQuery}
 				<button
 					class="sample-query-btn"
-					on:click={() => query = sampleQuery}
+					onclick={() => query = sampleQuery}
 				>
 					{sampleQuery}
 				</button>
@@ -189,7 +189,7 @@
 		<!-- Advanced Filters Toggle -->
 		<button
 			class="filters-toggle"
-			on:click={() => showFilters = !showFilters}
+			onclick={() => showFilters = !showFilters}
 		>
 			{showFilters ? '▲' : '▼'} Advanced Filters
 		</button>
@@ -292,47 +292,47 @@
 					<div class="result-nier-bits-card">
 						<div class="result-header">
 							<div class="result-title">
-								<h3>{(result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).title || 'Untitled Document'}</h3>
-								<span class="document-type">{(result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).document_type}</span>
+								<h3>{(result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).title || 'Untitled Document'}</h3>
+								<span class="document-type">{(result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).document_type}</span>
 							</div>
-							<div class="relevance-badge {getRelevanceColor((result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).relevance_level)}">
-								{(result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).relevance_level} ({((result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).semantic_score * 100).toFixed(1)}%)
+							<div class="relevance-badge {getRelevanceColor((result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).relevance_level)}">
+								{(result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).relevance_level} ({((result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).semantic_score * 100).toFixed(1)}%)
 							</div>
 						</div>
 
 						<div class="result-metadata">
-							{#if (result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).metadata.parties}
+							{#if (result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).metadata.parties}
 								<div class="metadata-item">
 									<span class="metadata-label">Parties:</span>
-									<span class="metadata-value">{(result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).metadata.parties.join(', ')}</span>
+									<span class="metadata-value">{(result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).metadata.parties.join(', ')}</span>
 								</div>
 							{/if}
 
-							{#if (result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).metadata.category}
+							{#if (result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).metadata.category}
 								<div class="metadata-item">
 									<span class="metadata-label">Category:</span>
-									<span class="metadata-value">{(result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).metadata.category}</span>
+									<span class="metadata-value">{(result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).metadata.category}</span>
 								</div>
 							{/if}
 
-							{#if (result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).metadata.jurisdiction}
+							{#if (result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).metadata.jurisdiction}
 								<div class="metadata-item">
 									<span class="metadata-label">Jurisdiction:</span>
-									<span class="metadata-value">{(result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).metadata.jurisdiction}</span>
+									<span class="metadata-value">{(result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).metadata.jurisdiction}</span>
 								</div>
 							{/if}
 
-							{#if (result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).metadata.effectiveDate}
+							{#if (result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).metadata.effectiveDate}
 								<div class="metadata-item">
 									<span class="metadata-label">Effective Date:</span>
-									<span class="metadata-value">{(result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).metadata.effectiveDate}</span>
+									<span class="metadata-value">{(result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).metadata.effectiveDate}</span>
 								</div>
 							{/if}
 						</div>
 
 						<div class="result-technical">
-							<span class="technical-detail">Distance: {(result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).distance.toFixed(4)}</span>
-							<span class="technical-detail">ID: {(result as { title?: any; document_type?: any; relevance_level?: any; semantic_score?: any; metadata?: any; distance?: any; id?: any }).id.slice(0, 8)}...</span>
+							<span class="technical-detail">Distance: {(result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).distance.toFixed(4)}</span>
+							<span class="technical-detail">ID: {(result as { title?: unknown; document_type?: unknown; relevance_level?: unknown; semantic_score?: unknown; metadata?: unknown; distance?: unknown; id?: unknown }).id.slice(0, 8)}...</span>
 						</div>
 					</div>
 				{/each}

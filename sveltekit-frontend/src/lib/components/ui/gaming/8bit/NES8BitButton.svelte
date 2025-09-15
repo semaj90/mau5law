@@ -33,7 +33,7 @@
     enableSound?: boolean;
     soundVolume?: number;
     // Content
-    children?: any;
+    children?: unknown;
     class?: string;
   }
 
@@ -161,9 +161,9 @@
   {formtarget}
   {name}
   {value}
-  on:click={handleClick}
-  on:on:mouseenter={handleHover}
-  on:focus={handleFocus}
+  onclick={handleClick}
+  ononmouseenter={handleHover}
+  onfocus={handleFocus}
   class="nes-8bit-button nes-btn {nesVariant} {className}"
   style="
     --button-color: {variantColor};

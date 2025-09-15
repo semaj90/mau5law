@@ -27,7 +27,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   } = $props();
 
   // Dynamic import for chart library
-  let chartComponent: any = $state(null);
+  let chartComponent: unknown = $state(null);
   let loadError: Error | null = $state(null);
 
   // Load chart component when visible

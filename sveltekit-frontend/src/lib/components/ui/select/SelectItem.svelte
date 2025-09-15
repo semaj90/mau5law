@@ -6,7 +6,7 @@
   import type { SelectContext } from "./types";
 
   interface Props {
-    value: any;
+    value: unknown;
     class_?: string;
     children?: import('svelte').Snippet;
   }
@@ -38,7 +38,7 @@
   class="space-y-4 {class_}"
   role="option"
   aria-selected={isSelected ? "true" : "false"}
-  on:click={() => handleClick()}
+  onclick={() => handleClick()}
   keydown={(e) => e.key === "Enter" && handleClick()}
   tabindex={0}
 >

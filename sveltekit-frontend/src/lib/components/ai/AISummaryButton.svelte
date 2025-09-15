@@ -1,3 +1,6 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   interface Props {
@@ -9,18 +12,35 @@
   let { text = "", onsummary }: Props = $props();
 
   let summary = $state("");
+  let errorMessage = $state('');
+  let isLoading = $state(false);
   let loading = $state(false);
 
   async function getSummary(input: string) {
     if (!input) return;
     try {
       loading = true;
-      const res = await fetch("/api/ai/ollama-gemma3", {
+      try {
+    const res = await fetch("/api/ai/ollama-gemma3", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: `Summarize: ${input}` })
+        body: JSON.stringify({ prompt: `Summarize: ${input}` });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  }
       });
-      const data = await res.json();
+      const data = awaitawait (async () => {
+      try {
+        return await  res.json();
+      } catch (error) {
+        console.error('JSON parsing failed:', error);
+        throw new Error('Invalid JSON response');
+      }
+    })();
       summary = data.response ?? "";
       onsummary?.();
     } catch (e) {
@@ -31,9 +51,9 @@
   }
 </script>
 
-<button
+<button aria-label="Action button"
   class="space-y-4"
-  on:click={() => getSummary(text)}
+  onclick={(event: MouseEvent) => ) => getSummary(text}
   disabled={loading}
 >
   {#if loading}

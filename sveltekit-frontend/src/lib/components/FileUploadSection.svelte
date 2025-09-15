@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
   	async function loadAvailableTags() {
   		try {
   			const evidence = loki.evidence.getAll();
-  			const allTags = evidence.flatMap((e: any) => e.tags || []);
+  			const allTags = evidence.flatMap((e: unknown) => e.tags || []);
   			availableTags = [...new Set(allTags as string[])].sort();
   		} catch (error) {
   			console.error('Failed to load available tags:', error);

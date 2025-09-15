@@ -335,11 +335,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     aria-label={ariaLabel}
     aria-describedby={ariaDescribedby}
     onMousemove={handleMouseMove}
-    on:mouseenter={handleMouseEnter}
-    on:mouseleave={handleMouseLeave}
+    onmouseenter={handleMouseEnter}
+    onmouseleave={handleMouseLeave}
     onMousedown={handleMouseDown}
     onmouseup={onclick}
-    on:keydown={handleKeydown}
+    onkeydown={handleKeydown}
   >
     <!-- N64 Visual Enhancement Layers -->
     <div class="n64-nier-bits-card-overlay" aria-hidden="true">

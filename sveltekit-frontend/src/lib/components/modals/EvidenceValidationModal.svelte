@@ -18,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
     onvalidated
   }: Props = $props();
 
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import {
     AlertTriangle,
@@ -89,9 +89,9 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify(payload),
       });
 
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; error?: any }).success) {
+      if ((result as { success?: unknown; error?: unknown }).success) {
         onvalidated?.();
 
         // Reset form
@@ -100,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
         showCorrections = false;
         open = false;
       } else {
-        console.error("Validation failed:", (result as { success?: any; error?: any }).error);
+        console.error("Validation failed:", (result as { success?: unknown; error?: unknown }).error);
         alert("Failed to submit validation. Please try again.");
       }
     } catch (error) {
@@ -140,7 +140,7 @@ https://svelte.dev/e/js_parse_error -->
             {...builder}
             variant="ghost"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 closeModal()}
           >
             ×
@@ -215,7 +215,7 @@ closeModal()}
               <Button
                 variant={validationChoice === "approve" ? "default" : "outline"}
                 class="space-y-4 bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 handleValidationChoice("approve")}
               >
                 <CheckCircle class="space-y-4" />
@@ -225,7 +225,7 @@ handleValidationChoice("approve")}
               <Button
                 variant={validationChoice === "reject" ? "danger" : "outline"}
                 class="space-y-4 bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 handleValidationChoice("reject")}
               >
                 <XCircle class="space-y-4" />
@@ -317,7 +317,7 @@ handleValidationChoice("reject")}
                         {tag}
                         <button
                           type="button"
-                          on:click={() => removeTag(tag)}
+                          onclick={() => removeTag(tag)}
                           class="space-y-4"
                         >
                           ×
@@ -341,7 +341,7 @@ handleValidationChoice("reject")}
                     type="button"
                     variant="secondary"
                     size="sm"
-                    on:click={() =>
+                    onclick={() =>
 addTag()}
                   >
                     <Tag class="space-y-4" />
@@ -356,7 +356,7 @@ addTag()}
         <div class="space-y-4">
           <Button class="bits-btn"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 closeModal()}
             disabled={isSubmitting}
           >
@@ -365,7 +365,7 @@ closeModal()}
 
           <Button 
             class="bits-btn"
-            on:click={() =>
+            onclick={() =>
 submitValidation()}
             disabled={!validationChoice || isSubmitting}
           >

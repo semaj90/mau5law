@@ -119,7 +119,7 @@ https://svelte.dev/e/expected_token -->
   let dragOverUpload = $state(false);
   
   // Document Uploader Reference
-  let documentUploader: any;
+  let documentUploader: unknown;
   
   // GPU Initialization with full NES-GPU integration
   async function initializeGPU() {
@@ -1286,18 +1286,18 @@ https://svelte.dev/e/expected_token -->
       <input 
         type="text" 
         bind:value={searchQuery} 
-        on:keydown={(e) => e.key === 'Enter' && searchDocuments(searchQuery)}
+        onkeydown={(e) => e.key === 'Enter' && searchDocuments(searchQuery)}
         placeholder="Search legal documents..." 
         class="flex-1 min-w-48 bg-black/50 border border-gray-500 rounded px-3 py-2 text-gray-200 placeholder-gray-400 text-sm"
       />
       <button 
-        on:click={() => searchDocuments(searchQuery)}
+        onclick={() => searchDocuments(searchQuery)}
         class="px-3 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded text-xs font-semibold hover:scale-105 transition-transform cursor-pointer border-none"
       >
         🔍 Search
       </button>
       <button 
-        on:click={() => render()}
+        onclick={() => render()}
         class="px-3 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded text-xs font-semibold hover:scale-105 transition-transform cursor-pointer border-none"
       >
         🔄 Render
@@ -1337,9 +1337,9 @@ https://svelte.dev/e/expected_token -->
         class:shadow-cyan-400/30={dragOverUpload}
         class:border-yellow-400={uploadInProgress}
         class:bg-yellow-400/5={uploadInProgress}
-        on:dragover={handleDragOver}
+        ondragover={handleDragOver}
         ondragleave={handleDragLeave}
-        role="region" aria-label="Drop zone" on:drop={handleDrop}
+        role="region" aria-label="Drop zone" ondrop={handleDrop}
       >
         {#if uploadInProgress}
           <div class="w-full">
@@ -1371,7 +1371,7 @@ https://svelte.dev/e/expected_token -->
             </div>
             <button 
               class="px-6 py-3 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded-md text-sm font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-              on:click={() => documentUploader?.selectFiles()}
+              onclick={() => documentUploader?.selectFiles()}
               disabled={uploadInProgress}
             >
               📂 Browse Files

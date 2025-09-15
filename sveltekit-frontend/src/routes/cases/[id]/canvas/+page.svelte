@@ -6,7 +6,7 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
-	import { Button } from '$lib/components/ui/enhanced-bits';
+	import Button from '$lib/components/ui/enhanced-bits';
 	import * as Card from '$lib/components/ui/card';
 
 	// Get case ID from route params
@@ -74,7 +74,7 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 		try {
 			// TODO: Replace with actual API call
 			// const response = await fetch(`/api/cases/${caseId}/evidence`);
-			// const evidence = await (response as { json?: any }).json();
+			// const evidence = await (response as { json?: unknown }).json();
 
 			// Mock evidence data for now
 			canvasData.evidence = [
@@ -175,13 +175,13 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 						{canvasComponents.error}
 					</p>
 					<div class="flex justify-center gap-4">
-						<Button class="nes-btn is-error" on:click={reloadCanvas}>
+						<Button class="nes-btn is-error" onclick={reloadCanvas}>
 							Retry Loading
 
 						<Button
 							variant="outline"
 							class="nes-btn"
-							on:click={() => window.history.back()}
+							onclick={() => window.history.back()}
 						>
 							Go Back
 
@@ -283,10 +283,10 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 						<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 							{#each canvasData.evidence as item}
 								<div class="nes-container with-title is-centered">
-									<p class="title">{(item as { title?: any; type?: any; x?: any; y?: any }).title}</p>
+									<p class="title">{(item as { title?: unknown; type?: unknown; x?: unknown; y?: unknown }).title}</p>
 									<div class="text-xs">
-										<div>Type: {(item as { title?: any; type?: any; x?: any; y?: any }).type}</div>
-										<div>Position: ({(item as { title?: any; type?: any; x?: any; y?: any }).x}, {(item as { title?: any; type?: any; x?: any; y?: any }).y})</div>
+										<div>Type: {(item as { title?: unknown; type?: unknown; x?: unknown; y?: unknown }).type}</div>
+										<div>Position: ({(item as { title?: unknown; type?: unknown; x?: unknown; y?: unknown }).x}, {(item as { title?: unknown; type?: unknown; x?: unknown; y?: unknown }).y})</div>
 									</div>
 								</div>
 							{/each}
@@ -312,7 +312,7 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 					<p class="nes-text is-disabled text-sm mb-6">
 						Click to load the interactive evidence canvas
 					</p>
-					<Button class="nes-btn is-primary" on:click={loadCanvasComponents}>
+					<Button class="nes-btn is-primary" onclick={loadCanvasComponents}>
 						Load Canvas Interface
 
 				</div.Content>

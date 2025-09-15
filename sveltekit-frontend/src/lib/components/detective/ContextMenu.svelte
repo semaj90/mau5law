@@ -139,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
     menu={menuOpen}
     class="space-y-4"
     style="position:fixed;left:{x}px;top:{y}px;"
-    on:keydown={(e) => {
+    onkeydown={(e) => {
       if (e.key === "Escape") closeMenu();
     }}
     aria-label="Evidence context menu"

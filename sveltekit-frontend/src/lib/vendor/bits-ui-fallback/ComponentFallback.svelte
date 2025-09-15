@@ -13,8 +13,8 @@ https://svelte.dev/e/js_parse_error -->
     variant?: string;
     size?: string;
     disabled?: boolean;
-    children?: any;
-    [key: string]: any;
+    children?: unknown;
+    [key: string]: unknown;
   }
 
   let {

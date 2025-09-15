@@ -369,7 +369,7 @@
 
 	<!-- RAG Ingestion Progress -->
 	{#if isIngesting}
-		<div class="rag-progress" transition:fly={{ y: -20, duration: 300 }}>
+		<div class="rag-progress" transitionfly={{ y: -20, duration: 300 }}>
 			<div class="progress-header">
 				<span>🧠 RAG Analysis</span>
 				<span>{ingestionProgress}%</span>
@@ -382,7 +382,7 @@
 
 	<!-- RAG Context -->
 	{#if ragContext.length > 0}
-		<div class="rag-context" transition:scale={{ duration: 300 }}>
+		<div class="rag-context" transitionscale={{ duration: 300 }}>
 			<h4>📚 Found Legal Context</h4>
 			{#each ragContext as context (context.title)}
 				<div class="context-item">
@@ -397,7 +397,7 @@
 	<!-- Chat Messages -->
 	<div class="chat-container" bind:this={chatContainer}>
 		{#each messages as message (message.id)}
-			<div class="message message-{message.type}" transition:fly={{ y: 20, duration: 300 }}>
+			<div class="message message-{message.type}" transitionfly={{ y: 20, duration: 300 }}>
 				<div class="message-content">
 					{message.content}
 				</div>
@@ -420,7 +420,7 @@
 
 	<!-- Workflow Interface -->
 	{#if workflowActive && currentStep < workflowSteps.length}
-		<div class="workflow-interface" transition:fly={{ y: 20, duration: 400 }}>
+		<div class="workflow-interface" transitionfly={{ y: 20, duration: 400 }}>
 			<div class="workflow-header">
 				<span class="workflow-icon">{workflowSteps[currentStep].icon}</span>
 				<span class="workflow-title">{workflowSteps[currentStep].key.toUpperCase()}</span>
@@ -431,13 +431,13 @@
 				class="workflow-input"
 				placeholder={workflowSteps[currentStep].placeholder}
 				rows="3"
-				on:keydown={workflowKeydown}
+				onkeydown={workflowKeydown}
 			></textarea>
 
 			<div class="workflow-actions">
 				<button
 					class="workflow-btn primary"
-					on:click={(e) => {
+					onclick={(e) => {
 						const wrapper = (e.currentTarget as HTMLElement).closest('.workflow-interface');
 						const textarea = wrapper?.querySelector('.workflow-input') as HTMLTextAreaElement | null;
 						handleQuickAnswerFromText(textarea);
@@ -460,7 +460,7 @@
 					placeholder="Ask me anything about legal cases, or say 'help' to start a new case..."
 					rows="2"
 					class="chat-input"
-					on:keydown={(e) => {
+					onkeydown={(e) => {
 						if (e.key === 'Enter' && !(e as KeyboardEvent).shiftKey) {
 							e.preventDefault();
 							handleChatMessage();
@@ -469,7 +469,7 @@
 				></textarea>
 				<button
 					class="send-button"
-					on:click={handleChatMessage}
+					onclick={handleChatMessage}
 					disabled={!currentMessage.trim() || isProcessing}
 				>
 					🚀
@@ -477,10 +477,10 @@
 			</div>
 
 			<div class="quick-actions">
-				<button class="quick-btn" on:click={startWorkflow}>
+				<button class="quick-btn" onclick={startWorkflow}>
 					📋 Start Case Workflow
 				</button>
-				<button class="quick-btn" on:click={handleChatMessage}>
+				<button class="quick-btn" onclick={handleChatMessage}>
 					🔍 Analyze Evidence
 				</button>
 			</div>

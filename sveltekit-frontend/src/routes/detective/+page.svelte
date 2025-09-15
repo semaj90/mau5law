@@ -136,7 +136,7 @@
 
       // Remove after 3 seconds
       setTimeout(() => {
-        (notification as { style?: any }).style.transform = 'translateX(100%)';
+        (notification as { style?: unknown }).style.transform = 'translateX(100%)';
         setTimeout(() => {
           document.body.removeChild(notification);
         }, 300);
@@ -168,16 +168,16 @@
     <div class="space-y-2">
       <h1 class="text-xl font-bold">Detective Mode</h1>
       <div class="flex gap-2 flex-wrap">
-        <button on:click={() => currentView = 'board'} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button onclick={() => currentView = 'board'} class="border rounded px-3 py-1 hover:bg-white/5">
           Evidence Board
         </button>
-        <button on:click={() => currentView = 'create-case'} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button onclick={() => currentView = 'create-case'} class="border rounded px-3 py-1 hover:bg-white/5">
           Create Case
         </button>
-        <button on:click={() => currentView = 'auth-demo'} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button onclick={() => currentView = 'auth-demo'} class="border rounded px-3 py-1 hover:bg-white/5">
           Auth Demo
         </button>
-        <button on:click={simulateCollaboration} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button onclick={simulateCollaboration} class="border rounded px-3 py-1 hover:bg-white/5">
           Demo Collab
         </button>
       </div>
@@ -191,7 +191,7 @@
           {#if $auth.isAuthenticated}
             <div class="flex items-center gap-3">
               <span>Welcome, {$auth.user?.name || $auth.user?.email}</span>
-              <button on:click={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5">Logout</button>
+              <button onclick={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5">Logout</button>
             </div>
           {:else}
             <div class="text-sm opacity-80">Not authenticated</div>
@@ -209,7 +209,7 @@
       />
     {:else if currentView === 'create-case'}
       <div class="space-y-4">
-        <CaseForm on:success={handleCaseFormSuccess} on:cancel={handleCaseFormCancel} />
+        <CaseForm onsuccess={handleCaseFormSuccess} oncancel={handleCaseFormCancel} />
       </div>
     {:else if currentView === 'auth-demo'}
       <div class="space-y-4">
@@ -228,13 +228,13 @@
 
               <div>
                 <div class="flex gap-2 flex-wrap">
-                  <button on:click={() => auth.login('test@example.com', 'password123')} class="border rounded px-2 py-1 hover:bg-white/5" disabled={$auth.isLoading}>
+                  <button onclick={() => auth.login('test@example.com', 'password123')} class="border rounded px-2 py-1 hover:bg-white/5" disabled={$auth.isLoading}>
                     Mock Login
                   </button>
-                  <button on:click={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5" disabled={!$auth.isAuthenticated}>
+                  <button onclick={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5" disabled={!$auth.isAuthenticated}>
                     Logout
                   </button>
-                  <button on:click={() => auth.checkAuth()} class="border rounded px-2 py-1 hover:bg-white/5" disabled={$auth.isLoading}>
+                  <button onclick={() => auth.checkAuth()} class="border rounded px-2 py-1 hover:bg-white/5" disabled={$auth.isLoading}>
                     Check Auth
                   </button>
                 </div>

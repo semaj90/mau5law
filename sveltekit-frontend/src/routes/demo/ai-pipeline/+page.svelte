@@ -120,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
 			<h2 class="text-2xl font-semibold mb-4 flex items-center">
 				🔧 System Health
 				<button 
-					on:click={checkSystemHealth}
+					onclick={checkSystemHealth}
 					class="ml-4 px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 rounded transition-colors"
 				>
 					Refresh
@@ -170,7 +170,7 @@ https://svelte.dev/e/js_parse_error -->
 					></textarea>
 					
 					<button 
-						on:click={runAutoTagging}
+						onclick={runAutoTagging}
 						disabled={isProcessing}
 						class="mt-4 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 rounded transition-all duration-200 transform hover:scale-105"
 					>
@@ -290,7 +290,7 @@ https://svelte.dev/e/js_parse_error -->
 					/>
 					
 					<button 
-						on:click={runRAGQuery}
+						onclick={runRAGQuery}
 						disabled={$ragLoading}
 						class="mt-4 px-6 py-2 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:opacity-50 rounded transition-all duration-200 transform hover:scale-105"
 					>
@@ -349,7 +349,7 @@ https://svelte.dev/e/js_parse_error -->
 			<h2 class="text-2xl font-semibold mb-4 flex items-center">
 				⚡ Performance Benchmark
 				<button 
-					on:click={runBenchmark}
+					onclick={runBenchmark}
 					class="ml-4 px-3 py-1 text-sm bg-purple-600 hover:bg-purple-700 rounded transition-colors"
 				>
 					Run Benchmark

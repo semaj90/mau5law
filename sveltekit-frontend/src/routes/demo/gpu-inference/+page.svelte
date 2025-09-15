@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { cognitiveSmartRouter } from '$lib/ai/cognitive-smart-router';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
@@ -310,7 +310,7 @@
                 <Button class="bits-btn" 
                   variant="outline" 
                   size="sm"
-                  on:click={clearChat}
+                  onclick={clearChat}
                 >
 🗑️ Clear
 </Button>
@@ -384,7 +384,7 @@
                     <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
-                      on:click={() =>
+                      onclick={() =>
 currentInput = "Analyze the key elements of a valid contract"}
                     >
                       📝 Contract Analysis
@@ -392,7 +392,7 @@ currentInput = "Analyze the key elements of a valid contract"}
                     <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
-                      on:click={() =>
+                      onclick={() =>
 currentInput = "What are common legal risks in mergers?"}
                     >
                       ⚖️ Legal Risks
@@ -400,7 +400,7 @@ currentInput = "What are common legal risks in mergers?"}
                     <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
-                      on:click={() =>
+                      onclick={() =>
 currentInput = "Test GPU performance with vector embeddings"}
                     >
                       🎮 GPU Test
@@ -408,7 +408,7 @@ currentInput = "Test GPU performance with vector embeddings"}
                     <Button class="bits-btn" 
                       variant="outline" 
                       size="sm"
-                      on:click={() =>
+                      onclick={() =>
 currentInput = "Compare different AI engines"}
                     >
                       🚀 Engine Comparison
@@ -430,7 +430,7 @@ currentInput = "Compare different AI engines"}
                   disabled={isProcessing}
                 ></textarea>
                 <Button
-                  on:click={sendMessage}
+                  onclick={sendMessage}
                   disabled={!currentInput.trim() || isProcessing}
                   class="px-6 bits-btn bits-btn"
                 >

@@ -1,9 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -397,37 +395,37 @@
     <div class="tab-nav">
       <button
         class="tab-button {activeTab === 'overview' ? 'active' : ''}"
-        on:click={() => activeTab = 'overview'}
+        onclick={() => activeTab = 'overview'}
       >
         📊 System Overview
       </button>
       <button
         class="tab-button {activeTab === 'upload' ? 'active' : ''}"
-        on:click={() => activeTab = 'upload'}
+        onclick={() => activeTab = 'upload'}
       >
         📤 Evidence Upload
       </button>
       <button
         class="tab-button {activeTab === 'search' ? 'active' : ''}"
-        on:click={() => activeTab = 'search'}
+        onclick={() => activeTab = 'search'}
       >
         🔍 Semantic Search
       </button>
       <button
         class="tab-button {activeTab === 'canvas' ? 'active' : ''}"
-        on:click={() => activeTab = 'canvas'}
+        onclick={() => activeTab = 'canvas'}
       >
         🖼️ Evidence Canvas
       </button>
       <button
         class="tab-button {activeTab === 'cache' ? 'active' : ''}"
-        on:click={() => activeTab = 'cache'}
+        onclick={() => activeTab = 'cache'}
       >
         ⚡ GPU Cache
       </button>
       <button
         class="tab-button {activeTab === 'workflow' ? 'active' : ''}"
-        on:click={() => activeTab = 'workflow'}
+        onclick={() => activeTab = 'workflow'}
       >
         🔄 Workflow
       </button>
@@ -591,7 +589,7 @@
               </div>
 
               <Button
-                on:click={handleFileUpload}
+                onclick={handleFileUpload}
                 disabled={!isSystemReady}
                 class="upload-button bits-btn bits-btn"
               >
@@ -634,10 +632,10 @@
                 bind:value={searchQuery}
                 placeholder="Enter your search query (e.g., 'contract terms', 'witness testimony', 'evidence timeline')"
                 class="search-input"
-                on:keydown={(e) => e.key === 'Enter' && performSearch()}
+                onkeydown={(e) => e.key === 'Enter' && performSearch()}
               />
               <Button
-                on:click={performSearch}
+                onclick={performSearch}
                 disabled={!isSystemReady || isSearching}
                 class="search-button bits-btn bits-btn"
               >
@@ -663,16 +661,16 @@
               {#each searchResults as result}
                 <div class="result-nier-bits-card nes-container">
                   <div class="result-header">
-                    <h5>{(result as { title?: any; source?: any; similarity?: any; content?: any; url?: any }).title}</h5>
+                    <h5>{(result as { title?: unknown; source?: unknown; similarity?: unknown; content?: unknown; url?: unknown }).title}</h5>
                     <div class="result-meta">
-                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{(result as { title?: any; source?: any; similarity?: any; content?: any; url?: any }).source}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{(result as { title?: unknown; source?: unknown; similarity?: unknown; content?: unknown; url?: unknown }).source}</span>
                       <span class="similarity">
-                        {Math.round((result as { title?: any; source?: any; similarity?: any; content?: any; url?: any }).similarity * 100)}% match
+                        {Math.round((result as { title?: unknown; source?: unknown; similarity?: unknown; content?: unknown; url?: unknown }).similarity * 100)}% match
                       </span>
                     </div>
                   </div>
-                  <p class="result-content">{(result as { title?: any; source?: any; similarity?: any; content?: any; url?: any }).content}</p>
-                  {#if (result as { title?: any; source?: any; similarity?: any; content?: any; url?: any }).url}
+                  <p class="result-content">{(result as { title?: unknown; source?: unknown; similarity?: unknown; content?: unknown; url?: unknown }).content}</p>
+                  {#if (result as { title?: unknown; source?: unknown; similarity?: unknown; content?: unknown; url?: unknown }).url}
                     <Button size="sm" variant="outline" class="view-button bits-btn bits-btn">
 👁️ View Evidence
 </Button>
@@ -707,10 +705,10 @@
               height={600}
               gridEnabled={true}
               snapToGrid={false}
-              on:canvasReady={() => console.log('Canvas ready')}
-              on:evidenceAdded={(e) => console.log('Evidence added:', e.detail)}
-              on:connectionCreated={(e) => console.log('Connection created:', e.detail)}
-              on:canvasSaved={() => console.log('Canvas saved')}
+              oncanvasReady={() => console.log('Canvas ready')}
+              onevidenceAdded={(e) => console.log('Evidence added:', e.detail)}
+              onconnectionCreated={(e) => console.log('Connection created:', e.detail)}
+              oncanvasSaved={() => console.log('Canvas saved')}
             />
           </div>
 
@@ -854,10 +852,10 @@
             <EvidenceProcessingWorkflow
               caseId="demo-case-123"
               autoStart={false}
-              on:workflowStarted={() => console.log('Workflow started')}
-              on:progressUpdate={(e) => console.log('Progress:', e.detail)}
-              on:workflowComplete={() => console.log('Workflow completed')}
-              on:error={(e) => console.error('Workflow error:', e.detail)}
+              onworkflowStarted={() => console.log('Workflow started')}
+              onprogressUpdate={(e) => console.log('Progress:', e.detail)}
+              onworkflowComplete={() => console.log('Workflow completed')}
+              onerror={(e) => console.error('Workflow error:', e.detail)}
             />
           </div>
 

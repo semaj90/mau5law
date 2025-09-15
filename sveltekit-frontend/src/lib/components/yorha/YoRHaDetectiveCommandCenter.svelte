@@ -114,11 +114,11 @@
     });
   }
 
-  function handleNavigation(item: any) {
-    if ((item as { route?: any; id?: any; icon?: any; label?: any }).route) {
-      goto((item as { route?: any; id?: any; icon?: any; label?: any }).route);
+  function handleNavigation(item: unknown) {
+    if ((item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).route) {
+      goto((item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).route);
     } else {
-      activeTab = (item as { route?: any; id?: any; icon?: any; label?: any }).id;
+      activeTab = (item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).id;
     }
   }
 
@@ -137,7 +137,7 @@
     showNewCaseModal = false;
   }
 
-  async function handleNewCaseSubmit(formData: any) {
+  async function handleNewCaseSubmit(formData: unknown) {
     try {
       // Show loading notification
       showNotification('Saving case to database...', 'info');
@@ -149,8 +149,8 @@
         body: JSON.stringify(formData)
       });
 
-      if ((response as { ok?: any; json?: any }).ok) {
-        const newCase = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const newCase = await (response as { ok?: unknown; json?: unknown }).json();
         // Add to active cases
         activeCases = [newCase, ...activeCases];
         // Update system data
@@ -201,21 +201,21 @@
       </div>
       
       <div class="header-actions">
-        <button class="header-btn" on:click={openNewCaseModal}>
+        <button class="header-btn" onclick={openNewCaseModal}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
           </svg>
           NEW CASE
         </button>
         
-        <button class="header-btn" on:click={handleGlobalSearch}>
+        <button class="header-btn" onclick={handleGlobalSearch}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
           GLOBAL SEARCH
         </button>
         
-        <button class="header-btn ai-assistant" on:click={() => showAIAssistant = true}>
+        <button class="header-btn ai-assistant" onclick={() => showAIAssistant = true}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
@@ -234,11 +234,11 @@
       <nav class="sidebar-nav">
         {#each navigationItems as item}
           <button 
-            class="sidebar-link {activeTab === (item as { route?: any; id?: any; icon?: any; label?: any }).id ? 'active' : ''}"
-            on:click={() => handleNavigation(item)}
+            class="sidebar-link {activeTab === (item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).id ? 'active' : ''}"
+            onclick={() => handleNavigation(item)}
           >
-            <span class="nav-icon">{(item as { route?: any; id?: any; icon?: any; label?: any }).icon}</span>
-            {(item as { route?: any; id?: any; icon?: any; label?: any }).label}
+            <span class="nav-icon">{(item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).icon}</span>
+            {(item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).label}
           </button>
         {/each}
       </nav>
@@ -376,7 +376,7 @@
 >
   <YoRHaDetectiveForm
     fields={newCaseFormFields}
-    on:submit={handleNewCaseSubmit}
+    onsubmit={handleNewCaseSubmit}
     submitText="SAVE TO DATABASE"
     submitClass="yorha-btn-success"
   />
@@ -436,9 +436,9 @@
 
 <!-- Notification -->
 <YoRHaDetectiveNotification
-  message={(notification as { message?: any; type?: any; show?: any }).message}
-  type={(notification as { message?: any; type?: any; show?: any }).type}
-  show={(notification as { message?: any; type?: any; show?: any }).show}
+  message={(notification as { message?: unknown; type?: unknown; show?: unknown }).message}
+  type={(notification as { message?: unknown; type?: unknown; show?: unknown }).type}
+  show={(notification as { message?: unknown; type?: unknown; show?: unknown }).show}
 />
 
 <style>

@@ -13,9 +13,9 @@
     showClose?: boolean;
     onOpenChange?: (open: boolean) => void;
     class?: string;
-    children?: any;
-    trigger?: any;
-    footer?: any;
+    children?: unknown;
+    trigger?: unknown;
+    footer?: unknown;
   }
 
   let {

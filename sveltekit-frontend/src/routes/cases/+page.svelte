@@ -8,7 +8,7 @@
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
   import { z } from 'zod';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     Dialog,
@@ -58,7 +58,7 @@
   let form: ActionData | null = $state(null);
 
   // Superforms for type-safe form handling
-  const createCaseForm = superForm((data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).createCaseForm, {
+  const createCaseForm = superForm((data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).createCaseForm, {
     validators: zodClient(createCaseSchema),
     onUpdated: ({ form }) => {
       isCreatingCase = false;
@@ -69,26 +69,26 @@
         if (caseCreationFeedback) {
           caseCreationFeedback.markCompleted({
             success: true,
-            caseTitle: form.(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).title,
-            casePriority: form.(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).priority,
-            caseStatus: form.(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).status
+            caseTitle: form.(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).title,
+            casePriority: form.(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).priority,
+            caseStatus: form.(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).status
           });
         }
       }
     },
     onError: ({ result }) => {
       isCreatingCase = false;
-      toast.error((result as { error?: any; title?: any; similarity?: any; description?: any }).error.message || 'Failed to create case');
+      toast.error((result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).error.message || 'Failed to create case');
       if (caseCreationFeedback) {
         caseCreationFeedback.markFailed({
           errorType: 'case_creation_error',
-          errorMessage: (result as { error?: any; title?: any; similarity?: any; description?: any }).error.message
+          errorMessage: (result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).error.message
         });
       }
     }
   });
 
-  const addEvidenceForm = superForm((data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).addEvidenceForm, {
+  const addEvidenceForm = superForm((data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).addEvidenceForm, {
     validators: zodClient(addEvidenceSchema),
     onUpdated: ({ form }) => {
       isAddingEvidence = false;
@@ -105,7 +105,7 @@
       if (optimisticEvidence.length) {
         optimisticEvidence = optimisticEvidence.filter(e => !e.__optimistic);
       }
-      toast.error((result as { error?: any; title?: any; similarity?: any; description?: any }).error.message || 'Failed to add evidence');
+      toast.error((result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).error.message || 'Failed to add evidence');
     }
   });
 
@@ -119,12 +119,12 @@
   let createCaseDialogOpen = $state(false);
   let addEvidenceDialogOpen = $state(false);
   let deleteEvidenceDialogOpen = $state(false);
-  let evidenceToDelete: any = $state(null);
+  let evidenceToDelete: unknown = $state(null);
   // Loading flags
   let isCreatingCase = $state(false);
   let isAddingEvidence = $state(false);
   // Optimistic evidence list
-  let optimisticEvidence: any[] = $state([]);
+  let optimisticEvidence: unknown[] = $state([]);
   // Focus management
   let lastDialogTrigger: HTMLElement | null = null; // still used for legacy alert dialog
 
@@ -159,13 +159,13 @@
 
   // Vector search state
   let useVectorSearch = $state(false);
-  let vectorSearchResults: any[] = $state([]);
+  let vectorSearchResults: unknown[] = $state([]);
   let isSearching = $state(false);
 
   // Feedback integration references
-  let pageFeedback: any = $state(undefined);
-  let searchFeedback: any = $state(undefined);
-  let caseCreationFeedback: any = $state(undefined);
+  let pageFeedback: unknown = $state(undefined);
+  let searchFeedback: unknown = $state(undefined);
+  let caseCreationFeedback: unknown = $state(undefined);
 
   // Sync local select variables from the form stores using Svelte 5 runes
   let createFormPriority = $derived($createFormData?.priority ?? 'medium');
@@ -177,7 +177,7 @@
     if (createFormData && typeof createFormData.update === 'function') {
       const current = get(createFormData);
       if (current && typeof current === 'object' && 'priority' in current && current.priority !== createFormPriority) {
-        createFormData.update((c: any) => ({ ...c, priority: createFormPriority }));
+        createFormData.update((c: unknown) => ({ ...c, priority: createFormPriority }));
       }
     }
   });
@@ -186,7 +186,7 @@
     if (createFormData && typeof createFormData.update === 'function') {
       const current = get(createFormData);
       if (current && typeof current === 'object' && 'status' in current && current.status !== createFormStatus) {
-        createFormData.update((c: any) => ({ ...c, status: createFormStatus }));
+        createFormData.update((c: unknown) => ({ ...c, status: createFormStatus }));
       }
     }
   });
@@ -195,7 +195,7 @@
     if (evidenceFormData && typeof evidenceFormData.update === 'function') {
       const current = get(evidenceFormData);
       if (current && typeof current === 'object' && 'evidenceType' in current && current.evidenceType !== evidenceFormType) {
-        evidenceFormData.update((c: any) => ({ ...c, evidenceType: evidenceFormType }));
+        evidenceFormData.update((c: unknown) => ({ ...c, evidenceType: evidenceFormType }));
       }
     }
   });
@@ -277,8 +277,8 @@
         })
       });
 
-      if ((response as { ok?: any; json?: any }).ok) {
-        const results = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const results = await (response as { ok?: unknown; json?: unknown }).json();
         vectorSearchResults = results.data || [];
         toast.success(`Found ${vectorSearchResults.length} similar cases using AI search`);
 
@@ -311,12 +311,12 @@
   }
 
   // View case details
-  function viewCase(caseItem: any) {
+  function viewCase(caseItem: unknown) {
     goto(`/cases?view=${caseItem.id}`);
   }
 
   // Delete evidence handler
-  function confirmDeleteEvidence(evidence: any) {
+  function confirmDeleteEvidence(evidence: unknown) {
     evidenceToDelete = evidence;
     deleteEvidenceDialogOpen = true;
   }
@@ -332,7 +332,7 @@
       body: formData
     });
 
-    if ((response as { ok?: any; json?: any }).ok) {
+    if ((response as { ok?: unknown; json?: unknown }).ok) {
       toast.success('Evidence deleted successfully');
       deleteEvidenceDialogOpen = false;
       evidenceToDelete = null;
@@ -346,11 +346,11 @@
   $effect(() => {
     if (addEvidenceDialogOpen && data?.activeCase?.id) {
       if (evidenceFormData && typeof evidenceFormData.update === 'function') {
-        evidenceFormData.update((c: any) => ({ ...c, caseId: (data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.id }));
+        evidenceFormData.update((c: unknown) => ({ ...c, caseId: (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.id }));
       } else if (evidenceFormData && typeof evidenceFormData.set === 'function') {
         const current = get(evidenceFormData);
         if (current && typeof current === 'object') {
-          evidenceFormData.set({ ...current, caseId: (data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.id });
+          evidenceFormData.set({ ...current, caseId: (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.id });
         }
       }
     }
@@ -372,7 +372,7 @@
           Manage cases with AI-powered search and PostgreSQL vector storage
         </p>
       </div>
-  <Button class="bits-btn gap-2" on:click={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; createCaseDialogOpen = true; }}>
+  <Button class="bits-btn gap-2" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; createCaseDialogOpen = true; }}>
         {#snippet children()}
           <Plus class="h-4 w-4" />
           New Case
@@ -381,7 +381,7 @@
     </div>
 
     <!-- Stats Overview -->
-    {#if (data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats}
+    {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats}
     <div class="grid gap-4 md:grid-cols-4">
       <div class="p-6 nes-container">
         {#snippet children()}
@@ -389,7 +389,7 @@
             <h3 class="text-sm font-medium">Total Cases</h3>
             <FileText class="h-4 w-4 nes-text is-disabled" />
           </div>
-          <div class="text-2xl font-bold">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.total}</div>
+          <div class="text-2xl font-bold">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.total}</div>
         {/snippet}
       </div>
       <div class="p-6 nes-container">
@@ -398,7 +398,7 @@
             <h3 class="text-sm font-medium">Open Cases</h3>
             <Eye class="h-4 w-4 nes-text is-disabled" />
           </div>
-          <div class="text-2xl font-bold text-blue-600">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.open}</div>
+          <div class="text-2xl font-bold text-blue-600">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.open}</div>
         {/snippet}
       </div>
       <div class="p-6 nes-container">
@@ -407,7 +407,7 @@
             <h3 class="text-sm font-medium">High Priority</h3>
             <AlertCircle class="h-4 w-4 text-red-500" />
           </div>
-          <div class="text-2xl font-bold text-red-600">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.highPriority}</div>
+          <div class="text-2xl font-bold text-red-600">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.highPriority}</div>
         {/snippet}
       </div>
       <div class="p-6 nes-container">
@@ -416,7 +416,7 @@
             <h3 class="text-sm font-medium">Closed Cases</h3>
             <div class="h-4 w-4 rounded-full bg-gray-500"></div>
           </div>
-          <div class="text-2xl font-bold text-gray-600">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.closed}</div>
+          <div class="text-2xl font-bold text-gray-600">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.closed}</div>
         {/snippet}
       </div>
     </div>
@@ -438,7 +438,7 @@
           <Button
             variant="outline"
             size="sm"
-            on:click={performVectorSearch}
+            onclick={performVectorSearch}
             disabled={!searchQuery.trim() || isSearching}
             class="gap-2 bits-btn"
           >
@@ -482,17 +482,17 @@
     </div>
 
     <!-- Cases Grid or Detail View -->
-    {#if (data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase}
+    {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase}
       <!-- Case Detail View -->
       <div class="space-y-6">
         <div class="flex items-center justify-between">
-          <Button class="bits-btn" variant="outline" on:click={() => goto('/cases')}>
+          <Button class="bits-btn" variant="outline" onclick={() => goto('/cases')}>
             {#snippet children()}
               ← Back to Cases
             {/snippet}
 
           <div class="flex gap-2">
-            <Button class="bits-btn" variant="outline" size="sm" on:click={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
+            <Button class="bits-btn" variant="outline" size="sm" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
               {#snippet children()}
                 <Plus class="h-4 w-4 mr-2" />
                 Add Evidence
@@ -506,28 +506,28 @@
             <div class="mb-4">
               <div class="flex items-start justify-between">
                 <div class="space-y-2">
-                  <h2 class="text-2xl font-semibold">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.title}</h2>
+                  <h2 class="text-2xl font-semibold">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.title}</h2>
                   <div class="flex gap-2">
-                    <Badge class={cn(priorityColors[(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.priority])}>
-                      {(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.priority}
+                    <Badge class={cn(priorityColors[(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.priority])}>
+                      {(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.priority}
                     </Badge>
-                    <Badge class={cn(statusColors[(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.status])}>
-                      {(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.status}
+                    <Badge class={cn(statusColors[(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.status])}>
+                      {(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.status}
                     </Badge>
-                    {#if (data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.location}
-                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">📍 {(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.location}</span>
+                    {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.location}
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">📍 {(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.location}</span>
                     {/if}
-                    {#if (data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.jurisdiction}
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">⚖️ {(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.jurisdiction}</span>
+                    {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.jurisdiction}
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">⚖️ {(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.jurisdiction}</span>
                     {/if}
                   </div>
                 </div>
               </div>
             </div>
-            <p class="nes-text is-disabled mb-4">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.description}</p>
-            {#if (data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.incidentDate}
+            <p class="nes-text is-disabled mb-4">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.description}</p>
+            {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.incidentDate}
               <div class="text-sm nes-text is-disabled">
-                <strong>Incident Date:</strong> {new Date((data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).activeCase.incidentDate).toLocaleDateString()}
+                <strong>Incident Date:</strong> {new Date((data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.incidentDate).toLocaleDateString()}
               </div>
             {/if}
           {/snippet}
@@ -535,15 +535,15 @@
 
         <!-- Evidence Section -->
         <div class="space-y-4">
-          <h2 class="text-xl font-semibold">Evidence ({(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseEvidence.length})</h2>
+          <h2 class="text-xl font-semibold">Evidence ({(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseEvidence.length})</h2>
 
-          {#if (data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseEvidence.length === 0}
+          {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseEvidence.length === 0}
             <div class="p-6 nes-container">
               {#snippet children()}
                 <div class="flex flex-col items-center justify-center py-12">
                   <FileText class="h-12 w-12 nes-text is-disabled mb-4" />
                   <p class="nes-text is-disabled mb-4">No evidence has been added to this case yet.</p>
-                  <Button class="bits-btn" on:click={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
+                  <Button class="bits-btn" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
                     {#snippet children()}
                       <Plus class="h-4 w-4 mr-2" />
                       Add First Evidence
@@ -554,15 +554,15 @@
             </div>
           {:else}
             <div class="grid gap-4">
-              {#each [...(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseEvidence, ...optimisticEvidence] as item}
+              {#each [...(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseEvidence, ...optimisticEvidence] as item}
                 <div class="p-6 nes-container">
                   {#snippet children()}
                     <div class="mb-4">
                       <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold">{(item as { title?: any; evidenceType?: any; __optimistic?: any; description?: any; collectedAt?: any; tags?: any }).title}</h3>
+                        <h3 class="text-lg font-semibold">{(item as { title?: unknown; evidenceType?: unknown; __optimistic?: unknown; description?: unknown; collectedAt?: unknown; tags?: unknown }).title}</h3>
                         <div class="flex gap-2">
-                          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{(item as { title?: any; evidenceType?: any; __optimistic?: any; description?: any; collectedAt?: any; tags?: any }).evidenceType}</span>
-                          {#if (item as { title?: any; evidenceType?: any; __optimistic?: any; description?: any; collectedAt?: any; tags?: any }).__optimistic}
+                          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{(item as { title?: unknown; evidenceType?: unknown; __optimistic?: unknown; description?: unknown; collectedAt?: unknown; tags?: unknown }).evidenceType}</span>
+                          {#if (item as { title?: unknown; evidenceType?: unknown; __optimistic?: unknown; description?: unknown; collectedAt?: unknown; tags?: unknown }).__optimistic}
                             <span class="flex items-center gap-1 text-xs nes-text is-disabled animate-pulse">
                               <div class="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
                               pending
@@ -576,7 +576,7 @@
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            on:click={() => confirmDeleteEvidence(item)}
+                            onclick={() => confirmDeleteEvidence(item)}
                           >
                             {#snippet children()}
                               <Trash2 class="h-4 w-4" />
@@ -585,11 +585,11 @@
                         </div>
                       </div>
                     </div>
-                    <p class="text-sm nes-text is-disabled mb-2">{(item as { title?: any; evidenceType?: any; __optimistic?: any; description?: any; collectedAt?: any; tags?: any }).description}</p>
+                    <p class="text-sm nes-text is-disabled mb-2">{(item as { title?: unknown; evidenceType?: unknown; __optimistic?: unknown; description?: unknown; collectedAt?: unknown; tags?: unknown }).description}</p>
                     <div class="flex justify-between items-center text-xs nes-text is-disabled">
-                      <span>Collected: {new Date((item as { title?: any; evidenceType?: any; __optimistic?: any; description?: any; collectedAt?: any; tags?: any }).collectedAt).toLocaleDateString()}</span>
-                      {#if (item as { title?: any; evidenceType?: any; __optimistic?: any; description?: any; collectedAt?: any; tags?: any }).tags}
-                        <span>Tags: {(item as { title?: any; evidenceType?: any; __optimistic?: any; description?: any; collectedAt?: any; tags?: any }).tags}</span>
+                      <span>Collected: {new Date((item as { title?: unknown; evidenceType?: unknown; __optimistic?: unknown; description?: unknown; collectedAt?: unknown; tags?: unknown }).collectedAt).toLocaleDateString()}</span>
+                      {#if (item as { title?: unknown; evidenceType?: unknown; __optimistic?: unknown; description?: unknown; collectedAt?: unknown; tags?: unknown }).tags}
+                        <span>Tags: {(item as { title?: unknown; evidenceType?: unknown; __optimistic?: unknown; description?: unknown; collectedAt?: unknown; tags?: unknown }).tags}</span>
                       {/if}
                     </div>
                   {/snippet}
@@ -656,7 +656,7 @@
                       <p class="nes-text is-disabled mb-4">
                         {searchQuery.trim() ? 'No cases found matching your search.' : 'No cases found.'}
                       </p>
-                      <Button class="bits-btn" on:click={() => createCaseDialogOpen = true}>
+                      <Button class="bits-btn" onclick={() => createCaseDialogOpen = true}>
                         {#snippet children()}
                           <Plus class="h-4 w-4 mr-2" />
                           Create Your First Case
@@ -678,15 +678,15 @@
                   {#snippet children()}
                     <div class="mb-4">
                       <div class="flex items-start justify-between">
-                        <h3 class="text-lg font-semibold line-clamp-2">{(result as { error?: any; title?: any; similarity?: any; description?: any }).title}</h3>
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round((result as { error?: any; title?: any; similarity?: any; description?: any }).similarity * 100)}% match</span>
+                        <h3 class="text-lg font-semibold line-clamp-2">{(result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).title}</h3>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round((result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).similarity * 100)}% match</span>
                       </div>
                     </div>
                     <p class="text-sm nes-text is-disabled line-clamp-3 mb-2">
-                      {(result as { error?: any; title?: any; similarity?: any; description?: any }).description || 'No description provided'}
+                      {(result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).description || 'No description provided'}
                     </p>
                     <div class="text-xs text-green-600 mb-2">
-                      🤖 AI-powered similarity: {((result as { error?: any; title?: any; similarity?: any; description?: any }).similarity * 100).toFixed(1)}%
+                      🤖 AI-powered similarity: {((result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).similarity * 100).toFixed(1)}%
                     </div>
                   {/snippet}
                 </div>
@@ -715,22 +715,22 @@
                   <h3 class="text-lg font-semibold">Case Distribution</h3>
                 </div>
                 <div class="space-y-2">
-                  {#if (data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats}
+                  {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats}
                     <div class="flex justify-between">
                       <span>Open Cases</span>
-                      <span class="font-semibold">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.open}</span>
+                      <span class="font-semibold">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.open}</span>
                     </div>
                     <div class="flex justify-between">
                       <span>Investigating</span>
-                      <span class="font-semibold">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.investigating || 0}</span>
+                      <span class="font-semibold">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.investigating || 0}</span>
                     </div>
                     <div class="flex justify-between">
                       <span>Pending</span>
-                      <span class="font-semibold">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.pending || 0}</span>
+                      <span class="font-semibold">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.pending || 0}</span>
                     </div>
                     <div class="flex justify-between">
                       <span>Closed</span>
-                      <span class="font-semibold">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.closed}</span>
+                      <span class="font-semibold">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.closed}</span>
                     </div>
                   {/if}
                 </div>
@@ -743,22 +743,22 @@
                   <h3 class="text-lg font-semibold">Priority Breakdown</h3>
                 </div>
                 <div class="space-y-2">
-                  {#if (data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats}
+                  {#if (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats}
                     <div class="flex justify-between">
                       <span class="text-red-600">Critical</span>
-                      <span class="font-semibold">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.critical || 0}</span>
+                      <span class="font-semibold">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.critical || 0}</span>
                     </div>
                     <div class="flex justify-between">
                       <span class="text-orange-600">High</span>
-                      <span class="font-semibold">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.highPriority}</span>
+                      <span class="font-semibold">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.highPriority}</span>
                     </div>
                     <div class="flex justify-between">
                       <span class="text-yellow-600">Medium</span>
-                      <span class="font-semibold">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.medium || 0}</span>
+                      <span class="font-semibold">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.medium || 0}</span>
                     </div>
                     <div class="flex justify-between">
                       <span class="text-green-600">Low</span>
-                      <span class="font-semibold">{(data as { createCaseForm?: any; title?: any; priority?: any; status?: any; addEvidenceForm?: any; activeCase?: any; caseStats?: any; caseEvidence?: any }).caseStats.low || 0}</span>
+                      <span class="font-semibold">{(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseStats.low || 0}</span>
                     </div>
                   {/if}
                 </div>
@@ -774,7 +774,7 @@
 <!-- Create Case Dialog -->
 <HeadlessDialog bind:open={createCaseDialogOpen} ariaLabelledby="create-case-title">
   <h2 id="create-case-title" class="text-lg font-semibold mb-2">Create New Case</h2>
-  <form method="post" action="?/createCase" use:enhance={createEnhance} on:submit={handleCreateCaseSubmit} class="space-y-4">
+  <form method="post" action="?/createCase" use:enhance={createEnhance} onsubmit={handleCreateCaseSubmit} class="space-y-4">
       <div class="grid gap-4">
         <div class="grid gap-2">
           <Label for="case-title">Case Title *</Label>
@@ -868,7 +868,7 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <Button class="bits-btn" variant="outline" type="button" on:click={() => createCaseDialogOpen = false}>
+        <Button class="bits-btn" variant="outline" type="button" onclick={() => createCaseDialogOpen = false}>
           {#snippet children()}Cancel{/snippet}
 
         <Button class="bits-btn" type="submit" disabled={isCreatingCase || !$createFormData.title?.trim()}>
@@ -884,7 +884,7 @@
 <!-- Add Evidence Dialog -->
 <HeadlessDialog bind:open={addEvidenceDialogOpen} ariaLabelledby="add-evidence-title">
   <h2 id="add-evidence-title" class="text-lg font-semibold mb-2">Add Evidence</h2>
-  <form method="post" action="?/addEvidence" use:enhance={evidenceEnhance} on:submit={handleEvidenceSubmit} class="space-y-4">
+  <form method="post" action="?/addEvidence" use:enhance={evidenceEnhance} onsubmit={handleEvidenceSubmit} class="space-y-4">
       <div class="grid gap-4">
         <div class="grid gap-2">
           <Label for="evidence-type">Evidence Type</Label>
@@ -942,7 +942,7 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <Button class="bits-btn" variant="outline" type="button" on:click={() => addEvidenceDialogOpen = false}>
+        <Button class="bits-btn" variant="outline" type="button" onclick={() => addEvidenceDialogOpen = false}>
           {#snippet children()}Cancel{/snippet}
 
         <Button class="bits-btn" type="submit" disabled={isAddingEvidence || !$evidenceFormData.title?.trim()}>
@@ -966,10 +966,10 @@
       </AlertDialog.Description>
     </AlertDialog.Header>
     <AlertDialog.Footer>
-      <Button class="bits-btn" variant="outline" on:click={() => deleteEvidenceDialogOpen = false}>
+      <Button class="bits-btn" variant="outline" onclick={() => deleteEvidenceDialogOpen = false}>
         {#snippet children()}Cancel{/snippet}
 
-      <Button class="bits-btn" variant="destructive" on:click={deleteEvidence}>
+      <Button class="bits-btn" variant="destructive" onclick={deleteEvidence}>
         {#snippet children()}Delete Evidence{/snippet}
 
     </AlertDialog.Footer>

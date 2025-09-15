@@ -1,3 +1,6 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import {
@@ -9,9 +12,7 @@
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
   import { Loader2, Bot, MessageSquare, FileText, Search, Sparkles, Zap } from 'lucide-svelte';
@@ -31,6 +32,8 @@
 
   // State
   let aiSearchQuery = $state('');
+  let errorMessage = $state('');
+  let isLoading = $state(false);
   let aiChatMessage = $state('');
   let summarizeText = $state('');
   let isAISearching = $state(false);
@@ -48,7 +51,8 @@
     aiSearchResults = [];
 
     try {
-      const response = await fetch('/api/ai/enhanced-legal-search', {
+      try {
+    const response = await fetch('/api/ai/enhanced-legal-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -61,7 +65,14 @@
             useVector: true,
             similarityThreshold: 0.7,
           },
-        }),
+        });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  },
       });
 
       const result = await (response as { json?: any }).json();
@@ -85,7 +96,8 @@
       console.error('Enhanced AI search error:', error);
       // Fallback to basic search
       await performFallbackSearch();
-    } finally {
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
       isAISearching = false;
     }
   }
@@ -93,7 +105,8 @@
   // Fallback search method
   async function performFallbackSearch() {
     try {
-      const response = await fetch('/api/ai/legal-search', {
+      try {
+    const response = await fetch('/api/ai/legal-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -101,7 +114,14 @@
           jurisdiction: 'all',
           category: 'all',
           useAI: true,
-        }),
+        });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  },
       });
 
       const result = await (response as { json?: any }).json();
@@ -125,13 +145,21 @@
     aiChatResponse = '';
 
     try {
-      const response = await fetch('/api/ai/chat', {
+      try {
+    const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: aiChatMessage,
           temperature: 0.7,
-        }),
+        });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  },
       });
 
       const result = await (response as { json?: any }).json();
@@ -146,7 +174,8 @@
       }
     } catch (error) {
       console.error('AI chat error:', error);
-    } finally {
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
       isAIChatting = false;
     }
   }
@@ -159,14 +188,22 @@
     summaryResult = '';
 
     try {
-      const response = await fetch('/api/ai/summarize', {
+      try {
+    const response = await fetch('/api/ai/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: summarizeText,
           type: 'legal',
           options: { max_tokens: 500 },
-        }),
+        });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  },
       });
 
       const result = await (response as { json?: any }).json();
@@ -181,7 +218,8 @@
       }
     } catch (error) {
       console.error('AI summarization error:', error);
-    } finally {
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
       isSummarizing = false;
     }
   }
@@ -228,7 +266,7 @@
           AI Search
         </h3>
       </div>
-      <div class="yorha-panel-content space-y-4">
+      <main>
         <div class="flex gap-2">
           <div class="relative flex-1">
             <Bot class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
@@ -240,7 +278,7 @@
               class="pl-10" />
           </div>
           <Button class="bits-btn"
-            on:click={performAISearch}
+            onclick={(event: MouseEvent) => performAISearch}
             disabled={disabled || isAISearching || !aiSearchQuery.trim()}
             size="sm">
 {#if isAISearching}
@@ -254,6 +292,7 @@
         {#if aiSearchResults.length > 0}
           <div class="space-y-2 max-h-32 overflow-y-auto">
             {#each aiSearchResults.slice(0, 3) as result}
+<!-- TODO: Consider virtual scrolling for large lists (aiSearchResults) -->
               <div class="p-2 bg-muted/50 rounded text-sm">
                 <div class="font-medium truncate">{(result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).title}</div>
                 <div class="text-xs nes-text is-disabled">{(result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).jurisdiction}</div>
@@ -285,7 +324,7 @@
             rows="2"
             class="resize-none" />
           <Button
-            on:click={performAIChat}
+            onclick={(event: MouseEvent) => performAIChat}
             disabled={disabled || isAIChatting || !aiChatMessage.trim()}
             size="sm"
             class="w-full bits-btn bits-btn">
@@ -327,7 +366,7 @@
             rows="2"
             class="resize-none" />
           <Button
-            on:click={performAISummarization}
+            onclick={(event: MouseEvent) => performAISummarization}
             disabled={disabled || isSummarizing || !summarizeText.trim()}
             size="sm"
             class="w-full bits-btn bits-btn">
@@ -355,7 +394,7 @@
   <!-- Clear Results Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
     <div class="text-center">
-      <Button class="bits-btn" variant="outline" on:click={clearResults} size="sm">
+      <Button class="bits-btn" variant="outline" onclick={(event: MouseEvent) => clearResults} size="sm">
 Clear All Results
 </Button>
     </div>
@@ -366,7 +405,7 @@ Clear All Results
     <Button class="bits-btn"
       variant="outline"
       size="sm"
-      on:click={() =>
+      onclick={(event: MouseEvent) => ) =>
 {
         aiSearchQuery = 'California murder laws';
         performAISearch();
@@ -378,7 +417,7 @@ Clear All Results
     <Button class="bits-btn"
       variant="outline"
       size="sm"
-      on:click={() =>
+      onclick={(event: MouseEvent) => ) =>
 {
         aiChatMessage = 'What are the elements of a valid contract?';
         performAIChat();
@@ -390,7 +429,7 @@ Clear All Results
     <Button class="bits-btn"
       variant="outline"
       size="sm"
-      on:click={() =>
+      onclick={(event: MouseEvent) => ) =>
 {
         aiSearchQuery = 'evidence admissibility rules';
         performAISearch();

@@ -93,14 +93,14 @@
         body: JSON.stringify(searchPayload)
       });
 
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        searchResults = (data as { results?: any; total?: any; relatedTopics?: any; citations?: any }).results || [];
-        totalResults = (data as { results?: any; total?: any; relatedTopics?: any; citations?: any }).total || 0;
-        relatedTopics = (data as { results?: any; total?: any; relatedTopics?: any; citations?: any }).relatedTopics || [];
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        searchResults = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).results || [];
+        totalResults = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).total || 0;
+        relatedTopics = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).relatedTopics || [];
         
         // Generate AI suggestions based on results
-        await generateAISuggestions((data as { results?: any; total?: any; relatedTopics?: any; citations?: any }).results.slice(0, 5));
+        await generateAISuggestions((data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).results.slice(0, 5));
       } else {
         // Mock data for demo
         searchResults = generateMockResults(searchQuery);
@@ -187,9 +187,9 @@
   async function loadSavedCitations() {
     try {
       const response = await fetch('/api/legal/research/citations/saved');
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        savedCitations = (data as { results?: any; total?: any; relatedTopics?: any; citations?: any }).citations || [];
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        savedCitations = (data as { results?: unknown; total?: unknown; relatedTopics?: unknown; citations?: unknown }).citations || [];
       }
     } catch (error) {
       console.error('Failed to load saved citations:', error);
@@ -223,7 +223,7 @@
         })
       });
 
-      if ((response as { ok?: any; json?: any }).ok) {
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
         document.isBookmarked = true;
         savedCitations = [
           { 
@@ -306,7 +306,7 @@
         
         <div class="flex items-center space-x-3">
           <button
-            on:click={() => advancedSearch = !advancedSearch}
+            onclick={() => advancedSearch = !advancedSearch}
             class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
           >
             <Filter class="h-4 w-4 mr-2" />
@@ -336,13 +336,13 @@
               <input
                 type="search"
                 bind:value={searchQuery}
-                on:keydown={(e) => e.key === 'Enter' && performSearch()}
+                onkeydown={(e) => e.key === 'Enter' && performSearch()}
                 placeholder="Search legal documents, cases, statutes, and precedents..."
                 class="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               />
               <div class="absolute inset-y-0 right-0 flex items-center">
                 <LoadingButton
-                  on:click={performSearch}
+                  onclick={performSearch}
                   loading={isSearching}
                   disabled={!searchQuery.trim()}
                   class="mr-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -365,7 +365,7 @@
                 { id: 'phrase', label: 'Exact Phrase', icon: FileText }
               ] as mode}
                 <button
-                  on:click={() => searchMode = mode.id}
+                  onclick={() => searchMode = mode.id}
                   class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors
                          {searchMode === mode.id ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
                 >
@@ -416,7 +416,7 @@
                 
                 <div class="flex items-end">
                   <button
-                    on:click={clearFilters}
+                    onclick={clearFilters}
                     class="w-full inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   >
                     Clear Filters
@@ -437,7 +437,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               {#each aiSuggestions as suggestion}
                 <button
-                  on:click={() => { searchQuery = suggestion; performSearch(); }}
+                  onclick={() => { searchQuery = suggestion; performSearch(); }}
                   class="text-left p-2 text-sm text-blue-700 hover:bg-blue-100 rounded-md transition-colors"
                 >
                   {suggestion}
@@ -473,53 +473,53 @@
                 <div class="flex items-start justify-between mb-3">
                   <div class="flex-1">
                     <h3 class="text-lg font-semibold text-blue-600 hover:text-blue-800">
-                      <a href={(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).url}>{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).title}</a>
+                      <a href={(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).url}>{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).title}</a>
                     </h3>
-                    <p class="text-sm text-gray-600 font-mono">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).citation}</p>
+                    <p class="text-sm text-gray-600 font-mono">{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).citation}</p>
                   </div>
                   
                   <div class="flex items-center space-x-2 ml-4">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getRelevanceColor((result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).relevanceScore)}">
-                      {Math.round((result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).relevanceScore * 100)}% match
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getRelevanceColor((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).relevanceScore)}">
+                      {Math.round((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).relevanceScore * 100)}% match
                     </span>
                     
                     <button
-                      on:click={() => saveCitation(result)}
+                      onclick={() => saveCitation(result)}
                       class="p-1 text-gray-400 hover:text-yellow-500 transition-colors"
-                      class:text-yellow-500={(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).isBookmarked}
+                      class:text-yellow-500={(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).isBookmarked}
                     >
                       <Bookmark class="h-4 w-4" />
                     </button>
                   </div>
                 </div>
 
-                <p class="text-gray-700 text-sm mb-3 line-clamp-2">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).summary}</p>
+                <p class="text-gray-700 text-sm mb-3 line-clamp-2">{(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).summary}</p>
 
                 <div class="flex items-center justify-between text-sm">
                   <div class="flex items-center space-x-4">
                     <div class="flex items-center text-gray-500">
                       <Gavel class="h-4 w-4 mr-1" />
-                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).court}
+                      {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).court}
                     </div>
                     
                     <div class="flex items-center text-gray-500">
                       <Calendar class="h-4 w-4 mr-1" />
-                      {formatDate((result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).dateDecided)}
+                      {formatDate((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).dateDecided)}
                     </div>
                     
                     <div class="flex items-center text-gray-500">
                       <Link class="h-4 w-4 mr-1" />
-                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).citedBy} citations
+                      {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).citedBy} citations
                     </div>
                   </div>
 
                   <div class="flex items-center space-x-2">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getPrecedentialColor((result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue)}">
-                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue} Precedent
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getPrecedentialColor((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue)}">
+                      {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue} Precedent
                     </span>
                     
                     <button
-                      on:click={() => openCitationDialog(result)}
+                      onclick={() => openCitationDialog(result)}
                       class="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
                     >
                       <Eye class="h-3 w-3 mr-1" />
@@ -529,10 +529,10 @@
                 </div>
 
                 <!-- Key Topics -->
-                {#if (result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).keyTopics?.length > 0}
+                {#if (result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).keyTopics?.length > 0}
                   <div class="mt-3 pt-3 border-t border-gray-100">
                     <div class="flex flex-wrap gap-1">
-                      {#each (result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).keyTopics.slice(0, 5) as topic}
+                      {#each (result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).keyTopics.slice(0, 5) as topic}
                         <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
                           {topic}
                         </span>
@@ -547,7 +547,7 @@
             {#if totalResults > 20}
               <div class="flex items-center justify-center space-x-2 mt-8">
                 <button
-                  on:click={() => { currentPage = Math.max(1, currentPage - 1); performSearch(); }}
+                  onclick={() => { currentPage = Math.max(1, currentPage - 1); performSearch(); }}
                   disabled={currentPage <= 1}
                   class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                 >
@@ -559,7 +559,7 @@
                 </span>
                 
                 <button
-                  on:click={() => { currentPage = currentPage + 1; performSearch(); }}
+                  onclick={() => { currentPage = currentPage + 1; performSearch(); }}
                   disabled={currentPage >= Math.ceil(totalResults / 20)}
                   class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                 >
@@ -639,7 +639,7 @@
               <div class="space-y-2 max-h-32 overflow-y-auto">
                 {#each researchSession.queries.slice(-5) as query}
                   <button
-                    on:click={() => { searchQuery = query.query; performSearch(); }}
+                    onclick={() => { searchQuery = query.query; performSearch(); }}
                     class="w-full text-left p-2 text-xs text-gray-600 hover:bg-gray-50 rounded border border-gray-200"
                   >
                     {query.query}
@@ -657,7 +657,7 @@
             <div class="space-y-2">
               {#each relatedTopics as topic}
                 <button
-                  on:click={() => { searchQuery = topic; performSearch(); }}
+                  onclick={() => { searchQuery = topic; performSearch(); }}
                   class="w-full text-left p-2 text-sm text-blue-600 hover:bg-blue-50 rounded"
                 >
                   {topic}
@@ -722,14 +722,14 @@
         
         <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
           <button
-            on:click={() => showCitationDialog = false}
+            onclick={() => showCitationDialog = false}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
           >
             Close
           </button>
           
           <button
-            on:click={() => { saveCitation(selectedDocument); showCitationDialog = false; }}
+            onclick={() => { saveCitation(selectedDocument); showCitationDialog = false; }}
             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700"
           >
             <Bookmark class="h-4 w-4 mr-1 inline" />

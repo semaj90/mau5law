@@ -8,7 +8,7 @@
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   
   // Pattern detection state
   let patterns = $state<DetectedPattern[]>([]);
@@ -202,7 +202,7 @@
       <p class="detection-subtitle">AI-powered pattern recognition and behavioral analysis</p>
     </div>
     <div class="header-actions">
-      <button class="nes-btn" on:click={disabled}>
+      <button class="nes-btn" onclick={disabled}>
         {isAnalyzing ? 'Analyzing...' : 'Run Analysis'}
       </button>
     </div>
@@ -393,7 +393,7 @@
           
           <div.Footer>
             <div class="nier-bits-card-actions">
-              <button class="nes-btn" variant="outline" size="sm" on:click={() => openPatternDetails(pattern)}>
+              <button class="nes-btn" variant="outline" size="sm" onclick={() => openPatternDetails(pattern)}>
                 View Details
               </button>
               <button class="nes-btn" size="sm">
@@ -520,7 +520,7 @@
       </div>
       
       <div class="dialog-actions">
-        <button class="nes-btn" variant="outline" on:click={() => showPatternDetails = false}>
+        <button class="nes-btn" variant="outline" onclick={() => showPatternDetails = false}>
           Close
         </button>
         <button class="nes-btn">

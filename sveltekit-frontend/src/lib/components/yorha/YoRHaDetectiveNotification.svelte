@@ -16,7 +16,7 @@
     type = $bindable(),
     show = $bindable(),
     duration = $bindable()
-  : any } = $props();
+  : unknown } = $props();
 
   function getTypeStyles(notificationType: string): string {
     switch (notificationType) {

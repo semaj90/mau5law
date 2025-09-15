@@ -200,9 +200,9 @@
 
         adaptiveDemo = {
           iterations: i + 1,
-          scalings: adaptiveDemo.scalings + ((result as { encodedDimensions?: any; processingTime?: any; compressionRatio?: any }).encodedDimensions !== 768 ? 1 : 0),
-          avgTime: (adaptiveDemo.avgTime * i + (result as { encodedDimensions?: any; processingTime?: any; compressionRatio?: any }).processingTime) / (i + 1),
-          compressionHistory: [...adaptiveDemo.compressionHistory, (result as { encodedDimensions?: any; processingTime?: any; compressionRatio?: any }).compressionRatio]
+          scalings: adaptiveDemo.scalings + ((result as { encodedDimensions?: unknown; processingTime?: unknown; compressionRatio?: unknown }).encodedDimensions !== 768 ? 1 : 0),
+          avgTime: (adaptiveDemo.avgTime * i + (result as { encodedDimensions?: unknown; processingTime?: unknown; compressionRatio?: unknown }).processingTime) / (i + 1),
+          compressionHistory: [...adaptiveDemo.compressionHistory, (result as { encodedDimensions?: unknown; processingTime?: unknown; compressionRatio?: unknown }).compressionRatio]
         };
 
         // Update status
@@ -276,7 +276,7 @@
         </p>
         
         <button
-          on:click={disabled}
+          onclick={disabled}
           class="w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded"
         >
@@ -304,7 +304,7 @@
         </p>
         
         <button
-          on:click={disabled}
+          onclick={disabled}
           class="w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded"
         >
@@ -331,7 +331,7 @@
         </p>
         
         <button
-          on:click={disabled}
+          onclick={disabled}
           class="w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded"
         >

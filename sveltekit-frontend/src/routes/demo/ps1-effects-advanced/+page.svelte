@@ -238,12 +238,12 @@ https://svelte.dev/e/js_parse_error -->
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify(metrics)
   			});
-  			if ((response as { ok?: any; json?: any }).ok) {
-  				const result = await (response as { ok?: any; json?: any }).json();
-  				addRuntimeBadge('Metrics', `Sent to backend (${(result as { metrics_id?: any; recommendations?: any }).metrics_id?.slice(-6) || 'OK'})`, 'good');
+  			if ((response as { ok?: unknown; json?: unknown }).ok) {
+  				const result = await (response as { ok?: unknown; json?: unknown }).json();
+  				addRuntimeBadge('Metrics', `Sent to backend (${(result as { metrics_id?: unknown; recommendations?: unknown }).metrics_id?.slice(-6) || 'OK'})`, 'good');
   				// Apply recommendations if provided
-  				if ((result as { metrics_id?: any; recommendations?: any }).recommendations?.length > 0) {
-  					(result as { metrics_id?: any; recommendations?: any }).recommendations.forEach(rec => {
+  				if ((result as { metrics_id?: unknown; recommendations?: unknown }).recommendations?.length > 0) {
+  					(result as { metrics_id?: unknown; recommendations?: unknown }).recommendations.forEach(rec => {
   						addRuntimeBadge('Recommendation', rec, 'info');
   					});
   				}
@@ -299,7 +299,7 @@ https://svelte.dev/e/js_parse_error -->
 					<input 
 						type="checkbox" 
 						bind:checked={flag.enabled}
-						on:change={() => toggleFeatureFlag(name)}
+						onchange={() => toggleFeatureFlag(name)}
 					>
 					<span class="flag-name">{name}</span>
 					{#if flag.experimental}
@@ -323,13 +323,13 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 		
 		<div class="lod-controls">
-			<button class="ps1-button" class:active={lodLevel === 'low'} on:click={() => setLOD('low')}>
+			<button class="ps1-button" class:active={lodLevel === 'low'} onclick={() => setLOD('low')}>
 				Low
 			</button>
-			<button class="ps1-button" class:active={lodLevel === 'medium'} on:click={() => setLOD('medium')}>
+			<button class="ps1-button" class:active={lodLevel === 'medium'} onclick={() => setLOD('medium')}>
 				Medium
 			</button>
-			<button class="ps1-button" class:active={lodLevel === 'high'} on:click={() => setLOD('high')}>
+			<button class="ps1-button" class:active={lodLevel === 'high'} onclick={() => setLOD('high')}>
 				High
 			</button>
 		</div>
@@ -340,16 +340,16 @@ https://svelte.dev/e/js_parse_error -->
 		<h3>⚡ Initialize Effects</h3>
 		
 		<div class="init-buttons">
-			<button class="ps1-button" on:click={() => initializeEffect('webgpu')}>
+			<button class="ps1-button" onclick={() => initializeEffect('webgpu')}>
 				🚀 WebGPU
 			</button>
-			<button class="ps1-button" on:click={() => initializeEffect('parallax')}>
+			<button class="ps1-button" onclick={() => initializeEffect('parallax')}>
 				🌊 Parallax
 			</button>
-			<button class="ps1-button" on:click={() => initializeEffect('3d-hybrid')}>
+			<button class="ps1-button" onclick={() => initializeEffect('3d-hybrid')}>
 				🎭 3D Hybrid
 			</button>
-			<button class="ps1-button" on:click={sendGPUMetrics}>
+			<button class="ps1-button" onclick={sendGPUMetrics}>
 				📊 Send Metrics
 			</button>
 		</div>

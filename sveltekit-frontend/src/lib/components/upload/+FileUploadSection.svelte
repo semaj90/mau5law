@@ -88,7 +88,7 @@
     </div>
     <div class="mb-3">
       <label for="fileInput" class="form-label">Upload File:</label>
-      <input type="file" id="fileInput" class="form-control" on:change={handleFileChange} />
+      <input type="file" id="fileInput" class="form-control" onchange={handleFileChange} />
     </div>
     <div class="mb-3 form-check">
       <Checkbox id="summarizeCheckbox" bind:checked={summarize} label="Summarize with AI" />
@@ -96,7 +96,7 @@
     <div class="mb-3 form-check">
       <Checkbox id="tagCheckbox" bind:checked={tag} label="Tag with AI" />
     </div>
-    <button class="btn nes-btn is-primary" on:click={handleSubmit}>Upload</button>
+    <button class="btn nes-btn is-primary" onclick={handleSubmit}>Upload</button>
   </div>
 </div>
 

@@ -462,12 +462,12 @@
     aria-disabled={disabled}
     aria-labelledby={label ? 'switch-label' : undefined}
     aria-describedby={description ? 'switch-description' : undefined}
-    on:click={handleToggle}
-    on:focus={handleFocus}
-    on:blur={handleBlur}
-    on:mouseenter={handleHover}
-    on:mouseleave={handleUnhover}
-    on:keydown={handleKeyDown}
+    onclick={handleToggle}
+    onfocus={handleFocus}
+    onblur={handleBlur}
+    onmouseenter={handleHover}
+    onmouseleave={handleUnhover}
+    onkeydown={handleKeyDown}
   >
     <div class="switch-track">
       <div class="switch-knob">

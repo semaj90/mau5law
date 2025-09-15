@@ -103,11 +103,11 @@
         }),
       });
 
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        testResults = (data as { data?: any }).data;
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        testResults = (data as { data?: unknown }).data;
       } else {
-        const error = await (response as { ok?: any; json?: any }).json();
+        const error = await (response as { ok?: unknown; json?: unknown }).json();
         testResults = { error: error.error };
   }
     } catch (error) {
@@ -176,7 +176,7 @@
 
       <button
         class="nes-btn is-primary w-full mt-3 text-xs"
-        on:click={() => checkSystemStatus()}
+        onclick={() => checkSystemStatus()}
         disabled={isLoadingStatus}
       >
         {isLoadingStatus ? "Checking..." : "🔄 Refresh Status"}
@@ -189,19 +189,19 @@
       <div class="space-y-2">
         <button
           class="nes-btn is-success w-full text-xs"
-          on:click={() => window.open("/api/embeddings", "_blank")}
+          onclick={() => window.open("/api/embeddings", "_blank")}
         >
           📊 Embeddings API
         </button>
         <button
           class="nes-btn is-success w-full text-xs"
-          on:click={() => window.open("/api/qdrant", "_blank")}
+          onclick={() => window.open("/api/qdrant", "_blank")}
         >
           🔍 Qdrant Status
         </button>
         <button
           class="nes-btn is-success w-full text-xs"
-          on:click={() => window.open("/cases", "_blank")}
+          onclick={() => window.open("/cases", "_blank")}
         >
           📁 Case Database
         </button>
@@ -239,7 +239,7 @@
         {#each demoQueries as query}
           <button
             class="nes-btn is-normal text-xs p-2 text-left"
-            on:click={() => (testQuery = query)}
+            onclick={() => (testQuery = query)}
           >
             "{query}"
           </button>
@@ -261,7 +261,7 @@
           class="nes-input flex-1"
         />
         <button
-          on:click={() => testVectorSearch()}
+          onclick={() => testVectorSearch()}
           disabled={!testQuery.trim() || isTestingSearch}
           class="nes-btn is-primary"
         >
@@ -288,16 +288,16 @@
               <div class="space-y-3">
                 {#each testResults.results as result}
                   <EvidenceCard
-                    title={(result as { title?: any; content?: any; type?: any; score?: any; source?: any }).title}
-                    description={(result as { title?: any; content?: any; type?: any; score?: any; source?: any }).content.substring(0, 200) + "..."}
+                    title={(result as { title?: unknown; content?: unknown; type?: unknown; score?: unknown; source?: unknown }).title}
+                    description={(result as { title?: unknown; content?: unknown; type?: unknown; score?: unknown; source?: unknown }).content.substring(0, 200) + "..."}
                     status="active"
-                    type={(result as { title?: any; content?: any; type?: any; score?: any; source?: any }).type}
-                    connections={Math.round((result as { title?: any; content?: any; type?: any; score?: any; source?: any }).score * 100)}
+                    type={(result as { title?: unknown; content?: unknown; type?: unknown; score?: unknown; source?: unknown }).type}
+                    connections={Math.round((result as { title?: unknown; content?: unknown; type?: unknown; score?: unknown; source?: unknown }).score * 100)}
                   >
                     {#snippet children()}
                       <div class="flex justify-between text-xs">
-                        <span>Match: {Math.round((result as { title?: any; content?: any; type?: any; score?: any; source?: any }).score * 100)}%</span>
-                        <span>Source: {(result as { title?: any; content?: any; type?: any; score?: any; source?: any }).source}</span>
+                        <span>Match: {Math.round((result as { title?: unknown; content?: unknown; type?: unknown; score?: unknown; source?: unknown }).score * 100)}%</span>
+                        <span>Source: {(result as { title?: unknown; content?: unknown; type?: unknown; score?: unknown; source?: unknown }).source}</span>
                       </div>
                     {/snippet}
                   </EvidenceCard>

@@ -87,15 +87,15 @@ https://svelte.dev/e/props_duplicate -->
 	<div 
 		class="mx-auto px-4 max-w-7xl" 
 		style="width: {avatarSize}; height: {avatarSize};"
-		on:click={() => handleAvatarClick()}
-		on:keydown={(e) => {
+		onclick={() => handleAvatarClick()}
+		onkeydown={(e) => {
 			if (e.key === 'Enter' || e.key === ' ') {
 				e.preventDefault();
 				handleAvatarClick();
 			}
 		}}
-		on:drop={handleDrop}
-		on:dragover={handleDragOver}
+		ondrop={handleDrop}
+		ondragover={handleDragOver}
 		ondragleave={handleDragLeave}
 		role="button"
 		tabindex={clickable ? 0 : -1}
@@ -130,7 +130,7 @@ https://svelte.dev/e/props_duplicate -->
 			<button 
 				type="button" 
 				class="mx-auto px-4 max-w-7xl"
-				on:click={() => fileInput?.click()}
+				onclick={() => fileInput?.click()}
 				disabled={$avatarStore.isUploading}
 			>
 				{$avatarStore.isUploading ? 'Uploading...' : 'Change Avatar'}
@@ -140,7 +140,7 @@ https://svelte.dev/e/props_duplicate -->
 				<button 
 					type="button" 
 					class="mx-auto px-4 max-w-7xl"
-					on:click={() => handleRemoveAvatar()}
+					onclick={() => handleRemoveAvatar()}
 				>
 					Remove
 				</button>
@@ -151,7 +151,7 @@ https://svelte.dev/e/props_duplicate -->
 	{#if $avatarStore.error}
 		<div class="mx-auto px-4 max-w-7xl">
 			{$avatarStore.error}
-			<button type="button" on:click={() => avatarStore.clearError()} class="mx-auto px-4 max-w-7xl">×</button>
+			<button type="button" onclick={() => avatarStore.clearError()} class="mx-auto px-4 max-w-7xl">×</button>
 		</div>
 	{/if}
 </div>
@@ -159,7 +159,7 @@ https://svelte.dev/e/props_duplicate -->
 <input 
 	bind:this={fileInput}
 	type="file" 
-	accept="image/jpeg,image/png,image/gif,image/svg+xml,image/webp" on:change={handleFileSelect}
+	accept="image/jpeg,image/png,image/gif,image/svg+xml,image/webp" onchange={handleFileSelect}
 	style="display: none;"
 />
 

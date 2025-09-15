@@ -28,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
     trackOnMount = $bindable(),
     trackOnVisible = $bindable(),
     ratingType = $bindable()
-  : any } = $props();
+  : unknown } = $props();
 
   // Get feedback store
   const store = getFeedbackStore();
@@ -79,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Mark interaction as completed successfully
    */
-  export function markCompleted(result: any = {}) {
+  export function markCompleted(result: unknown = {}) {
     if (interactionId) {
       updateContext({ 
         completed: true, 
@@ -92,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Mark interaction as failed
    */
-  export function markFailed(error: any = {}) {
+  export function markFailed(error: unknown = {}) {
     if (interactionId) {
       updateContext({ 
         failed: true, 

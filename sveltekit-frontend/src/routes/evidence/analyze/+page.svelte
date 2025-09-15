@@ -299,7 +299,7 @@ https://svelte.dev/e/js_parse_error -->
         <Input
           id="evidenceFile"
           type="file"
-          accept=".txt,.pdf,.doc,.docx" on:change={handleFileUpload}
+          accept=".txt,.pdf,.doc,.docx" onchange={handleFileUpload}
           disabled={analyzing}
           class="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary hover:file:bg-opacity-80" />
         {#if evidenceFile}
@@ -343,10 +343,10 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
     <div class="flex gap-2">
-  <Button class="bits-btn" variant="outline" on:click={resetForm} disabled={analyzing}>
+  <Button class="bits-btn" variant="outline" onclick={resetForm} disabled={analyzing}>
 Reset
 </Button>
-  <Button class="bits-btn" on:click={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+  <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
 {analyzing ? 'Analyzing...' : 'Start Analysis'}
 </Button>
       </div>
@@ -482,7 +482,7 @@ Reset
                   variant="outline"
                   size="sm"
                   class="mt-2 bits-btn bits-btn"
-                  on:click={() =>
+                  onclick={() =>
 viewDetailedResults(data)}>
                   View Details →
 </Button>
@@ -492,10 +492,10 @@ viewDetailedResults(data)}>
         </div>
 
         <DialogFooter>
-          <Button class="bits-btn" variant="outline" on:click={() =>
+          <Button class="bits-btn" variant="outline" onclick={() =>
 (showResults = false)}>Close
 </Button>
-          <Button class="bits-btn" on:click={() =>
+          <Button class="bits-btn" onclick={() =>
 goto(`/cases/${caseId}`)}>View Case Details
 </Button>
         </DialogFooter>

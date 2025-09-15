@@ -65,7 +65,7 @@
     return () => window.removeEventListener('resize', onResize);
   });
 
-  $: if (caseFiles) renderScene();
+  $effect(() => { if (caseFiles) renderScene(); });
 </script>
 
 <div class="canvas-container nes-container" role="region" aria-label="High-performance evidence visualization">

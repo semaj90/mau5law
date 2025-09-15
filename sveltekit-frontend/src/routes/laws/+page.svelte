@@ -15,7 +15,7 @@
   import { onMount } from 'svelte';
 
   // In Svelte 5 (runes mode) don't use `export let` for page props — use $props()
-  const { data } = $props() as { data: any };
+  const { data } = $props() as { data: unknown };
 let EnhancedFuseSearch = $state<any >(null);
 
   onMount(async () => {
@@ -39,13 +39,13 @@ let isSearching = $state<boolean >(false);
       });
 
       const response = await fetch(`/api/laws/search?${params}`);
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; laws?: any; error?: any }).success) {
-        searchResults = (result as { success?: any; laws?: any; error?: any }).laws || [];
+      if ((result as { success?: unknown; laws?: unknown; error?: unknown }).success) {
+        searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).laws || [];
       } else {
         searchResults = [];
-        console.error('Search failed:', (result as { success?: any; laws?: any; error?: any }).error);
+        console.error('Search failed:', (result as { success?: unknown; laws?: unknown; error?: unknown }).error);
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -62,18 +62,18 @@ let isSearching = $state<boolean >(false);
   }
 
   // AI toolbar event handlers (typed)
-  function handleAISearchResult(result: any) {
+  function handleAISearchResult(result: unknown) {
     console.log('AI Search Result:', result);
     if (result?.laws) {
-      searchResults = (result as { success?: any; laws?: any; error?: any }).laws;
+      searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).laws;
     }
   }
 
-  function handleAIChatResult(result: any) {
+  function handleAIChatResult(result: unknown) {
     console.log('AI Chat Result:', result);
   }
 
-  function handleAISummarizeResult(result: any) {
+  function handleAISummarizeResult(result: unknown) {
     console.log('AI Summarization Result:', result);
   }
 </script>
@@ -123,9 +123,9 @@ let isSearching = $state<boolean >(false);
           <Input
           placeholder="Search laws, codes, regulations..."
           bind:value={searchQuery}
-          on:keydown={handleKeydown}
+          onkeydown={handleKeydown}
           class="flex-1" />
-        <button on:click={performSearch} disabled={isSearching || !searchQuery.trim()} class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition disabled:opacity-50">
+        <button onclick={performSearch} disabled={isSearching || !searchQuery.trim()} class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition disabled:opacity-50">
           {#if isSearching}
             Loading...
           {:else}
@@ -145,7 +145,7 @@ let isSearching = $state<boolean >(false);
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {#each (data as { quickLinks?: any }).quickLinks as link}
+      {#each (data as { quickLinks?: unknown }).quickLinks as link}
         <div class="hover:shadow-lg transition-all duration-200 nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary text-lg">{link.title}</h3>
@@ -189,11 +189,11 @@ let isSearching = $state<boolean >(false);
             <div class="yorha-panel-content">
               <p class="mb-4 text-sm">{law.description}</p>
               <div class="flex gap-2">
-                <button on:click={() => handleAISummarizeResult(law)} class="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm">
+                <button onclick={() => handleAISummarizeResult(law)} class="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-3 py-1 text-sm">
                   <Bot class="h-4 w-4 mr-2" />
                   <span>AI Summary</span>
                 </button>
-                <button on:click={() => handleAIChatResult(law)} class="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm">
+                <button onclick={() => handleAIChatResult(law)} class="inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm">
                   <MessageSquare class="h-4 w-4 mr-2" />
                   <span>AI Chat</span>
                 </button>

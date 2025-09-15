@@ -27,7 +27,7 @@
   		onValueChange?: (value: string | undefined) => void;
   		onOpenChange?: (open: boolean) => void;
   		// Snippets
-  		trigger?: Snippet<[{ selected: any; open: boolean }]>;
+  		trigger?: Snippet<[{ selected: unknown; open: boolean }]>;
   		option?: Snippet<[{ option: SelectOption; isSelected: boolean }]>;
   		// Accessibility
   		name?: string;

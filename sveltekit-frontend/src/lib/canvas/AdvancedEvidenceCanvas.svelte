@@ -1,3 +1,6 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: Expected token }
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
@@ -71,6 +74,7 @@ https://svelte.dev/e/expected_token -->
   let canvasNodes = $state<EvidenceNode[]>(nodes);
   let selectedNode = $state<EvidenceNode | null>(null);
   let isDragging = $state(false);
+  let errorMessage = $state('');
   let dragOffset = $state({ x: 0, y: 0 });
   let zoom = $state(1.0);
   let pan = $state({ x: 0, y: 0 });
@@ -120,27 +124,55 @@ https://svelte.dev/e/expected_token -->
 
   // Canvas initialization effect
   $effect(() => {
-    if (canvas) {
-      ctx = canvas.getContext('2d');
-      initCanvas();
+    try {
+      
+          if (canvas) {
+            ctx = canvas.getContext<unknown>('2d');
+            initCanvas();
+          }
+        
+    } catch (error) {
+      console.error('Effect error:', error);
+      // Handle error gracefully
     }
   });
 
   // Re-render when nodes change
   $effect(() => {
-    if (ctx && canvasNodes) {
-      render();
+    try {
+      
+          if (ctx && canvasNodes) {
+            render();
+          }
+        
+    } catch (error) {
+      console.error('Effect error:', error);
+      // Handle error gracefully
     }
   });
 
   // Update nodes when prop changes
   $effect(() => {
-    canvasNodes = nodes;
+    try {
+      
+          canvasNodes = nodes;
+        
+    } catch (error) {
+      console.error('Effect error:', error);
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
   });
 
   // Selection change effect
   $effect(() => {
-    onNodeSelect?.(selectedNode);
+    try {
+      
+          onNodeSelect?.(selectedNode);
+        
+    } catch (error) {
+      console.error('Effect error:', error);
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
   });
 
   function initCanvas(): void {
@@ -563,7 +595,7 @@ https://svelte.dev/e/expected_token -->
   onmouseup={handleMouseUp}
   onwheel={handleWheel}
   ondblclick={handleDoubleClick}
-  on:keydown={handleKeyDown}
+  onkeydown={handleKeyDown}
   tabindex="0"
 />
 
@@ -578,8 +610,8 @@ https://svelte.dev/e/expected_token -->
 {/if}
 
 <div class="canvas-controls">
-  <button on:click={resetView}>Reset View</button>
-  <button on:click={fitToNodes}>Fit to Nodes</button>
+  <button aria-label="Action button" onclick={(event: MouseEvent) => resetView}>Reset View</button>
+  <button aria-label="Action button" onclick={(event: MouseEvent) => fitToNodes}>Fit to Nodes</button>
   <span>Zoom: {Math.round(zoom * 100)}%</span>
   <span>Nodes: {canvasNodes.length}</span>
 </div>

@@ -9,7 +9,7 @@
   interface Props {
     children?: Snippet;
     variant?: 'full' | 'minimal' | 'demo' | 'admin';
-    user?: any;
+    user?: unknown;
     showSidebar?: boolean;
     title?: string;
     hideNav?: boolean;
@@ -71,10 +71,10 @@
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
         class="sidebar-overlay nes-container is-dark"
-        on:click={() => sidebarOpen = false}
+        onclick={() => sidebarOpen = false}
         role="button"
         tabindex="0"
-        on:keydown={(e) => e.key === 'Enter' && (sidebarOpen = false)}
+        onkeydown={(e) => e.key === 'Enter' && (sidebarOpen = false)}
       ></div>
     {/if}
 

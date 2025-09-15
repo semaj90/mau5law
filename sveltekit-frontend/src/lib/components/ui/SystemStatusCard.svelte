@@ -112,6 +112,6 @@ export default {};
 	<div class="meta">Updated: {formattedUpdatedAt}</div>
   {/if}
 
-  <slot />
+  {@render children?.()}
 </div>
 

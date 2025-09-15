@@ -868,5 +868,5 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
 // const rag = createRagStreamStore({ maxRetries: 3 });
 // const { tokens, status, summary } = rag; // destructure the individual Svelte stores
 // onMount(() => { rag.start({ query: 'Explain force majeure' }); });
-// $: tokenList = $tokens; // reactive tokens array
+// let tokenList = $derived($tokens); // reactive tokens array
 // <button onclick={() => rag.cancel()}>Cancel</button>

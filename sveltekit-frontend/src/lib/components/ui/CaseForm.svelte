@@ -5,9 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
 
   import { goto } from "$app/navigation";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Card } from '$lib/components/ui/enhanced-bits';
   import Form from '$lib/components/ui/Form.svelte';
   import Input from '$lib/components/ui/Input.svelte';
@@ -57,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
     requiredFields: ["title", "description", "priority"],
   };
 
-  let formApi: any;
+  let formApi: unknown;
   let isSubmitting = $state(false);
 
   // Store form state
@@ -163,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
   <div variant="interactive" padding="lg" class="nes-container">
     <Form
       bind:formApi
-      options={formOptions} on:submit={handleSubmit} on:change={handleFormChange}
+      options={formOptions} onsubmit={handleSubmit} onchange={handleFormChange}
       submitText="Create Case"
       submitVariant="primary"
       showResetButton={true}
@@ -196,7 +194,7 @@ https://svelte.dev/e/js_parse_error -->
                 value={formValues.title || ""}
                 error={formErrors.title}
                 data-icon="${1}"
-                clearable on:input={(e) =>
+                clearable oninput={(e) =>
                   formApi?.setField(
                     "title",
                     (e.target as HTMLInputElement)?.value
@@ -220,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
                 value={values.description || ""}
                 class:border-red-300={errors.description}
                 class:border-green-300={values.description &&
-                  !errors.description} on:input={(e) =>
+                  !errors.description} oninput={(e) =>
                   formApi.setField(
                     "description",
                     (e.target as HTMLTextAreaElement)?.value
@@ -244,7 +242,7 @@ https://svelte.dev/e/js_parse_error -->
               <select
                 id="case-priority"
                 class="container mx-auto px-4"
-                value={values.priority || "medium"} on:change={(e) =>
+                value={values.priority || "medium"} onchange={(e) =>
                   formApi.setField(
                     "priority",
                     (e.target as HTMLSelectElement)?.value
@@ -264,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
                 type="date"
                 value={values.dueDate || ""}
                 error={errors.dueDate}
-                data-icon="${1}" on:input={(e) =>
+                data-icon="${1}" oninput={(e) =>
                   formApi.setField(
                     "dueDate",
                     (e.target as HTMLInputElement)?.value
@@ -290,7 +288,7 @@ https://svelte.dev/e/js_parse_error -->
                 placeholder="Enter assignee email or name"
                 value={values.assignedTo || ""}
                 error={errors.assignedTo}
-                data-icon="${1}" on:input={(e) =>
+                data-icon="${1}" oninput={(e) =>
                   formApi.setField(
                     "assignedTo",
                     (e.target as HTMLInputElement)?.value
@@ -308,7 +306,7 @@ https://svelte.dev/e/js_parse_error -->
                     value={values.tags || ""}
                     error={errors.tags}
                     data-icon="${1}"
-                    clearable on:input={(e) =>
+                    clearable oninput={(e) =>
                       formApi.setField(
                         "tags",
                         (e.target as HTMLInputElement)?.value
@@ -321,7 +319,7 @@ https://svelte.dev/e/js_parse_error -->
                   variant="secondary"
                   size="md"
                   data-icon="${1}"
-                  on:click={() =>
+                  onclick={() =>
 addTag()}
                 >
                   Add

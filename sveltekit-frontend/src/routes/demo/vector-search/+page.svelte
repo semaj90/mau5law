@@ -3,9 +3,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { Badge } from '$lib/components/ui/badge';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -91,12 +89,12 @@
         }),
       });
 
-      if (!(response as { ok?: any; json?: any }).ok) {
+      if (!(response as { ok?: unknown; json?: unknown }).ok) {
         throw new Error('Search failed');
       }
 
-      const data = await (response as { ok?: any; json?: any }).json();
-      results = (data as { results?: any }).results || [];
+      const data = await (response as { ok?: unknown; json?: unknown }).json();
+      results = (data as { results?: unknown }).results || [];
 
       // Track successful search for feedback
       if (searchInteractionId && vectorSearchFeedback) {
@@ -162,7 +160,7 @@
             placeholder="Enter your legal search query..."
             class="flex-1"
             keydown={(e) => e.key === 'Enter' && performSearch()} />
-          <Button class="bits-btn" on:click={performSearch} disabled={searching || !query.trim()}>
+          <Button class="bits-btn" onclick={performSearch} disabled={searching || !query.trim()}>
 {#if searching}
               <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               Searching...
@@ -277,17 +275,17 @@
                   Result #{index + 1}
                 </h3>
                 <p class="nes-text mt-1">
-                  {(result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).metadata?.filename || (result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).metadata?.title || 'Untitled'}
+                  {(result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).metadata?.filename || (result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).metadata?.title || 'Untitled'}
                 </p>
               </div>
-              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{formatScore((result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).score)}</span>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{formatScore((result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).score)}</span>
             </div>
           </div>
           <div class="yorha-panel-content space-y-4">
             <!-- Content Preview -->
             <div class="bg-muted p-4 rounded-lg">
               <p class="text-sm line-clamp-3">
-                {(result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).content}
+                {(result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).content}
               </p>
             </div>
 
@@ -299,7 +297,7 @@
               </div>
               <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
                 <TooltipProvider>
-                  {#each Object.entries((result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).rankingFactors) as [factor, value]}
+                  {#each Object.entries((result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).rankingFactors) as [factor, value]}
                     <Tooltip>
                       <TooltipTrigger>
                         <div class="text-center p-2 bg-muted rounded">
@@ -333,19 +331,19 @@
             </div>
 
             <!-- Explanation -->
-            {#if (result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).explanation}
+            {#if (result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).explanation}
               <div class="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
                 <p class="text-sm text-blue-800 dark:text-blue-200">
                   <strong>Why this result:</strong>
-                  {(result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).explanation}
+                  {(result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).explanation}
                 </p>
               </div>
             {/if}
 
             <!-- Metadata -->
-            {#if (result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).metadata && Object.keys((result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).metadata).length > 0}
+            {#if (result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).metadata && Object.keys((result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).metadata).length > 0}
               <div class="flex flex-wrap gap-2">
-                {#each Object.entries((result as { metadata?: any; score?: any; content?: any; rankingFactors?: any; explanation?: any }).metadata).slice(0, 5) as [key, value]}
+                {#each Object.entries((result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).metadata).slice(0, 5) as [key, value]}
                   {#if typeof value === 'string' || typeof value === 'number'}
                     <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{key}: {value}</span>
                   {/if}

@@ -1,6 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { Button } from 'bits-ui';
+  import Button from 'bits-ui';
   // import { createDialog, melt } from 'melt'; // Removed melt dependency
   import { fly, fade } from 'svelte/transition';
   import { writable } from 'svelte/store';
@@ -44,7 +44,7 @@
         <a href="#" class="nav-item">AI Assistant</a>
         
         <button
-          on:click={() => isDarkMode = !isDarkMode}
+          onclick={() => isDarkMode = !isDarkMode}
           class="nier-button-outline px-4 py-2 rounded-lg"
           class:dark={isDarkMode}
         >
@@ -70,7 +70,7 @@
     <div class="flex gap-2 border-b nier-divider">
       {#each ['overview', 'components', 'forms', 'cards'] as tab}
         <button
-          on:click={() => activeTab = tab}
+          onclick={() => activeTab = tab}
           class="px-6 py-3 font-medium capitalize nier-transition"
           class:text-harvard-crimson={activeTab === tab}
           class:dark:text-digital-green={activeTab === tab}
@@ -202,7 +202,7 @@
           <!-- Melt UI Dialog Example -->
           <button
             class="nier-button-crimson"
-            on:click={() => showModal = true}
+            onclick={() => showModal = true}
           >
             Open Modal Dialog
           </button>
@@ -225,7 +225,7 @@
               </p>
               
               <div class="flex gap-4 justify-end">
-                <button class="nier-button-outline px-4 py-2" on:click={() => showModal = false}>
+                <button class="nier-button-outline px-4 py-2" onclick={() => showModal = false}>
                   Cancel
                 </button>
                 <button class="nier-button-digital px-4 py-2">

@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   	import { onMount, onDestroy } from 'svelte';
   	import { Badge } from 'bits-ui';
   	import { Card, CardContent, CardHeader, CardTitle } from 'bits-ui';
-  	import { Button } from 'bits-ui';
+  	import Button from 'bits-ui';
   	import { Progress } from 'bits-ui';
   	import LLMProviderSelector from './LLMProviderSelector.svelte';
   	import { aiServiceWorkerManager, type AITask, type AITaskResult } from '$lib/services/aiServiceWorkerManager';
@@ -209,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
   	};
 </script>
 
-<div class="ai-processing-dashboard p-6 space-y-6 bg-yorha-bg-primary min-h-screen">
+<main>
 	<!-- Header -->
 	<div class="flex items-center justify-between">
 		<div>
@@ -236,8 +236,8 @@ https://svelte.dev/e/js_parse_error -->
 		<div class="yorha-panel-content">
 			<LLMProviderSelector 
 				bind:selectedProvider
-				on:providerSelected={handleProviderSelected}
-				on:statusChanged={handleStatusChanged}
+				onproviderSelected={handleProviderSelected}
+				onstatusChanged={handleStatusChanged}
 			/>
 		</div>
 	</div>
@@ -296,10 +296,11 @@ https://svelte.dev/e/js_parse_error -->
 			<!-- Individual Task Buttons -->
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 				{#each demoTasks as task}
-					<button class="nes-btn" 
+<!-- TODO: Consider virtual scrolling for large lists (demoTasks) -->
+					<button aria-label="Action button" class="nes-btn" 
 						variant="outline"
 						disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
-						on:click={() => processTask(task)}
+						onclick={(event: MouseEvent) => ) => processTask(task}
 						class="bits-btn h-auto p-3 flex flex-col items-start space-y-1"
 					>
 						<div class="flex items-center space-x-2">
@@ -315,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
 			<div class="flex items-center justify-center pt-4 border-t border-yorha-border">
 				<Button
 					disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
-					on:click={processParallelTasks}
+					onclick={(event: MouseEvent) => processParallelTasks}
 					class="bg-yorha-primary hover:bg-yorha-primary/80 bits-btn bits-btn"
 				>
 {#if isProcessing}

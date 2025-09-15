@@ -100,11 +100,11 @@
             bind:value={currentMessage}
             placeholder="Ask your legal question..."
             class="message-input"
-            on:keydown={(e) => e.key === 'Enter' && sendMessage()}
+            onkeydown={(e) => e.key === 'Enter' && sendMessage()}
           />
           <ButtonBits
             variant="primary"
-            on:click={sendMessage}
+            onclick={sendMessage}
             disabled={!currentMessage.trim() || isTyping}
             class="send-button"
           >
@@ -138,19 +138,19 @@
         <div class="quick-questions">
           <button
             class="quick-question"
-            on:click={() => currentMessage = 'What are Miranda rights?'}
+            onclick={() => currentMessage = 'What are Miranda rights?'}
           >
             Miranda Rights
 
           <button
             class="quick-question"
-            on:click={() => currentMessage = 'How to file a motion?'}
+            onclick={() => currentMessage = 'How to file a motion?'}
           >
             Filing Motions
 
           <button
             class="quick-question"
-            on:click={() => currentMessage = 'Evidence admissibility rules'}
+            onclick={() => currentMessage = 'Evidence admissibility rules'}
           >
             Evidence Rules
           </button>

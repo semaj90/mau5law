@@ -508,20 +508,20 @@
   <!-- Analysis Controls -->
   <div class="flex gap-4">
     <Button 
-      on:click={analyzeMotives} 
+      onclick={analyzeMotives} 
       disabled={analysisInProgress || !suspectProfile}
       class="bg-blue-600 hover:bg-blue-700"
     >
 {analysisInProgress ? 'Analyzing...' : 'Start Motive Analysis'}
 
-    <button class="nes-btn" variant="outline" on:click={() => activeTab = 'profile'}>
+    <button class="nes-btn" variant="outline" onclick={() => activeTab = 'profile'}>
       View Suspect Profile
 
-    <button class="nes-btn" variant="outline" on:click={() => activeTab = 'motives'}>
+    <button class="nes-btn" variant="outline" onclick={() => activeTab = 'motives'}>
       Motive Matrix
     </button>
     
-    <button class="nes-btn" variant="outline" on:click={() => activeTab = 'risk'}>
+    <button class="nes-btn" variant="outline" onclick={() => activeTab = 'risk'}>
       Risk Assessment
     </button>
   </div>

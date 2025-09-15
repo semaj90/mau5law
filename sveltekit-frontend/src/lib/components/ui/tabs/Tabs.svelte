@@ -7,7 +7,7 @@
   interface Props {
     value: string;
     onValueChange?: (value: string) => void;
-    children: any;
+    children: unknown;
   }
 
   let { value, onValueChange, children }: Props = $props();

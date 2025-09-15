@@ -23,7 +23,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     title?: string;
     containerType?: 'default' | 'with-title' | 'is-rounded' | 'is-dark' | 'is-centered';
     // Content and styling
-    children?: any;
+    children?: unknown;
     class?: string;
     style?: string;
     // Layout
@@ -141,7 +141,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     {minHeight ? `--container-min-height: ${minHeight};` : ''}
     {style}
   "
-  on:click={handleClick}
+  onclick={handleClick}
   onOnmouseenter={role}
   tabindex={onClick && !disabled ? 0 : undefined}
 >

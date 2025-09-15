@@ -410,7 +410,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
 
           <button
-            on:click={() => manualSaveDocument()}
+            onclick={() => manualSaveDocument()}
             class="container mx-auto px-4"
             disabled={readonly || loadingDocument || isSaving}
           >
@@ -492,7 +492,7 @@ https://svelte.dev/e/js_parse_error -->
                     <p class="container mx-auto px-4">{documentLoadError}</p>
                     <button
                       class="container mx-auto px-4"
-                      on:click={() => loadDocument()}
+                      onclick={() => loadDocument()}
                     >
                       Try Again
                     </button>
@@ -543,7 +543,7 @@ https://svelte.dev/e/js_parse_error -->
 
               <button
                 class="container mx-auto px-4"
-                on:click={() =>
+                onclick={() =>
                   insertCitation({
                     id: Math.random().toString(),
                     text: "Sample Citation",
@@ -663,7 +663,7 @@ https://svelte.dev/e/js_parse_error -->
               Cancel
             </button>
             <button
-              on:click={() => handleAIRequest()}
+              onclick={() => handleAIRequest()}
               class="container mx-auto px-4"
               disabled={!query.trim() || isProcessingAI}
             >

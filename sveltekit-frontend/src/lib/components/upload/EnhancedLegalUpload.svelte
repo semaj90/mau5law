@@ -15,7 +15,7 @@
   interface Props {
     data: PageData;
     caseId?: string;
-    onUploadComplete?: (result: any) => void;
+    onUploadComplete?: (result: unknown) => void;
     onUploadError?: (error: string) => void;
     preserveExistingFlow?: boolean; // New prop to maintain existing RAG flow
   }
@@ -28,7 +28,7 @@
   }: Props = $props();
 
   // Enhanced form leveraging Superforms' built-in validation
-  const { form, errors, enhance, submitting, message, delayed } = superForm((data as { form?: any; som_cluster?: any }).form, {
+  const { form, errors, enhance, submitting, message, delayed } = superForm((data as { form?: unknown; som_cluster?: unknown }).form, {
     validators: zod(fileUploadSchema),
     dataType: 'form', // Use FormData for file uploads
     multipleSubmits: 'prevent',
@@ -51,21 +51,21 @@
       }
     },
     onResult: async ({ result, formData }) => {
-      if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
-        const uploadResult = (result as { type?: any; data?: any; error?: any }).data?.uploadResult;
+      if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'success') {
+        const uploadResult = (result as { type?: unknown; data?: unknown; error?: unknown }).data?.uploadResult;
         // Enhanced RAG webhook integration
         if (uploadResult?.success && preserveExistingFlow) {
           await triggerWebhookProcessing(uploadResult, formData);
         }
         onUploadComplete?.(uploadResult);
-      } else if ((result as { type?: any; data?: any; error?: any }).type === 'failure') {
-        onUploadError?.((result as { type?: any; data?: any; error?: any }).data?.message || 'Upload validation failed');
-      } else if ((result as { type?: any; data?: any; error?: any }).type === 'error') {
-        onUploadError?.((result as { type?: any; data?: any; error?: any }).error?.message || 'Upload failed');
+      } else if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'failure') {
+        onUploadError?.((result as { type?: unknown; data?: unknown; error?: unknown }).data?.message || 'Upload validation failed');
+      } else if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'error') {
+        onUploadError?.((result as { type?: unknown; data?: unknown; error?: unknown }).error?.message || 'Upload failed');
       }
     },
     onError: ({ result }) => {
-      onUploadError?.((result as { type?: any; data?: any; error?: any }).error?.message || 'Unexpected error occurred');
+      onUploadError?.((result as { type?: unknown; data?: unknown; error?: unknown }).error?.message || 'Unexpected error occurred');
     }
   });
 
@@ -188,7 +188,7 @@
         if (ragResponse.ok) {
           semanticEmbeddings = await ragResponse.json();
           processingStage = `Semantic analysis complete: ${semanticEmbeddings.data?.som_cluster ? 
-            `Clustered to region [${semanticEmbeddings.(data as { form?: any; som_cluster?: any }).som_cluster.x},${semanticEmbeddings.(data as { form?: any; som_cluster?: any }).som_cluster.y}]` : 
+            `Clustered to region [${semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.x},${semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.y}]` : 
             'Vector embeddings generated'}`;
         }
       }
@@ -200,7 +200,7 @@
   }
 
   // Enhanced webhook processing preserving your existing RAG flow
-  async function triggerWebhookProcessing(uploadResult: any, formData: FormData) {
+  async function triggerWebhookProcessing(uploadResult: unknown, formData: FormData) {
     try {
       // Prepare webhook payload with enhanced analysis data
       const webhookPayload = {
@@ -385,17 +385,17 @@
         class:is-warning={processingStage}
         role="button"
         tabindex="0"
-        on:drop={onDrop}
-        on:dragover={onDragOver}
+        ondrop={onDrop}
+        ondragover={onDragOver}
         ondragleave={onDragLeave}
-        on:click={() => document.getElementById('file-input')?.click()}
+        onclick={() => document.getElementById('file-input')?.click()}
         keydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
       >
         <input
           id="file-input"
           type="file"
           name="file"
-          accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff" on:change={onFileChange}
+          accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff" onchange={onFileChange}
           style="display: none"
         />
 
@@ -410,7 +410,7 @@
               <div class="file-details">
                 <div class="file-name">{selectedFile.name}</div>
                 <div class="file-size">{formatFileSize(selectedFile.size)}</div>
-                <button type="button" class="remove-file" on:click={removeFile}>
+                <button type="button" class="remove-file" onclick={removeFile}>
                   ✕ Remove
                 </button>
               </div>
@@ -456,7 +456,7 @@
                     <strong>Semantic Analysis:</strong>
                     <div class="semantic-stats">
                       {semanticEmbeddings.data?.som_cluster ? 
-                        `Clustered to region [${semanticEmbeddings.(data as { form?: any; som_cluster?: any }).som_cluster.x},${semanticEmbeddings.(data as { form?: any; som_cluster?: any }).som_cluster.y}]` :
+                        `Clustered to region [${semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.x},${semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.y}]` :
                         'Vector embeddings generated'
                       }
                     </div>
@@ -735,7 +735,7 @@
                 <div class="semantic-visualization">
                   {#if semanticEmbeddings.data?.som_cluster}
                     <p class="nes-text is-primary">
-                      🗺️ Document clustered to region: [{semanticEmbeddings.(data as { form?: any; som_cluster?: any }).som_cluster.x}, {semanticEmbeddings.(data as { form?: any; som_cluster?: any }).som_cluster.y}]
+                      🗺️ Document clustered to region: [{semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.x}, {semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.y}]
                     </p>
                   {:else}
                     <p class="nes-text is-success">✅ Vector embeddings generated successfully</p>

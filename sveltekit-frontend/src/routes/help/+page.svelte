@@ -5,9 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 https://svelte.dev/e/const_tag_invalid_placement -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     AlertTriangle,
     ArrowRight,
@@ -516,7 +514,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             class:bg-green-100={activeCategory === "all"}
             class:text-green-700={activeCategory === "all"}
             class:hover:bg-gray-100={activeCategory !== "all"}
-            on:click={() => (activeCategory = "all")}
+            onclick={() => (activeCategory = "all")}
           >
             <Book class="h-5 w-5" />
             <div>
@@ -534,7 +532,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               class:bg-green-100={activeCategory === category.id}
               class:text-green-700={activeCategory === category.id}
               class:hover:bg-gray-100={activeCategory !== category.id}
-              on:click={() => (activeCategory = category.id)}
+              onclick={() => (activeCategory = category.id)}
             >
               {@const Icon = category.icon}
               <Icon class="h-5 w-5" />

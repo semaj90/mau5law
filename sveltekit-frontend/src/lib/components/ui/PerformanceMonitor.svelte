@@ -3,9 +3,17 @@
   import { writable } from 'svelte/store';
   import { Activity, Cpu, Zap, Clock, TrendingUp } from 'lucide-svelte';
 
-  export let showOverlay: boolean = false;
-  export let autoHide: boolean = true;
-  export let updateInterval: number = 1000;
+  interface Props {
+    showOverlay?: boolean;
+    autoHide?: boolean;
+    updateInterval?: number;
+  }
+
+  let {
+    showOverlay = false,
+    autoHide = true,
+    updateInterval = 1000
+  }: Props = $props();
 
   interface PerformanceMetrics {
     fps: number;
@@ -184,7 +192,7 @@
           <span class="font-semibold">Performance</span>
         </div>
         <button
-          on:click={toggleVisibility}
+          onclick={toggleVisibility}
           class="text-gray-400 hover:text-white transition-colors"
           aria-label="Close performance monitor"
         >

@@ -113,16 +113,16 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`Search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
+        throw new Error(`Search failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
       }
-      const data: SearchResponse = await (response as { ok?: any; statusText?: any; json?: any }).json();
-      if (!(data as { success?: any; results?: any; query_info?: any; suggestions?: any }).success) {
+      const data: SearchResponse = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
+      if (!(data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).success) {
         throw new Error('Search request failed');
       }
-      results = (data as { success?: any; results?: any; query_info?: any; suggestions?: any }).results;
-      searchInfo = (data as { success?: any; results?: any; query_info?: any; suggestions?: any }).query_info;
-      suggestions = (data as { success?: any; results?: any; query_info?: any; suggestions?: any }).suggestions || [];
+      results = (data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).results;
+      searchInfo = (data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).query_info;
+      suggestions = (data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).suggestions || [];
       console.log('Vector search results:', data);
     } catch (err) {
       console.error('Search error:', err);
@@ -214,7 +214,7 @@
             disabled={loading}
           />
           <OrchestratedButton.SearchSimilar
-            on:click={performSearch}
+            onclick={performSearch}
             disabled={loading || !query.trim()}
             class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2"
           >
@@ -255,7 +255,7 @@
           
           {#each documentTypes as docType}
             <button
-              on:click={() => toggleDocumentType(docType.value)}
+              onclick={() => toggleDocumentType(docType.value)}
               class="flex items-center gap-2 px-3 py-1 rounded-full border transition-all
                      {selectedTypes.has(docType.value) 
                        ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary' 
@@ -312,7 +312,7 @@
           <div class="text-center py-8">
             <AlertCircle class="w-8 h-8 text-red-500 mx-auto mb-2" />
             <p class="text-red-600">{error}</p>
-            <Button on:click={performSearch} variant="outline" size="sm" class="mt-2 bits-btn">
+            <Button onclick={performSearch} variant="outline" size="sm" class="mt-2 bits-btn">
 Retry Search
 
           </div>
@@ -332,39 +332,39 @@ Retry Search
                   </div>
                   <div>
                     <h3 class="font-medium text-nier-text-primary hover:text-nier-accent-warm cursor-pointer">
-                      {(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).title || `Document ${(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).document_id.slice(0, 8)}`}
+                      {(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).title || `Document ${(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).document_id.slice(0, 8)}`}
                     </h3>
                     <div class="flex items-center gap-2 mt-1">
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).document_type.replace('_', ' ')}</span>
-                      {#if (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).case_id}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).case_id.slice(0, 8)}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).document_type.replace('_', ' ')}</span>
+                      {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).case_id}
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).case_id.slice(0, 8)}</span>
                       {/if}
-                      {#if (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.file_type}
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.file_type.toUpperCase()}</span>
+                      {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.file_type}
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.file_type.toUpperCase()}</span>
                       {/if}
                     </div>
                   </div>
                 </div>
                 
                 <div class="flex items-center gap-2">
-                  <Badge class="text-xs {getSimilarityColor((result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).similarity_score)}">
-                    {getSimilarityLabel((result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).similarity_score)}
+                  <Badge class="text-xs {getSimilarityColor((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).similarity_score)}">
+                    {getSimilarityLabel((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).similarity_score)}
                   </Badge>
                   <span class="text-xs font-mono text-nier-text-muted">
-                    {((result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).similarity_score * 100).toFixed(1)}%
+                    {((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).similarity_score * 100).toFixed(1)}%
                   </span>
                 </div>
               </div>
               
               <p class="text-sm text-nier-text-secondary leading-relaxed mb-3">
-                {(result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).content_preview}
+                {(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).content_preview}
               </p>
               
-              {#if (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).highlights && (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).highlights.length > 0}
+              {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).highlights && (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).highlights.length > 0}
                 <div class="mb-3">
                   <h4 class="text-xs font-medium text-nier-text-muted mb-2">Key Highlights:</h4>
                   <div class="flex flex-wrap gap-1">
-                    {#each (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).highlights.slice(0, 3) as highlight}
+                    {#each (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).highlights.slice(0, 3) as highlight}
                       <span class="text-xs px-2 py-1 bg-nier-accent-warm/10 text-nier-accent-warm rounded">
                         {highlight}
                       </span>
@@ -375,16 +375,16 @@ Retry Search
               
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4 text-xs text-nier-text-muted">
-                  {#if (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.upload_date}
+                  {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.upload_date}
                     <div class="flex items-center gap-1">
                       <Clock class="w-3 h-3" />
-                      {new Date((result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.upload_date).toLocaleDateString()}
+                      {new Date((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.upload_date).toLocaleDateString()}
                     </div>
                   {/if}
-                  {#if (result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.confidence}
+                  {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.confidence}
                     <div class="flex items-center gap-1">
                       <CheckCircle class="w-3 h-3" />
-                      {((result as { title?: any; document_id?: any; document_type?: any; case_id?: any; metadata?: any; similarity_score?: any; content_preview?: any; highlights?: any }).metadata.confidence * 100).toFixed(1)}% confidence
+                      {((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.confidence * 100).toFixed(1)}% confidence
                     </div>
                   {/if}
                 </div>
@@ -421,7 +421,7 @@ Retry Search
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         {#each searchSuggestions as suggestion}
           <button
-            on:click={() => setSuggestionQuery(suggestion)}
+            onclick={() => setSuggestionQuery(suggestion)}
             class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10 
                    rounded-lg transition-colors border border-transparent hover:border-nier-accent-warm/20"
             disabled={loading}

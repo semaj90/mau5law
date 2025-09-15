@@ -262,11 +262,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     class={inputClasses()}
     aria-label={ariaLabel}
     aria-describedby={ariaDescribedby}
-    on:focus={handleFocus}
-    on:blur={oninput}
-    on:change={handleChange}
-    on:mouseenter={handleMouseEnter}
-    on:mouseleave={handleMouseLeave}
+    onfocus={handleFocus}
+    onblur={oninput}
+    onchange={handleChange}
+    onmouseenter={handleMouseEnter}
+    onmouseleave={handleMouseLeave}
   />
   
   <!-- N64 Visual Enhancement Layers -->

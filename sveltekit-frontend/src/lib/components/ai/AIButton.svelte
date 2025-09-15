@@ -35,6 +35,7 @@ https://svelte.dev/e/js_parse_error -->
   	import { quintOut } from 'svelte/easing';
   	// State management
   let mounted = $state(false);
+  let buttonElement: HTMLButtonElement | null = null;
   let showTooltip = $state(false);
   let buttonElement = $state<HTMLButtonElement// Size configurations
   	const sizeClasses | null>(null)({
@@ -132,12 +133,12 @@ https://svelte.dev/e/js_parse_error -->
 				{loading ? 'animate-pulse' : ''}
 			"
 			{disabled}
-			on:click={handleClick}
+			onclick={(event: MouseEvent) => handleClick}
 			keydown={handleKeydown}
-			on:mouseenter={showTooltipHandler}
-			on:mouseleave={hideTooltipHandler}
-			on:focus={showTooltipHandler}
-			on:blur={hideTooltipHandler}
+			onmouseenter={showTooltipHandler}
+			onmouseleave={hideTooltipHandler}
+			onfocus={showTooltipHandler}
+			onblur={hideTooltipHandler}
 			aria-label={tooltip}
 			in:fly={{ y: 100, duration: 500, easing: quintOut }}
 		>

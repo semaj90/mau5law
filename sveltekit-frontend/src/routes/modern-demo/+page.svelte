@@ -78,7 +78,7 @@
       <ModernButton
         variant="danger"
         size="lg"
-  on:click={() => handleLoadingDemo()}
+  onclick={() => handleLoadingDemo()}
         tooltip="Danger action with loading demo"
       >
         {#snippet children()}Danger Large{/snippet}
@@ -105,7 +105,7 @@
         variant="default"
         hoverable
         clickable
-  on:click={handleCardClick}
+  onclick={handleCardClick}
         tooltip="This is a clickable card with hover effects"
       >
         {#snippet children()}
@@ -179,7 +179,7 @@
             <p>Transparent background that appears on hover</p>
             <ModernButton
               variant="primary"
-              on:click={() => dialogOpen = true}
+              onclick={() => dialogOpen = true}
             >
               Open Dialog
             </ModernButton>
@@ -209,10 +209,10 @@
     {/snippet}
     {#snippet footer()}
       <div class="dialog-footer">
-  <ModernButton variant="ghost" on:click={() => dialogOpen = false}>
+  <ModernButton variant="ghost" onclick={() => dialogOpen = false}>
           Cancel
         </ModernButton>
-  <ModernButton variant="primary" on:click={() => dialogOpen = false}>
+  <ModernButton variant="primary" onclick={() => dialogOpen = false}>
           Confirm
         </ModernButton>
       </div>

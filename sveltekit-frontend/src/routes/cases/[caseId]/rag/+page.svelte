@@ -28,7 +28,7 @@
 
   // Transform case documents to legal evidence format
   let evidenceItems = $derived<LegalEvidenceItem[]>(
-    (data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).documents.map(doc => ({
+    (data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).documents.map(doc => ({
       id: doc.id,
       title: doc.title,
       type: doc.type as LegalEvidenceItem['type'],
@@ -46,8 +46,8 @@
     ragResponse = null;
     return ({ result }) => {
       isLoading = false;
-      if ((result as { type?: any; data?: any }).type === 'success' && (result as { type?: any; data?: any }).data?.response) {
-        ragResponse = (result as { type?: any; data?: any }).(data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).response;
+      if ((result as { type?: unknown; data?: unknown }).type === 'success' && (result as { type?: unknown; data?: unknown }).data?.response) {
+        ragResponse = (result as { type?: unknown; data?: unknown }).(data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).response;
         queryText = ''; // Clear input after successful query
       }
     };
@@ -65,17 +65,17 @@
 </script>
 
 <svelte:head>
-  <title>RAG Analysis - {(data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).caseData.title}</title>
+  <title>RAG Analysis - {(data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).caseData.title}</title>
 </svelte:head>
 
 <div class="container mx-auto p-6 space-y-6">
   <!-- Case Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-primary mb-2">
-      RAG Analysis: {(data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).caseData.title}
+      RAG Analysis: {(data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).caseData.title}
     </h1>
     <p class="nes-text is-disabled">
-      Status: <span class="font-medium">{(data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).caseData.status}</span>
+      Status: <span class="font-medium">{(data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).caseData.status}</span>
     </p>
   </div>
 
@@ -172,7 +172,7 @@
         </div>
         <button class="nes-btn"
           variant="outline"
-          on:click={() => showDocuments = !showDocuments}
+          onclick={() => showDocuments = !showDocuments}
         >
           {showDocuments ? 'Hide' : 'Show'} Documents
         </button>
@@ -207,7 +207,7 @@
   </OrchestratedCard.Evidence>
 
   <!-- RAG History -->
-  {#if (data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).ragHistory?.length > 0}
+  {#if (data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).ragHistory?.length > 0}
     <div class="nes-container">
       <div.Header class="nes-container">
         <div.Title class="nes-container">Recent Analysis History</div.Title>
@@ -215,7 +215,7 @@
       </div.Header>
       <div.Content class="nes-container">
         <div class="space-y-3">
-          {#each (data as { documents?: any; caseData?: any; processed?: any; ragHistory?: any }).ragHistory.slice(0, 5) as history}
+          {#each (data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).ragHistory.slice(0, 5) as history}
             <div class="p-3 border rounded-lg">
               <div class="font-medium text-sm mb-1">{history.query}</div>
               <div class="text-xs nes-text is-disabled">

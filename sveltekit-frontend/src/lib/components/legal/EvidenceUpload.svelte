@@ -250,17 +250,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       method: 'POST',
       body: formData
     });
-    if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-      throw new Error(`Upload failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+    if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
+      throw new Error(`Upload failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
     }
-    return await (response as { ok?: any; statusText?: any; json?: any }).json();
+    return await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
   }
 
   // Extract metadata from file
   async function extractMetadata(evidenceFile: EvidenceFile): Promise<any> {
     // Simulate metadata extraction
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const extractedMetadata: any = {
+    const extractedMetadata: unknown = {
       extractedText: '',
       tags: []
     };
@@ -310,13 +310,13 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         })
       });
 
-      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-      if ((result as { success?: any; data?: any; metadata?: any; processingTime?: any }).success && (result as { success?: any; data?: any; metadata?: any; processingTime?: any }).(data as { extractedText?: any; tags?: any; confidence?: any; aiAnalysis?: any }).result) {
+      const result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
+      if ((result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).success && (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).(data as { extractedText?: unknown; tags?: unknown; confidence?: unknown; aiAnalysis?: unknown }).result) {
         return {
-          aiAnalysis: `GPU-accelerated analysis completed with ${(result as { success?: any; data?: any; metadata?: any; processingTime?: any }).(data as { extractedText?: any; tags?: any; confidence?: any; aiAnalysis?: any }).(result as { success?: any; data?: any; metadata?: any; processingTime?: any }).metadata?.confidence || 85}% confidence`,
-          confidence: (result as { success?: any; data?: any; metadata?: any; processingTime?: any }).(data as { extractedText?: any; tags?: any; confidence?: any; aiAnalysis?: any }).(result as { success?: any; data?: any; metadata?: any; processingTime?: any }).metadata?.confidence || 0.85,
+          aiAnalysis: `GPU-accelerated analysis completed with ${(result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).(data as { extractedText?: unknown; tags?: unknown; confidence?: unknown; aiAnalysis?: unknown }).(result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).metadata?.confidence || 85}% confidence`,
+          confidence: (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).(data as { extractedText?: unknown; tags?: unknown; confidence?: unknown; aiAnalysis?: unknown }).(result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).metadata?.confidence || 0.85,
           tags: [...(evidenceFile.metadata?.tags || []), 'gpu-analyzed', 'ai-processed'],
-          processingTime: (result as { success?: any; data?: any; metadata?: any; processingTime?: any }).(data as { extractedText?: any; tags?: any; confidence?: any; aiAnalysis?: any }).(result as { success?: any; data?: any; metadata?: any; processingTime?: any }).processingTime
+          processingTime: (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).(data as { extractedText?: unknown; tags?: unknown; confidence?: unknown; aiAnalysis?: unknown }).(result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).processingTime
         };
       }
       throw new Error('Analysis failed');
@@ -385,10 +385,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     role="button"
     tabindex="0"
     aria-label="Evidence upload area"
-    on:dragenter={handleDragEnter}
-    on:dragleave={handleDragLeave}
+    ondragenter={handleDragEnter}
+    ondragleave={handleDragLeave}
     on:dragover|preventDefault
-    on:drop={onkeydown}
+    ondrop={onkeydown}
     }}
   >
     <div class="upload-content">
@@ -427,11 +427,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         type="file"
         multiple
         accept={acceptedTypes.join(',')}
-        on:change={handleFileSelect}
+        onchange={handleFileSelect}
         style="display: none"
       />
       
-      <button class="browse-button" on:click={() => document.getElementById('file-input')?.click()}>
+      <button class="browse-button" onclick={() => document.getElementById('file-input')?.click()}>
         📁 Browse Files
       </button>
     </div>
@@ -443,7 +443,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       <div class="stats-header">
         <h4>📊 Processing Statistics</h4>
         {#if files.length > 1}
-          <button class="clear-button" on:click={clearAll}>
+          <button class="clear-button" onclick={clearAll}>
             🗑️ Clear All
           </button>
         {/if}
@@ -495,7 +495,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
                   {/if}
                 </div>
               </div>
-              <button class="remove-button" on:click={() => removeFile(file.id)}>
+              <button class="remove-button" onclick={() => removeFile(file.id)}>
                 ❌
               </button>
             </div>
@@ -688,17 +688,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     border-radius: 8px;
   }
 
-  .stat-(item as { completed?: any; processing?: any; failed?: any }).completed {
+  .stat-(item as { completed?: unknown; processing?: unknown; failed?: unknown }).completed {
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.3);
   }
 
-  .stat-(item as { completed?: any; processing?: any; failed?: any }).processing {
+  .stat-(item as { completed?: unknown; processing?: unknown; failed?: unknown }).processing {
     background: rgba(59, 130, 246, 0.2);
     border: 1px solid rgba(59, 130, 246, 0.3);
   }
 
-  .stat-(item as { completed?: any; processing?: any; failed?: any }).failed {
+  .stat-(item as { completed?: unknown; processing?: unknown; failed?: unknown }).failed {
     background: rgba(239, 68, 68, 0.2);
     border: 1px solid rgba(239, 68, 68, 0.3);
   }

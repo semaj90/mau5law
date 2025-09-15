@@ -10,7 +10,7 @@ https://svelte.dev/e/attribute_duplicate -->
    */
   import { onMount } from 'svelte';
   import { writable, derived } from 'svelte/store';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/input/Input.svelte';
   // Badge replaced with span - not available in enhanced-bits
   import Progress from '$lib/components/ui/progress/Progress.svelte';
@@ -214,7 +214,7 @@ https://svelte.dev/e/attribute_duplicate -->
     <Alert variant="destructive" class="mb-4">
       <AlertDescription class="flex items-center justify-between">
         <span>{error.message}</span>
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 dismissError(error.id)}>
           ✕
 
@@ -274,7 +274,7 @@ dismissError(error.id)}>
               <button class="nes-btn" 
                 variant={selectedDocumentType === type.value ? 'default' : 'outline'}
                 size="sm"
-                on:click={() => selectedDocumentType = type.value}
+                onclick={() => selectedDocumentType = type.value}
                 disabled={$isProcessing}
                 class="bits-btn justify-start"
               >
@@ -298,7 +298,7 @@ dismissError(error.id)}>
         
         <div class="flex space-x-2">
           <Button
-            on:click={ingestDocument}
+            onclick={ingestDocument}
             disabled={!$canIngest || $isProcessing}
             class="flex-1 bits-btn bits-btn"
           >
@@ -306,7 +306,7 @@ dismissError(error.id)}>
 
           <Button class="bits-btn"
             variant="outline"
-            on:click={addToBatch}
+            onclick={addToBatch}
             disabled={!documentTitle.trim() || !documentContent.trim() || $isProcessing}
           >
 ➕ Add to Batch
@@ -344,7 +344,7 @@ dismissError(error.id)}>
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 removeFromBatch(doc.id)}
                 >
                   ✕
@@ -355,7 +355,7 @@ removeFromBatch(doc.id)}
           
           <div class="space-y-2">
             <Button
-              on:click={processBatch}
+              onclick={processBatch}
               disabled={$isProcessing}
               class="w-full bits-btn bits-btn"
             >
@@ -363,7 +363,7 @@ removeFromBatch(doc.id)}
 
             <Button class="bits-btn"
               variant="outline"
-              on:click={() =>
+              onclick={() =>
 batchDocuments.set([])}
               disabled={$isProcessing}
               size="sm"

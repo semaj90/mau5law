@@ -142,7 +142,7 @@ https://svelte.dev/e/js_parse_error -->
             <th class="select-header">
               <input
                 type="checkbox"
-                checked={selectedRows.size === sortedData.length && sortedData.length > 0} on:change={handleSelectAll}
+                checked={selectedRows.size === sortedData.length && sortedData.length > 0} onchange={handleSelectAll}
                 class="checkbox-input"
               />
             </th>
@@ -152,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
             <th class="header-cell">
               <button
                 class="header-button"
-                on:click={() => handleSort(column.key)}
+                onclick={() => handleSort(column.key)}
                 disabled={!sortable || !column.sortable}
               >
                 <span class="header-text">{column.title}</span>
@@ -206,13 +206,13 @@ https://svelte.dev/e/js_parse_error -->
                 'row-even': index % 2 === 0,
                 'row-clickable': selectable
               })}
-              on:click={() => handleRowSelect(row.id)}
+              onclick={() => handleRowSelect(row.id)}
             >
               {#if selectable && multiSelect}
                 <td class="select-cell">
                   <input
                     type="checkbox"
-                    checked={selectedRows.has(row.id)} on:change={() => handleRowSelect(row.id)}
+                    checked={selectedRows.has(row.id)} onchange={() => handleRowSelect(row.id)}
                     class="checkbox-input"
                   />
                 </td>

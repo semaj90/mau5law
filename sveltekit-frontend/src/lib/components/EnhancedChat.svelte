@@ -4,7 +4,7 @@
   import { onMount, onDestroy, tick } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { createMachine, assign } from 'xstate';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { cn } from '$lib/utils/cn';
   import { chatStore } from '$lib/stores/chat';
   import type { ChatMessage, ChatSession } from '$lib/types/chat';
@@ -23,7 +23,7 @@
 	onMount(() => {
 		// subscribe to the XState store when it's available (it will be assigned later in the file)
 		if (typeof state !== 'undefined' && state?.subscribe) {
-			machineUnsub = state.subscribe((s: any) => {
+			machineUnsub = state.subscribe((s: unknown) => {
 				if (s?.context?.messages?.length) {
 					// wait for DOM updates then scroll
 					tick().then(() => scrollToBottom());
@@ -284,9 +284,9 @@ const { state, send } = useMachine(enhancedChatMachine);
 
 		<div class="flex items-center space-x-2">
 	// Auto-scroll when messages update
-	$: if ($state.context.messages.length > 0) {
+	$effect(() => { if ($state.context.messages.length > 0) ; });{
 		tick().then(() => scrollToBottom());
-	} on:change={(e) => send({ type: 'SET_MODEL', model: e.target.value })}
+	} onchange={(e) => send({ type: 'SET_MODEL', model: e.target.value })}
 				class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 			>
 				{#each models as model}
@@ -304,7 +304,7 @@ const { state, send } = useMachine(enhancedChatMachine);
 			<select
 				id="model-select"
 				value={$state.context.model}
-				on:change={(e) => send({ type: 'SET_MODEL', model: (e.currentTarget as HTMLSelectElement).value })}
+				onchange={(e) => send({ type: 'SET_MODEL', model: (e.currentTarget as HTMLSelectElement).value })}
 				class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 			>
 				</div>
@@ -374,7 +374,7 @@ const { state, send } = useMachine(enhancedChatMachine);
 						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
 						size="sm"
 						variant="outline"
-						on:click={() =>
+						onclick={() =>
 send({ type: 'RETRY' })}
 					>
 						Retry
@@ -383,7 +383,7 @@ send({ type: 'RETRY' })}
 						class="bits-btn text-red-700 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						on:click={() =>
+						onclick={() =>
 send({ type: 'CLEAR_ERROR' })}
 					>
 						Dismiss
@@ -394,7 +394,7 @@ send({ type: 'CLEAR_ERROR' })}
 						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
 						size="sm"
 						variant="outline"
-						on:click={() =>
+						onclick={() =>
 send({ type: 'RETRY' })}
 					>
 						Retry
@@ -403,19 +403,19 @@ send({ type: 'RETRY' })}
 						class="bits-btn text-red-700 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						on:click={() =>
+						onclick={() =>
 send({ type: 'CLEAR_ERROR' })}
 					>
 						Dismiss
 </Button>
 			<div class="flex flex-col justify-end">
 				<Button
-					on:click={handleSend}
+					onclick={handleSend}
 					disabled={!messageInput.trim() || $state.matches('sending')}
 					class={/* JSX syntax converted to Svelte */}
 						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<Button
-					on:click={disabled}
+					onclick={disabled}
 					class={cn(
 						"px-6 py-3 rounded-lg font-medium transition-colors",
 						messageInput.trim() && !$state.matches('sending')

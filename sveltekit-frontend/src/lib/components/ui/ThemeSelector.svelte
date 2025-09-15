@@ -68,7 +68,7 @@
 	type="button"
 	class="btn"
 	aria-pressed={theme === 'light'}
-	on:click={() => setTheme('light')}
+	onclick={() => setTheme('light')}
 	title="Light theme"
   >
 	☀️ Light
@@ -78,7 +78,7 @@
 	type="button"
 	class="btn"
 	aria-pressed={theme === 'dark'}
-	on:click={() => setTheme('dark')}
+	onclick={() => setTheme('dark')}
 	title="Dark theme"
   >
 	🌙 Dark
@@ -88,7 +88,7 @@
 	type="button"
 	class="btn"
 	aria-pressed={theme === 'system'}
-	on:click={() => setTheme('system')}
+	onclick={() => setTheme('system')}
 	title="Use system preference"
   >
 	🖥️ System

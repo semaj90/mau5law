@@ -2,9 +2,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import EmbeddingGemmaChat from "$lib/components/ui/enhanced-bits/EmbeddingGemmaChat.svelte";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import { Code, FileText, BookOpen, Gavel } from "lucide-svelte";
 
@@ -108,7 +106,7 @@
     <div class="flex flex-wrap gap-4 mb-6">
       <Button class="bits-btn"
         variant="outline"
-        on:click={() =>
+        onclick={() =>
 loadSampleDocuments('contracts')}
       >
         {#snippet children()}
@@ -118,7 +116,7 @@ loadSampleDocuments('contracts')}
 
       <Button class="bits-btn"
         variant="outline"
-        on:click={() =>
+        onclick={() =>
 loadSampleDocuments('cases')}
       >
         {#snippet children()}
@@ -128,7 +126,7 @@ loadSampleDocuments('cases')}
 
       <Button class="bits-btn"
         variant="outline"
-        on:click={clearDocuments}
+        onclick={clearDocuments}
         disabled={currentDocuments.length === 0}
       >
 {#snippet children()}

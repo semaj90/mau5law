@@ -27,7 +27,7 @@
     children,
     footer,
     trigger
-  : any } = $props();
+  : unknown } = $props();
 
   const sizeClasses = {
     sm: "max-w-sm",
@@ -57,7 +57,7 @@
 </script>
 
 <!-- keyboard handling on window for accessibility -->
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <!-- optional trigger -->
 {@render trigger?.()}
@@ -67,8 +67,8 @@
   <div
     class="fixed inset-0 z-40 flex items-center justify-center bg-black/50"
     transitifade={{ duration: 200, easing: quadOut }}
-    on:click={handleOutsideClick}
-    on:keydown={(e) => e.key === 'Escape' ? handleOutsideClick(e) : null}
+    onclick={handleOutsideClick}
+    onkeydown={(e) => e.key === 'Escape' ? handleOutsideClick(e) : null}
     role="presentation"
     aria-hidden="true"
   >
@@ -84,8 +84,8 @@
       aria-labelledby={title ? "dialog-title" : undefined}
       aria-describedby={description ? "dialog-description" : undefined}
       tabindex={0}
-      on:click={(e) => e.stopPropagation()}
-      on:keydown={(e) => e.key === 'Escape' ? close() : null}
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.key === 'Escape' ? close() : null}
     >
     >
       <!-- header -->
@@ -107,7 +107,7 @@
           <button
             type="button"
             class="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-            on:click={close}
+            onclick={close}
             aria-label="Close dialog"
           >
             <X size="20" />

@@ -4,9 +4,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import type { Evidence } from '$lib/types';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     evidenceActions,
     evidenceGrid,
@@ -101,12 +99,12 @@ https://svelte.dev/e/attribute_duplicate -->
       evidenceActions.setSorting(field, "desc");
   }}
   function toggleSelection(item: Evidence) {
-    evidenceActions.toggleSelection((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id);
+    evidenceActions.toggleSelection((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id);
   }
   function selectAll() {
     filteredData.forEach((item) => {
-      if (!selectedItems.has((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)) {
-        evidenceActions.toggleSelection((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id);
+      if (!selectedItems.has((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id)) {
+        evidenceActions.toggleSelection((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id);
   }
     });
   }
@@ -144,18 +142,18 @@ https://svelte.dev/e/attribute_duplicate -->
     }).format(dateObj);
   }
   async function downloadEvidence(item: Evidence) {
-    if (!(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileUrl) return;
+    if (!(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileUrl) return;
 
     try {
-      const response = await fetch((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileUrl);
-      const blob = await (response as { blob?: any }).blob();
+      const response = await fetch((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileUrl);
+      const blob = await (response as { blob?: unknown }).blob();
 
       // Native browser download without file-saver library
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
-      a.download = (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileName || (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).title || 'evidence-file';
+      a.download = (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileName || (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).title || 'evidence-file';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -165,9 +163,9 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   }
   async function deleteEvidence(item: Evidence) {
-    if (confirm(`Are you sure you want to delete "${(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).title}"?`)) {
+    if (confirm(`Are you sure you want to delete "${(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).title}"?`)) {
       try {
-        await evidenceActions.deleteEvidence((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id);
+        await evidenceActions.deleteEvidence((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id);
       } catch (error) {
         console.error("Delete failed:", error);
         alert("Failed to delete evidence. Please try again.");
@@ -181,7 +179,7 @@ https://svelte.dev/e/attribute_duplicate -->
     event.preventDefault();
     selectedItem = item;
     // For now, just select the item - can be enhanced later with actual context menu
-    if (!selectedItems.has((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)) {
+    if (!selectedItems.has((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id)) {
       toggleSelection(item);
   }}
   // Context menu actions
@@ -227,7 +225,7 @@ https://svelte.dev/e/attribute_duplicate -->
             type="text"
             placeholder="Search evidence..."
             value={searchQuery}
-            on:input={handleSearch}
+            oninput={handleSearch}
             class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
@@ -237,7 +235,7 @@ https://svelte.dev/e/attribute_duplicate -->
         <!-- Sort dropdown -->
         <select
           value={sortBy}
-          on:change={(e) => {
+          onchange={(e) => {
             const value = (e.target as HTMLSelectElement)?.value;
             if (value === 'title' || value === 'evidenceType' || value === 'fileSize' || value === 'uploadedAt') {
               toggleSort(value);
@@ -256,7 +254,7 @@ https://svelte.dev/e/attribute_duplicate -->
           class="bits-btn flex items-center gap-2"
           variant="secondary"
           size="sm"
-          on:click={() =>
+          onclick={() =>
 toggleSort(sortBy)}
         >
           {#if sortOrder === "asc"}
@@ -270,7 +268,7 @@ toggleSort(sortBy)}
         <Button class="bits-btn"
           variant="secondary"
           size="sm"
-          on:click={() =>
+          onclick={() =>
 toggleViewMode()}
           class="flex items-center gap-2"
         >
@@ -293,7 +291,7 @@ toggleViewMode()}
           <Button class="bits-btn"
             variant="secondary"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 clearSelection()}
           >
             Clear
@@ -324,7 +322,7 @@ clearSelection()}
       <Button class="bits-btn"
         variant="secondary"
         size="sm"
-        on:click={() =>
+        onclick={() =>
 evidenceActions.loadEvidence(caseId)}
       >
         Try Again
@@ -350,26 +348,26 @@ evidenceActions.loadEvidence(caseId)}
           class="grid gap-4"
           style="grid-template-columns: repeat({columns}, minmax(0, 1fr))"
         >
-          {#each filteredData as item ((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)}
+          {#each filteredData as item ((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id)}
             <div
-              class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer {selectedItems.has((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id) ? 'ring-2 ring-blue-500' : ''}"
+              class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer {selectedItems.has((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id) ? 'ring-2 ring-blue-500' : ''}"
               role="button" tabindex="0"
-                on:click={() => toggleSelection(item)}
+                onclick={() => toggleSelection(item)}
               oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
             >
               <!-- Preview/Thumbnail -->
               <div
                 class="space-y-4"
               >
-                {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileUrl && isImageFile((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).mimeType || "")}
+                {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileUrl && isImageFile((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).mimeType || "")}
                   <img
-                    src={(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileUrl}
-                    alt={(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).title}
+                    src={(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileUrl}
+                    alt={(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).title}
                     class="space-y-4"
                     loading="lazy"
                   />
                 {:else}
-                  {@const SvelteComponent = getFileIcon((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).evidenceType, (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).mimeType)}
+                  {@const SvelteComponent = getFileIcon((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).evidenceType, (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).mimeType)}
                   <SvelteComponent
                     class="space-y-4"
                   />
@@ -379,8 +377,8 @@ evidenceActions.loadEvidence(caseId)}
                 <div class="space-y-4">
                   <input
                     type="checkbox"
-                    checked={selectedItems.has((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)}
-                    on:change={() => toggleSelection(item)}
+                    checked={selectedItems.has((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id)}
+                    onchange={() => toggleSelection(item)}
                     class="space-y-4"
                   />
                 </div>
@@ -390,7 +388,7 @@ evidenceActions.loadEvidence(caseId)}
                   <span
                     class="space-y-4"
                   >
-                    {getFileCategory((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).mimeType || (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).evidenceType)}
+                    {getFileCategory((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).mimeType || (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).evidenceType)}
                   </span>
                 </div>
               </div>
@@ -398,38 +396,38 @@ evidenceActions.loadEvidence(caseId)}
               <!-- Content -->
               <div class="space-y-4">
                 <h3 class="space-y-4">
-                  {(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).title}
+                  {(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).title}
                 </h3>
 
-                {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).description}
+                {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).description}
                   <p class="space-y-4">
-                    {(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).description}
+                    {(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).description}
                   </p>
                 {/if}
 
                 <!-- Metadata -->
                 <div class="space-y-4">
                   <div class="space-y-4">
-                    <span>{formatDate((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).uploadedAt)}</span>
-                    {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileSize}
-                      <span>{formatFileSize((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileSize)}</span>
+                    <span>{formatDate((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).uploadedAt)}</span>
+                    {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileSize}
+                      <span>{formatFileSize((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileSize)}</span>
                     {/if}
                   </div>
 
-                  {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags && (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length > 0}
+                  {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags && (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags.length > 0}
                     <div class="space-y-4">
-                      {#each (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.slice(0, 3) as tag}
+                      {#each (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags.slice(0, 3) as tag}
                         <span
                           class="space-y-4"
                         >
                           {tag}
                         </span>
                       {/each}
-                      {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length > 3}
+                      {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags.length > 3}
                         <span
                           class="space-y-4"
                         >
-                          +{(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length - 3}
+                          +{(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags.length - 3}
                         </span>
                       {/if}
                     </div>
@@ -442,18 +440,18 @@ evidenceActions.loadEvidence(caseId)}
       {:else}
         <!-- List view -->
         <div class="space-y-4">
-          {#each filteredData as item ((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)}
-            {@const SvelteComponent_1 = getFileIcon((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).evidenceType, (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).mimeType)}
+          {#each filteredData as item ((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id)}
+            {@const SvelteComponent_1 = getFileIcon((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).evidenceType, (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).mimeType)}
             <div
               class="space-y-4"
               role="button" tabindex="0"
-                on:click={() => toggleSelection(item)}
+                onclick={() => toggleSelection(item)}
               oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
             >
               <!-- Selection checkbox -->
               <input
                 type="checkbox"
-                checked={selectedItems.has((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).id)} on:change={() => toggleSelection(item)}
+                checked={selectedItems.has((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id)} onchange={() => toggleSelection(item)}
                 class="space-y-4"
               />
 
@@ -469,42 +467,42 @@ evidenceActions.loadEvidence(caseId)}
                 <div class="space-y-4">
                   <div class="space-y-4">
                     <h3 class="space-y-4">
-                      {(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).title}
+                      {(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).title}
                     </h3>
-                    {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).description}
+                    {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).description}
                       <p class="space-y-4">
-                        {(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).description}
+                        {(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).description}
                       </p>
                     {/if}
                   </div>
 
                   <div class="space-y-4">
                     <p class="space-y-4">
-                      {formatDate((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).uploadedAt)}
+                      {formatDate((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).uploadedAt)}
                     </p>
-                    {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileSize}
+                    {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileSize}
                       <p class="space-y-4">
-                        {formatFileSize((item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).fileSize)}
+                        {formatFileSize((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileSize)}
                       </p>
                     {/if}
                   </div>
                 </div>
 
                 <!-- Tags -->
-                {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags && (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length > 0}
+                {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags && (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags.length > 0}
                   <div class="space-y-4">
-                    {#each (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.slice(0, 5) as tag}
+                    {#each (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags.slice(0, 5) as tag}
                       <span
                         class="space-y-4"
                       >
                         {tag}
                       </span>
                     {/each}
-                    {#if (item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length > 5}
+                    {#if (item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags.length > 5}
                       <span
                         class="space-y-4"
                       >
-                        +{(item as { id?: any; fileUrl?: any; fileName?: any; title?: any; mimeType?: any; evidenceType?: any; description?: any; uploadedAt?: any; fileSize?: any; tags?: any }).tags.length - 5}
+                        +{(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).tags.length - 5}
                       </span>
                     {/if}
                   </div>

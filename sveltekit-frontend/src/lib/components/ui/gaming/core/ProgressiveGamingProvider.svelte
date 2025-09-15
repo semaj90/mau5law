@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
     // Debug
     showDebugInfo?: boolean;
     // Content
-    children?: any;
+    children?: unknown;
     class?: string;
   }
 
@@ -245,9 +245,9 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
       <div class="debug-controls">
-        <button on:click={() => setEra('8bit')}>8-Bit</button>
-        <button on:click={() => setEra('16bit')}>16-Bit</button>
-        <button on:click={() => setEra('n64')}>N64</button>
+        <button onclick={() => setEra('8bit')}>8-Bit</button>
+        <button onclick={() => setEra('16bit')}>16-Bit</button>
+        <button onclick={() => setEra('n64')}>N64</button>
       </div>
     </div>
   {/if}

@@ -171,30 +171,30 @@ https://svelte.dev/e/js_parse_error -->
     <div class="control-group">
       <button 
         class="btn nes-btn is-primary" 
-        on:click={processBatch}
+        onclick={processBatch}
         disabled={documents.length === 0}
       >
         🚀 Start Batch Processing
       </button>
       
       {#if isProcessing}
-        <button class="btn btn-warning" on:click={pauseProcessing}>
+        <button class="btn btn-warning" onclick={pauseProcessing}>
           ⏸️ Pause
         </button>
       {/if}
       
       {#if isPaused}
-        <button class="btn btn-success" on:click={resumeProcessing}>
+        <button class="btn btn-success" onclick={resumeProcessing}>
           ▶️ Resume
         </button>
       {/if}
       
-      <button class="btn btn-danger" on:click={clearQueue}>
+      <button class="btn btn-danger" onclick={clearQueue}>
         🗑️ Clear Queue
       </button>
       
       {#if errorDocuments.length > 0}
-        <button class="btn btn-info" on:click={retryFailed}>
+        <button class="btn btn-info" onclick={retryFailed}>
           🔄 Retry Failed ({errorDocuments.length})
         </button>
       {/if}
@@ -238,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
     <button 
       class="btn nes-btn is-primary" 
-      on:click={addDocument}
+      onclick={addDocument}
       disabled={!newDocumentContent.trim()}
     >
       ➕ Add to Queue
@@ -249,25 +249,25 @@ https://svelte.dev/e/js_parse_error -->
   <div class="tabs">
     <button 
       class="tab {selectedTab === 'queue' ? 'active' : ''}"
-      on:click={() => selectedTab = 'queue'}
+      onclick={() => selectedTab = 'queue'}
     >
       📋 Queue ({processingQueue.length})
     </button>
     <button 
       class="tab {selectedTab === 'active' ? 'active' : ''}"
-      on:click={() => selectedTab = 'active'}
+      onclick={() => selectedTab = 'active'}
     >
       ⚙️ Processing ({activeProcessing.size})
     </button>
     <button 
       class="tab {selectedTab === 'completed' ? 'active' : ''}"
-      on:click={() => selectedTab = 'completed'}
+      onclick={() => selectedTab = 'completed'}
     >
       ✅ Completed ({completedDocuments.length})
     </button>
     <button 
       class="tab {selectedTab === 'errors' ? 'active' : ''}"
-      on:click={() => selectedTab = 'errors'}
+      onclick={() => selectedTab = 'errors'}
     >
       ❌ Errors ({errorDocuments.length})
     </button>
@@ -326,21 +326,21 @@ https://svelte.dev/e/js_parse_error -->
 
     {#if selectedTab === 'completed'}
       <div class="document-list">
-        {#each completedDocuments as result ((result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).documentId)}
+        {#each completedDocuments as result ((result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).documentId)}
           <div class="document-item completed" in:fade={{ duration: 300 }}>
             <div class="document-info">
               <h4>Document Completed</h4>
               <div class="result-summary">
-                ✅ Processed in {(result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).processingTime}ms
-                {#if (result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).result?.extractedText}
-                  <br/>📄 Extracted {(result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).(result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).extractedText.length} characters
+                ✅ Processed in {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).processingTime}ms
+                {#if (result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result?.extractedText}
+                  <br/>📄 Extracted {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).extractedText.length} characters
                 {/if}
-                {#if (result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).result?.embeddings}
-                  <br/>🔢 Generated {(result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).(result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).embeddings.length} embeddings
+                {#if (result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result?.embeddings}
+                  <br/>🔢 Generated {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).embeddings.length} embeddings
                 {/if}
               </div>
               <div class="timestamp">
-                Completed: {(result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).timestamp.toLocaleString()}
+                Completed: {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).timestamp.toLocaleString()}
               </div>
             </div>
             <div class="document-status">
@@ -358,13 +358,13 @@ https://svelte.dev/e/js_parse_error -->
 
     {#if selectedTab === 'errors'}
       <div class="document-list">
-        {#each errorDocuments as result ((result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).documentId)}
+        {#each errorDocuments as result ((result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).documentId)}
           <div class="document-item error" in:fade={{ duration: 300 }}>
             <div class="document-info">
               <h4>Processing Failed</h4>
-              <p class="error-message">❌ {(result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).error}</p>
+              <p class="error-message">❌ {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).error}</p>
               <div class="timestamp">
-                Failed: {(result as { documentId?: any; processingTime?: any; result?: any; timestamp?: any; error?: any }).timestamp.toLocaleString()}
+                Failed: {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).timestamp.toLocaleString()}
               </div>
             </div>
             <div class="document-status">
@@ -595,17 +595,17 @@ https://svelte.dev/e/js_parse_error -->
     transform: translateY(-1px);
   }
 
-  .document-(item as { processing?: any; completed?: any; error?: any }).processing {
+  .document-(item as { processing?: unknown; completed?: unknown; error?: unknown }).processing {
     border-color: #ffc107;
     background: #fffbf0;
   }
 
-  .document-(item as { processing?: any; completed?: any; error?: any }).completed {
+  .document-(item as { processing?: unknown; completed?: unknown; error?: unknown }).completed {
     border-color: #28a745;
     background: #f8fff9;
   }
 
-  .document-(item as { processing?: any; completed?: any; error?: any }).error {
+  .document-(item as { processing?: unknown; completed?: unknown; error?: unknown }).error {
     border-color: #dc3545;
     background: #fff5f5;
   }

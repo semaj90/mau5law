@@ -1,7 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open
-https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
+<!-- SSR-optimized Dialog component for Legal AI Platform -->
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   interface Props {
     class?: string;
@@ -99,16 +98,22 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   }
 
 
+<!-- SSR-safe Dialog rendering with proper hydration -->
 <BitsDialog.Root {open} openchange={handleOpenChange}>
   {@render children?.()}
 
-  <!-- Portal rendering for dialog content -->
+  <!-- Portal rendering for dialog content with SSR compatibility -->
   <BitsDialog.Portal>
     <BitsDialog.Overlay
       class={overlayClasses}
+      data-ssr-dialog-overlay="true"
     />
     <BitsDialog.Content
       class={dialogContentClasses}
+      data-ssr-dialog-content="true"
+      role="dialog"
+      aria-modal="true"
+      tabindex="-1"
     >
       {@render content?.()}
     </BitsDialog.Content>
@@ -204,6 +209,57 @@ box-shadow: {}
 0 10px 10px -5px rgba(0, 0, 0, 0.04), {}
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
+/* SSR-specific optimizations for dialog rendering */
+  :global([data-ssr-dialog-overlay]) {
+    /* Ensure overlay renders properly during SSR */
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+
+    /* Prevent layout shift during hydration */
+    contain: layout style;
+    will-change: opacity;
+  }
+
+  :global([data-ssr-dialog-content]) {
+    /* Optimize dialog content for SSR */
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 51;
+
+    /* Ensure consistent sizing across different screen sizes */
+    width: 90vw;
+    max-width: 512px;
+    max-height: 85vh;
+
+    /* Background and styling */
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* Prevent content overflow */
+    overflow-y: auto;
+    padding: 1.5rem;
+
+    /* Focus management */
+    outline: none;
+  }
+
+  /* Responsive adjustments for dialog content */
+  @media (max-width: 640px) {
+    :global([data-ssr-dialog-content]) {
+      width: 95vw;
+      max-height: 90vh;
+      margin: 0;
+      border-radius: 0.25rem;
+    }
+  }
+
 /* Enhanced focus and accessibility */ {}
   :global(.bits-dialog-content:focus) {
     outline: 2px solid var(--color-nier-border-primary);

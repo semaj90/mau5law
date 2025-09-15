@@ -49,8 +49,8 @@ https://svelte.dev/e/js_parse_error -->
         bind:this={canvasComponent}
         {caseId}
         {readOnly}
-        on:nodeselect={handleNodeSelect}
-        on:nodesave={handleNodeSave}
+        onnodeselect={handleNodeSelect}
+        onnodesave={handleNodeSave}
       />
     </div>
     
@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
       <InspectorPanel 
         selectedNode={currentSelectedNode}
         {readOnly}
-        on:save={handleNodeSave}
+        onsave={handleNodeSave}
       />
     </div>
     
@@ -67,7 +67,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="space-y-4">
       <AIAssistantPanel 
         selectedNode={currentSelectedNode}
-        on:tagsupdate={(e) => {
+        ontagsupdate={(e) => {
           if (currentSelectedNode) {
             currentSelectedNode.aiTags = e.detail;
             selectedNode.update(n => ({ ...n, aiTags: e.detail }));

@@ -22,14 +22,14 @@ https://svelte.dev/e/js_parse_error -->
           }
         })
       });
-      if (!(response as { ok?: any; status?: any; text?: any; json?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; status?: any; text?: any; json?: any }).status}: ${await (response as { ok?: any; status?: any; text?: any; json?: any }).text()}`);
+      if (!(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).status}: ${await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).text()}`);
       }
-      const data = await (response as { ok?: any; status?: any; text?: any; json?: any }).json();
-      if (!(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).success) {
-        throw new Error((data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).error || 'Query failed');
+      const data = await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).json();
+      if (!(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).success) {
+        throw new Error((data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).error || 'Query failed');
       }
-      return `AI response generated (confidence: ${((data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).confidence * 100).toFixed(1)}%)`;
+      return `AI response generated (confidence: ${((data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).confidence * 100).toFixed(1)}%)`;
     });
     // Test 2: Evidence Analysis
     await runTest('Evidence Analysis', async () => {
@@ -43,12 +43,12 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
       // This might fail if evidence doesn't exist, but we can test the API structure
-      const data = await (response as { ok?: any; status?: any; text?: any; json?: any }).json();
-      if ((response as { ok?: any; status?: any; text?: any; json?: any }).status === 404) {
+      const data = await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).json();
+      if ((response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).status === 404) {
         return 'Evidence analysis API working (test evidence not found - expected)';
       }
-      if (!(response as { ok?: any; status?: any; text?: any; json?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; status?: any; text?: any; json?: any }).status}: ${(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).error || 'Unknown error'}`);
+      if (!(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).status}: ${(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).error || 'Unknown error'}`);
       }
       return `Evidence analyzed successfully`;
     });
@@ -63,25 +63,25 @@ https://svelte.dev/e/js_parse_error -->
           threshold: 0.6
         })
       });
-      if (!(response as { ok?: any; status?: any; text?: any; json?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; status?: any; text?: any; json?: any }).status}: ${await (response as { ok?: any; status?: any; text?: any; json?: any }).text()}`);
+      if (!(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).status}: ${await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).text()}`);
       }
-      const data = await (response as { ok?: any; status?: any; text?: any; json?: any }).json();
-      if (!(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).success) {
-        throw new Error((data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).error || 'Search failed');
+      const data = await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).json();
+      if (!(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).success) {
+        throw new Error((data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).error || 'Search failed');
       }
-      return `Vector search completed: ${(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).results.length} results found`;
+      return `Vector search completed: ${(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).results.length} results found`;
     });
     // Test 4: Ollama Health Check
     await runTest('Ollama Service Health', async () => {
       const response = await fetch('http://localhost:11434/api/tags');
-      if (!(response as { ok?: any; status?: any; text?: any; json?: any }).ok) {
+      if (!(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).ok) {
         throw new Error('Ollama service not accessible');
       }
-      const data = await (response as { ok?: any; status?: any; text?: any; json?: any }).json();
-      const models = (data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).models || [];
-  const hasGemma = models.some((m: any) => m.name.includes('gemma3-legal'));
-  const hasEmbedding = models.some((m: any) => m.name.includes('nomic-embed-text'));
+      const data = await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).json();
+      const models = (data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).models || [];
+  const hasGemma = models.some((m: unknown) => m.name.includes('gemma3-legal'));
+  const hasEmbedding = models.some((m: unknown) => m.name.includes('nomic-embed-text'));
       if (!hasGemma || !hasEmbedding) {
         throw new Error(`Missing models - gemma3-legal: ${hasGemma}, nomic-embed-text: ${hasEmbedding}`);
       }
@@ -90,26 +90,26 @@ https://svelte.dev/e/js_parse_error -->
     // Test 5: Database Connectivity
     await runTest('Database Connectivity', async () => {
       const response = await fetch('/api/health/database');
-      if ((response as { ok?: any; status?: any; text?: any; json?: any }).status === 404) {
+      if ((response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).status === 404) {
         return 'Database health endpoint not implemented (this is expected)';
       }
-      if (!(response as { ok?: any; status?: any; text?: any; json?: any }).ok) {
+      if (!(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).ok) {
         throw new Error('Database connectivity check failed');
       }
-      const data = await (response as { ok?: any; status?: any; text?: any; json?: any }).json();
-      return `Database connected: ${(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).status}`;
+      const data = await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).json();
+      return `Database connected: ${(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).status}`;
     });
     // Test 6: Query Suggestions
     await runTest('Query Suggestions', async () => {
       const response = await fetch('/api/ai/query?q=money laundering analysis');
-      if (!(response as { ok?: any; status?: any; text?: any; json?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; status?: any; text?: any; json?: any }).status}: ${await (response as { ok?: any; status?: any; text?: any; json?: any }).text()}`);
+      if (!(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).status}: ${await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).text()}`);
       }
-      const data = await (response as { ok?: any; status?: any; text?: any; json?: any }).json();
-      if (!(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).success) {
-        throw new Error((data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).error || 'Suggestions failed');
+      const data = await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).json();
+      if (!(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).success) {
+        throw new Error((data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).error || 'Suggestions failed');
       }
-      return `Query suggestions working: ${(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).suggestions.length} similar queries found`;
+      return `Query suggestions working: ${(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).suggestions.length} similar queries found`;
     });
     // Test 7: Embedding Generation
     await runTest('Embedding Generation Test', async () => {
@@ -123,14 +123,14 @@ https://svelte.dev/e/js_parse_error -->
           prompt: testText
         })
       });
-      if (!(response as { ok?: any; status?: any; text?: any; json?: any }).ok) {
+      if (!(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).ok) {
         throw new Error('Embedding generation failed');
       }
-      const data = await (response as { ok?: any; status?: any; text?: any; json?: any }).json();
-      if (!(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).embedding || !Array.isArray((data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).embedding)) {
+      const data = await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).json();
+      if (!(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).embedding || !Array.isArray((data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).embedding)) {
         throw new Error('Invalid embedding response');
       }
-      return `Embedding generated: ${(data as { success?: any; error?: any; data?: any; models?: any; status?: any; embedding?: any }).embedding.length} dimensions`;
+      return `Embedding generated: ${(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).embedding.length} dimensions`;
     });
     isRunning = false;
   }
@@ -172,7 +172,7 @@ https://svelte.dev/e/js_parse_error -->
 
   <div class="mb-6">
     <button
-      on:click={runCompleteAITest}
+      onclick={runCompleteAITest}
       disabled={isRunning}
       class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
     >
@@ -183,29 +183,29 @@ https://svelte.dev/e/js_parse_error -->
   <div class="space-y-4">
     {#each testResults as result}
       <div class="p-4 border rounded-lg transition-colors {
-        (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'success' ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950' :
-        (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'error' ? 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950' :
+        (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status === 'success' ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950' :
+        (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status === 'error' ? 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950' :
         'border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900'
       }">
         <div class="flex items-center justify-between mb-2">
-          <h3 class="font-semibold">{(result as { status?: any; test?: any; duration?: any; message?: any }).test}</h3>
+          <h3 class="font-semibold">{(result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).test}</h3>
           <div class="flex items-center gap-2">
-            {#if (result as { status?: any; test?: any; duration?: any; message?: any }).duration}
-              <span class="text-sm text-gray-500">{(result as { status?: any; test?: any; duration?: any; message?: any }).duration}ms</span>
+            {#if (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).duration}
+              <span class="text-sm text-gray-500">{(result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).duration}ms</span>
             {/if}
             <span class="px-2 py-1 text-xs rounded font-medium {
-              (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'success' ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' :
-              (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'error' ? 'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200' :
+              (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status === 'success' ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' :
+              (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status === 'error' ? 'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200' :
               'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
             }">
-              {(result as { status?: any; test?: any; duration?: any; message?: any }).status.toUpperCase()}
+              {(result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status.toUpperCase()}
             </span>
           </div>
         </div>
         <p class="text-sm {
-          (result as { status?: any; test?: any; duration?: any; message?: any }).status === 'error' ? 'text-red-700 dark:text-red-300' : 'text-gray-700 dark:text-gray-300'
+          (result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).status === 'error' ? 'text-red-700 dark:text-red-300' : 'text-gray-700 dark:text-gray-300'
         }">
-          {(result as { status?: any; test?: any; duration?: any; message?: any }).message}
+          {(result as { status?: unknown; test?: unknown; duration?: unknown; message?: unknown }).message}
         </p>
       </div>
     {/each}

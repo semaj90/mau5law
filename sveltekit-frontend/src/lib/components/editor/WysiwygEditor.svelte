@@ -34,7 +34,7 @@
 
   // Stores
   let editorElement: HTMLElement;
-  let hugerte: any;
+  let hugerte: unknown;
   let isInitialized = $state(false);
   const wordCount: Writable<number> = writable(0);
   const charCount: Writable<number> = writable(0);
@@ -148,7 +148,7 @@
               margin: 0.5em 0;
   }
           `,
-          setup: (editor: any) => {
+          setup: (editor: unknown) => {
             // Custom AI Assistant button
             editor.ui.registry.addButton('ai-assistant', {
               text: '🤖 AI',
@@ -196,7 +196,7 @@
       };
 
       // Listen to content changes from Hugerte
-      hugerte.$on('input', (event: any) => {
+      hugerte.$on('input', (event: unknown) => {
         content = event.detail.content;
         updateCounts(content);
       });
@@ -269,7 +269,7 @@
 
       const data = await response.json();
       if (data.success) {
-        citationResults = data.results.map((r: any) => ({
+        citationResults = data.results.map((r: unknown) => ({
           title: r.title,
           citation: r.citation,
           relevance: r.similarity
@@ -278,7 +278,7 @@
     } catch (error) {
       console.error('Citation search failed:', error);
   }}
-  function insertCitation(citation: any) {/* JSX syntax converted to Svelte */}</em>
+  function insertCitation(citation: unknown) {/* JSX syntax converted to Svelte */}</em>
         </div>
       `;
       hugerte.insertContent(citationHtml);
@@ -363,7 +363,7 @@
         ></textarea>
 
         <button
-          on:click={() => processAIRequest()}
+          onclick={() => processAIRequest()}
           disabled={isProcessingAI || !aiQuery.trim()}
           class="space-y-4"
         >
@@ -378,7 +378,7 @@
           <div class="space-y-4">
             <strong>AI Response:</strong>
             <div class="space-y-4">{aiResults}</div>
-            <button on:click={() => insertAIContent()} class="space-y-4">
+            <button onclick={() => insertAIContent()} class="space-y-4">
               Insert into Document
             </button>
           </div>
@@ -407,7 +407,7 @@
         />
 
         <button
-          on:click={() => searchCitations()}
+          onclick={() => searchCitations()}
           disabled={!citationQuery.trim()}
           class="space-y-4"
         >
@@ -425,7 +425,7 @@
                   Relevance: {Math.round(citation.relevance * 100)}%
                 </div>
                 <button
-                  on:click={() => insertCitation(citation)}
+                  onclick={() => insertCitation(citation)}
                   class="space-y-4"
                 >
                   Insert Citation

@@ -33,7 +33,7 @@
   {#if title}
     <p class="title">{title}</p>
   {/if}
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>

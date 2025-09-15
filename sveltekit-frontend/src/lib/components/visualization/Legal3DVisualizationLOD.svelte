@@ -880,7 +880,7 @@
   <!-- 3D Controls -->
   <div class="visualization-controls">
     <div class="camera-controls">
-      <LoadingButton on:click={handleZoomIn} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomIn} variant="outline" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
@@ -888,11 +888,11 @@
         {cameraDistance.toFixed(1)}m
       </span>
       
-      <LoadingButton on:click={handleZoomOut} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomOut} variant="outline" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton on:click={handleResetCamera} variant="outline" size="sm">
+      <LoadingButton onclick={handleResetCamera} variant="outline" size="sm">
         {#snippet children()}<RotateCcw class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
@@ -906,7 +906,7 @@
       <select 
         class="nes-select"
         bind:value={currentLOD}
-        on:change={handleLODChange}
+        onchange={handleLODChange}
       >
         {#each Object.entries(lodConfig) as [level, config]}
           <option value={parseInt(level)}>

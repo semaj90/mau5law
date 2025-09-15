@@ -53,7 +53,7 @@
 	type ButtonType = 'button' | 'submit' | 'reset';
 
 	interface BitsButtonProps {
-		children?: any;
+		children?: unknown;
 		variant?: ButtonVariant;
 		size?: ButtonSize;
 		disabled?: boolean;
@@ -68,7 +68,7 @@
 		analyticsCategory?: string;
 		analyticsAction?: string;
 		analyticsLabel?: string;
-		xstateContext?: any;
+		xstateContext?: unknown;
 		uiJsonConfig?: UIJsonSSRConfig;
 		searchKeywords?: string[];
 		cacheKey?: string;
@@ -158,7 +158,7 @@
 		tabindex="0"
 		aria-disabled={isDisabled}
 		data-testid={dataTestid || 'bits-button'}
-		on:click={handleClick}
+		onclick={handleClick}
 	>
 		{#if loading}
 			<svg class="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -177,7 +177,7 @@
 		disabled={isDisabled}
 		class={buttonClass}
 		data-testid={dataTestid || 'bits-button'}
-		on:click={handleClick}
+		onclick={handleClick}
 	>
 		{#if loading}
 			<svg class="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">

@@ -144,7 +144,7 @@ type OutcomeData struct {
 }
 
 // Request/Response structures
-type RecommendationRequest struct {
+type RecommendationRequestLocal struct {
 	CaseID                string            `json:"case_id"`
 	CaseFacts             []string          `json:"case_facts"`
 	LegalDomain           string            `json:"legal_domain"`
@@ -158,7 +158,7 @@ type RecommendationRequest struct {
 	QueryEmbedding        []float32         `json:"query_embedding"`
 }
 
-type RecommendationResponse struct {
+type RecommendationResponseLocal struct {
 	Recommendations  []LegalRecommendation `json:"recommendations"`
 	TotalCount       int32                 `json:"total_count"`
 	ConfidenceScore  float32               `json:"confidence_score"`
@@ -440,7 +440,7 @@ func NewLegalRecommendationEngine() *LegalRecommendationEngine {
 	return engine
 }
 
-func (engine *LegalRecommendationEngine) GenerateRecommendations(req RecommendationRequest) RecommendationResponse {
+func (engine *LegalRecommendationEngine) GenerateRecommendations(req RecommendationRequestLocal) RecommendationResponseLocal {
 	startTime := time.Now()
 
 	recommendations := []LegalRecommendation{}
@@ -506,7 +506,7 @@ func (engine *LegalRecommendationEngine) GenerateRecommendations(req Recommendat
 	})
 
 	// Limit results
-	if len(recommendations) > int(req.MaxRecommendations) {
+	if len(recommendations) > int(req.MaxRecommendations) && req.MaxRecommendations > 0 {
 		recommendations = recommendations[:req.MaxRecommendations]
 	}
 
@@ -520,7 +520,7 @@ func (engine *LegalRecommendationEngine) GenerateRecommendations(req Recommendat
 		avgConfidence = totalConfidence / float32(len(recommendations))
 	}
 
-	return RecommendationResponse{
+	return RecommendationResponseLocal{
 		Recommendations:  recommendations,
 		TotalCount:       int32(len(recommendations)),
 		ConfidenceScore:  avgConfidence,
@@ -705,7 +705,7 @@ func (engine *LegalRecommendationEngine) handleRecommendations(w http.ResponseWr
 		return
 	}
 
-	var req RecommendationRequest
+	var req RecommendationRequestLocal
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return

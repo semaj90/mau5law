@@ -354,7 +354,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             Semantic Search
           </h3>
           {#each demoSearchQueries as example}
-            <div class="demo-example-nier-bits-card" on:click={() => loadDemoQuery(example.query)}>
+            <div class="demo-example-nier-bits-card" onclick={() => loadDemoQuery(example.query)}>
               <h4 class="font-medium text-sm mb-1">{example.category}</h4>
               <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded font-mono">{example.query}</p>
@@ -369,7 +369,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             AI Recommendations
           </h3>
           {#each demoRecommendationContexts as example}
-            <div class="demo-example-nier-bits-card" on:click={() => loadDemoContext(example.context, example.role)}>
+            <div class="demo-example-nier-bits-card" onclick={() => loadDemoContext(example.context, example.role)}>
               <h4 class="font-medium text-sm mb-1">{example.description}</h4>
               <Badge class="bits-badge-outline text-xs mb-2">{example.role}</Badge>
               <p class="text-xs nes-text is-disabled">{example.context.substring(0, 80)}...</p>
@@ -384,7 +384,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
             Document Analysis
           </h3>
           {#each demoAnalysisContent as example}
-            <div class="demo-example-nier-bits-card" on:click={() => loadDemoContent(example.content)}>
+            <div class="demo-example-nier-bits-card" onclick={() => loadDemoContent(example.content)}>
               <h4 class="font-medium text-sm mb-1">{example.type}</h4>
               <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded">{example.content.substring(0, 60)}...</p>
@@ -400,7 +400,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
     <Button class="bits-btn"
       variant={activeTab === 'search' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() =>
+  onclick={() =>
 activeTab = 'search'}
       class="flex items-center gap-2"
     >
@@ -410,7 +410,7 @@ activeTab = 'search'}
     <Button class="bits-btn"
       variant={activeTab === 'recommendations' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() =>
+  onclick={() =>
 activeTab = 'recommendations'}
       class="flex items-center gap-2"
     >
@@ -420,7 +420,7 @@ activeTab = 'recommendations'}
     <Button class="bits-btn"
       variant={activeTab === 'analysis' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() =>
+  onclick={() =>
 activeTab = 'analysis'}
       class="flex items-center gap-2"
     >
@@ -430,7 +430,7 @@ activeTab = 'analysis'}
     <Button class="bits-btn"
       variant={activeTab === 'health' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() =>
+  onclick={() =>
 activeTab = 'health'}
       class="flex items-center gap-2"
     >
@@ -489,7 +489,7 @@ activeTab = 'health'}
 
           <div class="flex items-center gap-2">
             <Button
-              on:click={performSearch}
+              onclick={performSearch}
               disabled={isProcessing || !searchQuery.trim()}
               class="bits-btn-default bits-btn bits-btn"
             >
@@ -504,7 +504,7 @@ activeTab = 'health'}
             <Button class="bits-btn"
               variant="outline"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 showAdvancedOptions = !showAdvancedOptions}
             >
               <Settings class="h-4 w-4" />
@@ -532,23 +532,23 @@ showAdvancedOptions = !showAdvancedOptions}
               {#each searchResults as result}
                 <div class="vector-result-item">
                   <div class="flex items-start justify-between mb-2">
-                    <h3 class="font-semibold text-sm">{(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).id}</h3>
+                    <h3 class="font-semibold text-sm">{(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).id}</h3>
                     <div class="flex items-center gap-2">
-                      <Badge class={getConfidenceColor((result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).similarity)}>
-                        {Math.round((result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).similarity * 100)}%
+                      <Badge class={getConfidenceColor((result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).similarity)}>
+                        {Math.round((result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).similarity * 100)}%
                       </Badge>
-                      <Badge class="bits-badge-outline text-xs">{(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).source}</Badge>
+                      <Badge class="bits-badge-outline text-xs">{(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).source}</Badge>
                     </div>
                   </div>
 
                   <p class="text-sm nes-text is-disabled mb-3">
-                    {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).content.substring(0, 200)}...
+                    {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).content.substring(0, 200)}...
                   </p>
 
-                  {#if (result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).highlights?.length > 0}
+                  {#if (result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).highlights?.length > 0}
                     <div class="space-y-1">
                       <p class="text-xs font-medium">Highlights:</p>
-                      {#each (result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).highlights as highlight}
+                      {#each (result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).highlights as highlight}
                         <p class="text-xs bg-muted p-2 rounded">
                           <span class="vector-highlight">{highlight}</span>
                         </p>
@@ -557,10 +557,10 @@ showAdvancedOptions = !showAdvancedOptions}
                   {/if}
 
                   <div class="vector-metadata-grid mt-3">
-                    <span>Relevance: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).relevanceScore.toFixed(2)}</span>
-                    <span>Similarity: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).similarity.toFixed(3)}</span>
-                    <span>Source: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).source}</span>
-                    <span>ID: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).id.substring(0, 8)}...</span>
+                    <span>Relevance: {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).relevanceScore.toFixed(2)}</span>
+                    <span>Similarity: {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).similarity.toFixed(3)}</span>
+                    <span>Source: {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).source}</span>
+                    <span>ID: {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).id.substring(0, 8)}...</span>
                   </div>
                 </div>
               {/each}
@@ -624,7 +624,7 @@ showAdvancedOptions = !showAdvancedOptions}
           </div>
 
           <Button
-            on:click={generateRecommendations}
+            onclick={generateRecommendations}
             disabled={isProcessing || !recommendationContext.trim()}
             class="bits-btn-default bits-btn bits-btn"
           >
@@ -729,7 +729,7 @@ showAdvancedOptions = !showAdvancedOptions}
           </div>
 
           <Button
-            on:click={performSemanticAnalysis}
+            onclick={performSemanticAnalysis}
             disabled={isProcessing || !analysisContent.trim()}
             class="bits-btn-default bits-btn bits-btn"
           >
@@ -907,7 +907,7 @@ showAdvancedOptions = !showAdvancedOptions}
               <Activity class="h-5 w-5" />
               Vector Intelligence System Health
             </span>
-            <Button class="bits-btn" variant="outline" size="sm" on:click={loadSystemHealth}>
+            <Button class="bits-btn" variant="outline" size="sm" onclick={loadSystemHealth}>
 <RefreshCw class="h-4 w-4" />
 </Button>
           </h3>

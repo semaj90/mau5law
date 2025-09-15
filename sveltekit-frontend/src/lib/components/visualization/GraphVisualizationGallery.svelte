@@ -284,7 +284,7 @@ https://svelte.dev/e/js_parse_error -->
       <button class="nes-btn"
         variant="legal"
         disabled={$isGenerating}
-        on:click={() => generateVisualizationsForAllAlgorithms()}
+        onclick={() => generateVisualizationsForAllAlgorithms()}
         class="bits-btn generate-btn"
       >
         {$isGenerating ? 'Generating...' : 'Generate All'}
@@ -316,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="gallery-item nes-container is-rounded" data-algorithm={visualization.metadata.algorithm}>
         <!-- Preview Image -->
         <div class="item-preview" role="button" tabindex="0"
-                on:click={() => openVisualization(visualization)}>
+                onclick={() => openVisualization(visualization)}>
           <img 
             src={getVisualizationPreview(visualization)} 
             alt="Graph visualization using {visualization.metadata.algorithm}"
@@ -340,7 +340,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="evidence"
             size="small"
-            on:click={() =>
+            onclick={() =>
 regenerateVisualization(visualization.metadata.algorithm)}
             disabled={$isGenerating}
           >
@@ -368,7 +368,7 @@ regenerateVisualization(visualization.metadata.algorithm)}
       <p class="nes-text is-disabled">No visualizations generated yet.</p>
       <Button class="bits-btn"
         variant="legal"
-        on:click={() =>
+        onclick={() =>
 generateVisualizationsForAllAlgorithms()}
       >
         Generate Visualizations
@@ -389,10 +389,10 @@ generateVisualizationsForAllAlgorithms()}
 <!-- Modal for Full-Size Viewing -->
 {#if $showModal && $selectedVisualization}
   <div class="modal-overlay" role="button" tabindex="0"
-                on:click={closeModal}>
+                onclick={closeModal}>
     <div class="modal-content nes-container is-dark" role="button" tabindex="0"
-                on:click={(e) => e.stopPropagation()}>
-      <button class="modal-close nes-btn is-error" on:click={closeModal}>×
+                onclick={(e) => e.stopPropagation()}>
+      <button class="modal-close nes-btn is-error" onclick={closeModal}>×
 </Button>
       
       <div class="modal-header">

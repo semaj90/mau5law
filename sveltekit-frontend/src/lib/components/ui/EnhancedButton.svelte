@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
 			</svg>
 			{loadingText}
 		{:else}
-			<slot />
+			{@render children?.()}
 		{/if}
 	</BitsButton.Root>
 {:else if href}
@@ -165,7 +165,7 @@ https://svelte.dev/e/js_parse_error -->
 			</svg>
 			{loadingText}
 		{:else}
-			<slot />
+			{@render children?.()}
 		{/if}
 	</a>
 {:else}
@@ -205,7 +205,7 @@ https://svelte.dev/e/js_parse_error -->
 				</svg>
 				{loadingText}
 			{:else}
-				<slot />
+				{@render children?.()}
 			{/if}
 		</button>
 	{:else}
@@ -242,7 +242,7 @@ https://svelte.dev/e/js_parse_error -->
 				</svg>
 				{loadingText}
 			{:else}
-				<slot />
+				{@render children?.()}
 			{/if}
 		</button>
 	{/if}

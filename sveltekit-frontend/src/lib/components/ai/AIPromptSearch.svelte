@@ -26,7 +26,7 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 
 <div class="container mx-auto px-4">
-  <input
+  <input aria-label="Search AI history..."
     type="text"
     bind:value={query}
     placeholder="Search AI history..."
@@ -35,9 +35,9 @@ https://svelte.dev/e/js_parse_error -->
   <ul class="container mx-auto px-4">
     {#each results as item}
       <li class="container mx-auto px-4">
-        <div class="container mx-auto px-4">{(item as { prompt?: any; response?: any; timestamp?: any }).prompt}</div>
-        <div class="container mx-auto px-4">{(item as { prompt?: any; response?: any; timestamp?: any }).response}</div>
-        <div class="container mx-auto px-4">{(item as { prompt?: any; response?: any; timestamp?: any }).timestamp}</div>
+        <div class="container mx-auto px-4">{(item as { prompt?: unknown; response?: unknown; timestamp?: unknown }).prompt}</div>
+        <div class="container mx-auto px-4">{(item as { prompt?: unknown; response?: unknown; timestamp?: unknown }).response}</div>
+        <div class="container mx-auto px-4">{(item as { prompt?: unknown; response?: unknown; timestamp?: unknown }).timestamp}</div>
       </li>
     {/each}
   </ul>

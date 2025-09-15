@@ -9,7 +9,7 @@
   let finalTranscript = $state('');
   let interimTranscript = $state('');
   let currentTranscript = $state('');
-  let recognition: any = $state();
+  let recognition: unknown = $state();
 
   onMount(() => {
     // Initialize speech recognition
@@ -25,7 +25,7 @@
         isListening = true;
         speak("I'm listening. You can ask me legal questions or give voice commands.");
       };
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (event: unknown) => {
   let interim = $state('');
   let final = $state('');
         for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -46,7 +46,7 @@
           speak('No speech detected. Please try again.');
         }
       };
-      recognition.onerror = (event: any) => {
+      recognition.onerror = (event: unknown) => {
         isListening = false;
         if (event.error === 'no-speech') {
           speak('No speech detected. Please try again.');
@@ -71,7 +71,7 @@
     {:else}
       <p>Click the button and start speaking.</p>
     {/if}
-    <button on:click={() => {
+    <button onclick={() => {
       if (isListening) {
         recognition.stop();
         isListening = false;

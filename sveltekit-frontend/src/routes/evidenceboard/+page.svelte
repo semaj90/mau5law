@@ -49,7 +49,7 @@
         <button class="nes-btn"
           variant="outline"
           size="sm"
-          on:click={() => showWelcome = false}
+          onclick={() => showWelcome = false}
         >
           Get Started →
         </button>

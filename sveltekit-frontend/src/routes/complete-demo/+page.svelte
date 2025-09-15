@@ -49,21 +49,21 @@
         body: formData
       });
 
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
       
-      if ((result as { success?: any; data?: any; error?: any }).success) {
-        uploadResults = (result as { success?: any; data?: any; error?: any }).data;
+      if ((result as { success?: unknown; data?: unknown; error?: unknown }).success) {
+        uploadResults = (result as { success?: unknown; data?: unknown; error?: unknown }).data;
         uploadStatus = 'completed';
         
         // Add system message about successful upload
         chatMessages = [...chatMessages, {
           type: 'assistant',
-          content: `✅ Successfully processed "${file.name}" with Gemma embeddings! The document is now searchable with ${(result as { success?: any; data?: any; error?: any }).data.embeddingsCount} vector embeddings. You can ask questions about the content.`,
+          content: `✅ Successfully processed "${file.name}" with Gemma embeddings! The document is now searchable with ${(result as { success?: unknown; data?: unknown; error?: unknown }).data.embeddingsCount} vector embeddings. You can ask questions about the content.`,
           timestamp: Date.now()
         }];
       } else {
         uploadStatus = 'error';
-        console.error('Upload failed:', (result as { success?: any; data?: any; error?: any }).error);
+        console.error('Upload failed:', (result as { success?: unknown; data?: unknown; error?: unknown }).error);
       }
     } catch (error) {
       uploadStatus = 'error';
@@ -225,10 +225,10 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
 <HeadlessTypingListener
   bind:text={userInput}
   bind:element={chatInput}
-  on:stateChange={handleTypingStateChange}
-  on:contextualPrompt={handleContextualPrompts}
-  on:analyticsUpdate={handleAnalyticsUpdate}
-  on:mcpWorkerStatus={handleMCPWorkerStatus}
+  onstateChange={handleTypingStateChange}
+  oncontextualPrompt={handleContextualPrompts}
+  onanalyticsUpdate={handleAnalyticsUpdate}
+  onmcpWorkerStatus={handleMCPWorkerStatus}
 />
 
 <div class="complete-demo">
@@ -266,7 +266,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
           bind:this={fileInput}
           type="file"
           accept=".pdf,.txt,.doc,.docx"
-          on:change={(e) => {
+          onchange={(e) => {
             const file = e.target.files?.[0];
             if (file) {
               uploadedFile = file;
@@ -277,7 +277,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
         />
         
         <button
-          on:click={() => fileInput?.click()}
+          onclick={() => fileInput?.click()}
           disabled={uploadStatus === 'uploading'}
           class="upload-button"
         >
@@ -289,7 +289,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
         </button>
 
         <button
-          on:click={testWithLegalPDF}
+          onclick={testWithLegalPDF}
           disabled={uploadStatus === 'uploading'}
           class="test-button"
         >
@@ -359,7 +359,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
               {#each contextualPrompts as prompt}
                 <button
                   class="prompt-button"
-                  on:click={() => applyContextualPrompt(prompt)}
+                  onclick={() => applyContextualPrompt(prompt)}
                 >
                   {prompt}
                 </button>
@@ -373,7 +373,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
               bind:value={userInput}
               placeholder="Ask questions about your uploaded document..."
               rows="3"
-              on:keydown={(e) => {
+              onkeydown={(e) => {
                 if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                   e.preventDefault();
                   handleChatSubmit();
@@ -382,7 +382,7 @@ COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF
               disabled={isProcessingChat}
             ></textarea>
             <button
-              on:click={handleChatSubmit}
+              onclick={handleChatSubmit}
               disabled={!userInput.trim() || isProcessingChat}
               class="send-button"
             >

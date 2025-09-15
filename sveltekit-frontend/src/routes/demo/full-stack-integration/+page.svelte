@@ -2,7 +2,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import BitsDemo from '$lib/components/BitsDemo.svelte';
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
 
@@ -63,7 +63,7 @@
     for (const check of healthChecks) {
       try {
         const response = await fetch(check.endpoint);
-        systemHealth.services[check.name] = (response as { ok?: any; text?: any; json?: any; status?: any }).ok ? 'healthy' : 'unhealthy';
+        systemHealth.services[check.name] = (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).ok ? 'healthy' : 'unhealthy';
       } catch (error) {
         systemHealth.services[check.name] = 'error';
         console.error(`Health check failed for ${check.name}:`, error);
@@ -119,17 +119,17 @@
               status: 'open'
             })
           });
-          return { success: (response as { ok?: any; text?: any; json?: any; status?: any }).ok, details: await (response as { ok?: any; text?: any; json?: any; status?: any }).text() };
+          return { success: (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).ok, details: await (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).text() };
         }
       },
       {
         name: 'Multi-Protocol Service Discovery',
         test: async () => {
           const response = await fetch('/api/comprehensive-integration');
-          const result = await (response as { ok?: any; text?: any; json?: any; status?: any }).json();
+          const result = await (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).json();
           return {
-            success: (response as { ok?: any; text?: any; json?: any; status?: any }).ok && (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).system_overview?.healthy_services > 0,
-            details: `${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).system_overview?.healthy_services || 0}/${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).system_overview?.total_services || 0} services healthy`
+            success: (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).ok && (result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).system_overview?.healthy_services > 0,
+            details: `${(result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).system_overview?.healthy_services || 0}/${(result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).system_overview?.total_services || 0} services healthy`
           };
         }
       },
@@ -138,8 +138,8 @@
         test: async () => {
           const response = await fetch('/api/v1/quic/metrics');
           return {
-            success: (response as { ok?: any; text?: any; json?: any; status?: any }).ok,
-            details: (response as { ok?: any; text?: any; json?: any; status?: any }).ok ? 'QUIC metrics accessible' : 'QUIC metrics unavailable'
+            success: (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).ok,
+            details: (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).ok ? 'QUIC metrics accessible' : 'QUIC metrics unavailable'
           };
         }
       },
@@ -147,10 +147,10 @@
         name: 'Upload Service Health',
         test: async () => {
           const response = await fetch('/api/v1/upload?action=health');
-          const result = await (response as { ok?: any; text?: any; json?: any; status?: any }).json();
+          const result = await (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).json();
           return {
-            success: (response as { ok?: any; text?: any; json?: any; status?: any }).ok && (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).service,
-            details: (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).service ? `${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).service} - ${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).status}` : 'Service unavailable'
+            success: (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).ok && (result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).service,
+            details: (result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).service ? `${(result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).service} - ${(result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).status}` : 'Service unavailable'
           };
         }
       },
@@ -166,8 +166,8 @@
             })
           });
           return {
-            success: (response as { ok?: any; text?: any; json?: any; status?: any }).status < 500, // Accept 404 or other client errors as "working"
-            details: `RAG endpoint responding (${(response as { ok?: any; text?: any; json?: any; status?: any }).status})`
+            success: (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).status < 500, // Accept 404 or other client errors as "working"
+            details: `RAG endpoint responding (${(response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).status})`
           };
         }
       },
@@ -175,13 +175,13 @@
         name: 'Database Persistence',
         test: async () => {
           const response = await fetch('/api/test-database-persistence');
-          if (!(response as { ok?: any; text?: any; json?: any; status?: any }).ok) {
+          if (!(response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).ok) {
             return { success: false, details: 'Database test endpoint unavailable' };
           }
-          const result = await (response as { ok?: any; text?: any; json?: any; status?: any }).json();
+          const result = await (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).json();
           return {
-            success: (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).database?.connected || false,
-            details: `Connected: ${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).database?.connected}, Migrations: ${(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).database?.migrations}`
+            success: (result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).database?.connected || false,
+            details: `Connected: ${(result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).database?.connected}, Migrations: ${(result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).database?.migrations}`
           };
         }
       }
@@ -196,12 +196,12 @@
         const result = await testCase.test();
         testResults.push({
           name: testCase.name,
-          status: (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).success ? 'passed' : 'failed',
-          details: (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).details,
+          status: (result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).success ? 'passed' : 'failed',
+          details: (result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).details,
           timestamp: new Date().toISOString()
         });
 
-        if ((result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).success) {
+        if ((result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).success) {
           systemHealth.integration.passed_tests++;
         } else {
           systemHealth.integration.failed_tests++;
@@ -243,7 +243,7 @@
         const response = await fetch(endpoint);
         results.push({
           protocol,
-          status: (response as { ok?: any; text?: any; json?: any; status?: any }).ok ? 'available' : 'unavailable',
+          status: (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).ok ? 'available' : 'unavailable',
           latency: Date.now(), // Simplified latency measurement
           endpoint
         });
@@ -345,13 +345,13 @@
 
       <div class="flex gap-4">
         <Button
-          on:click={runSystemHealthCheck}
+          onclick={runSystemHealthCheck}
           class="bg-blue-600 text-white hover:bg-blue-700 font-bold px-4 py-2 bits-btn bits-btn"
         >
 🔄 REFRESH HEALTH CHECK
 
         <Button
-          on:click={runIntegrationTests}
+          onclick={runIntegrationTests}
           disabled={isRunningTests}
           class="bg-green-600 text-white hover:bg-green-700 font-bold px-4 py-2 disabled:opacity-50 bits-btn bits-btn"
         >
@@ -384,16 +384,16 @@
           {#each testResults as result}
             <div class="bg-[#EAE8E1] border border-[#D1CFC7] p-4 rounded">
               <div class="flex justify-between items-start mb-2">
-                <h3 class="font-bold text-sm">{(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).name}</h3>
+                <h3 class="font-bold text-sm">{(result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).name}</h3>
                 <span class="text-lg">
-                  {#if (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).status === 'passed'}✅
-                  {:else if (result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).status === 'failed'}❌
+                  {#if (result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).status === 'passed'}✅
+                  {:else if (result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).status === 'failed'}❌
                   {:else}⚠️{/if}
                 </span>
               </div>
-              <div class="text-xs opacity-75">{(result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).details}</div>
+              <div class="text-xs opacity-75">{(result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).details}</div>
               <div class="text-xs opacity-50 mt-1">
-                {new Date((result as { system_overview?: any; service?: any; status?: any; database?: any; success?: any; details?: any; name?: any; timestamp?: any }).timestamp).toLocaleString()}
+                {new Date((result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).timestamp).toLocaleString()}
               </div>
             </div>
           {/each}

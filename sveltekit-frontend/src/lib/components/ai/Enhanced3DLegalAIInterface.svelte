@@ -76,7 +76,8 @@
     } catch (error) {
       console.error('System initialization failed:', error);
       addSystemMessage('System initialization failed. Running in degraded mode.');
-    }
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
   });
   onDestroy(() => {
     cleanup();
@@ -102,7 +103,7 @@
   }
   async function initializeWebGL() {
     if (!canvasRef) return;
-    gl = canvasRef.getContext('webgl2') || canvasRef.getContext('webgl');
+    gl = canvasRef.getContext<unknown>('webgl2') || canvasRef.getContext<unknown>('webgl');
     if (!gl) {
       throw new Error('WebGL not supported');
     }
@@ -282,7 +283,8 @@
         if (stage.status === 'active') {
           stage.status = 'pending';
           stage.progress = 0;
-        }
+        
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
       });
       throw error;
     }
@@ -460,7 +462,8 @@
       }
     } catch (error) {
       console.error('Processing failed:', error);
-      addSystemMessage(`Processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      addSystemMessage(`Processing failed: ${error instanceof Error ? error.message : 'Unknown error'
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}`);
     } finally {
       isProcessing = false;
     }
@@ -612,10 +615,10 @@
       <input 
         bind:value={userInput}
         placeholder="Enter legal query or document text..."
-        on:keydown={(e) => e.key === 'Enter' && handleUserInput()}
+        onkeydown={(e) => e.key === 'Enter' && handleUserInput()}
         disabled={!isInitialized || isProcessing}
       />
-      <button on:click={handleUserInput} disabled={!isInitialized || isProcessing}>
+      <button onclick={handleUserInput} disabled={!isInitialized || isProcessing}>
         {isProcessing ? 'Processing...' : 'Analyze'}
       </button>
     </div>

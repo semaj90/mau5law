@@ -120,15 +120,15 @@
 {#if show}
   <!-- Updated to Svelte 5 event syntax: use onclick/onkeydown instead of onclick etc. -->
   <div class="feedback-overlay" role="button" tabindex="0"
-                on:click={close} on:keydown={(e) => e.key === 'Enter' && close()}>
+                onclick={close} onkeydown={(e) => e.key === 'Enter' && close()}>
     <div class="feedback-widget" role="dialog" tabindex="0" aria-labelledby="feedback-title"
-                on:click={(e) => e.stopPropagation()} on:keydown={(e) => e.key === 'Enter' && e.stopPropagation()}>
+                onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.key === 'Enter' && e.stopPropagation()}>
       {#if !isSubmitted}
         <div class="feedback-header">
           <h3 id="feedback-title" class="feedback-title">
             Rate {ratingTypeLabels[ratingType]}
           </h3>
-          <button class="close-button" on:click={close} aria-label="Close feedback" type="button">×</button>
+          <button class="close-button" onclick={close} aria-label="Close feedback" type="button">×</button>
         </div>
 
         <div class="feedback-content">
@@ -138,7 +138,7 @@
               {#each [1, 2, 3, 4, 5] as star}
                 <button
                   class="star {rating >= star ? 'active' : ''}"
-                  on:click={() => setRating(star)}
+                  onclick={() => setRating(star)}
                   aria-label="Rate {star} stars"
                   type="button"
                 >
@@ -165,7 +165,7 @@
             <div class="feedback-actions">
               <button
                 class="submit-button"
-                on:click={submitFeedback}
+                onclick={submitFeedback}
                 disabled={isSubmitting}
                 type="button"
               >

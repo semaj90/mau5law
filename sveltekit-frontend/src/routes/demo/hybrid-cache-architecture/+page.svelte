@@ -222,7 +222,7 @@
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-2xl font-semibold">🏗️ Architecture Overview</h2>
           <button
-            on:click={() => showArchitectureOverview = false}
+            onclick={() => showArchitectureOverview = false}
             class="text-gray-400 hover:text-gray-600"
           >
             ×
@@ -295,19 +295,19 @@
           <h2 class="text-2xl font-semibold">📊 Performance Metrics</h2>
           <div class="space-x-2">
             <button
-              on:click={refreshSystemStatus}
+              onclick={refreshSystemStatus}
               class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
             >
               🔄 Refresh
             </button>
             <button
-              on:click={clearCache}
+              onclick={clearCache}
               class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
             >
               🗑️ Clear Cache
             </button>
             <button
-              on:click={() => showPerformanceMetrics = false}
+              onclick={() => showPerformanceMetrics = false}
               class="text-gray-400 hover:text-gray-600"
             >
               ×
@@ -378,7 +378,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <button
-          on:click={() => simulateNodeClick('doc-uuid-12345')}
+          onclick={() => simulateNodeClick('doc-uuid-12345')}
           class="bg-green-500 text-white py-3 px-4 rounded-lg hover:bg-green-600 transition-colors"
         >
           📄 Click Contract Document
@@ -386,7 +386,7 @@
         </button>
 
         <button
-          on:click={() => simulateNodeClick('precedent-uuid-22222')}
+          onclick={() => simulateNodeClick('precedent-uuid-22222')}
           class="bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors"
         >
           ⚖️ Click Legal Precedent
@@ -394,7 +394,7 @@
         </button>
 
         <button
-          on:click={() => simulateNodeClick('case-uuid-' + Date.now())}
+          onclick={() => simulateNodeClick('case-uuid-' + Date.now())}
           class="bg-purple-500 text-white py-3 px-4 rounded-lg hover:bg-purple-600 transition-colors"
         >
           🔍 Click Random Node
@@ -433,7 +433,7 @@
             enablePhysics={true}
             enableStreaming={true}
             maxNodes={1000}
-            on:nodeInteraction={(event) => {
+            onnodeInteraction={(event) => {
               // Track interaction metrics
               demoStats.update(stats => ({
                 ...stats,
@@ -441,14 +441,14 @@
               }));
               systemStatus.update(s => ({ ...s, graphInitialized: true }));
             }}
-            on:cacheHit={(event) => {
+            oncacheHit={(event) => {
               demoStats.update(stats => ({
                 ...stats,
                 totalCacheHits: stats.totalCacheHits + 1,
                 averageCacheTime: (stats.averageCacheTime + event.detail.timing) / 2
               }));
             }}
-            on:serverFetch={(event) => {
+            onserverFetch={(event) => {
               demoStats.update(stats => ({
                 ...stats,
                 totalServerFetches: stats.totalServerFetches + 1,

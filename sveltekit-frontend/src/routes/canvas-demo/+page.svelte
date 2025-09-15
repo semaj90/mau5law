@@ -10,12 +10,10 @@ https://svelte.dev/e/attribute_duplicate -->
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import UnifiedCanvasIntegration from '$lib/components/canvas/UnifiedCanvasIntegration.svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
 
   let caseId = 'demo-case-001';
-  let unifiedCanvas: any;
+  let unifiedCanvas: unknown;
   let demoMode = $state('both');
   let eventLog = $state<string[]>([]);
   let showEventLog = $state(false);
@@ -121,7 +119,7 @@ https://svelte.dev/e/attribute_duplicate -->
       <Button
         variant="outline"
         size="sm"
-        on:click={runDemoScenario}
+        onclick={runDemoScenario}
         class="demo-btn bits-btn bits-btn"
       >
 🚀 Run Demo Scenario
@@ -130,7 +128,7 @@ https://svelte.dev/e/attribute_duplicate -->
         class="bits-btn demo-btn"
         variant="outline"
         size="sm"
-        on:click={() =>
+        onclick={() =>
 showEventLog = !showEventLog}
       >
         {showEventLog ? '👁️ Hide' : '👁️ Show'} Event Log
@@ -138,7 +136,7 @@ showEventLog = !showEventLog}
       <Button
         variant="outline"
         size="sm"
-        on:click={clearEventLog}
+        onclick={clearEventLog}
         class="demo-btn bits-btn bits-btn"
       >
 🗑️ Clear Log

@@ -187,7 +187,7 @@
 {#if $open}
   <div
     class="ai-menu"
-    transition:fly={{ duration: 150, y: -8 }}
+    transitionfly={{ duration: 150, y: -8 }}
   >
     <!-- Report Generation Section -->
     <div class="ai-menu__section">
@@ -200,7 +200,7 @@
         <button
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === reportType.id}
-          on:click={() => handleItemSelect(reportType.id)}
+          onclick={() => handleItemSelect(reportType.id)}
           disabled={disabled || isGenerating}
           data-value={reportType.id}
         >
@@ -236,7 +236,7 @@
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === tool.id}
           class:ai-menu__item--disabled={tool.requiresContent && !hasContent}
-          on:click={() => handleItemSelect(tool.id, tool.requiresContent)}
+          onclick={() => handleItemSelect(tool.id, tool.requiresContent)}
           disabled={disabled ||
             isGenerating ||
             (tool.requiresContent && !hasContent)}

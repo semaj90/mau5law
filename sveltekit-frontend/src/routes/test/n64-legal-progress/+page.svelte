@@ -10,9 +10,7 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Brain, Zap, Cpu, Database } from 'lucide-svelte';
 
@@ -98,10 +96,10 @@
           N64 Progress Components - Legal AI Integration Test
         </div>
         <div class="flex gap-2">
-          <Button class="bits-btn" on:click={startAnimation} disabled={mockData.isProcessing}>
+          <Button class="bits-btn" onclick={startAnimation} disabled={mockData.isProcessing}>
 Start AI Processing
 
-          <Button class="bits-btn" variant="outline" on:click={resetData}>
+          <Button class="bits-btn" variant="outline" onclick={resetData}>
 Reset
 
         </div>

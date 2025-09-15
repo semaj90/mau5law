@@ -3,9 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from "$lib/components/ui/textarea/index";
   import {
     aiPersonality,
@@ -26,6 +24,7 @@ https://svelte.dev/e/js_parse_error -->
 
   let { height = "500px", caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();
   let messageInput = $state("");
+  let errorMessage = $state('');
   let messagesContainer: HTMLElement;
   let inputElement: HTMLTextAreaElement;
   let inactivityTimer: NodeJS.Timeout;
@@ -144,7 +143,8 @@ https://svelte.dev/e/js_parse_error -->
         type: "error",
         title: "Chat Error",
         message: "Failed to get response from AI assistant",
-      });
+      
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';});
     } finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false);
@@ -255,7 +255,8 @@ https://svelte.dev/e/js_parse_error -->
       setTimeout(scrollToBottom, 100);
     } catch (error) {
       console.error("Proactive response error:", error);
-    } finally {
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false);
     }
@@ -306,7 +307,8 @@ https://svelte.dev/e/js_parse_error -->
         type: "error",
         title: "Analysis Failed",
         message: "Failed to analyze case evidence.",
-      });
+      
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';});
     }
   }
 
@@ -362,7 +364,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Reactive scroll to bottom when new messages arrive
   // TODO: Convert to $derived when possible
-  $: if ($currentConversation?.messages) {
+  $effect(() => { if ($currentConversation?.messages) ; });{
     tick().then(scrollToBottom);
   }
 </script>
@@ -384,7 +386,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={quickAnalyzeEvidence}
+            onclick={quickAnalyzeEvidence}
             disabled={$isLoading}
           >
 🔍 Quick Analysis
@@ -489,8 +491,8 @@ https://svelte.dev/e/js_parse_error -->
             ? "Ask for detailed analysis... (Enter to send, Shift+Enter for new line)"
             : "Type your message... (Enter to send, Shift+Enter for new line)"}
           class="mx-auto px-4 max-w-7xl"
-          on:keydown={handleKeyDown}
-          on:input={autoResize}
+          onkeydown={handleKeyDown}
+          oninput={autoResize}
           disabled={$isLoading}
         />
       </div>
@@ -499,7 +501,7 @@ https://svelte.dev/e/js_parse_error -->
         variant="default"
         size="sm"
         class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-        on:click={() => sendMessage()}
+        onclick={() => sendMessage()}
         disabled={$isLoading || !messageInput.trim()}
       >
         {#if $isLoading}

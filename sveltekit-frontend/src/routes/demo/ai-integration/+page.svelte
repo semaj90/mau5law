@@ -19,18 +19,18 @@ https://svelte.dev/e/js_parse_error -->
   const { snapshot: prefetchState, send: prefetchSend } = useMachine(prefetchMachine);
 
   // Props from server-side loading
-  export let data: PageData;
+  let { data } = $props();: PageData;
 
   // Component State - Initialize from server data
-  let systemHealth = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).systemHealth;
-  let embeddings = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).initialEmbeddings;
-  let labels = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).initialLabels;
+  let systemHealth = (data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).systemHealth;
+  let embeddings = (data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).initialEmbeddings;
+  let labels = (data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).initialLabels;
   let agentShellOpen = false;
   let isMonitoring = false;
-  let performanceMetrics = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).performanceMetrics;
+  let performanceMetrics = (data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).performanceMetrics;
 
   // Use server-loaded demo data
-  const demoDocuments = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).demoDocuments;
+  const demoDocuments = (data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).demoDocuments;
 
   onMount(() => {
     // Disabled auto health checks to prevent CORS errors
@@ -65,8 +65,8 @@ https://svelte.dev/e/js_parse_error -->
         });
 
         systemHealth[check.name] = {
-          status: (response as { ok?: any; status?: any; json?: any; statusText?: any }).ok ? 'healthy' : 'error',
-          details: (response as { ok?: any; status?: any; json?: any; statusText?: any }).ok ? 'Connected' : `HTTP ${(response as { ok?: any; status?: any; json?: any; statusText?: any }).status}`
+          status: (response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).ok ? 'healthy' : 'error',
+          details: (response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).ok ? 'Connected' : `HTTP ${(response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).status}`
         };
       } catch (error) {
         systemHealth[check.name] = {
@@ -93,9 +93,9 @@ https://svelte.dev/e/js_parse_error -->
           })
         });
         
-        if ((response as { ok?: any; status?: any; json?: any; statusText?: any }).ok) {
-          const result = await (response as { ok?: any; status?: any; json?: any; statusText?: any }).json();
-          return (result as { success?: any; data?: any; error?: any }).success ? (result as { success?: any; data?: any; error?: any }).(data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).embedding.slice(0, 3) : null; // Take first 3 dimensions for 3D viz
+        if ((response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).ok) {
+          const result = await (response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).json();
+          return (result as { success?: unknown; data?: unknown; error?: unknown }).success ? (result as { success?: unknown; data?: unknown; error?: unknown }).(data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).embedding.slice(0, 3) : null; // Take first 3 dimensions for 3D viz
         }
         return null;
       });
@@ -131,8 +131,8 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('Failed to generate embeddings:', error);
       // Use fallback demo data
-      embeddings = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).initialEmbeddings;
-      labels = (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).initialLabels;
+      embeddings = (data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).initialEmbeddings;
+      labels = (data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).initialLabels;
     }
   }
 
@@ -156,9 +156,9 @@ https://svelte.dev/e/js_parse_error -->
         (performanceMetrics.avgResponseTime + (endTime - startTime)) / 2
       );
 
-      if ((response as { ok?: any; status?: any; json?: any; statusText?: any }).ok) {
-        const data = await (response as { ok?: any; status?: any; json?: any; statusText?: any }).json();
-        console.log('Ollama Analysis Response:', (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).response);
+      if ((response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).json();
+        console.log('Ollama Analysis Response:', (data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).response);
 
         // Trigger prefetch based on analysis success
         prefetchSend({
@@ -167,9 +167,9 @@ https://svelte.dev/e/js_parse_error -->
           context: { success: true, model: 'gemma3-legal' }
         });
 
-        return (data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).response;
+        return (data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).response;
       } else {
-        throw new Error(`Ollama request failed: ${(response as { ok?: any; status?: any; json?: any; statusText?: any }).statusText}`);
+        throw new Error(`Ollama request failed: ${(response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
       }
     } catch (error) {
       console.error('Ollama integration test failed:', error);
@@ -197,11 +197,11 @@ https://svelte.dev/e/js_parse_error -->
         (performanceMetrics.avgResponseTime + (endTime - startTime)) / 2
       );
 
-      if ((response as { ok?: any; status?: any; json?: any; statusText?: any }).ok) {
-        const result = await (response as { ok?: any; status?: any; json?: any; statusText?: any }).json();
+      if ((response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).json();
         
-        if ((result as { success?: any; data?: any; error?: any }).success) {
-          console.log('Generated embedding:', (result as { success?: any; data?: any; error?: any }).(data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).embedding?.slice(0, 5));
+        if ((result as { success?: unknown; data?: unknown; error?: unknown }).success) {
+          console.log('Generated embedding:', (result as { success?: unknown; data?: unknown; error?: unknown }).(data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).embedding?.slice(0, 5));
           performanceMetrics.embeddingsGenerated++;
 
           // Cache hit simulation
@@ -210,12 +210,12 @@ https://svelte.dev/e/js_parse_error -->
             performanceMetrics.cacheHitRate + Math.random() * 10
           );
 
-          return (result as { success?: any; data?: any; error?: any }).(data as { systemHealth?: any; initialEmbeddings?: any; initialLabels?: any; performanceMetrics?: any; demoDocuments?: any; response?: any }).embedding;
+          return (result as { success?: unknown; data?: unknown; error?: unknown }).(data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).embedding;
         } else {
-          throw new Error((result as { success?: any; data?: any; error?: any }).error || 'Embedding generation failed');
+          throw new Error((result as { success?: unknown; data?: unknown; error?: unknown }).error || 'Embedding generation failed');
         }
       } else {
-        throw new Error(`API request failed: ${(response as { ok?: any; status?: any; json?: any; statusText?: any }).statusText}`);
+        throw new Error(`API request failed: ${(response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
       }
     } catch (error) {
       console.error('Embedding generation test failed:', error);
@@ -239,21 +239,21 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      if ((response as { ok?: any; status?: any; json?: any; statusText?: any }).ok) {
-        const result = await (response as { ok?: any; status?: any; json?: any; statusText?: any }).json();
+      if ((response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).json();
         
-        if ((result as { success?: any; data?: any; error?: any }).success) {
-          console.log('Similarity search results:', (result as { success?: any; data?: any; error?: any }).data);
+        if ((result as { success?: unknown; data?: unknown; error?: unknown }).success) {
+          console.log('Similarity search results:', (result as { success?: unknown; data?: unknown; error?: unknown }).data);
 
           // Update cache statistics
           prefetchSend({ type: 'CACHE_HIT', resource: 'similarity_search' });
 
-          return (result as { success?: any; data?: any; error?: any }).data;
+          return (result as { success?: unknown; data?: unknown; error?: unknown }).data;
         } else {
-          throw new Error((result as { success?: any; data?: any; error?: any }).error || 'Similarity search failed');
+          throw new Error((result as { success?: unknown; data?: unknown; error?: unknown }).error || 'Similarity search failed');
         }
       } else {
-        throw new Error(`API request failed: ${(response as { ok?: any; status?: any; json?: any; statusText?: any }).statusText}`);
+        throw new Error(`API request failed: ${(response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
       }
     } catch (error) {
       console.error('Vector similarity test failed:', error);
@@ -324,7 +324,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Reactive prefetch statistics using Svelte reactivity and the XState `state` store
-  let prefetchStats: any = {
+  let prefetchStats: unknown = {
     state: 'unknown',
     confidence: 0,
     cacheHits: 0,
@@ -332,17 +332,17 @@ https://svelte.dev/e/js_parse_error -->
     queueLength: 0
   };
 
-  $: prefetchStats = {
+  let prefetchStats = $derived({
     state: $prefetchState.value,
     confidence: $prefetchState.context?.confidence ?? 0,
     cacheHits: $prefetchState.context?.metrics?.hits ?? 0,
     cacheMisses: $prefetchState.context?.metrics?.misses ?? 0,
     queueLength: $prefetchState.context?.prefetchQueue?.length ?? 0
-  };
+  });
 
-  $: hitRate = (prefetchStats.cacheHits + prefetchStats.cacheMisses) > 0
+  let hitRate = $derived((prefetchStats.cacheHits + prefetchStats.cacheMisses) > 0
     ? Math.round((prefetchStats.cacheHits / (prefetchStats.cacheHits + prefetchStats.cacheMisses)) * 100)
-    : 0;
+    : 0);
 </script>
 
 <div class="ai-integration-demo min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
@@ -422,7 +422,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex items-center gap-4 mb-4">
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{embeddings.length} Vectors Loaded</span>
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">WebGPU Enabled</span>
-              <Button class="bits-btn" on:click={generateDemoEmbeddings} size="sm">
+              <Button class="bits-btn" onclick={generateDemoEmbeddings} size="sm">
 Regenerate Embeddings
 
             </div>
@@ -455,7 +455,7 @@ Regenerate Embeddings
             <div class="flex items-center gap-4 mb-4">
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Model: gemma3-legal</span>
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Streaming: Enabled</span>
-              <Button class="bits-btn" on:click={openAgentShell} size="sm">
+              <Button class="bits-btn" onclick={openAgentShell} size="sm">
 <Terminal class="h-4 w-4 mr-2" />
                 Open Agent Shell
 
@@ -463,13 +463,13 @@ Regenerate Embeddings
 
             <!-- Integration Test Buttons -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <Button on:click={testOllamaIntegration} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
+              <Button onclick={testOllamaIntegration} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
 Test AI Analysis
 
-              <Button on:click={testEmbeddingGeneration} class="bg-green-600 hover:bg-green-700 bits-btn bits-btn">
+              <Button onclick={testEmbeddingGeneration} class="bg-green-600 hover:bg-green-700 bits-btn bits-btn">
 Generate Embeddings
 
-              <Button on:click={testVectorSimilarity} class="bg-purple-600 hover:bg-purple-700 bits-btn bits-btn">
+              <Button onclick={testVectorSimilarity} class="bg-purple-600 hover:bg-purple-700 bits-btn bits-btn">
 Vector Similarity
 
             </div>
@@ -508,7 +508,7 @@ Vector Similarity
                   </div>
                 {/if}
               </div>
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 prefetchSend({ type: 'PREDICT_INTENT' })} size="sm">
                 Trigger Prediction
 
@@ -536,15 +536,15 @@ prefetchSend({ type: 'PREDICT_INTENT' })} size="sm">
 
             <!-- Control Buttons -->
             <div class="flex gap-4">
-              <Button class="bits-btn bg-green-600 hover:bg-green-700" on:click={() =>
+              <Button class="bits-btn bg-green-600 hover:bg-green-700" onclick={() =>
 prefetchSend({ type: 'CACHE_HIT', resource: 'demo' })} size="sm">
                 Simulate Cache Hit
 
-              <Button class="bits-btn bg-red-600 hover:bg-red-700" on:click={() =>
+              <Button class="bits-btn bg-red-600 hover:bg-red-700" onclick={() =>
 prefetchSend({ type: 'CACHE_MISS', resource: 'demo' })} size="sm">
                 Simulate Cache Miss
 
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">
                 Reset Metrics
 
@@ -566,7 +566,7 @@ prefetchSend({ type: 'RESET_METRICS' })} size="sm" variant="outline">
               </p>
             </div>
             <Button
-             on:click={isMonitoring ? stopPerformanceMonitoring : startPerformanceMonitoring}
+             onclick={isMonitoring ? stopPerformanceMonitoring : startPerformanceMonitoring}
               class={isMonitoring ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}
             >
 {#if isMonitoring}

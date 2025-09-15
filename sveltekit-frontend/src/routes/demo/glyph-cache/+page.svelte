@@ -460,21 +460,21 @@
         <div class="orchestration-controls">
           <button 
             class="nes-btn is-primary"
-            on:click={processWithGemma}
+            onclick={processWithGemma}
           >
             Process Legal Query
           </button>
           
           <button 
             class="nes-btn is-warning"
-            on:click={clearOrchestrationLog}
+            onclick={clearOrchestrationLog}
           >
             Clear Log
           </button>
           
           <button 
             class="nes-btn is-success"
-            on:click={runSystemValidation}
+            onclick={runSystemValidation}
           >
             Validate Systems
           </button>
@@ -551,10 +551,10 @@
               
               <div class="validation-details">
                 {#each $systemValidation.results as result}
-                  <div class="validation-item" class:success={(result as { success?: any; testName?: any; executionTime?: any }).success}>
-                    <span class="test-name">{(result as { success?: any; testName?: any; executionTime?: any }).testName}</span>
-                    <span class="test-time">{(result as { success?: any; testName?: any; executionTime?: any }).executionTime.toFixed(2)}ms</span>
-                    <span class="test-status">{(result as { success?: any; testName?: any; executionTime?: any }).success ? '✅' : '❌'}</span>
+                  <div class="validation-item" class:success={(result as { success?: unknown; testName?: unknown; executionTime?: unknown }).success}>
+                    <span class="test-name">{(result as { success?: unknown; testName?: unknown; executionTime?: unknown }).testName}</span>
+                    <span class="test-time">{(result as { success?: unknown; testName?: unknown; executionTime?: unknown }).executionTime.toFixed(2)}ms</span>
+                    <span class="test-status">{(result as { success?: unknown; testName?: unknown; executionTime?: unknown }).success ? '✅' : '❌'}</span>
                   </div>
                 {/each}
               </div>
@@ -994,7 +994,7 @@
     border-left: 4px solid;
   }
   
-  .validation-(item as { success?: any }).success {
+  .validation-(item as { success?: unknown }).success {
     border-left-color: #32CD32;
   }
   

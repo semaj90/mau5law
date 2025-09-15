@@ -76,13 +76,13 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch('/api/v1/cases');
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).success) {
-        cases = (result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.cases || [];
+      if ((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).success) {
+        cases = (result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.cases || [];
         console.log('Cases loaded:', cases.length);
       } else {
-        throw new Error((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).error || 'Failed to load cases');
+        throw new Error((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).error || 'Failed to load cases');
       }
     } catch (e) {
       error = `Failed to load cases: ${e instanceof Error ? e.message : 'Unknown error'}`;
@@ -109,9 +109,9 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify(createFormData)
       });
 
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).success) {
+      if ((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).success) {
         success = `Case "${createFormData.title}" created successfully`;
         showCreateForm = false;
         createFormData = {
@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
         };
         await loadCases(); // Refresh cases list
       } else {
-        throw new Error((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).error || 'Failed to create case');
+        throw new Error((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).error || 'Failed to create case');
       }
     } catch (e) {
       error = `Failed to create caseItem: ${e instanceof Error ? e.message : 'Unknown error'}`;
@@ -143,13 +143,13 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch(`/api/v1/cases/${caseId}`);
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).success) {
-        selectedCase = (result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.case;
+      if ((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).success) {
+        selectedCase = (result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.case;
         console.log('Case loaded:', selectedCase);
       } else {
-        throw new Error((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).error || 'Failed to load case');
+        throw new Error((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).error || 'Failed to load case');
       }
     } catch (e) {
       error = `Failed to load caseItem: ${e instanceof Error ? e.message : 'Unknown error'}`;
@@ -249,22 +249,22 @@ https://svelte.dev/e/js_parse_error -->
     const pollStatus = async () => {
       try {
         const response = await fetch(`/api/v1/jobs/${jobId}/status`);
-        const result = await (response as { json?: any }).json();
+        const result = await (response as { json?: unknown }).json();
 
-        if ((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).success) {
-          jobStatus = (result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.job;
-          if ((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.job.progress) {
-            uploadProgress = (result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.job.progress.percentage;
-            uploadStatus = (result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.job.progress.message;
+        if ((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).success) {
+          jobStatus = (result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.job;
+          if ((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.job.progress) {
+            uploadProgress = (result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.job.progress.percentage;
+            uploadStatus = (result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.job.progress.message;
           }
 
           // Stop polling if job is complete or failed
-          if (['completed', 'failed'].includes((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.job.status)) {
+          if (['completed', 'failed'].includes((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.job.status)) {
             if (statusPollingInterval) {
               clearInterval(statusPollingInterval);
               statusPollingInterval = null;
             }
-            if ((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.job.status === 'completed') {
+            if ((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.job.status === 'completed') {
               uploadProgress = 100;
               uploadStatus = 'Processing completed';
               success = 'Document processed successfully';
@@ -275,7 +275,7 @@ https://svelte.dev/e/js_parse_error -->
             } else {
               uploadProgress = 0;
               uploadStatus = 'Processing failed';
-              error = (result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.job.error || 'Processing failed';
+              error = (result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.job.error || 'Processing failed';
             }
           }
         }
@@ -343,11 +343,11 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).success) {
-        searchResults = (result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.results || [];
-        ragResponse = (result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.rag;
+      if ((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).success) {
+        searchResults = (result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.results || [];
+        ragResponse = (result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.rag;
         console.log('Search completed:', searchResults.length, 'results');
         if (searchResults.length === 0) {
           error = 'No relevant evidence found for your search query';
@@ -355,7 +355,7 @@ https://svelte.dev/e/js_parse_error -->
           success = `Found ${searchResults.length} relevant pieces of evidence`;
         }
       } else {
-        throw new Error((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).error || 'Search failed');
+        throw new Error((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).error || 'Search failed');
       }
     } catch (e) {
       error = `Search failed: ${e instanceof Error ? e.message : 'Unknown error'}`;
@@ -375,10 +375,10 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch(`/api/v1/cases/${selectedCase.id}/search/history`);
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
 
-      if ((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).success) {
-        searchHistory = (result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).data.history || [];
+      if ((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).success) {
+        searchHistory = (result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.history || [];
       }
     } catch (e) {
       console.error('Failed to load search history:', e);
@@ -453,7 +453,7 @@ https://svelte.dev/e/js_parse_error -->
         <h2 class="text-xl font-semibold text-gray-900">Cases</h2>
         <button
           class="btn nes-btn is-primary px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          on:click={() => showCreateForm = true}
+          onclick={() => showCreateForm = true}
           disabled={isLoading}
         >
           Create Case
@@ -475,7 +475,7 @@ https://svelte.dev/e/js_parse_error -->
               class="case-nier-bits-card p-4 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors"
               class:selected={selectedCase?.id === caseItem.id}
               role="button" tabindex="0"
-                on:click={() => loadCase(caseItem.id)}
+                onclick={() => loadCase(caseItem.id)}
             >
               <div class="flex justify-between items-start mb-2">
                 <h3 class="font-medium text-gray-900">{caseItem.title}</h3>
@@ -530,14 +530,14 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex space-x-2">
               <button
                 class="btn btn-search px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-                on:click={() => { showSearchModal = true; loadSearchHistory(); }}
+                onclick={() => { showSearchModal = true; loadSearchHistory(); }}
                 disabled={isLoading}
               >
                 Search Evidence
               </button>
               <button
                 class="btn nes-btn px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                on:click={() => showUploadModal = true}
+                onclick={() => showUploadModal = true}
                 disabled={isLoading}
               >
                 Upload Evidence
@@ -622,7 +622,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md">
       <h2 class="text-xl font-semibold mb-4">Create New Case</h2>
 
-      <form on:submit={async (e) => { e.preventDefault(); await createCase(); }}>
+      <form onsubmit={async (e) => { e.preventDefault(); await createCase(); }}>
         <div class="form-group mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2" for="-case-title-">
             Case Title *
@@ -679,7 +679,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex justify-end space-x-3">
           <button
             type="button"
-            on:click={() => showCreateForm = false}
+            onclick={() => showCreateForm = false}
             class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
             disabled={isLoading}
           >
@@ -704,13 +704,13 @@ https://svelte.dev/e/js_parse_error -->
     <div class="modal-content bg-white rounded-lg p-6 w-full max-w-md">
       <h2 class="text-xl font-semibold mb-4">Upload Evidence</h2>
 
-      <form on:submit={async (e) => { e.preventDefault(); await handleFileUpload(); }}>
+      <form onsubmit={async (e) => { e.preventDefault(); await handleFileUpload(); }}>
         <div class="form-group mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2" for="-select-file-">
             Select File *
           </label><input id="-select-file-"
             type="file"
-            on:change={handleFileSelect}
+            onchange={handleFileSelect}
             required
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.mp4,.avi,.zip"
@@ -743,7 +743,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex justify-end space-x-3">
           <button
             type="button"
-            on:click={() => { showUploadModal = false; uploadFile = null; uploadProgress = 0; }}
+            onclick={() => { showUploadModal = false; uploadFile = null; uploadProgress = 0; }}
             class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
             disabled={isLoading}
           >
@@ -769,7 +769,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-semibold">Search Evidence - {selectedCase?.title}</h2>
         <button
-          on:click={() => { showSearchModal = false; clearSearch(); }}
+          onclick={() => { showSearchModal = false; clearSearch(); }}
           class="text-gray-500 hover:text-black text-2xl"
         >
           &times;
@@ -777,7 +777,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <!-- Search Form -->
-      <form on:submit={async (e) => { e.preventDefault(); await performSearch(); }}>
+      <form onsubmit={async (e) => { e.preventDefault(); await performSearch(); }}>
         <div class="flex gap-4 mb-6">
           <div class="flex-1">
             <input
@@ -805,7 +805,7 @@ https://svelte.dev/e/js_parse_error -->
           {#if searchResults.length > 0}
             <button
               type="button"
-              on:click={clearSearch}
+              onclick={clearSearch}
               class="px-4 py-3 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200"
             >
               Clear
@@ -839,31 +839,31 @@ https://svelte.dev/e/js_parse_error -->
             Found {searchResults.length} relevant evidence items
           </h3>
           <div class="space-y-4">
-            {#each searchResults as result, index ((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).id)}
+            {#each searchResults as result, index ((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).id)}
               <div class="result-nier-bits-card border border-gray-200 rounded-lg p-4">
                 <div class="flex justify-between items-start mb-2">
-                  <h4 class="font-medium text-gray-900">{(result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).title}</h4>
+                  <h4 class="font-medium text-gray-900">{(result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).title}</h4>
                   <div class="flex items-center space-x-2">
                     <span class="evidence-type px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
-                      {(result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).evidenceType}
+                      {(result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).evidenceType}
                     </span>
-                    <span class="similarity-score px-2 py-1 text-xs rounded-full {getSimilarityColor((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).similarity)}">
-                      {getSimilarityPercentage((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).similarity)} match
+                    <span class="similarity-score px-2 py-1 text-xs rounded-full {getSimilarityColor((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).similarity)}">
+                      {getSimilarityPercentage((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).similarity)} match
                     </span>
                   </div>
                 </div>
 
                 <div class="content mb-3">
                   <p class="text-sm text-gray-700 line-clamp-4">
-                    {(result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).content.substring(0, 300)}...
+                    {(result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).content.substring(0, 300)}...
                   </p>
                 </div>
 
                 <div class="metadata text-xs text-gray-500 flex justify-between">
                   <span>
-                    Created: {formatDate((result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).createdAt)}
-                    {#if (result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).filePath}
-                      • File: {(result as { success?: any; data?: any; error?: any; id?: any; title?: any; evidenceType?: any; similarity?: any; content?: any; createdAt?: any; filePath?: any }).filePath.split('/').pop()}
+                    Created: {formatDate((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).createdAt)}
+                    {#if (result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).filePath}
+                      • File: {(result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).filePath.split('/').pop()}
                     {/if}
                   </span>
                   <span>
@@ -892,7 +892,7 @@ https://svelte.dev/e/js_parse_error -->
             {#each searchHistory.slice(0, 5) as historyItem (historyItem.timestamp)}
               <button
                 class="w-full text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
-                on:click={() => { searchQuery = historyItem.query; performSearch(); }}
+                onclick={() => { searchQuery = historyItem.query; performSearch(); }}
               >
                 <div class="font-medium text-sm text-gray-900">{historyItem.query}</div>
                 <div class="text-xs text-gray-500 mt-1">

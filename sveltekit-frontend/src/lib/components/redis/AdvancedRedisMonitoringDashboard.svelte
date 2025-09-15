@@ -10,7 +10,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   import { redisStats, redisOrchestratorClient } from '$lib/stores/redis-orchestrator-store';
   
   // Create unified SIMD parser instance
-  let unifiedSIMDParser: any;
+  let unifiedSIMDParser: unknown;
   
   // Real-time metrics stores
   const liveMetrics = writable({
@@ -172,8 +172,8 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   async function getMCPStats() {
     try {
       const response = await fetch('http://localhost:3002/mcp/metrics');
-      if ((response as { ok?: any; json?: any }).ok) {
-        return await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        return await (response as { ok?: unknown; json?: unknown }).json();
       }
       return { active_workers: 16, rps: 0, avg_response_ms: 0 };
     } catch {
@@ -186,7 +186,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     return hitRate > 0 ? Math.round((hitRate / 100) * 2500) : 0; // Up to 2500x improvement
   }
 
-  function checkPerformanceAlerts(metrics: any) {
+  function checkPerformanceAlerts(metrics: unknown) {
     const alerts = [];
     
     if (metrics.redis.hit_rate < 70) {
@@ -372,16 +372,16 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   <div class="control-panel">
     <h3>🎮 System Controls</h3>
     <div class="controls-grid">
-      <button class="control-btn" on:click={() => unifiedSIMDParser.clearAllCaches()}>
+      <button class="control-btn" onclick={() => unifiedSIMDParser.clearAllCaches()}>
         🧹 Clear All Caches
       </button>
-      <button class="control-btn" on:click={() => window.open('/admin/redis', '_blank')}>
+      <button class="control-btn" onclick={() => window.open('/admin/redis', '_blank')}>
         📊 Detailed Analytics
       </button>
-      <button class="control-btn" on:click={() => window.open('http://localhost:3002/mcp/workers', '_blank')}>
+      <button class="control-btn" onclick={() => window.open('http://localhost:3002/mcp/workers', '_blank')}>
         👥 MCP Workers
       </button>
-      <button class="control-btn" on:click={() => location.reload()}>
+      <button class="control-btn" onclick={() => location.reload()}>
         🔄 Refresh Dashboard
       </button>
     </div>
@@ -593,12 +593,12 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     margin-bottom: 10px;
   }
 
-  .alert-(item as { warning?: any; error?: any }).warning {
+  .alert-(item as { warning?: unknown; error?: unknown }).warning {
     background: rgba(252, 252, 84, 0.1);
     border-left: 4px solid #fcfc54;
   }
 
-  .alert-(item as { warning?: any; error?: any }).error {
+  .alert-(item as { warning?: unknown; error?: unknown }).error {
     background: rgba(252, 84, 84, 0.1);
     border-left: 4px solid #fc5454;
   }

@@ -3,11 +3,12 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- EnhancedRAG:Studio UI - Complete RAG Management Dashboard -->
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   interface Props { class?: string; children?: import('svelte').Snippet }
   import { onMount } from 'svelte';
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Input } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Badge } from '$lib/components/ui/badge';
@@ -16,7 +17,7 @@ https://svelte.dev/e/attribute_duplicate -->
   // State management types
   interface SearchResultMeta { title?: string; type?: string }
   interface SearchResult { id: string; score: number; content: string; metadata: SearchResultMeta }
-  interface LogEntry { action: string; metadata: any; timestamp: string }
+  interface LogEntry { action: string; metadata: unknown; timestamp: string }
   interface ServiceStatus { services?: Record<string, boolean>; indexStats?: { num_docs?: number } }
   interface RLMetrics { positive?: number; negative?: number; avgScore?: number }
 
@@ -69,7 +70,7 @@ https://svelte.dev/e/attribute_duplicate -->
   async function loadServiceStatus() {
     try {
       const response = await fetch('/api/rag?action=status');
-      const data = await (response as { json?: any }).json();
+      const data = await (response as { json?: unknown }).json();
       serviceStatus = data;
     } catch (error) {
       console.error('Failed to load service status:', error);
@@ -79,8 +80,8 @@ https://svelte.dev/e/attribute_duplicate -->
   async function loadRecentLogs() {
     try {
       const response = await fetch('/api/logs');
-      const data = await (response as { json?: any }).json();
-      recentLogs = ((data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).logs || []) as LogEntry[];
+      const data = await (response as { json?: unknown }).json();
+      recentLogs = ((data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).logs || []) as LogEntry[];
     } catch (error) {
       console.error('Failed to load logs:', error);
     }
@@ -89,8 +90,8 @@ https://svelte.dev/e/attribute_duplicate -->
   async function loadEmbeddings() {
     try {
       const response = await fetch('/api/embeddings');
-      const data = await (response as { json?: any }).json();
-      embeddings = (data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).embeddings || [];
+      const data = await (response as { json?: unknown }).json();
+      embeddings = (data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).embeddings || [];
     } catch (error) {
       console.error('Failed to load embeddings:', error);
     }
@@ -110,11 +111,11 @@ https://svelte.dev/e/attribute_duplicate -->
         })
       });
 
-      const data = await (response as { json?: any }).json();
-      searchResults = ((data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).results || []) as SearchResult[];
+      const data = await (response as { json?: unknown }).json();
+      searchResults = ((data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).results || []) as SearchResult[];
 
       // Log search activity
-      await logActivity('search', { query: searchQuery, results: (data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).results?.length || 0 });
+      await logActivity('search', { query: searchQuery, results: (data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).results?.length || 0 });
 
     } catch (error) {
       console.error('Search failed:', error);
@@ -136,10 +137,10 @@ https://svelte.dev/e/attribute_duplicate -->
         body: formData
       });
 
-      const data = await (response as { json?: any }).json();
+      const data = await (response as { json?: unknown }).json();
 
-      if ((data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).success) {
-        await logActivity('upload', { filename: uploadFile.name, chunks: (data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).document.chunks });
+      if ((data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).success) {
+        await logActivity('upload', { filename: uploadFile.name, chunks: (data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).document.chunks });
         uploadFile = null;
         await loadEmbeddings();
       }
@@ -165,10 +166,10 @@ https://svelte.dev/e/attribute_duplicate -->
         })
       });
 
-      const data = await (response as { json?: any }).json();
+      const data = await (response as { json?: unknown }).json();
 
-      if ((data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).success) {
-        await logActivity('crawl', { url: crawlUrl, chunks: (data as { logs?: any; embeddings?: any; results?: any; success?: any; document?: any }).document.chunks });
+      if ((data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).success) {
+        await logActivity('crawl', { url: crawlUrl, chunks: (data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).document.chunks });
         crawlUrl = '';
         await loadEmbeddings();
       }
@@ -200,7 +201,7 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   }
 
-  async function logActivity(action: string, metadata: any) {
+  async function logActivity(action: string, metadata: unknown) {
     try {
       await fetch('/api/logs', {
         method: 'POST',
@@ -268,7 +269,7 @@ https://svelte.dev/e/attribute_duplicate -->
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'search' ? 'default' : 'outline'}
-      on:click={() =>
+      onclick={() =>
 activeTab = 'search'}
     >
       <Search class="w-4 h-4" />
@@ -277,7 +278,7 @@ activeTab = 'search'}
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'upload' ? 'default' : 'outline'}
-      on:click={() =>
+      onclick={() =>
 activeTab = 'upload'}
     >
       <Upload class="w-4 h-4" />
@@ -286,7 +287,7 @@ activeTab = 'upload'}
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'crawl' ? 'default' : 'outline'}
-      on:click={() =>
+      onclick={() =>
 activeTab = 'crawl'}
     >
       <Globe class="w-4 h-4" />
@@ -295,7 +296,7 @@ activeTab = 'crawl'}
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'logs' ? 'default' : 'outline'}
-      on:click={() =>
+      onclick={() =>
 activeTab = 'logs'}
     >
       <FileText class="w-4 h-4" />
@@ -304,7 +305,7 @@ activeTab = 'logs'}
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'settings' ? 'default' : 'outline'}
-      on:click={() =>
+      onclick={() =>
 activeTab = 'settings'}
     >
       <Settings class="w-4 h-4" />
@@ -329,9 +330,9 @@ activeTab = 'settings'}
                 bind:value={searchQuery}
                 placeholder="Enter your search query..."
                 class="flex-1"
-                on:keydown={(e: KeyboardEvent) => e.key === 'Enter' && handleSearch()}
+                onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && handleSearch()}
               />
-              <Button class="bits-btn" on:click={handleSearch} disabled={isLoading || !searchQuery.trim()}>
+              <Button class="bits-btn" onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
 {#if isLoading}
                   <RefreshCw class="w-4 h-4 animate-spin" />
                 {:else}
@@ -349,27 +350,27 @@ activeTab = 'settings'}
                   <div class="border rounded-lg p-4 space-y-2">
                     <div class="flex justify-between items-start">
                       <div class="flex-1">
-                        <div class="font-medium">{(result as { metadata?: any; content?: any; score?: any; id?: any }).metadata.title || 'Untitled'}</div>
-                        <div class="text-sm text-gray-600 mb-2">{(result as { metadata?: any; content?: any; score?: any; id?: any }).content}</div>
+                        <div class="font-medium">{(result as { metadata?: unknown; content?: unknown; score?: unknown; id?: unknown }).metadata.title || 'Untitled'}</div>
+                        <div class="text-sm text-gray-600 mb-2">{(result as { metadata?: unknown; content?: unknown; score?: unknown; id?: unknown }).content}</div>
                         <div class="flex gap-2">
-                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Score: {(result as { metadata?: any; content?: any; score?: any; id?: any }).score.toFixed(3)}</span>
-                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { metadata?: any; content?: any; score?: any; id?: any }).metadata.type}</span>
+                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Score: {(result as { metadata?: unknown; content?: unknown; score?: unknown; id?: unknown }).score.toFixed(3)}</span>
+                          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { metadata?: unknown; content?: unknown; score?: unknown; id?: unknown }).metadata.type}</span>
                         </div>
                       </div>
                       <div class="flex gap-1 ml-4">
                         <Button class="bits-btn"
                           size="sm"
                           variant="outline"
-                          on:click={() =>
-submitFeedback((result as { metadata?: any; content?: any; score?: any; id?: any }).id, 1)}
+                          onclick={() =>
+submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unknown; id?: unknown }).id, 1)}
                         >
                           👍
 
                         <Button class="bits-btn"
                           size="sm"
                           variant="outline"
-                          on:click={() =>
-submitFeedback((result as { metadata?: any; content?: any; score?: any; id?: any }).id, -1)}
+                          onclick={() =>
+submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unknown; id?: unknown }).id, -1)}
                         >
                           👎
 
@@ -397,11 +398,11 @@ submitFeedback((result as { metadata?: any; content?: any; score?: any; id?: any
                 type="file"
                 accept=".pdf"
                 id="rag-upload-file"
-                on:change={(e: Event) => { const t = e.target as HTMLInputElement; uploadFile = t.files?.[0] || null; }}
+                onchange={(e: Event) => { const t = e.target as HTMLInputElement; uploadFile = t.files?.[0] || null; }}
                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
             </div>
-            <Button class="bits-btn" on:click={handleUpload} disabled={isLoading || !uploadFile}>
+            <Button class="bits-btn" onclick={handleUpload} disabled={isLoading || !uploadFile}>
 {#if isLoading}
                 <RefreshCw class="w-4 h-4 animate-spin mr-2" />
               {:else}
@@ -430,7 +431,7 @@ submitFeedback((result as { metadata?: any; content?: any; score?: any; id?: any
                 type="url"
               />
             </div>
-            <Button class="bits-btn" on:click={handleCrawl} disabled={isLoading || !crawlUrl.trim()}>
+            <Button class="bits-btn" onclick={handleCrawl} disabled={isLoading || !crawlUrl.trim()}>
 {#if isLoading}
                 <RefreshCw class="w-4 h-4 animate-spin mr-2" />
               {:else}

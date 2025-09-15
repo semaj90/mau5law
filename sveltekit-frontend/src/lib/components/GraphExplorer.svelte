@@ -145,13 +145,13 @@ https://svelte.dev/e/js_parse_error -->
           maxResults: 20
         }
       });
-      searchResults = (result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).results;
+      searchResults = (result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).results;
       // Add AI response to chat
       await db.addChatMessage({
         role: 'assistant',
-        content: `Found ${(result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).results.length} results in ${(result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).metrics.totalTime}ms`,
+        content: `Found ${(result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).results.length} results in ${(result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).metrics.totalTime}ms`,
         metadata: {
-          responseTime: (result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).metrics.totalTime,
+          responseTime: (result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).metrics.totalTime,
           legalContext: {
             documentType: 'search_results'
           }
@@ -315,7 +315,7 @@ https://svelte.dev/e/js_parse_error -->
         disabled={isSearching}
       />
       <button 
-        on:click={handleSearch}
+        onclick={handleSearch}
         disabled={isSearching || !searchQuery.trim()}
         class="search-btn"
       >
@@ -324,13 +324,13 @@ https://svelte.dev/e/js_parse_error -->
     </div>
     
     <div class="actions">
-      <button on:click={addSampleData} class="action-btn">
+      <button onclick={addSampleData} class="action-btn">
         Add Sample Data
       </button>
-      <button on:click={() => updatePerformanceStats()} class="action-btn">
+      <button onclick={() => updatePerformanceStats()} class="action-btn">
         Refresh Stats
       </button>
-      <button on:click={clearAllData} class="action-btn danger">
+      <button onclick={clearAllData} class="action-btn danger">
         Clear All
       </button>
     </div>
@@ -342,7 +342,7 @@ https://svelte.dev/e/js_parse_error -->
       <h3>Interactive Graph ({nodes.length} nodes)</h3>
       <canvas 
         bind:this={canvas as any}
-        on:click={handleCanvasInteraction}
+        onclick={handleCanvasInteraction}
         width="800"
         height="600"
         class="graph-canvas"
@@ -365,16 +365,16 @@ https://svelte.dev/e/js_parse_error -->
         <div class="results-grid">
           {#each searchResults as result}
             <div class="result-nier-bits-card">
-              <div class="result-score">{((result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).score * 100).toFixed(1)}%</div>
+              <div class="result-score">{((result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).score * 100).toFixed(1)}%</div>
               <div class="result-content">
-                <h4>{(result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).id}</h4>
-                <p>{(result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).content}</p>
+                <h4>{(result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).id}</h4>
+                <p>{(result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).content}</p>
                 <div class="result-meta">
-                  <span class="meta-tag">{(result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).metadata.documentType}</span>
-                  <span class="meta-tag">{(result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).metadata.source}</span>
-                  {#if (result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).metadata.legalAnalysis}
-                    <span class="risk-{(result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).metadata.legalAnalysis.riskLevel}">
-                      {(result as { results?: any; metrics?: any; score?: any; id?: any; content?: any; metadata?: any }).metadata.legalAnalysis.riskLevel} risk
+                  <span class="meta-tag">{(result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).metadata.documentType}</span>
+                  <span class="meta-tag">{(result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).metadata.source}</span>
+                  {#if (result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).metadata.legalAnalysis}
+                    <span class="risk-{(result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).metadata.legalAnalysis.riskLevel}">
+                      {(result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).metadata.legalAnalysis.riskLevel} risk
                     </span>
                   {/if}
                 </div>

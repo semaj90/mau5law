@@ -28,7 +28,7 @@
   let statusMessage = $state('Ready to demonstrate GPU vector processing with cached shaders');
 
   // Nintendo memory configuration
-  const memoryBudget: any = {
+  const memoryBudget: unknown = {
     L1: 32 * 1024,      // 32KB - Fast access cache
     L2: 256 * 1024,     // 256KB - Shader storage  
     L3: 8 * 1024 * 1024, // 8MB - Vector buffers
@@ -37,7 +37,7 @@
     PRG_ROM: 2 * 1024 * 1024  // 2MB - Compute shader cache
   };
 
-  const processingConfig: any = {
+  const processingConfig: unknown = {
     dimensions: 768,
     quantization: 'float32',
     batchSize: 32,
@@ -282,8 +282,8 @@
         const result = await tempProcessor.processEmbeddings(params);
         results.push(result);
         
-        statusMessage = `Testing ${quantization} quantization: ${(result as { processingTime?: any; memoryUsed?: any }).processingTime.toFixed(2)}ms, ` +
-          `${(result as { processingTime?: any; memoryUsed?: any }).memoryUsed} bytes`;
+        statusMessage = `Testing ${quantization} quantization: ${(result as { processingTime?: unknown; memoryUsed?: unknown }).processingTime.toFixed(2)}ms, ` +
+          `${(result as { processingTime?: unknown; memoryUsed?: unknown }).memoryUsed} bytes`;
         
         // Small delay to show progress
         await new Promise(resolve => setTimeout(resolve, 200));
@@ -432,7 +432,7 @@
         </p>
         
         <button
-          on:click={demonstrateSingleVectorProcessing}
+          onclick={demonstrateSingleVectorProcessing}
           disabled={!isInitialized || isProcessing}
           class=\"w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded mb-4\"
@@ -460,7 +460,7 @@
         </p>
         
         <button
-          on:click={demonstrateBatchProcessing}
+          onclick={demonstrateBatchProcessing}
           disabled={!isInitialized || isProcessing}
           class=\"w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded mb-4\"
@@ -488,7 +488,7 @@
         </p>
         
         <button
-          on:click={demonstrateAdaptiveQuantization}
+          onclick={demonstrateAdaptiveQuantization}
           disabled={!isInitialized || isProcessing}
           class=\"w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded mb-4\"
@@ -514,7 +514,7 @@
         </p>
         
         <button
-          on:click={demonstrateCachePerformance}
+          onclick={demonstrateCachePerformance}
           disabled={!isInitialized || isProcessing}
           class=\"w-full px-4 py-2 bg-green-900 border border-green-500 hover:bg-green-800 
                  disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded mb-4\"

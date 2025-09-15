@@ -21,7 +21,7 @@
 
   import { fade, slide, scale } from 'svelte/transition';
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { cn } from '$lib/utils';
   let showTooltip = $state(false);
   let showConfig = $state(false);
@@ -64,8 +64,8 @@
   <!-- Main Toggle Button -->
   <div
     class="toggle-container"
-    on:mouseenter={() => showTooltip = true}
-    on:mouseleave={() => showTooltip = false}
+    onmouseenter={() => showTooltip = true}
+    onmouseleave={() => showTooltip = false}
     role="button"
     tabindex="0"
   >
@@ -73,7 +73,7 @@
       variant={enabled ? "crimson" : "nier"}
       size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
       disabled={loading || (!premium && !enabled)}
-      on:click={handleToggle}
+      onclick={handleToggle}
       class={cn(
         "thinking-toggle-btn transition-all duration-300",
         enabled && "animate-crimson-glow",
@@ -110,7 +110,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click={handleConfigure}
+        onclick={handleConfigure}
         class="config-btn ml-2 bits-btn bits-btn"
         disabled={loading}
       >
@@ -123,7 +123,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click={handleUpgrade}
+        onclick={handleUpgrade}
         class="upgrade-btn ml-2 bits-btn bits-btn"
       >
 <Info size={14} class="text-harvard-gold" />
@@ -246,7 +246,7 @@
       </div>
 
       <div class="config-actions">
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 showConfig = false}>
           Cancel
 </Button>
@@ -269,7 +269,7 @@ Save Configuration
           <strong>Unlock Advanced AI Reasoning</strong>
           <p>Get step-by-step legal analysis with transparent thinking process</p>
         </div>
-        <Button class="bits-btn" variant="gold" size="sm" on:click={handleUpgrade}>
+        <Button class="bits-btn" variant="gold" size="sm" onclick={handleUpgrade}>
 Upgrade Now
 </Button>
       </div>

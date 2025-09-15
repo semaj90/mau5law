@@ -3,7 +3,7 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
   // Component props
-  let { ...props }: any = $props();
+  let { ...props }: unknown = $props();
 
   import 'nes.css/css/nes.min.css';
 </script>
@@ -36,12 +36,12 @@ https://svelte.dev/e/expected_token -->
   async function loadSystemCapabilities() {
     try {
       const response = await fetch('/api/v1/webgpu/cache-demo');
-      const data = await (response as { json?: any }).json();
+      const data = await (response as { json?: unknown }).json();
       
-      if ((data as { success?: any; capabilities?: any; error?: any; result?: any }).success) {
-        systemCapabilities = (data as { success?: any; capabilities?: any; error?: any; result?: any }).capabilities;
+      if ((data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).success) {
+        systemCapabilities = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).capabilities;
       } else {
-        errorMessage = (data as { success?: any; capabilities?: any; error?: any; result?: any }).error || 'Failed to load system capabilities';
+        errorMessage = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).error || 'Failed to load system capabilities';
       }
     } catch (error) {
       errorMessage = `System check failed: ${error.message}`;
@@ -80,12 +80,12 @@ https://svelte.dev/e/expected_token -->
         body: JSON.stringify(requestData)
       });
       
-      const data = await (response as { json?: any }).json();
+      const data = await (response as { json?: unknown }).json();
       
-      if ((data as { success?: any; capabilities?: any; error?: any; result?: any }).success) {
-        demoResults = (data as { success?: any; capabilities?: any; error?: any; result?: any }).result;
+      if ((data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).success) {
+        demoResults = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).result;
       } else {
-        errorMessage = (data as { success?: any; capabilities?: any; error?: any; result?: any }).error || 'Demo execution failed';
+        errorMessage = (data as { success?: unknown; capabilities?: unknown; error?: unknown; result?: unknown }).error || 'Demo execution failed';
       }
     } catch (error) {
       errorMessage = `Demo failed: ${error.message}`;
@@ -200,7 +200,7 @@ https://svelte.dev/e/expected_token -->
     
     <button 
       class="run-demo-btn" 
-      on:click={runDemo} 
+      onclick={runDemo} 
       disabled={loading}
     >
       {loading ? '🔄 Running Demo...' : '🚀 Run Demo'}
@@ -398,7 +398,7 @@ https://svelte.dev/e/expected_token -->
     border: 1px solid #e5e7eb;
   }
   
-  .status-(item as { enabled?: any }).enabled .icon {
+  .status-(item as { enabled?: unknown }).enabled .icon {
     color: #10b981;
   }
   

@@ -7,8 +7,8 @@
   Usage:
   <HeadlessTypingListener 
     bind:text={userInput} 
-    on:contextualPrompt={handlePrompt}
-    on:analyticsUpdate={handleAnalytics}
+    oncontextualPrompt={handlePrompt}
+    onanalyticsUpdate={handleAnalytics}
   />
 -->
 
@@ -343,7 +343,7 @@
   /**
    * Public API - Send custom events to the machine
    */
-  export function sendEvent(event: any) {
+  export function sendEvent(event: unknown) {
     typingActor.send(event);
   }
 

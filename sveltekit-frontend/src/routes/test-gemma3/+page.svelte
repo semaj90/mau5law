@@ -6,7 +6,7 @@
   let prompt = $state("Explain the legal concept of due process in criminal law.");
   let response = $state("");
   let isLoading = $state(false);
-  let status: any = $state(null);
+  let status: unknown = $state(null);
   let error = $state("");
 
   async function testGemma3() {
@@ -130,7 +130,7 @@
     </div>
 
     <button
-      on:click={() => testGemma3()}
+      onclick={() => testGemma3()}
       disabled={isLoading || !status?.available}
       class="test-button"
     >

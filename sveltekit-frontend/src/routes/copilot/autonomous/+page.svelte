@@ -5,9 +5,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -54,15 +52,15 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   async function checkSystemStatus() {
     try {
       const response = await fetch('/api/copilot/self-prompt?mode=status');
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
         systemStatus = {
-          copilotIntegration: (data as { status?: any; services?: any }).status === 'operational',
-          semanticSearch: (data as { status?: any; services?: any }).services?.semanticSearch || false,
-          memoryMCP: (data as { status?: any; services?: any }).services?.memoryMCP || false,
-          multiAgent: (data as { status?: any; services?: any }).services?.multiAgent || false,
-          autonomousEngineering: (data as { status?: any; services?: any }).services?.autonomousEngineering || false,
-          serviceWorkers: (data as { status?: any; services?: any }).services?.serviceWorkers || false
+          copilotIntegration: (data as { status?: unknown; services?: unknown }).status === 'operational',
+          semanticSearch: (data as { status?: unknown; services?: unknown }).services?.semanticSearch || false,
+          memoryMCP: (data as { status?: unknown; services?: unknown }).services?.memoryMCP || false,
+          multiAgent: (data as { status?: unknown; services?: unknown }).services?.multiAgent || false,
+          autonomousEngineering: (data as { status?: unknown; services?: unknown }).services?.autonomousEngineering || false,
+          serviceWorkers: (data as { status?: unknown; services?: unknown }).services?.serviceWorkers || false
         };
       }
     } catch (error) {
@@ -274,7 +272,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
             <Settings class="h-5 w-5" />
             System Architecture
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 showArchitecture = !showArchitecture}>
             {showArchitecture ? 'Hide' : 'Show'} Details
 
@@ -323,7 +321,7 @@ showArchitecture = !showArchitecture}>
             <Code class="h-5 w-5" />
             VS Code Extension Integration
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 showIntegration = !showIntegration}>
             {showIntegration ? 'Hide' : 'Show'} Examples
 

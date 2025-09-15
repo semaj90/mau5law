@@ -5,7 +5,7 @@ https://svelte.dev/e/illegal_element_attribute -->
   import 'nes.css/css/nes.min.css';
   import { ModularDialog } from '../modular-dialog';
   import { ModularCommand } from '../modular-command';
-  import { Button } from 'bits-ui';
+  import Button from 'bits-ui';
   import { Search, Plus, FileText, Users, Calendar } from 'lucide-svelte';
   import { reactiveApiClient } from '$lib/services/api-client';
   import type { Case, Evidence } from '$lib/types/api';
@@ -19,13 +19,13 @@ https://svelte.dev/e/illegal_element_attribute -->
   // Search and data management
   function handleCaseSelect(item: Case, type: string) {
     if (type === 'cases') {
-      selectedCaseId = (item as { id?: any }).id;
+      selectedCaseId = (item as { id?: unknown }).id;
       selectedCase = item;
       showCaseDialog = true;
     }
   }
 
-  function handleCommandSearch(item: any, type: string) {
+  function handleCommandSearch(item: unknown, type: string) {
     console.log(`Selected ${type}:`, item);
     switch (type) {
       case 'cases':
@@ -100,7 +100,7 @@ https://svelte.dev/e/illegal_element_attribute -->
     <div class="flex items-center gap-3">
       <!-- Global Search Button -->
       <button
-        on:click={() => showCommandPalette = true}
+        onclick={() => showCommandPalette = true}
         class="flex items-center gap-2 px-4 py-2 bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors font-mono"
       >
         <Search class="h-4 w-4" />
@@ -110,7 +110,7 @@ https://svelte.dev/e/illegal_element_attribute -->
       
       <!-- Create Case Button -->
       <button
-        on:click={createNewCase}
+        onclick={createNewCase}
         class="flex items-center gap-2 px-4 py-2 bg-yorha-accent text-yorha-text-accent border border-yorha-accent rounded-md hover:bg-yorha-accent/80 transition-colors font-mono"
       >
         <Plus class="h-4 w-4" />
@@ -122,7 +122,7 @@ https://svelte.dev/e/illegal_element_attribute -->
   <!-- Quick Actions -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
     <button
-      on:click={() => showCommandPalette = true}
+      onclick={() => showCommandPalette = true}
       class="p-4 bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors text-left"
     >
       <Search class="h-6 w-6 text-yorha-accent mb-2" />
@@ -131,7 +131,7 @@ https://svelte.dev/e/illegal_element_attribute -->
     </button>
     
     <button
-      on:click={createNewCase}
+      onclick={createNewCase}
       class="p-4 bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors text-left"
     >
       <Plus class="h-6 w-6 text-yorha-accent mb-2" />
@@ -246,13 +246,13 @@ https://svelte.dev/e/illegal_element_attribute -->
         <!-- Quick Actions -->
         <div class="flex flex-wrap gap-2">
           <button
-            on:click={() => updateCase({ status: 'investigating' })}
+            onclick={() => updateCase({ status: 'investigating' })}
             class="px-3 py-1 text-sm bg-yorha-accent text-yorha-text-accent border border-yorha-accent rounded-md hover:bg-yorha-accent/80 transition-colors font-mono"
           >
             Start Investigation
           </button>
           <button
-            on:click={refresh}
+            onclick={refresh}
             class="px-3 py-1 text-sm bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors font-mono"
           >
             Refresh Data
@@ -269,7 +269,7 @@ https://svelte.dev/e/illegal_element_attribute -->
   {#snippet footer({ close })}
     <div class="flex justify-end gap-2">
       <button
-        on:click={close}
+        onclick={close}
         class="px-4 py-2 text-sm bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors font-mono"
       >
         Close

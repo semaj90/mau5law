@@ -248,7 +248,7 @@ function applyTensorCoreAA(ctx: CanvasRenderingContext2D, width: number, height:
 
   // Apply 4-bit quantization simulation
   if (demoConfig.quantization === '4bit') {
-    for (let i = 0; i < (data as { length?: any }).length; i += 4) {
+    for (let i = 0; i < (data as { length?: unknown }).length; i += 4) {
       // Quantize RGB channels to 4-bit (0-15)
       data[i] = Math.round(data[i] / 17) * 17;     // Red
       data[i + 1] = Math.round(data[i + 1] / 17) * 17; // Green
@@ -297,8 +297,8 @@ async function processTestDocument() {
     quantization: demoConfig.quantization
   });
 
-  demoState.compressionRatio = (result as { compressionRatio?: any; processingTime?: any }).compressionRatio;
-  demoState.processingTime = (result as { compressionRatio?: any; processingTime?: any }).processingTime;
+  demoState.compressionRatio = (result as { compressionRatio?: unknown; processingTime?: unknown }).compressionRatio;
+  demoState.processingTime = (result as { compressionRatio?: unknown; processingTime?: unknown }).processingTime;
 
   console.log('✅ Test document processed:', result);
 }

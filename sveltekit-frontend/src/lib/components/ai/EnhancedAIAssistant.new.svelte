@@ -20,7 +20,7 @@ https://svelte.dev/e/attribute_duplicate -->
   let { maxHeight = $bindable()  }: { maxHeight = $bindable() : any } = $props(); // "400px";
   let { showReferences = $bindable()  }: { showReferences = $bindable() : any } = $props(); // true;
 
-  const dispatch = createEventDispatcher();
+  // TODO: Replace createEventDispatcher with callback props in Svelte 5
 
   // State
   let query = $state("");
@@ -102,12 +102,12 @@ https://svelte.dev/e/attribute_duplicate -->
     <div class="flex gap-2">
       <button
         class="p-2 hover:bg-gray-100 rounded"
-        on:click={() => (showSettings = !showSettings)}
+        onclick={() => (showSettings = !showSettings)}
         title="Settings"
       >
         <Settings class="w-4 h-4" />
       </button>
-      <button class="p-2 hover:bg-gray-100 rounded" on:click={() => clearMessages()} title="Clear">
+      <button class="p-2 hover:bg-gray-100 rounded" onclick={() => clearMessages()} title="Clear">
         <Trash2 class="w-4 h-4" />
       </button>
     </div>
@@ -127,7 +127,7 @@ https://svelte.dev/e/attribute_duplicate -->
             {#each message.references as reference}
               <button
                 class="flex items-center gap-2 p-2 text-left hover:bg-gray-50 rounded"
-                on:click={() => handleReferenceClick(reference)}
+                onclick={() => handleReferenceClick(reference)}
               >
                 <Quote class="w-4 h-4" />
                 <span class="font-medium">{reference.title}</span>
@@ -172,7 +172,7 @@ https://svelte.dev/e/attribute_duplicate -->
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <h4>Settings</h4>
-        <button class="container mx-auto px-4" on:click={() => (showSettings = false)}
+        <button class="container mx-auto px-4" onclick={() => (showSettings = false)}
           >×</button
         >
       </div>
@@ -233,7 +233,7 @@ https://svelte.dev/e/attribute_duplicate -->
       aria-modal="true"
       aria-labelledby="citation-dialog-title"
       tabindex={-1}
-      on:click={() => (showCitationDialog = false)}
+      onclick={() => (showCitationDialog = false)}
       keydown={(e) => e.key === "Escape" && (showCitationDialog = false)}
     >
       <div
@@ -257,12 +257,12 @@ https://svelte.dev/e/attribute_duplicate -->
           </div>
 
           <div class="flex gap-2">
-            <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" on:click={() => insertCitation()}>
+            <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onclick={() => insertCitation()}>
               Insert Citation
             </button>
             <button
               class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-              on:click={() => navigator.clipboard.writeText(selectedCitation)}
+              onclick={() => navigator.clipboard.writeText(selectedCitation)}
             >
               Copy
             </button>
@@ -272,7 +272,7 @@ https://svelte.dev/e/attribute_duplicate -->
         <div class="flex justify-end mt-4">
           <button
             class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-            on:click={() => (showCitationDialog = false)}
+            onclick={() => (showCitationDialog = false)}
           >
             Close
           </button>

@@ -75,7 +75,7 @@
         const modelsResponse = await fetch('http://localhost:11434/api/tags');
         if (modelsResponse.ok) {
           const models = await modelsResponse.json();
-          systemStatus.embeddings = models.models?.some((m: any) =>
+          systemStatus.embeddings = models.models?.some((m: unknown) =>
             m.name.includes('embed') || m.name.includes('mxbai')
           ) || false;
         }
@@ -117,14 +117,14 @@
         <button class="nes-btn"
           variant="outline"
           size="sm"
-          on:click={() => showSystemDialog = true}
+          onclick={() => showSystemDialog = true}
         >
           System Status
         </button>
         <button class="nes-btn"
           variant="outline"
           size="sm"
-          on:click={() => showConfigDialog = true}
+          onclick={() => showConfigDialog = true}
         >
           Demo Config
         </button>
@@ -390,10 +390,10 @@
       </div>
 
       <Dialog.Footer>
-        <button class="nes-btn" variant="outline" on:click={() => checkSystemStatus()}>
+        <button class="nes-btn" variant="outline" onclick={() => checkSystemStatus()}>
           Refresh Status
         </button>
-        <button class="nes-btn" on:click={() => showSystemDialog = false}>Close</button>
+        <button class="nes-btn" onclick={() => showSystemDialog = false}>Close</button>
       </Dialog.Footer>
     </Dialog.Content>
   </Dialog.Root>
@@ -499,10 +499,10 @@
       </div>
 
       <Dialog.Footer>
-        <button class="nes-btn" variant="outline" on:click={() => showConfigDialog = false}>
+        <button class="nes-btn" variant="outline" onclick={() => showConfigDialog = false}>
           Cancel
         </button>
-        <button class="nes-btn" on:click={() => showConfigDialog = false}>
+        <button class="nes-btn" onclick={() => showConfigDialog = false}>
           Apply Settings
         </button>
       </Dialog.Footer>
@@ -675,7 +675,7 @@
     margin-bottom: 0.5rem;
   }
 
-  .service-(item as { offline?: any }).offline {
+  .service-(item as { offline?: unknown }).offline {
     border-color: #ff6b6b;
     background: rgba(255, 107, 107, 0.1);
   }

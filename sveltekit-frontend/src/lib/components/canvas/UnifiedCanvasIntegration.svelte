@@ -8,9 +8,7 @@
   import { writable } from 'svelte/store';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
   import CanvasBoard from '$lib/components/yorha/CanvasBoard.svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   const dispatch = createEventDispatcher();
   interface Props {
     caseId?: string;
@@ -176,7 +174,7 @@
       <button class="nes-btn"
         variant={currentMode === 'evidence' ? 'default' : 'outline'}
         size="sm"
-        on:click={() => switchMode('evidence')}
+        onclick={() => switchMode('evidence')}
         class="bits-btn mode-btn"
       >
         📁 Evidence Only
@@ -185,7 +183,7 @@
       <button class="nes-btn"
         variant={currentMode === 'drawing' ? 'default' : 'outline'}
         size="sm" 
-        on:click={() => switchMode('drawing')}
+        onclick={() => switchMode('drawing')}
         class="bits-btn mode-btn"
       >
         🎨 Drawing Only
@@ -194,7 +192,7 @@
       <button class="nes-btn"
         variant={currentMode === 'both' ? 'default' : 'outline'}
         size="sm"
-        on:click={() => switchMode('both')}
+        onclick={() => switchMode('both')}
         class="bits-btn mode-btn"
       >
         🔄 Both
@@ -203,7 +201,7 @@
       <Button
         variant="outline"
         size="sm"
-        on:click={syncCanvasBoards}
+        onclick={syncCanvasBoards}
         disabled={syncInProgress}
         class="sync-btn bits-btn"
       >
@@ -212,7 +210,7 @@
       <Button
         variant="outline"
         size="sm"
-        on:click={clearAllCanvases}
+        onclick={clearAllCanvases}
         class="clear-btn bits-btn"
       >
 🗑️ Clear
@@ -233,9 +231,9 @@
           enableGPUProcessing={true}
           enableCUDAAcceleration={true}
           enableN64Style={true}
-          on:fileUploaded={handleEvidenceUploaded}
-          on:analysisComplete={handleAnalysisComplete}
-          on:canvasUpdated={syncCanvasBoards}
+          onfileUploaded={handleEvidenceUploaded}
+          onanalysisComplete={handleAnalysisComplete}
+          oncanvasUpdated={syncCanvasBoards}
         />
       </div>
     {/if}
@@ -249,10 +247,10 @@
           height={splitView ? 300 : 600}
           enableDrawing={true}
           showToolbar={true}
-          on:draw={handleYoRHaDrawing}
-          on:drawEnd={syncCanvasBoards}
-          on:clear={syncCanvasBoards}
-          on:neuralEngineReady={handleNeuralEngineReady}
+          ondraw={handleYoRHaDrawing}
+          ondrawEnd={syncCanvasBoards}
+          onclear={syncCanvasBoards}
+          onneuralEngineReady={handleNeuralEngineReady}
         />
       </div>
     {/if}
@@ -271,7 +269,7 @@
     
     <div class="status-actions">
       <button
-        on:click={exportCanvasState}
+        onclick={exportCanvasState}
         class="export-btn"
         title="Export Canvas State"
       >

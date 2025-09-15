@@ -191,7 +191,7 @@
 
     <div class="flex gap-3 mb-4">
       <button
-        on:click={runFullWorkflow}
+        onclick={runFullWorkflow}
         disabled={$loading}
         class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
       >
@@ -199,7 +199,7 @@
       </button>
 
       <button
-        on:click={runCopilotSelfPrompt}
+        onclick={runCopilotSelfPrompt}
         disabled={$loading}
         class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
       >

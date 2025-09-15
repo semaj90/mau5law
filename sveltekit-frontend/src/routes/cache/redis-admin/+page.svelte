@@ -174,7 +174,7 @@
       <Button 
         variant="outline" 
         size="sm"
-        on:click={toggleAutoRefresh}
+        onclick={toggleAutoRefresh}
         class="gap-2"
       >
         <Activity class="w-4 h-4 {isAutoRefresh ? 'text-green-600' : ''}" />
@@ -184,7 +184,7 @@
       <OrchestratedButton.Enhanced
         variant="outline"
         size="sm"
-        on:click={refreshData}
+        onclick={refreshData}
         disabled={isLoading}
         class="gap-2"
       >
@@ -216,7 +216,7 @@
       { id: 'tools', label: 'Tools', icon: Settings }
     ] as tab}
       <Button
-        on:click={() => selectedTab = tab.id}
+        onclick={() => selectedTab = tab.id}
         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
                {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
       >
@@ -353,7 +353,7 @@
                   <Button class="nes-btn"
                     variant="outline"
                     size="sm"
-                    on:click={() => viewKeyDetails(key.key)}
+                    onclick={() => viewKeyDetails(key.key)}
                   >
                     <Eye class="w-3 h-3" />
 
@@ -491,7 +491,7 @@
             type="submit"
             variant="destructive"
             class="gap-2"
-            on:click={(e) => {
+            onclick={(e) => {
               if (!confirm('Are you sure you want to flush all cache data? This cannot be undone.')) {
                 e.preventDefault();
               }

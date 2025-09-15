@@ -44,7 +44,7 @@ export interface SystemMetrics {
 }
 
 interface Props {
-  content: any;
+  content: unknown;
   assetType?: string;
   priority?: number;
   predictive?: boolean;

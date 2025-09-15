@@ -23,6 +23,8 @@ https://svelte.dev/e/expected_token -->
 
   let uploads: DocumentUpload[] = $state([]);
   let isDragging = $state(false);
+  let errorMessage = $state('');
+  let isLoading = $state(false);
   let fileInput = $state<HTMLInputElementconst API_BASE | null>(null)('http://localhost:8081/api');
   const MAX_LOCAL_STORAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -84,7 +86,8 @@ https://svelte.dev/e/expected_token -->
       await updateUpload(uploadId, { 
         status: 'error', 
         error: error instanceof Error ? error.message : 'Processing failed' 
-      });
+      
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';});
     }
   }
 
@@ -246,10 +249,10 @@ https://svelte.dev/e/expected_token -->
     class="upload-area border-2 border-dashed border-gray-600 rounded-lg p-8 text-center transition-colors duration-200"
     class:border-green-400={isDragging}
     class:bg-green-400={isDragging && 'opacity-10'}
-    on:drop={handleDrop}
-    role="region" aria-label="Drop zone" on:dragover={(e) => e.preventDefault()}
-    on:dragenter={() => isDragging = true}
-    on:dragleave={() => isDragging = false}
+    ondrop={handleDrop}
+    role="region" aria-label="Drop zone" ondragover={(e) => e.preventDefault()}
+    ondragenter={() => isDragging = true}
+    ondragleave={() => isDragging = false}
   >
     <div class="text-4xl mb-4">📄</div>
     <p class="text-lg mb-4">Drop PDFs or text files here, or click to browse</p>
@@ -259,11 +262,11 @@ https://svelte.dev/e/expected_token -->
       accept=".pdf,.txt,.json"
       multiple
       class="hidden"
-      on:change={handleFileInput}
+      onchange={handleFileInput}
     />
     <button 
       class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
-      on:click={() => fileInput.click()}
+      onclick={() => fileInput.click()}
     >
       Select Files
     </button>
@@ -290,7 +293,7 @@ https://svelte.dev/e/expected_token -->
         </div>
         <button 
           class="text-gray-400 hover:text-red-400 transition-colors"
-          on:click={() => removeUpload(upload.id)}
+          onclick={() => removeUpload(upload.id)}
         >
           ✕
         </button>
@@ -352,7 +355,7 @@ https://svelte.dev/e/expected_token -->
           <div class="flex space-x-3">
             <button 
               class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
-              on:click={() => downloadProcessedData(upload)}
+              onclick={() => downloadProcessedData(upload)}
             >
               📥 Download JSON
             </button>

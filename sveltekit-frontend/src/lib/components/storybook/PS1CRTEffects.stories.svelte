@@ -200,7 +200,7 @@ https://svelte.dev/e/expected_token -->
     transition: all 0.3s ease;
   }
 
-  .demo-(item as { active?: any }).active {
+  .demo-(item as { active?: unknown }).active {
     border-color: var(--ps1-accent);
     box-shadow: 0 0 20px var(--ps1-glow);
   }

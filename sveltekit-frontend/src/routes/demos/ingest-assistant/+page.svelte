@@ -13,9 +13,7 @@
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
   import CardTitle from '$lib/components/ui/CardTitle.svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { onMount } from 'svelte';
   type ServiceHealth = { upstream?: { port?: number; config?: { embed_model?: string; batch_size?: number } } };
   type IngestItem = { id: string; title: string; type: string; status: string; timestamp: string; processingTime: number };
@@ -196,7 +194,7 @@
           is available at <code>$lib/components/ai/IngestAIAssistant.svelte</code>
         </p>
         <div class="space-y-2">
-          <Button class="bits-btn" on:click={() =>
+          <Button class="bits-btn" onclick={() =>
 window.open('/api/v1/ingest', '_blank')}>
             Test API Directly
 
@@ -305,10 +303,10 @@ window.open('/api/v1/ingest', '_blank')}>
       AI-powered processing and vector semantic search
     </p>
     <div class="flex justify-center space-x-4">
-  <Button class="bits-btn" variant="outline" size="sm" on:click={checkServiceHealth}>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={checkServiceHealth}>
 🔄 Refresh Status
 
-  <Button class="bits-btn" variant="outline" size="sm" on:click={loadRecentIngests}>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={loadRecentIngests}>
 📊 Load Recent
 
     </div>
