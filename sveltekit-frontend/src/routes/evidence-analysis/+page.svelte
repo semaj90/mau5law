@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte';
   import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 
   let showWebGPUDemo = false;

@@ -1,9 +1,5 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  interface Props {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
   import { cn } from '$lib/utils/cn';
 
   interface CardFooterProps {

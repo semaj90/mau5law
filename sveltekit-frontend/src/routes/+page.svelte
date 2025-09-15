@@ -11,7 +11,7 @@
   import { cn } from '$lib/utils';
   import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
   import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
   import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
 

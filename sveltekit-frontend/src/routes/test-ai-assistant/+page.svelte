@@ -11,8 +11,17 @@
   import Badge from '$lib/components/ui/modular/Badge.svelte';
   import { cn } from '$lib/utils';
 
+  // Test interface
+  interface TestCase {
+    name: string;
+    endpoint: string;
+    description: string;
+    method?: string;
+    body?: any;
+  }
+
   // Svelte 5 runes for reactive state
-  let testResults = $state<Record<string, any>('')>({});
+  let testResults = $state<Record<string, any>>({});
   let isRunning = $state(false);
   let currentTest = $state('');
 
@@ -61,7 +70,7 @@
     }
   ];
 
-  async function runTest(test: unknown) {
+  async function runTest(test: TestCase) {
     currentTest = test.name;
     try {
       const options: RequestInit = {

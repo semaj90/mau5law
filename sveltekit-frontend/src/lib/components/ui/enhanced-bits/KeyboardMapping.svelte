@@ -6,7 +6,6 @@
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
-  import { createEventDispatcher } from 'svelte';
   import { cn } from '$lib/utils/cn';
 
   // Types
@@ -27,6 +26,8 @@
     enableGlobalShortcuts?: boolean;
     enableDebugMode?: boolean;
     className?: string;
+    onshortcutexecuted?: (data: { shortcut: KeyboardShortcut; event: KeyboardEvent }) => void;
+    onshortcutblocked?: (data: { shortcut: KeyboardShortcut; reason: string }) => void;
   }
 
   // Props
@@ -34,15 +35,16 @@
     shortcuts = [],
     enableGlobalShortcuts = true,
     enableDebugMode = false,
-    className = ''
+    className = '',
+    onshortcutexecuted,
+    onshortcutblocked
   }: KeyboardMappingProps = $props();
 
-  const dispatch = createEventDispatcher();
 
   // State
-  let pressedKeys = $state<Set<string>('')>(new Set());
+  let pressedKeys = $state<Set<string>>(new Set());
   let activeShortcuts = $state<KeyboardShortcut[]>([]);
-  let debugLog = $state<any[]>([])([]);
+  let debugLog = $state<any[]>([]);
 
   // Legal domain default shortcuts
   const defaultLegalShortcuts: KeyboardShortcut[] = [
@@ -266,13 +268,13 @@
         addDebugLog(`Executing shortcut: ${matchingShortcut.id}`);
         matchingShortcut.action();
         
-        dispatch('shortcutExecuted', {
+        onshortcutexecuted?.({
           shortcut: matchingShortcut,
           event
         });
       } catch (error) {
         addDebugLog(`Error executing shortcut: ${error}`, 'error');
-        dispatch('shortcutBlocked', {
+        onshortcutblocked?.({
           shortcut: matchingShortcut,
           reason: error instanceof Error ? error.message : 'Unknown error'
         });

@@ -138,11 +138,37 @@
     border-radius: 1px;
   }
 
-  /* Truncate text */
+  /* Truncate text with modern CSS fallbacks */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-overflow: ellipsis;
+
+    /* Modern CSS fallback for browsers that don't support line-clamp */
+    max-height: calc(1.2em * 2); /* Assuming line-height of 1.2 */
+    line-height: 1.2;
+
+    /* Container query support */
+    @supports not (-webkit-line-clamp: 2) {
+      max-height: 2.4em;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Gradient fade for better UX */
+    @supports not (-webkit-line-clamp: 2) {
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 3em;
+        height: 1.2em;
+        background: linear-gradient(to right, transparent, var(--background-color, white));
+        pointer-events: none;
+      }
+    }
   }
 </style>

@@ -1,11 +1,7 @@
 <!-- SSR-optimized Dialog component for Legal AI Platform -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+  import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
-  interface Props {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
   import { Dialog as BitsDialog } from 'bits-ui';
   import { fade, fly } from 'svelte/transition';
   import { cn } from '$lib/utils/cn';

@@ -457,7 +457,7 @@ export class WebGPURedisOptimizer {
   /**
    * Batch operations with parallel processing
    */
-  async batchOperations(operations: Array<): Promise<any[]> {
+  async batchOperations(operations: Array<any>): Promise<any[]> {
     const batchSize = this.OPTIMAL_BATCH_SIZE;
     const results: any[] = [];
 
@@ -539,7 +539,7 @@ export const optimizedCache = {
     });
   },
 
-  async batch(operations: Array<): Promise<any[]> {
+  async batch(operations: Array<any>): Promise<any[]> {
     return webgpuRedisOptimizer.batchOperations(operations);
   },
 

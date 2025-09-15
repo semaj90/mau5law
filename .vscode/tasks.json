@@ -352,6 +352,110 @@
 			},
 			"problemMatcher": [],
 			"detail": "Cleans up auto-generated error log files (keeps README.md)"
+		},
+		{
+			"label": "🤖 Start MCP Multicore Server",
+			"type": "shell",
+			"command": "node",
+			"args": ["scripts/mcp-multicore-server.mjs"],
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"env": {
+					"MCP_PORT": "3002",
+					"MCP_WORKERS": "4",
+					"RTX_3060_OPTIMIZATION": "true",
+					"CONTEXT7_MULTICORE": "true"
+				}
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"isBackground": true,
+			"problemMatcher": {
+				"pattern": {
+					"regexp": "^(.*)$",
+					"file": 1,
+					"location": 2,
+					"message": 3
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "Starting Enhanced MCP Multi-Core Server",
+					"endsPattern": "MCP Multi-Core Server ready"
+				}
+			},
+			"detail": "Starts MCP multicore server with Context7 integration for auto-solve tasks"
+		},
+		{
+			"label": "🔧 MCP Health Check",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-Command",
+				"try { $response = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/health' -Method Get; Write-Host 'MCP Status:' $response.status -ForegroundColor Green; Write-Host 'Workers:' $response.workers -ForegroundColor Yellow; Write-Host 'Uptime:' $response.uptime 'seconds' -ForegroundColor Cyan } catch { Write-Host 'MCP Server not running' -ForegroundColor Red }"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"problemMatcher": [],
+			"detail": "Checks MCP multicore server health and worker status"
+		},
+		{
+			"label": "📊 MCP Metrics Dashboard",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-Command",
+				"try { $metrics = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/metrics' -Method Get; Write-Host '=== MCP Metrics Dashboard ===' -ForegroundColor Magenta; Write-Host 'Workers:' $metrics.workers -ForegroundColor Green; Write-Host 'Memory RSS:' ([math]::Round($metrics.memory.rss/1MB, 2)) 'MB' -ForegroundColor Yellow; Write-Host 'GPU Optimization:' $metrics.gpu -ForegroundColor Cyan; $workers = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/workers' -Method Get; Write-Host 'Active Workers:' $workers.active 'of' $workers.total -ForegroundColor Blue } catch { Write-Host 'MCP Server not running' -ForegroundColor Red }"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"problemMatcher": [],
+			"detail": "Shows detailed MCP server metrics and worker status"
+		},
+		{
+			"label": "🚀 Start Full MCP Development Stack",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"🔧 Check Redis Connection",
+				"🤖 Start MCP Multicore Server",
+				"🔴 Start Redis Error Logger"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": true,
+				"clear": true
+			},
+			"detail": "Starts complete MCP-enabled development environment: Redis → MCP Server → Error Logger → SvelteKit"
 		}
 	]
 }

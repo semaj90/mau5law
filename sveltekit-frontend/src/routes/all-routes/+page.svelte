@@ -5,10 +5,10 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
-	import Card from '$lib/components/ui/Card.svelte';
-	import CardHeader from '$lib/components/ui/CardHeader.svelte';
-	import CardContent from '$lib/components/ui/CardContent.svelte';
-	import CardTitle from '$lib/components/ui/CardTitle.svelte';
+	import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
+	import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
+	import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
+	import CardTitle from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
 	import Dialog from '$lib/components/ui/enhanced-bits/Dialog.svelte';
 	import { DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from '$lib/components/ui/enhanced-bits/Dialog.svelte';
 

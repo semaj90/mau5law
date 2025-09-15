@@ -1,7 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import '$lib/styles/dropdown-global.css';
-  import { DropdownMenu as DropdownPrimitive } from "bits-ui";
+  import { DropdownMenu } from "bits-ui";
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   import { fade, scale } from 'svelte/transition';
@@ -39,14 +39,14 @@
   }
 </script>
 
-<DropdownPrimitive.Root bind:open onOpenChange={handleOpenChange}>
+<DropdownMenu.Root bind:open onOpenChange={handleOpenChange}>
   {#if trigger}
-    <DropdownPrimitive.Trigger class="legal-ai-dropdown-trigger">
+    <DropdownMenu.Trigger class="legal-ai-dropdown-trigger">
       {@render trigger()}
-    </DropdownPrimitive.Trigger>
+    </DropdownMenu.Trigger>
   {/if}
 
-  <DropdownPrimitive.Content
+  <DropdownMenu.Content
     class={contentClasses}
     side={placement}
     align="start"
@@ -58,8 +58,8 @@
     {#if children}
       {@render children()}
     {/if}
-  </DropdownPrimitive.Content>
-</DropdownPrimitive.Root>
+  </DropdownMenu.Content>
+</DropdownMenu.Root>
 
 <!-- Dropdown Item Component -->
 <script lang="ts" module>
@@ -74,7 +74,7 @@
 
 <!-- Export helper components for easier usage -->
 {#snippet DropdownItem({ class: className = '', disabled = false, destructive = false, children, onclick }: DropdownItemProps)}
-  <DropdownPrimitive.Item
+  <DropdownMenu.Item
     class={cn(
       "legal-ai-dropdown-item flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer",
       destructive
@@ -89,21 +89,21 @@
     {#if children}
       {@render children()}
     {/if}
-  </DropdownPrimitive.Item>
+  </DropdownMenu.Item>
 {/snippet}
 
 {#snippet DropdownSeparator({ class: className = '' }: { class?: string })}
-  <DropdownPrimitive.Separator
+  <DropdownMenu.Separator
     class={cn("h-px bg-amber-500/20 my-2", className)}
   />
 {/snippet}
 
 {#snippet DropdownLabel({ class: className = '', children }: { class?: string; children?: Snippet })}
-  <DropdownPrimitive.Label
+  <DropdownMenu.Label
     class={cn("px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500", className)}
   >
     {#if children}
       {@render children()}
     {/if}
-  </DropdownPrimitive.Label>
+  </DropdownMenu.Label>
 {/snippet}

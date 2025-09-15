@@ -148,7 +148,7 @@ export class QLoRAIntegrationAnalyzer {
    * Comprehensive analysis of feedback data for enhanced distillation
    */
   async analyzeFeedbackForDistillation(
-    feedbackBatch: Array<
+    feedbackBatch: Array<any>
   ): Promise<FeedbackAnalysis> {
     console.log(
       `🔍 Analyzing ${feedbackBatch.length} feedback entries for distillation optimization...`

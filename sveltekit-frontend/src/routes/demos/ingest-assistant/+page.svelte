@@ -9,11 +9,11 @@
   // Import IngestAIAssistant from '$lib/components/ai/IngestAIAssistant.svelte';
   // Use direct component imports (barrel was unreliable)
   import { Card } from '$lib/components/ui/enhanced-bits';
-  import CardContent from '$lib/components/ui/CardContent.svelte';
-  import CardHeader from '$lib/components/ui/CardHeader.svelte';
-  import CardTitle from '$lib/components/ui/CardTitle.svelte';
+  import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import { onMount } from 'svelte';
   type ServiceHealth = { upstream?: { port?: number; config?: { embed_model?: string; batch_size?: number } } };
   type IngestItem = { id: string; title: string; type: string; status: string; timestamp: string; processingTime: number };

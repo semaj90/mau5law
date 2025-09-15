@@ -1,9 +1,12 @@
 /**
  * Type definitions for embedding operations
+ * Enhanced for WASM + Web Workers + GPU AI
  */
 
 export interface EmbeddingRequest {
   text: string;
+  model?: string;
+  startTime?: number;
   metadata?: EmbeddingMetadata;
 }
 
@@ -27,11 +30,33 @@ export interface EmbeddingMetadata {
 }
 
 export interface BatchEmbeddingRequest {
-  documents: Array<any>;
+  texts: string[];
+  model?: string;
+  startTime?: number;
+  documents?: Array<any>;
   options?: {
     batchSize?: number;
     maxConcurrent?: number;
   };
+}
+
+export interface TextPreprocessingResult {
+  cleanText: string;
+  tokens: string[];
+  metadata: {
+    originalLength: number;
+    cleanedLength: number;
+    tokenCount: number;
+    hasSpecialChars: boolean;
+  };
+}
+
+export interface WASMEmbeddingConfig {
+  wasmPath: string;
+  modelPath?: string;
+  numThreads?: number;
+  memoryLimit?: number;
+  enableGPU?: boolean;
 }
 
 export interface BatchEmbeddingResponse {

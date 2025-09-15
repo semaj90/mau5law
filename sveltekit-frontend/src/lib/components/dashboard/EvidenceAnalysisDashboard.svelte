@@ -4,7 +4,7 @@
   import { fade, fly } from 'svelte/transition';
   import { AIEvidenceAnalyzer, type EvidenceItem, type EvidenceAnalysis } from '$lib/services/ai-evidence-analyzer';
   import EvidenceAnalysisVisualization from '$lib/components/visualizations/EvidenceAnalysisVisualization.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 
   let analyzer: AIEvidenceAnalyzer;

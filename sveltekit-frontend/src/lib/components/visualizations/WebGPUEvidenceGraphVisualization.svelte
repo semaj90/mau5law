@@ -2,10 +2,14 @@
   import { onMount, onDestroy } from 'svelte';
   import { WebGPUEvidenceGraph, type GraphNode, type GraphEdge } from '$lib/services/webgpu-evidence-graph';
   import type { EvidenceAnalysis, Correlation, Entity } from '$lib/services/ai-evidence-analyzer';
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
 
-  export let analysis: EvidenceAnalysis;
-  export let relatedAnalyses: EvidenceAnalysis[] = [];
+  interface Props {
+    analysis: EvidenceAnalysis;
+    relatedAnalyses?: EvidenceAnalysis[];
+  }
+
+  let { analysis, relatedAnalyses = [] }: Props = $props();
 
   let canvas: HTMLCanvasElement;
   let graph: WebGPUEvidenceGraph;

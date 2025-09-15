@@ -1,14 +1,13 @@
-<!-- Detective Board - Enhanced 3-Column Grid with NES.css, RabbitMQ & GPU Integration -->
+<!-- Detective Board - Enhanced 3-Column Grid with enhanced-bits UI, RabbitMQ & GPU Integration -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
-  	import Button from '$lib/components/ui/Button.svelte';
-  	import * as Card from '$lib/components/ui/card';
+  	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits';
+	import { alerts, showSuccess, showError, showInfo } from '$lib/stores/alerts';
   	import Badge from '$lib/components/ui/Badge.svelte';
   	import { page } from '$app/stores';
   	import Fuse from 'fuse.js';
   	import { dndzone } from 'svelte-dnd-action';
   	import { onMount } from 'svelte';
-  	import { Activity, Database, MessageSquare, Cpu, Zap, HardDrive } from 'lucide-svelte';
+  	import { Activity, Database, MessageSquare, Cpu, Zap, HardDrive, Bot, PanelRight } from 'lucide-svelte';
 
   	// SVELTE 5: External, app-wide stores are still valid.
   	// Access page data directly
@@ -18,6 +17,11 @@
   	import EvidenceCard from './EvidenceCard.svelte';
   	import UploadZone from './UploadZone.svelte';
   	import OptimizedMinIOUpload from '../upload/OptimizedMinIOUpload.svelte';
+
+	// AI Assistant Integration
+	import AIAssistantPanel from '../ai/AIAssistantPanel.svelte';
+	import { aiAssistant } from '$lib/stores/ai-assistant';
+	import { analyzeEvidence, findEvidenceConnections } from '$lib/ai/ai-service';
 
   	// Enhanced integrations
   	import { rabbitMQService } from '$lib/services/rabbitmq-service';
@@ -34,11 +38,16 @@
   	let allEvidence = $derived(evidenceStoreState.evidence || []);
 
   	// Case ID for associating uploaded evidence
-  	let caseId = $state('');
+  	let caseId = $state('case-001'); // Default case ID
 
   	// SVELTE 5: Use runes (`$state`) for all component-local state.
   	let viewMode = $state<'columns' | 'canvas'>('columns');
-  	let canvasContainer: HTMLDivElement | undefined;
+
+  	// AI Assistant state
+  	let showAIAssistant = $state(true);
+  	let selectedEvidenceIds = $state<string[]>([]);
+  	let aiHighlightedEvidence = $state<string[]>([]);
+  	let canvasContainer = $state<HTMLDivElement | undefined>();
   	let columns = $state([
   		{ id: 'new', title: 'New Evidence', items: [] },
   		{ id: 'processing', title: 'Processing', items: [] },
@@ -48,6 +57,7 @@
 
   	// SVELTE 5: Converted from writable store to a rune.
   	let activeUsers = $state([]);
+  	let selectedEvidenceIds = $state<string[]>([]);
 
   	// Enhanced system status tracking
   	let systemStatus = $state({
@@ -256,6 +266,73 @@
   		contextMenu.item = item;
   	}
 
+  	// AI Assistant Integration Functions
+  	function toggleAIAssistant() {
+  		showAIAssistant = !showAIAssistant;
+  	}
+
+  	function handleEvidenceSelect(evidenceId: string) {
+  		if (selectedEvidenceIds.includes(evidenceId)) {
+  			selectedEvidenceIds = selectedEvidenceIds.filter(id => id !== evidenceId);
+  		} else {
+  			selectedEvidenceIds = [...selectedEvidenceIds, evidenceId];
+  		}
+  	}
+
+  	function handleEvidenceHighlight(evidenceIds: string[]) {
+  		aiHighlightedEvidence = evidenceIds;
+  		// Clear highlights after 3 seconds
+  		setTimeout(() => {
+  			aiHighlightedEvidence = [];
+  		}, 3000);
+  	}
+
+  	function handleAIActionTrigger(event: CustomEvent) {
+  		const { type, data } = event.detail;
+
+  		switch (type) {
+  			case 'suggestions':
+  				// Handle AI suggestions
+  				console.log('AI Suggestions:', data);
+  				break;
+  			case 'evidence-connect':
+  				// Handle evidence connection suggestions
+  				console.log('Evidence connections:', data);
+  				break;
+  		}
+  	}
+
+  	async function analyzeSelectedEvidence() {
+  		if (selectedEvidenceIds.length === 0) return;
+
+  		try {
+  			if (selectedEvidenceIds.length === 1) {
+  				await analyzeEvidence(caseId, selectedEvidenceIds[0]);
+  			} else {
+  				await findEvidenceConnections(caseId, selectedEvidenceIds);
+  			}
+  		} catch (error) {
+  			console.error('Failed to analyze evidence:', error);
+  		}
+  	}
+
+  	// Initialize AI assistant with case context
+  	$effect(() => {
+  		if (caseId) {
+  			aiAssistant.initializeCase(caseId, 'Detective Board Case');
+
+  			// Add evidence to AI context when available
+  			allEvidence.forEach(evidence => {
+  				aiAssistant.addEvidence(caseId, {
+  					id: evidence.id,
+  					title: evidence.title || evidence.fileName || 'Unknown Evidence',
+  					annotations: evidence.annotations || [],
+  					connections: evidence.connections || []
+  				});
+  			});
+  		}
+  	});
+
   	function handleGlobalKeydown(event: KeyboardEvent) {
   		if (event.key === 'Escape') {
   			closeContextMenu();
@@ -312,7 +389,7 @@
   			// SVELTE 5: Use the reactive `allEvidence` rune directly. No `get()` needed.
   			const items = allEvidence || [];
   			const fuse = new Fuse(items, { keys: ['title', 'description', 'tags'] });
-  			const fuseResults = fuse.search(findModal.query || contextMenu.(item as { id?: any; title?: any; x?: any; y?: any }).title || '');
+  			const fuseResults = fuse.search(findModal.query || contextMenu.item?.title || '');
   			findModal.results = fuseResults.map((r) => r.item); // Extract the items
   		} catch (e) {
   			findModal.error = 'Local search failed';
@@ -324,7 +401,7 @@
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({
-  					query: findModal.query || contextMenu.(item as { id?: any; title?: any; x?: any; y?: any }).title
+  					query: findModal.query || contextMenu.item?.title
   				})
   			});
   			const vectorResults = await resp.json();
@@ -402,10 +479,10 @@
 
 <svelte:window onclick={closeContextMenu} onkeydown={handleGlobalKeydown} />
 
-<div class="w-full h-full min-h-screen bg-background detective-board-nes">
+<div class="w-full h-full min-h-screen bg-background detective-board">
 	<!-- Header -->
-	<Card.Root class="mb-6 nes-container is-rounded">
-		<div class="yorha-panel-header">
+	<Card class="mb-6">
+		<CardHeader>
 			<div class="flex justify-between items-center">
 				<div class="flex items-center gap-4">
 					<div
@@ -414,8 +491,8 @@
 						<span class="text-2xl">🕵️</span>
 					</div>
 					<div>
-						<h3 class="nes-text is-primary text-2xl">Detective Board</h3>
-						<p class="nes-text is-disabled">Case Evidence Management System</p>
+						<CardTitle class="text-2xl">Detective Board</CardTitle>
+						<p class="text-muted-foreground">Case Evidence Management System</p>
 					</div>
 				</div>
 
@@ -424,7 +501,6 @@
 					<div class="flex gap-2">
 						<Button
 							variant={viewMode === 'columns' ? 'default' : 'outline'}
-							class="bits-btn"
 							onclick={() => switchViewMode('columns')}
 							aria-pressed={viewMode === 'columns'}
 						>
@@ -433,12 +509,20 @@
 						</Button>
 						<Button
 							variant={viewMode === 'canvas' ? 'default' : 'outline'}
-							class="bits-btn"
 							onclick={() => switchViewMode('canvas')}
 							aria-pressed={viewMode === 'canvas'}
 						>
 							<span class="mr-2">🎨</span>
 							Canvas
+						</Button>
+						<Button
+							variant={showAIAssistant ? 'default' : 'outline'}
+							onclick={toggleAIAssistant}
+							aria-pressed={showAIAssistant}
+							size="sm"
+						>
+							<Bot class="w-4 h-4 mr-2" />
+							AI Assistant
 						</Button>
 					</div>
 
@@ -465,18 +549,20 @@
 						</div>
 					{/if}
 
-					<Button class="bits-btn" size="sm">
+					<Button size="sm">
 						<span class="mr-2">➕</span>
 						New Case
 					</Button>
 				</div>
 			</div>
-		</div>
-	</Card.Root>
+		</CardHeader>
+	</Card>
 
 	<!-- Main Board Area -->
-	<main class="flex-1">
-		{#if viewMode === 'columns'}
+	<main class="flex-1 flex gap-6">
+		<!-- Evidence Board Container -->
+		<div class="flex-1 min-w-0">
+			{#if viewMode === 'columns'}
 			<!-- Columns Container -->
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
 				{#each columns as column (column.id)}
@@ -517,7 +603,10 @@
 								{#each column.items as item ((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 									<div
 										class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105"
+										class:highlighted={aiHighlightedEvidence.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
+										class:selected={selectedEvidenceIds.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 										oncontextmenu={(e) => handleRightClick(e, item)}
+										onclick={() => handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 										role="button"
 										tabindex="0"
 									>
@@ -550,11 +639,14 @@
 						{#each canvasEvidence as item ((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 							<div
 								class="absolute p-4 bg-background border-2 border-border rounded-lg shadow-lg cursor-move hover:shadow-xl transition-shadow"
+								class:highlighted={aiHighlightedEvidence.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
+								class:selected={selectedEvidenceIds.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 								style="left: {(item as { id?: any; title?: any; x?: any; y?: any }).x || 100}px; top: {(item as { id?: any; title?: any; x?: any; y?: any }).y || 100}px; min-width: 200px;"
 								draggable="true"
 								ondragstart={(e) => handleCanvasDragStart(e, item)}
 								ondragend={(e) => handleCanvasDragEnd(e, item)}
 								oncontextmenu={(e) => handleRightClick(e, item)}
+								onclick={() => handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 								role="button"
 								tabindex="0"
 							>
@@ -594,6 +686,20 @@
 					</div>
 				</div>
 			</Card.Root>
+			{/if}
+		</div>
+
+		<!-- AI Assistant Panel -->
+		{#if showAIAssistant}
+			<div class="w-80 flex-shrink-0">
+				<AIAssistantPanel
+					{caseId}
+					bind:selectedEvidenceIds
+					on:evidence-select={(e) => handleEvidenceSelect(e.detail.evidenceId)}
+					on:evidence-highlight={(e) => handleEvidenceHighlight(e.detail.evidenceIds)}
+					on:action-trigger={handleAIActionTrigger}
+				/>
+			</div>
 		{/if}
 	</main>
 </div>
@@ -649,6 +755,15 @@
 				onclick={openFindModal}
 			>
 				Find Related...
+			</Button>
+			<Button
+				variant="ghost"
+				class="w-full justify-start bits-btn"
+				size="sm"
+				onclick={() => { analyzeSelectedEvidence(); closeContextMenu(); }}
+			>
+				<Bot class="w-4 h-4 mr-2" />
+				Ask AI About This
 			</Button>
 		</div>
 	</div>
@@ -933,5 +1048,25 @@
 
 	.detective-board-nes {
 		/* Add any additional detective board styles here */
+	}
+
+	/* AI Assistant Integration Styles */
+	:global(.highlighted) {
+		@apply ring-2 ring-yellow-400 ring-opacity-75 shadow-lg;
+		animation: pulse-highlight 2s ease-in-out;
+	}
+
+	:global(.selected) {
+		@apply ring-2 ring-primary ring-opacity-75 bg-primary/5;
+	}
+
+	@keyframes pulse-highlight {
+		0%, 100% {
+			@apply ring-opacity-75;
+		}
+		50% {
+			@apply ring-opacity-100 shadow-xl;
+			transform: scale(1.02);
+		}
 	}
 </style>

@@ -8,13 +8,18 @@ require (
 	github.com/go-json-experiment/json v0.0.0-20250910080747-cc2cfa0554c3
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gorilla/mux v1.8.1
+	github.com/gorilla/websocket v1.5.3
 	github.com/jackc/pgx/v5 v5.7.6
+	github.com/lib/pq v1.10.9
 	github.com/minio/minio-go/v7 v7.0.95
 	github.com/nats-io/nats.go v1.45.0
+	github.com/neo4j/neo4j-go-driver/v5 v5.28.3
 	github.com/pgvector/pgvector-go v0.3.0
 	github.com/prometheus/client_golang v1.19.1
 	github.com/quic-go/quic-go v0.54.0
 	github.com/redis/go-redis/v9 v9.14.0
+	github.com/rs/cors v1.11.1
+	github.com/streadway/amqp v1.1.0
 	go.opentelemetry.io/otel v1.38.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.38.0
 	go.opentelemetry.io/otel/sdk v1.38.0
@@ -57,7 +62,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.20.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
-	github.com/google/uuid v1.6.0 // indirect
+	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.2 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect

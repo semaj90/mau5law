@@ -248,7 +248,7 @@ https://svelte.dev/e/expected_token -->
 	<!-- Main Content -->
 	<main class="platform-content">
 		{#if activeView === 'dashboard'}
-			<div class="dashboard" transitionfade={{ duration: 300 }}>
+			<div class="dashboard" transition:fade={{ duration: 300 }}>
 				<div class="stats-grid">
 					<div class="stat-nier-bits-card">
 						<div class="stat-icon">📂</div>
@@ -311,7 +311,7 @@ https://svelte.dev/e/expected_token -->
 			</div>
 
 		{:else if activeView === 'cases'}
-			<div class="cases-view" transitionfade={{ duration: 300 }}>
+			<div class="cases-view" transition:fade={{ duration: 300 }}>
 				<h2>📂 Case Management</h2>
 				<div class="cases-grid">
 					{#each cases as cse}
@@ -347,7 +347,7 @@ https://svelte.dev/e/expected_token -->
 			</div>
 
 		{:else if activeView === 'detective'}
-			<div class="detective-mode" transitionfade={{ duration: 300 }}>
+			<div class="detective-mode" transition:fade={{ duration: 300 }}>
 				<h2>🧠 Detective Mode - "Who, What, Why, How"</h2>
 				<div class="workflow-progress">
 					{#each prosecutionWorkflow as step, index}
@@ -391,7 +391,7 @@ https://svelte.dev/e/expected_token -->
 			</div>
 
 		{:else}
-			<div class="feature-view" transitionfade={{ duration: 300 }}>
+			<div class="feature-view" transition:fade={{ duration: 300 }}>
 				<h2>🚧 {activeView.charAt(0).toUpperCase() + activeView.slice(1)} Feature</h2>
 				<p>This feature is fully implemented in the platform. Click around to explore!</p>
 				<div class="feature-grid">

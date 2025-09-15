@@ -656,11 +656,22 @@ legal-ai-*
 enhanced-rag*
 cuda-service*
 
-# Go modules
-go.mod
-go.sum
-**/go.mod
-**/go.sum
+# GPU-accelerated Legal AI Services
+gpu-memory-manager.exe
+cuda-service-worker-simd.exe
+legal-extraction-service.exe
+sequential-kg-service.exe
+legal-recommendation-engine.exe
+legal-ai-quic-server*.exe
+vector-consumer*.exe
+cuda-service-worker.exe
+legal-corpus-load-test.exe
+
+# Go module cache (but keep go.mod and go.sum)
+# Note: go.mod and go.sum SHOULD be committed
+# Only exclude module cache directories
+**/go/pkg/mod/
+vendor/
 
 # Large files and build artifacts
 comprehensive-all-routes-phase-file.txt

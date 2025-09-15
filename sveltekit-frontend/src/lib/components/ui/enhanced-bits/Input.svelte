@@ -1,12 +1,5 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  interface Props {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
   import type { HTMLInputAttributes } from 'svelte/elements';
   import { cn } from '$lib/utils/cn';
   import { Search, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-svelte';
@@ -81,14 +74,14 @@ https://svelte.dev/e/js_parse_error -->
     iconPosition = 'left',
     class: className = '',
     type = 'text',
-    value = $bindable(''),
+    value = $bindable(),
     passwordToggleText,
     ...restProps
   }: InputProps = $props();
 
   // Extract accessibility props for explicit handling
-  const ariaLabel = $$props['aria-label'];
-  const ariaDescribedby = $$props['aria-describedby'];
+  const ariaLabel = restProps['aria-label'];
+  const ariaDescribedby = restProps['aria-describedby'];
 
   // Generate unique IDs for accessibility
   const inputId = restProps.id || `input-${Math.random().toString(36).substr(2, 9)}`;

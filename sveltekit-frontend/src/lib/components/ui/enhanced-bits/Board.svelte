@@ -328,11 +328,13 @@
           </div>
         {:else}
           <!-- Custom item type -->
-          <slot name="item" {item}>
+          {#if children?.item}
+            {@render children.item(item)}
+          {:else}
             <div class="nes-container is-rounded p-3 bg-gray-100 shadow-lg">
               <div class="text-sm">Unknown Item</div>
             </div>
-          </slot>
+          {/if}
         {/if}
 
         <!-- Item Selection Indicator -->

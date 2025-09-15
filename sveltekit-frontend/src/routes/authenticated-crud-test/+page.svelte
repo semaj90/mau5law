@@ -9,7 +9,30 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+
+  // Type definitions
+  interface User {
+    email: string;
+    name?: string;
+  }
+
+  interface ApiResponse {
+    success?: boolean;
+    data?: any;
+    user?: User;
+    message?: string;
+    error?: string;
+    details?: any;
+    documents?: any[];
+    activities?: any[];
+  }
+
+  interface HttpResponse {
+    ok: boolean;
+    status: number;
+    json(): Promise<ApiResponse>;
+  }
 
   // Svelte 5 runes for reactive state
   let isLoading = $state(false);
@@ -60,21 +83,21 @@
   // Check authentication status
   async function checkAuth() {
     try {
-      const response = await fetch('/api/test-cases?limit=1');
-      const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
+      const response = await fetch('/api/test-cases?limit=1') as HttpResponse;
+      const data = await response.json();
 
-      if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {
+      if (response.status === 401) {
         isAuthenticated = false;
         authError = 'Authentication required - please log in';
         addResult('Authentication check failed - user not logged in', 'error');
         return false;
       }
 
-      if ((response as { json?: unknown; status?: unknown; ok?: unknown }).ok && (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).user) {
+      if (response.ok && data.user) {
         isAuthenticated = true;
-        currentUser = (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).user;
+        currentUser = data.user;
         authError = null;
-        addResult(`Authentication verified - logged in as ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).user.email}`, 'success');
+        addResult(`Authentication verified - logged in as ${data.user.email}`, 'success');
         return true;
       }
 

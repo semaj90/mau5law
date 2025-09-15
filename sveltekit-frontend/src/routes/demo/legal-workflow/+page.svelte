@@ -3,8 +3,8 @@ Legal AI Workflow Demo - Complete End-to-End Demonstration
 Shows: Case creation → Evidence upload → Canvas positioning → Timeline → RAG chat
 -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
+  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Alert } from '$lib/components/ui/enhanced-bits';
 
   interface WorkflowStep {
     step: number;
@@ -191,6 +191,16 @@ Shows: Case creation → Evidence upload → Canvas positioning → Timeline →
     return `${(ms / 1000).toFixed(1)}s`;
   }
 
+  function getStatusColor(status: string): string {
+    switch (status) {
+      case 'completed': return 'text-green-600';
+      case 'running': return 'text-blue-600';
+      case 'error': return 'text-red-600';
+      case 'pending': return 'text-gray-500';
+      default: return 'text-gray-500';
+    }
+  }
+
   onMount(async () => {
     // Load workflow info
     try {
@@ -215,40 +225,47 @@ Shows: Case creation → Evidence upload → Canvas positioning → Timeline →
     </p>
   </header>
 
-  <div class="demo-controls">
-    <button
-      class="nes-btn is-primary"
+  <div class="demo-controls flex gap-4 justify-center mb-8">
+    <Button
+      variant="default"
       onclick={runCompleteWorkflow}
       disabled={isRunning}
+      size="lg"
     >
       {isRunning ? '⚡ Running Demo...' : '🚀 Start Complete Workflow'}
-    </button>
+    </Button>
 
     {#if !isRunning && currentStep > 0}
-      <button class="nes-btn is-warning" onclick={() => location.reload()}>
+      <Button variant="outline" onclick={() => location.reload()} size="lg">
         🔄 Reset Demo
-      </button>
+      </Button>
     {/if}
   </div>
 
-  <div class="workflow-steps">
+  <div class="workflow-steps space-y-6">
     {#each workflowSteps as step, i}
-      <div class="step-card nes-container with-title" class:active={currentStep === step.step} data-step={step.step}>
-        <h3 class="title">
-          {getStepIcon(step.status)} Step {step.step}: {step.action}
-        </h3>
+      <Card class="{currentStep === step.step ? 'ring-2 ring-primary' : ''}">
+        <CardHeader>
+          <CardTitle class="flex items-center gap-2">
+            <span>{getStepIcon(step.status)}</span>
+            <span>Step {step.step}: {step.action}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
 
-        <div class="step-content">
-          <p><strong>Action:</strong> {step.description}</p>
-          <p><strong>Status:</strong>
-            <span class:nes-text={true} class:is-success={step.status === 'completed'}
-                  class:is-error={step.status === 'error'} class:is-warning={step.status === 'running'}>
+        <div class="space-y-4">
+          <p class="text-muted-foreground">{step.description}</p>
+          <div class="flex items-center space-x-2">
+            <span class="text-sm font-medium">Status:</span>
+            <span class="{getStatusColor(step.status)} font-medium">
               {step.status.toUpperCase()}
             </span>
-          </p>
+          </div>
 
           {#if step.duration}
-            <p><strong>Duration:</strong> {formatDuration(step.duration)}</p>
+            <div class="text-sm text-muted-foreground">
+              ⏱️ Completed in {formatDuration(step.duration)}
+            </div>
           {/if}
 
           {#if step.result?.message}
@@ -347,16 +364,22 @@ Shows: Case creation → Evidence upload → Canvas positioning → Timeline →
     </div>
   {/if}
 
-  <div class="demo-query-input">
-    <label class="nes-text" for="chat-query">Customize RAG Chat Query:</label>
-    <input
-      id="chat-query"
-      class="nes-input"
-      bind:value={chatQuery}
-      placeholder="Enter your legal query here..."
-      disabled={isRunning}
-    />
-  </div>
+  <Card class="mt-8">
+    <CardHeader>
+      <CardTitle>Customize RAG Chat Query</CardTitle>
+    </CardHeader>
+    <CardContent>
+      <div class="space-y-2">
+        <label for="chat-query" class="text-sm font-medium">Legal Query:</label>
+        <Input
+          id="chat-query"
+          bind:value={chatQuery}
+          placeholder="Enter your legal query here..."
+          disabled={isRunning}
+        />
+      </div>
+    </CardContent>
+  </Card>
 </div>
 
 <style>
