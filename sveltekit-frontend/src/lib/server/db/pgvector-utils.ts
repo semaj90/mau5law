@@ -3,13 +3,13 @@
  * Provides proper vector similarity search and embedding operations
  */
 
-import { db, sql } from './index.js.js';
+import { db, sql } from './index.js';
 import type { 
   chatMessages, 
   chatRecommendations, 
   evidence, 
   documentEmbeddings 
-} from './schema-unified.js.js';
+} from './schema-unified.js';
 
 export interface VectorSearchResult {
   id: string;

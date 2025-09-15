@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // src/routes/api/pipeline/test/+server.ts
 // End-to-end pipeline testing endpoint

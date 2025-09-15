@@ -36,7 +36,15 @@ https://svelte.dev/e/js_parse_error -->
 
   let currentPath = $derived(page.url.pathname);
 
-  const navigation = [
+  type NavigationItem = {
+    name: string;
+    href: string;
+    icon: any;
+    current: boolean;
+    badge?: string;
+  };
+
+  const navigation: NavigationItem[] = [
     {
       name: "Dashboard",
       href: "/",
@@ -71,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
     },
   ];
 
-  const analytics = [
+  const analytics: NavigationItem[] = [
     {
       name: "Analytics",
       href: "/analytics",
@@ -86,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
     },
   ];
 
-  const settings = [
+  const settings: NavigationItem[] = [
     {
       name: "Settings",
       href: "/settings",
@@ -159,42 +167,42 @@ https://svelte.dev/e/js_parse_error -->
         <div class="space-y-1">
           {#each navigation as item}
             <a
-              href={(item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).href}
+              href={item.href}
               class={cn(
                 "group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
-                (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).current
+                item.current
                   ? "bg-harvard-crimson text-white shadow-nier-glow"
                   : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
               )}
               onclick={closeSidebar}
             >
               <div class="flex items-center">
-                {@const Icon = (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).icon}
+                {@const Icon = item.icon}
                 <Icon
                   class={cn(
                     "mr-3 h-5 w-5 flex-shrink-0",
-                    (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).current
+                    item.current
                       ? "text-white"
                       : "text-muted-foreground group-hover:text-foreground"
                   )}
                 />
-                {(item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).name}
+                {item.name}
               </div>
 
-              {#if (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).badge}
+              {#if item.badge}
                 <span
                   class={cn(
                     "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
-                    (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).current
+                    item.current
                       ? "bg-white/20 text-white"
                       : "bg-harvard-crimson text-white"
                   )}
                 >
-                  {(item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).badge}
+                  {item.badge}
                 </span>
               {/if}
 
-              {#if (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).current}
+              {#if item.current}
                 <ChevronRight class="h-4 w-4 text-white" />
               {/if}
             </a>
@@ -211,25 +219,25 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mt-2 space-y-1">
             {#each analytics as item}
               <a
-                href={(item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).href}
+                href={item.href}
                 class={cn(
                   "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
-                  (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).current
+                  item.current
                     ? "bg-harvard-crimson text-white shadow-nier-glow"
                     : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
                 )}
                 onclick={closeSidebar}
               >
-                {@const Icon = (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).icon}
+                {@const Icon = item.icon}
                 <Icon
                   class={cn(
                     "mr-3 h-5 w-5 flex-shrink-0",
-                    (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).current
+                    item.current
                       ? "text-white"
                       : "text-muted-foreground group-hover:text-foreground"
                   )}
                 />
-                {(item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).name}
+                {item.name}
               </a>
             {/each}
           </div>
@@ -245,25 +253,25 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mt-2 space-y-1">
             {#each settings as item}
               <a
-                href={(item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).href}
+                href={item.href}
                 class={cn(
                   "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
-                  (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).current
+                  item.current
                     ? "bg-harvard-crimson text-white shadow-nier-glow"
                     : "text-muted-foreground hover:text-foreground hover:bg-nier-surface-light"
                 )}
                 onclick={closeSidebar}
               >
-                {@const Icon = (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).icon}
+                {@const Icon = item.icon}
                 <Icon
                   class={cn(
                     "mr-3 h-5 w-5 flex-shrink-0",
-                    (item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).current
+                    item.current
                       ? "text-white"
                       : "text-muted-foreground group-hover:text-foreground"
                   )}
                 />
-                {(item as { href?: unknown; current?: unknown; icon?: unknown; name?: unknown; badge?: unknown }).name}
+                {item.name}
               </a>
             {/each}
           </div>

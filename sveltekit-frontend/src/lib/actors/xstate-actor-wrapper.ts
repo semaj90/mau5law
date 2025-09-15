@@ -48,7 +48,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
     return {
       embedding: data.embedding,
       dimensions: data.dimensions || 768,
-      model: data?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text',
+      model: data?.model || 'nomic-embed-text',
       processingTime: Date.now() - startTime,
       tokenCount: data.tokenCount,
     } as EmbeddingActorOutput;
@@ -193,7 +193,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
       results: data.results || [],
       totalResults: data.totalResults || 0,
       processingTime: Date.now() - startTime,
-      model: data?.model || "unknown" // @ts-ignore - Model property access || 'unknown',
+      model: data?.model || 'unknown', // @ts-ignore - Model property access || 'unknown',
     } as RAGSearchOutput;
   } catch (error: any) {
     throw new Error(`RAG search actor failed: ${error.message}`);
@@ -235,12 +235,13 @@ export interface WorkflowOutput {
   results: Record<string, any>;
   totalTime: number;
   success: boolean;
-  errors: Array<any>
+  errors: Array<any>;
+}
 
 export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInput }) => {
   const startTime = Date.now();
   const results: Record<string, any> = {};
-  const errors: Array< = [];
+  const errors: Array<any> = [];
 
   try {
     if (input.parallel) {

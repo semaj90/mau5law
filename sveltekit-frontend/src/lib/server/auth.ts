@@ -144,14 +144,14 @@ export class AuthService {
    * Invalidate session (logout)
    */
   async invalidateSession(sessionId: string) {
-    await lucia.invalidateSession(sessionId);
+    await lucia.deleteSession(sessionId);
   }
 
   /**
    * Invalidate all user sessions
    */
   async invalidateUserSessions(userId: string) {
-    await lucia.invalidateUserSessions(userId);
+    await lucia.deleteUserSessions(userId);
   }
 
   /**

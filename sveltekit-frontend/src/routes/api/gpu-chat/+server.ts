@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { error } from '@sveltejs/kit';
 
 // Environment variable for Go GPU server URL (updated to use new inference endpoint)

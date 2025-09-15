@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // CrewAI Multi-Agent Document Review API
 // Orchestrates legal document analysis with multiple AI agents

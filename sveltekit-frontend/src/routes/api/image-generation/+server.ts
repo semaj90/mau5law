@@ -5,7 +5,7 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 interface ImageGenerationRequest {

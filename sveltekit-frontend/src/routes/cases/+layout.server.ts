@@ -1,5 +1,5 @@
 import { cases, helpers } from "$lib/server/db";
-import type { LayoutServerLoad } from './$types.js.js';
+import type { LayoutServerLoad } from './$types.js';
 
 // This runs for /cases and all its sub-pages
 // Perfect for loading persistent 3-column layout data

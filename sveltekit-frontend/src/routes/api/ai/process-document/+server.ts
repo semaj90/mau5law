@@ -16,7 +16,7 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // AI Document Processing API - Summarization, Entity Extraction, Embeddings
 // Production-ready endpoint with LangChain + Ollama integration

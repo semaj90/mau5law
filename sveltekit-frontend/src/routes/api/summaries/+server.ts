@@ -1,26 +1,26 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // Comprehensive AI Mix Summaries API - End-to-End Integration
 // Combines: Local LLM + Enhanced RAG + User Activity (simulated) + Fuse.js + XState Synthesis
 // Supports: Chunking, Streaming, Async Processing, Hybrid Vector Search
 
 // TODO: Strengthen typing & streaming implementation; current file cleaned from corruption
-import { db } from "$lib/server/db";
-import { evidence, cases, legalDocuments } from "$lib/server/db/schema-postgres";
-import { eq } from "drizzle-orm";
-import { vectorService } from "$lib/server/vector/vectorService";
-import { qdrantService } from "$lib/server/services/qdrant-service";
-import Fuse from "fuse.js";
-import { interpret } from "xstate";
-import { aiSummaryMachine } from "$lib/machines/aiSummaryMachine";
-import { ollamaService } from "$lib/server/services/ollama-service"; // Assumed service providing generateResponse
-import { URL } from "url";
+import { db } from '$lib/server/db';
+import { evidence, cases, legalDocuments } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import { vectorService } from '$lib/server/vector/vectorService';
+import { qdrantService } from '$lib/server/services/qdrant-service';
+import Fuse from 'fuse.js';
+import { interpret } from 'xstate';
+import { aiSummaryMachine } from '$lib/machines/aiSummaryMachine';
+import { ollamaService } from '$lib/server/services/ollama-service'; // Assumed service providing generateResponse
+import { URL } from 'url';
 
 // Request payload for summary generation
 export interface SummaryRequest {
-  type: "case" | "evidence" | "legal_document" | "cross_analysis";
+  type: 'case' | 'evidence' | 'legal_document' | 'cross_analysis';
   targetId: string;
-  depth: "quick" | "comprehensive" | "forensic";
+  depth: 'quick' | 'comprehensive' | 'forensic';
   includeRAG: boolean;
   includeUserActivity: boolean;
   enableStreaming: boolean;
@@ -84,7 +84,7 @@ const summaryService = interpret(aiSummaryMachine).start();
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
-      return json({ error: "Authentication required" }, { status: 401 });
+      return json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const summaryRequest: SummaryRequest = await request.json();
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     // Initialize XState machine with request context
     summaryService.send({
-      type: "GENERATE_SUMMARY" as any,
+      type: 'GENERATE_SUMMARY' as any,
     });
 
     if (summaryRequest.enableStreaming) {
@@ -101,10 +101,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return handleBatchSummary(summaryRequest, userId);
     }
   } catch (error: any) {
-    console.error("Summaries API error:", error);
+    console.error('Summaries API error:', error);
     return json(
       {
-        error: "Failed to generate summary",
+        error: 'Failed to generate summary',
         details: error.message,
       },
       { status: 500 }
@@ -119,14 +119,10 @@ async function handleBatchSummary(request: SummaryRequest, userId: string): Prom
   const llmOutput = await getLocalLLMOutput(request);
 
   // Step 2: Get Enhanced RAG Output
-  const ragOutput = request.includeRAG
-    ? await getEnhancedRAGOutput(request)
-    : null;
+  const ragOutput = request.includeRAG ? await getEnhancedRAGOutput(request) : null;
 
   // Step 3: Get User Activity Context
-  const userActivity = request.includeUserActivity
-    ? await getUserActivityContext(userId)
-    : null;
+  const userActivity = request.includeUserActivity ? await getUserActivityContext(userId) : null;
 
   // Step 4: Synthesize all outputs using XState + Fuse.js
   const synthesizedResult = await synthesizeOutputs({
@@ -145,7 +141,7 @@ async function handleBatchSummary(request: SummaryRequest, userId: string): Prom
       processingTime: totalTime,
       request: request,
       timestamp: new Date().toISOString(),
-      version: "1.0.0",
+      version: '1.0.0',
     },
   });
 }
@@ -161,8 +157,8 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: "status",
-              message: "Starting AI summary generation...",
+              type: 'status',
+              message: 'Starting AI summary generation...',
               progress: 0,
             })}\n\n`
           )
@@ -173,7 +169,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({
-                type: "llm_chunk",
+                type: 'llm_chunk',
                 content: chunk,
                 progress: 33,
               })}\n\n`
@@ -185,23 +181,21 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: "status",
-              message: "Retrieving relevant documents...",
+              type: 'status',
+              message: 'Retrieving relevant documents...',
               progress: 50,
             })}\n\n`
           )
         );
 
-        const ragOutput = request.includeRAG
-          ? await getEnhancedRAGOutput(request)
-          : null;
+        const ragOutput = request.includeRAG ? await getEnhancedRAGOutput(request) : null;
 
         // Step 3: User Activity
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: "status",
-              message: "Analyzing user activity patterns...",
+              type: 'status',
+              message: 'Analyzing user activity patterns...',
               progress: 75,
             })}\n\n`
           )
@@ -215,8 +209,8 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: "status",
-              message: "Synthesizing final summary...",
+              type: 'status',
+              message: 'Synthesizing final summary...',
               progress: 90,
             })}\n\n`
           )
@@ -233,7 +227,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: "complete",
+              type: 'complete',
               result: synthesizedResult,
               progress: 100,
             })}\n\n`
@@ -245,7 +239,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({
-              type: "error",
+              type: 'error',
               error: error.message,
             })}\n\n`
           )
@@ -257,56 +251,49 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
 
   return new Response(stream, {
     headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Cache-Control",
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Cache-Control',
     },
   });
 }
 
 // AI Mix Function 1: Local LLM Output
-async function getLocalLLMOutput(
-  request: SummaryRequest
-): Promise<AILLMOutput> {
+async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> {
   const startTime = Date.now();
 
   // Get source content based on type
-  let sourceContent = "";
+  let sourceContent = '';
   switch (request.type) {
-    case "case":
-      const caseData = await db
-        .select()
-        .from(cases)
-        .where(eq(cases.id, request.targetId))
-        .limit(1);
-      sourceContent = caseData[0]?.description || "";
+    case 'case':
+      const caseData = await db.select().from(cases).where(eq(cases.id, request.targetId)).limit(1);
+      sourceContent = caseData[0]?.description || '';
       break;
-    case "evidence":
+    case 'evidence':
       const evidenceData = await db
         .select()
         .from(evidence)
         .where(eq(evidence.id, request.targetId))
         .limit(1);
-      sourceContent = evidenceData[0]?.description || "";
+      sourceContent = evidenceData[0]?.description || '';
       break;
-    case "legal_document":
+    case 'legal_document':
       const docData = await db
         .select()
         .from(legalDocuments)
         .where(eq(legalDocuments.id, request.targetId))
         .limit(1);
-      sourceContent = docData[0]?.content || "";
+      sourceContent = docData[0]?.content || '';
       break;
   }
 
   // Prepare prompt based on depth
   const depthPrompts = {
-    quick: "Provide a concise 2-3 sentence summary of:",
-    comprehensive: "Provide a detailed analysis and comprehensive summary of:",
-    forensic:
-      "Conduct a thorough forensic analysis with legal implications for:",
+    quick: 'Provide a concise 2-3 sentence summary of:',
+    comprehensive: 'Provide a detailed analysis and comprehensive summary of:',
+    forensic: 'Conduct a thorough forensic analysis with legal implications for:',
   };
 
   const prompt = `${depthPrompts[request.depth]} ${sourceContent}`;
@@ -314,11 +301,9 @@ async function getLocalLLMOutput(
   // Use chunking for large content
   const chunkSize = request.chunkSize || 2000;
   const chunks =
-    sourceContent.length > chunkSize
-      ? chunkText(sourceContent, chunkSize)
-      : [sourceContent];
+    sourceContent.length > chunkSize ? chunkText(sourceContent, chunkSize) : [sourceContent];
 
-  let combinedResponse = "";
+  let combinedResponse = '';
   let totalTokens = 0;
 
   for (const chunk of chunks) {
@@ -342,7 +327,7 @@ async function getLocalLLMOutput(
 
   return {
     content: combinedResponse.trim(),
-    model: "gemma3:7b-instruct-q4_K_M",
+    model: 'gemma3:7b-instruct-q4_K_M',
     confidence: 0.85, // Based on model reliability
     tokens: totalTokens,
     processingTime,
@@ -350,34 +335,23 @@ async function getLocalLLMOutput(
 }
 
 // AI Mix Function 2: Enhanced RAG Output with pgvector + Qdrant
-async function getEnhancedRAGOutput(
-  request: SummaryRequest
-): Promise<EnhancedRAGOutput> {
+async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRAGOutput> {
   const startTime = Date.now();
 
   // Create search query from target content
-  let searchQuery = "";
+  let searchQuery = '';
   switch (request.type) {
-    case "case":
-      const caseData = await db
-        .select()
-        .from(cases)
-        .where(eq(cases.id, request.targetId))
-        .limit(1);
-      searchQuery =
-        `${caseData[0]?.title} ${caseData[0]?.description}`.substring(0, 200);
+    case 'case':
+      const caseData = await db.select().from(cases).where(eq(cases.id, request.targetId)).limit(1);
+      searchQuery = `${caseData[0]?.title} ${caseData[0]?.description}`.substring(0, 200);
       break;
-    case "evidence":
+    case 'evidence':
       const evidenceData = await db
         .select()
         .from(evidence)
         .where(eq(evidence.id, request.targetId))
         .limit(1);
-      searchQuery =
-        `${evidenceData[0]?.title} ${evidenceData[0]?.description}`.substring(
-          0,
-          200
-        );
+      searchQuery = `${evidenceData[0]?.title} ${evidenceData[0]?.description}`.substring(0, 200);
       break;
   }
 
@@ -396,19 +370,17 @@ async function getEnhancedRAGOutput(
 
   // Rank results by relevance
   const relevantDocs = uniqueResults
-    .sort(
-      (a, b) => (b.score || b.relevance || 0) - (a.score || a.relevance || 0)
-    )
+    .sort((a, b) => (b.score || b.relevance || 0) - (a.score || a.relevance || 0))
     .slice(0, 5)
     .map((doc) => ({
       id: doc.id,
-      content: doc.content || doc.payload?.content || "",
+      content: doc.content || doc.payload?.content || '',
       relevance: doc.score || doc.relevance || 0,
-      source: doc.source || "vector_db",
+      source: doc.source || 'vector_db',
     }));
 
   // Generate context summary using the most relevant docs
-  const contextContent = relevantDocs.map((doc) => doc.content).join("\n\n");
+  const contextContent = relevantDocs.map((doc) => doc.content).join('\n\n');
   const contextSummaryResp = await ollamaService.generateResponse(
     `Summarize the key context from these related documents: ${contextContent.substring(0, 1500)}`,
     {
@@ -433,9 +405,7 @@ async function getEnhancedRAGOutput(
 }
 
 // AI Mix Function 3: User Activity Context with Loki.js
-async function getUserActivityContext(
-  userId: string
-): Promise<UserActivityContext> {
+async function getUserActivityContext(userId: string): Promise<UserActivityContext> {
   // TODO: In production, this would connect to actual Loki.js user activity store
   // For now, we'll simulate based on available data patterns
 
@@ -462,14 +432,14 @@ async function getUserActivityContext(
   ].slice(0, 5);
 
   const preferredTopics = extractTopics([
-    ...recentCases.map((c) => c.description || ""),
-    ...recentEvidence.map((e: any) => e.description || ""),
+    ...recentCases.map((c) => c.description || ''),
+    ...recentEvidence.map((e: any) => e.description || ''),
   ]);
 
   // Generate recommendations using Fuse.js fuzzy search
   const fuse = new Fuse(recentQueries, {
     threshold: 0.6,
-    keys: ["title", "description"],
+    keys: ['title', 'description'],
   });
 
   const recommendations = generateRecommendations(preferredTopics, fuse);
@@ -478,8 +448,8 @@ async function getUserActivityContext(
     recentQueries,
     preferredTopics,
     interactionPatterns: {
-      timeOfDay: "morning", // TODO: Extract from actual activity logs
-      commonActions: ["case_analysis", "evidence_upload", "report_generation"],
+      timeOfDay: 'morning', // TODO: Extract from actual activity logs
+      commonActions: ['case_analysis', 'evidence_upload', 'report_generation'],
       focusAreas: preferredTopics.slice(0, 3),
     },
     recommendations,
@@ -500,7 +470,7 @@ async function synthesizeOutputs({
 }): Promise<SynthesizedOutput> {
   // Update XState machine with collected data
   summaryService.send({
-    type: "SYNTHESIZE_INSIGHTS" as any,
+    type: 'SYNTHESIZE_INSIGHTS' as any,
   });
 
   // Weighted synthesis based on source reliability
@@ -519,8 +489,8 @@ async function synthesizeOutputs({
   // Extract key insights using Fuse.js across all sources
   const allContent = [
     llmOutput.content,
-    ragOutput?.contextSummary || "",
-    userActivity?.recentQueries.join(" ") || "",
+    ragOutput?.contextSummary || '',
+    userActivity?.recentQueries.join(' ') || '',
   ].filter(Boolean);
 
   const keyInsights = await extractKeyInsights(allContent);
@@ -533,17 +503,13 @@ async function synthesizeOutputs({
     (userActivity ? 0.8 : 0) * weights.userActivity;
 
   // Generate next steps based on synthesis
-  const nextSteps = await generateNextSteps(
-    keyInsights,
-    actionItems,
-    request.type
-  );
+  const nextSteps = await generateNextSteps(keyInsights, actionItems, request.type);
 
   // Find related cases using vector similarity
   const relatedCases = await findRelatedCases(request.targetId, request.type);
 
   // Send completion event to XState machine
-  summaryService.send({ type: "RESET" as any });
+  summaryService.send({ type: 'RESET' as any });
 
   return {
     summary: llmOutput.content,
@@ -552,10 +518,10 @@ async function synthesizeOutputs({
     confidence,
     sources: [
       {
-        type: "llm",
+        type: 'llm',
         contribution: weights.llm,
         details: {
-          model: llmOutput?.model || "unknown" // @ts-ignore - Model property access,
+          model: llmOutput?.model || 'unknown',
           tokens: llmOutput.tokens,
           processingTime: llmOutput.processingTime,
         },
@@ -563,7 +529,7 @@ async function synthesizeOutputs({
       ...(ragOutput
         ? [
             {
-              type: "rag" as const,
+              type: 'rag' as const,
               contribution: weights.rag,
               details: {
                 documentsUsed: ragOutput.relevantDocs.length,
@@ -575,7 +541,7 @@ async function synthesizeOutputs({
       ...(userActivity
         ? [
             {
-              type: "user_activity" as const,
+              type: 'user_activity' as const,
               contribution: weights.userActivity,
               details: {
                 recentQueries: userActivity.recentQueries.length,
@@ -587,10 +553,7 @@ async function synthesizeOutputs({
     ],
     nextSteps,
     relatedCases,
-    warnings: generateWarnings(
-      confidence,
-      ragOutput?.searchMetrics.documentsRetrieved || 0
-    ),
+    warnings: generateWarnings(confidence, ragOutput?.searchMetrics.documentsRetrieved || 0),
   };
 }
 
@@ -615,7 +578,7 @@ async function getLocalLLMOutputStreaming(
 
 function extractTopics(texts: string[]): string[] {
   // Simple topic extraction - in production would use more sophisticated NLP
-  const allText = texts.join(" ").toLowerCase();
+  const allText = texts.join(' ').toLowerCase();
   const keywords = allText.match(/\b\w{4,}\b/g) || [];
   const frequency: Record<string, number> = {};
 
@@ -631,17 +594,13 @@ function extractTopics(texts: string[]): string[] {
 
 function generateRecommendations(topics: string[], fuse: Fuse<any>): string[] {
   // Generate recommendations based on topic analysis
-  return topics
-    .slice(0, 3)
-    .map((topic) => `Consider exploring ${topic} in related cases`);
+  return topics.slice(0, 3).map((topic) => `Consider exploring ${topic} in related cases`);
 }
 
 async function extractKeyInsights(contents: string[]): Promise<string[]> {
   // Use simple keyword extraction for insights
-  const combined = contents.join(" ");
-  const sentences = combined
-    .split(/[.!?]+/)
-    .filter((s) => s.trim().length > 20);
+  const combined = contents.join(' ');
+  const sentences = combined.split(/[.!?]+/).filter((s) => s.trim().length > 20);
 
   // Sort by sentence importance (length and keyword density)
   return sentences
@@ -656,17 +615,17 @@ async function generateActionItems(
 ): Promise<string[]> {
   const actionItems = [];
 
-  if (llmContent.toLowerCase().includes("evidence")) {
-    actionItems.push("Review additional evidence");
+  if (llmContent.toLowerCase().includes('evidence')) {
+    actionItems.push('Review additional evidence');
   }
-  if (llmContent.toLowerCase().includes("witness")) {
-    actionItems.push("Schedule witness interviews");
+  if (llmContent.toLowerCase().includes('witness')) {
+    actionItems.push('Schedule witness interviews');
   }
   if (ragOutput && ragOutput.relevantDocs.length > 0) {
-    actionItems.push("Analyze related legal precedents");
+    actionItems.push('Analyze related legal precedents');
   }
 
-  return actionItems.length > 0 ? actionItems : ["Continue investigation"];
+  return actionItems.length > 0 ? actionItems : ['Continue investigation'];
 }
 
 async function generateNextSteps(
@@ -676,19 +635,16 @@ async function generateNextSteps(
 ): Promise<string[]> {
   const nextSteps = [...actionItems];
 
-  if (type === "case") {
-    nextSteps.push("Update case status");
-    nextSteps.push("Notify relevant stakeholders");
+  if (type === 'case') {
+    nextSteps.push('Update case status');
+    nextSteps.push('Notify relevant stakeholders');
   }
 
   return nextSteps.slice(0, 5);
 }
 
-async function findRelatedCases(
-  targetId: string,
-  type: string
-): Promise<string[]> {
-  if (type !== "case") return [];
+async function findRelatedCases(targetId: string, type: string): Promise<string[]> {
+  if (type !== 'case') return [];
 
   // Simple related case finding - in production would use vector similarity
   const casesData = await db.select().from(cases).limit(5);
@@ -699,10 +655,10 @@ function generateWarnings(confidence: number, docsRetrieved: number): string[] {
   const warnings = [];
 
   if (confidence < 0.7) {
-    warnings.push("Low confidence in results - consider additional analysis");
+    warnings.push('Low confidence in results - consider additional analysis');
   }
   if (docsRetrieved < 3) {
-    warnings.push("Limited contextual information available");
+    warnings.push('Limited contextual information available');
   }
 
   return warnings;
@@ -710,12 +666,12 @@ function generateWarnings(confidence: number, docsRetrieved: number): string[] {
 
 // GET endpoint for summary status and health check
 export const GET: RequestHandler = async ({ url }) => {
-  const summaryId = url.searchParams.get("id");
+  const summaryId = url.searchParams.get('id');
 
   if (summaryId) {
     // Return status of specific summary
     return json({
-      status: "completed", // TODO: Implement actual status tracking
+      status: 'completed', // TODO: Implement actual status tracking
       summaryId,
       timestamp: new Date().toISOString(),
     });
@@ -723,17 +679,17 @@ export const GET: RequestHandler = async ({ url }) => {
 
   // Health check
   return json({
-    service: "AI Mix Summaries API",
-    status: "healthy",
+    service: 'AI Mix Summaries API',
+    status: 'healthy',
     capabilities: [
-      "Local LLM Integration (Ollama + Gemma3)",
-      "Enhanced RAG (PostgreSQL pgvector + Qdrant)",
-      "User Activity Analysis (Loki.js simulation)",
-      "XState Synthesis Engine",
-      "Streaming Support",
-      "Chunking & Async Processing",
+      'Local LLM Integration (Ollama + Gemma3)',
+      'Enhanced RAG (PostgreSQL pgvector + Qdrant)',
+      'User Activity Analysis (Loki.js simulation)',
+      'XState Synthesis Engine',
+      'Streaming Support',
+      'Chunking & Async Processing',
     ],
-    version: "1.0.0",
+    version: '1.0.0',
     timestamp: new Date().toISOString(),
   });
 };

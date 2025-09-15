@@ -6,9 +6,9 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { sql, eq, and, like, desc } from 'drizzle-orm';
-import * as schema from '../db/schema.js.js';
-import { cache } from '../server/cache/redis.js.js';
-import { minioService } from '../server/storage/minio-service.js.js';
+import * as schema from '../db/schema.js';
+import { cache } from '../server/cache/redis.js';
+import { minioService } from '../server/storage/minio-service.js';
 
 // Database connection
 const pool = new Pool({

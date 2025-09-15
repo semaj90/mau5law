@@ -6,7 +6,7 @@
 import { redirect, error } from '@sveltejs/kit';
 import type { Load, ServerLoad, ServerLoadEvent } from '@sveltejs/kit';
 import type { RouteDefinition } from '$lib/data/routes-config';
-import type { GeneratedRoute } from './dynamic-route-generator.js.js';
+import type { GeneratedRoute } from './dynamic-route-generator.js';
 import { URL } from "url";
 
 export interface RouteGuardContext {

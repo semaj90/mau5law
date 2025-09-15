@@ -3,7 +3,7 @@
 // Generated: 2025-07-25T03:29:35.246Z
 // Features detected: hasOllama, hasQdrant, hasRedis, hasPgVector, hasEmbeddings
 
-import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js.js';
+import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js';
 import type { Redis } from 'ioredis';
 import { createRedisInstance } from '$lib/server/redis';
 import {
@@ -12,9 +12,9 @@ import {
   criminals,
   embeddingCache,
   vectorMetadata,
-} from '../db/schema-postgres-enhanced.js.js';
+} from '../db/schema-postgres-enhanced.js';
 import { eq, sql } from 'drizzle-orm';
-import { db } from '../db.js.js';
+import { db } from '../db.js';
 
 export class EnhancedVectorService {
   private qdrant: QdrantApiWrapper;

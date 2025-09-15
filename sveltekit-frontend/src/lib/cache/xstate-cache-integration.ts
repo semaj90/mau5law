@@ -4,8 +4,8 @@
  */
 
 import { assign, fromPromise } from 'xstate';
-import { headlessUICache } from './headless-ui-cache.js.js';
-import type { CacheEntry } from './headless-ui-cache.js.js';
+import { headlessUICache } from './headless-ui-cache.js';
+import type { CacheEntry } from './headless-ui-cache.js';
 
 export interface CacheContext {
   cacheKey: string | null;

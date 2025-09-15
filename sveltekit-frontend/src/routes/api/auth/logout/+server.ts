@@ -23,7 +23,7 @@ export const POST = async ({ cookies, locals }: RequestEvent) => {
 
   try {
     // Invalidate the session in PostgreSQL database via Lucia
-    await lucia.invalidateSession(typedLocals.session.id);
+    await lucia.deleteSession(typedLocals.session.id);
     
     // Create and set blank session cookie
     const sessionCookie = lucia.createBlankSessionCookie();

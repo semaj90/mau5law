@@ -1,15 +1,15 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types';
 
 
 // Import all our AI suggestion services
-import { testOllamaIntegration } from '$lib/services/ollama-suggestions-service.js';
-import { testEnhancedRAGIntegration } from '$lib/services/enhanced-rag-suggestions-service.js';
-import { aiSuggestionsClient } from '$lib/services/ai-suggestions-grpc-client.js';
-import { pgvectorHealthCheck } from '$lib/server/db/pgvector-utils.js';
-import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
-import { db, healthCheck as dbHealthCheck } from '$lib/server/db/index.js';
+import { testOllamaIntegration } from '$lib/services/ollama-suggestions-service';
+import { testEnhancedRAGIntegration } from '$lib/services/enhanced-rag-suggestions-service';
+import { aiSuggestionsClient } from '$lib/services/ai-suggestions-grpc-client';
+import { pgvectorHealthCheck } from '$lib/server/db/pgvector-utils';
+import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced';
+import { db, healthCheck as dbHealthCheck } from '$lib/server/db/index';
 
 export interface IntegrationTestResult {
   service: string;
@@ -207,15 +207,15 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
     const result = await testOllamaIntegration();
     const responseTime = Date.now() - startTime;
     
-    if ((result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).success) {
+    if (result && typeof result === 'object' && 'success' in result && result.success) {
       return {
         service: 'Ollama AI Service',
         status: 'pass',
-        message: `Ollama service operational with model ${result?.model || "unknown" // @ts-ignore - Model property access}`,
+        message: `Ollama service operational with model ${(result as any)?.model || "unknown"}`,
         details: {
-          model: result?.model || "unknown" // @ts-ignore - Model property access,
-          availableModels: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).availableModels,
-          testSuggestion: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).testSuggestion
+          model: (result as any)?.model || "unknown",
+          availableModels: (result as any).availableModels,
+          testSuggestion: (result as any).testSuggestion
         },
         responseTime
       };
@@ -226,7 +226,7 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
         message: 'Ollama service not available',
         details: result,
         responseTime,
-        error: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).error
+        error: (result as any)?.error
       };
     }
   } catch (error: any) {
@@ -247,27 +247,27 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
     const result = await testEnhancedRAGIntegration();
     const responseTime = Date.now() - startTime;
     
-    if ((result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).success) {
+    if (result && typeof result === 'object' && 'success' in result && result.success) {
       return {
         service: 'Enhanced RAG Service',
         status: 'pass',
         message: 'Enhanced RAG service operational',
         details: {
-          serviceAvailable: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).serviceAvailable,
-          version: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).version,
-          testSuggestion: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).testSuggestion,
-          responseTime: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).responseTime
+          serviceAvailable: (result as any).serviceAvailable,
+          version: (result as any).version,
+          testSuggestion: (result as any).testSuggestion,
+          responseTime: (result as any).responseTime
         },
         responseTime
       };
     } else {
       return {
         service: 'Enhanced RAG Service',
-        status: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).serviceAvailable ? 'warning' : 'fail',
-        message: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).serviceAvailable ? 'Service available but test failed' : 'Enhanced RAG service not available',
+        status: (result as any)?.serviceAvailable ? 'warning' : 'fail',
+        message: (result as any)?.serviceAvailable ? 'Service available but test failed' : 'Enhanced RAG service not available',
         details: result,
         responseTime,
-        error: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).error
+        error: (result as any)?.error
       };
     }
   } catch (error: any) {
@@ -336,26 +336,26 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
     
     const responseTime = Date.now() - startTime;
     
-    if ((response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).ok) {
-      const result = await (response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).json();
-      
+    if (response.ok) {
+      const result = await response.json();
+
       return {
         service: 'Main Suggestions API',
         status: 'pass',
-        message: `API returned ${(result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).suggestions?.length || 0} suggestions`,
+        message: `API returned ${result?.suggestions?.length || 0} suggestions`,
         details: {
-          suggestionsCount: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).suggestions?.length || 0,
-          confidence: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).confidence,
-          servicesUsed: (result as { success?: any; availableModels?: any; testSuggestion?: any; error?: any; serviceAvailable?: any; version?: any; responseTime?: any; suggestions?: any; confidence?: any; servicesUsed?: any }).servicesUsed
+          suggestionsCount: result?.suggestions?.length || 0,
+          confidence: result?.confidence,
+          servicesUsed: result?.servicesUsed
         },
         responseTime
       };
     } else {
-      const errorText = await (response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).text();
+      const errorText = await response.text();
       return {
         service: 'Main Suggestions API',
         status: 'fail',
-        message: `API request failed with status ${(response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).status}`,
+        message: `API request failed with status ${response.status}`,
         responseTime,
         error: errorText
       };
@@ -381,14 +381,14 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
     
     const responseTime = Date.now() - startTime;
     
-    if ((response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).ok && (response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).headers.get('content-type')?.includes('text/event-stream')) {
+    if (response.ok && response.headers.get('content-type')?.includes('text/event-stream')) {
       return {
         service: 'Streaming API',
         status: 'pass',
         message: 'Streaming API is operational',
         details: {
-          contentType: (response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).headers.get('content-type'),
-          status: (response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).status
+          contentType: response.headers.get('content-type'),
+          status: response.status
         },
         responseTime
       };
@@ -396,7 +396,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
       return {
         service: 'Streaming API',
         status: 'fail',
-        message: `Streaming API failed with status ${(response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).status}`,
+        message: `Streaming API failed with status ${response.status}`,
         responseTime
       };
     }
@@ -420,13 +420,13 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
     const responseTime = Date.now() - startTime;
     
     // Should return 400 for missing userId
-    if ((response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).status === 400) {
+    if (response.status === 400) {
       return {
         service: 'Rating API',
         status: 'pass',
         message: 'Rating API is operational (validation working)',
         details: {
-          status: (response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).status,
+          status: response.status,
           validation: 'userId parameter required'
         },
         responseTime
@@ -436,7 +436,7 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
         service: 'Rating API',
         status: 'warning',
         message: 'Rating API responded unexpectedly',
-        details: { status: (response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).status },
+        details: { status: response.status },
         responseTime
       };
     }
@@ -458,8 +458,8 @@ async function testHealthCheckAPI(): Promise<IntegrationTestResult> {
     const response = await fetch('/api/ai/suggestions/health');
     const responseTime = Date.now() - startTime;
     
-    if ((response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).ok) {
-      const health = await (response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).json();
+    if (response.ok) {
+      const health = await response.json();
       
       return {
         service: 'Health Check API',
@@ -472,7 +472,7 @@ async function testHealthCheckAPI(): Promise<IntegrationTestResult> {
       return {
         service: 'Health Check API',
         status: 'fail',
-        message: `Health check API failed with status ${(response as { ok?: any; json?: any; text?: any; status?: any; headers?: any }).status}`,
+        message: `Health check API failed with status ${response.status}`,
         responseTime
       };
     }

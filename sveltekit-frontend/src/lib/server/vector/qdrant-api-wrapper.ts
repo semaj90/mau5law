@@ -4,7 +4,7 @@
  */
 
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { productionLogger as logger } from '../production-logger.js.js';
+import { productionLogger as logger } from '../production-logger.js';
 
 export class QdrantApiWrapper {
   private client: InstanceType<typeof QdrantClient>;

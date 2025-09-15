@@ -110,14 +110,16 @@ https://svelte.dev/e/js_parse_error -->
   };
 
   // Auto-resize functionality
-  let resizeTimeout = $state<NodeJS.Timeoutconst handleResize | null>(null)(() => {
-    if (!resize || !masonry) return);
+  let resizeTimeout = $state<NodeJS.Timeout | null>(null);
+
+  const handleResize = () => {
+    if (!resize || !masonry) return;
 
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       if (masonry) {
         masonry.layout();
-  }
+      }
     }, 150);
   };
 
@@ -186,23 +188,23 @@ https://svelte.dev/e/js_parse_error -->
       width: calc(25% - var(--gutter));
 }}
   /* Drag and drop styling */
-  :global(.masonry-(item as { id?: unknown; drag?: unknown; newly?: unknown }).drag-disabled) {
+  :global(.masonry-item.drag-disabled) {
     cursor: default;
-}
+  }
   :global(.masonry-item:not(.drag-disabled)) {
     cursor: grab;
 }
   :global(.masonry-item:not(.drag-disabled):active) {
     cursor: grabbing;
 }
-  :global(.masonry-(item as { id?: unknown; drag?: unknown; newly?: unknown }).drag-shadow) {
+  :global(.masonry-item.drag-shadow) {
     opacity: 0.5;
     transform: scale(0.95);
-}
-  :global(.masonry-(item as { id?: unknown; drag?: unknown; newly?: unknown }).drag-ghost) {
+  }
+  :global(.masonry-item.drag-ghost) {
     opacity: 0.3;
     transform: rotate(5deg);
-}
+  }
   /* Loading state */
   .masonry-grid:empty::before {
     content: 'Loading...';
@@ -213,9 +215,9 @@ https://svelte.dev/e/js_parse_error -->
     padding: 2rem;
 }
   /* Animation for new items */
-  :global(.masonry-(item as { id?: unknown; drag?: unknown; newly?: unknown }).newly-added) {
+  :global(.masonry-item.newly-added) {
     animation: slideInUp 0.3s ease-out;
-}
+  }
   @keyframes slideInUp {
     from {
       transform: translateY(20px);

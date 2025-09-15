@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Evidence Upload API (Production Ready)

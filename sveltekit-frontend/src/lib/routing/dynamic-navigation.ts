@@ -8,8 +8,8 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { browser } from '$app/environment';
 import type { RouteDefinition } from '$lib/data/routes-config';
-import type { GeneratedRoute } from './dynamic-route-generator.js.js';
-import { routeRegistry } from './route-registry.js.js';
+import type { GeneratedRoute } from './dynamic-route-generator.js';
+import { routeRegistry } from './route-registry.js';
 // Remove unused Node.js imports - not needed for this implementation
 
 export interface NavigationState {

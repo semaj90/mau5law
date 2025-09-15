@@ -4,8 +4,8 @@
 import { dev } from '$app/environment';
 import { redis } from '$lib/server/redis-service';
 import { randomBytes, createHash } from 'crypto';
-import type { AuthUser, AuthSession } from './auth-store.js.js';
-import type { UserRole } from './roles.js.js';
+import type { AuthUser, AuthSession } from './auth-store.js';
+import type { UserRole } from './roles.js';
 import type { Redis as IORedisClient } from 'ioredis';
 
 export interface SessionData {

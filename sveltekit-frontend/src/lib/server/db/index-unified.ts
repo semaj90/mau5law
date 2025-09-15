@@ -14,7 +14,7 @@ import {
   testDatabaseConnection,
   closeDatabaseConnections,
   getDatabaseHealth
-} from './connection-manager.js.js';
+} from './connection-manager.js';
 
 // Import database configuration
 import {
@@ -28,7 +28,7 @@ import {
 } from '$lib/config/database.js';
 
 // Import schema and types
-import * as schema from './schema-postgres.js.js';
+import * as schema from './schema-postgres.js';
 import type { DatabaseConfig, DatabaseUrls } from '$lib/config/database.js';
 
 // Re-export everything for backwards compatibility
@@ -52,7 +52,7 @@ export {
 };
 
 // Re-export schema
-export * from './schema-postgres.js.js';
+export * from './schema-postgres.js';
 export { schema };
 
 // Export types

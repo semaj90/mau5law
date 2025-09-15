@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { gpuCacheOrchestrator } from '$lib/services/gpu-cache-orchestrator';
 import { dev } from '$app/environment';

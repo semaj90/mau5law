@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 /*
  * QUIC AI Stream API - Real-time AI Streaming Service
@@ -9,18 +9,18 @@ import type { RequestHandler } from './$types.js.js';
 import { json, error } from '@sveltejs/kit';
 
 import { ensureError } from '$lib/utils/ensure-error';
-import crypto from "crypto";
-import { URL } from "url";
+import crypto from 'crypto';
+import { URL } from 'url';
 
 const QUIC_AI_STREAM_CONFIG = {
-  primaryPort: 8447,    // QUIC HTTP/3
-  fallbackPort: 8448,   // HTTP/2
+  primaryPort: 8447, // QUIC HTTP/3
+  fallbackPort: 8448, // HTTP/2
   baseUrl: 'http://localhost:8447',
   fallbackUrl: 'http://localhost:8448',
   wsUrl: 'ws://localhost:8447',
-  timeout: 60000,       // AI operations can take longer
+  timeout: 60000, // AI operations can take longer
   maxTokens: 4096,
-  defaultModel: 'gemma3-legal'
+  defaultModel: 'gemma3-legal',
 };
 
 export interface AIStreamRequest {
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Prepare request payload
     const requestPayload = {
       prompt: aiRequest.prompt,
-      model: aiRequest?.model || "unknown" // @ts-ignore - Model property access || QUIC_AI_STREAM_CONFIG.defaultModel,
+      model: aiRequest?.model || QUIC_AI_STREAM_CONFIG.defaultModel,
       maxTokens: aiRequest.maxTokens || QUIC_AI_STREAM_CONFIG.maxTokens,
       temperature: aiRequest.temperature || 0.7,
       stream: enableStreaming,
@@ -218,7 +218,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       response: responseData.response,
       streaming: enableStreaming,
       websocketUrl: enableStreaming ? `${QUIC_AI_STREAM_CONFIG.wsUrl}/ws/${sessionId}` : undefined,
-      model: responseData?.model || "unknown" // @ts-ignore - Model property access || requestPayload?.model || "unknown" // @ts-ignore - Model property access,
+      model: responseData?.model || requestPayload?.model || 'unknown',
       tokensUsed: responseData.tokensUsed || 0,
       executionTime: responseData.executionTime || 0,
     };
@@ -318,20 +318,22 @@ export const PUT: RequestHandler = async ({ request }) => {
     const updatedConfig = {
       ...QUIC_AI_STREAM_CONFIG,
       ...config,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
 
     return json({
       success: true,
       message: 'AI streaming configuration updated',
-      config: updatedConfig
+      config: updatedConfig,
     });
-
   } catch (err: any) {
     console.error('AI stream configuration update failed:', err);
-    error(500, ensureError({
-      message: 'Configuration update failed',
-      error: err instanceof Error ? err.message : 'Unknown error'
-    }));
+    error(
+      500,
+      ensureError({
+        message: 'Configuration update failed',
+        error: err instanceof Error ? err.message : 'Unknown error',
+      })
+    );
   }
 };

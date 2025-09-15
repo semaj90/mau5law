@@ -3,7 +3,7 @@
  * Provides endpoints to test and verify the orchestrator bridge functionality
  */
 
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { 
   testOrchestratorIntegration, 

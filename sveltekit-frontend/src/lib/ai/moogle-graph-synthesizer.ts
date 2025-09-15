@@ -20,7 +20,7 @@ type NESMemoryArchitecture = { allocateCHR_ROM?: (size: number) => any; writeCHR
 type DimensionalTensorStore = { storeTensorSlice?: (name: string, slice: any) => Promise<void>; getStats?: () => any };
 type SOMWebGPUCache = { getCachedLayout: (key: string) => any; setCachedLayout: (key: string, layout: any) => void };
 type GPUTensorWorker = { processVertexBuffer: (data: Float32Array) => Promise<ArrayBuffer> };
-import type { SoraGraphNode, SoraGraphEdge, SoraTraversalPath } from './sora-graph-traversal.js.js';
+import type { SoraGraphNode, SoraGraphEdge, SoraTraversalPath } from './sora-graph-traversal.js';
 import path from "path";
 type GraphNode = { id: string; properties: any };
 type GraphEdge = { id: string; source: string; target: string; weight: number };
@@ -793,7 +793,7 @@ export class MoogleGraphSynthesizer {
   async synthesizeReinforcementVisualization(
     paths: SoraTraversalPath[],
     qValues: Map<string, Map<string, number>>,
-    rewardHistory: Array<,
+    rewardHistory: Array<any>,
     config: Partial<MoogleVisualizationConfig> = {}
   ): Promise<MoogleReinforcementVisualization> {
     const { nodes, edges } = this.extractGraphElements(paths);

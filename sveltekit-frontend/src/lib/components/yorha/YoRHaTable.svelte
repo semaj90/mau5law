@@ -11,7 +11,7 @@
   }
 
   interface TableRow {
-    id: string | number;
+    id: string;
     [key: string]: unknown;
   }
 

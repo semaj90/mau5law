@@ -6,10 +6,10 @@
 
 import { Pool, type PoolClient } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { eq, sql, and, or, desc, asc } from 'drizzle-orm';
+import { eq, sql, and, or, desc } from 'drizzle-orm';
 import { dev } from '$app/environment';
-import * as schema from './db/schema-postgres.js.js';
-import { cognitiveCache } from '../services/cognitive-cache-integration.js.js';
+import * as schema from './db/schema-postgres.js';
+import { cognitiveCache } from '../services/cognitive-cache-integration.js';
 
 // Inline JsonbDocument type to avoid import issues
 interface JsonbDocument {
@@ -345,7 +345,7 @@ export class ThreadSafePostgres {
       includeMetadata?: boolean;
       filterBy?: Record<string, any>;
     } = {}
-  ): Promise<Array<any> {
+  ): Promise<Array<any>> {
     const {
       table = 'document_chunks',
       limit = 10,
@@ -404,8 +404,13 @@ export class ThreadSafePostgres {
   /**
    * Batch JSONB operations with thread safety
    */
-  async batchJsonbOperations<T>(
-    operations: Array<,
+  async batchJsonbOperations(
+    operations: Array<{
+      type: 'insert' | 'update' | 'delete';
+      table: string;
+      id: string;
+      data?: any;
+    }>,
     options: {
       atomic?: boolean;
       gpuAccelerated?: boolean;
@@ -590,7 +595,7 @@ export async function safeVectorSearch(
     includeMetadata?: boolean;
     filterBy?: Record<string, any>;
   }
-): Promise<Array<any> {
+): Promise<Array<any>> {
   return await threadSafePostgres.vectorSimilaritySearch(embedding, options || {});
 }
 

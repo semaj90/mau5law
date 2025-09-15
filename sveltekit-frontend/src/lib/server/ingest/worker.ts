@@ -17,13 +17,13 @@ import {
   sampleFramesFromVideo,
   parseJsonWithSimd,
   extractContent
-} from './extractors.js.js';
+} from './extractors.js';
 import {
   embedText,
   embedImageBuffer,
   embedAudioFilePath,
   embedContent
-} from './embed.js.js';
+} from './embed.js';
 
 if (!parentPort) {
   throw new Error('This script must be run as a worker thread');

@@ -8,7 +8,7 @@ const execAsync = promisify(exec);
 
 const client = new Client({
   host: 'localhost',
-  port: 5434,
+  port: 5432,
   user: 'legal_admin', 
   password: 'testpass123',
   database: 'legal_ai_test',

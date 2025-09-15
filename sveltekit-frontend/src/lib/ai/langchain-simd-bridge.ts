@@ -6,8 +6,8 @@
  * This bridge eliminates intermediate processing steps for maximum performance.
  */
 
-import { langChainOllamaService, type LangChainConfig, type ProcessingResult, type QueryResult } from './langchain-ollama-service.js.js';
-import { simdTextTilingEngine, type TextTileConfig, type TextEmbeddingResult } from './simd-text-tiling-engine.js.js';
+import { langChainOllamaService, type LangChainConfig, type ProcessingResult, type QueryResult } from './langchain-ollama-service.js';
+import { simdTextTilingEngine, type TextTileConfig, type TextEmbeddingResult } from './simd-text-tiling-engine.js';
 import { webgpuTextTileRenderer, type InstantUIComponent } from '$lib/webgpu/text-tile-renderer.js';
 
 export interface SIMDLangChainConfig extends Partial<LangChainConfig> {
@@ -319,7 +319,7 @@ export class LangChainSIMDBridge {
    * Batch process multiple documents with optimal SIMD pipeline
    */
   async processBatchDocuments(
-    documents: Array<,
+    documents: Array<any>,
     options: {
       concurrencyLimit?: number;
       enableUIGeneration?: boolean;

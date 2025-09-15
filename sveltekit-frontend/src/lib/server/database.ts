@@ -3,7 +3,7 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from "postgres";
 import { pgTable, serial, text, timestamp, jsonb, vector, real, uuid } from 'drizzle-orm/pg-core';
-import * as schema from './db/schema.js.js';
+import * as schema from './db/schema.js';
 
 // Database connection configuration
 const connectionString = process.env.DATABASE_URL ||

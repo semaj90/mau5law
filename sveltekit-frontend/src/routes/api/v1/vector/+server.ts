@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // Unified Vector Processing API Endpoint
 // Integrates Redis Streams + CUDA Worker + WebGPU + WASM LLM + PostgreSQL

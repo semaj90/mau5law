@@ -4,7 +4,7 @@
  * with XState Neural Sprite frontend for maximum performance
  */
 
-import { vectorWasm } from '../wasm/vector-wasm-wrapper.js.js';
+import { vectorWasm } from '../wasm/vector-wasm-wrapper.js';
 import { browser } from '$app/environment';
 
 export interface CacheEntry<T = any> {

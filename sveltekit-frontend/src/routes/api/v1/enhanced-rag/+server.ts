@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Enhanced RAG API - Direct Integration with Go Microservices

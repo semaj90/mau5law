@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // Simplified and type-safe evidence processing endpoint with an in-memory processing service
 // POST: start processing -> returns sessionId and jobId

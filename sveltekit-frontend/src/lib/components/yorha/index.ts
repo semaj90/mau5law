@@ -25,7 +25,7 @@ export interface YoRHaTableColumn {
 }
 
 export interface YoRHaTableRow {
-  id: string | number;
+  id: string;
     [key: string]: unknown;
   }
 

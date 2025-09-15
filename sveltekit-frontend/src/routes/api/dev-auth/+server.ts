@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 // Use canonical server drizzle + schema-postgres to avoid mixed column naming

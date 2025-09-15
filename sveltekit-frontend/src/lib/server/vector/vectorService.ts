@@ -11,7 +11,7 @@ import {
   cases,
   evidence,
   criminals,
-} from '../db/schema-postgres.js.js';
+} from '../db/schema-postgres.js';
 import { eq, and, sql, or, ilike } from 'drizzle-orm';
 import cuid2 from '@paralleldrive/cuid2';
 

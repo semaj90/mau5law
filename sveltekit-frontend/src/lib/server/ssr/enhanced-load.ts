@@ -1,11 +1,11 @@
-import type { LayoutLoad } from './$types.js.js';
-import type { PageLoad } from './$types.js.js';
+import type { LayoutLoad } from './$types.js';
+import type { PageLoad } from './$types.js';
 // Enhanced SSR Load Functions for SvelteKit 2
 // Production-optimized server-side rendering with caching
 
 import type { ServerLoad } from '@sveltejs/kit';
-import { checkDatabaseHealth } from '../db/health-check.js.js';
-// import { CaseOperations, EvidenceOperations } from '../db/enhanced-operations.js.js'; // These don't exist yet
+import { checkDatabaseHealth } from '../db/health-check.js';
+// import { CaseOperations, EvidenceOperations } from '../db/enhanced-operations.js'; // These don't exist yet
 
 // Temporary stub classes until the actual operations are implemented
 class CaseOperations {
@@ -22,9 +22,9 @@ class EvidenceOperations {
     return { evidence: [], total: 0 };
   }
 }
-import { CommonErrors } from '../api/response.js.js';
-import type { User } from '../db/schema-postgres.js.js';
-import { cases, evidence } from '../db/schema-postgres.js.js';
+import { CommonErrors } from '../api/response.js';
+import type { User } from '../db/schema-postgres.js';
+import { cases, evidence } from '../db/schema-postgres.js';
 import { URL } from 'url';
 
 type Case = typeof cases.$inferSelect;

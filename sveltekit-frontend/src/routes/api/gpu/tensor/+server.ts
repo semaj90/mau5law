@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 /*
  * SvelteKit API Route: GPU Tensor Processing

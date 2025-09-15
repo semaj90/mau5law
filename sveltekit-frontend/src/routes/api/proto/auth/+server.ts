@@ -1,6 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
-import { legal } from '../../../../proto/legal_api_pb.js.js';
+import { legal } from '../../../../proto/legal_api_pb.js';
 
 // Protobuf authentication endpoint
 export const POST: RequestHandler = async ({ request }) => {

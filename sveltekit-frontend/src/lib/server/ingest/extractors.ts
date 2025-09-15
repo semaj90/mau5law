@@ -15,7 +15,7 @@ import fs from "fs/promises";
 import path from "path";
 import { spawn } from "child_process";
 import { tmpdir } from "os";
-import { fetchMinioObject } from './minio.js.js';
+import { fetchMinioObject } from './minio.js';
 
 // Type imports for extractors
 export interface ExtractionResult {

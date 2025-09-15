@@ -8,7 +8,7 @@ import type { DistanceStrategy } from "@langchain/community/vectorstores/pgvecto
 import type { Document as LangChainDocumentType } from "@langchain/core/documents";
 import { Embeddings } from "@langchain/core/embeddings";
 import { OllamaEmbeddings } from "@langchain/ollama";
-import { db } from '../db/index.js.js';
+import { db } from '../db/index.js';
 import { sql, eq, and, or, desc, asc } from 'drizzle-orm';
 
 // Define legal document type

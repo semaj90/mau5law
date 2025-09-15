@@ -104,7 +104,7 @@ export class QdrantService {
   }
 
   async upsertPoints(
-    points: Array<,
+    points: Array<any>,
   ): Promise<void> {
     await this.ensureCollection();
     await this.client.upsert(this.collectionName, {

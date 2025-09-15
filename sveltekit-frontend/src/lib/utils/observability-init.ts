@@ -5,8 +5,8 @@
 
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
-import { observabilityClient, trackPageLoad } from './observability-client.js.js';
-import { timingMetrics } from './timing-metrics.js.js';
+import { observabilityClient, trackPageLoad } from './observability-client.js';
+import { timingMetrics } from './timing-metrics.js';
 
 // Global observability state
 let isInitialized = false;

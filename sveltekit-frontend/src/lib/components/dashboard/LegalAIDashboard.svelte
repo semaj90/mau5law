@@ -61,11 +61,11 @@
         apiClient.getPersonsOfInterest({ limit: 10, sortBy: 'updated_at', sortOrder: 'desc' })
       ]);
 
-      // Update state
-      cases = casesResponse.data || [];
-      evidence = evidenceResponse.data || [];
-      reports = reportsResponse.data || [];
-      personsOfInterest = personsResponse.data || [];
+      // Update state with proper fallbacks
+      cases = Array.isArray(casesResponse.data) ? casesResponse.data : [];
+      evidence = Array.isArray(evidenceResponse.data) ? evidenceResponse.data : [];
+      reports = Array.isArray(reportsResponse.data) ? reportsResponse.data : [];
+      personsOfInterest = Array.isArray(personsResponse.data) ? personsResponse.data : [];
 
       // Calculate statistics
       stats = {
@@ -73,9 +73,10 @@
         totalEvidence: evidenceResponse.total || 0,
         totalReports: reportsResponse.total || 0,
         totalPersons: personsResponse.total || 0,
-        activeCases: cases.filter(c => c.status === 'open').length,
-        pendingAnalysis: evidence.filter(e => !e.aiSummary).length,
+        activeCases: cases.filter(c => c?.status === 'open').length,
+        pendingAnalysis: evidence.filter(e => !e?.aiSummary).length,
         recentActivity: cases.filter(c => {
+          if (!c?.updatedAt) return false;
           const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
           return new Date(c.updatedAt) > dayAgo;
         }).length
@@ -84,7 +85,7 @@
       // Load system health
       await loadSystemHealth();
 
-    } catch (err) {
+    } catch (err: any) {
       console.error('Dashboard load error:', err);
       error = err instanceof Error ? err.message : 'Failed to load dashboard data';
       toast.error('Failed to load dashboard', { description: error });
@@ -103,7 +104,8 @@
         aiServices: healthResponse.services?.aiServices || 'unknown',
         jobQueue: healthResponse.services?.jobQueue || 'unknown'
       };
-    } catch (err) {
+    } catch (err: any) {
+      console.error('Health check failed:', err);
       systemHealth = {
         api: 'error',
         database: 'unknown',
@@ -129,7 +131,7 @@
         toast.success('Case created successfully!');
         await loadDashboardData(); // Refresh data
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Quick case creation error:', err);
       toast.error('Failed to create case');
     }
@@ -182,9 +184,11 @@
     // Set up auto-refresh every 30 seconds
     refreshInterval = setInterval(loadDashboardData, 30000);
 
+    // Cleanup function
     return () => {
       if (refreshInterval) {
         clearInterval(refreshInterval);
+        refreshInterval = null;
       }
     };
   });
@@ -377,15 +381,15 @@
                       <li class="py-4">
                         <div class="flex items-center space-x-4">
                           <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">{case.title}</p>
-                            <p class="text-sm text-gray-500 truncate">{case.description || 'No description'}</p>
+                            <p class="text-sm font-medium text-gray-900 truncate">{case?.title || 'Untitled Case'}</p>
+                            <p class="text-sm text-gray-500 truncate">{case?.description || 'No description'}</p>
                           </div>
                           <div class="flex items-center space-x-2">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getPriorityColor(case.priority)}">
-                              {case.priority}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getPriorityColor(case?.priority || 'medium')}">
+                              {case?.priority || 'medium'}
                             </span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getStatusColor(case.status)}">
-                              {case.status}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getStatusColor(case?.status || 'open')}">
+                              {case?.status || 'open'}
                             </span>
                           </div>
                         </div>
@@ -408,20 +412,20 @@
                           <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center">
                               <span class="text-sm">
-                                {item.evidenceType === 'photo' ? '📷' :
-                                 item.evidenceType === 'document' ? '📄' :
-                                 item.evidenceType === 'video' ? '🎥' : '📦'}
+                                {item?.evidenceType === 'photo' ? '📷' :
+                                 item?.evidenceType === 'document' ? '📄' :
+                                 item?.evidenceType === 'video' ? '🎥' : '📦'}
                               </span>
                             </div>
                           </div>
                           <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">{item.title}</p>
+                            <p class="text-sm font-medium text-gray-900 truncate">{item?.title || 'Untitled Evidence'}</p>
                             <p class="text-sm text-gray-500 truncate">
-                              {item.evidenceType} • {formatDate(item.createdAt)}
+                              {item?.evidenceType || 'unknown'} • {item?.createdAt ? formatDate(item.createdAt) : 'No date'}
                             </p>
                           </div>
                           <div>
-                            {#if item.aiSummary}
+                            {#if item?.aiSummary}
                               <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
                                 ✓ Analyzed
                               </span>
@@ -462,22 +466,22 @@
                     <tr>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div class="text-sm font-medium text-gray-900">{case.title}</div>
-                          <div class="text-sm text-gray-500">{case.caseNumber || 'No case number'}</div>
+                          <div class="text-sm font-medium text-gray-900">{case?.title || 'Untitled Case'}</div>
+                          <div class="text-sm text-gray-500">{case?.caseNumber || 'No case number'}</div>
                         </div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getStatusColor(case.status)}">
-                          {case.status}
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getStatusColor(case?.status || 'open')}">
+                          {case?.status || 'open'}
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getPriorityColor(case.priority)}">
-                          {case.priority}
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getPriorityColor(case?.priority || 'medium')}">
+                          {case?.priority || 'medium'}
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(case.updatedAt)}
+                        {case?.updatedAt ? formatDate(case.updatedAt) : 'No date'}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button class="text-blue-600 hover:text-blue-900">View</button>
@@ -502,18 +506,18 @@
                     <div class="flex-shrink-0">
                       <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                         <span class="text-lg">
-                          {item.evidenceType === 'photo' ? '📷' :
-                           item.evidenceType === 'document' ? '📄' :
-                           item.evidenceType === 'video' ? '🎥' :
-                           item.evidenceType === 'audio' ? '🎵' : '📦'}
+                          {item?.evidenceType === 'photo' ? '📷' :
+                           item?.evidenceType === 'document' ? '📄' :
+                           item?.evidenceType === 'video' ? '🎥' :
+                           item?.evidenceType === 'audio' ? '🎵' : '📦'}
                         </span>
                       </div>
                     </div>
                     <div class="flex-1 min-w-0">
-                      <p class="text-sm font-medium text-gray-900 truncate">{item.title}</p>
-                      <p class="text-xs text-gray-500 mt-1">{item.evidenceType}</p>
-                      <p class="text-xs text-gray-400 mt-1">{formatDate(item.createdAt)}</p>
-                      {#if item.aiSummary}
+                      <p class="text-sm font-medium text-gray-900 truncate">{item?.title || 'Untitled Evidence'}</p>
+                      <p class="text-xs text-gray-500 mt-1">{item?.evidenceType || 'unknown'}</p>
+                      <p class="text-xs text-gray-400 mt-1">{item?.createdAt ? formatDate(item.createdAt) : 'No date'}</p>
+                      {#if item?.aiSummary}
                         <div class="mt-2">
                           <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
                             ✓ AI Analyzed

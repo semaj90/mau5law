@@ -3,7 +3,7 @@
  * Connects timing metrics with SvelteKit architecture and server-side observability
  */
 
-import { timingMetrics, createTimedFetch, type TimingMetrics } from './timing-metrics.js.js';
+import { timingMetrics, createTimedFetch, type TimingMetrics } from './timing-metrics.js';
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { get } from 'svelte/store';

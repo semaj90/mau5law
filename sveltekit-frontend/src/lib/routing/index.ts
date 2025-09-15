@@ -3,10 +3,10 @@
  * Complete routing solution for SvelteKit with dynamic generation
  */
 
-import type { DynamicRouteConfig, GeneratedRoute } from './dynamic-route-generator.js.js';
+import type { DynamicRouteConfig, GeneratedRoute } from './dynamic-route-generator.js';
 import type { RouteDefinition } from '$lib/data/routes-config';
-import { getAllDynamicRoutes } from './dynamic-route-generator.js.js';
-import { registerDynamicRoute, getRoute } from './route-registry.js.js';
+import { getAllDynamicRoutes } from './dynamic-route-generator.js';
+import { registerDynamicRoute, getRoute } from './route-registry.js';
 import path from "path";
 
 // Core route generation

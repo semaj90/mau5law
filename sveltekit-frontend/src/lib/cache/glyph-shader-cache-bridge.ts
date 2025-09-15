@@ -5,7 +5,7 @@
  */
 
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
-import { parallelCacheOrchestrator } from './parallel-cache-orchestrator.js.js';
+import { parallelCacheOrchestrator } from './parallel-cache-orchestrator.js';
 import { browser } from '$app/environment';
 
 export interface GlyphRenderingRequest {

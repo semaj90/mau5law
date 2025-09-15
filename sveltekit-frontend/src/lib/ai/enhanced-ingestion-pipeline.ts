@@ -23,8 +23,8 @@ import { resolveLibraryId, getLibraryDocs } from '$lib/mcp-context72-get-library
 const copilotOrchestrator = async (prompt: string, options: any): Promise<any> => ({
   selfPrompt: "Mock copilot analysis completed",
 });
-import type { DocumentEmbedding } from './som-rag-system.js.js';
-import { SelfOrganizingMapRAG } from './som-rag-system.js.js';
+import type { DocumentEmbedding } from './som-rag-system.js';
+import { SelfOrganizingMapRAG } from './som-rag-system.js';
 import { QdrantService } from '$lib/server/services/qdrant-service';
 import { Pool } from 'pg';
 

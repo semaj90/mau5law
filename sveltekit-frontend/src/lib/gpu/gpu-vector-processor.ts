@@ -1,9 +1,9 @@
-import { gpuContextProvider } from './gpu-context-provider.js.js';
-import type { ShaderResources } from './gpu-context-provider.js.js';
-import { lodCacheEngine } from '../ai/lod-cache-engine.js.js';
-import { telemetryBus } from '../telemetry/telemetry-bus.js.js';
-import { gpuTelemetryService } from './gpu-telemetry-service.js.js';
-import { classifyGPUError, computeBackoff, DEFAULT_RETRY_POLICY } from './gpu-error-utils.js.js';
+import { gpuContextProvider } from './gpu-context-provider.js';
+import type { ShaderResources } from './gpu-context-provider.js';
+import { lodCacheEngine } from '../ai/lod-cache-engine.js';
+import { telemetryBus } from '../telemetry/telemetry-bus.js';
+import { gpuTelemetryService } from './gpu-telemetry-service.js';
+import { classifyGPUError, computeBackoff, DEFAULT_RETRY_POLICY } from './gpu-error-utils.js';
 
 interface VectorProcessOptions {
   pipeline: 'embedding-generation' | 'vector-clustering' | 'similarity-computation';

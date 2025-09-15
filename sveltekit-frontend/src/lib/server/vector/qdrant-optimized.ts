@@ -5,9 +5,9 @@
  */
 
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { generateEmbedding } from '../ai/embeddings-simple.js.js';
-import logger from '../production-logger.js.js';
-import type { LogContext } from '../production-logger.js.js';
+import { generateEmbedding } from '../ai/embeddings-simple.js';
+import logger from '../production-logger.js';
+import type { LogContext } from '../production-logger.js';
 
 // Simple caching fallback if service not available
 const cachingService = {

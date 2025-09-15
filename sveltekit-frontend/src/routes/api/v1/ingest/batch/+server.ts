@@ -14,7 +14,8 @@ const TIMEOUT = 120000; // 2 minutes for batch processing
 const BATCH_SIZE_LIMIT = parseInt('10'); // MAX_BATCH_SIZE ||
 
 export interface BatchIngestRequest {
-  documents: Array<any>
+  documents: Array<any>;
+}
 
 export interface BatchIngestResponse {
   results: Array<any>;

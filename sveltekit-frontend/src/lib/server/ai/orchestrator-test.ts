@@ -3,8 +3,8 @@
  * Tests the bridge connection between local and server orchestrators
  */
 
-import { llmOrchestratorBridge } from './llm-orchestrator-bridge.js.js';
-import type { LLMBridgeRequest } from './llm-orchestrator-bridge.js.js';
+import { llmOrchestratorBridge } from './llm-orchestrator-bridge.js';
+import type { LLMBridgeRequest } from './llm-orchestrator-bridge.js';
 
 export async function testOrchestratorIntegration(): Promise<any> {
   const results: any[] = [];

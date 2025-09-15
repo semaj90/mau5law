@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 /*
  * Enhanced Upload API Endpoint - SvelteKit 2 Production

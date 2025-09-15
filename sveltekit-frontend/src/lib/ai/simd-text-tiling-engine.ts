@@ -7,7 +7,7 @@
  */
 
 import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
-import { langChainOllamaService } from './langchain-ollama-service.js.js';
+import { langChainOllamaService } from './langchain-ollama-service.js';
 import { webgpuLangChainBridge } from '$lib/server/webgpu-langchain-bridge.js';
 
 export interface TextTileConfig {
@@ -501,7 +501,7 @@ export class SIMDTextTilingEngine {
    * Batch process multiple texts for UI component generation
    */
   async processBatchTexts(
-    texts: Array<,
+    texts: Array<any>,
     options: Partial<TextTileConfig> = {}
   ): Promise<TextEmbeddingResult[]> {
     const config = { ...this.config, ...options };

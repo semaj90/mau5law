@@ -3,7 +3,7 @@ import { canvasLayouts } from "$lib/server/db/schema-canvas";
 import type { RequestEvent } from "@sveltejs/kit";
 import { json } from "@sveltejs/kit";
 import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 

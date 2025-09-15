@@ -45,7 +45,7 @@ async function ocrWithTesseract(filePath: string): Promise<string> {
     const worker: any = await createWorker({
       logger: (m: any) => {
         if (import.meta.env.MCP_DEBUG === 'true') console.log('TESSERACT:', m);
-      }
+      },
     });
 
     // Standard worker lifecycle
@@ -53,10 +53,17 @@ async function ocrWithTesseract(filePath: string): Promise<string> {
     if (typeof worker.loadLanguage === 'function') await worker.loadLanguage('eng');
     if (typeof worker.initialize === 'function') await worker.initialize('eng');
 
-    const result: any = await worker.recognize ? await worker.recognize(filePath) : await worker;
+    const result: any = (await worker.recognize) ? await worker.recognize(filePath) : await worker;
     if (typeof worker.terminate === 'function') await worker.terminate();
 
-    return (result && (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).data && (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).(data as { text?: any }).text) ? (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).(data as { text?: any }).text : (result && (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).text) ? (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).text : '';
+    // Extract text from OCR result with simplified access pattern
+    if (result?.data?.text) {
+      return result.data.text;
+    } else if (result?.text) {
+      return result.text;
+    } else {
+      return '';
+    }
   } catch (err: any) {
     console.warn('Tesseract OCR failed or not installed:', err?.message || err);
     return `

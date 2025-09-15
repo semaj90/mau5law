@@ -22,7 +22,7 @@
  * Supports both local and server-side orchestrators with MCP multi-core integration
  */
 
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
 import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js';

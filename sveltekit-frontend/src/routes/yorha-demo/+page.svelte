@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
   let currentView = $state('grid');
   let modalOpen = $state(false);
   let terminalActive = $state(true);
-  type Notification = { id: string | number; type: string; message: string };
+  type Notification = { id: string; type: string; message: string };
   let notifications = $state<Notification[]>([]);
 
   // Sample data for demonstration

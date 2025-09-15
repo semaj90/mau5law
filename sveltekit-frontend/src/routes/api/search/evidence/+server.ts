@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // Evidence search API endpoint with advanced vector capabilities
 // Supports document content search, image analysis, and multi-modal search

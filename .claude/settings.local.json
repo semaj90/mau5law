@@ -236,7 +236,13 @@
       "Bash(then echo \"INCOMPLETE ROUTE: $dir\")",
       "Bash(then echo \"MISSING PAGE: $dir\")",
       "Bash(./cuda-service-worker.exe)",
-      "Bash(DATABASE_URL=\"postgres://legal_admin:123456@localhost:5432/legal_ai_db?sslmode=disable\" PORT=8082 timeout 15s go run cmd/legal-recommendation/main.go)"
+      "Bash(DATABASE_URL=\"postgres://legal_admin:123456@localhost:5432/legal_ai_db?sslmode=disable\" PORT=8082 timeout 15s go run cmd/legal-recommendation/main.go)",
+      "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5434/legal_ai_db\" REDIS_PASSWORD=\"redis\" timeout 10 npm run dev -- --port 5175 --host 127.0.0.1)",
+      "Bash(DATABASE_URL=\"postgres://legal_admin:123456@localhost:5434/legal_ai_db?sslmode=disable\" timeout 5 ./cuda-service-worker.exe)",
+      "Bash(export PGPASSWORD=postgres)",
+      "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5434/legal_ai_db\" npx drizzle-kit push:pg)",
+      "Bash(npx drizzle-kit:*)",
+      "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" npx tsx src/lib/server/db/seed.ts)"
     ],
     "deny": [],
     "ask": []

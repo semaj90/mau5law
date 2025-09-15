@@ -8,10 +8,10 @@
 
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { threadSafePostgres } from './thread-safe-postgres.js.js';
-import { concurrentSerializer, serializeForAPI } from './concurrent-json-serializer.js.js';
-import { gpuCoordinator, gpuProcessJsonb } from './gpu-thread-coordinator.js.js';
-import { cognitiveCache } from '../services/cognitive-cache-integration.js.js';
+import { threadSafePostgres } from './thread-safe-postgres.js';
+import { concurrentSerializer, serializeForAPI } from './concurrent-json-serializer.js';
+import { gpuCoordinator, gpuProcessJsonb } from './gpu-thread-coordinator.js';
+import { cognitiveCache } from '../services/cognitive-cache-integration.js';
 
 export interface SSRResponse<T = any> {
   success: boolean;

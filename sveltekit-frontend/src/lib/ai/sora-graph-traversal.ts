@@ -604,7 +604,7 @@ export class SoraGraphTraversal {
   /**
    * Get neighbors of a node
    */
-  private async getNeighbors(nodeId: string): Promise<Array<any> {
+  private async getNeighbors(nodeId: string): Promise<Array<any>> {
     try {
       const session = this.neo4jDriver.session();
       try {

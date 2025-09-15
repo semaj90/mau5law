@@ -83,7 +83,7 @@ export function isAITask(value: unknown): value is AITask {
     typeof (value as any).taskId === 'string' &&
     isAITaskType((value as any).type) &&
     typeof (value as any).providerId === 'string' &&
-    typeof (value as any)?.model || "unknown" // @ts-ignore - Model property access === 'string' &&
+    typeof (value as any).model === 'string' &&
     typeof (value as any).prompt === 'string' &&
     typeof (value as any).timestamp === 'number' &&
     ['low', 'medium', 'high'].includes((value as any).priority)
@@ -243,12 +243,12 @@ export function discriminateWorkerMessage(message: WorkerMessage): {
   isAPIResponse<any>: boolean;
   aiTask?: AITask;
   workerStatus?: WorkerStatus;
-  apiResponse?: APIResponse<any><unknown>;
+  apiResponse?: APIResponse<any>;
 } {
   const result = {
     isAITask: false,
     isWorkerStatus: false,
-    isAPIResponse<any>: false,
+    isAPIResponse: false,
   } as any;
 
   if (message.payload) {
@@ -258,8 +258,8 @@ export function discriminateWorkerMessage(message: WorkerMessage): {
     } else if (isWorkerStatus(message.payload)) {
       (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).isWorkerStatus = true;
       (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).workerStatus = message.payload;
-    } else if (isAPIResponse<any>(message.payload)) {
-      (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).isAPIResponse<any> = true;
+    } else if (isAPIResponse(message.payload)) {
+      (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).isAPIResponse = true;
       (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).apiResponse = message.payload;
     }
   }
@@ -308,8 +308,8 @@ export function assertIsWorkerStatus(value: unknown): asserts value is WorkerSta
   }
 }
 
-export function assertIsAPIResponse<any>(value: unknown): asserts value is APIResponse<any> {
-  if (!isAPIResponse<any>(value)) {
-    throw new Error('Value is not a valid APIResponse<any>');
+export function assertIsAPIResponse(value: unknown): asserts value is APIResponse<any> {
+  if (!isAPIResponse(value)) {
+    throw new Error('Value is not a valid APIResponse');
   }
 }

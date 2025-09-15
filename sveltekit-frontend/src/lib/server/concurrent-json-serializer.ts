@@ -45,7 +45,7 @@ interface SerializationResult {
 class WorkerPool {
   private workers: Worker[] = [];
   private availableWorkers: Worker[] = [];
-  private taskQueue: Array< = [];
+  private taskQueue: Array<any> = [];
 
   constructor(private poolSize: number = Math.max(2, cpus().length - 2)) {
     this.initializeWorkers();

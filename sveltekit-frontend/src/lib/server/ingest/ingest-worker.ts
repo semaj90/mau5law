@@ -9,21 +9,21 @@
  */
 
 import { parentPort } from "worker_threads";
-import { fetchMinioObject } from './minio.js.js';
+import { fetchMinioObject } from './minio.js';
 import {
   extractTextFromImage,
   extractTextFromPDF,
   extractAudioFromBuffer,
   sampleFramesFromVideo,
   parseJsonWithSimd
-} from './extractors.js.js';
+} from './extractors.js';
 import {
   embedText,
   embedImageBuffer,
   embedAudioFilePath
-} from './embed.js.js';
-import { db } from '../db/client.js.js';
-import { userDocuments } from '../db/unified-schema.js.js';
+} from './embed.js';
+import { db } from '../db/client.js';
+import { userDocuments } from '../db/unified-schema.js';
 import fs from "fs/promises";
 
 interface Job {

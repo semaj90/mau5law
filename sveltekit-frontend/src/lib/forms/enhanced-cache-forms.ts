@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { superForm, type SuperValidated, type Infer } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { writable, derived, type Writable } from 'svelte/store';
-import { cacheFirstService, CaseSchema, EvidenceSchema } from './cache-first-architecture.js.js';
+import { cacheFirstService, CaseSchema, EvidenceSchema } from './cache-first-architecture.js';
 
 // ===== ENHANCED CASE FORM SCHEMA =====
 

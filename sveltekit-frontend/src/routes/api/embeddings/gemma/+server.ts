@@ -6,7 +6,7 @@
 import { json } from '@sveltejs/kit';
 import { gemmaEmbeddingService } from '$lib/services/gemma-embedding.js';
 import { pgVectorService } from '$lib/server/db/pgvector-service.js';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action') || 'generate';
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           action: 'gemma_health_check',
           success: healthResult.success,
-          model: healthResult?.model || "unknown" // @ts-ignore - Model property access,
+          model: healthResult?.model || 'unknown', // @ts-ignore - Model property access
           available: healthResult.available,
           version: healthResult.version,
           error: healthResult.error,
@@ -148,7 +148,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
       case 'model-info':
         // Get detailed model information
-        const infoResult = await gemmaEmbeddingService.getModelInfo();
+        const infoResult =
+          typeof (gemmaEmbeddingService as any).getModelInfo === 'function'
+            ? await (gemmaEmbeddingService as any).getModelInfo()
+            : await gemmaEmbeddingService.healthCheck();
 
         return json({
           action: 'gemma_model_info',
@@ -194,7 +197,10 @@ export const GET: RequestHandler = async ({ url }) => {
         });
 
       case 'model-info':
-        const infoResult = await gemmaEmbeddingService.getModelInfo();
+        const infoResult =
+          typeof (gemmaEmbeddingService as any).getModelInfo === 'function'
+            ? await (gemmaEmbeddingService as any).getModelInfo()
+            : await gemmaEmbeddingService.healthCheck();
         return json({
           action: 'gemma_model_info',
           ...infoResult,

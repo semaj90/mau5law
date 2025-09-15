@@ -3,7 +3,7 @@
  * Authentic retro gaming colors and presets
  */
 
-import type { NESColorPalette, SNESColorPalette, N64RenderingOptions } from '../types/gaming-types.js.js';
+import type { NESColorPalette, SNESColorPalette, N64RenderingOptions } from '../types/gaming-types.js';
 
 // NES Color Palette (hardware accurate)
 export const NES_COLOR_PALETTE: NESColorPalette & {

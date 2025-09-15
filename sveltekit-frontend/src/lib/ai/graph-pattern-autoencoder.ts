@@ -179,7 +179,7 @@ export class GraphPatternAutoEncoder {
     // Encoder hidden layers
     for (let i = 0; i < this.config.hiddenLayers.length; i++) {
       const units = this.config.hiddenLayers[i];
-      
+
       // Dense layer
       encoderLayer = tf.layers.dense({
         units,
@@ -206,7 +206,7 @@ export class GraphPatternAutoEncoder {
     }
 
     // Create encoder model
-    this.encoder = tf?.model || "unknown" // @ts-ignore - Model property access({
+    this.encoder = tf.model({
       inputs: encoderInputs,
       outputs: encoderLayer,
       name: 'graph_pattern_encoder'
@@ -219,10 +219,10 @@ export class GraphPatternAutoEncoder {
 
     // Decoder hidden layers (reverse of encoder)
     const decoderLayers = [...this.config.hiddenLayers].reverse().slice(1);
-    
+
     for (let i = 0; i < decoderLayers.length; i++) {
       const units = decoderLayers[i];
-      
+
       decoderLayer = tf.layers.dense({
         units,
         activation: this.config.activationFunction,
@@ -286,13 +286,13 @@ export class GraphPatternAutoEncoder {
   private customGraphLoss = (yTrue: tf.Tensor, yPred: tf.Tensor): tf.Tensor => {
     // Reconstruction loss (MSE)
     const reconstructionLoss = tf.losses.meanSquaredError(yTrue, yPred);
-    
+
     // Structure preservation loss (encourage sparse representations)
     const sparsityLoss = tf.mean(tf.abs(yPred));
-    
+
     // Legal pattern consistency loss (custom for legal graphs)
     const consistencyLoss = this.calculateLegalConsistencyLoss(yTrue, yPred);
-    
+
     // Combined loss
     const totalLoss = tf.add(
       reconstructionLoss,
@@ -301,7 +301,7 @@ export class GraphPatternAutoEncoder {
         tf.mul(consistencyLoss, 0.2)
       )
     );
-    
+
     return totalLoss;
   };
 
@@ -309,7 +309,7 @@ export class GraphPatternAutoEncoder {
     // Simplified legal consistency - encourage similar patterns for similar legal concepts
     const diff = tf.sub(yTrue, yPred);
     const squaredDiff = tf.square(diff);
-    
+
     // Weight certain dimensions more heavily (e.g., legal importance features)
     const weights = tf.tensor1d(
       Array(this.config.inputDimension).fill(0).map((_, i) => {
@@ -318,7 +318,7 @@ export class GraphPatternAutoEncoder {
         return 1.0; // Other features
       })
     );
-    
+
     const weightedDiff = tf.mul(squaredDiff, weights.expandDims(0));
     return tf.mean(weightedDiff);
   }
@@ -329,7 +329,7 @@ export class GraphPatternAutoEncoder {
     }
 
     const cacheKey = `graph_encode_${this.generateGraphSignature(graphData)}`;
-    
+
     // Check cache first
     if (this.cache) {
       const cached = await this.cache.get<EncodedGraphPattern>(cacheKey);
@@ -402,7 +402,7 @@ export class GraphPatternAutoEncoder {
     }
 
     const cacheKey = `graph_decode_${encodedPattern.patternSignature}`;
-    
+
     // Check cache first
     if (this.cache) {
       const cached = await this.cache.get<DecodedGraphPattern>(cacheKey);
@@ -549,7 +549,7 @@ export class GraphPatternAutoEncoder {
 
     // Node count and distribution
     features.push(nodes.length / 1000); // Normalized node count
-    
+
     // Node type distribution
     const typeCount = { case: 0, statute: 0, regulation: 0, precedent: 0, person: 0, organization: 0 };
     nodes.forEach(node => typeCount[node.type]++);
@@ -629,7 +629,7 @@ export class GraphPatternAutoEncoder {
       'criminal': [0, 0, 1, 0],
       'corporate': [0, 0, 0, 1]
     };
-    
+
     const domainFeatures = domainMap[graphData.metadata.legalDomain as keyof typeof domainMap] || [0, 0, 0, 0];
     features.push(...domainFeatures);
 
@@ -650,15 +650,15 @@ export class GraphPatternAutoEncoder {
     // Simplified connectivity analysis
     const nodeCount = graphData.nodes.length;
     const edgeCount = graphData.edges.length;
-    
+
     if (nodeCount === 0) return [0, 0, 0];
 
     // Clustering coefficient approximation
     const clustering = edgeCount / (nodeCount * (nodeCount - 1) / 2);
-    
+
     // Average path length approximation
     const avgPathLength = nodeCount > 1 ? Math.log(nodeCount) / Math.log(edgeCount / nodeCount || 1) : 0;
-    
+
     // Centralization measure
     const centralization = graphData.metadata.averageDegree / nodeCount;
 
@@ -705,9 +705,9 @@ export class GraphPatternAutoEncoder {
         id: `reconstructed_node_${i}`,
         label: `Reconstructed Node ${i}`,
         type: 'case', // Simplified - would infer from features
-        position: { 
-          x: features[6] * 1000 + i * 10, 
-          y: features[7] * 1000 + i * 10 
+        position: {
+          x: features[6] * 1000 + i * 10,
+          y: features[7] * 1000 + i * 10
         },
         features: new Float32Array(features.slice(8, 32)),
         metadata: { reconstructed: true }
@@ -718,7 +718,7 @@ export class GraphPatternAutoEncoder {
     for (let i = 0; i < Math.min(edgeCount, reconstructedNodes.length * 2); i++) {
       const sourceIdx = i % reconstructedNodes.length;
       const targetIdx = (i + 1) % reconstructedNodes.length;
-      
+
       reconstructedEdges.push({
         id: `reconstructed_edge_${i}`,
         source: reconstructedNodes[sourceIdx].id,
@@ -734,12 +734,12 @@ export class GraphPatternAutoEncoder {
 
   private extractLegalPatterns(graphData: GraphData, encodedFeatures: Float32Array): LegalPatternFeatures {
     // Extract legal-specific patterns from the graph and encoding
-    
+
     const citationPaths = this.analyzeCitationPaths(graphData);
     const jurisdictionalClusters = this.analyzeJurisdictionalClusters(graphData);
     const temporalPatterns = this.analyzeTemporalPatterns(graphData);
     const authorityWeights = this.analyzeAuthorityWeights(graphData);
-    
+
     // Calculate derived metrics
     const precedentStrength = citationPaths.reduce((sum, val) => sum + val, 0) / citationPaths.length || 0;
     const conceptSimilarity = this.calculateConceptSimilarity(encodedFeatures);
@@ -758,24 +758,24 @@ export class GraphPatternAutoEncoder {
     // Analyze citation path patterns
     const citationEdges = graphData.edges.filter(edge => edge.type === 'cites');
     const paths: number[] = [];
-    
+
     // Simple path analysis - in practice would use more sophisticated graph algorithms
     for (let i = 0; i < Math.min(citationEdges.length, 10); i++) {
       paths.push(citationEdges[i].weight || 0.5);
     }
-    
+
     return paths;
   }
 
   private analyzeJurisdictionalClusters(graphData: GraphData): number[] {
     // Analyze jurisdictional clustering patterns
     const jurisdictions = new Map<string, number>();
-    
+
     graphData.nodes.forEach(node => {
       const jurisdiction = node.metadata.jurisdiction || 'unknown';
       jurisdictions.set(jurisdiction, (jurisdictions.get(jurisdiction) || 0) + 1);
     });
-    
+
     return Array.from(jurisdictions.values()).map(count => count / graphData.nodes.length);
   }
 
@@ -785,27 +785,27 @@ export class GraphPatternAutoEncoder {
       .map(node => node.metadata.timestamp)
       .filter(ts => typeof ts === 'number')
       .sort();
-    
+
     if (timestamps.length === 0) return [0, 0, 0];
-    
+
     const timeSpan = timestamps[timestamps.length - 1] - timestamps[0];
     const avgInterval = timeSpan / timestamps.length;
     const density = timestamps.length / (timeSpan || 1);
-    
+
     return [timeSpan / (365 * 24 * 60 * 60 * 1000), avgInterval / (30 * 24 * 60 * 60 * 1000), density];
   }
 
   private analyzeAuthorityWeights(graphData: GraphData): number[] {
     // Analyze authority/influence weights
     const weights: number[] = [];
-    
+
     graphData.nodes.forEach(node => {
       const importance = node.metadata.importance || 0.5;
       const citations = graphData.edges.filter(edge => edge.target === node.id).length;
       const authority = importance + (citations / 10); // Simple authority calculation
       weights.push(Math.min(authority, 1.0));
     });
-    
+
     return weights.slice(0, 20); // Limit to first 20
   }
 
@@ -824,7 +824,7 @@ export class GraphPatternAutoEncoder {
     const edgeSignature = graphData.edges.length.toString();
     const typeSignature = graphData.metadata.legalDomain;
     const timestamp = graphData.metadata.timestamp.toString();
-    
+
     return `${nodeSignature}_${edgeSignature}_${typeSignature}_${timestamp}`.substring(0, 32);
   }
 
@@ -833,9 +833,9 @@ export class GraphPatternAutoEncoder {
     const featureHash = Array.from(encodedFeatures.slice(0, 8))
       .map(f => Math.round(f * 1000).toString(16))
       .join('');
-    
+
     const patternHash = Math.round(legalPatterns.precedentStrength * 1000).toString(16);
-    
+
     return `pattern_${featureHash}_${patternHash}`.substring(0, 32);
   }
 
@@ -844,11 +844,11 @@ export class GraphPatternAutoEncoder {
     const squaredDiff = tf.square(diff);
     const mse = tf.mean(squaredDiff);
     const error = await mse.data();
-    
+
     diff.dispose();
     squaredDiff.dispose();
     mse.dispose();
-    
+
     return error[0];
   }
 
@@ -861,12 +861,12 @@ export class GraphPatternAutoEncoder {
   private async calculatePatternRecognitionAccuracy(graphs: GraphData[]): Promise<number> {
     // Simplified pattern recognition accuracy
     let correctPredictions = 0;
-    
+
     for (const graph of graphs.slice(0, 10)) { // Test on first 10 graphs
       try {
         const encoded = await this.encodeGraphPattern(graph);
         const decoded = await this.decodeGraphPattern(encoded);
-        
+
         if (decoded.fidelityScore > 0.7) {
           correctPredictions++;
         }
@@ -874,17 +874,17 @@ export class GraphPatternAutoEncoder {
         // Skip failed predictions
       }
     }
-    
+
     return correctPredictions / Math.min(graphs.length, 10);
   }
 
   private shouldStopEarly(): boolean {
     if (this.trainingHistory.length < 5) return false;
-    
+
     const recentLosses = this.trainingHistory.slice(-5).map(h => h.loss);
     const avgLoss = recentLosses.reduce((sum, loss) => sum + loss, 0) / recentLosses.length;
     const variance = recentLosses.reduce((sum, loss) => sum + Math.pow(loss - avgLoss, 2), 0) / recentLosses.length;
-    
+
     // Stop if variance is very low (converged) or loss is increasing
     return variance < 1e-6 || (recentLosses[4] > recentLosses[0]);
   }
@@ -901,7 +901,7 @@ export class GraphPatternAutoEncoder {
 
   private calculateStructuralFidelity(decoded: { reconstructedNodes: GraphNode[]; reconstructedEdges: GraphEdge[] }): number {
     // Simplified structural fidelity
-    const nodeEdgeRatio = decoded.reconstructedNodes.length > 0 ? 
+    const nodeEdgeRatio = decoded.reconstructedNodes.length > 0 ?
       decoded.reconstructedEdges.length / decoded.reconstructedNodes.length : 0;
     return Math.min(nodeEdgeRatio / 2, 1.0);
   }
@@ -911,17 +911,17 @@ export class GraphPatternAutoEncoder {
     return patterns.conceptSimilarity * 0.8 + patterns.precedentStrength * 0.2;
   }
 
-  getCompressionStats(): { 
-    patternCount: number; 
-    avgCompressionRatio: number; 
+  getCompressionStats(): {
+    patternCount: number;
+    avgCompressionRatio: number;
     totalSavings: number;
     cachingStats: any;
   } {
     const patterns = Array.from(this.patternLibrary.values());
-    const avgCompressionRatio = patterns.length > 0 ? 
+    const avgCompressionRatio = patterns.length > 0 ?
       patterns.reduce((sum, p) => sum + p.compressionRatio, 0) / patterns.length : 0;
     const totalSavings = patterns.reduce((sum, p) => sum + (p.originalSize - p.encodedSize), 0);
-    
+
     return {
       patternCount: patterns.length,
       avgCompressionRatio,

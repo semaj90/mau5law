@@ -2,7 +2,7 @@ import { db } from "$lib/db/connection";
 import { eq, desc } from "drizzle-orm";
 import { json } from '@sveltejs/kit';
 import { chatSessions } from '$lib/server/db/schema-unified';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

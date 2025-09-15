@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 /*
  * RAG QUIC Proxy API - Enhanced RAG Service with Edge Caching
@@ -11,11 +11,11 @@ import { json, error } from '@sveltejs/kit';
 import { ensureError } from '$lib/utils/ensure-error';
 
 const RAG_QUIC_CONFIG = {
-  primaryPort: 8451,    // QUIC HTTP/3
-  fallbackPort: 8452,   // HTTP/2
+  primaryPort: 8451, // QUIC HTTP/3
+  fallbackPort: 8452, // HTTP/2
   baseUrl: 'http://localhost:8451',
   fallbackUrl: 'http://localhost:8452',
-  timeout: 45000,       // RAG operations can be intensive
+  timeout: 45000, // RAG operations can be intensive
   cacheEnabled: true,
   etagRevalidation: true,
   maxPayloadSize: 10 * 1024 * 1024, // 10MB
@@ -43,8 +43,8 @@ export interface RAGResponse {
 
 // Import the Go microservice manager
 import { goServiceManager } from '$lib/services/goMicroservice';
-import crypto from "crypto";
-import { URL } from "url";
+import crypto from 'crypto';
+import { URL } from 'url';
 
 /*
  * GET /api/v1/quic/rag-proxy - RAG proxy health and metrics
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     // Check RAG proxy health
     const healthResponse = await fetch(`${RAG_QUIC_CONFIG.baseUrl}/health`, {
-      signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout)
+      signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout),
     });
 
     let proxyStatus = 'healthy';
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
     } else {
       // Try fallback HTTP/2
       const fallbackResponse = await fetch(`${RAG_QUIC_CONFIG.fallbackUrl}/health`, {
-        signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout)
+        signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout),
       });
 
       if (fallbackResponse.ok) {
@@ -88,9 +88,9 @@ export const GET: RequestHandler = async ({ url }) => {
 
         const metricsResponse = await fetch(metricsUrl, {
           headers: {
-            'Accept': 'application/json'
+            Accept: 'application/json',
           },
-          signal: AbortSignal.timeout(10000)
+          signal: AbortSignal.timeout(10000),
         });
 
         if (metricsResponse.ok) {
@@ -104,14 +104,15 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       service: 'rag-quic-proxy',
       status: proxyStatus,
-      protocol: proxyStatus === 'healthy' ? 'HTTP/3' : proxyStatus === 'fallback' ? 'HTTP/2' : 'N/A',
+      protocol:
+        proxyStatus === 'healthy' ? 'HTTP/3' : proxyStatus === 'fallback' ? 'HTTP/2' : 'N/A',
       ports: {
         quic: RAG_QUIC_CONFIG.primaryPort,
-        fallback: RAG_QUIC_CONFIG.fallbackPort
+        fallback: RAG_QUIC_CONFIG.fallbackPort,
       },
       backends: {
         uploadService: 'http://localhost:8093',
-        enhancedRAG: 'http://localhost:8094'
+        enhancedRAG: 'http://localhost:8094',
       },
       features: [
         'Enhanced RAG Operations',
@@ -119,18 +120,17 @@ export const GET: RequestHandler = async ({ url }) => {
         'Prometheus Metrics Integration',
         'JSON Response Optimization',
         'HTTP/3 Acceleration',
-        'Multi-backend Load Balancing'
+        'Multi-backend Load Balancing',
       ],
       caching: {
         enabled: RAG_QUIC_CONFIG.cacheEnabled,
         etagRevalidation: RAG_QUIC_CONFIG.etagRevalidation,
-        maxPayloadSize: RAG_QUIC_CONFIG.maxPayloadSize
+        maxPayloadSize: RAG_QUIC_CONFIG.maxPayloadSize,
       },
       metrics: metricsData,
       healthCheck: responseData,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (err: any) {
     console.error('RAG QUIC Proxy health check failed:', err);
 
@@ -138,7 +138,7 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'rag-quic-proxy',
       status: 'error',
       error: err instanceof Error ? err.message : 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 };
@@ -176,7 +176,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       threshold: ragRequest.threshold || 0.7,
       includeMetadata: ragRequest.includeMetadata !== false,
       useCache: ragRequest.useCache !== false && !bypassCache,
-      model: ragRequest?.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal',
+      model: ragRequest?.model || 'gemma3-legal',
       meta: {
         requestId: crypto.randomUUID(),
         timestamp: Date.now(),
@@ -246,7 +246,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const ragResponse: RAGResponse = {
       answer: responseData.answer || responseData.response,
       sources: responseData.sources || responseData.context || [],
-      model: responseData?.model || "unknown" // @ts-ignore - Model property access || requestPayload?.model || "unknown" // @ts-ignore - Model property access,
+      model: responseData?.model || requestPayload?.model || 'unknown',
       confidence: responseData.confidence || 0.8,
       executionTime: responseData.executionTime || 0,
       cached: responseData.cached || false,
@@ -265,7 +265,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         executionTimeMs: ragResponse.executionTime,
         confidence: ragResponse.confidence,
         cached: ragResponse.cached,
-        model: ragResponse?.model || "unknown" // @ts-ignore - Model property access,
+        model: ragResponse?.model || 'unknown', // @ts-ignore - Model property access,
       },
     });
   } catch (err: any) {
@@ -381,5 +381,5 @@ async function generateRequestHash(content: string): Promise<string> {
   const data = encoder.encode(content);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 }

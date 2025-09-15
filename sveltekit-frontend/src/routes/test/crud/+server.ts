@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // API Route Handler for CRUD operations
 import { json, error } from '@sveltejs/kit';

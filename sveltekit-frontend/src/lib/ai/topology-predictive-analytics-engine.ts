@@ -7,9 +7,9 @@
  * learning from user interactions and content relationships.
  */
 
-import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js.js';
-import { vectorMetadataAutoEncoder, type EncodedVectorMetadata } from './vector-metadata-auto-encoder.js.js';
-import { enhancedRAGGlyphSystem, type GlyphContext } from './enhanced-rag-glyph-system.js.js';
+import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js';
+import { vectorMetadataAutoEncoder, type EncodedVectorMetadata } from './vector-metadata-auto-encoder.js';
+import { enhancedRAGGlyphSystem, type GlyphContext } from './enhanced-rag-glyph-system.js';
 
 // Predictive analytics configuration
 interface PredictiveAnalyticsConfig {
@@ -475,7 +475,7 @@ class TopologyPredictiveAnalyticsEngine {
       min_confidence?: number;
       include_contextual?: boolean;
     } = {}
-  ): Promise<Array<any> {
+  ): Promise<Array<any>> {
     if (!this.config.enable_query_completion || partialQuery.length < 2) {
       return [];
     }

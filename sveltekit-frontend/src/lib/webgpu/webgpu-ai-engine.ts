@@ -15,7 +15,7 @@ import {
   BufferTypeGuards, 
   type BufferLike,
   BufferDebugUtils
-} from '../utils/buffer-conversion.js.js';
+} from '../utils/buffer-conversion.js';
 
 export interface WebGPUCapabilities {
   isSupported: boolean;

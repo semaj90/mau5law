@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 // Optimized Qdrant Service Test API
 // Tests the memory-efficient Qdrant service with SOM clustering and NES cache integration

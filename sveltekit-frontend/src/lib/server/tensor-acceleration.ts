@@ -4,7 +4,7 @@
  * Supports image analysis, similarity operations, and embedding transforms
  */
 
-import { textureStreamer } from '../gpu/texture-streaming-service.js.js';
+import { textureStreamer } from '../gpu/texture-streaming-service.js';
 
 interface GPUTensorConfig {
   tileSize: number;

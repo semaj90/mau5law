@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
 /*
@@ -6,13 +6,13 @@ import { json } from '@sveltejs/kit';
  * Integrates binary encoding, GPU caching, and NES orchestration for legal workflows
  */
 
-import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cache-binary-extension.js.js';
-import { nesCacheOrchestrator } from '../../../../../lib/services/nes-cache-orchestrator.js.js';
-import * as webgpuRAGService from '../../../../../lib/webgpu/webgpu-rag-service.js.js';
+import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cache-binary-extension.js';
+import { nesCacheOrchestrator } from '../../../../../lib/services/nes-cache-orchestrator.js';
+import * as webgpuRAGService from '../../../../../lib/webgpu/webgpu-rag-service.js';
 import {
   binaryEncoder,
   type EncodingFormat,
-} from '../../../../../lib/middleware/binary-encoding.js.js';
+} from '../../../../../lib/middleware/binary-encoding.js';
 // Avoid Node 'url' import in SvelteKit routes
 
 // Legal workflow types

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 // Local placeholder implementations (replace with real module imports when available)

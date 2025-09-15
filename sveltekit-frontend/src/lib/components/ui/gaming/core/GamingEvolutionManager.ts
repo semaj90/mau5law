@@ -14,13 +14,13 @@ import type {
   GamingThemeState,
   ProgressiveGamingConfig,
   GamepadState,
-} from '../types/gaming-types.js.js';
+} from '../types/gaming-types.js';
 
 import {
   GAMING_BREAKPOINTS,
   GAMING_ERA_SPECS,
   N64_TEXTURE_PRESETS,
-} from '../constants/gaming-constants.js.js';
+} from '../constants/gaming-constants.js';
 
 interface DeviceCapabilities {
   memory: number; // GB

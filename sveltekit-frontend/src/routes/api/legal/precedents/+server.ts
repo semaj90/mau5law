@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js.js';
+import type { RequestHandler } from './$types.js';
 
 
 // Minimal repaired Legal Precedents API

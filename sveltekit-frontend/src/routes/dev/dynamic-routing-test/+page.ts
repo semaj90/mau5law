@@ -3,7 +3,7 @@
  * Basic data loading for the routing test page
  */
 
-import type { PageLoad } from './$types.js.js';
+import type { PageLoad } from './$types.js';
 import { URL } from "url";
 
 export const load: PageLoad = async ({ params, url, route }) => {

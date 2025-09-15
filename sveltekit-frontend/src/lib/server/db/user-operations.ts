@@ -19,7 +19,7 @@ import type {
   UserActivity,
   NewUserActivity,
   FullUserProfile
-} from './schema/user-management.js.js';
+} from './schema/user-management.js';
 import { 
   users, 
   userProfiles, 
@@ -29,7 +29,7 @@ import {
   updateUserSchema,
   insertProfileSchema,
   updateProfileSchema
-} from './schema/user-management.js.js';
+} from './schema/user-management.js';
 
 // ============================================================================
 // DATABASE CONNECTION
