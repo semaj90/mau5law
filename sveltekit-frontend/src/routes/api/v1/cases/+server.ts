@@ -11,6 +11,7 @@ import {
   CreateCaseSchema,
   type CreateCaseData,
 } from '$lib/server/services/user-scoped-crud';
+import { queueCaseSynthesis } from '$lib/server/services/background-job-queue';
 import { z } from 'zod';
 
 // Query parameters schema for GET requests
@@ -167,6 +168,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Get the created case details
     const createdCase = await casesService.getById(caseId);
 
+    // Queue background synthesis
+    try {
+      const jobId = await queueCaseSynthesis(caseId, locals.user.id);
+      console.log(`[Cases API] Queued synthesis job ${jobId} for case ${caseId}`);
+    } catch (queueError) {
+      console.error('Failed to queue case synthesis:', queueError);
+      // Don't fail the request, just log the error
+    }
+
     return json(
       {
         success: true,
@@ -175,6 +185,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           caseId,
           userId: locals.user.id,
           timestamp: new Date().toISOString(),
+          synthesisQueued: true,
         },
       },
       { status: 201 }

@@ -93,10 +93,10 @@
 ### Demo Pages Available:
 
 - `/` - Homepage with framework showcase
-- `/frameworks-demo` - UnoCSS + Melt UI demo
-- `/interactive-canvas` - Visual case builder
 - `/local-ai-demo` - AI integration testing
-- `/cases` - Case management interface
+- `/frameworks-demo` - UnoCSS + bits-ui
+- `/interactive-canvas` - Visual case builder
+ `/cases` - Case management interface
 - `/evidence` - Evidence handling
 - `/profile` - User profile management
 

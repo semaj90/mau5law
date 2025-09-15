@@ -9,67 +9,67 @@ var vite_config_dev_default = defineConfig({
     sveltekit({
       kit: {
         adapter: {
-          fallback: "index.html"
-        }
-      }
+          fallback: 'index.html',
+        },
+      },
     }),
     nodePolyfills({
-      include: ["process", "buffer", "util", "stream", "events", "crypto", "path"],
-      exclude: ["fs", "dns", "os", "os-browserify"],
+      include: ['process', 'buffer', 'util', 'stream', 'events', 'crypto', 'path'],
+      exclude: ['fs', 'dns', 'os', 'os-browserify'],
       globals: {
         Buffer: true,
         global: true,
         process: {
           env: {},
-          platform: "browser",
-          version: "",
-          cwd: () => "/",
-          nextTick: (fn) => setTimeout(fn, 0)
+          platform: 'browser',
+          version: '',
+          cwd: () => '/',
+          nextTick: (fn) => setTimeout(fn, 0),
         },
         exports: {},
-        module: { exports: {} }
+        module: { exports: {} },
       },
-      protocolImports: true
-    })
+      protocolImports: true,
+    }),
   ],
   ssr: {
-    noExternal: ["svelte", "@sveltejs/kit"],
-    external: ["path-browserify", "crypto-browserify", "os-browserify"]
+    noExternal: ['svelte', '@sveltejs/kit'],
+    external: ['path-browserify', 'crypto-browserify', 'os-browserify'],
   },
   server: {
-    port: 5174,
+    port: 5173,
     strictPort: false,
-    host: "0.0.0.0",
-    open: "/demo/gpu-inference"
+    host: '0.0.0.0',
+    open: '/demo/gpu-inference',
   },
   preview: {
-    port: 4174,
-    host: "0.0.0.0",
-    open: "/demo/gpu-inference"
+    port: 5173,
+    host: '0.0.0.0',
+    open: '/demo/gpu-inference',
   },
   build: {
-    target: "esnext",
+    target: 'esnext',
     sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: {
-          "webgpu-ai": ["$lib/webgpu/webgpu-ai-engine"],
-          "cognitive-router": ["$lib/ai/cognitive-smart-router"],
-          "gpu-inference": ["$lib/services/cuda-vector-integration"]
-        }
-      }
-    }
+          'webgpu-ai': ['$lib/webgpu/webgpu-ai-engine'],
+          'cognitive-router': ['$lib/ai/cognitive-smart-router'],
+          'gpu-inference': ['$lib/services/cuda-vector-integration'],
+        },
+      },
+    },
   },
   optimizeDeps: {
-    exclude: ["@webgpu/types"]
+    exclude: ['@webgpu/types'],
   },
   define: {
-    "process.env.NODE_ENV": '"development"',
-    "process.env.DATABASE_URL": '"postgresql://postgres:123456@localhost:5432/legal_ai_db"',
-    global: "globalThis",
-    "process.platform": '"browser"',
-    "process.version": '""'
-  }
+    'process.env.NODE_ENV': '"development"',
+    'process.env.DATABASE_URL': '"postgresql://postgres:123456@localhost:5432/legal_ai_db"',
+    global: 'globalThis',
+    'process.platform': '"browser"',
+    'process.version': '""',
+  },
 });
 export {
   vite_config_dev_default as default

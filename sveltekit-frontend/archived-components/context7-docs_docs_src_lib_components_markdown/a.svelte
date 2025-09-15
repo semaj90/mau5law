@@ -1,16 +1,21 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  	import type { HTMLAnchorAttributes } from "svelte/elements";
-  	import { cn } from "$lib/utils/styles.js";
+  import type { HTMLAnchorAttributes } from "svelte/elements";
+  import { cn } from "$lib/utils/styles.js";
 
-  	let { class: className, href = "", children, ...restProps }: HTMLAnchorAttributes = $props();
+  // Public props
+  export let href: string = "";
+  export let className: string = "";
 
-  	const internal = $derived(href?.startsWith("/") || href?.startsWith("#"));
-  	const rel = $derived(!internal ? "noopener noreferrer" : undefined);
-  	const target = $derived(!internal ? "_blank" : undefined);
+  // derive whether the link is internal
+  $: isInternal = !!href && (href.startsWith("/") || href.startsWith("#"));
+
+  // reactive derived attributes for external links
+  $: rel = !isInternal && href ? "noopener noreferrer" : undefined;
+  $: target = !isInternal && href ? "_blank" : undefined;
 </script>
 
-<a {href} {target} {rel} class={cn("link leading-7", className)} {...restProps}>
-	{@render children?.()}
+<a href={href} target={target} rel={rel} class={cn("link leading-7", className)} {...$$restProps}>
+  <slot />
 </a>
 

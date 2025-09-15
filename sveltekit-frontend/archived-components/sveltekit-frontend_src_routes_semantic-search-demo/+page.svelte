@@ -10,8 +10,20 @@
 
 
   import { writable } from 'svelte/store';
-  import { browser } from '$app/environment';
-  import { semanticSearch } from '$lib/ai/mcp-helpers';
+  const browser = typeof window !== 'undefined';
+
+  // Fallback semanticSearch helper when $lib/ai/mcp-helpers is not available
+  async function semanticSearch(query: string) {
+    if (!query) return [];
+    try {
+      const res = await fetch(`/api/semantic-search?query=${encodeURIComponent(query)}`);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch (e) {
+      console.error('semanticSearch error', e);
+      return [];
+    }
+  }
 
   // Simple debounce utility
   function debounce<T extends (...args: any[]) => void>(fn: T, ms: number) {

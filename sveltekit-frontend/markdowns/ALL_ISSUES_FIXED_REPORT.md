@@ -50,7 +50,7 @@ npm run check
 # Linux: sudo apt install postgresql
 
 # 2. Create database
-createdb prosecutor_db
+createdb legal_ai_db
 
 # 3. Copy environment file
 cp .env.example .env
