@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { page } from "$app/state";
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits';
 
   interface Props {
     open?: unknown;

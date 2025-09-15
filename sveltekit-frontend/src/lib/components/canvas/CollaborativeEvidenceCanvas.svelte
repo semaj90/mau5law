@@ -8,6 +8,7 @@
   import { websocketStore } from '$lib/stores/websocket-store';
   import { Canvas, FabricObject, Point, util } from 'fabric';
   import type { Canvas as FabricCanvas } from 'fabric';
+  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
 
   // Props
   interface Props {
@@ -965,64 +966,88 @@
 <div class="canvas-workspace" class:sidebar-open={sidebarOpen}>
   <!-- Toolbar -->
   <div class="toolbar">
-    <div class="tool-group">
-      <button
-        class="tool-btn {selectedTool === 'select' ? 'active' : ''}"
+    <div class="tool-group flex gap-2">
+      <Button
+        variant={selectedTool === 'select' ? 'default' : 'outline'}
         onclick={() => { selectedTool = 'select'; updateToolMode(); }}
         title="Select (1)"
+        size="sm"
       >
-        ↖️
-      </button>
-      <button
-        class="tool-btn {selectedTool === 'evidence' ? 'active' : ''}"
+        ↖️ Select
+      </Button>
+      <Button
+        variant={selectedTool === 'evidence' ? 'default' : 'outline'}
         onclick={() => selectedTool = 'evidence'}
         title="Add Evidence (2)"
+        size="sm"
       >
-        📄
-      </button>
-      <button
-        class="tool-btn {selectedTool === 'connection' ? 'active' : ''}"
+        📄 Evidence
+      </Button>
+      <Button
+        variant={selectedTool === 'connection' ? 'default' : 'outline'}
         onclick={() => selectedTool = 'connection'}
         title="Connect Evidence (3)"
+        size="sm"
       >
-        🔗
-      </button>
-      <button
-        class="tool-btn {selectedTool === 'note' ? 'active' : ''}"
+        🔗 Connect
+      </Button>
+      <Button
+        variant={selectedTool === 'note' ? 'default' : 'outline'}
         onclick={() => selectedTool = 'note'}
         title="Add Note (4)"
+        size="sm"
       >
-        📝
-      </button>
-      <button
-        class="tool-btn {selectedTool === 'highlight' ? 'active' : ''}"
+        📝 Note
+      </Button>
+      <Button
+        variant={selectedTool === 'highlight' ? 'default' : 'outline'}
         onclick={() => selectedTool = 'highlight'}
         title="Highlight (5)"
+        size="sm"
       >
-        🖍️
-      </button>
-      <button
-        class="tool-btn {selectedTool === 'draw' ? 'active' : ''}"
+        🖍️ Highlight
+      </Button>
+      <Button
+        variant={selectedTool === 'draw' ? 'default' : 'outline'}
         onclick={() => { selectedTool = 'draw'; updateToolMode(); }}
         title="Draw (6)"
+        size="sm"
       >
-        ✏️
-      </button>
+        ✏️ Draw
+      </Button>
     </div>
 
-    <div class="action-group">
-      <button class="action-btn" onclick={undo} disabled={undoStack.length === 0}>
+    <div class="action-group flex gap-2">
+      <Button
+        variant="outline"
+        onclick={undo}
+        disabled={undoStack.length === 0}
+        size="sm"
+      >
         ⏪ Undo
-      </button>
-      <button class="action-btn" onclick={redo} disabled={redoStack.length === 0}>
+      </Button>
+      <Button
+        variant="outline"
+        onclick={redo}
+        disabled={redoStack.length === 0}
+        size="sm"
+      >
         ⏩ Redo
-      </button>
-      <button class="action-btn" onclick={zoomFit}>
+      </Button>
+      <Button
+        variant="outline"
+        onclick={zoomFit}
+        size="sm"
+      >
         🔍 Fit
-      </button>
-      <button class="action-btn" onclick={() => exportCanvas('png')}>
+      </Button>
+      <Button
+        variant="outline"
+        onclick={() => exportCanvas('png')}
+        size="sm"
+      >
         💾 Export
-      </button>
+      </Button>
     </div>
 
     {#if aiAssisted}
@@ -1098,9 +1123,14 @@
       {/if}
     </div>
   {:else}
-    <button class="sidebar-toggle" onclick={() => sidebarOpen = true}>
-      📚
-    </button>
+    <Button
+      variant="outline"
+      size="sm"
+      onclick={() => sidebarOpen = true}
+      class="fixed left-4 top-4 z-30"
+    >
+      📚 Sidebar
+    </Button>
   {/if}
 
   <!-- Canvas Container -->
@@ -1110,53 +1140,80 @@
 
   <!-- Properties Panel -->
   {#if propertiesPanel}
-    <div class="properties-panel">
-      <div class="panel-header">
-        <h3>Properties</h3>
-        <button class="close-btn" onclick={() => propertiesPanel = null}>×</button>
-      </div>
-
-      <div class="panel-content">
-        {#if propertiesPanel.type === 'evidence'}
-          <div class="property-group">
-            <label>Title:</label>
-            <input type="text" bind:value={propertiesPanel.data.title}>
+    <div class="properties-panel fixed right-4 top-4 w-80 z-40">
+      <Card>
+        <CardHeader>
+          <div class="flex items-center justify-between">
+            <CardTitle>Properties</CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onclick={() => propertiesPanel = null}
+            >
+              ×
+            </Button>
           </div>
-          <div class="property-group">
-            <label>Type:</label>
-            <select bind:value={propertiesPanel.data.type}>
-              <option value="document">Document</option>
-              <option value="photo">Photo</option>
-              <option value="video">Video</option>
-              <option value="audio">Audio</option>
-              <option value="witness_statement">Witness Statement</option>
-            </select>
-          </div>
-          <div class="property-group">
-            <label>Position:</label>
-            <div class="position-inputs">
-              <input type="number" bind:value={propertiesPanel.position.x} placeholder="X">
-              <input type="number" bind:value={propertiesPanel.position.y} placeholder="Y">
+        </CardHeader>
+        <CardContent class="space-y-4">
+          {#if propertiesPanel.type === 'evidence'}
+            <div class="space-y-2">
+              <Label for="evidence-title">Title:</Label>
+              <Input
+                id="evidence-title"
+                type="text"
+                bind:value={propertiesPanel.data.title}
+              />
             </div>
-          </div>
-        {/if}
-      </div>
+            <div class="space-y-2">
+              <Label for="evidence-type">Type:</Label>
+              <select
+                id="evidence-type"
+                bind:value={propertiesPanel.data.type}
+                class="w-full px-3 py-2 border border-input bg-background rounded-md"
+              >
+                <option value="document">📄 Document</option>
+                <option value="photo">📷 Photo</option>
+                <option value="video">🎥 Video</option>
+                <option value="audio">🎵 Audio</option>
+                <option value="witness_statement">👥 Witness Statement</option>
+              </select>
+            </div>
+            <div class="space-y-2">
+              <Label>Position:</Label>
+              <div class="grid grid-cols-2 gap-2">
+                <Input
+                  type="number"
+                  bind:value={propertiesPanel.position.x}
+                  placeholder="X"
+                />
+                <Input
+                  type="number"
+                  bind:value={propertiesPanel.position.y}
+                  placeholder="Y"
+                />
+              </div>
+            </div>
+          {/if}
+        </CardContent>
+      </Card>
     </div>
   {/if}
 
   <!-- Context Menu -->
   {#if contextMenu}
     <div
-      class="context-menu"
+      class="fixed z-50 bg-background border border-border rounded-md shadow-lg p-1"
       style="left: {contextMenu.x}px; top: {contextMenu.y}px;"
     >
       {#each contextMenu.actions as action}
-        <button
-          class="context-action"
+        <Button
+          variant="ghost"
+          size="sm"
           onclick={() => { action.action(); contextMenu = null; }}
+          class="w-full justify-start"
         >
           {action.label}
-        </button>
+        </Button>
       {/each}
     </div>
   {/if}

@@ -570,7 +570,11 @@ class IntelligentModelSwitcher {
     return [...new Set(predictions)].slice(0, 3);
   }
 
-  private generateContextualPredictions(profile: UserLearningProfile, currentQuery: string): Array< {
+  private generateContextualPredictions(profile: UserLearningProfile, currentQuery: string): Array<{
+    nextLikelyIntent: string;
+    probability: number;
+    suggestedModel: string;
+  }> {
     // Simplified prediction based on patterns
     return [
       { nextLikelyIntent: 'legal_analysis', probability: 0.6, suggestedModel: 'llama-rl' },

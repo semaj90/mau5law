@@ -1,0 +1,107 @@
+# GPU-Optimized Docker Compose for Legal AI Platform
+# CUDA 12.8 + TensorRT 9.6+ + Dynamic Engine Management
+
+version: '3.8'
+
+services:
+  # PostgreSQL with pgvector
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: legal_ai_db
+      POSTGRES_USER: legal_admin
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U legal_admin -d legal_ai_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    command: redis-server --requirepass redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redis", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # GPU-Accelerated Legal AI Services
+  legal-ai-gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu-optimized
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - NVIDIA_VISIBLE_DEVICES=all
+      - DATABASE_URL=postgres://legal_admin:123456@postgres:5432/legal_ai_db
+      - REDIS_PASSWORD=redis
+      - REDIS_URL=redis://:redis@redis:6379
+    ports:
+      - "8097:8097"  # CUDA Service Worker
+      - "8098:8098"  # Legal Extraction Service
+      - "8099:8099"  # Knowledge Graph Service
+      - "8107:8107"  # GPU Memory Manager
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8107/api/v1/gpu/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    volumes:
+      # Mount for TensorRT engine files
+      - ./models:/app/models:ro
+      # CUDA MPS sockets
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    stdin_open: true
+    tty: true
+
+  # SvelteKit Frontend
+  sveltekit-frontend:
+    build:
+      context: ./sveltekit-frontend
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://legal_admin:123456@postgres:5432/legal_ai_db
+      - REDIS_PASSWORD=redis
+    ports:
+      - "3000:3000"
+    depends_on:
+      - legal-ai-gpu
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/ai/rl-rag"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+
+# Custom networks for service isolation
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

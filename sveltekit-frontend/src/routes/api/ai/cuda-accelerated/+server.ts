@@ -23,7 +23,7 @@ import { json } from '@sveltejs/kit';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types.js';
 
-const CUDA_SERVER_URL = 'http://localhost:8085';
+const CUDA_SERVER_URL = 'http://localhost:8097'; // Updated to enhanced CUDA service worker
 const CUDA_TIMEOUT = 30000; // 30 seconds for complex inference
 
 interface CudaInferenceRequest {

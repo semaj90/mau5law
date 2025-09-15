@@ -9,6 +9,7 @@
   import * as THREE from 'three';
   import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
   import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
+  import { Button } from '$lib/components/ui/enhanced-bits';
 
   // Props
   interface Props {
@@ -645,25 +646,28 @@
 <div class="visualization-container" style="position: relative; width: {width}px; height: {height}px;">
   <!-- Controls -->
   <div class="controls-panel">
-    <div class="view-controls">
-      <button
-        class="btn-control {viewMode === '3d' ? 'active' : ''}"
+    <div class="view-controls flex gap-2">
+      <Button
+        variant={viewMode === '3d' ? 'default' : 'outline'}
         onclick={() => changeViewMode('3d')}
+        size="sm"
       >
-        3D Map
-      </button>
-      <button
-        class="btn-control {viewMode === 'network' ? 'active' : ''}"
+        🌍 3D Map
+      </Button>
+      <Button
+        variant={viewMode === 'network' ? 'default' : 'outline'}
         onclick={() => changeViewMode('network')}
+        size="sm"
       >
-        Network
-      </button>
-      <button
-        class="btn-control {viewMode === 'timeline' ? 'active' : ''}"
+        🕸️ Network
+      </Button>
+      <Button
+        variant={viewMode === 'timeline' ? 'default' : 'outline'}
         onclick={() => changeViewMode('timeline')}
+        size="sm"
       >
-        Timeline
-      </button>
+        🕰️ Timeline
+      </Button>
     </div>
 
     <div class="filter-controls">
@@ -677,8 +681,8 @@
     </div>
 
     <div class="action-controls">
-      <button class="btn-control" onclick={resetView}>Reset View</button>
-      <button class="btn-control" onclick={exportVisualization}>Export</button>
+      <Button variant="outline" onclick={resetView} size="sm">🔄 Reset View</Button>
+      <Button variant="outline" onclick={exportVisualization} size="sm">📤 Export</Button>
     </div>
   </div>
 
