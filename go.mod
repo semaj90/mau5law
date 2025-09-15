@@ -10,6 +10,8 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/jackc/pgx/v5 v5.7.6
 	github.com/minio/minio-go/v7 v7.0.95
+	github.com/nats-io/nats.go v1.45.0
+	github.com/pgvector/pgvector-go v0.3.0
 	github.com/prometheus/client_golang v1.19.1
 	github.com/quic-go/quic-go v0.54.0
 	github.com/redis/go-redis/v9 v9.14.0
@@ -20,15 +22,20 @@ require (
 	golang.org/x/sys v0.36.0
 	google.golang.org/grpc v1.75.0
 	google.golang.org/protobuf v1.36.9
+	gorm.io/driver/postgres v1.5.4
+	gorm.io/gorm v1.25.5
 )
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-ini/ini v1.67.0 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/minio/crc64nvme v1.0.2 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
-	github.com/pgvector/pgvector-go v0.3.0 // indirect
+	github.com/nats-io/nkeys v0.4.11 // indirect
+	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/philhofer/fwd v1.2.0 // indirect
 	github.com/rs/xid v1.6.0 // indirect
 	github.com/tinylib/msgp v1.3.0 // indirect
@@ -83,7 +90,6 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20250825161204-c5933d9347a5 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250825161204-c5933d9347a5 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	legal-ai-cuda/pkg/proto/cuda v0.0.0
 )
 
 replace legal-ai-cuda/pkg/proto/cuda => ./pkg/proto/cuda

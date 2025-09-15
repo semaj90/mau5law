@@ -248,8 +248,8 @@ export class TextureStreamingService {
   getMemoryStats() {
     const stats = {
       totalTextures: 0,
-      memoryUsage: Record<string, any>,
-      lodDistribution: Record<string, any>,
+      memoryUsage: {},
+      lodDistribution: {},
       cacheHitRate: this.lodManager.getCacheHitRate()
     };
 
