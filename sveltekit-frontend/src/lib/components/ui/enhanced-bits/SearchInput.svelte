@@ -1,7 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { Search, X, Loader, Filter, Zap, History } from 'lucide-svelte';
-  import { createEventDispatcher } from 'svelte';
   import type { VectorSearchResult } from './types';
 
   interface Props {
@@ -16,6 +15,9 @@
     size?: 'sm' | 'md' | 'lg';
     variant?: 'default' | 'legal' | 'evidence';
     class?: string;
+    onsearch?: (query: string) => void;
+    onclear?: () => void;
+    onfilter?: (filters: any[]) => void;
   }
 
   let {
@@ -30,6 +32,9 @@
     size = 'md',
     variant = 'default',
     class: className = '',
+    onsearch,
+    onclear,
+    onfilter,
     ...restProps
   }: Props = $props();
 
@@ -39,8 +44,6 @@
   let showFilters = $state(false);
   let inputElement: HTMLInputElement;
   let debounceTimer: number;
-
-  const dispatch = createEventDispatcher();
 
   // Size configurations
   let sizeClasses = $derived({
@@ -106,7 +109,7 @@
       if (data.success) {
         suggestions = data.results || [];
         showSuggestions = true;
-        dispatch('search', { query, results: suggestions });
+        onsearch?.(query);
       }
     } catch (error) {
       console.error('Search failed:', error);
@@ -131,7 +134,7 @@
   function selectSuggestion(suggestion: VectorSearchResult) {
     value = suggestion.content;
     showSuggestions = false;
-    dispatch('select', suggestion);
+    onsearch?.(suggestion.content);
   }
 
   // Handle clear
@@ -140,13 +143,13 @@
     suggestions = [];
     showSuggestions = false;
     inputElement?.focus();
-    dispatch('clear');
+    onclear?.();
   }
 
   // Handle filter toggle
   function toggleFilter(filterIndex: number) {
     filters[filterIndex].active = !filters[filterIndex].active;
-    dispatch('filter', { filters });
+    onfilter?.(filters);
   }
 
   // Close suggestions when clicking outside

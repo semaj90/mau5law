@@ -3,11 +3,11 @@
   import Fuse from 'fuse.js';
   // Use direct component imports to avoid broken barrels
   import { Card } from '$lib/components/ui/enhanced-bits';
-  import CardContent from '$lib/components/ui/CardContent.svelte';
-  import CardHeader from '$lib/components/ui/CardHeader.svelte';
-  import CardTitle from '$lib/components/ui/CardTitle.svelte';
-  import Input from '$lib/components/ui/Input.svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
+  import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Search, ExternalLink, Sparkles, FileText, Scale } from 'lucide-svelte';
   import { legalDocuments, type LegalDocument } from '$lib/data/legal-documents';

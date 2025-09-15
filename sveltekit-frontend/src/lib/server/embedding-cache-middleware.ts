@@ -266,7 +266,7 @@ export class EmbeddingCacheMiddleware {
         );
 
         if (gpuResult.result?.embeddings) {
-          return new Float32Array(gpuResult.(result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }).embeddings[0]);
+          return new Float32Array((gpuResult.result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }).embeddings[0]);
         }
       } catch (error) {
         console.warn('GPU coordinator failed, falling back to Python worker:', error);

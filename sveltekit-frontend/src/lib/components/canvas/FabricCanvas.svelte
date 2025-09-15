@@ -2,7 +2,7 @@
   import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   // Badge replaced with span - not available in enhanced-bits
   import * as Card from '$lib/components/ui/card';
   import {

@@ -3,7 +3,7 @@
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { N64LODManager } from '$lib/services/n64-lod-manager';
-  import SSRWebGPULoader from '$lib/components/SSRWebGPULoader.svelte';
+  import SSRWebGPULoader from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
   import { fade, scale } from 'svelte/transition';
   
   // Svelte 5 props

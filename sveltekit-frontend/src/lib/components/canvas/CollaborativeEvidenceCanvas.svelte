@@ -6,9 +6,16 @@
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { websocketStore } from '$lib/stores/websocket-store';
-  import { Canvas, FabricObject, Point, util } from 'fabric';
-  import type { Canvas as FabricCanvas } from 'fabric';
+  import { fabric } from 'fabric';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
+
+  // Extend fabric types for custom properties
+  interface ExtendedGroup extends fabric.Group {
+    evidenceId?: string;
+    annotationType?: string;
+    fromNodeId?: string;
+    toNodeId?: string;
+  }
 
   // Props
   interface Props {
@@ -39,7 +46,7 @@
 
   // Canvas and state management
   let canvasElement: HTMLCanvasElement;
-  let fabricCanvas: FabricCanvas;
+  let fabricCanvas: fabric.Canvas;
   let canvasContainer: HTMLDivElement;
 
   let selectedTool = $state<'select' | 'evidence' | 'connection' | 'note' | 'highlight' | 'draw'>('select');
@@ -100,7 +107,7 @@
 
   async function initializeCanvas() {
     // Initialize Fabric.js canvas
-    fabricCanvas = new Canvas(canvasElement, {
+    fabricCanvas = new fabric.Canvas(canvasElement, {
       width: canvasWidth,
       height: canvasHeight,
       backgroundColor: '#1a1a1a',
@@ -256,12 +263,12 @@
       strokeWidth: 2,
       rx: 8,
       ry: 8,
-      shadow: {
+      shadow: new fabric.Shadow({
         color: 'rgba(0,0,0,0.3)',
         blur: 10,
         offsetX: 2,
         offsetY: 2
-      }
+      })
     });
 
     // Title text
@@ -341,10 +348,10 @@
       hasControls: false,
       hasBorders: false,
       strokeDashArray: connectionType === 'inferred' ? [10, 5] : undefined,
-      shadow: {
+      shadow: new fabric.Shadow({
         color: 'rgba(0,0,0,0.2)',
         blur: 5
-      }
+      })
     });
 
     // Add arrowhead

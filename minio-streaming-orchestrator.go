@@ -8,9 +8,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
-	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -128,8 +125,9 @@ func NewStreamingOrchestrator() (*StreamingOrchestrator, error) {
 	logger := log.New(os.Stdout, "[MINIO-ORCHESTRATOR] ", log.LstdFlags)
 
 	upgrader := websocket.Upgrader{
-		CheckOrigin: func(r *http.Request) bool { return true },
-		BufferSize:  8192,
+		CheckOrigin:     func(r *http.Request) bool { return true },
+		ReadBufferSize:  8192,
+		WriteBufferSize: 8192,
 	}
 
 	jobManager := &JobManager{

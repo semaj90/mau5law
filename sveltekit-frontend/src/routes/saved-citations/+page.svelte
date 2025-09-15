@@ -5,10 +5,10 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
   import { run } from 'svelte/legacy';
   // Badge replaced with span - not available in enhanced-bits
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import { Card } from '$lib/components/ui/enhanced-bits';
-  import CardContent from '$lib/components/ui/CardContent.svelte';
-  import CardHeader from '$lib/components/ui/CardHeader.svelte';
+  import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
   import DialogContent from '$lib/components/ui/dialog/DialogContent.svelte';
   import DialogDescription from '$lib/components/ui/dialog/DialogDescription.svelte';
   import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
@@ -20,7 +20,7 @@ https://svelte.dev/e/js_parse_error -->
   import DropdownMenuRoot from '$lib/components/ui/dropdown-menu/DropdownMenuRoot.svelte';
   import DropdownMenuSeparator from '$lib/components/ui/dropdown-menu/DropdownMenuSeparator.svelte';
   import DropdownMenuTrigger from '$lib/components/ui/dropdown-menu/DropdownMenuTrigger.svelte';
-  import Input from '$lib/components/ui/Input.svelte';
+  import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
   import { Copy, Edit, MoreVertical, Plus, Search, Star, Tag, Trash2 } from 'lucide-svelte';
   import { onMount } from 'svelte';
 

@@ -55,9 +55,12 @@ func NewCUDAWorker() (*CUDAWorker, error) {
 		redisURL = "redis://127.0.0.1:6379/0"
 	}
 
-	redisClient := redis.NewClient(&redis.Options{
-		Addr: strings.TrimPrefix(redisURL, "redis://"),
-	})
+	// Parse Redis URL properly
+	opt, err := redis.ParseURL(redisURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse Redis URL: %v", err)
+	}
+	redisClient := redis.NewClient(opt)
 
 	// Test connections
 	if err := db.Ping(); err != nil {
@@ -346,15 +349,19 @@ func (w *CUDAWorker) generateCPUEmbeddings(contents []string) [][]float32 {
 	for i, content := range contents {
 		// Simple hash-based pseudo-embedding for demonstration
 		embedding := make([]float32, 768) // Gemma embedding size
-		
-		hash := 0
+
+		hash := uint64(0)
 		for _, r := range content {
-			hash = hash*31 + int(r)
+			hash = hash*31 + uint64(r)
 		}
-		
-		// Generate deterministic pseudo-embedding
+
+		// Generate deterministic pseudo-embedding with better distribution
 		for j := range embedding {
-			embedding[j] = float32((hash + j) % 1000) / 1000.0
+			// Use better hash distribution
+			seed := hash + uint64(j)
+			// Simple LCG for pseudo-random distribution
+			seed = (seed*1103515245 + 12345) & 0x7fffffff
+			embedding[j] = float32(seed%10000) / 10000.0
 		}
 		
 		embeddings[i] = embedding
@@ -423,9 +430,27 @@ func (w *CUDAWorker) processJob(job CUDAJob) error {
 	}
 }
 
+func (w *CUDAWorker) processJobWithContext(ctx context.Context, job CUDAJob) error {
+	// Create a channel to receive the result
+	resultChan := make(chan error, 1)
+
+	// Run the job in a goroutine
+	go func() {
+		resultChan <- w.processJob(job)
+	}()
+
+	// Wait for either the job to complete or context to be cancelled
+	select {
+	case err := <-resultChan:
+		return err
+	case <-ctx.Done():
+		return fmt.Errorf("job cancelled due to timeout: %v", ctx.Err())
+	}
+}
+
 func (w *CUDAWorker) start() {
 	log.Println("🔧 Starting CUDA Legal Document Processing Worker...")
-	
+
 	// Test CUDA availability
 	cudaAvailable := w.checkCUDA()
 	if cudaAvailable {
@@ -440,8 +465,12 @@ func (w *CUDAWorker) start() {
 
 	for {
 		// Block until job available (BLPOP - blocking list pop)
-		result, err := w.redis.BLPop(w.ctx, 0, "cuda:jobs").Result()
+		result, err := w.redis.BLPop(w.ctx, 30*time.Second, "cuda:jobs").Result()
 		if err != nil {
+			if err == redis.Nil {
+				// Timeout is normal, continue listening
+				continue
+			}
 			log.Printf("❌ Redis BLPOP error: %v", err)
 			time.Sleep(5 * time.Second)
 			continue
@@ -461,14 +490,20 @@ func (w *CUDAWorker) start() {
 
 		log.Printf("🔄 Processing CUDA job: %s (type: %s)", job.JobID, job.Type)
 
-		if err := w.processJob(job); err != nil {
-			log.Printf("❌ Job processing failed: %v", err)
-			
+		// Process job with timeout context
+		jobCtx, cancel := context.WithTimeout(w.ctx, 5*time.Minute)
+
+		jobErr := w.processJobWithContext(jobCtx, job)
+		cancel()
+
+		if jobErr != nil {
+			log.Printf("❌ Job processing failed: %v", jobErr)
+
 			// Mark job as failed
 			event := map[string]interface{}{
 				"job_id":    job.JobID,
 				"event":     "cuda_failed",
-				"error":     err.Error(),
+				"error":     jobErr.Error(),
 				"timestamp": time.Now(),
 			}
 			eventJSON, _ := json.Marshal(event)

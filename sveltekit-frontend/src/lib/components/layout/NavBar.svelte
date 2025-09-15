@@ -1,8 +1,7 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button, LinkButton } from '$lib/components/ui/enhanced-bits';
   import AccessibilitySettings from '$lib/components/ui/AccessibilitySettings.svelte';
   import { accessibilityService } from '$lib/services/accessibility-service';
 
@@ -107,47 +106,46 @@
       <nav class="navbar-center" aria-label="Main navigation">
         {#if variant === 'minimal'}
           <!-- Minimal nav for auth pages -->
-          <Button href="/" variant="ghost" size="sm">
-Home</Button>
-          <Button href="/all-routes" variant="ghost" size="sm">Browse</Button>
+          <LinkButton href="/" variant="ghost" size="sm">Home</LinkButton>
+          <LinkButton href="/all-routes" variant="ghost" size="sm">Browse</LinkButton>
         {:else if isDemo}
           <!-- Demo-specific navigation -->
           {#each demoNavItems as item}
-            <Button
-              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path}
+            <LinkButton
+              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path as string}
               variant={isActive((item as { path?: unknown; icon?: unknown; label?: unknown }).path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
               <span class="nav-icon">{(item as { path?: unknown; icon?: unknown; label?: unknown }).icon}</span>
               <span class="nav-label">{(item as { path?: unknown; icon?: unknown; label?: unknown }).label}</span>
-            </Button>
+            </LinkButton>
           {/each}
         {:else if isAdmin && user?.role === 'admin'}
           <!-- Admin navigation -->
           {#each adminNavItems as item}
-            <Button
-              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path}
+            <LinkButton
+              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path as string}
               variant={isActive((item as { path?: unknown; icon?: unknown; label?: unknown }).path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
               <span class="nav-icon">{(item as { path?: unknown; icon?: unknown; label?: unknown }).icon}</span>
               <span class="nav-label">{(item as { path?: unknown; icon?: unknown; label?: unknown }).label}</span>
-            </Button>
+            </LinkButton>
           {/each}
         {:else}
           <!-- Main navigation -->
           {#each mainNavItems as item}
-            <Button
-              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path}
+            <LinkButton
+              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path as string}
               variant={isActive((item as { path?: unknown; icon?: unknown; label?: unknown }).path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
               <span class="nav-icon">{(item as { path?: unknown; icon?: unknown; label?: unknown }).icon}</span>
               <span class="nav-label">{(item as { path?: unknown; icon?: unknown; label?: unknown }).label}</span>
-            </Button>
+            </LinkButton>
           {/each}
         {/if}
       </nav>

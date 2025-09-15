@@ -86,7 +86,10 @@
     // Cleanup Three.js resources
     scene?.clear();
     renderer?.dispose();
-    cssRenderer?.dispose();
+    // CSS3DRenderer doesn't have dispose method, just remove DOM element
+    if (cssRenderer?.domElement?.parentNode) {
+      cssRenderer.domElement.parentNode.removeChild(cssRenderer.domElement);
+    }
     controls?.dispose();
   });
 

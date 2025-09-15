@@ -9,20 +9,10 @@
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import { lodManager } from '$lib/services/N64LODManager.ts';
-  import type { LODContext } from '$lib/services/N64LODManager.ts';
+  import { lodManager } from '$lib/services/N64LODManager';
+  import type { LODContext } from '$lib/services/N64LODManager';
 
-  // Props for texture streaming configuration
-  let {
-    assetId,
-    width = 64,
-    height = 64,
-    viewportDistance = 50, // 0-100 scale
-    enableGPU = true,
-    fallbackContent = '', // Server-side fallback
-    loadingClass = 'nes-loading',
-    errorClass = 'nes-error'
-  }: {
+  interface Props {
     assetId: string;
     width?: number;
     height?: number;
@@ -31,12 +21,27 @@
     fallbackContent?: string;
     loadingClass?: string;
     errorClass?: string;
-  } = $props();
+    overlay?: boolean;
+    debug?: boolean;
+  }
+
+  let {
+    assetId,
+    width = 64,
+    height = 64,
+    viewportDistance = 50, // 0-100 scale
+    enableGPU = true,
+    fallbackContent = '', // Server-side fallback
+    loadingClass = 'nes-loading',
+    errorClass = 'nes-error',
+    overlay = false,
+    debug = false
+  }: Props = $props();
 
   // Reactive state for texture streaming
   let webgpuSupported = false;
   let textureData: string = '';
-  let currentLOD: number = 3; // Start with lowest detail
+  let currentLOD: 0 | 1 | 2 | 3 = 3; // Start with lowest detail
   let isLoading = true;
   let error: string | null = null;
   let containerElement: HTMLElement;
@@ -177,7 +182,7 @@
       enhancementTimeout = window.setTimeout(async () => {
         if (currentLOD > 0) {
           try {
-            const higherLOD = Math.max(0, currentLOD - 1);
+            const higherLOD = Math.max(0, currentLOD - 1) as 0 | 1 | 2 | 3;
             const enhancedChunk = await lodManager.streamTexture(assetId, higherLOD);
 
             if (enhancedChunk) {
@@ -241,9 +246,9 @@
     <div class="nes-texture-container">
       {@html textureData}
 
-      {#if overlay}
+      {#if overlay && children?.overlay}
         <div class="nes-overlay">
-          <slot name="overlay" {currentLOD} {webgpuSupported} {assetId} />
+          {@render children.overlay(currentLOD, webgpuSupported, assetId)}
         </div>
       {/if}
     </div>
@@ -272,13 +277,15 @@
         </div>
       {/if}
 
-      <slot name="fallback" {assetId} />
+      {#if children?.fallback}
+        {@render children.fallback(assetId)}
+      {/if}
     </div>
   {/if}
 
   <!-- Debug info slot -->
-  {#if debug}
-    <slot name="debug" memoryStats={getMemoryStats()} {currentLOD} {webgpuSupported} />
+  {#if debug && children?.debug}
+    {@render children.debug(getMemoryStats(), currentLOD, webgpuSupported)}
   {/if}
 </div>
 

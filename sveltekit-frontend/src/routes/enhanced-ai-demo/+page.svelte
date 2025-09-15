@@ -6,13 +6,13 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import { Card } from '$lib/components/ui/enhanced-bits';
-  import CardContent from '$lib/components/ui/CardContent.svelte';
-  import CardHeader from '$lib/components/ui/CardHeader.svelte';
-  import CardTitle from '$lib/components/ui/CardTitle.svelte';
+  import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
+  import CardHeader from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
+  import CardTitle from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import Input from '$lib/components/ui/Input.svelte';
+  import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
 
   type AnalysisEntity = { text: string; type: string; confidence: number };
   type AnalysisResult = {

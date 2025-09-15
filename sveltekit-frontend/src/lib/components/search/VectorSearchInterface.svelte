@@ -247,49 +247,49 @@
           <div class="flex items-start justify-between mb-3">
             <div class="flex-1">
               <h4 class="text-lg font-semibold text-white mb-1">
-                {(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.title}
+                {result.metadata.title}
               </h4>
               <div class="flex items-center gap-3 text-sm text-gray-400">
                 <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-1 rounded">
-                  {(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.documentType}
+                  {result.metadata.documentType}
                 </span>
-                <span class="{getRiskLevelClass((result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.riskLevel)} border px-2 py-1 rounded">
-                  {(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.riskLevel.toUpperCase()}
+                <span class="{getRiskLevelClass(result.metadata.riskLevel)} border px-2 py-1 rounded">
+                  {result.metadata.riskLevel.toUpperCase()}
                 </span>
-                <span>📍 {(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.jurisdiction}</span>
+                <span>📍 {result.metadata.jurisdiction}</span>
               </div>
             </div>
             <div class="text-right">
               <div class="text-lg font-bold text-cyan-400">
-                {formatScore((result as { metadata?: unknown; score?: unknown; chunks?: unknown }).score)}
+                {formatScore(result.score)}
               </div>
               <div class="text-xs text-gray-500">
-                confidence: {((result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.confidenceLevel * 100).toFixed(0)}%
+                confidence: {(result.metadata.confidenceLevel * 100).toFixed(0)}%
               </div>
             </div>
           </div>
 
           <!-- Metadata -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3 text-sm">
-            {#if (result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.legalEntities.length > 0}
+            {#if result.metadata.legalEntities.length > 0}
               <div>
                 <span class="text-gray-400">Legal Entities:</span>
-                <span class="text-gray-200">{(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.legalEntities.join(', ')}</span>
+                <span class="text-gray-200">{result.metadata.legalEntities.join(', ')}</span>
               </div>
             {/if}
-            {#if (result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.caseReferences.length > 0}
+            {#if result.metadata.caseReferences.length > 0}
               <div>
                 <span class="text-gray-400">Case References:</span>
-                <span class="text-gray-200">{(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.caseReferences.length} citations</span>
+                <span class="text-gray-200">{result.metadata.caseReferences.length} citations</span>
               </div>
             {/if}
           </div>
 
           <!-- Text Chunks Preview -->
-          {#if (result as { metadata?: unknown; score?: unknown; chunks?: unknown }).chunks && (result as { metadata?: unknown; score?: unknown; chunks?: unknown }).chunks.length > 0}
+          {#if result.chunks && result.chunks.length > 0}
             <div class="mt-3 p-3 bg-gray-900/50 rounded border border-gray-700/50">
               <div class="text-sm text-gray-400 mb-2">Relevant Excerpts:</div>
-              {#each (result as { metadata?: unknown; score?: unknown; chunks?: unknown }).chunks.slice(0, 2) as chunk}
+              {#each result.chunks.slice(0, 2) as chunk}
                 <div class="text-sm text-gray-300 mb-2 line-clamp-3">
                   "{chunk.text.substring(0, 200)}..."
                 </div>
@@ -300,7 +300,7 @@
           <!-- Actions -->
           <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-700/50">
             <div class="text-xs text-gray-500">
-              Modified: {new Date((result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.lastModified).toLocaleDateString()}
+              Modified: {new Date(result.metadata.lastModified).toLocaleDateString()}
             </div>
             <div class="flex gap-2">
               <ModernButton

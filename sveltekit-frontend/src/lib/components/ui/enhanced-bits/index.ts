@@ -18,6 +18,7 @@ import CardFooterComponent from './CardFooter.svelte.js';
 
 // Standard exports for direct usage
 export { default as Button } from './Button.svelte.js';
+export { default as LinkButton } from './LinkButton.svelte.js';
 export { default as Input } from './Input.svelte.js';
 export { default as Label } from './Label.svelte.js';
 export { default as Alert } from './Alert.svelte.js';
@@ -33,6 +34,14 @@ export { default as EvidenceThumbnail } from './EvidenceThumbnail.svelte.js';
 export { default as EvidenceAIAnalysis } from './EvidenceAIAnalysis.svelte.js';
 export { default as SearchInput } from './SearchInput.svelte.js';
 export { default as Board } from './Board.svelte.js';
+
+// AI Assistant Components
+export { default as AIChatMessage } from './AIChatMessage.svelte.js';
+export { default as AIDialog } from './AIDialog.svelte.js';
+export { default as AISearchBar } from './AISearchBar.svelte.js';
+export { default as AIRecommendations } from './AIRecommendations.svelte.js';
+export { default as ChatMessage } from './ChatMessage.svelte.js';
+export { default as AIAssistantTest } from './AIAssistantTest.svelte.js';
 
 // =============================================================================
 // ENHANCED-BITS DUAL IMPORT APPROACH FOR SSR COMPATIBILITY

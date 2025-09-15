@@ -1,7 +1,6 @@
 <!-- AI Search Bar: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from 'svelte';
   import { Input, Button } from './index.js';
   import { Search } from 'lucide-svelte';
 
@@ -11,6 +10,7 @@
     neo4jContext?: unknown;
     analyticsLog?: (event: unknown) => void;
     onResults?: (results: unknown) => void;
+    onsearch?: (query: string) => void;
   }
 
   const {
@@ -18,12 +18,12 @@
     userContext = {},
     neo4jContext = {},
     analyticsLog = () => {},
-    onResults = () => {}
+    onResults = () => {},
+    onsearch
   }: Props = $props();
 
   let query = $state('');
   let loading = $state(false);
-  const dispatch = createEventDispatcher();
 
   async function handleSearch() {
     if (!query) return;
@@ -37,8 +37,8 @@
       });
       const data = await res.json();
       analyticsLog({ event: 'ai_search_result', query, resultCount: data.results?.length, timestamp: Date.now() });
-      onResults(data.results);
-      dispatch('results', { results: data.results });
+      onResults?.(data.results);
+      onsearch?.(query);
     } catch (error) {
       analyticsLog({ event: 'ai_search_error', query, error: error.message, timestamp: Date.now() });
     } finally {

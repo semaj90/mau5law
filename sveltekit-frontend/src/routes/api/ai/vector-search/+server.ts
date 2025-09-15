@@ -24,7 +24,7 @@ import type { RequestHandler } from './$types.js';
 
 
 // Minimal vector search endpoint leveraging pgvector embedding repository
-export async function POST({ request }): Promise<any> {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const contentType = request.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
@@ -57,8 +57,8 @@ export async function POST({ request }): Promise<any> {
   }
 }
 
-export async function GET(): Promise<any> {
+export const GET: RequestHandler = async () => {
   return json({ status: 'ok', message: 'POST { query, limit?, model? }' });
-}
+};
 
 

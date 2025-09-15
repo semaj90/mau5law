@@ -198,9 +198,9 @@
         </div>
 
         <div class="action-buttons">
-          <button class="nes-btn" onclick={processDocument}>Process Document</button>
-          <button class="nes-btn" onclick={preloadAllLODs}>Preload All LODs</button>
-          <button class="nes-btn" onclick={updateScrollVelocity}>Simulate Scroll</button>
+          <button class="nes-btn" on:click={processDocument}>Process Document</button>
+          <button class="nes-btn" on:click={preloadAllLODs}>Preload All LODs</button>
+          <button class="nes-btn" on:click={updateScrollVelocity}>Simulate Scroll</button>
         </div>
 
         <div class="nes-field">
@@ -216,10 +216,10 @@
   <!-- Texture Display -->
   <div class="demo-section">
     <div>
-      <divHeader>
-        <divTitle>NES Texture Streaming Result</h3>
+      <div class="header">
+        <h3 class="title">NES Texture Streaming Result</h3>
       </div>
-      <divContent>
+      <div class="content">
         <div class="texture-display">
           <div class="texture-info">
             <p><strong>Calculated LOD:</strong> Level {calculatedLOD}</p>
@@ -262,10 +262,10 @@
   <!-- Performance Stats -->
   <div class="demo-section">
     <div>
-      <divHeader>
-        <divTitle>🚀 Performance Metrics</h3>
+      <div class="header">
+        <h3 class="title">🚀 Performance Metrics</h3>
       </div>
-      <divContent>
+      <div class="content">
         <div class="stats-grid">
           <div class="stat-box">
             <div class="stat-label">Processing Time</div>

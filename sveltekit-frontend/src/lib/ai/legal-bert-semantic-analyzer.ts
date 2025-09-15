@@ -67,7 +67,8 @@ export interface DocumentClassification {
   category: 'contract' | 'litigation' | 'regulatory' | 'corporate' | 'intellectual_property' | 'employment' | 'real_estate' | 'tax' | 'other';
   subcategory: string;
   confidence: number;
-  topPredictions: Array<any>
+  topPredictions: Array<any>;
+}
 
 export interface RiskAssessment {
   overallRisk: 'low' | 'medium' | 'high' | 'critical';

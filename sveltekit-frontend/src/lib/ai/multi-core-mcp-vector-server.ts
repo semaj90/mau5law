@@ -11,14 +11,24 @@
  */
 
 import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
-import os from 'os';
+import * as os from 'os';
 import postgres from 'postgres';
-import { Redis } from '@upstash/redis'; // Client-side Redis
-import amqp from 'amqplib';
-import { VectorStore, Document } from 'langchain/vectorstores/base';
-import { Embeddings } from 'langchain/embeddings/base';
-import { PGVector } from 'langchain/vectorstores/pgvector';
-import { performance } from 'perf_hooks';/**
+// import { Redis } from '@upstash/redis'; // Client-side Redis - commented out due to missing dependency
+import * as amqp from 'amqplib';
+// import { VectorStore, Document } from 'langchain/vectorstores/base';
+// import { Embeddings } from 'langchain/embeddings/base';
+// import { PGVector } from 'langchain/vectorstores/pgvector';
+import { performance } from 'perf_hooks';
+
+// Type definitions for missing dependencies
+type Redis = any; // Placeholder for @upstash/redis
+type VectorStore = any; // Placeholder for langchain VectorStore
+type Document = any; // Placeholder for langchain Document
+type Embeddings = any; // Placeholder for langchain Embeddings
+type PGVector = any; // Placeholder for langchain PGVector
+type SIMDJsonParser = any; // Placeholder for SIMD JSON parser
+
+/**
  * Advanced search configuration options
  */
 interface AdvancedSearchOptions {
@@ -1598,7 +1608,7 @@ interface SystemMetrics {
 }
 
 export {
-  MultiCoreMCPVectorServer,
+  // MultiCoreMCPVectorServer, // Already exported with class declaration
   IndexBuildProgress,
   IndexBuildResult,
   SystemMetrics,

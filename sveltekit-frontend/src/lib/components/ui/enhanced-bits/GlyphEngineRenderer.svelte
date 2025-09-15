@@ -5,25 +5,31 @@
    * Uses your existing WebGPU texture streaming + N64 style rendering
    */
 
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { WebGPUTextureStreaming } from '$lib/services/webgpu-texture-streaming';
   import type { LegalDocument, EvidenceItem } from '$lib/core/logic/legal-ai-logic';
 
-  // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  interface Props {
+    data: {
+      documents?: LegalDocument[];
+      evidence?: EvidenceItem[];
+      textContent?: string;
+      interactiveElements?: number;
+      realTimeUpdates?: boolean;
+    };
+    type: 'evidence-card' | 'document-viewer' | 'chat-interface' | 'case-timeline';
+    title?: string;
+    priority?: 'critical' | 'high' | 'medium' | 'low';
+    oninteract?: (data: { type: string; position: { x: number; y: number }; data: any }) => void;
+  }
 
-  // Props - same as IntelligentRenderer for consistency
-  let { data } = $props();: {
-    documents?: LegalDocument[];
-    evidence?: EvidenceItem[];
-    textContent?: string;
-    interactiveElements?: number;
-    realTimeUpdates?: boolean;
-  };
-
-  let { type } = $props();: 'evidence-card' | 'document-viewer' | 'chat-interface' | 'case-timeline';
-  let { title } = $props();: string = '';
-  let { priority } = $props();: 'critical' | 'high' | 'medium' | 'low' = 'medium';
+  let {
+    data,
+    type,
+    title = '',
+    priority = 'medium',
+    oninteract
+  }: Props = $props();
 
   // Canvas and WebGPU setup
   let canvas: HTMLCanvasElement;
@@ -275,7 +281,7 @@
 
     // Hit testing for interactive elements
     // Dispatch events back to parent
-    onInteract?.({
+    oninteract?.({
       type: 'click',
       position: { x, y },
       data: data

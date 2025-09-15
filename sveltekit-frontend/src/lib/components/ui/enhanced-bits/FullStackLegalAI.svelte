@@ -12,7 +12,7 @@ Features:
 -->
 
 <script lang="ts">
-import { createEventDispatcher, onMount } from 'svelte';
+import { onMount } from 'svelte';
 import Button from './Button.svelte';
 import Card from './Card.svelte';
 import CardContent from './CardContent.svelte';
@@ -57,6 +57,7 @@ interface Props {
 	legalDomain?: string;
 	enableRealTimeUpdates?: boolean;
 	showPerformanceMetrics?: boolean;
+	onsearch?: (data: { query: string; results: RAGResult[]; performance: PerformanceMetrics | null; timestamp: number }) => void;
 }
 
 let {
@@ -64,7 +65,8 @@ let {
 	maxResults = 8,
 	legalDomain = 'general',
 	enableRealTimeUpdates = true,
-	showPerformanceMetrics = true
+	showPerformanceMetrics = true,
+	onsearch
 }: Props = $props();
 
 // State using Svelte 5 runes
@@ -85,7 +87,6 @@ let gpuMetrics = $state({
 	mps_enabled: false
 });
 
-const dispatch = createEventDispatcher();
 
 // Check service health on mount
 onMount(async () => {
@@ -189,7 +190,7 @@ async function performFullStackSearch() {
 			await checkServiceHealth();
 		}
 
-		dispatch('search', {
+		onsearch?.({
 			query,
 			results,
 			performance,

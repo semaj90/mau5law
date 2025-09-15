@@ -1,10 +1,6 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+  import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
-  interface Props {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
   import { cn } from '$lib/utils/cn';
 
   interface CardProps {

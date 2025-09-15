@@ -2,7 +2,7 @@
   import 'nes.css/css/nes.min.css';
   import type { PageData } from './$types';
 
-  let { data } = $props();: PageData;
+  let { data }: { data: PageData } = $props();
   const { user, session } = data;
 </script>
 

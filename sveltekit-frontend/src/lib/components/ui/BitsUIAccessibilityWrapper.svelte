@@ -40,12 +40,36 @@
   }: Props = $props();
 
   let containerElement: HTMLElement;
-  let currentRouteConfig = $state(enhancedRouteAccessibility.getCurrentConfig());
+  let currentRouteConfig = $state(null);
+
+  // Local fallback for screen reader announcements
+  function announceToScreenReader(message: string) {
+    if ((accessibilityService as any)?.announceToScreenReader) {
+      (accessibilityService as any).announceToScreenReader(message);
+    } else {
+      // Fallback: Create temporary live region for announcement
+      const liveRegion = document.createElement('div');
+      liveRegion.setAttribute('aria-live', 'polite');
+      liveRegion.setAttribute('aria-atomic', 'true');
+      liveRegion.className = 'sr-only';
+      liveRegion.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0';
+
+      document.body.appendChild(liveRegion);
+      liveRegion.textContent = message;
+
+      // Clean up after announcement
+      setTimeout(() => {
+        if (liveRegion.parentNode) {
+          liveRegion.parentNode.removeChild(liveRegion);
+        }
+      }, 1000);
+    }
+  }
 
   onMount(() => {
     // Update route config when route changes
     const interval = setInterval(() => {
-      const newConfig = enhancedRouteAccessibility.getCurrentConfig());
+      const newConfig = (enhancedRouteAccessibility as any)?.getCurrentConfig?.();
       if (newConfig !== currentRouteConfig) {
         currentRouteConfig = newConfig;
       }
@@ -136,7 +160,7 @@
           element.setAttribute('aria-disabled', isDisabled.toString());
 
           if (isDisabled) {
-            accessibilityService.announceToScreenReader('Button disabled');
+            announceToScreenReader('Button disabled');
           }
         }
       });
@@ -158,7 +182,7 @@
     // Add validation support
     element.addEventListener('invalid', () => {
       const validationMessage = (element as HTMLInputElement).validationMessage;
-      accessibilityService.announceToScreenReader(`Input error: ${validationMessage}`);
+      announceToScreenReader(`Input error: ${validationMessage}`);
     });
   }
 
@@ -193,7 +217,7 @@
     if (button) {
       button.addEventListener('click', () => {
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
-        accessibilityService.announceToScreenReader(
+        announceToScreenReader(
           isExpanded ? 'Options collapsed' : 'Options expanded'
         );
       });
@@ -299,7 +323,102 @@
   }
 
   :global(.accessibility-enhanced-legal) {
-    /* Legal-specific accessibility styling */
+    /* Legal-specific accessibility styling for compliance and readability */
+
+    /* Enhanced focus for legal forms and inputs */
+    input, textarea, select {
+      border: 2px solid #1f2937;
+      border-radius: 4px;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: 3px solid #3b82f6;
+      outline-offset: 2px;
+      border-color: #3b82f6;
+    }
+
+    /* High contrast for legal document text */
+    .legal-document-text {
+      color: #111827;
+      line-height: 1.6;
+      font-size: 16px;
+      background: #ffffff;
+    }
+
+    /* Accessible legal alerts and warnings */
+    .legal-alert {
+      border-left: 4px solid #ef4444;
+      padding: 12px 16px;
+      background: #fef2f2;
+      color: #991b1b;
+      font-weight: 600;
+    }
+
+    /* Enhanced legal button contrast */
+    .legal-action-button {
+      background: #1f2937;
+      color: #ffffff;
+      border: 2px solid #1f2937;
+      padding: 12px 24px;
+      font-weight: 600;
+      min-height: 44px; /* WCAG touch target minimum */
+    }
+
+    .legal-action-button:hover {
+      background: #374151;
+      border-color: #374151;
+    }
+
+    .legal-action-button:focus {
+      outline: 3px solid #3b82f6;
+      outline-offset: 2px;
+    }
+
+    /* Legal table accessibility */
+    .legal-table th {
+      background: #f9fafb;
+      font-weight: 700;
+      text-align: left;
+      padding: 12px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .legal-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* Evidence and case status indicators */
+    .evidence-status-critical {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .evidence-status-important {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Screen reader improvements for legal UI */
+    .sr-legal-context {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   }
 
   :global(.accessibility-focused) {

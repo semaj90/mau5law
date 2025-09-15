@@ -5,7 +5,11 @@
 
   Chart.register(...registerables);
 
-  export let analysis: EvidenceAnalysis;
+  interface Props {
+    analysis: EvidenceAnalysis;
+  }
+
+  let { analysis }: Props = $props();
 
   let canvasRisk: HTMLCanvasElement;
   let canvasEntities: HTMLCanvasElement;

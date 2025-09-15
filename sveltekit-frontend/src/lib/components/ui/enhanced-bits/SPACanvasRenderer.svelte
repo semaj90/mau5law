@@ -5,22 +5,30 @@
    * Full-screen canvas UX with navigation, using gemma3:legal-latest
    */
 
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { WebGPUTextureStreaming } from '$lib/services/webgpu-texture-streaming';
   import { LegalAILogic, type LegalDocument, type EvidenceItem } from '$lib/core/logic/legal-ai-logic';
 
-  // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  interface Props {
+    fullscreen?: boolean;
+    currentView?: 'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases';
+    legalData?: {
+      documents?: LegalDocument[];
+      evidence?: EvidenceItem[];
+      cases?: unknown[];
+      chatMessages?: unknown[];
+    };
+    onnavigate?: (data: { view: string; data: any }) => void;
+    oninteract?: (data: { type: string; position: { x: number; y: number }; view: string; data: any }) => void;
+  }
 
-  // SPA Canvas state
-  let { fullscreen = true } = $props();
-  let { currentView } = $props();: 'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases' = 'dashboard';
-  let { legalData } = $props();: {
-    documents?: LegalDocument[];
-    evidence?: EvidenceItem[];
-    cases?: unknown[];
-    chatMessages?: unknown[];
-  } = {};
+  let {
+    fullscreen = true,
+    currentView = 'dashboard',
+    legalData = {},
+    onnavigate,
+    oninteract
+  }: Props = $props();
 
   // Canvas setup
   let canvas: HTMLCanvasElement;
@@ -473,7 +481,7 @@
       if (clickedIndex >= 0 && clickedIndex < navigationItems.length) {
         currentView = navigationItems[clickedIndex].id as any;
 
-        onNavigate?.({
+        onnavigate?.({
           view: currentView,
           data: legalData
         });
@@ -481,7 +489,7 @@
     }
 
     // Content area interactions
-    onInteract?.({
+    oninteract?.({
       type: 'click',
       position: { x, y },
       view: currentView,

@@ -4,9 +4,11 @@ import (
 	"context"
 	crand "crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -14,10 +16,11 @@ import (
 	"math/big"
 	"net"
 	"net/http"
+	"os"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
-	"strings"
-	"os"
 
 	"github.com/quic-go/quic-go/http3"
 	"github.com/redis/go-redis/v9"
@@ -120,6 +123,239 @@ type RiskFactor struct {
 	Probability   float32  `json:"probability"`
 	Description   string   `json:"description"`
 	RelatedCases  []string `json:"related_cases"`
+}
+
+// Authentication structures
+type AuthRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email,omitempty"`
+}
+
+type AuthResponse struct {
+	Success   bool   `json:"success"`
+	Message   string `json:"message"`
+	Token     string `json:"token,omitempty"`
+	SessionID string `json:"session_id,omitempty"`
+}
+
+type Session struct {
+	SessionID string    `json:"session_id"`
+	Username  string    `json:"username"`
+	CreatedAt time.Time `json:"created_at"`
+	ExpiresAt time.Time `json:"expires_at"`
+}
+
+// Authentication handler
+type AuthHandler struct {
+	redisClient *redis.Client
+	sessions    map[string]Session
+	mu          sync.RWMutex
+}
+
+func NewAuthHandler(redisClient *redis.Client) *AuthHandler {
+	return &AuthHandler{
+		redisClient: redisClient,
+		sessions:    make(map[string]Session),
+	}
+}
+
+func (ah *AuthHandler) generateSessionID() string {
+	// Generate random bytes for better entropy
+	randomBytes := make([]byte, 16)
+	if _, err := crand.Read(randomBytes); err != nil {
+		log.Printf("⚠️  Failed to generate secure random bytes: %v", err)
+		// Fallback to timestamp-based generation
+		randomBytes = []byte(fmt.Sprintf("%d", time.Now().UnixNano()))
+	}
+	hash := sha256.Sum256([]byte(fmt.Sprintf("%d%x", time.Now().UnixNano(), randomBytes)))
+	return hex.EncodeToString(hash[:])[:32]
+}
+
+func (ah *AuthHandler) generateToken() string {
+	// Generate random bytes for better entropy
+	randomBytes := make([]byte, 16)
+	if _, err := crand.Read(randomBytes); err != nil {
+		log.Printf("⚠️  Failed to generate secure random bytes: %v", err)
+		// Fallback to timestamp-based generation
+		randomBytes = []byte(fmt.Sprintf("%d", time.Now().UnixNano()))
+	}
+	hash := sha256.Sum256([]byte(fmt.Sprintf("%d%x", time.Now().UnixNano(), randomBytes)))
+	return hex.EncodeToString(hash[:])
+}
+
+func (ah *AuthHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req AuthRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	if req.Username == "" || req.Password == "" {
+		response := AuthResponse{
+			Success: false,
+			Message: "Username and password required",
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// In production, store user in database with hashed password
+	// For demo purposes, we'll just validate the request
+	response := AuthResponse{
+		Success: true,
+		Message: "User registered successfully",
+		Token:   ah.generateToken(),
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+func (ah *AuthHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req AuthRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	// In production, validate against stored user credentials
+	// For demo purposes, accept any non-empty username/password
+	if req.Username == "" || req.Password == "" {
+		response := AuthResponse{
+			Success: false,
+			Message: "Invalid credentials",
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	sessionID := ah.generateSessionID()
+	session := Session{
+		SessionID: sessionID,
+		Username:  req.Username,
+		CreatedAt: time.Now(),
+		ExpiresAt: time.Now().Add(24 * time.Hour),
+	}
+
+	ah.mu.Lock()
+	ah.sessions[sessionID] = session
+	ah.mu.Unlock()
+
+	// Store session in Redis if available
+	if ah.redisClient != nil {
+		sessionJSON, _ := json.Marshal(session)
+		ah.redisClient.Set(context.Background(), "session:"+sessionID, sessionJSON, 24*time.Hour)
+	}
+
+	response := AuthResponse{
+		Success:   true,
+		Message:   "Login successful",
+		Token:     ah.generateToken(),
+		SessionID: sessionID,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+func (ah *AuthHandler) HandleValidateSession(w http.ResponseWriter, r *http.Request) {
+	sessionID := r.Header.Get("X-Session-ID")
+	if sessionID == "" {
+		sessionID = r.URL.Query().Get("session_id")
+	}
+
+	if sessionID == "" {
+		http.Error(w, "Session ID required", http.StatusBadRequest)
+		return
+	}
+
+	valid := ah.validateSession(sessionID)
+	response := map[string]interface{}{
+		"valid":      valid,
+		"session_id": sessionID,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+func (ah *AuthHandler) HandleLogout(w http.ResponseWriter, r *http.Request) {
+	sessionID := r.Header.Get("X-Session-ID")
+	if sessionID == "" {
+		sessionID = r.URL.Query().Get("session_id")
+	}
+
+	if sessionID != "" {
+		ah.mu.Lock()
+		delete(ah.sessions, sessionID)
+		ah.mu.Unlock()
+
+		// Remove from Redis if available
+		if ah.redisClient != nil {
+			ah.redisClient.Del(context.Background(), "session:"+sessionID)
+		}
+	}
+
+	response := AuthResponse{
+		Success: true,
+		Message: "Logout successful",
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+func (ah *AuthHandler) validateSession(sessionID string) bool {
+	ah.mu.RLock()
+	session, exists := ah.sessions[sessionID]
+	ah.mu.RUnlock()
+
+	if !exists && ah.redisClient != nil {
+		// Try to get from Redis
+		sessionJSON, err := ah.redisClient.Get(context.Background(), "session:"+sessionID).Result()
+		if err == nil {
+			var redisSession Session
+			if json.Unmarshal([]byte(sessionJSON), &redisSession) == nil {
+				session = redisSession
+				exists = true
+				// Cache locally
+				ah.mu.Lock()
+				ah.sessions[sessionID] = session
+				ah.mu.Unlock()
+			}
+		}
+	}
+
+	return exists && time.Now().Before(session.ExpiresAt)
+}
+
+func (ah *AuthHandler) RequireAuth(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sessionID := r.Header.Get("X-Session-ID")
+		if sessionID == "" {
+			sessionID = r.URL.Query().Get("session_id")
+		}
+
+		if sessionID == "" || !ah.validateSession(sessionID) {
+			http.Error(w, "Authentication required", http.StatusUnauthorized)
+			return
+		}
+
+		next(w, r)
+	}
 }
 
 // QUIC Legal AI Server
@@ -695,64 +931,160 @@ func parsePortOrDefault(portStr string, defaultPort int) int {
 	if portStr == "" {
 		return defaultPort
 	}
-	// Simple port parsing (could use strconv.Atoi for production)
-	switch portStr {
-	case "4433":
-		return 4433
-	case "4434":
-		return 4434
-	case "4435":
-		return 4435
-	default:
+
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		log.Printf("⚠️  Invalid port '%s', using default %d", portStr, defaultPort)
 		return defaultPort
 	}
+
+	// Validate port range
+	if port < 1024 || port > 65535 {
+		log.Printf("⚠️  Port %d out of valid range (1024-65535), using default %d", port, defaultPort)
+		return defaultPort
+	}
+
+	return port
 }
 
 func main() {
+	// Configure logging with better format
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.Println("🔧 Initializing Legal AI QUIC Server...")
+
+	// Initialize server with error handling
 	server := NewLegalAIQuicServer()
+	if server == nil {
+		log.Fatal("❌ Failed to initialize Legal AI QUIC Server")
+	}
 
-	// Create auth handler
+	// Create auth handler with error handling
 	authHandler := NewAuthHandler(server.redisClient)
+	if authHandler == nil {
+		log.Fatal("❌ Failed to initialize authentication handler")
+	}
 
-	// Setup HTTP/3 routes
+	// Setup HTTP/3 routes with CORS support
 	mux := http.NewServeMux()
 
-	// Authentication routes
-	mux.HandleFunc("/auth/register", authHandler.HandleRegister)
-	mux.HandleFunc("/auth/login", authHandler.HandleLogin)
-	mux.HandleFunc("/auth/validate", authHandler.HandleValidateSession)
-	mux.HandleFunc("/auth/logout", authHandler.HandleLogout)
+	// Add CORS middleware wrapper
+	corsWrapper := func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Session-ID")
 
-	// Protected legal AI routes (require authentication)
-	mux.HandleFunc("/legal/analyze", authHandler.RequireAuth(server.handleDocumentAnalysis))
-	mux.HandleFunc("/legal/recommend", authHandler.RequireAuth(server.handleRecommendations))
-	mux.HandleFunc("/legal/result", server.handleResult)
-	mux.HandleFunc("/health", server.handleHealth)
+			if r.Method == "OPTIONS" {
+				w.WriteHeader(http.StatusOK)
+				return
+			}
 
-	// IMPROVED: Better port handling
+			next(w, r)
+		}
+	}
+
+	// Authentication routes with CORS
+	mux.HandleFunc("/auth/register", corsWrapper(authHandler.HandleRegister))
+	mux.HandleFunc("/auth/login", corsWrapper(authHandler.HandleLogin))
+	mux.HandleFunc("/auth/validate", corsWrapper(authHandler.HandleValidateSession))
+	mux.HandleFunc("/auth/logout", corsWrapper(authHandler.HandleLogout))
+
+	// Protected legal AI routes with CORS and auth
+	mux.HandleFunc("/legal/analyze", corsWrapper(authHandler.RequireAuth(server.handleDocumentAnalysis)))
+	mux.HandleFunc("/legal/recommend", corsWrapper(authHandler.RequireAuth(server.handleRecommendations)))
+	mux.HandleFunc("/legal/result", corsWrapper(server.handleResult))
+	mux.HandleFunc("/health", corsWrapper(server.handleHealth))
+
+	// Add root handler for service info
+	mux.HandleFunc("/", corsWrapper(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+
+		info := map[string]interface{}{
+			"service":     "Legal AI QUIC Server",
+			"version":     "1.0.0",
+			"status":      "running",
+			"protocol":    "HTTP/3 over QUIC",
+			"endpoints": []string{
+				"POST /auth/register",
+				"POST /auth/login",
+				"POST /auth/logout",
+				"GET  /auth/validate",
+				"POST /legal/analyze",
+				"POST /legal/recommend",
+				"GET  /legal/result",
+				"GET  /health",
+			},
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(info)
+	}))
+
+	// Improved port handling with validation
 	preferredPort := getEnvOrDefault("QUIC_PORT", "4433")
 	port := findAvailablePort(preferredPort)
-	
-	// Start QUIC/HTTP3 server
+
+	// Generate TLS config with validation
+	tlsConfig := generateTLSConfig()
+	if tlsConfig == nil {
+		log.Fatal("❌ Failed to generate TLS configuration")
+	}
+
+	// Start QUIC/HTTP3 server with enhanced configuration
 	quicServer := &http3.Server{
 		Handler:   mux,
 		Addr:      ":" + port,
-		TLSConfig: generateTLSConfig(),
+		TLSConfig: tlsConfig,
 	}
 
-	log.Println("🚀 Legal AI QUIC Server starting on :" + port)
+	// Enhanced startup logging
+	log.Println("🚀 Legal AI QUIC Server starting...")
+	log.Printf("📡 Listening on port: %s (HTTP/3 over QUIC)", port)
+	log.Printf("🔒 TLS: Self-signed certificate generated")
+
+	// Log Redis connection status
+	redisStatus := "disconnected"
+	if server.redisClient != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		defer cancel()
+		if err := server.redisClient.Ping(ctx).Err(); err == nil {
+			redisStatus = "connected"
+		}
+	}
+	log.Printf("🗄️  Redis: %s", redisStatus)
+
 	log.Println("📚 Vector database initialized")
 	log.Println("⚖️  Legal case database loaded")
 	log.Println("⚡ Worker pools ready:")
-	log.Printf("   - Legal analysis workers: %d", cap(server.workerPool))
-	log.Printf("   - Recommendation workers: %d", cap(server.recommendations))
-	log.Println("🌐 API Endpoints:")
-	log.Printf("   - POST /legal/analyze    (Document Analysis)")
-	log.Printf("   - POST /legal/recommend  (Legal Recommendations)")  
-	log.Printf("   - GET  /legal/result     (Job Results)")
-	log.Printf("   - GET  /health           (Server Health)")
-	
+	log.Printf("   - Legal analysis workers: %d (queue: %d/%d)",
+		10, len(server.workerPool), cap(server.workerPool))
+	log.Printf("   - Recommendation workers: %d (queue: %d/%d)",
+		5, len(server.recommendations), cap(server.recommendations))
+
+	log.Println("🌐 API Endpoints available:")
+	log.Printf("   - POST /auth/register     (User Registration)")
+	log.Printf("   - POST /auth/login        (User Login)")
+	log.Printf("   - POST /auth/logout       (User Logout)")
+	log.Printf("   - GET  /auth/validate     (Session Validation)")
+	log.Printf("   - POST /legal/analyze     (Document Analysis - Protected)")
+	log.Printf("   - POST /legal/recommend   (Legal Recommendations - Protected)")
+	log.Printf("   - GET  /legal/result      (Job Results)")
+	log.Printf("   - GET  /health            (Server Health Check)")
+	log.Printf("   - GET  /                  (Service Information)")
+
+	log.Println("✅ Legal AI QUIC Server ready for connections!")
+
+	// Start server with comprehensive error handling
 	if err := quicServer.ListenAndServe(); err != nil {
-		log.Fatal("❌ Failed to start Legal AI QUIC server:", err)
+		log.Printf("❌ QUIC server startup failed: %v", err)
+		log.Println("💡 Troubleshooting suggestions:")
+		log.Printf("   - Verify port %s is not in use: lsof -i :%s", port, port)
+		log.Println("   - Check if QUIC/HTTP3 is supported in your environment")
+		log.Println("   - Try a different port: QUIC_PORT=4434 ./legal-ai-quic-server-fixed")
+		log.Println("   - Ensure proper firewall configuration")
+		log.Fatal("❌ Unable to start Legal AI QUIC server")
 	}
 }
