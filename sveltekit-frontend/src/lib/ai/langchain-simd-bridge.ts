@@ -147,7 +147,7 @@ export class LangChainSIMDBridge {
     const simdStart = Date.now();
     const simdResult = await simdTextTilingEngine.processText(content, {
       type: metadata.type || 'general',
-      context: `langchain-${this.config?.model || "unknown" // @ts-ignore - Model property access}`,
+      context: `langchain-${this.config?.model || "unknown"}`,
       uiTarget: options.generateUI ? 'component' : undefined
     });
     const simdCompressionTime = Date.now() - simdStart;
@@ -197,7 +197,7 @@ export class LangChainSIMDBridge {
       metadata: {
         totalTokens: langchainResult.metadata?.totalTokens || 0,
         avgChunkSize: langchainResult.metadata?.avgChunkSize || 0,
-        model: langchainResult.metadata??.model || "unknown" // @ts-ignore - Model property access || 'unknown'
+        model: langchainResult.metadata?.model || 'unknown'
       } as { totalTokens: number; avgChunkSize: number; model: string; },
 
       // SIMD enhancement data

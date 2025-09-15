@@ -244,7 +244,19 @@
       "Bash(npx drizzle-kit:*)",
       "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" npx tsx src/lib/server/db/seed.ts)",
       "Bash(./cmd/cuda-service/cuda-service.exe:*)",
-      "Bash(wsl:*)"
+      "Bash(wsl:*)",
+      "Bash(./cuda-service-worker.exe --help)",
+      "Bash(DATABASE_URL=\"postgres://legal_admin:123456@localhost:5432/legal_ai_db?sslmode=disable\" PORT=8097 ./cuda-service-worker-simd.exe)",
+      "Bash(git clone:*)",
+      "Bash(PORT=8098 ./legal-extraction-service.exe)",
+      "Bash(PORT=8099 ./sequential-kg-service.exe)",
+      "Bash(REDIS_PASSWORD=redis go run cognitive-microservice.go)",
+      "Bash(export REDIS_PASSWORD=redis)",
+      "Bash(set PORT=8102)",
+      "Bash(set NEO4J_URI=bolt://localhost:7687)",
+      "Bash(set NEO4J_USERNAME=neo4j)",
+      "Bash(set NEO4J_PASSWORD=neo4j)",
+      "Bash(PORT=8107 ./gpu-memory-manager.exe)"
     ],
     "deny": [],
     "ask": []

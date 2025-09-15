@@ -37,13 +37,48 @@ export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: st
 }
 
 // Helper to create Float32Array from ArrayBufferLike safely
-export function createFloat32Array(buffer: ArrayBufferLike, offset = 0, length?: number): Float32Array {
-  if (buffer instanceof ArrayBuffer) {
-    return new Float32Array(buffer, offset, length);
+export function createFloat32Array(
+  source: ArrayBufferLike | ArrayBufferView,
+  offset = 0,
+  length?: number
+): Float32Array {
+  // Normalize to underlying ArrayBuffer and compute absolute byte offset & available bytes
+  let buffer: ArrayBuffer;
+  let startByteOffset: number;
+  let availableBytes: number;
+
+  if (ArrayBuffer.isView(source)) {
+    const view = source as ArrayBufferView;
+    buffer = view.buffer;
+    const viewByteOffset = (view as any).byteOffset ?? 0;
+    const viewByteLength =
+      (view as any).byteLength ?? view.length * ((view as any).BYTES_PER_ELEMENT ?? 1);
+    startByteOffset = viewByteOffset + offset;
+    availableBytes = Math.max(0, viewByteLength - offset);
+  } else {
+    buffer = source as ArrayBufferLike as ArrayBuffer;
+    startByteOffset = offset;
+    availableBytes = Math.max(0, (source as ArrayBufferLike).byteLength - offset);
   }
 
-  // For SharedArrayBuffer or other ArrayBufferLike types
-  return new Float32Array(buffer as ArrayBuffer, offset, length);
+  // Compute number of float32 elements we can create
+  const maxElements = Math.floor(availableBytes / 4);
+  const elementCount =
+    length !== undefined ? Math.max(0, Math.min(length, maxElements)) : maxElements;
+
+  if (elementCount === 0) return new Float32Array(0);
+
+  // If start offset is not 4-byte aligned, create an aligned copy
+  if (startByteOffset % 4 !== 0) {
+    const bytesNeeded = elementCount * 4;
+    const tmp = new ArrayBuffer(bytesNeeded);
+    const src = new Uint8Array(buffer, startByteOffset, bytesNeeded);
+    new Uint8Array(tmp).set(src);
+    return new Float32Array(tmp);
+  }
+
+  // Safe to create a Float32Array view directly
+  return new Float32Array(buffer, startByteOffset, elementCount);
 }
 
 // WebGPU feature detection
