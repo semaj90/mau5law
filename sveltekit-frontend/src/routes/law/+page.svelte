@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  let laws: any[] = $state([]);
+  let laws: unknown[] = $state([]);
   let loading = $state(true);
   let error: string | null = $state(null);
   let searchQuery = $state('');

@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  let { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024  }: { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024 : any } = $props();
+  let { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024  }: { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024 : unknown } = $props();
 
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
@@ -17,9 +17,7 @@ https://svelte.dev/e/js_parse_error -->
     resetProcessor,
     type EvidenceUploadProps
   } from '$lib/stores/evidence-workflow';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Progress } from '$lib/components/ui/progress';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import { Badge } from '$lib/components/ui/badge';
@@ -166,8 +164,8 @@ https://svelte.dev/e/js_parse_error -->
       class:bg-blue-50={dragover}
       class:border-gray-300={!dragover}
       on:dragover|preventDefault={() => dragover = true}
-      on:dragleave={() => dragover = false}
-      on:drop={handleDrop}
+      ondragleave={() => dragover = false}
+      ondrop={handleDrop}
       role="button"
       tabindex="0"
     >
@@ -181,14 +179,14 @@ https://svelte.dev/e/js_parse_error -->
         bind:this={fileInput}
         type="file"
         accept={allowedTypes.join(',')}
-        on:change={handleFileSelect}
+        onchange={handleFileSelect}
         class="hidden"
       />
 
       <Button 
         class="bits-btn mt-2"
         variant="outline"
-        on:click={() =>
+        onclick={() =>
 fileInput?.click()}
       >
         Select File
@@ -208,10 +206,10 @@ fileInput?.click()}
           <p class="text-sm text-blue-600 mt-1">Evidence ID: {evidenceId}</p>
         </div>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="outline" size="sm" on:click={handleReset}>
+          <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
 Change File
 </Button>
-          <Button on:click={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">
+          <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">
 Process Evidence
 </Button>
         </div>
@@ -221,7 +219,7 @@ Process Evidence
 
   <!-- Processing Status -->
   {#if processing}
-    <div class="processing-status" transition:fly={{ y: 20 }}>
+    <div class="processing-status" transitionfly={{ y: 20 }}>
       <div class="mb-4">
         <div class="flex items-center justify-between mb-2">
           <h3 class="font-medium text-gray-900">Processing Evidence</h3>
@@ -244,7 +242,7 @@ Process Evidence
         {#each processingSteps as step, index}
           <div
             class="flex items-center gap-2 text-sm text-green-600"
-            transition:fly={{ x: -20, delay: index * 100 }}
+            transitionfly={{ x: -20, delay: index * 100 }}
           >
             <CheckCircle class="w-4 h-4" />
             {step}
@@ -278,12 +276,12 @@ Process Evidence
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 window.open(artifactUrl, '_blank')}
           >
             Download Artifact
 </Button>
-          <Button class="bits-btn" variant="outline" size="sm" on:click={handleReset}>
+          <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
 Process Another
 </Button>
         </div>
@@ -298,10 +296,10 @@ Process Another
       <AlertDescription>
         <div class="mb-2">{error}</div>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="outline" size="sm" on:click={handleRetry}>
+          <Button class="bits-btn" variant="outline" size="sm" onclick={handleRetry}>
 Retry
 </Button>
-          <Button class="bits-btn" variant="outline" size="sm" on:click={handleReset}>
+          <Button class="bits-btn" variant="outline" size="sm" onclick={handleReset}>
 Reset
 </Button>
         </div>

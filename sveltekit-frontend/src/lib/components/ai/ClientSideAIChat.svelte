@@ -187,7 +187,7 @@
       {/if}
     </div>
     
-    <div class="yorha-panel-content p-3 space-y-3">
+    <main>
       {#if !collapsed}
         <!-- Messages -->
         <div class="messages-container h-48 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-gray-600" data-testid="chat-messages">
@@ -241,8 +241,8 @@
             <div class="text-xs text-gray-400 mb-2 font-mono">Quick prompts:</div>
             <div class="flex flex-wrap gap-1">
               {#each quickPrompts.slice(0, 2) as prompt}
-                <button
-                  on:click={() => sendMessage(prompt)}
+                <button aria-label="Action button"
+                  onclick={() => sendMessage(prompt)}
                   disabled={isProcessing || !isInitialized}
                   class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded border border-gray-600 hover:border-yellow-500 transition-colors disabled:opacity-50"
                 >
@@ -255,7 +255,7 @@
 
         <!-- Error Display -->
         {#if error}
-          <div class="error-message bg-red-900/30 border border-red-500/50 rounded p-2">
+          <div class="error-message bg-red-900/30 border border-red-500/50 rounded p-2" aria-live="polite" role="alert">
             <div class="text-xs text-red-400 font-mono">⚠️ {error}</div>
           </div>
         {/if}
@@ -272,8 +272,8 @@
               class="flex-1 text-xs bg-gray-800 border border-gray-600 rounded px-2 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-yellow-500 resize-none disabled:opacity-50"
               data-testid="chat-input"
             ></textarea>
-            <button
-              on:click={() => sendMessage()}
+            <button aria-label="Action button"
+              onclick={() => sendMessage()}
               disabled={!chatInput.trim() || isProcessing || !isInitialized}
               class="px-3 py-1 bg-yellow-600 text-black text-xs font-mono rounded hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               data-testid="send-button"
@@ -286,8 +286,8 @@
             <div class="text-xs text-gray-500 font-mono">
               Running locally • No data sent to servers
             </div>
-            <button
-              on:click={clearChat}
+            <button aria-label="Action button"
+              onclick={clearChat}
               class="text-xs text-gray-400 hover:text-gray-300 font-mono"
             >
               Clear

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   interface Props {
     class?: string;
@@ -115,8 +116,8 @@
   class={cardClasses}
   role={clickable ? 'button' : undefined}
   tabindex={clickable ? 0 : undefined}
-  on:click={clickable ? handleClick : undefined}
-  on:keydown={clickable ? handleKeydown : undefined}
+  onclick={clickable ? handleClick : undefined}
+  onkeydown={clickable ? handleKeydown : undefined}
   data-evidence-card={evidenceCard}
   data-case-card={caseCard}
   data-ai-analysis={aiAnalysis}

@@ -199,7 +199,7 @@
 				{#each surfaceConfigs as config}
 					<button
 						class="ps1-button surface-btn {surfaceType === config.id ? 'active' : ''}"
-						on:click={() => surfaceType = config.id}
+						onclick={() => surfaceType = config.id}
 						title={config.desc}
 					>
 						{config.name}
@@ -281,8 +281,8 @@
 		</div>
 
 		<div class="button-row">
-			<button class="ps1-button" on:click={resetSurface}>Regenerate</button>
-			<button class="ps1-button" on:click={() => animationSpeed = animationSpeed > 0 ? 0 : 1}>
+			<button class="ps1-button" onclick={resetSurface}>Regenerate</button>
+			<button class="ps1-button" onclick={() => animationSpeed = animationSpeed > 0 ? 0 : 1}>
 				{animationSpeed > 0 ? 'Pause' : 'Resume'} Animation
 			</button>
 		</div>

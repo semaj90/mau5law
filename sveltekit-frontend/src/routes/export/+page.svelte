@@ -1,8 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import TooltipContent from "$lib/components/ui/TooltipContent.svelte";
   import TooltipTrigger from "$lib/components/ui/TooltipTrigger.svelte";
@@ -161,7 +159,7 @@
                   <TooltipTrigger asChild>
                     <button
                       class="space-y-4"
-                      on:click={() =>
+                      onclick={() =>
                         (format = formatOption.value as "json" | "csv" | "xml")}
                     >
                       <div class="space-y-4">{formatOption.label}</div>
@@ -258,7 +256,7 @@
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 selectAllCases()}
                 >
                   Select All
@@ -266,7 +264,7 @@ selectAllCases()}
                 <Button class="bits-btn"
                   variant="outline"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 clearCaseSelection()}
                 >
                   Clear
@@ -284,7 +282,7 @@ clearCaseSelection()}
                   >
                     <input
                       type="checkbox"
-                      checked={selectedCaseIds.includes(caseItem.id)} on:change={() => toggleCaseSelection(caseItem.id)}
+                      checked={selectedCaseIds.includes(caseItem.id)} onchange={() => toggleCaseSelection(caseItem.id)}
                       class="space-y-4"
                     />
                     <span class="space-y-4">
@@ -339,7 +337,7 @@ clearCaseSelection()}
           <Tooltip>
             <TooltipTrigger asChild>
               <Button class="bits-btn space-y-4"
-                on:click={() =>
+                onclick={() =>
 exportData()}
                 disabled={exportLoading || (!includeCases && !includeEvidence)}
               >

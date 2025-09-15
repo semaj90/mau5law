@@ -58,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
 
         if (response.ok) {
           const data = await response.json();
-          const apiSuggestions = data.suggestions.map((s: any) => s.tag);
+          const apiSuggestions = data.suggestions.map((s: unknown) => s.tag);
           // Merge with existing available tags
           availableTags = [...new Set([...availableTags, ...apiSuggestions])];
         }
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<svelte:window on:click={handleClickOutside} />
+<svelte:window onclick={handleClickOutside} />
 
 <div class="mx-auto px-4 max-w-7xl" class:readonly>
   <div class="mx-auto px-4 max-w-7xl">
@@ -167,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             type="button"
             class="mx-auto px-4 max-w-7xl"
-            on:click={() => removeTag(tag)}
+            onclick={() => removeTag(tag)}
             aria-label="Remove {tag} tag"
           >
             <X size={12} />
@@ -180,9 +180,9 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mx-auto px-4 max-w-7xl" bind:this={suggestionsContainer}>
         <input
           bind:this={inputElement}
-          bind:value={inputValue} on:input={handleInput}
+          bind:value={inputValue} oninput={handleInput}
           keydown={handleKeyDown}
-          on:focus={handleFocus}
+          onfocus={handleFocus}
           class="mx-auto px-4 max-w-7xl"
           type="text"
           {placeholder}
@@ -196,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
                 type="button"
                 class="mx-auto px-4 max-w-7xl"
                 class:active={index === activeIndex}
-                on:click={() => handleSuggestionClick(suggestion)}
+                onclick={() => handleSuggestionClick(suggestion)}
                 role="option"
                 aria-selected={index === activeIndex}
               >
@@ -213,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         type="button"
         class="mx-auto px-4 max-w-7xl"
-        on:click={() => addTag(inputValue)}
+        onclick={() => addTag(inputValue)}
         aria-label="Add custom tag: {inputValue}"
       >
         <Plus size={14} />

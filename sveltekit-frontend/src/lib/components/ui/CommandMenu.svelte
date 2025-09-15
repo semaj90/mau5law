@@ -256,8 +256,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
             <button
               class="command-menu-item"
               class:selected={globalIndex === selectedIndex}
-              on:click={() => executeCommand(command)}
-              on:mouseenter={() => (selectedIndex = globalIndex)}
+              onclick={() => executeCommand(command)}
+              onmouseenter={() => (selectedIndex = globalIndex)}
             >
               <svelte:component this={command.icon} size={16} />
               <span class="command-menu-item-label">{command.label}</span>
@@ -353,7 +353,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     text-align: left;
 }
   .command-item:hover,
-  .command-(item as { selected?: any }).selected {
+  .command-(item as { selected?: unknown }).selected {
     background: #f3f4f6;
     color: #3b82f6;
 }

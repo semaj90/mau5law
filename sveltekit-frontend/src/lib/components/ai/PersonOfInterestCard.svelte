@@ -204,7 +204,7 @@ https://svelte.dev/e/js_parse_error -->
         variant="outline" 
         size="sm" 
         class="flex-1 text-xs bits-btn bits-btn"
-        on:click={() =>
+        onclick={() =>
 showFullDetails = !showFullDetails}
       >
         {showFullDetails ? 'Less' : 'More'} Info

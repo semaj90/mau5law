@@ -71,7 +71,7 @@
 		analyticsCategory?: string;
 		analyticsAction?: string;
 		analyticsLabel?: string;
-		xstateContext?: any;
+		xstateContext?: unknown;
 		uiJsonConfig?: UIJsonSSRConfig;
 		searchKeywords?: string[];
 		cacheKey?: string;
@@ -255,7 +255,7 @@
 		aria-controls={ariaControls}
 		aria-busy={loading}
 		data-testid="button"
-		on:click={handleClick}
+		onclick={handleClick}
 		{...restProps}
 	>
 		{#if loading}

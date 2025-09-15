@@ -104,7 +104,7 @@ Automatically handles server upload with localStorage fallback
 
       onupload?.({ results });
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       error = err.message || 'Upload failed';
       onerror?.({ error: error! });
     } finally {
@@ -184,14 +184,14 @@ Automatically handles server upload with localStorage fallback
     class="drop-zone"
     class:drag-over={isDragOver}
     class:uploading={isUploading}
-    on:drop={handleDrop}
-    on:dragover={handleDragOver}
+    ondrop={handleDrop}
+    ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     role="button" 
     aria-label="Drop zone"
     tabindex="0"
-    on:click={openFileSelector}
-    on:keydown={(e) => e.key === 'Enter' && openFileSelector()}
+    onclick={openFileSelector}
+    onkeydown={(e) => e.key === 'Enter' && openFileSelector()}
   >
     <div class="drop-zone-content">
       {#if isUploading}
@@ -227,7 +227,7 @@ Automatically handles server upload with localStorage fallback
     {accept}
     {multiple}
     style="display: none"
-    on:change={(e) => {
+    onchange={(e) => {
       const target = e.target as HTMLInputElement;
       if (target?.files) handleFileSelect(target.files);
     }}
@@ -245,26 +245,26 @@ Automatically handles server upload with localStorage fallback
     <div class="results-container">
       <div class="results-header">
         <h4>Upload Results</h4>
-        <button class="clear-btn" on:click={clearResults}>Clear</button>
+        <button class="clear-btn" onclick={clearResults}>Clear</button>
       </div>
 
       <div class="results-list">
         {#each uploadResults as result}
-          <div class="result-item" class:success={(result as { success?: any; fileName?: any; storageType?: any; fallbackUsed?: any; size?: any; error?: any }).success} class:error={!(result as { success?: any; fileName?: any; storageType?: any; fallbackUsed?: any; size?: any; error?: any }).success}>
+          <div class="result-item" class:success={(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).success} class:error={!(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).success}>
             <div class="result-icon">
-              {(result as { success?: any; fileName?: any; storageType?: any; fallbackUsed?: any; size?: any; error?: any }).success ? '✅' : '❌'}
+              {(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).success ? '✅' : '❌'}
             </div>
             <div class="result-details">
-              <div class="result-name">{(result as { success?: any; fileName?: any; storageType?: any; fallbackUsed?: any; size?: any; error?: any }).fileName}</div>
+              <div class="result-name">{(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).fileName}</div>
               <div class="result-meta">
-                {#if (result as { success?: any; fileName?: any; storageType?: any; fallbackUsed?: any; size?: any; error?: any }).success}
-                  <span class="storage-type">{(result as { success?: any; fileName?: any; storageType?: any; fallbackUsed?: any; size?: any; error?: any }).storageType}</span>
-                  {#if (result as { success?: any; fileName?: any; storageType?: any; fallbackUsed?: any; size?: any; error?: any }).fallbackUsed}
+                {#if (result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).success}
+                  <span class="storage-type">{(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).storageType}</span>
+                  {#if (result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).fallbackUsed}
                     <span class="fallback-badge">localStorage fallback</span>
                   {/if}
-                  <span class="file-size">{Math.round((result as { success?: any; fileName?: any; storageType?: any; fallbackUsed?: any; size?: any; error?: any }).size / 1024)}KB</span>
+                  <span class="file-size">{Math.round((result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).size / 1024)}KB</span>
                 {:else}
-                  <span class="error-text">{(result as { success?: any; fileName?: any; storageType?: any; fallbackUsed?: any; size?: any; error?: any }).error}</span>
+                  <span class="error-text">{(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).error}</span>
                 {/if}
               </div>
             </div>
@@ -463,11 +463,11 @@ Automatically handles server upload with localStorage fallback
     border-bottom: none;
   }
 
-  .result-(item as { success?: any; error?: any }).success {
+  .result-(item as { success?: unknown; error?: unknown }).success {
     background-color: #f0fdf4;
   }
 
-  .result-(item as { success?: any; error?: any }).error {
+  .result-(item as { success?: unknown; error?: unknown }).error {
     background-color: #fef2f2;
   }
 

@@ -1,3 +1,6 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
 
@@ -7,9 +10,7 @@
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import {
@@ -55,15 +56,29 @@
 
   // Focus input when dialog opens
   $effect(() => {
-    if (open && inputElement) {
-      setTimeout(() => inputElement.focus(), 100);
+    try {
+      
+          if (open && inputElement) {
+            setTimeout(() => inputElement.focus(), 100);
+          }
+        
+    } catch (error) {
+      console.error('Effect error:', error);
+      // Handle error gracefully
     }
   });
 
   // Initialize with context message if provided
   $effect(() => {
-    if (open && context && messages.length === 0) {
-      addSystemMessage();
+    try {
+      
+          if (open && context && messages.length === 0) {
+            addSystemMessage();
+          }
+        
+    } catch (error) {
+      console.error('Effect error:', error);
+      // Handle error gracefully
     }
   });
 
@@ -103,7 +118,8 @@
         contextText = `Context: ${context.title}\n${context.description || ''}\n${context.fullText || ''}`;
       }
 
-      const response = await fetch('/api/ai/chat', {
+      try {
+    const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -112,14 +128,28 @@
           caseId,
           documentId,
           temperature: 0.7,
-        }),
+        });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  },
       });
 
       if (!response.ok) {
         throw new Error('Failed to get AI response');
       }
 
-      const data = await response.json();
+      const data = awaitawait (async () => {
+      try {
+        return await  response.json();
+      } catch (error) {
+        console.error('JSON parsing failed:', error);
+        throw new Error('Invalid JSON response');
+      }
+    })();
 
       const aiMessage = {
         id: Date.now() + 1,
@@ -221,6 +251,7 @@
       <ScrollArea bind:element={chatContainer} class="h-[400px] w-full pr-4">
         <div class="space-y-4">
           {#each messages as message}
+<!-- TODO: Consider virtual scrolling for large lists (messages) -->
             <div class="flex gap-3 {message.role === 'user' ? 'justify-end' : 'justify-start'}">
               {#if message.role !== 'user'}
                 <div class="flex-shrink-0">
@@ -242,7 +273,7 @@
                 <div.Root
                   class="{message.role === 'user'
                     ? 'bg-primary text-primary-foreground'
-                    : ''} {message.error ? 'border-red-200 dark:border-red-800' : ''} nes-container">
+                    : ''} {message.error ? 'border-red-200 dark:border-red-800' : ''} nes-container" aria-live="polite" role="alert">
                   <div.Content class="p-3">
                     <div
                       class="prose prose-sm max-w-none {message.role === 'user'
@@ -267,22 +298,22 @@
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            on:click={() =>
-copyToClipboard(message.content)}>
+                            onclick={(event: MouseEvent) => ) =>
+copyToClipboard(message.content}>
                             <Copy class="h-3 w-3" />
 </Button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            on:click={() =>
-provideFeedback(message.id, 'positive')}>
+                            onclick={(event: MouseEvent) => ) =>
+provideFeedback(message.id, 'positive'}>
                             <ThumbsUp class="h-3 w-3" />
 </Button>
                           <Button class="bits-btn"
                             variant="ghost"
                             size="sm"
-                            on:click={() =>
-provideFeedback(message.id, 'negative')}>
+                            onclick={(event: MouseEvent) => ) =>
+provideFeedback(message.id, 'negative'}>
                             <ThumbsDown class="h-3 w-3" />
 </Button>
                         </div>
@@ -299,8 +330,8 @@ provideFeedback(message.id, 'negative')}>
                         variant="outline"
                         size="sm"
                         class="text-xs h-auto py-1 px-2 bits-btn bits-btn"
-                        on:click={() =>
-handleSuggestionClick(suggestion)}>
+                        onclick={(event: MouseEvent) => ) =>
+handleSuggestionClick(suggestion}>
                         {suggestion}
 </Button>
                     {/each}
@@ -352,14 +383,14 @@ handleSuggestionClick(suggestion)}>
           keydown={handleKeydown}
           disabled={isLoading}
           class="flex-1" />
-        <Button class="bits-btn" on:click={sendMessage} disabled={isLoading || !currentMessage.trim()}>
+        <Button class="bits-btn" onclick={(event: MouseEvent) => sendMessage} disabled={isLoading || !currentMessage.trim()}>
 {#if isLoading}
             <Loader2 class="h-4 w-4 animate-spin" />
           {:else}
             <Send class="h-4 w-4" />
           {/if}
 </Button>
-        <Button class="bits-btn" variant="outline" on:click={clearChat}>
+        <Button class="bits-btn" variant="outline" onclick={(event: MouseEvent) => clearChat}>
 <X class="h-4 w-4" />
 </Button>
       </div>

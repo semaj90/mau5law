@@ -45,7 +45,7 @@
 
   let {
     caseId = '',
-    userId = page.(data as { user?: any }).user?.id || '',
+    userId = page.(data as { user?: unknown }).user?.id || '',
     maxFiles = 10,
     allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'text/plain', 'application/msword'],
     enableAnalytics = true,
@@ -179,7 +179,7 @@
   async function checkOllamaConnection() {
     try {
       const response = await fetch('/api/ai/ollama/health');
-      ollamaConnected = (response as { ok?: any; json?: any }).ok;
+      ollamaConnected = (response as { ok?: unknown; json?: unknown }).ok;
 
       if (ollamaConnected) {
         const modelsResponse = await fetch('/api/ai/ollama/models');
@@ -323,7 +323,7 @@
           body: formData
         });
 
-        return (response as { ok?: any; json?: any }).ok ? await (response as { ok?: any; json?: any }).json() : null;
+        return (response as { ok?: unknown; json?: unknown }).ok ? await (response as { ok?: unknown; json?: unknown }).json() : null;
       });
 
       const results = await Promise.all(analysisPromises);
@@ -361,8 +361,8 @@
           body: formData
         });
 
-        if ((response as { ok?: any; json?: any }).ok) {
-          return await (response as { ok?: any; json?: any }).json();
+        if ((response as { ok?: unknown; json?: unknown }).ok) {
+          return await (response as { ok?: unknown; json?: unknown }).json();
         }
         throw new Error(`Analysis failed for ${file.name}`);
       });
@@ -375,7 +375,7 @@
     }
   }
 
-  function calculateEvidenceQuality(results: any[]): number {
+  function calculateEvidenceQuality(results: unknown[]): number {
     if (!results.length) return 0;
 
     const qualityFactors = results.map(r => {
@@ -392,7 +392,7 @@
     return qualityFactors.reduce((sum, score) => sum + score, 0) / qualityFactors.length;
   }
 
-  function generateLegalRecommendations(results: any[], context: any): string[] {
+  function generateLegalRecommendations(results: unknown[], context: unknown): string[] {
     const recommendations: string[] = [];
 
     const privilegedCount = results.filter(r => r.privileged).length;
@@ -415,7 +415,7 @@
     return recommendations;
   }
 
-  function assessLegalRisks(results: any[]): { level: string; factors: string[] } {
+  function assessLegalRisks(results: unknown[]): { level: string; factors: string[] } {
     const risks: string[] = [];
     let level = 'low';
 
@@ -561,14 +561,14 @@
                 size="sm"
                 legal
                 confidence="high"
-                on:click={() => handlePromptReaction(prompt.id, 'accepted')}
+                onclick={() => handlePromptReaction(prompt.id, 'accepted')}
               >
                 ✓ Accept
               </button>
               <button class="nes-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
+                onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
               >
                 ✕ Dismiss
               </button>
@@ -590,8 +590,8 @@
         role="button"
         tabindex="0"
         aria-label="File drop zone for legal document upload"
-        on:drop={handleDrop}
-        on:dragover={handleDragOver}
+        ondrop={handleDrop}
+        ondragover={handleDragOver}
         ondragleave={handleDragLeave}
         data-legal-action="file-upload"
       >
@@ -611,7 +611,7 @@
               type="file"
               multiple
               accept={allowedTypes.join(',')}
-              on:change={handleFileSelect}
+              onchange={handleFileSelect}
               class="hidden"
             />
 
@@ -620,7 +620,7 @@
               size="lg"
               legal
               priority={legalContext.urgency}
-              on:click={() => fileInput?.click()}
+              onclick={() => fileInput?.click()}
             >
               Select Legal Documents
             </button>
@@ -691,7 +691,7 @@
                   legal
                   priority={legalContext.urgency}
                   loading={isUploading}
-                  on:click={startEnhancedUpload}
+                  onclick={startEnhancedUpload}
                   data-legal-action="start-upload"
                 >
                   {#if ollamaConnected}
@@ -703,7 +703,7 @@
 
                 <button class="nes-btn"
                   variant="outline"
-                  on:click={() => { selectedFiles = []; aiAnalysisResults = []; }}
+                  onclick={() => { selectedFiles = []; aiAnalysisResults = []; }}
                 >
                   Clear Files
                 </button>
@@ -711,7 +711,7 @@
                 <button class="nes-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() => showAdvancedSettings = !showAdvancedSettings}
+                  onclick={() => showAdvancedSettings = !showAdvancedSettings}
                 >
                   Advanced Settings
                 </button>
@@ -810,7 +810,7 @@
 
         <div class="upload-actions">
           <button class="nes-btn is-error"
-            on:click={() => uploadActor?.send({ type: 'CANCEL_UPLOAD' })}
+            onclick={() => uploadActor?.send({ type: 'CANCEL_UPLOAD' })}
           >
             Cancel Upload
           </button>
@@ -838,7 +838,7 @@
           <div class="legal-summary yorha-summary">
             <div class="summary-stats">
               <div class="stat-item">
-                <span class="stat-value">{uploadResults.filter((r: any) => r.success).length}</span>
+                <span class="stat-value">{uploadResults.filter((r: unknown) => r.success).length}</span>
                 <span class="stat-label">Successfully Processed</span>
               </div>
               <div class="stat-item">
@@ -869,17 +869,17 @@
         <!-- Detailed Results -->
         <div class="results-list">
           {#each uploadResults as result, index}
-            <div.Root class={`result-item ${(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success ? 'success' : ''}`} class="nes-container">
+            <div.Root class={`result-item ${(result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).success ? 'success' : ''}`} class="nes-container">
               <div.Content class="nes-container">
                 <div class="result-header">
                   <div class="result-info">
-                    <span class="result-filename">{(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).fileName}</span>
-                    {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success && (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).documentId}
-                      <span class="result-document-id">ID: {(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).documentId}</span>
+                    <span class="result-filename">{(result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).fileName}</span>
+                    {#if (result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).success && (result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).documentId}
+                      <span class="result-document-id">ID: {(result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).documentId}</span>
                     {/if}
                   </div>
                   <div class="result-status">
-                    {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success}
+                    {#if (result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).success}
                       <span class="status-success">✓ Success</span>
                     {:else}
                       <span class="status-error">✗ Failed</span>
@@ -887,16 +887,16 @@
                   </div>
                 </div>
 
-                {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success && (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights}
+                {#if (result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).success && (result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).aiInsights}
                   <div class="ai-insights yorha-insights">
                     <h4>🤖 AI Analysis Results</h4>
-                    <p class="insights-summary">{(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.summary}</p>
+                    <p class="insights-summary">{(result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).aiInsights.summary}</p>
 
-                    {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.keyEntities}
+                    {#if (result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).aiInsights.keyEntities}
                       <div class="entities">
                         <strong>Key Entities:</strong>
                         <div class="entity-tags">
-                          {#each (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.keyEntities as entity}
+                          {#each (result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).aiInsights.keyEntities as entity}
                             <span class="entity-tag yorha-tag" class:person={entity.type === 'person'} class:organization={entity.type === 'organization'}>
                               {entity.value} ({entity.type})
                             </span>
@@ -905,37 +905,37 @@
                       </div>
                     {/if}
 
-                    {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.suggestedTags}
+                    {#if (result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).aiInsights.suggestedTags}
                       <div class="suggested-tags">
                         <strong>Evidence Categories:</strong>
                         <div class="tag-list">
-                          {#each (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.suggestedTags as tag}
+                          {#each (result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).aiInsights.suggestedTags as tag}
                             <span class="tag yorha-tag">{tag}</span>
                           {/each}
                         </div>
                       </div>
                     {/if}
 
-                    {#if (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.confidenceScore}
+                    {#if (result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).aiInsights.confidenceScore}
                       <div class="confidence-indicator">
                         <span class="confidence-label">AI Confidence:</span>
                         <div class="confidence-bar">
                           <div
                             class="confidence-fill"
-                            style="width: {(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.confidenceScore * 100}%"
+                            style="width: {(result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).aiInsights.confidenceScore * 100}%"
                           ></div>
                         </div>
                         <span class="confidence-value">
-                          {Math.round((result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).aiInsights.confidenceScore * 100)}%
+                          {Math.round((result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).aiInsights.confidenceScore * 100)}%
                         </span>
                       </div>
                     {/if}
                   </div>
                 {/if}
 
-                {#if !(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).success && (result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).errorMessage}
+                {#if !(result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).success && (result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).errorMessage}
                   <div class="error-message yorha-error">
-                    <strong>Error:</strong> {(result as { success?: any; fileName?: any; documentId?: any; aiInsights?: any; errorMessage?: any }).errorMessage}
+                    <strong>Error:</strong> {(result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).errorMessage}
                   </div>
                 {/if}
               </div.Content>
@@ -961,13 +961,13 @@
                 variant="yorha"
                 legal
                 priority="high"
-                on:click={() => handlePromptReaction(prompt.id, 'accepted')}
+                onclick={() => handlePromptReaction(prompt.id, 'accepted')}
               >
                 Let's Do It
               </button>
               <button class="nes-btn"
                 variant="outline"
-                on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
+                onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
               >
                 Maybe Later
               </button>
@@ -1027,13 +1027,13 @@
 
         <div class="error-actions">
           <button class="nes-btn is-error"
-            on:click={() => uploadActor?.send({ type: 'RETRY_UPLOAD' })}
+            onclick={() => uploadActor?.send({ type: 'RETRY_UPLOAD' })}
           >
             Retry Upload
           </button>
           <button class="nes-btn"
             variant="outline"
-            on:click={resetUpload}
+            onclick={resetUpload}
           >
             Start Over
           </button>
@@ -1049,7 +1049,7 @@
         variant="yorha"
         size="lg"
         legal
-        on:click={resetUpload}
+        onclick={resetUpload}
       >
         Upload More Documents
       </button>
@@ -1057,7 +1057,7 @@
       {#if enableAIPrompts}
         <button class="nes-btn"
           variant="outline"
-          on:click={() => uploadActor?.send({ type: 'REQUEST_AI_SUGGESTIONS', context: 'user_requested' })}
+          onclick={() => uploadActor?.send({ type: 'REQUEST_AI_SUGGESTIONS', context: 'user_requested' })}
         >
           Get More AI Insights
         </button>
@@ -1066,7 +1066,7 @@
       {#if caseId}
         <button class="nes-btn"
           variant="ghost"
-          on:click={() => goto(`/cases/${caseId}/evidence`)}
+          onclick={() => goto(`/cases/${caseId}/evidence`)}
         >
           View in Evidence Board
         </button>
@@ -1214,7 +1214,7 @@
     border-radius: 0.25rem;
   }
 
-  .insight-(item as { warning?: any; success?: any }).warning {
+  .insight-(item as { warning?: unknown; success?: unknown }).warning {
     background: rgba(255, 107, 107, 0.3);
     color: #ff6b6b;
   }
@@ -1435,7 +1435,7 @@
     margin-bottom: 1rem;
   }
 
-  .result-(item as { warning?: any; success?: any }).success {
+  .result-(item as { warning?: unknown; success?: unknown }).success {
     border-left: 4px solid #51cf66;
   }
 

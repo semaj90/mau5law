@@ -4,9 +4,7 @@
   import { browser } from '$app/environment';
   import { onMount, tick } from 'svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import Input from '$lib/components/ui/Input.svelte';
   // Badge replaced with span - not available in enhanced-bits
   import {
@@ -381,11 +379,11 @@
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={downloadConversation}
+            onclick={downloadConversation}
             disabled={messages.length <= 1}>
 <Download class="h-4 w-4" />
 </Button>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={clearMessages} disabled={messages.length <= 1}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages} disabled={messages.length <= 1}>
 <Trash2 class="h-4 w-4" />
 </Button>
           <Dialog.Close>
@@ -457,7 +455,7 @@
             class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             keydown={handleKeydown} />
           <Button
-            on:click={sendMessage}
+            onclick={sendMessage}
             disabled={!currentMessage.trim() || !isConnected || isLoading}
             class="px-4 bits-btn bits-btn">
 {#if isLoading}

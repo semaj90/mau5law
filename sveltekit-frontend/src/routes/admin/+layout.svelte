@@ -97,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
 
   $effect(() => {
     visibleNavItems = currentUserValue && currentUserValue.role
-      ? navItems.filter(item => AccessControl.hasPermission(currentUserValue.role, (item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).permission))
+      ? navItems.filter(item => AccessControl.hasPermission(currentUserValue.role, (item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).permission))
       : [];
   });
 
@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function navClass(item: { path: string; label: string; icon: string; permission: Permission; description: string }) {
-    return (isActivePath((item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).path) ? executiveClasses.navLinkActive : executiveClasses.navLink) + ' w-full block text-left group';
+    return (isActivePath((item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).path) ? executiveClasses.navLinkActive : executiveClasses.navLink) + ' w-full block text-left group';
   }
 
   onMount(async () => {
@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
       await AuthStore.initialize();
 
       // Initialize current user from data or store snapshot and subscribe for updates
-      const initialUser = (data as { user?: any }).user || get(currentUser);
+      const initialUser = (data as { user?: unknown }).user || get(currentUser);
       currentUserValue = initialUser ?? null;
       unsubscribeCurrentUser = currentUser.subscribe(v => { currentUserValue = v; });
 
@@ -200,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
               <span class="text-amber-400 font-bold text-sm">{(userEmail || currentUserValue?.email || 'U')[0].toUpperCase()}</span>
             </div>
             <Button
-              on:click={() => AuthStore.logout()}
+              onclick={() => AuthStore.logout()}
               class="px-4 py-2 bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500/20 hover:border-red-500 transition-all duration-300 rounded-lg text-sm font-medium"
             >
               Sign Out
@@ -217,12 +217,12 @@ https://svelte.dev/e/js_parse_error -->
             <h3 class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-4 border-b border-amber-500/20 pb-2">Administration</h3>
           </div>
           {#each visibleNavItems as item}
-            <a href={(item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).path} class={navClass(item)}>
+            <a href={(item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).path} class={navClass(item)}>
               <div class="flex items-center gap-4">
-                <span class="text-xl">{(item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).icon}</span>
+                <span class="text-xl">{(item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).icon}</span>
                 <div class="flex-1">
-                  <div class="font-medium">{(item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).label}</div>
-                  <div class="text-xs text-slate-500 group-hover:text-slate-400 transition-colors">{(item as { permission?: any; path?: any; icon?: any; label?: any; description?: any }).description}</div>
+                  <div class="font-medium">{(item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).label}</div>
+                  <div class="text-xs text-slate-500 group-hover:text-slate-400 transition-colors">{(item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).description}</div>
                 </div>
               </div>
             </a>
@@ -296,7 +296,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="text-xs text-slate-500 mt-2">Contact your system administrator for access</div>
       </div>
       <Button
-        on:click={() => goto('/')}
+        onclick={() => goto('/')}
         class="px-8 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-medium"
       >
         Return to Dashboard

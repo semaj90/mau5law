@@ -367,7 +367,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   <section class="yorha-test-controls">
       <button
         class="yorha-test-run-btn {isRunning ? 'running' : ''}"
-        on:click={runAllTests}
+        onclick={runAllTests}
         disabled={isRunning}
       >
         {#if isRunning}

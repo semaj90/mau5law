@@ -57,15 +57,15 @@
     
     try {
       const response = await fetch(`/api/instant-search-test?test=${testType}`);
-      const data = await (response as { json?: any }).json();
+      const data = await (response as { json?: unknown }).json();
       testResults = data;
       
-      if ((data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).status === 'success') {
+      if ((data as { status?: unknown; performance?: unknown; results?: unknown; benchmarks?: unknown; success?: unknown }).status === 'success') {
         performanceMetrics = {
-          searchTime: (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).performance.instantSearch || 0,
-          cacheHitRate: (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).results.health?.components?.instantSearch?.stats?.cacheHitRate || 0,
-          totalSearches: (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).results.health?.components?.instantSearch?.stats?.totalSearches || 0,
-          averageResponseTime: (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).results.health?.components?.instantSearch?.stats?.averageResponseTime || 0
+          searchTime: (data as { status?: unknown; performance?: unknown; results?: unknown; benchmarks?: unknown; success?: unknown }).performance.instantSearch || 0,
+          cacheHitRate: (data as { status?: unknown; performance?: unknown; results?: unknown; benchmarks?: unknown; success?: unknown }).results.health?.components?.instantSearch?.stats?.cacheHitRate || 0,
+          totalSearches: (data as { status?: unknown; performance?: unknown; results?: unknown; benchmarks?: unknown; success?: unknown }).results.health?.components?.instantSearch?.stats?.totalSearches || 0,
+          averageResponseTime: (data as { status?: unknown; performance?: unknown; results?: unknown; benchmarks?: unknown; success?: unknown }).results.health?.components?.instantSearch?.stats?.averageResponseTime || 0
         };
       }
     } catch (error) {
@@ -92,8 +92,8 @@
         })
       });
       
-      const data = await (response as { json?: any }).json();
-      benchmarkResults = (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).benchmarks;
+      const data = await (response as { json?: unknown }).json();
+      benchmarkResults = (data as { status?: unknown; performance?: unknown; results?: unknown; benchmarks?: unknown; success?: unknown }).benchmarks;
     } catch (error) {
       console.error('Benchmark failed:', error);
     } finally {
@@ -114,8 +114,8 @@
         })
       });
       
-      const data = await (response as { json?: any }).json();
-      if ((data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).success) {
+      const data = await (response as { json?: unknown }).json();
+      if ((data as { status?: unknown; performance?: unknown; results?: unknown; benchmarks?: unknown; success?: unknown }).success) {
         await checkSystemHealth();
       }
     } catch (error) {
@@ -135,8 +135,8 @@
         body: JSON.stringify({ action: 'clear-cache' })
       });
       
-      const data = await (response as { json?: any }).json();
-      if ((data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).success) {
+      const data = await (response as { json?: unknown }).json();
+      if ((data as { status?: unknown; performance?: unknown; results?: unknown; benchmarks?: unknown; success?: unknown }).success) {
         testResults = null;
         benchmarkResults = null;
         await checkSystemHealth();
@@ -151,8 +151,8 @@
   async function checkSystemHealth() {
     try {
       const response = await fetch('/api/instant-search-test?test=health');
-      const data = await (response as { json?: any }).json();
-      systemHealth = (data as { status?: any; performance?: any; results?: any; benchmarks?: any; success?: any }).results.health;
+      const data = await (response as { json?: unknown }).json();
+      systemHealth = (data as { status?: unknown; performance?: unknown; results?: unknown; benchmarks?: unknown; success?: unknown }).results.health;
     } catch (error) {
       console.error('Health check failed:', error);
     }
@@ -226,7 +226,7 @@
           <Activity class="h-5 w-5" />
           System Health
         </div.Title>
-        <button class="nes-btn" size="sm" on:click={checkSystemHealth} disabled={isTestRunning}>
+        <button class="nes-btn" size="sm" onclick={checkSystemHealth} disabled={isTestRunning}>
           <RefreshCw class="h-4 w-4 mr-2" />
           Refresh
         </button>
@@ -378,19 +378,19 @@
         </div.Header>
         <div.Content>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <button class="nes-btn" on:click={() => runIntegrationTest('redis')} disabled={isTestRunning}>
+            <button class="nes-btn" onclick={() => runIntegrationTest('redis')} disabled={isTestRunning}>
               <Database class="h-4 w-4 mr-2" />
               Test Redis
             </button>
-            <button class="nes-btn" on:click={() => runIntegrationTest('loki')} disabled={isTestRunning}>
+            <button class="nes-btn" onclick={() => runIntegrationTest('loki')} disabled={isTestRunning}>
               <Activity class="h-4 w-4 mr-2" />
               Test Loki.js
             </button>
-            <button class="nes-btn" on:click={() => runIntegrationTest('search')} disabled={isTestRunning}>
+            <button class="nes-btn" onclick={() => runIntegrationTest('search')} disabled={isTestRunning}>
               <Zap class="h-4 w-4 mr-2" />
               Test Search
             </button>
-            <button class="nes-btn" on:click={() => runIntegrationTest('all')} disabled={isTestRunning}>
+            <button class="nes-btn" onclick={() => runIntegrationTest('all')} disabled={isTestRunning}>
               <Play class="h-4 w-4 mr-2" />
               Test All
             </button>
@@ -436,26 +436,26 @@
             {#if testResults.results}
               <div class="space-y-4">
                 {#each Object.entries(testResults.results) as [component, result]}
-                  {@const SvelteComponent_5 = getStatusIcon((result as { status?: any; operations?: any; message?: any }).status)}
+                  {@const SvelteComponent_5 = getStatusIcon((result as { status?: unknown; operations?: unknown; message?: unknown }).status)}
                   <div class="border rounded-lg p-4">
                     <div class="flex items-center gap-2 mb-2">
-                      <SvelteComponent_5 class="h-4 w-4 {getStatusColor((result as { status?: any; operations?: any; message?: any }).status)}" 
+                      <SvelteComponent_5 class="h-4 w-4 {getStatusColor((result as { status?: unknown; operations?: unknown; message?: unknown }).status)}" 
                       />
                       <span class="font-medium capitalize">{component}</span>
-                      <Badge class="{(result as { status?: any; operations?: any; message?: any }).status === 'working' || (result as { status?: any; operations?: any; message?: any }).status === 'connected' || (result as { status?: any; operations?: any; message?: any }).status === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                        {(result as { status?: any; operations?: any; message?: any }).status}
+                      <Badge class="{(result as { status?: unknown; operations?: unknown; message?: unknown }).status === 'working' || (result as { status?: unknown; operations?: unknown; message?: unknown }).status === 'connected' || (result as { status?: unknown; operations?: unknown; message?: unknown }).status === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                        {(result as { status?: unknown; operations?: unknown; message?: unknown }).status}
                       </Badge>
                     </div>
                     
-                    {#if (result as { status?: any; operations?: any; message?: any }).operations}
+                    {#if (result as { status?: unknown; operations?: unknown; message?: unknown }).operations}
                       <div class="text-sm nes-text is-disabled mb-2">
-                        Operations: {(result as { status?: any; operations?: any; message?: any }).operations.join(', ')}
+                        Operations: {(result as { status?: unknown; operations?: unknown; message?: unknown }).operations.join(', ')}
                       </div>
                     {/if}
                     
-                    {#if (result as { status?: any; operations?: any; message?: any }).message}
+                    {#if (result as { status?: unknown; operations?: unknown; message?: unknown }).message}
                       <div class="text-sm text-red-600">
-                        Error: {(result as { status?: any; operations?: any; message?: any }).message}
+                        Error: {(result as { status?: unknown; operations?: unknown; message?: unknown }).message}
                       </div>
                     {/if}
                   </div>
@@ -502,7 +502,7 @@
                 disabled={isTestRunning}
               />
             </div>
-            <button class="nes-btn" on:click={runBenchmark} disabled={isTestRunning}>
+            <button class="nes-btn" onclick={runBenchmark} disabled={isTestRunning}>
               {#if isTestRunning}
                 <RefreshCw class="h-4 w-4 mr-2 animate-spin" />
                 Running...
@@ -560,15 +560,15 @@
         </div.Header>
         <div.Content>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button class="nes-btn" on:click={populateTestData} disabled={isTestRunning}>
+            <button class="nes-btn" onclick={populateTestData} disabled={isTestRunning}>
               <Database class="h-4 w-4 mr-2" />
               Populate Test Data
             </button>
-            <button class="nes-btn" variant="outline" on:click={clearCache} disabled={isTestRunning}>
+            <button class="nes-btn" variant="outline" onclick={clearCache} disabled={isTestRunning}>
               <RefreshCw class="h-4 w-4 mr-2" />
               Clear All Caches
             </button>
-            <button class="nes-btn" variant="outline" on:click={checkSystemHealth} disabled={isTestRunning}>
+            <button class="nes-btn" variant="outline" onclick={checkSystemHealth} disabled={isTestRunning}>
               <Activity class="h-4 w-4 mr-2" />
               Check System Health
             </button>

@@ -12,7 +12,7 @@
   let searchQuery = $state('');
   let selectedNoteType = $state('');
   let showNoteModal = $state(false);
-  let selectedNote: any = $state(null);
+  let selectedNote: unknown = $state(null);
   let isCreatingNote = $state(false);
 
   // Demo data
@@ -87,7 +87,7 @@
       contentJson: json
     };
   }
-  async function saveCurrentNote(html: string, markdown: string, json: any) {
+  async function saveCurrentNote(html: string, markdown: string, json: unknown) {
     if (!currentNote.title.trim() && !markdown.trim()) return;
 
     const noteToSave = {
@@ -135,7 +135,7 @@
     };
     isCreatingNote = true;
   }
-  function viewNote(note: any) {
+  function viewNote(note: unknown) {
     selectedNote = note;
     showNoteModal = true;
   }
@@ -202,7 +202,7 @@
                 type="text"
                 placeholder="Add tags (comma separated)"
                 class="space-y-4"
-                on:blur={(e) => {
+                onblur={(e) => {
                   const tags = (e.target as HTMLInputElement).value.split(',').map(t => t.trim()).filter(t => t);
                   currentNote.tags = tags;
                 }}
@@ -212,7 +212,7 @@
             <RichTextEditor
               content={currentNote.content}
               placeholder="Start writing your note..."
-              save={handleEditorSave} on:change={handleEditorChange}
+              save={handleEditorSave} onchange={handleEditorChange}
               autoSave={true}
               autoSaveDelay={3000}
             />
@@ -282,7 +282,7 @@
 
             <button
               type="button"
-              on:click={() => createNewNote()}
+              onclick={() => createNewNote()}
               class="space-y-4"
             >
               <Plus class="space-y-4" />
@@ -303,7 +303,7 @@
             {#each $filteredNotes as note (note.id)}
               <button
                 type="button"
-                on:click={() => viewNote(note)}
+                onclick={() => viewNote(note)}
                 class="space-y-4"
               >
                 <div class="space-y-4">

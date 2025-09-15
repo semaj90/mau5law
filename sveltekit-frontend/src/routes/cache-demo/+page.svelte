@@ -14,9 +14,9 @@ https://svelte.dev/e/tag_invalid_name -->
   import { idleDetectionService } from '$lib/machines/idleDetectionMachine';
   import ModernButton from '$lib/components/ui/button/Button.svelte';
 
-  let serviceStatus: any = null;
-  let wasmStats: any = null;
-  let idleState: any = null;
+  let serviceStatus: unknown = null;
+  let wasmStats: unknown = null;
+  let idleState: unknown = null;
   let cacheDemo = {
     loading: false,
     results: null,
@@ -54,7 +54,7 @@ https://svelte.dev/e/tag_invalid_name -->
       );
 
       cacheDemo = { ...cacheDemo, results: result, queryTime: Date.now() - startTime };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Cache demo failed:', error);
       cacheDemo = { ...cacheDemo, results: { error: error?.message || String(error) } };
     } finally {
@@ -195,14 +195,14 @@ https://svelte.dev/e/tag_invalid_name -->
     <div class="flex gap-4 mb-4">
       <ModernButton
       <ModernButton
-  on:click={disabled}
+  onclick={disabled}
         class="bg-blue-600 hover:bg-blue-700"
       >
         {cacheDemo.loading ? '⚡ Running...' : '🔍 Run Graph Query'}
       </ModernButton>
       <ModernButton
       <ModernButton
-  on:click={triggerIdle}
+  onclick={triggerIdle}
         variant="outline"
         class="border-yellow-500 text-yellow-400 hover:bg-yellow-500/10"
       >
@@ -210,7 +210,7 @@ https://svelte.dev/e/tag_invalid_name -->
       </ModernButton>
       <ModernButton
       <ModernButton
-  on:click={triggerActivity}
+  onclick={triggerActivity}
         variant="outline"
         class="border-green-500 text-green-400 hover:bg-green-500/10"
       >
@@ -218,7 +218,7 @@ https://svelte.dev/e/tag_invalid_name -->
       </ModernButton>
       <ModernButton
       <ModernButton
-  on:click={clearAllCaches}
+  onclick={clearAllCaches}
         variant="outline"
         class="border-red-500 text-red-400 hover:bg-red-500/10"
       >

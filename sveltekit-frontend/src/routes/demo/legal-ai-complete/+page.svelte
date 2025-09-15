@@ -10,7 +10,7 @@
   import 'nes.css/css/nes.min.css';
   import LegalDocumentProcessor from '$lib/components/legal/LegalDocumentProcessor.svelte';
   import type { LegalDocument } from '$lib/services/legalRAGEngine';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import * as Card from '$lib/components/ui/card';
   // Sample legal documents for testing
   const sampleDocuments: Partial<LegalDocument>[] = [
@@ -125,7 +125,7 @@
     isShowingResults = false;
   }
 
-  function onProcessingComplete(result: any) {
+  function onProcessingComplete(result: unknown) {
     processingResults = [...processingResults, {
       ...result,
       timestamp: new Date().toISOString(),
@@ -193,7 +193,7 @@
         <div class="space-y-4">
           {#each sampleDocuments as doc, index}
             <button
-              on:click={() => selectDocument(doc)}
+              onclick={() => selectDocument(doc)}
               class="w-full text-left p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors {selectedDocument === doc ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700'}"
             >
               <div class="flex items-start justify-between">
@@ -223,7 +223,7 @@
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-2xl font-semibold">Processing History</h2>
             <button
-              on:click={clearResults}
+              onclick={clearResults}
               class="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
             >
               Clear History
@@ -234,26 +234,26 @@
               <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div class="flex items-center justify-between mb-2">
                   <div class="font-medium text-gray-900 dark:text-gray-100">
-                    {(result as { document?: any; timestamp?: any; riskScore?: any; processingDuration?: any; entities?: any }).document?.title}
+                    {(result as { document?: unknown; timestamp?: unknown; riskScore?: unknown; processingDuration?: unknown; entities?: unknown }).document?.title}
                   </div>
                   <div class="text-xs text-gray-500">
-                    {new Date((result as { document?: any; timestamp?: any; riskScore?: any; processingDuration?: any; entities?: any }).timestamp).toLocaleTimeString()}
+                    {new Date((result as { document?: unknown; timestamp?: unknown; riskScore?: unknown; processingDuration?: unknown; entities?: unknown }).timestamp).toLocaleTimeString()}
                   </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span class="text-gray-600 dark:text-gray-400">Risk Score:</span>
-                    <span class="font-medium ml-1">{(result as { document?: any; timestamp?: any; riskScore?: any; processingDuration?: any; entities?: any }).riskScore || 'N/A'}</span>
+                    <span class="font-medium ml-1">{(result as { document?: unknown; timestamp?: unknown; riskScore?: unknown; processingDuration?: unknown; entities?: unknown }).riskScore || 'N/A'}</span>
                   </div>
                   <div>
                     <span class="text-gray-600 dark:text-gray-400">Duration:</span>
-                    <span class="font-medium ml-1">{(result as { document?: any; timestamp?: any; riskScore?: any; processingDuration?: any; entities?: any }).processingDuration ? `${((result as { document?: any; timestamp?: any; riskScore?: any; processingDuration?: any; entities?: any }).processingDuration / 1000).toFixed(1)}s` : 'N/A'}</span>
+                    <span class="font-medium ml-1">{(result as { document?: unknown; timestamp?: unknown; riskScore?: unknown; processingDuration?: unknown; entities?: unknown }).processingDuration ? `${((result as { document?: unknown; timestamp?: unknown; riskScore?: unknown; processingDuration?: unknown; entities?: unknown }).processingDuration / 1000).toFixed(1)}s` : 'N/A'}</span>
                   </div>
                 </div>
-                {#if (result as { document?: any; timestamp?: any; riskScore?: any; processingDuration?: any; entities?: any }).entities}
+                {#if (result as { document?: unknown; timestamp?: unknown; riskScore?: unknown; processingDuration?: unknown; entities?: unknown }).entities}
                   <div class="mt-2 text-xs">
                     <span class="text-gray-600 dark:text-gray-400">Entities:</span>
-                    <span class="ml-1">{(result as { document?: any; timestamp?: any; riskScore?: any; processingDuration?: any; entities?: any }).entities.parties.length} parties, {(result as { document?: any; timestamp?: any; riskScore?: any; processingDuration?: any; entities?: any }).entities.clauses.length} clauses</span>
+                    <span class="ml-1">{(result as { document?: unknown; timestamp?: unknown; riskScore?: unknown; processingDuration?: unknown; entities?: unknown }).entities.parties.length} parties, {(result as { document?: unknown; timestamp?: unknown; riskScore?: unknown; processingDuration?: unknown; entities?: unknown }).entities.clauses.length} clauses</span>
                   </div>
                 {/if}
               </div>

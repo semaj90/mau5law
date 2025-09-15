@@ -5,9 +5,7 @@ Compact AI recommendations component for sidebar/dashboard use
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import {
     Card,
@@ -95,7 +93,7 @@ Compact AI recommendations component for sidebar/dashboard use
         }
       });
 
-      recommendations = (result as { slice?: any }).slice(0, maxRecommendations);
+      recommendations = (result as { slice?: unknown }).slice(0, maxRecommendations);
       lastUpdated = new Date();
     } catch (error) {
       console.error('Failed to load recommendations:', error);
@@ -180,7 +178,7 @@ Compact AI recommendations component for sidebar/dashboard use
       <Button
         variant="ghost"
         size="sm"
-        on:click={loadRecommendations}
+        onclick={loadRecommendations}
         disabled={isLoading}
         class="h-7 w-7 p-0 bits-btn bits-btn"
       >
@@ -219,7 +217,7 @@ Compact AI recommendations component for sidebar/dashboard use
           <button
             type="button"
             class="w-full text-left p-3 rounded-lg border-l-4 {getRecommendationColor(rec.type)} hover:shadow-md transition-all duration-200"
-            on:click={() => onRecommendationClick(rec)}
+            onclick={() => onRecommendationClick(rec)}
           >
             <div class="flex items-start justify-between mb-2">
               <div class="flex items-center gap-2">

@@ -8,9 +8,7 @@
   }
 
 
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { aiPersonality } from "$lib/stores/chatStore";
   import { Clock, Lightbulb, MessageCircle, Sparkles, X } from "lucide-svelte";
   // Array of proactive prompts based on context
@@ -79,7 +77,7 @@
           variant="outline"
           size="sm"
           class="space-y-4 bits-btn bits-btn"
-          on:click={() =>
+          onclick={() =>
 handleAccept()}
         >
           <MessageCircle class="space-y-4" />
@@ -91,7 +89,7 @@ handleAccept()}
           variant="ghost"
           size="sm"
           class="space-y-4 bits-btn bits-btn"
-          on:click={() =>
+          onclick={() =>
 onquickResponse?.()}
         >
           <Lightbulb class="space-y-4" />
@@ -103,7 +101,7 @@ onquickResponse?.()}
           variant="ghost"
           size="sm"
           class="space-y-4 bits-btn bits-btn"
-          on:click={() =>
+          onclick={() =>
 handleDismiss()}
           title="Not now"
         >

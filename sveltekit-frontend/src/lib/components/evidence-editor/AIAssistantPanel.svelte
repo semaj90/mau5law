@@ -1,9 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { Badge } from '$lib/components/ui/badge';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -20,9 +18,9 @@
   const dispatch = createEventDispatcher();
 
   interface Props {
-    selectedNode?: any;
+    selectedNode?: unknown;
     caseId?: string;
-    evidenceList?: any[];
+    evidenceList?: unknown[];
   }
 
   let {
@@ -86,8 +84,8 @@
         })
       });
 
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const analysis = await (response as { ok?: any; json?: any; statusText?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        const analysis = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
 
         // Update the selected node with AI tags
         if (selectedNode) {
@@ -106,7 +104,7 @@
         dispatch('tagsUpdate', analysis);
         processingStatus = 'Analysis complete!';
       } else {
-        throw new Error(`Analysis failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+        throw new Error(`Analysis failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
       }
     } catch (error) {
       console.error('AI analysis error:', error);
@@ -134,12 +132,12 @@
         })
       });
 
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const insights = await (response as { ok?: any; json?: any; statusText?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        const insights = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
         aiInsights = insights;
         processingStatus = 'Insights generated!';
       } else {
-        throw new Error(`Insight generation failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+        throw new Error(`Insight generation failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
       }
     } catch (error) {
       console.error('Insight generation error:', error);
@@ -150,11 +148,11 @@
     }
   }
 
-  function selectEvidence(item: any) {
-    dispatch('evidenceSelect', { id: (item as { id?: any }).id });
+  function selectEvidence(item: unknown) {
+    dispatch('evidenceSelect', { id: (item as { id?: unknown }).id });
   }
 
-  function selectConnection(connection: any) {
+  function selectConnection(connection: unknown) {
     dispatch('connectionSelect', { connection });
   }
 </script>
@@ -188,7 +186,7 @@
           class="flex-1"
         />
         {#if searchQuery}
-          <Button class="bits-btn" on:click={clearSearch} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={clearSearch} variant="outline" size="sm">
 Clear
 
         {/if}
@@ -202,29 +200,29 @@ Clear
           <div class="space-y-2 max-h-60 overflow-y-auto">
             {#each searchResults as result}
               <button
-                on:click={() => selectEvidence(result)}
+                onclick={() => selectEvidence(result)}
                 class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 <div class="flex justify-between items-start">
                   <div class="flex-1">
                     <p class="font-medium text-gray-900 dark:text-white">
-                      {(result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).name || (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).title || 'Unknown'}
+                      {(result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).name || (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).title || 'Unknown'}
                     </p>
-                    {#if (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).description}
+                    {#if (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).description}
                       <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-                        {(result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).description}
+                        {(result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).description}
                       </p>
                     {/if}
-                    {#if (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).tags && (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).tags.length > 0}
+                    {#if (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).tags && (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).tags.length > 0}
                       <div class="flex flex-wrap gap-1 mt-2">
-                        {#each (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).tags.slice(0, 3) as tag}
+                        {#each (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).tags.slice(0, 3) as tag}
                           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
                         {/each}
                       </div>
                     {/if}
                   </div>
-                  {#if (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).score !== undefined}
-                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round((1 - (result as { name?: any; title?: any; description?: any; tags?: any; score?: any }).score) * 100)}% match</span>
+                  {#if (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).score !== undefined}
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round((1 - (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).score) * 100)}% match</span>
                   {/if}
                 </div>
 
@@ -257,11 +255,11 @@ Clear
         </div>
 
         <div class="flex gap-2">
-          <Button on:click={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn bits-btn">
+          <Button onclick={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn bits-btn">
 <Sparkles class="w-4 h-4 mr-2" />
             {isProcessing ? 'Analyzing...' : 'Analyze with AI'}
 
-          <Button class="bits-btn" on:click={generateInsights} disabled={isProcessing} variant="outline">
+          <Button class="bits-btn" onclick={generateInsights} disabled={isProcessing} variant="outline">
 Generate Insights
 
         </div>
@@ -326,7 +324,7 @@ Generate Insights
             <div class="space-y-2">
               {#each aiInsights.connections as connection}
                 <button
-                  on:click={() => selectConnection(connection)}
+                  onclick={() => selectConnection(connection)}
                   class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <p class="font-medium text-gray-900 dark:text-white">
@@ -350,7 +348,7 @@ Generate Insights
             <div class="space-y-2">
               {#each aiInsights.similarEvidence as similar}
                 <button
-                  on:click={() => selectEvidence(similar)}
+                  onclick={() => selectEvidence(similar)}
                   class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <p class="font-medium text-gray-900 dark:text-white">

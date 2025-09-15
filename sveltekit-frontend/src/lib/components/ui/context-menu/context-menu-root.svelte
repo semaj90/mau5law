@@ -2,7 +2,7 @@
   import 'nes.css/css/nes.min.css';
   interface Props {
     onOpenChange?: (open: boolean) => void;
-    children: any;
+    children: unknown;
   }
   let {
     onOpenChange = undefined,

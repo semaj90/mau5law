@@ -80,8 +80,8 @@
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
         console.log('CUDA Worker Status:', data);
       }
     } catch (err) {
@@ -188,16 +188,16 @@
 
         // Upload to MinIO via evidence API
         const result = await uploadSingleFile(uploadFile, preprocessedData, cudaProcessed);
-        if ((result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).success) {
+        if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).success) {
           uploadFile.status = 'completed';
           uploadFile.progress = 100;
           uploadFile.cudaProcessed = cudaProcessed;
-          results.push((result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).data);
+          results.push((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data);
           // Publish real-time sync event
-          await publishMinIOSyncEvent((result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).data, caseId);
+          await publishMinIOSyncEvent((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data, caseId);
         } else {
           uploadFile.status = 'error';
-          uploadFile.errorMessage = (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).error;
+          uploadFile.errorMessage = (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).error;
         }
       }
 
@@ -246,15 +246,15 @@
         body: formData
       });
 
-      if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
-        throw new Error(`CUDA preprocessing failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+      if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        throw new Error(`CUDA preprocessing failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
       }
 
-      const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+      const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
       return {
         success: true,
-        processedFile: (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).processedFile ? new File([(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).processedFile], file.name, { type: file.type }) : undefined,
-        metadata: (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).metadata
+        processedFile: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile ? new File([(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile], file.name, { type: file.type }) : undefined,
+        metadata: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).metadata
       };
 
     } catch (error) {
@@ -285,21 +285,21 @@
       body: formData
     });
 
-    if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
-      const errorData = await (response as { ok?: any; json?: any; statusText?: any }).json();
+    if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+      const errorData = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
       return {
         success: false,
         error: errorData.error?.message || 'Upload failed'
       };
     }
 
-    const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+    const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
     const processingTime = Date.now() - startTime;
-    if ((result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).success && (result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).data?.[0]) {
+    if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).success && (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data?.[0]) {
       return {
         success: true,
         data: {
-          ...(result as { success?: any; data?: any; error?: any; processedFile?: any; metadata?: any }).data[0],
+          ...(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data[0],
           cudaOptimized: cudaProcessed,
           processingTime
         } as UploadResult
@@ -391,7 +391,7 @@
     multiple
     accept={acceptedTypes.join(',')}
     bind:this={fileInput}
-    on:change={handleFileSelect}
+    onchange={handleFileSelect}
     style="display: none;"
   />
 
@@ -402,13 +402,13 @@
     class:bg-blue-50={dragOver}
     class:border-gray-300={!dragOver}
     class:bg-gray-50={!dragOver}
-    on:dragover={handleDragOver}
+    ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    on:drop={handleDrop}
+    ondrop={handleDrop}
     role="button" 
     aria-label="Drop zone" 
     tabindex="0"
-    on:click={handleClickToSelect}
+    onclick={handleClickToSelect}
   >
     <!-- Drag overlay -->
     {#if dragOver}
@@ -470,7 +470,7 @@
         <h4 class="font-semibold text-gray-700">Upload Queue</h4>
         <button
           class="text-xs text-red-600 hover:text-red-800"
-          on:click={clearFiles}
+          onclick={clearFiles}
           disabled={uploading}
         >
           Clear All
@@ -506,7 +506,7 @@
               {#if file.status === 'pending' || file.status === 'error'}
                 <button
                   class="text-red-600 hover:text-red-800 text-sm"
-                  on:click={() => removeFile(file.id)}
+                  onclick={() => removeFile(file.id)}
                   disabled={uploading}
                 >
                   ×

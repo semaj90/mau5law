@@ -84,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
 
       currentSuggestions = suggestions.slice(0, maxSuggestions);
       if (currentSuggestions.length > 0) {
-        await tick();
+        await tick(); // In Svelte 5, consider using flushSync() for immediate DOM updates
         updateSuggestionPopupPosition();
         isShowingSuggestions = true;
         selectedSuggestionIndex = 0;
@@ -337,9 +337,9 @@ https://svelte.dev/e/js_parse_error -->
     aria-label="AI-enhanced text editor"
     aria-multiline="true"
     class="editor-content"
-    {placeholder} on:input={handleInput}
+    {placeholder} oninput={handleInput}
     keydown={handleKeyDown}
-    on:focus={() => generateSuggestions(value, 0)}
+    onfocus={() => generateSuggestions(value, 0)}
   >
     {value}
   </div>
@@ -361,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
     >
       <div class="suggestion-header">
         <span class="suggestion-title">AI Suggestions</span>
-        <button class="close-btn" on:click={hideSuggestions}>×</button>
+        <button class="close-btn" onclick={hideSuggestions}>×</button>
       </div>
       
       <div class="suggestions-list">
@@ -369,7 +369,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             class="suggestion-item"
             class:selected={index === selectedSuggestionIndex}
-            on:click={() => applySuggestion(suggestion)}
+            onclick={() => applySuggestion(suggestion)}
           >
             <div class="suggestion-content">
               <div class="suggestion-text">{suggestion.text}</div>

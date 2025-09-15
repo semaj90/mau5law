@@ -17,9 +17,7 @@ https://svelte.dev/e/js_parse_error -->
     setKeyboardContext,
     type KeyboardShortcut
   } from '$lib/services/keyboard-shortcuts-service';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -29,8 +27,8 @@ https://svelte.dev/e/js_parse_error -->
   import { Badge } from '$lib/components/ui/badge';
   import { Switch } from '$lib/components/ui/switch';
 
-  let { visible = $bindable()  }: { visible = $bindable() : any } = $props(); // false;
-  let { context = $bindable()  }: { context = $bindable() : any } = $props(); // string[] = ['global'];
+  let { visible = $bindable()  }: { visible = $bindable() : unknown } = $props(); // false;
+  let { context = $bindable()  }: { context = $bindable() : unknown } = $props(); // string[] = ['global'];
   let searchQuery = $state('');
   let selectedCategory = $state('all');
   let showRemoteOnly = $state(false);
@@ -122,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-2xl font-bold text-green-400">⌨️ Keyboard Shortcuts</h2>
-          <Button class="bits-btn" variant="ghost" on:click={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 helpModalVisible = false}>
             ✕
 
@@ -182,12 +180,12 @@ helpModalVisible = false}>
 
                       <div class="flex items-center gap-2">
                         <Switch
-                          checked={shortcut.enabled} on:change={() => toggleShortcut(shortcut)}
+                          checked={shortcut.enabled} onchange={() => toggleShortcut(shortcut)}
                         />
                         <Button class="bits-btn"
                           size="sm"
                           variant="outline"
-                          on:click={() =>
+                          onclick={() =>
 executeShortcut(shortcut)}
                           disabled={!shortcut.enabled}
                         >
@@ -207,7 +205,7 @@ executeShortcut(shortcut)}
           <div class="mt-4 p-3 bg-green-900 border border-green-700 rounded-lg">
             <div class="flex items-center gap-2">
               <span class="text-green-400">🔗 Connected to remote control</span>
-              <Button class="bits-btn" size="sm" variant="outline" on:click={() =>
+              <Button class="bits-btn" size="sm" variant="outline" onclick={() =>
 remoteStatusVisible = true}>
                 View Status
 
@@ -217,7 +215,7 @@ remoteStatusVisible = true}>
           <div class="mt-4 p-3 bg-yellow-900 border border-yellow-700 rounded-lg">
             <div class="flex items-center gap-2">
               <span class="text-yellow-400">⚠️ Remote control disconnected</span>
-              <Button class="bits-btn" size="sm" variant="outline" on:click={() =>
+              <Button class="bits-btn" size="sm" variant="outline" onclick={() =>
 keyboardShortcutsService.connectRemote()}>
                 Connect
 
@@ -236,7 +234,7 @@ keyboardShortcutsService.connectRemote()}>
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold text-green-400">📡 Remote Control Status</h2>
-          <Button class="bits-btn" variant="ghost" on:click={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 remoteStatusVisible = false}>
             ✕
 
@@ -286,18 +284,18 @@ remoteStatusVisible = false}>
         <!-- Controls -->
         <div class="flex gap-2">
           {#if $isRemoteConnected}
-            <Button class="bits-btn" variant="outline" on:click={() =>
+            <Button class="bits-btn" variant="outline" onclick={() =>
 keyboardShortcutsService.disconnectRemote()}>
               Disconnect
 
           {:else}
-            <Button class="bits-btn" on:click={() =>
+            <Button class="bits-btn" onclick={() =>
 keyboardShortcutsService.connectRemote()}>
               Reconnect
 
           {/if}
 
-          <Button class="bits-btn" variant="outline" on:click={() =>
+          <Button class="bits-btn" variant="outline" onclick={() =>
 $remoteCommands.length && remoteCommands.set([])}>
             Clear History
 

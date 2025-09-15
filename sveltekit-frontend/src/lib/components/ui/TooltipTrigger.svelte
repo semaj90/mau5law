@@ -4,7 +4,7 @@
 
   interface Props {
     asChild?: unknown;
-    builder: any ;
+    builder: unknown ;
   }
   let {
     asChild = false,

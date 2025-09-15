@@ -26,7 +26,7 @@
     isActive = true,
     onCommand,
     maxLines = 100
-  : any } = $props();
+  : unknown } = $props();
 
   let terminalRef: HTMLDivElement
   let inputRef: HTMLInputElement
@@ -295,7 +295,7 @@
         bind:value={currentCommand}
         class="command-input"
         disabled={isProcessing}
-        on:keydown={handleKeyDown}
+        onkeydown={handleKeyDown}
         placeholder=""
         spellcheck="false"
         autocomplete="off"

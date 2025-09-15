@@ -6,9 +6,7 @@ https://svelte.dev/e/tag_invalid_name -->
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -163,7 +161,7 @@ https://svelte.dev/e/tag_invalid_name -->
           {getStatusText()}
         </Badge>
       </h3>
-      <Button class="bits-btn" variant="ghost" size="sm" on:click={clearMessages}>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>
 Clear Chat
 </Button>
     </div>
@@ -231,7 +229,7 @@ Clear Chat
         class="flex-1"
       />
       <Button class="bits-btn" 
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={!inputMessage.trim() || isLoading || connectionStatus !== 'connected'}
       >
 {isLoading ? '⏳' : '📤'} Send

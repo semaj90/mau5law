@@ -192,7 +192,7 @@
 
       <Button
         variant="outline"
-        on:click={refreshData}
+        onclick={refreshData}
         disabled={isLoading}
         class="gap-2"
       >
@@ -205,21 +205,21 @@
   <!-- Quick Actions -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <button class="nes-btn h-20 flex-col gap-2"
-      on:click={() => goto('/admin/users')}
+      onclick={() => goto('/admin/users')}
       variant="outline"
     >
       <Users class="w-6 h-6" />
       <span>Manage Users</span>
 
     <button class="nes-btn h-20 flex-col gap-2"
-      on:click={() => goto('/admin/cluster')}
+      onclick={() => goto('/admin/cluster')}
       variant="outline"
     >
       <Server class="w-6 h-6" />
       <span>Cluster Status</span>
 
     <button class="nes-btn h-20 flex-col gap-2"
-      on:click={() => goto('/admin/gpu-demo')}
+      onclick={() => goto('/admin/gpu-demo')}
       variant="outline"
     >
       <Cpu class="w-6 h-6" />
@@ -227,7 +227,7 @@
     </button>
 
     <button class="nes-btn h-20 flex-col gap-2"
-      on:click={() => goto('/system-status')}
+      onclick={() => goto('/system-status')}
       variant="outline"
     >
       <Monitor class="w-6 h-6" />

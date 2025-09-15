@@ -63,7 +63,7 @@ https://svelte.dev/e/expected_token -->
     onResultClick = null,
     onResultAction = null,
     class: className = ''
-  : any } = $props();
+  : unknown } = $props();
 
   // Search state
   let searchQuery = $state('');
@@ -123,14 +123,14 @@ https://svelte.dev/e/expected_token -->
       
       // Set up event listeners
       instantSearchEngine.on('searchCompleted', (data) => {
-        lastSearchTime = (data as { responseTime?: any; documentCount?: any; jurisdiction?: any }).responseTime;
+        lastSearchTime = (data as { responseTime?: unknown; documentCount?: unknown; jurisdiction?: unknown }).responseTime;
         if (showStats) {
           searchStats = instantSearchEngine.getSearchStats();
         }
       });
 
       instantSearchEngine.on('indexRefreshed', (data) => {
-        console.log(`🔍 Search index refreshed with ${(data as { responseTime?: any; documentCount?: any; jurisdiction?: any }).documentCount} documents`);
+        console.log(`🔍 Search index refreshed with ${(data as { responseTime?: unknown; documentCount?: unknown; jurisdiction?: unknown }).documentCount} documents`);
       });
 
     } catch (error) {
@@ -269,7 +269,7 @@ https://svelte.dev/e/expected_token -->
           <Button
             size="sm"
             variant="ghost"
-            on:click={toggleFiltersPanel}
+            onclick={toggleFiltersPanel}
             class="h-8 w-8 p-0"
           >
 <Filter class="h-4 w-4" />
@@ -405,40 +405,40 @@ https://svelte.dev/e/expected_token -->
               <div class="flex items-start justify-between">
                 <div.Title class="text-base leading-tight flex items-center gap-2">
                   <svelte:component 
-                    this={getResultTypeIcon((result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).resultType)} 
-                    class="h-4 w-4 {getResultTypeColor((result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).resultType)}" 
+                    this={getResultTypeIcon((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).resultType)} 
+                    class="h-4 w-4 {getResultTypeColor((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).resultType)}" 
                   />
-                  {#if (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).highlights?.title}
-                    {@html (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).highlights.title}
+                  {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).highlights?.title}
+                    {@html (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).highlights.title}
                   {:else}
-                    {(result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.metadata?.title || (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).id}
+                    {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.metadata?.title || (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).id}
                   {/if}
                 </div.Title>
                 
                 <div class="flex items-center gap-2 ml-2">
                   <!-- Result Type Badge -->
-                  <Badge class="text-xs capitalize {getResultTypeColor((result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).resultType)}">
-                    {(result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).resultType}
+                  <Badge class="text-xs capitalize {getResultTypeColor((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).resultType)}">
+                    {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).resultType}
                   </Badge>
                   
                   <!-- Score Badge -->
                   <Badge variant="outline" class="text-xs">
-                    {formatScore((result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).combinedScore)}
+                    {formatScore((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).combinedScore)}
                   </Badge>
                   
                   <!-- Risk Level Badge -->
-                  <Badge class={getRiskLevelColor((result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.riskLevel)}>
-                    {(result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.riskLevel.toUpperCase()}
+                  <Badge class={getRiskLevelColor((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.riskLevel)}>
+                    {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.riskLevel.toUpperCase()}
                   </Badge>
                 </div>
               </div>
 
               <!-- Description -->
               <div.Description class="text-sm">
-                {#if (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).highlights?.content}
-                  {@html (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).highlights.content}
+                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).highlights?.content}
+                  {@html (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).highlights.content}
                 {:else}
-                  {(result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.metadata?.description || 'No description available'}
+                  {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.metadata?.description || 'No description available'}
                 {/if}
               </div.Description>
 
@@ -446,37 +446,37 @@ https://svelte.dev/e/expected_token -->
               <div class="flex flex-wrap gap-4 text-xs nes-text is-disabled">
                 <div class="flex items-center gap-1">
                   <FileText class="h-3 w-3" />
-                  <span class="capitalize">{(result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.type}</span>
+                  <span class="capitalize">{(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.type}</span>
                 </div>
                 
-                {#if (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.metadata?.jurisdiction}
+                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.metadata?.jurisdiction}
                   <div class="flex items-center gap-1">
                     <Scale class="h-3 w-3" />
-                    <span>{(result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.metadata.jurisdiction}</span>
+                    <span>{(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.metadata.jurisdiction}</span>
                   </div>
                 {/if}
                 
                 <div class="flex items-center gap-1">
                   <TrendingUp class="h-3 w-3" />
-                  <span>Priority: {(result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.priority}</span>
+                  <span>Priority: {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.priority}</span>
                 </div>
                 
                 <div class="flex items-center gap-1">
                   <Shield class="h-3 w-3" />
-                  <span>Confidence: {formatScore((result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.confidenceLevel)}</span>
+                  <span>Confidence: {formatScore((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.confidenceLevel)}</span>
                 </div>
                 
-                {#if (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.accessCount > 0}
+                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.accessCount > 0}
                   <div class="flex items-center gap-1">
                     <Clock class="h-3 w-3" />
-                    <span>Accessed {(result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.accessCount} times</span>
+                    <span>Accessed {(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.accessCount} times</span>
                   </div>
                 {/if}
 
-                {#if (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).responseTime}
+                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).responseTime}
                   <div class="flex items-center gap-1">
                     <Zap class="h-3 w-3" />
-                    <span>{(result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).responseTime}ms</span>
+                    <span>{(result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).responseTime}ms</span>
                   </div>
                 {/if}
               </div>
@@ -487,32 +487,32 @@ https://svelte.dev/e/expected_token -->
               <div class="flex gap-2 flex-wrap">
                 <button class="nes-btn" 
                   size="sm" 
-                  on:click={(e) => { e.stopPropagation(); handleResultAction(result, 'view'); }}
+                  onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'view'); }}
                 >
                   View Document
 
                 <button class="nes-btn" 
                   size="sm" 
                   variant="outline" 
-                  on:click={(e) => { e.stopPropagation(); handleResultAction(result, 'analyze'); }}
+                  onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'analyze'); }}
                 >
                   AI Analysis
                 </button>
                 
-                {#if (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).document.type === 'evidence'}
+                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.type === 'evidence'}
                   <button class="nes-btn" 
                     size="sm" 
                     variant="outline" 
-                    on:click={(e) => { e.stopPropagation(); handleResultAction(result, 'canvas'); }}
+                    onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'canvas'); }}
                   >
                     Open in Canvas
                   </button>
                 {/if}
                 
-                {#if (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).fuseScore && (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).semanticScore}
+                {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).fuseScore && (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).semanticScore}
                   <div class="ml-auto text-xs nes-text is-disabled">
-                    Fuzzy: {formatScore(1 - (result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).fuseScore)} | 
-                    Semantic: {formatScore((result as { resultType?: any; highlights?: any; document?: any; id?: any; combinedScore?: any; responseTime?: any; fuseScore?: any; semanticScore?: any }).semanticScore)}
+                    Fuzzy: {formatScore(1 - (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).fuseScore)} | 
+                    Semantic: {formatScore((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).semanticScore)}
                   </div>
                 {/if}
               </div>

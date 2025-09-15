@@ -408,7 +408,7 @@
     }
   }
 
-  function getParticleStyle(particle: any) {
+  function getParticleStyle(particle: unknown) {
     const scale = Math.max(0.1, particle.life);
     const opacity = Math.min(1, particle.life * 2);
     const perspective = 1000;
@@ -746,7 +746,7 @@
           border-radius: {currentStyle.borderRadius};
           box-shadow: {currentStyle.shadows}, inset 0 0 20px {getStageColor()}33;
         "
-        transition:scale={{ duration: 500, easing: elasticOut }}
+        transitionscale={{ duration: 500, easing: elasticOut }}
       >
         <div class="doc-icon">📄</div>
         <div class="doc-title">{document.title}</div>
@@ -786,7 +786,7 @@
       <div 
         class="particle {particle.type}"
         style={getParticleStyle(particle)}
-        transition:scale={{ duration: 300, easing: quintOut }}
+        transitionscale={{ duration: 300, easing: quintOut }}
       ></div>
     {/each}
 
@@ -799,7 +799,7 @@
           opacity: {connection.strength};
           box-shadow: 0 0 10px {currentStyle.colors.secondary};
         "
-        transition:fly={{ duration: 500, easing: quintOut }}
+        transitionfly={{ duration: 500, easing: quintOut }}
       ></div>
     {/each}
   </div>
@@ -816,7 +816,7 @@
         border-radius: {currentStyle.borderRadius};
         box-shadow: {currentStyle.shadows};
       "
-      transition:fade={{ duration: 300 }}
+      transitionfade={{ duration: 300 }}
     >
       <div class="stage-icon">
         {#if processingStage === 'parsing'}🔍

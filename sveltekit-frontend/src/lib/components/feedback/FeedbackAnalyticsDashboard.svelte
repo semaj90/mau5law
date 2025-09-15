@@ -104,7 +104,7 @@ https://svelte.dev/e/component_invalid_directive -->
       const data = await response.json();
       dashboardData = data.data || {};
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('❌ Failed to load feedback analytics:', err);
       error = err.message || 'Failed to load analytics data';
     } finally {
@@ -191,13 +191,13 @@ https://svelte.dev/e/component_invalid_directive -->
 
       <div class="header-actions">
         <div class="filters">
-          <select bind:value={selectedTimeframe} on:change={loadDashboardData} class="filter-select">
+          <select bind:value={selectedTimeframe} onchange={loadDashboardData} class="filter-select">
             {#each timeframeOptions as option}
               <option value={option.value}>{option.label}</option>
             {/each}
           </select>
 
-          <select bind:value={selectedRatingType} on:change={loadDashboardData} class="filter-select">
+          <select bind:value={selectedRatingType} onchange={loadDashboardData} class="filter-select">
             {#each ratingTypeOptions as option}
               <option value={option.value}>{option.label}</option>
             {/each}
@@ -205,7 +205,7 @@ https://svelte.dev/e/component_invalid_directive -->
         </div>
 
         <button 
-          on:click={() => loadDashboardData(true)} 
+          onclick={() => loadDashboardData(true)} 
           disabled={refreshing}
           class="action-button refresh-button"
         >
@@ -213,7 +213,7 @@ https://svelte.dev/e/component_invalid_directive -->
           {refreshing ? 'Refreshing...' : 'Refresh'}
         </button>
 
-        <button on:click={exportData} class="action-button export-button">
+        <button onclick={exportData} class="action-button export-button">
           <Download class="w-4 h-4" />
           Export Data
         </button>
@@ -228,7 +228,7 @@ https://svelte.dev/e/component_invalid_directive -->
         <h3 class="font-semibold">Error Loading Analytics</h3>
         <p>{error}</p>
       </div>
-      <button on:click={() => loadDashboardData()} class="retry-button">
+      <button onclick={() => loadDashboardData()} class="retry-button">
         <RefreshCw class="w-4 h-4" />
         Retry
       </button>

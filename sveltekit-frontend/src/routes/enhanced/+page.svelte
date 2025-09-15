@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
   		loading = true;
   		controller?.abort();
   		controller = new AbortController();
-  		const body: any = { query, limit, mode };
+  		const body: unknown = { query, limit, mode };
   		if (threshold !== null && threshold >= 0) body.threshold = threshold;
   		if (model.trim()) body.model = model.trim();
   		if (caseId.trim()) body.caseId = caseId.trim();
@@ -67,14 +67,14 @@ https://svelte.dev/e/js_parse_error -->
   				results = data.results || [];
   				responseMeta = data;
   			}
-  		} catch (e: any) {
+  		} catch (e: unknown) {
   			if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
   		} finally {
   			loading = false;
   		}
   	}
 
-  	async function runStreaming(body: any) {
+  	async function runStreaming(body: unknown) {
   		streaming = true;
   		try {
   			const params = new URLSearchParams({ query: body.query, limit: String(body.limit || 8), mode: body.mode || 'simple' });
@@ -108,7 +108,7 @@ https://svelte.dev/e/js_parse_error -->
   					}
   				}
   			}
-  		} catch (e: any) {
+  		} catch (e: unknown) {
   			if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
   		} finally {
   			streaming = false;
@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	}
 
-  	function handleStreamEvent(event: string, data: any) {
+  	function handleStreamEvent(event: string, data: unknown) {
   		if (event === 'meta') {
   			responseMeta = { ...(responseMeta || {}), ...data };
   		} else if (event === 'result') {
@@ -162,10 +162,10 @@ https://svelte.dev/e/js_parse_error -->
 		<p class="text-sm text-neutral-500 dark:text-neutral-400">Interact with the unified pgvector + (stub) enhanced RAG pipeline. Choose simple (direct similarity) or enhanced (RAG fallback) mode.</p>
 	</header>
 
-	<form class="grid gap-4 md:grid-cols-7 items-end bg-neutral-50 dark:bg-neutral-900/40 p-4 rounded-lg border border-neutral-200 dark:border-neutral-700" on:submit={(e) => { e.preventDefault(); submit(); }}>
+	<form class="grid gap-4 md:grid-cols-7 items-end bg-neutral-50 dark:bg-neutral-900/40 p-4 rounded-lg border border-neutral-200 dark:border-neutral-700" onsubmit={(e) => { e.preventDefault(); submit(); }}>
 		<div class="md:col-span-3 flex flex-col gap-1">
 			<label for="query-input" class="text-xs font-medium uppercase tracking-wide">Query</label>
-			<input id="query-input" bind:value={query} on:input={scheduleDebounced} class="px-3 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Find clauses about indemnification..." />
+			<input id="query-input" bind:value={query} oninput={scheduleDebounced} class="px-3 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Find clauses about indemnification..." />
 		</div>
 		<div class="flex flex-col gap-1">
 			<label for="streaming-toggle" class="text-xs font-medium uppercase tracking-wide">Streaming</label>
@@ -200,9 +200,9 @@ https://svelte.dev/e/js_parse_error -->
 		<div class="md:col-span-7 flex gap-3 pt-1">
 			<button type="submit" class="px-4 py-2 rounded bg-indigo-600 text-white text-sm font-medium disabled:opacity-50" disabled={loading}>{loading ? (useStreaming ? (streaming ? 'Streaming…' : 'Starting…') : 'Searching…') : 'Search'}</button>
 			{#if loading}
-				<button type="button" on:click={abort} class="px-3 py-2 rounded bg-neutral-200 dark:bg-neutral-700 text-sm">Abort</button>
+				<button type="button" onclick={abort} class="px-3 py-2 rounded bg-neutral-200 dark:bg-neutral-700 text-sm">Abort</button>
 			{/if}
-			<button type="button" on:click={reset} class="px-3 py-2 rounded border border-neutral-300 dark:border-neutral-600 text-sm">Clear</button>
+			<button type="button" onclick={reset} class="px-3 py-2 rounded border border-neutral-300 dark:border-neutral-600 text-sm">Clear</button>
 		</div>
 	</form>
 

@@ -41,7 +41,7 @@ func NewCUDAWorker() (*CUDAWorker, error) {
 	// Database connection
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		dbURL = "postgres://legal_admin:123456@localhost:5433/legal_ai_db?sslmode=disable"
+		dbURL = "postgres://legal_admin:123456@localhost:5432/legal_ai_db?sslmode=disable"
 	}
 
 	db, err := sql.Open("pgx", dbURL)

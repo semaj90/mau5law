@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   interface Props {
     class?: string;

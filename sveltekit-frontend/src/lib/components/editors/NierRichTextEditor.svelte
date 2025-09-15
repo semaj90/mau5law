@@ -295,7 +295,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant={editorState.isBold ? "default" : "ghost"}
 							size="sm"
-							on:click={toggleBold}
+							onclick={toggleBold}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -304,7 +304,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant={editorState.isItalic ? "default" : "ghost"}
 							size="sm"
-							on:click={toggleItalic}
+							onclick={toggleItalic}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -313,7 +313,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant={editorState.isUnderlined ? "default" : "ghost"}
 							size="sm"
-							on:click={toggleUnderline}
+							onclick={toggleUnderline}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -326,7 +326,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							on:click={insertList}
+							onclick={insertList}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -335,7 +335,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							on:click={insertOrderedList}
+							onclick={insertOrderedList}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -344,7 +344,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							on:click={insertQuote}
+							onclick={insertQuote}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -357,7 +357,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							on:click={insertLink}
+							onclick={insertLink}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -366,7 +366,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							on:click={insertCode}
+							onclick={insertCode}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -379,7 +379,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="outline"
 							size="sm"
-							on:click={saveContent}
+							onclick={saveContent}
 							disabled={readonly}
 							class="h-8 bits-btn bits-btn"
 						>
@@ -395,7 +395,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<button
 							variant={nieRTheme.mode === 'android' ? 'default' : 'ghost'}
 							size="sm"
-							on:click={() => switchTheme('android')}
+							onclick={() => switchTheme('android')}
 							class="nes-btn bits-btn h-6 px-2 text-xs"
 						>
 							2B
@@ -403,7 +403,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<button
 							variant={nieRTheme.mode === 'yorha' ? 'default' : 'ghost'}
 							size="sm"
-							on:click={() => switchTheme('yorha')}
+							onclick={() => switchTheme('yorha')}
 							class="nes-btn bits-btn h-6 px-2 text-xs"
 						>
 							9S
@@ -412,7 +412,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							variant={nieRTheme.mode === 'machine' ? 'default' : 'ghost'}
 							class="bits-btn"
 							size="sm"
-							on:click={() => switchTheme('machine')}
+							onclick={() => switchTheme('machine')}
 							class="h-6 px-2 text-xs"
 						>
 							A2

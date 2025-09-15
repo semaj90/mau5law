@@ -382,7 +382,7 @@ https://svelte.dev/e/expected_token -->
   <!-- Controls -->
   <div class="mt-4 flex gap-2">
     <button 
-      on:click={startRendering}
+      onclick={startRendering}
       disabled={isRendering}
       class="px-3 py-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white text-sm rounded transition-colors"
     >
@@ -390,7 +390,7 @@ https://svelte.dev/e/expected_token -->
     </button>
     
     <button 
-      on:click={stopRendering}
+      onclick={stopRendering}
       disabled={!isRendering}
       class="px-3 py-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white text-sm rounded transition-colors"
     >

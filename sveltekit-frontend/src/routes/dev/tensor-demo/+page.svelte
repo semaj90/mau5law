@@ -4,7 +4,7 @@
   import { embedText } from '$lib/ai/tensor-client';
 
   let input = $state('Contracts and liabilities in commercial agreements.');
-  let result: any = $state(null);
+  let result: unknown = $state(null);
   let error: string | null = $state(null);
   let busy = $state(false);
 
@@ -30,7 +30,7 @@
   <p class="text-sm opacity-80">Embeds text via /api/ai/tensor then asks the Service Worker to SIMD-parse the tensor.</p>
 
   <textarea bind:value={input} rows="4" class="w-full p-3 border rounded bg-black/20"></textarea>
-  <button class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 disabled:opacity-50" on:click={run} disabled={busy}>
+  <button class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 disabled:opacity-50" onclick={run} disabled={busy}>
     {busy ? 'Working…' : 'Run'}
   </button>
 
@@ -41,11 +41,11 @@
     <div class="grid grid-cols-2 gap-4">
       <div>
         <h3 class="font-semibold mb-2">Embedding</h3>
-        <pre class="text-xs max-h-48 overflow-auto">{JSON.stringify((result as { embedding?: any; tensorMeta?: any }).embedding?.slice?.(0, 16))} … ({(result as { embedding?: any; tensorMeta?: any }).embedding?.length})</pre>
+        <pre class="text-xs max-h-48 overflow-auto">{JSON.stringify((result as { embedding?: unknown; tensorMeta?: unknown }).embedding?.slice?.(0, 16))} … ({(result as { embedding?: unknown; tensorMeta?: unknown }).embedding?.length})</pre>
       </div>
       <div>
         <h3 class="font-semibold mb-2">SIMD Meta</h3>
-        <pre class="text-xs">{JSON.stringify((result as { embedding?: any; tensorMeta?: any }).tensorMeta, null, 2)}</pre>
+        <pre class="text-xs">{JSON.stringify((result as { embedding?: unknown; tensorMeta?: unknown }).tensorMeta, null, 2)}</pre>
       </div>
     </div>
   {/if}

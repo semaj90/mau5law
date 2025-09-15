@@ -23,7 +23,7 @@
   			href: string
   			icon?: string;
   		}[];
-  		children: any
+  		children: unknown
   	}
   	let { 
   		showHUD = true,
@@ -89,7 +89,7 @@
 				
 				<button 
 					class="collapse-button"
-					on:click={toggleSidebar}
+					onclick={toggleSidebar}
 					aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
 				>
 					{sidebarCollapsed ? '▶' : '◀'}
@@ -285,7 +285,7 @@ text-transform: uppercase {}
 		transform: translateX(2px);
 	}
 	
-	.nav-(item as { active?: any }).active {
+	.nav-(item as { active?: unknown }).active {
 		background: var(--yorha-bg-tertiary, #2a2a2a);
 		border-color: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-secondary, #ffd700);

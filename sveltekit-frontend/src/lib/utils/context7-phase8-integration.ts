@@ -235,8 +235,8 @@ export class Context7Phase8Integrator {
 // Enhanced drag-and-drop evidence upload
 <div 
   class="drop-zone yorha-panel border-dashed border-2 p-8"
-  on:drop={handleDrop}
-  on:dragover={handleDragOver}
+  ondrop={handleDrop}
+  ondragover={handleDragOver}
 >
   <FileUploadIcon />
   <p>Drag evidence files here or click to browse</p>

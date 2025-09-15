@@ -26,13 +26,13 @@ async function handleSubmit(event: Event) {
         body: JSON.stringify(formData)
       });
 
-      const result = await (response as { json?: any; ok?: any }).json();
+      const result = await (response as { json?: unknown; ok?: unknown }).json();
       
-      if ((response as { json?: any; ok?: any }).ok) {
-        submitResult = `✅ SUCCESS: Case created with ID ${(result as { id?: any; error?: any; status?: any }).id}`;
+      if ((response as { json?: unknown; ok?: unknown }).ok) {
+        submitResult = `✅ SUCCESS: Case created with ID ${(result as { id?: unknown; error?: unknown; status?: unknown }).id}`;
         console.log('✅ Case Creation Success:', result);
       } else {
-        submitResult = `❌ ERROR: ${(result as { id?: any; error?: any; status?: any }).error}`;
+        submitResult = `❌ ERROR: ${(result as { id?: unknown; error?: unknown; status?: unknown }).error}`;
         console.error('❌ Case Creation Error:', result);
       }
     } catch (error) {
@@ -47,9 +47,9 @@ async function handleSubmit(event: Event) {
 async function testDatabaseConnection() {
     try {
       const response = await fetch('/api/test-case');
-      const result = await (response as { json?: any; ok?: any }).json();
+      const result = await (response as { json?: unknown; ok?: unknown }).json();
       console.log('✅ Database connection test:', result);
-      submitResult = `✅ Database connection working: ${(result as { id?: any; error?: any; status?: any }).status}`;
+      submitResult = `✅ Database connection working: ${(result as { id?: unknown; error?: unknown; status?: unknown }).status}`;
     } catch (error) {
       console.error('❌ Database connection failed:', error);
       submitResult = `❌ Database connection failed`;
@@ -77,7 +77,7 @@ async function testDatabaseConnection() {
   <div class="nier-bits-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 30px; background: white;">
     <h2 style="margin-top: 0; color: #333;">Case Information Form</h2>
     
-    <form on:submit={handleSubmit} style="display: flex; flex-direction: column; gap: 20px;">
+    <form onsubmit={handleSubmit} style="display: flex; flex-direction: column; gap: 20px;">
       
       <div>
         <label for="caseNumber" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">
@@ -141,7 +141,7 @@ async function testDatabaseConnection() {
       <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 20px; border-top: 1px solid #eee;">
         <button 
           type="button"
-          on:click={testDatabaseConnection}
+          onclick={testDatabaseConnection}
           style="padding: 10px 20px; border: 1px solid #007bff; background: white; color: #007bff; border-radius: 4px; cursor: pointer; font-size: 14px;"
         >
           Test Database Connection

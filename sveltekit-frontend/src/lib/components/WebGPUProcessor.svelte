@@ -552,7 +552,7 @@ https://svelte.dev/e/js_parse_error -->
   	}
 
   	// Queue tensor operation
-  	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: any = {}) {
+  	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: unknown = {}) {
   		const operation: TensorOperation = {
   			id: `op_${++operationId}`,
   			type,
@@ -639,7 +639,7 @@ https://svelte.dev/e/js_parse_error -->
   	}
 
   	// Process document data
-  	function processDocumentData(data: any[]) {
+  	function processDocumentData(data: unknown[]) {
   		if (!data || data.length === 0) return;
 
   		data.forEach((doc, index) => {

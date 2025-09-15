@@ -5,9 +5,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -348,7 +346,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               <Button class="bits-btn"
                 size="sm"
                 variant="outline"
-                on:click={() =>
+                onclick={() =>
 executeExample(example)}
                 disabled={isProcessing}
               >
@@ -444,7 +442,7 @@ executeExample(example)}
 
       <div class="flex gap-2">
         <Button
-          on:click={executePrompt}
+          onclick={executePrompt}
           disabled={isProcessing || !userPrompt.trim()}
           class="flex-1 bits-btn bits-btn"
         >
@@ -459,17 +457,17 @@ executeExample(example)}
 
         <Button class="bits-btn"
           variant="outline"
-          on:click={executeViaAPI}
+          onclick={executeViaAPI}
           disabled={isProcessing || !userPrompt.trim()}
         >
 Via API
 </Button>
 
         {#if currentResult}
-          <Button class="bits-btn" variant="outline" on:click={downloadResult}>
+          <Button class="bits-btn" variant="outline" onclick={downloadResult}>
 <Download class="h-4 w-4" />
 </Button>
-          <Button class="bits-btn" variant="outline" on:click={clearResults}>
+          <Button class="bits-btn" variant="outline" onclick={clearResults}>
 <RefreshCw class="h-4 w-4" />
 </Button>
         {/if}

@@ -14,9 +14,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -53,7 +51,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   let selectedFiles: File[] = $state([]);
   let uploading = $state(false);
   let uploadProgress = $state(0);
-  let uploadResults: any[] = $state([]);
+  let uploadResults: unknown[] = $state([]);
   let dragActive = $state(false);
 
   // Evidence form data
@@ -162,15 +160,15 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
             method: 'POST',
             body: formData
           }));
-          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-            throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+          if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+            throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
           }
         } catch (error) {
           console.error('Fetch failed:', error);
           throw error;
         }
 
-          const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+          const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
           uploadResults.push({ file: file.name, ...result });
           uploadProgress = ((i + 1) / selectedFiles.length) * 100;
         }
@@ -291,9 +289,9 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     <!-- File Upload Area -->
     <div 
       class="border-2 border-dashed rounded-lg p-8 text-center transition-colors {dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}"
-      on:dragover={handleDragOver as any}
+      ondragover={handleDragOver as any}
       ondragleave={handleDragLeave as any}
-      role="region" aria-label="Drop zone" on:drop={handleDrop as any}
+      role="region" aria-label="Drop zone" ondrop={handleDrop as any}
     >
       {#if selectedFiles.length === 0}
         <Upload class="mx-auto w-12 h-12 text-gray-400 mb-4" />
@@ -306,11 +304,11 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         <input
           type="file"
           multiple
-          accept={allowedTypes.join(',')} on:change={handleFileSelect as any}
+          accept={allowedTypes.join(',')} onchange={handleFileSelect as any}
           class="hidden"
           id="file-input"
         />
-        <Button class="bits-btn" variant="outline" on:click={() =>
+        <Button class="bits-btn" variant="outline" onclick={() =>
 document.getElementById('file-input')?.click()}>
           Select Files
 </Button>
@@ -340,7 +338,7 @@ document.getElementById('file-input')?.click()}>
                 <Button class="bits-btn" 
                   variant="ghost" 
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 removeFile(index)}
                 >
                   <X class="w-4 h-4" />
@@ -353,19 +351,19 @@ removeFile(index)}
             <input
               type="file"
               multiple
-              accept={allowedTypes.join(',')} on:change={handleFileSelect as any}
+              accept={allowedTypes.join(',')} onchange={handleFileSelect as any}
               class="hidden"
               id="add-more-files"
             />
             <Button class="bits-btn" 
               variant="outline" 
-              on:click={() =>
+              onclick={() =>
 document.getElementById('add-more-files')?.click()}
               disabled={selectedFiles.length >= maxFiles}
             >
               Add More Files
 </Button>
-            <Button class="bits-btn" on:click={uploadEvidence} disabled={uploading || !evidenceTitle.trim()}>
+            <Button class="bits-btn" onclick={uploadEvidence} disabled={uploading || !evidenceTitle.trim()}>
 {#if uploading}
                 Processing...
               {:else}
@@ -400,21 +398,21 @@ document.getElementById('add-more-files')?.click()}
           <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
             <div class="flex justify-between items-start">
               <div>
-                <h4 class="font-medium text-green-900">{(result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).fileName || (result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).file}</h4>
+                <h4 class="font-medium text-green-900">{(result as { fileName?: unknown; file?: unknown; aiAnalysis?: unknown; embedding?: unknown; qdrantId?: unknown }).fileName || (result as { fileName?: unknown; file?: unknown; aiAnalysis?: unknown; embedding?: unknown; qdrantId?: unknown }).file}</h4>
                 <p class="text-sm text-green-700">
                   Stored in MinIO • Embedded in Qdrant • AI Analyzed
                 </p>
-                {#if (result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).aiAnalysis}
+                {#if (result as { fileName?: unknown; file?: unknown; aiAnalysis?: unknown; embedding?: unknown; qdrantId?: unknown }).aiAnalysis}
                   <div class="mt-2 space-y-1">
                     <p class="text-xs text-green-600">
-                      <strong>AI Summary:</strong> {(result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).aiAnalysis.summary?.substring(0, 100)}...
+                      <strong>AI Summary:</strong> {(result as { fileName?: unknown; file?: unknown; aiAnalysis?: unknown; embedding?: unknown; qdrantId?: unknown }).aiAnalysis.summary?.substring(0, 100)}...
                     </p>
-                    {#if (result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).aiAnalysis.prosecutionRelevance}
+                    {#if (result as { fileName?: unknown; file?: unknown; aiAnalysis?: unknown; embedding?: unknown; qdrantId?: unknown }).aiAnalysis.prosecutionRelevance}
                       <Badge 
-                        variant={(result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).aiAnalysis.prosecutionRelevance === 'high' ? 'destructive' : 'secondary'}
+                        variant={(result as { fileName?: unknown; file?: unknown; aiAnalysis?: unknown; embedding?: unknown; qdrantId?: unknown }).aiAnalysis.prosecutionRelevance === 'high' ? 'destructive' : 'secondary'}
                         class="text-xs"
                       >
-                        {(result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).aiAnalysis.prosecutionRelevance} relevance
+                        {(result as { fileName?: unknown; file?: unknown; aiAnalysis?: unknown; embedding?: unknown; qdrantId?: unknown }).aiAnalysis.prosecutionRelevance} relevance
                       </Badge>
                     {/if}
                   </div>
@@ -422,8 +420,8 @@ document.getElementById('add-more-files')?.click()}
               </div>
               
               <div class="flex flex-col items-end space-y-1">
-                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{(result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).embedding || 'Vector stored'}</span>
-                {#if (result as { fileName?: any; file?: any; aiAnalysis?: any; embedding?: any; qdrantId?: any }).qdrantId}
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{(result as { fileName?: unknown; file?: unknown; aiAnalysis?: unknown; embedding?: unknown; qdrantId?: unknown }).embedding || 'Vector stored'}</span>
+                {#if (result as { fileName?: unknown; file?: unknown; aiAnalysis?: unknown; embedding?: unknown; qdrantId?: unknown }).qdrantId}
                   <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Searchable</span>
                 {/if}
               </div>
@@ -434,7 +432,7 @@ document.getElementById('add-more-files')?.click()}
         <div class="flex justify-center mt-4">
           <Button class="bits-btn" 
             variant="outline" 
-            on:click={() =>
+            onclick={() =>
 {
               uploadResults = [];
               selectedFiles = [];

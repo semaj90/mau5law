@@ -4,9 +4,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge/index.js';
   import * as Card from '$lib/components/ui/Card/index.js';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
@@ -276,7 +274,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <div class="dialog-section">
             <Button.Root
               class="snes-btn snes-nes-btn is-primary bits-btn bits-btn"
-              on:click={() => dialogOpen = true}
+              onclick={() => dialogOpen = true}
             >
               🗨️ Open Message Box
             </Button.Root>
@@ -296,7 +294,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                     <div class="dialog-actions">
                       <Button.Root
                         class="snes-btn snes-btn-confirm bits-btn bits-btn"
-                        on:click={() => dialogOpen = false}
+                        onclick={() => dialogOpen = false}
                       >
                         ✓ OK
                       </Button.Root>

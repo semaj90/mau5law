@@ -375,7 +375,7 @@ https://svelte.dev/e/js_parse_error -->
     canvas.setActiveObject(arrow);
   }
 
-  function createEvidenceObject(evidence: any): fabric.Group {
+  function createEvidenceObject(evidence: unknown): fabric.Group {
     const rect = new fabric.Rect({
       width: 200,
       height: 150,
@@ -435,7 +435,7 @@ https://svelte.dev/e/js_parse_error -->
     return group;
   }
 
-  function createThumbnail(evidence: any): fabric.Object | null {
+  function createThumbnail(evidence: unknown): fabric.Object | null {
     // Create appropriate thumbnail based on file type
     const fileType = evidence.fileType || evidence.mimeType || "";
 
@@ -623,11 +623,11 @@ https://svelte.dev/e/js_parse_error -->
     saveState();
   }
 
-  function handleSelectionCreated(options: any) {
+  function handleSelectionCreated(options: unknown) {
     updateSelection();
   }
 
-  function handleSelectionUpdated(options: any) {
+  function handleSelectionUpdated(options: unknown) {
     updateSelection();
   }
 
@@ -769,8 +769,8 @@ https://svelte.dev/e/js_parse_error -->
 
       // Fallback to server
       const response = await fetch(`/api/canvas/${caseId}`);
-      if ((response as { ok?: any; json?: any }).ok) {
-        const serverData = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const serverData = await (response as { ok?: unknown; json?: unknown }).json();
         canvas?.loadFromJSON(serverData.data, () => {
           canvas?.renderAll();
         });
@@ -904,8 +904,8 @@ https://svelte.dev/e/js_parse_error -->
     // Implement clipboard paste functionality
     navigator.clipboard.read().then((items) => {
       for (const item of items) {
-        if ((item as { types?: any; getType?: any }).types.includes("image/png")) {
-          (item as { types?: any; getType?: any }).getType("image/png").then((blob) => {
+        if ((item as { types?: unknown; getType?: unknown }).types.includes("image/png")) {
+          (item as { types?: unknown; getType?: unknown }).getType("image/png").then((blob) => {
             const reader = new FileReader();
             reader.onload = async (e) => {
               const imgUrl = e.target?.result as string;
@@ -968,7 +968,7 @@ https://svelte.dev/e/js_parse_error -->
     }
 
     const results = searchEngine.search(query);
-    searchResults = results.map((result) => (result as { item?: any }).item);
+    searchResults = results.map((result) => (result as { item?: unknown }).item);
   }
 
   // Generate AI summary for canvas
@@ -1020,14 +1020,14 @@ https://svelte.dev/e/js_parse_error -->
   let state = $derived(get(canvasState));
 
   // Exported functions for parent component access
-  export function addEvidenceToCanvas(evidence: any) {
+  export function addEvidenceToCanvas(evidence: unknown) {
     if (!canvas) return;
     const evidenceObject = createEvidenceObject(evidence);
     canvas.add(evidenceObject);
     canvas.setActiveObject(evidenceObject);
   }
 
-  export function addElementsToCanvas(elements: any[]) {
+  export function addElementsToCanvas(elements: unknown[]) {
     if (!canvas || !elements) return;
     elements.forEach((element) => {
       // Create canvas objects from element data
@@ -1039,7 +1039,7 @@ https://svelte.dev/e/js_parse_error -->
     canvas.renderAll();
   }
 
-  function createCanvasObjectFromData(elementData: any): fabric.Object | null {
+  function createCanvasObjectFromData(elementData: unknown): fabric.Object | null {
     try {
       // Basic implementation - can be expanded based on element types
       if (elementData.type === "evidence") {
@@ -1069,14 +1069,14 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
         class="mx-auto px-4 max-w-7xl"
-        on:click={() => saveCanvas()}
+        onclick={() => saveCanvas()}
         title="Save Canvas"
       >
         <Save size="18" />
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        on:click={() => undo()}
+        onclick={() => undo()}
         disabled={!state.canUndo}
         title="Undo"
       >
@@ -1084,7 +1084,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
-        on:click={() => redo()}
+        onclick={() => redo()}
         disabled={!state.canRedo}
         title="Redo"
       >
@@ -1100,7 +1100,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="mx-auto px-4 max-w-7xl"
           class:active={state.tool === tool.id}
-          on:click={() => setTool(tool.id)}
+          onclick={() => setTool(tool.id)}
           title={tool.label}
         >
           <svelte:component this={tool.icon} size="18" />
@@ -1112,18 +1112,18 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Canvas Controls -->
     <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => zoomOut()} title="Zoom Out">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => zoomOut()} title="Zoom Out">
         <ZoomOut size="18" />
       </button>
       <span class="mx-auto px-4 max-w-7xl">{state.zoom}%</span>
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => zoomIn()} title="Zoom In">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => zoomIn()} title="Zoom In">
         <ZoomIn size="18" />
       </button>
 
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.showGrid}
-        on:click={() => toggleGrid()}
+        onclick={() => toggleGrid()}
         title="Toggle Grid"
       >
         <Grid size="18" />
@@ -1134,13 +1134,13 @@ https://svelte.dev/e/js_parse_error -->
 
     <!-- Object Actions -->
     <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => copySelected()} title="Copy">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => copySelected()} title="Copy">
         <Copy size="18" />
       </button>
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => pasteClipboard()} title="Paste">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => pasteClipboard()} title="Paste">
         <Copy size="18" />
       </button>
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => deleteSelected()} title="Delete">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => deleteSelected()} title="Delete">
         <Trash2 size="18" />
       </button>
     </div>
@@ -1151,7 +1151,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button
         class="mx-auto px-4 max-w-7xl"
-        on:click={() => generateAISummary()}
+        onclick={() => generateAISummary()}
         title="Generate AI Summary"
       >
         <FileText size="18" />
@@ -1166,9 +1166,9 @@ https://svelte.dev/e/js_parse_error -->
         <Download size="18" />
       </button>
       <div class="mx-auto px-4 max-w-7xl">
-        <button on:click={() => exportCanvas("png")}>Export as PNG</button>
-        <button on:click={() => exportCanvas("svg")}>Export as SVG</button>
-        <button on:click={() => exportCanvas("json")}>Export as JSON</button>
+        <button onclick={() => exportCanvas("png")}>Export as PNG</button>
+        <button onclick={() => exportCanvas("svg")}>Export as SVG</button>
+        <button onclick={() => exportCanvas("json")}>Export as JSON</button>
       </div>
     </div>
 
@@ -1190,7 +1190,7 @@ https://svelte.dev/e/js_parse_error -->
           <input
             type="text"
             placeholder="Search evidence..."
-            bind:value={state.searchQuery} on:input={(e) =>
+            bind:value={state.searchQuery} oninput={(e) =>
               searchEvidence((e.target as HTMLInputElement).value)}
             class="mx-auto px-4 max-w-7xl"
           />
@@ -1201,7 +1201,7 @@ https://svelte.dev/e/js_parse_error -->
           {#each state.searchQuery ? searchResults : evidenceItems as evidence}
             <div
               class="mx-auto px-4 max-w-7xl"
-              on:click={() => addEvidenceToCanvas(evidence)}
+              onclick={() => addEvidenceToCanvas(evidence)}
               keydown={(e) =>
                 e.key === "Enter" && addEvidenceToCanvas(evidence)}
               role="button"
@@ -1219,28 +1219,28 @@ https://svelte.dev/e/js_parse_error -->
         <div class="mx-auto px-4 max-w-7xl">
           <button
             class="mx-auto px-4 max-w-7xl"
-            on:click={() => addTimelineToCanvas()}
+            onclick={() => addTimelineToCanvas()}
           >
             <Clock size="16" class="mx-auto px-4 max-w-7xl" />
             Timeline
           </button>
           <button
             class="mx-auto px-4 max-w-7xl"
-            on:click={() => addPersonToCanvas()}
+            onclick={() => addPersonToCanvas()}
           >
             <Users size="16" class="mx-auto px-4 max-w-7xl" />
             Person
           </button>
           <button
             class="mx-auto px-4 max-w-7xl"
-            on:click={() => addLocationToCanvas()}
+            onclick={() => addLocationToCanvas()}
           >
             <MapPin size="16" class="mx-auto px-4 max-w-7xl" />
             Location
           </button>
           <button
             class="mx-auto px-4 max-w-7xl"
-            on:click={() => setTool("note")}
+            onclick={() => setTool("note")}
           >
             <FileText size="16" class="mx-auto px-4 max-w-7xl" />
             Note

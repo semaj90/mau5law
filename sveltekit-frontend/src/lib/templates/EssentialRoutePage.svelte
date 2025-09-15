@@ -8,7 +8,7 @@ Use this template for all essential routes
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
-	import { Button } from '$lib/components/ui/enhanced-bits';
+	import Button from '$lib/components/ui/enhanced-bits';
 	import * as Card from '$lib/components/ui/card';
 	import { ButtonBits, CardBits, DialogBits } from '$lib/components/ui/bits-ui';
 
@@ -59,7 +59,7 @@ Use this template for all essential routes
 							<Button
 								variant="outline"
 								size="sm"
-								on:click={goBack}
+								onclick={goBack}
 								class="nes-btn is-primary"
 							>
 								← Back
@@ -105,12 +105,12 @@ Use this template for all essential routes
 								</p>
 							</div>
 							<div class="flex justify-center gap-4 mt-6">
-								<Button class="nes-btn is-primary" on:click={goBack}>
+								<Button class="nes-btn is-primary" onclick={goBack}>
 									Go Back
 								<Button
 									variant="outline"
 									class="nes-btn"
-									on:click={() => window.location.href = '/'}
+									onclick={() => window.location.href = '/'}
 								>
 									Home
 							</div>

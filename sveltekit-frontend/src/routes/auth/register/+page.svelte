@@ -6,8 +6,8 @@
   import 'nes.css/css/nes.min.css';
   import { enhance } from '$app/forms';
   interface Props {
-    data?: any;
-    form?: any;
+    data?: unknown;
+    form?: unknown;
   }
   let { data, form }: Props = $props();
   let isLoading = $state(false);
@@ -42,7 +42,7 @@
           isLoading = true;
           return async ({ result }) => {
             isLoading = false;
-            if ((result as { type?: any }).type === 'redirect') {
+            if ((result as { type?: unknown }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }
           };

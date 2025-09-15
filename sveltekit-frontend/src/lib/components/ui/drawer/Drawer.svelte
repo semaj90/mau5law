@@ -6,11 +6,11 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   import { createEventDispatcher } from "svelte";
   import { X } from "lucide-svelte";
 
-  let { open = $bindable()  }: { open = $bindable() : any } = $props(); // false;
-  let { title = $bindable()  }: { title = $bindable() : any } = $props(); // "";
-  let { description = $bindable()  }: { description = $bindable() : any } = $props(); // "";
-  let { side = $bindable()  }: { side = $bindable() : any } = $props(); // "left" | "right" | "top" | "bottom" = "right";
-  let { size = $bindable()  }: { size = $bindable() : any } = $props(); // "sm" | "md" | "lg" | "xl" = "md";
+  let { open = $bindable()  }: { open = $bindable() : unknown } = $props(); // false;
+  let { title = $bindable()  }: { title = $bindable() : unknown } = $props(); // "";
+  let { description = $bindable()  }: { description = $bindable() : unknown } = $props(); // "";
+  let { side = $bindable()  }: { side = $bindable() : unknown } = $props(); // "left" | "right" | "top" | "bottom" = "right";
+  let { size = $bindable()  }: { size = $bindable() : unknown } = $props(); // "sm" | "md" | "lg" | "xl" = "md";
 
   const dispatch = createEventDispatcher();
 
@@ -32,7 +32,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     role="dialog"
     aria-modal="true"
     aria-label={title ? title : "Drawer"}
-    on:click={handleBackdropClick}
+    onclick={handleBackdropClick}
   >
     <div class="drawer drawer-{size} drawer-{side}" click|stopPropagation>
       <div class="drawer-header">
@@ -47,7 +47,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
         <button
           class="drawer-close"
           aria-label="Close drawer"
-          on:click={handleClose}
+          onclick={handleClose}
         >
           <X size="24" />
         </button>

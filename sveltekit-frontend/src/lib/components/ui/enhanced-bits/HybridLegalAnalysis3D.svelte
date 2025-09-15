@@ -7,9 +7,7 @@ https://svelte.dev/e/expected_token -->
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, tick } from "svelte";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
   import { enhancedEmbeddingService } from "$lib/services/enhanced-embedding-service";
   import { 
@@ -356,9 +354,9 @@ https://svelte.dev/e/expected_token -->
     if (!scene || index >= analysisComponents.length - 2) return;
 
     const docComponent = analysisComponents[index + 2]; // Skip container and status panel
-    if (docComponent && (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).position3D) {
+    if (docComponent && (result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).position3D) {
       // Update position based on semantic clustering
-      docComponent.position.copy((result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).position3D);
+      docComponent.position.copy((result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).position3D);
       
       // Update color based on confidence and risk level
       const material = docComponent.mesh?.material;
@@ -369,11 +367,11 @@ https://svelte.dev/e/expected_token -->
           high: NES_YORHA_PALETTE.nesError,
           critical: NES_YORHA_PALETTE.nesError
         };
-        material.color.setHex(riskColors[(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).riskLevel]);
+        material.color.setHex(riskColors[(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).riskLevel]);
       }
 
       // Add confidence scaling
-      const confidenceScale = 0.5 + ((result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).confidenceScore * 0.5);
+      const confidenceScale = 0.5 + ((result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).confidenceScore * 0.5);
       docComponent.scale.setScalar(confidenceScale);
     }
   }
@@ -526,7 +524,7 @@ https://svelte.dev/e/expected_token -->
   }
 
   // Public methods for external control
-  export function loadDocuments(docs: any[]) {
+  export function loadDocuments(docs: unknown[]) {
     documents = docs.map(doc => doc.content || doc.toString());
     notifications.add({
       type: "info",
@@ -614,7 +612,7 @@ https://svelte.dev/e/expected_token -->
     <div class="action-buttons">
       <Button
         variant="outline"
-        on:click={startHybridAnalysis}
+        onclick={startHybridAnalysis}
         disabled={isAnalyzing || documents.length === 0}
         class="nes-btn is-primary bits-btn bits-btn"
       >
@@ -630,7 +628,7 @@ https://svelte.dev/e/expected_token -->
 
       <Button
         variant="outline"
-        on:click={checkSystemHealth}
+        onclick={checkSystemHealth}
         disabled={isAnalyzing}
         class="nes-btn is-warning bits-btn bits-btn"
       >
@@ -641,7 +639,7 @@ https://svelte.dev/e/expected_token -->
 
       <Button class="bits-btn"
         variant="outline"
-        on:click={() =>
+        onclick={() =>
 enable3DVisualization = !enable3DVisualization}
         class="nes-btn {enable3DVisualization ? 'is-success' : 'is-normal'}"
       >
@@ -677,40 +675,40 @@ enable3DVisualization = !enable3DVisualization}
       {#if analysisData.length > 0}
         <div class="results-grid">
           {#each analysisData as result, index}
-            <div class="nes-container is-rounded document-result risk-{(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).riskLevel}">
+            <div class="nes-container is-rounded document-result risk-{(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).riskLevel}">
               <div class="document-header">
                 <FileText class="w-5 h-5" />
                 <span class="doc-title">Document {index + 1}</span>
                 <span class="confidence-badge nes-badge">
-                  {Math.round((result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).confidenceScore * 100)}%
+                  {Math.round((result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).confidenceScore * 100)}%
                 </span>
               </div>
               
               <div class="document-details">
-                <p><strong>Practice Area:</strong> {(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).practiceArea}</p>
+                <p><strong>Practice Area:</strong> {(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).practiceArea}</p>
                 <p><strong>Risk Level:</strong> 
-                  <span class="risk-{(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).riskLevel}">{(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).riskLevel.toUpperCase()}</span>
+                  <span class="risk-{(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).riskLevel}">{(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).riskLevel.toUpperCase()}</span>
                 </p>
-                <p><strong>Legal Entities:</strong> {(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).legalEntities.join(', ') || 'None identified'}</p>
-                <p><strong>Topics:</strong> {(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).semanticTopics.join(', ') || 'General'}</p>
+                <p><strong>Legal Entities:</strong> {(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).legalEntities.join(', ') || 'None identified'}</p>
+                <p><strong>Topics:</strong> {(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).semanticTopics.join(', ') || 'General'}</p>
               </div>
 
-              {#if (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).keyFindings.length > 0}
+              {#if (result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).keyFindings.length > 0}
                 <div class="key-findings">
                   <strong>Key Findings:</strong>
                   <ul class="nes-list is-disc">
-                    {#each (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).keyFindings as finding}
+                    {#each (result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).keyFindings as finding}
                       <li>{finding}</li>
                     {/each}
                   </ul>
                 </div>
               {/if}
 
-              {#if (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).recommendations.length > 0}
+              {#if (result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).recommendations.length > 0}
                 <div class="recommendations">
                   <strong>Recommendations:</strong>
                   <ul class="nes-list is-circle">
-                    {#each (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).recommendations as rec}
+                    {#each (result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).recommendations as rec}
                       <li>{rec}</li>
                     {/each}
                   </ul>
@@ -828,21 +826,21 @@ enable3DVisualization = !enable3DVisualization}
     transform: scale(1.02);
   }
 
-  .document-(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).risk-critical {
+  .document-(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).risk-critical {
     border-color: #f83800;
     box-shadow: 0 0 10px rgba(248, 56, 0, 0.3);
   }
 
-  .document-(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).risk-high {
+  .document-(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).risk-high {
     border-color: #fc9838;
     box-shadow: 0 0 10px rgba(252, 152, 56, 0.3);
   }
 
-  .document-(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).risk-medium {
+  .document-(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).risk-medium {
     border-color: #d4af00;
   }
 
-  .document-(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).risk-low {
+  .document-(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).risk-low {
     border-color: #00d800;
   }
 

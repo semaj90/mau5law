@@ -14,6 +14,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   import { createButton, melt } from 'melt';
   import { fly, fade } from 'svelte/transition';
@@ -325,9 +326,9 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Main button -->
   <button
     class={baseClasses}
-    on:click={handleClick}
-    on:mouseenter={handleMouseEnter}
-    on:mouseleave={handleMouseLeave}
+    onclick={handleClick}
+    onmouseenter={handleMouseEnter}
+    onmouseleave={handleMouseLeave}
     {...restProps}
   >
     <!-- Loading spinner -->

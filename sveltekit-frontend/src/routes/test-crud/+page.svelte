@@ -5,7 +5,7 @@
   import CardContent from '$lib/components/ui/CardContent.svelte';
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
   import CardTitle from '$lib/components/ui/CardTitle.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
 
   // Svelte 5 runes for state management
   let isLoading = $state(false);
@@ -227,23 +227,23 @@
     </div>
     <div class="yorha-panel-content">
       <div class="flex flex-wrap gap-3">
-  <Button class="bits-btn" on:click={runFullCRUDTest} disabled={isLoading} variant="default">
+  <Button class="bits-btn" onclick={runFullCRUDTest} disabled={isLoading} variant="default">
 {isLoading ? '⏳ Testing...' : '🚀 Run Full CRUD Test'}
 
-  <Button class="bits-btn" on:click={testGETOperations} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn" onclick={testGETOperations} disabled={isLoading} variant="secondary">
           🔍 Test GET
 
-  <Button class="bits-btn" on:click={testPOSTOperation} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn" onclick={testPOSTOperation} disabled={isLoading} variant="secondary">
           📝 Test POST
 
-  <Button class="bits-btn" on:click={() => testPUTOperation()} disabled={isLoading} variant="secondary">
+  <Button class="bits-btn" onclick={() => testPUTOperation()} disabled={isLoading} variant="secondary">
           ✏️ Test PUT
 
-  <Button class="bits-btn" on:click={() =>
+  <Button class="bits-btn" onclick={() =>
 testDELETEOperation()} disabled={isLoading} variant="secondary">
           🗑️ Test DELETE
 
-  <Button class="bits-btn" on:click={clearResults} variant="ghost">
+  <Button class="bits-btn" onclick={clearResults} variant="ghost">
 🧹 Clear Results
 
       </div>

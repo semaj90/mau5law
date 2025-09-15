@@ -51,9 +51,9 @@
   async function loadCaseData() {
     try {
       const response = await fetch(`/api/v1/cases/${caseId}`);
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        caseData = (data as { data?: any }).data;
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        caseData = (data as { data?: unknown }).data;
       } else {
         throw new Error('Failed to load case data');
       }
@@ -69,9 +69,9 @@
   async function loadCaseEvidence() {
     try {
       const response = await fetch(`/api/v1/evidence/by-case/${caseId}?includeAnalysis=true&limit=100`);
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        evidenceList = (data as { data?: any }).(data as { data?: any }).evidence || [];
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        evidenceList = (data as { data?: unknown }).(data as { data?: unknown }).evidence || [];
       } else {
         throw new Error('Failed to load evidence');
       }
@@ -131,8 +131,8 @@
     
     // Update evidence in the list with new analysis
     evidenceList = evidenceList.map(item => 
-      (item as { id?: any; metadata?: any }).id === evidence.id 
-        ? { ...item, metadata: { ...(item as { id?: any; metadata?: any }).metadata, aiAnalysis: analysis } }
+      (item as { id?: unknown; metadata?: unknown }).id === evidence.id 
+        ? { ...item, metadata: { ...(item as { id?: unknown; metadata?: unknown }).metadata, aiAnalysis: analysis } }
         : item
     );
     
@@ -158,14 +158,14 @@
 {#if isLoading}
   <div class="loading-container">
     <div class="loading-spinner"></div>
-    <p>Loading case (data as { data?: any })...</p>
+    <p>Loading case (data as { data?: unknown })...</p>
   </div>
 {:else if error}
   <div class="error-container">
     <div class="error-icon">⚠️</div>
     <h1>Error</h1>
     <p>{error}</p>
-    <button type="button" on:click={refreshCase}>Try Again</button>
+    <button type="button" onclick={refreshCase}>Try Again</button>
   </div>
 {:else if caseData}
   <div class="detective-page">
@@ -184,7 +184,7 @@
       </div>
       
       <div class="case-actions">
-        <button type="button" on:click={refreshCase}>Refresh</button>
+        <button type="button" onclick={refreshCase}>Refresh</button>
         <a href="/cases/{caseId}" class="view-case-btn">View Case Details</a>
       </div>
     </header>
@@ -196,9 +196,9 @@
         initialEvidence={evidenceList}
         enableContextualPrompts={true}
         enableAnalytics={true}
-        on:connectionMapGenerated={handleConnectionMapGenerated}
-        on:contextualPromptTriggered={handleContextualPromptTriggered}
-        on:evidenceAnalyzed={handleEvidenceAnalyzed}
+        onconnectionMapGenerated={handleConnectionMapGenerated}
+        oncontextualPromptTriggered={handleContextualPromptTriggered}
+        onevidenceAnalyzed={handleEvidenceAnalyzed}
       />
     </main>
 

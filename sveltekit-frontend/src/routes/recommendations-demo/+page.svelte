@@ -9,7 +9,7 @@ https://svelte.dev/e/expected_token -->
   import DidYouMeanSuggestions from '$lib/components/recommendations/DidYouMeanSuggestions.svelte';
   import { Users, Search, Sparkles, Database, Brain, Network } from 'lucide-svelte';
 
-  let { data  }: { data : any } = $props();
+  let { data  }: { data : unknown } = $props();
   // Svelte 5 runes for component state
   let foafModalOpen = $state(false);
   let searchQuery = $state('');
@@ -22,7 +22,7 @@ https://svelte.dev/e/expected_token -->
     { value: 'DOCUMENT', label: 'Documents', icon: Brain },
   ];
 
-  function handleSuggestionSelect(suggestion: any) {
+  function handleSuggestionSelect(suggestion: unknown) {
     console.log('Selected suggestion:', suggestion);
     // Navigate to the selected entity or perform action
   }
@@ -88,7 +88,7 @@ https://svelte.dev/e/expected_token -->
 
         <button
           class="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2"
-          on:click={() => foafModalOpen = true}
+          onclick={() => foafModalOpen = true}
         >
           <Users class="w-4 h-4" />
           Show Network Recommendations

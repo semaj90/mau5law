@@ -21,12 +21,12 @@ https://svelte.dev/e/js_parse_error -->
   	import { fade, fly, scale } from 'svelte/transition';
   	import { writable } from 'svelte/store';
 
-  	let { title = $bindable()  }: { title = $bindable() : any } = $props(); // "Smart Document Form";
-  	let { description = $bindable()  }: { description = $bindable() : any } = $props(); // "Upload a document for automatic field extraction and population";
-  	let { formSchema = $bindable()  }: { formSchema = $bindable() : any } = $props(); // FormField[] = [];
-  	let { enableOCR = $bindable()  }: { enableOCR = $bindable() : any } = $props(); // true;
-  	let { enableSmartSuggestions = $bindable()  }: { enableSmartSuggestions = $bindable() : any } = $props(); // true;
-  	let { documentTypes = $bindable()  }: { documentTypes = $bindable() : any } = $props(); // string[] = ['legal_document', 'contract', 'form'];
+  	let { title = $bindable()  }: { title = $bindable() : unknown } = $props(); // "Smart Document Form";
+  	let { description = $bindable()  }: { description = $bindable() : unknown } = $props(); // "Upload a document for automatic field extraction and population";
+  	let { formSchema = $bindable()  }: { formSchema = $bindable() : unknown } = $props(); // FormField[] = [];
+  	let { enableOCR = $bindable()  }: { enableOCR = $bindable() : unknown } = $props(); // true;
+  	let { enableSmartSuggestions = $bindable()  }: { enableSmartSuggestions = $bindable() : unknown } = $props(); // true;
+  	let { documentTypes = $bindable()  }: { documentTypes = $bindable() : unknown } = $props(); // string[] = ['legal_document', 'contract', 'form'];
 
   	const dispatch = createEventDispatcher();
 
@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
 
   			// Generate smart suggestions for incomplete fields
   			if (enableSmartSuggestions) {
-  				await generateSmartSuggestions((result as { text?: any }).text);
+  				await generateSmartSuggestions((result as { text?: unknown }).text);
   			}
 
   			showPreview = true;
@@ -153,7 +153,7 @@ https://svelte.dev/e/js_parse_error -->
   			try {
   				field.validation.parse(value);
   				delete errors[fieldName];
-  			} catch (error: any) {
+  			} catch (error: unknown) {
   				errors[fieldName] = error.errors?.[0]?.message || 'Invalid value';
   			}
   		} else {
@@ -254,10 +254,10 @@ https://svelte.dev/e/js_parse_error -->
 				<div
 					class="border-2 border-dashed border-yorha-border rounded-lg p-8 text-center transition-colors duration-200 hover:border-yorha-primary hover:bg-yorha-bg-secondary/50"
 					class:border-yorha-primary={uploadedFile}
-					on:drop={handleDrop}
+					ondrop={handleDrop}
 					role="button" 
 					aria-label="Drop zone" 
-					on:dragover={handleDragOver}
+					ondragover={handleDragOver}
 					tabindex="0"
 				>
 					{#if uploadedFile}
@@ -282,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
 						bind:this={fileInput}
 						type="file"
 						accept=".pdf,.png,.jpg,.jpeg,.tiff"
-						class="hidden" on:change={(e) => {
+						class="hidden" onchange={(e) => {
 							const files = e.target?.files;
 							if (files && files.length > 0) {
 								uploadedFile = files[0];
@@ -295,7 +295,7 @@ https://svelte.dev/e/js_parse_error -->
 						<Button
 							variant="outline"
 							class="mt-4 bits-btn"
-							on:click={() =>
+							onclick={() =>
 fileInput.click()}
 						>
 							Browse Files
@@ -378,7 +378,7 @@ fileInput.click()}
 								<Textarea
 									bind:value={field.value}
 									placeholder={`Enter ${field.label.toLowerCase()}...`}
-									class="min-h-[80px] bg-yorha-bg-secondary border-yorha-border text-yorha-text-primary" on:input={(e) => handleFieldChange(field.name, e.target.value)}
+									class="min-h-[80px] bg-yorha-bg-secondary border-yorha-border text-yorha-text-primary" oninput={(e) => handleFieldChange(field.name, e.target.value)}
 								/>
 							{:else}
 								<Input
@@ -387,7 +387,7 @@ fileInput.click()}
 									placeholder={`Enter ${field.label.toLowerCase()}...`}
 									class="bg-yorha-bg-secondary border-yorha-border text-yorha-text-primary"
 																class:border-yorha-danger={$formErrors[field.name]}
-								class:border-yorha-success={field.confidence && field.confidence > 0.8} on:input={(e) => handleFieldChange(field.name, e.target.value)}
+								class:border-yorha-success={field.confidence && field.confidence > 0.8} oninput={(e) => handleFieldChange(field.name, e.target.value)}
 								/>
 							{/if}
 
@@ -408,7 +408,7 @@ fileInput.click()}
 												variant="outline"
 												size="sm"
 												class="text-xs h-6 px-2 bits-btn"
-												on:click={() =>
+												onclick={() =>
 applySuggestion(field.name, suggestion)}
 											>
 												{suggestion}
@@ -446,7 +446,7 @@ applySuggestion(field.name, suggestion)}
 					<div class="flex items-center space-x-3">
 						<Button class="bits-btn"
 							variant="outline"
-							on:click={() =>
+							onclick={() =>
 {
 								populatedFields = populatedFields.map(f => ({ ...f, value: '' }));
 								formErrors.set({});
@@ -478,7 +478,7 @@ Submit Form
 					<Button class="bits-btn"
 						variant="ghost"
 						size="sm"
-						on:click={() =>
+						onclick={() =>
 showPreview = !showPreview}
 					>
 						{showPreview ? 'Hide' : 'Show'}

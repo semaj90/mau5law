@@ -43,12 +43,12 @@
   class="evidence-card nes-container is-rounded cursor-pointer transition-all duration-300 {statusConfig?.bgClass || 'bg-gray-50'} {statusConfig?.borderClass || 'border-gray-400'}"
   class:selected={isSelected}
   class:hovered={isHovered}
-  on:mouseenter={() => isHovered = true}
-  on:mouseleave={() => isHovered = false}
-  on:click={handleClick}
+  onmouseenter={() => isHovered = true}
+  onmouseleave={() => isHovered = false}
+  onclick={handleClick}
   role="button"
   tabindex="0"
-  on:keydown={(e) => e.key === 'Enter' && handleClick()}
+  onkeydown={(e) => e.key === 'Enter' && handleClick()}
 >
   <!-- Card Header -->
   <div class="flex items-center justify-between mb-3">

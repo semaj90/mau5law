@@ -222,7 +222,7 @@
               name="evidence_type"
               id="evidence_type"
               disabled={$submitting}
-              bind:value={$form.evidence_type} on:change={onEvidenceTypeChange}
+              bind:value={$form.evidence_type} onchange={onEvidenceTypeChange}
             >
               <option value="UNKNOWN">🔍 Auto-detect from file</option>
               <option value="PDF">📄 PDF Document</option>
@@ -247,9 +247,9 @@
             <div
               class="nes-container {dragOver ? 'is-success' : ''} {$errors.file ? 'is-error' : ''}"
               style="padding: 30px; text-align: center; cursor: pointer;"
-              on:dragover={onDragOver}
+              ondragover={onDragOver}
               ondragleave={onDragLeave}
-              role="region" aria-label="Drop zone" on:drop={onDrop}
+              role="region" aria-label="Drop zone" ondrop={onDrop}
             >
               {#if selectedFile}
                 <div class="space-y-4">
@@ -270,7 +270,7 @@
                   
                   <button
                     type="button"
-                    on:click={() => { selectedFile = null; filePreview = null; metadata = null; }}
+                    onclick={() => { selectedFile = null; filePreview = null; metadata = null; }}
                     class="text-sm text-red-600 hover:text-red-800"
                   >
                     Remove file
@@ -290,7 +290,7 @@
                         name="file"
                         id="file"
                         class="sr-only"
-                        disabled={$submitting} on:change={onFileChange}
+                        disabled={$submitting} onchange={onFileChange}
                       />
                     </label>
                   </div>
@@ -507,7 +507,7 @@
         <div style="text-align: center; margin: 20px 0;">
           <button
             type="button"
-            on:click={() => history.back()}
+            onclick={() => history.back()}
             disabled={$submitting}
             class="nes-btn"
           >

@@ -135,8 +135,8 @@
 
     const items = Array.from(event.clipboardData?.items || []);
     const files = items
-      .filter((item) => (item as { kind?: any; getAsFile?: any; size?: any; uploading?: any }).kind === "file")
-      .map((item) => (item as { kind?: any; getAsFile?: any; size?: any; uploading?: any }).getAsFile())
+      .filter((item) => (item as { kind?: unknown; getAsFile?: unknown; size?: unknown; uploading?: unknown }).kind === "file")
+      .map((item) => (item as { kind?: unknown; getAsFile?: unknown; size?: unknown; uploading?: unknown }).getAsFile())
       .filter(Boolean) as File[];
 
     if (files.length > 0) {
@@ -203,7 +203,7 @@
   }
     // Check total size
     const totalSize = [...files, ...validFiles].reduce(
-      (sum, item) => sum + (item as { kind?: any; getAsFile?: any; size?: any; uploading?: any }).size,
+      (sum, item) => sum + (item as { kind?: unknown; getAsFile?: unknown; size?: unknown; uploading?: unknown }).size,
       0
     );
     if (totalSize > maxTotalSize) {
@@ -337,12 +337,12 @@
       body: formData,
     });
 
-    if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-      throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+    if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+      throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
   }
-    const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
-    fileItem.url = (result as { url?: any; thumbnailUrl?: any }).url;
-    fileItem.thumbnailUrl = (result as { url?: any; thumbnailUrl?: any }).thumbnailUrl;
+    const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
+    fileItem.url = (result as { url?: unknown; thumbnailUrl?: unknown }).url;
+    fileItem.thumbnailUrl = (result as { url?: unknown; thumbnailUrl?: unknown }).thumbnailUrl;
   }
   async function uploadFileInChunks(fileItem: FileUploadItem) {
     const totalChunks = Math.ceil(fileItem.size / chunkSize);
@@ -366,8 +366,8 @@
         body: formData,
       });
 
-      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+      if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
   }
       fileItem.uploadedChunks = chunkIndex + 1;
       fileItem.progress = (fileItem.uploadedChunks / totalChunks) * 100;
@@ -387,8 +387,8 @@
       throw new Error("Failed to finalize upload");
   }
     const result = await finalizeResponse.json();
-    fileItem.url = (result as { url?: any; thumbnailUrl?: any }).url;
-    fileItem.thumbnailUrl = (result as { url?: any; thumbnailUrl?: any }).thumbnailUrl;
+    fileItem.url = (result as { url?: unknown; thumbnailUrl?: unknown }).url;
+    fileItem.thumbnailUrl = (result as { url?: unknown; thumbnailUrl?: unknown }).thumbnailUrl;
   }
   function updateTotalProgress() {
     if (files.length === 0) {
@@ -547,14 +547,14 @@
     class="drop-zone-area"
     class:drag-over={isDragOver}
     class:disabled
-    on:drop={handleDrop}
+    ondrop={handleDrop}
     role="button" 
     aria-label="File upload area. Click to select files or drag and drop files here."
-    on:dragover={handleDragOver}
+    ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     tabindex={0}
-    on:click={() => !disabled && fileInput.click()}
-    on:keydown={(e) => {
+    onclick={() => !disabled && fileInput.click()}
+    onkeydown={(e) => {
       if ((e.key === "Enter" || e.key === " ") && !disabled) {
         e.preventDefault();
         fileInput.click();
@@ -593,7 +593,7 @@
         {#if enableCameraCapture}
           <Button class="bits-btn"
             variant="secondary"
-            on:click={handleCameraCaptureClick}
+            onclick={handleCameraCaptureClick}
             {disabled}
           >
 <Camera class="container mx-auto px-4" />
@@ -603,7 +603,7 @@
 
         {#if enableAudioRecording}
           <button class="nes-btn"
-            on:click={handleAudioRecordingClick}
+            onclick={handleAudioRecordingClick}
             {disabled}
             class={isRecording ? "bg-red-100 text-red-700" : ""}
           >
@@ -621,7 +621,7 @@
     type="file"
     {multiple}
     {accept}
-    {disabled} on:change={handleFileSelect}
+    {disabled} onchange={handleFileSelect}
     class="container mx-auto px-4"
     aria-hidden="true"
   />
@@ -638,7 +638,7 @@
           {#if !autoUpload && files.some((f) => f.status === "pending")}
             <Button class="bits-btn"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 uploadFiles()}
               disabled={isUploading}
             >
@@ -654,7 +654,7 @@ uploadFiles()}
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 (files = [])}
             disabled={isUploading}
           >
@@ -729,7 +729,7 @@ uploadFiles()}
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 window.open(file.url, "_blank")}
                   aria-label="View {file.name}"
                 >
@@ -741,7 +741,7 @@ window.open(file.url, "_blank")}
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 retryUpload(file.id)}
                   aria-label="Retry upload of {file.name}"
                 >
@@ -752,7 +752,7 @@ retryUpload(file.id)}
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 removeFile(file.id)}
                 disabled={file.status === "uploading"}
                 aria-label="Remove {file.name}"
@@ -872,7 +872,7 @@ removeFile(file.id)}
   .file-item:hover {
     background: #f9fafb;
 }
-  .file-(item as { kind?: any; getAsFile?: any; size?: any; uploading?: any }).uploading {
+  .file-(item as { kind?: unknown; getAsFile?: unknown; size?: unknown; uploading?: unknown }).uploading {
     background: #eff6ff;
 }
   .file-preview {

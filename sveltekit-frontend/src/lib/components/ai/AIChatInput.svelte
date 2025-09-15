@@ -1,5 +1,6 @@
 <!-- AI Chat Input Component -->
 <script lang="ts">
+  import { debounce } from '$lib/utils/debounce';
   import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { createEventDispatcher, onMount } from "svelte";
@@ -24,7 +25,7 @@
   } = $props();
 
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  // TODO: Replace createEventDispatcher with callback props in Svelte 5
 
   // Elements
   let textarea: HTMLTextAreaElement;
@@ -125,10 +126,10 @@
       class:near-limit={isNearLimit}
       class:at-limit={isAtLimit}
       rows={rows}
-      on:input={handleInput}
-      on:keydown={handleKeydown}
-      on:focus={handleFocus}
-      on:blur={handleBlur}
+      oninput={(event: Event) => debounce(handleInput, 300}
+      onkeydown={handleKeydown}
+      onfocus={handleFocus}
+      onblur={handleBlur}
       aria-label="Chat message input"
       spellcheck="true"
     ></textarea>
@@ -144,12 +145,12 @@
         </span>
       {/if}
 
-      <button
+      <button aria-label="Button"
         type="button"
         class="send-button"
         disabled={disabled}
         class:has-content={value.trim().length > 0}
-        on:click={() => handleSend()}
+        onclick={(event: MouseEvent) => ) => handleSend(}
         title="Send message (Enter)"
         aria-label="Send message"
       >

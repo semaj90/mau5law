@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
   {enctype}
   {target}
   {novalidate}
-  {autocomplete} on:submit={handleSubmit}
+  {autocomplete} onsubmit={handleSubmit}
   {...restProps}
 >
   <!-- Form Header -->

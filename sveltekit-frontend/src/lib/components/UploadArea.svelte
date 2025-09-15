@@ -37,15 +37,15 @@ https://svelte.dev/e/rune_missing_parentheses -->
   class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors"
   class:border-blue-500={dragActive}
   class:bg-blue-50={dragActive}
-  on:drop={handleDrop}
-  role="region" aria-label="Drop zone" on:dragover={preventDefault(() => dragActive = true)}
+  ondrop={handleDrop}
+  role="region" aria-label="Drop zone" ondragover={preventDefault(() => dragActive = true)}
   dragleave={() => dragActive = false}
 >
   <input
     bind:this={fileInput}
     type="file"
     {accept}
-    {multiple} on:change={handleFileSelect}
+    {multiple} onchange={handleFileSelect}
     class="hidden"
   />
 
@@ -56,7 +56,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
       <p class="text-sm text-gray-500">Supports all file types</p>
     </div>
     <button
-      on:click={() => fileInput.click()}
+      onclick={() => fileInput.click()}
       class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
     >
       Select Files

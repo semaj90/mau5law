@@ -29,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
     shortcutsHelp
    }: { open = $bindable(false),
     shortcutsHelp
-  : any } = $props();
+  : unknown } = $props();
 
   // Keyboard shortcuts configuration
   const shortcuts = [
@@ -401,7 +401,7 @@ https://svelte.dev/e/js_parse_error -->
 
     return parts.join("+");
   }
-  function executeCommand(command: any) {
+  function executeCommand(command: unknown) {
     if (!command) return;
 
     open = false;
@@ -538,7 +538,7 @@ https://svelte.dev/e/js_parse_error -->
     tabindex={0}
     aria-modal="true"
     aria-labelledby="command-palette-title"
-    on:click={(e) => { if ((e.target as HTMLButtonElement) === e.currentTarget) open = false; }}
+    onclick={(e) => { if ((e.target as HTMLButtonElement) === e.currentTarget) open = false; }}
     keydown={(e) => (e.key === "Escape" ? (open = false) : null)}
   >
     <div class="command-palette">
@@ -559,7 +559,7 @@ https://svelte.dev/e/js_parse_error -->
           <button class="nes-btn"
             variant="ghost"
             size="sm"
-            on:click={() => (open = false)}
+            onclick={() => (open = false)}
             class="close-button"
             aria-label="Close command palette"
           >
@@ -582,14 +582,14 @@ https://svelte.dev/e/js_parse_error -->
                 role="option"
                 aria-selected={index === selectedIndex}
                 tabindex={0}
-                on:click={() => shortcut.action && shortcut.action()}
+                onclick={() => shortcut.action && shortcut.action()}
                 keydown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     shortcut.action && shortcut.action();
                   }
                 }}
-                on:mouseenter={() => (selectedIndex = index)}
+                onmouseenter={() => (selectedIndex = index)}
               >
                 <div class="command-content">
                   <div class="command-title flex items-center gap-2">
@@ -722,7 +722,7 @@ box-shadow: {}
     transition: background-color 0.1s ease;
 }
 .command-item:hover, {}
-  .command-(item as { selected?: any }).selected {
+  .command-(item as { selected?: unknown }).selected {
     background: #f3f4f6;
 }
   .command-icon {
@@ -815,7 +815,7 @@ box-shadow: {}
       color: #9ca3af;
 }
 .command-item:hover, {}
-    .command-(item as { selected?: any }).selected {
+    .command-(item as { selected?: unknown }).selected {
       background: #374151;
 }
     .command-icon {
@@ -857,7 +857,7 @@ box-shadow: {}
     .command-palette {
       border: 2px solid #000;
 }
-    .command-(item as { selected?: any }).selected {
+    .command-(item as { selected?: unknown }).selected {
       background: #000;
       color: #fff;
 }}

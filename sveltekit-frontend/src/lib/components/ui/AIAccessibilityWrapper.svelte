@@ -6,7 +6,7 @@
 
   interface Props {
     children?: Snippet;
-    aiResult?: any;
+    aiResult?: unknown;
     operation?: string;
     status?: 'idle' | 'processing' | 'completed' | 'error';
     enableVoiceCommands?: boolean;
@@ -120,7 +120,7 @@
     <div class="voice-commands-control">
       <button
         class="voice-toggle nes-btn {voiceCommandsActive ? 'is-success' : 'is-primary'}"
-        on:click={handleVoiceCommand}
+        onclick={handleVoiceCommand}
         aria-pressed={voiceCommandsActive}
         aria-label="Toggle voice commands (Ctrl+Shift+V)"
         title="Voice Commands (Ctrl+Shift+V)"

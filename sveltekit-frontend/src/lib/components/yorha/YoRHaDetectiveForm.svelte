@@ -14,20 +14,20 @@
 
   interface Props {
     fields: FormField[];
-    onSubmit: (data: any) => Promise<void>;
+    onSubmit: (data: unknown) => Promise<void>;
     submitText?: string;
     submitClass?: string;
   }
 
   let { fields = $bindable(),
-    on:submit= $bindable(), 
+    onsubmit= $bindable(), 
     submitText = $bindable(),
     submitClass = $bindable()
    }: { fields = $bindable(),
-    on:submit= $bindable(), 
+    onsubmit= $bindable(), 
     submitText = $bindable(),
     submitClass = $bindable()
-  : any } = $props();
+  : unknown } = $props();
 
   let formData = $state({});
   let isSubmitting = $state(false);
@@ -59,12 +59,12 @@
     }
   }
 
-  function updateFormData(fieldName: string, value: any) {
+  function updateFormData(fieldName: string, value: unknown) {
     formData[fieldName] = value;
   }
 </script>
 
-<form class="yorha-form" on:submit={handleSubmit}>
+<form class="yorha-form" onsubmit={handleSubmit}>
   <div class="form-fields">
     {#each fields as field}
       <div class="form-field">

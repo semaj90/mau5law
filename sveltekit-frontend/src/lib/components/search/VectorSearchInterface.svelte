@@ -115,13 +115,13 @@
       <div class="flex-1">
         <input
           bind:value={searchQuery}
-          on:keydown={handleKeydown}
+          onkeydown={handleKeydown}
           placeholder="Enter legal query (e.g., 'contract liability clauses')"
           class="w-full bg-gray-800/50 border border-cyan-400/30 rounded-lg px-4 py-3 text-gray-200 placeholder-gray-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 focus:outline-none transition-all"
         />
       </div>
       <ModernButton
-        on:click={performSearch}
+        onclick={performSearch}
         disabled={isSearching || !searchQuery.trim()}
         variant="primary"
         class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-3 font-bold text-white disabled:opacity-50"
@@ -148,7 +148,7 @@
     <!-- Filter Toggle -->
     <div class="flex items-end">
       <ModernButton
-        on:click={() => showFilters = !showFilters}
+        onclick={() => showFilters = !showFilters}
         variant="outline"
         class="border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10"
       >
@@ -172,7 +172,7 @@
                 <input
                   type="checkbox"
                   checked={selectedFilters.documentType.includes(type)}
-                  on:change={() => toggleFilter('documentType', type)}
+                  onchange={() => toggleFilter('documentType', type)}
                   class="mr-2 text-cyan-400 focus:ring-cyan-400"
                 />
                 <span class="text-sm capitalize">{type.replace('_', ' ')}</span>
@@ -190,7 +190,7 @@
                 <input
                   type="checkbox"
                   checked={selectedFilters.jurisdiction.includes(jurisdiction)}
-                  on:change={() => toggleFilter('jurisdiction', jurisdiction)}
+                  onchange={() => toggleFilter('jurisdiction', jurisdiction)}
                   class="mr-2 text-cyan-400 focus:ring-cyan-400"
                 />
                 <span class="text-sm capitalize">{jurisdiction}</span>
@@ -208,7 +208,7 @@
                 <input
                   type="checkbox"
                   checked={selectedFilters.riskLevel.includes(risk)}
-                  on:change={() => toggleFilter('riskLevel', risk)}
+                  onchange={() => toggleFilter('riskLevel', risk)}
                   class="mr-2 text-cyan-400 focus:ring-cyan-400"
                 />
                 <span class="text-sm capitalize">{risk}</span>
@@ -247,49 +247,49 @@
           <div class="flex items-start justify-between mb-3">
             <div class="flex-1">
               <h4 class="text-lg font-semibold text-white mb-1">
-                {(result as { metadata?: any; score?: any; chunks?: any }).metadata.title}
+                {(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.title}
               </h4>
               <div class="flex items-center gap-3 text-sm text-gray-400">
                 <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-1 rounded">
-                  {(result as { metadata?: any; score?: any; chunks?: any }).metadata.documentType}
+                  {(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.documentType}
                 </span>
-                <span class="{getRiskLevelClass((result as { metadata?: any; score?: any; chunks?: any }).metadata.riskLevel)} border px-2 py-1 rounded">
-                  {(result as { metadata?: any; score?: any; chunks?: any }).metadata.riskLevel.toUpperCase()}
+                <span class="{getRiskLevelClass((result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.riskLevel)} border px-2 py-1 rounded">
+                  {(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.riskLevel.toUpperCase()}
                 </span>
-                <span>📍 {(result as { metadata?: any; score?: any; chunks?: any }).metadata.jurisdiction}</span>
+                <span>📍 {(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.jurisdiction}</span>
               </div>
             </div>
             <div class="text-right">
               <div class="text-lg font-bold text-cyan-400">
-                {formatScore((result as { metadata?: any; score?: any; chunks?: any }).score)}
+                {formatScore((result as { metadata?: unknown; score?: unknown; chunks?: unknown }).score)}
               </div>
               <div class="text-xs text-gray-500">
-                confidence: {((result as { metadata?: any; score?: any; chunks?: any }).metadata.confidenceLevel * 100).toFixed(0)}%
+                confidence: {((result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.confidenceLevel * 100).toFixed(0)}%
               </div>
             </div>
           </div>
 
           <!-- Metadata -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3 text-sm">
-            {#if (result as { metadata?: any; score?: any; chunks?: any }).metadata.legalEntities.length > 0}
+            {#if (result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.legalEntities.length > 0}
               <div>
                 <span class="text-gray-400">Legal Entities:</span>
-                <span class="text-gray-200">{(result as { metadata?: any; score?: any; chunks?: any }).metadata.legalEntities.join(', ')}</span>
+                <span class="text-gray-200">{(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.legalEntities.join(', ')}</span>
               </div>
             {/if}
-            {#if (result as { metadata?: any; score?: any; chunks?: any }).metadata.caseReferences.length > 0}
+            {#if (result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.caseReferences.length > 0}
               <div>
                 <span class="text-gray-400">Case References:</span>
-                <span class="text-gray-200">{(result as { metadata?: any; score?: any; chunks?: any }).metadata.caseReferences.length} citations</span>
+                <span class="text-gray-200">{(result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.caseReferences.length} citations</span>
               </div>
             {/if}
           </div>
 
           <!-- Text Chunks Preview -->
-          {#if (result as { metadata?: any; score?: any; chunks?: any }).chunks && (result as { metadata?: any; score?: any; chunks?: any }).chunks.length > 0}
+          {#if (result as { metadata?: unknown; score?: unknown; chunks?: unknown }).chunks && (result as { metadata?: unknown; score?: unknown; chunks?: unknown }).chunks.length > 0}
             <div class="mt-3 p-3 bg-gray-900/50 rounded border border-gray-700/50">
               <div class="text-sm text-gray-400 mb-2">Relevant Excerpts:</div>
-              {#each (result as { metadata?: any; score?: any; chunks?: any }).chunks.slice(0, 2) as chunk}
+              {#each (result as { metadata?: unknown; score?: unknown; chunks?: unknown }).chunks.slice(0, 2) as chunk}
                 <div class="text-sm text-gray-300 mb-2 line-clamp-3">
                   "{chunk.text.substring(0, 200)}..."
                 </div>
@@ -300,7 +300,7 @@
           <!-- Actions -->
           <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-700/50">
             <div class="text-xs text-gray-500">
-              Modified: {new Date((result as { metadata?: any; score?: any; chunks?: any }).metadata.lastModified).toLocaleDateString()}
+              Modified: {new Date((result as { metadata?: unknown; score?: unknown; chunks?: unknown }).metadata.lastModified).toLocaleDateString()}
             </div>
             <div class="flex gap-2">
               <ModernButton

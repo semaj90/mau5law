@@ -271,7 +271,7 @@
         max="32000"
         step="100"
         bind:value={tokenLimit}
-        on:change={(e: Event) => updateTokenLimit(parseInt((e.target as HTMLInputElement).value))}
+        onchange={(e: Event) => updateTokenLimit(parseInt((e.target as HTMLInputElement).value))}
         data-testid="token-limit-slider"
         class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
       />
@@ -364,7 +364,7 @@
         size="sm"
         variant="outline"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        on:click={() =>
+        onclick={() =>
 showHistory = !showHistory}
         data-testid="token-history-button"
       >
@@ -378,7 +378,7 @@ showHistory = !showHistory}
         size="sm"
         variant="outline"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        on:click={optimizeTokenUsage}
+        onclick={optimizeTokenUsage}
         disabled={!autoOptimize}
       >
 <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -391,7 +391,7 @@ showHistory = !showHistory}
         size="sm"
         variant="outline"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        on:click={resetSession}
+        onclick={resetSession}
       >
 Reset
 </Button>
@@ -400,7 +400,7 @@ Reset
         size="sm"
         variant="outline"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        on:click={exportUsageData}
+        onclick={exportUsageData}
       >
 Export
 </Button>

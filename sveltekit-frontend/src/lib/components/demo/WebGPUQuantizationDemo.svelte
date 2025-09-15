@@ -502,7 +502,7 @@ https://svelte.dev/e/expected_token -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each demoScenarios as scenario}
           <button
-            on:click={() => runDemo(scenario.id)}
+            onclick={() => runDemo(scenario.id)}
             disabled={demoRunning}
             class="scenario-nier-bits-card p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all duration-200 text-left {demoRunning ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}"
           >
@@ -521,13 +521,13 @@ https://svelte.dev/e/expected_token -->
     <!-- Controls -->
     <div class="controls mb-6 flex gap-4">
       <button
-        on:click={() => clearResults()}
+        onclick={() => clearResults()}
         class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
       >
         Clear Results
       </button>
       <button
-        on:click={() => clearCache()}
+        onclick={() => clearCache()}
         class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors"
       >
         Clear Cache

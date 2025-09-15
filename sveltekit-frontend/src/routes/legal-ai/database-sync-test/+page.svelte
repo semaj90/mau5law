@@ -30,16 +30,16 @@
   import type { PageData } from './$types.js';
   
   // Component props - receives SSR data
-  export let data: PageData;
+  let { data } = $props();: PageData;
   
   // ===== LOGIC LAYER =====
   // Pure reactive state derived from stores
   
-  $: langchainState = $langchainService;
-  $: documentState = $documentProcessing;
-  $: serviceStatus = (data as { initialState?: any; meta?: any }).initialState.serviceStatus;
-  $: recentSessions = (data as { initialState?: any; meta?: any }).initialState.recentSessions;
-  $: recentDocuments = (data as { initialState?: any; meta?: any }).initialState.recentDocuments;
+  let langchainState = $derived($langchainService);
+  let documentState = $derived($documentProcessing);
+  let serviceStatus = $derived((data as { initialState?: unknown); meta?: unknown }).initialState.serviceStatus;
+  let recentSessions = $derived((data as { initialState?: unknown); meta?: unknown }).initialState.recentSessions;
+  let recentDocuments = $derived((data as { initialState?: unknown); meta?: unknown }).initialState.recentDocuments;
   
   // Local component state for testing
   let testDocument = `
@@ -65,7 +65,7 @@
   `;
   
   let selectedSession: string | null = null;
-  let testResults: any = null;
+  let testResults: unknown = null;
   let testLog: string[] = [];
   
   // ===== DATABASE SYNC TESTING FUNCTIONS =====
@@ -158,12 +158,12 @@
   // ===== PRESENTATION LAYER =====
   // ARIA state management
   
-  $: ariaProps = {
+  let ariaProps = $derived({
     expanded: false,
     disabled: $documentProcessing.isProcessing,
     label: $documentProcessing.isProcessing ? 'Processing...' : 'Test database sync',
     live: $documentProcessing.isProcessing ? 'polite' : 'off'
-  };
+  });
   
   onMount(() => {
     addToLog('🚀 Database sync test component mounted');
@@ -212,7 +212,7 @@
     <p class="last-checked">
       Last checked: {new Date(serviceStatus.lastChecked).toLocaleString()}
       <br>
-      Server render time: {(data as { initialState?: any; meta?: any }).meta.serverRenderTime}ms
+      Server render time: {(data as { initialState?: unknown; meta?: unknown }).meta.serverRenderTime}ms
     </p>
   </section>
 
@@ -556,7 +556,7 @@
     background: #f8f9fa;
   }
   
-  .session-(item as { selected?: any }).selected {
+  .session-(item as { selected?: unknown }).selected {
     border-color: #0066cc;
     background: #e3f2fd;
   }

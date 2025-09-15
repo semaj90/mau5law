@@ -224,7 +224,7 @@
     <div class="error-icon">⚠️</div>
     <h1>Error</h1>
     <p>{error}</p>
-    <button type="button" on:click={refreshOrganization}>Try Again</button>
+    <button type="button" onclick={refreshOrganization}>Try Again</button>
   </div>
 {:else if caseData}
   <div class="evidence-organization-page">
@@ -244,17 +244,17 @@
           {#if selectedEvidence.length > 0}
             <div class="selection-info">
               <span class="selection-count">{selectedEvidence.length} selected</span>
-              <button type="button" on:click={clearSelections} class="clear-btn">
+              <button type="button" onclick={clearSelections} class="clear-btn">
                 Clear Selection
               </button>
             </div>
           {/if}
           
           <div class="action-buttons">
-            <button type="button" on:click={exportOrganization} class="export-btn">
+            <button type="button" onclick={exportOrganization} class="export-btn">
               📥 Export Organization
             </button>
-            <button type="button" on:click={generateReport} class="report-btn">
+            <button type="button" onclick={generateReport} class="report-btn">
               📊 Generate Report
             </button>
             <a href="/cases/{caseId}" class="view-case-btn">
@@ -292,9 +292,9 @@
         organizationMode="category"
         enableCollaboration={true}
         showMetrics={true}
-        on:evidenceReorganized={handleEvidenceReorganized}
-        on:evidenceSelected={handleEvidenceSelected}
-        on:organizationChanged={handleOrganizationChanged}
+        onevidenceReorganized={handleEvidenceReorganized}
+        onevidenceSelected={handleEvidenceSelected}
+        onorganizationChanged={handleOrganizationChanged}
       />
     </main>
 
@@ -317,7 +317,7 @@
                 <button 
                   type="button" 
                   class="remove-btn"
-                  on:click={() => handleEvidenceSelected({ detail: { evidence, context: 'removal' } })}
+                  onclick={() => handleEvidenceSelected({ detail: { evidence, context: 'removal' } })}
                 >
                   ✕
                 </button>

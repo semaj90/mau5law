@@ -380,7 +380,7 @@ https://svelte.dev/e/tag_invalid_name -->
 
 				<div class="flex gap-2 mb-6">
 					<button
-						on:click={() => runEnhancedRAGQuery(currentQuery)}
+						onclick={() => runEnhancedRAGQuery(currentQuery)}
 						disabled={isLoading || !currentQuery.trim()}
 						class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
 					>
@@ -390,7 +390,7 @@ https://svelte.dev/e/tag_invalid_name -->
 						🚀 Run Enhanced RAG
 					</button>
 					<button
-						on:click={clearResponses}
+						onclick={clearResponses}
 						class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
 					>
 						Clear Results
@@ -402,7 +402,7 @@ https://svelte.dev/e/tag_invalid_name -->
 				<div class="space-y-2">
 					{#each enhancedRagQueries as demo}
 						<button
-							on:click={() => runEnhancedRAGQuery(demo.query, demo.category)}
+							onclick={() => runEnhancedRAGQuery(demo.query, demo.category)}
 							disabled={isLoading}
 							class="w-full text-left px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 rounded-lg transition-colors disabled:opacity-50 border border-blue-200"
 						>

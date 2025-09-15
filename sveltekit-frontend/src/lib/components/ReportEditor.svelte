@@ -7,11 +7,11 @@ https://svelte.dev/e/props_duplicate -->
   import type { CitationPoint, Report, ReportSection } from "$lib/data/types";
   import { onDestroy, onMount } from 'svelte';
 
-  let { report = $bindable()  }: { report = $bindable() : any } = $props(); // Report | null = null;
-  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string;
-  let { onSave = $bindable()  }: { onSave = $bindable() : any } = $props(); // (report: Report) => Promise<void> = async () => {};
-  let { autoSaveEnabled = $bindable()  }: { autoSaveEnabled = $bindable() : any } = $props(); // true;
-  let { readOnly = $bindable()  }: { readOnly = $bindable() : any } = $props(); // false;
+  let { report = $bindable()  }: { report = $bindable() : unknown } = $props(); // Report | null = null;
+  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string;
+  let { onSave = $bindable()  }: { onSave = $bindable() : unknown } = $props(); // (report: Report) => Promise<void> = async () => {};
+  let { autoSaveEnabled = $bindable()  }: { autoSaveEnabled = $bindable() : unknown } = $props(); // true;
+  let { readOnly = $bindable()  }: { readOnly = $bindable() : unknown } = $props(); // false;
 
   let editorElement: HTMLDivElement;
   let citationSidebar: HTMLDivElement;
@@ -371,13 +371,13 @@ https://svelte.dev/e/props_duplicate -->
       <div class="container mx-auto px-4">
         <button
           class="container mx-auto px-4"
-          on:click={() => (showAiPanel = !showAiPanel)}
+          onclick={() => (showAiPanel = !showAiPanel)}
         >
           AI Assist
         </button>
         <button
           class="container mx-auto px-4"
-          on:click={() => saveReport()}
+          onclick={() => saveReport()}
           disabled={!isDirty || isLoading}
         >
           Save
@@ -393,21 +393,21 @@ https://svelte.dev/e/props_duplicate -->
       <div class="container mx-auto px-4">
         <button
           type="button"
-          on:click={() => formatText("bold")}
+          onclick={() => formatText("bold")}
           title="Bold (Ctrl+B)"
         >
           <strong>B</strong>
         </button>
         <button
           type="button"
-          on:click={() => formatText("italic")}
+          onclick={() => formatText("italic")}
           title="Italic (Ctrl+I)"
         >
           <em>I</em>
         </button>
         <button
           type="button"
-          on:click={() => formatText("underline")}
+          onclick={() => formatText("underline")}
           title="Underline (Ctrl+U)"
         >
           <u>U</u>
@@ -415,7 +415,7 @@ https://svelte.dev/e/props_duplicate -->
         <div class="container mx-auto px-4"></div>
         <button
           type="button"
-          on:click={() => insertCitationPrompt()}
+          onclick={() => insertCitationPrompt()}
           title="Insert Citation (Ctrl+K)"
         >
           📎 Citation
@@ -444,7 +444,7 @@ https://svelte.dev/e/props_duplicate -->
       <h3>Citations</h3>
       <button
         class="container mx-auto px-4"
-        on:click={() => (citationSidebar.style.display = "none")}>×</button
+        onclick={() => (citationSidebar.style.display = "none")}>×</button
       >
     </div>
 
@@ -460,7 +460,7 @@ https://svelte.dev/e/props_duplicate -->
             <div class="container mx-auto px-4">{citation.source}</div>
             <button
               class="container mx-auto px-4"
-              on:click={() => insertCitation(citation)}
+              onclick={() => insertCitation(citation)}
             >
               Add
             </button>
@@ -475,7 +475,7 @@ https://svelte.dev/e/props_duplicate -->
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <h3>AI Suggestions</h3>
-        <button class="container mx-auto px-4" on:click={() => (showAiPanel = false)}
+        <button class="container mx-auto px-4" onclick={() => (showAiPanel = false)}
           >×</button
         >
       </div>
@@ -489,7 +489,7 @@ https://svelte.dev/e/props_duplicate -->
               <p>{suggestion}</p>
               <button
                 class="container mx-auto px-4"
-                on:click={() => insertAiSuggestion(suggestion)}
+                onclick={() => insertAiSuggestion(suggestion)}
               >
                 Use This
               </button>
@@ -511,7 +511,7 @@ https://svelte.dev/e/props_duplicate -->
           <span class="container mx-auto px-4">[{citation.source}]</span>
           <button
             class="container mx-auto px-4"
-            on:click={() => removeCitation(citation.id)}>×</button
+            onclick={() => removeCitation(citation.id)}>×</button
           >
         </div>
       {/each}

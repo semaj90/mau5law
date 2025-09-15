@@ -46,7 +46,7 @@ https://svelte.dev/e/expected_token -->
 
   // Derived state for analysis capabilities
   let availableAnalyses = $derived(
-    Object.entries((data as { analysisCapabilities?: any; sampleDocuments?: any; recentAnalyses?: any }).analysisCapabilities).map(([key, capability]) => ({
+    Object.entries((data as { analysisCapabilities?: unknown; sampleDocuments?: unknown; recentAnalyses?: unknown }).analysisCapabilities).map(([key, capability]) => ({
       id: key,
       ...capability
     }))
@@ -85,9 +85,9 @@ https://svelte.dev/e/expected_token -->
         body: formData
       });
 
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).success) {
-        analysisResults = (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).results;
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).success) {
+        analysisResults = (result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).results;
       }
     } catch (error) {
       console.error('Analysis failed:', error);
@@ -194,7 +194,7 @@ https://svelte.dev/e/expected_token -->
         { id: 'visualization', label: 'Data Visualization', icon: Eye }
       ] as tab}
         <button
-          on:click={() => currentTab = tab.id}
+          onclick={() => currentTab = tab.id}
           class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {currentTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
@@ -221,9 +221,9 @@ https://svelte.dev/e/expected_token -->
         </div.Header>
         <div.Content class="space-y-4 nes-container">
           <div class="grid gap-3 max-h-96 overflow-y-auto">
-            {#each (data as { analysisCapabilities?: any; sampleDocuments?: any; recentAnalyses?: any }).sampleDocuments as document}
+            {#each (data as { analysisCapabilities?: unknown; sampleDocuments?: unknown; recentAnalyses?: unknown }).sampleDocuments as document}
               <button
-                on:click={() => selectedDocument = document}
+                onclick={() => selectedDocument = document}
                 class="p-4 border rounded-lg text-left transition-all hover:shadow-md
                        {selectedDocument?.id === document.id ? 'border-primary bg-primary/5' : 'hover:border-primary/50'}"
               >
@@ -274,7 +274,7 @@ https://svelte.dev/e/expected_token -->
                   <input
                     type="checkbox"
                     checked={selectedAnalysisTypes.has(analysis.id)}
-                    on:change={() => toggleAnalysisType(analysis.id)}
+                    onchange={() => toggleAnalysisType(analysis.id)}
                     class="rounded border-gray-300"
                   />
                   <div class="flex-1">
@@ -295,7 +295,7 @@ https://svelte.dev/e/expected_token -->
           <!-- Analysis Controls -->
           <div class="border-t pt-4">
             <OrchestratedButton.AnalyzeEvidence
-              on:click={runHybridAnalysis}
+              onclick={runHybridAnalysis}
               disabled={!selectedDocument || selectedAnalysisTypes.size === 0 || isAnalyzing}
               class="w-full gap-2"
             >
@@ -368,15 +368,15 @@ https://svelte.dev/e/expected_token -->
               <div class="border rounded-lg p-4">
                 <div class="flex items-center gap-2 mb-3">
                   <Badge class={getAnalysisTypeColor(analysisType)}>{analysisType.replace('_', ' ')}</Badge>
-                  {#if (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).confidence}
-                    <Badge variant="outline">{formatConfidence((result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).confidence)} confidence</Badge>
+                  {#if (result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).confidence}
+                    <Badge variant="outline">{formatConfidence((result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).confidence)} confidence</Badge>
                   {/if}
                 </div>
 
-                {#if analysisType === 'semantic_similarity' && (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).similarDocuments}
+                {#if analysisType === 'semantic_similarity' && (result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).similarDocuments}
                   <div class="space-y-2">
                     <h5 class="font-medium">Similar Documents</h5>
-                    {#each (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).similarDocuments as doc}
+                    {#each (result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).similarDocuments as doc}
                       <div class="flex items-center justify-between p-2 bg-muted/30 rounded">
                         <span class="text-sm">{doc.title}</span>
                         <Badge variant="outline">{formatConfidence(doc.similarity)} similarity</Badge>
@@ -385,11 +385,11 @@ https://svelte.dev/e/expected_token -->
                   </div>
                 {/if}
 
-                {#if analysisType === 'entity_extraction' && (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).entities}
+                {#if analysisType === 'entity_extraction' && (result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).entities}
                   <div class="space-y-2">
-                    <h5 class="font-medium">Extracted Entities ({(result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).entityCount})</h5>
+                    <h5 class="font-medium">Extracted Entities ({(result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).entityCount})</h5>
                     <div class="flex flex-wrap gap-2">
-                      {#each (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).entities as entity}
+                      {#each (result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).entities as entity}
                         <Badge variant="secondary" class="gap-1">
                           {entity.text}
                           <span class="text-xs opacity-70">({entity.type})</span>
@@ -399,24 +399,24 @@ https://svelte.dev/e/expected_token -->
                   </div>
                 {/if}
 
-                {#if analysisType === 'risk_assessment' && (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskScore !== undefined}
+                {#if analysisType === 'risk_assessment' && (result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).riskScore !== undefined}
                   <div class="space-y-3">
                     <div class="flex items-center justify-between">
                       <span class="font-medium">Risk Assessment</span>
-                      <Badge class={getRiskLevelColor((result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskLevel)}>
-                        {(result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskLevel} risk
+                      <Badge class={getRiskLevelColor((result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).riskLevel)}>
+                        {(result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).riskLevel} risk
                       </Badge>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        class="h-2 rounded-full {(result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskScore > 0.7 ? 'bg-red-500' : (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskScore > 0.4 ? 'bg-yellow-500' : 'bg-green-500'}"
-                        style="width: {(result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskScore * 100}%"
+                        class="h-2 rounded-full {(result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).riskScore > 0.7 ? 'bg-red-500' : (result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).riskScore > 0.4 ? 'bg-yellow-500' : 'bg-green-500'}"
+                        style="width: {(result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).riskScore * 100}%"
                       ></div>
                     </div>
-                    {#if (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskFactors}
+                    {#if (result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).riskFactors}
                       <div class="space-y-1">
                         <h6 class="text-sm font-medium">Risk Factors:</h6>
-                        {#each (result as { success?: any; results?: any; confidence?: any; similarDocuments?: any; entities?: any; entityCount?: any; riskScore?: any; riskLevel?: any; riskFactors?: any }).riskFactors as factor}
+                        {#each (result as { success?: unknown; results?: unknown; confidence?: unknown; similarDocuments?: unknown; entities?: unknown; entityCount?: unknown; riskScore?: unknown; riskLevel?: unknown; riskFactors?: unknown }).riskFactors as factor}
                           <div class="flex items-center gap-2 text-sm nes-text is-disabled">
                             <AlertTriangle class="w-3 h-3" />
                             {factor}
@@ -432,14 +432,14 @@ https://svelte.dev/e/expected_token -->
 
           <!-- Action Buttons -->
           <div class="flex gap-3 pt-4 border-t">
-            <button class="nes-btn" variant="outline" on:click={() => analysisResults = null}>
+            <button class="nes-btn" variant="outline" onclick={() => analysisResults = null}>
               Clear Results
             </button>
-            <button class="nes-btn" variant="outline" on:click={() => currentTab = 'visualization'}>
+            <button class="nes-btn" variant="outline" onclick={() => currentTab = 'visualization'}>
               <Eye class="w-4 h-4 mr-2" />
               View Visualization
             </button>
-            <button class="nes-btn" on:click={() => goto('/dashboard/search')}>
+            <button class="nes-btn" onclick={() => goto('/dashboard/search')}>
               <Search class="w-4 h-4 mr-2" />
               Search Similar
             </button>
@@ -462,12 +462,12 @@ https://svelte.dev/e/expected_token -->
       </div.Header>
       <div.Content class="space-y-6 nes-container">
         <div class="grid gap-3">
-          {#each (data as { analysisCapabilities?: any; sampleDocuments?: any; recentAnalyses?: any }).sampleDocuments as document}
+          {#each (data as { analysisCapabilities?: unknown; sampleDocuments?: unknown; recentAnalyses?: unknown }).sampleDocuments as document}
             <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50">
               <input
                 type="checkbox"
                 checked={selectedDocuments.has(document.id)}
-                on:change={() => toggleDocumentSelection(document.id)}
+                onchange={() => toggleDocumentSelection(document.id)}
                 class="rounded border-gray-300"
               />
               <div class="flex-1">
@@ -505,7 +505,7 @@ https://svelte.dev/e/expected_token -->
     </div.Header>
     <div.Content class="nes-container">
       <div class="space-y-3">
-        {#each (data as { analysisCapabilities?: any; sampleDocuments?: any; recentAnalyses?: any }).recentAnalyses as analysis}
+        {#each (data as { analysisCapabilities?: unknown; sampleDocuments?: unknown; recentAnalyses?: unknown }).recentAnalyses as analysis}
           <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-1">
@@ -527,7 +527,7 @@ https://svelte.dev/e/expected_token -->
                   {formatConfidence(analysis.results.overallScore)}
                 </Badge>
               {/if}
-              <button class="nes-btn" variant="ghost" size="sm" on:click={() => navigateToDocument(analysis.documentId)}>
+              <button class="nes-btn" variant="ghost" size="sm" onclick={() => navigateToDocument(analysis.documentId)}>
                 <Eye class="w-3 h-3" />
 
             </div>

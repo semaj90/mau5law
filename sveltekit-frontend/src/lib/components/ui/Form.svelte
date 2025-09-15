@@ -1,8 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { createFormStore, type FormOptions } from '$lib/stores/form';
   import { notifications } from '$lib/stores/notification';
 
@@ -89,7 +87,7 @@
   });
 </script>
 
-<form on:submit={handleSubmit}
+<form onsubmit={handleSubmit}
   reset={handleReset}
   class="space-y-6 {restProps.class || ''}"
   novalidate={restProps.novalidate}

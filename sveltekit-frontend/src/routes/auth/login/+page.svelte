@@ -7,8 +7,8 @@
   import { enhance } from '$app/forms';
   
   interface Props {
-    data?: any;
-    form?: any;
+    data?: unknown;
+    form?: unknown;
   }
   
   let { data, form }: Props = $props();
@@ -56,7 +56,7 @@
           isLoading = true;
           return async ({ result }) => {
             isLoading = false;
-            if ((result as { type?: any }).type === 'redirect') {
+            if ((result as { type?: unknown }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }
           };
@@ -127,7 +127,7 @@
         <!-- Demo Button -->
         <button
           type="button"
-          on:click={fillDemoCredentials}
+          onclick={fillDemoCredentials}
           disabled={isLoading}
           class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors disabled:opacity-50"
         >

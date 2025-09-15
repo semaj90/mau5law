@@ -325,12 +325,12 @@
       {autocomplete}
       bind:value
       {placeholder}
-      on:input={handleInput}
-      on:focus={handleFocus}
-      on:blur={handleBlur}
-      on:mouseenter={handleHover}
-      on:mouseleave={handleUnhover}
-      on:keydown={handleKeyDown}
+      oninput={handleInput}
+      onfocus={handleFocus}
+      onblur={handleBlur}
+      onmouseenter={handleHover}
+      onmouseleave={handleUnhover}
+      onkeydown={handleKeyDown}
       class="n64-input {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
       style="
         --material-bg: {materialStyles.background};

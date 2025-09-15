@@ -13,9 +13,7 @@ https://svelte.dev/e/element_unclosed -->
     type LogLevel,
     type LogFilter
   } from '$lib/services/logging-aggregation-service';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
 
   // Modern Svelte 5 props via $props rune
@@ -114,7 +112,7 @@ https://svelte.dev/e/element_unclosed -->
     });
   }
 
-  function formatData(data: any): string {
+  function formatData(data: unknown): string {
     if (!data) return '';
     try {
       return JSON.stringify(data, null, 2);
@@ -167,10 +165,10 @@ https://svelte.dev/e/element_unclosed -->
         </h2>
 
         <div class="flex items-center gap-2">
-          <Button class="bits-btn" size="sm" variant="outline" on:click={exportLogs}>
+          <Button class="bits-btn" size="sm" variant="outline" onclick={exportLogs}>
 📤 Export
 
-          <Button class="bits-btn" size="sm" variant="outline" on:click={clearLogs}>
+          <Button class="bits-btn" size="sm" variant="outline" onclick={clearLogs}>
 🗑️ Clear
 
         </div>
@@ -262,7 +260,7 @@ https://svelte.dev/e/element_unclosed -->
             <button
               type="button"
               class="log-entry group w-full text-left hover:bg-gray-800 p-2 rounded cursor-pointer transition-colors duration-150"
-              on:click={() => selectEntry(entry)}
+              onclick={() => selectEntry(entry)}
             >
               <div class="flex items-start gap-3">
                 <!-- Timestamp -->
@@ -306,7 +304,7 @@ https://svelte.dev/e/element_unclosed -->
 
                 <!-- Actions -->
                 <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button class="bits-btn" size="sm" variant="ghost" on:click={(e) =>
+                  <Button class="bits-btn" size="sm" variant="ghost" onclick={(e) =>
 { e.stopPropagation(); selectEntry(entry); }}>
                     👁️
 
@@ -329,7 +327,7 @@ https://svelte.dev/e/element_unclosed -->
           <h3 class="text-xl font-bold text-green-400 flex items-center gap-2">
             {getLevelIcon(selectedEntry.level)} Log Entry Details
           </h3>
-          <Button class="bits-btn" variant="ghost" on:click={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 showDetails = false}>
             ✕
 
@@ -453,12 +451,12 @@ showDetails = false}>
         <div class="flex gap-2 mt-6">
           <Button class="bits-btn"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
           >
             📋 Copy JSON
 
-          <Button class="bits-btn" variant="outline" on:click={() =>
+          <Button class="bits-btn" variant="outline" onclick={() =>
 showDetails = false}>
             Close
 

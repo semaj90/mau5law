@@ -13,7 +13,7 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
 
   // Svelte 5 runes for state management
   let selectedWorkflow = $state<'legal-research' | 'document-processing' | 'case-creation'>('legal-research');
@@ -238,7 +238,7 @@
 
           <Button 
             variant="outline" 
-            on:click={loadDemoData}
+            onclick={loadDemoData}
             class="w-full bits-btn bits-btn"
           >
 Load Demo Data
@@ -376,7 +376,7 @@ Load Demo Data
           <!-- Execute Button -->
           <div class="pt-4 border-t border-gray-200">
             <Button 
-              on:click={executeWorkflow}
+              onclick={executeWorkflow}
               disabled={isProcessing || !systemHealthy}
               class="w-full {isProcessing ? 'opacity-50 cursor-not-allowed' : ''} bits-btn bits-btn"
             >

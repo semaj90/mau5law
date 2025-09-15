@@ -3,22 +3,22 @@
 <script>
   import 'nes.css/css/nes.min.css';
   // Svelte 4 reactive variables
-  export let initialCount = 0;
+  let { initialCount = 0 } = $props();
   
   let count = initialCount;
   let doubled;
   let history = [];
   
   // Reactive statement
-  $: doubled = count * 2;
+  let doubled = $derived(count * 2);
   
   // Reactive statement with side effect
-  $: if (count > 10) {
+  $effect(() => { if (count > 10) ; });{
     console.log("Count is getting high!");
   }
   
   // Reactive statement updating array
-  $: history = [...history.slice(-4), count];
+  let history = $derived([...history.slice(-4), count]);
   
   function increment() {
     count += 1;
@@ -81,8 +81,8 @@ export default {};
   </div>
   
   <div class="controls">
-    <button on:click={increment}>Increment</button>
-    <button on:click={reset}>Reset</button>
+    <button onclick={increment}>Increment</button>
+    <button onclick={reset}>Reset</button>
   </div>
 </div>
 

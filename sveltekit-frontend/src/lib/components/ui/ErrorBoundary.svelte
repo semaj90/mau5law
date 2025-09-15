@@ -20,14 +20,14 @@
   let isRetrying = false;
 
   // Error details for debugging
-  $: errorDetails = error ? {
+  let errorDetails = $derived(error ? {
     name: error.name,
     message: error.message,
     stack: error.stack,
     timestamp: new Date().toISOString(),
     userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
     url: typeof window !== 'undefined' ? window.location.href : 'Unknown'
-  } : null;
+  } : null);
 
   function handleError(event: ErrorEvent | PromiseRejectionEvent) {
     const err = 'error' in event ? event.error : event.reason;
@@ -140,15 +140,15 @@
           <!-- Actions -->
           <div class="flex flex-wrap gap-3 mb-6">
             <Button
-              on:click={disabled}
+              onclick={disabled}
               class="flex items-center gap-2"
             >
               <RefreshCw class="w-4 h-4 {isRetrying ? 'animate-spin' : ''}" />
               {isRetrying ? 'Retrying...' : 'Try Again'}
-            <Button variant="outline" on:click={goHome} class="flex items-center gap-2">
+            <Button variant="outline" onclick={goHome} class="flex items-center gap-2">
               <Home class="w-4 h-4" />
               Go Home
-            <Button variant="outline" on:click={reportError} class="flex items-center gap-2">
+            <Button variant="outline" onclick={reportError} class="flex items-center gap-2">
               <Bug class="w-4 h-4" />
               Report Issue
           </div>
@@ -183,7 +183,7 @@
   </div>
 {:else}
   <!-- Normal content -->
-  <slot />
+  {@render children?.()}
 {/if}
 
 <style>

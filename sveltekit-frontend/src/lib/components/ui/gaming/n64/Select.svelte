@@ -473,12 +473,12 @@
     aria-required={required}
     aria-invalid={hasError}
     aria-describedby={error || success ? `${id || name}-message` : undefined}
-    on:click={handleToggle}
-    on:focus={handleFocus}
-    on:blur={handleBlur}
-    on:mouseenter={handleHover}
-    on:mouseleave={handleUnhover}
-    on:keydown={handleKeyDown}
+    onclick={handleToggle}
+    onfocus={handleFocus}
+    onblur={handleBlur}
+    onmouseenter={handleHover}
+    onmouseleave={handleUnhover}
+    onkeydown={handleKeyDown}
   >
     <div class="select-trigger">
       <div class="select-value" class:placeholder={!selectedOption}>
@@ -489,7 +489,7 @@
         {#if clearable && value}
           <button
             class="clear-button"
-            on:click={(e) => { e.stopPropagation(); clearSelection(); }}
+            onclick={(e) => { e.stopPropagation(); clearSelection(); }}
             aria-label="Clear selection"
             type="button"
           >
@@ -536,7 +536,7 @@
               bind:value={searchTerm}
               class="search-input"
               placeholder="Search options..."
-              on:input={handleSearchInput}
+              oninput={handleSearchInput}
               type="text"
             />
           </div>
@@ -551,7 +551,7 @@
               class:disabled={option.disabled}
               role="option"
               aria-selected={option.value === value}
-              on:click={() => selectOption(option)}
+              onclick={() => selectOption(option)}
             >
               {option.label}
               

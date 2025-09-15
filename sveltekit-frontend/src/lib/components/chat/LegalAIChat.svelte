@@ -489,7 +489,7 @@ https://svelte.dev/e/js_parse_error -->
         </select>
         
         <button
-          on:click={clearConversation}
+          onclick={clearConversation}
           disabled={isLoading}
           class="text-gray-400 hover:text-gray-600 p-1 disabled:opacity-50"
           title="Clear conversation"
@@ -542,7 +542,7 @@ https://svelte.dev/e/js_parse_error -->
                   <button 
                     class="hover:bg-white hover:bg-opacity-20 p-1 rounded"
                     title="Copy message"
-                    on:click={() => navigator.clipboard?.writeText(message.content)}
+                    onclick={() => navigator.clipboard?.writeText(message.content)}
                   >
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -583,15 +583,15 @@ https://svelte.dev/e/js_parse_error -->
             bind:value={currentMessage}
             placeholder="Ask a legal question, request case analysis, or seek investigative insights..."
             disabled={isLoading}
-            on:keydown={handleKeyPress}
-            on:input={autoResize}
+            onkeydown={handleKeyPress}
+            oninput={autoResize}
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 resize-none overflow-hidden"
             style="min-height: 40px; max-height: 120px;"
           ></textarea>
         </div>
         
         <button
-          on:click={sendMessage}
+          onclick={sendMessage}
           disabled={!currentMessage.trim() || isLoading}
           class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
         >
@@ -611,21 +611,21 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Quick Actions -->
       <div class="flex flex-wrap gap-2 mt-2">
         <button
-          on:click={() => currentMessage = "Analyze the evidence in this case and identify any potential issues or patterns."}
+          onclick={() => currentMessage = "Analyze the evidence in this case and identify any potential issues or patterns."}
           disabled={isLoading}
           class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded disabled:opacity-50"
         >
           Analyze Evidence
         </button>
         <button
-          on:click={() => currentMessage = "Review the case timeline and identify any gaps or inconsistencies."}
+          onclick={() => currentMessage = "Review the case timeline and identify any gaps or inconsistencies."}
           disabled={isLoading}
           class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded disabled:opacity-50"
         >
           Timeline Review
         </button>
         <button
-          on:click={() => currentMessage = "What legal precedents or citations are relevant to this case?"}
+          onclick={() => currentMessage = "What legal precedents or citations are relevant to this case?"}
           disabled={isLoading}
           class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded disabled:opacity-50"
         >
@@ -633,7 +633,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
         {#if detectiveMode}
           <button
-            on:click={() => currentMessage = "Perform a detective-level analysis and identify investigative opportunities."}
+            onclick={() => currentMessage = "Perform a detective-level analysis and identify investigative opportunities."}
             disabled={isLoading}
             class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded disabled:opacity-50"
           >

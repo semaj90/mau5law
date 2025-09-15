@@ -4,8 +4,8 @@
   import { browser } from '$app/environment';
 
   // Only import in browser environment
-  let accessibilityService: any = null;
-  let enhancedRouteAccessibility: any = null;
+  let accessibilityService: unknown = null;
+  let enhancedRouteAccessibility: unknown = null;
 
   if (browser) {
     import('$lib/services/accessibility-service').then(module => {

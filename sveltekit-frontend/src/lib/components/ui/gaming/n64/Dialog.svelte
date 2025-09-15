@@ -59,9 +59,9 @@ https://svelte.dev/e/attribute_duplicate -->
     fullscreen?: boolean;
 
     // Content slots
-    header?: any;
-    footer?: any;
-    children?: any;
+    header?: unknown;
+    footer?: unknown;
+    children?: unknown;
     class?: string;
   }
 
@@ -401,7 +401,7 @@ https://svelte.dev/e/attribute_duplicate -->
     class:backdrop-blur={enableBackdropBlur}
     role="button" 
     tabindex="0"
-    on:click={handleBackdropClick}
+    onclick={handleBackdropClick}
     style="
       --atmosphere-intensity: {atmosphereIntensity};
       --fog-color: {effectiveRenderOptions.fogColor};
@@ -446,7 +446,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {#if !preventClose}
             <button
               class="dialog-close-button"
-              on:click={closeDialog}
+              onclick={closeDialog}
               aria-label="Close dialog"
               type="button"
             >

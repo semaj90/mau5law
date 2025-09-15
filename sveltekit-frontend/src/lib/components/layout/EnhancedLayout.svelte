@@ -10,7 +10,7 @@
     showNavigation?: boolean;
     showSidebar?: boolean;
     variant?: 'legal' | 'yorha' | 'minimal' | 'admin';
-    user?: any;
+    user?: unknown;
     hideHeader?: boolean;
     fullWidth?: boolean;
   }
@@ -88,15 +88,15 @@
         </div>
 
         <nav class="header-nav" class:yorha-nav={layoutVariant === 'yorha'}>
-          {#each navigationItems as item ((item as { href?: any; label?: any; icon?: any; active?: any }).href)}
+          {#each navigationItems as item ((item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).href)}
             <a
-              href={(item as { href?: any; label?: any; icon?: any; active?: any }).href}
+              href={(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).href}
               class="nav-item"
-              class:active={currentPath === (item as { href?: any; label?: any; icon?: any; active?: any }).href}
-              aria-label={(item as { href?: any; label?: any; icon?: any; active?: any }).label}
+              class:active={currentPath === (item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).href}
+              aria-label={(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).label}
             >
-              <span class="nav-icon">{(item as { href?: any; label?: any; icon?: any; active?: any }).icon}</span>
-              <span class="nav-label">{(item as { href?: any; label?: any; icon?: any; active?: any }).label}</span>
+              <span class="nav-icon">{(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).icon}</span>
+              <span class="nav-label">{(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).label}</span>
             </a>
           {/each}
         </nav>
@@ -104,7 +104,7 @@
         {#if showSidebar}
           <button
             class="sidebar-toggle nes-btn"
-            on:click={toggleSidebar}
+            onclick={toggleSidebar}
             aria-label="Toggle sidebar"
           >
             ☰
@@ -232,12 +232,12 @@
     color: #ffd700;
   }
 
-  .nav-(item as { href?: any; label?: any; icon?: any; active?: any }).active {
+  .nav-(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).active {
     background: var(--nes-primary-color, #000);
     color: #fff;
   }
 
-  .enhanced-layout[data-variant="yorha"] .nav-(item as { href?: any; label?: any; icon?: any; active?: any }).active {
+  .enhanced-layout[data-variant="yorha"] .nav-(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).active {
     background: #ffd700;
     color: #000;
   }

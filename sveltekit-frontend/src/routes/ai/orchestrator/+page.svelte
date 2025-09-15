@@ -5,9 +5,7 @@ Showcases the service worker-based AI orchestration system
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -97,7 +95,7 @@ Showcases the service worker-based AI orchestration system
     }
   });
 
-  async function runDemoScenario(scenario: any) {
+  async function runDemoScenario(scenario: unknown) {
     if (!selectedModel) return;
 
     isProcessing = true;
@@ -105,7 +103,7 @@ Showcases the service worker-based AI orchestration system
 
     try {
       // Create tasks for the scenario
-      const tasks = scenario.tasks.map((taskConfig: any) =>
+      const tasks = scenario.tasks.map((taskConfig: unknown) =>
         createAnalysisTask(
           `${scenario.prompt}\n\nFocus: ${taskConfig.focus}`,
           taskConfig.focus,
@@ -283,7 +281,7 @@ Showcases the service worker-based AI orchestration system
                 variant="outline"
                 size="sm"
                 class="w-full bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 runDemoScenario(scenario)}
                 disabled={isProcessing}
               >
@@ -332,7 +330,7 @@ runDemoScenario(scenario)}
 
           <div class="flex gap-2">
             <Button
-              on:click={submitCustomTask}
+              onclick={submitCustomTask}
               disabled={isProcessing || !selectedModel}
               class="flex-1 bits-btn bits-btn"
             >
@@ -344,7 +342,7 @@ runDemoScenario(scenario)}
                 Submit Task
               {/if}
 
-            <Button class="bits-btn" variant="outline" on:click={clearResults}>
+            <Button class="bits-btn" variant="outline" onclick={clearResults}>
 <RotateCcw class="h-4 w-4" />
 
           </div>
@@ -360,7 +358,7 @@ runDemoScenario(scenario)}
               Task Results ({demoResults.length})
             </span>
             {#if demoResults.length > 0}
-              <Button class="bits-btn" variant="ghost" size="sm" on:click={clearResults}>
+              <Button class="bits-btn" variant="ghost" size="sm" onclick={clearResults}>
 Clear
 
             {/if}
@@ -375,24 +373,24 @@ Clear
           {:else}
             <div class="space-y-3 max-h-96 overflow-y-auto">
               {#each demoResults as result}
-                {@const SvelteComponent_1 = getProviderIcon((result as { task?: any; error?: any; response?: any }).task.providerId)}
-                <div class="border rounded-lg p-3 {(result as { task?: any; error?: any; response?: any }).error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : (result as { task?: any; error?: any; response?: any }).response ? 'border-green-200 bg-green-50 dark:bg-green-900/20' : 'border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20'}">
+                {@const SvelteComponent_1 = getProviderIcon((result as { task?: unknown; error?: unknown; response?: unknown }).task.providerId)}
+                <div class="border rounded-lg p-3 {(result as { task?: unknown; error?: unknown; response?: unknown }).error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : (result as { task?: unknown; error?: unknown; response?: unknown }).response ? 'border-green-200 bg-green-50 dark:bg-green-900/20' : 'border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20'}">
                   <div class="flex items-start justify-between mb-2">
                     <div class="flex items-center gap-2">
                       <SvelteComponent_1
                         class="h-4 w-4 text-blue-500"
                       />
                       <span class="font-medium text-sm">
-                        {(result as { task?: any; error?: any; response?: any }).task.providerId} - {(result as { task?: any; error?: any; response?: any }).task.model}
+                        {(result as { task?: unknown; error?: unknown; response?: unknown }).task.providerId} - {(result as { task?: unknown; error?: unknown; response?: unknown }).task.model}
                       </span>
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { task?: any; error?: any; response?: any }).task.type}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { task?: unknown; error?: unknown; response?: unknown }).task.type}</span>
                     </div>
 
-                    {#if (result as { task?: any; error?: any; response?: any }).response}
+                    {#if (result as { task?: unknown; error?: unknown; response?: unknown }).response}
                       <Badge class="bg-green-100 text-green-800 text-xs">
                         Completed
                       </Badge>
-                    {:else if (result as { task?: any; error?: any; response?: any }).error}
+                    {:else if (result as { task?: unknown; error?: unknown; response?: unknown }).error}
                       <Badge class="bg-red-100 text-red-800 text-xs">
                         Failed
                       </Badge>
@@ -404,26 +402,26 @@ Clear
                   </div>
 
                   <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                    {(result as { task?: any; error?: any; response?: any }).task.prompt.substring(0, 100)}...
+                    {(result as { task?: unknown; error?: unknown; response?: unknown }).task.prompt.substring(0, 100)}...
                   </p>
 
-                  {#if (result as { task?: any; error?: any; response?: any }).response}
+                  {#if (result as { task?: unknown; error?: unknown; response?: unknown }).response}
                     <div class="mt-2 p-2 bg-white dark:bg-gray-800 rounded text-xs">
                       <p class="font-medium mb-1">Response:</p>
                       <p class="text-gray-700 dark:text-gray-300">
-                        {(result as { task?: any; error?: any; response?: any }).response.response?.content || 'Task completed successfully'}
+                        {(result as { task?: unknown; error?: unknown; response?: unknown }).response.response?.content || 'Task completed successfully'}
                       </p>
-                      {#if (result as { task?: any; error?: any; response?: any }).response.metrics}
+                      {#if (result as { task?: unknown; error?: unknown; response?: unknown }).response.metrics}
                         <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                          <span>Processing: {formatDuration((result as { task?: any; error?: any; response?: any }).response.metrics.processingTime || 0)}</span>
-                          <span>Tokens: {(result as { task?: any; error?: any; response?: any }).response.metrics.tokensProcessed || 0}</span>
+                          <span>Processing: {formatDuration((result as { task?: unknown; error?: unknown; response?: unknown }).response.metrics.processingTime || 0)}</span>
+                          <span>Tokens: {(result as { task?: unknown; error?: unknown; response?: unknown }).response.metrics.tokensProcessed || 0}</span>
                         </div>
                       {/if}
                     </div>
-                  {:else if (result as { task?: any; error?: any; response?: any }).error}
+                  {:else if (result as { task?: unknown; error?: unknown; response?: unknown }).error}
                     <div class="mt-2 p-2 bg-red-100 dark:bg-red-900/30 rounded text-xs">
                       <p class="font-medium text-red-700 dark:text-red-400 mb-1">Error:</p>
-                      <p class="text-red-600 dark:text-red-400">{(result as { task?: any; error?: any; response?: any }).error}</p>
+                      <p class="text-red-600 dark:text-red-400">{(result as { task?: unknown; error?: unknown; response?: unknown }).error}</p>
                     </div>
                   {:else}
                     <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">

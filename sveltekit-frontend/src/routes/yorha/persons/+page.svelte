@@ -103,9 +103,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       isLoading = true;
       error = null;
       const response = await fetch('/api/persons-of-interest');
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        persons = (data as { persons?: any }).persons || persons; // Fallback to mock data
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        persons = (data as { persons?: unknown }).persons || persons; // Fallback to mock data
       }
     } catch (err) {
       error = 'Failed to load persons of interest';
@@ -116,15 +116,15 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   }
 
   // Add new person
-  async function addPerson(personData: any) {
+  async function addPerson(personData: unknown) {
     try {
       const response = await fetch('/api/persons-of-interest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(personData)
       });
-      if ((response as { ok?: any; json?: any }).ok) {
-        const newPerson = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const newPerson = await (response as { ok?: unknown; json?: unknown }).json();
         persons = [...persons, newPerson];
         showNewPersonModal = false;
       }
@@ -217,7 +217,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       </div>
 
       <div class="header-right">
-        <Button class="header-btn bits-btn bits-btn" on:click={() =>
+        <Button class="header-btn bits-btn bits-btn" onclick={() =>
 showNewPersonModal = true}>
           <Plus class="w-4 h-4" />
           ADD PERSON
@@ -413,11 +413,11 @@ showNewPersonModal = true}>
     </div>
 
     <Dialog.Footer>
-      <Button class="bits-btn" variant="outline" on:click={() =>
+      <Button class="bits-btn" variant="outline" onclick={() =>
 showNewPersonModal = false}>
         CANCEL
 </Button>
-      <Button class="bits-btn" on:click={() =>
+      <Button class="bits-btn" onclick={() =>
 showNewPersonModal = false}>
         ADD PERSON
 </Button>
@@ -498,7 +498,7 @@ showNewPersonModal = false}>
     color: #d4af37;
   }
 
-  .nav-(item as { persons?: any; critical?: any; high?: any }).persons-active {
+  .nav-(item as { persons?: unknown; critical?: unknown; high?: unknown }).persons-active {
     background: #1a2a1a;
     color: #d4af37;
     border-left: 3px solid #d4af37;
@@ -637,11 +637,11 @@ showNewPersonModal = false}>
     color: #888;
   }
 
-  .stat-(item as { persons?: any; critical?: any; high?: any }).critical .stat-number {
+  .stat-(item as { persons?: unknown; critical?: unknown; high?: unknown }).critical .stat-number {
     color: #ef4444;
   }
 
-  .stat-(item as { persons?: any; critical?: any; high?: any }).high .stat-number {
+  .stat-(item as { persons?: unknown; critical?: unknown; high?: unknown }).high .stat-number {
     color: #f97316;
   }
 

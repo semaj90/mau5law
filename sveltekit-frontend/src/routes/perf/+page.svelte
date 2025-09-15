@@ -7,8 +7,8 @@
   const signatures = writable<any>(null);
   const error = writable<string | null>(null);
   const loading = writable<boolean>(true);
-  let interval: any;
-  let fastAlertInterval: any;
+  let interval: unknown;
+  let fastAlertInterval: unknown;
   let fastPolling = $state<boolean>(false);
   function toggleFastPolling(){
     fastPolling = !fastPolling;
@@ -36,7 +36,7 @@
   // GPU (cuda-service) sampled metrics
   let gpuUtilSeries: number[] = [];
   let gpuMemSeries: number[] = [];
-  let gpuInfo: any = null;
+  let gpuInfo: unknown = null;
   const gpuRuntime = writable<any>(null);
 
   // NOTE: Using $runtime and $signatures directly in template (remove derived helpers for runes mode)
@@ -61,7 +61,7 @@
   let historyMemUsedSeries = $state<number[]>([]);
   let historyLoad1Series = $state<number[]>([]);
   let historyRedisMemSeries = $state<number[]>([]);
-  let anomalyStats: any = $state(null);
+  let anomalyStats: unknown = $state(null);
   let activeHistoryTab = $state<'gpu'|'jobs'|'system'|'redis'|'anomaly'>('gpu');
   // New tabs for profiling & engines
   let showGpuEngines = $state<boolean>(false);
@@ -69,10 +69,10 @@
   let showProfiling = $state<boolean>(false);
 
   // Backend (cuda-service) new endpoints data
-  let gpuEngines: any = $state(null);
-  let workerStats: any[] = $state([]);
-  let profilingSnapshot: any = $state(null);
-  let profilingHistory: any[] = $state([]);
+  let gpuEngines: unknown = $state(null);
+  let workerStats: unknown[] = $state([]);
+  let profilingSnapshot: unknown = $state(null);
+  let profilingHistory: unknown[] = $state([]);
   let lastProfilingFetched: number | null = $state(null);
 
   async function fetchCudaEndpoint(path: string) {
@@ -445,7 +445,7 @@
   await loadAllEnhancedMetrics();
 
   error.set(null);
-    } catch (e: any) {
+    } catch (e: unknown) {
   error.set(e.message);
     } finally {
   loading.set(false);
@@ -486,10 +486,10 @@
     <span>{serverAlerts.length} Alert{serverAlerts.length !== 1 ? 's' : ''}</span>
       </div>
     {/if}
-  <button class="px-3 py-1.5 text-xs font-medium rounded-md border border-gray-300/70 dark:border-gray-600 bg-white/70 dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition" on:click={load}>
+  <button class="px-3 py-1.5 text-xs font-medium rounded-md border border-gray-300/70 dark:border-gray-600 bg-white/70 dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition" onclick={load}>
       Refresh Now
     </button>
-    <button class="px-3 py-1.5 text-xs font-medium rounded-md border border-indigo-300/70 dark:border-indigo-600 bg-indigo-50/70 dark:bg-indigo-900/40 hover:bg-indigo-100 dark:hover:bg-indigo-800 transition" on:click={toggleFastPolling}>
+    <button class="px-3 py-1.5 text-xs font-medium rounded-md border border-indigo-300/70 dark:border-indigo-600 bg-indigo-50/70 dark:bg-indigo-900/40 hover:bg-indigo-100 dark:hover:bg-indigo-800 transition" onclick={toggleFastPolling}>
       {fastPolling ? '⏸️ Stop Fast Alerts' : '⚡ Fast Alerts (3s)'}
     </button>
   </div>
@@ -563,7 +563,7 @@
     <h2 class="font-medium mb-4 flex items-center gap-2"><span class="text-lg">🕒</span> Historical Metrics (Server)</h2>
     <div class="flex gap-2 mb-4 text-xs">
       {#each ['gpu','jobs','system','redis','anomaly'] as tab}
-        <button class="px-2 py-1 rounded border {activeHistoryTab===tab ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600'}" on:click={() => activeHistoryTab=tab as any}>{tab}</button>
+        <button class="px-2 py-1 rounded border {activeHistoryTab===tab ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600'}" onclick={() => activeHistoryTab=tab as any}>{tab}</button>
       {/each}
     </div>
     {#if activeHistoryTab==='gpu'}
@@ -690,9 +690,9 @@
 
 <!-- Toggle buttons for advanced CUDA-service panels -->
 <div class="mt-6 flex flex-wrap gap-2">
-  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" on:click={()=>{showGpuEngines=!showGpuEngines; if(showGpuEngines) refreshEnginesWorkersProfiling();}}>🧩 GPU Engines {showGpuEngines? '−':'+'}</button>
-  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" on:click={()=>{showWorkers=!showWorkers; if(showWorkers) refreshEnginesWorkersProfiling();}}>🛠️ Workers {showWorkers? '−':'+'}</button>
-  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" on:click={()=>{showProfiling=!showProfiling; if(showProfiling) refreshEnginesWorkersProfiling();}}>🧪 Profiling {showProfiling? '−':'+'}</button>
+  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" onclick={()=>{showGpuEngines=!showGpuEngines; if(showGpuEngines) refreshEnginesWorkersProfiling();}}>🧩 GPU Engines {showGpuEngines? '−':'+'}</button>
+  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" onclick={()=>{showWorkers=!showWorkers; if(showWorkers) refreshEnginesWorkersProfiling();}}>🛠️ Workers {showWorkers? '−':'+'}</button>
+  <button class="px-2 py-1 text-xs rounded border bg-white/70 hover:bg-indigo-50" onclick={()=>{showProfiling=!showProfiling; if(showProfiling) refreshEnginesWorkersProfiling();}}>🧪 Profiling {showProfiling? '−':'+'}</button>
   {#if lastProfilingFetched}<span class="text-[10px] text-gray-500 ml-2">Refreshed {new Date(lastProfilingFetched).toLocaleTimeString()}</span>{/if}
 </div>
 
@@ -789,8 +789,8 @@
         </div>
       {:else}<div class="text-xs text-gray-500">No profiling history yet.</div>{/if}
       <div class="mt-3 flex gap-2">
-        <button class="px-2 py-1 text-xs rounded border bg-white hover:bg-gray-50" on:click={refreshEnginesWorkersProfiling}>Refresh</button>
-        <button class="px-2 py-1 text-xs rounded border bg-white hover:bg-gray-50" on:click={()=>{profilingHistory.length=0;}}>Clear Local</button>
+        <button class="px-2 py-1 text-xs rounded border bg-white hover:bg-gray-50" onclick={refreshEnginesWorkersProfiling}>Refresh</button>
+        <button class="px-2 py-1 text-xs rounded border bg-white hover:bg-gray-50" onclick={()=>{profilingHistory.length=0;}}>Clear Local</button>
       </div>
     {:else}
       <div class="text-xs text-gray-500">No profiling snapshot yet (enable with build tag or wait for sampler).</div>

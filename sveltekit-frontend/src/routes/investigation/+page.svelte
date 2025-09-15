@@ -14,9 +14,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
   import EnhancedAIAssistant from '$lib/components/ai/EnhancedAIAssistant.svelte';
   import CitationsManager from '$lib/components/citations/CitationsManager.svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import * as Card from '$lib/components/ui/card';
   import * as Tabs from '$lib/components/ui/tabs';
@@ -142,7 +140,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     // Update evidence with analysis
     evidence = evidence.map(item => {
-      if ((item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).title === fileId || (item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).id === fileId) {
+      if ((item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).title === fileId || (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).id === fileId) {
         return {
           ...item,
           status: 'analyzed',
@@ -162,11 +160,11 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     console.log('🕵️ Detective insights:', patterns);
 
     if (conflicts && conflicts.length > 0) {
-      addChatMessage('assistant', `⚠️ Potential conflicts detected: ${conflicts.map((c: any) => c.description).join(', ')}`, 'analysis');
+      addChatMessage('assistant', `⚠️ Potential conflicts detected: ${conflicts.map((c: unknown) => c.description).join(', ')}`, 'analysis');
     }
 
     if (patterns && patterns.length > 0) {
-      addChatMessage('assistant', `🔍 Patterns identified: ${patterns.map((p: any) => p.type).join(', ')}`, 'analysis');
+      addChatMessage('assistant', `🔍 Patterns identified: ${patterns.map((p: unknown) => p.type).join(', ')}`, 'analysis');
     }
   }
 
@@ -211,9 +209,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         })
       });
 
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        addChatMessage('assistant', (data as { response?: any }).response || 'I understand. How can I assist with this investigation?');
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        addChatMessage('assistant', (data as { response?: unknown }).response || 'I understand. How can I assist with this investigation?');
       } else {
         addChatMessage('assistant', 'I apologize, but I am currently unavailable. Please try again later.');
       }
@@ -297,8 +295,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   async function loadSystemStatus() {
     try {
       const response = await fetch('/api/system/status');
-      if ((response as { ok?: any; json?: any }).ok) {
-        const status = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const status = await (response as { ok?: unknown; json?: unknown }).json();
         systemStatus = { ...systemStatus, ...status };
       }
     } catch (error) {
@@ -327,7 +325,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         body: JSON.stringify(investigationData)
       });
 
-      if ((response as { ok?: any; json?: any }).ok) {
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
         addChatMessage('system', 'Investigation progress saved successfully.');
       }
     } catch (error) {
@@ -360,7 +358,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       </div>
 
       <div class="workspace-actions">
-  <Button class="bits-btn" on:click={saveInvestigation} variant="outline" size="sm">
+  <Button class="bits-btn" onclick={saveInvestigation} variant="outline" size="sm">
 <Save class="w-4 h-4 mr-2" />
           Save Progress
 </Button>
@@ -428,9 +426,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                   splitView={false}
                   syncCanvases={true}
                   initialMode="both"
-                  on:evidenceUploaded={handleEvidenceUploaded}
-                  on:analysisComplete={handleAnalysisComplete}
-                  on:detectiveInsights={handleDetectiveInsights}
+                  onevidenceUploaded={handleEvidenceUploaded}
+                  onanalysisComplete={handleAnalysisComplete}
+                  ondetectiveInsights={handleDetectiveInsights}
                 />
               </div>
             </div>
@@ -447,31 +445,31 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                   {#each evidence as item}
                     <div class="evidence-item">
                       <div class="evidence-header">
-                        <span class="evidence-title">{(item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).title}</span>
-                        <Badge class={`${getStatusColor((item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).status)} text-white text-xs`}>
-                          {(item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).status}
+                        <span class="evidence-title">{(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).title}</span>
+                        <Badge class={`${getStatusColor((item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).status)} text-white text-xs`}>
+                          {(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).status}
                         </Badge>
                       </div>
 
-                      {#if (item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).confidence}
+                      {#if (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).confidence}
                         <div class="confidence-meter">
-                          <span class="confidence-label">Confidence: {Math.round((item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).confidence * 100)}%</span>
+                          <span class="confidence-label">Confidence: {Math.round((item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).confidence * 100)}%</span>
                           <div class="confidence-bar">
                             <div
                               class="confidence-fill"
-                              style="width: {(item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).confidence * 100}%"
+                              style="width: {(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).confidence * 100}%"
                             ></div>
                           </div>
                         </div>
                       {/if}
 
-                      {#if (item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).aiAnalysis}
-                        <p class="evidence-analysis">{(item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).aiAnalysis}</p>
+                      {#if (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).aiAnalysis}
+                        <p class="evidence-analysis">{(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).aiAnalysis}</p>
                       {/if}
 
-                      {#if (item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).tags.length > 0}
+                      {#if (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).tags.length > 0}
                         <div class="evidence-tags">
-                          {#each (item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).tags as tag}
+                          {#each (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).tags as tag}
                             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                           {/each}
                         </div>
@@ -538,10 +536,10 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               <Input
                 bind:value={currentChatMessage}
                 placeholder="Ask about evidence, legal precedents, case analysis..."
-                on:keydown={(e) => e.key === 'Enter' && !e.shiftKey && sendChatMessage()}
+                onkeydown={(e) => e.key === 'Enter' && !e.shiftKey && sendChatMessage()}
                 class="flex-1"
               />
-              <Button class="bits-btn" on:click={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
+              <Button class="bits-btn" onclick={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
 <MessageSquare class="w-4 h-4" />
 </Button>
             </div>
@@ -644,7 +642,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     transition: all 0.3s ease;
   }
 
-  .status-(item as { title?: any; id?: any; status?: any; confidence?: any; aiAnalysis?: any; tags?: any; active?: any }).active {
+  .status-(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).active {
     background: rgba(0, 255, 136, 0.2);
     border-color: #00ff88;
     color: #00ff88;

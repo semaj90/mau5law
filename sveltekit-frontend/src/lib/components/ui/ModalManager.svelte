@@ -1,9 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
 
-  	import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  	import Button from '$lib/components/ui/enhanced-bits';;
   	import { quintOut } from 'svelte/easing';
   	import { fade, fly } from 'svelte/transition';
   	import { modals } from "../../stores/modal";
@@ -76,11 +74,11 @@
   		};
   		return sizeMap[size as keyof typeof sizeMap] || sizeMap.md;
   }
-  	function handleBackdropClick(event: MouseEvent, modal: any) {
+  	function handleBackdropClick(event: MouseEvent, modal: unknown) {
   		if (event.target === event.currentTarget && !modal.persistent) {
   			modals.close(modal.id);
   }}
-  	function handleKeydown(event: KeyboardEvent, modal: any) {
+  	function handleKeydown(event: KeyboardEvent, modal: unknown) {
   		if (event.key === 'Escape' && modal.closable) {
   			modals.close(modal.id);
   }}
@@ -90,7 +88,7 @@
 {#each $modals.modals as modal (modal.id)}
 	<div
 		class="space-y-4"
-		on:click={(e) => handleBackdropClick(e, modal)}
+		onclick={(e) => handleBackdropClick(e, modal)}
 		keydown={(e) => handleKeydown(e, modal)}
 		role="dialog"
 		aria-modal="true"
@@ -139,7 +137,7 @@
 					{#if modal.closable !== false}
 						<button
 							class="space-y-4"
-							on:click={() => modals.close(modal.id)}
+							onclick={() => modals.close(modal.id)}
 							aria-label="Close modal"
 						>
 							<iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
@@ -170,7 +168,7 @@
 							{#each builtInModal.actions as action}
 								<Button class="bits-btn"
 									variant={action.variant}
-									on:click={() =>
+									onclick={() =>
 action.action()}
 								>
 									{action.label}

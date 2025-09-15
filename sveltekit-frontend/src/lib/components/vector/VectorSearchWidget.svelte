@@ -7,9 +7,7 @@ Compact searchable component for embedding in other interfaces
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from "$lib/components/ui/badge";
   import {
     Search,
@@ -151,14 +149,14 @@ Compact searchable component for embedding in other interfaces
       type="text"
       {placeholder}
       class="vector-search-input pl-10 {searchQuery ? 'pr-10' : 'pr-3'} {compact ? 'h-8 text-sm' : 'h-10'}"
-      on:focus={() => { if (searchResults.length > 0) isOpen = true; }}
+      onfocus={() => { if (searchResults.length > 0) isOpen = true; }}
     />
 
     {#if searchQuery}
       <button
         type="button"
         class="absolute inset-y-0 right-0 pr-3 flex items-center"
-        on:click={clearSearch}
+        onclick={clearSearch}
       >
         <X class="h-4 w-4 nes-text is-disabled hover:text-foreground" />
       </button>
@@ -179,7 +177,7 @@ Compact searchable component for embedding in other interfaces
             <button
               type="button"
               class="w-full text-left p-3 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
-              on:click={() => selectResult(result)}
+              onclick={() => selectResult(result)}
             >
               <div class="flex items-start justify-between mb-2">
                 <div class="flex items-center gap-2">
@@ -198,17 +196,17 @@ Compact searchable component for embedding in other interfaces
                 {(result?.content || '').substring(0, 120)}{(result?.content || '').length > 120 ? '...' : ''}
               </p>
 
-              {#if (result as { highlights?: any; relevanceScore?: any; similarity?: any }).highlights?.length > 0}
+              {#if (result as { highlights?: unknown; relevanceScore?: unknown; similarity?: unknown }).highlights?.length > 0}
                 <div class="text-xs">
-                  <span class="vector-highlight">{(result as { highlights?: any; relevanceScore?: any; similarity?: any }).highlights[0]}</span>
+                  <span class="vector-highlight">{(result as { highlights?: unknown; relevanceScore?: unknown; similarity?: unknown }).highlights[0]}</span>
                 </div>
               {/if}
 
               {#if !compact}
                 <div class="flex items-center gap-3 mt-2 text-xs nes-text is-disabled">
-                  <span>Relevance: {(result as { highlights?: any; relevanceScore?: any; similarity?: any }).relevanceScore.toFixed(2)}</span>
+                  <span>Relevance: {(result as { highlights?: unknown; relevanceScore?: unknown; similarity?: unknown }).relevanceScore.toFixed(2)}</span>
                   <span>•</span>
-                  <span>Similarity: {(result as { highlights?: any; relevanceScore?: any; similarity?: any }).similarity.toFixed(3)}</span>
+                  <span>Similarity: {(result as { highlights?: unknown; relevanceScore?: unknown; similarity?: unknown }).similarity.toFixed(3)}</span>
                 </div>
               {/if}
             </button>

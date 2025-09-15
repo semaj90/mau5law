@@ -466,7 +466,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="error-overlay">
       <h3>⚠️ Visualization Error</h3>
       <p>{$error}</p>
-      <button on:click={() => error.set(null)}>Dismiss</button>
+      <button onclick={() => error.set(null)}>Dismiss</button>
     </div>
   {/if}
 
@@ -478,7 +478,7 @@ https://svelte.dev/e/js_parse_error -->
         width={width}
         height={height}
         class="visualization-canvas canvas-2d"
-        on:click={(e) => handleCanvasClick(e, false)}
+        onclick={(e) => handleCanvasClick(e, false)}
       ></canvas>
       
       <!-- 2D Controls -->
@@ -499,7 +499,7 @@ https://svelte.dev/e/js_parse_error -->
         width={width}
         height={height}
         class="visualization-canvas canvas-3d"
-        on:click={(e) => handleCanvasClick(e, true)}
+        onclick={(e) => handleCanvasClick(e, true)}
       ></canvas>
       
       <!-- 3D Controls -->
@@ -529,7 +529,7 @@ https://svelte.dev/e/js_parse_error -->
           <div 
             class="path-item"
             class:high-score={path.totalScore > 0.8}
-            on:click={() => handlePathSelection(index)}
+            onclick={() => handlePathSelection(index)}
           >
             <div class="path-header">
               <span class="path-score">Score: {path.totalScore.toFixed(3)}</span>

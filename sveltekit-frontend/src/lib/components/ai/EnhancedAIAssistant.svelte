@@ -231,7 +231,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="ai-actions">
       <button
         class="action-btn"
-        on:click={() => showSettings = !showSettings}
+        onclick={() => showSettings = !showSettings}
         title="Settings"
       >
         <Settings size={16} />
@@ -239,7 +239,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       
       <button
         class="action-btn"
-        on:click={() => exportConversation('markdown')}
+        onclick={() => exportConversation('markdown')}
         title="Export Conversation"
         disabled={messages.length === 0}
       >
@@ -248,7 +248,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       
       <button
         class="action-btn"
-        on:click={clearConversation}
+        onclick={clearConversation}
         title="Clear Conversation"
         disabled={messages.length === 0}
       >
@@ -269,7 +269,7 @@ https://svelte.dev/e/effect_invalid_placement -->
             <button
               class="backend-btn {currentBackend === backend ? 'active' : ''}"
               class:unavailable={backendLatency[backend] === 0}
-              on:click={() => selectBackend(backend)}
+              onclick={() => selectBackend(backend)}
             >
               {backend}
               <span class="latency {getBackendStatusColor(backend)}">
@@ -374,7 +374,7 @@ https://svelte.dev/e/effect_invalid_placement -->
                 <li>
                   <button
                     class="reference-link"
-                    on:click={() => showCitation(ref.citation)}
+                    onclick={() => showCitation(ref.citation)}
                   >
                     {ref.title}
                   </button>
@@ -410,7 +410,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="search-results-panel">
       <div class="search-header">
         <h4>🔍 Related Conversations</h4>
-        <button on:click={() => showSearchResults = false}>✕</button>
+        <button onclick={() => showSearchResults = false}>✕</button>
       </div>
       
       <div class="search-results">
@@ -418,7 +418,7 @@ https://svelte.dev/e/effect_invalid_placement -->
           <div 
             class="search-result"
             role="button" tabindex="0"
-                on:click={() => insertSearchResult(result)}
+                onclick={() => insertSearchResult(result)}
           >
             <div class="result-content">{(result as { content?: any; similarity?: any; timestamp?: any }).content}</div>
             <div class="result-meta">
@@ -440,7 +440,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="input-controls">
       <button
         class="voice-btn {isListening ? 'listening' : ''}"
-        on:click={toggleVoiceInput}
+        onclick={toggleVoiceInput}
         disabled={!recognition}
         title={recognition ? 'Voice input' : 'Voice input not supported'}
       >
@@ -453,7 +453,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       
       <button
         class="search-btn"
-        on:click={searchHistory}
+        onclick={searchHistory}
         disabled={!messageInput.trim()}
         title="Search conversation history"
       >
@@ -464,14 +464,14 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="input-wrapper">
       <textarea
         bind:value={messageInput}
-        on:keydown={handleKeyDown}
+        onkeydown={handleKeyDown}
         {placeholder}
         rows="3"
         disabled={isProcessing}
       ></textarea>
       <button
         class="submit-btn"
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={!messageInput.trim() || isProcessing}
         title="Send message (Enter)"
       >
@@ -486,7 +486,7 @@ https://svelte.dev/e/effect_invalid_placement -->
 
   <!-- Citation Dialog -->
   {#if showCitationDialog}
-    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" on:keydown={(e) => { if (e.key === 'Escape') showCitationDialog = false; }}>
+    <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = false; }}>
       <div class="modal" role="document">
         <div class="modal-header">
           <Quote size={20} />
@@ -497,16 +497,16 @@ https://svelte.dev/e/effect_invalid_placement -->
             <p>{selectedCitation}</p>
           </div>
           <div class="modal-actions">
-            <button class="nes-btn is-primary" on:click={() => insertCitation()}>
+            <button class="nes-btn is-primary" onclick={() => insertCitation()}>
               Insert Citation
             </button>
-            <button class="nes-btn" on:click={() => navigator.clipboard.writeText(selectedCitation)}>
+            <button class="nes-btn" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
               Copy
             </button>
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn-close" on:click={() => (showCitationDialog = false)}>
+          <button class="btn-close" onclick={() => (showCitationDialog = false)}>
             Close
           </button>
         </div>

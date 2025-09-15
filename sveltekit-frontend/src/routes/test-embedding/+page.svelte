@@ -1,9 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import AiAssistant from '$lib/components/ai/AiAssistant.svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -155,13 +153,13 @@
     <div class="yorha-panel-content">
       <div class="space-y-4">
         <Button
-          on:click={testEmbeddingAPI}
+          onclick={testEmbeddingAPI}
           class="mr-2 bits-btn bits-btn"
         >
 Test Embedding API
 
         <Button class="bits-btn"
-          on:click={testEmbeddingService}
+          onclick={testEmbeddingService}
           variant="outline"
         >
 Test Embedding Service

@@ -459,7 +459,7 @@
     <div class="navigation-controls">
       <LoadingButton
         loading={isLoading}
-        on:click={() => changePage(currentPage - 1)}
+        onclick={() => changePage(currentPage - 1)}
         disabled={currentPage <= 1 || isLoading}
         variant="outline"
         size="sm"
@@ -473,7 +473,7 @@
       
       <LoadingButton
         loading={isLoading}
-        on:click={() => changePage(currentPage + 1)}
+        onclick={() => changePage(currentPage + 1)}
         disabled={currentPage >= totalPages || isLoading}
         variant="outline"
         size="sm"
@@ -483,7 +483,7 @@
     </div>
     
     <div class="view-controls">
-      <LoadingButton on:click={handleZoomIn} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomIn} variant="outline" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
@@ -491,11 +491,11 @@
         {Math.round(zoomLevel * 100)}%
       </span>
       
-      <LoadingButton on:click={handleZoomOut} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomOut} variant="outline" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton on:click={handleRotate} variant="outline" size="sm">
+      <LoadingButton onclick={handleRotate} variant="outline" size="sm">
         {#snippet children()}<RotateCw class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
@@ -504,7 +504,7 @@
       <select 
         class="nes-select"
         bind:value={currentLOD}
-        on:change={() => {
+        onchange={() => {
           onLODChange?.(currentLOD);
           renderCurrentPage();
         }}

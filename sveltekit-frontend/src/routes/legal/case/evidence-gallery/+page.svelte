@@ -117,11 +117,11 @@
     if (!isConnecting) {
       isConnecting = true;
       selectedItem = item;
-    } else if (selectedItem && selectedItem.id !== (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id) {
+    } else if (selectedItem && selectedItem.id !== (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id) {
       // Create connection
       const newConnection = {
         from: selectedItem.id,
-        to: (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id,
+        to: (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id,
         type: 'correlation'
       };
       connections = [...connections, newConnection];
@@ -129,9 +129,9 @@
       // Update item connections
       canvasItems = canvasItems.map(i => {
         if (i.id === selectedItem.id) {
-          return { ...i, connections: [...i.connections, (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id] };
+          return { ...i, connections: [...i.connections, (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id] };
         }
-        if (i.id === (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id) {
+        if (i.id === (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id) {
           return { ...i, connections: [...i.connections, selectedItem.id] };
         }
         return i;
@@ -169,7 +169,7 @@
       const newY = event.clientY - rect.top - dragOffset.y;
       
       canvasItems = canvasItems.map(item => 
-        (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id === draggedItem.id 
+        (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id === draggedItem.id 
           ? { ...item, position: { x: Math.max(0, newX), y: Math.max(0, newY) } }
           : item
       );
@@ -258,7 +258,7 @@
 📎 CONNECT
 
           <Button 
-            on:click={addEvidence}
+            onclick={addEvidence}
             class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm"
           >
 + ADD EVIDENCE
@@ -288,8 +288,8 @@
           <!-- SVG for connection lines -->
           <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 1;">
             {#each connections as connection}
-              {@const fromItem = canvasItems.find(item => (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id === connection.from)}
-              {@const toItem = canvasItems.find(item => (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id === connection.to)}
+              {@const fromItem = canvasItems.find(item => (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id === connection.from)}
+              {@const toItem = canvasItems.find(item => (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id === connection.to)}
               {#if fromItem && toItem}
                 <line
                   x1={fromItem.position.x + 120}
@@ -306,52 +306,52 @@
           </svg>
 
           <!-- Evidence Cards -->
-          {#each canvasItems as item ((item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id)}
+          {#each canvasItems as item ((item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id)}
             <div
               class="absolute cursor-pointer select-none"
-              style="left: {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).position.x}px; top: {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).position.y}px; z-index: 2;"
+              style="left: {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).position.x}px; top: {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).position.y}px; z-index: 2;"
               onmousedown={(e) => handleMouseDown(e, item)}
-              on:click={() => startConnection(item)}
+              onclick={() => startConnection(item)}
             >
-              <div.Root class="w-60 bg-white border-2 {selectedItem?.id === (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).id ? 'border-blue-500' : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all">
+              <div.Root class="w-60 bg-white border-2 {selectedItem?.id === (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id ? 'border-blue-500' : 'border-gray-300'} shadow-lg hover:shadow-xl transition-all">
                 <div.Header class="pb-2">
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-gray-800">{(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).type}</span>
+                    <span class="text-sm font-bold text-gray-800">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).type}</span>
                     <span class="text-xs text-gray-500">!</span>
                   </div>
                 </div.Header>
                 <div.Content class="pt-0">
                   <!-- Main Content Area -->
                   <div class="bg-gray-600 h-16 rounded mb-2 flex items-center justify-center">
-                    <span class="text-white text-2xl">{getTypeIcon((item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).type)}</span>
+                    <span class="text-white text-2xl">{getTypeIcon((item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).type)}</span>
                   </div>
                   
                   <!-- Title -->
-                  <div class="text-sm font-bold text-blue-600 mb-1">{(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).title}</div>
+                  <div class="text-sm font-bold text-blue-600 mb-1">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).title}</div>
                   
                   <!-- Description -->
-                  <div class="text-xs text-gray-700 mb-2">{(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).description}</div>
+                  <div class="text-xs text-gray-700 mb-2">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).description}</div>
                   
                   <!-- Metadata -->
-                  {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata}
+                  {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata}
                     <div class="text-xs text-gray-500 space-y-1">
-                      {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.timestamp}
-                        <div>📅 {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.timestamp}</div>
+                      {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.timestamp}
+                        <div>📅 {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.timestamp}</div>
                       {/if}
-                      {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.location}
-                        <div>📍 {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.location}</div>
+                      {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.location}
+                        <div>📍 {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.location}</div>
                       {/if}
-                      {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.source}
-                        <div>🔗 {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).metadata.source}</div>
+                      {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.source}
+                        <div>🔗 {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata.source}</div>
                       {/if}
                     </div>
                   {/if}
                   
                   <!-- Connection indicators -->
-                  {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).connections.length > 0}
+                  {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).connections.length > 0}
                     <div class="flex items-center mt-2 text-xs text-green-600">
                       <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
-                      {(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).connections.length} connections
+                      {(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).connections.length} connections
                       <span class="ml-auto">🔗</span>
                     </div>
                   {/if}
@@ -370,7 +370,7 @@
                     Selected: {selectedItem?.title}<br>
                     Click another evidence item to create connection
                   </div>
-                  <Button on:click={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
+                  <Button onclick={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
 Cancel Connection
 
                 </div>
@@ -431,12 +431,12 @@ Cancel Connection
             {#each canvasItems as item}
               <div class="p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
                 <div class="flex items-center space-x-2">
-                  <span class="text-lg">{getTypeIcon((item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).type)}</span>
+                  <span class="text-lg">{getTypeIcon((item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).type)}</span>
                   <div class="flex-1">
-                    <div class="text-sm font-medium text-gray-800">{(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).title}</div>
-                    <div class="text-xs text-gray-600">{(item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).type}</div>
+                    <div class="text-sm font-medium text-gray-800">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).title}</div>
+                    <div class="text-xs text-gray-600">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).type}</div>
                   </div>
-                  {#if (item as { id?: any; position?: any; type?: any; title?: any; description?: any; metadata?: any; connections?: any }).connections.length > 0}
+                  {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).connections.length > 0}
                     <span class="text-xs text-green-600">🔗</span>
                   {/if}
                 </div>
@@ -447,7 +447,7 @@ Cancel Connection
 
         <!-- Action Buttons -->
         <div class="p-4 border-t space-y-2">
-          <Button on:click={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">
+          <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">
 + Add Evidence
 
           <Button class="w-full bg-green-600 hover:bg-green-700 text-white">

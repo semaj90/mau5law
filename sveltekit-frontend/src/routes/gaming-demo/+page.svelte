@@ -164,7 +164,7 @@
 							size="lg"
 							loading={isAnalyzing}
 							glowEffect={true}
-							on:click={startAnalysis}
+							onclick={startAnalysis}
 						>
 							{isAnalyzing ? 'Analyzing...' : 'Start Deep Analysis'}
 						</GamingButton>
@@ -172,7 +172,7 @@
 						<GamingButton
 							variant="secondary"
 							size="md"
-							on:click={generateReport}
+							onclick={generateReport}
 						>
 							Generate Report
 						</GamingButton>
@@ -405,7 +405,7 @@
 		border-color: rgba(0, 255, 136, 0.3);
 	}
 
-	.document-(item as { processing?: any }).processing {
+	.document-(item as { processing?: unknown }).processing {
 		border-color: #ffaa00;
 		box-shadow: 0 0 15px rgba(255, 170, 0, 0.2);
 		animation: processing-pulse 2s ease-in-out infinite;

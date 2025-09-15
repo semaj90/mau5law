@@ -8,7 +8,7 @@
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   
   // Document drafting state
   let documentTypes = $state<DocumentType[]>([]);
@@ -360,10 +360,10 @@
     </div>
     <div class="header-actions">
       {#if currentDocument}
-        <button class="nes-btn" on:click={saveDocument}>Save Draft</button>
-        <button class="nes-btn" variant="outline" on:click={() => showPreview = true}>Preview</button>
+        <button class="nes-btn" onclick={saveDocument}>Save Draft</button>
+        <button class="nes-btn" variant="outline" onclick={() => showPreview = true}>Preview</button>
       {:else}
-        <button class="nes-btn" on:click={disabled}>
+        <button class="nes-btn" onclick={disabled}>
           {isDrafting ? 'Creating...' : 'Start New Document'}
         </button>
       {/if}
@@ -520,7 +520,7 @@
                   <p class="suggestion-text">{suggestion.suggestion}</p>
                   <p class="suggestion-reasoning">{suggestion.reasoning}</p>
                   <div class="suggestion-actions">
-                    <button class="nes-btn" size="sm" on:click={() => applySuggestion(suggestion)}>
+                    <button class="nes-btn" size="sm" onclick={() => applySuggestion(suggestion)}>
                       Apply
                     </button>
                     <button class="nes-btn" variant="outline" size="sm">
@@ -540,28 +540,28 @@
             <button class="nes-btn" 
               variant="outline" 
               size="sm" 
-              on:click={disabled}
+              onclick={disabled}
             >
               Add Introduction
             </button>
             <button class="nes-btn" 
               variant="outline" 
               size="sm" 
-              on:click={disabled}
+              onclick={disabled}
             >
               Add Conclusion
             </button>
             <button class="nes-btn" 
               variant="outline" 
               size="sm" 
-              on:click={disabled}
+              onclick={disabled}
             >
               Improve Language
             </button>
             <button class="nes-btn" 
               variant="outline" 
               size="sm" 
-              on:click={disabled}
+              onclick={disabled}
             >
               Add Citations
             </button>
@@ -635,7 +635,7 @@
                 type="text"
                 placeholder="Ask AI to help with specific content..."
                 class="ai-prompt-input"
-                on:keydown={(e) => {
+                onkeydown={(e) => {
                   if (e.key === 'Enter' && e.target.value.trim()) {
                     generateContent(e.target.value);
                     e.target.value = '';
@@ -718,7 +718,7 @@
       </div>
       
       <div class="dialog-actions">
-        <button class="nes-btn" variant="outline" on:click={() => showPreview = false}>
+        <button class="nes-btn" variant="outline" onclick={() => showPreview = false}>
           Close Preview
         </button>
         <button class="nes-btn">

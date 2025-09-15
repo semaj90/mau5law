@@ -90,7 +90,7 @@
   });
 </script>
 
-<div class={containerClasses} on:click={handleThumbnailClick} {...restProps}>
+<div class={containerClasses} onclick={handleThumbnailClick} {...restProps}>
   {#if evidence.thumbnailUrl}
     <!-- Image/Video Thumbnail -->
     <img

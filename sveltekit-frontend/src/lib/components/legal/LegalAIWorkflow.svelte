@@ -82,7 +82,7 @@
             }
 
             dispatch('complete', { analysisResult, recommendations });
-        } catch (err: any) {
+        } catch (err: unknown) {
             error = err.message || 'Processing failed';
             console.error('Document processing failed:', err);
         } finally {
@@ -130,7 +130,7 @@
             <span class="status-indicator {servicesHealth?.recommendationEngine ? 'online' : 'offline'}">
                 Recommendation Engine {servicesHealth?.recommendationEngine ? '🟢' : '🔴'}
             </span>
-            <button on:click={checkServicesHealth} class="refresh-btn">🔄</button>
+            <button onclick={checkServicesHealth} class="refresh-btn">🔄</button>
         </div>
     </div>
 
@@ -159,7 +159,7 @@
         <div class="error-message">
             <span class="error-icon">❌</span>
             <span>{error}</span>
-            <button on:click={reset} class="retry-btn">Try Again</button>
+            <button onclick={reset} class="retry-btn">Try Again</button>
         </div>
     {/if}
 
@@ -170,7 +170,7 @@
                 <input 
                     type="file" 
                     accept=".pdf,.doc,.docx,.txt" 
-                    on:change={handleFileSelect}
+                    onchange={handleFileSelect}
                     class="file-input"
                     id="file-upload"
                 />
@@ -209,7 +209,7 @@
             </div>
 
             <button 
-                on:click={processDocument}
+                onclick={processDocument}
                 disabled={!canProcess}
                 class="process-btn"
             >
@@ -380,9 +380,9 @@
     <!-- Action Buttons -->
     {#if currentStep === 'complete'}
         <div class="action-buttons">
-            <button on:click={reset} class="secondary-btn">Analyze Another Document</button>
+            <button onclick={reset} class="secondary-btn">Analyze Another Document</button>
             <button 
-                on:click={() => dispatch('export', { analysisResult, recommendations })}
+                onclick={() => dispatch('export', { analysisResult, recommendations })}
                 class="primary-btn"
             >
                 Export Results

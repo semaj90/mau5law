@@ -75,12 +75,12 @@
           context: workflowContext
         })
       });
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        addLog(`✅ Cold path success: ${shaderConfig.key} cached with ${(result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shader?.sourceCode?.length || 0} chars`);
+      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
+        addLog(`✅ Cold path success: ${shaderConfig.key} cached with ${(result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader?.sourceCode?.length || 0} chars`);
         updateShaderResults(result);
       } else {
-        addLog(`❌ Cold path failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+        addLog(`❌ Cold path failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
       }
     } catch (error) {
       addLog(`❌ Cold path error: ${error.message}`);
@@ -102,12 +102,12 @@
         })
       });
       const latency = Date.now() - startTime;
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
         addLog(`⚡ Hot path success: ${shaderKey} retrieved in ${latency}ms (from cache)`);
         updateShaderResults(result);
       } else {
-        addLog(`❌ Hot path failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+        addLog(`❌ Hot path failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
       }
     } catch (error) {
       addLog(`❌ Hot path error: ${error.message}`);
@@ -133,12 +133,12 @@
           context: advancedContext
         })
       });
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        addLog(`🎯 Predictive preloading triggered: ${(result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).message}`);
+      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
+        addLog(`🎯 Predictive preloading triggered: ${(result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).message}`);
         addLog(`📊 ML Analysis: Evidence view detected → preloading timeline and relationship shaders`);
       } else {
-        addLog(`❌ Predictive preloading failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+        addLog(`❌ Predictive preloading failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
       }
     } catch (error) {
       addLog(`❌ Predictive preloading error: ${error.message}`);
@@ -163,14 +163,14 @@
           }
         })
       });
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        addLog(`🎯 Multi-dimensional search: Found ${(result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).count} semantically similar shaders`);
-        (result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shaders?.forEach((shader: any, index: number) => {
+      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
+        addLog(`🎯 Multi-dimensional search: Found ${(result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).count} semantically similar shaders`);
+        (result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shaders?.forEach((shader: unknown, index: number) => {
           addLog(`  ${index + 1}. ${shader.key} - Similarity score: ${(0.8 + Math.random() * 0.15).toFixed(3)}`);
         });
       } else {
-        addLog(`❌ Multi-dimensional search failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+        addLog(`❌ Multi-dimensional search failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
       }
     } catch (error) {
       addLog(`❌ Multi-dimensional search error: ${error.message}`);
@@ -181,10 +181,10 @@
   async function loadMetrics() {
     try {
       const response = await fetch('/api/v1/gpu-cache/metrics');
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        if ((data as { success?: any; metrics?: any; shaderType?: any; usageCount?: any; legalContext?: any }).success && (data as { success?: any; metrics?: any; shaderType?: any; usageCount?: any; legalContext?: any }).metrics.shaderCache) {
-          metrics.set((data as { success?: any; metrics?: any; shaderType?: any; usageCount?: any; legalContext?: any }).metrics.shaderCache);
+      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
+        if ((data as { success?: unknown; metrics?: unknown; shaderType?: unknown; usageCount?: unknown; legalContext?: unknown }).success && (data as { success?: unknown; metrics?: unknown; shaderType?: unknown; usageCount?: unknown; legalContext?: unknown }).metrics.shaderCache) {
+          metrics.set((data as { success?: unknown; metrics?: unknown; shaderType?: unknown; usageCount?: unknown; legalContext?: unknown }).metrics.shaderCache);
         }
       }
     } catch (error) {
@@ -198,7 +198,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'clear' })
       });
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
         addLog(`🧹 Cache cleared successfully`);
         shaderResults.set([]);
         await loadMetrics();
@@ -213,11 +213,11 @@
       return newLog.slice(-20); // Keep last 20 log entries
     });
   }
-  function updateShaderResults(result: any) {
-    if ((result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).success && (result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shader) {
+  function updateShaderResults(result: unknown) {
+    if ((result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).success && (result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader) {
       shaderResults.update(results => {
         const newResults = [...results];
-        const existingIndex = newResults.findIndex(r => r.shader.key === (result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shader.key);
+        const existingIndex = newResults.findIndex(r => r.shader.key === (result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader.key);
         if (existingIndex >= 0) {
           newResults[existingIndex] = result;
         } else {
@@ -295,7 +295,7 @@
               <button
                 class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors disabled:opacity-50 text-sm"
                 disabled={$isLoading}
-                on:click={() => demonstrateColdPath(shader)}
+                onclick={() => demonstrateColdPath(shader)}
               >
                 {shader.key}
               </button>
@@ -314,7 +314,7 @@
               <button
                 class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors disabled:opacity-50 text-sm"
                 disabled={$isLoading}
-                on:click={() => demonstrateHotPath(shader.key)}
+                onclick={() => demonstrateHotPath(shader.key)}
               >
                 {shader.key}
               </button>
@@ -332,14 +332,14 @@
             <button
               class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
               disabled={$isLoading}
-              on:click={demonstratePredictivePreloading}
+              onclick={demonstratePredictivePreloading}
             >
               🎯 Predictive Preloading
             </button>
             <button
               class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
               disabled={$isLoading}
-              on:click={demonstrateMultiDimensionalSearch}
+              onclick={demonstrateMultiDimensionalSearch}
             >
               🔍 Multi-Dimensional Search
             </button>
@@ -354,7 +354,7 @@
           <button
             class="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors disabled:opacity-50"
             disabled={$isLoading}
-            on:click={clearCache}
+            onclick={clearCache}
           >
             🧹 Clear Cache
           </button>
@@ -382,20 +382,20 @@
           <div class="space-y-3 max-h-80 overflow-y-auto">
             {#each $shaderResults as result}
               <div class="border border-gray-200 rounded-lg p-3">
-                <div class="font-semibold text-gray-800">{(result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shader.key}</div>
+                <div class="font-semibold text-gray-800">{(result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader.key}</div>
                 <div class="text-sm text-gray-600 mt-1">
-                  Type: {(result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shader.metadata.shaderType} | 
-                  Size: {(result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shader.sourceCode?.length || 0} chars |
-                  Usage: {(result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shader.metadata.usageCount}x
+                  Type: {(result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader.metadata.shaderType} | 
+                  Size: {(result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader.sourceCode?.length || 0} chars |
+                  Usage: {(result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader.metadata.usageCount}x
                 </div>
-                {#if (result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shader.metadata.legalContext}
+                {#if (result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader.metadata.legalContext}
                   <div class="text-xs text-blue-600 mt-1">
-                    Legal Context: {(result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shader.metadata.legalContext.documentTypes?.join(', ')}
+                    Legal Context: {(result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader.metadata.legalContext.documentTypes?.join(', ')}
                   </div>
                 {/if}
-                {#if (result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shader.dependencies?.length > 0}
+                {#if (result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader.dependencies?.length > 0}
                   <div class="text-xs text-purple-600 mt-1">
-                    Dependencies: {(result as { shader?: any; message?: any; count?: any; shaders?: any; success?: any }).shader.dependencies.join(', ')}
+                    Dependencies: {(result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader.dependencies.join(', ')}
                   </div>
                 {/if}
               </div>

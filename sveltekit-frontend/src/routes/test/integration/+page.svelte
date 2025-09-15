@@ -8,7 +8,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import { browser } from '$app/environment';
-  import { Button } from 'bits-ui';
+  import Button from 'bits-ui';
   import GPUCacheIntegrationDemo from '$lib/components/ui/gaming/demo/GPUCacheIntegrationDemo.svelte';
   import NES8BitButton from '$lib/components/ui/gaming/8bit/NES8BitButton.svelte';
   import SNES16BitButton from '$lib/components/ui/gaming/16bit/SNES16BitButton.svelte';
@@ -23,7 +23,7 @@
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
 
   // Test state
-  let testResults = $state<Record<string, { status: 'pending' | 'passed' | 'failed'; message: stringdetails?: any } | null>(null)()>({});
+  let testResults = $state<Record<string, { status: 'pending' | 'passed' | 'failed'; message: stringdetails?: unknown } | null>(null)()>({});
   let isRunningTests = $state(false);
   let postgresStatus = $state<'connecting' | 'connected' | 'error'>('connecting');
   let apiEndpoints = $state<Record<string, { status: 'pending' | 'online' | 'offline'latency?: number } | null>(null)()>({});
@@ -127,8 +127,8 @@
         headers: { 'Accept': 'application/json' }
       });
 
-      if ((response as { ok?: any; json?: any; status?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any; status?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
         postgresStatus = 'connected';
         testResults['postgresql'] = {
           status: 'passed',
@@ -136,7 +136,7 @@
           details: data
         };
       } else {
-        throw new Error(`Database connection failed: ${(response as { ok?: any; json?: any; status?: any }).status}`);
+        throw new Error(`Database connection failed: ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`);
       }
     } catch (error) {
       postgresStatus = 'error';
@@ -161,7 +161,7 @@
         const endTime = performance.now();
         const latency = Math.round(endTime - startTime);
 
-        if ((response as { ok?: any; json?: any; status?: any }).ok || (response as { ok?: any; json?: any; status?: any }).status === 404) { // 404 is OK for endpoints that don't exist yet
+        if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok || (response as { ok?: unknown; json?: unknown; status?: unknown }).status === 404) { // 404 is OK for endpoints that don't exist yet
           apiEndpoints[endpoint.name] = {
             status: 'online',
             latency
@@ -258,7 +258,7 @@
 
     <div class="flex gap-4 mb-6">
       <Button.Root
-  on:click={runIntegrationTests}
+  onclick={runIntegrationTests}
         disabled={isRunningTests}
         class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold bits-btn bits-btn"
       >
@@ -296,13 +296,13 @@
               <div class="test-result-nier-bits-card p-4 bg-gray-800 rounded-lg border border-gray-700">
                 <div class="flex items-center justify-between mb-2">
                   <h4 class="font-semibold text-white capitalize">{testName.replace('-', ' ')}</h4>
-                  <span class="text-xl">{getStatusIcon((result as { status?: any; message?: any; details?: any }).status)}</span>
+                  <span class="text-xl">{getStatusIcon((result as { status?: unknown; message?: unknown; details?: unknown }).status)}</span>
                 </div>
-                <p class="text-sm {getStatusColor((result as { status?: any; message?: any; details?: any }).status)} mb-2">{(result as { status?: any; message?: any; details?: any }).message}</p>
-                {#if (result as { status?: any; message?: any; details?: any }).details}
+                <p class="text-sm {getStatusColor((result as { status?: unknown; message?: unknown; details?: unknown }).status)} mb-2">{(result as { status?: unknown; message?: unknown; details?: unknown }).message}</p>
+                {#if (result as { status?: unknown; message?: unknown; details?: unknown }).details}
                   <details class="text-xs text-gray-400">
                     <summary class="cursor-pointer">Details</summary>
-                    <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">{JSON.stringify((result as { status?: any; message?: any; details?: any }).details, null, 2)}</pre>
+                    <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">{JSON.stringify((result as { status?: unknown; message?: unknown; details?: unknown }).details, null, 2)}</pre>
                   </details>
                 {/if}
               </div>
@@ -323,7 +323,7 @@
           <div class="component-section">
             <h3 class="text-xl font-semibold text-white mb-4">8-Bit NES Era</h3>
             <div class="flex gap-4 flex-wrap">
-              <NES8BitButton variant="primary" on:click={() => console.log('NES Button Clicked!')}>
+              <NES8BitButton variant="primary" onclick={() => console.log('NES Button Clicked!')}>
                 NES Primary
               </NES8BitButton>
               <NES8BitButton variant="success" enableSound={true}>

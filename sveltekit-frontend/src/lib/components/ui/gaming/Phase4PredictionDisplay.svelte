@@ -116,7 +116,7 @@
     <button
       class="refresh-btn"
       style:color={currentTheme.accentColor}
-      on:click={loadPrediction}
+      onclick={loadPrediction}
       disabled={loading}
     >
       {loading ? '⏳' : '🔄'}
@@ -135,12 +135,12 @@
     <div class="error-container" transition:fade>
       <div class="error-icon">❌</div>
       <p class="error-message">{error}</p>
-      <button class="retry-btn nes-btn is-error" on:click={loadPrediction}>
+      <button class="retry-btn nes-btn is-error" onclick={loadPrediction}>
         Retry Analysis
       </button>
     </div>
   {:else if prediction}
-    <div class="prediction-content" transition:fly={{ y: 20, duration: 400 }}>
+    <div class="prediction-content" transitionfly={{ y: 20, duration: 400 }}>
       <!-- Main Prediction Display -->
       <div class="main-prediction">
         <div class="probability-circle" style:border-color={getProbabilityColor(prediction.winProbability)}>
@@ -174,7 +174,7 @@
 
       <!-- Key Factors -->
       {#if prediction.keyFactors.length > 0}
-        <div class="factors-section" transition:scale={{ delay: 200 }}>
+        <div class="factors-section" transitionscale={{ delay: 200 }}>
           <h3 class="section-title">
             <span class="icon">⚖️</span>
             Key Factors
@@ -183,7 +183,7 @@
             {#each prediction.keyFactors as factor, index}
               <div
                 class="factor-card {consoleTheme}"
-                transition:fly={{ x: -20, delay: index * 100 }}
+                transitionfly={{ x: -20, delay: index * 100 }}
               >
                 <div class="factor-header">
                   <span class="factor-type">{factor.factorType.replace('_', ' ').toUpperCase()}</span>
@@ -207,7 +207,7 @@
 
       <!-- Similar Cases -->
       {#if prediction.similarCases.length > 0}
-        <div class="similar-cases-section" transition:scale={{ delay: 400 }}>
+        <div class="similar-cases-section" transitionscale={{ delay: 400 }}>
           <h3 class="section-title">
             <span class="icon">📚</span>
             Similar Cases
@@ -216,7 +216,7 @@
             {#each prediction.similarCases as similarCase, index}
               <div
                 class="case-card {consoleTheme}"
-                transition:fly={{ y: 10, delay: index * 50 }}
+                transitionfly={{ y: 10, delay: index * 50 }}
               >
                 <div class="case-header">
                   <h4 class="case-title">{similarCase.title}</h4>
@@ -245,7 +245,7 @@
       {/if}
 
       <!-- Gaming Elements -->
-      <div class="gaming-elements" transition:fade={{ delay: 600 }}>
+      <div class="gaming-elements" transitionfade={{ delay: 600 }}>
         <div class="achievement-display">
           <span class="achievement-icon">
             {prediction.gameTheme.displayAs === 'boss_battle_odds' ? '⚔️' :
@@ -261,7 +261,7 @@
     <div class="empty-state" transition:fade>
       <div class="empty-icon">🔮</div>
       <p>Click "Analyze Case" to generate outcome prediction</p>
-      <button class="analyze-btn nes-btn is-primary" on:click={loadPrediction}>
+      <button class="analyze-btn nes-btn is-primary" onclick={loadPrediction}>
         Analyze Case
       </button>
     </div>

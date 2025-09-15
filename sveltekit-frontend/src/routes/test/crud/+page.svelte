@@ -10,12 +10,10 @@ https://svelte.dev/e/js_parse_error -->
   import { invalidateAll } from '$app/navigation';
 
   // Gaming UI Components
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
 
   // Standard UI Components
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
@@ -32,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
 
   /** @type {import('./$types').PageData} */
-  let { data  }: { data : any } = $props();
+  let { data  }: { data : unknown } = $props();
   let isCreating = $state(false);
   let editingCase = $state(null);
   let isDeleting = $state(false);
@@ -91,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
         method: 'DELETE'
       });
 
-      if ((response as { ok?: any }).ok) {
+      if ((response as { ok?: unknown }).ok) {
         await invalidateAll();
       } else {
         alert('Failed to delete case');
@@ -107,11 +105,11 @@ https://svelte.dev/e/js_parse_error -->
   // Form submission handler
   const handleSubmit = () => {
     return async ({ result, update }) => {
-      if ((result as { type?: any; error?: any }).type === 'success') {
+      if ((result as { type?: unknown; error?: unknown }).type === 'success') {
         resetForm();
         await update();
-      } else if ((result as { type?: any; error?: any }).type === 'error') {
-        alert('Error saving caseItem: ' + (result as { type?: any; error?: any }).error?.message);
+      } else if ((result as { type?: unknown; error?: unknown }).type === 'error') {
+        alert('Error saving caseItem: ' + (result as { type?: unknown; error?: unknown }).error?.message);
       }
     };
   };
@@ -165,7 +163,7 @@ https://svelte.dev/e/js_parse_error -->
         <Button class="bits-btn"
           variant="outline"
           size="sm"
-          on:click={() =>
+          onclick={() =>
 showSystemHealth = !showSystemHealth}
         >
           {showSystemHealth ? 'Hide' : 'Show'} System Health
@@ -192,18 +190,18 @@ showSystemHealth = !showSystemHealth}
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="space-y-2">
               <h4 class="font-medium">Database</h4>
-              <Badge variant={(data as { health?: any; cases?: any }).health.database?.connected ? "default" : "destructive"}>
-                {(data as { health?: any; cases?: any }).health.database?.connected ? 'Connected' : 'Offline'}
+              <Badge variant={(data as { health?: unknown; cases?: unknown }).health.database?.connected ? "default" : "destructive"}>
+                {(data as { health?: unknown; cases?: unknown }).health.database?.connected ? 'Connected' : 'Offline'}
               </Badge>
-              {#if (data as { health?: any; cases?: any }).health.database?.responseTime}
-                <p class="text-sm nes-text is-disabled">Response: {(data as { health?: any; cases?: any }).health.database.responseTime}ms</p>
+              {#if (data as { health?: unknown; cases?: unknown }).health.database?.responseTime}
+                <p class="text-sm nes-text is-disabled">Response: {(data as { health?: unknown; cases?: unknown }).health.database.responseTime}ms</p>
               {/if}
             </div>
 
             <div class="space-y-2">
               <h4 class="font-medium">Server</h4>
               <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">SSR Active</span>
-              <p class="text-sm nes-text is-disabled">Cases: {(data as { health?: any; cases?: any }).cases?.length || 0}</p>
+              <p class="text-sm nes-text is-disabled">Cases: {(data as { health?: unknown; cases?: unknown }).cases?.length || 0}</p>
             </div>
 
             <div class="space-y-2">
@@ -213,9 +211,9 @@ showSystemHealth = !showSystemHealth}
             </div>
           </div>
 
-          {#if (data as { health?: any; cases?: any }).health.database?.error}
+          {#if (data as { health?: unknown; cases?: unknown }).health.database?.error}
             <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded">
-              <p class="text-sm text-red-700">Database Error: {(data as { health?: any; cases?: any }).health.database.error}</p>
+              <p class="text-sm text-red-700">Database Error: {(data as { health?: unknown; cases?: unknown }).health.database.error}</p>
             </div>
           {/if}
         </div>
@@ -323,7 +321,7 @@ showSystemHealth = !showSystemHealth}
               </NES8BitButton>
 
               {#if isCreating}
-                <NES8BitButton type="button" on:click={resetForm}>
+                <NES8BitButton type="button" onclick={resetForm}>
                   ❌ Cancel
                 </NES8BitButton>
               {/if}
@@ -333,7 +331,7 @@ showSystemHealth = !showSystemHealth}
               </SNES16BitButton>
 
               {#if isCreating}
-                <SNES16BitButton type="button" on:click={resetForm} plasmaEffect={true}>
+                <SNES16BitButton type="button" onclick={resetForm} plasmaEffect={true}>
                   ❌ Cancel
                 </SNES16BitButton>
               {/if}
@@ -350,7 +348,7 @@ showSystemHealth = !showSystemHealth}
               {#if isCreating}
                 <N643DButton
                   type="button"
-                  on:click={resetForm}
+                  onclick={resetForm}
                   variant="secondary"
                   materialType="metal"
                 >
@@ -367,13 +365,13 @@ showSystemHealth = !showSystemHealth}
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           📋 Cases List
-          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(data as { health?: any; cases?: any }).cases?.length || 0} total</span>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(data as { health?: unknown; cases?: unknown }).cases?.length || 0} total</span>
         </h3>
       </div>
       <div class="yorha-panel-content">
-        {#if (data as { health?: any; cases?: any }).cases && (data as { health?: any; cases?: any }).cases.length > 0}
+        {#if (data as { health?: unknown; cases?: unknown }).cases && (data as { health?: unknown; cases?: unknown }).cases.length > 0}
           <div class="space-y-4">
-            {#each (data as { health?: any; cases?: any }).cases as caseItem (caseItem.id)}
+            {#each (data as { health?: unknown; cases?: unknown }).cases as caseItem (caseItem.id)}
               <div class="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
                 <div class="flex flex-col md:flex-row justify-between items-start gap-4">
                   <div class="flex-1 space-y-2">
@@ -411,7 +409,7 @@ showSystemHealth = !showSystemHealth}
                     <Button class="bits-btn"
                       variant="outline"
                       size="sm"
-                      on:click={() =>
+                      onclick={() =>
 startEdit(caseItem)}
                       disabled={isDeleting}
                     >
@@ -420,7 +418,7 @@ startEdit(caseItem)}
                     <Button class="bits-btn"
                       variant="destructive"
                       size="sm"
-                      on:click={() =>
+                      onclick={() =>
 confirmDelete(caseItem)}
                       disabled={isDeleting}
                     >
@@ -450,8 +448,8 @@ confirmDelete(caseItem)}
             <h4 class="font-medium mb-2">✅ SSR Status</h4>
             <ul class="text-sm space-y-1 nes-text is-disabled">
               <li>• Page data loaded: {data ? '✅' : '❌'}</li>
-              <li>• Cases from server: {(data as { health?: any; cases?: any }).cases ? '✅' : '❌'}</li>
-              <li>• Database health: {(data as { health?: any; cases?: any }).health ? '✅' : '❌'}</li>
+              <li>• Cases from server: {(data as { health?: unknown; cases?: unknown }).cases ? '✅' : '❌'}</li>
+              <li>• Database health: {(data as { health?: unknown; cases?: unknown }).health ? '✅' : '❌'}</li>
               <li>• Form actions: {typeof enhance !== 'undefined' ? '✅' : '❌'}</li>
             </ul>
           </div>
@@ -471,8 +469,8 @@ confirmDelete(caseItem)}
           <h5 class="font-medium mb-2">Debug Info:</h5>
           <pre class="text-xs overflow-auto">{JSON.stringify({
             hasData: !!data,
-            casesCount: (data as { health?: any; cases?: any }).cases?.length || 0,
-            databaseConnected: (data as { health?: any; cases?: any }).health?.database?.connected || false,
+            casesCount: (data as { health?: unknown; cases?: unknown }).cases?.length || 0,
+            databaseConnected: (data as { health?: unknown; cases?: unknown }).health?.database?.connected || false,
             gamingEra,
             timestamp: new Date().toISOString()
           }, null, 2)}</pre>

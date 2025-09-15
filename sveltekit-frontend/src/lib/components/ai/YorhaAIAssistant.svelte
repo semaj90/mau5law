@@ -266,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
 
   		chatSocket = new WebSocket(wsUrl);
 
-  		chatSocket.on:open=() => {
+  		chatSocket.onopen=() => {
   			console.log('= Connected to YorhaAI chat service');
   			isConnected = true;
   		};
@@ -280,7 +280,7 @@ https://svelte.dev/e/js_parse_error -->
   			}
   		};
 
-  		chatSocket.on:close=() => {
+  		chatSocket.onclose=() => {
   			console.log('L Chat service disconnected');
   			isConnected = false;
   			chatService?.send('DISCONNECT');
@@ -298,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
 
   		activitySocket = new WebSocket(wsUrl);
 
-  		activitySocket.on:open=() => {
+  		activitySocket.onopen=() => {
   			console.log('=� Connected to activity service');
   		};
 
@@ -671,7 +671,7 @@ https://svelte.dev/e/js_parse_error -->
 	<!-- Trigger Button -->
 	<Button.Root
 		{...$trigger}
-		on:click={openDialog}
+		onclick={openDialog}
 		variant="default"
 		size="lg"
 		class={cn(
@@ -745,7 +745,7 @@ https://svelte.dev/e/js_parse_error -->
 							{...$close}
 							variant="ghost"
 							size="sm"
-							on:click={closeDialog}
+							onclick={closeDialog}
 							class="h-6 w-6 p-0 bits-btn bits-btn"
 						>
 							<span class="sr-only">Close</span>
@@ -818,7 +818,7 @@ https://svelte.dev/e/js_parse_error -->
 												{#each message.metadata.suggestions as suggestion}
 													<button
 														class="text-xs text-blue-400 hover:text-blue-300 underline block"
-														on:click={() => {
+														onclick={() => {
 															currentMessage = suggestion;
 															sendMessage();
 														}}
@@ -873,7 +873,7 @@ https://svelte.dev/e/js_parse_error -->
 						/>
 
 						<Button.Root
-							on:click={sendMessage}
+							onclick={sendMessage}
 							disabled={!canSendMessage}
 							variant="default"
 							size="sm"
@@ -898,7 +898,7 @@ https://svelte.dev/e/js_parse_error -->
 							<Button.Root
 								variant="ghost"
 								size="sm"
-								on:click={clearChat}
+								onclick={clearChat}
 								disabled={!hasMessages}
 								class="text-xs h-6 px-2 bits-btn bits-btn"
 							>

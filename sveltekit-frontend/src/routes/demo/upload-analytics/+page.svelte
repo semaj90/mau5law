@@ -21,7 +21,7 @@
 
   let showConfiguration = $state(false);
 
-  function updateConfig(key: string, value: any) {
+  function updateConfig(key: string, value: unknown) {
     demoConfig = {
       ...demoConfig,
       [key]: value
@@ -80,13 +80,13 @@
     <div class="config-header">
       <button
         class="config-toggle"
-        on:click={() => showConfiguration = !showConfiguration}
+        onclick={() => showConfiguration = !showConfiguration}
       >
         {showConfiguration ? '🔽' : '▶️'} Demo Configuration
       </button>
 
       {#if showConfiguration}
-        <button class="btn-reset" on:click={resetToDefaults}>
+        <button class="btn-reset" onclick={resetToDefaults}>
           Reset to Defaults
         </button>
       {/if}
@@ -168,7 +168,7 @@
                 <input
                   type="checkbox"
                   checked={demoConfig.allowedTypes.includes(type)}
-                  on:change={(e) => {
+                  onchange={(e) => {
                     if (e.target.checked) {
                       demoConfig.allowedTypes = [...demoConfig.allowedTypes, type];
                     } else {
@@ -447,7 +447,7 @@
     gap: 0.5rem;
   }
 
-  .config-(item as { checkbox?: any }).checkbox-item {
+  .config-(item as { checkbox?: unknown }).checkbox-item {
     flex-direction: row;
     align-items: center;
   }

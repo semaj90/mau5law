@@ -166,7 +166,7 @@
   }
 </script>
 
-<svelte:window on:click={handleClickOutside} on:keydown={handleKeydown} />
+<svelte:window onclick={handleClickOutside} onkeydown={handleKeydown} />
 
 <div class="{containerClasses} search-container">
   <!-- Main Search Input -->
@@ -176,8 +176,8 @@
       bind:value={value}
       class={inputClasses}
       {placeholder}
-      on:input={handleInput}
-      on:focus={() => value && (showSuggestions = true)}
+      oninput={handleInput}
+      onfocus={() => value && (showSuggestions = true)}
       {...restProps}
     />
 
@@ -196,7 +196,7 @@
     {#if value}
       <button
         class="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        on:click={clearSearch}
+        onclick={clearSearch}
       >
         <X class={iconSizes[size]} />
       </button>
@@ -206,7 +206,7 @@
     {#if filters.length > 0}
       <button
         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        on:click={() => showFilters = !showFilters}
+        onclick={() => showFilters = !showFilters}
         class:text-blue-600={filters.some(f => f.active)}
       >
         <Filter class={iconSizes[size]} />
@@ -244,7 +244,7 @@
           <button
             class="nes-btn is-small"
             class:is-primary={filter.active}
-            on:click={() => toggleFilter(index)}
+            onclick={() => toggleFilter(index)}
           >
             {filter.label}
           </button>
@@ -270,7 +270,7 @@
           {#each suggestions as suggestion}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
-              on:click={() => selectSuggestion(suggestion)}
+              onclick={() => selectSuggestion(suggestion)}
             >
               <div class="font-medium text-sm truncate">{suggestion.content}</div>
               {#if suggestion.score}
@@ -303,7 +303,7 @@
           {#each searchHistory.slice(0, 3) as historyItem}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
-              on:click={() => { value = historyItem; performSearch(historyItem); }}
+              onclick={() => { value = historyItem; performSearch(historyItem); }}
             >
               <div class="text-sm text-gray-700">{historyItem}</div>
             </button>

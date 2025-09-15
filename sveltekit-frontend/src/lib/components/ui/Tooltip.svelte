@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   interface Props {
     content?: string;
@@ -32,8 +33,8 @@
 <div
   class="space-y-4"
   role="tooltip"
-  on:mouseenter={handleMouseEnter}
-  on:mouseleave={handleMouseLeave}
+  onmouseenter={handleMouseEnter}
+  onmouseleave={handleMouseLeave}
 >
   {@render children?.()}
   {#if showTooltip && content}

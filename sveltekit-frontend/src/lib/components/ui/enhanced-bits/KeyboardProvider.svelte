@@ -141,7 +141,7 @@
 {/if}
 
 <!-- Slot for application content -->
-<slot />
+{@render children?.()}
 
 <!-- Expose context for TypeScript -->
 <script lang="ts" generics="T">

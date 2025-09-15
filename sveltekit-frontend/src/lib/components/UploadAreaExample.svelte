@@ -4,7 +4,7 @@
   import UploadArea from './UploadArea.svelte';
   let uploadComponent: UploadArea = $state();
   let uploadStatus = $state('');
-  let uploadedFiles: any[] = $state([]);
+  let uploadedFiles: unknown[] = $state([]);
   let showProgress = $state(true);
   let autoUpload = $state(false);
   let maxFiles = $state(5);
@@ -104,7 +104,7 @@
                 <input
                   type="number"
                   class="space-y-4"
-                  id="maxSize" on:input={(e) => {
+                  id="maxSize" oninput={(e) => {
                     const target = e.target as HTMLInputElement;
                     if (target) {
                       maxFileSize = parseInt(target.value) * 1024 * 1024;
@@ -157,7 +157,7 @@
             type="button"
             class="space-y-4"
             aria-label="Clear status"
-            on:click={() => clearStatus()}
+            onclick={() => clearStatus()}
           ></button>
         </div>
       {/if}
@@ -171,7 +171,7 @@
             <button
               type="button"
               class="space-y-4"
-              on:click={() => clearStatus()}
+              onclick={() => clearStatus()}
             >
               Clear
             </button>

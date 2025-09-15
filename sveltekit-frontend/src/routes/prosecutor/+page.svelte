@@ -14,9 +14,7 @@ Features: Case management, evidence upload, AI chat, vector search
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -40,11 +38,11 @@ Features: Case management, evidence upload, AI chat, vector search
 
   // State management
   let selectedCaseId = $state('');
-  let cases: any[] = $state([]);
-  let personsOfInterest: any[] = $state([]);
-  let recentEvidence: any[] = $state([]);
+  let cases: unknown[] = $state([]);
+  let personsOfInterest: unknown[] = $state([]);
+  let recentEvidence: unknown[] = $state([]);
   let searchQuery = $state('');
-  let searchResults: any[] = $state([]);
+  let searchResults: unknown[] = $state([]);
   let activeTab = $state('overview');
 
   // AI features state
@@ -67,15 +65,15 @@ Features: Case management, evidence upload, AI chat, vector search
     try {
   let response = $state<Responsetry {
           response | null>(null)(await fetch('/api/cases?role=prosecutor');
-          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-            throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+          if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+            throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
           }
         } catch (error) {
           console.error('Fetch failed:', error);
           throw error;
         }
-      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
-      cases = (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).data || [];
+      const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
+      cases = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
 
       if (cases.length > 0 && !selectedCaseId) {
         selectedCaseId = cases[0].id;
@@ -89,15 +87,15 @@ Features: Case management, evidence upload, AI chat, vector search
     try {
   let response = $state<Responsetry {
           response | null>(null)(await fetch(`/api/persons-of-interest?caseId=${selectedCaseId}`);
-          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-            throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+          if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+            throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
           }
         } catch (error) {
           console.error('Fetch failed:', error);
           throw error;
         }
-      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
-      personsOfInterest = (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).data || [];
+      const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
+      personsOfInterest = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
     } catch (error) {
       console.error('Failed to load POIs:', error);
     }
@@ -107,15 +105,15 @@ Features: Case management, evidence upload, AI chat, vector search
     try {
   let response = $state<Responsetry {
           response | null>(null)(await fetch(`/api/evidence?caseId=${selectedCaseId}&limit=10`);
-          if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-            throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+          if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+            throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
           }
         } catch (error) {
           console.error('Fetch failed:', error);
           throw error;
         }
-      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
-      recentEvidence = (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).data || [];
+      const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
+      recentEvidence = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
     } catch (error) {
       console.error('Failed to load evidence:', error);
     }
@@ -145,8 +143,8 @@ Features: Case management, evidence upload, AI chat, vector search
             type: 'evidence'
           })
         });
-        const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
-        searchResults = (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).results || [];
+        const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
+        searchResults = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).results || [];
       }
     } catch (error) {
       console.error('Vector search failed:', error);
@@ -154,7 +152,7 @@ Features: Case management, evidence upload, AI chat, vector search
   };
 
   // Handle evidence upload completion
-  const handleEvidenceUploaded = (results: any[]) => {
+  const handleEvidenceUploaded = (results: unknown[]) => {
     console.log('Evidence uploaded:', results);
     loadRecentEvidence(); // Refresh evidence list
   };
@@ -214,7 +212,7 @@ Features: Case management, evidence upload, AI chat, vector search
             <Button class="bits-btn"
               variant={selectedCaseId === caseItem.id ? 'default' : 'outline'}
               size="sm"
-              on:click={() =>
+              onclick={() =>
 selectCase(caseItem.id)}
             >
               {caseItem.caseNumber} - {caseItem.title}
@@ -252,7 +250,7 @@ selectCase(caseItem.id)}
                 placeholder="Search evidence, cases, precedents..."
                 class="flex-1"
               />
-              <Button class="bits-btn" on:click={performVectorSearch} disabled={!searchQuery.trim()}>
+              <Button class="bits-btn" onclick={performVectorSearch} disabled={!searchQuery.trim()}>
 <Search class="w-4 h-4" />
 
             </div>
@@ -264,19 +262,19 @@ selectCase(caseItem.id)}
                   <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                     <div class="flex justify-between items-start">
                       <div>
-                        <p class="font-medium text-sm">{(result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).payload?.fileName || (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).id}</p>
+                        <p class="font-medium text-sm">{(result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).payload?.fileName || (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).id}</p>
                         <p class="text-xs text-gray-600 mt-1">
-                          {(result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).payload?.title || 'No title'}
+                          {(result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).payload?.title || 'No title'}
                         </p>
-                        {#if (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).payload?.tags}
+                        {#if (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).payload?.tags}
                           <div class="flex gap-1 mt-2">
-                            {#each (result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).payload.tags as tag}
+                            {#each (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).payload.tags as tag}
                               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                             {/each}
                           </div>
                         {/if}
                       </div>
-                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round((result as { data?: any; results?: any; payload?: any; id?: any; score?: any }).score * 100)}% match</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round((result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).score * 100)}% match</span>
                     </div>
                   </div>
                 {/each}

@@ -3,6 +3,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions -->
 <!-- AI Dialog: Svelte 5, Bits UI, UnoCSS, transitions, analytics logging -->
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   import { accessibleClick } from '$lib/actions/accessibleClick';
 
@@ -11,9 +12,9 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     children?: import('svelte').Snippet;
   }
   import { fade, scale } from 'svelte/transition';
-  let { open = $bindable()  }: { open = $bindable() : any } = $props(); // false;
-  let { title = $bindable()  }: { title = $bindable() : any } = $props(); // '';
-  let { onClose = $bindable()  }: { onClose = $bindable() : any } = $props(); // () => void = () => {};
+  let { open = $bindable()  }: { open = $bindable() : unknown } = $props(); // false;
+  let { title = $bindable()  }: { title = $bindable() : unknown } = $props(); // '';
+  let { onClose = $bindable()  }: { onClose = $bindable() : unknown } = $props(); // () => void = () => {};
 </script>
 
 {#if open}

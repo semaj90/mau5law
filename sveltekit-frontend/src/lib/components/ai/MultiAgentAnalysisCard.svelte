@@ -16,9 +16,7 @@ https://svelte.dev/e/js_parse_error -->
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
   let { analysisData = $bindable()  }: { analysisData = $bindable() : any } = $props(); // {
     evidenceAnalysis?: unknown;
@@ -235,7 +233,7 @@ https://svelte.dev/e/js_parse_error -->
       <Button class="bits-btn" 
         variant="outline" 
         size="sm"
-        on:click={() =>
+        onclick={() =>
 showDetails = !showDetails}
       >
         {showDetails ? 'Hide' : 'Show'} Full Analysis

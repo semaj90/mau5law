@@ -4,9 +4,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -153,7 +151,7 @@
       console.log('✅ WebGL context initialized');
 
       if (gpuManager) {
-        gpuMetricsSub = gpuManager.getMetrics().subscribe((metrics: any) => {
+        gpuMetricsSub = gpuManager.getMetrics().subscribe((metrics: unknown) => {
           gpuMetrics = {
             totalContexts: metrics.totalContexts,
             activeContexts: metrics.activeContexts,
@@ -167,7 +165,7 @@
       }
 
       if (shaderCache) {
-        shaderMetricsSub = shaderCache.getMetrics().subscribe((metrics: any) => {
+        shaderMetricsSub = shaderCache.getMetrics().subscribe((metrics: unknown) => {
           shaderMetrics = {
             totalShaders: metrics.totalShaders,
             cacheHits: metrics.cacheHits,
@@ -424,7 +422,7 @@
         data: new Float32Array([1, 2, 3, 4, 5]),
         shaderProgram: 'vector-normalize',
         expectedDuration: 10,
-        callback: (result: any) => {
+        callback: (result: unknown) => {
           console.log('GPU workload result:', result);
         },
       };
@@ -646,7 +644,7 @@
         <!-- Visualization Controls -->
         <div class="grid grid-cols-2 gap-2">
           <Button class="bits-btn text-sm"
-            on:click={() =>
+            onclick={() =>
 startVisualization('attentionHeatmap')}
             disabled={!isInitialized}
             variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}>
@@ -654,14 +652,14 @@ startVisualization('attentionHeatmap')}
           </Button>
 
           <Button class="bits-btn text-sm"
-            on:click={() => startVisualization('documentNetwork')}
+            onclick={() => startVisualization('documentNetwork')}
             disabled={!isInitialized}
             variant={activeVisualization === 'documentNetwork' ? 'default' : 'outline'}>
             Document Network
 </Button>
 
             <Button class="bits-btn text-sm"
-              on:click={() =>
+              onclick={() =>
 startVisualization('evidenceTimeline')}
               disabled={!isInitialized}
               variant={activeVisualization === 'evidenceTimeline' ? 'default' : 'outline'}>
@@ -669,7 +667,7 @@ startVisualization('evidenceTimeline')}
 </Button>
 
           <Button class="bits-btn text-sm"
-            on:click={() =>
+            onclick={() =>
 startVisualization('textFlow')}
             disabled={!isInitialized}
             variant={activeVisualization === 'textFlow' ? 'default' : 'outline'}>
@@ -680,13 +678,13 @@ startVisualization('textFlow')}
         <!-- Render Controls -->
         <div class="flex gap-2">
           {#if isRendering}
-            <Button on:click={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
+            <Button onclick={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
 Stop Rendering
 </Button>
           {/if}
 
           <Button
-            on:click={executeGPUWorkload}
+            onclick={executeGPUWorkload}
             disabled={!isInitialized}
             variant="outline"
             class="text-white border-slate-600 hover:bg-slate-700 bits-btn">

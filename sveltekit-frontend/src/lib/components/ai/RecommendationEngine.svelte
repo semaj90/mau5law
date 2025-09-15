@@ -8,7 +8,7 @@
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   
   // Recommendation state
   let recommendations = $state<Recommendation[]>([]);
@@ -100,13 +100,8 @@
   
   async function loadExistingRecommendations() {
     try {
-      const params = new URLSearchParams();
-      if (contextType && contextId) {
-        params.set('context_type', contextType);
-        params.set('context_id', contextId);
-      }
-      
-      const response = await fetch(`/api/ai/recommendations?${params}`, {
+      // Use new integrated legal recommendation engine
+      const response = await fetch(`http://localhost:8095/api/v1/cases`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -146,16 +141,14 @@
     isGenerating = true;
     try {
       const request = {
-        context_type: contextType,
-        context_id: contextId,
-        preferences: {
-          category_focus: categoryFilter === 'all' ? null : categoryFilter,
-          min_confidence: confidenceThreshold / 100,
-          max_recommendations: 10
-        }
+        query: contextId || 'legal case analysis',
+        case_id: contextId,
+        jurisdiction: 'Federal',
+        practice_area: categoryFilter === 'all' ? 'Contract Law' : categoryFilter,
+        limit: 10
       };
-      
-      const response = await fetch('/api/ai/recommendations', {
+
+      const response = await fetch('http://localhost:8095/api/v1/recommend', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -165,7 +158,36 @@
       
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        recommendations = (result as { recommendations?: any }).recommendations || [];
+        // Transform legal recommendation format to our component format
+        const legalRecs = (result as { recommendations?: any }).recommendations || [];
+        recommendations = legalRecs.map((rec: any) => ({
+          id: rec.case_id || rec.id,
+          title: rec.title,
+          description: rec.summary || rec.description,
+          category: 'legal_research',
+          priority: rec.relevance > 0.9 ? 'high' : rec.relevance > 0.7 ? 'medium' : 'low',
+          confidence: Math.round(rec.relevance * 100),
+          impact: Math.round(rec.relevance * 100),
+          effort: Math.round((1 - rec.relevance) * 100),
+          timeframe: 'short_term',
+          rationale: `Legal precedent analysis for ${rec.practice_area} case`,
+          steps: [{
+            id: '1',
+            description: 'Review case details and legal precedents',
+            order: 1,
+            estimated_duration: '2-3 hours',
+            required_resources: ['Legal database access'],
+            dependencies: [],
+            completion_criteria: 'Case analysis completed'
+          }],
+          resources: [],
+          risks: [],
+          alternatives: [],
+          dependencies: [],
+          success_metrics: [],
+          estimated_completion: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          tags: [rec.jurisdiction, rec.practice_area].filter(Boolean)
+        }));
       } else {
         throw new Error(`Generation failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
       }
@@ -178,14 +200,17 @@
   
   async function applyRecommendation(recommendationId: string) {
     try {
-      const response = await fetch(`/api/ai/recommendations/${recommendationId}/apply`, {
-        method: 'POST',
+      // Get detailed case information from legal recommendation engine
+      const response = await fetch(`http://localhost:8095/api/v1/cases/${recommendationId}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
+
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
+        const caseDetail = await (response as { ok?: any; json?: any; statusText?: any }).json();
+        console.log('Applied recommendation for case:', caseDetail);
         // Refresh recommendations
         await loadExistingRecommendations();
       }
@@ -284,7 +309,7 @@
       <p class="engine-subtitle">Intelligent suggestions for case strategy and next actions</p>
     </div>
     <div class="header-actions">
-      <button class="nes-btn" on:click={disabled}>
+      <button class="nes-btn" onclick={generateRecommendations} disabled={isGenerating}>
         {isGenerating ? 'Generating...' : 'Generate Recommendations'}
       </button>
     </div>
@@ -297,7 +322,7 @@
       <div class="context-controls">
         <div class="control-group">
           <label for="context-type">Context Type:</label>
-          <select id="context-type" bind:value={contextType} on:change={loadContextData} class="control-select">
+          <select id="context-type" bind:value={contextType} onchange={loadContextData} class="control-select">
             <option value="case">Case</option>
             <option value="evidence">Evidence</option>
             <option value="investigation">Investigation</option>
@@ -312,7 +337,7 @@
             type="text"
             placeholder="Enter case/evidence ID..."
             bind:value={contextId}
-            on:blur={loadContextData}
+            onblur={loadContextData}
             class="control-input"
           />
         </div>
@@ -475,10 +500,10 @@
           
           <div.Footer>
             <div class="nier-bits-card-actions">
-              <button class="nes-btn" variant="outline" size="sm" on:click={() => openRecommendationDetails(recommendation)}>
+              <button class="nes-btn" variant="outline" size="sm" onclick={() => openRecommendationDetails(recommendation)}>
                 View Details
               </button>
-              <button class="nes-btn" size="sm" on:click={() => applyRecommendation(recommendation.id)}>
+              <button class="nes-btn" size="sm" onclick={() => applyRecommendation(recommendation.id)}>
                 Apply
               </button>
             </div>
@@ -643,10 +668,10 @@
       </div>
       
       <div class="dialog-actions">
-        <button class="nes-btn" variant="outline" on:click={() => showRecommendationDetails = false}>
+        <button class="nes-btn" variant="outline" onclick={() => showRecommendationDetails = false}>
           Close
         </button>
-        <button class="nes-btn" on:click={() => applyRecommendation(selectedRecommendation.id)}>
+        <button class="nes-btn" onclick={() => applyRecommendation(selectedRecommendation.id)}>
           Apply Recommendation
         </button>
       </div>

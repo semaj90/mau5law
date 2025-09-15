@@ -29,11 +29,11 @@
           const start = Date.now();
           const response = await fetch(test.endpoint);
           const time = Date.now() - start;
-          const data = await (response as { json?: any; ok?: any }).json();
+          const data = await (response as { json?: unknown; ok?: unknown }).json();
 
           return {
             ...test,
-            status: (response as { json?: any; ok?: any }).ok ? 'online' : 'error',
+            status: (response as { json?: unknown; ok?: unknown }).ok ? 'online' : 'error',
             responseTime: time,
             data: data
           };
@@ -42,7 +42,7 @@
 
       systemStatus = results.map((result, index) => ({
         ...tests[index],
-        ...((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value : { status: 'error', error: (result as { status?: any; value?: any; reason?: any }).reason })
+        ...((result as { status?: unknown; value?: unknown; reason?: unknown }).status === 'fulfilled' ? (result as { status?: unknown; value?: unknown; reason?: unknown }).value : { status: 'error', error: (result as { status?: unknown; value?: unknown; reason?: unknown }).reason })
       }));
 
     } catch (error) {
@@ -68,8 +68,8 @@
               maxResults: 5
             })
           });
-          const data = await (response as { json?: any; ok?: any }).json();
-          return { success: (response as { json?: any; ok?: any }).ok, data };
+          const data = await (response as { json?: unknown; ok?: unknown }).json();
+          return { success: (response as { json?: unknown; ok?: unknown }).ok, data };
         }
       },
       {
@@ -84,8 +84,8 @@
               useEnhancedFeatures: true
             })
           });
-          const data = await (response as { json?: any; ok?: any }).json();
-          return { success: (response as { json?: any; ok?: any }).ok, data };
+          const data = await (response as { json?: unknown; ok?: unknown }).json();
+          return { success: (response as { json?: unknown; ok?: unknown }).ok, data };
         }
       },
       {
@@ -100,8 +100,8 @@
               includeEnhancedSearch: true
             })
           });
-          const data = await (response as { json?: any; ok?: any }).json();
-          return { success: (response as { json?: any; ok?: any }).ok, data };
+          const data = await (response as { json?: unknown; ok?: unknown }).json();
+          return { success: (response as { json?: unknown; ok?: unknown }).ok, data };
         }
       },
       {
@@ -109,9 +109,9 @@
         description: 'Verify enhanced upload endpoint configuration',
         test: async () => {
           const response = await fetch('/api/documents/upload-enhanced');
-          const data = await (response as { json?: any; ok?: any }).json();
+          const data = await (response as { json?: unknown; ok?: unknown }).json();
           return {
-            success: (response as { json?: any; ok?: any }).ok && (data as { enhancedFeatures?: any; supportedFormats?: any }).enhancedFeatures && (data as { enhancedFeatures?: any; supportedFormats?: any }).supportedFormats,
+            success: (response as { json?: unknown; ok?: unknown }).ok && (data as { enhancedFeatures?: unknown; supportedFormats?: unknown }).enhancedFeatures && (data as { enhancedFeatures?: unknown; supportedFormats?: unknown }).supportedFormats,
             data
           };
         }
@@ -130,7 +130,7 @@
           duration,
           timestamp: new Date().toISOString()
         }];
-      } catch (error: any) {
+      } catch (error: unknown) {
         integrationTests = [...integrationTests, {
           ...test,
           success: false,
@@ -181,9 +181,9 @@
               {#if service.responseTime}
                 <div class="status-time">{service.responseTime}ms</div>
               {/if}
-              {#if service.data && service.(data as { enhancedFeatures?: any; supportedFormats?: any }).enhancedFeatures}
+              {#if service.data && service.(data as { enhancedFeatures?: unknown; supportedFormats?: unknown }).enhancedFeatures}
                 <div class="status-features">
-                  Enhanced Features: {service.(data as { enhancedFeatures?: any; supportedFormats?: any }).enhancedFeatures.length}
+                  Enhanced Features: {service.(data as { enhancedFeatures?: unknown; supportedFormats?: unknown }).enhancedFeatures.length}
                 </div>
               {/if}
             </div>
@@ -192,10 +192,10 @@
       </div>
 
       <div class="status-actions">
-        <ModernButton on:click={loadSystemStatus} variant="secondary">
+        <ModernButton onclick={loadSystemStatus} variant="secondary">
           🔄 Refresh Status
         </ModernButton>
-        <ModernButton on:click={runIntegrationTests} disabled={testRunning} variant="primary">
+        <ModernButton onclick={runIntegrationTests} disabled={testRunning} variant="primary">
           {testRunning ? '🔄 Running Tests...' : '🧪 Run Integration Tests'}
         </ModernButton>
       </div>
@@ -251,14 +251,14 @@
     <button
       class="tab-button"
       class:active={activeTab === 'upload'}
-      on:click={() => activeTab = 'upload'}
+      onclick={() => activeTab = 'upload'}
     >
       📄 Document Upload Testing
     </button>
     <button
       class="tab-button"
       class:active={activeTab === 'search'}
-      on:click={() => activeTab = 'search'}
+      onclick={() => activeTab = 'search'}
     >
       🔍 Enhanced Search Testing
     </button>
@@ -434,11 +434,11 @@
     padding: 1rem;
   }
 
-  .test-(item as { success?: any; error?: any }).success {
+  .test-(item as { success?: unknown; error?: unknown }).success {
     border-color: #00ff41;
   }
 
-  .test-(item as { success?: any; error?: any }).error {
+  .test-(item as { success?: unknown; error?: unknown }).error {
     border-color: #ff4444;
   }
 

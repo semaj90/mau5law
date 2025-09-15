@@ -262,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
     </h3>
     {#if mode === 'edit'}
       <button 
-        on:click={handleDelete}
+        onclick={handleDelete}
         disabled={isLoading}
         class="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
       >
@@ -488,7 +488,7 @@ https://svelte.dev/e/js_parse_error -->
         Tags
       </label><input id="-tags-"
         type="text"
-        on:keydown={addTag}
+        onkeydown={addTag}
         disabled={disabled || isLoading}
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
         placeholder="Type tag and press Enter..."
@@ -500,7 +500,7 @@ https://svelte.dev/e/js_parse_error -->
               {tag}
               <button
                 type="button"
-                on:click={() => removeTag(tag)}
+                onclick={() => removeTag(tag)}
                 class="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-500 focus:outline-none"
               >
                 <svg class="w-2 h-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
@@ -531,7 +531,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex justify-end space-x-3 pt-4 border-t">
       <button
         type="button"
-        on:click={() => dispatch('cancel')}
+        onclick={() => dispatch('cancel')}
         disabled={isLoading}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
       >

@@ -48,7 +48,7 @@
     }
   }
 
-  function handleWorkflowCompleted(result: any) {
+  function handleWorkflowCompleted(result: unknown) {
     console.log('Workflow completed:', result);
     loadActiveSessions();
   }
@@ -115,7 +115,7 @@
       <Button class="bits-btn"
         variant={selectedDemo === 'single' ? 'default' : 'ghost'}
         size="sm"
-        on:click={() =>
+        onclick={() =>
 selectedDemo = 'single'}
       >
         Single Workflow
@@ -123,7 +123,7 @@ selectedDemo = 'single'}
       <Button class="bits-btn"
         variant={selectedDemo === 'multiple' ? 'default' : 'ghost'}
         size="sm"
-        on:click={() =>
+        onclick={() =>
 selectedDemo = 'multiple'}
       >
         Multiple Sessions
@@ -131,7 +131,7 @@ selectedDemo = 'multiple'}
       <Button class="bits-btn"
         variant={selectedDemo === 'dashboard' ? 'default' : 'ghost'}
         size="sm"
-        on:click={() =>
+        onclick={() =>
 selectedDemo = 'dashboard'}
       >
         Live Dashboard
@@ -186,7 +186,7 @@ selectedDemo = 'dashboard'}
                 <label for="auto-refresh" class="text-sm font-normal">
                   Auto-refresh
                 </label>
-                <Button class="bits-btn" on:click={loadActiveSessions} variant="outline" size="sm">
+                <Button class="bits-btn" onclick={loadActiveSessions} variant="outline" size="sm">
 Refresh
 </Button>
               </div>
@@ -226,7 +226,7 @@ Refresh
                         ></div>
                       </div>
                       <Button class="bits-btn"
-                        on:click={() =>
+                        onclick={() =>
 cancelSession(session.evidenceId)}
                         variant="outline"
                         size="sm"
@@ -256,7 +256,7 @@ cancelSession(session.evidenceId)}
 
             <div class="space-y-2">
               <Button class="bits-btn w-full justify-start"
-                on:click={() =>
+                onclick={() =>
 selectedDemo = 'single'}
                 variant="outline"
               >
@@ -264,7 +264,7 @@ selectedDemo = 'single'}
 </Button>
 
               <Button class="bits-btn w-full justify-start"
-                on:click={() =>
+                onclick={() =>
 selectedDemo = 'multiple'}
                 variant="outline"
               >

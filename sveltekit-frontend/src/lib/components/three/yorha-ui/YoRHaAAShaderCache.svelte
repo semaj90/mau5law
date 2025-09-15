@@ -54,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
     // Event handlers
     onShaderCompiled?: (cache: CompiledShaderCache) => void;
     onShaderError?: (error: string) => void;
-    onPerformanceUpdate?: (metrics: any) => void;
+    onPerformanceUpdate?: (metrics: unknown) => void;
     onQualityChanged?: (newConfig: AntiAliasingConfig) => void;
   }
 
@@ -229,13 +229,13 @@ https://svelte.dev/e/js_parse_error -->
         let rmin = aabbMin - p;
 
         var result = r;
-        if ((result as { x?: any; y?: any; z?: any }).x > rmax.x + 0.000001) { result *= (rmax.x / (result as { x?: any; y?: any; z?: any }).x); }
-        if ((result as { x?: any; y?: any; z?: any }).y > rmax.y + 0.000001) { result *= (rmax.y / (result as { x?: any; y?: any; z?: any }).y); }
-        if ((result as { x?: any; y?: any; z?: any }).z > rmax.z + 0.000001) { result *= (rmax.z / (result as { x?: any; y?: any; z?: any }).z); }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).x > rmax.x + 0.000001) { result *= (rmax.x / (result as { x?: unknown; y?: unknown; z?: unknown }).x); }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).y > rmax.y + 0.000001) { result *= (rmax.y / (result as { x?: unknown; y?: unknown; z?: unknown }).y); }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).z > rmax.z + 0.000001) { result *= (rmax.z / (result as { x?: unknown; y?: unknown; z?: unknown }).z); }
 
-        if ((result as { x?: any; y?: any; z?: any }).x < rmin.x - 0.000001) { result *= (rmin.x / (result as { x?: any; y?: any; z?: any }).x); }
-        if ((result as { x?: any; y?: any; z?: any }).y < rmin.y - 0.000001) { result *= (rmin.y / (result as { x?: any; y?: any; z?: any }).y); }
-        if ((result as { x?: any; y?: any; z?: any }).z < rmin.z - 0.000001) { result *= (rmin.z / (result as { x?: any; y?: any; z?: any }).z); }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).x < rmin.x - 0.000001) { result *= (rmin.x / (result as { x?: unknown; y?: unknown; z?: unknown }).x); }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).y < rmin.y - 0.000001) { result *= (rmin.y / (result as { x?: unknown; y?: unknown; z?: unknown }).y); }
+        if ((result as { x?: unknown; y?: unknown; z?: unknown }).z < rmin.z - 0.000001) { result *= (rmin.z / (result as { x?: unknown; y?: unknown; z?: unknown }).z); }
 
         return p + result;
       }
@@ -422,7 +422,7 @@ https://svelte.dev/e/js_parse_error -->
 
       isInitialized = true;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       hasError = true;
       errorMessage = error.message || 'Failed to initialize shader cache';
       console.error('Shader cache initialization error:', error);
@@ -461,7 +461,7 @@ https://svelte.dev/e/js_parse_error -->
 
       console.log(`⚡ YoRHa ${aaConfig.type.toUpperCase()} shader compiled and cached in ${compilationTime.toFixed(2)}ms`);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(`Failed to compile and cache shader: ${error.message}`);
     }
   }
@@ -502,7 +502,7 @@ https://svelte.dev/e/js_parse_error -->
 
       currentAAType = aaConfig.type;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(`Failed to compile shader: ${error.message}`);
     }
   }
@@ -656,7 +656,7 @@ https://svelte.dev/e/js_parse_error -->
 
       console.log(`🔥 Shader hot reloaded (${shaderHotReloadCount} times)`);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Hot reload failed:', error);
       onShaderError?.(error.message);
     } finally {
@@ -859,11 +859,11 @@ https://svelte.dev/e/js_parse_error -->
       <div class="error-title">SHADER ERROR</div>
       <div class="error-message">{errorMessage}</div>
       <div class="error-actions">
-        <button class="retry-button" on:click={() => initializeShaderCache()}>
+        <button class="retry-button" onclick={() => initializeShaderCache()}>
           RETRY COMPILATION
         </button>
         {#if enableHotReload}
-          <button class="hotreload-button" on:click={hotReloadShader}>
+          <button class="hotreload-button" onclick={hotReloadShader}>
             HOT RELOAD
           </button>
         {/if}
@@ -896,7 +896,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Hot Reload Controls -->
   {#if enableHotReload && enableDebugMode}
     <div class="hotreload-controls">
-      <button class="hotreload-trigger" on:click={hotReloadShader}>
+      <button class="hotreload-trigger" onclick={hotReloadShader}>
         🔥 HOT RELOAD
       </button>
       <div class="hotreload-count">{shaderHotReloadCount}</div>

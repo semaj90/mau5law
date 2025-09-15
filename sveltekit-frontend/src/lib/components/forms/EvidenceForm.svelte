@@ -108,7 +108,7 @@
   </div>
 
   <div class="space-y-4">
-    <Button class="bits-btn" type="button" variant="ghost" on:click={() =>
+    <Button class="bits-btn" type="button" variant="ghost" onclick={() =>
 dispatch("cancel")}
       >Cancel</Button
     >

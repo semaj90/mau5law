@@ -67,8 +67,8 @@
         body: JSON.stringify({ query, context: 'legal_analysis' })
       });
 
-      if ((response as { ok?: any; json?: any }).ok) {
-  ragResult = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+  ragResult = await (response as { ok?: unknown; json?: unknown }).json();
   systemData.aiQueries += 1;
   activeSection = 'rag-results';
       }
@@ -86,15 +86,15 @@
     try {
       const response = await fetch(`/api/yorha/legal-data?search=${encodeURIComponent(searchTerm)}&limit=10`);
 
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        const results = Array.isArray(data?.results) ? (data as { results?: any }).results : [];
-  searchResults = results.map((item: any, index: number) => ({
-          id: (item && ((item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).id ?? (item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any })._id)) || index + 1,
-          title: (item && ((item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).title ?? (item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).name)) || `Document ${index + 1}`,
-          type: (item && (item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).type) || 'Legal Document',
-          relevance: Math.round(((item && ((item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).relevance ?? (item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).score)) ?? Math.random()) * 100),
-          status: (item && (item as { id?: any; _id?: any; title?: any; name?: any; type?: any; relevance?: any; score?: any; status?: any }).status) || 'active',
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        const results = Array.isArray(data?.results) ? (data as { results?: unknown }).results : [];
+  searchResults = results.map((item: unknown, index: number) => ({
+          id: (item && ((item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).id ?? (item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown })._id)) || index + 1,
+          title: (item && ((item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).title ?? (item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).name)) || `Document ${index + 1}`,
+          type: (item && (item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).type) || 'Legal Document',
+          relevance: Math.round(((item && ((item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).relevance ?? (item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).score)) ?? Math.random()) * 100),
+          status: (item && (item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).status) || 'active',
           metadata: item
         }));
   activeSection = 'search-results';
@@ -119,10 +119,10 @@
       <h1>YoRHa Command Interface</h1>
     </div>
     <div class="header-right">
-      <button class="yorha-btn-icon" on:click={() => navigateTo('/settings')}>
+      <button class="yorha-btn-icon" onclick={() => navigateTo('/settings')}>
         <Settings />
       </button>
-      <button class="yorha-btn-icon" on:click={() => navigateTo('/profile')}>
+      <button class="yorha-btn-icon" onclick={() => navigateTo('/profile')}>
         <Gamepad2 />
       </button>
     </div>
@@ -132,31 +132,31 @@
     <nav>
       <ul>
         <li>
-          <button class="yorha-btn-sidebar" class:active={activeSection === 'dashboard'} on:click={() => (activeSection = 'dashboard')}>
+          <button class="yorha-btn-sidebar" class:active={activeSection === 'dashboard'} onclick={() => (activeSection = 'dashboard')}>
             <Monitor />
             <span>Dashboard</span>
           </button>
         </li>
         <li>
-          <button class="yorha-btn-sidebar" class:active={activeSection === 'rag-results'} on:click={() => performRAGQuery()}>
+          <button class="yorha-btn-sidebar" class:active={activeSection === 'rag-results'} onclick={() => performRAGQuery()}>
             <Bot />
             <span>RAG Analysis</span>
           </button>
         </li>
         <li>
-          <button class="yorha-btn-sidebar" class:active={activeSection === 'search-results'} on:click={() => performSemanticSearch()}>
+          <button class="yorha-btn-sidebar" class:active={activeSection === 'search-results'} onclick={() => performSemanticSearch()}>
             <Search />
             <span>Semantic Search</span>
           </button>
         </li>
         <li>
-          <button class="yorha-btn-sidebar" on:click={() => navigateTo('/documents')}>
+          <button class="yorha-btn-sidebar" onclick={() => navigateTo('/documents')}>
             <FileText />
             <span>Documents</span>
           </button>
         </li>
         <li>
-          <button class="yorha-btn-sidebar" on:click={() => navigateTo('/yorha-terminal')}>
+          <button class="yorha-btn-sidebar" onclick={() => navigateTo('/yorha-terminal')}>
             <Terminal />
             <span>Terminal</span>
           </button>

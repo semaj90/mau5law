@@ -64,7 +64,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       // Update memory bank status periodically
       setInterval(updateMemoryStatus, 2000);
       console.log('✅ N64 Detective UI ready');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('N64 Detective UI initialization failed:', error);
     }
   });
@@ -159,7 +159,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
       console.log(`✅ Analysis complete: ${totalTime.toFixed(2)}ms`);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Evidence analysis failed:', error);
     } finally {
       isAnalyzing = false;
@@ -244,7 +244,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
       currentEvidence = enhanced;
       console.log('✅ Screenshot enhanced and analyzed');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Screenshot enhancement failed:', error);
     }
   }
@@ -309,28 +309,28 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     <button 
       class="n64-tab"
       class:active={selectedTab === 'evidence'}
-      on:click={() => selectedTab = 'evidence'}
+      onclick={() => selectedTab = 'evidence'}
     >
       EVIDENCE
     </button>
     <button 
       class="n64-tab"
       class:active={selectedTab === 'conflicts'}
-      on:click={() => selectedTab = 'conflicts'}
+      onclick={() => selectedTab = 'conflicts'}
     >
       CONFLICTS ({conflicts.length})
     </button>
     <button 
       class="n64-tab"
       class:active={selectedTab === 'search'}
-      on:click={() => selectedTab = 'search'}
+      onclick={() => selectedTab = 'search'}
     >
       SEARCH
     </button>
     <button 
       class="n64-tab"
       class:active={selectedTab === 'cache'}
-      on:click={() => selectedTab = 'cache'}
+      onclick={() => selectedTab = 'cache'}
     >
       CACHE
     </button>
@@ -341,8 +341,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       <!-- Evidence Analysis Tab -->
       <div class="evidence-panel">
         <div class="drop-zone"
-          on:drop={handleFileDrop}
-          on:dragover={handleDragOver}
+          ondrop={handleFileDrop}
+          ondragover={handleDragOver}
           class:analyzing={isAnalyzing}
         >
           {#if isAnalyzing}
@@ -359,10 +359,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
                 bind:this={fileInput}
                 type="file"
                 accept="image/*,application/pdf,.txt,.doc,.docx"
-                on:change={handleFileSelect}
+                onchange={handleFileSelect}
                 style="display: none;"
               />
-              <button class="n64-button" on:click={() => fileInput?.click()}>
+              <button class="n64-button" onclick={() => fileInput?.click()}>
                 SELECT FILE
               </button>
             </div>
@@ -374,7 +374,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
             <div class="evidence-header">
               <h3>EVIDENCE #{currentEvidence.id.slice(-8)}</h3>
               <div class="evidence-actions">
-                <button class="n64-button small" on:click={screenshotEvidence}>
+                <button class="n64-button small" onclick={screenshotEvidence}>
                   📸 ENHANCE
                 </button>
               </div>
@@ -453,7 +453,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
             <div class="history-grid">
               {#each evidenceHistory.slice(0, 6) as evidence}
                 <div class="history-item" role="button" tabindex="0"
-                on:click={() => currentEvidence = evidence}>
+                onclick={() => currentEvidence = evidence}>
                   <div class="history-id">#{evidence.id.slice(-6)}</div>
                   <div class="history-type">{evidence.type.toUpperCase()}</div>
                   <div class="history-relevance" class:high={evidence.analysis.legalRelevance === 'high'}>
@@ -520,7 +520,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           <input
             type="text"
             bind:value={searchQuery}
-            on:input={handleSearchInput}
+            oninput={handleSearchInput}
             placeholder="Enter search query..."
             class="n64-input"
           />
@@ -534,7 +534,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
               {#each searchSuggestions as suggestion}
                 <button 
                   class="suggestion-item"
-                  on:click={() => applySuggestion(suggestion)}
+                  onclick={() => applySuggestion(suggestion)}
                 >
                   <div class="suggestion-query">{suggestion.query}</div>
                   <div class="suggestion-meta">
@@ -1032,7 +1032,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     padding: 1rem;
   }
 
-  .conflict-(item as { critical?: any }).critical {
+  .conflict-(item as { critical?: unknown }).critical {
     border-color: #ff0000;
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
   }

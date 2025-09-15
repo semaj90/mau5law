@@ -3,9 +3,7 @@
   import 'nes.css/css/nes.min.css';
   import TokenUsageManager from "$lib/components/TokenUsageManager.svelte";
   import { Badge } from "$lib/components/ui/badge";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -93,7 +91,7 @@
       ollamaStatus = data.status === "healthy" ? "healthy" : "unhealthy";
 
       if (data.models) {
-        availableModels = data.models.map((m: any) => m.name);
+        availableModels = data.models.map((m: unknown) => m.name);
       }
     } catch (error) {
       ollamaStatus = "unhealthy";
@@ -316,7 +314,7 @@
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 (showSettings = !showSettings)}
           >
             <Settings class="w-4 h-4" />
@@ -326,7 +324,7 @@
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={checkOllamaHealth}
+            onclick={checkOllamaHealth}
             disabled={isLoading}
           >
 <RefreshCw class="w-4 h-4" />
@@ -453,7 +451,7 @@
                     class="bits-btn text-xs"
                     variant="outline"
                     size="sm"
-                    on:click={() =>
+                    onclick={() =>
 selectSuggestion(suggestion)}
                   >
                     {suggestion}
@@ -501,7 +499,7 @@ selectSuggestion(suggestion)}
     </div>
 
     <Button
-      on:click={sendMessage}
+      onclick={sendMessage}
       disabled={!canSend || ollamaStatus !== "healthy"}
       class="h-12 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium bits-btn bits-btn"
       data-testid="send-button"
@@ -518,7 +516,7 @@ selectSuggestion(suggestion)}
     <!-- Additional Actions -->
     <Button class="bits-btn"
       variant="outline"
-      on:click={clearChat}
+      onclick={clearChat}
       disabled={chatHistory.length === 0}
     >
 Clear
@@ -526,7 +524,7 @@ Clear
 
     <Button class="bits-btn"
       variant="outline"
-      on:click={exportChat}
+      onclick={exportChat}
       disabled={chatHistory.length === 0}
     >
 Export

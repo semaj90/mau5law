@@ -102,6 +102,7 @@
   });
   
   async function refreshMetrics() {
+    performance.mark('function-start');
     if (isRefreshing) return;
     
     isRefreshing = true;
@@ -124,6 +125,7 @@
   }
   
   async function updateCacheMetrics() {
+    performance.mark('function-start');
     // Simulate API call to get cache metrics
     await new Promise(resolve => setTimeout(resolve, 200));
     
@@ -158,6 +160,7 @@
   }
   
   async function updateNintendoStats() {
+    performance.mark('function-start');
     // Simulate Nintendo memory manager stats
     nintendoStats = {
       memoryUsage: Math.random() * 6000 + 2000,
@@ -171,6 +174,7 @@
   }
   
   async function updateRecentQueries() {
+    performance.mark('function-start');
     const sampleQueries = [
       { query: 'breach of contract elements', cached: true, responseTime: 23 },
       { query: 'negligence standard of care', cached: false, responseTime: 145 },
@@ -183,6 +187,7 @@
   }
   
   async function checkSystemHealth() {
+    performance.mark('function-start');
     const hitRate = totalHitRate();
     const memUsage = memoryEfficiency();
     const errorRate = cacheMetrics.performance.errorRate;
@@ -197,6 +202,7 @@
   }
   
   function toggleAutoRefresh() {
+    performance.mark('function-start');
     autoRefresh = !autoRefresh;
     
     if (autoRefresh) {
@@ -207,6 +213,7 @@
   }
   
   async function clearCache() {
+    performance.mark('function-start');
     // In a real implementation, this would call the cache clearing API
     console.log('Clearing cache...');
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -214,6 +221,7 @@
   }
   
   function getHealthIcon() {
+    performance.mark('function-start');
     switch (systemHealth) {
       case 'healthy': return { icon: CheckCircle, color: 'text-green-500' };
       case 'warning': return { icon: AlertTriangle, color: 'text-yellow-500' };
@@ -239,8 +247,8 @@
         </div>
         
         <div class="control-buttons">
-          <button 
-            on:click={refreshMetrics} 
+          <button aria-label="Action button" 
+            onclick={(event: MouseEvent) => refreshMetrics} 
             disabled={isRefreshing}
             class="refresh-btn"
           >
@@ -248,15 +256,15 @@
             Refresh
           </button>
           
-          <button 
-            on:click={toggleAutoRefresh} 
+          <button aria-expanded="false" aria-label="Action button" 
+            onclick={(event: MouseEvent) => toggleAutoRefresh} 
             class="auto-refresh-btn {autoRefresh ? 'active' : ''}"
           >
             <Target size={16} />
             Auto: {autoRefresh ? 'ON' : 'OFF'}
           </button>
           
-          <button on:click={clearCache} class="clear-cache-btn">
+          <button aria-label="Action button" onclick={(event: MouseEvent) => clearCache} class="clear-cache-btn">
             <Database size={16} />
             Clear Cache
           </button>

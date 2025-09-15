@@ -25,7 +25,7 @@ https://svelte.dev/e/expected_token -->
 
   // AI readiness state for gating actions
   let aiReady = $state<boolean | null>(null);
-  let aiStatus: any = $state(null);
+  let aiStatus: unknown = $state(null);
 
   async function checkAiReady() {
     try {
@@ -114,14 +114,14 @@ https://svelte.dev/e/expected_token -->
       body: formData
     });
 
-    if (!(response as { ok?: any; json?: any }).ok) {
+    if (!(response as { ok?: unknown; json?: unknown }).ok) {
       throw new Error('OCR processing failed');
     }
 
-    return await (response as { ok?: any; json?: any }).json();
+    return await (response as { ok?: unknown; json?: unknown }).json();
   };
 
-  const convertToJSON = async (ocrData: any): Promise<any> => {
+  const convertToJSON = async (ocrData: unknown): Promise<any> => {
     const response = await fetch('/api/convert/to-json', {
       method: 'POST',
       headers: {
@@ -130,14 +130,14 @@ https://svelte.dev/e/expected_token -->
       body: JSON.stringify({ ocrData })
     });
 
-    if (!(response as { ok?: any; json?: any }).ok) {
+    if (!(response as { ok?: unknown; json?: unknown }).ok) {
       throw new Error('JSON conversion failed');
     }
 
-    return await (response as { ok?: any; json?: any }).json();
+    return await (response as { ok?: unknown; json?: unknown }).json();
   };
 
-  const sendToGoMicroservice = async (jsonData: any): Promise<any> => {
+  const sendToGoMicroservice = async (jsonData: unknown): Promise<any> => {
     const response = await fetch('http://localhost:8084/api/simd/parse', {
       method: 'POST',
       headers: {
@@ -146,14 +146,14 @@ https://svelte.dev/e/expected_token -->
       body: JSON.stringify(jsonData)
     });
 
-    if (!(response as { ok?: any; json?: any }).ok) {
+    if (!(response as { ok?: unknown; json?: unknown }).ok) {
       throw new Error('SIMD parsing failed');
     }
 
-    return await (response as { ok?: any; json?: any }).json();
+    return await (response as { ok?: unknown; json?: unknown }).json();
   };
 
-  const enhancedRAGProcessing = async (simdData: any): Promise<any> => {
+  const enhancedRAGProcessing = async (simdData: unknown): Promise<any> => {
     const response = await fetch('/api/rag/enhanced-process', {
       method: 'POST',
       headers: {
@@ -162,14 +162,14 @@ https://svelte.dev/e/expected_token -->
       body: JSON.stringify(simdData)
     });
 
-    if (!(response as { ok?: any; json?: any }).ok) {
+    if (!(response as { ok?: unknown; json?: unknown }).ok) {
       throw new Error('Enhanced RAG processing failed');
     }
 
-    return await (response as { ok?: any; json?: any }).json();
+    return await (response as { ok?: unknown; json?: unknown }).json();
   };
 
-  const performClustering = async (ragData: any): Promise<any> => {
+  const performClustering = async (ragData: unknown): Promise<any> => {
     const response = await fetch('/api/clustering/som-kmeans', {
       method: 'POST',
       headers: {
@@ -178,11 +178,11 @@ https://svelte.dev/e/expected_token -->
       body: JSON.stringify(ragData)
     });
 
-    if (!(response as { ok?: any; json?: any }).ok) {
+    if (!(response as { ok?: unknown; json?: unknown }).ok) {
       throw new Error('Clustering analysis failed');
     }
 
-    return await (response as { ok?: any; json?: any }).json();
+    return await (response as { ok?: unknown; json?: unknown }).json();
   };
 
   const generatePlaywrightTests = async () => {
@@ -205,12 +205,12 @@ https://svelte.dev/e/expected_token -->
         })
       });
 
-      if (!(response as { ok?: any; json?: any }).ok) {
+      if (!(response as { ok?: unknown; json?: unknown }).ok) {
         throw new Error('Playwright test generation failed');
       }
 
-      const result = await (response as { ok?: any; json?: any }).json();
-      processingStage = `Tests generated: ${(result as { filename?: any; text?: any; confidence?: any; pages?: any; summary?: any }).filename}`;
+      const result = await (response as { ok?: unknown; json?: unknown }).json();
+      processingStage = `Tests generated: ${(result as { filename?: unknown; text?: unknown; confidence?: unknown; pages?: unknown; summary?: unknown }).filename}`;
 
     } catch (error) {
       console.error('Test generation error:', error);
@@ -239,7 +239,7 @@ https://svelte.dev/e/expected_token -->
           bind:this={fileInput}
           type="file"
           accept=".pdf"
-          multiple on:change={handleFileUpload}
+          multiple onchange={handleFileUpload}
           class="hidden"
           id="pdf-upload"
         />
@@ -303,9 +303,9 @@ https://svelte.dev/e/expected_token -->
             {#each ocrResults as result, i}
               <div class="bg-gray-700/50 rounded p-3">
                 <div class="text-sm font-medium text-gray-300 mb-2">Document {i + 1}</div>
-                <div class="text-xs text-gray-400 truncate">{(result as { filename?: any; text?: any; confidence?: any; pages?: any; summary?: any }).text || 'Processing...'}</div>
+                <div class="text-xs text-gray-400 truncate">{(result as { filename?: unknown; text?: unknown; confidence?: unknown; pages?: unknown; summary?: unknown }).text || 'Processing...'}</div>
                 <div class="text-xs text-green-300 mt-1">
-                  Confidence: {(result as { filename?: any; text?: any; confidence?: any; pages?: any; summary?: any }).confidence || 0}% | Pages: {(result as { filename?: any; text?: any; confidence?: any; pages?: any; summary?: any }).pages || 0}
+                  Confidence: {(result as { filename?: unknown; text?: unknown; confidence?: unknown; pages?: unknown; summary?: unknown }).confidence || 0}% | Pages: {(result as { filename?: unknown; text?: unknown; confidence?: unknown; pages?: unknown; summary?: unknown }).pages || 0}
                 </div>
               </div>
             {/each}
@@ -404,7 +404,7 @@ https://svelte.dev/e/expected_token -->
       <p class="text-gray-300 mb-4">Generate comprehensive Playwright tests for this processing pipeline</p>
 
       <button
-        on:click={generatePlaywrightTests}
+        onclick={generatePlaywrightTests}
         disabled={!ocrResults.length || isProcessing}
         class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg transition-colors"
       >
@@ -421,7 +421,7 @@ https://svelte.dev/e/expected_token -->
       {/if}
 
       <button
-        on:click={async () => {
+        onclick={async () => {
           if (!jsonOutput) return;
           if (aiReady === false) return;
 
@@ -434,10 +434,10 @@ https://svelte.dev/e/expected_token -->
               body: JSON.stringify({ document: jsonOutput })
             });
 
-            if (!(response as { ok?: any; json?: any }).ok) throw new Error('pgai test failed');
+            if (!(response as { ok?: unknown; json?: unknown }).ok) throw new Error('pgai test failed');
 
-            const result = await (response as { ok?: any; json?: any }).json();
-            processingStage = `pgai summary generated: ${(result as { filename?: any; text?: any; confidence?: any; pages?: any; summary?: any }).summary?.length || 0} chars`;
+            const result = await (response as { ok?: unknown; json?: unknown }).json();
+            processingStage = `pgai summary generated: ${(result as { filename?: unknown; text?: unknown; confidence?: unknown; pages?: unknown; summary?: unknown }).summary?.length || 0} chars`;
 
           } catch (error) {
             errorMessage = `pgai test error: ${error.message}`;

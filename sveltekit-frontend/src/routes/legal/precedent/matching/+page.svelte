@@ -617,7 +617,7 @@
       </div>
 
       <Button 
-        on:click={searchPrecedents} 
+        onclick={searchPrecedents} 
         disabled={analysisInProgress}
         class="bg-blue-600 hover:bg-blue-700 w-full"
       >

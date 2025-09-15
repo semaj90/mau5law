@@ -25,13 +25,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 		<nav class="demo-nav">
 			<button
 				class="nav-btn {activeDemo === 'surface' ? 'active' : ''}"
-				on:click={() => activeDemo = 'surface'}
+				onclick={() => activeDemo = 'surface'}
 			>
 				🔷 Surface Rendering
 			</button>
 			<button
 				class="nav-btn {activeDemo === 'parallax' ? 'active' : ''}"
-				on:click={() => activeDemo = 'parallax'}
+				onclick={() => activeDemo = 'parallax'}
 			>
 				🌟 Dynamic Parallax
 			</button>

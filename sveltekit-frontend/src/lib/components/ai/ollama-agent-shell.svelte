@@ -403,7 +403,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
 
             <button
-              on:click={() => copyMessage(message.content, i)}
+              onclick={() => copyMessage(message.content, i)}
               class="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-muted rounded"
             >
               {#if copiedIndex === i}
@@ -427,7 +427,7 @@ https://svelte.dev/e/js_parse_error -->
             disabled={isLoading}
           />
           <button
-            on:click={handleSubmit}
+            onclick={handleSubmit}
             disabled={isLoading || !input.trim()}
             class={cn(
               "p-3 rounded-lg transition-colors",

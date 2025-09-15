@@ -14,12 +14,12 @@
     requireWebGPU = false,
     children
   }: {
-    fallbackComponent?: any;
-    loadingComponent?: any; 
-    errorComponent?: any;
+    fallbackComponent?: unknown;
+    loadingComponent?: unknown; 
+    errorComponent?: unknown;
     enableGPUAcceleration?: boolean;
     requireWebGPU?: boolean;
-    children?: any;
+    children?: unknown;
   } = $props();
   
   // State management
@@ -141,7 +141,7 @@
         <div class="error-icon">⚠️</div>
         <h3>GPU Initialization Failed</h3>
         <p>{loadError}</p>
-        <button on:click={handleRetry} class="retry-button">
+        <button onclick={handleRetry} class="retry-button">
           Try Again
         </button>
       </div>

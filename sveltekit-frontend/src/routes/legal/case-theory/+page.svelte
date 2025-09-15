@@ -72,8 +72,8 @@
   async function loadCaseData() {
     try {
       const response = await fetch(`/api/v1/cases/${caseId}`);
-      if ((response as { ok?: any; json?: any }).ok) {
-        const caseData = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const caseData = await (response as { ok?: unknown; json?: unknown }).json();
         caseTitle = caseData.title || caseData.name || 'Untitled Case';
         await loadCaseEvidence();
         await loadCasePrecedents();
@@ -90,9 +90,9 @@
   async function loadCaseEvidence() {
     try {
       const response = await fetch(`/api/v1/evidence/case/${caseId}`);
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        evidenceItems = (data as { evidence?: any; results?: any; theories?: any }).evidence || [];
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        evidenceItems = (data as { evidence?: unknown; results?: unknown; theories?: unknown }).evidence || [];
       }
     } catch (error) {
       console.error('Failed to load evidence:', error);
@@ -115,9 +115,9 @@
         })
       });
       
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        precedents = (data as { evidence?: any; results?: any; theories?: any }).results || [];
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        precedents = (data as { evidence?: unknown; results?: unknown; theories?: unknown }).results || [];
       }
     } catch (error) {
       console.error('Failed to load precedents:', error);
@@ -128,9 +128,9 @@
   async function loadExistingTheories() {
     try {
       const response = await fetch(`/api/legal/case-theory/${caseId}`);
-      if ((response as { ok?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any }).json();
-        theories = (data as { evidence?: any; results?: any; theories?: any }).theories || [];
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; json?: unknown }).json();
+        theories = (data as { evidence?: unknown; results?: unknown; theories?: unknown }).theories || [];
       }
     } catch (error) {
       console.error('Failed to load theories:', error);
@@ -170,19 +170,19 @@
         })
       });
 
-      if ((response as { ok?: any; json?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; json?: unknown }).json();
         
         // Update theory with AI analysis
         const builtTheory = {
           id: `theory_${Date.now()}`,
           ...theoryData,
-          legalArguments: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).legalArguments || [],
-          counterarguments: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).counterarguments || [],
-          logicalChain: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).logicalChain || [],
-          strength: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).strengthScore || 0.5,
-          riskAssessment: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).riskAssessment || {},
-          aiSuggestions: (result as { legalArguments?: any; counterarguments?: any; logicalChain?: any; strengthScore?: any; riskAssessment?: any; suggestions?: any }).suggestions || [],
+          legalArguments: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).legalArguments || [],
+          counterarguments: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).counterarguments || [],
+          logicalChain: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).logicalChain || [],
+          strength: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).strengthScore || 0.5,
+          riskAssessment: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).riskAssessment || {},
+          aiSuggestions: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).suggestions || [],
           createdAt: new Date(),
           updatedAt: new Date()
         };
@@ -383,7 +383,7 @@
         </div>
         
         <button
-          on:click={() => showTheoryDialog = true}
+          onclick={() => showTheoryDialog = true}
           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
         >
           <Plus class="h-4 w-4 mr-2" />
@@ -415,7 +415,7 @@
                          {currentTheory?.id === theory.id ? 'border-purple-500 bg-purple-50' : 'hover:border-gray-300'}
                          {optimistic ? 'opacity-50' : ''}"
                   role="button" tabindex="0"
-                  on:click={() => selectTheory(theory)}
+                  onclick={() => selectTheory(theory)}
                 >
                   <div class="flex items-start justify-between mb-2">
                     <h4 class="font-medium text-gray-900">{theory.name}</h4>
@@ -667,7 +667,7 @@
             <h3 class="text-lg font-medium text-gray-900 mb-2">Select a Theory</h3>
             <p class="text-gray-600 mb-6">Choose a case theory from the list to view detailed AI analysis</p>
             <button
-              on:click={() => showTheoryDialog = true}
+              onclick={() => showTheoryDialog = true}
               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
             >
               <Plus class="h-4 w-4 mr-2" />
@@ -689,7 +689,7 @@
         <p class="text-sm text-gray-600">AI will analyze evidence and build logical legalArguments</p>
       </div>
       
-      <form on:submit={submitTheory} class="p-6 space-y-4">
+      <form onsubmit={submitTheory} class="p-6 space-y-4">
         <div>
           <label for="theoryName" class="block text-sm font-medium text-gray-700 mb-1">
             Theory Name
@@ -753,7 +753,7 @@
         <div class="flex justify-end space-x-3 pt-4">
           <button
             type="button"
-            on:click={() => showTheoryDialog = false}
+            onclick={() => showTheoryDialog = false}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
             disabled={isBuilding}
           >

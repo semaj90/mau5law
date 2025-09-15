@@ -7,7 +7,7 @@ https://svelte.dev/e/attribute_duplicate -->
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
@@ -199,7 +199,7 @@ https://svelte.dev/e/attribute_duplicate -->
           type="checkbox"
           class="sr-only peer"
           bind:checked={trainingEnabled}
-          on:click={handleTrainingToggle}
+          onclick={handleTrainingToggle}
         />
         <div class="w-14 h-8 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-cyan-300/20 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-cyan-600"></div>
       </label>
@@ -208,9 +208,9 @@ https://svelte.dev/e/attribute_duplicate -->
     <!-- File Upload Area -->
     <div 
       class="border-2 border-dashed border-cyan-500/30 rounded-lg p-8 text-center transition-all duration-200 {dragActive ? 'border-cyan-400 bg-cyan-500/10' : 'hover:border-cyan-500/50'}"
-      role="region" aria-label="Drop zone" on:dragover={(e) => { e.preventDefault(); dragActive = true; }}
+      role="region" aria-label="Drop zone" ondragover={(e) => { e.preventDefault(); dragActive = true; }}
       ondragleave={() => dragActive = false}
-      on:drop={handleFileDrop}
+      ondrop={handleFileDrop}
     >
       <div class="space-y-4">
         <div class="text-6xl">📄</div>
@@ -231,18 +231,18 @@ Select Files
           multiple
           accept=".case,.json"
           class="hidden"
-          on:change={handleFileInput}
+          onchange={handleFileInput}
         />
       </div>
     </div>
 
     <!-- Selected Files -->
     {#if selectedFiles.length > 0}
-      <div class="space-y-3" transition:fly={{ y: 20, duration: 300 }}>
+      <div class="space-y-3" transitionfly={{ y: 20, duration: 300 }}>
         <h4 class="text-lg font-semibold text-white">Selected Files ({selectedFiles.length})</h4>
         <div class="grid gap-2 max-h-40 overflow-y-auto">
           {#each selectedFiles as file, index}
-            <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded border border-gray-700" transition:fly={{ x: -20, duration: 200 }}>
+            <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded border border-gray-700" transitionfly={{ x: -20, duration: 200 }}>
               <div class="flex items-center gap-3">
                 <span class="text-2xl">📋</span>
                 <div>
@@ -251,7 +251,7 @@ Select Files
                 </div>
               </div>
               <button 
-                on:click={() => removeFile(index)}
+                onclick={() => removeFile(index)}
                 class="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-500/20 transition-colors"
               >
                 ✕
@@ -262,7 +262,7 @@ Select Files
         
         {#if trainingEnabled}
           <button class="nes-btn" 
-            on:click={() => startTraining(selectedFiles)}
+            onclick={() => startTraining(selectedFiles)}
             class="bits-btn w-full bg-green-600 hover:bg-green-700"
             disabled={currentJob?.status === 'running'}
           >
@@ -274,7 +274,7 @@ Select Files
 
     <!-- Training Progress -->
     {#if currentJob}
-      <div class="space-y-4" transition:fade={{ duration: 300 }}>
+      <div class="space-y-4" transitionfade={{ duration: 300 }}>
         <div class="flex items-center justify-between">
           <h4 class="text-lg font-semibold text-white">Training Progress</h4>
           <Badge class={getStatusColor(currentJob.status) + ' text-white'}>
@@ -357,23 +357,23 @@ Select Files
         <!-- Training Controls -->
         <div class="flex gap-3">
           {#if currentJob.status === 'running'}
-            <Button class="bits-btn" on:click={pauseTraining} variant="outline" size="sm">
+            <Button class="bits-btn" onclick={pauseTraining} variant="outline" size="sm">
 ⏸️ Pause
 </Button>
-            <Button class="bits-btn" on:click={stopTraining} variant="destructive" size="sm">
+            <Button class="bits-btn" onclick={stopTraining} variant="destructive" size="sm">
 ⏹️ Stop
 </Button>
           {:else if currentJob.status === 'paused'}
-            <Button class="bits-btn" on:click={resumeTraining} variant="default" size="sm">
+            <Button class="bits-btn" onclick={resumeTraining} variant="default" size="sm">
 ▶️ Resume
 </Button>
-            <Button class="bits-btn" on:click={stopTraining} variant="destructive" size="sm">
+            <Button class="bits-btn" onclick={stopTraining} variant="destructive" size="sm">
 ⏹️ Stop
 </Button>
           {/if}
           
           <Button class="bits-btn" 
-            on:click={() =>
+            onclick={() =>
 showAdvancedConfig = !showAdvancedConfig} 
             variant="ghost" 
             size="sm"
@@ -387,7 +387,7 @@ showAdvancedConfig = !showAdvancedConfig}
 
     <!-- Advanced Configuration -->
     {#if showAdvancedConfig}
-      <div class="space-y-4 border-t border-gray-700 pt-6" transition:fly={{ y: -20, duration: 300 }}>
+      <div class="space-y-4 border-t border-gray-700 pt-6" transitionfly={{ y: -20, duration: 300 }}>
         <h4 class="text-lg font-semibold text-white">Advanced Configuration</h4>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -398,7 +398,7 @@ showAdvancedConfig = !showAdvancedConfig}
               min="1"
               max="128"
               class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white focus:border-cyan-500 focus:outline-none"
-              on:change={(e) => qloraTrainingService.updateConfig({ rank: parseInt(e.target.value) })}
+              onchange={(e) => qloraTrainingService.updateConfig({ rank: parseInt(e.target.value) })}
             />
           </div>
           
@@ -410,7 +410,7 @@ showAdvancedConfig = !showAdvancedConfig}
               min="0.0001"
               max="0.01"
               class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white focus:border-cyan-500 focus:outline-none"
-              on:change={(e) => qloraTrainingService.updateConfig({ 
+              onchange={(e) => qloraTrainingService.updateConfig({ 
                 trainingParams: { ...config?.trainingParams!, learningRate: parseFloat(e.target.value) }
               })}
             />
@@ -420,7 +420,7 @@ showAdvancedConfig = !showAdvancedConfig}
             <label class="text-sm font-medium text-gray-300" for="batch-size">Batch Size</label><select id="batch-size" 
               value={config?.trainingParams.batchSize || 4}
               class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white focus:border-cyan-500 focus:outline-none"
-              on:change={(e) => qloraTrainingService.updateConfig({ 
+              onchange={(e) => qloraTrainingService.updateConfig({ 
                 trainingParams: { ...config?.trainingParams!, batchSize: parseInt(e.target.value) }
               })}
             >
@@ -438,7 +438,7 @@ showAdvancedConfig = !showAdvancedConfig}
               min="1"
               max="20"
               class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white focus:border-cyan-500 focus:outline-none"
-              on:change={(e) => qloraTrainingService.updateConfig({ 
+              onchange={(e) => qloraTrainingService.updateConfig({ 
                 trainingParams: { ...config?.trainingParams!, epochs: parseInt(e.target.value) }
               })}
             />
@@ -451,7 +451,7 @@ showAdvancedConfig = !showAdvancedConfig}
             <input
               type="checkbox"
               checked={config?.useReinforcementLearning || false}
-              on:change={(e) => qloraTrainingService.updateConfig({ useReinforcementLearning: e.target.checked })}
+              onchange={(e) => qloraTrainingService.updateConfig({ useReinforcementLearning: e.target.checked })}
               class="w-4 h-4 text-cyan-600 bg-gray-700 border-gray-600 rounded focus:ring-cyan-500 focus:ring-2"
             />
             <span class="text-gray-300">Enable Reinforcement Learning</span>
@@ -461,7 +461,7 @@ showAdvancedConfig = !showAdvancedConfig}
             <input
               type="checkbox"
               checked={config?.enableUserAnalytics || false}
-              on:change={(e) => qloraTrainingService.updateConfig({ enableUserAnalytics: e.target.checked })}
+              onchange={(e) => qloraTrainingService.updateConfig({ enableUserAnalytics: e.target.checked })}
               class="w-4 h-4 text-cyan-600 bg-gray-700 border-gray-600 rounded focus:ring-cyan-500 focus:ring-2"
             />
             <span class="text-gray-300">Enable User Analytics</span>
@@ -472,7 +472,7 @@ showAdvancedConfig = !showAdvancedConfig}
 
     <!-- User Analytics Summary -->
     {#if analytics && config?.enableUserAnalytics}
-      <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4" transition:fade={{ duration: 300 }}>
+      <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4" transitionfade={{ duration: 300 }}>
         <h5 class="text-blue-300 font-semibold mb-3">📊 User Analytics</h5>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
           <div>

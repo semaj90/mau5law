@@ -236,8 +236,8 @@
     {legalData}
     {currentView}
     fullscreen={true}
-    on:navigate={handleNavigation}
-    on:interact={handleInteraction}
+    onnavigate={handleNavigation}
+    oninteract={handleInteraction}
   />
 
   <!-- Debug info (remove in production) -->

@@ -55,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
     linkLines = [];
 
     const radius = 4;
-    graphData.nodes.forEach((n: any, idx: number) => {
+    graphData.nodes.forEach((n: unknown, idx: number) => {
       const mat = new THREE.MeshStandardMaterial({ color: typeColor[n.type] ?? typeColor.default, emissive: 0x111111 });
       const mesh = new THREE.Mesh(nodeGeometry, mat);
       // Initial circular placement; slight random Z for depth
@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
     });
 
     // Links
-    graphData.links.forEach((l: any) => {
+    graphData.links.forEach((l: unknown) => {
       const from = nodeMeshes[l.source];
       const to = nodeMeshes[l.target];
       if (!from || !to) return;

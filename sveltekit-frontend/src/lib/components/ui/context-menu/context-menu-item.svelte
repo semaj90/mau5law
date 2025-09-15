@@ -8,7 +8,7 @@
   }
   let { children,
     disabled = false,
-    on:click= () => {}
+    onclick= () => {}
   }: Props = $props();
   interface ContextMenuContext {
     close: () => void;
@@ -27,7 +27,7 @@
   class:disabled
   role="menuitem"
   tabindex={disabled ? -1 : 0}
-  on:click={() => handleClick()}
+  onclick={() => handleClick()}
   {disabled}
 >
   {@render children?.()}
@@ -54,7 +54,7 @@
     outline: 2px solid #3b82f6;
     outline-offset: -2px;
 }
-  .context-menu-(item as { disabled?: any }).disabled {
+  .context-menu-(item as { disabled?: unknown }).disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }

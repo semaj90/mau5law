@@ -3,20 +3,20 @@
   import AILoadingIndicator from './AILoadingIndicator.svelte';
   import { fly, fade } from 'svelte/transition';
 
-  export let position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'top-right';
-  export let maxVisible: number = 3;
+  let { position } = $props();: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'top-right';
+  let { maxVisible } = $props();: number = 3;
 
-  $: operations = Array.from($loadingStore.operations.values());
-  $: activeOperations = operations.filter(op => op.status === 'loading');
-  $: completedOperations = operations.filter(op => op.status !== 'loading');
-  $: visibleOperations = [...activeOperations, ...completedOperations].slice(0, maxVisible);
+  let operations = $derived(Array.from($loadingStore.operations.values()));
+  let activeOperations = $derived(operations.filter(op => op.status === 'loading'));
+  let completedOperations = $derived(operations.filter(op => op.status !== 'loading'));
+  let visibleOperations = $derived([...activeOperations, ...completedOperations].slice(0, maxVisible));
 
-  $: positionClasses = {
+  let positionClasses = $derived({
     'top-right': 'top-4 right-4',
     'top-left': 'top-4 left-4',
     'bottom-right': 'bottom-4 right-4',
     'bottom-left': 'bottom-4 left-4'
-  };
+  });
 </script>
 
 {#if visibleOperations.length > 0}

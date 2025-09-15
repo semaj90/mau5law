@@ -85,7 +85,7 @@
   /**
    * Get backend health from health check data
    */
-  function getBackendHealth(backend: Backend, healthData: any): boolean {
+  function getBackendHealth(backend: Backend, healthData: unknown): boolean {
     switch (backend) {
       case 'vllm':
         return healthData.backends?.vllm?.reachable || false;
@@ -266,17 +266,17 @@
     <div class="header-controls">
       <button
         class="control-btn {isMonitoring ? 'active' : ''}"
-        on:click={toggleMonitoring}
+        onclick={toggleMonitoring}
         title={isMonitoring ? 'Pause monitoring' : 'Resume monitoring'}
       >
         {isMonitoring ? 'Monitoring' : 'Paused'}
       </button>
       
-      <button class="control-btn" on:click={resetMetrics} title="Reset metrics">
+      <button class="control-btn" onclick={resetMetrics} title="Reset metrics">
         Reset
       </button>
       
-      <button class="control-btn" on:click={exportMetrics} title="Export metrics">
+      <button class="control-btn" onclick={exportMetrics} title="Export metrics">
         Export
       </button>
     </div>

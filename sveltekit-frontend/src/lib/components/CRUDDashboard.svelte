@@ -251,7 +251,7 @@
       <div class="space-y-4">
         <button
           class="space-y-4"
-          on:click={() => fetchAllData()}
+          onclick={() => fetchAllData()}
           disabled={refreshing}
           title="Refresh all data"
         >
@@ -324,10 +324,10 @@
             <input
               type="text"
               placeholder="Search cases..."
-              bind:value={searchTerms.cases} on:input={() => handleSearch("cases")}
+              bind:value={searchTerms.cases} oninput={() => handleSearch("cases")}
             />
           </div>
-          <button class="space-y-4" on:click={() => createNew("cases")}>
+          <button class="space-y-4" onclick={() => createNew("cases")}>
             <Plus size={16} />
           </button>
         </div>
@@ -360,7 +360,7 @@
       </div>
 
       <div class="space-y-4">
-        <button class="space-y-4" on:click={() => viewAll("cases")}>
+        <button class="space-y-4" onclick={() => viewAll("cases")}>
           View All Cases
         </button>
       </div>
@@ -379,10 +379,10 @@
             <input
               type="text"
               placeholder="Search evidence..."
-              bind:value={searchTerms.evidence} on:input={() => handleSearch("evidence")}
+              bind:value={searchTerms.evidence} oninput={() => handleSearch("evidence")}
             />
           </div>
-          <button class="space-y-4" on:click={() => createNew("evidence")}>
+          <button class="space-y-4" onclick={() => createNew("evidence")}>
             <Plus size={16} />
           </button>
         </div>
@@ -419,7 +419,7 @@
       </div>
 
       <div class="space-y-4">
-        <button class="space-y-4" on:click={() => viewAll("evidence")}>
+        <button class="space-y-4" onclick={() => viewAll("evidence")}>
           View All Evidence
         </button>
       </div>
@@ -438,10 +438,10 @@
             <input
               type="text"
               placeholder="Search reports..."
-              bind:value={searchTerms.reports} on:input={() => handleSearch("reports")}
+              bind:value={searchTerms.reports} oninput={() => handleSearch("reports")}
             />
           </div>
-          <button class="space-y-4" on:click={() => createNew("reports")}>
+          <button class="space-y-4" onclick={() => createNew("reports")}>
             <Plus size={16} />
           </button>
         </div>
@@ -476,7 +476,7 @@
       </div>
 
       <div class="space-y-4">
-        <button class="space-y-4" on:click={() => viewAll("reports")}>
+        <button class="space-y-4" onclick={() => viewAll("reports")}>
           View All Reports
         </button>
       </div>
@@ -495,10 +495,10 @@
             <input
               type="text"
               placeholder="Search activities..."
-              bind:value={searchTerms.activities} on:input={() => handleSearch("activities")}
+              bind:value={searchTerms.activities} oninput={() => handleSearch("activities")}
             />
           </div>
-          <button class="space-y-4" on:click={() => createNew("activities")}>
+          <button class="space-y-4" onclick={() => createNew("activities")}>
             <Plus size={16} />
           </button>
         </div>
@@ -531,7 +531,7 @@
       </div>
 
       <div class="space-y-4">
-        <button class="space-y-4" on:click={() => viewAll("activities")}>
+        <button class="space-y-4" onclick={() => viewAll("activities")}>
           View All Activities
         </button>
       </div>
@@ -547,22 +547,22 @@
       </div>
 
       <div class="space-y-4">
-        <button class="space-y-4" on:click={() => createNew("cases")}>
+        <button class="space-y-4" onclick={() => createNew("cases")}>
           <FileText size={24} />
           <span>New Case</span>
         </button>
 
-        <button class="space-y-4" on:click={() => createNew("evidence")}>
+        <button class="space-y-4" onclick={() => createNew("evidence")}>
           <Camera size={24} />
           <span>Add Evidence</span>
         </button>
 
-        <button class="space-y-4" on:click={() => createNew("reports")}>
+        <button class="space-y-4" onclick={() => createNew("reports")}>
           <FileText size={24} />
           <span>Create Report</span>
         </button>
 
-        <button class="space-y-4" on:click={() => viewAll("activities")}>
+        <button class="space-y-4" onclick={() => viewAll("activities")}>
           <Clock size={24} />
           <span>View Tasks</span>
         </button>

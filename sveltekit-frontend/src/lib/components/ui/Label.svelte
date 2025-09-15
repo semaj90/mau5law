@@ -3,7 +3,7 @@
   interface Props {
     for_?: string;
     class_?: string;
-    children?: any;
+    children?: unknown;
   }
 
   let { for_ = '', class_ = '', children }: Props = $props();

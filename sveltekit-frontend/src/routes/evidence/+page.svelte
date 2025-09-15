@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
 
   import type { PageData } from "./$types";
   // ... other imports ...
-  let { data }: { data: any } = $props(); // PageData;
+  let { data }: { data: unknown } = $props(); // PageData;
 
   // State management
   let validationModal = $state({
@@ -97,8 +97,8 @@ https://svelte.dev/e/js_parse_error -->
 
   // Feedback integration references
   let evidencePageFeedback = $state<any>(null);
-  let evidenceSearchFeedback: any;
-  let evidenceUploadFeedback: any;
+  let evidenceSearchFeedback: unknown;
+  let evidenceUploadFeedback: unknown;
 
   // Filtering and selection
   let selectedEvidence = $state<Set<string>('')>(new Set());
@@ -122,12 +122,12 @@ https://svelte.dev/e/js_parse_error -->
 
   // Reactive values from SSR data and store
   let ({ isLoading: loading, error } = $derived($evidenceGrid));
-  let allEvidence = $derived((data as { evidence?: any }).evidence || []);
+  let allEvidence = $derived((data as { evidence?: unknown }).evidence || []);
   let filteredEvidence = $derived(filterAndSortEvidence(allEvidence));
   let visibleEvidence = $derived(getPaginatedEvidence());
   onMount(() => {
     // Initialize store with SSR data
-    evidenceActions.setItems((data as { evidence?: any }).evidence || []);
+    evidenceActions.setItems((data as { evidence?: unknown }).evidence || []);
     // Set case context if available
     if (caseId) {
       evidenceActions.loadEvidence(caseId);
@@ -325,7 +325,7 @@ https://svelte.dev/e/js_parse_error -->
     };
   }
 
-  function formatAnalysisForDisplay(analysis: any): string {
+  function formatAnalysisForDisplay(analysis: unknown): string {
     if (!analysis) return "No analysis available";
   let display = "";
 
@@ -522,28 +522,28 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Handle unified search results from multi-source search
-  function handleUnifiedSearch(searchResults: any[]) {
+  function handleUnifiedSearch(searchResults: unknown[]) {
     console.log('🔍 Unified search results received:', searchResults.length, 'items');
 
     // Convert search results to evidence format for display
     const convertedEvidence = searchResults.map(result => ({
-      id: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).id,
-      title: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).title,
-      description: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).content.substring(0, 200) + '...',
-      evidenceType: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.documentType || 'document',
-      isAdmissible: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).confidence > 0.8,
-      collectedBy: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.source,
-      uploadedAt: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.uploadDate || new Date().toISOString(),
-      fileSize: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.fileSize || 0,
-      hash: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.filePath ? 'verified' : null,
-      tags: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata.entities || [],
+      id: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).id,
+      title: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).title,
+      description: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).content.substring(0, 200) + '...',
+      evidenceType: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.documentType || 'document',
+      isAdmissible: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).confidence > 0.8,
+      collectedBy: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.source,
+      uploadedAt: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.uploadDate || new Date().toISOString(),
+      fileSize: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.fileSize || 0,
+      hash: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.filePath ? 'verified' : null,
+      tags: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.entities || [],
       aiAnalysis: {
-        confidence: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).confidence,
-        similarity: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).similarity,
-        source: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).source,
-        highlight: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).highlight
+        confidence: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).confidence,
+        similarity: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).similarity,
+        source: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).source,
+        highlight: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).highlight
       },
-      metadata: (result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).metadata
+      metadata: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata
     });
     // Update evidence display with search results
     if (convertedEvidence.length > 0) {
@@ -660,7 +660,7 @@ https://svelte.dev/e/js_parse_error -->
             bind:enabled={thinkingStyleEnabled}
             premium={true}
             size="sm"
-            on:toggle={handleThinkingToggle}
+            ontoggle={handleThinkingToggle}
           />
         </div>
 
@@ -668,7 +668,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 refreshEvidence()}
             disabled={loading}
             aria-label="Refresh evidence"
@@ -683,7 +683,7 @@ refreshEvidence()}
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 (showFilters = !showFilters)}
             class={showFilters ? 'nes-legal-priority-high' : ''}
             aria-label="Toggle filters"
@@ -698,7 +698,7 @@ refreshEvidence()}
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 (viewMode = viewMode === "grid" ? "list" : "grid")}
             aria-label="Toggle view mode"
             class="yorha-3d-button"
@@ -715,7 +715,7 @@ refreshEvidence()}
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 handleAdvancedUpload()}
             class="neural-sprite-cached"
           >
@@ -727,7 +727,7 @@ handleAdvancedUpload()}
         <Tooltip content="Standard evidence upload">
           <Button class="bits-btn"
             variant="evidence"
-            on:click={() =>
+            onclick={() =>
 openUploadModal()}
           >
             <Plus class="w-4 h-4 mr-2" />
@@ -766,7 +766,7 @@ openUploadModal()}
         <Button class="bits-btn"
           variant="outline"
           size="sm"
-          on:click={() =>
+          onclick={() =>
 (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
           aria-label="Toggle sort order"
           class="yorha-3d-button"
@@ -805,7 +805,7 @@ openUploadModal()}
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 bulkOperation("analyze")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
@@ -822,7 +822,7 @@ bulkOperation("analyze")}
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 bulkOperation("verify")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
@@ -834,7 +834,7 @@ bulkOperation("verify")}
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 bulkOperation("archive")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
@@ -846,7 +846,7 @@ bulkOperation("archive")}
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 bulkOperation("export")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
@@ -858,7 +858,7 @@ bulkOperation("export")}
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 bulkOperation("delete")}
             disabled={bulkOperationLoading}
             class="mx-auto px-4 max-w-7xl"
@@ -870,7 +870,7 @@ bulkOperation("delete")}
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 {
               selectedEvidence.clear();
               selectedEvidence = selectedEvidence;
@@ -898,7 +898,7 @@ bulkOperation("delete")}
         <h3 class="mx-auto px-4 max-w-7xl">Error Loading Evidence</h3>
         <div class="mx-auto px-4 max-w-7xl">{error}</div>
       </div>
-  <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
 refreshEvidence()}>
         <RefreshCw class="mx-auto px-4 max-w-7xl" />
         Retry
@@ -929,14 +929,14 @@ refreshEvidence()}>
       </p>
       {#if !searchQuery && !selectedType && !selectedStatus && !selectedCollector && !dateFrom && !dateTo}
         <div class="mx-auto px-4 max-w-7xl">
-          <Button class="bits-btn" on:click={() =>
+          <Button class="bits-btn" onclick={() =>
 openUploadModal()} class="mx-auto px-4 max-w-7xl">
             <Plus class="mx-auto px-4 max-w-7xl" />
             Upload Evidence
 </Button>
           <Button class="bits-btn"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 handleAdvancedUpload()}
             class="mx-auto px-4 max-w-7xl"
           >
@@ -961,7 +961,7 @@ handleAdvancedUpload()}
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 selectAllEvidence()}
             class="mx-auto px-4 max-w-7xl"
             aria-label="Select all visible evidence"
@@ -994,7 +994,7 @@ selectAllEvidence()}
                   type="checkbox"
                   class="input-nes-primary w-4 h-4"
                   checked={selectedEvidence.has(evidence.id)}
-                  on:change={() => toggleEvidenceSelection(evidence.id)}
+                  onchange={() => toggleEvidenceSelection(evidence.id)}
                   aria-label="Select evidence {evidence.title || 'Untitled Evidence'}"
                 />
 
@@ -1079,7 +1079,7 @@ selectAllEvidence()}
                 <Button class="bits-btn"
                   size="sm"
                   variant={thinkingStyleEnabled ? "neural" : "yorha"}
-                  on:click={() =>
+                  onclick={() =>
 analyzeEvidence(evidence)}
                   disabled={analysisInProgress.has(evidence.id)}
                   class="flex-1"
@@ -1118,7 +1118,7 @@ analyzeEvidence(evidence)}
                   type="checkbox"
                   class="w-4 h-4 rounded border-gray-300 focus:ring-2 focus:ring-yellow-400"
                   checked={selectedEvidence.has(evidence.id)}
-                  on:change={() => toggleEvidenceSelection(evidence.id)}
+                  onchange={() => toggleEvidenceSelection(evidence.id)}
                   aria-label="Select evidence {evidence.title ||
                     'Untitled Evidence'}"
                 />
@@ -1189,7 +1189,7 @@ analyzeEvidence(evidence)}
                   <Button class="bits-btn"
                     size="sm"
                     variant="outline"
-                    on:click={() =>
+                    onclick={() =>
 analyzeEvidence(evidence)}
                     disabled={analysisInProgress.has(evidence.id)}
                     class="mx-auto px-4 max-w-7xl"
@@ -1268,7 +1268,7 @@ analyzeEvidence(evidence)}
             size="sm"
             class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
             disabled={currentPage === 1}
-            on:click={() =>
+            onclick={() =>
 (currentPage = Math.max(1, currentPage - 1))}
             aria-label="Previous page"
           >
@@ -1283,7 +1283,7 @@ analyzeEvidence(evidence)}
               variant={page === currentPage ? "default" : "outline"}
               size="sm"
               class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-              on:click={() =>
+              onclick={() =>
 (currentPage = page)}
               aria-label="Go to page {page}"
               aria-current={page === currentPage ? "page" : undefined}
@@ -1297,7 +1297,7 @@ analyzeEvidence(evidence)}
             size="sm"
             class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
             disabled={currentPage === totalPages}
-            on:click={() =>
+            onclick={() =>
 (currentPage = Math.min(totalPages, currentPage + 1))}
             aria-label="Next page"
           >
@@ -1315,7 +1315,7 @@ analyzeEvidence(evidence)}
   bind:open={validationModal.open}
   evidence={validationModal.evidence}
   aiEvent={validationModal.aiEvent}
-  on:complete={handleValidationComplete}
+  oncomplete={handleValidationComplete}
 />
 
 <!-- AI Analysis Results Modal -->
@@ -1333,7 +1333,7 @@ analyzeEvidence(evidence)}
           {/if}
           - {analysisModal.evidence.title}
         </h3>
-  <Button class="bits-btn" variant="ghost" size="sm" on:click={closeAnalysisModal}>
+  <Button class="bits-btn" variant="ghost" size="sm" onclick={closeAnalysisModal}>
 ✕
 </Button>
       </div>
@@ -1343,11 +1343,11 @@ analyzeEvidence(evidence)}
           <div class="mx-auto px-4 max-w-7xl">{formatAnalysisForDisplay(analysisModal.result)}</div>
         </div>
 
-        {#if analysisModal.(result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).reasoning_steps && analysisModal.(result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).reasoning_steps.length > 0}
+        {#if analysisModal.(result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).reasoning_steps && analysisModal.(result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).reasoning_steps.length > 0}
           <div class="mx-auto px-4 max-w-7xl">
             <h4 class="mx-auto px-4 max-w-7xl">Reasoning Steps:</h4>
             <ol class="mx-auto px-4 max-w-7xl">
-              {#each analysisModal.(result as { id?: any; title?: any; content?: any; metadata?: any; confidence?: any; similarity?: any; source?: any; highlight?: any; reasoning_steps?: any }).reasoning_steps as step}
+              {#each analysisModal.(result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).reasoning_steps as step}
                 <li class="mx-auto px-4 max-w-7xl">{step}</li>
               {/each}
             </ol>
@@ -1356,10 +1356,10 @@ analyzeEvidence(evidence)}
       </div>
 
       <div class="mx-auto px-4 max-w-7xl">
-  <Button class="bits-btn" variant="outline" on:click={closeAnalysisModal}>
+  <Button class="bits-btn" variant="outline" onclick={closeAnalysisModal}>
 Close
 </Button>
-  <Button class="bits-btn" on:click={() =>
+  <Button class="bits-btn" onclick={() =>
 {
           // Save analysis or perform other actions
           closeAnalysisModal();
@@ -1367,7 +1367,7 @@ Close
 </Button>
       </div>
     </div>
-  <div class="mx-auto px-4 max-w-7xl" role="button" tabindex="0" on:click={closeAnalysisModal} on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && closeAnalysisModal()}></div>
+  <div class="mx-auto px-4 max-w-7xl" role="button" tabindex="0" onclick={closeAnalysisModal} onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && closeAnalysisModal()}></div>
   </div>
 {/if}
 
@@ -1380,8 +1380,8 @@ Close
         multiple={true}
         maxFiles={10}
         maxFileSize={50 * 1024 * 1024}
-        on:upload={handleFileUpload}
-        on:cancel={() => (showAdvancedUpload = false)}
+        onupload={handleFileUpload}
+        oncancel={() => (showAdvancedUpload = false)}
       />
     </div>
     <div
@@ -1389,8 +1389,8 @@ Close
       role="button"
       tabindex={0}
       aria-label="Close modal"
-      on:click={() => (showAdvancedUpload = false)}
-      on:keydown={(e) => e.key === "Escape" && (showAdvancedUpload = false)}
+      onclick={() => (showAdvancedUpload = false)}
+      onkeydown={(e) => e.key === "Escape" && (showAdvancedUpload = false)}
     ></div>
   </div>
 {/if}

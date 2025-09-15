@@ -1,21 +1,19 @@
-
-// Debounce utility functions for performance optimization
-
 /**
- * Debounce function that delays execution until after wait milliseconds
- * have elapsed since the last time it was invoked
+ * Debounce utility for performance optimization
+ * Prevents excessive function calls during rapid user input
  */
+
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number,
-  immediate = false
+  immediate?: boolean
 ): (...args: Parameters<T>) => void {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
+  let timeout: NodeJS.Timeout | null = null;
 
-  return function executedFunction(...args: Parameters<T>) {
+  return function executedFunction(this: any, ...args: Parameters<T>) {
     const later = () => {
       timeout = null;
-      if (!immediate) func(...args);
+      if (!immediate) func.apply(this, args);
     };
 
     const callNow = immediate && !timeout;
@@ -23,78 +21,42 @@ export function debounce<T extends (...args: any[]) => any>(
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(later, wait);
 
-    if (callNow) func(...args);
+    if (callNow) func.apply(this, args);
   };
 }
 
 /**
- * Throttle function that limits execution to once per wait period
+ * Throttle utility - limits function calls to once per specified interval
  */
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
-  wait: number
+  limit: number
 ): (...args: Parameters<T>) => void {
-  let inThrottle: boolean;
+  let inThrottle: boolean = false;
 
-  return function executedFunction(...args: Parameters<T>) {
+  return function executedFunction(this: any, ...args: Parameters<T>) {
     if (!inThrottle) {
       func.apply(this, args);
       inThrottle = true;
-      setTimeout(() => (inThrottle = false), wait);
+      setTimeout(() => inThrottle = false, limit);
     }
   };
 }
 
 /**
- * Async debounce for promises
+ * RequestAnimationFrame-based throttle for smooth animations
  */
-export function debounceAsync<T extends (...args: any[]) => Promise<any>>(
-  func: T,
-  wait: number
-): (...args: Parameters<T>) => Promise<ReturnType<T>> {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-  let resolveList: Array<(value: any) => void> = [];
-  let rejectList: Array<(reason: any) => void> = [];
+export function rafThrottle<T extends (...args: any[]) => any>(
+  func: T
+): (...args: Parameters<T>) => void {
+  let rafId: number | null = null;
 
-  return function executedFunction(...args: Parameters<T>): Promise<ReturnType<T>> {
-    return new Promise((resolve, reject) => {
-      resolveList.push(resolve);
-      rejectList.push(reject);
+  return function executedFunction(this: any, ...args: Parameters<T>) {
+    if (rafId !== null) return;
 
-      if (timeout) clearTimeout(timeout);
-
-      timeout = setTimeout(async () => {
-        try {
-          const result = await func(...args);
-          resolveList.forEach((r: any) => r(result));
-        } catch (error: any) {
-          rejectList.forEach((r: any) => r(error));
-        } finally {
-          resolveList = [];
-          rejectList = [];
-          timeout = null;
-        }
-      }, wait);
+    rafId = requestAnimationFrame(() => {
+      func.apply(this, args);
+      rafId = null;
     });
   };
-}
-
-/**
- * Search debounce specifically for input fields
- */
-export function createSearchDebounce(
-  callback: (query: string) => void,
-  delay = 300
-) {
-  return debounce(callback, delay);
-}
-
-/**
- * Auto-save debounce for form fields
- */
-export function createAutoSaveDebounce(
-  callback: () => void | Promise<void>,
-  delay = 1000
-) {
-  return debounce(callback, delay);
 }

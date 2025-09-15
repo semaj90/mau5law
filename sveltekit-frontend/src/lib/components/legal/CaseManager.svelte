@@ -305,7 +305,7 @@ Create New Case
             <Button class="bits-btn" 
               type="button" 
               variant="outline"
-              on:click={() =>
+              onclick={() =>
 isCreateDialogOpen.set(false)}
             >
               Cancel
@@ -397,7 +397,7 @@ isCreateDialogOpen.set(false)}
               <Button class="bits-btn" 
                 size="sm" 
                 variant="outline"
-                on:click={() =>
+                onclick={() =>
 openEditDialog(caseData)}
               >
                 Edit
@@ -405,7 +405,7 @@ openEditDialog(caseData)}
               <Button class="bits-btn" 
                 size="sm" 
                 variant="destructive"
-                on:click={() =>
+                onclick={() =>
 deleteCase(caseData.id!)}
               >
                 Delete
@@ -429,7 +429,7 @@ deleteCase(caseData.id!)}
         {#if !$searchQuery}
           <Button 
             class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn"
-            on:click={() =>
+            onclick={() =>
 isCreateDialogOpen.set(true)}
           >
             Create First Case
@@ -521,7 +521,7 @@ isCreateDialogOpen.set(true)}
           <Button class="bits-btn" 
             type="button" 
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 isEditDialogOpen.set(false)}
           >
             Cancel

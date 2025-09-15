@@ -1,7 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   interface Props {
-    user: any ;
+    user: unknown ;
   }
   let {
     user = null
@@ -38,7 +38,7 @@
 <div class="user-dropdown" bind:this={dropdownElement}>
 	<button 
 		class="user-trigger"
-		on:click={() => toggleDropdown()}
+		onclick={() => toggleDropdown()}
 		aria-expanded={dropdownOpen}
 		aria-haspopup="true"
 	>
@@ -104,7 +104,7 @@
 					My Cases
 				</a>
 				
-				<button type="button" class="dropdown-item logout" on:click={() => handleLogout()}>
+				<button type="button" class="dropdown-item logout" onclick={() => handleLogout()}>
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M6 15H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3M13 11l3-3-3-3M8 8h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 					</svg>
@@ -236,10 +236,10 @@
 		background: var(--bg-secondary, #f3f4f6);
 		color: var(--text-primary, #111827);
 }
-	.dropdown-(item as { logout?: any }).logout {
+	.dropdown-(item as { logout?: unknown }).logout {
 		color: #dc2626;
 }
-	.dropdown-(item as { logout?: any }).logout:hover {
+	.dropdown-(item as { logout?: unknown }).logout:hover {
 		background: #fef2f2;
 		color: #b91c1c;
 }

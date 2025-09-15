@@ -7,7 +7,7 @@
   let caseFiles: CaseFile[] = [];
 
   // Client-only component reference
-  let Intelligent: any = null;
+  let Intelligent: unknown = null;
 
   onMount(async () => {
     // generate mock data on the client only

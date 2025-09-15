@@ -221,7 +221,22 @@
       "Bash(on:input=)",
       "Bash(on:drop=)",
       "Bash(on:mouseleave=)",
-      "Bash(ondrop=)"
+      "Bash(ondrop=)",
+      "Bash(tree:*)",
+      "Bash(while read dir)",
+      "Bash([ ! -f \"$dir/+layout.svelte\" ])",
+      "Bash(then echo \"$dir (has page but no layout)\")",
+      "Bash(while read server)",
+      "Bash(if [ ! -f \"$page\" ])",
+      "Bash(then echo \"Missing page for server: $server\")",
+      "Bash([ -f \"$dir/+server.ts\" ])",
+      "Bash(then echo \"$dir\")",
+      "Bash(then echo \"ORPHANED SERVER: $dir/+page.server.ts\")",
+      "Bash([ ! -f \"$dir/+server.ts\" ])",
+      "Bash(then echo \"INCOMPLETE ROUTE: $dir\")",
+      "Bash(then echo \"MISSING PAGE: $dir\")",
+      "Bash(./cuda-service-worker.exe)",
+      "Bash(DATABASE_URL=\"postgres://legal_admin:123456@localhost:5432/legal_ai_db?sslmode=disable\" PORT=8082 timeout 15s go run cmd/legal-recommendation/main.go)"
     ],
     "deny": [],
     "ask": []

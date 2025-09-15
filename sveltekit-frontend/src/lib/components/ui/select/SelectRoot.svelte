@@ -5,7 +5,7 @@
   interface Props {
     value?: string;
     onValueChange?: (value: string) => void;
-    children?: any;
+    children?: unknown;
   }
 
   let { value = $bindable(), onValueChange, children, ...restProps }: Props = $props();

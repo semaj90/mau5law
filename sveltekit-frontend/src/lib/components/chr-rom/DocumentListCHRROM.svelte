@@ -253,7 +253,7 @@ https://svelte.dev/e/js_parse_error -->
           </span>
         </div>
       </div>
-      <button on:click={refreshPatterns} class="refresh-btn">
+      <button onclick={refreshPatterns} class="refresh-btn">
         🔄 Refresh Patterns
       </button>
     </div>
@@ -265,8 +265,8 @@ https://svelte.dev/e/js_parse_error -->
       <div 
         class="document-nier-bits-card"
         style:border-left-color={getCategoryColor(doc.id)}
-        on:mouseenter={() => handleDocumentHover(doc.id)}
-        on:mouseleave={handleDocumentLeave}
+        onmouseenter={() => handleDocumentHover(doc.id)}
+        onmouseleave={handleDocumentLeave}
         role="button"
         tabindex="0"
       >

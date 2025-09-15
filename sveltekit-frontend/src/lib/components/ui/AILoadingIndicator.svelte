@@ -4,17 +4,17 @@
   import { cubicOut } from 'svelte/easing';
   import { Brain, Cpu, Zap, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-svelte';
 
-  export let isLoading: boolean = false;
-  export let title: string = 'Processing...';
-  export let description: string = '';
-  export let progress: number = 0; // 0-100
-  export let status: 'loading' | 'success' | 'error' | 'warning' = 'loading';
-  export let showProgress: boolean = true;
-  export let showEstimate: boolean = false;
-  export let estimatedTime: number = 0; // in seconds
-  export let operation: string = 'ai'; // 'ai', 'gpu', 'upload', 'processing'
-  export let size: 'sm' | 'md' | 'lg' = 'md';
-  export let variant: 'overlay' | 'inline' | 'modal' = 'inline';
+  let { isLoading } = $props();: boolean = false;
+  let { title } = $props();: string = 'Processing...';
+  let { description } = $props();: string = '';
+  let { progress } = $props();: number = 0; // 0-100
+  let { status } = $props();: 'loading' | 'success' | 'error' | 'warning' = 'loading';
+  let { showProgress } = $props();: boolean = true;
+  let { showEstimate } = $props();: boolean = false;
+  let { estimatedTime } = $props();: number = 0; // in seconds
+  let { operation } = $props();: string = 'ai'; // 'ai', 'gpu', 'upload', 'processing'
+  let { size } = $props();: 'sm' | 'md' | 'lg' = 'md';
+  let { variant } = $props();: 'overlay' | 'inline' | 'modal' = 'inline';
 
   const progressTween = tweened(0, {
     duration: 300,
@@ -25,23 +25,23 @@
   let elapsedTime = 0;
   let intervalId: number;
 
-  $: progressTween.set(progress);
+  $effect(() => { progressTween.set(progress); });
 
-  $: sizeClasses = {
+  let sizeClasses = $derived({
     sm: 'text-sm p-3',
     md: 'text-base p-4',
     lg: 'text-lg p-6'
-  };
+  });
 
-  $: iconSize = {
+  let iconSize = $derived({
     sm: 'w-4 h-4',
     md: 'w-5 h-5',
     lg: 'w-6 h-6'
-  };
+  });
 
-  $: getOperationIcon = (op: string) => {
+  let getOperationIcon = $derived((op: string) => {
     switch (op) {
-      case 'ai': return Brain;
+      case 'ai': return Brain);
       case 'gpu': return Zap;
       case 'cpu': return Cpu;
       case 'upload': return CheckCircle;
@@ -49,18 +49,18 @@
     }
   };
 
-  $: getStatusIcon = (st: string) => {
+  let getStatusIcon = $derived((st: string) => {
     switch (st) {
-      case 'success': return CheckCircle;
+      case 'success': return CheckCircle);
       case 'error': return XCircle;
       case 'warning': return AlertCircle;
       default: return getOperationIcon(operation);
     }
   };
 
-  $: getStatusColor = (st: string) => {
+  let getStatusColor = $derived((st: string) => {
     switch (st) {
-      case 'success': return 'text-green-400';
+      case 'success': return 'text-green-400');
       case 'error': return 'text-red-400';
       case 'warning': return 'text-yellow-400';
       case 'loading':
@@ -75,8 +75,8 @@
     }
   };
 
-  $: formatTime = (seconds: number) => {
-    if (seconds < 60) return `${Math.round(seconds)}s`;
+  let formatTime = $derived((seconds: number) => {
+    if (seconds < 60) return `${Math.round(seconds)}s`);
     if (seconds < 3600) return `${Math.round(seconds / 60)}m ${Math.round(seconds % 60)}s`;
     return `${Math.round(seconds / 3600)}h ${Math.round((seconds % 3600) / 60)}m`;
   };
@@ -98,7 +98,7 @@
     }
   });
 
-  $: if (isLoading) {
+  $effect(() => { if (isLoading) ; });{
     if (!intervalId) {
       startTime = Date.now();
       intervalId = setInterval(updateElapsedTime, 100);

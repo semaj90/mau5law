@@ -296,7 +296,7 @@
       
       <div class="flex items-center gap-3">
         <button
-          on:click={() => realTimeStats = !realTimeStats}
+          onclick={() => realTimeStats = !realTimeStats}
           class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
           <Monitor class="w-4 h-4" />
@@ -304,7 +304,7 @@
         </button>
         
         <button
-          on:click={() => showJobDialog = true}
+          onclick={() => showJobDialog = true}
           class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-blue-700"
         >
           <Play class="w-4 h-4" />
@@ -426,7 +426,7 @@
               </div>
               <div class="flex justify-end mt-2">
                 <button 
-                  on:click={() => cancelJob(job.id)}
+                  onclick={() => cancelJob(job.id)}
                   class="text-xs text-red-600 hover:text-red-800"
                 >
                   Cancel
@@ -563,7 +563,7 @@
         <h2 class="text-lg font-semibold text-gray-900">Create Processing Job</h2>
       </div>
       
-      <form on:submit={submitProcessingJob} class="p-6 space-y-4">
+      <form onsubmit={submitProcessingJob} class="p-6 space-y-4">
         <FormField name="documentId" errors={newJobForm.errors.documentId}>
           <label for="documentId" class="block text-sm font-medium text-gray-700 mb-1">
             Document ID
@@ -630,7 +630,7 @@
         <div class="flex justify-end gap-3 pt-4">
           <button
             type="button"
-            on:click={() => showJobDialog = false}
+            onclick={() => showJobDialog = false}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Cancel

@@ -108,11 +108,11 @@
   async function loadPersonsFromAPI() {
     try {
       const response = await fetch('/api/persons-of-interest');
-      if ((response as { ok?: any; json?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any }).json();
-        const apiPersons = (result as { success?: any; data?: any }).success ? (result as { success?: any; data?: any }).data : [];
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; json?: unknown }).json();
+        const apiPersons = (result as { success?: unknown; data?: unknown }).success ? (result as { success?: unknown; data?: unknown }).data : [];
         // Transform API data to FugitiveDex format
-        const transformedPersons = apiPersons.map((person: any) => ({
+        const transformedPersons = apiPersons.map((person: unknown) => ({
           id: (apiPersons.indexOf(person) + 1).toString().padStart(3, '0'),
           name: person.name,
           alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0] : (person.name ? person.name.split(' ')[0] : 'Unknown'),
@@ -197,7 +197,7 @@
         {#each persons as person (person.id)}
           <button
             class="person-entry {selectedPerson.id === person.id ? 'selected' : ''}"
-            on:click={() => selectedPerson = person}
+            onclick={() => selectedPerson = person}
           >
             <span class="person-number">#{person.id}</span>
             <span class="person-name">{person.alias}</span>

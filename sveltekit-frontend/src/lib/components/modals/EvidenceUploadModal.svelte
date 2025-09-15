@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
           <Upload class="container mx-auto px-4" />
           <h2 class="container mx-auto px-4">Upload Evidence</h2>
         </div>
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 closeModal()}>
           <X class="container mx-auto px-4" />
 </Button>
@@ -87,10 +87,10 @@ closeModal()}>
           aria-label="Evidence file drop zone"
           aria-describedby="evidence-dropzone-instructions"
           class="container mx-auto px-4"
-          on:drop={handleDrop}
-          on:dragover={handleDragOver}
+          ondrop={handleDrop}
+          ondragover={handleDragOver}
           ondragleave={handleDragLeave}
-          on:click={() => fileInput?.click()}
+          onclick={() => fileInput?.click()}
           keydown={(e) =>
             (e.key === "Enter" || e.key === " ") && fileInput?.click()}
         >
@@ -101,7 +101,7 @@ closeModal()}>
           <p id="evidence-dropzone-instructions" class="container mx-auto px-4">
             Support for images, documents, audio, and video files
           </p>
-          <Button class="bits-btn" variant="outline" on:click={() =>
+          <Button class="bits-btn" variant="outline" onclick={() =>
 fileInput?.click()}>
             Choose Files
 </Button>
@@ -110,7 +110,7 @@ fileInput?.click()}>
             type="file"
             multiple
             class="container mx-auto px-4"
-            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls" on:change={handleFileSelect}
+            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xlsx,.xls" onchange={handleFileSelect}
           />
         </div>
 
@@ -176,7 +176,7 @@ fileInput?.click()}>
                       <Button class="bits-btn"
                         variant="ghost"
                         size="sm"
-                        on:click={() =>
+                        onclick={() =>
 removeFile(file.id)}
                       >
                         <X class="container mx-auto px-4" />
@@ -207,13 +207,13 @@ removeFile(file.id)}
         </div>
 
         <div class="container mx-auto px-4">
-          <Button class="bits-btn" variant="outline" on:click={() =>
+          <Button class="bits-btn" variant="outline" onclick={() =>
 closeModal()}>
             {activeUploads.length > 0 ? "Continue in Background" : "Close"}
 </Button>
 
           {#if completedUploads.length > 0}
-            <Button class="bits-btn" on:click={() =>
+            <Button class="bits-btn" onclick={() =>
 dispatch("viewEvidence", completedUploads)}>
               View Evidence
 </Button>

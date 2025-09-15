@@ -12,8 +12,8 @@
     initialData?: SuperValidated<CaseForm> | Partial<CaseForm>;
     isEditing?: boolean;
     formApi?: unknown;
-    onsuccess?: (data: any) => void;
-    onerror?: (error: any) => void;
+    onsuccess?: (data: unknown) => void;
+    onerror?: (error: unknown) => void;
   }
 
   let {
@@ -43,10 +43,10 @@
       console.log('Form submitted with data:', $form);
     },
     onResult: ({ result }) => {
-      if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
-        onsuccess?.((result as { type?: any; data?: any; error?: any }).data);
-      } else if ((result as { type?: any; data?: any; error?: any }).type === 'error') {
-        onerror?.((result as { type?: any; data?: any; error?: any }).error);
+      if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'success') {
+        onsuccess?.((result as { type?: unknown; data?: unknown; error?: unknown }).data);
+      } else if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'error') {
+        onerror?.((result as { type?: unknown; data?: unknown; error?: unknown }).error);
       }
     }
   });
@@ -105,7 +105,7 @@
       {#if !isEditing}
         <button
           type="button"
-          on:click={() => generateCaseNumber()}
+          onclick={() => generateCaseNumber()}
           class="space-y-4"
         >
           Generate Case #
@@ -262,7 +262,7 @@
               {tag}
               <button
                 type="button"
-                on:click={() => removeTag(tag)}
+                onclick={() => removeTag(tag)}
                 class="space-y-4"
               >
                 ×
@@ -282,7 +282,7 @@
           />
           <button
             type="button"
-            on:click={() => addTag()}
+            onclick={() => addTag()}
             class="space-y-4"
           >
             Add Tag
@@ -318,7 +318,7 @@
       <div class="space-y-4">
         <button
           type="button"
-          on:click={() => dispatch('cancel')}
+          onclick={() => dispatch('cancel')}
           class="space-y-4"
           disabled={$submitting}
         >

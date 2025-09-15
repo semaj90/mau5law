@@ -124,7 +124,7 @@
           size="sm"
           class="h-8 w-8 p-0 bits-btn bits-btn"
           aria-label="View Evidence"
-          on:click={() => onView?.(item)}
+          onclick={() => onView?.(item)}
         >
           <i class="i-lucide-eye w-4 h-4" aria-hidden="true"></i>
         </Button>
@@ -133,7 +133,7 @@
           size="sm"
           class="h-8 w-8 p-0 bits-btn bits-btn"
           aria-label="More Options"
-          on:click={() => onMoreOptions?.(item)}
+          onclick={() => onMoreOptions?.(item)}
         >
           <i class="i-lucide-more-horizontal w-4 h-4" aria-hidden="true"></i>
         </Button>

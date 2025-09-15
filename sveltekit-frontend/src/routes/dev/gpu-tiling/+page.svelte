@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
   let text = 'A short legal passage about indemnification and liability.';
   let simdParse = true;
   let gpuTile = true;
-  let result: any = null;
+  let result: unknown = null;
   let ocrBusy = false;
   let runBusy = false;
   let webgpuSupported = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
@@ -19,7 +19,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const r = await embedText(text, { simdParse, gpuTile });
       result = r;
-    } catch (e: any) {
+    } catch (e: unknown) {
       result = { error: e?.message || String(e) };
     } finally {
       runBusy = false;
@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
       const data = await resp.json();
       if (!resp.ok) throw new Error(data?.error || 'OCR failed');
       text = data?.text || '';
-    } catch (e: any) {
+    } catch (e: unknown) {
       alert(e?.message || String(e);
     } finally {
       ocrBusy = false;
@@ -63,7 +63,7 @@ https://svelte.dev/e/js_parse_error -->
 
   <div class="inputs">
     <div>
-      <label for="pick-image-for-ocr">Pick image for OCR:</label><input id="pick-image-for-ocr" type="file" accept="image/*" on:change={onImageSelected} disabled={ocrBusy}>
+      <label for="pick-image-for-ocr">Pick image for OCR:</label><input id="pick-image-for-ocr" type="file" accept="image/*" onchange={onImageSelected} disabled={ocrBusy}>
       {#if ocrBusy}<span>OCR…</span>{/if}
     </div>
     <div class="text">
@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <div class="actions">
-    <button on:click={run} disabled={runBusy}>Process</button>
+    <button onclick={run} disabled={runBusy}>Process</button>
     {#if runBusy}<span>Running…</span>{/if}
   </div>
 

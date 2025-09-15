@@ -371,7 +371,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="yorha-nav-bar">
         <Button.Root
           class="yorha-nav-btn bits-btn bits-btn"
-          on:click={goHome}
+          onclick={goHome}
         >
 <Home size={16} />
           HOME
@@ -414,7 +414,7 @@ https://svelte.dev/e/js_parse_error -->
         {#each demoCategories as category}
           <button
             class="yorha-category-btn {selectedDemo === category.id ? 'active' : ''}"
-            on:click={() => scrollToCategory(category.id)}
+            onclick={() => scrollToCategory(category.id)}
           >
             
             {category.title}
@@ -444,7 +444,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="yorha-overview-grid">
           {#each allDemos as demo}
             <div class="yorha-demo-nier-bits-card yorha-demo-nier-bits-card-overview" role="button" tabindex="0"
-                on:click={() => handleDemoNavigation(demo.path)}>
+                onclick={() => handleDemoNavigation(demo.path)}>
               <div class="yorha-demo-header">
                 <h3 class="yorha-demo-title">{demo.title}</h3>
                 <Badge class="{getStatusColor(demo.status)}">
@@ -480,7 +480,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="yorha-demos-grid">
             {#each category.demos as demo}
               <div class="yorha-demo-nier-bits-card" role="button" tabindex="0"
-                on:click={() => handleDemoNavigation(demo.path)}>
+                onclick={() => handleDemoNavigation(demo.path)}>
                 <div class="yorha-demo-header">
                   <h3 class="yorha-demo-title">{demo.title}</h3>
                   <Badge class="{getStatusColor(demo.status)}">
@@ -498,7 +498,7 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="yorha-demo-actions">
                     <Button.Root
                       class="yorha-demo-btn bits-btn bits-btn"
-                      on:click={(e) => {
+                      onclick={(e) => {
                         e.stopPropagation();
                         handleDemoNavigation(demo.path);
                       }}
@@ -545,7 +545,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="yorha-footer-actions">
             <Button.Root
               class="yorha-btn yorha-nes-btn is-primary bits-btn bits-btn"
-              on:click={goHome}
+              onclick={goHome}
             >
               <ArrowLeft size={16} />
               RETURN TO HOMEPAGE

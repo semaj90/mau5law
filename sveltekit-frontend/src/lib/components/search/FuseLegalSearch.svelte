@@ -5,9 +5,7 @@
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import * as Card from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Search, Loader2, ExternalLink, Bot } from 'lucide-svelte';
@@ -22,7 +20,7 @@
     onResultSelect = null,
     showAIActions = true,
     maxResults = 10,
-  : any } = $props();
+  : unknown } = $props();
 
   let searchQuery = $state('');
   let searchResults = $state([]);
@@ -48,7 +46,7 @@
 
   // Initialize Fuse.js when data changes
   $effect(() => {
-    if (data && (data as { length?: any }).length > 0) {
+    if (data && (data as { length?: unknown }).length > 0) {
       fuse = new Fuse(data, fuseOptions);
     }
   });
@@ -87,10 +85,10 @@
 
       // Process results with highlighting and scoring
       searchResults = results.map((result) => ({
-        ...(result as { item?: any; score?: any; matches?: any }).item,
-        fuseScore: (result as { item?: any; score?: any; matches?: any }).score,
-        matches: (result as { item?: any; score?: any; matches?: any }).matches || [],
-        highlighted: highlightMatches((result as { item?: any; score?: any; matches?: any }).item, (result as { item?: any; score?: any; matches?: any }).matches || []),
+        ...(result as { item?: unknown; score?: unknown; matches?: unknown }).item,
+        fuseScore: (result as { item?: unknown; score?: unknown; matches?: unknown }).score,
+        matches: (result as { item?: unknown; score?: unknown; matches?: unknown }).matches || [],
+        highlighted: highlightMatches((result as { item?: unknown; score?: unknown; matches?: unknown }).item, (result as { item?: unknown; score?: unknown; matches?: unknown }).matches || []),
       }));
     } catch (error) {
       console.error('Fuse search error:', error);
@@ -206,12 +204,12 @@
           {#if showAIActions}
             <div.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
-                <Button class="bits-btn" size="sm" on:click={() =>
+                <Button class="bits-btn" size="sm" onclick={() =>
 handleAIAction(law, 'summary')}>
                   <Bot class="h-3 w-3 mr-1" />
                   AI Summary
 
-                <Button class="bits-btn" variant="outline" size="sm" on:click={() =>
+                <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
 handleAIAction(law, 'chat')}>
                   <Bot class="h-3 w-3 mr-1" />
                   Ask AI

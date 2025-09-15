@@ -67,7 +67,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   });
 
   // Handle intersection
-  function handleIntersection(entry: any) {
+  function handleIntersection(entry: unknown) {
     lazyStore.setVisible(entry.isIntersecting, entry.intersectionRatio);
     if (entry.isIntersecting && !$lazyStore.hasBeenVisible) {
       if (enableProfiling) {
@@ -134,7 +134,7 @@ https://svelte.dev/e/bindable_invalid_location -->
       <p class="error-message">{errorText}</p>
       <button
         class="retry-button"
-        on:click={() => {
+        onclick={() => {
           loadError = null;
           lazyStore.reset();
         }}

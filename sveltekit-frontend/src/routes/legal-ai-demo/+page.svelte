@@ -132,7 +132,7 @@
       <div class="space-y-2">
         <button
           class="nes-btn is-primary w-full text-xs"
-          on:click={() => {
+          onclick={() => {
             const mockFile = createMockFile(mockTestData.contractDispute);
             console.log('Mock contract dispute file created:', mockFile);
           }}
@@ -141,7 +141,7 @@
         </button>
         <button
           class="nes-btn is-success w-full text-xs"
-          on:click={() => {
+          onclick={() => {
             const mockFile = createMockFile(mockTestData.employmentCase);
             console.log('Mock employment case file created:', mockFile);
           }}
@@ -155,8 +155,8 @@
     <!-- Main Demo Workflow -->
     <main class="space-y-6">
         <LegalAIWorkflow 
-            on:complete={handleWorkflowComplete}
-            on:export={handleExportResults}
+            oncomplete={handleWorkflowComplete}
+            onexport={handleExportResults}
         />
 
         <!-- Technical Implementation Cards using Evidence Board Style -->

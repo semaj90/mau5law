@@ -1,12 +1,13 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression or a `{get, set}` pair
 https://svelte.dev/e/bind_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';;
@@ -56,6 +57,8 @@ https://svelte.dev/e/bind_invalid_expression -->
 
   // Reactive state using Svelte 5 runes
   let currentMessage = $state('');
+  let isLoading = $state(false);
+  let errorMessage = $state('');
   let useContext7 = $state(false);
   let showSettingsDialog = $state(false);
   let showExportDialog = $state(false);
@@ -91,14 +94,16 @@ https://svelte.dev/e/bind_invalid_expression -->
       console.log('✅ Unified AI Service ready');
     } catch (error) {
       console.error('Failed to initialize Unified AI Service:', error);
-    }
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
 
     // Load available models
     try {
       availableModels = await aiAssistantManager.getAvailableModels();
     } catch (error) {
       console.warn('Failed to load available models:', error);
-    }
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
 
     // Check cluster health
     aiAssistantManager.checkClusterHealth();
@@ -115,6 +120,7 @@ https://svelte.dev/e/bind_invalid_expression -->
 
   // Send message to AI
   async function sendMessage() {
+    performance.mark('function-start');
     if (!canSend) return;
 
     const message = currentMessage.trim();
@@ -174,7 +180,8 @@ https://svelte.dev/e/bind_invalid_expression -->
       }
     } catch (error) {
       console.error('Failed to send message:', error);
-    }
+    
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
 
     // Focus back to input
     if (messageInput) {
@@ -184,6 +191,7 @@ https://svelte.dev/e/bind_invalid_expression -->
 
   // Handle keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
+    performance.mark('function-start');
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -211,21 +219,25 @@ https://svelte.dev/e/bind_invalid_expression -->
 
   // Clear conversation
   function clearConversation() {
+    performance.mark('function-start');
     aiAssistantManager.clearConversation();
   }
 
   // Export conversation
   function exportConversation() {
+    performance.mark('function-start');
     aiAssistantManager.exportConversation();
   }
 
   // Stop generation
   function stopGeneration() {
+    performance.mark('function-start');
     aiAssistantManager.stopGeneration();
   }
 
   // Retry last message
   function retryLast() {
+    performance.mark('function-start');
     aiAssistantManager.retryLast();
   }
 </script>
@@ -245,7 +257,7 @@ https://svelte.dev/e/bind_invalid_expression -->
           <Button class="bits-btn" 
             variant="ghost" 
             size="sm"
-            on:click={() =>
+            onclick={(event: MouseEvent) => ) =>
 showSettingsDialog = true}
           >
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -259,7 +271,7 @@ showSettingsDialog = true}
           <Button class="bits-btn" 
             variant="ghost" 
             size="sm"
-            on:click={() =>
+            onclick={(event: MouseEvent) => ) =>
 showExportDialog = true}
           >
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,7 +283,7 @@ showExportDialog = true}
     </div>
   </div>
 
-  <div class="yorha-panel-content p-0 flex flex-col" style="height: calc({height} - 80px);">
+  <main style="height: calc({height} - 80px);">
     <!-- Chat Messages -->
     <div 
       bind:this={chatContainer}
@@ -331,7 +343,7 @@ showExportDialog = true}
             variant="outline" 
             size="sm" 
             class="mt-2 bits-btn bits-btn"
-            on:click={retryLast}
+            onclick={(event: MouseEvent) => retryLast}
           >
 Retry
 </Button>
@@ -391,7 +403,7 @@ Retry
         
         <div class="flex flex-col gap-1">
           <Button 
-            on:click={sendMessage}
+            onclick={(event: MouseEvent) => sendMessage}
             disabled={!canSend}
             class="px-4 bits-btn bits-btn"
           >
@@ -408,7 +420,7 @@ Retry
             <Button class="bits-btn" 
               variant="outline"
               size="sm"
-              on:click={stopGeneration}
+              onclick={(event: MouseEvent) => stopGeneration}
             >
 <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect x="6" y="6" width="12" height="12" />
@@ -490,8 +502,8 @@ Retry
           <Button class="bits-btn" 
             variant="outline" 
             size="sm"
-            on:click={() =>
-aiAssistantManager.checkClusterHealth()}
+            onclick={(event: MouseEvent) => ) =>
+aiAssistantManager.checkClusterHealth(}
           >
             Refresh Health
 </Button>
@@ -501,12 +513,12 @@ aiAssistantManager.checkClusterHealth()}
       <div class="flex justify-between gap-2">
         <Button class="bits-btn" 
           variant="destructive"
-          on:click={clearConversation}
+          onclick={(event: MouseEvent) => clearConversation}
           disabled={!hasConversation}
         >
 Clear Chat
 </Button>
-        <Button class="bits-btn" on:click={() =>
+        <Button class="bits-btn" onclick={(event: MouseEvent) => ) =>
 showSettingsDialog = false}>
           Close
 </Button>
@@ -543,12 +555,12 @@ showSettingsDialog = false}>
       <div class="flex justify-end gap-2">
         <Button class="bits-btn" 
           variant="outline"
-          on:click={() =>
+          onclick={(event: MouseEvent) => ) =>
 showExportDialog = false}
         >
           Cancel
 </Button>
-        <Button class="bits-btn" on:click={() =>
+        <Button class="bits-btn" onclick={(event: MouseEvent) => ) =>
 {
           exportConversation();
           showExportDialog = false;

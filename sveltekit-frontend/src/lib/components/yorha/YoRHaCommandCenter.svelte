@@ -4,9 +4,7 @@
   // Svelte 5 runes and modern imports
   import { onMount } from 'svelte';
   import { goto } from "$app/navigation";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge/index.js';
   import {
     Card,
@@ -98,7 +96,7 @@
     }
   });
 
-  function handleQuickAction(action: any) {
+  function handleQuickAction(action: unknown) {
     selectedCard = action?.id ?? null;
     if (action?.action === 'modal' && action?.id === 'new-case') {
       showCaseModal = true;
@@ -109,7 +107,7 @@
     }
   }
 
-  function handleCaseCreated(event: any) {
+  function handleCaseCreated(event: unknown) {
     const newCase = event.detail.case;
     showCaseModal = false;
     // Update recent activity
@@ -127,21 +125,21 @@
     systemData.activeCases = systemData.activeCases + 1;
   }
 
-  function handleCaseError(event: any) {
+  function handleCaseError(event: unknown) {
     console.error('Case creation error:', event.detail.message);
     // You could add a notification system here
   }
 
   // Modal event handlers for superforms integration
-  function handleCaseCreationSuccess(event: any) {
+  function handleCaseCreationSuccess(event: unknown) {
     return handleCaseCreated(event);
   }
 
-  function handleCaseCreationError(event: any) {
+  function handleCaseCreationError(event: unknown) {
     return handleCaseError(event);
   }
 
-  function handleModalBackdropClick(event: any) {
+  function handleModalBackdropClick(event: unknown) {
     if (event.target === event.currentTarget) {
       showCaseModal = false;
     }
@@ -186,7 +184,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button 
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" 
-      on:click={() => { componentError = null; }}
+      onclick={() => { componentError = null; }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -337,11 +335,11 @@
       {#each quickActions as action}
         <button
           class="action-nier-bits-card border rounded-lg p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg {getActionColor(action.color)} {selectedCard === action.id ? 'scale-95' : ''}"
-          on:click={() => handleQuickAction(action)}
+          onclick={() => handleQuickAction(action)}
           role="button"
           tabindex="0"
           aria-label="{action.label} - {action.icon}"
-          on:keydown={(e) => {
+          onkeydown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
               handleQuickAction(action);
@@ -373,12 +371,12 @@
         categories={['cases', 'evidence', 'precedents', 'statutes', 'criminals']}
         enableVectorSearch={true}
         aiSuggestions={true}
-        on:select={(result) => {
+        onselect={(result) => {
           // Handle search result selection
           recentActivity = [{
             id: Date.now(),
             action: 'Search Query Executed',
-            target: `"${(result as { detail?: any }).detail.title}"`,
+            target: `"${(result as { detail?: unknown }).detail.title}"`,
             time: 'just now',
             type: 'ai'
           }, ...recentActivity.slice(0, 4)];
@@ -421,15 +419,15 @@
 <!-- YoRHa Case Creation Modal -->
 {#if showCaseModal}
   <div class="modal-backdrop fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" 
-       on:click={handleModalBackdropClick}
+       onclick={handleModalBackdropClick}
        role="dialog"
        aria-modal="true"
        aria-labelledby="case-modal-title">
-    <div class="modal-content max-w-4xl w-full" on:click={(e) => e.stopPropagation()}>
+    <div class="modal-content max-w-4xl w-full" onclick={(e) => e.stopPropagation()}>
       <YoRHaCaseForm 
-        on:success={handleCaseCreationSuccess}
-        on:error={handleCaseCreationError}
-        on:close={() => showCaseModal = false}
+        onsuccess={handleCaseCreationSuccess}
+        onerror={handleCaseCreationError}
+        onclose={() => showCaseModal = false}
       />
     </div>
   </div>

@@ -58,11 +58,11 @@
 
     // Fabric.js integration
     enableFabricJS?: boolean;
-    fabricConfig?: any;
+    fabricConfig?: unknown;
 
     // Event callbacks
-    onCanvasReady?: (canvas: HTMLCanvasElement, context: any) => void;
-    onDraw?: (context: any, deltaTime: number) => void;
+    onCanvasReady?: (canvas: HTMLCanvasElement, context: unknown) => void;
+    onDraw?: (context: unknown, deltaTime: number) => void;
     onResize?: (width: number, height: number) => void;
     class?: string;
   }

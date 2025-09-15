@@ -4,7 +4,7 @@ TODO: Implement document upload, AI summarization, export functionality
 -->
 <script lang="ts">
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
-	import { Button } from '$lib/components/ui/enhanced-bits';
+	import Button from '$lib/components/ui/enhanced-bits';
 	import * as Card from '$lib/components/ui/card';
 	import { FileText, Upload, Download, Brain, Clock, Star } from 'lucide-svelte';
 
@@ -106,7 +106,7 @@ TODO: Implement document upload, AI summarization, export functionality
 								<input
 									type="file"
 									accept=".pdf,.doc,.docx,.txt"
-									on:change={handleFileUpload}
+									onchange={handleFileUpload}
 									class="nes-input"
 									disabled={isUploading}
 								/>
@@ -165,7 +165,7 @@ TODO: Implement document upload, AI summarization, export functionality
 							<div class="pt-4 border-t border-gray-600">
 								<Button
 									class="nes-btn is-primary w-full"
-									on:click={generateSummary}
+									onclick={generateSummary}
 									disabled={!selectedFile || isUploading || isSummarizing}
 								>
 									{#if isSummarizing}
@@ -193,7 +193,7 @@ TODO: Implement document upload, AI summarization, export functionality
 								<Button
 									size="sm"
 									class="nes-btn"
-									on:click={exportSummary}
+									onclick={exportSummary}
 								>
 									<Download class="w-3 h-3 mr-1" />
 									Export

@@ -233,10 +233,10 @@ https://svelte.dev/e/attribute_duplicate -->
   <div 
     class="modal-backdrop"
     style:background-color="rgba(0, 0, 0, 0.8)"
-    transition:fade={{ duration: 300 }}
+    transitionfade={{ duration: 300 }}
     role="button" 
     tabindex="0"
-    on:click={handleClose}
+    onclick={handleClose}
     aria-label="Close modal"
   ></div>
 
@@ -248,7 +248,7 @@ https://svelte.dev/e/attribute_duplicate -->
     style:border-color={currentTheme.colors.border}
     style:box-shadow={currentTheme.shadow}
     style:font-family={currentTheme.fontFamily}
-    transition:fly={{ y: -50, duration: 400, easing: quintOut }}
+    transitionfly={{ y: -50, duration: 400, easing: quintOut }}
     role="dialog"
     aria-modal="true"
     aria-labelledby="modal-title"
@@ -265,7 +265,7 @@ https://svelte.dev/e/attribute_duplicate -->
       <button 
         class="close-button"
         style:color={currentTheme.colors.accent}
-        on:click={handleClose}
+        onclick={handleClose}
         aria-label="Close modal"
       >
         ×
@@ -288,9 +288,9 @@ https://svelte.dev/e/attribute_duplicate -->
               style:border-color={index === selectedIndex ? currentTheme.colors.selected : 'transparent'}
               style:background-color={index === selectedIndex ? `${currentTheme.colors.selected}20` : 'transparent'}
               role="button" 
-                on:click={() => { selectedIndex = index; rec.action?.(); handleClose(); }}
+                onclick={() => { selectedIndex = index; rec.action?.(); handleClose(); }}
               tabindex={index === selectedIndex ? 0 : -1}
-              transition:scale={{ duration: 200, delay: index * 50 }}
+              transitionscale={{ duration: 200, delay: index * 50 }}
             >
               <!-- Priority Indicator -->
               <div 
@@ -500,7 +500,7 @@ https://svelte.dev/e/attribute_duplicate -->
     transform: translateX(4px);
   }
 
-  .recommendation-(item as { selected?: any }).selected {
+  .recommendation-(item as { selected?: unknown }).selected {
     transform: translateX(8px);
   }
 

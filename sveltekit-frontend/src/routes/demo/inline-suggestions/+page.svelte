@@ -20,9 +20,7 @@ https://svelte.dev/e/bind_invalid_expression -->
     CardDescription
   } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Switch } from '$lib/components/ui/switch';
   import { Slider } from '$lib/components/ui/slider';
 
@@ -153,7 +151,7 @@ https://svelte.dev/e/bind_invalid_expression -->
     }
   ];
 
-  function loadScenario(scenario: any) {
+  function loadScenario(scenario: unknown) {
     demoContent = scenario.content;
   }
 </script>
@@ -207,7 +205,7 @@ https://svelte.dev/e/bind_invalid_expression -->
                 <Button class="bits-btn justify-start text-left"
                   variant="outline"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 loadScenario(scenario)}
                 >
                   {scenario.title}
@@ -225,7 +223,7 @@ loadScenario(scenario)}
                 <h3 class="nes-text is-primary">AI-Enhanced Legal Editor</h3>
                 <p class="nes-text">Start typing to see intelligent suggestions appear</p>
               </div>
-              <Button class="bits-btn" on:click={resetDemo} variant="outline" size="sm">
+              <Button class="bits-btn" onclick={resetDemo} variant="outline" size="sm">
 Reset Demo
 
             </div>

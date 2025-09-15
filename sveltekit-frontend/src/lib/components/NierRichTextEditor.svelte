@@ -18,9 +18,7 @@ https://svelte.dev/e/component_invalid_directive -->
   import { Editor } from "@tiptap/core";
   import StarterKit from "@tiptap/starter-kit";
   import { onMount } from "svelte";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Select } from "$lib/components/ui/select";
   import { Separator } from "$lib/components/ui/separator";
   let editor = $state<Editor | null >(null);
@@ -51,7 +49,7 @@ https://svelte.dev/e/component_invalid_directive -->
         variant="ghost" 
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
-        on:click={() =>
+        onclick={() =>
 editor?.commands.undo()}
       >
         ↶
@@ -60,7 +58,7 @@ editor?.commands.undo()}
         variant="ghost" 
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
-        on:click={() =>
+        onclick={() =>
 editor?.commands.redo()}
       >
         ↷
@@ -95,7 +93,7 @@ editor?.commands.redo()}
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
         class:active={editor?.isActive('bold')}
-        on:click={() =>
+        onclick={() =>
 editor?.chain().focus().toggleBold().run()}
       >
         <strong>B</strong>
@@ -105,7 +103,7 @@ editor?.chain().focus().toggleBold().run()}
         size="sm" 
         class="nier-toolbar-btn bits-btn bits-btn"
         class:active={editor?.isActive('italic')}
-        on:click={() =>
+        onclick={() =>
 editor?.chain().focus().toggleItalic().run()}
       >
         <em>I</em>

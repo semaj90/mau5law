@@ -311,7 +311,7 @@
       role="button"
       tabindex="0"
       aria-label="Close AI Interface"
-      on:click={() => showAIInterface = false}
+      onclick={() => showAIInterface = false}
       keydown={e => { if (e.key === 'Enter' || e.key === ' ') showAIInterface = false; }}
     ></div>
 
@@ -348,7 +348,7 @@
         <!-- Header Controls -->
         <div class="flex items-center gap-2">
           <button
-            on:click={() => currentTheme = currentTheme === 'yorha' ? 'cyberpunk' : currentTheme === 'cyberpunk' ? 'matrix' : 'yorha'}
+            onclick={() => currentTheme = currentTheme === 'yorha' ? 'cyberpunk' : currentTheme === 'cyberpunk' ? 'matrix' : 'yorha'}
             class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
             title="Switch Theme"
           >
@@ -356,7 +356,7 @@
           </button>
 
           <button
-            on:click={openNierAssistant}
+            onclick={openNierAssistant}
             class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
             title="Open Full Assistant"
           >
@@ -364,7 +364,7 @@
           </button>
 
           <button
-            on:click={() => showAIInterface = false}
+            onclick={() => showAIInterface = false}
             class="p-2 rounded-lg hover:bg-red-500/20 transition-colors"
           >
             <X class="w-5 h-5 text-red-400" />
@@ -458,7 +458,7 @@
 
           <!-- Input Area -->
           <div class="p-4 border-t {theme.border}">
-            <form on:submit={e => { e.preventDefault(); sendMessage(inputValue); }} class="flex gap-3">
+            <form onsubmit={e => { e.preventDefault(); sendMessage(inputValue); }} class="flex gap-3">
               <div class="flex-1 relative">
                 <input
                   bind:value={inputValue}
@@ -485,7 +485,7 @@
             <div class="flex gap-2 mt-3">
               {#each ['analyze case', 'search evidence', 'system status', 'generate report'] as cmd}
                 <button
-                  on:click={() => { inputValue = cmd; sendMessage(cmd) }}
+                  onclick={() => { inputValue = cmd; sendMessage(cmd) }}
                   class="px-3 py-1 text-xs bg-gray-700/50 hover:bg-gray-600/50 {theme.secondary}
                          rounded border {theme.border} transition-colors uppercase font-mono"
                 >
@@ -509,7 +509,7 @@
               { id: 'rapid', label: 'Rapid Response', icon: Zap }
             ] as mode}
               <button
-                on:click={() => processAICommand(`switch to ${mode.label.toLowerCase()}`)}
+                onclick={() => processAICommand(`switch to ${mode.label.toLowerCase()}`)}
                 class="w-full flex items-center gap-3 p-3 rounded-lg border {theme.border}
                        hover:bg-gray-700/30 transition-colors text-left"
               >

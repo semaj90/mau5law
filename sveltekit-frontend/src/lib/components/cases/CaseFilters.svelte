@@ -3,7 +3,7 @@
   import type { Case } from '$lib/types/api';
   import { Input } from '$lib/components/ui/input';
   import * as Select from '$lib/components/ui/select';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Search, Filter, SortAsc, SortDesc } from 'lucide-svelte';
 
   interface Props {
@@ -143,7 +143,7 @@
     variant="outline"
     size="sm"
     class="bits-btn"
-    on:click={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
+    onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
   >
     {#if sortOrder === 'asc'}
       <SortAsc class="w-4 h-4 mr-2" />

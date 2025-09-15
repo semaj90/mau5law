@@ -124,8 +124,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         })
       });
 
-      if ((response as { ok?: any; json?: any; status?: any }).ok) {
-        legalSession = await (response as { ok?: any; json?: any; status?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
+        legalSession = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
         console.log('[YoRHa] Legal AI session initialized:', legalSession?.session_id);
       }
     } catch (error) {
@@ -158,8 +158,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         body: JSON.stringify({ query, context: 'legal_analysis' }),
         signal
       });
-      if (!(response as { ok?: any; json?: any; status?: any }).ok) throw new Error(`HTTP ${(response as { ok?: any; json?: any; status?: any }).status}`);
-      return (response as { ok?: any; json?: any; status?: any }).json();
+      if (!(response as { ok?: unknown; json?: unknown; status?: unknown }).ok) throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`);
+      return (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
     });
     try {
       const data = await promise;
@@ -177,7 +177,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   async function performSemanticSearch(searchTerm: string = 'contract liability') {
     isLoading = true;
     searchResults = [];
-  let localResults: any[] = [];
+  let localResults: unknown[] = [];
     if (isLocalIndexReady() && (searchMode === 'local' || searchMode === 'hybrid')) {
       localResults = localSearch(searchTerm, 50);
       if (searchMode === 'local') {
@@ -190,17 +190,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     const { promise, abort } = withAbort(async (signal) => {
       if (searchMode === 'local') return { results: [] }; // guard
       const response = await fetch(`/api/yorha/legal-data?search=${encodeURIComponent(searchTerm)}&limit=25`, { signal });
-      if (!(response as { ok?: any; json?: any; status?: any }).ok) throw new Error(`HTTP ${(response as { ok?: any; json?: any; status?: any }).status}`);
-      return (response as { ok?: any; json?: any; status?: any }).json();
+      if (!(response as { ok?: unknown; json?: unknown; status?: unknown }).ok) throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`);
+      return (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
     });
     try {
       const data = await promise;
-      const remote = ((data as { results?: any }).results || []).map((item: any, index: number) => ({
-        id: (item as { id?: any; title?: any; name?: any; type?: any; relevance?: any; status?: any }).id || index + 1,
-        title: (item as { id?: any; title?: any; name?: any; type?: any; relevance?: any; status?: any }).title || (item as { id?: any; title?: any; name?: any; type?: any; relevance?: any; status?: any }).name || `Document ${index + 1}`,
-        type: (item as { id?: any; title?: any; name?: any; type?: any; relevance?: any; status?: any }).type || 'Legal Document',
-        relevance: Math.round(((item as { id?: any; title?: any; name?: any; type?: any; relevance?: any; status?: any }).relevance || Math.random()) * 100),
-        status: (item as { id?: any; title?: any; name?: any; type?: any; relevance?: any; status?: any }).status || 'active',
+      const remote = ((data as { results?: unknown }).results || []).map((item: unknown, index: number) => ({
+        id: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).id || index + 1,
+        title: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).title || (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).name || `Document ${index + 1}`,
+        type: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).type || 'Legal Document',
+        relevance: Math.round(((item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).relevance || Math.random()) * 100),
+        status: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).status || 'active',
         metadata: item
       }));
       searchResults = searchMode === 'hybrid' ? mergeResults(localResults, remote) : remote;
@@ -217,8 +217,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     isLoading = true;
     const { promise, abort } = withAbort(async (signal) => {
       const response = await fetch('/api/v1/cluster/health', { signal });
-      if (!(response as { ok?: any; json?: any; status?: any }).ok) throw new Error(`HTTP ${(response as { ok?: any; json?: any; status?: any }).status}`);
-      return (response as { ok?: any; json?: any; status?: any }).json();
+      if (!(response as { ok?: unknown; json?: unknown; status?: unknown }).ok) throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`);
+      return (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
     });
     try {
       const healthData = await promise;
@@ -304,7 +304,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         <div class="yorha-control-panel">
           <button
             class="yorha-control-btn {showCommandInterface ? 'active' : ''}"
-            on:click={toggleCommandInterface}
+            onclick={toggleCommandInterface}
             aria-label="Toggle command interface"
           >
             <Terminal size={16} />
@@ -312,7 +312,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           </button>
           <button
             class="yorha-control-btn {holographicMode ? 'active' : ''}"
-            on:click={toggleHolographicMode}
+            onclick={toggleHolographicMode}
             aria-label="Toggle holographic mode"
           >
             <Zap size={16} />
@@ -328,7 +328,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     <div class="yorha-actions-grid">
       <button
         class="yorha-action-nier-bits-card yorha-action-primary"
-        on:click={() => performRAGQuery()}
+        onclick={() => performRAGQuery()}
         disabled={isLoading}
       >
         <Cpu size={32} />
@@ -341,7 +341,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
       <button
         class="yorha-action-nier-bits-card yorha-action-search"
-        on:click={() => performSemanticSearch()}
+        onclick={() => performSemanticSearch()}
         disabled={isLoading}
       >
         <Search size={32} />
@@ -351,7 +351,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
       <button
         class="yorha-action-nier-bits-card yorha-action-health"
-        on:click={() => checkClusterHealth()}
+        onclick={() => checkClusterHealth()}
         disabled={isLoading}
       >
         <Monitor size={32} />
@@ -361,7 +361,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
       <button
         class="yorha-action-nier-bits-card yorha-action-database"
-        on:click={() => performSemanticSearch('database evidence')}
+        onclick={() => performSemanticSearch('database evidence')}
         disabled={isLoading}
       >
         <Database size={32} />
@@ -423,7 +423,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   <section class="yorha-search-box" aria-label="Semantic Search">
     <div class="yorha-search-inner max-w-6xl mx-auto">
       <label for="yorha-search" class="sr-only">Search legal documents</label>
-      <input id="yorha-search" type="search" placeholder="Search legal documents..." class="yorha-search-input" on:input={(e) => debouncedSearch((e.target as HTMLInputElement).value)} />
+      <input id="yorha-search" type="search" placeholder="Search legal documents..." class="yorha-search-input" oninput={(e) => debouncedSearch((e.target as HTMLInputElement).value)} />
       <div class="yorha-search-meta">
         <fieldset class="yorha-search-modes" aria-label="Search Mode">
           <legend class="sr-only">Search Mode</legend>
@@ -457,12 +457,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         {#each searchResults as result}
           <div class="yorha-result-item">
             <div class="yorha-result-header">
-              <h4>{(result as { title?: any; relevance?: any; type?: any; status?: any }).title}</h4>
-              <span class="yorha-result-relevance">{(result as { title?: any; relevance?: any; type?: any; status?: any }).relevance}%</span>
+              <h4>{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).title}</h4>
+              <span class="yorha-result-relevance">{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).relevance}%</span>
             </div>
             <div class="yorha-result-meta">
-              <span class="yorha-result-type">{(result as { title?: any; relevance?: any; type?: any; status?: any }).type}</span>
-              <span class="yorha-result-status yorha-status-{(result as { title?: any; relevance?: any; type?: any; status?: any }).status}">{(result as { title?: any; relevance?: any; type?: any; status?: any }).status}</span>
+              <span class="yorha-result-type">{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).type}</span>
+              <span class="yorha-result-status yorha-status-{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).status}">{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).status}</span>
             </div>
           </div>
         {/each}

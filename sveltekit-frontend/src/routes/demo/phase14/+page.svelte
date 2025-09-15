@@ -399,7 +399,7 @@ https://svelte.dev/e/js_parse_error -->
           <UnifiedButton
             {...getDemoButtonProps(scenario.id)}
             variant={currentDemo === scenario.id ? 'primary' : 'secondary'}
-            on:click={() => currentDemo = scenario.id}
+            onclick={() => currentDemo = scenario.id}
           >
             {scenario.title}
           </UnifiedButton>
@@ -448,13 +448,13 @@ https://svelte.dev/e/js_parse_error -->
               </div>
 
               <div class=\"flex flex-wrap gap-3\">
-                <UnifiedButton on:click={testMemoryOperations} variant=\"evidence\">
+                <UnifiedButton onclick={testMemoryOperations} variant=\"evidence\">
                   Test Memory Operations
                 </UnifiedButton>
-                <UnifiedButton on:click={testCacheOperations} variant=\"case\">
+                <UnifiedButton onclick={testCacheOperations} variant=\"case\">
                   Test Cache Operations
                 </UnifiedButton>
-                <UnifiedButton on:click={testGPUAnimations} variant=\"legal\">
+                <UnifiedButton onclick={testGPUAnimations} variant=\"legal\">
                   Test GPU Animations
                 </UnifiedButton>
               </div>
@@ -504,7 +504,7 @@ https://svelte.dev/e/js_parse_error -->
                 <!-- Dialog Demo -->
                 <div>
                   <h3 class=\"text-lg font-semibold mb-3\">Modal Dialog</h3>
-                  <UnifiedButton on:click={() => showDialog = true} variant=\"case\">
+                  <UnifiedButton onclick={() => showDialog = true} variant=\"case\">
                     Open Legal Analysis Dialog
                   </UnifiedButton>
                 </div>
@@ -523,7 +523,7 @@ https://svelte.dev/e/js_parse_error -->
                 <label class=\"block text-sm font-medium mb-2\">Legal Document</label>
                 <div class=\"mb-3\">
                   <select
-                    class=\"block w-full px-3 py-2 border border-gray-300 rounded-md\" on:change={(e) => sampleDocument = sampleDocuments[parseInt(e.currentTarget.value)]?.content || ''}
+                    class=\"block w-full px-3 py-2 border border-gray-300 rounded-md\" onchange={(e) => sampleDocument = sampleDocuments[parseInt(e.currentTarget.value)]?.content || ''}
                   >
                     {#each sampleDocuments as doc, index}
                       <option value={index}>{doc.title}</option>
@@ -540,7 +540,7 @@ https://svelte.dev/e/js_parse_error -->
 
               <div class=\"mb-6\">
                 <UnifiedButton
-                  on:click={runAIAnalysis}
+                  onclick={runAIAnalysis}
                   variant=\"legal\"
                   disabled={!sampleDocument.trim()}
                   legalContext={{
@@ -786,7 +786,7 @@ https://svelte.dev/e/js_parse_error -->
           <h3 class=\"font-semibold text-gray-900 mb-3\">Quick Actions</h3>
           <div class=\"space-y-2\">
             <UnifiedButton
-              on:click={runAIAnalysis}
+              onclick={runAIAnalysis}
               variant=\"legal\"
               size=\"sm\"
               disabled={!sampleDocument.trim()}
@@ -794,14 +794,14 @@ https://svelte.dev/e/js_parse_error -->
               Run AI Analysis
             </UnifiedButton>
             <UnifiedButton
-              on:click={testMemoryOperations}
+              onclick={testMemoryOperations}
               variant=\"evidence\"
               size=\"sm\"
             >
               Test Memory
             </UnifiedButton>
             <UnifiedButton
-              on:click={testGPUAnimations}
+              onclick={testGPUAnimations}
               variant=\"case\"
               size=\"sm\"
             >
@@ -887,7 +887,7 @@ https://svelte.dev/e/js_parse_error -->
 
   {#snippet footer()}
     <UnifiedButton
-      on:click={() => showDialog = false}
+      onclick={() => showDialog = false}
       variant=\"secondary\"
     >
       Close

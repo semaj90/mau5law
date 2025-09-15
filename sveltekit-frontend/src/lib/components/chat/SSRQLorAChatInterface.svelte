@@ -27,9 +27,7 @@ https://svelte.dev/e/js_parse_error -->
   // Neural sprite rendering
   import NeuralSpriteRenderer from '$lib/components/three/NeuralSpriteRenderer.svelte';
   // YoRHa UI components
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -332,14 +330,14 @@ https://svelte.dev/e/js_parse_error -->
             <div class="feedback-buttons">
               <button 
                 class="feedback-btn positive"
-                on:click={() => provideFeedback(message.id, 1)}
+                onclick={() => provideFeedback(message.id, 1)}
                 title="Good response"
               >
                 👍
               </button>
               <button 
                 class="feedback-btn negative"
-                on:click={() => provideFeedback(message.id, -1)}
+                onclick={() => provideFeedback(message.id, -1)}
                 title="Poor response"
               >
                 👎
@@ -371,14 +369,14 @@ https://svelte.dev/e/js_parse_error -->
       <input 
         bind:this={messageInput}
         bind:value={$currentMessage}
-        on:keypress={handleKeyPress}
+        onkeypress={handleKeyPress}
         placeholder="Ask me about legal matters..."
         disabled={$isStreaming}
         class="message-input nes-input"
       />
       
       <Button 
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={!$canSend}
         class="send-button bits-btn bits-btn"
         variant="ghost"
@@ -390,7 +388,7 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
 
       <Button 
-        on:click={clearChat}
+        onclick={clearChat}
         variant="outline"
         size="sm"
         class="clear-button bits-btn bits-btn"

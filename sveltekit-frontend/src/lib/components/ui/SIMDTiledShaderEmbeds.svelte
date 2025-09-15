@@ -45,9 +45,9 @@ export interface Props {
   cacheResults?: boolean;
   
   // Event callbacks
-  onTilingComplete?: (result: any) => void;
+  onTilingComplete?: (result: unknown) => void;
   onShaderGenerated?: (shader: string) => void;
-  onCompressionComplete?: (data: any) => void;
+  onCompressionComplete?: (data: unknown) => void;
 }
 
 let {
@@ -200,7 +200,7 @@ async function processTiledShaderEmbeds(): Promise<void> {
 /**
  * Convert various source data types to Float32Array
  */
-async function convertSourceDataToFloat32Array(source: any): Promise<Float32Array> {
+async function convertSourceDataToFloat32Array(source: unknown): Promise<Float32Array> {
   if (source instanceof Float32Array) {
     return source;
   }
@@ -308,7 +308,7 @@ async function canvasToFloat32Array(canvas: HTMLCanvasElement): Promise<Float32A
 /**
  * Generate WebGL/WebGPU shaders from tiled data
  */
-async function generateShadersFromTiles(tiles: any[]): Promise<void> {
+async function generateShadersFromTiles(tiles: unknown[]): Promise<void> {
   console.log(`🎨 Generating shaders from ${tiles.length} tiles...`);
   
   for (const tile of tiles) {
@@ -316,8 +316,8 @@ async function generateShadersFromTiles(tiles: any[]): Promise<void> {
     const shaderKey = `tile_${tile.tileX}_${tile.tileY}_${tile.metadata.evidenceType}`;
     
     // Analyze tile data to determine shader complexity
-    const avgValue = tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).reduce((sum: number, val: number) => sum + val, 0) / tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).length;
-    const variance = tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).reduce((sum: number, val: number) => sum + (val - avgValue) ** 2, 0) / tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).length;
+    const avgValue = tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).reduce((sum: number, val: number) => sum + val, 0) / tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).length;
+    const variance = tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).reduce((sum: number, val: number) => sum + (val - avgValue) ** 2, 0) / tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).length;
     
     const shader = generateShaderCode({
       tileData: tile.data,
@@ -474,11 +474,11 @@ function generateShaderCode(config: {
 /**
  * Apply CHR-ROM style compression to tiled data
  */
-async function applyCHRROMCompression(tiles: any[]): Promise {
+async function applyCHRROMCompression(tiles: unknown[]): Promise {
   const startTime = performance.now();
   
   // Calculate original size
-  const originalSize = tiles.reduce((total, tile) => total + tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).byteLength, 0);
+  const originalSize = tiles.reduce((total, tile) => total + tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).byteLength, 0);
   
   // Generate CHR-ROM patterns (ultra-compressed representations)
   const chrPatterns = [];
@@ -509,7 +509,7 @@ async function applyCHRROMCompression(tiles: any[]): Promise {
 /**
  * Generate CHR-ROM pattern from tile data
  */
-function generateCHRROMPattern(tile: any): string {
+function generateCHRROMPattern(tile: unknown): string {
   const size = 16; // CHR-ROM standard tile size
   const scale = tile.width / size;
   
@@ -563,7 +563,7 @@ async function renderTiledVisualization(): Promise<void> {
     // Create ImageData from tile
     const imageData = ctx.createImageData(tile.width, tile.height);
     
-    for (let i = 0; i < tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).length; i++) {
+    for (let i = 0; i < tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).length; i++) {
       const pixelIndex = i * 4;
       const value = Math.floor(tile.data[i] * 255);
       
@@ -621,7 +621,7 @@ async function predictiveAssetCaching(): Promise<void> {
     };
     
     const result = await ultimateNeuralTopologyOrchestrator.processWithUnifiedIntelligence(request);
-    console.log('🔮 Predictive caching completed:', (result as { predictions?: any }).predictions.recommendedAssets.length, 'assets predicted');
+    console.log('🔮 Predictive caching completed:', (result as { predictions?: unknown }).predictions.recommendedAssets.length, 'assets predicted');
     
   } catch (error) {
     console.warn('Predictive caching failed:', error);
@@ -632,7 +632,7 @@ async function predictiveAssetCaching(): Promise<void> {
  * Update memory usage metrics
  */
 function updateMemoryUsage(): void {
-  const gpuMemory = tiledData.reduce((total, tile) => total + tile.(data as { evidenceType?: any; reduce?: any; length?: any; confidence?: any; byteLength?: any }).byteLength, 0);
+  const gpuMemory = tiledData.reduce((total, tile) => total + tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).byteLength, 0);
   const systemMemory = generatedShaders.size * 1024; // Estimate 1KB per shader
   const cacheMemory = compressionResults ? compressionResults.compressedSize : 0;
   
@@ -803,7 +803,7 @@ export function getCHRPatterns(): string[] {
             </div>
             <button 
               class="copy-shader" 
-              on:click={() => navigator.clipboard.writeText(shader)}
+              onclick={() => navigator.clipboard.writeText(shader)}
             >
               📋 Copy
             </button>
@@ -837,7 +837,7 @@ export function getCHRPatterns(): string[] {
   <div class="control-panel">
     <button 
       class="process-button" 
-      on:click={processTiledShaderEmbeds}
+      onclick={processTiledShaderEmbeds}
       disabled={isProcessing}
     >
       {#if isProcessing}

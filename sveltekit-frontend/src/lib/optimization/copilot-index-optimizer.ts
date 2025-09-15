@@ -652,7 +652,7 @@ export class CopilotIndexOptimizer {
       });
     }
 
-    if (context.currentLine.includes('$:')) {
+    if (context.currentLine.includes('$effect(() => { ')) ; });{
       suggestions.push({
         text: 'let computed = $derived(() => {\n  // computation\n});',
         priority: 0.8,

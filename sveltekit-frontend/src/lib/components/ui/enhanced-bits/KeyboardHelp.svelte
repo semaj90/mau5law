@@ -7,7 +7,7 @@
   import { browser } from '$app/environment';
   import { cn } from '$lib/utils/cn';
   import { Card } from './index';
-  import { Button } from './index';
+  import Button from './index';
 
   // Types
   interface KeyboardShortcut {
@@ -179,8 +179,8 @@
 {#if open}
   <div 
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-    on:click={handleBackdropClick}
-    on:keydown={handleKeydown}
+    onclick={handleBackdropClick}
+    onkeydown={handleKeydown}
     role="dialog"
     aria-modal="true"
     aria-labelledby="keyboard-help-title"
@@ -200,7 +200,7 @@
         <button class="nes-btn"
           variant="ghost"
           size="sm"
-          on:click={() => open = false}
+          onclick={() => open = false}
           class="text-nier-text-secondary hover:text-nier-text-primary"
           aria-label="Close keyboard shortcuts help"
         >

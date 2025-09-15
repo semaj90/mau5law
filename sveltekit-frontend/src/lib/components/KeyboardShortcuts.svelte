@@ -5,9 +5,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   import 'nes.css/css/nes.min.css';
 
   import { browser } from "$app/environment";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { Accessibility, Keyboard, Maximize2, Minimize2 } from "lucide-svelte";
   import { onMount } from "svelte";
@@ -171,7 +169,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 {#if showShortcuts}
   <div
     class="mx-auto px-4 max-w-7xl"
-    on:click={() => (showShortcuts = false)}
+    onclick={() => (showShortcuts = false)}
     keydown={(e) => e.key === "Escape" && (showShortcuts = false)}
     role="dialog"
     aria-modal="true"
@@ -189,7 +187,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         </h3>
         <button
           class="mx-auto px-4 max-w-7xl"
-          on:click={() => (showShortcuts = false)}
+          onclick={() => (showShortcuts = false)}
           aria-label="Close shortcuts dialog"
         >
           <svg class="mx-auto px-4 max-w-7xl" fill="currentColor" viewBox="0 0 20 20">
@@ -235,7 +233,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       variant="outline"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-      on:click={() =>
+      onclick={() =>
 (showAccessibilityPanel = !showAccessibilityPanel)}
       aria-label="Toggle accessibility panel"
     >
@@ -249,7 +247,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       variant="outline"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-      on:click={() =>
+      onclick={() =>
 (showShortcuts = !showShortcuts)}
       aria-label="Show keyboard shortcuts"
     >
@@ -266,7 +264,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       variant="outline"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-      on:click={() =>
+      onclick={() =>
 toggleFullscreen()}
       aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
     >

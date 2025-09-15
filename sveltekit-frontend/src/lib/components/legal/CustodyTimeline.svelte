@@ -59,7 +59,7 @@ Displays the chronological chain of custody events with detailed audit trail
     return new Date(timestamp).toLocaleString();
   }
 
-  function getEventDetails(event: any) {
+  function getEventDetails(event: unknown) {
     switch (event.eventType) {
       case 'intake':
         return {

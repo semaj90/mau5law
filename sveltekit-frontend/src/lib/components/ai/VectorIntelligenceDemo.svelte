@@ -1,9 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { Search, Database, Brain, FileText, AlertCircle, CheckCircle2, Loader2, Star, Clock } from "lucide-svelte";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import Input from "$lib/components/ui/Input.svelte";
   // Badge replaced with span - not available in enhanced-bits
   import {
@@ -183,10 +181,10 @@
       </h3>
     </div>
     <div class="yorha-panel-content space-y-4">
-      <form on:submit={handleSubmit} class="flex gap-2">
+      <form onsubmit={handleSubmit} class="flex gap-2">
         <Input
           bind:value={query}
-          on:keydown={handleKeydown}
+          onkeydown={handleKeydown}
           placeholder="Search legal documents using natural language..."
           class="flex-1"
           disabled={isSearching}
@@ -213,7 +211,7 @@
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 { query = example; }}
             disabled={isSearching}
           >
@@ -351,7 +349,7 @@
         <div class="flex justify-center">
           <Button class="bits-btn"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 { results = demoResults; metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 }; }}
           >
             Load Demo Results
@@ -369,7 +367,7 @@
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           {selectedResult.title}
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 selectedResult = null}>
             ×
 </Button>

@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.update(data => ({
         ...data,
         documents: {
-          ...(data as { documents?: any }).documents,
+          ...(data as { documents?: unknown }).documents,
           uploaded_files: files,
           processing_status: 'processing'
         }
@@ -203,7 +203,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.update(data => ({
         ...data,
         documents: {
-          ...(data as { documents?: any }).documents,
+          ...(data as { documents?: unknown }).documents,
           ocr_results: ocrResults,
           processing_status: 'completed'
         }
@@ -221,7 +221,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.update(data => ({
         ...data,
         documents: {
-          ...(data as { documents?: any }).documents,
+          ...(data as { documents?: unknown }).documents,
           processing_status: 'error'
         }
       }));
@@ -246,11 +246,11 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      if (!(response as { ok?: any; json?: any }).ok) {
+      if (!(response as { ok?: unknown; json?: unknown }).ok) {
         throw new Error('Evidence extraction failed');
       }
 
-      const evidenceData = await (response as { ok?: any; json?: any }).json();
+      const evidenceData = await (response as { ok?: unknown; json?: unknown }).json();
 
       formData.update(data => ({
         ...data,
@@ -283,11 +283,11 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      if (!(response as { ok?: any; json?: any }).ok) {
+      if (!(response as { ok?: unknown; json?: unknown }).ok) {
         throw new Error('AI analysis failed');
       }
 
-      const analysisData = await (response as { ok?: any; json?: any }).json();
+      const analysisData = await (response as { ok?: unknown; json?: unknown }).json();
 
       formData.update(data => ({
         ...data,
@@ -335,17 +335,17 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify($formData)
       });
 
-      if (!(response as { ok?: any; json?: any }).ok) {
+      if (!(response as { ok?: unknown; json?: unknown }).ok) {
         throw new Error('Case submission failed');
       }
 
-      const result = await (response as { ok?: any; json?: any }).json();
+      const result = await (response as { ok?: unknown; json?: unknown }).json();
 
       // Clear form data
       localStorage.removeItem(`legal-case-form-${caseId || 'new'}`);
 
       // Redirect to case details
-      window.location.href = `/cases/${(result as { case_id?: any }).case_id}`;
+      window.location.href = `/cases/${(result as { case_id?: unknown }).case_id}`;
 
     } catch (error) {
       console.error('❌ Case submission failed:', error);
@@ -439,7 +439,7 @@ https://svelte.dev/e/js_parse_error -->
       <div transitislide={{ duration: 300, easing: cubicOut }}>
         <ReviewSubmitForm
           bind:data={$formData.review}
-          fullCaseData={$formData} on:submit={submitForm}
+          fullCaseData={$formData} onsubmit={submitForm}
           prev={prevStep}
           isValid={$stepValidation}
         />

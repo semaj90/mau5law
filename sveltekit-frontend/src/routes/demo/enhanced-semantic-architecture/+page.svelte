@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   	import { onMount } from 'svelte';
   	import EnhancedSemanticIntegration from '$lib/components/demo/EnhancedSemanticIntegration.svelte';
   let pageTitle = $state('🧠 Enhanced Semantic Architecture - Complete Integration Demo');
-  let integrationComponent: any;
+  let integrationComponent: unknown;
 	// Demo state
 	let lastTodosUpdate = $state<any>(null);
   let lastTextAnalysis = $state<any >(null);
@@ -39,8 +39,8 @@ https://svelte.dev/e/js_parse_error -->
   	function handleSOMUpdated(event: CustomEvent) {
   		lastSOMUpdate = {
   			grid_size: '20x20',
-  			active_cluster: event.detail.find((row: any) =>
-  				row.find((cell: any) => cell.active)
+  			active_cluster: event.detail.find((row: unknown) =>
+  				row.find((cell: unknown) => cell.active)
   			),
   			timestamp: new Date().toLocaleTimeString()
   		};

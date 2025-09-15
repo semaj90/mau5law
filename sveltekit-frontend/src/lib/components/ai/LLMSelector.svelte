@@ -343,7 +343,7 @@
                 <!-- Load Button -->
                 {#if model.status === 'offline'}
                   <button
-                    on:click={(e) => {
+                    onclick={(e) => {
                       e.stopPropagation()
                       loadModel(model)
                     }}
@@ -376,7 +376,7 @@
       <div class="border-t border-gray-200 dark:border-gray-700 px-4 py-3">
         <div class="flex items-center justify-between">
           <button
-            on:click={refreshModelStatuses}
+            onclick={refreshModelStatuses}
             class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300
                    focus:outline-none focus:underline"
           >

@@ -61,20 +61,20 @@
     evidenceData.forEach(item => {
       const ctx = evidenceCanvas.ctx;
       // Draw background
-      ctx.fillStyle = (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).color;
-      ctx.fillRect((item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).x, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).y, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).width, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).height);
+      ctx.fillStyle = (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).color;
+      ctx.fillRect((item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).width, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).height);
       // Draw border
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 2;
-      ctx.strokeRect((item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).x, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).y, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).width, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).height);
+      ctx.strokeRect((item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).width, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).height);
       // Draw title
       ctx.fillStyle = '#ffffff';
       ctx.font = '14px system-ui';
-      ctx.fillText((item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).title, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).x + 10, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).y + 25);
+      ctx.fillText((item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).title, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x + 10, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y + 25);
       // Draw type indicator
       ctx.fillStyle = '#000000';
       ctx.font = '12px system-ui';
-      ctx.fillText(`Type: ${(item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).type}`, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).x + 10, (item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).y + 45);
+      ctx.fillText(`Type: ${(item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).type}`, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x + 10, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y + 45);
     });
   }
 
@@ -122,13 +122,13 @@
     
     <div class="flex gap-2">
       <button 
-        on:click={addEvidenceItem}
+        onclick={addEvidenceItem}
         class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
       >
         Add Evidence
       </button>
       <button 
-        on:click={clearCanvas}
+        onclick={clearCanvas}
         class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
       >
         Clear Canvas
@@ -178,11 +178,11 @@
           <div class="flex items-center gap-3 p-2 bg-slate-700 rounded">
             <div 
               class="w-4 h-4 rounded" 
-              style="background-color: {(item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).color}"
+              style="background-color: {(item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).color}"
             ></div>
             <div>
-              <div class="font-medium">{(item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).title}</div>
-              <div class="text-gray-400 capitalize">{(item as { color?: any; x?: any; y?: any; width?: any; height?: any; title?: any; type?: any }).type}</div>
+              <div class="font-medium">{(item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).title}</div>
+              <div class="text-gray-400 capitalize">{(item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).type}</div>
             </div>
           </div>
         {/each}
@@ -192,7 +192,7 @@
     <div class="bg-slate-800 p-8 rounded border border-slate-700 text-center">
       <p class="text-gray-400 mb-4">No evidence items on canvas</p>
       <button 
-        on:click={addEvidenceItem}
+        onclick={addEvidenceItem}
         class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
       >
         Add Your First Evidence Item

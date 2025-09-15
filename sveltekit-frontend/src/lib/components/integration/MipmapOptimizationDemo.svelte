@@ -8,7 +8,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
   import { yorhaWebGPU } from '$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath';
   import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders';
   import { yorhaTextureManager } from '$lib/components/three/yorha-ui/webgpu/YoRHaOptimizedTextureManager';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
@@ -150,11 +150,11 @@ https://svelte.dev/e/unexpected_reserved_word -->
       // Store result
       processingResults = [{
         document: document.title,
-        processingTime: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).processingTime,
-        mipmapsGenerated: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmaps.length,
-        memoryUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).memoryUsed,
-        rtxAcceleration: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.rtxAcceleration,
-        streamingUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.streamingUsed,
+        processingTime: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).processingTime,
+        mipmapsGenerated: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).mipmaps.length,
+        memoryUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed,
+        rtxAcceleration: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration,
+        streamingUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.streamingUsed,
         timestamp: new Date()
       }, ...processingResults.slice(0, 9)]; // Keep last 10 results
 
@@ -164,7 +164,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       // Update system stats
       systemStats = yorhaTextureManager.getStatistics();
 
-      console.log(`✅ Document processed: ${(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmaps.length} mip levels generated`);
+      console.log(`✅ Document processed: ${(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).mipmaps.length} mip levels generated`);
 
     } catch (error) {
       console.error('Document processing failed:', error);
@@ -256,16 +256,16 @@ https://svelte.dev/e/unexpected_reserved_word -->
 
       processingResults = [{
         document: 'Mipmap Demo (2048x2048)',
-        processingTime: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).totalGenerationTime,
-        mipmapsGenerated: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmapLevels.length,
-        memoryUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).memoryUsed,
-        rtxAcceleration: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.rtxAcceleration,
-        streamingUsed: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.streamingUsed,
+        processingTime: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).totalGenerationTime,
+        mipmapsGenerated: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).mipmapLevels.length,
+        memoryUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed,
+        rtxAcceleration: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration,
+        streamingUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.streamingUsed,
         demo: true,
         timestamp: new Date()
       }, ...processingResults.slice(0, 9)];
 
-      console.log(`✅ Mipmap demo completed: ${(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmapLevels.length} levels generated in ${(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).totalGenerationTime.toFixed(2)}ms`);
+      console.log(`✅ Mipmap demo completed: ${(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).mipmapLevels.length} levels generated in ${(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).totalGenerationTime.toFixed(2)}ms`);
 
     } catch (error) {
       console.error('Mipmap demo failed:', error);
@@ -276,13 +276,13 @@ https://svelte.dev/e/unexpected_reserved_word -->
   }
 
   // Update performance metrics
-  function updatePerformanceMetrics(result: any) {
+  function updatePerformanceMetrics(result: unknown) {
     performanceMetrics = {
       totalTexturesProcessed: performanceMetrics.totalTexturesProcessed + 1,
-      totalMipmapsGenerated: performanceMetrics.totalMipmapsGenerated + (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmaps.length,
-      averageProcessingTime: (performanceMetrics.averageProcessingTime * (performanceMetrics.totalTexturesProcessed - 1) + (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).processingTime) / performanceMetrics.totalTexturesProcessed,
-      memoryEfficiency: Math.min(95, performanceMetrics.memoryEfficiency + ((result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).memoryUsed > 0 ? 5 : 0)),
-      rtxAccelerationUsage: (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).optimization.rtxAcceleration ? performanceMetrics.rtxAccelerationUsage + 1 : performanceMetrics.rtxAccelerationUsage
+      totalMipmapsGenerated: performanceMetrics.totalMipmapsGenerated + (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).mipmaps.length,
+      averageProcessingTime: (performanceMetrics.averageProcessingTime * (performanceMetrics.totalTexturesProcessed - 1) + (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).processingTime) / performanceMetrics.totalTexturesProcessed,
+      memoryEfficiency: Math.min(95, performanceMetrics.memoryEfficiency + ((result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed > 0 ? 5 : 0)),
+      rtxAccelerationUsage: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration ? performanceMetrics.rtxAccelerationUsage + 1 : performanceMetrics.rtxAccelerationUsage
     };
   }
 
@@ -333,7 +333,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         </div>
         
         {#if !isInitialized && !isProcessing}
-          <Button class="bits-btn" on:click={initializeSystem} size="sm">
+          <Button class="bits-btn" onclick={initializeSystem} size="sm">
 🔄 Initialize System
 </Button>
         {/if}
@@ -422,7 +422,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
               </div>
               
               <Button class="bits-btn" 
-                on:click={() =>
+                onclick={() =>
 processDocument(index)}
                 disabled={!isInitialized || isProcessing}
                 size="sm"
@@ -436,14 +436,14 @@ processDocument(index)}
         <!-- Batch Operations -->
         <div class="flex gap-2 pt-4 border-t">
           <Button class="bits-btn" 
-            on:click={batchProcessDocuments}
+            onclick={batchProcessDocuments}
             disabled={!isInitialized || isProcessing}
           >
 🚀 Batch Process All
 </Button>
           
           <Button class="bits-btn" 
-            on:click={generateMipmapDemo}
+            onclick={generateMipmapDemo}
             disabled={!isInitialized || isProcessing}
             variant="outline"
           >
@@ -555,35 +555,35 @@ processDocument(index)}
             <div class="p-3 border rounded-lg">
               <div class="flex justify-between items-start mb-2">
                 <div class="flex items-center gap-2">
-                  <span class="font-semibold">{(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).document}</span>
-                  {#if (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).batchProcessing}
+                  <span class="font-semibold">{(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).document}</span>
+                  {#if (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).batchProcessing}
                     <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">BATCH</span>
                   {/if}
-                  {#if (result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).demo}
+                  {#if (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).demo}
                     <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">DEMO</span>
                   {/if}
                 </div>
                 <div class="text-sm text-gray-500">
-                  {formatTime((result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).processingTime)}
+                  {formatTime((result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).processingTime)}
                 </div>
               </div>
               
               <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
                 <div>
                   <span class="text-gray-500">Mipmaps:</span>
-                  <span class="font-medium">{(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).mipmapsGenerated}</span>
+                  <span class="font-medium">{(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).mipmapsGenerated}</span>
                 </div>
                 <div>
                   <span class="text-gray-500">Memory:</span>
-                  <span class="font-medium">{formatBytes((result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).memoryUsed)}</span>
+                  <span class="font-medium">{formatBytes((result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed)}</span>
                 </div>
                 <div>
                   <span class="text-gray-500">RTX:</span>
-                  <span class="font-medium">{(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).rtxAcceleration ? '✅' : '❌'}</span>
+                  <span class="font-medium">{(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).rtxAcceleration ? '✅' : '❌'}</span>
                 </div>
                 <div>
                   <span class="text-gray-500">Streaming:</span>
-                  <span class="font-medium">{(result as { processingTime?: any; mipmaps?: any; memoryUsed?: any; optimization?: any; totalGenerationTime?: any; mipmapLevels?: any; document?: any; batchProcessing?: any; demo?: any; mipmapsGenerated?: any; rtxAcceleration?: any; streamingUsed?: any }).streamingUsed ? '✅' : '❌'}</span>
+                  <span class="font-medium">{(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).streamingUsed ? '✅' : '❌'}</span>
                 </div>
               </div>
             </div>

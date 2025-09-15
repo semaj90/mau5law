@@ -5,7 +5,7 @@
   // Props are defined as $props() rune, no import needed
 
   interface Props {
-    trigger: any;
+    trigger: unknown;
   }
   let { children,
     trigger

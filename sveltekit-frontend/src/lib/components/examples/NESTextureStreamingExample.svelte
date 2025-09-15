@@ -20,7 +20,7 @@
   let memoryPressure = 0.2;
   let documentComplexity = 0.7;
   let enableGPU = true;
-  let memoryStats: any = {};
+  let memoryStats: unknown = {};
   let processingTime = 0;
 
   // Demo documents (legal AI context)
@@ -198,9 +198,9 @@
         </div>
 
         <div class="action-buttons">
-          <button class="nes-btn" on:click={processDocument}>Process Document</button>
-          <button class="nes-btn" on:click={preloadAllLODs}>Preload All LODs</button>
-          <button class="nes-btn" on:click={updateScrollVelocity}>Simulate Scroll</button>
+          <button class="nes-btn" onclick={processDocument}>Process Document</button>
+          <button class="nes-btn" onclick={preloadAllLODs}>Preload All LODs</button>
+          <button class="nes-btn" onclick={updateScrollVelocity}>Simulate Scroll</button>
         </div>
 
         <div class="nes-field">
@@ -238,20 +238,20 @@
               {enableGPU}
               fallbackContent="<div class='nes-fallback'>Document Preview</div>"
             >
-              <svelte:fragment slot="overlay" let:currentLOD let:webgpuSupported>
+              {#snippet overlay let:currentLOD let:webgpuSupported}
                 <div class="texture-overlay">
                   LOD{currentLOD} | GPU:{webgpuSupported ? '✅' : '❌'}
                 </div>
-              </svelte:fragment>
+              {/snippet}
 
-              <svelte:fragment slot="debug" let:memoryStats let:currentLOD let:webgpuSupported>
+              {#snippet debug let:memoryStats let:currentLOD let:webgpuSupported}
                 <div class="debug-info">
                   <small>
                     Cache: {memoryStats.cacheSize || 0} items |
                     L1: {(memoryStats.utilizationPercent?.L1 || 0).toFixed(1)}%
                   </small>
                 </div>
-              </svelte:fragment>
+              {/snippet}
             </SSRWebGPULoader>
           </div>
         </div>

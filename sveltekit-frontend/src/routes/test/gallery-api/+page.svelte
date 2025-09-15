@@ -18,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
     endpoint: string;
     method: string;
     description: string;
-    payload?: any;
+    payload?: unknown;
     expectedStatus?: number;
   }
 
@@ -99,27 +99,27 @@ https://svelte.dev/e/js_parse_error -->
       const endTime = Date.now();
       const responseTime = endTime - startTime;
   let responseData = $state(null);
-      const contentType = (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).headers.get('content-type');
+      const contentType = (response as { headers?: unknown; json?: unknown; text?: unknown; status?: unknown; statusText?: unknown }).headers.get('content-type');
 
       if (contentType && contentType.includes('application/json')) {
         try {
-          responseData = await (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).json();
+          responseData = await (response as { headers?: unknown; json?: unknown; text?: unknown; status?: unknown; statusText?: unknown }).json();
         } catch (e) {
           responseData = { error: 'Invalid JSON response' };
         }
       } else {
-        responseData = { text: await (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).text() };
+        responseData = { text: await (response as { headers?: unknown; json?: unknown; text?: unknown; status?: unknown; statusText?: unknown }).text() };
       }
 
       return {
         success: true,
-        status: (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).status,
-        statusText: (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).statusText,
+        status: (response as { headers?: unknown; json?: unknown; text?: unknown; status?: unknown; statusText?: unknown }).status,
+        statusText: (response as { headers?: unknown; json?: unknown; text?: unknown; status?: unknown; statusText?: unknown }).statusText,
         responseTime,
         data: responseData,
-        headers: Object.fromEntries((response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).headers.entries()),
+        headers: Object.fromEntries((response as { headers?: unknown; json?: unknown; text?: unknown; status?: unknown; statusText?: unknown }).headers.entries()),
         expectedStatus: test.expectedStatus,
-        statusMatch: test.expectedStatus ? (response as { headers?: any; json?: any; text?: any; status?: any; statusText?: any }).status === test.expectedStatus : true
+        statusMatch: test.expectedStatus ? (response as { headers?: unknown; json?: unknown; text?: unknown; status?: unknown; statusText?: unknown }).status === test.expectedStatus : true
       };
 
     } catch (error) {
@@ -171,14 +171,14 @@ https://svelte.dev/e/js_parse_error -->
     console.log('All tests completed');
   }
 
-  function getStatusColor(result: any): string {
-    if (!(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).success) return 'error';
-    if ((result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).statusMatch) return 'success';
-    if ((result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).status >= 200 && (result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).status < 300) return 'warning';
+  function getStatusColor(result: unknown): string {
+    if (!(result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).success) return 'error';
+    if ((result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).statusMatch) return 'success';
+    if ((result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).status >= 200 && (result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).status < 300) return 'warning';
     return 'error';
   }
 
-  function formatJson(obj: any): string {
+  function formatJson(obj: unknown): string {
     return JSON.stringify(obj, null, 2);
   }
 
@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="test-actions">
       <button
         class="test-button primary"
-  on:click={runAllTests}
+  onclick={runAllTests}
         disabled={isTestingInProgress}
       >
         {isTestingInProgress ? '🔄 Testing...' : '🚀 Run All Tests'}
@@ -250,7 +250,7 @@ https://svelte.dev/e/js_parse_error -->
                 <h3>{test.name}</h3>
                 {#if result}
                   <span class="status-badge {getStatusColor(result)}">
-                    {(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).success ? ((result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).statusMatch ? '✅' : '⚠️') : '❌'}
+                    {(result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).success ? ((result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).statusMatch ? '✅' : '⚠️') : '❌'}
                   </span>
                 {:else if isTestingInProgress}
                   <span class="status-badge testing">🔄</span>
@@ -271,31 +271,31 @@ https://svelte.dev/e/js_parse_error -->
                     <div class="metric">
                       <span class="metric-label">Status:</span>
                       <span class="metric-value {getStatusColor(result)}">
-                        {(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).status || 'Error'} {(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).statusText || ''}
+                        {(result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).status || 'Error'} {(result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).statusText || ''}
                       </span>
                     </div>
                     <div class="metric">
                       <span class="metric-label">Response Time:</span>
-                      <span class="metric-value">{(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).responseTime}ms</span>
+                      <span class="metric-value">{(result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).responseTime}ms</span>
                     </div>
-                    {#if (result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).expectedStatus}
+                    {#if (result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).expectedStatus}
                       <div class="metric">
                         <span class="metric-label">Expected:</span>
-                        <span class="metric-value">{(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).expectedStatus}</span>
+                        <span class="metric-value">{(result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).expectedStatus}</span>
                       </div>
                     {/if}
                   </div>
 
-                  {#if (result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).error}
+                  {#if (result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).error}
                     <div class="error-details">
-                      <strong>Error:</strong> {(result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).error}
+                      <strong>Error:</strong> {(result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).error}
                     </div>
                   {/if}
 
-                  {#if (result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).data}
+                  {#if (result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).data}
                     <details class="response-details">
                       <summary>Response Data</summary>
-                      <pre class="response-json">{formatJson((result as { success?: any; statusMatch?: any; status?: any; statusText?: any; responseTime?: any; expectedStatus?: any; error?: any; data?: any }).data)}</pre>
+                      <pre class="response-json">{formatJson((result as { success?: unknown; statusMatch?: unknown; status?: unknown; statusText?: unknown; responseTime?: unknown; expectedStatus?: unknown; error?: unknown; data?: unknown }).data)}</pre>
                     </details>
                   {/if}
               </div>
@@ -317,7 +317,7 @@ https://svelte.dev/e/js_parse_error -->
         </a>
         <button
           class="test-button warning"
-          on:click={() => window.open('/gallery?debug=true', '_blank')}
+          onclick={() => window.open('/gallery?debug=true', '_blank')}
         >
           🐛 Open Gallery with Debug
         </button>

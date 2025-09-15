@@ -25,13 +25,13 @@ https://svelte.dev/e/js_parse_error -->
   // COMPONENT PROPS
   // ============================================================================
 
-  let { graphId = $bindable()  }: { graphId = $bindable() : any } = $props(); // string = 'legal-network-main';
-  let { width = $bindable()  }: { width = $bindable() : any } = $props(); // number = 800;
-  let { height = $bindable()  }: { height = $bindable() : any } = $props(); // number = 600;
-  let { enablePhysics = $bindable()  }: { enablePhysics = $bindable() : any } = $props(); // boolean = true;
-  let { enableStreaming = $bindable()  }: { enableStreaming = $bindable() : any } = $props(); // boolean = true;
-  let { maxNodes = $bindable()  }: { maxNodes = $bindable() : any } = $props(); // number = 10000;
-  let { class = $bindable()  }: { class = $bindable() : any } = $props(); // string = '';
+  let { graphId = $bindable()  }: { graphId = $bindable() : unknown } = $props(); // string = 'legal-network-main';
+  let { width = $bindable()  }: { width = $bindable() : unknown } = $props(); // number = 800;
+  let { height = $bindable()  }: { height = $bindable() : unknown } = $props(); // number = 600;
+  let { enablePhysics = $bindable()  }: { enablePhysics = $bindable() : unknown } = $props(); // boolean = true;
+  let { enableStreaming = $bindable()  }: { enableStreaming = $bindable() : unknown } = $props(); // boolean = true;
+  let { maxNodes = $bindable()  }: { maxNodes = $bindable() : unknown } = $props(); // number = 10000;
+  let { class = $bindable()  }: { class = $bindable() : unknown } = $props(); // string = '';
 
   // ============================================================================
   // REACTIVE STORES
@@ -373,7 +373,7 @@ https://svelte.dev/e/js_parse_error -->
    * Handle related document visualization updates
    * Called when document details are loaded to update the graph
    */
-  async function updateGraphWithRelations(documentId: string, relatedDocs: any[]): Promise<void> {
+  async function updateGraphWithRelations(documentId: string, relatedDocs: unknown[]): Promise<void> {
     if (!graphEngine) return;
 
     try {
@@ -576,7 +576,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="error-icon">⚠️</div>
       <h3>WebGPU Error</h3>
       <p>{$error}</p>
-      <button on:click={() => window.location.reload()}>Reload Page</button>
+      <button onclick={() => window.location.reload()}>Reload Page</button>
     </div>
   {/if}
 
@@ -614,15 +614,15 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Controls Panel -->
   {#if $canInteract}
     <div class="controls-panel">
-      <button on:click={resetCamera} title="Reset Camera">
+      <button onclick={resetCamera} title="Reset Camera">
         🎯
       </button>
       
-      <button on:click={togglePhysics} title="Toggle Physics" class:active={enablePhysics}>
+      <button onclick={togglePhysics} title="Toggle Physics" class:active={enablePhysics}>
         ⚡
       </button>
       
-      <button on:click={() => $renderState.autoRotate = !$renderState.autoRotate} 
+      <button onclick={() => $renderState.autoRotate = !$renderState.autoRotate} 
               title="Auto Rotate" 
               class:active={$renderState.autoRotate}>
         🔄
@@ -636,11 +636,11 @@ https://svelte.dev/e/js_parse_error -->
         <option value="precedent">Precedents</option>
       </select>
 
-      <button on:click={saveGraphState} title="Save State">
+      <button onclick={saveGraphState} title="Save State">
         💾
       </button>
 
-      <button on:click={async () => {
+      <button onclick={async () => {
         const blob = await exportImage();
         if (blob) {
           const url = URL.createObjectURL(blob);

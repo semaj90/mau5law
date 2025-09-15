@@ -99,28 +99,28 @@ https://svelte.dev/e/js_parse_error -->
       console.log('📊 Upload progress:', data);
       progressData.update(current => ({
         ...current,
-        stage: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).stage || current.stage,
-        progress: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).progress || current.progress,
-        status: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).status || current.status,
-        metrics: { ...current.metrics, ...(data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).metrics },
+        stage: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).stage || current.stage,
+        progress: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).progress || current.progress,
+        status: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).status || current.status,
+        metrics: { ...current.metrics, ...(data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics },
       }));
 
       // Update XState machine
-      if ((data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).stage && (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).progress !== undefined) {
+      if ((data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).stage && (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).progress !== undefined) {
         uploadStore.send({
           type: 'PROCESSING_PROGRESS',
-          stage: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).stage,
-          progress: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).progress,
+          stage: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).stage,
+          progress: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).progress,
         });
       }
 
       // Update real-time metrics
-      if ((data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).metrics) {
+      if ((data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics) {
         realtimeMetrics.update(current => ({
           ...current,
-          uploadSpeed: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).metrics.uploadSpeed || current.uploadSpeed,
-          processingTime: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).metrics.processingTime || current.processingTime,
-          memoryUsage: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).metrics.memoryUsage || current.memoryUsage,
+          uploadSpeed: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics.uploadSpeed || current.uploadSpeed,
+          processingTime: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics.processingTime || current.processingTime,
+          memoryUsage: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics.memoryUsage || current.memoryUsage,
         }));
       }
     });
@@ -137,15 +137,15 @@ https://svelte.dev/e/js_parse_error -->
       if (showTensorMetrics) {
         tensorResults.update(current => ({
           ...current,
-          ...(data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).result,
-          metrics: { ...current.metrics, ...(data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).result.metrics },
+          ...(data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).result,
+          metrics: { ...current.metrics, ...(data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).result.metrics },
         }));
 
         // Update GPU utilization if available
-        if ((data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).result.metrics?.gpuUtilization) {
+        if ((data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).result.metrics?.gpuUtilization) {
           realtimeMetrics.update(current => ({
             ...current,
-            gpuUtilization: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).result.metrics.gpuUtilization,
+            gpuUtilization: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).result.metrics.gpuUtilization,
           }));
         }
       }
@@ -154,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
       uploadStore.send({
         type: 'PROCESSING_COMPLETE',
         stage: 'tensor',
-        result: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).result,
+        result: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).result,
       });
     });
 
@@ -170,13 +170,13 @@ https://svelte.dev/e/js_parse_error -->
       progressData.update(current => ({
         ...current,
         status: 'failed',
-        error: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).error.message || 'Unknown error',
+        error: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).error.message || 'Unknown error',
       }));
 
       uploadStore.send({
         type: 'PROCESSING_FAILED',
-        stage: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).stage || 'unknown',
-        error: (data as { stage?: any; progress?: any; status?: any; metrics?: any; result?: any; error?: any }).error.message || 'Unknown error',
+        stage: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).stage || 'unknown',
+        error: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).error.message || 'Unknown error',
       });
     });
 

@@ -20,11 +20,11 @@
         })
       });
 
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((response as { json?: any; ok?: any }).ok) {
-        testResult = `✅ Case created successfully!\nID: ${(result as { data?: any; error?: any; details?: any }).data.id}\nCase Number: ${(result as { data?: any; error?: any; details?: any }).data.caseNumber}\nTitle: ${(result as { data?: any; error?: any; details?: any }).data.title}`;
+      const result = await (response as { json?: unknown; ok?: unknown }).json();
+      if ((response as { json?: unknown; ok?: unknown }).ok) {
+        testResult = `✅ Case created successfully!\nID: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.id}\nCase Number: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.caseNumber}\nTitle: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.title}`;
       } else {
-        testResult = `❌ Error: ${(result as { data?: any; error?: any; details?: any }).error}\nDetails: ${JSON.stringify((result as { data?: any; error?: any; details?: any }).details, null, 2)}`;
+        testResult = `❌ Error: ${(result as { data?: unknown; error?: unknown; details?: unknown }).error}\nDetails: ${JSON.stringify((result as { data?: unknown; error?: unknown; details?: unknown }).details, null, 2)}`;
       }
     } catch (error) {
       testResult = `❌ Network error: ${error.message}`;
@@ -37,11 +37,11 @@
     isLoading = true;
     try {
       const response = await fetch('/api/cases');
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((response as { json?: any; ok?: any }).ok) {
-        testResult = `✅ Cases retrieved successfully!\nTotal: ${(result as { data?: any; error?: any; details?: any }).data.length}\nFirst few cases:\n${JSON.stringify((result as { data?: any; error?: any; details?: any }).data.slice(0, 3), null, 2)}`;
+      const result = await (response as { json?: unknown; ok?: unknown }).json();
+      if ((response as { json?: unknown; ok?: unknown }).ok) {
+        testResult = `✅ Cases retrieved successfully!\nTotal: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.length}\nFirst few cases:\n${JSON.stringify((result as { data?: unknown; error?: unknown; details?: unknown }).data.slice(0, 3), null, 2)}`;
       } else {
-        testResult = `❌ Error: ${(result as { data?: any; error?: any; details?: any }).error}`;
+        testResult = `❌ Error: ${(result as { data?: unknown; error?: unknown; details?: unknown }).error}`;
       }
     } catch (error) {
       testResult = `❌ Network error: ${error.message}`;
@@ -57,7 +57,7 @@
   <div class="space-y-4 mb-8">
     <button 
       class="px-4 py-2 bg-blue-600 text-white border border-blue-400 hover:bg-blue-700 transition-colors disabled:opacity-50"
-      on:click={testCaseCreation}
+      onclick={testCaseCreation}
       disabled={isLoading}
     >
       {isLoading ? 'Testing...' : 'Test Case Creation'}
@@ -65,7 +65,7 @@
     
     <button 
       class="px-4 py-2 bg-green-600 text-white border border-green-400 hover:bg-green-700 transition-colors disabled:opacity-50"
-      on:click={testCaseList}
+      onclick={testCaseList}
       disabled={isLoading}
     >
       {isLoading ? 'Testing...' : 'Test Case Listing'}

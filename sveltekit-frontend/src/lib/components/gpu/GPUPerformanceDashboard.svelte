@@ -172,7 +172,7 @@
     <div class="flex items-center gap-3">
       <button
         class="px-3 py-2 rounded-lg {isMonitoring ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 hover:bg-gray-700'} text-white transition-colors"
-        on:click={handleToggleMonitoring}
+        onclick={handleToggleMonitoring}
       >
         {isMonitoring ? '⏹️ Stop' : '▶️ Start'} Monitoring
       </button>
@@ -181,7 +181,7 @@
       <select 
         class="px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
         bind:value={currentProfile}
-        on:change={(e) => handleProfileChange(e.target.value)}
+        onchange={(e) => handleProfileChange(e.target.value)}
       >
         {#each availableProfiles as profile}
           <option value={profile.name.toLowerCase().replace(/\s+/g, '-')}>
@@ -374,7 +374,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <button 
           class="flex items-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-          on:click={handleOptimizeMemory}
+          onclick={handleOptimizeMemory}
         >
           <span>🧹</span>
           <span>Optimize Memory</span>
@@ -382,7 +382,7 @@
         
         <button 
           class="flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
-          on:click={handleOptimizeTensors}
+          onclick={handleOptimizeTensors}
         >
           <span>⚡</span>
           <span>Optimize Tensors</span>
@@ -390,7 +390,7 @@
         
         <button 
           class="flex items-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
-          on:click={handleBalanceWorkload}
+          onclick={handleBalanceWorkload}
         >
           <span>⚖️</span>
           <span>Balance Workload</span>

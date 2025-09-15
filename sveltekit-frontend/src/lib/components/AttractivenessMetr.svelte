@@ -68,9 +68,9 @@ https://svelte.dev/e/props_duplicate -->
         class:active={isActive}
         class:hovered={isHovered}
         disabled={readOnly}
-        on:click={() => handleRatingClick(rating)}
-        on:mouseenter={() => handleMouseEnter(rating)}
-        on:mouseleave={handleMouseLeave}
+        onclick={() => handleRatingClick(rating)}
+        onmouseenter={() => handleMouseEnter(rating)}
+        onmouseleave={handleMouseLeave}
         aria-label="Rate {rating} out of 10"
       >
         <svg
@@ -93,7 +93,7 @@ https://svelte.dev/e/props_duplicate -->
         type="range"
         min="1"
         max="10"
-        bind:value={score} on:input={() => onChange?.({ score })}
+        bind:value={score} oninput={() => onChange?.({ score })}
         class="mx-auto px-4 max-w-7xl"
       />
     </div>

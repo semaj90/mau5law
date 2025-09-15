@@ -62,7 +62,7 @@ https://svelte.dev/e/js_parse_error -->
   : any } = $props();
 
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  // TODO: Replace createEventDispatcher with callback props in Svelte 5
 
   // Types
   interface UploadFile {
@@ -447,14 +447,14 @@ https://svelte.dev/e/js_parse_error -->
     bind:this={dropZone}
     class="drop-zone"
     class:dragging={$isDragging}
-    on:dragover={handleDragOver}
+    ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    on:drop={handleDrop}
+    ondrop={handleDrop}
     role="button" 
     aria-label="Drop zone" 
     tabindex="0"
-    on:click={() => fileInput?.click()}
-    on:keydown={(e) => e.key === "Enter" && fileInput?.click()}
+    onclick={() => fileInput?.click()}
+    onkeydown={(e) => e.key === "Enter" && fileInput?.click()}
   >
     <div class="drop-zone-content">
       <Upload class="drop-zone-icon" size={48} />
@@ -481,7 +481,7 @@ https://svelte.dev/e/js_parse_error -->
     bind:this={fileInput}
     type="file"
     multiple
-    accept={acceptedTypes} on:change={handleFileSelect}
+    accept={acceptedTypes} onchange={handleFileSelect}
     class="sr-only"
   />
 
@@ -570,7 +570,7 @@ https://svelte.dev/e/js_parse_error -->
                     <Button class="bits-btn"
                       variant="ghost"
                       size="sm"
-                      on:click={() =>
+                      onclick={() =>
 openMetadataDialog(file)}
                     >
                       Edit
@@ -580,7 +580,7 @@ openMetadataDialog(file)}
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:click={() =>
+                    onclick={() =>
 removeFile(file.id)}
                     disabled={file.status === "uploading" ||
                       file.status === "processing"}
@@ -598,7 +598,7 @@ removeFile(file.id)}
     <!-- Upload Actions -->
     <div class="upload-actions mt-6">
       <Button class="bits-btn"
-        on:click={uploadFiles}
+        onclick={uploadFiles}
         disabled={$isProcessing || $files.every((f) =>
 f.status !== "pending")}
         class="mr-4"
@@ -615,7 +615,7 @@ f.status !== "pending")}
 
       <Button class="bits-btn"
         variant="outline"
-        on:click={() =>
+        onclick={() =>
 files.set([])}
         disabled={$isProcessing}
       >
@@ -695,12 +695,12 @@ files.set([])}
           </div>
 
           <div class="dialog-actions">
-            <Button class="bits-btn" variant="outline" on:click={() =>
+            <Button class="bits-btn" variant="outline" onclick={() =>
 showMetadata.set(false)}>
               Cancel
 </Button>
             <Button class="bits-btn"
-              on:click={() =>
+              onclick={() =>
 {
                 if ($selectedFile) {
                   updateFileMetadata($selectedFile.id, $selectedFile.metadata);

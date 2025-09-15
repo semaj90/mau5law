@@ -73,15 +73,15 @@ https://svelte.dev/e/js_parse_error -->
         body: form
       });
 
-      if ((response as { ok?: any; json?: any }).ok) {
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
         success = authMode === 'login' ? 'Login successful! Redirecting...' : 'Registration successful! Redirecting...';
         // Redirect on success
         setTimeout(() => {
           window.location.href = '/dashboard';
         }, 1500);
       } else {
-        const result = await (response as { ok?: any; json?: any }).json();
-        error = (result as { error?: any }).error || `${authMode === 'login' ? 'Login' : 'Registration'} failed`;
+        const result = await (response as { ok?: unknown; json?: unknown }).json();
+        error = (result as { error?: unknown }).error || `${authMode === 'login' ? 'Login' : 'Registration'} failed`;
       }
     } catch (err) {
       error = 'Network error. Please try again.';
@@ -136,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
           class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 {authMode === 'login'
             ? 'bg-yellow-500 text-black'
             : 'text-gray-300 hover:text-white'}"
-          on:click={() => authMode = 'login'}
+          onclick={() => authMode = 'login'}
         >
           🔐 Login
         </button>
@@ -145,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
           class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 {authMode === 'register'
             ? 'bg-yellow-500 text-black'
             : 'text-gray-300 hover:text-white'}"
-          on:click={() => authMode = 'register'}
+          onclick={() => authMode = 'register'}
         >
           📝 Register
         </button>
@@ -165,7 +165,7 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
 
       <!-- Auth Form -->
-      <form on:submit={handleSubmit} class="space-y-4">
+      <form onsubmit={handleSubmit} class="space-y-4">
         <!-- Common Fields -->
         <div>
           <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
@@ -370,7 +370,7 @@ https://svelte.dev/e/js_parse_error -->
           {authMode === 'login' ? "Don't have an account?" : "Already have an account?"}
           <button
             type="button"
-            on:click={toggleAuthMode}
+            onclick={toggleAuthMode}
             class="text-yellow-400 hover:text-yellow-300 hover:underline ml-1 transition-colors"
           >
             {authMode === 'login' ? 'Create one here' : 'Sign in instead'}

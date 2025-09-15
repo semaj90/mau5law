@@ -154,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
   ];
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <div 
   class="professional-editor {isFullscreen ? 'fullscreen' : ''} {isFocusMode ? 'focus-mode' : ''}"
@@ -177,7 +177,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="header-actions">
       <button 
         class="action-btn yorha-btn yorha-nes-btn"
-        on:click={() => showShortcuts = !showShortcuts}
+        onclick={() => showShortcuts = !showShortcuts}
         title="Keyboard shortcuts (Ctrl+/)"
       >
         <Keyboard class="h-4 w-4" />
@@ -185,7 +185,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <button 
         class="action-btn yorha-btn yorha-nes-btn"
-        on:click={toggleFocusMode}
+        onclick={toggleFocusMode}
         title="Focus mode (F10)"
       >
         {#if isFocusMode}
@@ -197,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <button 
         class="action-btn yorha-btn yorha-nes-btn"
-        on:click={toggleFullscreen}
+        onclick={toggleFullscreen}
         title="Fullscreen (F11)"
       >
         {#if isFullscreen}
@@ -209,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <button 
         class="action-btn yorha-btn yorha-nes-btn is-primary"
-        on:click={saveDocument}
+        onclick={saveDocument}
         title="Save document (Ctrl+S)"
       >
         <Save class="h-4 w-4" />
@@ -223,7 +223,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="format-group">
       <button 
         class="format-btn yorha-btn yorha-nes-btn"
-        on:click={() => formatText('bold')}
+        onclick={() => formatText('bold')}
         title="Bold (Ctrl+B)"
       >
         <strong>B</strong>
@@ -231,7 +231,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <button 
         class="format-btn yorha-btn yorha-nes-btn"
-        on:click={() => formatText('italic')}
+        onclick={() => formatText('italic')}
         title="Italic (Ctrl+I)"
       >
         <em>I</em>
@@ -239,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <button 
         class="format-btn yorha-btn yorha-nes-btn"
-        on:click={() => formatText('underline')}
+        onclick={() => formatText('underline')}
         title="Underline"
       >
         <u>U</u>
@@ -249,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="format-group">
       <button 
         class="format-btn yorha-btn yorha-nes-btn"
-        on:click={() => formatText('justifyLeft')}
+        onclick={() => formatText('justifyLeft')}
         title="Align left"
       >
         ⟸
@@ -257,7 +257,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <button 
         class="format-btn yorha-btn yorha-nes-btn"
-        on:click={() => formatText('justifyCenter')}
+        onclick={() => formatText('justifyCenter')}
         title="Center"
       >
         ▤
@@ -265,7 +265,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <button 
         class="format-btn yorha-btn yorha-nes-btn"
-        on:click={() => formatText('justifyRight')}
+        onclick={() => formatText('justifyRight')}
         title="Align right"
       >
         ⟹
@@ -275,7 +275,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="format-group">
       <button 
         class="format-btn yorha-btn yorha-nes-btn"
-        on:click={() => formatText('insertUnorderedList')}
+        onclick={() => formatText('insertUnorderedList')}
         title="Bullet list"
       >
         ⋯
@@ -283,7 +283,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <button 
         class="format-btn yorha-btn yorha-nes-btn"
-        on:click={() => formatText('insertOrderedList')}
+        onclick={() => formatText('insertOrderedList')}
         title="Numbered list"
       >
         ①
@@ -296,7 +296,7 @@ https://svelte.dev/e/js_parse_error -->
     <div 
       bind:this={editorElement}
       class="editor-content"
-      contenteditable="true" on:input={updateStatistics}
+      contenteditable="true" oninput={updateStatistics}
       bind:innerHTML={content}
       placeholder="Start writing your document..."
     ></div>
@@ -328,8 +328,8 @@ https://svelte.dev/e/js_parse_error -->
 
 <!-- Keyboard Shortcuts Modal -->
 {#if showShortcuts}
-  <div class="shortcuts-overlay" on:click={() => showShortcuts = false}>
-    <div class="shortcuts-modal yorha-nier-bits-card" on:click={(e) => e.stopPropagation()}>
+  <div class="shortcuts-overlay" onclick={() => showShortcuts = false}>
+    <div class="shortcuts-modal yorha-nier-bits-card" onclick={(e) => e.stopPropagation()}>
       <h3 class="shortcuts-title gradient-text-primary">
         Keyboard Shortcuts
       </h3>
@@ -345,7 +345,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <button 
         class="close-shortcuts yorha-btn yorha-nes-btn is-primary"
-        on:click={() => showShortcuts = false}
+        onclick={() => showShortcuts = false}
       >
         Close
       </button>

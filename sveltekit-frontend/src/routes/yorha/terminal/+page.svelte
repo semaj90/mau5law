@@ -170,12 +170,12 @@
         body: JSON.stringify({ query, context: 'terminal' })
       });
 
-      if ((response as { ok?: any; json?: any; status?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any; status?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
         addOutput('=== RAG RESULT ===', 'success');
         addOutput(JSON.stringify(result, null, 2), 'info');
       } else {
-        addOutput(`RAG query failed: HTTP ${(response as { ok?: any; json?: any; status?: any }).status}`, 'error');
+        addOutput(`RAG query failed: HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`, 'error');
       }
     } catch (error) {
       const e = error as Error;
@@ -193,18 +193,18 @@
       addOutput(`Searching database for: "${term}"`, 'info');
       const response = await fetch(`/api/yorha/legal-data?search=${encodeURIComponent(term)}&limit=5`);
 
-      if ((response as { ok?: any; json?: any; status?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any; status?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
         addOutput('=== SEARCH RESULTS ===', 'success');
-        if ((result as { results?: any }).results && (result as { results?: any }).results.length > 0) {
-          (result as { results?: any }).results.forEach((item: any, index: number) => {
-            addOutput(`${index + 1}. ${(item as { title?: any; name?: any }).title || (item as { title?: any; name?: any }).name || 'Untitled'}`, 'info');
+        if ((result as { results?: unknown }).results && (result as { results?: unknown }).results.length > 0) {
+          (result as { results?: unknown }).results.forEach((item: unknown, index: number) => {
+            addOutput(`${index + 1}. ${(item as { title?: unknown; name?: unknown }).title || (item as { title?: unknown; name?: unknown }).name || 'Untitled'}`, 'info');
           });
         } else {
           addOutput('No results found.', 'info');
         }
       } else {
-        addOutput(`Search failed: HTTP ${(response as { ok?: any; json?: any; status?: any }).status}`, 'error');
+        addOutput(`Search failed: HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`, 'error');
       }
     } catch (error) {
       const e = error as Error;
@@ -223,12 +223,12 @@
         try {
           addOutput('Checking cluster health...', 'info');
           const response = await fetch('/api/v1/cluster/health');
-          if ((response as { ok?: any; json?: any; status?: any }).ok) {
-            const health = await (response as { ok?: any; json?: any; status?: any }).json();
+          if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
+            const health = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
             addOutput('=== CLUSTER HEALTH ===', 'success');
             addOutput(JSON.stringify(health, null, 2), 'info');
           } else {
-            addOutput(`Health check failed: HTTP ${(response as { ok?: any; json?: any; status?: any }).status}`, 'error');
+            addOutput(`Health check failed: HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown }).status}`, 'error');
           }
         } catch (error) {
           const e = error as Error;
@@ -304,7 +304,7 @@
           <span>YoRHa Terminal</span>
         </div>
         <div class="yorha-terminal-controls">
-          <button class="yorha-terminal-control" on:click={() => clearTerminal()}>
+          <button class="yorha-terminal-control" onclick={() => clearTerminal()}>
             <RotateCcw size={14} />
           </button>
           <button class="yorha-terminal-control">
@@ -342,7 +342,7 @@
         <input
           type="text"
           bind:value={currentInput}
-          on:keydown={handleKeydown}
+          onkeydown={handleKeydown}
           disabled={isExecuting}
           class="yorha-terminal-input"
           placeholder="Type command... (try 'help')"

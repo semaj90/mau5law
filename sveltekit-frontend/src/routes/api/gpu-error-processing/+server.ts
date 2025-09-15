@@ -140,7 +140,7 @@ function generateErrorFix(error: ParsedError, category: string): any {
   const fixTemplates = {
     svelte5: {
       code: 'let { prop1, prop2, ...restProps } = $props();',
-      explanation: 'Convert export let to $props() for Svelte 5 compatibility'
+      explanation: 'Convert let { to } = $props(); $props() for Svelte 5 compatibility'
     },
     import: {
       code: '// Check import path and module existence',

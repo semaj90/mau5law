@@ -663,7 +663,7 @@ and performance monitoring across N64 and YoRHa gaming components
                 ? 'border-cyan-400 text-cyan-300' 
                 : 'border-transparent text-slate-400 hover:text-slate-300'
             }"
-            on:click={() => activeDemo = tab}
+            onclick={() => activeDemo = tab}
           >
             {tab.toUpperCase()}
           </button>
@@ -686,14 +686,14 @@ and performance monitoring across N64 and YoRHa gaming components
               <div class="flex gap-3">
                 {#if !demoStarted}
                   <button
-                    on:click={startDemo}
+                    onclick={startDemo}
                     class="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
                   >
                     Start Demo
                   </button>
                 {:else}
                   <button
-                    on:click={stopDemo}
+                    onclick={stopDemo}
                     class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
                   >
                     Stop Demo
@@ -701,7 +701,7 @@ and performance monitoring across N64 and YoRHa gaming components
                 {/if}
                 
                 <button
-                  on:click={clearAllCaches}
+                  onclick={clearAllCaches}
                   class="px-4 py-2 bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors"
                 >
                   Clear Cache
@@ -746,7 +746,7 @@ and performance monitoring across N64 and YoRHa gaming components
               </div>
               
               <button
-                on:click={runStressTest}
+                onclick={runStressTest}
                 disabled={stressTestMode}
                 class="w-full px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-slate-600 disabled:cursor-not-allowed rounded-lg transition-colors"
               >

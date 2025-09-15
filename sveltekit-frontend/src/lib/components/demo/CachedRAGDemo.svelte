@@ -152,7 +152,7 @@
         {#each sampleQueries as sampleQuery}
           <button
             type="button"
-            on:click={() => { query = sampleQuery; }}
+            onclick={() => { query = sampleQuery; }}
             disabled={loading}
             class="sample-btn"
           >
@@ -164,7 +164,7 @@
 
     <div class="actions">
       <button
-        on:click={runCachedQuery}
+        onclick={runCachedQuery}
         disabled={loading || !query.trim()}
         class="primary-btn"
       >
@@ -172,7 +172,7 @@
       </button>
 
       <button
-        on:click={runCacheTest}
+        onclick={runCacheTest}
         disabled={loading}
         class="secondary-btn"
       >
@@ -180,7 +180,7 @@
       </button>
 
       <button
-        on:click={warmupCache}
+        onclick={warmupCache}
         disabled={loading}
         class="secondary-btn"
       >
@@ -188,7 +188,7 @@
       </button>
 
       <button
-        on:click={loadCacheMetrics}
+        onclick={loadCacheMetrics}
         disabled={loading}
         class="secondary-btn"
       >

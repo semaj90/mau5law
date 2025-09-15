@@ -4,7 +4,7 @@ TODO: Implement RAG functionality, vector search, document context
 -->
 <script lang="ts">
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
-	import { Button } from '$lib/components/ui/enhanced-bits';
+	import Button from '$lib/components/ui/enhanced-bits';
 	import * as Card from '$lib/components/ui/card';
 	import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
 	import { FileText, Brain, Search, Zap } from 'lucide-svelte';
@@ -24,7 +24,7 @@ TODO: Implement RAG functionality, vector search, document context
 			// 	headers: { 'Content-Type': 'application/json' },
 			// 	body: JSON.stringify({ query })
 			// });
-			// results = await (response as { json?: any }).json();
+			// results = await (response as { json?: unknown }).json();
 
 			// Simulate search for now
 			setTimeout(() => {
@@ -101,11 +101,11 @@ TODO: Implement RAG functionality, vector search, document context
 										type="text"
 										bind:value={query}
 										placeholder="What evidence supports the prosecution's case?"
-										on:keydown={(e) => e.key === 'Enter' && handleRAGSearch()}
+										onkeydown={(e) => e.key === 'Enter' && handleRAGSearch()}
 									/>
 									<Button
 										class="nes-btn is-primary"
-										on:click={handleRAGSearch}
+										onclick={handleRAGSearch}
 										disabled={isSearching || !query.trim()}
 									>
 										{#if isSearching}
@@ -124,11 +124,11 @@ TODO: Implement RAG functionality, vector search, document context
 									</h3>
 									{#each results as result}
 										<div class="nes-container with-title is-centered">
-											<p class="title">{(result as { title?: any; snippet?: any; relevance?: any }).title}</p>
-											<p class="text-sm">{(result as { title?: any; snippet?: any; relevance?: any }).snippet}</p>
+											<p class="title">{(result as { title?: unknown; snippet?: unknown; relevance?: unknown }).title}</p>
+											<p class="text-sm">{(result as { title?: unknown; snippet?: unknown; relevance?: unknown }).snippet}</p>
 											<div class="flex justify-between items-center mt-2">
 												<span class="nes-badge is-success">
-													{Math.round((result as { title?: any; snippet?: any; relevance?: any }).relevance * 100)}% match
+													{Math.round((result as { title?: unknown; snippet?: unknown; relevance?: unknown }).relevance * 100)}% match
 												</span>
 												<Button size="sm" class="nes-btn">
 													View Document

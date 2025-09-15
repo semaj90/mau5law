@@ -3,9 +3,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     errorHandler,
     type UserFriendlyError,
@@ -30,7 +28,7 @@ https://svelte.dev/e/attribute_duplicate -->
    }: { showInline = false, // Show as inline alert vs modal
     autoHide = true, // Auto-hide non-critical errors
     maxWidth = "max-w-lg" // Maximum width class
-  : any } = $props();
+  : unknown } = $props();
   let currentError = $state<UserFriendlyError | null >(null);
   let showDetails = $state(false);
   let retryInProgress = $state(false);
@@ -205,7 +203,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 class="bits-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 copyErrorDetails()}
                 aria-label="Copy error details"
               >
@@ -226,7 +224,7 @@ copyErrorDetails()}
             size="sm"
             variant="outline"
             class={getButtonClass(currentError.severity)}
-            on:click={() =>
+            onclick={() =>
 retryAction()}
             disabled={retryInProgress}
             aria-label="Retry action"
@@ -244,7 +242,7 @@ retryAction()}
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 (showDetails = !showDetails)}
             aria-label="Toggle error details"
           >
@@ -259,7 +257,7 @@ retryAction()}
         <Button class="bits-btn"
           size="sm"
           variant="ghost"
-          on:click={() =>
+          onclick={() =>
 clearError()}
           aria-label="Dismiss error"
         >
@@ -302,7 +300,7 @@ clearError()}
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:click={() =>
+                    onclick={() =>
 copyErrorDetails()}
                     class="mx-auto px-4 max-w-7xl"
                     aria-label="Copy error details"
@@ -326,7 +324,7 @@ copyErrorDetails()}
             <Button class="bits-btn"
               variant="outline"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 reportError()}
               class="mx-auto px-4 max-w-7xl"
             >
@@ -339,7 +337,7 @@ reportError()}
             <Button class="bits-btn"
               variant="outline"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 (showDetails = !showDetails)}
               class="mx-auto px-4 max-w-7xl"
             >
@@ -356,7 +354,7 @@ reportError()}
           {#if currentError.canRetry}
             <Button
               class={`gap-2 ${getButtonClass(currentError.severity)}`}
-              on:click={() =>
+              onclick={() =>
 retryAction()}
               disabled={retryInProgress}
             >
@@ -372,7 +370,7 @@ retryAction()}
 
           <Button class="bits-btn"
             variant={currentError.canRetry ? "outline" : "default"}
-            on:click={() =>
+            onclick={() =>
 clearError()}
           >
             {currentError.canRetry ? "Cancel" : "Close"}

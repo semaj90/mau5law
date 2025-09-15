@@ -400,7 +400,7 @@
   	}
 </script>
 
-<svelte:window on:click={closeContextMenu} on:keydown={handleGlobalKeydown} />
+<svelte:window onclick={closeContextMenu} onkeydown={handleGlobalKeydown} />
 
 <div class="w-full h-full min-h-screen bg-background detective-board-nes">
 	<!-- Header -->
@@ -425,7 +425,7 @@
 						<Button
 							variant={viewMode === 'columns' ? 'default' : 'outline'}
 							class="bits-btn"
-							on:click={() => switchViewMode('columns')}
+							onclick={() => switchViewMode('columns')}
 							aria-pressed={viewMode === 'columns'}
 						>
 							<span class="mr-2">📋</span>
@@ -434,7 +434,7 @@
 						<Button
 							variant={viewMode === 'canvas' ? 'default' : 'outline'}
 							class="bits-btn"
-							on:click={() => switchViewMode('canvas')}
+							onclick={() => switchViewMode('canvas')}
 							aria-pressed={viewMode === 'canvas'}
 						>
 							<span class="mr-2">🎨</span>
@@ -540,8 +540,8 @@
 					<div
 						bind:this={canvasContainer}
 						class="relative w-full h-full bg-slate-50 dark:bg-slate-900 overflow-auto"
-					 role="region" aria-label="Drop zone" on:drop={(e) => handleCanvasDrop(e)}
-						on:dragover={(e) => e.preventDefault()}
+					 role="region" aria-label="Drop zone" ondrop={(e) => handleCanvasDrop(e)}
+						ondragover={(e) => e.preventDefault()}
 					>
 						<!-- Grid background -->
 						<div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
@@ -606,7 +606,7 @@
 				variant="ghost"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				on:click={() => { window.open(`/evidence/${contextMenu.item?.id}`, '_blank'); closeContextMenu(); }}
+				onclick={() => { window.open(`/evidence/${contextMenu.item?.id}`, '_blank'); closeContextMenu(); }}
 			>
 				View Details
 			</Button>
@@ -614,7 +614,7 @@
 				variant="ghost"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				on:click={() => { window.location.href = `/evidence/${contextMenu.item?.id}/edit`; closeContextMenu(); }}
+				onclick={() => { window.location.href = `/evidence/${contextMenu.item?.id}/edit`; closeContextMenu(); }}
 			>
 				Edit
 			</Button>
@@ -623,9 +623,9 @@
 				variant="ghost"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				on:mouseenter={(e) => showMiniModal('citation', e)}
-				on:mouseleave={hideMiniModal}
-				on:click={() => saveTo('savedcitations')}
+				onmouseenter={(e) => showMiniModal('citation', e)}
+				onmouseleave={hideMiniModal}
+				onclick={() => saveTo('savedcitations')}
 			>
 				Add to /savedcitations
 			</Button>
@@ -633,9 +633,9 @@
 				variant="ghost"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				on:mouseenter={(e) => showMiniModal('mcpcontext', e)}
-				on:mouseleave={hideMiniModal}
-				on:click={() => saveTo('mcpcontext')}
+				onmouseenter={(e) => showMiniModal('mcpcontext', e)}
+				onmouseleave={hideMiniModal}
+				onclick={() => saveTo('mcpcontext')}
 			>
 				Add to MCP Context (LLM)
 			</Button>
@@ -644,9 +644,9 @@
 				variant="ghost"
 				class="w-full justify-start bits-btn"
 				size="sm"
-				on:mouseenter={(e) => showMiniModal('find', e)}
-				on:mouseleave={hideMiniModal}
-				on:click={openFindModal}
+				onmouseenter={(e) => showMiniModal('find', e)}
+				onmouseleave={hideMiniModal}
+				onclick={openFindModal}
 			>
 				Find Related...
 			</Button>
@@ -659,7 +659,7 @@
 	<div
 		class="fixed z-50 inset-0 bg-black/60 flex items-center justify-center"
 	 role="button" tabindex="0"
-                on:click={(e) => { if (e.target === e.currentTarget) closeFindModal(); }}
+                onclick={(e) => { if (e.target === e.currentTarget) closeFindModal(); }}
 	>
 		<div
 			class="bg-background border border-primary rounded-lg shadow-lg p-6 w-full max-w-lg"
@@ -672,15 +672,15 @@
 					type="text"
 					bind:value={findModal.query}
 					placeholder="Enter keywords or question..."
-					on:keydown={(e) => {
+					onkeydown={(e) => {
 						if (e.key === 'Enter') runFindSearch();
 					}}
 				/>
 				<div class="flex gap-2">
-					<Button class="bits-btn" on:click={runFindSearch} disabled={findModal.loading}>
+					<Button class="bits-btn" onclick={runFindSearch} disabled={findModal.loading}>
 						{#if findModal.loading}Searching...{:else}Search{/if}
 					</Button>
-					<Button class="bits-btn" variant="outline" on:click={closeFindModal}>Close</Button>
+					<Button class="bits-btn" variant="outline" onclick={closeFindModal}>Close</Button>
 				</div>
 
 				{#if findModal.error}

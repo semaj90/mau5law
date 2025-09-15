@@ -1,3 +1,6 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!--
 Agent Orchestrator Component
 Manages AutoGen and CrewAI multi-agent workflows
@@ -6,9 +9,7 @@ Manages AutoGen and CrewAI multi-agent workflows
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Card } from '$lib/components/ui/enhanced-bits';
   import CardContent from '$lib/components/ui/CardContent.svelte';
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
@@ -62,6 +63,7 @@ Manages AutoGen and CrewAI multi-agent workflows
 
   // Component state
   let selectedWorkflow = $state(defaultWorkflow);
+  let isLoading = $state(false);
   let selectedProvider = $state<'autogen' | 'crewai'>('autogen');
   let inputText = $state('');
   let isProcessing = $state(false);
@@ -436,7 +438,7 @@ Manages AutoGen and CrewAI multi-agent workflows
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-  on:click={checkServiceStatus}
+  onclick={(event: MouseEvent) => checkServiceStatus}
       >
 <RefreshCw class="h-4 w-4" />
 </Button>
@@ -451,7 +453,7 @@ Manages AutoGen and CrewAI multi-agent workflows
         Workflow Configuration
       </h3>
     </div>
-    <div class="yorha-panel-content space-y-4">
+    <main>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <span id="label-workflow" class="block text-sm font-medium mb-2">Workflow Type</span>
@@ -527,7 +529,7 @@ Manages AutoGen and CrewAI multi-agent workflows
 
       <div class="flex gap-2">
         <Button
-          on:click={executeWorkflow}
+          onclick={(event: MouseEvent) => executeWorkflow}
           disabled={isProcessing || !inputText.trim() || (!serviceStatus.autogen && selectedProvider === 'autogen') || (!serviceStatus.crewai && selectedProvider === 'crewai')}
           class="flex-1 bits-btn bits-btn"
         >
@@ -541,16 +543,16 @@ Manages AutoGen and CrewAI multi-agent workflows
 </Button>
 
         {#if isProcessing}
-          <Button class="bits-btn" variant="outline" on:click={cancelExecution}>
+          <Button class="bits-btn" variant="outline" onclick={(event: MouseEvent) => cancelExecution}>
 <Square class="h-4 w-4" />
 </Button>
         {/if}
 
         {#if conversationMessages.length > 0 || executionResults.length > 0}
-          <Button class="bits-btn" variant="outline" on:click={clearResults}>
+          <Button class="bits-btn" variant="outline" onclick={(event: MouseEvent) => clearResults}>
 Clear
 </Button>
-          <Button class="bits-btn" variant="outline" on:click={downloadResults}>
+          <Button class="bits-btn" variant="outline" onclick={(event: MouseEvent) => downloadResults}>
 <Download class="h-4 w-4" />
 </Button>
         {/if}
@@ -688,7 +690,7 @@ Clear
           <Button
             variant="outline"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            on:click={() =>
+            onclick={(event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'case_analysis';
               selectedProvider = 'autogen';
@@ -704,7 +706,7 @@ Clear
           <Button
             variant="outline"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            on:click={() =>
+            onclick={(event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'contract_analysis';
               selectedProvider = 'crewai';
@@ -720,7 +722,7 @@ Clear
           <Button
             variant="outline"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            on:click={() =>
+            onclick={(event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'evidence_review';
               selectedProvider = 'autogen';
@@ -736,7 +738,7 @@ Clear
           <Button
             variant="outline"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            on:click={() =>
+            onclick={(event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'legal_research';
               selectedProvider = 'autogen';

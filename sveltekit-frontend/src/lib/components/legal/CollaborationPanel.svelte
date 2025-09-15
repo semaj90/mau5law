@@ -13,7 +13,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     userId: string
     evidenceId: string
     wsConnection: WebSocket | null;
-    onAddAnnotation: (content: string, position: any) ;
+    onAddAnnotation: (content: string, position: unknown) ;
   }
   let { collaborationSession,
     activeCollaborators,
@@ -27,15 +27,13 @@ Real-time collaboration interface for multiple investigators working on evidence
     evidenceId,
     wsConnection,
     onAddAnnotation = > void
-  : any } = $props();
+  : unknown } = $props();
 
 
 
   import { onMount } from 'svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -78,7 +76,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     }
   });
 
-  function handleWebSocketMessage(data: any) {
+  function handleWebSocketMessage(data: unknown) {
     switch (data.type) {
       case 'chat-message':
         if (collaborationSession) {
@@ -315,7 +313,7 @@ Real-time collaboration interface for multiple investigators working on evidence
               bind:value={newMessage}
               placeholder="Type your message..."
               class="flex-1 resize-none min-h-[40px] max-h-[120px]"
-              on:keydown={(e) => {
+              onkeydown={(e) => {
                 handleTyping();
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -324,7 +322,7 @@ Real-time collaboration interface for multiple investigators working on evidence
               }}
             />
             <Button 
-              on:click={sendMessage}
+              onclick={sendMessage}
               disabled={!newMessage.trim()}
               size="sm"
               class="self-end bits-btn bits-btn"
@@ -347,7 +345,7 @@ Real-time collaboration interface for multiple investigators working on evidence
           <Button class="bits-btn"
             variant="outline"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 showAnnotationInput = !showAnnotationInput}
           >
             Add Note
@@ -363,10 +361,10 @@ showAnnotationInput = !showAnnotationInput}
               class="mb-3"
             />
             <div class="flex space-x-2">
-              <Button class="bits-btn" on:click={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
+              <Button class="bits-btn" onclick={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
 Add Annotation
 </Button>
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 showAnnotationInput = false} variant="outline" size="sm">
                 Cancel
 </Button>

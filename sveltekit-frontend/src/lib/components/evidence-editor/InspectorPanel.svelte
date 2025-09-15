@@ -7,8 +7,8 @@ https://svelte.dev/e/js_parse_error -->
   import { createEventDispatcher, onMount } from 'svelte';
   import { writable } from 'svelte/store';
   const dispatch = createEventDispatcher();
-  let { selectedNode = $bindable()  }: { selectedNode = $bindable() : any } = $props(); // any = null;
-  let { readOnly = $bindable()  }: { readOnly = $bindable() : any } = $props(); // false;
+  let { selectedNode = $bindable()  }: { selectedNode = $bindable() : unknown } = $props(); // any = null;
+  let { readOnly = $bindable()  }: { readOnly = $bindable() : unknown } = $props(); // false;
   // Enhanced form fields with auto-population
   let formData = writable({
     // Basic fields
@@ -104,7 +104,7 @@ https://svelte.dev/e/js_parse_error -->
       if (autoSaveTimer) clearTimeout(autoSaveTimer);
     };
   });
-  async function autoPopulateForm(node: any) {
+  async function autoPopulateForm(node: unknown) {
     if (!node) return;
     isLoading = true;
     try {
@@ -181,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
       isLoading = false;
   }
   }
-  async function triggerEnhancedAIAnalysis(node: any, formData: any) {
+  async function triggerEnhancedAIAnalysis(node: unknown, formData: unknown) {
     try {
       const response = await fetch('/api/ai/tag', {
         method: 'POST',
@@ -193,8 +193,8 @@ https://svelte.dev/e/js_parse_error -->
           enhanced: true // Request enhanced analysis
         })
       });
-      if ((response as { ok?: any; json?: any }).ok) {
-        const aiTags = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const aiTags = await (response as { ok?: unknown; json?: unknown }).json();
         // Update the node with AI tags
         node.aiTags = aiTags;
         // Auto-populate form with enhanced data
@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
     if (customTag.trim() && !$formData.customTags.includes(customTag.trim())) {
       formData.update(data => ({
         ...data,
-        customTags: [...(data as { customTags?: any; people?: any; locations?: any; organizations?: any; actions?: any }).customTags, customTag.trim()]
+        customTags: [...(data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).customTags, customTag.trim()]
       }));
       customTag = '';
   }
@@ -249,14 +249,14 @@ https://svelte.dev/e/js_parse_error -->
   function removeCustomTag(tag: string) {
     formData.update(data => ({
       ...data,
-      customTags: (data as { customTags?: any; people?: any; locations?: any; organizations?: any; actions?: any }).customTags.filter(t => t !== tag)
+      customTags: (data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).customTags.filter(t => t !== tag)
     }));
   }
   function addCustomPerson() {
     if (customPerson.trim() && !$formData.people.includes(customPerson.trim())) {
       formData.update(data => ({
         ...data,
-        people: [...(data as { customTags?: any; people?: any; locations?: any; organizations?: any; actions?: any }).people, customPerson.trim()]
+        people: [...(data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).people, customPerson.trim()]
       }));
       customPerson = '';
   }
@@ -264,14 +264,14 @@ https://svelte.dev/e/js_parse_error -->
   function removePerson(person: string) {
     formData.update(data => ({
       ...data,
-      people: (data as { customTags?: any; people?: any; locations?: any; organizations?: any; actions?: any }).people.filter(p => p !== person)
+      people: (data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).people.filter(p => p !== person)
     }));
   }
   function addCustomLocation() {
     if (customLocation.trim() && !$formData.locations.includes(customLocation.trim())) {
       formData.update(data => ({
         ...data,
-        locations: [...(data as { customTags?: any; people?: any; locations?: any; organizations?: any; actions?: any }).locations, customLocation.trim()]
+        locations: [...(data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).locations, customLocation.trim()]
       }));
       customLocation = '';
   }
@@ -279,14 +279,14 @@ https://svelte.dev/e/js_parse_error -->
   function removeLocation(location: string) {
     formData.update(data => ({
       ...data,
-      locations: (data as { customTags?: any; people?: any; locations?: any; organizations?: any; actions?: any }).locations.filter(l => l !== location)
+      locations: (data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).locations.filter(l => l !== location)
     }));
   }
   function addCustomOrganization() {
     if (customOrganization.trim() && !$formData.organizations.includes(customOrganization.trim())) {
       formData.update(data => ({
         ...data,
-        organizations: [...(data as { customTags?: any; people?: any; locations?: any; organizations?: any; actions?: any }).organizations, customOrganization.trim()]
+        organizations: [...(data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).organizations, customOrganization.trim()]
       }));
       customOrganization = '';
   }
@@ -294,14 +294,14 @@ https://svelte.dev/e/js_parse_error -->
   function removeOrganization(org: string) {
     formData.update(data => ({
       ...data,
-      organizations: (data as { customTags?: any; people?: any; locations?: any; organizations?: any; actions?: any }).organizations.filter(o => o !== org)
+      organizations: (data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).organizations.filter(o => o !== org)
     }));
   }
   function addCustomAction() {
     if (customAction.trim() && !$formData.actions.includes(customAction.trim())) {
       formData.update(data => ({
         ...data,
-        actions: [...(data as { customTags?: any; people?: any; locations?: any; organizations?: any; actions?: any }).actions, customAction.trim()]
+        actions: [...(data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).actions, customAction.trim()]
       }));
       customAction = '';
   }
@@ -309,7 +309,7 @@ https://svelte.dev/e/js_parse_error -->
   function removeAction(action: string) {
     formData.update(data => ({
       ...data,
-      actions: (data as { customTags?: any; people?: any; locations?: any; organizations?: any; actions?: any }).actions.filter(a => a !== action)
+      actions: (data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).actions.filter(a => a !== action)
     }));
   }
   // Auto-save functionality
@@ -351,7 +351,7 @@ https://svelte.dev/e/js_parse_error -->
           data: updatedNode
         })
       });
-      if ((response as { ok?: any; json?: any }).ok) {
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
         hasUnsavedChanges = false;
         lastSavedAt = new Date();
         dispatch('autoSaved', updatedNode);
@@ -391,11 +391,11 @@ https://svelte.dev/e/js_parse_error -->
           data: updatedNode
         })
       });
-      if ((response as { ok?: any; json?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; json?: unknown }).json();
         hasUnsavedChanges = false;
         lastSavedAt = new Date();
-        dispatch('save', (result as { evidence?: any }).evidence);
+        dispatch('save', (result as { evidence?: unknown }).evidence);
         dispatch('showNotification', {
           type: 'success',
           message: 'Evidence saved successfully'
@@ -471,7 +471,7 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
           
           <button 
-            on:click={reanalyzeWithAI}
+            onclick={reanalyzeWithAI}
             disabled={isLoading}
             class="container mx-auto px-4"
           >
@@ -623,7 +623,7 @@ https://svelte.dev/e/js_parse_error -->
                       {tag}
                       {#if !readOnly}
                         <button 
-                          on:click={() => removeCustomTag(tag)}
+                          onclick={() => removeCustomTag(tag)}
                           class="container mx-auto px-4"
                         >×</button>
                       {/if}
@@ -640,7 +640,7 @@ https://svelte.dev/e/js_parse_error -->
                       class="container mx-auto px-4"
                     />
                     <button 
-                      on:click={addCustomTag} 
+                      onclick={addCustomTag} 
                       class="container mx-auto px-4"
                     >Add</button>
                   </div>
@@ -672,7 +672,7 @@ https://svelte.dev/e/js_parse_error -->
                         👤 {person}
                         {#if !readOnly}
                           <button 
-                            on:click={() => removePerson(person)}
+                            onclick={() => removePerson(person)}
                             class="container mx-auto px-4"
                           >×</button>
                         {/if}
@@ -689,7 +689,7 @@ https://svelte.dev/e/js_parse_error -->
                         class="container mx-auto px-4"
                       />
                       <button 
-                        on:click={addCustomPerson} 
+                        onclick={addCustomPerson} 
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
@@ -715,7 +715,7 @@ https://svelte.dev/e/js_parse_error -->
                         📍 {location}
                         {#if !readOnly}
                           <button 
-                            on:click={() => removeLocation(location)}
+                            onclick={() => removeLocation(location)}
                             class="container mx-auto px-4"
                           >×</button>
                         {/if}
@@ -732,7 +732,7 @@ https://svelte.dev/e/js_parse_error -->
                         class="container mx-auto px-4"
                       />
                       <button 
-                        on:click={addCustomLocation} 
+                        onclick={addCustomLocation} 
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
@@ -758,7 +758,7 @@ https://svelte.dev/e/js_parse_error -->
                         🏢 {org}
                         {#if !readOnly}
                           <button 
-                            on:click={() => removeOrganization(org)}
+                            onclick={() => removeOrganization(org)}
                             class="container mx-auto px-4"
                           >×</button>
                         {/if}
@@ -775,7 +775,7 @@ https://svelte.dev/e/js_parse_error -->
                         class="container mx-auto px-4"
                       />
                       <button 
-                        on:click={addCustomOrganization} 
+                        onclick={addCustomOrganization} 
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
@@ -837,7 +837,7 @@ https://svelte.dev/e/js_parse_error -->
                         ⚡ {action}
                         {#if !readOnly}
                           <button 
-                            on:click={() => removeAction(action)}
+                            onclick={() => removeAction(action)}
                             class="container mx-auto px-4"
                           >×</button>
                         {/if}
@@ -854,7 +854,7 @@ https://svelte.dev/e/js_parse_error -->
                         class="container mx-auto px-4"
                       />
                       <button 
-                        on:click={addCustomAction} 
+                        onclick={addCustomAction} 
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
@@ -954,7 +954,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if !readOnly}
           <div class="container mx-auto px-4">
             <button 
-              on:click={handleSave}
+              onclick={handleSave}
               disabled={isSaving || !hasUnsavedChanges}
               class="container mx-auto px-4"
             >

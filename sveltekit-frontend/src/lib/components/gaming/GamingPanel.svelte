@@ -9,7 +9,7 @@
   		scanEffect?: boolean;
   		minimizable?: boolean;
   		closable?: boolean;
-  		children: any
+  		children: unknown
   	}
   	let { title,
   		subtitle,
@@ -27,7 +27,7 @@
   		minimizable = false,
   		closable = false,
   		children
-  	: any } = $props();
+  	: unknown } = $props();
   	let isMinimized = $state(false);
   	let isClosed = $state(false);
   	function toggleMinimize() {
@@ -63,7 +63,7 @@
 				{#if minimizable}
 					<button 
 						class="control-button minimize" 
-						on:click={toggleMinimize}
+						onclick={toggleMinimize}
 						aria-label={isMinimized ? 'Expand panel' : 'Minimize panel'}
 					>
 						{isMinimized ? '▲' : '▼'}
@@ -73,7 +73,7 @@
 				{#if closable}
 					<button 
 						class="control-button close" 
-						on:click={closePanel}
+						onclick={closePanel}
 						aria-label="Close panel"
 					>
 						✕

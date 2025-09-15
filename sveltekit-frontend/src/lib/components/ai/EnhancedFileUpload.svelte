@@ -77,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
         }
       }
       statusSocket.onerror = (e) => console.warn('[UploadWS] error', e);
-      statusSocket.on:close=() => {
+      statusSocket.onclose=() => {
         console.debug('[UploadWS] closed – retrying in 5s');
         setTimeout(() => connectStatusSocket(), 5000);
       }
@@ -372,7 +372,7 @@ https://svelte.dev/e/js_parse_error -->
     <input
       type="file"
       {accept}
-      multiple on:change={handleFileUpload}
+      multiple onchange={handleFileUpload}
       class="hidden"
       id="file-input" />
     <label for="file-input" class="upload-label">
@@ -436,7 +436,7 @@ https://svelte.dev/e/js_parse_error -->
           placeholder="Search uploaded documents with AI..."
           class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
         <button
-          on:click={handleSearch}
+          onclick={handleSearch}
           disabled={isSearching || !searchQuery.trim()}
           class="px-6 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50 hover:bg-blue-600 flex items-center gap-2">
           {#if isSearching}

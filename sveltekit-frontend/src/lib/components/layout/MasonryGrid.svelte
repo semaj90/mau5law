@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   interface Props {
-    items: any[] ;
+    items: unknown[] ;
     columnWidth?: unknown;
     gutter?: unknown;
     itemSelector?: unknown;
@@ -44,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
     import Masonry from 'masonry-layout';
 
   let container: HTMLElement;
-  let masonry: any;
+  let masonry: unknown;
   let isInitialized = $state(false);
 
   // Masonry configuration
@@ -145,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
   finalize={handleDndFinalize}
   style="--column-width: {columnWidth}px; --gutter: {gutter}px;"
 >
-  {#each items as item, index ((item as { id?: any; drag?: any; newly?: any }).id)}
+  {#each items as item, index ((item as { id?: unknown; drag?: unknown; newly?: unknown }).id)}
     <div
       class="space-y-4"
       /* transition removed */}
@@ -186,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
       width: calc(25% - var(--gutter));
 }}
   /* Drag and drop styling */
-  :global(.masonry-(item as { id?: any; drag?: any; newly?: any }).drag-disabled) {
+  :global(.masonry-(item as { id?: unknown; drag?: unknown; newly?: unknown }).drag-disabled) {
     cursor: default;
 }
   :global(.masonry-item:not(.drag-disabled)) {
@@ -195,11 +195,11 @@ https://svelte.dev/e/js_parse_error -->
   :global(.masonry-item:not(.drag-disabled):active) {
     cursor: grabbing;
 }
-  :global(.masonry-(item as { id?: any; drag?: any; newly?: any }).drag-shadow) {
+  :global(.masonry-(item as { id?: unknown; drag?: unknown; newly?: unknown }).drag-shadow) {
     opacity: 0.5;
     transform: scale(0.95);
 }
-  :global(.masonry-(item as { id?: any; drag?: any; newly?: any }).drag-ghost) {
+  :global(.masonry-(item as { id?: unknown; drag?: unknown; newly?: unknown }).drag-ghost) {
     opacity: 0.3;
     transform: rotate(5deg);
 }
@@ -213,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 2rem;
 }
   /* Animation for new items */
-  :global(.masonry-(item as { id?: any; drag?: any; newly?: any }).newly-added) {
+  :global(.masonry-(item as { id?: unknown; drag?: unknown; newly?: unknown }).newly-added) {
     animation: slideInUp 0.3s ease-out;
 }
   @keyframes slideInUp {

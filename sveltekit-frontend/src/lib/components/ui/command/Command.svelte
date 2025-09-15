@@ -15,7 +15,7 @@
     onOpenChange = $bindable(),
     placeholder = $bindable(),
     class: className = $bindable()
-  : any } = $props();
+  : unknown } = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -59,7 +59,7 @@
     }
   ];
 
-  function handleSelect(item: any) {
+  function handleSelect(item: unknown) {
     dispatch('select', item);
     open = false;
   }
@@ -101,15 +101,15 @@
 
         {#each group.items as item}
           <Command.Item
-            value={(item as { title?: any; description?: any; keywords?: any }).title + ' ' + (item as { title?: any; description?: any; keywords?: any }).description + ' ' + (item as { title?: any; description?: any; keywords?: any }).keywords.join(' ')}
+            value={(item as { title?: unknown; description?: unknown; keywords?: unknown }).title + ' ' + (item as { title?: unknown; description?: unknown; keywords?: unknown }).description + ' ' + (item as { title?: unknown; description?: unknown; keywords?: unknown }).keywords.join(' ')}
             select={() => handleSelect(item)}
             class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 legal-command-item font-mono"
           >
             <div class="flex items-start gap-3 w-full">
               <group.icon class="h-4 w-4 mt-0.5 nes-text is-disabled flex-shrink-0" />
               <div class="flex flex-col gap-1 min-w-0 flex-1">
-                <div class="font-medium text-sm">{(item as { title?: any; description?: any; keywords?: any }).title}</div>
-                <div class="text-xs nes-text is-disabled">{(item as { title?: any; description?: any; keywords?: any }).description}</div>
+                <div class="font-medium text-sm">{(item as { title?: unknown; description?: unknown; keywords?: unknown }).title}</div>
+                <div class="text-xs nes-text is-disabled">{(item as { title?: unknown; description?: unknown; keywords?: unknown }).description}</div>
               </div>
             </div>
           </Command.Item>

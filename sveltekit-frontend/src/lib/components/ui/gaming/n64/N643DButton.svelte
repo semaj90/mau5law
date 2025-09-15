@@ -40,7 +40,7 @@
     enableParticles?: boolean;
     glowIntensity?: number;
     // Content
-    children?: any;
+    children?: unknown;
     class?: string;
   }
 
@@ -344,12 +344,12 @@
   {form}
   {name}
   {value}
-  on:click={handleClick}
-  on:on:mouseenter={handleHover}
-  on:on:mouseleave={handleUnhover}
+  onclick={handleClick}
+  ononmouseenter={handleHover}
+  ononmouseleave={handleUnhover}
   onMousemove={handleMouseMove}
-  on:focus={handleFocus}
-  on:blur={handleBlur}
+  onfocus={handleFocus}
+  onblur={handleBlur}
   class="n64-3d-button {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
   style="
     --material-bg: {materialStyles.background};

@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"runtime"
 	"sync"
 	"time"
@@ -14,8 +16,63 @@ import (
 	"legal-ai-cuda/internal/cuda"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgxpool"
+	pgvector "github.com/pgvector/pgvector-go"
 )
 
+// Diagnostic helper: scan the repository for other Go files that declare a main package
+// or a func main(...) and log the findings. Useful to locate duplicate main() entries.
+//
+// Usage:
+// - At runtime this will run once during init() and log any candidate files.
+// - Set MAIN_SCAN_ROOT to override the root directory scanned.
+func scanForMains(root string) ([]string, error) {
+	var results []string
+
+	var walk func(dir string)
+	walk = func(dir string) {
+		entries, err := os.ReadDir(dir)
+		if err != nil {
+			// ignore unreadable directories but log
+			log.Printf("scanForMains: cannot read dir %s: %v", dir, err)
+			return
+		}
+		for _, e := range entries {
+			name := e.Name()
+
+			// Skip common large/irrelevant directories
+			if e.IsDir() {
+				if name == ".git" || name == "vendor" || name == "node_modules" || name == "dist" || name == "node" || name == "bin" || name == "build" {
+					continue
+				}
+				next := dir + string(os.PathSeparator) + name
+				walk(next)
+				continue
+			}
+
+			// Only inspect .go files
+			if len(name) > 3 && name[len(name)-3:] == ".go" {
+				path := dir + string(os.PathSeparator) + name
+				data, err := os.ReadFile(path)
+				if err != nil {
+					continue
+				}
+				// Look for "package main" or "func main(" heuristically
+				if bytes.Contains(data, []byte("package main")) || bytes.Contains(data, []byte("func main(")) {
+					results = append(results, path)
+				}
+			}
+		}
+	}
+
+	walk(root)
+	return results, nil
+}
+
+func init() {
+	// Disabled main scanning to prevent initialization issues in large codebases
+	log.Printf("main-scan: disabled for performance reasons")
+}
 // CUDA GPU Worker optimized for RTX 3060 Ti
 type CUDAWorker struct {
 	ID                int
@@ -61,6 +118,23 @@ type CUDAService struct {
 	shutdown    context.CancelFunc
 	// Optional path to an external native CUDA worker (cuda-worker.exe)
 	externalWorkerPath string
+	// Database connection pool for pgvector search
+	dbPool *pgxpool.Pool
+}
+
+// SearchRequest is the JSON body for search endpoint
+type SearchRequest struct {
+	Query string `json:"q"`
+	Limit int    `json:"limit,omitempty"`
+}
+
+// SearchResult is what we return to SvelteKit
+type SearchResult struct {
+	ID       string          `json:"id"`
+	TaskID   string          `json:"task_id"`
+	Payload  string          `json:"payload"`
+	Metadata json.RawMessage `json:"metadata"`
+	Score    float32         `json:"score"`
 }
 
 // RTX 3060 Ti specifications
@@ -75,7 +149,7 @@ const (
 )
 
 // NewCUDAService creates a new CUDA service with RTX 3060 Ti optimization
-func NewCUDAService() *CUDAService {
+func NewCUDAService(dbPool *pgxpool.Pool) *CUDAService {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	service := &CUDAService{
@@ -85,6 +159,7 @@ func NewCUDAService() *CUDAService {
 		shutdownCtx: ctx,
 		shutdown:    cancel,
 		externalWorkerPath: cuda.FindCudaWorkerPath(),
+		dbPool:      dbPool,
 	}
 
 	// Initialize RTX 3060 Ti worker
@@ -396,6 +471,7 @@ func (s *CUDAService) setupHTTPHandlers() {
 		api.POST("/submit", s.submitTaskHandler)
 		api.GET("/result/:id", s.getResultHandler)
 		api.GET("/status/:id", s.getStatusHandler)
+		api.POST("/search", s.searchHandler)
 	}
 }
 
@@ -644,6 +720,76 @@ func (s *CUDAService) getStatusHandler(c *gin.Context) {
 	})
 }
 
+// searchHandler performs semantic search using Ollama embeddings and pgvector
+func (s *CUDAService) searchHandler(c *gin.Context) {
+	var req SearchRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("Invalid request: %v", err),
+		})
+		return
+	}
+
+	if req.Limit == 0 {
+		req.Limit = 5
+	}
+
+	// Check if database pool is available
+	if s.dbPool == nil {
+		c.JSON(http.StatusServiceUnavailable, gin.H{
+			"error": "Database connection not available",
+		})
+		return
+	}
+
+	// Step 1: call Ollama to get embedding
+	embedding, err := embedWithOllama(req.Query)
+	if err != nil {
+		log.Printf("embedding failed: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "embedding generation failed",
+		})
+		return
+	}
+
+	// Step 2: query pgvector
+	rows, err := s.dbPool.Query(
+		context.Background(),
+		`SELECT id, task_id, payload, metadata,
+			(embedding <-> $1) AS score
+		 FROM embeddings
+		 ORDER BY embedding <-> $1
+		 LIMIT $2`,
+		pgvector.NewVector(embedding),
+		req.Limit,
+	)
+	if err != nil {
+		log.Printf("query failed: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "database query failed",
+		})
+		return
+	}
+	defer rows.Close()
+
+	var results []SearchResult
+	for rows.Next() {
+		var r SearchResult
+		if err := rows.Scan(&r.ID, &r.TaskID, &r.Payload, &r.Metadata, &r.Score); err != nil {
+			log.Printf("row scan failed: %v", err)
+			continue
+		}
+		results = append(results, r)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"query":   req.Query,
+		"results": results,
+		"count":   len(results),
+		"limit":   req.Limit,
+	})
+}
+
 // Utility functions
 func minInt(a, b int) int {
 	if a < b {
@@ -659,27 +805,114 @@ func minFloat32(a, b float32) float32 {
 	return b
 }
 
+// embedWithOllama calls Ollama embed API with Gemma3:legal-latest
+func embedWithOllama(text string) ([]float32, error) {
+	// Ollama REST API endpoint
+	ollamaURL := os.Getenv("OLLAMA_URL")
+	if ollamaURL == "" {
+		ollamaURL = "http://localhost:11434"
+	}
+
+	// Prepare request
+	body := map[string]interface{}{
+		"model": "nomic-embed-text",
+		"input": text,
+	}
+	payload, _ := json.Marshal(body)
+
+	resp, err := http.Post(ollamaURL+"/api/embed", "application/json", bytes.NewBuffer(payload))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result struct {
+		Embeddings [][]float32 `json:"embeddings"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+
+	if len(result.Embeddings) == 0 {
+		return nil, fmt.Errorf("no embeddings returned")
+	}
+
+	return result.Embeddings[0], nil
+}
+
 func main() {
 	log.Printf("Starting CUDA Service Worker for RTX 3060 Ti")
 	log.Printf("Available CPU cores: %d", runtime.NumCPU())
 
-	service := NewCUDAService()
+	// Initialize PostgreSQL connection for pgvector search
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		dbURL = "postgres://legal_admin:123456@localhost:5432/legal_ai_db?sslmode=disable"
+		log.Printf("DATABASE_URL not set, using default: %s", dbURL)
+	}
+
+	dbPool, err := pgxpool.New(context.Background(), dbURL)
+	if err != nil {
+		log.Printf("Failed to connect to database: %v", err)
+		log.Printf("Search functionality will be disabled")
+		dbPool = nil
+	} else {
+		// Test the connection
+		if err := dbPool.Ping(context.Background()); err != nil {
+			log.Printf("Database ping failed: %v", err)
+			log.Printf("Search functionality will be disabled")
+			dbPool.Close()
+			dbPool = nil
+		} else {
+			log.Printf("Database connection established successfully")
+		}
+	}
+
+	service := NewCUDAService(dbPool)
 	service.setupHTTPHandlers()
 
 	// Start HTTP server
 	go func() {
-		log.Printf("Starting HTTP server on :8096")
-		if err := service.httpServer.Run(":8096"); err != nil {
-			log.Fatalf("HTTP server failed: %v", err)
+		port := os.Getenv("PORT")
+		if port == "" {
+			port = "8097" // Use 8097 to avoid conflict
+		}
+
+		log.Printf("Starting HTTP server on :%s", port)
+		log.Printf("HTTP API: http://localhost:%s/api/v1/health", port)
+		log.Printf("Workers: http://localhost:%s/api/v1/workers", port)
+		log.Printf("Metrics: http://localhost:%s/api/v1/metrics", port)
+		log.Printf("Search: http://localhost:%s/api/v1/search", port)
+
+		if err := service.httpServer.Run(":" + port); err != nil {
+			log.Fatalf("HTTP server failed to start on port %s: %v", port, err)
 		}
 	}()
 
 	// Future: gRPC server setup would go here
 
 	log.Printf("CUDA Service Worker is running")
-	log.Printf("HTTP API: http://localhost:8096/api/v1/health")
-	log.Printf("Workers: http://localhost:8096/api/v1/workers")
-	log.Printf("Metrics: http://localhost:8096/api/v1/metrics")
+
+	// Give the HTTP server time to start
+	time.Sleep(2 * time.Second)
+
+	// Verify the server is responding
+	go func() {
+		time.Sleep(3 * time.Second)
+		port := os.Getenv("PORT")
+		if port == "" {
+			port = "8097"
+		}
+
+		resp, err := http.Get(fmt.Sprintf("http://localhost:%s/api/v1/health", port))
+		if err != nil {
+			log.Printf("WARNING: Health check failed: %v", err)
+			log.Printf("Server may not be accepting connections on port %s", port)
+		} else {
+			resp.Body.Close()
+			log.Printf("✅ HTTP server is responding on port %s", port)
+		}
+	}()
 
 	// Keep the service running
 	select {}

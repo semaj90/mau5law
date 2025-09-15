@@ -151,8 +151,8 @@
       filters={searchFilters}
       variant="legal"
       size="lg"
-      on:search={handleSearch}
-      on:select={handleSearchSelect}
+      onsearch={handleSearch}
+      onselect={handleSearchSelect}
     />
   </Card>
 
@@ -163,7 +163,7 @@
       {#each sampleEvidence as evidence}
         <div
           class="cursor-pointer transform hover:scale-105 transition-transform"
-          on:click={() => handleEvidenceSelect(evidence)}
+          onclick={() => handleEvidenceSelect(evidence)}
         >
           <EvidenceThumbnail
             {evidence}
@@ -212,8 +212,8 @@
         enableDragging={true}
         height="400px"
         background="legal"
-        on:itemMove={handleBoardItemMove}
-        on:boardSave={handleBoardSave}
+        onitemMove={handleBoardItemMove}
+        onboardSave={handleBoardSave}
       />
     </Card>
   </div>
@@ -222,19 +222,19 @@
   <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">⚡ Quick Actions</h2>
     <div class="flex flex-wrap gap-3">
-      <Button variant="primary" on:click={() => showAnalysis = true}>
+      <Button variant="primary" onclick={() => showAnalysis = true}>
         Run AI Analysis
       </Button>
-      <Button variant="secondary" on:click={() => console.log('Export case')}>
+      <Button variant="secondary" onclick={() => console.log('Export case')}>
         Export Case
       </Button>
-      <Button variant="success" on:click={() => console.log('Generate report')}>
+      <Button variant="success" onclick={() => console.log('Generate report')}>
         Generate Report
       </Button>
-      <Button variant="warning" on:click={() => console.log('Flag critical')}>
+      <Button variant="warning" onclick={() => console.log('Flag critical')}>
         Flag Critical
       </Button>
-      <Button variant="error" on:click={() => console.log('Archive case')}>
+      <Button variant="error" onclick={() => console.log('Archive case')}>
         Archive Case
       </Button>
     </div>

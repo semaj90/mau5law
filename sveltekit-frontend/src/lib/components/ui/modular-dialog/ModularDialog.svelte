@@ -25,14 +25,14 @@
     refreshInterval?: number;
     // Event handlers
     onOpenChange?: (open: boolean) => void;
-    onDataLoad?: (data: any) => void;
+    onDataLoad?: (data: unknown) => void;
     onError?: (error: string) => void;
     // Content slots
-    children?: any;
-    header?: any;
-    footer?: any;
-    loading?: any;
-    error?: any;
+    children?: unknown;
+    header?: unknown;
+    footer?: unknown;
+    loading?: unknown;
+    error?: unknown;
   }
 
   let {
@@ -61,7 +61,7 @@
   const dispatch = createEventDispatcher();
 
   // Reactive data state
-  let data: any = $state(dataProvider?.data || null);
+  let data: unknown = $state(dataProvider?.data || null);
   let isLoading = $state(dataProvider?.loading || false);
   let errorMessage = $state(dataProvider?.error || null);
   let lastFetch = $state<number | null>(null);
@@ -101,7 +101,7 @@
       }
 
       if (result) {
-        data = (result as { data?: any }).data || result;
+        data = (result as { data?: unknown }).data || result;
         lastFetch = Date.now();
         onDataLoad?.(data);
         dispatch('dataLoad', data);
@@ -199,7 +199,7 @@
                 {title}
                 {#if data && entityType === 'case'}
                   <span class="text-sm nes-text is-disabled ml-2">
-                    #{(data as { caseNumber?: any; id?: any }).caseNumber || (data as { caseNumber?: any; id?: any }).id.slice(-6)}
+                    #{(data as { caseNumber?: unknown; id?: unknown }).caseNumber || (data as { caseNumber?: unknown; id?: unknown }).id.slice(-6)}
                   </span>
                 {/if}
               </Dialog.Title>
@@ -215,7 +215,7 @@
           <!-- Refresh button -->
           {#if entityType && entityId}
             <button
-              on:click={refresh}
+              onclick={refresh}
               disabled={isLoading}
               class="p-1 rounded-sm opacity-70 hover:opacity-100 transition-opacity disabled:opacity-50 mr-2"
               title="Refresh data"
@@ -243,7 +243,7 @@
             {:else}
               <div class="flex items-center gap-2 nes-text is-disabled">
                 <Loader2 class="h-4 w-4 animate-spin" />
-                <span class="font-mono text-sm">Loading (data as { caseNumber?: any; id?: any })...</span>
+                <span class="font-mono text-sm">Loading (data as { caseNumber?: unknown; id?: unknown })...</span>
               </div>
             {/if}
           </div>
@@ -259,7 +259,7 @@
                   <p class="font-mono text-xs nes-text is-disabled mt-1">{errorMessage}</p>
                 </div>
                 <button
-                  on:click={refresh}
+                  onclick={refresh}
                   class="px-3 py-1 text-xs bg-muted hover:bg-muted/80 rounded-md font-mono transition-colors"
                 >
                   Try Again

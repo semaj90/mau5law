@@ -119,8 +119,8 @@
       serviceStatus.loading = true;
       const response = await fetch(`${API_BASE}/health`);
 
-      if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
-        const health = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).ok) {
+        const health = await (response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).json();
         serviceStatus = {
           healthy: true,
           loading: false,
@@ -129,7 +129,7 @@
           config: health.config || {},
         };
       } else {
-        throw new Error(`HTTP ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}`);
+        throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).status}`);
       }
     } catch (error) {
       console.error("Health check failed:", error);
@@ -174,11 +174,11 @@
         body: JSON.stringify(request),
       });
 
-      if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}: ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).statusText}`);
+      if (!(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).status}: ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).statusText}`);
       }
 
-      processResult = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
+      processResult = await (response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).json();
       showProcessDialog = true;
     } catch (error) {
       console.error("Document processing failed:", error);
@@ -217,11 +217,11 @@
         body: JSON.stringify(request),
       });
 
-      if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}: ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).statusText}`);
+      if (!(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).status}: ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).statusText}`);
       }
 
-      searchResults = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
+      searchResults = await (response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).json();
       showSearchDialog = true;
     } catch (error) {
       console.error("Vector search failed:", error);
@@ -409,7 +409,7 @@
 
         <!-- Process Button -->
         <Button.Root
-          on:click={processDocument}
+          onclick={processDocument}
           disabled={processing || !serviceStatus.healthy}
           class="w-full mt-4 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-semibold rounded-lg transition-colors bits-btn bits-btn"
         >
@@ -465,7 +465,7 @@
 
         <!-- Search Button -->
         <Button.Root
-          on:click={performVectorSearch}
+          onclick={performVectorSearch}
           disabled={searching || !serviceStatus.healthy}
           class="w-full mt-4 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-400 text-white font-semibold rounded-lg transition-colors bits-btn bits-btn"
         >
@@ -616,14 +616,14 @@
               class="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors"
             >
               <div class="flex justify-between items-start mb-2">
-                <span class="font-medium text-slate-800">{(result as { id?: any; score?: any; content?: any; metadata?: any }).id}</span>
+                <span class="font-medium text-slate-800">{(result as { id?: unknown; score?: unknown; content?: unknown; metadata?: unknown }).id}</span>
                 <span class="text-sm font-semibold text-green-600">
-                  {((result as { id?: any; score?: any; content?: any; metadata?: any }).score * 100).toFixed(1)}% match
+                  {((result as { id?: unknown; score?: unknown; content?: unknown; metadata?: unknown }).score * 100).toFixed(1)}% match
                 </span>
               </div>
-              <p class="text-slate-600 mb-3">{(result as { id?: any; score?: any; content?: any; metadata?: any }).content}</p>
+              <p class="text-slate-600 mb-3">{(result as { id?: unknown; score?: unknown; content?: unknown; metadata?: unknown }).content}</p>
               <div class="flex flex-wrap gap-2 text-xs">
-                {#each Object.entries((result as { id?: any; score?: any; content?: any; metadata?: any }).metadata) as [key, value]}
+                {#each Object.entries((result as { id?: unknown; score?: unknown; content?: unknown; metadata?: unknown }).metadata) as [key, value]}
                   <span class="px-2 py-1 bg-slate-100 text-slate-700 rounded">
                     {key}: {value}
                   </span>

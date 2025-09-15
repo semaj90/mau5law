@@ -816,7 +816,7 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 					<button
 						class="mx-auto px-4 max-w-7xl"
-						on:click={() => addEvidenceMarker(item)}
+						onclick={() => addEvidenceMarker(item)}
 						disabled={readOnly}
 						title="Add evidence marker to canvas"
 					>
@@ -839,7 +839,7 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 					<button
 						class="mx-auto px-4 max-w-7xl"
-						on:click={() => addCitationMarker(citation)}
+						onclick={() => addCitationMarker(citation)}
 						disabled={readOnly}
 						title="Add citation marker to canvas"
 					>

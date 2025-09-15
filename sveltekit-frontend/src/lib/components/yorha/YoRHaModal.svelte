@@ -49,7 +49,7 @@
     type = "default",
     children,
     footer,
-  : any } = $props();
+  : unknown } = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -122,9 +122,9 @@
 {#if open}
   <div
     class="yorha-modal-backdrop {type}"
-    on:click={handleBackdropClick}
-    on:keydown={handleKeydown}
-    transition:fade={{ duration: 200 }}
+    onclick={handleBackdropClick}
+    onkeydown={handleKeydown}
+    transitionfade={{ duration: 200 }}
     role="dialog"
     aria-modal="true"
     aria-labelledby={title ? "modal-title" : undefined}
@@ -134,7 +134,7 @@
     <div
       bind:this={modalElement}
       class="yorha-modal {sizeClasses[size]} {type}"
-      transition:scale={{ duration: 300, easing: quintOut, start: 0.9 }}
+      transitionscale={{ duration: 300, easing: quintOut, start: 0.9 }}
       tabindex="-1"
     >
       <!-- Header -->
@@ -163,7 +163,7 @@
           {#if closable && !persistent}
             <button
               class="modal-close"
-              on:click={handleClose}
+              onclick={handleClose}
               aria-label="Close modal"
             >
               <span class="close-icon">✕</span>
@@ -186,18 +186,18 @@
             {@render footer()}
           {:else if type === "confirm"}
             <div class="modal-actions">
-              <button class="modal-button cancel" on:click={handleCancel}>
+              <button class="modal-button cancel" onclick={handleCancel}>
                 <span class="button-icon">✕</span>
                 Cancel
               </button>
-              <button class="modal-button confirm" on:click={handleConfirm}>
+              <button class="modal-button confirm" onclick={handleConfirm}>
                 <span class="button-icon">✓</span>
                 Confirm
               </button>
             </div>
           {:else if type === "alert"}
             <div class="modal-actions">
-              <button class="modal-button acknowledge" on:click={handleClose}>
+              <button class="modal-button acknowledge" onclick={handleClose}>
                 <span class="button-icon">■</span>
                 Acknowledge
               </button>

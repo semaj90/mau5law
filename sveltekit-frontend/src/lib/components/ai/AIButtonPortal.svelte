@@ -15,9 +15,7 @@ https://svelte.dev/e/js_parse_error -->
     show = true
   }: Props = $props();
 
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   </script>
 
 {#if show}

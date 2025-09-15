@@ -57,7 +57,7 @@
     evidenceId?: string;
     autoStart?: boolean;
     neuralSpriteEnabled?: boolean;
-    onCompleted?: ((result: any) => void) | undefined;
+    onCompleted?: ((result: unknown) => void) | undefined;
     onError?: ((error: string) => void) | undefined;
     sessionId?: string | null;
     endpoint?: string;
@@ -81,7 +81,7 @@
 
   // Prepare initial snapshot with safe context access (actor may not have started yet)
   const rawSnapshot = (actor.getSnapshot && (actor.getSnapshot() as any)) || null;
-  const initialSnapshot: any = rawSnapshot || {
+  const initialSnapshot: unknown = rawSnapshot || {
     context: {},
     value: 'idle',
     matches: (_: string) => false
@@ -118,8 +118,8 @@
     routingKey: evidenceId
   };
 
-  let rabbitClient: any = null;
-  let rabbitSubscription: any = null;
+  let rabbitClient: unknown = null;
+  let rabbitSubscription: unknown = null;
 
   async function connectRabbitMQ() {
     if (!useRabbitMQ || typeof window === 'undefined') return;
@@ -135,7 +135,7 @@
 
       rabbitClient.onConnect = () => {
         const destination = `/exchange/${rabbitConfig.exchange}/${rabbitConfig.routingKey}`;
-        rabbitSubscription = rabbitClient.subscribe(destination, (msg: any) => {
+        rabbitSubscription = rabbitClient.subscribe(destination, (msg: unknown) => {
           try {
             const data = JSON.parse(msg.body);
             if (data.currentState && data.context) {
@@ -237,7 +237,7 @@
     actor.start();
 
     // Subscribe to state changes
-    const subscription = actor.subscribe((state: any) => {
+    const subscription = actor.subscribe((state: unknown) => {
       currentState = state as EvidenceActorState;
       recomputeDerived();
 
@@ -364,7 +364,7 @@
     }
   }
 
-  function updateClientFromServer(serverData: any) {
+  function updateClientFromServer(serverData: unknown) {
     const { currentState: serverState, context: serverContext } = serverData;
 
     // Sync client state with server state
@@ -448,8 +448,8 @@
         class="border-2 border-dashed rounded-lg p-8 text-center transition-colors border-gray-300"
         class:border-blue-500={dragOver}
         class:bg-blue-50={dragOver}
-        on:drop={handleFileDrop}
-        on:dragover={handleDragOver}
+        ondrop={handleFileDrop}
+        ondragover={handleDragOver}
         ondragleave={handleDragLeave}
       >
         <div class="space-y-4">
@@ -465,7 +465,7 @@
           <label class="cursor-pointer inline-flex items-center justify-center px-4 py-2 rounded bg-white border">
             <input
               type="file"
-              on:change={handleFileSelect}
+              onchange={handleFileSelect}
               accept=".pdf,.docx,.txt,.png,.jpg,.jpeg"
               class="hidden"
             />
@@ -489,7 +489,7 @@
         </div>
 
         {#if !isProcessing && !isCompleted}
-          <button type="button" class="bits-btn" on:click={resetWorkflow}>
+          <button type="button" class="bits-btn" onclick={resetWorkflow}>
             Change File
           </button>
         {/if}
@@ -565,7 +565,7 @@
     <!-- Processing Controls -->
     {#if selectedFile && !isProcessing && !isCompleted && !hasError}
       <div class="flex justify-center">
-        <button type="button" on:click={startProcessing} class="px-8 py-3 bits-btn">
+        <button type="button" onclick={startProcessing} class="px-8 py-3 bits-btn">
           🚀 Start Processing Workflow
         </button>
       </div>
@@ -614,7 +614,7 @@
 
         {#if canCancel}
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" on:click={cancelProcessing}>
+            <button type="button" class="bits-btn" onclick={cancelProcessing}>
               Cancel Processing
             </button>
           </div>
@@ -635,10 +635,10 @@
           {/each}
         </div>
         <div class="flex gap-2 mt-3">
-          <button type="button" class="bits-btn" on:click={retryProcessing}>
+          <button type="button" class="bits-btn" onclick={retryProcessing}>
             Retry
           </button>
-          <button type="button" class="bits-btn" on:click={resetWorkflow}>
+          <button type="button" class="bits-btn" onclick={resetWorkflow}>
             Reset
           </button>
         </div>
@@ -662,7 +662,7 @@
                 <button
                   type="button"
                   class="bits-btn px-4 py-2"
-                  on:click={openPortableArtifact}
+                  onclick={openPortableArtifact}
                 >
                   📦 Download Portable Artifact
                 </button>
@@ -671,7 +671,7 @@
                   <button
                     type="button"
                     class="bits-btn"
-                    on:click={openMinioStorage}
+                    onclick={openMinioStorage}
                   >
                     🗄️ View in Archive
                   </button>
@@ -687,7 +687,7 @@
           {/if}
 
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" on:click={resetWorkflow}>
+            <button type="button" class="bits-btn" onclick={resetWorkflow}>
               Process Another Evidence
             </button>
           </div>
@@ -703,7 +703,7 @@
           <h3 class="font-medium text-yellow-800">Processing Cancelled</h3>
           <p class="text-sm text-yellow-700">Workflow was cancelled by user</p>
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" on:click={resetWorkflow}>
+            <button type="button" class="bits-btn" onclick={resetWorkflow}>
               Start New Workflow
             </button>
           </div>

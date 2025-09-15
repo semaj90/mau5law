@@ -1,9 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import SecurityMonitoringDashboard from "$lib/components/security/SecurityMonitoringDashboard.svelte";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { ArrowLeft, Shield } from "lucide-svelte";
 </script>
 

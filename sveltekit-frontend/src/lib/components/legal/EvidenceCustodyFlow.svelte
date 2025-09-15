@@ -13,7 +13,7 @@ and AI-powered verification features.
     caseId: string
     userId: string
     originalHash: string
-    onWorkflowComplete: ((result: any) ;
+    onWorkflowComplete: ((result: unknown) ;
     onWorkflowError: ((error: string) ;
   }
   let { evidenceId,
@@ -28,7 +28,7 @@ and AI-powered verification features.
     originalHash,
     onWorkflowComplete = > void) | undefined = undefined,
     onWorkflowError = > void) | undefined = undefined
-  : any } = $props();
+  : unknown } = $props();
 
 
 
@@ -39,9 +39,7 @@ and AI-powered verification features.
   import IntegrityVerification from './IntegrityVerification.svelte';
   import CollaborationPanel from './CollaborationPanel.svelte';
   import WorkflowProgress from './WorkflowProgress.svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -201,7 +199,7 @@ and AI-powered verification features.
     }
   }
 
-  function handleCollaborationUpdate(data: any) {
+  function handleCollaborationUpdate(data: unknown) {
     // Handle different types of collaboration updates
     switch (data.action) {
       case 'user-joined':
@@ -331,7 +329,7 @@ and AI-powered verification features.
               Begin the Evidence Chain of Custody workflow to ensure proper handling,
               verification, and documentation of evidence integrity.
             </p>
-            <Button on:click={startWorkflow} class="w-full bits-btn bits-btn">
+            <Button onclick={startWorkflow} class="w-full bits-btn bits-btn">
 Start Custody Workflow
 
           </div>
@@ -350,7 +348,7 @@ Start Custody Workflow
               <Button class="bits-btn" 
                 variant="outline" 
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 showIntegrityDetails = !showIntegrityDetails}
               >
                 {showIntegrityDetails ? 'Hide' : 'Show'} Details
@@ -397,10 +395,10 @@ showIntegrityDetails = !showIntegrityDetails}
           <div class="yorha-panel-content space-y-4">
             {#if currentState.value === 'awaitingApproval'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" on:click={approveWorkflow} variant="success">
+                <Button class="bits-btn" onclick={approveWorkflow} variant="success">
 Approve Custody
 
-                <Button class="bits-btn" on:click={rejectWorkflow} variant="destructive">
+                <Button class="bits-btn" onclick={rejectWorkflow} variant="destructive">
 Reject Custody
 
               </div>
@@ -408,16 +406,16 @@ Reject Custody
 
             {#if currentState.value === 'collaboration'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" on:click={() =>
+                <Button class="bits-btn" onclick={() =>
 showTransferDialog = true} variant="outline">
                   Transfer Custody
 
                 {#if !activeCollaborators.includes(userId)}
-                  <Button class="bits-btn" on:click={joinCollaboration} variant="outline">
+                  <Button class="bits-btn" onclick={joinCollaboration} variant="outline">
 Join Collaboration
 
                 {:else}
-                  <Button class="bits-btn" on:click={leaveCollaboration} variant="outline">
+                  <Button class="bits-btn" onclick={leaveCollaboration} variant="outline">
 Leave Collaboration
 
                 {/if}
@@ -426,10 +424,10 @@ Leave Collaboration
 
             {#if currentState.value === 'error'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" on:click={retryWorkflow}>
+                <Button class="bits-btn" onclick={retryWorkflow}>
 Retry Workflow
 
-                <Button class="bits-btn" on:click={cancelWorkflow} variant="destructive">
+                <Button class="bits-btn" onclick={cancelWorkflow} variant="destructive">
 Cancel Workflow
 
               </div>
@@ -476,14 +474,14 @@ Cancel Workflow
         ></textarea>
         <div class="flex space-x-3">
           <Button 
-            on:click={startCustodyTransfer}
+            onclick={startCustodyTransfer}
             disabled={!transferReason.trim()}
             class="flex-1 bits-btn bits-btn"
           >
 Transfer
 
           <Button class="bits-btn" 
-            on:click={() =>
+            onclick={() =>
 showTransferDialog = false}
             variant="outline"
             class="flex-1"

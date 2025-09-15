@@ -209,7 +209,7 @@
         </div>
 
         <button
-          on:click={testCompute}
+          onclick={testCompute}
           disabled={computeLoading || !health?.cuda_available}
           class="bg-gradient-to-r from-nier-accent-warm to-nier-accent-cool text-nier-bg-primary font-bold px-golden-lg py-golden-md rounded uppercase tracking-wide hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >

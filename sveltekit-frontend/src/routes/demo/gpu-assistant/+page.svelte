@@ -80,8 +80,8 @@
   </div>
 
   <div class="flex gap-2">
-  <input class="flex-1 border rounded px-3 py-2 bg-nier-bg-secondary" bind:value={input} placeholder="Ask a question about your case…" on:keydown={(e) => e.key==='Enter' && send()} />
-  <ModernButton on:click={send} variant="primary">Send</ModernButton>
+  <input class="flex-1 border rounded px-3 py-2 bg-nier-bg-secondary" bind:value={input} placeholder="Ask a question about your case…" onkeydown={(e) => e.key==='Enter' && send()} />
+  <ModernButton onclick={send} variant="primary">Send</ModernButton>
   </div>
 </div>
 

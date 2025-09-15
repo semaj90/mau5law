@@ -241,7 +241,7 @@
     <div class="nes-texture-container">
       {@html textureData}
 
-      {#if $$slots.overlay}
+      {#if overlay}
         <div class="nes-overlay">
           <slot name="overlay" {currentLOD} {webgpuSupported} {assetId} />
         </div>
@@ -277,7 +277,7 @@
   {/if}
 
   <!-- Debug info slot -->
-  {#if $$slots.debug}
+  {#if debug}
     <slot name="debug" memoryStats={getMemoryStats()} {currentLOD} {webgpuSupported} />
   {/if}
 </div>

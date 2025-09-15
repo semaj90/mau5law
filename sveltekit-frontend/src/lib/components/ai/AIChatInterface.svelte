@@ -1,7 +1,11 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
+  import { debounce } from '$lib/utils/debounce';
   import 'nes.css/css/nes.min.css';
   	import { onMount, tick } from 'svelte';
   	import { fade, fly, scale } from 'svelte/transition';
@@ -68,6 +72,11 @@ https://svelte.dev/e/attribute_invalid_name -->
   	// State
   let messages = $state<Message[] >([]);
   let inputValue = $state('');
+  let inputElement: HTMLInputElement | null = null;
+  let messagesContainer: HTMLElement | null = null;
+  let windowElement: HTMLElement | null = null;
+  let errorMessage = $state('');
+  let isLoading = $state(false);
   let isTyping = $state(false);
   let isConnected = $state(true);
   let isDragging = $state(false);
@@ -112,13 +121,20 @@ https://svelte.dev/e/attribute_invalid_name -->
 
   	// Auto-scroll to bottom when new messages arrive
   	$effect(() => {
-  		if (messages.length > 0) {
-  			// use tick to wait for DOM update
-  			tick().then(() => {
-  				if (messagesContainer) {
-  					messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  				}
-  			});
+    try {
+      
+        		if (messages.length > 0) {
+        			// use tick to wait for DOM update
+        			tick().then(() => {
+        				if (messagesContainer) {
+        					messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        				}
+        			
+    } catch (error) {
+      console.error('Effect error:', error);
+      // Handle error gracefully
+    }
+  });
   		}
   	});
 
@@ -170,7 +186,8 @@ https://svelte.dev/e/attribute_invalid_name -->
   		} catch (error) {
   			console.error('Chat error:', error);
   			messages = messages.filter((msg) => msg.id !== typingMessage.id);
-  			addMessage('assistant', "Sorry, I'm having trouble connecting. Please try again.", { error: true });
+  			addMessage('assistant', "Sorry, I'm having trouble connecting. Please try again.", { error: true 
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';});
   			isConnected = false;
   		} finally {
   			isTyping = false;
@@ -188,12 +205,20 @@ https://svelte.dev/e/attribute_invalid_name -->
   			const controller = new AbortController();
   			const timeoutId = setTimeout(() => controller.abort(), 60000);
 
-  			const response = await fetch(apiEndpoint, {
+  			try {
+    const response = await fetch(apiEndpoint, {
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({
   					model: settings.model,
-  					prompt: formatPromptForGemma3(message),
+  					prompt: formatPromptForGemma3(message);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  },
   					stream: false,
   					options: {
   						temperature: settings.temperature,
@@ -210,13 +235,21 @@ https://svelte.dev/e/attribute_invalid_name -->
   			clearTimeout(timeoutId);
 
   			if (response.ok) {
-  				const data = await response.json();
+  				const data = awaitawait (async () => {
+      try {
+        return await  response.json();
+      } catch (error) {
+        console.error('JSON parsing failed:', error);
+        throw new Error('Invalid JSON response');
+      }
+    })();
   				return data.response?.trim() || null;
   			}
   		} catch (error) {
   			console.warn('Primary API failed:', error);
   			isConnected = false;
-  		}
+  		
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
 
   		return null;
   	}
@@ -224,7 +257,8 @@ https://svelte.dev/e/attribute_invalid_name -->
   	// Call fallback API
   	async function callFallbackAPI(message: string): Promise<string | null> {
   		try {
-  			const response = await fetch(fallbackEndpoint, {
+  			try {
+    const response = await fetch(fallbackEndpoint, {
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({
@@ -235,19 +269,34 @@ https://svelte.dev/e/attribute_invalid_name -->
   					max_tokens: settings.maxTokens,
   					temperature: settings.temperature,
   					top_p: settings.topP
-  				}),
+  				});
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  },
   				// AbortSignal.timeout may not be available in all runtimes; keep for modern environments
   				// If unsupported, the fetch will simply run without timeout.
   				signal: (AbortSignal as any).timeout ? (AbortSignal as any).timeout(60000) : undefined
   			});
 
   			if (response.ok) {
-  				const data = await response.json();
+  				const data = awaitawait (async () => {
+      try {
+        return await  response.json();
+      } catch (error) {
+        console.error('JSON parsing failed:', error);
+        throw new Error('Invalid JSON response');
+      }
+    })();
   				return data.response || data.choices?.[0]?.message?.content || null;
   			}
   		} catch (error) {
   			console.warn('Fallback API failed:', error);
-  		}
+  		
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
 
   		return null;
   	}
@@ -424,11 +473,12 @@ https://svelte.dev/e/attribute_invalid_name -->
 				</div>
 			</div>
 
-			<nav class="flex items-center space-x-1" role="toolbar" aria-label="Chat window controls">
+			<a href="#main-content" class="skip-link">Skip to main content</a>
+  <nav class="flex items-center space-x-1" role="toolbar" aria-label="Chat window controls">
 				<button
 					type="button"
 					class="w-8 h-8 flex items-center justify-center border border-yorha-border text-yorha-text-secondary hover:border-yorha-primary hover:text-yorha-primary focus:border-yorha-primary focus:outline-none focus:ring-2 focus:ring-yorha-primary/50 transition-colors"
-					on:click={toggleSettings}
+					onclick={(event: MouseEvent) => toggleSettings}
 					aria-label={settingsOpen ? 'Close settings' : 'Open settings'}
 					aria-expanded={settingsOpen}
 				>
@@ -441,7 +491,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 				<button
 					type="button"
 					class="w-8 h-8 flex items-center justify-center border border-yorha-border text-yorha-text-secondary hover:border-yorha-primary hover:text-yorha-primary focus:border-yorha-primary focus:outline-none focus:ring-2 focus:ring-yorha-primary/50 transition-colors"
-					on:click={minimizeWindow}
+					onclick={(event: MouseEvent) => minimizeWindow}
 					aria-label={minimized ? 'Restore window' : 'Minimize window'}
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -456,7 +506,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 				<button
 					type="button"
 					class="w-8 h-8 flex items-center justify-center border border-yorha-border text-yorha-text-secondary hover:border-red-500 hover:text-red-500 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 transition-colors"
-					on:click={closeWindow}
+					onclick={(event: MouseEvent) => closeWindow}
 					aria-label="Close chat window"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -485,14 +535,14 @@ https://svelte.dev/e/attribute_invalid_name -->
 
 						<div>
 							<label class="block text-xs text-yorha-text-secondary mb-1" for="max-tokens">Max Tokens</label>
-			<input id="max-tokens" type="number" min="100" max="2048" bind:value={settings.maxTokens} class="w-full bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary text-xs p-2 focus:border-yorha-primary">
+			<input aria-label="Input field" id="max-tokens" type="number" min="100" max="2048" bind:value={settings.maxTokens} class="w-full bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary text-xs p-2 focus:border-yorha-primary">
 						</div>
 
 						<div class="flex space-x-2">
-							<button type="button" on:click={updateSettings} class="flex-1 bg-yorha-primary text-yorha-bg-primary text-xs p-2 hover:bg-yorha-secondary transition-colors">
+							<button aria-label="Action button" type="button" onclick={(event: MouseEvent) => updateSettings} class="flex-1 bg-yorha-primary text-yorha-bg-primary text-xs p-2 hover:bg-yorha-secondary transition-colors">
 								Apply
 							</button>
-							<button type="button" on:click={clearChat} class="flex-1 bg-yorha-error text-white text-xs p-2 hover:bg-red-600 transition-colors">
+							<button aria-label="Action button" type="button" onclick={(event: MouseEvent) => clearChat} class="flex-1 bg-yorha-error text-white text-xs p-2 hover:bg-red-600 transition-colors">
 								Clear
 							</button>
 						</div>
@@ -521,7 +571,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 
 							{#if message.error}
 								<div class="mt-2 text-xs text-red-400" role="alert">
-									Failed to get response. <button on:click={sendMessage} class="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-red-400/50" aria-label="Retry sending message">Retry</button>
+									Failed to get response. <button onclick={(event: MouseEvent) => sendMessage} class="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-red-400/50" aria-label="Retry sending message">Retry</button>
 								</div>
 							{/if}
 
@@ -550,12 +600,20 @@ https://svelte.dev/e/attribute_invalid_name -->
 			</main>
 
 			<footer class="border-t border-yorha-border bg-yorha-bg-secondary p-4">
-				<form class="flex space-x-3" on:submit={(e) => { e.preventDefault(); sendMessage(); }} role="search" aria-label="Send message to AI">
+				<form class="flex space-x-3" onsubmit={(event: SubmitEvent) => {
+      event.preventDefault();
+      try {
+        (event: SubmitEvent) => e) => { e.preventDefault(); sendMessage();(event);
+      } catch (error) {
+        console.error('Form submission error:', error);
+        errorMessage = error instanceof Error ? error.message : 'Form submission failed';
+      }
+    }}} role="search" aria-label="Send message to AI">
 					<textarea
 						bind:this={inputElement}
 						bind:value={inputValue}
-						on:keydown={handleKeyDown}
-						on:input={autoResize}
+						onkeydown={handleKeyDown}
+						oninput={(event: Event) => debounce(autoResize, 300}
 						placeholder="Ask me about contracts, liability, compliance, or any legal question..."
 						class="flex-1 bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary placeholder-yorha-text-muted p-3 text-sm resize-none focus:border-yorha-primary focus:outline-none focus:ring-2 focus:ring-yorha-primary/50 transition-colors"
 						rows="1"

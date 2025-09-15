@@ -1,7 +1,7 @@
 <!-- Evidence Upload Board Component with AI Analysis -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  // import { Button } from '$lib/components/ui/enhanced-bits'; // Temporarily disabled due to SSR issues
+  // import Button from '$lib/components/ui/enhanced-bits'; // Temporarily disabled due to SSR issues
   // import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits'; // Temporarily disabled due to SSR issues
   // import { Textarea } from '$lib/components/ui/textarea'; // Replaced with native HTML textarea
   import { AIAnalysisService } from '$lib/services/ai-analysis';
@@ -37,7 +37,7 @@
     </div>
     <div class="yorha-panel-content space-y-4">
       <input 
-        type="file" on:change={handleFileUpload}
+        type="file" onchange={handleFileUpload}
         accept=".txt,.pdf,.doc,.docx"
         class="block w-full text-sm"
       />

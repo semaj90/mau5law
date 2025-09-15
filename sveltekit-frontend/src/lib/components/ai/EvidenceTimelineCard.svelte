@@ -10,9 +10,7 @@
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import Separator from '$lib/components/ui/separator/Separator.svelte';
 
   // Access props via Svelte runes $props()
@@ -149,7 +147,7 @@
                 <div class="flex-1">
                   <button
                     class="text-left w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                    on:click={() => toggleDate(date)}
+                    onclick={() => toggleDate(date)}
                   >
                     <div>
                       <h3 class="font-semibold text-lg">{formatDate(date)}</h3>

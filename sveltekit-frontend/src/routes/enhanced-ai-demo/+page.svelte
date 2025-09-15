@@ -6,9 +6,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Card } from '$lib/components/ui/enhanced-bits';
   import CardContent from '$lib/components/ui/CardContent.svelte';
   import CardHeader from '$lib/components/ui/CardHeader.svelte';
@@ -170,7 +168,7 @@
           <!-- Action Buttons -->
           <div class="flex gap-4">
             <Button
-              on:click={handleAnalyze}
+              onclick={handleAnalyze}
               disabled={!testQuery.trim() ||
                 processingStatus === 'processing' ||
                 !systemInitialized}
@@ -180,7 +178,7 @@
 
             <Button class="bits-btn"
               variant="outline"
-              on:click={handleClear}
+              onclick={handleClear}
               disabled={processingStatus === 'processing'}>
 Clear
 </Button>

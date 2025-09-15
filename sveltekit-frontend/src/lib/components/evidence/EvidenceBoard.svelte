@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
 
   let canvas: HTMLCanvasElement | null = null;
   let ctx: CanvasRenderingContext2D | null;
-  let networkLayout: any = {};
+  let networkLayout: unknown = {};
 
   onMount(async () => {
     await loadEvidence();
@@ -117,10 +117,10 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Build connection map for network visualization
-  function buildConnectionMap(insights: any) {
-    const connections: any[] = [];
+  function buildConnectionMap(insights: unknown) {
+    const connections: unknown[] = [];
     // Process entity connections
-    insights.entityConnections?.forEach((connection: any) => {
+    insights.entityConnections?.forEach((connection: unknown) => {
       connections.push({
         type: 'entity',
         source: connection.source,
@@ -131,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
     });
 
     // Process cross-references
-    insights.crossReferences?.forEach((ref: any) => {
+    insights.crossReferences?.forEach((ref: unknown) => {
       connections.push({
         type: 'reference',
         source: ref.sourceEvidence,
@@ -156,8 +156,8 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Derived evidence list filtered by search and type
-    let filteredEvidence: any[] = [];
-    let filteredEvidence = $derived($evidenceItems.filter((evidence: any) => {
+    let filteredEvidence: unknown[] = [];
+    let filteredEvidence = $derived($evidenceItems.filter((evidence: unknown) => {
       const query = searchQuery?.toLowerCase?.() || '');
       const matchesSearch =
         !query ||
@@ -228,7 +228,7 @@ https://svelte.dev/e/js_parse_error -->
   async function createEvidenceConnection(sourceId: string, targetId: string) {
     try {
       console.log(`Creating connection: ${sourceId} -> ${targetId}`);
-      connectionMap.update((connections: any[]) => [
+      connectionMap.update((connections: unknown[]) => [
         ...connections,
         {
           type: 'manual',
@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Get analysis status color
-  function getAnalysisStatusColor(evidence: any) {
+  function getAnalysisStatusColor(evidence: unknown) {
     if (evidence.analyzed) return 'text-green-600';
     if (loadingAnalysis && $selectedEvidence.includes(evidence.id)) return 'text-yellow-600';
     return 'text-gray-400';
@@ -279,7 +279,7 @@ https://svelte.dev/e/js_parse_error -->
     });
   }
 
-  function drawConnection(connection: any) {
+  function drawConnection(connection: unknown) {
     if (!ctx) return;
     // Simplified connection drawing
     ctx.beginPath();
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
     ctx.setLineDash([]);
   }
 
-  function drawEvidenceNode(evidence: any, index: number) {
+  function drawEvidenceNode(evidence: unknown, index: number) {
     if (!ctx) return;
     const x = 50 + (index % 8) * 100;
     const y = 50 + Math.floor(index / 8) * 100;
@@ -349,7 +349,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="view-btn"
           class:active={viewMode === 'grid'}
-          on:click={() => viewMode = 'grid'}
+          onclick={() => viewMode = 'grid'}
           title="Grid View"
         >
           <Archive class="w-4 h-4" />
@@ -357,7 +357,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="view-btn"
           class:active={viewMode === 'timeline'}
-          on:click={() => viewMode = 'timeline'}
+          onclick={() => viewMode = 'timeline'}
           title="Timeline View"
         >
           <Clock class="w-4 h-4" />
@@ -365,7 +365,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="view-btn"
           class:active={viewMode === 'network'}
-          on:click={() => viewMode = 'network'}
+          onclick={() => viewMode = 'network'}
           title="Network View"
         >
           <Network class="w-4 h-4" />
@@ -376,7 +376,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="detective-toggle"
         class:active={detectiveMode}
-        on:click={toggleDetectiveMode}
+        onclick={toggleDetectiveMode}
         title="Toggle Detective Mode"
       >
         {#if detectiveMode}
@@ -392,7 +392,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if $selectedEvidence.length > 0}
         <button
           class="analyze-btn"
-          on:click={analyzeSelectedEvidence}
+          onclick={analyzeSelectedEvidence}
           disabled={loadingAnalysis}
           title="Analyze Selected Evidence"
         >
@@ -410,7 +410,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="filter-toggle"
         class:active={showFilters}
-        on:click={() => showFilters = !showFilters}
+        onclick={() => showFilters = !showFilters}
         title="Toggle Filters"
       >
         <Filter class="w-4 h-4" />
@@ -479,7 +479,7 @@ https://svelte.dev/e/js_parse_error -->
         <h3>🕵️ Detective Insights</h3>
         <button
           class="insights-toggle"
-          on:click={() => showInsights = !showInsights}
+          onclick={() => showInsights = !showInsights}
         >
           {showInsights ? 'Hide' : 'Show'} Insights
         </button>
@@ -514,9 +514,9 @@ https://svelte.dev/e/js_parse_error -->
             class:analyzed={evidence.analyzed}
             class:suspicious={evidence.suspiciousIndicators?.length > 0}
             draggable={detectiveMode}
-            on:dragstart={e => handleDragStart(e, evidence.id)}
-            on:dragover={e => e.preventDefault()}
-            on:drop={onclick}
+            ondragstart={e => handleDragStart(e, evidence.id)}
+            ondragover={e => e.preventDefault()}
+            ondrop={onclick}
           >
             <!-- Evidence Header -->
             <div class="nier-bits-yorha-panel-header">
@@ -884,7 +884,7 @@ https://svelte.dev/e/js_parse_error -->
     border-left: 4px solid #f59e0b;
   }
 
-  .insight-(item as { high?: any }).high-confidence {
+  .insight-(item as { high?: unknown }).high-confidence {
     border-left-color: #dc2626;
   }
 

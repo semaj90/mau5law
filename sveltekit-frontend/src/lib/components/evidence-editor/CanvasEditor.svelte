@@ -207,7 +207,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     // Implementation for visual connection preview while connecting nodes
     // This would show a line from the selected node to the mouse cursor
   }
-  function drawFileNode(node: any) {
+  function drawFileNode(node: unknown) {
     const isSelected = selectedNodeId === node.id;
     const isHovered = hoveredNodeId === node.id;
 
@@ -279,7 +279,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       drawConnectionPoints(node);
   }
   }
-  function drawConnectionPoints(node: any) {
+  function drawConnectionPoints(node: unknown) {
     const pointSize = 6 / zoomLevel;
     const points = [
       { x: node.x + node.width / 2, y: node.y }, // Top
@@ -412,7 +412,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
     reader.readAsDataURL(file);
   }
-  async function autoTagFileEnhanced(node: any) {
+  async function autoTagFileEnhanced(node: unknown) {
     try {
       const response = await fetch('/api/ai/tag', {
         method: 'POST',
@@ -445,7 +445,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       console.error('Auto-tagging failed:', error);
   }
   }
-  function createSmartConnections(newNode: any) {
+  function createSmartConnections(newNode: unknown) {
     if (!newNode.aiTags) return;
 
     const { people, locations, organizations } = newNode.aiTags;
@@ -687,7 +687,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   }
   // Public methods
-  export function addFileNode(file: any, x: number, y: number) {
+  export function addFileNode(file: unknown, x: number, y: number) {
     const node = {
       id: crypto.randomUUID(),
       name: file.name,
@@ -709,7 +709,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   export function getSelectedNode() {
     return fileNodes.find(node => node.id === selectedNodeId) || null;
   }
-  export function updateNode(nodeId: string, updates: any) {
+  export function updateNode(nodeId: string, updates: unknown) {
     const node = fileNodes.find(n => n.id === nodeId);
     if (node) {
       Object.assign(node, updates);
@@ -723,7 +723,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       viewport: { zoomLevel, panOffset }
     };
   }
-  export function loadCanvasState(state: any) {
+  export function loadCanvasState(state: unknown) {
     if (state.nodes) fileNodes = state.nodes;
     if (state.connections) nodeConnections = state.connections;
     if (state.viewport) {
@@ -738,12 +738,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   <canvas
     bind:this={canvas as any}
     class="container mx-auto px-4"
-    on:drop={handleDrop}
-    on:dragover={handleDragOver}
-    on:click={handleCanvasClick}
+    ondrop={handleDrop}
+    ondragover={handleDragOver}
+    onclick={handleCanvasClick}
     onmousedown={handleMouseDown}
     onmousemove={mouseup}
-    on:mouseleave={wheel}
+    onmouseleave={wheel}
     on:contextmenu|preventDefault
   ></canvas>
 

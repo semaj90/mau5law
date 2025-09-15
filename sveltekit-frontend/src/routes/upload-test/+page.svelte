@@ -7,7 +7,7 @@
 
   interface ServiceStatus { healthy: boolean; [key: string]: unknown }
   interface SystemStatus { services?: Record<string, ServiceStatus>; [key: string]: unknown }
-  interface UploadResult { filename?: string; status?: string; documentId?: string; size?: number; embeddingGenerated?: boolean; error?: string; [key:string]: any }
+  interface UploadResult { filename?: string; status?: string; documentId?: string; size?: number; embeddingGenerated?: boolean; error?: string; [key:string]: unknown }
 
   let uploadResults: UploadResult[] = [];
   let systemStatus: SystemStatus = {};
@@ -73,8 +73,8 @@
 
       // Stop polling when leaving page
       addEventListener('beforeunload', () => { pollActive = false; });
-      if ((response as { ok?: any; json?: any }).ok) {
-        systemStatus = await (response as { ok?: any; json?: any }).json();
+      if ((response as { ok?: unknown; json?: unknown }).ok) {
+        systemStatus = await (response as { ok?: unknown; json?: unknown }).json();
       }
     } catch (error) {
       console.error('Failed to fetch system status:', error);
@@ -107,7 +107,7 @@
   <!-- Simple File Upload Component (UnoCSS attributify) -->
   <!-- Converted UnoCSS attributify props to class to satisfy TS HTMLProps -->
   <div class="mb-8 border border-gray-200 rounded-lg p-4">
-    <SimpleFileUpload on:uploadcomplete={handleUploadComplete} />
+    <SimpleFileUpload onuploadcomplete={handleUploadComplete} />
   </div>
 
   <!-- Upload Results -->
@@ -118,22 +118,22 @@
         {#each uploadResults as result}
           <div class="p-4 border rounded-lg bg-white shadow-sm">
             <div class="flex justify-between items-start mb-2">
-              <h3 class="font-medium">{(result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).filename || 'Unknown file'}</h3>
-              <span class={`px-2 py-1 text-xs rounded ${(result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                {(result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).status}
+              <h3 class="font-medium">{(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).filename || 'Unknown file'}</h3>
+              <span class={`px-2 py-1 text-xs rounded ${(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).status === 'processed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                {(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).status}
               </span>
             </div>
-            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).documentId}
-              <p class="text-sm text-gray-600 mb-1">Document ID: {(result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).documentId}</p>
+            {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).documentId}
+              <p class="text-sm text-gray-600 mb-1">Document ID: {(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).documentId}</p>
             {/if}
-            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size}
-              <p class="text-sm text-gray-600 mb-1">Size: {((result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size / 1024).toFixed(1)} KB</p>
+            {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).size}
+              <p class="text-sm text-gray-600 mb-1">Size: {((result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).size / 1024).toFixed(1)} KB</p>
             {/if}
-            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).embeddingGenerated}
+            {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).embeddingGenerated}
               <p class="text-sm text-green-600">✓ Embeddings generated</p>
             {/if}
-            {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).error}
-              <p class="text-sm text-red-600">Error: {(result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).error}</p>
+            {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).error}
+              <p class="text-sm text-red-600">Error: {(result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).error}</p>
             {/if}
           </div>
         {/each}

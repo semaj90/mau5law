@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 /// <reference types="vite/client" />
 <script lang="ts">
   // Component props
-  let { ...props }: any = $props();
+  let { ...props }: unknown = $props();
 
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
@@ -137,10 +137,10 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="text-lg font-semibold text-red-800 mb-2">Error</h3>
         <p class="text-red-600 mb-4">{$state.context.error}</p>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="outline" size="sm" on:click={handleRetry}>
+          <Button class="bits-btn" variant="outline" size="sm" onclick={handleRetry}>
 Retry
 
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleDismissError}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleDismissError}>
 Dismiss
 
         </div>
@@ -195,7 +195,7 @@ Dismiss
             ></textarea>
           </div>
           
-          <Button on:click={handleCreateCase} class="w-full bits-btn bits-btn">
+          <Button onclick={handleCreateCase} class="w-full bits-btn bits-btn">
 Create Case
 
         </div>
@@ -217,7 +217,7 @@ Create Case
             </div>
             <div class="flex items-center gap-2">
               <select 
-                bind:value={workflowStage} on:change={(e) => handleWorkflowStageChange(e.target.value)}
+                bind:value={workflowStage} onchange={(e) => handleWorkflowStageChange(e.target.value)}
                 class="px-3 py-1 border border-gray-300 rounded-md text-sm"
               >
                 <option value="investigation">Investigation</option>
@@ -259,7 +259,7 @@ Create Case
           {#each ['overview', 'evidence', 'analysis', 'search'] as tab}
             <button
               class="py-2 px-1 border-b-2 font-medium text-sm {activeTab === tab ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
-              on:click={() => handleTabSwitch(tab)}
+              onclick={() => handleTabSwitch(tab)}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
 
@@ -297,10 +297,10 @@ Create Case
                 <input
                   type="file"
                   multiple
-                  bind:this={fileInput} on:change={onFileChange}
+                  bind:this={fileInput} onchange={onFileChange}
                   class="hidden"
                 />
-                <Button class="bits-btn" on:click={triggerFileUpload}>
+                <Button class="bits-btn" onclick={triggerFileUpload}>
 Choose Files
 
               </div>
@@ -316,22 +316,22 @@ Choose Files
                       <div class="border border-gray-200 rounded-lg p-4">
                         <div class="flex justify-between items-start">
                           <div>
-                            <h4 class="font-medium">{(item as { title?: any; type?: any; aiSummary?: any }).title}</h4>
-                            <p class="text-sm text-gray-500">{(item as { title?: any; type?: any; aiSummary?: any }).type}</p>
+                            <h4 class="font-medium">{(item as { title?: unknown; type?: unknown; aiSummary?: unknown }).title}</h4>
+                            <p class="text-sm text-gray-500">{(item as { title?: unknown; type?: unknown; aiSummary?: unknown }).type}</p>
                           </div>
                           <div class="flex gap-2">
                             <Button class="bits-btn" size="sm" variant="outline">
 View
 
-                            <Button class="bits-btn" size="sm" on:click={() =>
+                            <Button class="bits-btn" size="sm" onclick={() =>
 send({ type: 'SELECT_EVIDENCE', evidence: item })}>
                               Select
 
                           </div>
                         </div>
-                        {#if (item as { title?: any; type?: any; aiSummary?: any }).aiSummary}
+                        {#if (item as { title?: unknown; type?: unknown; aiSummary?: unknown }).aiSummary}
                           <div class="mt-3 p-3 bg-blue-50 rounded-md">
-                            <p class="text-sm">{(item as { title?: any; type?: any; aiSummary?: any }).aiSummary}</p>
+                            <p class="text-sm">{(item as { title?: unknown; type?: unknown; aiSummary?: unknown }).aiSummary}</p>
                           </div>
                         {/if}
                       </div>
@@ -351,14 +351,14 @@ send({ type: 'SELECT_EVIDENCE', evidence: item })}>
                 <h3 class="text-lg font-semibold mb-4">AI Analysis</h3>
                 <div class="flex gap-3 mb-4">
                   <Button class="bits-btn" 
-                    on:click={handleStartAIAnalysis}
+                    onclick={handleStartAIAnalysis}
                     disabled={!canStartAIAnalysis}
                   >
 Start AI Analysis
 
                   <Button class="bits-btn" 
                     variant="outline"
-                    on:click={handleFindSimilarCases}
+                    onclick={handleFindSimilarCases}
                   >
 Find Similar Cases
 

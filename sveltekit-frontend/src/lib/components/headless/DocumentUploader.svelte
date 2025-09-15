@@ -282,7 +282,7 @@
   multiple={maxFiles > 1}
   accept={acceptedTypes.join(',')}
   style="display: none;"
-  on:change={handleFileSelection}
+  onchange={handleFileSelection}
 />
 
 <!-- Snippet for custom UI -->

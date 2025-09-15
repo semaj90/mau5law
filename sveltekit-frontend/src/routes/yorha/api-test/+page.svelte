@@ -382,7 +382,7 @@ https://svelte.dev/e/js_parse_error -->
     yorhaAPI.subscribe('api:response', (data) => {
       realTimeStats.activeConnections = Math.max(0, realTimeStats.activeConnections - 1);
 
-      if ((data as { success?: any; latency?: any; responseSize?: any }).success) {
+      if ((data as { success?: unknown; latency?: unknown; responseSize?: unknown }).success) {
         const newSuccessRate = ((realTimeStats.successRate * realTimeStats.totalRequests) + 100) / (realTimeStats.totalRequests + 1);
         realTimeStats.successRate = Math.round(newSuccessRate * 100) / 100;
       } else {
@@ -390,9 +390,9 @@ https://svelte.dev/e/js_parse_error -->
         realTimeStats.successRate = Math.round(newSuccessRate * 100) / 100;
       }
 
-      realTimeStats.averageLatency = Math.round(((realTimeStats.averageLatency * (realTimeStats.totalRequests - 1)) + (data as { success?: any; latency?: any; responseSize?: any }).latency) / realTimeStats.totalRequests);
+      realTimeStats.averageLatency = Math.round(((realTimeStats.averageLatency * (realTimeStats.totalRequests - 1)) + (data as { success?: unknown; latency?: unknown; responseSize?: unknown }).latency) / realTimeStats.totalRequests);
       realTimeStats.lastUpdate = new Date();
-      realTimeStats.dataTransferred += ((data as { success?: any; latency?: any; responseSize?: any }).responseSize || 0);
+      realTimeStats.dataTransferred += ((data as { success?: unknown; latency?: unknown; responseSize?: unknown }).responseSize || 0);
 
       updateRealTimeStats();
     });
@@ -424,7 +424,7 @@ https://svelte.dev/e/js_parse_error -->
   function updatePerformanceMetrics() {
     const now = Date.now();
     const recentResults = testResults.filter(result =>
-      new Date((result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).startTime).getTime() > (now - 300000) // Last 5 minutes
+      new Date((result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).startTime).getTime() > (now - 300000) // Last 5 minutes
     );
 
     if (recentResults.length > 0) {
@@ -512,7 +512,7 @@ https://svelte.dev/e/js_parse_error -->
       // Parse response
       let responseData;
   let responseSize = $state(0);
-      const responseText = await (response as { text?: any; ok?: any; status?: any; headers?: any }).text();
+      const responseText = await (response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).text();
       responseSize = responseText.length;
 
       try {
@@ -522,23 +522,23 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       // Update test result
-      testResult.status = (response as { text?: any; ok?: any; status?: any; headers?: any }).ok ? 'success' : 'error';
+      testResult.status = (response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).ok ? 'success' : 'error';
       testResult.endTime = new Date();
       testResult.latency = latency;
       testResult.response = responseData;
-      testResult.statusCode = (response as { text?: any; ok?: any; status?: any; headers?: any }).status;
+      testResult.statusCode = (response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).status;
       testResult.responseSize = responseSize;
-      testResult.headers = Object.fromEntries((response as { text?: any; ok?: any; status?: any; headers?: any }).headers.entries());
+      testResult.headers = Object.fromEntries((response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).headers.entries());
       // Validation
       if (endpoint.validation) {
-        testResult.validation = validateResponse(responseData, endpoint.validation, (response as { text?: any; ok?: any; status?: any; headers?: any }).status);
+        testResult.validation = validateResponse(responseData, endpoint.validation, (response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).status);
       } else {
-        testResult.validation.passed = (response as { text?: any; ok?: any; status?: any; headers?: any }).ok;
+        testResult.validation.passed = (response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).ok;
       }
 
       // Emit event for monitoring
       yorhaAPI.emit('api:response', {
-        success: (response as { text?: any; ok?: any; status?: any; headers?: any }).ok,
+        success: (response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).ok,
         latency,
         responseSize,
         endpoint: endpoint.id
@@ -574,16 +574,16 @@ https://svelte.dev/e/js_parse_error -->
 
     // Check status codes
     if (validation.statusCodes && !validation.statusCodes.includes(statusCode)) {
-      (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).passed = false;
-      (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).errors.push(`Expected status codes: ${validation.statusCodes.join(', ')}, got: ${statusCode}`);
+      (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).passed = false;
+      (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).errors.push(`Expected status codes: ${validation.statusCodes.join(', ')}, got: ${statusCode}`);
     }
 
     // Check required fields
     if (validation.required && typeof responseData === 'object' && responseData !== null) {
       for (const field of validation.required) {
         if (!(field in responseData)) {
-          (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).passed = false;
-          (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).errors.push(`Missing required field: ${field}`);
+          (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).passed = false;
+          (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).errors.push(`Missing required field: ${field}`);
         }
       }
     }
@@ -641,8 +641,8 @@ https://svelte.dev/e/js_parse_error -->
 
       // Calculate suite results
       const suiteTestResults = testResults.filter(result =>
-        (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).startTime.getTime() >= suiteStartTime &&
-        suite.endpoints.includes((result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).endpointId)
+        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).startTime.getTime() >= suiteStartTime &&
+        suite.endpoints.includes((result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).endpointId)
       );
 
       const successCount = suiteTestResults.filter(r => r.status === 'success').length;
@@ -736,16 +736,16 @@ https://svelte.dev/e/js_parse_error -->
 
     // Filter by status
     if (filterStatus !== 'all') {
-      filtered = filtered.filter(result => (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).status === filterStatus);
+      filtered = filtered.filter(result => (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).status === filterStatus);
     }
 
     // Filter by search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(result =>
-        (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).endpoint.toLowerCase().includes(term) ||
-        (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).category?.toLowerCase().includes(term) ||
-        (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).url.toLowerCase().includes(term)
+        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).endpoint.toLowerCase().includes(term) ||
+        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).category?.toLowerCase().includes(term) ||
+        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).url.toLowerCase().includes(term)
       );
     }
 
@@ -845,7 +845,7 @@ https://svelte.dev/e/js_parse_error -->
           <button
             class="p-2 rounded-lg bg-amber-900/20 border border-amber-400/30 hover:bg-amber-400/10 text-amber-400"
             class:animate-spin={autoRefresh}
-            on:click={toggleAutoRefresh}
+            onclick={toggleAutoRefresh}
             title={autoRefresh ? 'Disable auto-refresh' : 'Enable auto-refresh'}
           >
             <RefreshCw class="w-4 h-4" />
@@ -853,7 +853,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <button
             class="p-2 rounded-lg bg-blue-900/20 border border-blue-400/30 hover:bg-blue-400/10 text-blue-400"
-            on:click={exportResults}
+            onclick={exportResults}
             title="Export test results"
           >
             <Download class="w-4 h-4" />
@@ -861,7 +861,7 @@ https://svelte.dev/e/js_parse_error -->
 
           <button
             class="p-2 rounded-lg bg-red-900/20 border border-red-400/30 hover:bg-red-400/10 text-red-400"
-            on:click={clearResults}
+            onclick={clearResults}
             title="Clear all results"
           >
             <Trash2 class="w-4 h-4" />
@@ -994,7 +994,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex flex-wrap gap-3 mb-4">
             <button
               class="px-4 py-2 rounded-lg bg-green-900/20 border border-green-400/30 hover:bg-green-400/10 text-green-400 disabled:opacity-50"
-              on:click={runAllTests}
+              onclick={runAllTests}
               disabled={isRunning}
             >
               <Play class="w-4 h-4 inline-block mr-2" />
@@ -1003,7 +1003,7 @@ https://svelte.dev/e/js_parse_error -->
 
             <button
               class="px-4 py-2 rounded-lg bg-gray-700/50 border border-gray-600 hover:bg-gray-600/50 text-gray-300"
-              on:click={() => showAdvanced = !showAdvanced}
+              onclick={() => showAdvanced = !showAdvanced}
             >
               {showAdvanced ? 'Hide Advanced' : 'Show Advanced'}
               
@@ -1028,7 +1028,7 @@ https://svelte.dev/e/js_parse_error -->
                   </span>
                   <button
                     class="px-3 py-1 rounded-lg bg-blue-900/20 border border-blue-400/30 hover:bg-blue-400/10 text-blue-400 disabled:opacity-50"
-                    on:click={() => runApiTest(endpoint)}
+                    onclick={() => runApiTest(endpoint)}
                     disabled={isRunning && currentTest?.includes(endpoint.id)}
                   >
                     
@@ -1062,7 +1062,7 @@ https://svelte.dev/e/js_parse_error -->
                   {/if}
                   <button
                     class="px-3 py-1 rounded-lg bg-purple-900/20 border border-purple-400/30 hover:bg-purple-400/10 text-purple-400 disabled:opacity-50"
-                    on:click={() => runTestSuite(suite)}
+                    onclick={() => runTestSuite(suite)}
                     disabled={batchTesting}
                   >
                     
@@ -1147,29 +1147,29 @@ https://svelte.dev/e/js_parse_error -->
                     <td class="py-3 px-4">
                       <div class="flex items-center space-x-2">
                         
-                        <span class="text-sm {getStatusColor((result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).status)} capitalize">{(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).status}</span>
+                        <span class="text-sm {getStatusColor((result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).status)} capitalize">{(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).status}</span>
                       </div>
                     </td>
                     <td class="py-3 px-4">
                       <div>
-                        <p class="text-gray-200 font-medium">{(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).endpoint}</p>
-                        <p class="text-xs text-gray-400">{(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).url}</p>
+                        <p class="text-gray-200 font-medium">{(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).endpoint}</p>
+                        <p class="text-xs text-gray-400">{(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).url}</p>
                       </div>
                     </td>
                     <td class="py-3 px-4">
                       <span class="px-2 py-1 rounded text-xs font-mono bg-gray-700 text-gray-300">
-                        {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).method}
+                        {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).method}
                       </span>
                     </td>
                     <td class="py-3 px-4">
                       <span class="text-blue-400 font-mono">
-                        {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).latency ? formatLatency((result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).latency) : '-'}
+                        {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).latency ? formatLatency((result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).latency) : '-'}
                       </span>
                     </td>
                     <td class="py-3 px-4">
-                      {#if (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).statusCode}
-                        <span class="px-2 py-1 rounded text-xs font-mono {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).statusCode >= 200 && (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).statusCode < 300 ? 'bg-green-900/30 text-green-400' : (result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).statusCode >= 400 ? 'bg-red-900/30 text-red-400' : 'bg-yellow-900/30 text-yellow-400'}">
-                          {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).statusCode}
+                      {#if (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).statusCode}
+                        <span class="px-2 py-1 rounded text-xs font-mono {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).statusCode >= 200 && (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).statusCode < 300 ? 'bg-green-900/30 text-green-400' : (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).statusCode >= 400 ? 'bg-red-900/30 text-red-400' : 'bg-yellow-900/30 text-yellow-400'}">
+                          {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).statusCode}
                         </span>
                       {:else}
                         <span class="text-gray-500">-</span>
@@ -1177,12 +1177,12 @@ https://svelte.dev/e/js_parse_error -->
                     </td>
                     <td class="py-3 px-4">
                       <span class="text-gray-400 text-sm">
-                        {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).startTime.toLocaleTimeString()}
+                        {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).startTime.toLocaleTimeString()}
                       </span>
                     </td>
                     <td class="py-3 px-4">
                       <span class="text-gray-400 text-sm">
-                        {(result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).responseSize ? formatBytes((result as { startTime?: any; passed?: any; errors?: any; endpointId?: any; status?: any; endpoint?: any; category?: any; url?: any; method?: any; latency?: any; statusCode?: any; responseSize?: any }).responseSize) : '-'}
+                        {(result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).responseSize ? formatBytes((result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).responseSize) : '-'}
                       </span>
                     </td>
                   </tr>

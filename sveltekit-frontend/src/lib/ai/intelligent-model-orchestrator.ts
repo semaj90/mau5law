@@ -463,7 +463,7 @@ export class IntelligentModelOrchestrator {
   public readonly currentModel = writable<ModelVariant | null>(null);
   public readonly suggestions = writable<SelfPromptingSuggestion[]>([]);
   public readonly performance = writable<ModelPerformanceMetrics[]>([]);
-  public readonly memoryOptimization = writable;
+  public readonly memoryOptimization = writable<{
     totalMemoryUsed: number;
     fragmentationRatio: number;
   } | null>(null);

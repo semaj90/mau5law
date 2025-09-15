@@ -61,17 +61,17 @@
 	bind:value
 	{placeholder}
 	class="search-input"
-	type="text" on:input={handleInput}
+	type="text" oninput={handleInput}
 	keydown={handleKeydown}
-	on:focus={handleFocus}
-	on:blur={handleBlur}
+	onfocus={handleFocus}
+	onblur={handleBlur}
 	aria-label="Search"
   />
 
   {#if value}
 	<button
 	  class="clear-button"
-	  on:click={clearValue}
+	  onclick={clearValue}
 	  aria-label="Clear search"
 	  type="button"
 	>

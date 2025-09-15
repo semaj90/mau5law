@@ -222,7 +222,7 @@ export class FullSystemOrchestrator {
             recommendations: [
               'Apply automated Svelte 5 props migration',
               'Update component event binding patterns',
-              'Convert export let to $props() pattern'
+              'Convert let { to } = $props(); $props() pattern'
             ]
           },
           {

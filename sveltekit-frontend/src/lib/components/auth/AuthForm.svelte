@@ -3,7 +3,7 @@
   import { superForm } from "sveltekit-superforms";
 
   interface Props {
-    data: any;
+    data: unknown;
     formType: "login" | "register";
   }
   let {

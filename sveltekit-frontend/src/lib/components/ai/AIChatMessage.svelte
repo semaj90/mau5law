@@ -1,3 +1,6 @@
+
+<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
+<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
@@ -37,6 +40,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   } = $props();
 
   let formattedTime = $state("");
+  let isLoading = $state(false);
   let isSourcesExpanded = $state(false);
   let isMetadataExpanded = $state(false);
 
@@ -126,10 +130,10 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         {formattedTime}
       </span>
 
-      <button
+      <button aria-label="Action button"
         type="button"
         class="container mx-auto px-4"
-        on:click={() => copyToClipboard()}
+        onclick={(event: MouseEvent) => ) => copyToClipboard(}
         title="Copy message"
         aria-label="Copy message to clipboard"
       >
@@ -155,10 +159,10 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     {#if showSources && message.sources && message.sources.length > 0}
       <div class="container mx-auto px-4">
-        <button
+        <button aria-label="Action button"
           type="button"
           class="container mx-auto px-4"
-          on:click={() => (isSourcesExpanded = !isSourcesExpanded)}
+          onclick={(event: MouseEvent) => ) => (isSourcesExpanded = !isSourcesExpanded}
           aria-expanded={isSourcesExpanded}
         >
           <svg
@@ -198,10 +202,10 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     {#if showMetadata && message.metadata}
       <div class="container mx-auto px-4">
-        <button
+        <button aria-label="Action button"
           type="button"
           class="container mx-auto px-4"
-          on:click={() => (isMetadataExpanded = !isMetadataExpanded)}
+          onclick={(event: MouseEvent) => ) => (isMetadataExpanded = !isMetadataExpanded}
           aria-expanded={isMetadataExpanded}
         >
           <svg

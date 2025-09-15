@@ -3,9 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import type { Citation } from "$lib/types/api";
   import { Copy, Search, Star, Tag, Trash2 } from "lucide-svelte";
   import { createEventDispatcher } from "svelte";
@@ -109,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
               <button class="nes-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() => toggleFavorite(citation)}
+                onclick={() => toggleFavorite(citation)}
                 class="bits-btn container mx-auto px-4"
               >
                 <Star class="container mx-auto px-4" />
@@ -118,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 copyCitation(citation)}
                 title="Copy citation"
               >
@@ -128,7 +126,7 @@ copyCitation(citation)}
               <button class="nes-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() => deleteCitation(citation)}
+                onclick={() => deleteCitation(citation)}
                 title="Delete citation"
                 class="bits-btn container mx-auto px-4"
               >
@@ -197,7 +195,7 @@ copyCitation(citation)}
           <p class="container mx-auto px-4">No citations match your search criteria.</p>
           <button class="nes-btn"
             size="sm"
-            on:click={() => {
+            onclick={() => {
               searchQuery = "";
               selectedCategory = "all";
             }}

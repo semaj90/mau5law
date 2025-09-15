@@ -338,13 +338,13 @@
           <div class="prompt-actions">
             <button
               class="btn-accept"
-              on:click={() => handlePromptReaction(prompt.id, 'accepted')}
+              onclick={() => handlePromptReaction(prompt.id, 'accepted')}
             >
               ✓ Accept
             </button>
             <button
               class="btn-dismiss"
-              on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
+              onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
             >
               ✕ Dismiss
             </button>
@@ -362,8 +362,8 @@
     class="file-drop-zone"
     class:drag-over={dragOver}
     class:has-files={selectedFiles.length > 0}
-    on:drop={handleDrop}
-    on:dragover={handleDragOver}
+    ondrop={handleDrop}
+    ondragover={handleDragOver}
     ondragleave={handleDragLeave}
   >
     {#if selectedFiles.length === 0}
@@ -378,12 +378,12 @@
           type="file"
           multiple
           accept={allowedTypes.join(',')}
-          on:change={handleFileSelect}
+          onchange={handleFileSelect}
           style="display: none;"
         />
         <button
           class="btn-select-files"
-          on:click={() => fileInput?.click()}
+          onclick={() => fileInput?.click()}
         >
           Select Files
         </button>
@@ -412,10 +412,10 @@
 
         {#if !isUploading && !isComplete}
           <div class="file-actions">
-            <button class="nes-btn is-primary" on:click={startUpload}>
+            <button class="nes-btn is-primary" onclick={startUpload}>
               Start Upload & Analysis
             </button>
-            <button class="nes-btn" on:click={() => { selectedFiles = []; }}>
+            <button class="nes-btn" onclick={() => { selectedFiles = []; }}>
               Clear Files
             </button>
           </div>
@@ -475,7 +475,7 @@
       </div>
 
       <div class="upload-actions">
-        <button class="btn-cancel" on:click={cancelUpload}>
+        <button class="btn-cancel" onclick={cancelUpload}>
           Cancel Upload
         </button>
       </div>
@@ -558,13 +558,13 @@
           <div class="prompt-actions">
             <button
               class="nes-btn is-primary"
-              on:click={() => handlePromptReaction(prompt.id, 'accepted')}
+              onclick={() => handlePromptReaction(prompt.id, 'accepted')}
             >
               Let's Do It
             </button>
             <button
               class="nes-btn"
-              on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
+              onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
             >
               Maybe Later
             </button>
@@ -585,10 +585,10 @@
       {/each}
 
       <div class="error-actions">
-        <button class="btn-retry" on:click={retryUpload}>
+        <button class="btn-retry" onclick={retryUpload}>
           Retry Upload
         </button>
-        <button class="btn-reset" on:click={resetUpload}>
+        <button class="btn-reset" onclick={resetUpload}>
           Start Over
         </button>
       </div>
@@ -629,12 +629,12 @@
   <!-- Action Buttons -->
   {#if isComplete}
     <div class="final-actions">
-      <button class="nes-btn is-primary" on:click={resetUpload}>
+      <button class="nes-btn is-primary" onclick={resetUpload}>
         Upload More Files
       </button>
 
       {#if enableAIPrompts}
-        <button class="nes-btn" on:click={requestAISuggestions}>
+        <button class="nes-btn" onclick={requestAISuggestions}>
           Get AI Suggestions
         </button>
       {/if}

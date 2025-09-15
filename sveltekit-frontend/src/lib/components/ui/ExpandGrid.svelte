@@ -61,8 +61,8 @@ https://svelte.dev/e/js_parse_error -->
     --expand-duration: {expandDuration};
     --easing: {easing};
   "
-  on:mouseenter={handleMouseEnter}
-  on:mouseleave={focusin}
+  onmouseenter={handleMouseEnter}
+  onmouseleave={focusin}
   focusout={handleFocusOut}
   role="grid"
   tabindex={0}

@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
     id: string;
     title: string;
     description: string;
-    icon: any;
+    icon: unknown;
     category: string;
     href?: string;
     shortcut?: string[];
@@ -30,8 +30,8 @@ https://svelte.dev/e/js_parse_error -->
   let selectedIndex = $state(0);
   let filteredItems = $derived(searchQuery 
     ? allItems.filter(item => 
-        (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).description.toLowerCase().includes(searchQuery.toLowerCase())
+        (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).description.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : allItems);
   const allItems: CommandItem[] = [
@@ -131,12 +131,12 @@ https://svelte.dev/e/js_parse_error -->
         break;
   }
   }
-  function selectItem(item: any) {
+  function selectItem(item: unknown) {
     onSelect?.({ item });
-    if ((item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).href) {
-      window.location.href = (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).href;
-    } else if ((item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).action) {
-      (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).action();
+    if ((item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).href) {
+      window.location.href = (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).href;
+    } else if ((item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).action) {
+      (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).action();
   }
     close();
   }
@@ -155,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Backdrop -->
   <div 
     class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-    on:click={close}
+    onclick={close}
     role="button"
     tabindex="0"
     keydown={(e) => e.key === 'Enter' && close()}
@@ -177,7 +177,7 @@ https://svelte.dev/e/js_parse_error -->
             bind:value={searchQuery}
             type="text"
             placeholder="Search commands, cases, evidence..."
-            class="flex-1 bg-transparent border-none outline-none py-4 text-foreground placeholder:nes-text is-disabled" on:input={() => selectedIndex = 0}
+            class="flex-1 bg-transparent border-none outline-none py-4 text-foreground placeholder:nes-text is-disabled" oninput={() => selectedIndex = 0}
           />
           <div class="flex items-center gap-1 text-xs nes-text is-disabled">
             <kbd class="px-1.5 py-0.5 bg-nier-surface-light rounded border border-nier-gray">
@@ -192,8 +192,8 @@ https://svelte.dev/e/js_parse_error -->
           {#if filteredItems.length > 0}
             {#each Object.entries(
               filteredItems.reduce((acc: Record<string, CommandItem[]>, item) => {
-                if (!acc[(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).category]) acc[(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).category] = [];
-                acc[(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).category].push(item);
+                if (!acc[(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).category]) acc[(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).category] = [];
+                acc[(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).category].push(item);
                 return acc;
               }, {})
             ) as entry, categoryIndex}
@@ -213,12 +213,12 @@ https://svelte.dev/e/js_parse_error -->
                         ? "bg-harvard-crimson text-white shadow-nier-glow"
                         : "hover:bg-nier-surface-light text-foreground"
                     )}
-                    on:click={() => selectItem(item)}
-                    on:mouseenter={() => selectedIndex = globalIndex}
+                    onclick={() => selectItem(item)}
+                    onmouseenter={() => selectedIndex = globalIndex}
                   >
                     <div class="flex items-center">
                       <svelte:component 
-                        this={(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).icon} 
+                        this={(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).icon} 
                         class={cn(
                           "h-4 w-4 mr-3",
                           globalIndex === selectedIndex ? "text-white" : "text-muted-foreground"
@@ -229,20 +229,20 @@ https://svelte.dev/e/js_parse_error -->
                           "text-sm font-medium",
                           globalIndex === selectedIndex ? "text-white" : "text-foreground"
                         )}>
-                          {(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).title}
+                          {(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).title}
                         </div>
                         <div class={cn(
                           "text-xs",
                           globalIndex === selectedIndex ? "text-white/70" : "text-muted-foreground"
                         )}>
-                          {(item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).description}
+                          {(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).description}
                         </div>
                       </div>
                     </div>
                     
-                    {#if (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).shortcut}
+                    {#if (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).shortcut}
                       <div class="flex items-center gap-1">
-                        {#each (item as { title?: any; description?: any; href?: any; action?: any; category?: any; icon?: any; shortcut?: any }).shortcut as key}
+                        {#each (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).shortcut as key}
                           <kbd class={cn(
                             "px-1.5 py-0.5 text-xs rounded border",
                             globalIndex === selectedIndex

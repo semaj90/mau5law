@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   let routeTests = $state([
     { name: 'Test Hub', path: '/test', status: 'pending', responseTime: null },
     { name: 'CRUD Interface', path: '/test/crud', status: 'pending', responseTime: null },
@@ -93,14 +93,14 @@ https://svelte.dev/e/js_parse_error -->
 
   <div class="flex justify-center gap-4">
     <Button class="bits-btn"
-      on:click={runAllRouteTests}
+      onclick={runAllRouteTests}
       disabled={isTestingRoutes}
       variant="default"
     >
 {isTestingRoutes ? '🔄 Testing...' : '🚀 Test All Routes'}
 
     <Button class="bits-btn"
-      on:click={() =>
+      onclick={() =>
 window.location.href = '/test'}
       variant="outline"
     >

@@ -6,9 +6,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   import { onMount } from 'svelte';
   // Svelte 5 runes are built-in, no import needed
   import * as Card from '$lib/components/ui/card';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
   import {
@@ -403,7 +401,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     color: #d4af37;
   }
 
-  .nav-(item as { analysis?: any; critical?: any; high?: any; medium?: any; low?: any }).analysis-active {
+  .nav-(item as { analysis?: unknown; critical?: unknown; high?: unknown; medium?: unknown; low?: unknown }).analysis-active {
     background: #1a2a1a;
     color: #d4af37;
     border-left: 3px solid #d4af37;
@@ -581,19 +579,19 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     font-size: 10px;
   }
 
-  .threat-(item as { analysis?: any; critical?: any; high?: any; medium?: any; low?: any }).critical .threat-number {
+  .threat-(item as { analysis?: unknown; critical?: unknown; high?: unknown; medium?: unknown; low?: unknown }).critical .threat-number {
     color: #ef4444;
   }
 
-  .threat-(item as { analysis?: any; critical?: any; high?: any; medium?: any; low?: any }).high .threat-number {
+  .threat-(item as { analysis?: unknown; critical?: unknown; high?: unknown; medium?: unknown; low?: unknown }).high .threat-number {
     color: #f97316;
   }
 
-  .threat-(item as { analysis?: any; critical?: any; high?: any; medium?: any; low?: any }).medium .threat-number {
+  .threat-(item as { analysis?: unknown; critical?: unknown; high?: unknown; medium?: unknown; low?: unknown }).medium .threat-number {
     color: #fbbf24;
   }
 
-  .threat-(item as { analysis?: any; critical?: any; high?: any; medium?: any; low?: any }).low .threat-number {
+  .threat-(item as { analysis?: unknown; critical?: unknown; high?: unknown; medium?: unknown; low?: unknown }).low .threat-number {
     color: #4ade80;
   }
 

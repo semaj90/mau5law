@@ -75,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
   			services = serviceRegistry;
   			utilization = util;
 
-  		} catch (err: any) {
+  		} catch (err: unknown) {
   			error = `Failed to load GPU data: ${err.message}`;
   			console.error('GPU data loading error:', err);
   		} finally {
@@ -132,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
   				success: true
   			}];
 
-  		} catch (err: any) {
+  		} catch (err: unknown) {
   			processingResults = [...processingResults, {
   				timestamp: new Date().toLocaleTimeString(),
   				type: 'Document Processing',
@@ -165,10 +165,10 @@ https://svelte.dev/e/js_parse_error -->
   				type: 'Query Processing',
   				input: queryText,
   				result: result,
-  				success: (result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).status === 'success'
+  				success: (result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).status === 'success'
   			}];
 
-  		} catch (err: any) {
+  		} catch (err: unknown) {
   			processingResults = [...processingResults, {
   				timestamp: new Date().toLocaleTimeString(),
   				type: 'Query Processing',
@@ -254,7 +254,7 @@ https://svelte.dev/e/js_parse_error -->
 							<h3 class="text-sm font-medium text-red-800">Error</h3>
 							<p class="mt-1 text-sm text-red-700">{error}</p>
 							<button 
-								on:click={loadGPUData}
+								onclick={loadGPUData}
 								class="mt-2 text-sm bg-red-100 text-red-800 px-3 py-1 rounded hover:bg-red-200"
 							>
 								Retry
@@ -337,7 +337,7 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 
 					<button
-						on:click={processDocument}
+						onclick={processDocument}
 						disabled={isProcessing || !documentText.trim()}
 						class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
 					>
@@ -371,7 +371,7 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 
 					<button
-						on:click={processQuery}
+						onclick={processQuery}
 						disabled={isProcessing || !queryText.trim()}
 						class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
 					>
@@ -394,7 +394,7 @@ https://svelte.dev/e/js_parse_error -->
 					<div class="flex justify-between items-center mb-4">
 						<h3 class="text-lg font-semibold text-gray-900">Processing Results</h3>
 						<button
-							on:click={clearResults}
+							onclick={clearResults}
 							class="text-sm text-gray-600 hover:text-gray-800"
 						>
 							Clear Results
@@ -403,35 +403,35 @@ https://svelte.dev/e/js_parse_error -->
 					
 					<div class="space-y-4 max-h-96 overflow-y-auto">
 						{#each processingResults.slice().reverse() as result}
-							<div class={`border-l-4 pl-4 py-2 ${(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).success ? 'border-green-400 bg-green-50' : 'border-red-400 bg-red-50'}`}>
+							<div class={`border-l-4 pl-4 py-2 ${(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).success ? 'border-green-400 bg-green-50' : 'border-red-400 bg-red-50'}`}>
 								<div class="flex justify-between items-start">
 									<div class="flex-1">
 										<p class="font-medium text-sm">
-											{(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).type} - {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).timestamp}
+											{(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).type} - {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).timestamp}
 										</p>
 										<p class="text-xs text-gray-600 mt-1">
-											Input: {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).input}
+											Input: {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).input}
 										</p>
-										{#if (result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).success && (result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).result}
+										{#if (result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).success && (result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).result}
 											<div class="mt-2">
 												<p class="text-xs text-green-800">
-													Status: {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).status}
+													Status: {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).status}
 												</p>
-												{#if (result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).result}
+												{#if (result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).result}
 													<p class="text-xs text-gray-600">
-														Result: {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).length} values generated
+														Result: {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).length} values generated
 													</p>
 												{/if}
-												{#if (result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).process_time}
+												{#if (result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).process_time}
 													<p class="text-xs text-gray-600">
-														Process time: {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).process_time}ms
+														Process time: {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).process_time}ms
 													</p>
 												{/if}
 											</div>
 										{/if}
-										{#if !(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).success}
+										{#if !(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).success}
 											<p class="text-xs text-red-800 mt-1">
-												Error: {(result as { status?: any; success?: any; type?: any; timestamp?: any; input?: any; result?: any; length?: any; error?: any }).error}
+												Error: {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).error}
 											</p>
 										{/if}
 									</div>

@@ -374,7 +374,7 @@
     <div class="flex items-center gap-2">
       <input 
         type="text"
-        bind:value={searchQuery} on:input={() => filterContent(searchQuery)}
+        bind:value={searchQuery} oninput={() => filterContent(searchQuery)}
         placeholder="Search documentation..."
         class="px-3 py-1 border border-[#D1CFC7] bg-white text-sm w-64"
       />
@@ -411,7 +411,7 @@
     {#each Object.entries(documentationSections) as [key, section]}
       <button
         class="px-4 py-2 text-sm font-bold border transition-colors {activeTab === key ? 'bg-[#3D3D3D] text-[#F7F6F2] border-[#3D3D3D]' : 'bg-[#EAE8E1] border-[#D1CFC7] hover:bg-[#F7F6F2]'}"
-        on:click={() => activeTab = key}
+        onclick={() => activeTab = key}
       >
         {section.icon} {section.title}
       </button>

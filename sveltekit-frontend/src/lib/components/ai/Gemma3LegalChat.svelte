@@ -12,9 +12,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service';
   import { enhancedRAGService } from '$lib/services/enhanced-rag-service';
   import { natsMessaging } from '$lib/services/nats-messaging-service';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from '$lib/components/ui/textarea';
   import {
     Card,

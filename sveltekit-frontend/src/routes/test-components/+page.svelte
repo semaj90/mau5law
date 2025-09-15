@@ -2,9 +2,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   // Test shadcn components that are working
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
 </script>
 
 <div class="p-8 bg-slate-900 text-white min-h-screen">

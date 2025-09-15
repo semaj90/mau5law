@@ -39,11 +39,11 @@ https://svelte.dev/e/js_parse_error -->
   async function checkGPUStatus() {
     try {
       const response = await fetch('/api/gpu/cuda-status');
-      const data = await (response as { json?: any }).json();
-      gpuStatus.set((data as { gpu_status?: any; cuda?: any }).gpu_status);
-      cudaHealth.set((data as { gpu_status?: any; cuda?: any }).cuda.available);
-      if ((data as { gpu_status?: any; cuda?: any }).gpu_status?.performanceMetrics) {
-        performanceMetrics.set((data as { gpu_status?: any; cuda?: any }).gpu_status.performanceMetrics);
+      const data = await (response as { json?: unknown }).json();
+      gpuStatus.set((data as { gpu_status?: unknown; cuda?: unknown }).gpu_status);
+      cudaHealth.set((data as { gpu_status?: unknown; cuda?: unknown }).cuda.available);
+      if ((data as { gpu_status?: unknown; cuda?: unknown }).gpu_status?.performanceMetrics) {
+        performanceMetrics.set((data as { gpu_status?: unknown; cuda?: unknown }).gpu_status.performanceMetrics);
       }
     } catch (error) {
       console.error('Failed to check GPU status:', error);
@@ -71,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
           }
         })
       });
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
       // Add to results
       processingResults.update(results => [
         {
@@ -79,11 +79,11 @@ https://svelte.dev/e/js_parse_error -->
           service: selectedService,
           operation: selectedOperation,
           priority: selectedPriority,
-          success: (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).success,
-          processingTime: (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).result?.processingTime || 0,
-          memoryUsed: (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).result?.memoryUsed || 0,
-          result: (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).result,
-          error: (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).error
+          success: (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).success,
+          processingTime: (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).result?.processingTime || 0,
+          memoryUsed: (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).result?.memoryUsed || 0,
+          result: (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).result,
+          error: (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).error
         },
         ...results
       ]);
@@ -118,16 +118,16 @@ https://svelte.dev/e/js_parse_error -->
           analysisType: 'legal'
         })
       });
-      const result = await (response as { json?: any }).json();
+      const result = await (response as { json?: unknown }).json();
       processingResults.update(results => [
         {
           timestamp: new Date().toISOString(),
           service: 'flashattention2',
           operation: 'legal_text_processing',
           priority: 'high',
-          success: (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).success,
-          processingTime: (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).processingTime,
-          memoryUsage: (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).memoryUsage,
+          success: (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).success,
+          processingTime: (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).processingTime,
+          memoryUsage: (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).memoryUsage,
           result: result,
           type: 'FlashAttention2 RTX 3060 Ti'
         },
@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Processing Buttons -->
       <div class="space-y-4">
         <button
-          on:click={processWithCUDA}
+          onclick={processWithCUDA}
           disabled={$isProcessing || !$cudaHealth}
           class="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
@@ -269,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
 
         <button
-          on:click={testFlashAttention2}
+          onclick={testFlashAttention2}
           disabled={$isProcessing}
           class="w-full bg-purple-600 text-white py-3 px-4 rounded-md hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
@@ -277,7 +277,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
 
         <button
-          on:click={checkGPUStatus}
+          onclick={checkGPUStatus}
           class="w-full bg-gray-600 text-white py-3 px-4 rounded-md hover:bg-gray-700"
         >
           🔄 Refresh GPU Status
@@ -308,40 +308,40 @@ https://svelte.dev/e/js_parse_error -->
 
       <div class="space-y-4 max-h-96 overflow-y-auto">
         {#each $processingResults as result, i}
-          <div class="border border-gray-200 rounded-lg p-4 {(result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
+          <div class="border border-gray-200 rounded-lg p-4 {(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
             <div class="flex justify-between items-start mb-2">
               <div>
-                <p class="font-semibold {(result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).success ? 'text-green-800' : 'text-red-800'}">
-                  {(result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).service} - {(result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).operation}
+                <p class="font-semibold {(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).success ? 'text-green-800' : 'text-red-800'}">
+                  {(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).service} - {(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).operation}
                 </p>
-                <p class="text-sm text-gray-600">{(result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).timestamp}</p>
+                <p class="text-sm text-gray-600">{(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).timestamp}</p>
               </div>
               <span class="px-2 py-1 text-xs rounded {
-                (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).priority === 'high' ? 'bg-red-100 text-red-800' :
-                (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).priority === 'normal' ? 'bg-yellow-100 text-yellow-800' :
+                (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).priority === 'high' ? 'bg-red-100 text-red-800' :
+                (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).priority === 'normal' ? 'bg-yellow-100 text-yellow-800' :
                 'bg-gray-100 text-gray-800'
               }">
-                {(result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).priority}
+                {(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).priority}
               </span>
             </div>
 
-            {#if (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).success}
+            {#if (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).success}
               <div class="grid grid-cols-2 gap-4 text-sm">
-                {#if (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).processingTime}
-                  <p><span class="font-medium">Time:</span> {formatDuration((result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).processingTime)}</p>
+                {#if (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).processingTime}
+                  <p><span class="font-medium">Time:</span> {formatDuration((result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).processingTime)}</p>
                 {/if}
-                {#if (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).memoryUsed}
-                  <p><span class="font-medium">Memory:</span> {formatBytes((result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).memoryUsed)}</p>
+                {#if (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).memoryUsed}
+                  <p><span class="font-medium">Memory:</span> {formatBytes((result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).memoryUsed)}</p>
                 {/if}
               </div>
 
-              {#if (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).result && (result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).(result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).vector}
+              {#if (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).result && (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).vector}
                 <p class="text-xs text-gray-600 mt-2">
-                  Vector Result: [{(result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).(result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).vector.slice(0, 5).map(v => v.toFixed(3)).join(', ')}...]
+                  Vector Result: [{(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).vector.slice(0, 5).map(v => v.toFixed(3)).join(', ')}...]
                 </p>
               {/if}
             {:else}
-              <p class="text-red-600 text-sm mt-2">Error: {(result as { success?: any; result?: any; error?: any; processingTime?: any; memoryUsage?: any; service?: any; operation?: any; timestamp?: any; priority?: any; memoryUsed?: any }).error}</p>
+              <p class="text-red-600 text-sm mt-2">Error: {(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).error}</p>
             {/if}
           </div>
         {/each}

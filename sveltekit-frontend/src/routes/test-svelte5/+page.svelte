@@ -1,7 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   // Svelte 5 runes are built-in, no import needed
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
 
   // Test Svelte 5 state with bits-ui v2.9.4
   let dialogOpen = $state(false);
@@ -35,7 +35,7 @@
       <h2 class="text-xl font-semibold">Modern Button (Svelte 5)</h2>
       <Button class="bits-btn"
         variant="default"
-  on:click={handleButtonClick}
+  onclick={handleButtonClick}
       >
 Test Button (onclick)
 </Button>
@@ -74,7 +74,7 @@ Test Button (onclick)
     <div class="space-y-4">
       <h2 class="text-xl font-semibold">melt v0.39.0 Builder Test</h2>
       <button
-        on:click={() => meltDialogOpen = !meltDialogOpen}
+        onclick={() => meltDialogOpen = !meltDialogOpen}
         class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
       >
         Open melt Dialog
@@ -90,7 +90,7 @@ Test Button (onclick)
             This tests melt v0.39.0 builders with Svelte 5 compatibility.
           </p>
           <button
-            on:click={() => meltDialog.states.open.set(false)}
+            onclick={() => meltDialog.states.open.set(false)}
             class="px-4 py-2 border rounded hover:bg-gray-50"
           >
             Close melt Dialog

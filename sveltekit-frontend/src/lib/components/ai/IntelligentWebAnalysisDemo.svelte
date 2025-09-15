@@ -363,7 +363,7 @@
       <div class="controls">
         <button
           class="primary"
-          on:click={analyzeCurrentPage}
+          onclick={analyzeCurrentPage}
           disabled={!isInitialized || isAnalyzing}
         >
           {#if isAnalyzing}
@@ -373,24 +373,24 @@
           {/if}
         </button>
 
-        <button on:click={simulateTypingPatterns} disabled={isAnalyzing}>
+        <button onclick={simulateTypingPatterns} disabled={isAnalyzing}>
           📝 Simulate Typing
         </button>
 
-        <button on:click={updateCaseContext} disabled={isAnalyzing}>
+        <button onclick={updateCaseContext} disabled={isAnalyzing}>
           ⚖️ Update Case Context
         </button>
 
-        <button on:click={testBatchProcessing} disabled={isAnalyzing}>
+        <button onclick={testBatchProcessing} disabled={isAnalyzing}>
           🚀 Test Batch Processing
         </button>
 
-        <button on:click={clearAll} disabled={isAnalyzing}>
+        <button onclick={clearAll} disabled={isAnalyzing}>
           🗑️ Clear All
         </button>
 
         {#if analysisResults}
-          <button class="export" on:click={exportQLoRAData}>
+          <button class="export" onclick={exportQLoRAData}>
             📥 Export QLoRA Data
           </button>
         {/if}

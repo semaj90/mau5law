@@ -308,28 +308,28 @@
         
         <div class="lod-controls">
           <button 
-            on:click={() => streamSpecificLOD(0)}
+            onclick={() => streamSpecificLOD(0)}
             class="lod-button {currentLOD === 0 ? 'active' : ''}"
             disabled={isStreaming}
           >
             LOD 0
           </button>
           <button 
-            on:click={() => streamSpecificLOD(1)}
+            onclick={() => streamSpecificLOD(1)}
             class="lod-button {currentLOD === 1 ? 'active' : ''}"
             disabled={isStreaming}
           >
             LOD 1
           </button>
           <button 
-            on:click={() => streamSpecificLOD(2)}
+            onclick={() => streamSpecificLOD(2)}
             class="lod-button {currentLOD === 2 ? 'active' : ''}"
             disabled={isStreaming}
           >
             LOD 2
           </button>
           <button 
-            on:click={() => streamSpecificLOD(3)}
+            onclick={() => streamSpecificLOD(3)}
             class="lod-button {currentLOD === 3 ? 'active' : ''}"
             disabled={isStreaming}
           >
@@ -338,9 +338,9 @@
         </div>
         
         <div class="zoom-controls">
-          <button on:click={() => handleZoomChange(-0.1)}>🔍-</button>
+          <button onclick={() => handleZoomChange(-0.1)}>🔍-</button>
           <span>Zoom: {zoomLevel.toFixed(1)}x</span>
-          <button on:click={() => handleZoomChange(0.1)}>🔍+</button>
+          <button onclick={() => handleZoomChange(0.1)}>🔍+</button>
         </div>
       </div>
       
@@ -381,7 +381,7 @@
           <div class="no-texture">
             <div class="nes-icon">🎮</div>
             <p>No texture loaded</p>
-            <button on:click={() => startStreaming()}>Load Texture</button>
+            <button onclick={() => startStreaming()}>Load Texture</button>
           </div>
         {/if}
       </div>

@@ -21,7 +21,7 @@ import (
 const (
 	MCP_CONTEXT7_ENDPOINT = "http://localhost:4000"
 	OLLAMA_URL           = "http://localhost:11434"
-	DATABASE_URL         = "postgres://legal_admin:123456@localhost:5433/legal_ai_db?sslmode=disable"
+	DATABASE_URL         = "postgres://legal_admin:123456@localhost:5432/legal_ai_db?sslmode=disable"
 	GEMMA_EMBED_MODEL    = "embeddinggemma:latest"
 	DOCS_OUTPUT_DIR      = "./docs/context7-library-docs"
 )

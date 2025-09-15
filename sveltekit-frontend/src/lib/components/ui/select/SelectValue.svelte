@@ -7,8 +7,8 @@
 
   interface Props {
     class?: string;
-    placeholder?: any;
-    children?: any;
+    placeholder?: unknown;
+    children?: unknown;
   }
   let { children, placeholder,
     class: class_ = ""

@@ -5,7 +5,7 @@ https://svelte.dev/e/expected_token -->
   import 'nes.css/css/nes.min.css';
   interface Props {
     message: { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string }
-    analyticsLog?: (event: any) => void;
+    analyticsLog?: (event: unknown) => void;
   }
 
   let {
@@ -45,8 +45,8 @@ https://svelte.dev/e/expected_token -->
 </div>
 <!-- Chat Message: Svelte 5, Bits UI, UnoCSS, analytics logging -->
   import { User, Bot, AlertTriangle } from 'lucide-svelte';
-  let { message = $bindable()  }: { message = $bindable() : any } = $props(); // { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string };
-  let { analyticsLog = $bindable()  }: { analyticsLog = $bindable() : any } = $props(); // (event: any) => void = () => {};
+  let { message = $bindable()  }: { message = $bindable() : unknown } = $props(); // { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string };
+  let { analyticsLog = $bindable()  }: { analyticsLog = $bindable() : unknown } = $props(); // (event: unknown) => void = () => {};
 
   // TODO: Convert to $derived: if (message && message.content) {
     analyticsLog({ event: 'chat_message_rendered', role: message.role, timestamp: Date.now() })

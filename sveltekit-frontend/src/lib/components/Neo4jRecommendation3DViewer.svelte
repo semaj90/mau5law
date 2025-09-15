@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  let { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha'  }: { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha' : any } = $props();
+  let { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha'  }: { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha' : unknown } = $props();
 
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { useMachine } from '@xstate/svelte';
@@ -432,8 +432,8 @@ https://svelte.dev/e/js_parse_error -->
   <!-- WebGPU Canvas -->
   <canvas
     bind:this={canvasRef}
-    on:click={handleCanvasClick}
-    on:mousemove={handleCanvasClick}
+    onclick={handleCanvasClick}
+    onmousemove={handleCanvasClick}
     class="render-canvas"
     aria-label="3D Neo4j Knowledge Graph Visualization"
   />
@@ -486,7 +486,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="error-message">{error}</div>
       <button 
         class="retry-button"
-        on:click={loadRecommendations}
+        onclick={loadRecommendations}
         disabled={isLoading}
       >
         Retry Loading
@@ -522,7 +522,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="camera-controls">
     <button 
       class="control-button"
-      on:click={() => animation.enabled = !animation.enabled}
+      onclick={() => animation.enabled = !animation.enabled}
       title="Toggle Animation"
     >
       {animation.enabled ? '⏸️' : '▶️'}
@@ -530,7 +530,7 @@ https://svelte.dev/e/js_parse_error -->
     
     <button 
       class="control-button"
-      on:click={() => camera = { ...camera, position: { x: 0, y: 0, z: 50 } }}
+      onclick={() => camera = { ...camera, position: { x: 0, y: 0, z: 50 } }}
       title="Reset Camera"
     >
       🎯

@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
   function connectWebSocket() {
     try {
       ws = new WebSocket('ws://localhost:8080');
-      ws.on:open=() => {
+      ws.onopen=() => {
         isConnected = true;
         console.log('[observability-panel] WebSocket connected');
       };
@@ -108,7 +108,7 @@ https://svelte.dev/e/js_parse_error -->
           console.error('[observability-panel] Failed to parse WebSocket message:', error);
         }
       };
-      ws.on:close=() => {
+      ws.onclose=() => {
         isConnected = false;
         console.log('[observability-panel] WebSocket disconnected');
         // Reconnect after 5 seconds
@@ -168,7 +168,7 @@ https://svelte.dev/e/js_parse_error -->
         <span class="status-indicator {isConnected ? 'connected' : 'disconnected'}"></span>
         {isConnected ? 'Live' : 'Disconnected'}
       </div>
-      <button class="btn-toggle" on:click={() => showDetails = !showDetails}>
+      <button class="btn-toggle" onclick={() => showDetails = !showDetails}>
         {showDetails ? 'Hide' : 'Show'} Details
       </button>
     </div>
@@ -235,7 +235,7 @@ https://svelte.dev/e/js_parse_error -->
           <input type="checkbox" bind:checked={autoScroll} />
           Auto-scroll
         </label>
-        <button class="btn-clear" on:click={clearAlerts}>Clear</button>
+        <button class="btn-clear" onclick={clearAlerts}>Clear</button>
       </div>
     </div>
     

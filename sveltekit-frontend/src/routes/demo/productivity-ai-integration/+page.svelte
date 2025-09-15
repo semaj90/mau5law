@@ -168,7 +168,7 @@
         { id: 'effects', name: '🎮 3D Effects', desc: 'NES.css processing' }
       ] as demo}
         <button
-          on:click={() => switchDemo(demo.id)}
+          onclick={() => switchDemo(demo.id)}
           class="px-6 py-3 rounded-lg border border-cyan-500/30 transition-all duration-300 {
             activeDemo === demo.id 
               ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/25' 
@@ -186,7 +186,7 @@
       
       <!-- Overview Section -->
       {#if activeDemo === 'overview'}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" transition:fade={{ duration: 300 }}>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" transitionfade={{ duration: 300 }}>
           <!-- System Stats -->
           <div class="bg-gray-800/50 backdrop-blur border border-cyan-500/20 rounded-lg p-6">
             <h3 class="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
@@ -248,7 +248,7 @@
             
             <div class="space-y-3 max-h-80 overflow-y-auto">
               {#each currentHistory.slice(0, 10) as action (action.id)}
-                <div class="flex items-center gap-3 p-3 bg-gray-700/30 rounded" transition:fly={{ x: -20, duration: 200 }}>
+                <div class="flex items-center gap-3 p-3 bg-gray-700/30 rounded" transitionfly={{ x: -20, duration: 200 }}>
                   <div class="w-8 h-8 rounded-full flex items-center justify-center {
                     action.outcome.success ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
                   }">
@@ -280,7 +280,7 @@
                     rec.priority === 'critical' ? 'border-red-500' :
                     rec.priority === 'high' ? 'border-orange-500' :
                     rec.priority === 'medium' ? 'border-yellow-500' : 'border-blue-500'
-                  }" transition:scale={{ duration: 200 }}>
+                  }" transitionscale={{ duration: 200 }}>
                     <div class="font-semibold text-sm mb-2">{rec.title}</div>
                     <div class="text-xs text-gray-400 mb-2 line-clamp-2">{rec.description}</div>
                     <div class="flex justify-between items-center text-xs">
@@ -299,14 +299,14 @@
 
       <!-- QLorA Training Section -->
       {#if activeDemo === 'qlora'}
-        <div transition:fade={{ duration: 300 }}>
+        <div transitionfade={{ duration: 300 }}>
           <QLorATrainingPanel enabledByDefault={true} />
         </div>
       {/if}
 
       <!-- User Analytics Section -->
       {#if activeDemo === 'analytics'}
-        <div class="bg-gray-800/50 backdrop-blur border border-cyan-500/20 rounded-lg p-6" transition:fade={{ duration: 300 }}>
+        <div class="bg-gray-800/50 backdrop-blur border border-cyan-500/20 rounded-lg p-6" transitionfade={{ duration: 300 }}>
           <h3 class="text-xl font-bold text-cyan-400 mb-6">User Analytics & Reinforcement Learning</h3>
           
           {#if currentProfile}
@@ -398,7 +398,7 @@
                 </div>
 
                 <button
-                  on:click={startProcessingDemo}
+                  onclick={startProcessingDemo}
                   disabled={processing}
                   class="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-semibold transition-all duration-200"
                 >
@@ -417,20 +417,20 @@
 
       <!-- MinIO Upload Section -->
       {#if activeDemo === 'minio'}
-        <div transition:fade={{ duration: 300 }}>
+        <div transitionfade={{ duration: 300 }}>
           <EnhancedMinIODragDrop
             caseId="demo_case"
             enableCudaAcceleration={true}
             enableGpuOptimization={true}
             useMsvcOptimizations={true}
-            on:uploadComplete={handleFileUpload}
+            onuploadComplete={handleFileUpload}
           />
         </div>
       {/if}
 
       <!-- 3D Effects Section -->
       {#if activeDemo === 'effects'}
-        <div transition:fade={{ duration: 300 }}>
+        <div transitionfade={{ duration: 300 }}>
           <div class="mb-6">
             <h3 class="text-xl font-bold text-cyan-400 mb-4">🎮 3D NES.css LOD Effects</h3>
             <p class="text-gray-300 mb-4">
@@ -439,7 +439,7 @@
             
             <div class="flex flex-wrap gap-4 mb-6">
               <button
-                on:click={startProcessingDemo}
+                onclick={startProcessingDemo}
                 disabled={processing}
                 class="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed rounded font-semibold transition-colors"
               >
@@ -448,7 +448,7 @@
               
               <select 
                 class="px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white"
-                on:change={(e) => {
+                onchange={(e) => {
                   // In a real implementation, this would change the effect style
                   console.log('Style changed to:', e.target.value);
                 }}
@@ -462,7 +462,7 @@
               
               <select 
                 class="px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white"
-                on:change={(e) => {
+                onchange={(e) => {
                   console.log('LOD changed to:', e.target.value);
                 }}
               >

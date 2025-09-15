@@ -9,9 +9,7 @@ https://svelte.dev/e/js_parse_error -->
   import { fade, scale } from 'svelte/transition';
   import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps } from '$lib/stores/evidence-workflow';
   import type { LegalAIMetadata } from '$lib/types/legal-ai-metadata';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -148,7 +146,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       {#if allowDownload && downloadUrl}
-        <Button on:click={handleDownload} class="flex items-center gap-2 bits-btn bits-btn">
+        <Button onclick={handleDownload} class="flex items-center gap-2 bits-btn bits-btn">
 <Download class="w-4 h-4" />
           Download
 

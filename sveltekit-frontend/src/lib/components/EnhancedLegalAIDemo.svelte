@@ -106,7 +106,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
       // Subscribe to real-time updates
       if (machines?.streamingActor) {
-        machines.streamingActor.subscribe((state: any) => {
+        machines.streamingActor.subscribe((state: unknown) => {
           if (state.context.messageQueue.length > realTimeUpdates.length) {
             realTimeUpdates = [...state.context.messageQueue];
           }
@@ -183,7 +183,7 @@ https://svelte.dev/e/attribute_duplicate -->
     processingActive = true;
   }
 
-  async function addDemoEvidence(demoEvidence: any) {
+  async function addDemoEvidence(demoEvidence: unknown) {
     if (!machines?.evidenceActor) return;
 
     machines.evidenceActor.send({
@@ -292,7 +292,7 @@ https://svelte.dev/e/attribute_duplicate -->
             />
             <button
               class="bits-btn bits-btn w-full"
-              on:click={addCustomEvidence}
+              onclick={addCustomEvidence}
               disabled={!evidenceText.trim() || processingActive}
             >
               Process Evidence
@@ -313,7 +313,7 @@ https://svelte.dev/e/attribute_duplicate -->
                   {demo.content.slice(0, 100)}...
                 </p>
                 <button type="button" class="bits-btn bits-btn w-full"
-                  on:click={() => addDemoEvidence(demo)}
+                  onclick={() => addDemoEvidence(demo)}
                   disabled={processingActive}
                 >
                   Process This Evidence
@@ -329,16 +329,16 @@ https://svelte.dev/e/attribute_duplicate -->
             <h3 class="nes-text is-primary">System Controls</h3>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <button type="button" class="bits-btn bits-btn w-full" on:click={() => checkSystemHealth()}>
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => checkSystemHealth()}>
               Health Check
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" on:click={() => syncCache()}>
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => syncCache()}>
               Sync Cache
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" on:click={() => clearErrors()}>
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => clearErrors()}>
               Clear Errors
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" on:click={() => clearCache()}>
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => clearCache()}>
               Clear Cache
             </button>
           </div>
@@ -382,17 +382,17 @@ https://svelte.dev/e/attribute_duplicate -->
                 {#each processingResults.slice(-5) as result}
                   <div class="border rounded-lg p-3">
                     <div class="flex items-center justify-between mb-2">
-                      <Badge class="{(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).status === 'complete' ? 'bg-green-500' : 'bg-yellow-500'} text-white">
-                        {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).status}
+                      <Badge class="{(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).status === 'complete' ? 'bg-green-500' : 'bg-yellow-500'} text-white">
+                        {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).status}
                       </Badge>
                       <span class="text-xs text-gray-500">
-                        {formatTimestamp((result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).timestamp)}
+                        {formatTimestamp((result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).timestamp)}
                       </span>
                     </div>
-                    <p class="text-sm">Evidence: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).evidenceId}</p>
-                    <p class="text-sm">Type: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).type}</p>
-                    <p class="text-sm">Confidence: {((result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).confidence * 100).toFixed(1)}%</p>
-                    <p class="text-sm">Time: {(result as { status?: any; timestamp?: any; evidenceId?: any; type?: any; confidence?: any; processingTime?: any }).processingTime}ms</p>
+                    <p class="text-sm">Evidence: {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).evidenceId}</p>
+                    <p class="text-sm">Type: {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).type}</p>
+                    <p class="text-sm">Confidence: {((result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).confidence * 100).toFixed(1)}%</p>
+                    <p class="text-sm">Time: {(result as { status?: unknown; timestamp?: unknown; evidenceId?: unknown; type?: unknown; confidence?: unknown; processingTime?: unknown }).processingTime}ms</p>
                   </div>
                 {/each}
               </div>

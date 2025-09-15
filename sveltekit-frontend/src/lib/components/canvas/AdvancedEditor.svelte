@@ -261,7 +261,7 @@ https://svelte.dev/e/js_parse_error -->
     editor.replaceSelection(formattedText);
   }
 
-  function insertNode(node: any) {
+  function insertNode(node: unknown) {
     if (!editor) return;
 
     switch (node.type) {

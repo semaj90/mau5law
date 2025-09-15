@@ -165,7 +165,7 @@
 <input
   type="file"
   bind:this={fileInput}
-  on:change={handleFileSelect}
+  onchange={handleFileSelect}
   multiple
   accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
   class="hidden"
@@ -175,7 +175,7 @@
 {/if}
 
 {#if minimal}
-  <button class="upload-zone px-3 py-2 border rounded text-sm" on:click={openFileDialog} title="Upload Evidence" aria-label="Upload Evidence" tabindex={0} disabled={isUploading}>
+  <button class="upload-zone px-3 py-2 border rounded text-sm" onclick={openFileDialog} title="Upload Evidence" aria-label="Upload Evidence" tabindex={0} disabled={isUploading}>
     {#if isUploading}
       ⏳ Uploading...
     {:else}
@@ -185,14 +185,14 @@
 {:else}
   <div
     class="upload-zone border-2 border-dashed rounded p-6 text-center transition-colors select-none {isDragOver ? 'bg-gray-100 border-gray-400' : 'border-gray-300'}"
-    on:dragover={handleDragOver}
+    ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    on:drop={handleDrop}
+    ondrop={handleDrop}
     role="button" 
     aria-label="Upload Evidence Dropzone" 
     tabindex={0}
-  on:click={openFileDialog}
-  on:keydown={(e) => e.key === 'Enter' && openFileDialog()}
+  onclick={openFileDialog}
+  onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
   >
     {#if isUploading}
       <div class="flex flex-col items-center gap-3">
@@ -201,7 +201,7 @@
           <div class="h-full bg-blue-500 transition-all" style="width: {uploadProgress}%"></div>
         </div>
         <div class="flex gap-2 items-center">
-          <button class="text-xs px-2 py-1 border rounded hover:bg-gray-100" on:click={(e) => { e.stopPropagation(); cancelUpload(); }}>Cancel</button>
+          <button class="text-xs px-2 py-1 border rounded hover:bg-gray-100" onclick={(e) => { e.stopPropagation(); cancelUpload(); }}>Cancel</button>
         </div>
       </div>
     {:else}

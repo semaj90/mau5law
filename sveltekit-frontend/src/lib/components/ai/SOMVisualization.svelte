@@ -343,7 +343,7 @@ https://svelte.dev/e/js_parse_error -->
           <label class="block text-sm text-gray-300 mb-1">Map Size</label>
           <div class="flex gap-2">
             <input 
-              bind:value={somConfig.mapWidth} on:change={updateSOMConfig}
+              bind:value={somConfig.mapWidth} onchange={updateSOMConfig}
               type="number" 
               min="5" 
               max="50" 
@@ -352,7 +352,7 @@ https://svelte.dev/e/js_parse_error -->
             />
             <span class="text-gray-400 text-sm">×</span>
             <input 
-              bind:value={somConfig.mapHeight} on:change={updateSOMConfig}
+              bind:value={somConfig.mapHeight} onchange={updateSOMConfig}
               type="number" 
               min="5" 
               max="50" 
@@ -376,7 +376,7 @@ https://svelte.dev/e/js_parse_error -->
         
         <div>
           <label class="block text-sm text-gray-300 mb-1" for="clusters">Clusters</label><input id="clusters" 
-            bind:value={somConfig.clusterCount} on:change={updateSOMConfig}
+            bind:value={somConfig.clusterCount} onchange={updateSOMConfig}
             type="number" 
             min="2" 
             max="16" 
@@ -450,7 +450,7 @@ https://svelte.dev/e/js_parse_error -->
       
       <div class="space-y-3">
         <button 
-          on:click={trainWithSampleData}
+          onclick={trainWithSampleData}
           disabled={!isInitialized || isTraining}
           class="w-full yorha-button px-4 py-2 bg-blue-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -458,7 +458,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
         
         <button 
-          on:click={processTestDocument}
+          onclick={processTestDocument}
           disabled={!isInitialized || isTraining}
           class="w-full yorha-button px-4 py-2 bg-green-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -466,7 +466,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
         
         <button 
-          on:click={exportSOMData}
+          onclick={exportSOMData}
           disabled={!isInitialized}
           class="w-full yorha-button px-4 py-2 bg-purple-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >

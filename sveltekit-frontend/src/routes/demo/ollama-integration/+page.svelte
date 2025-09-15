@@ -22,9 +22,7 @@ https://svelte.dev/e/tag_invalid_name -->
     type IntegratedChatResponse,
     type OllamaServiceStatus
   } from '$lib/services/ollama-integration-layer';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
   import {
     Card,
@@ -278,7 +276,7 @@ https://svelte.dev/e/tag_invalid_name -->
         })
       });
 
-      const result = await (response as { json?: any; substring?: any; length?: any }).json();
+      const result = await (response as { json?: unknown; substring?: unknown; length?: unknown }).json();
 
       responses = [{
         type: 'Direct API',
@@ -346,7 +344,7 @@ https://svelte.dev/e/tag_invalid_name -->
       <Badge variant={isInitialized ? 'default' : 'secondary'}>
         {isInitialized ? 'Ready' : 'Initializing'}
       </Badge>
-  <Button class="bits-btn" variant="outline" size="sm" on:click={refreshServiceStatus}>
+  <Button class="bits-btn" variant="outline" size="sm" onclick={refreshServiceStatus}>
 <Settings class="w-4 h-4" />
 
     </div>
@@ -434,7 +432,7 @@ https://svelte.dev/e/tag_invalid_name -->
         <!-- Test Actions -->
         <div class="grid grid-cols-2 gap-2">
           <Button
-            on:click={testBasicChat}
+            onclick={testBasicChat}
             disabled={!isInitialized || isLoading}
             class="flex items-center gap-2 bits-btn bits-btn"
           >
@@ -446,7 +444,7 @@ https://svelte.dev/e/tag_invalid_name -->
             Basic Chat
 
           <Button
-            on:click={testDocumentSummary}
+            onclick={testDocumentSummary}
             disabled={!isInitialized || isLoading}
             variant="secondary"
             class="flex items-center gap-2 bits-btn bits-btn"
@@ -455,7 +453,7 @@ https://svelte.dev/e/tag_invalid_name -->
             Document Summary
 
           <Button
-            on:click={testRAGQuery}
+            onclick={testRAGQuery}
             disabled={!isInitialized || isLoading}
             variant="outline"
             class="flex items-center gap-2 bits-btn bits-btn"
@@ -464,7 +462,7 @@ https://svelte.dev/e/tag_invalid_name -->
             RAG Query
 
           <Button
-            on:click={testDirectAPI}
+            onclick={testDirectAPI}
             disabled={!isInitialized || isLoading}
             variant="outline"
             class="flex items-center gap-2 bits-btn bits-btn"
@@ -477,7 +475,7 @@ https://svelte.dev/e/tag_invalid_name -->
         <!-- Streaming Test -->
         <div class="border-t pt-4">
           <Button
-            on:click={testStreamingResponse}
+            onclick={testStreamingResponse}
             disabled={!isInitialized || isStreaming}
             variant="secondary"
             class="w-full flex items-center gap-2 bits-btn bits-btn"
@@ -503,7 +501,7 @@ https://svelte.dev/e/tag_invalid_name -->
         <!-- System Actions -->
         <div class="border-t pt-4 space-y-2">
           <Button
-            on:click={warmupServices}
+            onclick={warmupServices}
             disabled={isLoading}
             variant="outline"
             class="w-full flex items-center gap-2 bits-btn bits-btn"
@@ -527,7 +525,7 @@ https://svelte.dev/e/tag_invalid_name -->
             <Button class="bits-btn"
               variant="outline"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 responses = []}
             >
               Clear
@@ -549,35 +547,35 @@ responses = []}
                 <div class="nes-container">
                   <div class="yorha-panel-header pb-2">
                     <div class="flex items-center justify-between">
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).type}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).type}</span>
                       <span class="text-xs nes-text is-disabled">
-                        {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).processingTime}ms • {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).timestamp.toLocaleTimeString()}
+                        {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).processingTime}ms • {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).timestamp.toLocaleTimeString()}
                       </span>
                     </div>
                   </div>
                   <div class="yorha-panel-content pt-2">
                     <!-- Response Content -->
-                    {#if (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).response}
+                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).response}
                       <div class="mb-3">
                         <p class="text-sm font-medium">Response:</p>
                         <p class="text-sm bg-muted p-2 rounded mt-1 whitespace-pre-wrap">
-                          {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).(response as { json?: any; substring?: any; length?: any }).substring(0, 300)}{(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).(response as { json?: any; substring?: any; length?: any }).length > 300 ? '...' : ''}
+                          {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).substring(0, 300)}{(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).length > 300 ? '...' : ''}
                         </p>
                       </div>
                     {/if}
 
                     <!-- Summary -->
-                    {#if (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).summary}
+                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).summary}
                       <div class="mb-3">
                         <p class="text-sm font-medium">Summary:</p>
                         <p class="text-sm bg-blue-50 p-2 rounded mt-1">
-                          {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).summary.summary?.substring(0, 200)}...
+                          {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).summary.summary?.substring(0, 200)}...
                         </p>
-                        {#if (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).summary.keyPoints?.length}
+                        {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).summary.keyPoints?.length}
                           <div class="mt-2">
                             <p class="text-xs font-medium">Key Points:</p>
                             <ul class="text-xs list-disc list-inside mt-1">
-                              {#each (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).summary.keyPoints.slice(0, 3) as point}
+                              {#each (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).summary.keyPoints.slice(0, 3) as point}
                                 <li>{point}</li>
                               {/each}
                             </ul>
@@ -587,19 +585,19 @@ responses = []}
                     {/if}
 
                     <!-- Performance -->
-                    {#if (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).performance}
+                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).performance}
                       <div class="flex gap-4 text-xs nes-text is-disabled">
-                        <span>Duration: {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).performance.duration}ms</span>
-                        <span>Tokens: {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).performance.tokens}</span>
-                        <span>Model: {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).performance.model}</span>
+                        <span>Duration: {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).performance.duration}ms</span>
+                        <span>Tokens: {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).performance.tokens}</span>
+                        <span>Model: {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).performance.model}</span>
                       </div>
                     {/if}
 
                     <!-- Integration Info -->
-                    {#if (result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).integration}
+                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).integration}
                       <div class="mt-2 p-2 bg-green-50 rounded text-xs">
-                        <p><strong>Integration:</strong> {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).integration.processingPath}</p>
-                        <p><strong>Services:</strong> {(result as { type?: any; processingTime?: any; timestamp?: any; response?: any }).(response as { json?: any; substring?: any; length?: any }).integration.servicesUsed.join(', ')}</p>
+                        <p><strong>Integration:</strong> {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).integration.processingPath}</p>
+                        <p><strong>Services:</strong> {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).integration.servicesUsed.join(', ')}</p>
                       </div>
                     {/if}
                   </div>

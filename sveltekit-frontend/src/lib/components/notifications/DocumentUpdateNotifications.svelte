@@ -26,7 +26,7 @@ https://svelte.dev/e/js_parse_error -->
     maxVisible = 5,
     autoHide = true,
     position = "top-right",
-  : any } = $props();
+  : unknown } = $props();
 
   // State
   let notifications = $state<UpdateNotification[]>([]);
@@ -94,13 +94,13 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function getProgressWidth(notification: UpdateNotification): string {
-    if ((notification as { data?: any; id?: any }).(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).progress !== undefined) {
-      return `${(notification as { data?: any; id?: any }).(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).progress}%`;
+    if ((notification as { data?: unknown; id?: unknown }).(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).progress !== undefined) {
+      return `${(notification as { data?: unknown; id?: unknown }).(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).progress}%`;
     }
 
-    if ((notification as { data?: any; id?: any }).(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).chunksProcessed != null && (notification as { data?: any; id?: any }).(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).totalChunks != null) {
+    if ((notification as { data?: unknown; id?: unknown }).(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).chunksProcessed != null && (notification as { data?: unknown; id?: unknown }).(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).totalChunks != null) {
       const progress =
-        ((notification as { data?: any; id?: any }).(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).chunksProcessed / (notification as { data?: any; id?: any }).(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).totalChunks) *
+        ((notification as { data?: unknown; id?: unknown }).(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).chunksProcessed / (notification as { data?: unknown; id?: unknown }).(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).totalChunks) *
         100;
       return `${Math.round(progress)}%`;
     }
@@ -137,7 +137,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex items-center space-x-1">
         {#if notifications.length > 0}
           <button
-            on:click={clearAllNotifications}
+            onclick={clearAllNotifications}
             class="text-xs text-gray-500 hover:text-gray-700 px-2 py-1 rounded"
             title="Clear all"
           >
@@ -146,7 +146,7 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
 
         <button
-          on:click={toggleNotifications}
+          onclick={toggleNotifications}
           class="text-gray-500 hover:text-gray-700 p-1 rounded"
           title={showNotifications
             ? "Hide notifications"
@@ -184,13 +184,13 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex items-start justify-between">
             <div class="flex-1">
               <div class="text-sm text-gray-700 dark:text-gray-300 mb-1">
-                {update.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).title ||
+                {update.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).title ||
                   `Document ${update.documentId.substring(0, 8)}...`}
               </div>
 
-              {#if update.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).chunksProcessed != null && update.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).totalChunks != null}
+              {#if update.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).chunksProcessed != null && update.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).totalChunks != null}
                 <div class="text-xs text-gray-500 mb-2">
-                  Processing chunk {update.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).chunksProcessed} of {update.data
+                  Processing chunk {update.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).chunksProcessed} of {update.data
                     .totalChunks}
                 </div>
 
@@ -232,7 +232,7 @@ https://svelte.dev/e/js_parse_error -->
         </h4>
       </div>
 
-      {#each visibleNotifications as notification ((notification as { data?: any; id?: any }).id)}
+      {#each visibleNotifications as notification ((notification as { data?: unknown; id?: unknown }).id)}
         {@const typedNotification = notification as UpdateNotification}
         <div
           class="p-3 border-b border-gray-100 dark:border-gray-600 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
@@ -247,37 +247,37 @@ https://svelte.dev/e/js_parse_error -->
               <div class="flex-1 min-w-0">
                 <div class="text-sm text-gray-700 dark:text-gray-300 mb-1">
                   {#if typedNotification.type === "document_changed"}
-                    Document "{typedNotification.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).title || "Untitled"}" was
+                    Document "{typedNotification.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).title || "Untitled"}" was
                     modified
                   {:else if typedNotification.type === "reembedding_started"}
-                    Re-embedding "{typedNotification.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).title || "document"}"
+                    Re-embedding "{typedNotification.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).title || "document"}"
                   {:else if typedNotification.type === "reembedding_complete"}
                     Completed re-embedding with {typedNotification.data
                       .chunksProcessed || 0} chunks
                   {:else if typedNotification.type === "reranking_complete"}
-                    Updated {typedNotification.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).queriesReranked || 0} search
+                    Updated {typedNotification.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).queriesReranked || 0} search
                     queries
-                    {#if typedNotification.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).similarityImprovement}
+                    {#if typedNotification.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).similarityImprovement}
                       <span class="text-green-600">
                         (+{(
-                          typedNotification.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).similarityImprovement * 100
+                          typedNotification.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).similarityImprovement * 100
                         ).toFixed(1)}% accuracy)
                       </span>
                     {/if}
                   {:else if typedNotification.type === "error"}
                     <span class="text-red-600">
-                      Error: {typedNotification.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).error}
+                      Error: {typedNotification.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).error}
                     </span>
                   {/if}
                 </div>
 
-                {#if typedNotification.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).priority}
+                {#if typedNotification.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).priority}
                   <span
                     class="inline-block px-2 py-1 text-xs rounded-full {getPriorityColor(
-                      typedNotification.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).priority
+                      typedNotification.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).priority
                     )}"
                   >
-                    {typedNotification.(data as { title?: any; chunksProcessed?: any; totalChunks?: any; queriesReranked?: any; similarityImprovement?: any; error?: any; priority?: any }).priority} priority
+                    {typedNotification.(data as { title?: unknown; chunksProcessed?: unknown; totalChunks?: unknown; queriesReranked?: unknown; similarityImprovement?: unknown; error?: unknown; priority?: unknown }).priority} priority
                   </span>
                 {/if}
               </div>
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if !showAll && notifications.length > maxVisible}
         <div class="p-3 text-center">
           <button
-            on:click={() => (showAll = true)}
+            onclick={() => (showAll = true)}
             class="text-xs text-blue-600 hover:text-blue-800"
           >
             Show all {notifications.length} notifications

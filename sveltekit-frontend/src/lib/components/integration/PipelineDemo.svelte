@@ -213,7 +213,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         
         <div class="flex items-end">
           <Button 
-            on:click={executePipeline}
+            onclick={executePipeline}
             disabled={isProcessing}
             class="w-full bits-btn bits-btn"
           >
@@ -225,33 +225,33 @@ https://svelte.dev/e/unexpected_reserved_word -->
       <!-- Advanced Controls -->
       <div class="flex flex-wrap gap-2">
         <Button class="bits-btn" 
-          on:click={autoExecutePipeline}
+          onclick={autoExecutePipeline}
           disabled={isProcessing}
           variant="outline"
         >
 🧠 Auto-Select Optimal
 
         <Button class="bits-btn" 
-          on:click={batchProcess}
+          onclick={batchProcess}
           disabled={isProcessing}
           variant="outline"
         >
 📦 Batch Process
 
         <Button class="bits-btn" 
-          on:click={checkSystemHealth}
+          onclick={checkSystemHealth}
           variant="outline"
         >
 🏥 Health Check
 
         <Button class="bits-btn" 
-          on:click={generateReport}
+          onclick={generateReport}
           variant="outline"
         >
 📈 Performance Report
 
         <Button class="bits-btn" 
-          on:click={cleanup}
+          onclick={cleanup}
           variant="destructive"
         >
 🧹 Cleanup
@@ -274,7 +274,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           placeholder="Search across all pipelines..."
           onkeypress={(e) => e.key === 'Enter' && searchPipelines()}
         />
-        <Button class="bits-btn" on:click={searchPipelines}>
+        <Button class="bits-btn" onclick={searchPipelines}>
 🔍 Search
 
       </div>
@@ -287,12 +287,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
               <div class="p-2 bg-gray-50 rounded border-l-4 border-blue-500">
                 <div class="flex justify-between items-start">
                   <div class="flex-1">
-                    <p class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).id}</p>
-                    <p class="text-sm text-gray-600">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).content?.substring(0, 100)}...</p>
+                    <p class="font-medium">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).id}</p>
+                    <p class="text-sm text-gray-600">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).content?.substring(0, 100)}...</p>
                   </div>
                   <div class="text-right text-sm">
-                    <div class="font-semibold">Score: {(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).score?.toFixed(3)}</div>
-                    <div class="text-gray-500">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).source}</div>
+                    <div class="font-semibold">Score: {(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).score?.toFixed(3)}</div>
+                    <div class="text-gray-500">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).source}</div>
                   </div>
                 </div>
               </div>
@@ -387,38 +387,38 @@ https://svelte.dev/e/unexpected_reserved_word -->
             <div class="p-3 border rounded-lg">
               <div class="flex justify-between items-start mb-2">
                 <div class="flex items-center gap-2">
-                  <span class="font-semibold">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).type}</span>
-                  <span class={getStatusColor((result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).success)}>
-                    {(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).success ? '✅' : '❌'}
+                  <span class="font-semibold">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).type}</span>
+                  <span class={getStatusColor((result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).success)}>
+                    {(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).success ? '✅' : '❌'}
                   </span>
                 </div>
                 <div class="text-sm text-gray-500">
-                  {formatTime((result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.totalProcessingTime)}
+                  {formatTime((result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.totalProcessingTime)}
                 </div>
               </div>
               
               <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
                 <div>
                   <span class="text-gray-500">Cache Hit:</span>
-                  <span class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.cacheHitRate.toFixed(1)}%</span>
+                  <span class="font-medium">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.cacheHitRate.toFixed(1)}%</span>
                 </div>
                 <div>
                   <span class="text-gray-500">Memory:</span>
-                  <span class="font-medium">{formatMemory((result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.memoryUsageMB)}</span>
+                  <span class="font-medium">{formatMemory((result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.memoryUsageMB)}</span>
                 </div>
                 <div>
                   <span class="text-gray-500">GPU:</span>
-                  <span class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.gpuUtilization.toFixed(0)}%</span>
+                  <span class="font-medium">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.gpuUtilization.toFixed(0)}%</span>
                 </div>
                 <div>
                   <span class="text-gray-500">Throughput:</span>
-                  <span class="font-medium">{(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).metrics.throughputPerSecond.toFixed(1)}/s</span>
+                  <span class="font-medium">{(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).metrics.throughputPerSecond.toFixed(1)}/s</span>
                 </div>
               </div>
               
-              {#if (result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).error}
+              {#if (result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).error}
                 <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-                  Error: {(result as { id?: any; content?: any; score?: any; source?: any; type?: any; success?: any; metrics?: any; error?: any }).error}
+                  Error: {(result as { id?: unknown; content?: unknown; score?: unknown; source?: unknown; type?: unknown; success?: unknown; metrics?: unknown; error?: unknown }).error}
                 </div>
               {/if}
             </div>

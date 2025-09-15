@@ -5,11 +5,11 @@
   import { gpuVectorProcessor } from '../../gpu/gpu-vector-processor.js';
   import { telemetryBus } from '../../telemetry/telemetry-bus.js';
 
-  let aggregates: any[] = [];
-  let recent: any[] = [];
-  let errors: any[] = [];
-  let demotions: any[] = [];
-  let memory: any = null;
+  let aggregates: unknown[] = [];
+  let recent: unknown[] = [];
+  let errors: unknown[] = [];
+  let demotions: unknown[] = [];
+  let memory: unknown = null;
   let expanded = false;
 
   let unsub: () => void;
@@ -47,7 +47,7 @@
 <div class="panel">
   <div style="display:flex; justify-content:space-between; align-items:center;">
     <strong>GPU Diagnostics</strong>
-    <button on:click={() => expanded = !expanded}>{expanded ? 'Hide' : 'Show'}</button>
+    <button onclick={() => expanded = !expanded}>{expanded ? 'Hide' : 'Show'}</button>
   </div>
   {#if expanded}
     <div class="section">

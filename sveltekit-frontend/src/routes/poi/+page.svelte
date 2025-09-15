@@ -2,7 +2,7 @@
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
 
   // State
   let searchQuery = $state('');
@@ -66,7 +66,7 @@
     <Button class="bits-btn {showFilters ? 'bg-blue-50 border-blue-300' : ''}"
         variant="outline"
         size="sm"
-  on:click={() =>
+  onclick={() =>
 (showFilters = !showFilters)}
       >
         <Filter class="w-4 h-4 mr-2" />
@@ -75,7 +75,7 @@
     <Button class="bits-btn"
         variant="outline"
         size="sm"
-  on:click={() =>
+  onclick={() =>
 (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
       >
         {#if viewMode === 'grid'}

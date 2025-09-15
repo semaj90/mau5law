@@ -23,7 +23,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h2>{title}</h2>
-				<button type="button" on:click={() => isOpen = false}>×</button>
+				<button type="button" onclick={() => isOpen = false}>×</button>
 			</div>
 			<div class="modal-body">
 				{#if children}

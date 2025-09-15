@@ -7,9 +7,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -23,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
   import { CheckCircle, AlertCircle, Cpu, Database, Zap, Activity } from 'lucide-svelte';
 
   // Phase 13 system instances
-  let canvas = $state<HTMLCanvasElementlet phase13System: any | null>(null)(null);
+  let canvas = $state<HTMLCanvasElementlet phase13System: unknown | null>(null)(null);
   let apiCoordinator = $state<any >(null);
   let ragEngine = $state<any >(null);
   let context7Integration = $state<any >(null);
@@ -81,47 +79,47 @@ https://svelte.dev/e/js_parse_error -->
         phase13System = createPhase13Integration(canvas);
 
         // Subscribe to system stores
-        phase13System.stores.webglStatus.subscribe((status: any) => {
+        phase13System.stores.webglStatus.subscribe((status: unknown) => {
           webglReady = status.initialized && status.streaming;
         });
 
-        phase13System.stores.apiCoordination.subscribe((coordination: any) => {
+        phase13System.stores.apiCoordination.subscribe((coordination: unknown) => {
           apiActive = coordination.active;
         });
 
-        phase13System.stores.performanceMetrics.subscribe((metrics: any) => {
+        phase13System.stores.performanceMetrics.subscribe((metrics: unknown) => {
           frameRate = metrics.frameRate;
         });
       }
 
       // Subscribe to API coordinator stores
-      apiCoordinator.stores.systemHealth.subscribe((health: any) => {
+      apiCoordinator.stores.systemHealth.subscribe((health: unknown) => {
         systemHealth = health.overall;
       });
 
-      apiCoordinator.stores.throughputMetrics.subscribe((metrics: any) => {
+      apiCoordinator.stores.throughputMetrics.subscribe((metrics: unknown) => {
         apiThroughput = metrics.tasksPerSecond;
       });
 
       // Subscribe to RAG engine stores
-      ragEngine.stores.queryResults.subscribe((results: any) => {
+      ragEngine.stores.queryResults.subscribe((results: unknown) => {
         if (results.size > 0) {
           const latestResults = Array.from(results.values()).pop() || [];
           searchResults = Array.isArray(latestResults) ? latestResults.slice(0, 5) : [];
         }
       });
 
-      ragEngine.stores.feedbackMetrics.subscribe((metrics: any) => {
+      ragEngine.stores.feedbackMetrics.subscribe((metrics: unknown) => {
         feedbackCount = metrics.totalVotes;
         pageRankScore = metrics.averageRelevance;
       });
 
       // Subscribe to Context7 integration stores
-      context7Integration.stores.activeRecommendations.subscribe((recs: any) => {
+      context7Integration.stores.activeRecommendations.subscribe((recs: unknown) => {
         recommendations = Array.isArray(recs) ? recs.slice(0, 3) : [];
       });
 
-      context7Integration.stores.integrationStatus.subscribe((status: any) => {
+      context7Integration.stores.integrationStatus.subscribe((status: unknown) => {
         context7Active = status.overall === 'HEALTHY';
       });
 
@@ -405,7 +403,7 @@ https://svelte.dev/e/js_parse_error -->
           class="border border-slate-600 rounded bg-black"></canvas>
         <div class="flex flex-col gap-2">
           <Button
-            on:click={startWebGLDemo}
+            onclick={startWebGLDemo}
             disabled={!systemInitialized}
             variant="outline"
             class="text-white border-slate-600 hover:bg-slate-700 bits-btn bits-btn">
@@ -431,13 +429,13 @@ Start WebGL Demo
             class="w-full p-3 rounded border border-slate-600 bg-slate-700 text-white placeholder-gray-400" />
           <div class="flex gap-2">
             <Button
-              on:click={performEnhancedRAGSearch}
+              onclick={performEnhancedRAGSearch}
               disabled={!systemInitialized || ragActive}
               class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
 {ragActive ? 'Searching...' : 'Search'}
 </Button>
             <Button
-              on:click={getContext7Recommendations}
+              onclick={getContext7Recommendations}
               disabled={!systemInitialized}
               variant="outline"
               class="text-white border-slate-600 hover:bg-slate-700 bits-btn bits-btn">
@@ -455,13 +453,13 @@ Get Recommendations
         <h3 class="text-lg font-semibold text-white mb-4">System Controls</h3>
         <div class="space-y-4">
           <Button
-            on:click={startAPICoordination}
+            onclick={startAPICoordination}
             disabled={!systemInitialized || apiActive}
             class="w-full bg-green-600 hover:bg-green-700 bits-btn bits-btn">
 {apiActive ? 'API Active' : 'Start API Coordination'}
 </Button>
           <Button
-            on:click={runFullDemo}
+            onclick={runFullDemo}
             disabled={!systemInitialized}
             class="w-full bg-purple-600 hover:bg-purple-700 bits-btn bits-btn">
 Run Full Demo
@@ -483,21 +481,21 @@ Run Full Demo
           {#each searchResults as result, index}
             <div class="p-3 rounded border border-slate-600 bg-slate-700/50">
               <div class="flex justify-between items-start mb-2">
-                <h4 class="font-medium text-white">{(result as { document?: any; finalScore?: any; pageRankBoost?: any }).document.title}</h4>
+                <h4 class="font-medium text-white">{(result as { document?: unknown; finalScore?: unknown; pageRankBoost?: unknown }).document.title}</h4>
                 <span class="text-xs px-2 py-1 rounded bg-blue-600 text-white">
-                  {((result as { document?: any; finalScore?: any; pageRankBoost?: any }).finalScore * 100).toFixed(1)}%
+                  {((result as { document?: unknown; finalScore?: unknown; pageRankBoost?: unknown }).finalScore * 100).toFixed(1)}%
                 </span>
               </div>
               <p class="text-sm text-gray-300 mb-2">
-                {(result as { document?: any; finalScore?: any; pageRankBoost?: any }).document.content.substring(0, 150)}...
+                {(result as { document?: unknown; finalScore?: unknown; pageRankBoost?: unknown }).document.content.substring(0, 150)}...
               </p>
               <div class="flex justify-between items-center">
                 <span class="text-xs text-gray-400">
-                  PageRank: {(result as { document?: any; finalScore?: any; pageRankBoost?: any }).pageRankBoost?.toFixed(3) || '0.000'}
+                  PageRank: {(result as { document?: unknown; finalScore?: unknown; pageRankBoost?: unknown }).pageRankBoost?.toFixed(3) || '0.000'}
                 </span>
                 <Button class="bits-btn"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 submitPositiveFeedback(index)}
                   class="text-xs bg-green-600 hover:bg-green-700">
                   👍 Relevant

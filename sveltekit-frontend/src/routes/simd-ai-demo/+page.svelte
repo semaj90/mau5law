@@ -8,7 +8,7 @@ https://svelte.dev/e/expected_token -->
   import SIMDAIAssistantDemo from '$lib/components/ai/SIMDAIAssistantDemo.svelte';
   import SIMDTextTilingDemo from '$lib/components/ai/SIMDTextTilingDemo.svelte';
   import SIMDGlyphDemo from '$lib/components/ai/SIMDGlyphDemo.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
@@ -277,7 +277,7 @@ https://svelte.dev/e/expected_token -->
             </div>
           </div>
           
-          <Button class="bits-btn" on:click={runSystemBenchmark} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={runSystemBenchmark} variant="outline" size="sm">
 🧪 Run Benchmark
 
         </div>
@@ -291,7 +291,7 @@ https://svelte.dev/e/expected_token -->
       <div class="flex space-x-1">
         {#each demos as demo}
           <button
-            on:click={() => activeDemo = demo.id}
+            onclick={() => activeDemo = demo.id}
             class="px-4 py-3 text-sm font-medium rounded-t-lg transition-colors {
               activeDemo === demo.id
                 ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'

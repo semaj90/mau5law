@@ -1,8 +1,8 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   interface Props {
-    menu: any;
-    children?: any;
+    menu: unknown;
+    children?: unknown;
   }
   let { children, menu }: Props = $props();
 </script>

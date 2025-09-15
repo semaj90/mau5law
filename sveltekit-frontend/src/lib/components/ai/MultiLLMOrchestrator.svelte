@@ -7,9 +7,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
   import { Badge } from '$lib/components/ui/badge';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -275,7 +273,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        on:click={refreshStatus}
+        onclick={refreshStatus}
         disabled={isProcessing}
       >
 <RefreshCw class="h-4 w-4 mr-2 {isProcessing ? 'animate-spin' : ''}" />
@@ -284,13 +282,13 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       <Button class="bits-btn"
         variant="outline"
         size="sm"
-        on:click={() =>
+        onclick={() =>
 showSettings = !showSettings}
       >
         <Settings class="h-4 w-4" />
 
       {#if !isInitialized}
-        <Button class="bits-btn" on:click={initializeOrchestrator} disabled={isProcessing}>
+        <Button class="bits-btn" onclick={initializeOrchestrator} disabled={isProcessing}>
 <Play class="h-4 w-4 mr-2" />
           Initialize
 
@@ -390,7 +388,7 @@ showSettings = !showSettings}
                 variant="outline"
                 size="sm"
                 class="w-full mt-2 bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 submitTestTask(provider.id)}
                 disabled={provider.status !== 'online'}
               >
@@ -412,7 +410,7 @@ submitTestTask(provider.id)}
             <Activity class="h-5 w-5" />
             Active Tasks ({activeTasks.size})
           </span>
-          <Button class="bits-btn" variant="outline" size="sm" on:click={clearCompletedTasks}>
+          <Button class="bits-btn" variant="outline" size="sm" onclick={clearCompletedTasks}>
 Clear Completed
 
         </h3>
@@ -439,7 +437,7 @@ Clear Completed
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 cancelTask(taskId)}
                 >
                   <X class="h-4 w-4" />

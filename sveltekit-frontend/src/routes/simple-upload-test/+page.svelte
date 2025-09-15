@@ -13,7 +13,7 @@ https://svelte.dev/e/js_parse_error -->
   let searchResults = $state<unknown[]>([]);
   let isSearching = $state(false);
 
-  function handleUploadComplete(result: any) {
+  function handleUploadComplete(result: unknown) {
     console.log('Upload completed:', result);
     uploadResults = [...uploadResults, result];
   }
@@ -33,12 +33,12 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
 
-      if ((response as { ok?: any; json?: any; text?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any; text?: any }).json();
-        searchResults = (result as { results?: any; filename?: any; title?: any; similarity?: any; content?: any; metadata?: any }).results || [];
+      if ((response as { ok?: unknown; json?: unknown; text?: unknown }).ok) {
+        const result = await (response as { ok?: unknown; json?: unknown; text?: unknown }).json();
+        searchResults = (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).results || [];
         console.log('Search results:', result);
       } else {
-        console.error('Search failed:', await (response as { ok?: any; json?: any; text?: any }).text();
+        console.error('Search failed:', await (response as { ok?: unknown; json?: unknown; text?: unknown }).text();
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
         keydown={(e) => e.key === 'Enter' && performSearch()}
       />
       <button
-        on:click={performSearch}
+        onclick={performSearch}
         disabled={isSearching}
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
       >
@@ -86,14 +86,14 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="font-medium">Search Results:</h3>
         {#each searchResults as result}
           <div class="border rounded-lg p-4">
-            <div class="font-medium">{(result as { results?: any; filename?: any; title?: any; similarity?: any; content?: any; metadata?: any }).filename || (result as { results?: any; filename?: any; title?: any; similarity?: any; content?: any; metadata?: any }).title || 'Unknown Document'}</div>
-            {#if (result as { results?: any; filename?: any; title?: any; similarity?: any; content?: any; metadata?: any }).similarity}
-              <div class="text-sm text-gray-600">Similarity: {((result as { results?: any; filename?: any; title?: any; similarity?: any; content?: any; metadata?: any }).similarity * 100).toFixed(1)}%</div>
+            <div class="font-medium">{(result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).filename || (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).title || 'Unknown Document'}</div>
+            {#if (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).similarity}
+              <div class="text-sm text-gray-600">Similarity: {((result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).similarity * 100).toFixed(1)}%</div>
             {/if}
-            <div class="text-sm mt-2">{(result as { results?: any; filename?: any; title?: any; similarity?: any; content?: any; metadata?: any }).content}</div>
-            {#if (result as { results?: any; filename?: any; title?: any; similarity?: any; content?: any; metadata?: any }).metadata}
+            <div class="text-sm mt-2">{(result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).content}</div>
+            {#if (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).metadata}
               <div class="text-xs text-gray-500 mt-2">
-                {JSON.stringify((result as { results?: any; filename?: any; title?: any; similarity?: any; content?: any; metadata?: any }).metadata)}
+                {JSON.stringify((result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).metadata)}
               </div>
             {/if}
           </div>
@@ -124,13 +124,13 @@ https://svelte.dev/e/js_parse_error -->
     <h3 class="font-medium mb-2">Quick API Tests</h3>
     <div class="flex gap-2 flex-wrap">
       <button
-        on:click={() => fetch('/api/rag/status').then(r => r.json()).then(console.log)}
+        onclick={() => fetch('/api/rag/status').then(r => r.json()).then(console.log)}
         class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
       >
         Test Status API
       </button>
       <button
-        on:click={() => fetch('/api/ai/embeddings').then(r => r.json()).then(console.log)}
+        onclick={() => fetch('/api/ai/embeddings').then(r => r.json()).then(console.log)}
         class="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600"
       >
         Test Embeddings API

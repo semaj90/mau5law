@@ -228,7 +228,7 @@
         bind:this={fileInput}
         type="file"
         accept="image/*"
-        on:change={handleFileSelect}
+        onchange={handleFileSelect}
         disabled={!initialized || processing}
       />
       
@@ -241,7 +241,7 @@
       
       <div class="action-buttons">
         <button
-          on:click={processImage}
+          onclick={processImage}
           disabled={!uploadedFile || !initialized || processing}
         >
           {#if processing}
@@ -252,14 +252,14 @@
         </button>
         
         <button
-          on:click={processBatchDemo}
+          onclick={processBatchDemo}
           disabled={!initialized || processing}
         >
           📊 Batch Demo
         </button>
         
         <button
-          on:click={clearResults}
+          onclick={clearResults}
           disabled={results.length === 0}
         >
           🗑️ Clear Results

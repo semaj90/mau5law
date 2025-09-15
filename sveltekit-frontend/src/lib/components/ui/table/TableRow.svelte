@@ -2,7 +2,7 @@
   import 'nes.css/css/nes.min.css';
   import { cn } from "$lib/utils";
   
-  let { children, class: className = ""  }: { children, class: className = "" : any } = $props();
+  let { children, class: className = ""  }: { children, class: className = "" : unknown } = $props();
 </script>
 
 <tr class={cn("border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted", className)}>

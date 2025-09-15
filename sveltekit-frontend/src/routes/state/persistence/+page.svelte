@@ -211,7 +211,7 @@ https://svelte.dev/e/expected_token -->
           <h2>📋 Persisted States ({persistedStates.length})</h2>
           
           <div class="filter-controls">
-            <button class="nes-btn" variant="outline" on:click={loadPersistedStates}>
+            <button class="nes-btn" variant="outline" onclick={loadPersistedStates}>
               🔄 Refresh
             </button>
           </div>
@@ -220,7 +220,7 @@ https://svelte.dev/e/expected_token -->
             {#each persistedStates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as state}
               <div class="state-nier-bits-card {selectedState?.id === state.id ? 'selected' : ''}"
                    role="button" tabindex="0"
-                on:click={() => selectedState = selectedState?.id === state.id ? null : state}>
+                onclick={() => selectedState = selectedState?.id === state.id ? null : state}>
                 <div class="state-header">
                   <div class="state-info">
                     <h3 class="state-title">{getMachineDisplayName(state.machineId)}</h3>
@@ -254,7 +254,7 @@ https://svelte.dev/e/expected_token -->
                 <div class="state-actions">
                   <button class="nes-btn" 
                     size="sm"
-                    on:click={(e) => {
+                    onclick={(e) => {
                       e.stopPropagation();
                       restoreState(state.id);
                     }}
@@ -265,7 +265,7 @@ https://svelte.dev/e/expected_token -->
                   
                   <button class="nes-btn is-error"
                     size="sm"
-                    on:click={(e) => {
+                    onclick={(e) => {
                       e.stopPropagation();
                       deletePersistedState(state.id);
                     }}

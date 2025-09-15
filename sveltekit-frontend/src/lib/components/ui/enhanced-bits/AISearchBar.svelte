@@ -9,8 +9,8 @@
     placeholder?: string;
     userContext?: unknown;
     neo4jContext?: unknown;
-    analyticsLog?: (event: any) => void;
-    onResults?: (results: any) => void;
+    analyticsLog?: (event: unknown) => void;
+    onResults?: (results: unknown) => void;
   }
 
   const {
@@ -63,7 +63,7 @@
     legal
     aiAssisted
   />
-  <Button class="bits-btn" variant="yorha" on:click={handleSearch} loading={loading} legal aria-label="Search with AI">
+  <Button class="bits-btn" variant="yorha" onclick={handleSearch} loading={loading} legal aria-label="Search with AI">
 <Search class="w-4 h-4 mr-1" />
     Search
 

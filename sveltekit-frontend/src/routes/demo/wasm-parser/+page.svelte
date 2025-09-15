@@ -7,10 +7,10 @@ https://svelte.dev/e/expected_token -->
   import { onMount } from 'svelte';
   
   // Reactive state
-  let wasm: any = null;
+  let wasm: unknown = null;
   let status = $state('idle');
   let selectedFile: File | null = $state(null);
-  let parsedDocuments: any[] = $state([]);
+  let parsedDocuments: unknown[] = $state([]);
   let processingTime = $state(0);
   let jobId = $state('');
   let eventLog: string[] = $state([]);
@@ -38,7 +38,7 @@ https://svelte.dev/e/expected_token -->
     
     try {
       const response = await fetch('/wasm/legal-parser.wasm');
-      const bytes = await (response as { arrayBuffer?: any; ok?: any; status?: any; statusText?: any; json?: any }).arrayBuffer();
+      const bytes = await (response as { arrayBuffer?: unknown; ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).arrayBuffer();
       
       const { instance } = await WebAssembly.instantiate(bytes, {
         env: {
@@ -79,11 +79,11 @@ https://svelte.dev/e/expected_token -->
       eventSource.addEventListener('events:ingest', (e) => {
         try {
           const data = JSON.parse(e.data);
-          addLog(`📥 Pipeline event: ${(data as { event?: any; job_id?: any; title?: any; progress?: any; document_count?: any }).event || 'processing'}`);
+          addLog(`📥 Pipeline event: ${(data as { event?: unknown; job_id?: unknown; title?: unknown; progress?: unknown; document_count?: unknown }).event || 'processing'}`);
           
-          if ((data as { event?: any; job_id?: any; title?: any; progress?: any; document_count?: any }).job_id === jobId) {
-            if ((data as { event?: any; job_id?: any; title?: any; progress?: any; document_count?: any }).event === 'job_created') {
-              addLog(`✅ Job created: ${(data as { event?: any; job_id?: any; title?: any; progress?: any; document_count?: any }).job_id}`);
+          if ((data as { event?: unknown; job_id?: unknown; title?: unknown; progress?: unknown; document_count?: unknown }).job_id === jobId) {
+            if ((data as { event?: unknown; job_id?: unknown; title?: unknown; progress?: unknown; document_count?: unknown }).event === 'job_created') {
+              addLog(`✅ Job created: ${(data as { event?: unknown; job_id?: unknown; title?: unknown; progress?: unknown; document_count?: unknown }).job_id}`);
             }
           }
         } catch (err) {
@@ -94,8 +94,8 @@ https://svelte.dev/e/expected_token -->
       eventSource.addEventListener('events:processing', (e) => {
         try {
           const data = JSON.parse(e.data);
-          if ((data as { event?: any; job_id?: any; title?: any; progress?: any; document_count?: any }).job_id === jobId) {
-            addLog(`🔄 Processing: ${(data as { event?: any; job_id?: any; title?: any; progress?: any; document_count?: any }).title || 'document'} (${(data as { event?: any; job_id?: any; title?: any; progress?: any; document_count?: any }).progress || ''})`);
+          if ((data as { event?: unknown; job_id?: unknown; title?: unknown; progress?: unknown; document_count?: unknown }).job_id === jobId) {
+            addLog(`🔄 Processing: ${(data as { event?: unknown; job_id?: unknown; title?: unknown; progress?: unknown; document_count?: unknown }).title || 'document'} (${(data as { event?: unknown; job_id?: unknown; title?: unknown; progress?: unknown; document_count?: unknown }).progress || ''})`);
           }
         } catch (err) {
           console.warn('Failed to parse processing event:', err);
@@ -105,8 +105,8 @@ https://svelte.dev/e/expected_token -->
       eventSource.addEventListener('events:completed', (e) => {
         try {
           const data = JSON.parse(e.data);
-          if ((data as { event?: any; job_id?: any; title?: any; progress?: any; document_count?: any }).job_id === jobId) {
-            addLog(`✅ Processing completed: ${(data as { event?: any; job_id?: any; title?: any; progress?: any; document_count?: any }).document_count} documents`);
+          if ((data as { event?: unknown; job_id?: unknown; title?: unknown; progress?: unknown; document_count?: unknown }).job_id === jobId) {
+            addLog(`✅ Processing completed: ${(data as { event?: unknown; job_id?: unknown; title?: unknown; progress?: unknown; document_count?: unknown }).document_count} documents`);
             status = 'completed';
           }
         } catch (err) {
@@ -215,15 +215,15 @@ https://svelte.dev/e/expected_token -->
         body: JSON.stringify(documents)
       });
       
-      if (!(response as { arrayBuffer?: any; ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`API error: ${(response as { arrayBuffer?: any; ok?: any; status?: any; statusText?: any; json?: any }).status} ${(response as { arrayBuffer?: any; ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+      if (!(response as { arrayBuffer?: unknown; ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
+        throw new Error(`API error: ${(response as { arrayBuffer?: unknown; ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status} ${(response as { arrayBuffer?: unknown; ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
       }
       
-      const result = await (response as { arrayBuffer?: any; ok?: any; status?: any; statusText?: any; json?: any }).json();
-      jobId = (result as { job_id?: any; status?: any }).job_id;
+      const result = await (response as { arrayBuffer?: unknown; ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
+      jobId = (result as { job_id?: unknown; status?: unknown }).job_id;
       
       addLog(`✅ Job queued: ${jobId}`);
-      addLog(`📊 Status: ${(result as { job_id?: any; status?: any }).status}`);
+      addLog(`📊 Status: ${(result as { job_id?: unknown; status?: unknown }).status}`);
       
       status = 'processing';
       
@@ -324,7 +324,7 @@ https://svelte.dev/e/expected_token -->
       <input 
         type="file" 
         accept=".json,.txt" 
-        on:change={onFileSelect}
+        onchange={onFileSelect}
         class="hidden" 
         id="fileInput"
       />
@@ -340,7 +340,7 @@ https://svelte.dev/e/expected_token -->
           
           <div class="space-x-4">
             <button 
-              on:click={processFile}
+              onclick={processFile}
               disabled={status !== 'idle' && status !== 'wasm-loaded' && status !== 'completed' && status !== 'error'}
               class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
@@ -447,7 +447,7 @@ https://svelte.dev/e/expected_token -->
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-2xl font-bold text-gray-900">📊 Processing Log</h2>
       <button 
-        on:click={clearLog}
+        onclick={clearLog}
         class="text-sm text-gray-600 hover:text-gray-900"
       >
         Clear Log

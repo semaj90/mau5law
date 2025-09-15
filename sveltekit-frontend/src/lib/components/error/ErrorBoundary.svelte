@@ -3,11 +3,11 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
 
   interface Props {
-    children?: any;
-    fallback?: any;
+    children?: unknown;
+    fallback?: unknown;
     title?: string;
     showReportButton?: boolean;
     showRefreshButton?: boolean;
@@ -123,22 +123,22 @@
       
       <div class="error-actions">
         {#if showRefreshButton}
-          <button class="nes-btn is-primary" on:click={refreshPage}>
+          <button class="nes-btn is-primary" onclick={refreshPage}>
             Try Again
           </button>
         {/if}
         
-        <button class="nes-btn" variant="outline" on:click={goHome}>
+        <button class="nes-btn" variant="outline" onclick={goHome}>
           Go Home
         </button>
         
         {#if showReportButton}
-          <button class="nes-btn" variant="outline" on:click={reportError}>
+          <button class="nes-btn" variant="outline" onclick={reportError}>
             Report Issue
           </button>
         {/if}
         
-        <button class="nes-btn" variant="outline" size="sm" on:click={reset}>
+        <button class="nes-btn" variant="outline" size="sm" onclick={reset}>
           Reset
         </button>
       </div>

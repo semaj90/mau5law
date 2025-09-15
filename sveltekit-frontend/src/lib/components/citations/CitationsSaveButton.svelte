@@ -137,7 +137,7 @@
       {variant}
       {size}
       class="citation-save-btn {isSaved ? 'saved' : ''}"
-      on:click={isSaved ? handleRemove : handleSave}
+      onclick={isSaved ? handleRemove : handleSave}
       disabled={isSaving}
       title={isSaved ? 'Remove from saved citations' : 'Save citation'}
     >
@@ -155,7 +155,7 @@
         variant="ghost"
         {size}
         class="collection-selector-btn"
-        on:click={() => showCollectionSelector = !showCollectionSelector}
+        onclick={() => showCollectionSelector = !showCollectionSelector}
         title="Save to collection"
       >
         📁
@@ -165,14 +165,14 @@
         <div class="collection-selector">
           <div class="collection-header">
             <h4>Save to Collection</h4>
-            <button class="close-btn" on:click={() => showCollectionSelector = false}>✕
+            <button class="close-btn" onclick={() => showCollectionSelector = false}>✕
 
           </div>
           <div class="collection-list">
             {#each collections as collection}
               <button
                 class="collection-item"
-                on:click={() => handleSaveToCollection(collection.id)}
+                onclick={() => handleSaveToCollection(collection.id)}
               >
                 <span class="collection-name">{collection.name}</span>
                 <span class="collection-count">

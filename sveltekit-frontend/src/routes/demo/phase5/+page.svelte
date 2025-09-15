@@ -1,9 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   // Badge replaced with span - not available in enhanced-bits
   import {
     Card,
@@ -25,7 +23,7 @@
   // Component state
   let activeTab = $state('overview');
   let systemStatus = $state('initializing');
-  let context7Stats: any = $state(null);
+  let context7Stats: unknown = $state(null);
 
   // Phase 5 features checklist
   const phase5Features = [
@@ -299,7 +297,7 @@
           <div class="yorha-panel-content">
             <Button
               class="w-full bits-btn bits-btn"
-              on:click={() =>
+              onclick={() =>
 activeTab = 'vector-demo'}
             >
               <Search class="h-4 w-4 mr-2" />
@@ -320,7 +318,7 @@ activeTab = 'vector-demo'}
             <Button
               variant="outline"
               class="w-full bits-btn bits-btn"
-              on:click={() =>
+              onclick={() =>
 activeTab = 'fabric-canvas'}
             >
               <Canvas class="h-4 w-4 mr-2" />
@@ -469,12 +467,12 @@ activeTab = 'fabric-canvas'}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {#each category.items as item}
                     <div class="flex items-center gap-3 p-3 border rounded-lg">
-                      <CheckCircle class="h-5 w-5 {getStatusIcon((item as { status?: any; name?: any }).status)} flex-shrink-0" />
+                      <CheckCircle class="h-5 w-5 {getStatusIcon((item as { status?: unknown; name?: unknown }).status)} flex-shrink-0" />
                       <div class="flex-1">
-                        <div class="font-medium">{(item as { status?: any; name?: any }).name}</div>
+                        <div class="font-medium">{(item as { status?: unknown; name?: unknown }).name}</div>
                       </div>
-                      <Badge variant={getStatusBadge((item as { status?: any; name?: any }).status)} class="text-xs">
-                        {(item as { status?: any; name?: any }).status}
+                      <Badge variant={getStatusBadge((item as { status?: unknown; name?: unknown }).status)} class="text-xs">
+                        {(item as { status?: unknown; name?: unknown }).status}
                       </Badge>
                     </div>
                   {/each}

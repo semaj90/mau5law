@@ -39,8 +39,8 @@ https://svelte.dev/e/js_parse_error -->
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
 
-  let { data }: { data: any } = $props(); // { form: any };
-  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string = '';
+  let { data }: { data: unknown } = $props(); // { form: unknown };
+  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string = '';
   const { form, errors, enhance, submitting, delayed, message } = superForm(data.form, {
     validators: zodClient(fileUploadSchema),
     multipleSubmits: 'prevent',
@@ -151,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/snippet}
 
-  <Form method="POST" enctype="multipart/form-data" on:submit={enhance} variant="legal">
+  <Form method="POST" enctype="multipart/form-data" onsubmit={enhance} variant="legal">
     <!-- File Upload Component -->
     <div class="space-y-2">
       <Label for="file">File</Label>

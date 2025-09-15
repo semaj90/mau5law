@@ -1,6 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: `$effect(() => { ` is not allowed in runes mode, use `$derived` or `$effect` instead
 https://svelte.dev/e/legacy_reactive_statement_invalid -->
-<!-- @migration-task Error while migrating Svelte code: `$:` is not allowed in runes mode, use `$derived` or `$effect` instead -->
+<!-- @migration-task Error while migrating Svelte code: `$effect(() => { ` is not allowed in runes mode, use `$derived` or `$effect` instead -->
 <!--
   NES.css Typewriter Text Streaming Component
   Cached alphabet texture streaming for enhanced AI chat
@@ -8,7 +8,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
 -->
 
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
+  import 'nes.css/css/nes.min.css'; });
   import { onMount, onDestroy } from 'svelte'; });
   import { writable, derived } from 'svelte/store';
   import type { Writable } from 'svelte/store';

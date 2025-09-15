@@ -3,7 +3,7 @@
 -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
@@ -41,10 +41,10 @@ let formData = $state({
         body: JSON.stringify(formData)
       });
 
-      const result = await (response as { json?: any; ok?: any }).json();
+      const result = await (response as { json?: unknown; ok?: unknown }).json();
 
-      if ((response as { json?: any; ok?: any }).ok) {
-        submitResult = `✅ Success: Case created with ID ${(result as { id?: any; error?: any }).id || 'unknown'}`;
+      if ((response as { json?: unknown; ok?: unknown }).ok) {
+        submitResult = `✅ Success: Case created with ID ${(result as { id?: unknown; error?: unknown }).id || 'unknown'}`;
         // Reset form
         formData = {
           caseNumber: '',
@@ -53,7 +53,7 @@ let formData = $state({
           priority: 'medium'
         };
       } else {
-        submitResult = `❌ Error: ${(result as { id?: any; error?: any }).error || 'Unknown error'}`;
+        submitResult = `❌ Error: ${(result as { id?: unknown; error?: unknown }).error || 'Unknown error'}`;
       }
     } catch (error) {
       submitResult = `❌ Network Error: ${error instanceof Error ? error.message : 'Unknown error'}`;
@@ -100,7 +100,7 @@ let formData = $state({
     </div.Header>
 
     <div.Content>
-      <form on:submit={handleSubmit} class="space-y-6">
+      <form onsubmit={handleSubmit} class="space-y-6">
         <!-- Case Number -->
         <div class="space-y-2">
           <Label for="caseNumber">
@@ -161,7 +161,7 @@ let formData = $state({
           <Button class="bits-btn"
             type="button"
             variant="outline"
-            on:click={() =>
+            onclick={() =>
 {
               formData = {
                 caseNumber: '',

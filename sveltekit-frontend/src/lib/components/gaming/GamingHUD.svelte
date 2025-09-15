@@ -26,7 +26,7 @@
   		documentsAnalyzed = 47,
   		accuracyScore = 94.2,
   		isOnline = true
-  	: any } = $props();
+  	: unknown } = $props();
   	let currentTime = $state('00:00:00');
   	let glowEffect = $state(false);
   	// Experience bar percentage

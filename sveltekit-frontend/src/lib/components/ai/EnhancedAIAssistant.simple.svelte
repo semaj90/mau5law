@@ -21,7 +21,7 @@ https://svelte.dev/e/props_duplicate -->
   let { showReferences = $bindable()  }: { showReferences = $bindable() : any } = $props(); // true;
   export const enableVoiceInput = false;
   ;
-  const dispatch = createEventDispatcher();
+  // TODO: Replace createEventDispatcher with callback props in Svelte 5
 
   // State
   let query = $state("");
@@ -110,14 +110,14 @@ https://svelte.dev/e/props_duplicate -->
       <div class="container mx-auto px-4">
         <button
           class="container mx-auto px-4"
-          on:click={() => (showSettings = !showSettings)}
+          onclick={() => (showSettings = !showSettings)}
           title="Settings"
         >
           <Settings class="container mx-auto px-4" />
         </button>
         <button
           class="container mx-auto px-4"
-          on:click={() => clearMessages()}
+          onclick={() => clearMessages()}
           title="Clear conversation"
         >
           <Trash2 class="container mx-auto px-4" />
@@ -139,7 +139,7 @@ https://svelte.dev/e/props_duplicate -->
               {#each message.references as reference}
                 <button
                   class="container mx-auto px-4"
-                  on:click={() => handleReferenceClick(reference)}
+                  onclick={() => handleReferenceClick(reference)}
                 >
                   <Quote class="container mx-auto px-4" />
                   <span class="container mx-auto px-4">{reference.title}</span>
@@ -187,7 +187,7 @@ https://svelte.dev/e/props_duplicate -->
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <h4 class="container mx-auto px-4">AI Assistant Settings</h4>
-        <button class="container mx-auto px-4" on:click={() => (showSettings = false)}
+        <button class="container mx-auto px-4" onclick={() => (showSettings = false)}
           >×</button
         >
       </div>
@@ -246,7 +246,7 @@ https://svelte.dev/e/props_duplicate -->
   {#if showCitationDialog}
     <div
       class="container mx-auto px-4"
-      on:click={() => (showCitationDialog = false)}
+      onclick={() => (showCitationDialog = false)}
       keydown={(e) => {
         if (e.key === "Escape") {
           showCitationDialog = false;
@@ -271,12 +271,12 @@ https://svelte.dev/e/props_duplicate -->
           </div>
 
           <div class="container mx-auto px-4">
-            <button class="container mx-auto px-4" on:click={() => insertCitation()}>
+            <button class="container mx-auto px-4" onclick={() => insertCitation()}>
               Insert Citation
             </button>
             <button
               class="container mx-auto px-4"
-              on:click={() => navigator.clipboard.writeText(selectedCitation)}
+              onclick={() => navigator.clipboard.writeText(selectedCitation)}
             >
               Copy to Clipboard
             </button>
@@ -286,7 +286,7 @@ https://svelte.dev/e/props_duplicate -->
         <div class="container mx-auto px-4">
           <button
             class="container mx-auto px-4"
-            on:click={() => (showCitationDialog = false)}
+            onclick={() => (showCitationDialog = false)}
           >
             Close
           </button>

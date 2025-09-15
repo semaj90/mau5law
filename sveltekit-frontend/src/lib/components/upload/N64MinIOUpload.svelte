@@ -157,11 +157,11 @@
       const data = JSON.parse(raw);
       if (!data?.files) return;
       // Restore evolution stage
-      if ((data as { evolutionStage?: any; files?: any }).evolutionStage) {
-        evolutionStage = (data as { evolutionStage?: any; files?: any }).evolutionStage;
+      if ((data as { evolutionStage?: unknown; files?: unknown }).evolutionStage) {
+        evolutionStage = (data as { evolutionStage?: unknown; files?: unknown }).evolutionStage;
       }
       const restored: FileState[] = [];
-      for (const m of (data as { evolutionStage?: any; files?: any }).files) {
+      for (const m of (data as { evolutionStage?: unknown; files?: unknown }).files) {
         const ph = new File([], m.name, { type: m.type || 'application/octet-stream' });
         restored.push({
           file: ph,
@@ -257,7 +257,7 @@
   }
 
   let retryTicker = $state(0);
-  let retryInterval: any = null;
+  let retryInterval: unknown = null;
   function ensureRetryTicker() {
     if (retryInterval) return;
     retryInterval = setInterval(() => {
@@ -884,7 +884,7 @@
     {accept}
     {multiple}
     disabled={disabled || uploading}
-    on:change={handleFileSelect}
+    onchange={handleFileSelect}
     style="display:none"
   />
 
@@ -910,11 +910,11 @@
     role="button"
     aria-disabled={disabled || uploading}
     tabindex="0"
-    on:drop={handleDrop}
-    on:dragover={handleDragOver}
+    ondrop={handleDrop}
+    ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    on:click={openFileDialog}
-    on:keydown={(e) => e.key === 'Enter' && openFileDialog()}
+    onclick={openFileDialog}
+    onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
   >
     {#if fileStates.length === 0}
       <div class="n64-upload-prompt">
@@ -997,7 +997,7 @@
                   type="button"
                   class="n64-action-btn remove"
                   title="Remove"
-                  on:click={(e) => { e.stopPropagation(); removeFile(index); }}
+                  onclick={(e) => { e.stopPropagation(); removeFile(index); }}
                   aria-label="Remove file"
                 >
                   ✕
@@ -1007,7 +1007,7 @@
                   type="button"
                   class="n64-action-btn cancel"
                   title="Cancel"
-                  on:click={(e) => { e.stopPropagation(); cancelUpload(index); }}
+                  onclick={(e) => { e.stopPropagation(); cancelUpload(index); }}
                   aria-label="Cancel upload"
                 >
                   ⏹
@@ -1017,7 +1017,7 @@
                   type="button"
                   class="n64-action-btn retry"
                   title="Retry"
-                  on:click={(e) => { e.stopPropagation(); retryFile(index); uploadFiles(); }}
+                  onclick={(e) => { e.stopPropagation(); retryFile(index); uploadFiles(); }}
                   aria-label="Retry upload"
                 >
                   ⟳
@@ -1026,7 +1026,7 @@
                   type="button"
                   class="n64-action-btn remove"
                   title="Remove"
-                  on:click={(e) => { e.stopPropagation(); removeFile(index); }}
+                  onclick={(e) => { e.stopPropagation(); removeFile(index); }}
                   aria-label="Remove file"
                 >
                   ✕
@@ -1115,7 +1115,7 @@
       class="n64-upload-button"
       class:theme-{evolutionStage}
       disabled={fileStates.length === 0 || uploading || disabled || fileStates.every(f=>['completed','canceled'].includes(f.status))}
-      on:click={uploadFiles}
+      onclick={uploadFiles}
       aria-label="Start upload"
     >
       {#if uploading}
@@ -1131,7 +1131,7 @@
       <button
         type="button"
         class="n64-clear-button cancel"
-        on:click={cancelAllUploads}
+        onclick={cancelAllUploads}
         aria-label="Cancel all uploads"
       >
         ❌ CANCEL ALL
@@ -1142,7 +1142,7 @@
       <button
         type="button"
         class="n64-clear-button clear"
-        on:click={() => {
+        onclick={() => {
           files = [];
           fileStates = [];
           if (fileInput) fileInput.value = '';
@@ -1351,18 +1351,18 @@
     pointer-events: none;
   }
 
-  .n64-file-(item as { status?: any }).status-uploading {
+  .n64-file-(item as { status?: unknown }).status-uploading {
     border-color: #4090FF;
     background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%);
     animation: processingGlow 1.5s ease-in-out infinite alternate;
   }
 
-  .n64-file-(item as { status?: any }).status-completed {
+  .n64-file-(item as { status?: unknown }).status-completed {
     border-color: #40FF40;
     background: linear-gradient(135deg, #1a2e1a 0%, #0a1a0a 100%);
   }
 
-  .n64-file-(item as { status?: any }).status-error {
+  .n64-file-(item as { status?: unknown }).status-error {
     border-color: #FF3030;
     background: linear-gradient(135deg, #2e1a1a 0%, #1a0a0a 100%);
   }

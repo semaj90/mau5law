@@ -12,9 +12,7 @@ Comprehensive showcase of Phase 4 capabilities
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
   import { Badge } from '$lib/components/ui/badge';
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     ArrowLeft,
     ExternalLink,
@@ -37,7 +35,7 @@ Comprehensive showcase of Phase 4 capabilities
     <div class="max-w-7xl mx-auto px-6 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <Button class="bits-btn" variant="ghost" size="sm" on:click="history.back()">
+          <Button class="bits-btn" variant="ghost" size="sm" onclick="history.back()">
 <ArrowLeft class="h-4 w-4 mr-2" />
             Back
 

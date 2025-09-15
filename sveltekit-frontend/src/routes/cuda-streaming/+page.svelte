@@ -35,7 +35,7 @@
   let currentSession = $state<string | null>(null);
   let streamResults = $state<any[]>([]);
   let processingProgress = $state(0);
-  let liveMetrics = $state((data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).sessionStats);
+  let liveMetrics = $state((data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).sessionStats);
   let selectedTab = $state<'streaming' | 'monitoring' | 'results' | 'config'>('streaming');
 
   // Real-time metrics update
@@ -43,11 +43,11 @@
   let streamingSocket: EventSource | null = null;
 
   // Derived states
-  let gpuStatus = $derived((data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable ? 'available' : 'unavailable');
+  let gpuStatus = $derived((data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuAvailable ? 'available' : 'unavailable');
   let canStream = $derived(!isStreaming && inputText.trim().length > 0);
   let gpuUtilizationColor = $derived(
-    (data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.utilization?.gpu > 80 ? 'text-red-600' :
-    (data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.utilization?.gpu > 50 ? 'text-yellow-600' : 'text-green-600'
+    (data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.utilization?.gpu > 80 ? 'text-red-600' :
+    (data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.utilization?.gpu > 50 ? 'text-yellow-600' : 'text-green-600'
   );
 
   // CUDA streaming functions
@@ -67,11 +67,11 @@
         method: 'POST',
         body: formData
       });
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).success) {
-        currentSession = (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).sessionId;
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {
+        currentSession = (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).sessionId;
         // Start streaming updates
-        startStreamingUpdates((result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).sessionId);
+        startStreamingUpdates((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).sessionId);
       }
     } catch (error) {
       console.error('Failed to start CUDA stream:', error);
@@ -154,17 +154,17 @@
         method: 'POST',
         body: formData
       });
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).success) {
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {
         streamResults = [...streamResults, {
           id: Date.now(),
           operation: `single_${selectedOperation}`,
           input: inputText.slice(0, 100) + '...',
           status: 'completed',
-          processingTime: (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).processingTime,
-          gpuAccelerated: (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).gpuAccelerated,
-          results: (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).result,
-          timestamp: (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).timestamp
+          processingTime: (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).processingTime,
+          gpuAccelerated: (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).gpuAccelerated,
+          results: (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).result,
+          timestamp: (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).timestamp
         }];
       }
     } catch (error) {
@@ -234,19 +234,19 @@
     </p>
     <div class="flex justify-center gap-2 mt-6">
       <Badge 
-        variant={(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable ? 'default' : 'destructive'}
+        variant={(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuAvailable ? 'default' : 'destructive'}
         class="gap-1"
       >
         <Zap class="w-3 h-3" />
-        GPU {(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable ? 'Available' : 'Unavailable'}
+        GPU {(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuAvailable ? 'Available' : 'Unavailable'}
       </Badge>
       <Badge variant="secondary" class="gap-1">
         <Memory class="w-3 h-3" />
-        {(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.totalMemory} VRAM
+        {(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.totalMemory} VRAM
       </Badge>
       <Badge variant="secondary" class="gap-1">
         <Activity class="w-3 h-3" />
-        CUDA {(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.cudaVersion}
+        CUDA {(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.cudaVersion}
       </Badge>
       <Badge variant="secondary" class="gap-1">
         <TrendingUp class="w-3 h-3" />
@@ -265,7 +265,7 @@
         { id: 'config', label: 'Configuration', icon: Settings }
       ] as tab}
         <button
-          on:click={() => selectedTab = tab.id}
+          onclick={() => selectedTab = tab.id}
           class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
@@ -299,7 +299,7 @@
               class="w-full p-2 border rounded-md"
               disabled={isStreaming}
             >
-              {#each (data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).supportedOperations as operation}
+              {#each (data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).supportedOperations as operation}
                 <option value={operation}>
                   {operation.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                 </option>
@@ -335,7 +335,7 @@
                 <input
                   type="checkbox"
                   bind:checked={useGpu}
-                  disabled={isStreaming || !(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable}
+                  disabled={isStreaming || !(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuAvailable}
                   class="rounded"
                 />
                 <span class="text-sm font-medium">Use GPU Acceleration</span>
@@ -346,7 +346,7 @@
           <!-- Control Buttons -->
           <div class="flex gap-3">
             <OrchestratedButton.ProcessDocument
-              on:click={startCudaStream}
+              onclick={startCudaStream}
               disabled={!canStream}
               class="flex-1 gap-2"
             >
@@ -368,7 +368,7 @@
             {:else}
               <Button 
                 variant="outline" 
-                on:click={processSingleDocument}
+                onclick={processSingleDocument}
                 disabled={!inputText.trim()}
                 class="gap-2"
               >
@@ -424,38 +424,38 @@
                 <div class="border rounded-lg p-3">
                   <div class="flex items-center justify-between mb-2">
                     <div class="flex items-center gap-2">
-                      {@render getOperationIcon((result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).operation)({ class: "w-4 h-4" })}
-                      <span class="font-medium text-sm">{(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).operation.replace('_', ' ')}</span>
+                      {@render getOperationIcon((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).operation)({ class: "w-4 h-4" })}
+                      <span class="font-medium text-sm">{(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).operation.replace('_', ' ')}</span>
                     </div>
                     <Badge 
-                      variant={(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).status === 'completed' ? 'default' : 'secondary'}
+                      variant={(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).status === 'completed' ? 'default' : 'secondary'}
                       class="text-xs"
                     >
-                      {(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).status}
+                      {(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).status}
                     </Badge>
                   </div>
                   
-                  {#if (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).input}
-                    <p class="text-xs nes-text is-disabled mb-2">{(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).input}</p>
+                  {#if (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).input}
+                    <p class="text-xs nes-text is-disabled mb-2">{(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).input}</p>
                   {/if}
                   
-                  {#if (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).processingTime}
+                  {#if (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).processingTime}
                     <div class="flex items-center gap-4 text-xs nes-text is-disabled">
-                      <span>{(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).processingTime}ms</span>
-                      <span>{(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).gpuAccelerated ? 'GPU' : 'CPU'}</span>
-                      {#if (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).results?.confidence}
-                        <span class={getConfidenceClass((result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).results.confidence)}>
-                          {Math.round((result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).results.confidence * 100)}% confidence
+                      <span>{(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).processingTime}ms</span>
+                      <span>{(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).gpuAccelerated ? 'GPU' : 'CPU'}</span>
+                      {#if (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).results?.confidence}
+                        <span class={getConfidenceClass((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).results.confidence)}>
+                          {Math.round((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).results.confidence * 100)}% confidence
                         </span>
                       {/if}
                     </div>
                   {/if}
                   
-                  {#if (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).progress !== undefined}
+                  {#if (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).progress !== undefined}
                     <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
                       <div 
                         class="bg-primary h-1 rounded-full"
-                        style="width: {(result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).progress}%"
+                        style="width: {(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).progress}%"
                       ></div>
                     </div>
                   {/if}
@@ -476,13 +476,13 @@
         <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Cpu class="w-8 h-8 text-primary/60" />
-            <Badge variant={(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable ? 'default' : 'destructive'}>
+            <Badge variant={(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuAvailable ? 'default' : 'destructive'}>
               {gpuStatus}
             </Badge>
           </div>
           <p class="text-sm nes-text is-disabled mb-1">GPU Status</p>
-          <p class="text-lg font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuName}</p>
-          <p class="text-xs nes-text is-disabled">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.computeCapability}</p>
+          <p class="text-lg font-medium">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuName}</p>
+          <p class="text-xs nes-text is-disabled">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.computeCapability}</p>
         </div.Content>
       </OrchestratedCard.Analysis>
 
@@ -491,11 +491,11 @@
         <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Memory class="w-8 h-8 text-primary/60" />
-            <Badge variant="outline">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.utilization?.memory}%</Badge>
+            <Badge variant="outline">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.utilization?.memory}%</Badge>
           </div>
           <p class="text-sm nes-text is-disabled mb-1">Memory Usage</p>
-          <p class="text-lg font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.availableMemory}</p>
-          <p class="text-xs nes-text is-disabled">of {(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.totalMemory}</p>
+          <p class="text-lg font-medium">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.availableMemory}</p>
+          <p class="text-xs nes-text is-disabled">of {(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.totalMemory}</p>
         </div.Content>
       </OrchestratedCard.Analysis>
 
@@ -504,10 +504,10 @@
         <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Thermometer class="w-8 h-8 text-primary/60" />
-            <Badge variant="outline">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.temperatureCurrent}°C</Badge>
+            <Badge variant="outline">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.temperatureCurrent}°C</Badge>
           </div>
           <p class="text-sm nes-text is-disabled mb-1">Temperature</p>
-          <p class="text-lg font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.temperatureCurrent}°C</p>
+          <p class="text-lg font-medium">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.temperatureCurrent}°C</p>
           <p class="text-xs nes-text is-disabled">Normal operating range</p>
         </div.Content>
       </OrchestratedCard.Analysis>
@@ -517,10 +517,10 @@
         <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Power class="w-8 h-8 text-primary/60" />
-            <Badge variant="outline">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.powerDraw}W</Badge>
+            <Badge variant="outline">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.powerDraw}W</Badge>
           </div>
           <p class="text-sm nes-text is-disabled mb-1">Power Draw</p>
-          <p class="text-lg font-medium">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.powerDraw}W</p>
+          <p class="text-lg font-medium">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.powerDraw}W</p>
           <p class="text-xs nes-text is-disabled">Current consumption</p>
         </div.Content>
       </OrchestratedCard.Analysis>
@@ -566,7 +566,7 @@
     </div.Header>
     <div.Content class="nes-container">
       <div class="space-y-3">
-        {#each (data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).recentProcessing as session}
+        {#each (data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).recentProcessing as session}
           <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-1">

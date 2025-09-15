@@ -2,7 +2,7 @@
   import 'nes.css/css/nes.min.css';
   import { createEventDispatcher } from 'svelte';
 
-  const dispatch = createEventDispatcher();
+  // TODO: Replace createEventDispatcher with callback props in Svelte 5
 
   let notesContent: string = $state('');
   let selectedCaseForNotes: string = $state(''); // Assuming notes can be linked to a case
@@ -70,7 +70,7 @@
         {/each}
       </select>
     </div>
-    <button class="btn nes-btn is-primary" on:click={handleSubmit}>Save Notes</button>
+    <button aria-label="Action button" class="btn nes-btn is-primary" onclick={(event: MouseEvent) => handleSubmit}>Save Notes</button>
   </div>
 </div>
 

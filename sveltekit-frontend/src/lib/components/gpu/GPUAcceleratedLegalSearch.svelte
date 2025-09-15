@@ -4,7 +4,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
-  	import { Button } from '$lib/components/ui/enhanced-bits';
+  	import Button from '$lib/components/ui/enhanced-bits';
   	// Svelte 5 runes for reactive state
   	let query = $state('');
   	let isProcessing = $state(false);
@@ -54,8 +54,8 @@
   	async function checkGPUStatus() {
   		try {
   			const response = await fetch('/api/v1/gpu/status');
-  			if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-  				const status = await (response as { ok?: any; json?: any; statusText?: any }).json();
+  			if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+  				const status = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
   				gpuStatus = {
   					available: status.gpu_available || false,
   					model: status.gpu_model || 'Unknown',
@@ -112,16 +112,16 @@
   				})
   			});
 
-  			if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
-  				throw new Error(`GPU processing failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+  			if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
+  				throw new Error(`GPU processing failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
   			}
 
-  			const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
+  			const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
   			const totalTime = Date.now() - startTime;
 
   			// Process GPU similarity results
-  			if ((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).success && (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).result) {
-  				const similarities = (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).result;
+  			if ((result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).success && (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).result) {
+  				const similarities = (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).result;
   				const matches = [];
 
   				// Match similarity scores with legal cases
@@ -133,8 +133,8 @@
   							title: legalCaseDatabase[i].title,
   							score: Math.round(score * 100) / 100,
   							confidence: Math.min(score * 1.3, 1.0),
-  							processing_time: (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).processing_ms || 0,
-  							gpu_accelerated: (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).gpu_utilized || false
+  							processing_time: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).processing_ms || 0,
+  							gpu_accelerated: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).gpu_utilized || false
   						});
   					}
   				}
@@ -145,7 +145,7 @@
   				// Update performance metrics
   				performanceMetrics = {
   					total_time: totalTime,
-  					gpu_speedup: (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).metadata?.speedup_vs_cpu || '8.3x',
+  					gpu_speedup: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).metadata?.speedup_vs_cpu || '8.3x',
   					vectors_processed: similarities.length,
   					cuda_operations: Math.ceil(similarities.length / 16)
   				};
@@ -153,11 +153,11 @@
   				console.log('🚀 GPU Legal Search completed:', {
   					results_found: searchResults.length,
   					processing_time: totalTime,
-  					gpu_utilized: (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).gpu_utilized
+  					gpu_utilized: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).gpu_utilized
   				});
 
   			} else {
-  				throw new Error((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).error || 'No results from GPU processing');
+  				throw new Error((result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).error || 'No results from GPU processing');
   			}
 
   		} catch (error) {
@@ -244,7 +244,7 @@
 				disabled={isProcessing}
 			/>
 			<Button
-				on:click={performGPULegalSearch}
+				onclick={performGPULegalSearch}
 				disabled={isProcessing || !gpuStatus?.available}
 				class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 min-w-[140px] bits-btn bits-btn"
 			>
@@ -306,27 +306,27 @@
 					<div class="result-nier-bits-card p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
 						<div class="flex justify-between items-start mb-2">
 							<h3 class="text-lg font-medium text-gray-900 flex-1">
-								{(result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).title}
+								{(result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).title}
 							</h3>
 							<div class="ml-4 text-right">
 								<div class="text-xs text-gray-500 mb-1">Similarity Score</div>
-								<span class="px-2 py-1 rounded text-sm font-medium {getScoreColor((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).score)}">
-									{((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).score * 100).toFixed(1)}%
+								<span class="px-2 py-1 rounded text-sm font-medium {getScoreColor((result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).score)}">
+									{((result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).score * 100).toFixed(1)}%
 								</span>
 							</div>
 						</div>
 						
 						<div class="flex items-center justify-between text-sm text-gray-600">
 							<div class="flex items-center space-x-4">
-								<span>Case ID: {(result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).case_id}</span>
+								<span>Case ID: {(result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).case_id}</span>
 								<span class="flex items-center">
-									{#if (result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).gpu_accelerated}
+									{#if (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).gpu_accelerated}
 										🚀 GPU Accelerated
 									{:else}
 										💻 CPU Processed
 									{/if}
 								</span>
-								<span>{(result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).processing_time}ms</span>
+								<span>{(result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).processing_time}ms</span>
 							</div>
 							
 							<div class="flex items-center space-x-2">
@@ -334,10 +334,10 @@
 								<div class="w-16 h-2 bg-gray-200 rounded-full">
 									<div 
 										class="h-full bg-blue-500 rounded-full transition-all duration-300"
-										style={getConfidenceBar((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).confidence)}
+										style={getConfidenceBar((result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).confidence)}
 									></div>
 								</div>
-								<span class="text-xs w-8">{((result as { success?: any; result?: any; processing_ms?: any; gpu_utilized?: any; metadata?: any; error?: any; title?: any; score?: any; case_id?: any; gpu_accelerated?: any; processing_time?: any; confidence?: any }).confidence * 100).toFixed(0)}%</span>
+								<span class="text-xs w-8">{((result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).confidence * 100).toFixed(0)}%</span>
 							</div>
 						</div>
 					</div>

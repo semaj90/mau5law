@@ -13,13 +13,13 @@
   // const dispatch = createEventDispatcher();
 
   // SPA Canvas state
-  export let fullscreen = true;
-  export let currentView: 'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases' = 'dashboard';
-  export let legalData: {
+  let { fullscreen = true } = $props();
+  let { currentView } = $props();: 'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases' = 'dashboard';
+  let { legalData } = $props();: {
     documents?: LegalDocument[];
     evidence?: EvidenceItem[];
-    cases?: any[];
-    chatMessages?: any[];
+    cases?: unknown[];
+    chatMessages?: unknown[];
   } = {};
 
   // Canvas setup
@@ -156,7 +156,7 @@
 
     navigationItems.forEach((item, index) => {
       const x = index * itemWidth;
-      const isActive = (item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).id === currentView;
+      const isActive = (item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).id === currentView;
 
       // Item background
       if (isActive) {
@@ -168,11 +168,11 @@
       ctx.font = '24px "Courier New", monospace';
       ctx.fillStyle = isActive ? colors.text : colors.textSecondary;
       ctx.textAlign = 'center';
-      ctx.fillText((item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).icon, x + itemWidth / 2, 25);
+      ctx.fillText((item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).icon, x + itemWidth / 2, 25);
 
       // Item label
       ctx.font = '12px "Courier New", monospace';
-      ctx.fillText((item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).label, x + itemWidth / 2, 45);
+      ctx.fillText((item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).label, x + itemWidth / 2, 45);
     });
   }
 
@@ -279,19 +279,19 @@
         low: colors.accent
       };
 
-      ctx.fillStyle = priorityColors[(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).priority];
+      ctx.fillStyle = priorityColors[(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).priority];
       ctx.fillRect(20, itemY, 5, itemHeight - 10);
 
       // Item title
       ctx.font = 'bold 16px "Courier New", monospace';
       ctx.fillStyle = colors.text;
       ctx.textAlign = 'left';
-      ctx.fillText((item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).title, 35, itemY + 25);
+      ctx.fillText((item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).title, 35, itemY + 25);
 
       // Item type and confidence
       ctx.font = '12px "Courier New", monospace';
       ctx.fillStyle = colors.textSecondary;
-      ctx.fillText(`Type: ${(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).type.toUpperCase()} | Confidence: ${(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).confidence}%`, 35, itemY + 45);
+      ctx.fillText(`Type: ${(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).type.toUpperCase()} | Confidence: ${(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).confidence}%`, 35, itemY + 45);
     });
   }
 
@@ -503,7 +503,7 @@
     width={canvasWidth}
     height={canvasHeight}
     class="spa-canvas"
-    on:click={handleCanvasClick}
+    onclick={handleCanvasClick}
     style="display: block; cursor: pointer;"
   />
 
@@ -515,7 +515,7 @@
     {#if legalData.evidence}
       <h2>Evidence ({legalData.evidence.length} items)</h2>
       {#each legalData.evidence.slice(0, 5) as item}
-        <p>{(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).title} - {(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).type} - {(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).priority} priority</p>
+        <p>{(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).title} - {(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).type} - {(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).priority} priority</p>
       {/each}
     {/if}
 

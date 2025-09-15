@@ -139,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Actions -->
     <div class="flex-shrink-0 flex items-center gap-1">
       <button
-        on:click={() => handleView()}
+        onclick={() => handleView()}
         class="p-1 text-gray-400 hover:text-gray-600 rounded"
         title="View evidence"
         {disabled}
@@ -148,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
 
       <button
-        on:click={() => handleEdit()}
+        onclick={() => handleEdit()}
         class="p-1 text-gray-400 hover:text-gray-600 rounded"
         title="Edit evidence"
         {disabled}
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
 
       <button
-        on:click={() => handleDownload()}
+        onclick={() => handleDownload()}
         class="p-1 text-gray-400 hover:text-gray-600 rounded"
         title="Download evidence"
         {disabled}
@@ -166,7 +166,7 @@ https://svelte.dev/e/js_parse_error -->
       </button>
 
       <button
-        on:click={() => handleDelete()}
+        onclick={() => handleDelete()}
         class="p-1 text-red-400 hover:text-red-600 rounded"
         title="Delete evidence"
         {disabled}

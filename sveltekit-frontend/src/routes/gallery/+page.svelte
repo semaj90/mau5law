@@ -32,10 +32,10 @@ Displays all media: evidence, generated images, documents, uploads
   let galleryStats = $derived(() => {
     const stats = {
       total: mediaItems.length,
-      evidence: mediaItems.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'evidence').length,
-      images: mediaItems.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'images').length,
-      documents: mediaItems.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'documents').length,
-      aiGenerated: mediaItems.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).metadata?.aiGenerated).length
+      evidence: mediaItems.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === 'evidence').length,
+      images: mediaItems.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === 'images').length,
+      documents: mediaItems.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === 'documents').length,
+      aiGenerated: mediaItems.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).metadata?.aiGenerated).length
     };
     return stats;
   });
@@ -47,25 +47,25 @@ Displays all media: evidence, generated images, documents, uploads
     // Filter by category
     if (selectedCategory !== 'all') {
       if (selectedCategory === 'ai-generated') {
-        items = items.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).metadata?.aiGenerated);
+        items = items.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).metadata?.aiGenerated);
       } else {
-        items = items.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === selectedCategory);
+        items = items.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === selectedCategory);
       }
     }
 
     // Filter by case
     if (selectedCaseId !== 'all') {
-      items = items.filter(item => (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).caseId === selectedCaseId);
+      items = items.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).caseId === selectedCaseId);
     }
 
     // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       items = items.filter(item =>
-        (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title?.toLowerCase().includes(query) ||
-        (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).description?.toLowerCase().includes(query) ||
-        (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags?.some((tag: string) => tag.toLowerCase().includes(query)) ||
-        (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).caseTitle?.toLowerCase().includes(query)
+        (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).title?.toLowerCase().includes(query) ||
+        (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).description?.toLowerCase().includes(query) ||
+        (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).tags?.some((tag: string) => tag.toLowerCase().includes(query)) ||
+        (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).caseTitle?.toLowerCase().includes(query)
       );
     }
 
@@ -119,12 +119,12 @@ Displays all media: evidence, generated images, documents, uploads
 
     try {
       const response = await fetch('/api/gallery');
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`Failed to load gallery: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
+        throw new Error(`Failed to load gallery: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
       }
 
-      const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
-      mediaItems = (data as { items?: any; cases?: any; prompt?: any }).items || [];
+      const data = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
+      mediaItems = (data as { items?: unknown; cases?: unknown; prompt?: unknown }).items || [];
 
     } catch (err) {
       console.error('Failed to load gallery data:', err);
@@ -138,21 +138,21 @@ Displays all media: evidence, generated images, documents, uploads
   async function loadCases() {
     try {
       const response = await fetch('/api/cases');
-      if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
-        const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
-        availableCases = (data as { items?: any; cases?: any; prompt?: any }).cases || [];
+      if ((response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
+        const data = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
+        availableCases = (data as { items?: unknown; cases?: unknown; prompt?: unknown }).cases || [];
       }
     } catch (err) {
       console.error('Failed to load cases:', err);
     }
   }
 
-  function getItemIcon(item: any): string {
-    if ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).metadata?.aiGenerated) return '🎨';
+  function getItemIcon(item: unknown): string {
+    if ((item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).metadata?.aiGenerated) return '🎨';
 
-    switch ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category) {
+    switch ((item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category) {
       case 'evidence':
-        switch ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).type) {
+        switch ((item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).type) {
           case 'image': return '🖼️';
           case 'video': return '🎥';
           case 'audio': return '🎵';
@@ -165,14 +165,14 @@ Displays all media: evidence, generated images, documents, uploads
     }
   }
 
-  function getItemPreview(item: any): string {
-    if ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).fileUrl) return (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).fileUrl;
-    if ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).imageUrl) return (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).imageUrl;
-    if ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).thumbnailUrl) return (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).thumbnailUrl;
+  function getItemPreview(item: unknown): string {
+    if ((item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).fileUrl) return (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).fileUrl;
+    if ((item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).imageUrl) return (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).imageUrl;
+    if ((item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).thumbnailUrl) return (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).thumbnailUrl;
     return '/api/placeholder-image';
   }
 
-  function openItem(item: any) {
+  function openItem(item: unknown) {
     selectedItem = item;
   }
 
@@ -180,30 +180,30 @@ Displays all media: evidence, generated images, documents, uploads
     selectedItem = null;
   }
 
-  function downloadItem(item: any) {
-    if ((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).fileUrl || (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).imageUrl) {
-      const url = (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).fileUrl || (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).imageUrl;
+  function downloadItem(item: unknown) {
+    if ((item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).fileUrl || (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).imageUrl) {
+      const url = (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).fileUrl || (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).imageUrl;
       const a = document.createElement('a');
       a.href = url;
-      a.download = (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title || `item-${(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).id}`;
+      a.download = (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).title || `item-${(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).id}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
     }
   }
 
-  async function deleteItem(item: any) {
-    if (!confirm(`Delete "${(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title}"? This action cannot be undone.`)) {
+  async function deleteItem(item: unknown) {
+    if (!confirm(`Delete "${(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).title}"? This action cannot be undone.`)) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/gallery/${(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).id}`, {
+      const response = await fetch(`/api/gallery/${(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).id}`, {
         method: 'DELETE'
       });
 
-      if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
-        mediaItems = mediaItems.filter(i => i.id !== (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).id);
+      if ((response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
+        mediaItems = mediaItems.filter(i => i.id !== (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).id);
         selectedItem = null;
       } else {
         alert('Failed to delete item');
@@ -214,10 +214,10 @@ Displays all media: evidence, generated images, documents, uploads
     }
   }
 
-  function shareItem(item: any) {
+  function shareItem(item: unknown) {
     const shareData = {
-      title: (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title || 'Gallery Item',
-      text: (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).description || '',
+      title: (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).title || 'Gallery Item',
+      text: (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).description || '',
       url: window.location.href
     };
 
@@ -231,7 +231,7 @@ Displays all media: evidence, generated images, documents, uploads
     }
   }
 
-  async function handleFileUpload(event: any) {
+  async function handleFileUpload(event: unknown) {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
@@ -255,7 +255,7 @@ Displays all media: evidence, generated images, documents, uploads
         body: formData
       });
 
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+      if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error('Upload failed');
       }
 
@@ -299,13 +299,13 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="header-actions">
         <button
           class="nes-btn is-success"
-          on:click={() => showUploadModal = true}
+          onclick={() => showUploadModal = true}
         >
           📤 Upload Files
         </button>
         <button
           class="nes-btn is-normal"
-          on:click={() => loadGalleryData()}
+          onclick={() => loadGalleryData()}
           disabled={isLoading}
         >
           {isLoading ? '🔄' : '↻'} Refresh
@@ -371,7 +371,7 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="control-group">
         <button
           class="nes-btn {sortOrder === 'desc' ? 'is-primary' : 'is-normal'}"
-          on:click={() => sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'}
+          onclick={() => sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'}
         >
           {sortOrder === 'desc' ? '↓' : '↑'}
         </button>
@@ -381,19 +381,19 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="control-group view-modes">
         <button
           class="nes-btn {viewMode === 'grid' ? 'is-primary' : 'is-normal'}"
-          on:click={() => viewMode = 'grid'}
+          onclick={() => viewMode = 'grid'}
         >
           ⊞
         </button>
         <button
           class="nes-btn {viewMode === 'list' ? 'is-primary' : 'is-normal'}"
-          on:click={() => viewMode = 'list'}
+          onclick={() => viewMode = 'list'}
         >
           ☰
         </button>
         <button
           class="nes-btn {viewMode === 'masonry' ? 'is-primary' : 'is-normal'}"
-          on:click={() => viewMode = 'masonry'}
+          onclick={() => viewMode = 'masonry'}
         >
           ⊡
         </button>
@@ -403,7 +403,7 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="control-group">
         <button
           class="nes-btn is-error"
-          on:click={clearFilters}
+          onclick={clearFilters}
         >
           🗑️ Clear
         </button>
@@ -425,7 +425,7 @@ Displays all media: evidence, generated images, documents, uploads
   {#if error}
     <div class="error-state nes-container is-error">
       <p>❌ {error}</p>
-  <button class="nes-btn is-normal" on:click={() => loadGalleryData()}>
+  <button class="nes-btn is-normal" onclick={() => loadGalleryData()}>
         Retry
       </button>
     </div>
@@ -444,14 +444,14 @@ Displays all media: evidence, generated images, documents, uploads
         <div class="empty-actions">
           <button
             class="nes-btn is-success"
-            on:click={() => showUploadModal = true}
+            onclick={() => showUploadModal = true}
           >
             📤 Upload Files
           </button>
           {#if searchQuery || selectedCategory !== 'all' || selectedCaseId !== 'all'}
             <button
               class="nes-btn is-normal"
-              on:click={clearFilters}
+              onclick={clearFilters}
             >
               Clear Filters
             </button>
@@ -463,15 +463,15 @@ Displays all media: evidence, generated images, documents, uploads
         {#each filteredItems as item}
           <div class="gallery-item nes-container is-rounded">
             <div class="item-preview" role="button" tabindex="0"
-                on:click={() => openItem(item)}>
-              {#if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).type === 'image' || (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'images'}
+                onclick={() => openItem(item)}>
+              {#if (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).type === 'image' || (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === 'images'}
                 <img
                   src={getItemPreview(item)}
-                  alt={(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title || 'Gallery item'}
+                  alt={(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).title || 'Gallery item'}
                   class="preview-image"
                   loading="lazy"
                 >
-              {:else if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).type === 'video'}
+              {:else if (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).type === 'video'}
                 <video
                   src={getItemPreview(item)}
                   class="preview-video"
@@ -482,23 +482,23 @@ Displays all media: evidence, generated images, documents, uploads
               {:else}
                 <div class="preview-placeholder">
                   <div class="file-icon">{getItemIcon(item)}</div>
-                  <div class="file-type">{(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).type || 'file'}</div>
+                  <div class="file-type">{(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).type || 'file'}</div>
                 </div>
               {/if}
 
               <!-- Overlay Info -->
               <div class="item-overlay">
                 <div class="overlay-info">
-                  <p class="item-title">{(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).title || 'Untitled'}</p>
-                  {#if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).caseTitle}
-                    <p class="item-case">{(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).caseTitle}</p>
+                  <p class="item-title">{(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).title || 'Untitled'}</p>
+                  {#if (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).caseTitle}
+                    <p class="item-case">{(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).caseTitle}</p>
                   {/if}
                 </div>
                 <div class="overlay-actions">
-                  <button class="nes-btn is-small" on:click={(e) => { e.stopPropagation(); downloadItem(item); }}>
+                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); downloadItem(item); }}>
                     ⬇️
                   </button>
-                  <button class="nes-btn is-small" on:click={(e) => { e.stopPropagation(); shareItem(item); }}>
+                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); shareItem(item); }}>
                     📤
                   </button>
                 </div>
@@ -508,27 +508,27 @@ Displays all media: evidence, generated images, documents, uploads
             <!-- Item Info -->
             <div class="item-info">
               <div class="item-meta">
-                <span class="category-badge nes-badge is-{(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'evidence' ? 'primary' : (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category === 'images' ? 'success' : 'normal'}">
-                  {(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).category}
+                <span class="category-badge nes-badge is-{(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === 'evidence' ? 'primary' : (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === 'images' ? 'success' : 'normal'}">
+                  {(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category}
                 </span>
-                {#if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).metadata?.aiGenerated}
+                {#if (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).metadata?.aiGenerated}
                   <span class="ai-badge nes-badge is-error">AI</span>
                 {/if}
               </div>
 
-              {#if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags && (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags.length > 0}
+              {#if (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).tags && (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).tags.length > 0}
                 <div class="item-tags">
-                  {#each (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags.slice(0, 3) as tag}
+                  {#each (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).tags.slice(0, 3) as tag}
                     <span class="tag-badge">{tag}</span>
                   {/each}
-                  {#if (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags.length > 3}
-                    <span class="tag-more">+{(item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).tags.length - 3}</span>
+                  {#if (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).tags.length > 3}
+                    <span class="tag-more">+{(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).tags.length - 3}</span>
                   {/if}
                 </div>
               {/if}
 
               <div class="item-timestamp">
-                {new Date((item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).createdAt || (item as { category?: any; metadata?: any; caseId?: any; title?: any; description?: any; tags?: any; caseTitle?: any; type?: any; fileUrl?: any; imageUrl?: any; thumbnailUrl?: any; id?: any; createdAt?: any; timestamp?: any }).timestamp).toLocaleDateString()}
+                {new Date((item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).createdAt || (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).timestamp).toLocaleDateString()}
               </div>
             </div>
           </div>
@@ -539,12 +539,12 @@ Displays all media: evidence, generated images, documents, uploads
   <!-- Upload Modal -->
   {#if showUploadModal}
   <div class="modal-overlay" role="button" tabindex="0"
-                on:click={() => showUploadModal = false}>
+                onclick={() => showUploadModal = false}>
   <div class="modal-content nes-container is-rounded" role="button" tabindex="0"
-                on:click={(e) => e.stopPropagation()}>
+                onclick={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h3>Upload Files</h3>
-          <button class="nes-btn is-error" on:click={() => showUploadModal = false}>×</button>
+          <button class="nes-btn is-error" onclick={() => showUploadModal = false}>×</button>
         </div>
         <div class="modal-body">
           <div class="upload-area nes-container is-dark">
@@ -553,7 +553,7 @@ Displays all media: evidence, generated images, documents, uploads
               id="file-upload"
               multiple
               accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
-              on:change={handleFileUpload}
+              onchange={handleFileUpload}
               style="display: none;"
             >
             <label for="file-upload" class="upload-label">
@@ -586,12 +586,12 @@ Displays all media: evidence, generated images, documents, uploads
   <!-- Item Detail Modal -->
   {#if selectedItem}
   <div class="modal-overlay" role="button" tabindex="0"
-                on:click={closeModal}>
+                onclick={closeModal}>
   <div class="modal-content detail-modal nes-container is-rounded" role="button" tabindex="0"
-                on:click={(e) => e.stopPropagation()}>
+                onclick={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h3>{selectedItem.title || 'Gallery Item'}</h3>
-          <button class="nes-btn is-error" on:click={closeModal}>×</button>
+          <button class="nes-btn is-error" onclick={closeModal}>×</button>
         </div>
         <div class="modal-body">
           <div class="detail-content">
@@ -672,10 +672,10 @@ Displays all media: evidence, generated images, documents, uploads
           </div>
 
           <div class="detail-actions">
-            <button class="nes-btn is-success" on:click={() => downloadItem(selectedItem)}>
+            <button class="nes-btn is-success" onclick={() => downloadItem(selectedItem)}>
               ⬇️ Download
             </button>
-            <button class="nes-btn is-primary" on:click={() => shareItem(selectedItem)}>
+            <button class="nes-btn is-primary" onclick={() => shareItem(selectedItem)}>
               📤 Share
             </button>
             {#if selectedItem.caseId}
@@ -683,7 +683,7 @@ Displays all media: evidence, generated images, documents, uploads
                 🔗 View Case
               </a>
             {/if}
-            <button class="nes-btn is-error" on:click={() => deleteItem(selectedItem)}>
+            <button class="nes-btn is-error" onclick={() => deleteItem(selectedItem)}>
               🗑️ Delete
             </button>
           </div>

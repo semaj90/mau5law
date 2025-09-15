@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   import { Dialog as DialogPrimitive } from "bits-ui";
   // Removed melt dependency - using bits-ui Dialog primitives only
@@ -95,7 +96,7 @@
           {#if showClose}
             <DialogPrimitive.Close
               class="dialog-close"
-              on:click={handleClose}
+              onclick={handleClose}
             >
               <svg
                 class="w-4 h-4"

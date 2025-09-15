@@ -6,9 +6,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   import OllamaChatInterface from "$lib/components/OllamaChatInterface.svelte";
   import { Alert, AlertDescription } from "$lib/components/ui/alert";
   import { Badge } from "$lib/components/ui/badge";
-  import {
-    Button
-  } from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';;
   import {
     Card,
     CardHeader,
@@ -202,7 +200,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             <Badge
               variant={selectedModel === model ? "default" : "outline"}
               class="cursor-pointer"
-              on:click={() => (selectedModel = model)}
+              onclick={() => (selectedModel = model)}
             >
               {model}
             </Badge>
@@ -210,10 +208,10 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </div>
 
         <div class="mt-4 flex gap-2">
-          <Button class="bits-btn" on:click={testGeneration} variant="outline">
+          <Button class="bits-btn" onclick={testGeneration} variant="outline">
 Test Generation
 
-          <Button class="bits-btn" on:click={checkOllamaHealth} variant="outline">
+          <Button class="bits-btn" onclick={checkOllamaHealth} variant="outline">
 Refresh Status
 
         </div>
