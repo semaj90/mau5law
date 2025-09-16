@@ -3,7 +3,6 @@
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
-  import { createDialog } from 'melt-ui';
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';
   import * as Dialog from '$lib/components/ui/dialog';
   // Card components removed - using native HTML elements
@@ -271,13 +270,13 @@
 <div class="enhanced-ai-chat w-full max-w-6xl mx-auto">
   <!-- Main Chat Interface -->
   <div.Root class="h-[700px] flex flex-col">
-    <div.Header class="border-b">
+    <div class="chat-header border-b">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
           <ChatBubbleIcon class="w-6 h-6 text-primary" />
           <div>
-            <div.Title class="text-lg">Enhanced Legal AI Assistant</div.Title>
-            <div.Description class="flex items-center gap-2">
+            <h3 class="text-lg font-semibold">Enhanced Legal AI Assistant</h3>
+            <p class="text-sm text-muted-foreground flex items-center gap-2">
               <div class="flex items-center gap-1">
                 <div class="w-2 h-2 rounded-full {isConnected ? 'bg-green-500' : 'bg-red-500'}"></div>
                 <span class="text-xs">
@@ -287,7 +286,7 @@
               {#if enableWebGPU && webgpuAccelerator}
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">WebGPU Enabled</span>
               {/if}
-            </div.Description>
+            </p>
           </div>
         </div>
         
@@ -317,10 +316,10 @@ Clear
 
         </div>
       </div>
-    </Card.Header>
+    </div>
 
     <!-- Messages Area -->
-    <div.Content class="flex-1 overflow-hidden p-0">
+    <div class="chat-content flex-1 overflow-hidden p-0">
       <div 
         bind:this={chatContainer}
         class="h-full overflow-y-auto p-4 space-y-4"
@@ -378,7 +377,7 @@ Clear
           </div>
         {/if}
       </div>
-    </Card.Content>
+    </div>
 
     <!-- Input Area -->
     <div class="border-t p-4">

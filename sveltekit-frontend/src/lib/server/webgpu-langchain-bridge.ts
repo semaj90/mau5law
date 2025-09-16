@@ -106,7 +106,7 @@ export class WebGPULangChainBridge {
    * Batch process multiple documents with WebGPU optimization
    */
   async processBatchDocuments(
-    documents: Array<,
+    documents: Array<{ id: string; content: string; metadata?: any }>,
     options: Partial<LangChainWebGPUConfig> = {}
   ): Promise<ProcessingResult[]> {
     const mergedConfig = { ...this.config, ...options };
@@ -122,7 +122,7 @@ export class WebGPULangChainBridge {
       
       // Process batch in parallel
       const batchResults = await Promise.all(
-        batch.map(doc => this.processLegalDocument(doc.text, mergedConfig))
+        batch.map(doc => this.processLegalDocument(doc.content, mergedConfig))
       );
       
       results.push(...batchResults);
@@ -369,7 +369,7 @@ export async function processLegalDocumentWithWebGPU(
 }
 
 export async function processBatchDocumentsWithWebGPU(
-  documents: Array<,
+  documents: Array<{ id: string; content: string; metadata?: any }>,
   options?: Partial<LangChainWebGPUConfig>
 ): Promise<ProcessingResult[]> {
   return webgpuLangChainBridge.processBatchDocuments(documents, options);

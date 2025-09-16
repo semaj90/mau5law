@@ -1,23 +1,27 @@
 <script lang="ts">
-	import {
-		Button,
-		Card,
-		CardContent,
-		CardHeader,
-		CardTitle,
-		Input,
-		AIChatMessage,
-		AISearchBar
-	} from '$lib/components/ui/enhanced-bits';
+	import Button from '$lib/components/ui/button/Button.svelte';
+	import Card from '$lib/components/ui/Card/Card.svelte';
+	import CardContent from '$lib/components/ui/Card/CardContent.svelte';
+	import CardHeader from '$lib/components/ui/Card/CardHeader.svelte';
+	import CardTitle from '$lib/components/ui/Card/CardTitle.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import AIChatMessage from '$lib/components/ai/AIChatMessage.svelte';
+	import AISearchBar from '$lib/components/ui/enhanced-bits/AISearchBar.svelte';
 	import { aiAssistant } from '$lib/stores/ai-assistant-unified.svelte';
 	import { acceleratedLegalAssistant, enhanceAIResponse } from '$lib/ai/accelerated-legal-assistant';
 	import { MessageSquare, Bot, User, Loader, Lightbulb, Link, FileText, Search, Zap } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
 
-	// Props
-	export let caseId: string;
-	export let selectedEvidenceIds: string[] = [];
-	export let isVisible: boolean = true;
+	// Props using Svelte 5 $props rune
+	let {
+		caseId = '',
+		selectedEvidenceIds = [],
+		isVisible = true
+	}: {
+		caseId?: string;
+		selectedEvidenceIds?: string[];
+		isVisible?: boolean;
+	} = $props();
 
 	// Svelte 5 state
 	let userInput = $state('');
@@ -37,10 +41,10 @@
 	}>();
 
 	// Reactive values using Svelte 5 $derived - properly connected to unified store
-	let messages = $derived(aiAssistant.currentMessages);
-	let caseContext = $derived(aiAssistant.currentCase);
-	let insights = $derived(caseContext?.insights || []);
-	let isAssistantLoading = $derived(aiAssistant.isLoading);
+	const messages = $derived(aiAssistant.currentMessages);
+	const caseContext = $derived(aiAssistant.currentCase);
+	const insights = $derived(caseContext?.insights || []);
+	const isAssistantLoading = $derived(aiAssistant.isLoading);
 
 	// Initialize case and acceleration when component mounts
 	$effect(() => {
@@ -178,16 +182,13 @@
 
 					<!-- Acceleration Toggle -->
 					<button
-						class="acceleration-toggle"
+						class="acceleration-toggle {useAcceleration && accelerationStatus === 'ready' ? 'enabled' : ''} {accelerationStatus === 'initializing' ? 'initializing' : ''} {accelerationStatus === 'error' ? 'error' : ''}"
 						onclick={() => {
 							useAcceleration = !useAcceleration;
 							if (useAcceleration && accelerationStatus === 'disabled') {
 								initializeAcceleration();
 							}
 						}}
-						class:enabled={useAcceleration && accelerationStatus === 'ready'}
-						class:initializing={accelerationStatus === 'initializing'}
-						class:error={accelerationStatus === 'error'}
 					>
 						<Zap class="w-3 h-3" />
 						<span class="sr-only">Toggle GPU Acceleration</span>

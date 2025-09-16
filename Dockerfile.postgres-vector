@@ -1,0 +1,358 @@
+# PostgreSQL Vector Integration Service
+# Bridges TensorRT and WebAssembly with pgvector + drizzle-orm
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    curl \
+    postgresql-client
+
+# Copy package files
+COPY package*.json ./
+
+# Install Node.js dependencies
+RUN npm install && npm install \
+    postgres \
+    drizzle-orm \
+    drizzle-kit \
+    redis \
+    @types/pg \
+    dotenv
+
+# Create PostgreSQL + pgvector integration service
+RUN cat > /app/vector_service.js << 'EOF'
+const postgres = require('postgres');
+const { drizzle } = require('drizzle-orm/postgres-js');
+const { createClient } = require('redis');
+const express = require('express');
+
+class PostgresVectorService {
+  constructor() {
+    this.dbUrl = process.env.DATABASE_URL;
+    this.redisUrl = process.env.REDIS_URL;
+    this.tensorrtEndpoint = process.env.TENSORRT_ENDPOINT;
+    this.webasmEndpoint = process.env.WEBASM_ENDPOINT;
+
+    this.sql = postgres(this.dbUrl);
+    this.db = drizzle(this.sql);
+    this.redis = createClient({ url: this.redisUrl });
+
+    this.app = express();
+    this.port = 8103;
+
+    this.setupMiddleware();
+    this.setupRoutes();
+  }
+
+  async initialize() {
+    try {
+      await this.redis.connect();
+      console.log('✅ Connected to PostgreSQL and Redis');
+
+      // Initialize pgvector tables if needed
+      await this.initializeTables();
+
+      return true;
+    } catch (error) {
+      console.error('❌ Initialization failed:', error);
+      return false;
+    }
+  }
+
+  async initializeTables() {
+    try {
+      // Create embeddings table with pgvector support
+      await this.sql`
+        CREATE TABLE IF NOT EXISTS legal_embeddings (
+          id SERIAL PRIMARY KEY,
+          document_id VARCHAR(255) UNIQUE NOT NULL,
+          content_hash VARCHAR(64),
+          embedding vector(768),
+          metadata JSONB DEFAULT '{}',
+          model_name VARCHAR(100) DEFAULT 'gemma3-legal',
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        )
+      `;
+
+      // Create vector similarity index
+      await this.sql`
+        CREATE INDEX IF NOT EXISTS legal_embeddings_vector_idx
+        ON legal_embeddings USING ivfflat (embedding vector_cosine_ops)
+        WITH (lists = 100)
+      `;
+
+      // Create legal document vectors table
+      await this.sql`
+        CREATE TABLE IF NOT EXISTS legal_document_vectors (
+          id SERIAL PRIMARY KEY,
+          case_id INTEGER REFERENCES cases(id),
+          document_type VARCHAR(50),
+          content_vector vector(768),
+          summary_vector vector(768),
+          risk_vector vector(384),
+          metadata JSONB DEFAULT '{}',
+          processing_method VARCHAR(50) DEFAULT 'tensorrt',
+          confidence FLOAT DEFAULT 0.0,
+          created_at TIMESTAMP DEFAULT NOW()
+        )
+      `;
+
+      console.log('✅ Vector tables initialized');
+      return true;
+    } catch (error) {
+      console.error('❌ Table initialization failed:', error);
+      return false;
+    }
+  }
+
+  setupMiddleware() {
+    this.app.use(express.json());
+    this.app.use((req, res, next) => {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Headers', 'Content-Type');
+      next();
+    });
+  }
+
+  setupRoutes() {
+    // Health check
+    this.app.get('/health', (req, res) => {
+      res.json({
+        status: 'healthy',
+        service: 'PostgreSQL Vector Integration',
+        integrations: ['pgvector', 'tensorrt', 'webasm', 'drizzle-orm']
+      });
+    });
+
+    // Process legal document with vector storage
+    this.app.post('/api/process/legal-document', async (req, res) => {
+      try {
+        const { document_id, content, case_id, document_type } = req.body;
+
+        // Generate embeddings using TensorRT (primary) or WebAssembly (fallback)
+        let embeddings;
+        let processing_method = 'tensorrt';
+
+        try {
+          // Try TensorRT first
+          const tensorrtResponse = await fetch(`${this.tensorrtEndpoint}/api/embeddings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: content, model: 'gemma3-legal:latest' })
+          });
+
+          if (tensorrtResponse.ok) {
+            const data = await tensorrtResponse.json();
+            embeddings = data.embedding;
+          } else {
+            throw new Error('TensorRT unavailable');
+          }
+        } catch (error) {
+          console.log('🔄 Falling back to WebAssembly ONNX...');
+          processing_method = 'webasm';
+
+          const webasmResponse = await fetch(`${this.webasmEndpoint}/api/embeddings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: content, model: 'gemma3:270m' })
+          });
+
+          const data = await webasmResponse.json();
+          embeddings = data.embedding;
+        }
+
+        // Store in PostgreSQL with pgvector
+        const result = await this.sql`
+          INSERT INTO legal_document_vectors (
+            case_id,
+            document_type,
+            content_vector,
+            metadata,
+            processing_method,
+            confidence
+          ) VALUES (
+            ${case_id},
+            ${document_type},
+            ${embeddings},
+            ${JSON.stringify({ document_id, content_length: content.length })},
+            ${processing_method},
+            ${0.95}
+          ) RETURNING id
+        `;
+
+        // Cache for fast retrieval
+        await this.redis.set(
+          `legal_vector:${document_id}`,
+          JSON.stringify({
+            vector_id: result[0].id,
+            embeddings,
+            processing_method,
+            timestamp: Date.now()
+          }),
+          { EX: 3600 }
+        );
+
+        res.json({
+          success: true,
+          vector_id: result[0].id,
+          processing_method,
+          embedding_dimensions: embeddings.length,
+          cached: true
+        });
+
+      } catch (error) {
+        console.error('❌ Document processing failed:', error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Legal document similarity search
+    this.app.post('/api/search/legal-similarity', async (req, res) => {
+      try {
+        const { query, case_id, document_type, limit = 10, threshold = 0.7 } = req.body;
+
+        // Generate query embedding
+        let queryEmbedding;
+        try {
+          const tensorrtResponse = await fetch(`${this.tensorrtEndpoint}/api/embeddings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: query, model: 'gemma3-legal:latest' })
+          });
+
+          const data = await tensorrtResponse.json();
+          queryEmbedding = data.embedding;
+        } catch (error) {
+          const webasmResponse = await fetch(`${this.webasmEndpoint}/api/embeddings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: query, model: 'gemma3:270m' })
+          });
+
+          const data = await webasmResponse.json();
+          queryEmbedding = data.embedding;
+        }
+
+        // Perform similarity search with pgvector
+        let searchQuery = this.sql`
+          SELECT
+            ldv.id,
+            ldv.case_id,
+            ldv.document_type,
+            ldv.metadata,
+            ldv.processing_method,
+            ldv.confidence,
+            c.title as case_title,
+            1 - (ldv.content_vector <=> ${queryEmbedding}) as similarity
+          FROM legal_document_vectors ldv
+          LEFT JOIN cases c ON ldv.case_id = c.id
+          WHERE 1 - (ldv.content_vector <=> ${queryEmbedding}) > ${threshold}
+        `;
+
+        if (case_id) {
+          searchQuery = this.sql`${searchQuery} AND ldv.case_id = ${case_id}`;
+        }
+
+        if (document_type) {
+          searchQuery = this.sql`${searchQuery} AND ldv.document_type = ${document_type}`;
+        }
+
+        const results = await this.sql`
+          ${searchQuery}
+          ORDER BY ldv.content_vector <=> ${queryEmbedding}
+          LIMIT ${limit}
+        `;
+
+        res.json({
+          query,
+          results,
+          count: results.length,
+          method: 'pgvector-cosine-similarity',
+          threshold
+        });
+
+      } catch (error) {
+        console.error('❌ Similarity search failed:', error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+    // Get vector statistics
+    this.app.get('/api/stats/vectors', async (req, res) => {
+      try {
+        const stats = await this.sql`
+          SELECT
+            COUNT(*) as total_vectors,
+            COUNT(DISTINCT case_id) as unique_cases,
+            COUNT(DISTINCT document_type) as document_types,
+            processing_method,
+            AVG(confidence) as avg_confidence
+          FROM legal_document_vectors
+          GROUP BY processing_method
+        `;
+
+        const cacheStats = await this.redis.info('memory');
+
+        res.json({
+          vector_stats: stats,
+          cache_info: cacheStats,
+          integrations: {
+            tensorrt_endpoint: this.tensorrtEndpoint,
+            webasm_endpoint: this.webasmEndpoint
+          }
+        });
+
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
+  }
+
+  async start() {
+    try {
+      await this.initialize();
+
+      this.app.listen(this.port, '0.0.0.0', () => {
+        console.log(`🚀 PostgreSQL Vector service running on port ${this.port}`);
+        console.log(`🔗 TensorRT endpoint: ${this.tensorrtEndpoint}`);
+        console.log(`🔗 WebAssembly endpoint: ${this.webasmEndpoint}`);
+      });
+
+    } catch (error) {
+      console.error('❌ Failed to start vector service:', error);
+      process.exit(1);
+    }
+  }
+}
+
+// Start service
+const service = new PostgresVectorService();
+service.start();
+EOF
+
+# Create startup script
+RUN cat > /app/start.sh << 'EOF'
+#!/bin/sh
+echo "🚀 Starting PostgreSQL Vector Integration Service"
+echo "==============================================="
+
+node vector_service.js
+EOF
+
+RUN chmod +x /app/start.sh
+
+# Expose port
+EXPOSE 8103
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=45s --retries=3 \
+    CMD curl -f http://localhost:8103/health || exit 1
+
+# Start service
+CMD ["/app/start.sh"]

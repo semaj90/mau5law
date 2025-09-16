@@ -4,8 +4,8 @@
     class?: string;
     children?: import('svelte').Snippet;
   }
-  import { Button, Dialog, Select, Input, Card } from './index.js';
-  import type { SelectOption } from './index.js';
+  import { Button, Dialog, Select, Input, Card } from './index';
+  import type { SelectOption } from './index';
   import { cn } from '$lib/utils/cn';
   import { Search, FileText, Scale, Brain, AlertTriangle, CheckCircle } from 'lucide-svelte';
 
@@ -318,7 +318,7 @@ evidenceDialogOpen = true}>
 
         <!-- Case Management Dialog -->
         <Dialog
-          open={dialogOpen} openchange={(open) => dialogOpen = open}
+          bind:open={dialogOpen}
           size="lg"
           legal
           caseManagement
@@ -386,7 +386,7 @@ Create Case
 
         <!-- Evidence Upload Dialog -->
         <Dialog
-          open={evidenceDialogOpen} openchange={(open) => evidenceDialogOpen = open}
+          bind:open={evidenceDialogOpen}
           size="md"
           legal
           evidenceAnalysis
@@ -453,42 +453,37 @@ evidenceDialogOpen = false}>
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {#each mockEvidenceItems as item ((item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).id)}
+          {#each mockEvidenceItems as item (item.id)}
             <div
-              variant="evidence"
-              evidenceCard
-              legal
-              clickable
-              hoverable
-              priority={(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).priority}
-              confidence={(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).confidence}
-              selected={selectedEvidenceCard === (item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).id}
-              onclick={() = class="nes-container"> selectEvidenceCard((item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).id)}
+              class="nes-container yorha-nier-bits-card p-4 cursor-pointer transition-all duration-200 hover:shadow-lg"
+              class:ring-2={selectedEvidenceCard === item.id}
+              class:ring-nier-border-primary={selectedEvidenceCard === item.id}
+              onclick={() => selectEvidenceCard(item.id)}
             >
               <div class="space-y-3">
                 <div class="flex items-start justify-between">
                   <h3 class="font-semibold text-nier-text-primary text-sm">
-                    {(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).title}
+                    {item.title}
                   </h3>
-                  <div class="vector-confidence-badge vector-confidence-{(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).confidence}">
-                    {(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).confidence.toUpperCase()}
+                  <div class="vector-confidence-badge vector-confidence-{item.confidence}">
+                    {item.confidence.toUpperCase()}
                   </div>
                 </div>
 
                 <p class="text-xs text-nier-text-secondary">
-                  {(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).description}
+                  {item.description}
                 </p>
 
                 <div class="flex items-center justify-between text-xs">
-                  <span class="yorha-priority-{(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).priority} px-2 py-1 rounded text-white">
-                    {(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).priority.toUpperCase()}
+                  <span class="yorha-priority-{item.priority} px-2 py-1 rounded text-white">
+                    {item.priority.toUpperCase()}
                   </span>
                   <span class="text-nier-text-muted">
-                    {(item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).type.toUpperCase()}
+                    {item.type.toUpperCase()}
                   </span>
                 </div>
 
-                {#if selectedEvidenceCard === (item as { id?: unknown; priority?: unknown; confidence?: unknown; title?: unknown; description?: unknown; type?: unknown }).id}
+                {#if selectedEvidenceCard === item.id}
                   <div class="border-t border-nier-border-secondary pt-3 mt-3">
                     <div class="flex gap-2">
                       <Button size="sm" variant="outline" class="flex-1 bits-btn bits-btn">

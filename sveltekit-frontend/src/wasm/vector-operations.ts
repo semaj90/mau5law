@@ -330,13 +330,190 @@ export function cosineSimilaritySIMD(aPtr: usize, bPtr: usize, length: i32): f32
   return dotProduct / (Mathf.sqrt(normA) * Mathf.sqrt(normB));
 }
 
+// === Client-Server Integration Functions ===
+
+/**
+ * Prepare vector data for CUDA server processing
+ * Converts WebAssembly memory to JSON-serializable format
+ */
+export function prepareVectorForServer(vectorPtr: usize, length: i32): void {
+  // This function is called from JavaScript to prepare data for server transfer
+  // The actual serialization is handled by the JavaScript wrapper
+}
+
+/**
+ * Process server response and store in WebAssembly memory
+ */
+export function processServerResponse(responsePtr: usize, resultPtr: usize, length: i32): void {
+  // Copy server response data back into WebAssembly memory
+  for (let i = 0; i < length; i++) {
+    const value = load<f32>(responsePtr + (i << 2));
+    store<f32>(resultPtr + (i << 2), value);
+  }
+}
+
+/**
+ * Hybrid processing: attempt local SIMD, fallback to server
+ */
+export function hybridCosineSimilarity(
+  aPtr: usize,
+  bPtr: usize,
+  length: i32,
+  useServer: bool
+): f32 {
+  if (useServer || length > 10000) { // Use server for large vectors
+    // Return sentinel value to indicate server processing needed
+    return -999.0;
+  }
+
+  // Use local SIMD optimization for smaller vectors
+  return cosineSimilaritySIMD(aPtr, bPtr, length);
+}
+
+/**
+ * Batch vector processing with chunking for server optimization
+ */
+export function batchVectorChunking(
+  vectorsPtr: usize,
+  numVectors: i32,
+  vectorLength: i32,
+  chunkSize: i32,
+  resultsPtr: usize
+): i32 {
+  if (chunkSize <= 0 || chunkSize > numVectors) {
+    return 0; // Invalid chunk size
+  }
+
+  let processedChunks = 0;
+  let vectorOffset = 0;
+  let resultOffset = 0;
+
+  while (vectorOffset < numVectors) {
+    const currentChunkSize = i32(Math.min(chunkSize, numVectors - vectorOffset));
+
+    // Mark chunk boundaries in results array
+    store<f32>(resultsPtr + (resultOffset << 2), f32(vectorOffset)); // Start index
+    store<f32>(resultsPtr + ((resultOffset + 1) << 2), f32(currentChunkSize)); // Chunk size
+
+    vectorOffset += currentChunkSize;
+    resultOffset += 2;
+    processedChunks++;
+  }
+
+  return processedChunks;
+}
+
+/**
+ * Memory-optimized tensor preparation for CUDA transfer
+ */
+export function prepareTensorForCUDA(
+  tensorPtr: usize,
+  dimensions: i32[],
+  dimCount: i32,
+  outputPtr: usize
+): void {
+  let totalElements = 1;
+
+  // Calculate total elements
+  for (let i = 0; i < dimCount; i++) {
+    totalElements *= dimensions[i];
+  }
+
+  // Prepare tensor metadata for CUDA
+  store<i32>(outputPtr, dimCount); // Number of dimensions
+
+  let metadataOffset = 4;
+  for (let i = 0; i < dimCount; i++) {
+    store<i32>(outputPtr + metadataOffset, dimensions[i]);
+    metadataOffset += 4;
+  }
+
+  // Store total element count
+  store<i32>(outputPtr + metadataOffset, totalElements);
+}
+
+/**
+ * Optimized memory transfer for large embeddings
+ */
+export function optimizedEmbeddingTransfer(
+  embeddingPtr: usize,
+  length: i32,
+  compressionLevel: i32
+): usize {
+  if (compressionLevel == 0) {
+    // No compression, direct transfer
+    return embeddingPtr;
+  }
+
+  // Quantization for reduced bandwidth
+  const quantizedPtr = allocateVectorMemory(length);
+
+  if (compressionLevel == 1) {
+    // 8-bit quantization
+    let minVal = load<f32>(embeddingPtr);
+    let maxVal = minVal;
+
+    // Find min/max
+    for (let i = 1; i < length; i++) {
+      const val = load<f32>(embeddingPtr + (i << 2));
+      if (val < minVal) minVal = val;
+      if (val > maxVal) maxVal = val;
+    }
+
+    const range = maxVal - minVal;
+    const scale = range / 255.0;
+
+    // Store quantization parameters
+    store<f32>(quantizedPtr, minVal);
+    store<f32>(quantizedPtr + 4, scale);
+
+    // Quantize values
+    for (let i = 0; i < length; i++) {
+      const val = load<f32>(embeddingPtr + (i << 2));
+      const quantized = i32((val - minVal) / scale);
+      store<u8>(quantizedPtr + 8 + i, u8(Math.min(255, Math.max(0, quantized))));
+    }
+  }
+
+  return quantizedPtr;
+}
+
+/**
+ * Smart routing: local vs server processing decision
+ */
+export function shouldUseServer(
+  operationType: i32, // 0=similarity, 1=matrix, 2=embedding, 3=search
+  dataSize: i32,
+  complexityScore: i32
+): bool {
+  // Use server for:
+  // - Large similarity computations (>1000 vectors)
+  // - Matrix operations (always prefer GPU)
+  // - Embedding generation (requires model)
+  // - Complex search operations
+
+  switch (operationType) {
+    case 0: // Similarity
+      return dataSize > 1000 || complexityScore > 50;
+    case 1: // Matrix
+      return true; // Always use GPU for matrix ops
+    case 2: // Embedding
+      return true; // Always use server for embedding generation
+    case 3: // Search
+      return dataSize > 100 || complexityScore > 30;
+    default:
+      return false;
+  }
+}
+
 // === JavaScript-Friendly Wrappers ===
 
 /**
- * JS-callable cosine similarity wrapper
+ * JS-callable cosine similarity wrapper with server routing
  */
 export function cosineSimJS(aPtr: usize, bPtr: usize, length: i32): f32 {
-  return cosineSimilarity(aPtr, bPtr, length);
+  const useServer = shouldUseServer(0, length, 10);
+  return hybridCosineSimilarity(aPtr, bPtr, length, useServer);
 }
 
 /**
@@ -358,4 +535,24 @@ export function cosineSimSIMDJS(aPtr: usize, bPtr: usize, length: i32): f32 {
  */
 export function getMemoryStats(): i32 {
   return memory.size() * 65536; // Pages to bytes
+}
+
+/**
+ * Performance benchmark for routing decisions
+ */
+export function benchmarkOperation(
+  operation: i32,
+  dataSize: i32,
+  iterations: i32
+): f32 {
+  const startTime = Date.now();
+
+  // Simple benchmark based on operation type
+  let ops = 0;
+  for (let i = 0; i < iterations; i++) {
+    ops += dataSize * operation; // Simulate work
+  }
+
+  const endTime = Date.now();
+  return f32(endTime - startTime);
 }

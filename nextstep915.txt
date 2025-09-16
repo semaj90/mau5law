@@ -316,8 +316,8 @@ src/routes/
 ## 🎯 Next 48 Hours Action Plan
 
 ### **Day 1 (Today)**:
-1. Execute dependency changes (remove Tailwind, add UnoCSS)
-2. Create uno.config.ts with legal AI theme
+1. Execute dependency changes (remove Tailwind, shadcn-svelte uses tailwind, remove tailwind, use unocss, add UnoCSS with proper ux, flexbox, grid utilities stretch to fit, proper spacing, theme legal-ai color, gaming, nes.css, nier gaming theme, justice blue, court gray, law green, etc)
+2. Create uno.config.ts with legal AI theme with enhanced-bits-ui components add any we might need for proper ux of modern website. 
 3. Setup basic layout structure directories
 4. Begin NavBar component migration
 1. Complete layout components (SideBar, Footer)

@@ -1,0 +1,166 @@
+# TensorRT Production Service for Legal AI Platform
+# Integrates with existing Docker Desktop containers
+# Optimized for RTX 3060 Ti and gemma3-legal:latest model
+
+version: '3.8'
+
+services:
+  # TensorRT GPU Service for gemma3-legal:latest
+  tensorrt-legal-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.tensorrt-legal
+    container_name: legal-ai-tensorrt-production
+    restart: unless-stopped
+
+    # GPU access for RTX 3060 Ti
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    environment:
+      # GPU optimization for RTX 3060 Ti
+      - CUDA_VISIBLE_DEVICES=0
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+      # TensorRT configuration
+      - TENSORRT_CACHE_DIR=/app/tensorrt_cache
+      - TENSORRT_WORKSPACE_SIZE=2147483648  # 2GB for RTX 3060 Ti
+      - TENSORRT_MAX_BATCH_SIZE=8
+      - TENSORRT_PRECISION=fp16
+
+      # Model configuration
+      - PRIMARY_MODEL=gemma3-legal:latest
+      - FALLBACK_MODEL=gemma3:270m
+      - MODEL_CACHE_PATH=/app/models
+
+      # Integration with existing services
+      - POSTGRES_URL=postgresql://legal_admin:123456@legal-ai-postgres-dynamic:5432/legal_ai_db
+      - REDIS_URL=redis://:redis@legal-ai-redis-dynamic:6379/0
+      - MINIO_ENDPOINT=legal-ai-minio-dynamic:9000
+      - MINIO_ACCESS_KEY=legal_admin
+      - MINIO_SECRET_KEY=legal_secret
+
+      # Performance tuning
+      - OMP_NUM_THREADS=8
+      - CUDA_LAUNCH_BLOCKING=0
+      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+
+    ports:
+      - "8098:8098"  # TensorRT XState Integration
+      - "8099:8099"  # TensorRT Model API
+      - "8100:8100"  # TensorRT Health/Metrics
+
+    volumes:
+      # Model storage (persistent)
+      - tensorrt_models:/app/models
+      - tensorrt_cache:/app/tensorrt_cache
+
+      # GPU memory management bridge
+      - ./go-microservice/tensorrt:/app/tensorrt
+
+      # Integration with existing data
+      - ./sveltekit-frontend/src/lib/ai:/app/webasm
+      - ./sveltekit-frontend/src/lib/adapters:/app/adapters
+
+    networks:
+      - legal-ai-network
+
+    # Health check optimized for GPU services
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8100/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # Ensure database and Redis are ready
+    depends_on:
+      - legal-ai-postgres-dynamic
+      - legal-ai-redis-dynamic
+
+  # ONNX.js WebAssembly Service for gemma3:270m (client-side fallback)
+  webasm-onnx-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.webasm-onnx
+    container_name: legal-ai-webasm-onnx
+    restart: unless-stopped
+
+    environment:
+      - NODE_ENV=production
+      - WEBASM_MODELS_PATH=/app/webasm_models
+      - ONNX_MODELS_PATH=/app/onnx_models
+      - PRIMARY_WEBASM_MODEL=gemma3:270m
+      - ENABLE_SIMD=true
+      - ENABLE_THREADS=true
+      - MAX_WORKERS=4
+
+    ports:
+      - "8101:8101"  # WebAssembly ONNX API
+      - "8102:8102"  # WebAssembly Health/Metrics
+
+    volumes:
+      - webasm_models:/app/webasm_models
+      - onnx_models:/app/onnx_models
+      - ./sveltekit-frontend/src/lib/ai:/app/webasm_src
+
+    networks:
+      - legal-ai-network
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8102/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # PostgreSQL + pgvector Integration Service
+  postgres-vectorization-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres-vector
+    container_name: legal-ai-postgres-vector-service
+    restart: unless-stopped
+
+    environment:
+      - DATABASE_URL=postgresql://legal_admin:123456@legal-ai-postgres-dynamic:5432/legal_ai_db
+      - REDIS_URL=redis://:redis@legal-ai-redis-dynamic:6379/1
+      - TENSORRT_ENDPOINT=http://tensorrt-legal-service:8099
+      - WEBASM_ENDPOINT=http://webasm-onnx-service:8101
+      - EMBEDDING_MODEL=gemma3-legal:latest
+      - FALLBACK_EMBEDDING_MODEL=nomic-embed-text
+      - VECTOR_DIMENSIONS=768
+      - BATCH_SIZE=100
+
+    ports:
+      - "8103:8103"  # Vector processing API
+
+    volumes:
+      - ./sveltekit-frontend/src/lib/server/db:/app/db_schemas
+
+    networks:
+      - legal-ai-network
+
+    depends_on:
+      - legal-ai-postgres-dynamic
+      - legal-ai-redis-dynamic
+      - tensorrt-legal-service
+
+volumes:
+  tensorrt_models:
+    driver: local
+  tensorrt_cache:
+    driver: local
+  webasm_models:
+    driver: local
+  onnx_models:
+    driver: local
+
+networks:
+  legal-ai-network:
+    external: true

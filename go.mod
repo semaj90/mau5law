@@ -1,6 +1,6 @@
 module legal-ai-cuda
 
-go 1.25
+go 1.23
 
 require (
 	github.com/bytedance/sonic v1.14.1

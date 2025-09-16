@@ -256,7 +256,8 @@
       "Bash(set NEO4J_URI=bolt://localhost:7687)",
       "Bash(set NEO4J_USERNAME=neo4j)",
       "Bash(set NEO4J_PASSWORD=neo4j)",
-      "Bash(PORT=8107 ./gpu-memory-manager.exe)"
+      "Bash(PORT=8107 ./gpu-memory-manager.exe)",
+      "Bash(./start-tensorrt-production.bat)"
     ],
     "deny": [],
     "ask": []

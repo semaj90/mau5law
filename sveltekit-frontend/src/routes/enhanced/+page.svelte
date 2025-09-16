@@ -78,7 +78,7 @@ https://svelte.dev/e/js_parse_error -->
   		streaming = true;
   		try {
   			const params = new URLSearchParams({ query: body.query, limit: String(body.limit || 8), mode: body.mode || 'simple' });
-  			if (body.threshold != null) params.set('threshold', String(body.threshold);
+  			if (body.threshold != null) params.set('threshold', String(body.threshold));
   			if (body.model) params.set('model', body.model);
   			if (body.caseId) params.set('caseId', body.caseId);
   			const url = `/api/ai/vector-search/stream?${params.toString()}`;

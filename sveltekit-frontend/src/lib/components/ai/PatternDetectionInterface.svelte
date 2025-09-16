@@ -269,14 +269,14 @@
   <!-- Analysis Results Summary -->
   {#if analysisResults}
     <section class="results-summary">
-      <div.Root class="summary-nier-bits-card">
-        <Card.Header>
-          <div.Title>Latest Analysis Results</div.Title>
-          <div.Description>
+      <div class="summary-nier-bits-card">
+        <div class="card-header">
+          <h3 class="text-lg font-semibold">Latest Analysis Results</h3>
+          <p class="text-sm text-muted-foreground">
             Completed: {new Date(analysisResults.timestamp).toLocaleString()}
-          </div.Description>
-        </Card.Header>
-        <Card.Content>
+          </p>
+        </div>
+        <div class="card-content">
           <div class="summary-metrics">
             <div class="metric">
               <span class="metric-value">{analysisResults.totalPatterns}</span>
@@ -302,8 +302,8 @@
               </ul>
             </div>
           {/if}
-        </Card.Content>
-      </Card.Root>
+        </div>
+      </div>
     </section>
   {/if}
 
@@ -328,7 +328,7 @@
               <div class="pattern-title-section">
                 <div class="pattern-icon">{getPatternTypeIcon(pattern.type)}</div>
                 <div>
-                  <div.Title class="pattern-title">{pattern.title}</div.Title>
+                  <h4 class="pattern-title font-semibold">{pattern.title}</h4>
                   <span class="pattern-type-badge {getPatternTypeColor(pattern.type)}">
                     {pattern.type}
                   </span>
@@ -346,7 +346,7 @@
             </div.Description>
           </Card.Header>
           
-          <Card.Content>
+          <div class="card-content">
             <div class="pattern-stats">
               <div class="stat">
                 <span class="stat-label">Significance</span>
@@ -389,7 +389,7 @@
                 </div>
               </div>
             {/if}
-          </Card.Content>
+          </div>
           
           <div.Footer>
             <div class="nier-bits-card-actions">
@@ -401,7 +401,7 @@
               </button>
             </div>
           </div.Footer>
-        </Card.Root>
+        </div>
       {/each}
     {/if}
   </main>

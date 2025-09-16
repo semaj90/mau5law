@@ -44,7 +44,9 @@ sudo systemctl restart docker
 # Test GPU access in Docker
 docker run --rm --gpus all nvidia/cuda:12.8-base-ubuntu22.04 nvidia-smi
 ```
-
+Enable integration with Ubuntu-22.04
+✅ Resources > WSL Integration > Enable GPU support
+✅ Resources > Advanced > Memory: 8GB+ (for legal AI workloads)
 ### 🔧 **TensorRT Engine Compatibility**
 
 #### **Version Matrix (CRITICAL)**

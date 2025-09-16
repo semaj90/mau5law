@@ -23,8 +23,15 @@
   let isAdmin = $derived(currentPath.startsWith('/admin'));
   let showAccessibilitySettings = $state(false);
 
+  // Navigation item type
+  type NavItem = {
+    path: string;
+    label: string;
+    icon: string;
+  };
+
   // Main navigation items
-  const mainNavItems = [
+  const mainNavItems: NavItem[] = [
     { path: '/', label: 'Home', icon: '🏠' },
     { path: '/dashboard/cases', label: 'Cases', icon: '📁' },
     { path: '/ai/dashboard', label: 'AI Hub', icon: '🤖' },
@@ -35,7 +42,7 @@
   ];
 
   // Demo navigation items
-  const demoNavItems = [
+  const demoNavItems: NavItem[] = [
     { path: '/demo/bits-ui', label: 'Components', icon: '🎨' },
     { path: '/demo/nes-bits-ui', label: 'NES UI', icon: '🎮' },
     { path: '/demo/gpu-inference', label: 'GPU', icon: '⚡' },
@@ -44,7 +51,7 @@
   ];
 
   // Admin navigation items
-  const adminNavItems = [
+  const adminNavItems: NavItem[] = [
     { path: '/admin', label: 'Dashboard', icon: '📊' },
     { path: '/admin/users', label: 'Users', icon: '👤' },
     { path: '/admin/cluster', label: 'Cluster', icon: '🖥️' },
@@ -112,39 +119,39 @@
           <!-- Demo-specific navigation -->
           {#each demoNavItems as item}
             <LinkButton
-              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path as string}
-              variant={isActive((item as { path?: unknown; icon?: unknown; label?: unknown }).path) ? 'primary' : 'ghost'}
+              href={item.path}
+              variant={isActive(item.path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
-              <span class="nav-icon">{(item as { path?: unknown; icon?: unknown; label?: unknown }).icon}</span>
-              <span class="nav-label">{(item as { path?: unknown; icon?: unknown; label?: unknown }).label}</span>
+              <span class="nav-icon">{item.icon}</span>
+              <span class="nav-label">{item.label}</span>
             </LinkButton>
           {/each}
         {:else if isAdmin && user?.role === 'admin'}
           <!-- Admin navigation -->
           {#each adminNavItems as item}
             <LinkButton
-              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path as string}
-              variant={isActive((item as { path?: unknown; icon?: unknown; label?: unknown }).path) ? 'primary' : 'ghost'}
+              href={item.path}
+              variant={isActive(item.path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
-              <span class="nav-icon">{(item as { path?: unknown; icon?: unknown; label?: unknown }).icon}</span>
-              <span class="nav-label">{(item as { path?: unknown; icon?: unknown; label?: unknown }).label}</span>
+              <span class="nav-icon">{item.icon}</span>
+              <span class="nav-label">{item.label}</span>
             </LinkButton>
           {/each}
         {:else}
           <!-- Main navigation -->
           {#each mainNavItems as item}
             <LinkButton
-              href={(item as { path?: unknown; icon?: unknown; label?: unknown }).path as string}
-              variant={isActive((item as { path?: unknown; icon?: unknown; label?: unknown }).path) ? 'primary' : 'ghost'}
+              href={item.path}
+              variant={isActive(item.path) ? 'primary' : 'ghost'}
               size="sm"
               class="nav-item"
             >
-              <span class="nav-icon">{(item as { path?: unknown; icon?: unknown; label?: unknown }).icon}</span>
-              <span class="nav-label">{(item as { path?: unknown; icon?: unknown; label?: unknown }).label}</span>
+              <span class="nav-icon">{item.icon}</span>
+              <span class="nav-label">{item.label}</span>
             </LinkButton>
           {/each}
         {/if}
@@ -165,20 +172,20 @@
         {#if user}
           <div class="user-menu">
             <span class="user-name">{user.name || user.email}</span>
-            <Button href="/settings" variant="ghost" size="sm">
+            <LinkButton href="/settings" variant="ghost" size="sm">
               ⚙️ Settings
-            </Button>
-            <Button href="/auth/logout" variant="outline" size="sm">
+            </LinkButton>
+            <LinkButton href="/auth/logout" variant="outline" size="sm">
               Logout
-            </Button>
+            </LinkButton>
           </div>
         {:else}
-          <Button href="/auth/login" variant="outline" size="sm">
+          <LinkButton href="/auth/login" variant="outline" size="sm">
             Login
-          </Button>
-          <Button href="/auth/register" variant="primary" size="sm">
+          </LinkButton>
+          <LinkButton href="/auth/register" variant="primary" size="sm">
             Register
-          </Button>
+          </LinkButton>
         {/if}
       </div>
     </div>
