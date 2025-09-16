@@ -1,0 +1,19 @@
+# Simple TensorRT-LLM Container for Legal AI Q4_K_M
+FROM nvcr.io/nvidia/tensorrt:24.05-py3
+
+WORKDIR /workspace
+
+# Install TensorRT-LLM from PyPI (simpler approach)
+RUN pip install tensorrt-llm --extra-index-url https://pypi.nvidia.com
+
+# Copy model files and build scripts
+COPY models/ /workspace/models/
+COPY build-tensorrt-llm-rtx3060ti.py /workspace/
+COPY tensorrt-llm-server.py /workspace/
+
+# Set environment for RTX 3060 Ti
+ENV CUDA_VISIBLE_DEVICES=0
+ENV TORCH_CUDA_ARCH_LIST="8.6"
+
+# Build the optimized Q4_K_M engine on startup
+CMD ["python", "build-tensorrt-llm-rtx3060ti.py"]

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  tensorrt-llm-legal:
+    build:
+      context: .
+      dockerfile: Dockerfile.tensorrt-llm
+    image: tensorrt-llm-legal:latest
+    container_name: tensorrt-llm-legal
+    ports:
+      - "8100:8100"
+    environment:
+      - OLLAMA_HOST=host.docker.internal:11434
+      - CUDA_VISIBLE_DEVICES=0
+      - PORT=8100
+    volumes:
+      - ./tensorrt_workspace:/workspace/shared
+      - ./logs:/workspace/logs
+    networks:
+      - legal-ai-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8100/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  legal-ai-network:
+    driver: bridge
+
+volumes:
+  tensorrt_workspace:
+  logs:

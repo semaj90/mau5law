@@ -270,7 +270,20 @@
       "Bash(set TORCH_CUDA_ARCH_LIST=8.6)",
       "Bash(set MAX_JOBS=4)",
       "Bash(pip uninstall:*)",
-      "Bash(.test-flashattention-production.bat)"
+      "Bash(.test-flashattention-production.bat)",
+      "Bash(CGO_ENABLED=0 go build -o simple_test ./simple_test.go)",
+      "Bash(build-tensorrt-pipeline.bat)",
+      "Bash(./build_wsl2.sh:*)",
+      "Bash(sudo apt:*)",
+      "Bash(./fix-line-endings.sh:*)",
+      "Bash(pip show:*)",
+      "Bash(./quick-start-optimized-stack.sh:*)",
+      "Bash(./legal-ai-simple)",
+      "Bash(./run-wsl2-setup.bat)",
+      "Bash(./run-ngc-tensorrt-llm.sh:*)",
+      "Bash(tensorrt_llm_env/bin/python:*)",
+      "Bash(/usr/bin/python3.12:*)",
+      "Bash(VIRTUAL_ENV=./tensorrt_llm_env PATH=\"./tensorrt_llm_env/bin:$PATH\" pip install tensorrt-llm --extra-index-url https://pypi.nvidia.com --timeout 30)"
     ],
     "deny": [],
     "ask": []

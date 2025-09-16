@@ -29,9 +29,19 @@ echo "📦 Compiling CUDA kernels..."
 nvcc -O3 -arch=sm_86 -std=c++17 -Xcompiler -fPIC \
     int4_flash_attn_kernel.cu -c -o int4_flash_attn_kernel.o
 
-echo "🔧 Building TensorRT plugin..."
+echo "🔧 Building Q4_K_M TensorRT plugin..."
+# Add to Dockerfile.tensorrt-legal equivalent step
+nvcc -shared -o q4km_plugin.so \
+    q4km_plugin.cpp int4_flash_attn_kernel.o \
+    -I/usr/include -I/usr/local/cuda/include \
+    -I/usr/include/x86_64-linux-gnu \
+    -L/usr/lib/x86_64-linux-gnu -L/usr/local/cuda/lib64 \
+    -ltensorrt -ltensorrt_plugin -lcudart -lcuda -lcublas -lcurand \
+    -O3 -arch=sm_86 -std=c++17 -Xcompiler -fPIC
+
+echo "🔗 Building TensorRT C++ wrapper..."
 g++ -O3 -std=c++17 -fPIC -shared \
-    tensorrt_wrapper.cpp q4km_plugin.cpp int4_flash_attn_kernel.o \
+    tensorrt_wrapper.cpp q4km_plugin.so \
     -I/usr/include -I/usr/local/cuda/include \
     -I/usr/include/x86_64-linux-gnu \
     -L/usr/lib/x86_64-linux-gnu -L/usr/local/cuda/lib64 \
