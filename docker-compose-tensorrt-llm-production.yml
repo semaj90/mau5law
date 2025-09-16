@@ -1,0 +1,182 @@
+# TensorRT-LLM Legal AI Production Deployment
+# Docker Compose with volume mounts for models, engines, and logs
+version: '3.8'
+
+services:
+  # PostgreSQL 17 + pgvector for legal document storage
+  postgres-legal:
+    image: pgvector/pgvector:pg17
+    container_name: postgres-legal-ai
+    environment:
+      POSTGRES_DB: legal_ai_db
+      POSTGRES_USER: legal_admin
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_legal_data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
+    command: postgres -c shared_preload_libraries=vector
+    networks:
+      - legal-ai-network
+
+  # Redis for tensor caching and session management
+  redis-legal:
+    image: redis:7-alpine
+    container_name: redis-legal-ai
+    command: redis-server --requirepass redis --maxmemory 2gb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_legal_data:/data
+    networks:
+      - legal-ai-network
+
+  # RabbitMQ for async legal query processing
+  rabbitmq-legal:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq-legal-ai
+    environment:
+      RABBITMQ_DEFAULT_USER: legal_admin
+      RABBITMQ_DEFAULT_PASS: legal123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_legal_data:/var/lib/rabbitmq
+    networks:
+      - legal-ai-network
+
+  # MinIO for model and document object storage
+  minio-legal:
+    image: minio/minio:latest
+    container_name: minio-legal-ai
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: legal_admin
+      MINIO_ROOT_PASSWORD: legal_storage_key
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_legal_data:/data
+      - ./models:/data/legal-models:ro
+      - ./engines:/data/tensorrt-engines:ro
+    networks:
+      - legal-ai-network
+
+  # Qdrant for advanced vector similarity search
+  qdrant-legal:
+    image: qdrant/qdrant:latest
+    container_name: qdrant-legal-ai
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_legal_data:/qdrant/storage
+    networks:
+      - legal-ai-network
+
+  # TensorRT-LLM Legal AI Service
+  tensorrt-llm-legal:
+    build:
+      context: .
+      dockerfile: legal-ai-tensorrt.dockerfile
+    container_name: tensorrt-llm-legal-ai
+    environment:
+      # TensorRT-LLM Configuration
+      TENSORRT_ENGINES_PATH: /opt/engines
+      MODELS_PATH: /opt/models
+      PYTHON_ENV_PATH: /opt/tensorrt_env
+
+      # Database connections
+      DATABASE_URL: postgresql://legal_admin:123456@postgres-legal:5432/legal_ai_db
+      REDIS_URL: redis://:redis@redis-legal:6379/0
+
+      # Service configuration
+      SERVICE_PORT: 8096
+      HEALTH_CHECK_PORT: 8096
+      LOG_LEVEL: INFO
+
+      # GPU optimization
+      CUDA_VISIBLE_DEVICES: 0
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+
+      # FlashAttention + TensorRT optimization
+      FLASH_ATTENTION_ENABLED: true
+      TENSORRT_OPTIMIZATION: q4_k_m
+      GPU_MEMORY_FRACTION: 0.85
+    ports:
+      - "8096:8096"
+      - "8108:8108"
+    volumes:
+      # Mount TensorRT environment and models
+      - ./TensorRT-LLM/tensorrt_env:/opt/tensorrt_env:ro
+      - ./models:/opt/models:ro
+      - ./engines:/opt/engines:ro
+
+      # Service scripts and configurations
+      - ./legal-ai-tensorrt-service.py:/opt/legal-ai-tensorrt-service.py:ro
+      - ./tensorrt-llm-legal-production.py:/opt/tensorrt-llm-legal-production.py:ro
+
+      # Logs and runtime data
+      - tensorrt_logs:/opt/logs
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    depends_on:
+      - postgres-legal
+      - redis-legal
+      - rabbitmq-legal
+      - minio-legal
+      - qdrant-legal
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
+  # Nginx reverse proxy for production
+  nginx-legal:
+    image: nginx:alpine
+    container_name: nginx-legal-ai
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./configs/nginx-legal-tensorrt.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./ssl:/etc/ssl:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - tensorrt-llm-legal
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+
+volumes:
+  postgres_legal_data:
+    driver: local
+  redis_legal_data:
+    driver: local
+  rabbitmq_legal_data:
+    driver: local
+  minio_legal_data:
+    driver: local
+  qdrant_legal_data:
+    driver: local
+  tensorrt_logs:
+    driver: local
+  nginx_logs:
+    driver: local
+
+networks:
+  legal-ai-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
