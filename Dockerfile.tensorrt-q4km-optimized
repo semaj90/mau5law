@@ -1,0 +1,125 @@
+# TensorRT Q4_K_M Production Dockerfile for gemma3-legal:latest
+# Optimized for 4-bit mixed precision with RTX 3060 Ti
+# Handles 11.8B parameters + 131K context + 3840 embedding dims
+
+FROM nvcr.io/nvidia/tensorrt:24.09-py3
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies + TensorRT plugin development
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    build-essential \
+    cmake \
+    git \
+    python3-dev \
+    libssl-dev \
+    pkg-config \
+    libnvinfer-plugin-dev \
+    libnvinfer-headers-plugin-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Go 1.23+ for microservice orchestration
+RUN wget https://go.dev/dl/go1.23.4.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.23.4.linux-amd64.tar.gz && \
+    rm go1.23.4.linux-amd64.tar.gz
+
+# Install Node.js 20 for frontend integration
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
+
+# Create directories for custom plugins and kernels
+RUN mkdir -p /app/plugins /app/kernels /app/engines
+
+# Copy Q4_K_M plugin sources
+COPY go-microservice/tensorrt/plugins/q4km_plugin.cpp /app/plugins/
+COPY go-microservice/tensorrt/plugins/int4_flash_attention.cu /app/plugins/
+COPY go-microservice/tensorrt/kernels/q4km_matmul.cu /app/kernels/
+
+# Copy minimal requirements for Q4_K_M dependencies
+COPY go-microservice/tensorrt/requirements-q4km-minimal.txt /app/
+
+# Install essential build dependencies first
+RUN pip install --upgrade pip setuptools wheel packaging numpy protobuf
+
+# Install Q4_K_M essential Python dependencies
+RUN pip install --no-cache-dir -r requirements-q4km-minimal.txt
+
+# Build custom Q4_K_M TensorRT plugins (fix NVCC flags)
+RUN cd /app/plugins && \
+    g++ -shared -fPIC -O3 -std=c++17 \
+    -I/usr/include/x86_64-linux-gnu \
+    -I/usr/local/cuda/include \
+    -I/opt/tensorrt/include \
+    -L/opt/tensorrt/lib \
+    -lnvinfer -lnvinfer_plugin \
+    -o q4km_plugin.so q4km_plugin.cpp && \
+    nvcc -shared -Xcompiler -fPIC -O3 -std=c++17 \
+    --gpu-architecture=sm_86 \
+    -I/usr/local/cuda/include \
+    -o int4_flash_attention.so int4_flash_attention.cu
+
+# Build optimized Q4_K_M matrix multiplication kernels
+RUN cd /app/kernels && \
+    nvcc -shared -fPIC -O3 -std=c++17 \
+    --gpu-architecture=sm_86 \
+    -I/usr/local/cuda/include \
+    -o q4km_matmul.so q4km_matmul.cu
+
+# Set environment variables for Q4_K_M optimization
+ENV PATH=/usr/local/go/bin:$PATH
+ENV TENSORRT_PLUGIN_PATH=/app/plugins
+ENV CUDA_KERNEL_PATH=/app/kernels
+ENV TRT_ENGINE_CACHE=/app/engines
+ENV RTX_3060_OPTIMIZATION=true
+ENV Q4KM_MIXED_PRECISION=true
+ENV MAX_CONTEXT_LENGTH=131072
+ENV EMBEDDING_DIM=3840
+
+# Copy Go microservice for TensorRT orchestration
+COPY go-microservice/tensorrt/ /app/tensorrt-service/
+COPY go-microservice/go.mod go-microservice/go.sum /app/tensorrt-service/
+
+# Build Go TensorRT microservice with Q4_K_M support
+RUN cd /app/tensorrt-service && \
+    CGO_ENABLED=1 go build -o tensorrt-q4km-server \
+    -ldflags="-s -w" \
+    -tags="tensorrt,q4km,rtx3060ti" \
+    main.go
+
+# Copy C++ inference engine sources
+COPY go-microservice/tensorrt/cpp/ /app/cpp-engine/
+
+# Build C++ inference engine for ultra-low latency Q4_K_M
+RUN cd /app/cpp-engine && \
+    mkdir -p build && cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release \
+          -DTENSORRT_ROOT=/opt/tensorrt \
+          -DCUDA_TOOLKIT_ROOT=/usr/local/cuda \
+          -DQ4KM_OPTIMIZATION=ON \
+          -DRTX_3060_OPTIMIZATION=ON \
+          .. && \
+    make -j$(nproc) q4km_inference_engine
+
+# Copy Python fallback service
+COPY go-microservice/tensorrt/python/ /app/python-fallback/
+
+# Create engine cache directory with proper permissions
+RUN mkdir -p /app/engines && \
+    chmod 777 /app/engines
+
+# Health check for Q4_K_M services
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
+    CMD curl -f http://localhost:8095/health/q4km || exit 1
+
+# Expose ports for different services
+EXPOSE 8095 8096 8097
+
+# Multi-stage startup script for Q4_K_M stack
+COPY go-microservice/tensorrt/scripts/start-q4km-stack.sh /app/
+RUN chmod +x /app/start-q4km-stack.sh
+
+# Default command starts the complete Q4_K_M inference stack
+CMD ["/app/start-q4km-stack.sh"]
