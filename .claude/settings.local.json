@@ -283,7 +283,13 @@
       "Bash(./run-ngc-tensorrt-llm.sh:*)",
       "Bash(tensorrt_llm_env/bin/python:*)",
       "Bash(/usr/bin/python3.12:*)",
-      "Bash(VIRTUAL_ENV=./tensorrt_llm_env PATH=\"./tensorrt_llm_env/bin:$PATH\" pip install tensorrt-llm --extra-index-url https://pypi.nvidia.com --timeout 30)"
+      "Bash(VIRTUAL_ENV=./tensorrt_llm_env PATH=\"./tensorrt_llm_env/bin:$PATH\" pip install tensorrt-llm --extra-index-url https://pypi.nvidia.com --timeout 30)",
+      "Bash(alpine:latest /app/server)",
+      "Bash(copy:*)",
+      "Bash(ollama run:*)",
+      "Bash(/bashes)",
+      "Bash(./test-tensorrt-inference.sh:*)",
+      "Bash(./scripts/porcelain-build-push.sh:*)"
     ],
     "deny": [],
     "ask": []
