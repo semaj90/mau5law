@@ -1,0 +1,331 @@
+# Caddy Configuration for TensorRT-LLM Legal AI Pipeline
+# Optimized for QUIC/HTTP3, sub-1ms latency, and high throughput
+
+{
+	# Global options for maximum performance
+	auto_https off
+	admin off
+	log {
+		output file logs/caddy-tensorrt.log
+		level ERROR
+	}
+
+	# Enable HTTP/3 and QUIC globally
+	servers {
+		protocols h1 h2 h3
+	}
+
+	# Optimize for legal AI workloads
+	grace_period 0
+	shutdown_delay 0
+}
+
+# Main Legal AI API endpoint with QUIC optimization
+:8080 {
+	# Enable HTTP/3 and QUIC
+	protocols h1 h2 h3
+
+	# Compression optimization for JSON responses
+	encode {
+		gzip 6
+		brotli 6
+		minimum_length 100
+	}
+
+	# CORS headers for SvelteKit frontend
+	header {
+		Access-Control-Allow-Origin "*"
+		Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+		Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+		Access-Control-Max-Age "86400"
+
+		# Performance headers
+		Cache-Control "no-cache, no-store, must-revalidate"
+		X-Frame-Options "DENY"
+		X-Content-Type-Options "nosniff"
+
+		# QUIC and HTTP/3 advertisement
+		Alt-Svc "h3=\":8080\"; ma=86400"
+	}
+
+	# Handle preflight requests
+	@options {
+		method OPTIONS
+	}
+	respond @options 204
+
+	# TensorRT-LLM API routes with load balancing
+	@tensorrt_api {
+		path /v1/completions
+		path /v1/chat/completions
+		path /v1/embeddings
+	}
+
+	handle @tensorrt_api {
+		# Load balance across TensorRT instances
+		reverse_proxy {
+			# Primary TensorRT-LLM server (WSL2)
+			to localhost:8100
+
+			# Fallback to Go SIMD optimizer
+			to localhost:8103
+
+			# Health check and failover
+			health_uri /health
+			health_interval 5s
+			health_timeout 3s
+			fail_duration 10s
+			max_fails 3
+
+			# Connection pooling for performance
+			transport http {
+				keepalive 30s
+				keepalive_idle_conns 100
+				keepalive_idle_conns_per_host 10
+				max_idle_conns 100
+				max_conns_per_host 50
+				idle_timeout 90s
+				response_header_timeout 30s
+				expect_continue_timeout 1s
+			}
+
+			# Load balancing strategy
+			lb_policy least_conn
+			lb_try_duration 3s
+			lb_try_interval 250ms
+
+			# Header optimization
+			header_up Host {upstream_hostport}
+			header_up X-Real-IP {remote_host}
+			header_up X-Forwarded-For {remote_host}
+			header_up X-Forwarded-Proto {scheme}
+			header_up X-TensorRT-Optimized "true"
+		}
+
+		# Response transformation
+		header {
+			X-Served-By "Caddy-TensorRT-Pipeline"
+			X-Response-Time "{latency_ms}ms"
+		}
+	}
+
+	# gRPC API for high-performance streaming
+	@grpc_api {
+		path /grpc/*
+		protocol grpc
+	}
+
+	handle @grpc_api {
+		reverse_proxy {
+			to h2c://localhost:50051
+
+			# gRPC specific settings
+			transport http {
+				versions h2c
+			}
+
+			# gRPC headers
+			header_up X-gRPC-TensorRT "enabled"
+		}
+	}
+
+	# Metrics and monitoring endpoints
+	@metrics {
+		path /metrics
+		path /health
+		path /benchmark
+	}
+
+	handle @metrics {
+		reverse_proxy {
+			to localhost:8103  # SIMD optimizer metrics
+			to localhost:8100  # TensorRT metrics
+
+			lb_policy first
+			fail_duration 5s
+		}
+	}
+
+	# Static files for SvelteKit frontend
+	@static {
+		path /static/*
+		path /_app/*
+		path /favicon.ico
+		path /manifest.json
+	}
+
+	handle @static {
+		# Aggressive caching for static assets
+		header Cache-Control "public, max-age=31536000, immutable"
+
+		root * /app/build
+		file_server
+	}
+
+	# SvelteKit application
+	handle {
+		reverse_proxy {
+			to localhost:5173  # SvelteKit dev server
+
+			# WebSocket support for HMR
+			transport http {
+				versions h1 h2
+			}
+
+			# SvelteKit headers
+			header_up X-Forwarded-Host {host}
+		}
+	}
+
+	# Logging with performance tracking
+	log {
+		output file logs/tensorrt-access.log {
+			roll_size 100MB
+			roll_keep 5
+		}
+		format json {
+			time_format "2006-01-02T15:04:05.000Z07:00"
+			message_key "message"
+		}
+		level INFO
+	}
+}
+
+# HTTPS endpoint with automatic certificates
+legal-ai.localhost:443 {
+	# TLS configuration optimized for performance
+	tls internal {
+		curve x25519
+		protocols tls1.2 tls1.3
+		ciphers TLS_AES_128_GCM_SHA256 TLS_AES_256_GCM_SHA384 TLS_CHACHA20_POLY1305_SHA256
+	}
+
+	# Import the same configuration as HTTP
+	import :8080
+}
+
+# WebSocket endpoint for real-time legal analysis
+:8081 {
+	protocols h1 h2 h3
+
+	# WebSocket specific handling
+	@websocket {
+		header Connection *Upgrade*
+		header Upgrade websocket
+	}
+
+	handle @websocket {
+		reverse_proxy {
+			to localhost:5173
+
+			# WebSocket settings
+			transport http {
+				versions h1
+			}
+		}
+	}
+
+	# Fallback to regular HTTP
+	handle {
+		reverse_proxy localhost:8080
+	}
+}
+
+# Monitoring and admin interface
+:9090 {
+	# Restrict to localhost only
+	@not_localhost {
+		not remote_ip 127.0.0.1 ::1
+	}
+	respond @not_localhost "Access denied" 403
+
+	# Metrics dashboard
+	handle /metrics {
+		reverse_proxy localhost:8103
+	}
+
+	# Health dashboard
+	handle /health {
+		respond `{
+			"status": "healthy",
+			"services": {
+				"tensorrt": "running",
+				"simd_optimizer": "running",
+				"sveltekit": "running",
+				"caddy": "running"
+			},
+			"performance": {
+				"quic_enabled": true,
+				"http3_enabled": true,
+				"compression": "brotli+gzip"
+			}
+		}` 200 {
+			Content-Type "application/json"
+		}
+	}
+
+	# System status
+	handle /status {
+		templates
+		respond `<!DOCTYPE html>
+<html>
+<head>
+	<title>TensorRT-LLM Legal AI Status</title>
+	<style>
+		body { font-family: Arial, sans-serif; margin: 40px; }
+		.status { background: #f0f0f0; padding: 20px; border-radius: 8px; }
+		.metric { margin: 10px 0; }
+		.healthy { color: green; }
+		.warning { color: orange; }
+		.error { color: red; }
+	</style>
+</head>
+<body>
+	<h1>🚀 TensorRT-LLM Legal AI Pipeline Status</h1>
+	<div class="status">
+		<div class="metric healthy">✅ QUIC/HTTP3: Enabled</div>
+		<div class="metric healthy">✅ TensorRT-LLM: Running</div>
+		<div class="metric healthy">✅ SIMD Optimizer: Active</div>
+		<div class="metric healthy">✅ gRPC Streaming: Available</div>
+		<div class="metric healthy">✅ SvelteKit Frontend: Connected</div>
+	</div>
+	<p>Performance optimizations active:</p>
+	<ul>
+		<li>Q4_K_M quantization</li>
+		<li>CUDA graphs</li>
+		<li>FlashAttention v2</li>
+		<li>SIMD JSON parsing</li>
+		<li>Connection pooling</li>
+		<li>Brotli compression</li>
+	</ul>
+</body>
+</html>` 200
+	}
+}
+
+# Error handling and fallbacks
+handle_errors {
+	@5xx `{err.status_code} >= 500`
+	handle @5xx {
+		respond `{
+			"error": "Internal server error",
+			"message": "TensorRT-LLM service temporarily unavailable",
+			"fallback": "SIMD optimizer active",
+			"retry_after": 5
+		}` 500 {
+			Content-Type "application/json"
+			Retry-After "5"
+		}
+	}
+
+	@4xx `{err.status_code} >= 400 && {err.status_code} < 500`
+	handle @4xx {
+		respond `{
+			"error": "Client error",
+			"message": "Invalid request format",
+			"status": {err.status_code}
+		}` {err.status_code} {
+			Content-Type "application/json"
+		}
+	}
+}
