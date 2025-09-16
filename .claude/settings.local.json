@@ -257,7 +257,20 @@
       "Bash(set NEO4J_USERNAME=neo4j)",
       "Bash(set NEO4J_PASSWORD=neo4j)",
       "Bash(PORT=8107 ./gpu-memory-manager.exe)",
-      "Bash(./start-tensorrt-production.bat)"
+      "Bash(./start-tensorrt-production.bat)",
+      "Bash(./test-tensorrt-wsl2.sh:*)",
+      "Bash(PORT=8102 timeout 10s go run cuda-integration-wrapper.go)",
+      "Bash(./enhanced-legal-ai.exe --help)",
+      "Bash(.gpu-memory-manager.exe --help)",
+      "Bash(./gpu-memory-manager.exe --help)",
+      "Bash(./scripts/health-check-all.sh:*)",
+      "Bash(make:*)",
+      "Bash(nvidia-docker:*)",
+      "Bash(pip install:*)",
+      "Bash(set TORCH_CUDA_ARCH_LIST=8.6)",
+      "Bash(set MAX_JOBS=4)",
+      "Bash(pip uninstall:*)",
+      "Bash(.test-flashattention-production.bat)"
     ],
     "deny": [],
     "ask": []
