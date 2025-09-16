@@ -8,7 +8,7 @@ export { default as DialogBits } from '../dialog/DialogBits.svelte';
 export { default as DropdownBits } from '../dropdown/DropdownBits.svelte';
 export { default as SelectBits } from '../select/SelectBits.svelte';
 export { default as TooltipBits } from '../tooltip/TooltipBits.svelte';
-export { default as TabsBits } from '../tabs/TabsBits.svelte';
+export { TabsBits } from '../enhanced-bits';
 
 // Accessibility enhancement wrapper for bits-ui components
 export { default as BitsUIAccessibilityWrapper } from '../BitsUIAccessibilityWrapper.svelte';

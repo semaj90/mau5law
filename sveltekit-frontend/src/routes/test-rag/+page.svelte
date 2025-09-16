@@ -3,7 +3,8 @@
   import { onMount } from 'svelte';
   import EnhancedDocumentUpload from '$lib/components/EnhancedDocumentUpload.svelte';
   import RAGSearchComponent from '$lib/components/RAGSearchComponent.svelte';
-  import ModernButton from '$lib/components/ui/button/Button.svelte';
+  import { ButtonBits, TabsBits, CardBits } from '$lib/components/ui/bits-ui';
+  import { FileText, Search, Activity, CheckCircle, AlertCircle, Clock } from 'lucide-svelte';
 
   let activeTab = $state('upload');
   let systemStatus = $state<any>(null);
@@ -131,10 +132,11 @@
           timestamp: new Date().toISOString()
         }];
       } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
         integrationTests = [...integrationTests, {
           ...test,
           success: false,
-          error: error.message,
+          error: message,
           duration: 0,
           timestamp: new Date().toISOString()
         }];
@@ -181,9 +183,9 @@
               {#if service.responseTime}
                 <div class="status-time">{service.responseTime}ms</div>
               {/if}
-              {#if service.data && service.(data as { enhancedFeatures?: unknown; supportedFormats?: unknown }).enhancedFeatures}
+              {#if service.data && (service.data as { enhancedFeatures?: unknown; supportedFormats?: unknown }).enhancedFeatures}
                 <div class="status-features">
-                  Enhanced Features: {service.(data as { enhancedFeatures?: unknown; supportedFormats?: unknown }).enhancedFeatures.length}
+                  Enhanced Features: {(service.data as { enhancedFeatures?: unknown; supportedFormats?: unknown }).enhancedFeatures.length}
                 </div>
               {/if}
             </div>
@@ -192,12 +194,18 @@
       </div>
 
       <div class="status-actions">
-        <ModernButton onclick={loadSystemStatus} variant="secondary">
-          🔄 Refresh Status
-        </ModernButton>
-        <ModernButton onclick={runIntegrationTests} disabled={testRunning} variant="primary">
-          {testRunning ? '🔄 Running Tests...' : '🧪 Run Integration Tests'}
-        </ModernButton>
+        <ButtonBits onclick={loadSystemStatus} variant="secondary" size="md">
+          <Activity class="w-4 h-4 mr-2" />
+          Refresh Status
+        </ButtonBits>
+        <ButtonBits onclick={runIntegrationTests} disabled={testRunning} variant="primary" size="md" loading={testRunning}>
+          {#if testRunning}
+            Running Tests...
+          {:else}
+            <CheckCircle class="w-4 h-4 mr-2" />
+            Run Integration Tests
+          {/if}
+        </ButtonBits>
       </div>
     {:else}
       <div class="loading">Loading system status...</div>
@@ -246,46 +254,89 @@
     </div>
   {/if}
 
-  <!-- Tab Navigation -->
-  <div class="tab-navigation">
-    <button
-      class="tab-button"
-      class:active={activeTab === 'upload'}
-      onclick={() => activeTab = 'upload'}
-    >
-      📄 Document Upload Testing
-    </button>
-    <button
-      class="tab-button"
-      class:active={activeTab === 'search'}
-      onclick={() => activeTab = 'search'}
-    >
-      🔍 Enhanced Search Testing
-    </button>
-  </div>
+  <!-- Enhanced Tab Navigation with TabsBits -->
+  <TabsBits.Root bind:value={activeTab} class="legal-ai-tabs">
+    <TabsBits.List class="mb-6">
+      <TabsBits.Trigger value="upload" class="flex items-center gap-2">
+        <FileText class="w-4 h-4" />
+        Document Upload Testing
+      </TabsBits.Trigger>
+      <TabsBits.Trigger value="search" class="flex items-center gap-2">
+        <Search class="w-4 h-4" />
+        Enhanced Search Testing
+      </TabsBits.Trigger>
+      <TabsBits.Trigger value="status" class="flex items-center gap-2">
+        <Activity class="w-4 h-4" />
+        System Status
+      </TabsBits.Trigger>
+    </TabsBits.List>
 
-  <!-- Tab Content -->
-  <div class="tab-content">
-    {#if activeTab === 'upload'}
-      <div class="upload-testing">
-        <h2>📄 Enhanced Document Upload Testing</h2>
-        <p class="tab-description">
+    <TabsBits.Content value="upload">
+      <CardBits variant="elevated" padding="xl" class="upload-testing">
+        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+          <FileText class="w-6 h-6 text-blue-400" />
+          Enhanced Document Upload Testing
+        </h2>
+        <p class="tab-description mb-6 text-nier-text-secondary">
           Test the enhanced document upload functionality with AI-powered processing,
           multi-format support, and automatic semantic indexing.
         </p>
         <EnhancedDocumentUpload />
-      </div>
-    {:else if activeTab === 'search'}
-      <div class="search-testing">
-        <h2>🔍 Enhanced Semantic Search Testing</h2>
-        <p class="tab-description">
+      </CardBits>
+    </TabsBits.Content>
+
+    <TabsBits.Content value="search">
+      <CardBits variant="elevated" padding="xl" class="search-testing">
+        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+          <Search class="w-6 h-6 text-green-400" />
+          Enhanced Semantic Search Testing
+        </h2>
+        <p class="tab-description mb-6 text-nier-text-secondary">
           Test the enhanced semantic search with improved accuracy, practice area detection,
           and integrated vector search capabilities.
         </p>
         <RAGSearchComponent />
-      </div>
-    {/if}
-  </div>
+      </CardBits>
+    </TabsBits.Content>
+
+    <TabsBits.Content value="status">
+      <CardBits variant="elevated" padding="xl">
+        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+          <Activity class="w-6 h-6 text-amber-400" />
+          System Status Dashboard
+        </h2>
+        <p class="tab-description mb-6 text-nier-text-secondary">
+          Monitor the health and performance of all legal AI system components.
+        </p>
+
+        {#if systemStatus}
+          <div class="status-grid mb-6">
+            {#each systemStatus as service}
+              <CardBits variant="outlined" padding="md" class="status-service-card" style="border-color: {getStatusColor(service.status)}">
+                <div class="flex justify-between items-start mb-2">
+                  <span class="font-semibold text-sm">{service.name}</span>
+                  <span class="status-indicator" style="color: {getStatusColor(service.status)}">
+                    {#if service.status === 'online'}
+                      <CheckCircle class="w-4 h-4" />
+                    {:else}
+                      <AlertCircle class="w-4 h-4" />
+                    {/if}
+                  </span>
+                </div>
+                <div class="text-xs text-nier-text-muted mb-2">{service.endpoint}</div>
+                {#if service.responseTime}
+                  <div class="flex items-center gap-1 text-xs text-nier-text-secondary">
+                    <Clock class="w-3 h-3" />
+                    {service.responseTime}ms
+                  </div>
+                {/if}
+              </CardBits>
+            {/each}
+          </div>
+        {/if}
+      </CardBits>
+    </TabsBits.Content>
+  </TabsBits.Root>
 </div>
 
 <style>
@@ -434,11 +485,11 @@
     padding: 1rem;
   }
 
-  .test-(item as { success?: unknown; error?: unknown }).success {
+  .test-item.success {
     border-color: #00ff41;
   }
 
-  .test-(item as { success?: unknown; error?: unknown }).error {
+  .test-item.error {
     border-color: #ff4444;
   }
 
@@ -484,7 +535,6 @@
     cursor: pointer;
     font-size: 0.8rem;
   }
-
   .test-data pre {
     background: #0a0a0a;
     border: 1px solid #333;
@@ -496,7 +546,22 @@
     margin-top: 0.5rem;
   }
 
-  .tab-navigation {
+  /* Enhanced bits-ui TabsBits styling for legal AI testing */
+  :global(.legal-ai-tabs) {
+    box-shadow: var(--legal-ai-shadow-lg);
+  }
+
+  /* Test result card styling */
+  :global(.test-result-card.success) {
+    border-left: 4px solid #10b981;
+  }
+
+  :global(.test-result-card.error) {
+    border-left: 4px solid #ef4444;
+  }
+
+  /* Original styles */
+  .test-container {
     display: flex;
     background: #111;
     border-radius: 12px 12px 0 0;

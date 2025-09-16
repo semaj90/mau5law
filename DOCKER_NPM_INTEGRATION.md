@@ -104,7 +104,7 @@ npm run dev:debug             # Debug mode
 
 The Docker integration automatically sets:
 ```env
-DATABASE_URL=postgresql://legal_admin:123456@localhost:5433/legal_ai_db
+DATABASE_URL=postgresql://legal_admin:123456@localhost:5432/legal_ai_db
 REDIS_URL=redis://localhost:6379
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5433
