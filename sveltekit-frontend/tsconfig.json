@@ -19,19 +19,7 @@
     "lib": ["esnext", "DOM", "DOM.Iterable"],
     "verbatimModuleSyntax": true,
     "noEmit": true,
-    "isolatedModules": true,
-    "paths": {
-      "$lib": ["./src/lib"],
-      "$lib/*": ["./src/lib/*"],
-      "$components": ["./src/lib/components"],
-      "$components/*": ["./src/lib/components/*"],
-      "$stores": ["./src/lib/stores"],
-      "$stores/*": ["./src/lib/stores/*"],
-      "$utils": ["./src/lib/utils"],
-      "$utils/*": ["./src/lib/utils/*"],
-      "$types": ["./src/lib/types"],
-      "$types/*": ["./src/lib/types/*"]
-    }
+    "isolatedModules": true
   },
   "include": ["src", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
   "exclude": [

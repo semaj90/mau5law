@@ -1,3 +1,12 @@
+<script lang="ts" context="module">
+  import { Tabs } from "bits-ui";
+
+  // Export compound components
+  export const List = Tabs.List;
+  export const Trigger = Tabs.Trigger;
+  export const Content = Tabs.Content;
+</script>
+
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { Tabs as TabsPrimitive } from "bits-ui";
@@ -12,12 +21,24 @@
   }
 
   interface Props {
-    tabs: TabItem[];
+    tabs?: TabItem[];
     value?: string;
     onValueChange?: (value: string) => void;
     variant?: 'default' | 'pills' | 'underline';
     size?: 'sm' | 'md' | 'lg';
     class?: string;
+    children?: Snippet;
+  }
+
+  let {
+    tabs = [],
+    value = $bindable(),
+    onValueChange,
+    variant = 'default',
+    size = 'md',
+    class: className = '',
+    children
+  }: Props = $props();
     children?: Snippet;
   }
 
@@ -69,33 +90,35 @@
   onValueChange={handleValueChange}
   class={cn("legal-ai-tabs w-full", className)}
 >
-  <TabsPrimitive.List
-    class={cn(
-      "legal-ai-tabs-list flex",
-      variantClasses[variant].list
-    )}
-  >
-    {#each tabs as tab}
-      <TabsPrimitive.Trigger
-        value={tab.value}
-        disabled={tab.disabled}
-        class={cn(
-          "legal-ai-tabs-trigger font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed",
-          sizeClasses[size],
-          variantClasses[variant].trigger,
-          value === tab.value
-            ? variantClasses[variant].triggerActive
-            : variantClasses[variant].triggerInactive
-        )}
-      >
-        {tab.label}
-      </TabsPrimitive.Trigger>
-    {/each}
-  </TabsPrimitive.List>
-
   {#if children}
+    <!-- Compound component mode -->
     {@render children()}
   {:else}
+    <!-- Array-based mode -->
+    <TabsPrimitive.List
+      class={cn(
+        "legal-ai-tabs-list flex",
+        variantClasses[variant].list
+      )}
+    >
+      {#each tabs as tab}
+        <TabsPrimitive.Trigger
+          value={tab.value}
+          disabled={tab.disabled}
+          class={cn(
+            "legal-ai-tabs-trigger font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed",
+            sizeClasses[size],
+            variantClasses[variant].trigger,
+            value === tab.value
+              ? variantClasses[variant].triggerActive
+              : variantClasses[variant].triggerInactive
+          )}
+        >
+          {tab.label}
+        </TabsPrimitive.Trigger>
+      {/each}
+    </TabsPrimitive.List>
+
     {#each tabs as tab}
       <TabsPrimitive.Content
         value={tab.value}

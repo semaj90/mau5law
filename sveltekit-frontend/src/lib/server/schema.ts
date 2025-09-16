@@ -91,7 +91,7 @@ export const evidenceEmbeddingsTable = pgTable(
   },
   (table: any) => ({
     evidenceIdIdx: index('evidence_embeddings_evidence_id_idx').on(table.evidence_id),
-    modelIdx: index('evidence_embeddings_model_idx').on(table?.model || "unknown" // @ts-ignore - Model property access),
+    modelIdx: index('evidence_embeddings_model_idx').on(table.model),
   })
 );
 
@@ -112,7 +112,7 @@ export const evidenceVectorsTable = pgTable(
   (table: any) => ({
     evidenceIdModelIdx: index('evidence_vectors_evidence_id_model_idx').on(
       table.evidence_id,
-      table?.model || "unknown" // @ts-ignore - Model property access
+      table.model
     ),
     // IVFFlat index with L2 distance operator class for fast similarity search
     vectorIdx: index('evidence_vectors_vector_idx')

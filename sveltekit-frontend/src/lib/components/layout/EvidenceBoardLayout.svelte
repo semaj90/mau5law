@@ -3,19 +3,21 @@
   import { onMount } from 'svelte';
 
   // Props for customization
-  let { title = 'LEGAL AI COMMAND CENTER',
+  let {
+    title = 'LEGAL AI COMMAND CENTER',
     caseInfo = '',
     demoMode = true,
     showGrid = true,
     children,
     rightPanel = undefined
-   }: { title = 'LEGAL AI COMMAND CENTER',
-    caseInfo = '',
-    demoMode = true,
-    showGrid = true,
-    children,
-    rightPanel = undefined
-  : unknown } = $props();
+  }: {
+    title?: string;
+    caseInfo?: string;
+    demoMode?: boolean;
+    showGrid?: boolean;
+    children: any;
+    rightPanel?: any;
+  } = $props();
 
   // Connection status (matching Evidence Board)
   let isConnected = $state(false);
