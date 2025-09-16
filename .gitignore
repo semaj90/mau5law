@@ -678,3 +678,15 @@ comprehensive-all-routes-phase-file.txt
 *.exe
 **/*.exe
 # Go binaries
+
+########################################
+# TensorRT-LLM Python environments  
+########################################
+tensorrt_llm_ubuntu_env/
+tensorrt_test_env/
+TensorRT-LLM/tensorrt_env/
+**/tensorrt_env/
+**/*_env/
+.venv/
+venv/
+**/venv/
