@@ -1,7 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
-  import { ButtonBits } from '$lib/components/ui/bits-ui';
+  import { Button } from '$lib/components/ui/enhanced-bits';
 
   interface Props {
     variant?: 'full' | 'minimal' | 'demo';
@@ -63,15 +63,13 @@
             <h4 class="section-title nes-text is-primary">Quick Links</h4>
             <nav class="footer-nav" aria-label="Footer navigation">
               {#each quickLinks as link}
-                <ButtonBits
-                  to={link.path}
-                  variant="ghost"
-                  size="sm"
+                <a
+                  href={link.path}
                   class="footer-link nes-btn is-dark"
                 >
                   <span class="link-icon">{link.icon}</span>
                   <span class="link-label">{link.label}</span>
-                </ButtonBits>
+                </a>
               {/each}
             </nav>
           </div>
@@ -149,8 +147,8 @@
           © {currentYear} YoRHa Legal AI
         </p>
         <div class="minimal-links">
-          <ButtonBits to="/privacy" variant="ghost" size="sm">Privacy</ButtonBits>
-          <ButtonBits to="/terms" variant="ghost" size="sm">Terms</ButtonBits>
+          <a href="/privacy" class="nes-btn is-dark">Privacy</a>
+          <a href="/terms" class="nes-btn is-dark">Terms</a>
         </div>
       </div>
     {:else if variant === 'demo'}
@@ -162,12 +160,12 @@
             🎮 This is a demonstration of the YoRHa Legal AI Platform
           </p>
           <div class="demo-actions">
-            <ButtonBits to="/" variant="primary" size="sm">
+            <a href="/" class="nes-btn is-primary">
               Return to Main App
-            </ButtonBits>
-            <ButtonBits to="/all-routes" variant="ghost" size="sm">
+            </a>
+            <a href="/all-routes" class="nes-btn is-dark">
               Explore All Routes
-            </ButtonBits>
+            </a>
           </div>
         </div>
       </div>

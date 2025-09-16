@@ -143,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
         type: "error",
         title: "Chat Error",
         message: "Failed to get response from AI assistant",
-      
+
     errorMessage = error instanceof Error ? error.message : 'An error occurred';});
     } finally {
       chatActions.setLoading(false);
@@ -255,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
       setTimeout(scrollToBottom, 100);
     } catch (error) {
       console.error("Proactive response error:", error);
-    
+
     errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false);
@@ -307,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
         type: "error",
         title: "Analysis Failed",
         message: "Failed to analyze case evidence.",
-      
+
     errorMessage = error instanceof Error ? error.message : 'An error occurred';});
     }
   }
@@ -362,11 +362,13 @@ https://svelte.dev/e/js_parse_error -->
     window.removeEventListener("click", handleUserActivity);
   });
 
-  // Reactive scroll to bottom when new messages arrive
-  // TODO: Convert to $derived when possible
-  $effect(() => { if ($currentConversation?.messages) ; });{
-    tick().then(scrollToBottom);
-  }
+// Reactive scroll to bottom when new messages arrive
+    // TODO: Convert to $derived when possible
+    $effect(() => {
+      if ($currentConversation?.messages) {
+        tick().then(scrollToBottom);
+      }
+    });
 </script>
 
 <div class="mx-auto px-4 max-w-7xl">

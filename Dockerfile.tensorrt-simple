@@ -1,0 +1,79 @@
+# Simplified TensorRT Dockerfile - Python Only for Testing
+# Skips Go dependencies to test model conversion quickly
+
+FROM nvcr.io/nvidia/tensorrt:24.09-py3
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    build-essential \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy TensorRT requirements and install Python dependencies
+COPY go-microservice/tensorrt/requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install additional TensorRT dependencies
+RUN pip install --no-cache-dir \
+    tensorrt>=9.5.0 \
+    pycuda>=2023.1 \
+    torch>=2.0.0 \
+    transformers>=4.30.0 \
+    onnx>=1.14.0 \
+    requests>=2.31.0
+
+# Copy model conversion scripts
+COPY go-microservice/tensorrt/model_converter.py /app/
+COPY build-tensorrt-engines.sh /app/
+RUN chmod +x /app/build-tensorrt-engines.sh
+
+# Create model directories
+RUN mkdir -p /app/models /app/tensorrt_cache /app/logs
+
+# Set environment variables for RTX 3060 Ti
+ENV CUDA_VISIBLE_DEVICES=0
+ENV TENSORRT_VERSION=9.5
+ENV NVIDIA_TF32_OVERRIDE=1
+ENV TORCH_BACKENDS_CUDNN_BENCHMARK=true
+
+# Expose port for health checks
+EXPOSE 8100
+
+# Simple startup script for testing
+RUN cat > /app/test_tensorrt.sh << 'EOF'
+#!/bin/bash
+echo "🚀 Testing TensorRT Legal AI Model Conversion"
+echo "============================================="
+
+# Check GPU availability
+echo "🔍 Checking GPU access..."
+nvidia-smi || (echo "❌ GPU not accessible" && exit 1)
+
+# Check TensorRT installation
+echo "🔧 Checking TensorRT installation..."
+python3 -c "import tensorrt as trt; print(f'TensorRT version: {trt.__version__}')" || exit 1
+
+# Check PyTorch CUDA
+echo "🔥 Checking PyTorch CUDA support..."
+python3 -c "import torch; print(f'PyTorch CUDA available: {torch.cuda.is_available()}')" || exit 1
+
+# Test model converter help
+echo "📋 Testing model converter..."
+python3 /app/model_converter.py --help
+
+echo "✅ TensorRT environment ready for model conversion!"
+echo "🎯 Next: python3 model_converter.py --model embeddinggemma:latest --benchmark"
+EOF
+
+RUN chmod +x /app/test_tensorrt.sh
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD python3 -c "import tensorrt; print('TensorRT OK')" || exit 1
+
+CMD ["/app/test_tensorrt.sh"]

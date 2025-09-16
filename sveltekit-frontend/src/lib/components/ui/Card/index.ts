@@ -1,18 +1,16 @@
 
-// Re-export from enhanced-bits with fallback to local components
-export { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent, 
-  CardFooter 
-} from '$lib/components/ui/enhanced-bits';
+// Export local components
+export { default as Card } from './Card.svelte';
+export { default as CardHeader } from './CardHeader.svelte';
+export { default as CardTitle } from './CardTitle.svelte';
+export { default as CardDescription } from './CardDescription.svelte';
+export { default as CardContent } from './CardContent.svelte';
+export { default as CardFooter } from './CardFooter.svelte';
 
 // Compound component structure for * as Card imports
-export { Card as Root } from '$lib/components/ui/enhanced-bits';
-export { CardHeader as Header } from '$lib/components/ui/enhanced-bits';
-export { CardTitle as Title } from '$lib/components/ui/enhanced-bits';
-export { CardDescription as Description } from '$lib/components/ui/enhanced-bits';
-export { CardContent as Content } from '$lib/components/ui/enhanced-bits';
-export { CardFooter as Footer } from '$lib/components/ui/enhanced-bits';
+export { default as Root } from './Card.svelte';
+export { default as Header } from './CardHeader.svelte';
+export { default as Title } from './CardTitle.svelte';
+export { default as Description } from './CardDescription.svelte';
+export { default as Content } from './CardContent.svelte';
+export { default as Footer } from './CardFooter.svelte';

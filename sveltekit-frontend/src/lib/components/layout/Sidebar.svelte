@@ -1,17 +1,12 @@
-<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`
-https://svelte.dev/e/const_tag_invalid_placement -->
-<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>` or `<Component>` -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { page } from "$app/state";
+  import { page } from '$app/stores';
   import { Button } from '$lib/components/ui/enhanced-bits';
 
   interface Props {
-    open?: unknown;
+    open?: boolean;
   }
-  let { open = false }: Props = $props();
+  let { open = $bindable(false) }: Props = $props();
   import { cn } from "$lib/utils";
   import {
     BarChart3,
@@ -34,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
     mounted = true;
   });
 
-  let currentPath = $derived(page.url.pathname);
+  let currentPath = $derived($page.url.pathname);
 
   type NavigationItem = {
     name: string;
@@ -44,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
     badge?: string;
   };
 
-  const navigation: NavigationItem[] = [
+  let navigation = $derived([
     {
       name: "Dashboard",
       href: "/",
@@ -77,9 +72,9 @@ https://svelte.dev/e/js_parse_error -->
       icon: Layers,
       current: currentPath.startsWith("/interactive-canvas"),
     },
-  ];
+  ]);
 
-  const analytics: NavigationItem[] = [
+  let analytics = $derived([
     {
       name: "Analytics",
       href: "/analytics",
@@ -92,16 +87,16 @@ https://svelte.dev/e/js_parse_error -->
       icon: FileBarChart,
       current: currentPath.startsWith("/reports"),
     },
-  ];
+  ]);
 
-  const settings: NavigationItem[] = [
+  let settings = $derived([
     {
       name: "Settings",
       href: "/settings",
       icon: Settings,
       current: currentPath.startsWith("/settings"),
     },
-  ];
+  ]);
 
   function closeSidebar() {
     open = false;
@@ -177,8 +172,8 @@ https://svelte.dev/e/js_parse_error -->
               onclick={closeSidebar}
             >
               <div class="flex items-center">
-                {@const Icon = item.icon}
-                <Icon
+                <svelte:component
+                  this={item.icon}
                   class={cn(
                     "mr-3 h-5 w-5 flex-shrink-0",
                     item.current
@@ -228,8 +223,8 @@ https://svelte.dev/e/js_parse_error -->
                 )}
                 onclick={closeSidebar}
               >
-                {@const Icon = item.icon}
-                <Icon
+                <svelte:component
+                  this={item.icon}
                   class={cn(
                     "mr-3 h-5 w-5 flex-shrink-0",
                     item.current
@@ -262,8 +257,8 @@ https://svelte.dev/e/js_parse_error -->
                 )}
                 onclick={closeSidebar}
               >
-                {@const Icon = item.icon}
-                <Icon
+                <svelte:component
+                  this={item.icon}
                   class={cn(
                     "mr-3 h-5 w-5 flex-shrink-0",
                     item.current

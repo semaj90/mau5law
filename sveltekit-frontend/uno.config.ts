@@ -100,6 +100,58 @@ export default defineConfig({
       input: 'hsl(var(--input))',
       ring: 'hsl(var(--ring))',
 
+      // Legal AI Gaming Theme - Justice, Court, Law with Gaming Aesthetics
+      justice: {
+        50: '#eff6ff',
+        100: '#dbeafe',
+        200: '#bfdbfe',
+        300: '#93c5fd',
+        400: '#60a5fa',
+        500: '#3b82f6',
+        600: '#1e40af', // Primary justice blue
+        700: '#1e3a8a',
+        800: '#1e3a8a',
+        900: '#1e3a8a',
+      },
+      court: {
+        50: '#f9fafb',
+        100: '#f3f4f6',
+        200: '#e5e7eb',
+        300: '#d1d5db',
+        400: '#9ca3af',
+        500: '#6b7280', // Primary court gray
+        600: '#4b5563',
+        700: '#374151',
+        800: '#1f2937',
+        900: '#111827',
+      },
+      law: {
+        50: '#ecfdf5',
+        100: '#d1fae5',
+        200: '#a7f3d0',
+        300: '#6ee7b7',
+        400: '#34d399',
+        500: '#10b981',
+        600: '#059669', // Primary law green
+        700: '#047857',
+        800: '#065f46',
+        900: '#064e3b',
+      },
+      gaming: {
+        nes: '#ff6b6b',
+        nier: '#ece6d0',
+        neon: '#00ff88',
+        cyber: '#0ff',
+        matrix: '#00ff00',
+        retro: '#ff1493',
+      },
+      neural: {
+        input: '#4f46e5',
+        hidden: '#7c3aed',
+        output: '#ec4899',
+        active: '#f59e0b',
+      },
+
       // YoRHa Dark Terminal Theme - Based on NieR: Automata
       'nier-bg-primary': '#0a0a0a',
       'nier-bg-secondary': '#1a1a1a',
@@ -163,6 +215,9 @@ export default defineConfig({
     fontFamily: {
       mono: ['JetBrains Mono', 'Roboto Mono', 'SF Mono', 'Monaco', 'Consolas', 'monospace'],
       gothic: ['MS Gothic', 'MS UI Gothic', 'monospace'],
+      nes: ['Press Start 2P', 'monospace'],
+      nier: ['IBM Plex Sans', 'sans-serif'],
+      legal: ['Inter', 'sans-serif'],
     },
     spacing: {
       'nier-xs': '4px',
@@ -170,12 +225,21 @@ export default defineConfig({
       'nier-md': '16px',
       'nier-lg': '24px',
       'nier-xl': '32px',
+      'nes-1': '8px',
+      'nes-2': '16px',
+      'nes-3': '24px',
+      'nes-4': '32px',
+      'court': '1.5rem',
+      'legal': '2rem',
     },
     animation: {
       'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       'bounce-subtle': 'bounce 2s ease-in-out infinite',
       'fade-in': 'fadeIn 0.5s ease-in-out',
       'slide-up': 'slideUp 0.3s ease-out',
+      'glow': 'glow 2s ease-in-out infinite alternate',
+      'matrix-rain': 'matrixRain 3s linear infinite',
+      'nes-blink': 'nesBlink 1s step-end infinite',
       processing: 'processing 2s linear infinite',
       // Additional UnoCSS animations for missing utilities
       pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -189,6 +253,18 @@ export default defineConfig({
       slideUp: {
         '0%': { transform: 'translateY(100%)', opacity: '0' },
         '100%': { transform: 'translateY(0)', opacity: '1' },
+      },
+      glow: {
+        '0%': { 'box-shadow': '0 0 5px #00ff88' },
+        '100%': { 'box-shadow': '0 0 20px #00ff88, 0 0 30px #00ff88' },
+      },
+      matrixRain: {
+        '0%': { transform: 'translateY(-100%)' },
+        '100%': { transform: 'translateY(100vh)' },
+      },
+      nesBlink: {
+        '0%, 50%': { opacity: '1' },
+        '51%, 100%': { opacity: '0' },
       },
       processing: {
         '0%': { transform: 'translateX(-100%)' },
@@ -207,6 +283,54 @@ export default defineConfig({
     },
   },
   shortcuts: {
+    // Legal AI Gaming Layout Utilities
+    'flex-gaming': 'flex gap-4 flex-wrap items-center',
+    'grid-legal': 'grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6',
+    'stretch-fit': 'w-full h-full object-cover',
+
+    // Legal AI Component Styles
+    'btn-justice': 'bg-justice-600 hover:bg-justice-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
+    'btn-court': 'bg-court-500 hover:bg-court-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
+    'btn-law': 'bg-law-600 hover:bg-law-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
+    'btn-gaming': 'bg-gaming-nes hover:bg-gaming-retro text-white font-nes text-sm px-4 py-2 border-2 border-current transition-all duration-200',
+
+    // Card Styles with Gaming Aesthetics
+    'card-legal': 'bg-white border border-court-200 rounded-lg shadow-sm p-6',
+    'card-gaming': 'bg-court-900 border-2 border-gaming-neon rounded-none p-4 font-nes text-xs shadow-lg shadow-gaming-neon/25',
+    'card-nier': 'bg-gaming-nier border border-court-400 rounded-sm p-6 font-nier shadow-md',
+
+    // Input Styles
+    'input-legal': 'border border-court-300 rounded-lg px-4 py-3 bg-white focus:ring-2 focus:ring-justice-500 focus:border-justice-500 transition-colors',
+    'input-gaming': 'border-2 border-gaming-neon bg-court-900 text-gaming-neon px-3 py-2 font-mono text-sm focus:outline-none focus:shadow-glow',
+
+    // Typography Patterns
+    'text-legal-heading': 'font-legal font-bold text-court-900 leading-tight',
+    'text-gaming-heading': 'font-nes text-gaming-neon uppercase tracking-wide',
+    'text-nier-heading': 'font-nier font-light text-court-800 tracking-wide',
+
+    // Layout Containers
+    'container-legal': 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
+    'container-gaming': 'max-w-6xl mx-auto px-nes-2 font-nes',
+    'sidebar-legal': 'w-64 bg-white border-r border-court-200 h-screen sticky top-0',
+    'main-content': 'flex-1 bg-gray-50 min-h-screen p-6',
+
+    // AI/Neural Visualization
+    'node-input': 'w-4 h-4 rounded-full bg-neural-input border-2 border-white shadow-lg',
+    'node-hidden': 'w-4 h-4 rounded-full bg-neural-hidden border-2 border-white shadow-lg',
+    'node-output': 'w-4 h-4 rounded-full bg-neural-output border-2 border-white shadow-lg',
+    'connection-active': 'stroke-neural-active stroke-2 animate-pulse-slow',
+
+    // Gaming Effects
+    'effect-glow': 'shadow-lg shadow-gaming-neon/50 animate-glow',
+    'effect-matrix': 'text-gaming-matrix font-mono animate-matrix-rain',
+    'effect-nes-border': 'border-4 border-double border-gaming-nes',
+    'effect-cyber': 'bg-gradient-to-r from-gaming-cyber/20 to-gaming-neon/20 backdrop-blur-sm',
+
+    // CUDA/WASM Performance Indicators
+    'cuda-active': 'shadow-lg shadow-gaming-neon/50 border-2 border-gaming-neon animate-glow',
+    'wasm-active': 'shadow-lg shadow-gaming-nes/50 border-2 border-gaming-nes animate-glow',
+    'intel-gpu-active': 'shadow-lg shadow-gaming-cyber/50 border-2 border-gaming-cyber animate-glow',
+
     // NieR Flexbox Layout
     'yorha-flex-container': 'flex h-full w-full',
     'yorha-flex-small': 'flex-1 min-w-0',

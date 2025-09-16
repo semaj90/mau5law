@@ -378,7 +378,7 @@ https://svelte.dev/e/js_parse_error -->
     if (selectedEvidence.size === visibleEvidence.length) {
       selectedEvidence.clear();
     } else {
-      visibleEvidence.forEach((e) => selectedEvidence.add(e.id);
+      visibleEvidence.forEach((e) => selectedEvidence.add(e.id));
     }
     selectedEvidence = selectedEvidence;
     showBulkActions = selectedEvidence.size > 0;

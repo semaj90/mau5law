@@ -580,14 +580,14 @@
             <p>Select a document type and configuration to get started with AI-assisted drafting.</p>
             
             {#if selectedDocType}
-              <div.Root class="selected-type-preview">
-                <Card.Header>
-                  <div.Title>
+              <div class="selected-type-preview nier-bits-card">
+                <div class="card-header">
+                  <h3 class="text-lg font-semibold">
                     {getDocumentTypeIcon(selectedDocType.category)} {selectedDocType.name}
-                  </div.Title>
-                  <div.Description>{selectedDocType.description}</div.Description>
-                </Card.Header>
-                <Card.Content>
+                  </h3>
+                  <p class="text-sm text-muted-foreground">{selectedDocType.description}</p>
+                </div>
+                <div class="card-content">
                   <div class="required-fields">
                     <h4>Required Information:</h4>
                     <ul>
@@ -596,8 +596,8 @@
                       {/each}
                     </ul>
                   </div>
-                </Card.Content>
-              </Card.Root>
+                </div>
+              </div>
             {/if}
           </div>
         </div>
@@ -658,14 +658,14 @@
       <h2>Recent Drafts</h2>
       <div class="drafts-grid">
         {#each draftHistory.slice(0, 6) as draft}
-          <div.Root class="draft-nier-bits-card">
-            <Card.Header>
-              <div.Title class="draft-title">{draft.title}</div.Title>
-              <div.Description>
+          <div class="draft-nier-bits-card">
+            <div class="card-header">
+              <h3 class="draft-title font-semibold">{draft.title}</h3>
+              <p class="text-sm text-muted-foreground">
                 {draft.type} • {draft.metadata.wordCount} words
-              </div.Description>
-            </Card.Header>
-            <Card.Content>
+              </p>
+            </div>
+            <div class="card-content">
               <div class="draft-stats">
                 <span class="draft-status status-{draft.status}">{draft.status}</span>
                 <span class="draft-date">
@@ -675,14 +675,14 @@
               <div class="draft-preview">
                 {draft.content.substring(0, 150)}...
               </div>
-            </Card.Content>
-            <div.Footer>
+            </div>
+            <div class="card-footer">
               <div class="draft-actions">
                 <button class="nes-btn" variant="outline" size="sm">Continue</button>
                 <button class="nes-btn" size="sm">Duplicate</button>
               </div>
-            </div.Footer>
-          </Card.Root>
+            </div>
+          </div>
         {/each}
       </div>
     </section>

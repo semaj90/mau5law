@@ -1,26 +1,21 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-</script>
+  import Button from '$lib/components/ui/button/Button.svelte';
+
   interface Props {
     position?: "bottom-right" | "bottom-left" | "top-right" | "top-left";
     show?: boolean;
   }
+
   let {
     position = "bottom-right",
     show = true
   }: Props = $props();
-
-  import Button from '$lib/components/ui/enhanced-bits';;
-  </script>
+</script>
 
 {#if show}
-  <div class="space-y-4" data-position={position}>
-    <Button class="bits-btn" />
+  <div class="ai-button-portal space-y-4" data-position={position}>
+    <Button class="bits-btn">AI Assistant</Button>
   </div>
 {/if}
 
@@ -30,22 +25,25 @@ https://svelte.dev/e/js_parse_error -->
     position: fixed;
     z-index: 1000;
     pointer-events: auto;
-}
+  }
+
   [data-position="bottom-right"] {
     right: 1.5rem;
     bottom: 1.5rem;
-}
+  }
+
   [data-position="bottom-left"] {
     left: 1.5rem;
     bottom: 1.5rem;
-}
+  }
+
   [data-position="top-right"] {
     right: 1.5rem;
     top: 1.5rem;
-}
+  }
+
   [data-position="top-left"] {
     left: 1.5rem;
     top: 1.5rem;
-}
+  }
 </style>
-

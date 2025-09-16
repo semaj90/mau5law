@@ -2,18 +2,41 @@
  * Master Component Barrel Export
  * Legal AI Platform - SvelteKit 2 + Svelte 5
  *
- * Comprehensive component wiring and modularity for all UI components
+ * Prioritizing enhanced-bits components with legal AI theming
  */
 
-// ===== CORE UI COMPONENTS =====
-export * from './ui/index.js';
+// ===== PRIMARY UI COMPONENTS (Enhanced-Bits) =====
+// These are the modern, Svelte 5 compatible components
+export * from './ui';
 
-// ===== LAYOUT COMPONENTS =====
-export * from './ui/layout/index.js';
+// ===== QUICK ACCESS FOR COMMON COMPONENTS =====
+export {
+  // Enhanced-bits components (primary)
+  Button,
+  Input,
+  Dialog,
+  Select,
+  Card,
+  Alert,
+  Label,
 
-// ===== ENHANCED UI COMPONENTS =====
-// Note: Using selective exports to avoid conflicts with base UI components
-export { Button as EnhancedButton, Card as EnhancedCard, Input as EnhancedInput } from './ui/enhanced/index.js';
+  // Layout components
+  Sidebar,
+  Footer,
+  NavBar,
+  UnifiedLayout,
+
+  // Utilities
+  createLayoutConfig,
+  selectComponentLibrary,
+  LEGAL_AI_VARIANTS,
+
+  // Types
+  type LayoutVariant,
+  type LegalAITheme,
+  type ComponentLibrary,
+  type SelectOption
+} from './ui';
 // export { SelectOption as EnhancedSelectOption } from './ui/enhanced-bits/index.js'; // Disabled: empty file
 export * from './ui/modern/index.js';
 

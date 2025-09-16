@@ -3,12 +3,12 @@
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fade, slide, scale } from 'svelte/transition';
-  import { 
-    Database, 
-    Zap, 
-    TrendingUp, 
-    DollarSign, 
-    Clock, 
+  import {
+    Database,
+    Zap,
+    TrendingUp,
+    DollarSign,
+    Clock,
     BarChart3,
     RefreshCw,
     AlertTriangle,
@@ -17,7 +17,7 @@
     Cpu,
     HardDrive
   } from 'lucide-svelte';
-  
+
   // Sample cache metrics - replace with real data
   let cacheMetrics = $state({
     retrieval: {
@@ -47,7 +47,7 @@
       errorRate: 0
     }
   });
-  
+
   let nintendoStats = $state({
     memoryUsage: 0,
     maxMemory: 8192,
@@ -57,26 +57,26 @@
     evictions: 0,
     bankSwitches: 0
   });
-  
+
   let recentQueries = $state([]);
   let systemHealth = $state('healthy');
   let isRefreshing = $state(false);
   let autoRefresh = $state(true);
   let refreshInterval: number;
-  
+
   // Calculated metrics
   let totalHitRate = $derived(() => {
     const totalHits = cacheMetrics.retrieval.hits + cacheMetrics.embedding.hits;
     const totalRequests = cacheMetrics.retrieval.totalQueries + cacheMetrics.embedding.totalRequests;
     return totalRequests > 0 ? (totalHits / totalRequests) * 100 : 0;
   });
-  
+
   let memoryEfficiency = $derived(() => {
     const totalUsage = cacheMetrics.memory.l1Usage + cacheMetrics.memory.l2Usage + cacheMetrics.memory.l3Usage;
     const maxCapacity = 1024 + 2048 + 1024; // L1 + L2 + L3 budgets in KB
     return (totalUsage / maxCapacity) * 100;
   });
-  
+
   let performanceGrade = $derived(() => {
     const hitRate = totalHitRate();
     if (hitRate >= 80) return { grade: 'A', color: 'text-green-500' };
@@ -84,29 +84,29 @@
     if (hitRate >= 40) return { grade: 'C', color: 'text-orange-500' };
     return { grade: 'D', color: 'text-red-500' };
   });
-  
+
   onMount(() => {
     // Load initial data
     refreshMetrics();
-    
+
     // Set up auto-refresh
     if (autoRefresh) {
       refreshInterval = setInterval(refreshMetrics, 5000);
     }
   });
-  
+
   onDestroy(() => {
     if (refreshInterval) {
       clearInterval(refreshInterval);
     }
   });
-  
+
   async function refreshMetrics() {
     performance.mark('function-start');
     if (isRefreshing) return;
-    
+
     isRefreshing = true;
-    
+
     try {
       // In a real implementation, these would be API calls
       await Promise.all([
@@ -115,7 +115,7 @@
         updateRecentQueries(),
         checkSystemHealth()
       ]);
-      
+
     } catch (error) {
       console.error('Failed to refresh metrics:', error);
       systemHealth = 'error';
@@ -123,12 +123,12 @@
       isRefreshing = false;
     }
   }
-  
+
   async function updateCacheMetrics() {
     performance.mark('function-start');
     // Simulate API call to get cache metrics
     await new Promise(resolve => setTimeout(resolve, 200));
-    
+
     cacheMetrics = {
       retrieval: {
         hits: Math.floor(Math.random() * 1000) + 500,
@@ -158,7 +158,7 @@
       }
     };
   }
-  
+
   async function updateNintendoStats() {
     performance.mark('function-start');
     // Simulate Nintendo memory manager stats
@@ -172,7 +172,7 @@
       bankSwitches: Math.floor(Math.random() * 3)
     };
   }
-  
+
   async function updateRecentQueries() {
     performance.mark('function-start');
     const sampleQueries = [
@@ -182,16 +182,16 @@
       { query: 'contract formation requirements', cached: true, responseTime: 18 },
       { query: 'tort damages calculation', cached: false, responseTime: 167 }
     ];
-    
+
     recentQueries = sampleQueries.slice(0, Math.floor(Math.random() * 3) + 3);
   }
-  
+
   async function checkSystemHealth() {
     performance.mark('function-start');
     const hitRate = totalHitRate();
     const memUsage = memoryEfficiency();
     const errorRate = cacheMetrics.performance.errorRate;
-    
+
     if (errorRate > 5 || memUsage > 95) {
       systemHealth = 'critical';
     } else if (hitRate < 40 || memUsage > 80) {
@@ -200,18 +200,18 @@
       systemHealth = 'healthy';
     }
   }
-  
+
   function toggleAutoRefresh() {
     performance.mark('function-start');
     autoRefresh = !autoRefresh;
-    
+
     if (autoRefresh) {
       refreshInterval = setInterval(refreshMetrics, 5000);
     } else {
       clearInterval(refreshInterval);
     }
   }
-  
+
   async function clearCache() {
     performance.mark('function-start');
     // In a real implementation, this would call the cache clearing API
@@ -219,7 +219,7 @@
     await new Promise(resolve => setTimeout(resolve, 1000));
     await refreshMetrics();
   }
-  
+
   function getHealthIcon() {
     performance.mark('function-start');
     switch (systemHealth) {
@@ -239,31 +239,31 @@
         <h1>⚡ Legal AI Cache Performance</h1>
         <p>Nintendo-style memory management with intelligent caching</p>
       </div>
-      
+
       <div class="header-controls">
         <div class="system-health {systemHealth}">
           <svelte:component this={getHealthIcon().icon} size={20} class={getHealthIcon().color} />
           <span>System {systemHealth.toUpperCase()}</span>
         </div>
-        
+
         <div class="control-buttons">
-          <button aria-label="Action button" 
-            onclick={(event: MouseEvent) => refreshMetrics} 
+          <button aria-label="Action button"
+            onclick={(event: MouseEvent) => refreshMetrics}
             disabled={isRefreshing}
             class="refresh-btn"
           >
             <RefreshCw size={16} class={isRefreshing ? 'animate-spin' : ''} />
             Refresh
           </button>
-          
-          <button aria-expanded="false" aria-label="Action button" 
-            onclick={(event: MouseEvent) => toggleAutoRefresh} 
+
+          <button aria-expanded="false" aria-label="Action button"
+            onclick={(event: MouseEvent) => toggleAutoRefresh}
             class="auto-refresh-btn {autoRefresh ? 'active' : ''}"
           >
             <Target size={16} />
             Auto: {autoRefresh ? 'ON' : 'OFF'}
           </button>
-          
+
           <button aria-label="Action button" onclick={(event: MouseEvent) => clearCache} class="clear-cache-btn">
             <Database size={16} />
             Clear Cache
@@ -289,7 +289,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="metric-nier-bits-card">
         <div class="metric-icon">
           <Clock size={24} />
@@ -301,7 +301,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="metric-nier-bits-card">
         <div class="metric-icon">
           <DollarSign size={24} />
@@ -313,7 +313,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="metric-nier-bits-card">
         <div class="metric-icon">
           <BarChart3 size={24} />
@@ -342,7 +342,7 @@
               <span>{cacheMetrics.retrieval.hitRate.toFixed(1)}%</span>
             </div>
           </div>
-          
+
           <div class="stat-grid">
             <div class="stat-item">
               <span class="label">Total Queries:</span>
@@ -377,7 +377,7 @@
               <span>{cacheMetrics.embedding.hitRate.toFixed(1)}%</span>
             </div>
           </div>
-          
+
           <div class="stat-grid">
             <div class="stat-item">
               <span class="label">Total Requests:</span>
@@ -409,7 +409,7 @@
             </div>
             <p>{(nintendoStats.memoryUsage / 1024).toFixed(1)}KB / {(nintendoStats.maxMemory / 1024).toFixed(1)}KB</p>
           </div>
-          
+
           <div class="bank-info">
             <div class="bank-item">
               <Cpu size={16} />
@@ -424,7 +424,7 @@
               <span>Streams: {nintendoStats.activeStreams}</span>
             </div>
           </div>
-          
+
           <div class="nintendo-events">
             <div class="event">Bank Switches: {nintendoStats.bankSwitches}</div>
             <div class="event">Evictions: {nintendoStats.evictions}</div>
@@ -446,7 +446,7 @@
             </div>
             <span class="usage-text">{cacheMetrics.memory.l1Usage.toFixed(1)}%</span>
           </div>
-          
+
           <div class="memory-layer l2">
             <div class="layer-info">
               <h4>L2 Cache (System RAM)</h4>
@@ -457,7 +457,7 @@
             </div>
             <span class="usage-text">{cacheMetrics.memory.l2Usage.toFixed(1)}%</span>
           </div>
-          
+
           <div class="memory-layer l3">
             <div class="layer-info">
               <h4>L3 Cache (Redis)</h4>
@@ -526,13 +526,13 @@
     font-family: 'JetBrains Mono', monospace;
     min-height: 100vh;
   }
-  
+
   .dashboard-header {
     background: rgba(0, 0, 0, 0.5);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1.5rem 2rem;
   }
-  
+
   .header-content {
     display: flex;
     justify-content: space-between;
@@ -542,7 +542,7 @@
     max-width: 1400px;
     margin: 0 auto;
   }
-  
+
   .title-section h1 {
     margin: 0 0 0.25rem 0;
     font-size: 1.75rem;
@@ -551,20 +551,20 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
+
   .title-section p {
     margin: 0;
     opacity: 0.7;
     font-size: 0.9rem;
   }
-  
+
   .header-controls {
     display: flex;
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
   }
-  
+
   .system-health {
     display: flex;
     align-items: center;
@@ -574,27 +574,27 @@
     font-size: 0.875rem;
     font-weight: 500;
   }
-  
+
   .system-health.healthy {
     background: rgba(34, 197, 94, 0.1);
     border: 1px solid rgba(34, 197, 94, 0.3);
   }
-  
+
   .system-health.warning {
     background: rgba(245, 158, 11, 0.1);
     border: 1px solid rgba(245, 158, 11, 0.3);
   }
-  
+
   .system-health.critical {
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
   }
-  
+
   .control-buttons {
     display: flex;
     gap: 0.5rem;
   }
-  
+
   .control-buttons button {
     display: flex;
     align-items: center;
@@ -609,40 +609,40 @@
     font-size: 0.875rem;
     transition: all 0.2s;
   }
-  
+
   .control-buttons button:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
   }
-  
+
   .control-buttons button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-  
+
   .auto-refresh-btn.active {
     background: rgba(34, 197, 94, 0.2);
     border-color: #22c55e;
   }
-  
+
   .clear-cache-btn {
     background: rgba(239, 68, 68, 0.2) !important;
     border-color: #ef4444 !important;
   }
-  
+
   .dashboard-content {
     padding: 2rem;
     max-width: 1400px;
     margin: 0 auto;
   }
-  
+
   .metrics-overview {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
   }
-  
+
   .metric-card {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -652,17 +652,17 @@
     align-items: center;
     gap: 1rem;
   }
-  
+
   .metric-card.primary {
     background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
     border-color: #3b82f6;
   }
-  
+
   .metric-icon {
     color: #3b82f6;
     opacity: 0.8;
   }
-  
+
   .metric-content h3 {
     margin: 0 0 0.5rem 0;
     font-size: 0.875rem;
@@ -670,7 +670,7 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-  
+
   .metric-value {
     font-size: 1.75rem;
     font-weight: bold;
@@ -679,25 +679,25 @@
     align-items: baseline;
     gap: 0.5rem;
   }
-  
+
   .grade {
     font-size: 1rem;
     opacity: 0.7;
   }
-  
+
   .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 1.5rem;
   }
-  
+
   .dashboard-card {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 1.5rem;
   }
-  
+
   .dashboard-card h2 {
     margin: 0 0 1rem 0;
     font-size: 1.1rem;
@@ -705,35 +705,35 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 0.5rem;
   }
-  
+
   .dashboard-card.nintendo {
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
     border-color: #22c55e;
   }
-  
+
   .dashboard-card.nintendo h2 {
     color: #22c55e;
   }
-  
+
   .cache-stats {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .stat-row {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-  
+
   .stat-bar {
     flex: 1;
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-  
+
   .bar {
     flex: 1;
     height: 8px;
@@ -741,53 +741,53 @@
     border-radius: 4px;
     overflow: hidden;
   }
-  
+
   .fill {
     height: 100%;
     border-radius: 4px;
     transition: width 0.5s ease;
   }
-  
+
   .fill.retrieval {
     background: linear-gradient(90deg, #3b82f6, #1d4ed8);
   }
-  
+
   .fill.embedding {
     background: linear-gradient(90deg, #22c55e, #16a34a);
   }
-  
+
   .stat-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
-  
+
   .stat-item {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-  
+
   .stat-item .label {
     font-size: 0.8rem;
     opacity: 0.7;
   }
-  
+
   .stat-item .value {
     font-weight: bold;
     font-size: 0.9rem;
   }
-  
+
   .nintendo-stats {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .memory-overview {
     text-align: center;
   }
-  
+
   .memory-bar {
     height: 12px;
     background: rgba(0, 0, 0, 0.3);
@@ -795,41 +795,41 @@
     overflow: hidden;
     margin-bottom: 0.5rem;
   }
-  
+
   .memory-fill {
     height: 100%;
     background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
     border-radius: 6px;
     transition: width 0.5s ease;
   }
-  
+
   .bank-info {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-  
+
   .bank-item {
     display: flex;
     align-items: center;
     gap: 0.25rem;
     font-size: 0.85rem;
   }
-  
+
   .nintendo-events {
     display: flex;
     justify-content: space-between;
     font-size: 0.8rem;
     opacity: 0.7;
   }
-  
+
   .memory-hierarchy {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .memory-layer {
     display: flex;
     align-items: center;
@@ -837,37 +837,37 @@
     padding: 0.75rem;
     border-radius: 6px;
   }
-  
+
   .memory-layer.l1 {
     background: rgba(34, 197, 94, 0.1);
     border: 1px solid rgba(34, 197, 94, 0.3);
   }
-  
+
   .memory-layer.l2 {
     background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.3);
   }
-  
+
   .memory-layer.l3 {
     background: rgba(245, 158, 11, 0.1);
     border: 1px solid rgba(245, 158, 11, 0.3);
   }
-  
+
   .layer-info {
     min-width: 120px;
   }
-  
+
   .layer-info h4 {
     margin: 0 0 0.25rem 0;
     font-size: 0.8rem;
     font-weight: bold;
   }
-  
+
   .layer-info span {
     font-size: 0.7rem;
     opacity: 0.7;
   }
-  
+
   .usage-bar {
     flex: 1;
     height: 6px;
@@ -875,21 +875,21 @@
     border-radius: 3px;
     overflow: hidden;
   }
-  
+
   .usage-fill {
     height: 100%;
     background: currentColor;
     border-radius: 3px;
     transition: width 0.5s ease;
   }
-  
+
   .usage-text {
     min-width: 50px;
     text-align: right;
     font-size: 0.8rem;
     opacity: 0.8;
   }
-  
+
   .query-list {
     display: flex;
     flex-direction: column;
@@ -897,115 +897,115 @@
     max-height: 300px;
     overflow-y: auto;
   }
-  
+
   .query-item {
     padding: 0.75rem;
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .query-(item as { cached?: any; uncached?: any }).cached {
     background: rgba(34, 197, 94, 0.1);
     border-color: rgba(34, 197, 94, 0.3);
   }
-  
+
   .query-(item as { cached?: any; uncached?: any }).uncached {
     background: rgba(239, 68, 68, 0.1);
     border-color: rgba(239, 68, 68, 0.3);
   }
-  
+
   .query-text {
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
   }
-  
+
   .query-meta {
     display: flex;
     justify-content: space-between;
     font-size: 0.8rem;
     opacity: 0.8;
   }
-  
+
   .cache-status.hit {
     color: #22c55e;
   }
-  
+
   .cache-status.miss {
     color: #ef4444;
   }
-  
+
   .performance-metrics {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .perf-item {
     display: flex;
     justify-content: space-between;
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
-  
+
   .perf-item:last-child {
     border-bottom: none;
   }
-  
+
   .perf-item .value {
     font-weight: bold;
   }
-  
+
   /* Responsive design */
   @media (max-width: 768px) {
     .dashboard-header {
       padding: 1rem;
     }
-    
+
     .header-content {
       flex-direction: column;
       align-items: stretch;
     }
-    
+
     .header-controls {
       justify-content: center;
     }
-    
+
     .control-buttons {
       flex-wrap: wrap;
       justify-content: center;
     }
-    
+
     .dashboard-content {
       padding: 1rem;
     }
-    
+
     .metrics-overview {
       grid-template-columns: 1fr;
     }
-    
+
     .dashboard-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .stat-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .bank-info {
       flex-direction: column;
     }
   }
-  
+
   /* Animation classes */
   .animate-spin {
     animation: spin 1s linear infinite;
   }
-  
+
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-  
+
   /* Text color utilities */
   .text-green-500 { color: #22c55e; }
   .text-yellow-500 { color: #eab308; }

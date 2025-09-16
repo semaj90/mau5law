@@ -11,57 +11,19 @@ https://svelte.dev/e/js_parse_error -->
   - Backend: expects /api/ai/process-evidence (LangChain, Ollama, pg_vector, Neo4j, Redis, Docker)
 -->
 <script lang="ts">
-interface EvidenceItem {
-  id: string;
-  title: string;
-  description?: string;
-  type: string;
-  createdAt: string;
-  metadata?: Record<string, unknown>;
-}
-
-interface CaseData {
-  id: string;
-  title: string;
-  status: string;
-  evidence?: EvidenceItem[];
-  createdAt: string;
-}
-
-interface ApiResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-}
-
-interface FileData {
-  name: string;
-  size: number;
-  type: string;
-  lastModified: number;
-}
-
-interface UserData {
-  id: string;
-  name: string;
-  email?: string;
-  role?: string;
-}
+// Type interfaces for the component
 
   import 'nes.css/css/nes.min.css';
   import { getContext, onMount } from 'svelte';
 
   // UI components (Svelte 5 + melt v0.39.0 compatible)
   import Button from '$lib/components/ui/button/Button.svelte';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  // Remove unused Card imports
   import { aiGlobalStore, aiGlobalActions } from '$lib/stores/ai';
   import { legalCaseStore, legalCaseActions } from '$lib/stores/legal-case';
+
+  // Since legalCaseStore uses $state, we access it directly without $ prefix
+  // aiGlobalStore is a writable store, so we use $ prefix
 
   // Type definition for AI store context
   interface AIStoreContext {
@@ -69,7 +31,7 @@ interface UserData {
     error?: string;
     summary?: string;
     stream?: string;
-    sources?: Array;
+    sources?: Array<any>;
   }
 
   interface AIStore {
@@ -80,12 +42,7 @@ interface UserData {
   const getUser = getContext<unknown>('user');
   const user = typeof getUser === 'function' ? getUser() : undefined;
 
-  interface Props {
-    contextItems?: any[];
-    caseId?: string;
-    evidenceText?: string;
-  }
-
+  // Component props using Svelte 5 $props rune
   let {
     contextItems = [],
     caseId = '',
@@ -100,6 +57,9 @@ interface UserData {
   // Access store state via $aiGlobalStore, send actions via aiGlobalActions.send
   // The actorRef is not directly used in the component's script, but can be accessed via aiGlobalStore if needed.
   // const { snapshot, send, actorRef } = useAIGlobalStore(); // Old usage
+
+  // Add missing errorMessage variable
+  let errorMessage = $state('');
 
   onMount(() => {
     // getSummaryCache(); // Uncomment and use this if you need to initialize cache on client
@@ -136,9 +96,9 @@ interface UserData {
     async function saveSummary() {
       if (!(($aiGlobalStore as AIStore).context.summary) || !caseId || !user?.id) return;
       try {
-        try {
-    const response = await fetch('/api/summaries', {
+        const response = await fetch('/api/summaries', {
           method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             type: 'case',
             targetId: caseId,
@@ -147,28 +107,24 @@ interface UserData {
             includeUserActivity: false,
             enableStreaming: false,
             userId: user.id
-          });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-  } catch (error) {
-    console.error('API call failed:', error);
-    throw error;
-  },
-          headers: { 'Content-Type': 'application/json' }
+          })
         });
 
-        const result = await (response as { json?: any }).json();
-        if ((result as { success?: any; error?: any }).success) {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.success) {
           // Optionally show a success notification here
           console.log('Summary saved successfully');
         } else {
-          console.error('Failed to save summary:', (result as { success?: any; error?: any }).error);
+          console.error('Failed to save summary:', result.error);
         }
       } catch (error) {
         console.error('Error saving summary:', error);
-      
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+        errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      }
     }
   </script>
 
@@ -177,37 +133,41 @@ interface UserData {
       <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
     <div class="flex gap-2 flex-wrap">
       <Button
-        onclick={(event: MouseEvent) => handleSummarize}
+        onclick={handleSummarize}
         disabled={!user || $aiGlobalStore.context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
       >
-{!user ? 'Sign in to Summarize' : ($aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence')}
+        {!user ? 'Sign in to Summarize' : ($aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence')}
+      </Button>
 
       <Button
-        onclick={(event: MouseEvent) => saveSummary}
+        onclick={saveSummary}
         disabled={!$aiGlobalStore.context.summary || $aiGlobalStore.context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
       >
-Save Summary
+        Save Summary
+      </Button>
 
       {#if evidenceText}
         <Button
-          onclick={(event: MouseEvent) => handleGenerateEmbedding}
-          disabled={!user || $legalCaseStore.context.generatingEmbedding}
+          onclick={handleGenerateEmbedding}
+          disabled={!user || legalCaseStore.context.generatingEmbedding}
           variant="secondary"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
-{$legalCaseStore.context.generatingEmbedding ? 'Generating...' : 'Find Related Evidence'}
+          {legalCaseStore.context.generatingEmbedding ? 'Generating...' : 'Find Related Evidence'}
+        </Button>
 
         <Button
-          onclick={(event: MouseEvent) => handleSearchRelatedEvidence}
-          disabled={!user || $legalCaseStore.context.searchingRelatedEvidence}
+          onclick={handleSearchRelatedEvidence}
+          disabled={!user || legalCaseStore.context.searchingRelatedEvidence}
           variant="outline"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
-{$legalCaseStore.context.searchingRelatedEvidence ? 'Searching...' : 'Semantic Search'}
+          {legalCaseStore.context.searchingRelatedEvidence ? 'Searching...' : 'Semantic Search'}
+        </Button>
 
       {/if}
     </div>
@@ -244,11 +204,11 @@ Save Summary
           </div>
         {/if}
 
-        {#if $legalCaseStore.context.relatedEvidence && $legalCaseStore.context.relatedEvidence.length > 0}
+        {#if legalCaseStore.context.relatedEvidence && legalCaseStore.context.relatedEvidence.length > 0}
           <div class="nier-related-evidence mt-4 pt-4 border-t border-gray-200">
             <h4 class="nier-subtitle font-semibold mb-2">Related Evidence Found:</h4>
             <div class="space-y-2">
-              {#each $legalCaseStore.context.relatedEvidence.slice(0, 5) as evidence, i}
+              {#each legalCaseStore.context.relatedEvidence.slice(0, 5) as evidence, i}
                 <div class="nier-evidence-item p-3 bg-gray-50 rounded border">
                   <div class="flex items-center gap-2 mb-1">
                     <span class="nier-badge">{i + 1}</span>
@@ -269,11 +229,11 @@ Save Summary
     {:else}
       <div class="nier-empty">
         <span class="nier-text-muted">No summary yet.</span>
-        {#if $legalCaseStore.context.relatedEvidence && $legalCaseStore.context.relatedEvidence.length > 0}
+        {#if legalCaseStore.context.relatedEvidence && legalCaseStore.context.relatedEvidence.length > 0}
           <div class="nier-related-evidence mt-4 pt-4 border-t border-gray-200">
             <h4 class="nier-subtitle font-semibold mb-2">Related Evidence Found:</h4>
             <div class="space-y-2">
-              {#each $legalCaseStore.context.relatedEvidence.slice(0, 5) as evidence, i}
+              {#each legalCaseStore.context.relatedEvidence.slice(0, 5) as evidence, i}
                 <div class="nier-evidence-item p-3 bg-gray-50 rounded border">
                   <div class="flex items-center gap-2 mb-1">
                     <span class="nier-badge">{i + 1}</span>
@@ -294,7 +254,7 @@ Save Summary
     {/if}
 
     <!-- Loading states for embedding operations -->
-    {#if $legalCaseStore.context.generatingEmbedding}
+    {#if legalCaseStore.context.generatingEmbedding}
       <div class="nier-embedding-status mt-4 p-3 bg-blue-50 rounded border border-blue-200">
         <div class="flex items-center gap-2">
           <div class="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
@@ -303,7 +263,7 @@ Save Summary
       </div>
     {/if}
 
-    {#if $legalCaseStore.context.searchingRelatedEvidence}
+    {#if legalCaseStore.context.searchingRelatedEvidence}
       <div class="nier-search-status mt-4 p-3 bg-green-50 rounded border border-green-200">
         <div class="flex items-center gap-2">
           <div class="animate-pulse h-4 w-4 bg-green-600 rounded-full"></div>
@@ -311,7 +271,7 @@ Save Summary
         </div>
       </div>
     {/if}
-  </div>
+  </main>
 </div>
 
 <style>
@@ -324,12 +284,12 @@ Save Summary
 
   :global(.nier-title) {
     letter-spacing: 0.05em;
-    text-transform: uppercase
+    text-transform: uppercase;
   }
 
   :global(.nier-button) {
-    position: relative
-    overflow: hidden
+    position: relative;
+    overflow: hidden;
     transition: all 0.3s ease;
   }
 
@@ -353,8 +313,8 @@ Save Summary
 
   :global(.nier-badge) {
     display: inline-flex;
-    align-items: center
-    justify-content: center
+    align-items: center;
+    justify-content: center;
     width: 24px;
     height: 24px;
     background: #000;
@@ -366,7 +326,7 @@ Save Summary
 
   :global(.nier-text-muted) {
     color: #666;
-    font-style: italic
+    font-style: italic;
   }
 
   :global(.nier-list-item) {
@@ -391,6 +351,7 @@ Save Summary
 
   :global(.line-clamp-2) {
     display: -webkit-box;
+    line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;

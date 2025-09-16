@@ -1,15 +1,14 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import {
-    ButtonBits,
-    CardBits,
-    InputBits,
-    DialogBits,
-    DropdownBits,
-    SelectBits,
-    TabsBits,
-    TooltipBits
-  } from '$lib/components/ui/bits-ui';
+    Button,
+    Card,
+    Input,
+    Dialog,
+    Select,
+    Alert,
+    Label
+  } from '$lib/components/ui/enhanced-bits';
 
   // Svelte 5 state
   let inputValue = $state('');

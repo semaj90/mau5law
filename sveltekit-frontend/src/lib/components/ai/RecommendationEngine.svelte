@@ -413,7 +413,7 @@
               <div class="recommendation-title-section">
                 <div class="recommendation-icon">{getCategoryIcon(recommendation.category)}</div>
                 <div>
-                  <div.Title class="recommendation-title">{recommendation.title}</div.Title>
+                  <h4 class="recommendation-title font-semibold">{recommendation.title}</h4>
                   <div class="recommendation-badges">
                     <span class="category-badge {getCategoryColor(recommendation.category)}">
                       {recommendation.category.replace('_', ' ')}

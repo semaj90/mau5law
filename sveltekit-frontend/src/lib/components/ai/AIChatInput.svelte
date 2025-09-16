@@ -5,37 +5,32 @@
   import { browser } from "$app/environment";
   import { createEventDispatcher, onMount } from "svelte";
 
-  // Props
-  let { 
-    placeholder = "Type your message...",
-    disabled = false,
-    autoFocus = false,
-    value = $bindable(""),
-    maxLength = 2000,
-    rows = 1,
-    maxRows = 6
-  }: {
-    placeholder?: string;
-    disabled?: boolean;
-    autoFocus?: boolean;
-    value?: string;
-    maxLength?: number;
-    rows?: number;
-    maxRows?: number;
-  } = $props();
+  // Props (standard Svelte exports)
+  export let placeholder: string = "Type your message...";
+  export let disabled: boolean = false;
+  export let autoFocus: boolean = false;
+  export let value: string = "";
+  export let maxLength: number = 2000;
+  export let rows: number = 1;
+  export let maxRows: number = 6;
 
   // Event dispatcher
-  // TODO: Replace createEventDispatcher with callback props in Svelte 5
+  const dispatch = createEventDispatcher();
 
-  // Elements
-  let textarea: HTMLTextAreaElement;
-  let isMultiline = $state(false);
+  // Elements / state
+  let textarea: HTMLTextAreaElement | null = null;
+  let isMultiline = false;
+
+  // Debounced input handler
+  const debouncedHandleInput = debounce((event: Event) => handleInput(event), 300);
 
   // Auto-focus on mount
   onMount(() => {
     if (browser && autoFocus && textarea) {
-      setTimeout(() => textarea.focus(), 100);
+      setTimeout(() => textarea?.focus(), 100);
     }
+    // initialize textarea height
+    resetTextareaHeight();
   });
 
   // Handle input changes
@@ -45,6 +40,7 @@
     dispatch("input", value);
     adjustTextareaHeight();
   }
+
   // Handle key press
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Enter") {
@@ -58,6 +54,7 @@
       }
     }
   }
+
   // Send message
   function handleSend() {
     const trimmedValue = value.trim();
@@ -67,6 +64,7 @@
     value = "";
     resetTextareaHeight();
   }
+
   // Auto-resize textarea
   function adjustTextareaHeight() {
     if (!textarea) return;
@@ -74,11 +72,12 @@
     // Reset height to calculate scroll height
     textarea.style.height = "auto";
 
-    // Calculate number of lines
-    const lineHeight = parseInt(getComputedStyle(textarea).lineHeight);
+    // Calculate number of lines safely
+    const computed = getComputedStyle(textarea);
+    const lineHeight = parseInt(computed.lineHeight || '0') || 20;
     const paddingHeight =
-      parseInt(getComputedStyle(textarea).paddingTop) +
-      parseInt(getComputedStyle(textarea).paddingBottom);
+      (parseInt(computed.paddingTop || '0') || 0) +
+      (parseInt(computed.paddingBottom || '0') || 0);
 
     const currentRows = Math.floor(
       (textarea.scrollHeight - paddingHeight) / lineHeight
@@ -88,18 +87,21 @@
     textarea.style.height = `${targetRows * lineHeight + paddingHeight}px`;
     isMultiline = targetRows > 1;
   }
+
   // Reset textarea height
   function resetTextareaHeight() {
     if (!textarea) return;
 
-    const lineHeight = parseInt(getComputedStyle(textarea).lineHeight);
+    const computed = getComputedStyle(textarea);
+    const lineHeight = parseInt(computed.lineHeight || '0') || 20;
     const paddingHeight =
-      parseInt(getComputedStyle(textarea).paddingTop) +
-      parseInt(getComputedStyle(textarea).paddingBottom);
+      (parseInt(computed.paddingTop || '0') || 0) +
+      (parseInt(computed.paddingBottom || '0') || 0);
 
     textarea.style.height = `${rows * lineHeight + paddingHeight}px`;
     isMultiline = false;
   }
+
   // Handle focus/blur events
   function handleFocus() {
     dispatch("focus");
@@ -107,10 +109,11 @@
   function handleBlur() {
     dispatch("blur");
   }
-  // Character count
-  let characterCount = $derived(value.length);
-  let isNearLimit = $derived(characterCount > maxLength * 0.8);
-  let isAtLimit = $derived(characterCount >= maxLength);
+
+  // Character count reactive values
+  $: characterCount = value ? value.length : 0;
+  $: isNearLimit = characterCount > maxLength * 0.8;
+  $: isAtLimit = characterCount >= maxLength;
 </script>
 
 <div class="chat-input-wrapper" class:multiline={isMultiline}>

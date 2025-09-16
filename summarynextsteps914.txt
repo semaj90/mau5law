@@ -47,10 +47,10 @@ PGVECTOR 512-DIMENSION OPTIMIZATION - IMPLEMENTATION COMPLETE
 ### Phase 1: Database Setup
 ```bash
 # Run the migration
-PGPASSWORD=123456 psql -h localhost -p 5433 -U legal_admin -d legal_ai_db -f "src/lib/server/db/migrations/005_pgvector_384_optimization.sql"
+PGPASSWORD=123456 psql -h localhost -p 5432 -U legal_admin -d legal_ai_db -f "src/lib/server/db/migrations/005_pgvector_384_optimization.sql"
 
 # Verify tables created
-PGPASSWORD=123456 psql -h localhost -p 5433 -U legal_admin -d legal_ai_db -c "\dt *embedding*"
+PGPASSWORD=123456 psql -h localhost -p 5432 -U legal_admin -d legal_ai_db -c "\dt *embedding*"
 ```
 
 ### Phase 2: Test Embedding Service
