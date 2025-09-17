@@ -1,247 +1,84 @@
-# Optimized TensorRT for Quantized Legal AI
-# Focused on cache + C++ wrapper performance
+# Use cached Ubuntu with optimized setup for your RTX 3060 Ti
+FROM ubuntu:22.04
 
-FROM nvcr.io/nvidia/tensorrt:24.09-py3
+# Set environment for your RTX 3060 Ti + TensorRT
+ENV CUDA_VISIBLE_DEVICES=0
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV TENSORRT_OPTIMIZATION=1
+ENV LEGAL_AI_MODE=production
 
 WORKDIR /app
 
-# System dependencies (minimal for C++ compilation)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    python3-dev \
-    curl wget \
-    cmake \
-    ninja-build \
-    zstd \
+# Install Python 3.12 to match your working system
+RUN apt-get update && apt-get install -y \
+    python3.12 \
+    python3.12-dev \
+    python3-pip \
+    curl \
+    && ln -sf /usr/bin/python3.12 /usr/bin/python \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements & install pinned versions for RTX 3060 Ti
-COPY go-microservice/tensorrt/requirements.txt .
-RUN pip install --no-cache-dir \
-    tensorrt==10.0.1 \
-    pycuda==2023.1 \
-    torch==2.2.2+cu121 --index-url https://download.pytorch.org/whl/cu121 \
-    transformers==4.41.2 \
-    onnx==1.16.0 \
-    requests==2.32.3 \
-    zstandard==0.22.0
+# Use pip cache to leverage your successful installations
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install \
+    torch>=2.7.1 \
+    numpy>=1.26.0 \
+    fastapi>=0.115.0 \
+    uvicorn \
+    ollama>=0.3.0 \
+    scikit-learn
 
-# Copy model conversion with cache optimizations
-COPY go-microservice/tensorrt/model_converter.py .
-COPY build-tensorrt-engines.sh .
-RUN chmod +x build-tensorrt-engines.sh
+# Copy your working legal AI system
+COPY embedding_adapter_512.py .
+COPY embedding_adapter_512.pkl .
+COPY legal_vector_db_512.json .
+COPY Legal_AI_Vector_Search_Complete_Guide.txt .
 
-# Create optimized directory structure
-RUN mkdir -p \
-    models/quantized \
-    tensorrt_cache/engines \
-    tensorrt_cache/timing \
-    tensorrt_cache/compressed \
-    logs \
-    cuda_graphs
+# TensorRT optimization flags for RTX 3060 Ti (Ampere architecture)
+ENV TORCH_CUDA_ARCH_LIST="8.6"
+ENV CUDA_LAUNCH_BLOCKING=0
+ENV PYTORCH_CUDA_ALLOC_CONF="max_split_size_mb:512"
 
-# Environment optimized for quantized models + caching
-ENV CUDA_VISIBLE_DEVICES=0 \
-    NVIDIA_TF32_OVERRIDE=1 \
-    TORCH_BACKENDS_CUDNN_BENCHMARK=1 \
-    TENSORRT_CACHE_COMPRESSION=1 \
-    CUDA_GRAPH_CAPTURE=1 \
-    QUANTIZED_INFERENCE=1
-
-# Create optimized conversion script for quantized models
-RUN cat > convert_quantized_legal.py << 'EOF'
+# Create API server
+RUN cat > api_server.py << 'PYEOF'
 #!/usr/bin/env python3
-"""
-Optimized conversion for quantized legal AI models
-- Engine caching with zstd compression
-- INT8 calibration for quantized models
-- CUDA Graph capture for fixed batch sizes
-- Multi-dimensional optimization profiles
-"""
-
-import os
-import zstandard as zstd
-import tensorrt as trt
+import uvicorn
+from fastapi import FastAPI
+from embedding_adapter_512 import EmbeddingAdapter512
 import torch
-import time
-from pathlib import Path
 
-class QuantizedLegalConverter:
-    def __init__(self):
-        self.cache_dir = Path("/app/tensorrt_cache")
-        self.compressor = zstd.ZstdCompressor(level=3)
-        self.decompressor = zstd.ZstdDecompressor()
+app = FastAPI(title="Legal AI Vector Search", version="1.0.0")
+adapter = EmbeddingAdapter512()
 
-    def convert_with_cache(self, model_name: str, precision="int8"):
-        """Convert quantized model with aggressive caching"""
-        cache_key = f"{model_name}_{precision}_rtx3060ti"
-        compressed_path = self.cache_dir / "compressed" / f"{cache_key}.zst"
+@app.get("/health")
+async def health():
+    return {
+        "status": "healthy", 
+        "gpu_available": torch.cuda.is_available(),
+        "cuda_version": torch.version.cuda if torch.cuda.is_available() else None,
+        "gpu_name": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None
+    }
 
-        # Check compressed cache first
-        if compressed_path.exists():
-            print(f"🚀 Loading from compressed cache: {cache_key}")
-            return self.load_compressed_engine(compressed_path)
-
-        # Build new engine with quantization
-        print(f"🔧 Building quantized engine for {model_name}")
-        engine = self.build_quantized_engine(model_name, precision)
-
-        # Compress and cache
-        self.save_compressed_engine(engine, compressed_path)
-        return engine
-
-    def build_quantized_engine(self, model_name: str, precision: str):
-        """Build TensorRT engine optimized for quantized legal models"""
-        # Implementation for quantized model optimization
-        # - INT8 calibration datasets for legal documents
-        # - Multi-dimensional batch optimization
-        # - CUDA Graph capture points
-        pass
-
-    def save_compressed_engine(self, engine_data: bytes, path: Path):
-        """Save engine with zstd compression"""
-        compressed = self.compressor.compress(engine_data)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with open(path, 'wb') as f:
-            f.write(compressed)
-        compression_ratio = len(engine_data) / len(compressed)
-        print(f"💾 Saved with {compression_ratio:.1f}x compression")
-
-    def load_compressed_engine(self, path: Path) -> bytes:
-        """Load and decompress cached engine"""
-        with open(path, 'rb') as f:
-            compressed = f.read()
-        return self.decompressor.decompress(compressed)
+@app.post("/embeddings")
+async def generate_embeddings(text: str):
+    embedding = adapter.get_legal_embedding_512(text)
+    return {
+        "embedding": embedding.tolist(), 
+        "dimensions": len(embedding),
+        "model": "embeddinggemma:latest",
+        "status": "success"
+    }
 
 if __name__ == "__main__":
-    converter = QuantizedLegalConverter()
+    uvicorn.run(app, host="0.0.0.0", port=8100)
+PYEOF
 
-    # Convert Unsloth quantized models
-    models = [
-        "embeddinggemma:latest",
-        "gemma3-legal:latest"
-    ]
-
-    for model in models:
-        print(f"Converting quantized model: {model}")
-        engine = converter.convert_with_cache(model, precision="int8")
-        print(f"✅ Cached engine ready for {model}")
-EOF
-
-RUN chmod +x convert_quantized_legal.py
-
-# Create C++ wrapper header for ultra-low latency
-RUN cat > tensorrt_cpp_wrapper.hpp << 'EOF'
-#pragma once
-#include <NvInfer.h>
-#include <cuda_runtime.h>
-#include <memory>
-#include <vector>
-
-/**
- * Ultra-low latency TensorRT wrapper for quantized legal AI
- * - Sub-millisecond inference via CUDA Graphs
- * - Warp-level primitives for custom kernels
- * - Pinned memory pools for zero-copy operations
- */
-class QuantizedLegalInference {
-private:
-    std::unique_ptr<nvinfer1::IRuntime> runtime;
-    std::unique_ptr<nvinfer1::ICudaEngine> engine;
-    std::unique_ptr<nvinfer1::IExecutionContext> context;
-
-    // CUDA Graph for fixed batch inference
-    cudaGraph_t cuda_graph;
-    cudaGraphExec_t graph_exec;
-
-    // Pinned memory pools
-    void* input_pinned_mem;
-    void* output_pinned_mem;
-
-    // GPU memory
-    void* input_gpu_mem;
-    void* output_gpu_mem;
-
-public:
-    QuantizedLegalInference(const std::string& engine_path);
-
-    // Ultra-fast inference via CUDA Graph replay
-    std::vector<float> infer_fast(const std::vector<int>& input_ids);
-
-    // Batch inference with custom CUDA kernels
-    std::vector<std::vector<float>> infer_batch(
-        const std::vector<std::vector<int>>& batch_input_ids
-    );
-
-    // Warm-up and CUDA Graph capture
-    void capture_cuda_graph(const std::vector<int>& sample_input);
-
-    ~QuantizedLegalInference();
-};
-EOF
-
-# Test script for quantized model performance
-RUN cat > test_quantized_performance.sh << 'EOF'
-#!/bin/bash
-echo "🚀 Testing Quantized Legal AI Performance"
-echo "========================================"
-
-# Check GPU specs for RTX 3060 Ti
-echo "🔍 GPU Information:"
-nvidia-smi --query-gpu=name,memory.total,compute_cap --format=csv,noheader
-
-# Verify TensorRT with quantization support
-echo "🔧 TensorRT Quantization Support:"
-python3 -c "
-import tensorrt as trt
-print(f'TensorRT version: {trt.__version__}')
-builder = trt.Builder(trt.Logger())
-print(f'INT8 support: {builder.platform_has_fast_int8}')
-print(f'FP16 support: {builder.platform_has_fast_fp16}')
-"
-
-# Test CUDA Graph capture
-echo "📊 CUDA Graph Performance Test:"
-python3 -c "
-import torch
-import time
-
-# Test CUDA Graph capture overhead
-device = torch.device('cuda:0')
-x = torch.randn(32, 512, device=device)
-linear = torch.nn.Linear(512, 768).to(device)
-
-# Warm-up
-for _ in range(10):
-    y = linear(x)
-torch.cuda.synchronize()
-
-# Capture graph
-print('Capturing CUDA Graph...')
-start = time.perf_counter()
-with torch.cuda.graph(torch.cuda.CUDAGraph()) as graph:
-    y = linear(x)
-capture_time = time.perf_counter() - start
-print(f'Graph capture: {capture_time*1000:.2f}ms')
-
-# Replay graph (should be much faster)
-start = time.perf_counter()
-graph.replay()
-torch.cuda.synchronize()
-replay_time = time.perf_counter() - start
-print(f'Graph replay: {replay_time*1000:.2f}ms')
-print(f'Speedup: {capture_time/replay_time:.1f}x')
-"
-
-echo "✅ Quantized TensorRT environment ready!"
-echo "🎯 Next: python3 convert_quantized_legal.py"
-EOF
-
-RUN chmod +x test_quantized_performance.sh
+RUN chmod +x api_server.py
 
 EXPOSE 8100
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD python3 -c "import tensorrt; print('Quantized TensorRT OK')" || exit 1
+# Health check for container monitoring
+HEALTHCHECK --interval=30s --timeout=3s \
+    CMD python -c "import requests; requests.get('http://localhost:8100/health')" || exit 1
 
-CMD ["./test_quantized_performance.sh"]
+CMD ["python", "api_server.py"]

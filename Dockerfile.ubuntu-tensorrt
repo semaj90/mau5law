@@ -1,0 +1,65 @@
+# syntax=docker/dockerfile:1.7
+# TensorRT-LLM Ubuntu WSL2 Optimized Dockerfile
+# Based on NVIDIA TensorRT-LLM with Ubuntu 22.04 and CUDA 13.0 support
+
+FROM nvcr.io/nvidia/tensorrt:24.12-py3
+
+# Set working directory
+WORKDIR /app
+
+# Set environment variables for CUDA 13.0
+ENV CUDA_VERSION=13.0
+ENV CUDA_HOME=/usr/local/cuda
+ENV PATH=${CUDA_HOME}/bin:${PATH}
+ENV LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+# Use Python provided by the NVIDIA base image; upgrade pip only
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python3 -m pip install --no-cache-dir --upgrade pip
+
+# Prefer PyTorch/TensorRT from base image; only install if missing
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python3 - <<'PY'
+import os, sys
+try:
+    import torch  # noqa: F401
+    import torchvision  # noqa: F401
+    import torchaudio  # noqa: F401
+    sys.exit(0)
+except Exception:
+    pass
+print('PyTorch stack not found; installing cu124 wheels...')
+code = os.system('python3 -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cu124 torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1')
+sys.exit(0 if code == 0 else 1)
+PY
+
+# Install TensorRT-LLM dependencies (with compatible versions for Python 3.12)
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python3 -m pip install --no-cache-dir \
+    fastapi==0.104.1 \
+    uvicorn[standard]==0.24.0 \
+    transformers==4.44.0 \
+    numpy>=1.26.0 \
+    pydantic==2.5.0 \
+    requests==2.31.0
+
+# Copy application files
+COPY tensorrt-llm-production-server.py /app/
+COPY simple-legal-ai-server.py /app/
+
+# Set proper permissions
+RUN chmod +x /app/*.py
+
+# Health check (no external tools; uses Python stdlib)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python3 -c "import urllib.request,sys;\
+resp=urllib.request.urlopen('http://localhost:8100/health', timeout=5);\
+sys.exit(0 if resp.getcode()==200 else 1)"
+
+# Expose port
+EXPOSE 8100
+
+# Default command - use the TensorRT production server
+CMD ["python3", "tensorrt-llm-production-server.py"]

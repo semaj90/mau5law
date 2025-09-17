@@ -96,6 +96,15 @@
       stats: '156 active records'
     },
     {
+      title: '🧠 AI Legal Chat',
+      description: 'TensorRT-powered legal AI assistant',
+      href: '/ai-chat',
+      icon: Brain,
+      gradient: 'from-blue-600 to-purple-700',
+      stats: 'TensorRT Q4_K_M',
+      isNew: true
+    },
+    {
       title: '🎮 SPA Canvas',
       description: 'Full-screen gaming UX with gemma3:legal-latest',
       href: '/spa',

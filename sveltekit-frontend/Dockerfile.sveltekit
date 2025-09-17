@@ -15,7 +15,7 @@ WORKDIR /app
 
 # Copy all source files
 COPY . .
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # Copy environment configuration
 COPY .env.example .env

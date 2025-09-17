@@ -289,7 +289,16 @@
       "Bash(ollama run:*)",
       "Bash(/bashes)",
       "Bash(./test-tensorrt-inference.sh:*)",
-      "Bash(./scripts/porcelain-build-push.sh:*)"
+      "Bash(./scripts/porcelain-build-push.sh:*)",
+      "Bash(./start-tensorrt-docker.sh:*)",
+      "Bash(./go-microservice/tensorrt/legal-tensorrt-service-simple.exe --help)",
+      "Bash(./build.sh)",
+      "Bash(./simple-tensorrt-service.exe)",
+      "Bash(./go-microservice/tensorrt/legal-tensorrt-service-simple.exe)",
+      "Bash(PORT=8100 ./simple-tensorrt-service.exe)",
+      "Bash(PORT=5173 npm run dev -- --host 127.0.0.1 --port 5173)",
+      "Bash(ping:*)",
+      "Bash(telnet:*)"
     ],
     "deny": [],
     "ask": []
